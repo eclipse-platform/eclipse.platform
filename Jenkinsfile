@@ -11,11 +11,6 @@ pipeline {
 		jdk 'openjdk-jdk11-latest'
 	}
 	stages {
-		stage('initialize Gerrit review') {
-			steps {
-				gerritReview labels: [Verified: 0], message: "Build started $BUILD_URL"
-			}
-		}
 		stage('Build') {
 			steps {
 				wrap([$class: 'Xvnc', useXauthority: true]) {
@@ -33,12 +28,6 @@ pipeline {
 					junit '**/target/surefire-reports/TEST-*.xml'
 					publishIssues issues:[scanForIssues(tool: java()), scanForIssues(tool: mavenConsole())]
 				}
-				unstable {
-					gerritReview labels: [Verified: -1], message: "Build UNSTABLE (test failures) $BUILD_URL"
-				}
-				failure {
-					gerritReview labels: [Verified: -1], message: "Build FAILED $BUILD_URL"
-				}
 			}
 		}
 		stage('Check freeze period') {
@@ -54,16 +43,6 @@ pipeline {
 					sh './verifyFreezePeriod.sh'
 				}
 			}
-			post {
-				failure {
-					gerritReview labels: [Verified: -1], message: "Build and test are OK, but Eclipse project is currently in a code freeze period.\nPlease wait for end of code freeze period before merging.\n $BUILD_URL"
-				}
-			}
-		}
-	}
-	post {
-		success {
-			gerritReview labels: [Verified: 1], message: "Build Succcess $BUILD_URL"
 		}
 	}
 }
