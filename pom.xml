@@ -24,7 +24,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <tycho.scmUrl>scm:git:https://git.eclipse.org/r/platform/eclipse.platform.team.git</tycho.scmUrl>
+    <tycho.scmUrl>scm:git:https://github.com/eclipse-platform/eclipse.platform.team.git</tycho.scmUrl>
     <code.ignoredWarnings>-warn:-deprecation,raw,unchecked,warningToken</code.ignoredWarnings>
   </properties>
 
