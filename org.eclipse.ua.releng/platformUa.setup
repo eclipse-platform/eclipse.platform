@@ -15,34 +15,28 @@
   <setupTask
       xsi:type="setup:EclipseIniTask"
       option="-Doomph.redirection.platform.ua"
-      value="=https://git.eclipse.org/c/platform/eclipse.platform.ua.git/plain/org.eclipse.ua.releng/platformUa.setup->${git.clone.platform.ua.location|uri}/org.eclipse.ua.releng/platformUa.setup"
+      value="=https://raw.githubusercontent.com/eclipse-platform/eclipse.platform.ua/master/org.eclipse.ua.releng/platformUa.setup->${github.clone.platform.ua.location|uri}/org.eclipse.ua.releng/platformUa.setup"
       vm="true"/>
   <setupTask
       xsi:type="git:GitCloneTask"
-      id="git.clone.platform.ua"
-      remoteURI="platform/eclipse.platform.ua"
+      id="github.clone.platform.ua"
+      remoteURI="eclipse-platform/eclipse.platform.ua"
       pushURI="">
     <annotation
         source="http://www.eclipse.org/oomph/setup/InducedChoices">
       <detail
           key="inherit">
-        <value>eclipse.git.gerrit.remoteURIs</value>
+        <value>github.remoteURIs</value>
       </detail>
       <detail
           key="label">
-        <value>Platform UA Git or Gerrit Repository</value>
+        <value>Platform UA Git Repository</value>
       </detail>
       <detail
           key="target">
         <value>remoteURI</value>
       </detail>
     </annotation>
-    <configSections
-        name="gerrit">
-      <properties
-          key="createchangeid"
-          value="true"/>
-    </configSections>
     <description>Platform UA</description>
   </setupTask>
   <setupTask
@@ -53,7 +47,7 @@
       <requirement
           name="*"/>
       <sourceLocator
-          rootFolder="${git.clone.platform.ua.location}"/>
+          rootFolder="${github.clone.platform.ua.location}"/>
     </targlet>
   </setupTask>
   <setupTask
@@ -67,7 +61,7 @@
             project="org.eclipse.help"/>
         <operand
             xsi:type="workingsets:ExclusionPredicate"
-            excludedWorkingSet="//@setupTasks.3/@workingSets.1 //@setupTasks.3/@workingSets.2"/>
+            excludedWorkingSet="//@setupTasks.3/@workingSets[name='Platform%20UA%20Tests'] //@setupTasks.3/@workingSets[name='Platform%20UA%20Examples']"/>
       </predicate>
     </workingSet>
     <workingSet
