@@ -15,34 +15,28 @@
   <setupTask
       xsi:type="setup:EclipseIniTask"
       option="-Doomph.redirection.platform.team"
-      value="=https://git.eclipse.org/c/platform/eclipse.platform.team.git/plain/bundles/org.eclipse.team.releng/platformTeam.setup->${git.clone.platform.team.location|uri}/bundles/org.eclipse.team.releng/platformTeam.setup"
+      value="=https://raw.githubusercontent.com/eclipse-platform/eclipse.platform.team/master/bundles/org.eclipse.team.releng/platformTeam.setup->${github.clone.platform.team.location|uri}/bundles/org.eclipse.team.releng/platformTeam.setup"
       vm="true"/>
   <setupTask
       xsi:type="git:GitCloneTask"
-      id="git.clone.platform.team"
-      remoteURI="platform/eclipse.platform.team"
+      id="github.clone.platform.team"
+      remoteURI="eclipse-platform/eclipse.platform.team"
       pushURI="">
     <annotation
         source="http://www.eclipse.org/oomph/setup/InducedChoices">
       <detail
           key="inherit">
-        <value>eclipse.git.gerrit.remoteURIs</value>
+        <value>github.remoteURIs</value>
       </detail>
       <detail
           key="label">
-        <value>Platform Team Git or Gerrit Repository</value>
+        <value>Platform Team Git Repository</value>
       </detail>
       <detail
           key="target">
         <value>remoteURI</value>
       </detail>
     </annotation>
-    <configSections
-        name="gerrit">
-      <properties
-          key="createchangeid"
-          value="true"/>
-    </configSections>
     <description>Platform Team</description>
   </setupTask>
   <setupTask
@@ -53,7 +47,7 @@
       <requirement
           name="*"/>
       <sourceLocator
-          rootFolder="${git.clone.platform.team.location}"
+          rootFolder="${github.clone.platform.team.location}"
           locateNestedProjects="true"/>
     </targlet>
   </setupTask>
@@ -68,7 +62,7 @@
             project="org.eclipse.team.core"/>
         <operand
             xsi:type="workingsets:ExclusionPredicate"
-            excludedWorkingSet="//@setupTasks.3/@workingSets.1 //@setupTasks.3/@workingSets.2"/>
+            excludedWorkingSet="//@setupTasks.3/@workingSets[name='Platform%20Team%20Examples'] //@setupTasks.3/@workingSets[name='Platform%20Team%20Tests']"/>
       </predicate>
     </workingSet>
     <workingSet
