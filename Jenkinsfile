@@ -28,6 +28,7 @@ pipeline {
 					junit '**/target/surefire-reports/TEST-*.xml'
 					publishIssues issues:[scanForIssues(tool: java()), scanForIssues(tool: mavenConsole())]
 				}
+			}
 		}
 		stage('Check freeze period') {
 			steps {
