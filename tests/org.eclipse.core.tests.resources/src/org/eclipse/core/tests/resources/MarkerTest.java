@@ -1969,6 +1969,25 @@ public class MarkerTest extends ResourceTest {
 		}
 	}
 
+	public void testGetAttributesEquality() throws Exception {
+		final String value = "Some value";
+		for (int i = 0; i < resources.length; i++) {
+			IMarker marker = resources[i].createMarker(IMarker.PROBLEM, Map.of(createNewString(i), value));
+
+			// Check we can get the value by equal key
+			assertEquals(value, marker.getAttribute(createNewString(i)));
+
+			// Check the map returned by marker is equal to equal map
+			Map<String, Object> existing = marker.getAttributes();
+			Map<String, Object> otherAttributes = Map.of(createNewString(i), value);
+			assertEquals(existing, otherAttributes);
+		}
+	}
+
+	private String createNewString(int i) {
+		return new StringBuilder().append(i).toString();
+	}
+
 	public void testSetGetAttribute2() {
 		debug("testSetGetAttribute2");
 

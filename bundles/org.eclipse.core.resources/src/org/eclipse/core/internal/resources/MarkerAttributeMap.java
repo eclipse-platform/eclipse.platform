@@ -81,7 +81,7 @@ public class MarkerAttributeMap implements IStringPoolParticipant {
 	}
 
 	private Map<String, Object> copy(Map<String, ? extends Object> map, boolean validate) {
-		Map<String, Object> target = new IdentityHashMap<>();
+		Map<String, Object> target = new HashMap<>();
 		putAll(target, map, validate);
 		return target;
 	}
@@ -116,7 +116,7 @@ public class MarkerAttributeMap implements IStringPoolParticipant {
 	}
 
 	private Map<String, Object> copy(Map<String, ? extends Object> map) {
-		return new IdentityHashMap<>(map);
+		return new HashMap<>(map);
 	}
 
 	private Map<String, Object> getMap() {
@@ -153,7 +153,7 @@ public class MarkerAttributeMap implements IStringPoolParticipant {
 		for (java.util.Map.Entry<String, Object> e : getMap().entrySet()) {
 			Object o = e.getValue();
 			if (o instanceof String) {
-				getMap().put(e.getKey(), set.add((String) o));
+				e.setValue(set.add((String) o));
 			} else if (o instanceof IStringPoolParticipant) {
 				((IStringPoolParticipant) o).shareStrings(set);
 			}
