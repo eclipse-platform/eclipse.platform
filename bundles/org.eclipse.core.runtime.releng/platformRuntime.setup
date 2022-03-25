@@ -15,18 +15,18 @@
   <setupTask
       xsi:type="setup:EclipseIniTask"
       option="-Doomph.redirection.platform.runtime"
-      value="=https://git.eclipse.org/c/platform/eclipse.platform.runtime.git/plain/bundles/org.eclipse.core.runtime.releng/platformRuntime.setup->${git.clone.platform.runtime.location|uri}/bundles/org.eclipse.core.runtime.releng/platformRuntime.setup"
+      value="=https://raw.githubusercontent.com/eclipse-platform/eclipse.platform.runtime/master/bundles/org.eclipse.core.runtime.releng/platformRuntime.setup->${github.clone.platform.runtime.location|uri}/bundles/org.eclipse.core.runtime.releng/platformRuntime.setup"
       vm="true"/>
   <setupTask
       xsi:type="git:GitCloneTask"
-      id="git.clone.platform.runtime"
-      remoteURI="platform/eclipse.platform.runtime"
+      id="github.clone.platform.runtime"
+      remoteURI="eclipse-platform/eclipse.platform.runtime"
       pushURI="">
     <annotation
         source="http://www.eclipse.org/oomph/setup/InducedChoices">
       <detail
           key="inherit">
-        <value>eclipse.git.gerrit.remoteURIs</value>
+        <value>github.remoteURIs</value>
       </detail>
       <detail
           key="label">
@@ -37,12 +37,6 @@
         <value>remoteURI</value>
       </detail>
     </annotation>
-    <configSections
-        name="gerrit">
-      <properties
-          key="createchangeid"
-          value="true"/>
-    </configSections>
     <description>Platform Runtime</description>
   </setupTask>
   <setupTask
@@ -51,15 +45,18 @@
         name="Platform Runtime"
         activeRepositoryList="${eclipse.target.platform}">
       <requirement
+          name="org.eclipse.test.performance"
+          optional="true"/>
+      <requirement
           name="*"/>
       <sourceLocator
-          rootFolder="${git.clone.platform.runtime.location}"
+          rootFolder="${github.clone.platform.runtime.location}"
           locateNestedProjects="true">
         <predicate
             xsi:type="predicates:NotPredicate">
           <operand
               xsi:type="predicates:NamePredicate"
-              pattern="org\.eclipse\.core\.tools.*">
+              pattern="org\.eclipse\.core\.tools-.*">
             <annotation
                 source="http://www.eclipse.org/oomph/base/Warning">
               <detail
@@ -73,7 +70,8 @@
     </targlet>
   </setupTask>
   <setupTask
-      xsi:type="setup.workingsets:WorkingSetTask">
+      xsi:type="setup.workingsets:WorkingSetTask"
+      id="runtime.workingsets">
     <workingSet
         name="Platform Runtime">
       <predicate
@@ -83,7 +81,7 @@
             project="org.eclipse.core.runtime"/>
         <operand
             xsi:type="workingsets:ExclusionPredicate"
-            excludedWorkingSet="//@setupTasks.3/@workingSets.1"/>
+            excludedWorkingSet="//'runtime.workingsets'/@workingSets[name='Platform%20Runtime%20Tests']"/>
       </predicate>
     </workingSet>
     <workingSet
