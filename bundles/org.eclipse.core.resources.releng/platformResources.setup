@@ -15,17 +15,17 @@
   <setupTask
       xsi:type="setup:EclipseIniTask"
       option="-Doomph.redirection.platform.resources"
-      value="=https://git.eclipse.org/c/platform/eclipse.platform.resources.git/plain/bundles/org.eclipse.core.resources.releng/platformResources.setup->${git.clone.platform.resources.location|uri}/bundles/org.eclipse.core.resources.releng/platformResources.setup"
+      value="=https://raw.githubusercontent.com/eclipse-platform/eclipse.platform.resources/master/bundles/org.eclipse.core.resources.releng/platformResources.setup->${github.clone.platform.resources.location|uri}/bundles/org.eclipse.core.resources.releng/platformResources.setup"
       vm="true"/>
   <setupTask
       xsi:type="git:GitCloneTask"
-      id="git.clone.platform.resources"
-      remoteURI="platform/eclipse.platform.resources">
+      id="github.clone.platform.resources"
+      remoteURI="eclipse-platform/eclipse.platform.resources">
     <annotation
         source="http://www.eclipse.org/oomph/setup/InducedChoices">
       <detail
           key="inherit">
-        <value>eclipse.git.gerrit.remoteURIs</value>
+        <value>github.remoteURIs</value>
       </detail>
       <detail
           key="label">
@@ -36,12 +36,6 @@
         <value>remoteURI</value>
       </detail>
     </annotation>
-    <configSections
-        name="gerrit">
-      <properties
-          key="createchangeid"
-          value="true"/>
-    </configSections>
     <description>Platform Resources</description>
   </setupTask>
   <setupTask
@@ -52,7 +46,7 @@
       <requirement
           name="*"/>
       <sourceLocator
-          rootFolder="${git.clone.platform.resources.location}"
+          rootFolder="${github.clone.platform.resources.location}"
           locateNestedProjects="true">
         <predicate
             xsi:type="predicates:NotPredicate">
@@ -72,7 +66,8 @@
     </targlet>
   </setupTask>
   <setupTask
-      xsi:type="setup.workingsets:WorkingSetTask">
+      xsi:type="setup.workingsets:WorkingSetTask"
+      id="resources.workingsets">
     <workingSet
         name="Platform Resources">
       <predicate
@@ -82,7 +77,7 @@
             project="org.eclipse.core.resources"/>
         <operand
             xsi:type="workingsets:ExclusionPredicate"
-            excludedWorkingSet="//@setupTasks.3/@workingSets.1"/>
+            excludedWorkingSet="//'resources.workingsets'/@workingSets[name='Platform%20Resources%20Tests']"/>
       </predicate>
     </workingSet>
     <workingSet
