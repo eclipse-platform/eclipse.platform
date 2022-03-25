@@ -99,6 +99,9 @@ public class MarkerAttributeMap implements IStringPoolParticipant {
 	}
 
 	private void putAll(Map<String, Object> target, Map<String, ? extends Object> source, boolean validate) {
+		if (source == null) {
+			return;
+		}
 		for (Entry<String, ? extends Object> e : source.entrySet()) {
 			String key = e.getKey();
 			Objects.requireNonNull(key, "insert of null key not allowed"); //$NON-NLS-1$

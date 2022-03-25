@@ -2137,7 +2137,17 @@ public class MarkerTest extends ResourceTest {
 					// expected
 				}
 			} catch (CoreException e) {
-				fail("4.24." + resource.getFullPath(), e);
+				fail("4.26" + resource.getFullPath(), e);
+			}
+			try {
+				assertNotNull(marker.getAttribute("2"));
+				assertNotNull(marker.getAttributes());
+				marker.setAttributes(null);
+				assertNull(marker.getAttribute("1"));
+				assertNull(marker.getAttribute("2"));
+				assertNull(marker.getAttributes());
+			} catch (CoreException e) {
+				fail("4.27" + resource.getFullPath(), e);
 			}
 		}
 	}
