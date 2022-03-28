@@ -178,6 +178,7 @@ public class CharsetTest extends ResourceTest {
 			return true;
 		};
 		root.accept(visitor);
+		waitForProjectEncodingValidation();
 	}
 
 	private IFile getResourcesPreferenceFile(IProject project, boolean forDerivedResources) {
@@ -241,6 +242,7 @@ public class CharsetTest extends ResourceTest {
 		ResourcesPlugin.getPlugin().getPluginPreferences().setValue(ResourcesPlugin.PREF_ENCODING, savedWorkspaceCharset);
 		// Reset the PREF_LIGHTWEIGHT_AUTO_REFRESH preference to its default value.
 		getResourcesPreferences().remove(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH);
+		waitForProjectEncodingValidation();
 		super.tearDown();
 	}
 
@@ -1255,6 +1257,7 @@ public class CharsetTest extends ResourceTest {
 			} catch (CoreException e) {
 				fail("7.1", e);
 			}
+			waitForProjectEncodingValidation();
 			verifier.assertExpectedDeltasWereReceived("7.2.");
 
 			// clear all the encoding info before we start working with the root
@@ -1270,6 +1273,7 @@ public class CharsetTest extends ResourceTest {
 			} catch (CoreException e) {
 				fail("8.1", e);
 			}
+			waitForProjectEncodingValidation();
 			verifier.assertExpectedDeltasWereReceived("8.2.");
 		} finally {
 			verifier.removeResourceChangeListeners();
