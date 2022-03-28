@@ -1001,6 +1001,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			monitor.done();
 			return;
 		}
+		int blockReports = 0;
 		//spin until all jobs are completed
 		try {
 			monitor.beginTask(JobMessages.jobs_blocked0, jobCount);
@@ -1014,6 +1015,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 					blockingJobs = new ArrayList<>(jobs);
 				}
 				if (!Objects.equals(reportedBlockingJobs, blockingJobs)) {
+					blockReports++; // see WorkbenchDialogBlockedHandler.nestingDepth
 					reportBlocked(monitor, blockingJobs);
 					reportedBlockingJobs = blockingJobs;
 				}
@@ -1040,7 +1042,9 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		} finally {
 			lockManager.aboutToRelease();
 			removeJobChangeListener(listener);
-			reportUnblocked(monitor);
+			for (int i = 0; i < blockReports; i++) {
+				reportUnblocked(monitor);
+			}
 			monitor.done();
 		}
 	}
