@@ -285,20 +285,29 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 		}
 	}
 
-	protected void basicBuild(IBuildConfiguration buildConfiguration, int trigger, IBuildContext context, ICommand[] commands, MultiStatus status, IProgressMonitor monitor) {
+	protected void basicBuild(IBuildConfiguration buildConfiguration, final int trigger, IBuildContext context,
+			ICommand[] commands, MultiStatus status, IProgressMonitor monitor) {
 		int remainingIterations = Math.max(1, workspace.getDescription().getMaxBuildIterations());
 
+		// Planned triggers for each builder are originally all same
+		// but may change if the rebuild is requested in the loop
+		int[] triggers = new int[commands.length];
+		Arrays.fill(triggers, trigger);
+		boolean shouldRebuild = true;
 		try {
-			boolean shouldRebuild = true;
 			while (shouldRebuild) {
 				shouldRebuild = false;
+				// If rebuild was requested, the triggers for next builder executions
+				// will be changed to incremental.
+				int[] nextTriggers = null;
 				for (int i = 0; i < commands.length; i++) {
-					checkCanceled(trigger, monitor);
+					int currentTrigger = triggers[i];
+					checkCanceled(currentTrigger, monitor);
 					BuildCommand command = (BuildCommand) commands[i];
 					IProgressMonitor sub = Policy.subMonitorFor(monitor, 1);
 					IncrementalProjectBuilder builder = getBuilder(buildConfiguration, command, i, status, context);
 					if (builder != null) {
-						basicBuild(trigger, builder, command.getArguments(false), status, sub);
+						basicBuild(currentTrigger, builder, command.getArguments(false), status, sub);
 
 						// Check if the builder requested rebuild
 						IProject project = builder.getProject();
@@ -309,17 +318,31 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 								if (!restartImmediately) {
 									// process building all builders and restart after that
 									shouldRebuild = true;
+									// Next build rounds for all builders should be incremental
+									if (trigger != IncrementalProjectBuilder.AUTO_BUILD) {
+										nextTriggers = new int[triggers.length];
+										Arrays.fill(nextTriggers, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+									}
 								} else {
 									// First builder doesn't need to restart anything
 									if (i > 0) {
 										// Start for loop again, input can be important for all builders before
 										shouldRebuild = true;
+										// Next build rounds for previous builders up to current should be incremental
+										if (trigger != IncrementalProjectBuilder.AUTO_BUILD) {
+											nextTriggers = Arrays.copyOf(triggers, triggers.length);
+											Arrays.fill(nextTriggers, 0, i + 1,
+													IncrementalProjectBuilder.INCREMENTAL_BUILD);
+										}
 										break;
 									}
 								}
 							}
 						}
 					}
+				}
+				if (nextTriggers != null) {
+					triggers = nextTriggers;
 				}
 			}
 		} catch (CoreException e) {
@@ -1290,7 +1313,9 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	}
 
 	/**
-	 * Hook for builders to request a rebuild.
+	 * Hook for builders to request a global rebuild for the main build loop on next
+	 * build cycle. All projects will be rebuilt at least once after the current
+	 * build cycle.
 	 */
 	void requestRebuild() {
 		rebuildRequested = true;

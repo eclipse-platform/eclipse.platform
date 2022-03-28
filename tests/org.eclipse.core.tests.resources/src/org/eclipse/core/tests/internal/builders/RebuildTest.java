@@ -102,6 +102,13 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(2, b1.buildsCount());
 		assertEquals(2, b2.buildsCount());
 		assertEquals(2, b3.buildsCount());
+
+		List<Integer> expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -114,6 +121,15 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(3, b1.buildsCount());
 		assertEquals(3, b2.buildsCount());
 		assertEquals(2, b3.buildsCount());
+
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -126,6 +142,12 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(3, b1.buildsCount());
 		assertEquals(3, b2.buildsCount());
 		assertEquals(3, b3.buildsCount());
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -140,6 +162,14 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(4, b1.buildsCount());
 		assertEquals(4, b2.buildsCount());
 		assertEquals(3, b3.buildsCount());
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -204,6 +234,12 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(3, b1.buildsCount());
 		assertEquals(3, b2.buildsCount());
 		assertEquals(3, b3.buildsCount());
+		List<Integer> expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(true));
@@ -215,6 +251,12 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(3, b1.buildsCount());
 		assertEquals(3, b2.buildsCount());
 		assertEquals(3, b3.buildsCount());
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(true));
@@ -227,6 +269,12 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(3, b1.buildsCount());
 		assertEquals(3, b2.buildsCount());
 		assertEquals(3, b3.buildsCount());
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(true));
@@ -239,6 +287,12 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(3, b1.buildsCount());
 		assertEquals(3, b2.buildsCount());
 		assertEquals(3, b3.buildsCount());
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(true));
@@ -301,22 +355,36 @@ public class RebuildTest extends AbstractBuilderTest {
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(true));
 
-		// First builder requests rebuild - one repetition
+		// First builder requests rebuild - all builders will run twice
 		b1.setRequestProjectRebuild(project, 1);
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 		assertEquals(2, b1.buildsCount());
 		assertEquals(2, b2.buildsCount());
 		assertEquals(2, b3.buildsCount());
+		List<Integer> expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(true));
 
-		// Second builder requests rebuild - two repetitions for all
+		// Second builder requests rebuild - all builders will run twice
 		b2.setRequestProjectRebuild(project, 1);
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 		assertEquals(2, b1.buildsCount());
 		assertEquals(2, b2.buildsCount());
 		assertEquals(2, b3.buildsCount());
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
+		builders.forEach(RebuildingBuilder::reset);
+		builders.forEach(b -> b.setPropagateRebuild(false));
+		builders.forEach(b -> b.setProcessOtherBuilders(true));
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(true));
@@ -327,12 +395,16 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(2, b1.buildsCount());
 		assertEquals(2, b2.buildsCount());
 		assertEquals(2, b3.buildsCount());
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(true));
 
 		// Second and third builder request rebuild - all builders will run twice
-		// times, last one one time less
 		b2.setRequestProjectRebuild(project, 1);
 		b3.setRequestProjectRebuild(project, 1);
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
@@ -419,6 +491,11 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(1, b1.buildsCount());
 		assertEquals(1, b2.buildsCount());
 		assertEquals(1, b3.buildsCount());
+		List<Integer> expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -429,6 +506,12 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(2, b1.buildsCount());
 		assertEquals(2, b2.buildsCount());
 		assertEquals(1, b3.buildsCount());
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD);
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -439,6 +522,11 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(2, b1.buildsCount());
 		assertEquals(2, b2.buildsCount());
 		assertEquals(2, b3.buildsCount());
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -451,6 +539,15 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(3, b1.buildsCount());
 		assertEquals(3, b2.buildsCount());
 		assertEquals(2, b3.buildsCount());
+
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -521,7 +618,7 @@ public class RebuildTest extends AbstractBuilderTest {
 		desc = project2.getDescription();
 
 		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder3"),
+				createCommand(desc, builderName, "builder4"),
 				createCommand(desc, builderName, "builder5"),
 				createCommand(desc, builderName, "builder6"), });
 		project2.setDescription(desc, getMonitor());
@@ -558,6 +655,17 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(2, b4.buildsCount());
 		assertEquals(2, b5.buildsCount());
 		assertEquals(2, b6.buildsCount());
+
+		List<Integer> expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
+		assertEquals(expectedKinds, b4.buildKinds());
+		assertEquals(expectedKinds, b5.buildKinds());
+		assertEquals(expectedKinds, b6.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -649,7 +757,7 @@ public class RebuildTest extends AbstractBuilderTest {
 		// Create and set a build spec for the project
 		desc = project2.getDescription();
 
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder3"),
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder4"),
 				createCommand(desc, builderName, "builder5"), createCommand(desc, builderName, "builder6"), });
 		project2.setDescription(desc, getMonitor());
 
@@ -685,6 +793,18 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(2, b4.buildsCount());
 		assertEquals(2, b5.buildsCount());
 		assertEquals(2, b6.buildsCount());
+
+		List<Integer> expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b4.buildKinds());
+		assertEquals(expectedKinds, b5.buildKinds());
+		assertEquals(expectedKinds, b6.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(true));
@@ -787,7 +907,7 @@ public class RebuildTest extends AbstractBuilderTest {
 		desc = project2.getDescription();
 
 		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder3"),
+				createCommand(desc, builderName, "builder4"),
 				createCommand(desc, builderName, "builder5"),
 				createCommand(desc, builderName, "builder6"), });
 		project2.setDescription(desc, getMonitor());
@@ -828,6 +948,25 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(1, b4.buildsCount());
 		assertEquals(1, b5.buildsCount());
 		assertEquals(1, b6.buildsCount());
+
+		List<Integer> expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b3.buildKinds());
+
+		// TODO: this is unexpected. If the allowEarlyBuildLoopExit is set, we
+		// start rebuild and automatically change trigger to INCREMENTAL build
+		// even if the not yet built projects haven't done full build yet
+		expectedKinds = List.of(IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b4.buildKinds());
+		assertEquals(expectedKinds, b5.buildKinds());
+		assertEquals(expectedKinds, b6.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -930,7 +1069,7 @@ public class RebuildTest extends AbstractBuilderTest {
 		desc = project2.getDescription();
 
 		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder3"),
+				createCommand(desc, builderName, "builder4"),
 				createCommand(desc, builderName, "builder5"),
 				createCommand(desc, builderName, "builder6"), });
 		project2.setDescription(desc, getMonitor());
@@ -988,6 +1127,18 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(1, b4.buildsCount());
 		assertEquals(1, b5.buildsCount());
 		assertEquals(1, b6.buildsCount());
+
+		List<Integer> expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD);
+		assertEquals(expectedKinds, b3.buildKinds());
+		assertEquals(expectedKinds, b4.buildKinds());
+		assertEquals(expectedKinds, b5.buildKinds());
+		assertEquals(expectedKinds, b6.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -1079,7 +1230,7 @@ public class RebuildTest extends AbstractBuilderTest {
 		// Create and set a build spec for the project
 		desc = project2.getDescription();
 
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder3"),
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder4"),
 				createCommand(desc, builderName, "builder5"), createCommand(desc, builderName, "builder6"), });
 		project2.setDescription(desc, getMonitor());
 
@@ -1120,6 +1271,17 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(1, b4.buildsCount());
 		assertEquals(1, b5.buildsCount());
 		assertEquals(1, b6.buildsCount());
+
+		List<Integer> expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD);
+		assertEquals(expectedKinds, b4.buildKinds());
+		assertEquals(expectedKinds, b5.buildKinds());
+		assertEquals(expectedKinds, b6.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(true));
@@ -1233,7 +1395,7 @@ public class RebuildTest extends AbstractBuilderTest {
 		desc = project2.getDescription();
 
 		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder3"),
+				createCommand(desc, builderName, "builder4"),
 				createCommand(desc, builderName, "builder5"),
 				createCommand(desc, builderName, "builder6"), });
 		project2.setDescription(desc, getMonitor());
@@ -1289,6 +1451,18 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(1, b4.buildsCount());
 		assertEquals(1, b5.buildsCount());
 		assertEquals(1, b6.buildsCount());
+
+		List<Integer> expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+		assertEquals(expectedKinds, b2.buildKinds());
+
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD);
+		assertEquals(expectedKinds, b3.buildKinds());
+		assertEquals(expectedKinds, b4.buildKinds());
+		assertEquals(expectedKinds, b5.buildKinds());
+		assertEquals(expectedKinds, b6.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -1452,6 +1626,15 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(2, b1.buildsCount());
 		assertEquals(1, b2.buildsCount());
 		assertEquals(1, b3.buildsCount());
+
+		List<Integer> expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD);
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -1654,6 +1837,15 @@ public class RebuildTest extends AbstractBuilderTest {
 		assertEquals(2, b1.buildsCount());
 		assertEquals(1, b2.buildsCount());
 		assertEquals(1, b3.buildsCount());
+
+		List<Integer> expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD,
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		assertEquals(expectedKinds, b1.buildKinds());
+
+		expectedKinds = List.of(IncrementalProjectBuilder.FULL_BUILD);
+		assertEquals(expectedKinds, b2.buildKinds());
+		assertEquals(expectedKinds, b3.buildKinds());
+
 		builders.forEach(RebuildingBuilder::reset);
 		builders.forEach(b -> b.setPropagateRebuild(true));
 		builders.forEach(b -> b.setProcessOtherBuilders(true));

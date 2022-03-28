@@ -39,10 +39,13 @@ public class RebuildingBuilder extends TestBuilder {
 
 	List<IProject> projectsBuilt = new ArrayList<>();
 
+	List<Integer> buildKinds = new ArrayList<>();
+
 	BuilderRuleCallback callback = new BuilderRuleCallback() {
 		@Override
 		public IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 			projectsBuilt.add(getProject());
+			buildKinds.add(kind);
 			if (projectToRebuild.size() > 1 || projectToRebuild.get(getProject()) == null) {
 				Set<IProject> toRebuild = new HashSet<>();
 				Set<IProject> toRemove = new HashSet<>();
@@ -103,11 +106,16 @@ public class RebuildingBuilder extends TestBuilder {
 		return projectsBuilt.size();
 	}
 
+	public List<Integer> buildKinds() {
+		return buildKinds;
+	}
+
 	@Override
 	public void reset() {
 		super.reset();
 		projectsBuilt.clear();
 		projectToRebuild.clear();
+		buildKinds.clear();
 		setRuleCallback(callback);
 		setPropagateRebuild(true);
 		setProcessOtherBuilders(true);
