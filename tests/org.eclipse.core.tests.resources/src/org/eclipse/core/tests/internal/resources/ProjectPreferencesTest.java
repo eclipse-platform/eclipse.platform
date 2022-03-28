@@ -715,7 +715,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		assertEquals("value1", properties.get("key1"));
 		assertEquals("childValue1", properties.get("child/key"));
 		assertEquals("childValue2", properties.get("child/node/key"));
-		assertEquals("UTF-8", properties.get("encoding/<project>"));
+		assertEquals(ResourcesPlugin.getEncoding(), properties.get("encoding/<project>"));
 
 		// adds property
 		properties.put("key0", "value0");
