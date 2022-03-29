@@ -85,7 +85,7 @@ public class PathVariableUtil {
 		if (variableHint != null && pathVariableManager.isDefined(variableHint)) {
 			IPath value = URIUtil.toPath(pathVariableManager.getURIValue(variableHint));
 			if (value != null)
-				return wrapInProperFormat(makeRelativeToVariable(pathVariableManager, originalPath, resource, force, variableHint, generateMacro), generateMacro);
+				return wrapInProperFormat(makeRelativeToVariable(pathVariableManager, originalPath, force, variableHint), generateMacro);
 		}
 		IPath path = convertToProperCase(originalPath);
 		IPath newPath = null;
@@ -110,7 +110,7 @@ public class PathVariableUtil {
 					int matchLength = value.segmentCount();
 					if (matchLength > maxMatchLength) {
 						maxMatchLength = matchLength;
-						newPath = makeRelativeToVariable(pathVariableManager, originalPath, resource, force, variable, generateMacro);
+						newPath = makeRelativeToVariable(pathVariableManager, originalPath, force, variable);
 					}
 				}
 			}
@@ -139,7 +139,7 @@ public class PathVariableUtil {
 							int difference = value.segmentCount() - originalSegmentCount;
 							if (difference < minDifference) {
 								minDifference = difference;
-								newPath = makeRelativeToVariable(pathVariableManager, originalPath, resource, force, variable, generateMacro);
+								newPath = makeRelativeToVariable(pathVariableManager, originalPath, force, variable);
 							}
 						}
 					}
@@ -152,7 +152,7 @@ public class PathVariableUtil {
 				IPath value = URIUtil.toPath(pathVariableManager.getURIValue(variable));
 				value = convertToProperCase(URIUtil.toPath(pathVariableManager.resolveURI(URIUtil.toURI(value))));
 				if (originalPath.isPrefixOf(value))
-					newPath = makeRelativeToVariable(pathVariableManager, originalPath, resource, force, variable, generateMacro);
+					newPath = makeRelativeToVariable(pathVariableManager, originalPath, force, variable);
 				if (newPath != null)
 					return wrapInProperFormat(newPath, generateMacro);
 			}
@@ -169,7 +169,7 @@ public class PathVariableUtil {
 		return newPath;
 	}
 
-	private static IPath makeRelativeToVariable(IPathVariableManager pathVariableManager, IPath originalPath, IResource resource, boolean force, String variableHint, boolean generateMacro) {
+	private static IPath makeRelativeToVariable(IPathVariableManager pathVariableManager, IPath originalPath, boolean force, String variableHint) {
 		IPath path = convertToProperCase(originalPath);
 		IPath value = URIUtil.toPath(pathVariableManager.getURIValue(variableHint));
 		value = convertToProperCase(URIUtil.toPath(pathVariableManager.resolveURI(URIUtil.toURI(value))));

@@ -90,13 +90,13 @@ public class PropertyManager2 implements IPropertyManager {
 
 	@Override
 	public synchronized void copy(IResource source, IResource destination, int depth) throws CoreException {
-		copyProperties(source.getFullPath(), destination.getFullPath(), depth);
+		copyProperties(source.getFullPath(), destination.getFullPath());
 	}
 
 	/**
 	 * Copies all properties from the source path to the target path, to the given depth.
 	 */
-	private void copyProperties(final IPath source, final IPath destination, int depth) throws CoreException {
+	private void copyProperties(final IPath source, final IPath destination) throws CoreException {
 		Assert.isLegal(source.segmentCount() > 0);
 		Assert.isLegal(destination.segmentCount() > 0);
 		Assert.isLegal(source.segmentCount() > 1 || destination.segmentCount() == 1);

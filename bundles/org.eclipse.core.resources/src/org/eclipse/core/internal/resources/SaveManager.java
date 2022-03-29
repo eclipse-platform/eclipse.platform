@@ -1589,7 +1589,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 					// new master table must provide greater or equal sequence number for root
 					// throw exception if new value is lower than previous one - we cannot allow to desynchronize master table on disk
 					if (valueInMemory < valueInFile) {
-						String message = getBadSequenceNumberErrorMessage(target, valueInFile, valueInMemory, masterTable, previousMasterTable);
+						String message = getBadSequenceNumberErrorMessage(target, valueInFile, valueInMemory);
 						Assert.isLegal(false, message);
 					}
 				}
@@ -1597,7 +1597,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		}
 	}
 
-	private static String getBadSequenceNumberErrorMessage(java.io.File target, int valueInFile, int valueInMemory, MasterTable currentMasterTable, MasterTable previousMasterTable) {
+	private static String getBadSequenceNumberErrorMessage(java.io.File target, int valueInFile, int valueInMemory) {
 		StringBuilder messageBuffer = new StringBuilder();
 		messageBuffer.append("Cannot set lower sequence number for root (previous: "); //$NON-NLS-1$
 		messageBuffer.append(valueInFile);
@@ -1878,7 +1878,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 *    For each interesting project:
 	 *       UTF - interesting project name
 	 */
-	private void writeBuilderPersistentInfo(DataOutputStream output, List<BuilderPersistentInfo> builders, IProgressMonitor monitor) throws IOException {
+	private void writeBuilderPersistentInfo(DataOutputStream output, List<BuilderPersistentInfo> builders) throws IOException {
 		// write the number of builders we are saving
 		int numBuilders = builders.size();
 		output.writeInt(numBuilders);
@@ -2006,7 +2006,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 						additionalConfigNames);
 
 			// Save the version 2 builders info
-			writeBuilderPersistentInfo(output, builderInfos, subMonitor.newChild(1));
+			writeBuilderPersistentInfo(output, builderInfos);
 
 			// Builder infos of non-active configurations are persisted after the active
 			// configuration's builder infos. So, their trees have to follow the same order.
@@ -2023,7 +2023,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			subMonitor.worked(4);
 
 			// Since 3.7: Save the additional builders info
-			writeBuilderPersistentInfo(output, additionalBuilderInfos, subMonitor.newChild(1));
+			writeBuilderPersistentInfo(output, additionalBuilderInfos);
 
 			// Save the configuration names for the builders in the order they were saved
 			for (String string : configNames)
@@ -2078,7 +2078,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 					additionalConfigNames);
 
 			// Save the version 2 builders info
-			writeBuilderPersistentInfo(output, builderInfos, subMonitor.newChild(2));
+			writeBuilderPersistentInfo(output, builderInfos);
 
 			// Builder infos of non-active configurations are persisted after the active
 			// configuration's builder infos. So, their trees have to follow the same order.
@@ -2096,7 +2096,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 
 			// Since 3.7: Save the builders info and get the workspace trees associated with
 			// those builders
-			writeBuilderPersistentInfo(output, additionalBuilderInfos, subMonitor.newChild(2));
+			writeBuilderPersistentInfo(output, additionalBuilderInfos);
 
 			// Save configuration names for the builders in the order they were saved
 			for (String string : configNames)

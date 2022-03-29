@@ -296,7 +296,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 				break;
 			case S_PROJECTS :
 				if (elementName.equals(PROJECTS)) {
-					endProjectsElement(elementName);
+					endProjectsElement();
 					state = S_PROJECT_DESC;
 				}
 				break;
@@ -804,7 +804,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 	/**
 	 * End of an element that is part of a project references list
 	 */
-	private void endProjectsElement(String elementName) {
+	private void endProjectsElement() {
 		// Pop the array list that contains all the referenced project names
 		ArrayList<String> referencedProjects = (ArrayList<String>) objectStack.pop();
 		if (referencedProjects.isEmpty())
