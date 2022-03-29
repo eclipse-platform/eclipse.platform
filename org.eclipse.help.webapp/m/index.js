@@ -1146,7 +1146,7 @@
                 }
             }
             var query = searchWord.length
-                        ? (  encodeURIComponent(searchWord.toLowerCase())
+                        ? (  encodeURIComponent(searchWord)
                            + ((searchScope.l == 1 || searchScope.l == 2) && tocScope && tocScope.toc ? '&toc=' + encodeURIComponent(tocScope.toc) : '')
                            + (searchScope.l == 2 && tocScope && tocScope.path ? '&path=' + tocScope.path : '')
                            + (searchScope.l == 4 && searchScope.s ? '&scope=' + encodeURIComponent(searchScope.s) : ''))
