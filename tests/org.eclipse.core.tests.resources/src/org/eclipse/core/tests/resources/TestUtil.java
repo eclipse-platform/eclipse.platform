@@ -161,6 +161,14 @@ public class TestUtil {
 
 	static Set<Job> runningJobs = new LinkedHashSet<>();
 
+	public static void dumRunnigOrWaitingJobs(String owner) {
+		List<Job> jobs = getRunningOrWaitingJobs(null);
+		if (!jobs.isEmpty()) {
+			String message = "Some job is still running or waiting to run: " + asString(jobs);
+			log(IStatus.INFO, owner, message);
+		}
+	}
+
 	private static void dumpRunningOrWaitingJobs(String owner, List<Job> jobs) {
 		String message = "Some job is still running or waiting to run: " + dumpRunningOrWaitingJobs(jobs);
 		log(IStatus.ERROR, owner, message);
@@ -172,9 +180,15 @@ public class TestUtil {
 		}
 		// clear "old" running jobs, we only remember most recent
 		runningJobs.clear();
-		StringBuilder sb = new StringBuilder();
 		for (Job job : jobs) {
 			runningJobs.add(job);
+		}
+		return asString(jobs);
+	}
+
+	private static String asString(List<Job> jobs) {
+		StringBuilder sb = new StringBuilder();
+		for (Job job : jobs) {
 			sb.append("'").append(job.getName()).append("'/");
 			sb.append(job.getClass().getName());
 			sb.append(", ");

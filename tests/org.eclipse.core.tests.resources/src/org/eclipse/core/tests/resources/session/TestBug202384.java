@@ -16,8 +16,7 @@ package org.eclipse.core.tests.resources.session;
 import junit.framework.Test;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.AutomatedTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.*;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -87,7 +86,16 @@ public class TestBug202384 extends WorkspaceSessionTest {
 		try {
 			//correct values should be available if ProjectPreferences got
 			//initialized upon creation
-			assertEquals("2.0", "UTF-8", project.getDefaultCharset(false));
+			String expectedEncoding = "UTF-8";
+			// check with a timeout, in case some initialize operation is slow
+			long timeout = 10_000;
+			long start = System.currentTimeMillis();
+			while (!expectedEncoding.equals(project.getDefaultCharset(false))
+					&& System.currentTimeMillis() - start < timeout) {
+				TestUtil.dumRunnigOrWaitingJobs(getName());
+				TestUtil.waitForJobs(getName(), 500, 1000);
+			}
+			assertEquals("2.0", expectedEncoding, project.getDefaultCharset(false));
 		} catch (CoreException e) {
 			fail("3.0", e);
 		}
