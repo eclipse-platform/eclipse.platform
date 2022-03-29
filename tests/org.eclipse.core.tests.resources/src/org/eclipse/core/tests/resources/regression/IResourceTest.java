@@ -282,6 +282,13 @@ public class IResourceTest extends ResourceTest {
 	 * 1FW87XF: ITPUI:WIN2000 - Can create 2 files with same name
 	 */
 	public void testCreate_1FW87XF() {
+		// FIXME: remove when fix this PR
+		String os = Platform.getOS();
+		if (!os.equals(Platform.OS_LINUX)) {
+			debug("Skipping testCreate_1FW87XF because it is still not supported by the platform.");
+			return;
+		}
+
 		// test if the file system is case sensitive
 		boolean caseSensitive = new java.io.File("abc").compareTo(new java.io.File("ABC")) != 0;
 
