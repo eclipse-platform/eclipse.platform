@@ -15,6 +15,7 @@
 package org.eclipse.core.internal.resources;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IPath;
 
@@ -210,5 +211,15 @@ public class MarkerDelta implements IMarkerDelta, IMarkerSetElement {
 
 	private void setKind(int kind) {
 		this.kind = kind;
+	}
+
+	/** for debugging only **/
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[resource=" + getResource() + ", attributes=" //$NON-NLS-1$ //$NON-NLS-2$
+				+ getAttributes() == null ? null
+						: getAttributes().entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()) //$NON-NLS-1$
+						.collect(Collectors.joining(", ", "{", "}")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ "]"; //$NON-NLS-1$
 	}
 }

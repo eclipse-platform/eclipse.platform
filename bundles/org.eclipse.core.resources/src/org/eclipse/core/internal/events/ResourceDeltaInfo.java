@@ -15,6 +15,7 @@
 package org.eclipse.core.internal.events;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.eclipse.core.internal.resources.MarkerSet;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.runtime.IPath;
@@ -57,5 +58,15 @@ public class ResourceDeltaInfo {
 
 	public void setNodeIDMap(NodeIDMap map) {
 		nodeIDMap = map;
+	}
+
+	/** for debugging only **/
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[allMarkerDeltas=" //$NON-NLS-1$
+				+ allMarkerDeltas == null ? null
+						: allMarkerDeltas.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()) //$NON-NLS-1$
+						.collect(Collectors.joining(", ", "{", "}")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ "]"; //$NON-NLS-1$
 	}
 }

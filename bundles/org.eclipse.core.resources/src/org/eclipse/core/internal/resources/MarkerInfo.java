@@ -86,7 +86,7 @@ public class MarkerInfo implements IMarkerSetElement, Cloneable, IStringPoolPart
 
 	/** clone constructor **/
 	public MarkerInfo(MarkerInfo markerInfo) {
-		this(markerInfo.attributes, markerInfo.creationTime, markerInfo.type, markerInfo.id);
+		this(new MarkerAttributeMap(markerInfo.attributes), markerInfo.creationTime, markerInfo.type, markerInfo.id);
 	}
 
 	public MarkerInfo(Map<String, ? extends Object> attributes, boolean validate, long creationTime, String type,

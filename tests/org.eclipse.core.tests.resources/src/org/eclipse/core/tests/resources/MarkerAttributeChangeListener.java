@@ -16,7 +16,6 @@ package org.eclipse.core.tests.resources;
 
 import java.util.HashMap;
 import java.util.Map;
-import junit.framework.AssertionFailedError;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Assert;
@@ -31,7 +30,7 @@ public class MarkerAttributeChangeListener extends Assert implements IResourceCh
 	private Map<Long, Map<String, Object>> attributeMap = new HashMap<>();
 
 	//cache the exception because it can't be thrown from a listener
-	private AssertionFailedError error;
+	private AssertionError error;
 
 	public void expectChanges(IMarker marker) throws CoreException {
 		expectChanges(new IMarker[] {marker});
@@ -51,16 +50,21 @@ public class MarkerAttributeChangeListener extends Assert implements IResourceCh
 		IMarkerDelta[] deltas = event.findMarkerDeltas(null, true);
 		try {
 			checkDelta(deltas);
-		} catch (AssertionFailedError e) {
+		} catch (AssertionError e) {
 			error = e;
+		} catch (Throwable e) {
+			error = new AssertionError(e);
 		}
 	}
 
-	private void checkDelta(IMarkerDelta[] deltas) throws AssertionFailedError {
-		assertEquals("wrong number of changes", attributeMap.size(), deltas.length);
+	private void checkDelta(IMarkerDelta[] deltas) {
+		int expectedCount = attributeMap.size();
+		int actualCount = deltas.length;
+		assertEquals("wrong number of changes", expectedCount, actualCount);
 		for (IMarkerDelta delta : deltas) {
-			Map<String, Object> values = attributeMap.get(Long.valueOf(delta.getId()));
-			assertEquals("Changes different from expecations", delta.getAttributes(), values);
+			Map<String, Object> expected = attributeMap.get(Long.valueOf(delta.getId()));
+			Map<String, Object> actual = delta.getAttributes();
+			assertEquals("Changes different from expecations", expected, actual);
 		}
 	}
 

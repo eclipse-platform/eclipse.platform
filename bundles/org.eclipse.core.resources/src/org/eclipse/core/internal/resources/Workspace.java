@@ -2516,6 +2516,12 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 		return buffer.toString();
 	}
 
+	/** for debugging only **/
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[localMetaArea=" + localMetaArea.getLocation() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
 	public void updateModificationStamp(ResourceInfo info) {
 		info.incrementModificationStamp();
 	}
