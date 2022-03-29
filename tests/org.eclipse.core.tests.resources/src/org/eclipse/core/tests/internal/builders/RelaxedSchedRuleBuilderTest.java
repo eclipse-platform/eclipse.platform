@@ -17,6 +17,7 @@ package org.eclipse.core.tests.internal.builders;
 import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import org.eclipse.core.internal.events.ResourceDelta;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
@@ -251,6 +252,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		// Ensure the builder is instantiated
 		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 
+		waitForContentDescriptionUpdate();
+
 		final TestBarrier tb1 = new TestBarrier(TestBarrier.STATUS_WAIT_FOR_START);
 
 		// Create a builder set a null scheduling rule
@@ -276,7 +279,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 				tb1.waitForStatus(TestBarrier.STATUS_WAIT_FOR_RUN);
 				try {
 					// Give the resource modification time be queued
-					Thread.sleep(10);
+					Thread.sleep(20);
 				} catch (InterruptedException e) {
 					fail();
 				}
@@ -290,7 +293,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 				// assert that the delta contains the file foo
 				IResourceDelta delta = getDelta(project);
 				assertNotNull("1.1", delta);
-				assertEquals("1.2.", 1, delta.getAffectedChildren().length);
+				assertEquals("1.2: " + ((ResourceDelta) delta).toDeepDebugString(), 1,
+						delta.getAffectedChildren().length);
 				assertEquals("1.3.", foo, delta.getAffectedChildren()[0].getResource());
 				tb1.setStatus(TestBarrier.STATUS_DONE);
 				return super.build(kind, args, monitor);

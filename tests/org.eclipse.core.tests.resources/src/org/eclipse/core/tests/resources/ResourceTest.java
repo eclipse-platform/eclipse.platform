@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources;
 
 import java.io.*;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
@@ -22,8 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.filesystem.*;
-import org.eclipse.core.internal.resources.Resource;
-import org.eclipse.core.internal.resources.ValidateProjectEncoding;
+import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.resources.*;
@@ -1047,5 +1047,9 @@ public abstract class ResourceTest extends CoreTest {
 
 	protected void waitForProjectEncodingValidation() {
 		TestUtil.waitForJobs(getName(), 10, 5_000, ValidateProjectEncoding.class);
+	}
+
+	protected void waitForContentDescriptionUpdate() {
+		TestUtil.waitForJobs(getName(), 10, 5_000, ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH);
 	}
 }
