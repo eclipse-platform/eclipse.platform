@@ -1,4 +1,4 @@
-name: Maven Tycho build currently witout the unit tests
+name: Maven Tycho build currently without the unit tests
 
 on:
   push:
