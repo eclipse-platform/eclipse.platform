@@ -450,7 +450,7 @@ public class InternalAntRunner {
 				System.setSecurityManager(new AntSecurityManager(originalSM, Thread.currentThread()));
 			}
 			catch (UnsupportedOperationException ex) {
-				System.out.println("Setting Security Manager is not supported"); //$NON-NLS-1$
+				logMessage(null, RemoteAntMessages.getString("InternalAntRunner.SecurityManagerError"), Project.MSG_WARN); //$NON-NLS-1$
 			}
 			if (targets == null) {
 				targets = new Vector<String>(1);
