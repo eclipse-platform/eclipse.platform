@@ -64,9 +64,9 @@ public class ResourceDeltaInfo {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "[allMarkerDeltas=" //$NON-NLS-1$
-				+ allMarkerDeltas == null ? null
+				+ ((allMarkerDeltas == null) ? null
 						: allMarkerDeltas.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()) //$NON-NLS-1$
-						.collect(Collectors.joining(", ", "{", "}")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+								.collect(Collectors.joining(", ", "{", "}"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ "]"; //$NON-NLS-1$
 	}
 }

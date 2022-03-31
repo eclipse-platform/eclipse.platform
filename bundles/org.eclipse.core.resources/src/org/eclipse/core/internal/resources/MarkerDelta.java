@@ -217,9 +217,9 @@ public class MarkerDelta implements IMarkerDelta, IMarkerSetElement {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "[resource=" + getResource() + ", attributes=" //$NON-NLS-1$ //$NON-NLS-2$
-				+ getAttributes() == null ? null
+				+ (getAttributes() == null ? null
 						: getAttributes().entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()) //$NON-NLS-1$
-						.collect(Collectors.joining(", ", "{", "}")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+								.collect(Collectors.joining(", ", "{", "}"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ "]"; //$NON-NLS-1$
 	}
 }
