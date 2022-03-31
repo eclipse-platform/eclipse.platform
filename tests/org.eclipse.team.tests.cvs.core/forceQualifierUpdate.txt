@@ -1,2 +1,0 @@
-# To force a version qualifier update add the bug here
-Bug 544466 - Build I20190215-0055 is unstable due to comparator errors

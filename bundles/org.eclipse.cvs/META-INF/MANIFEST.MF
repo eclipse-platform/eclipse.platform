@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: %pluginName
-Bundle-SymbolicName: org.eclipse.cvs; singleton:=true
-Bundle-Version: 1.4.2100.qualifier
-Bundle-Vendor: %providerName
-Bundle-Localization: plugin
-Bundle-ActivationPolicy: lazy

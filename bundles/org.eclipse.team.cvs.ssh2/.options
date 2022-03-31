@@ -1,4 +1,0 @@
-# Debugging options for the org.eclipse.team.cvs.ssh2 plugin.
-
-# Turn on debugging for the plugin.
-org.eclipse.team.cvs.ssh2/debug=false
