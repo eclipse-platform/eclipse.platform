@@ -1,4 +1,4 @@
-name: Maven Tycho build
+name: Build Validation
 
 on:
   push:
@@ -23,7 +23,6 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-
-    - name: Run build
-      uses: GabrielBB/xvfb-action@v1
-      with:
-       run: mvn clean verify -Pbuild-individual-bundles
+    - name: Compile and API check
+      run: mvn clean verify --batch-mode -Pbuild-individual-bundles -DskipTests=true
+              -Papi-check -Dmaven.compiler.failOnWarning=true -Dproject.build.sourceEncoding=UTF-8 
