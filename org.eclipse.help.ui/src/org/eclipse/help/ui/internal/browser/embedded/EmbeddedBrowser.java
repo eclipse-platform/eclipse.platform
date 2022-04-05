@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProduct;
@@ -36,7 +37,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationAdapter;
 import org.eclipse.swt.browser.LocationEvent;
-import org.eclipse.swt.browser.ProgressEvent;
+import org.eclipse.swt.browser.LocationListener;
 import org.eclipse.swt.browser.ProgressListener;
 import org.eclipse.swt.browser.VisibilityWindowListener;
 import org.eclipse.swt.browser.WindowEvent;
@@ -304,6 +305,8 @@ public class EmbeddedBrowser {
 	}
 
 	private void initializeStatusBar(Browser browser) {
+
+		// Text
 		browser.addStatusTextListener(event -> {
 			event.text = event.text.replaceAll("&", "&&"); //$NON-NLS-1$ //$NON-NLS-2$
 			if (!event.text.equals(statusText)) {
@@ -311,24 +314,41 @@ public class EmbeddedBrowser {
 				statusBarText.setText(statusText);
 			}
 		});
-		browser.addProgressListener(new ProgressListener() {
+
+		// Progress bar (is shown when loading a page, not on JavaScript requests;
+		// unfortunately, ProgressListener doesn't tell to which request it refers, so
+		// just assume that it refers to the latest page loading request)
+		final AtomicReference<String> changingLocationHolder = new AtomicReference<>();
+		browser.addLocationListener(new LocationListener() {
 
 			@Override
-			public void changed(ProgressEvent event) {
-				if (event.total > 0) {
-					statusBarProgress.setMaximum(event.total);
-					statusBarProgress.setSelection(Math.min(event.current, event.total));
-					statusBarSeparator.setVisible(true);
-					statusBarProgress.setVisible(true);
+			public void changing(LocationEvent event) {
+				if (event.location == null || event.location.startsWith("javascript:")) //$NON-NLS-1$
+					return;
+				changingLocationHolder.set(event.location);
+			}
+
+			@Override
+			public void changed(LocationEvent event) {
+				if (changingLocationHolder.get() != null && changingLocationHolder.get().equals(event.location)) {
+					changingLocationHolder.set(null);
+				}
+				if (changingLocationHolder.get() == null) {
+					statusBarSeparator.setVisible(false);
+					statusBarProgress.setVisible(false);
 				}
 			}
-
-			@Override
-			public void completed(ProgressEvent event) {
-				statusBarSeparator.setVisible(false);
-				statusBarProgress.setVisible(false);
-			}
 		});
+		browser.addProgressListener(ProgressListener.changedAdapter(event -> {
+			if (event.total <= 0 || changingLocationHolder.get() == null)
+				return;
+			statusBarProgress.setMaximum(event.total);
+			statusBarProgress.setSelection(Math.min(event.current, event.total));
+			if (event.current < event.total) {
+				statusBarSeparator.setVisible(true);
+				statusBarProgress.setVisible(true);
+			}
+		}));
 	}
 
 	private void createStatusBar(Composite parent) {
