@@ -86,12 +86,24 @@ public class JobGroup extends InternalJobGroup {
 	 * @param seedJobsCount the initial number of jobs that will be added to the job group.
 	 * This is the initial count of jobs with which the creator of the job group will "seed"
 	 * the job group. Those initial jobs may discover more work and add yet more jobs, but
-	 * those additional jobs should not be included in this initial "seed" count. If this
-	 * value is set too high, the job group will never transition to the done ({@link #NONE})
+	 * those additional jobs should not be included in this initial "seed" count. 
+	 * <ul>
+	 * <li>
+	 * If this value is set too high (higher than the number of actually scheduled jobs), 
+	 * the job group will never transition to the done ({@link #NONE})
 	 * state, {@link #join(long, IProgressMonitor)} calls will hang, and {@link #getResult()}
-	 * calls will return invalid results. If this value is set too low, the job group may
+	 * calls will return invalid results. 
+	 * </li>
+	 * <li>
+	 * If this value is set too low, the job group may
 	 * transition to the ({@link #NONE}) state before all of the jobs have been scheduled,
 	 * causing a {@link #join(long, IProgressMonitor)} call to return too early.
+	 * </li>
+	 * <li>Scheduling more jobs to the group after {@code seedJobsCount} previously 
+	 * scheduled jobs were finished may cause a {@link #join(long, IProgressMonitor)} 
+	 * call to return too early.
+	 * </li>
+	 * </ul>
 	 */
 	public JobGroup(String name, int maxThreads, int seedJobsCount) {
 		super(name, maxThreads, seedJobsCount);

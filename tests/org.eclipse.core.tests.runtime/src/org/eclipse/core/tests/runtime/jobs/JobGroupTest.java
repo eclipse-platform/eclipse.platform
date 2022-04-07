@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import junit.framework.AssertionFailedError;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
@@ -774,13 +775,84 @@ public class JobGroupTest extends AbstractJobTest {
 	}
 
 	/**
-	 * Tested scenario:
-	 *   - Create and add a WaitingJob to the JobGroup and schedule it when the job manager is suspended
-	 *   - Join on the JobGroup when the job manager is suspended
+	 * Test for bug 543660 - JobGroup.join() blocks if scheduling more jobs as seed
+	 * count
+	 */
+	public void testJoinIfJobCoundExceedsSeedCount() throws Exception {
+		final int SEED_JOBS = 2;
+		AtomicLong count = new AtomicLong(0);
+		JobGroup jobGroup = new JobGroup("JobGroup", 2, SEED_JOBS);
+		for (int i = 0; i < SEED_JOBS; i++) {
+			TestJob testJob = new TestJob("TestJob", 0, 0) {
+				@Override
+				public IStatus run(IProgressMonitor monitor) {
+					return new Status(IStatus.INFO, "hello", "" + count.incrementAndGet());
+				}
+			};
+			testJob.setJobGroup(jobGroup);
+			testJob.schedule();
+		}
+
+		jobGroup.join(0, null);
+
+		IStatus[] children = jobGroup.getResult().getChildren();
+		assertEquals(SEED_JOBS, children.length);
+		Integer[] results = Arrays.stream(children).map(s -> Integer.valueOf(s.getMessage())).toArray(Integer[]::new);
+		for (int i = 0; i < results.length; i++) {
+			assertEquals("Job result in unexpected order", i + 1, results[i].intValue());
+		}
+
+		TestJob testJob = new TestJob("TestJob", 1, 10) {
+			@Override
+			public IStatus run(IProgressMonitor monitor) {
+				return new Status(IStatus.INFO, "hello", "" + count.incrementAndGet());
+			}
+		};
+		testJob.setJobGroup(jobGroup);
+		testJob.schedule();
+
+
+		FussyProgressMonitor monitor = new FussyProgressMonitor();
+		// should not block
+		jobGroup.join(0, monitor);
+
+		children = jobGroup.getResult().getChildren();
+		assertEquals(SEED_JOBS + 1, children.length);
+		results = Arrays.stream(children).map(s -> Integer.valueOf(s.getMessage())).toArray(Integer[]::new);
+		for (int i = 0; i < results.length; i++) {
+			assertEquals("Job result in unexpected order", i + 1, results[i].intValue());
+		}
+
+		// Check the progress reporting on monitor.
+		monitor.sanityCheck();
+		monitor.assertUsedUp();
+
+		testJob.setJobGroup(jobGroup);
+		testJob.schedule();
+
+		monitor = new FussyProgressMonitor();
+		// should not block
+		jobGroup.join(0, monitor);
+
+		children = jobGroup.getResult().getChildren();
+		assertEquals(SEED_JOBS + 2, children.length);
+		results = Arrays.stream(children).map(s -> Integer.valueOf(s.getMessage())).toArray(Integer[]::new);
+		for (int i = 0; i < results.length; i++) {
+			assertEquals("Job result in unexpected order", i + 1, results[i].intValue());
+		}
+		// Check the progress reporting on monitor.
+		monitor.sanityCheck();
+		monitor.assertUsedUp();
+	}
+
+	/**
+	 * Tested scenario: - Create and add a WaitingJob to the JobGroup and schedule
+	 * it when the job manager is suspended - Join on the JobGroup when the job
+	 * manager is suspended
 	 *
-	 * Expected result:
-	 *   The join call on the JobGroup should not wait for the WaitingJob as the WaitingJob is not going
-	 *   to be executed when the job manger is suspended.
+	 * Expected result: The join call on the JobGroup should not wait for the
+	 * WaitingJob as the WaitingJob is not going to be executed when the job manger
+	 * is suspended.
 	 */
 	public void testJoinWithJobManagerSuspended_1() throws InterruptedException {
 		final JobGroup jobGroup = new JobGroup("JobGroup", 1, 1);

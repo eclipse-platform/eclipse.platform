@@ -232,12 +232,33 @@ public class InternalJobGroup {
 			if (seedJobsRemainingCount > 0 && !groupResult.matches(IStatus.CANCEL))
 				throw new IllegalStateException("Invalid initial jobs remaining count"); //$NON-NLS-1$
 			state = JobGroup.NONE;
+			if (result != null) {
+				IStatus[] children1 = result.getChildren();
+				IStatus[] children2 = groupResult.getChildren();
+				if (children1.length > 0 || children2.length > 0) {
+					List<IStatus> combined = new ArrayList<>(children1.length + children2.length);
+					for (IStatus s : children1) {
+						combined.add(s);
+					}
+					for (IStatus s : children2) {
+						combined.add(s);
+					}
+					groupResult = computeGroupResult(combined);
+				}
+			}
 			result = groupResult;
 			results.clear();
 			cancelingDueToError = false;
 			failedJobsCount = 0;
 			canceledJobsCount = 0;
-			seedJobsRemainingCount = seedJobsCount;
+
+			// Set to 0 or 1 to allow additionally added jobs "end" this job group again
+			// by entering JobManager.JobGroupUpdater.done(IJobChangeEvent).
+			// Setting to value > 1 would cause an endless loop if the value is
+			// bigger then the number of additionally scheduled jobs.
+			// The drawback is that every extra scheduled job will trigger
+			// endJobGroup(), but that's something we can't avoid
+			seedJobsRemainingCount = seedJobsCount == 0 ? 0 : 1;
 			jobGroupStateLock.notifyAll();
 		}
 	}
