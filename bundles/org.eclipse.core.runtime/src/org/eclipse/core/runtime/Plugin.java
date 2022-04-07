@@ -344,31 +344,32 @@ public abstract class Plugin implements BundleActivator {
 	 */
 	@Deprecated
 	public final void savePluginPreferences() {
-
-		Location instance = InternalPlatform.getDefault().getInstanceLocation();
-		if (instance == null || !instance.isSet())
-			// If the instance area is not set there is no point in getting or setting the preferences.
-			// There is nothing to save in this case.
-			return;
-		// populate the "preferences" instance variable. We still might
-		// need to save them because someone else might have
-		// made changes via the OSGi APIs.
-		getPluginPreferences();
-
-		// Performance: isolate PreferenceForwarder and BackingStoreException into
-		// an inner class to avoid class loading (and then activation of the Preferences plugin)
-		// as the Plugin class is loaded.
-		final Preferences preferencesCopy = preferences;
-		Runnable innerCall = () -> {
-			try {
-				((org.eclipse.core.internal.preferences.legacy.PreferenceForwarder) preferencesCopy).flush();
-			} catch (org.osgi.service.prefs.BackingStoreException e) {
-				IStatus status = new Status(IStatus.ERROR, Platform.PI_RUNTIME, IStatus.ERROR,
-						Messages.preferences_saveProblems, e);
-				RuntimeLog.log(status);
-			}
-		};
-		innerCall.run();
+		if (InternalPlatform.getDefault().isRunning()) {
+			Location instance = InternalPlatform.getDefault().getInstanceLocation();
+			if (instance == null || !instance.isSet())
+				// If the instance area is not set there is no point in getting or setting the preferences.
+				// There is nothing to save in this case.
+				return;
+			// populate the "preferences" instance variable. We still might
+			// need to save them because someone else might have
+			// made changes via the OSGi APIs.
+			getPluginPreferences();
+	
+			// Performance: isolate PreferenceForwarder and BackingStoreException into
+			// an inner class to avoid class loading (and then activation of the Preferences plugin)
+			// as the Plugin class is loaded.
+			final Preferences preferencesCopy = preferences;
+			Runnable innerCall = () -> {
+				try {
+					((org.eclipse.core.internal.preferences.legacy.PreferenceForwarder) preferencesCopy).flush();
+				} catch (org.osgi.service.prefs.BackingStoreException e) {
+					IStatus status = new Status(IStatus.ERROR, Platform.PI_RUNTIME, IStatus.ERROR,
+							Messages.preferences_saveProblems, e);
+					RuntimeLog.log(status);
+				}
+			};
+			innerCall.run();
+		}
 	}
 
 	/**
