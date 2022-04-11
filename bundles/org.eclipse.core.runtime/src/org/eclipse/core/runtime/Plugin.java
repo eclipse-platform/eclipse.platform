@@ -128,6 +128,8 @@ public abstract class Plugin implements BundleActivator {
 	 */
 	private Bundle bundle;
 
+	private volatile IPath stateLocation;
+
 	/**
 	 * The debug flag for this plug-in.  The flag is false by default.
 	 * This flag is only used when the DebugOptions service is not available.
@@ -256,7 +258,12 @@ public abstract class Plugin implements BundleActivator {
 	 *  XXX Investigate the usage of a service factory (see also platform.getStateLocation)
 	 */
 	public final IPath getStateLocation() throws IllegalStateException {
-		return InternalPlatform.getDefault().getStateLocation(getBundle(), true);
+		if (stateLocation == null) {
+			// cache the value to avoid repeated java.io.File.mkdirs()
+			// does not matter if the value is computed twice in parallel
+			stateLocation = InternalPlatform.getDefault().getStateLocation(getBundle(), true);
+		}
+		return stateLocation;
 	}
 
 	/**
