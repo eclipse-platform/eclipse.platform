@@ -779,6 +779,19 @@ public class JobGroupTest extends AbstractJobTest {
 	 * count
 	 */
 	public void testJoinIfJobCoundExceedsSeedCount() throws Exception {
+		class ExclusiveRule implements ISchedulingRule {
+			@Override
+			public boolean contains(ISchedulingRule rule) {
+				return isConflicting(rule);
+			}
+			@Override
+			public boolean isConflicting(ISchedulingRule rule) {
+				return rule instanceof ExclusiveRule;
+			}
+		}
+
+		ExclusiveRule rule = new ExclusiveRule();
+
 		final int SEED_JOBS = 2;
 		AtomicLong count = new AtomicLong(0);
 		JobGroup jobGroup = new JobGroup("JobGroup", 2, SEED_JOBS);
@@ -789,6 +802,7 @@ public class JobGroupTest extends AbstractJobTest {
 					return new Status(IStatus.INFO, "hello", "" + count.incrementAndGet());
 				}
 			};
+			testJob.setRule(rule);
 			testJob.setJobGroup(jobGroup);
 			testJob.schedule();
 		}
@@ -808,6 +822,7 @@ public class JobGroupTest extends AbstractJobTest {
 				return new Status(IStatus.INFO, "hello", "" + count.incrementAndGet());
 			}
 		};
+		testJob.setRule(rule);
 		testJob.setJobGroup(jobGroup);
 		testJob.schedule();
 
