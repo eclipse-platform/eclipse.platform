@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -17,6 +17,7 @@
 package org.eclipse.core.internal.resources;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.Map.Entry;
@@ -401,24 +402,26 @@ public class ProjectPreferences extends EclipsePreferences {
 	 * Figure out what the children of this node are based on the resources
 	 * that are in the workspace.
 	 */
-	private String[] computeChildren() {
-		if (project == null)
-			return EMPTY_STRING_ARRAY;
+	private List<String> computeChildren() {
+		if (project == null) {
+			return List.of();
+		}
 		IFolder folder = project.getFolder(DEFAULT_PREFERENCES_DIRNAME);
-		if (!folder.exists())
-			return EMPTY_STRING_ARRAY;
+		if (!folder.exists()) {
+			return List.of();
+		}
 		IResource[] members = null;
 		try {
 			members = folder.members();
 		} catch (CoreException e) {
-			return EMPTY_STRING_ARRAY;
+			return List.of();
 		}
-		ArrayList<String> result = new ArrayList<>();
+		List<String> result = new ArrayList<>();
 		for (IResource resource : members) {
 			if (resource.getType() == IResource.FILE && PREFS_FILE_EXTENSION.equals(resource.getFullPath().getFileExtension()))
 				result.add(resource.getFullPath().removeFileExtension().lastSegment());
 		}
-		return result.toArray(EMPTY_STRING_ARRAY);
+		return result;
 	}
 
 	@Override
@@ -526,12 +529,11 @@ public class ProjectPreferences extends EclipsePreferences {
 		if (project.isOpen()) {
 			try {
 				synchronized (this) {
-					List<String> addedNames = Arrays.asList(internalChildNames());
-					String[] names = computeChildren();
+					Set<String> addedNames = Set.of(internalChildNames());
 					// add names only for nodes that were not added previously
-					for (String name : names) {
-						if (!addedNames.contains(name)) {
-							addChild(name, null);
+					for (String child : computeChildren()) {
+						if (!addedNames.contains(child)) {
+							addChild(child, null);
 						}
 					}
 				}
@@ -570,9 +572,7 @@ public class ProjectPreferences extends EclipsePreferences {
 		if (Policy.DEBUG_PREFERENCES)
 			Policy.debug("Loading preferences from file: " + localFile.getFullPath()); //$NON-NLS-1$
 		Properties fromDisk = new Properties();
-		try (
-			InputStream input = new BufferedInputStream(localFile.getContents(true));
-		) {
+		try (InputStream input = localFile.getContents(true)) {
 			fromDisk.load(input);
 			convertFromProperties(this, fromDisk, true);
 			loadedNodes.add(absolutePath());
@@ -681,7 +681,7 @@ public class ProjectPreferences extends EclipsePreferences {
 					String fileLineSeparator = FileUtil.getLineSeparator(fileInWorkspace);
 					if (!systemLineSeparator.equals(fileLineSeparator))
 						s = s.replaceAll(systemLineSeparator, fileLineSeparator);
-					InputStream input = new BufferedInputStream(new ByteArrayInputStream(s.getBytes("UTF-8"))); //$NON-NLS-1$
+					InputStream input = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
 					// make sure that preference folder and file are in sync
 					fileInWorkspace.getParent().refreshLocal(IResource.DEPTH_ZERO, null);
 					fileInWorkspace.refreshLocal(IResource.DEPTH_ZERO, null);
@@ -691,7 +691,6 @@ public class ProjectPreferences extends EclipsePreferences {
 						if (fileInWorkspace.isReadOnly()) {
 							IStatus status2 = fileInWorkspace.getWorkspace().validateEdit(new IFile[] {fileInWorkspace}, IWorkspace.VALIDATE_PROMPT);
 							if (!status2.isOK()) {
-								input.close();
 								throw new CoreException(status2);
 							}
 						}
