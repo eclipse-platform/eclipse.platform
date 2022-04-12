@@ -21,6 +21,7 @@ public class RandomTestRunnable extends Thread {
 	private Random random = new Random();
 	private boolean alive;
 	private boolean needRandomization;
+	volatile int runs;
 
 	/**
 	 * This runnable will randomly acquire the given locks for
@@ -51,8 +52,14 @@ public class RandomTestRunnable extends Thread {
 			}
 			for (ILock lock : locks) {
 				lock.acquire();
+				// wait a random time to get random order from different threads.
+				// XXX a pure waste of time. Would be better to have a fixed sequence of
+				// acquire() calls across all threads
 				try {
-					Thread.sleep(random.nextInt(500));
+					int r = random.nextInt(3);
+					if (r > 0) {
+						Thread.sleep(r);
+					}
 				} catch (InterruptedException e1) {
 				}
 			}
@@ -60,6 +67,7 @@ public class RandomTestRunnable extends Thread {
 			for (int i = locks.length; --i >= 0;) {
 				locks[i].release();
 			}
+			runs++;
 		}
 	}
 

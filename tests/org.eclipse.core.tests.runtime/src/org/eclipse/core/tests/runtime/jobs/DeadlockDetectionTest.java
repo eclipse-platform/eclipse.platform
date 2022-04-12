@@ -83,14 +83,18 @@ public class DeadlockDetectionTest {
 		createRunnables(new ILock[] {lock4, lock5, lock6}, 1, allRunnables, true);
 		createRunnables(new ILock[] {lock5, lock6, lock1}, 1, allRunnables, true);
 		createRunnables(new ILock[] {lock6, lock1, lock2}, 1, allRunnables, true);
+		wait(allRunnables, lockManager);
+	}
+
+	private void wait(ArrayList<RandomTestRunnable> allRunnables, LockManager lockManager) {
 		start(allRunnables);
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			//ignore
+		// wait till all threads looped at least twice:
+		while (!allRunnables.stream().allMatch(t -> t.runs >= 2)) {
+			Thread.yield();
 		}
 		kill(allRunnables);
 
+		// join all threads:
 		for (int i = 0; i < allRunnables.size(); i++) {
 			try {
 				((Thread) allRunnables.get(i)).join(100000);
@@ -116,24 +120,7 @@ public class DeadlockDetectionTest {
 		createRunnables(new ILock[] {lock1, lock2}, 1, allRunnables, false);
 		createRunnables(new ILock[] {lock2, lock1}, 1, allRunnables, false);
 
-		start(allRunnables);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			//ignore
-		}
-		kill(allRunnables);
-
-		for (int i = 0; i < allRunnables.size(); i++) {
-			try {
-				((Thread) allRunnables.get(i)).join(100000);
-			} catch (InterruptedException e1) {
-				//ignore
-			}
-			assertTrue("1." + i, !((Thread) allRunnables.get(i)).isAlive());
-		}
-		//the underlying array has to be empty
-		assertTrue("Locks not removed from graph.", localManager.isEmpty());
+		wait(allRunnables, localManager);
 	}
 
 	/**
@@ -151,24 +138,7 @@ public class DeadlockDetectionTest {
 		createRunnables(new ILock[] {lock2, lock3}, 1, allRunnables, false);
 		createRunnables(new ILock[] {lock3, lock1}, 1, allRunnables, false);
 
-		start(allRunnables);
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			//ignore
-		}
-		kill(allRunnables);
-
-		for (int i = 0; i < allRunnables.size(); i++) {
-			try {
-				((Thread) allRunnables.get(i)).join(100000);
-			} catch (InterruptedException e1) {
-				//ignore
-			}
-			assertTrue("1." + i, !((Thread) allRunnables.get(i)).isAlive());
-		}
-		//the underlying array has to be empty
-		assertTrue("Locks not removed from graph.", lockManager.isEmpty());
+		wait(allRunnables, lockManager);
 	}
 
 	/**
@@ -990,24 +960,7 @@ public class DeadlockDetectionTest {
 		createRunnables(new ILock[] {lock4, lock5, lock6}, 10, allRunnables, true);
 		createRunnables(new ILock[] {lock5, lock6, lock1}, 10, allRunnables, true);
 		createRunnables(new ILock[] {lock6, lock1, lock2}, 10, allRunnables, true);
-		start(allRunnables);
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			//ignore
-		}
-		kill(allRunnables);
-
-		for (int i = 0; i < allRunnables.size(); i++) {
-			try {
-				((Thread) allRunnables.get(i)).join(100000);
-			} catch (InterruptedException e1) {
-				//ignore
-			}
-			assertTrue("1." + i, !((Thread) allRunnables.get(i)).isAlive());
-		}
-		//the underlying array has to be empty
-		assertTrue("Locks not removed from graph.", lockManager.isEmpty());
+		wait(allRunnables, lockManager);
 	}
 
 	/**
