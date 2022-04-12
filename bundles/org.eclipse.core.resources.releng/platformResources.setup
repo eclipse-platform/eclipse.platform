@@ -29,7 +29,7 @@
       </detail>
       <detail
           key="label">
-        <value>Platform Resources Git or Gerrit Repository</value>
+        <value>Platform Resources Github Repository</value>
       </detail>
       <detail
           key="target">
