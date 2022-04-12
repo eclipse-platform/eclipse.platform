@@ -203,8 +203,10 @@ public class OrderedLockTest {
 		//second runnable which is going to submit a request for this lock and wait until it is available
 		Runnable waitForLock = () -> {
 			status.set(1, TestBarrier2.STATUS_START);
-			lock.acquire();
-			assertTrue("1.0", manager.isLockOwner());
+			lock.acquire(); // has to be in waiting state before manager.setLockListener(listener) should
+							// happen
+			assertTrue("1.0", manager.isLockOwner()); // XXX fails silently in other thread and test times out.
+			status.set(1, TestBarrier2.STATUS_WAIT_FOR_DONE);
 			lock.release();
 			status.set(1, TestBarrier2.STATUS_DONE);
 
@@ -217,6 +219,7 @@ public class OrderedLockTest {
 			lock.release();
 			status.set(0, TestBarrier2.STATUS_WAIT_FOR_DONE);
 		};
+
 
 		//a locklistener to force lock manager to give the lock to the third runnable (implicitly)
 		LockListener listener = new LockListener() {
@@ -231,12 +234,24 @@ public class OrderedLockTest {
 		Thread second = new Thread(waitForLock);
 		Thread third = new Thread(forceGetLock);
 
+		LockListener waitListener = new LockListener() {
+			@Override
+			public boolean aboutToWait(Thread lockOwner) {
+				if (Thread.currentThread() == second) {
+					status.set(1, TestBarrier2.STATUS_WAIT_FOR_DONE);
+				}
+				return false;
+			}
+		};
 		//start the first thread and wait for it to acquire the lock
 		first.start();
 		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_START);
+		manager.setLockListener(waitListener);
 		//start the second thread, make sure it is added to the lock wait queue
 		second.start();
 		TestBarrier2.waitForStatus(status, 1, TestBarrier2.STATUS_START);
+		// wait till waitForLock's "lock.acquire()" has been progressed enough:
+		TestBarrier2.waitForStatus(status, 1, TestBarrier2.STATUS_WAIT_FOR_DONE);
 
 		//assign our listener to the manager
 		manager.setLockListener(listener);

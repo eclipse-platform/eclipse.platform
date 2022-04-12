@@ -67,7 +67,7 @@ public class LockManager {
 	}
 
 	//the lock listener for this lock manager
-	protected LockListener lockListener;
+	protected volatile LockListener lockListener;
 	/*
 	 * The internal data structure that stores all the relationships
 	 * between the locks (or rules) and the threads that own them.
