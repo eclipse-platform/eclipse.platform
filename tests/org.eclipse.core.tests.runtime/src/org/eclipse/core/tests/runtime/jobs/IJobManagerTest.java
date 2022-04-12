@@ -1167,7 +1167,9 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		long endTime = now();
 
 		assertEquals("2.0", TestBarrier2.STATUS_DONE, status.get(0));
-		assertTrue("2.1", endTime > startTime);
+		assertTrue("2.1", endTime >= startTime); // XXX this tests makes no sense. now() is guaranteed to be >= anyway.
+													// and the expectation is that it takes NO time anyway... see next
+													// comment
 
 		//the join call should take no actual time (join call should not block thread at all)
 		if (PEDANTIC) {
