@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2011 IBM Corporation and others.
+ * Copyright (c) 2003, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.junit.Assert;
 
 /**
@@ -21,12 +22,8 @@ import org.junit.Assert;
  * particular state in a reasonable amount of time. This prevents test suites
  * from hanging indefinitely if a concurrency bug is found that would normally
  * result in an indefinite hang.
- *
- * @deprecated use TestBarrier2 instead
- * 
  */
-@Deprecated
-public class TestBarrier {
+public class TestBarrier2 {
 
 	/**
 	 * Convenience status constant that can be interpreted differently by each
@@ -67,7 +64,7 @@ public class TestBarrier {
 	/**
 	 * The status array and index for this barrier object
 	 */
-	private final int[] myStatus;
+	private final AtomicIntegerArray myStatus;
 
 	/**
 	 * Blocks the calling thread until the status integer at the given index
@@ -79,20 +76,14 @@ public class TestBarrier {
 	 * thread is waiting for
 	 * @param status the status that the calling thread should wait for
 	 */
-	private static void doWaitForStatus(int[] statuses, int index, int status, int timeout) {
-		long start = System.currentTimeMillis();
-		int i = 0;
-		while (statuses[index] != status) {
-			try {
-				Thread.yield();
-				Thread.sleep(100);
-				Thread.yield();
-			} catch (InterruptedException e) {
-				//ignore
-			}
+	private static void doWaitForStatus(AtomicIntegerArray statuses, int index, int status, int timeout) {
+		long start = System.nanoTime();
+		while (statuses.get(index) != status) {
+			Thread.yield();
 			//sanity test to avoid hanging tests
-			long elapsed = System.currentTimeMillis()-start;
-			Assert.assertTrue("Timeout after " + elapsed + "ms waiting for status to change from " + getStatus(statuses[index]) + " to " + getStatus(status), i++ < timeout);
+			long elapsed = (System.nanoTime() - start) / 1_000_000;
+			Assert.assertTrue("Timeout after " + elapsed + "ms waiting for status to change from "
+					+ getStatus(statuses.get(index)) + " to " + getStatus(status), elapsed / 100 < timeout);
 		}
 	}
 
@@ -117,7 +108,7 @@ public class TestBarrier {
 		}
 	}
 
-	public static void waitForStatus(int[] location, int status) {
+	public static void waitForStatus(AtomicIntegerArray location, int status) {
 		doWaitForStatus(location, 0, status, 100);
 	}
 
@@ -125,29 +116,29 @@ public class TestBarrier {
 	 * Blocks the current thread until the given variable is set to the given
 	 * value Times out after a predefined period to avoid hanging tests
 	 */
-	public static void waitForStatus(int[] location, int index, int status) {
+	public static void waitForStatus(AtomicIntegerArray location, int index, int status) {
 		doWaitForStatus(location, index, status, 500);
 	}
 
 	/**
 	 * Creates a new test barrier suitable for a single thread
 	 */
-	public TestBarrier() {
-		this(new int[1], 0);
+	public TestBarrier2() {
+		this(new AtomicIntegerArray(new int[1]), 0);
 	}
 
 	/**
 	 * Creates a new test barrier suitable for a single thread, with the given initial status.
 	 */
-	public TestBarrier(int initalStatus) {
-		this(new int[] {initalStatus}, 0);
+	public TestBarrier2(int initalStatus) {
+		this(new AtomicIntegerArray(new int[] { initalStatus }), 0);
 	}
 
 	/**
 	 * Creates a new test barrier on the provided status array, suitable for
 	 * acting as a barrier for multiple threads.
 	 */
-	public TestBarrier(int[] location, int index) {
+	public TestBarrier2(AtomicIntegerArray location, int index) {
 		this.myStatus = location;
 		this.myIndex = index;
 	}
@@ -156,7 +147,7 @@ public class TestBarrier {
 	 * Sets this barrier object's status.
 	 */
 	public void setStatus(int status) {
-		myStatus[myIndex] = status;
+		myStatus.set(myIndex, status);
 	}
 
 	/**

@@ -15,7 +15,7 @@ package org.eclipse.core.tests.runtime.jobs;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 
 /**
  * Make sure that IProgressMonitor's blocked/unblocked is invoked.
@@ -46,12 +46,12 @@ public class Bug_311756 extends AbstractJobManagerTest {
 					blocked[0] = CLEARED;
 			}
 		};
-		final TestBarrier barrier = new TestBarrier(TestBarrier.STATUS_START);
+		final TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_START);
 		IdentityRule rule = new IdentityRule();
 		Job conflicting = new Job("Conflicting") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier.setStatus(TestBarrier.STATUS_RUNNING);
+				barrier.setStatus(TestBarrier2.STATUS_RUNNING);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -63,7 +63,7 @@ public class Bug_311756 extends AbstractJobManagerTest {
 		conflicting.setRule(rule);
 		conflicting.schedule();
 
-		barrier.waitForStatus(TestBarrier.STATUS_RUNNING);
+		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		try {
 			Job.getJobManager().beginRule(rule, wrapper);
 		} finally {
@@ -92,14 +92,14 @@ public class Bug_311756 extends AbstractJobManagerTest {
 					blocked[0] = CLEARED;
 			}
 		};
-		final TestBarrier barrier = new TestBarrier(TestBarrier.STATUS_START);
+		final TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_START);
 		final IdentityRule rule = new IdentityRule();
 		final Thread[] destinationThread = new Thread[1];
 		Job conflicting = new Job("Conflicting") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier.setStatus(TestBarrier.STATUS_RUNNING);
-				barrier.waitForStatus(TestBarrier.STATUS_BLOCKED);
+				barrier.setStatus(TestBarrier2.STATUS_RUNNING);
+				barrier.waitForStatus(TestBarrier2.STATUS_BLOCKED);
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
@@ -113,7 +113,7 @@ public class Bug_311756 extends AbstractJobManagerTest {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				destinationThread[0] = getThread();
-				barrier.setStatus(TestBarrier.STATUS_BLOCKED);
+				barrier.setStatus(TestBarrier2.STATUS_BLOCKED);
 				getJobManager().beginRule(rule, wrapper);
 				getJobManager().endRule(rule);
 				return Status.OK_STATUS;
@@ -121,7 +121,7 @@ public class Bug_311756 extends AbstractJobManagerTest {
 		};
 		conflicting.setRule(rule);
 		conflicting.schedule();
-		barrier.waitForStatus(TestBarrier.STATUS_RUNNING);
+		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		transferTo.schedule();
 		waitForCompletion(conflicting);
 		waitForCompletion(transferTo);
@@ -148,12 +148,12 @@ public class Bug_311756 extends AbstractJobManagerTest {
 					blocked[0] = CLEARED;
 			}
 		};
-		final TestBarrier barrier = new TestBarrier(TestBarrier.STATUS_START);
+		final TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_START);
 		IdentityRule rule = new IdentityRule();
 		Job conflicting = new Job("Conflicting") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier.setStatus(TestBarrier.STATUS_RUNNING);
+				barrier.setStatus(TestBarrier2.STATUS_RUNNING);
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
@@ -168,7 +168,7 @@ public class Bug_311756 extends AbstractJobManagerTest {
 		conflicting.setRule(rule);
 		conflicting.schedule();
 
-		barrier.waitForStatus(TestBarrier.STATUS_RUNNING);
+		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		try {
 			Job.getJobManager().beginRule(rule, null);
 			try {
@@ -203,12 +203,12 @@ public class Bug_311756 extends AbstractJobManagerTest {
 					blocked[0] = CLEARED;
 			}
 		};
-		final TestBarrier barrier = new TestBarrier(TestBarrier.STATUS_START);
+		final TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_START);
 		IdentityRule rule = new IdentityRule();
 		Job conflicting = new Job("Conflicting") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier.setStatus(TestBarrier.STATUS_RUNNING);
+				barrier.setStatus(TestBarrier2.STATUS_RUNNING);
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
@@ -223,7 +223,7 @@ public class Bug_311756 extends AbstractJobManagerTest {
 		conflicting.setRule(rule);
 		conflicting.schedule();
 
-		barrier.waitForStatus(TestBarrier.STATUS_RUNNING);
+		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		Job.getJobManager().beginRule(rule, null);
 		Job.getJobManager().transferRule(rule, conflicting.getThread());
 		try {

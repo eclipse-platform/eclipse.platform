@@ -13,10 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.*;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 
 /**
  * This runnable will try to begin the given rule in the Job Manager.  It will
@@ -25,11 +26,11 @@ import org.eclipse.core.tests.harness.TestBarrier;
 class SimpleRuleRunner implements Runnable {
 	private ISchedulingRule rule;
 	private IProgressMonitor monitor;
-	private int[] status;
+	private AtomicIntegerArray status;
 	RuntimeException exception;
 	private static final IJobManager manager = Job.getJobManager();
 
-	public SimpleRuleRunner(ISchedulingRule rule, int[] status, IProgressMonitor monitor) {
+	public SimpleRuleRunner(ISchedulingRule rule, AtomicIntegerArray status, IProgressMonitor monitor) {
 		this.rule = rule;
 		this.monitor = monitor;
 		this.status = status;
@@ -39,7 +40,7 @@ class SimpleRuleRunner implements Runnable {
 	@Override
 	public void run() {
 		//tell the caller that we have entered the run method
-		status[0] = TestBarrier.STATUS_RUNNING;
+		status.set(0, TestBarrier2.STATUS_RUNNING);
 		try {
 			try {
 				manager.beginRule(rule, monitor);
@@ -51,7 +52,7 @@ class SimpleRuleRunner implements Runnable {
 		} catch (RuntimeException e) {
 			exception = e;
 		} finally {
-			status[0] = TestBarrier.STATUS_DONE;
+			status.set(0, TestBarrier2.STATUS_DONE);
 		}
 	}
 }

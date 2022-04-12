@@ -14,7 +14,7 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
 
 /**
@@ -25,7 +25,7 @@ import org.eclipse.core.tests.harness.TestJob;
  */
 public class Bug_129551 extends AbstractJobManagerTest {
 	final boolean[] shouldSleep = new boolean[] {true};
-	TestBarrier barrier = new TestBarrier();
+	TestBarrier2 barrier = new TestBarrier2();
 	RuntimeException[] failure = new RuntimeException[1];
 
 	class BugJob extends TestJob {
@@ -39,16 +39,16 @@ public class Bug_129551 extends AbstractJobManagerTest {
 			if (!shouldSleep[0]) {
 				return true;
 			}
-			barrier.setStatus(TestBarrier.STATUS_RUNNING);
+			barrier.setStatus(TestBarrier2.STATUS_RUNNING);
 			//wait for blocking jobs to queue up
-			barrier.waitForStatus(TestBarrier.STATUS_START);
+			barrier.waitForStatus(TestBarrier2.STATUS_START);
 			//put the job to sleep
 			try {
 				this.sleep();
 			} catch (RuntimeException e) {
 				failure[0] = e;
 			}
-			barrier.setStatus(TestBarrier.STATUS_DONE);
+			barrier.setStatus(TestBarrier2.STATUS_DONE);
 			return true;
 		}
 	}
@@ -70,7 +70,7 @@ public class Bug_129551 extends AbstractJobManagerTest {
 		job.schedule();
 		other.schedule();
 		//wait until the first job is about to run
-		barrier.waitForStatus(TestBarrier.STATUS_RUNNING);
+		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		//wait to ensure the other job is blocked
 		try {
 			Thread.sleep(1000);
@@ -78,8 +78,8 @@ public class Bug_129551 extends AbstractJobManagerTest {
 			fail("4.99", e);
 		}
 		//let the first job go
-		barrier.setStatus(TestBarrier.STATUS_START);
-		barrier.waitForStatus(TestBarrier.STATUS_DONE);
+		barrier.setStatus(TestBarrier2.STATUS_START);
+		barrier.waitForStatus(TestBarrier2.STATUS_DONE);
 
 		//check for failure
 		if (failure[0] != null) {

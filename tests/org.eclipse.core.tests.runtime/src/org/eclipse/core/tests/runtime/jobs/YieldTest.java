@@ -15,9 +15,10 @@ package org.eclipse.core.tests.runtime.jobs;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
 
 /**
@@ -95,29 +96,29 @@ public class YieldTest extends AbstractJobManagerTest {
 	}
 
 	public void testExceptionWhenYieldingNotOwner() {
-		int[] location = new int[2];
-		final TestBarrier barrier1 = new TestBarrier(location, 0);
-		final TestBarrier barrier2 = new TestBarrier(location, 1);
+		AtomicIntegerArray location = new AtomicIntegerArray(new int[2]);
+		final TestBarrier2 barrier1 = new TestBarrier2(location, 0);
+		final TestBarrier2 barrier2 = new TestBarrier2(location, 1);
 
 		final Job yielding = new Job(getName() + " Yielding") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier2.setStatus(TestBarrier.STATUS_START);
-				barrier1.waitForStatus(TestBarrier.STATUS_START);
+				barrier2.setStatus(TestBarrier2.STATUS_START);
+				barrier1.waitForStatus(TestBarrier2.STATUS_START);
 				return Status.OK_STATUS;
 			}
 		};
 		Job otherJob = new Job(getName() + " ShouldFault") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier2.waitForStatus(TestBarrier.STATUS_START);
+				barrier2.waitForStatus(TestBarrier2.STATUS_START);
 				try {
 					yielding.yieldRule(null);
 				} catch (IllegalArgumentException e) {
 					//expected
 					return new Status(IStatus.ERROR, "org.eclipse.core.tests.runtime", "Expected failure");
 				} finally {
-					barrier1.setStatus(TestBarrier.STATUS_START);
+					barrier1.setStatus(TestBarrier2.STATUS_START);
 				}
 				return Status.OK_STATUS;
 			}
@@ -278,18 +279,18 @@ public class YieldTest extends AbstractJobManagerTest {
 
 	public void testYieldJobToJobAndEnsureConflictingRunsBeforeResume() {
 		final PathRule rule = new PathRule(getName());
-		int[] location = new int[2];
-		final TestBarrier barrier1 = new TestBarrier(location, 0);
+		AtomicIntegerArray location = new AtomicIntegerArray(new int[2]);
+		final TestBarrier2 barrier1 = new TestBarrier2(location, 0);
 		final Job[] jobs = new Job[2];
 		Job yieldJob = new Job(getName() + " Yielding") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier1.waitForStatus(TestBarrier.STATUS_START);
-				barrier1.setStatus(TestBarrier.STATUS_RUNNING);
+				barrier1.waitForStatus(TestBarrier2.STATUS_START);
+				barrier1.setStatus(TestBarrier2.STATUS_RUNNING);
 				while (yieldRule(null) == null) {
 					//loop until yield succeeds
 				}
-				barrier1.waitForStatus(TestBarrier.STATUS_DONE);
+				barrier1.waitForStatus(TestBarrier2.STATUS_DONE);
 				return Status.OK_STATUS;
 			}
 		};
@@ -299,7 +300,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		final Job conflictingJob1 = new Job(getName() + " Conflicting") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier1.setStatus(TestBarrier.STATUS_DONE);
+				barrier1.setStatus(TestBarrier2.STATUS_DONE);
 				return Status.OK_STATUS;
 			}
 		};
@@ -314,7 +315,7 @@ public class YieldTest extends AbstractJobManagerTest {
 
 		yieldJob.schedule();
 		conflictingJob1.schedule();
-		barrier1.setStatus(TestBarrier.STATUS_START);
+		barrier1.setStatus(TestBarrier2.STATUS_START);
 		// we are testing a race-condition here... (This test will not catch all conditions)
 		// make sure starting a non-conflicting job does not cause
 		// the yielding job to resume before conflicting job has a chance to run
@@ -331,16 +332,16 @@ public class YieldTest extends AbstractJobManagerTest {
 	public void testYieldJobToThread() {
 
 		final PathRule rule = new PathRule(getName());
-		final TestBarrier barrier = new TestBarrier();
+		final TestBarrier2 barrier = new TestBarrier2();
 		final Job yielding = new Job(getName() + " Yielding") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier.setStatus(TestBarrier.STATUS_START);
+				barrier.setStatus(TestBarrier2.STATUS_START);
 				while (yieldRule(null) == null) {
 					//loop until yield succeeds
 				}
 				// ensure that the other job ran
-				barrier.waitForStatus(TestBarrier.STATUS_DONE);
+				barrier.waitForStatus(TestBarrier2.STATUS_DONE);
 				return Status.OK_STATUS;
 			}
 		};
@@ -350,7 +351,7 @@ public class YieldTest extends AbstractJobManagerTest {
 			public void run() {
 				try {
 					Job.getJobManager().beginRule(rule, null);
-					barrier.setStatus(TestBarrier.STATUS_DONE);
+					barrier.setStatus(TestBarrier2.STATUS_DONE);
 				} finally {
 					Job.getJobManager().endRule(rule);
 				}
@@ -358,7 +359,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		};
 
 		yielding.schedule();
-		barrier.waitForStatus(TestBarrier.STATUS_START);
+		barrier.waitForStatus(TestBarrier2.STATUS_START);
 		t.start();
 
 		waitForCompletion(yielding);
@@ -367,18 +368,18 @@ public class YieldTest extends AbstractJobManagerTest {
 
 	public void testYieldThreadJobToThread() {
 		final PathRule rule = new PathRule(getName());
-		final TestBarrier barrier = new TestBarrier();
+		final TestBarrier2 barrier = new TestBarrier2();
 		final Job yielding = new Job(getName() + " Yielding") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
 					Job.getJobManager().beginRule(rule, null);
-					barrier.setStatus(TestBarrier.STATUS_START);
+					barrier.setStatus(TestBarrier2.STATUS_START);
 					while (yieldRule(null) == null) {
 						//loop until yield succeeds
 					}
 					// ensure that the other job ran
-					barrier.waitForStatus(TestBarrier.STATUS_DONE);
+					barrier.waitForStatus(TestBarrier2.STATUS_DONE);
 				} finally {
 					Job.getJobManager().endRule(rule);
 				}
@@ -391,7 +392,7 @@ public class YieldTest extends AbstractJobManagerTest {
 			public void run() {
 				try {
 					Job.getJobManager().beginRule(rule, null);
-					barrier.setStatus(TestBarrier.STATUS_DONE);
+					barrier.setStatus(TestBarrier2.STATUS_DONE);
 				} finally {
 					Job.getJobManager().endRule(rule);
 				}
@@ -399,7 +400,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		};
 
 		yielding.schedule();
-		barrier.waitForStatus(TestBarrier.STATUS_START);
+		barrier.waitForStatus(TestBarrier2.STATUS_START);
 		t.start();
 
 		waitForCompletion(yielding, 5000);
@@ -409,7 +410,7 @@ public class YieldTest extends AbstractJobManagerTest {
 	public void testYieldThreadToJob() {
 
 		final PathRule rule = new PathRule(getName());
-		final TestBarrier barrier = new TestBarrier();
+		final TestBarrier2 barrier = new TestBarrier2();
 		final Thread t = new Thread() {
 			@Override
 			public void run() {
@@ -417,16 +418,16 @@ public class YieldTest extends AbstractJobManagerTest {
 				try {
 					m.beginRule(rule, null);
 					Job j = m.currentJob();
-					barrier.setStatus(TestBarrier.STATUS_START);
-					barrier.waitForStatus(TestBarrier.STATUS_WAIT_FOR_START);
+					barrier.setStatus(TestBarrier2.STATUS_START);
+					barrier.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_START);
 					while (j.yieldRule(null) == null) {
 						//loop until yield succeeds
 					}
 					// ensure that the other job ran
-					barrier.waitForStatus(TestBarrier.STATUS_DONE);
+					barrier.waitForStatus(TestBarrier2.STATUS_DONE);
 				} finally {
 					m.endRule(rule);
-					barrier.setStatus(TestBarrier.STATUS_WAIT_FOR_DONE);
+					barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 				}
 			}
 		};
@@ -434,40 +435,40 @@ public class YieldTest extends AbstractJobManagerTest {
 		final Job conflictingJob = new Job(getName() + " Conflicting") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier.setStatus(TestBarrier.STATUS_DONE);
+				barrier.setStatus(TestBarrier2.STATUS_DONE);
 				return Status.OK_STATUS;
 			}
 		};
 
 		t.start();
-		barrier.waitForStatus(TestBarrier.STATUS_START);
+		barrier.waitForStatus(TestBarrier2.STATUS_START);
 		conflictingJob.setRule(rule);
 		conflictingJob.schedule();
-		barrier.setStatus(TestBarrier.STATUS_WAIT_FOR_START);
-		barrier.waitForStatus(TestBarrier.STATUS_WAIT_FOR_DONE);
+		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
+		barrier.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 		waitForCompletion(conflictingJob);
 		assertTrue(conflictingJob.getResult().isOK());
 	}
 
 	public void testYieldThreadToThreadJob() {
 		final PathRule rule = new PathRule(getName());
-		final TestBarrier barrier = new TestBarrier();
+		final TestBarrier2 barrier = new TestBarrier2();
 		Thread t = new Thread(getName() + " Yielding") {
 			@Override
 			public void run() {
 				try {
 					Job.getJobManager().beginRule(rule, null);
-					barrier.setStatus(TestBarrier.STATUS_START);
+					barrier.setStatus(TestBarrier2.STATUS_START);
 					while (Job.getJobManager().currentJob().yieldRule(null) == null) {
 						//loop until yield succeeds
 					}
 					// ensure that the other job ran
-					barrier.waitForStatus(TestBarrier.STATUS_DONE);
+					barrier.waitForStatus(TestBarrier2.STATUS_DONE);
 				} finally {
 					Job.getJobManager().endRule(rule);
 				}
 				// status code irrelevant
-				barrier.setStatus(TestBarrier.STATUS_BLOCKED);
+				barrier.setStatus(TestBarrier2.STATUS_BLOCKED);
 			}
 		};
 
@@ -479,18 +480,18 @@ public class YieldTest extends AbstractJobManagerTest {
 				} finally {
 					Job.getJobManager().endRule(rule);
 				}
-				barrier.setStatus(TestBarrier.STATUS_DONE);
+				barrier.setStatus(TestBarrier2.STATUS_DONE);
 				return Status.OK_STATUS;
 			}
 		};
 
 		t.start();
-		barrier.waitForStatus(TestBarrier.STATUS_START);
+		barrier.waitForStatus(TestBarrier2.STATUS_START);
 		conflicting.schedule();
 
 		waitForCompletion(conflicting, 5000);
 		assertTrue(conflicting.getResult().isOK());
-		barrier.waitForStatus(TestBarrier.STATUS_BLOCKED);
+		barrier.waitForStatus(TestBarrier2.STATUS_BLOCKED);
 	}
 
 	private synchronized void waitForCompletion() {
@@ -511,7 +512,7 @@ public class YieldTest extends AbstractJobManagerTest {
 	}
 
 	public void transferRuleToYieldingThreadJobException() {
-		final TestBarrier barrier = new TestBarrier();
+		final TestBarrier2 barrier = new TestBarrier2();
 		final PathRule rule = new PathRule(getName());
 
 		final Thread A = new Thread() {
@@ -519,7 +520,7 @@ public class YieldTest extends AbstractJobManagerTest {
 			public void run() {
 				try {
 					Job.getJobManager().beginRule(rule, null);
-					barrier.setStatus(TestBarrier.STATUS_RUNNING);
+					barrier.setStatus(TestBarrier2.STATUS_RUNNING);
 					while (Job.getJobManager().currentJob().yieldRule(null) == null) {
 						//loop until yield succeeds
 					}
@@ -533,7 +534,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		Thread B = new Thread() {
 			@Override
 			public void run() {
-				barrier.waitForStatus(TestBarrier.STATUS_RUNNING);
+				barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 
 				try {
 					Job.getJobManager().beginRule(rule, null);
@@ -544,7 +545,7 @@ public class YieldTest extends AbstractJobManagerTest {
 					try {
 						Job.getJobManager().transferRule(rule, A);
 					} catch (Exception e) {
-						barrier.setStatus(TestBarrier.STATUS_DONE);
+						barrier.setStatus(TestBarrier2.STATUS_DONE);
 					}
 				} finally {
 					Job.getJobManager().endRule(rule);
@@ -555,11 +556,11 @@ public class YieldTest extends AbstractJobManagerTest {
 		};
 		A.start();
 		B.start();
-		barrier.waitForStatus(TestBarrier.STATUS_DONE);
+		barrier.waitForStatus(TestBarrier2.STATUS_DONE);
 	}
 
 	public void transferRuleToYieldingJobException() {
-		final TestBarrier barrier = new TestBarrier();
+		final TestBarrier2 barrier = new TestBarrier2();
 		final PathRule rule = new PathRule(getName());
 
 		final Thread[] t = new Thread[1];
@@ -569,7 +570,7 @@ public class YieldTest extends AbstractJobManagerTest {
 				t[0] = getThread();
 				try {
 					Job.getJobManager().beginRule(rule, null);
-					barrier.setStatus(TestBarrier.STATUS_RUNNING);
+					barrier.setStatus(TestBarrier2.STATUS_RUNNING);
 					while (Job.getJobManager().currentJob().yieldRule(null) == null) {
 						//loop until yield succeeds
 					}
@@ -584,7 +585,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		Job B = new Job(getName() + "B") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier.waitForStatus(TestBarrier.STATUS_RUNNING);
+				barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 
 				try {
 					Job.getJobManager().beginRule(rule, null);
@@ -595,7 +596,7 @@ public class YieldTest extends AbstractJobManagerTest {
 					try {
 						Job.getJobManager().transferRule(rule, t[0]);
 					} catch (Exception e) {
-						barrier.setStatus(TestBarrier.STATUS_DONE);
+						barrier.setStatus(TestBarrier2.STATUS_DONE);
 					}
 				} finally {
 					Job.getJobManager().endRule(rule);
@@ -605,7 +606,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		};
 		A.schedule();
 		B.schedule();
-		barrier.waitForStatus(TestBarrier.STATUS_DONE);
+		barrier.waitForStatus(TestBarrier2.STATUS_DONE);
 	}
 
 	public void testYieldPingPong() {
@@ -657,7 +658,7 @@ public class YieldTest extends AbstractJobManagerTest {
 	}
 
 	public void testYieldPingPongBetweenMultipleJobs() throws Throwable {
-		final TestBarrier barrier = new TestBarrier();
+		final TestBarrier2 barrier = new TestBarrier2();
 		final PathRule rule = new PathRule(getName());
 		final Object SYNC = new Object();
 		final int count = 100;
@@ -671,7 +672,7 @@ public class YieldTest extends AbstractJobManagerTest {
 						started[0] = Integer.valueOf(started[0].intValue() + 1);
 						SYNC.notifyAll();
 					}
-					barrier.waitForStatus(TestBarrier.STATUS_WAIT_FOR_START);
+					barrier.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_START);
 					while (true) {
 
 						if (yieldRule(null) != null) {
@@ -707,7 +708,7 @@ public class YieldTest extends AbstractJobManagerTest {
 			}
 		}
 		// release all waiting jobs
-		barrier.setStatus(TestBarrier.STATUS_WAIT_FOR_START);
+		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
 		// wait for jobs to finish within 5s
 		waitForJobsCompletion(jobs.toArray(new Job[jobs.size()]), 5000);
 
@@ -727,7 +728,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		// FAMILY A
 		//----------
 
-		final TestBarrier barrier_A = new TestBarrier();
+		final TestBarrier2 barrier_A = new TestBarrier2();
 		final PathRule rule_A = new PathRule(getName() + "_ruleA");
 		final Object SYNC_A = new Object();
 		final Integer[] started_A = new Integer[] {Integer.valueOf(0)};
@@ -740,7 +741,7 @@ public class YieldTest extends AbstractJobManagerTest {
 						started_A[0] = Integer.valueOf(started_A[0].intValue() + 1);
 						SYNC_A.notifyAll();
 					}
-					barrier_A.waitForStatus(TestBarrier.STATUS_WAIT_FOR_START);
+					barrier_A.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_START);
 					while (true) {
 
 						if (yieldRule(null) != null) {
@@ -776,13 +777,13 @@ public class YieldTest extends AbstractJobManagerTest {
 			}
 		}
 		// release all waiting jobs
-		barrier_A.setStatus(TestBarrier.STATUS_WAIT_FOR_START);
+		barrier_A.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
 
 		//----------
 		// FAMILY B
 		//----------
 
-		final TestBarrier barrier_B = new TestBarrier();
+		final TestBarrier2 barrier_B = new TestBarrier2();
 		final PathRule rule_B = new PathRule(getName() + "_ruleB");
 		final Object SYNC_B = new Object();
 
@@ -796,7 +797,7 @@ public class YieldTest extends AbstractJobManagerTest {
 						started_B[0] = Integer.valueOf(started_B[0].intValue() + 1);
 						SYNC_B.notifyAll();
 					}
-					barrier_B.waitForStatus(TestBarrier.STATUS_WAIT_FOR_START);
+					barrier_B.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_START);
 					while (true) {
 
 						if (yieldRule(null) != null) {
@@ -832,7 +833,7 @@ public class YieldTest extends AbstractJobManagerTest {
 			}
 		}
 		// release all waiting jobs
-		barrier_B.setStatus(TestBarrier.STATUS_WAIT_FOR_START);
+		barrier_B.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
 
 		// wait for jobs to finish within 5s
 		waitForJobsCompletion(jobs_A.toArray(new Job[jobs_A.size()]), 5000);
@@ -933,14 +934,14 @@ public class YieldTest extends AbstractJobManagerTest {
 
 	public void testYieldJobToJobsInterleaved() {
 		// yield from job to multiple waiting others
-		final TestBarrier barrier = new TestBarrier();
+		final TestBarrier2 barrier = new TestBarrier2();
 		final PathRule rule = new PathRule(getName());
 
 		final int count = 50;
 		Job yieldA = new Job(getName() + " YieldingA") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier.waitForStatus(TestBarrier.STATUS_START);
+				barrier.waitForStatus(TestBarrier2.STATUS_START);
 				int yields = 0;
 				while (yields < count) {
 					if (yieldRule(null) != null) {
@@ -956,7 +957,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		Job yieldB = new Job(getName() + " YieldingB") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				barrier.waitForStatus(TestBarrier.STATUS_START);
+				barrier.waitForStatus(TestBarrier2.STATUS_START);
 				int yields = 0;
 				while (yields < count) {
 					if (yieldRule(null) != null) {
@@ -969,7 +970,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		yieldB.setRule(rule);
 		yieldB.schedule();
 
-		barrier.setStatus(TestBarrier.STATUS_START);
+		barrier.setStatus(TestBarrier2.STATUS_START);
 
 		List<Job> jobs = new ArrayList<>();
 		jobs.add(yieldA);
@@ -989,14 +990,14 @@ public class YieldTest extends AbstractJobManagerTest {
 
 	public void testYieldThreadJobToBlockedConflictingJob() throws Exception {
 		final PathRule rule = new PathRule(getName());
-		final TestBarrier b = new TestBarrier(TestBarrier.STATUS_START);
+		final TestBarrier2 b = new TestBarrier2(TestBarrier2.STATUS_START);
 		final Job yieldA = new Job(getName()) {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 
 				try {
 					Job.getJobManager().beginRule(rule, monitor);
-					b.setStatus(TestBarrier.STATUS_RUNNING);
+					b.setStatus(TestBarrier2.STATUS_RUNNING);
 					while (yieldRule(null) == null && !monitor.isCanceled()) {
 						//loop until yield succeeds
 					}
@@ -1018,7 +1019,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		// start testing
 
 		yieldA.schedule();
-		b.waitForStatus(TestBarrier.STATUS_RUNNING);
+		b.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		conflicting.schedule();
 		try {
 			waitForCompletion(yieldA);
@@ -1033,14 +1034,14 @@ public class YieldTest extends AbstractJobManagerTest {
 	public void testResumingThreadJobIsNotRescheduled() {
 
 		final PathRule rule = new PathRule(getName());
-		final TestBarrier b = new TestBarrier(TestBarrier.STATUS_START);
+		final TestBarrier2 b = new TestBarrier2(TestBarrier2.STATUS_START);
 		final Job yieldA = new Job(getName()) {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 
 				try {
 					Job.getJobManager().beginRule(rule, monitor);
-					b.setStatus(TestBarrier.STATUS_RUNNING);
+					b.setStatus(TestBarrier2.STATUS_RUNNING);
 					while (yieldRule(null) == null) {
 						if (monitor.isCanceled()) {
 							return Status.CANCEL_STATUS;
@@ -1076,7 +1077,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		// start testing
 
 		yieldA.schedule();
-		b.waitForStatus(TestBarrier.STATUS_RUNNING);
+		b.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		conflicting.schedule();
 		try {
 			waitForCompletion(yieldA);
@@ -1095,12 +1096,12 @@ public class YieldTest extends AbstractJobManagerTest {
 		final PathRule rule = new PathRule(getName());
 		final PathRule subRule = new PathRule(getName() + "/subRule");
 
-		final TestBarrier b = new TestBarrier(TestBarrier.STATUS_START);
+		final TestBarrier2 b = new TestBarrier2(TestBarrier2.STATUS_START);
 		final Job yieldA = new Job(getName()) {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 
-				b.setStatus(TestBarrier.STATUS_RUNNING);
+				b.setStatus(TestBarrier2.STATUS_RUNNING);
 				try {
 					Job.getJobManager().beginRule(subRule, null);
 
@@ -1137,7 +1138,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		try {
 			// start testing
 			yieldA.schedule();
-			b.waitForStatus(TestBarrier.STATUS_RUNNING);
+			b.waitForStatus(TestBarrier2.STATUS_RUNNING);
 			conflicting.schedule();
 			waitForCompletion(yieldA);
 			waitForCompletion(conflicting);

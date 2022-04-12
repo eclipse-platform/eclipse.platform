@@ -15,7 +15,7 @@ package org.eclipse.core.tests.runtime.jobs;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 
 /**
  * Regression test for bug 307391
@@ -38,8 +38,8 @@ public class Bug_307391 extends AbstractJobManagerTest {
 	public void testYieldWithlockAcquire() throws Exception {
 		final IdentityRule idSchedRule = new IdentityRule();
 
-		final TestBarrier tb1 = new TestBarrier(-1);
-		final TestBarrier tb2 = new TestBarrier(-1);
+		final TestBarrier2 tb1 = new TestBarrier2(-1);
+		final TestBarrier2 tb2 = new TestBarrier2(-1);
 
 		final int YIELD2 = 10002;
 		final int ACQUIRE2 = 1005;
@@ -51,8 +51,8 @@ public class Bug_307391 extends AbstractJobManagerTest {
 			protected IStatus run(IProgressMonitor monitor) {
 				Job.getJobManager().beginRule(idSchedRule, null);
 
-				tb1.setStatus(TestBarrier.STATUS_WAIT_FOR_START);
-				tb1.waitForStatus(TestBarrier.STATUS_START);
+				tb1.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
+				tb1.waitForStatus(TestBarrier2.STATUS_START);
 
 				// Yield our rule
 				Job.getJobManager().currentJob().yieldRule(null);
@@ -64,7 +64,7 @@ public class Bug_307391 extends AbstractJobManagerTest {
 
 				// The test executed successfully
 				Job.getJobManager().endRule(idSchedRule);
-				tb1.setStatus(TestBarrier.STATUS_DONE);
+				tb1.setStatus(TestBarrier2.STATUS_DONE);
 				return Status.OK_STATUS;
 			}
 		};
@@ -72,8 +72,8 @@ public class Bug_307391 extends AbstractJobManagerTest {
 		Thread t2 = new Thread() {
 			@Override
 			public void run() {
-				tb2.setStatus(TestBarrier.STATUS_WAIT_FOR_START);
-				tb2.waitForStatus(TestBarrier.STATUS_START);
+				tb2.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
+				tb2.waitForStatus(TestBarrier2.STATUS_START);
 
 				Job.getJobManager().beginRule(idSchedRule, null);
 				Job.getJobManager().endRule(idSchedRule);
@@ -83,7 +83,7 @@ public class Bug_307391 extends AbstractJobManagerTest {
 				Job.getJobManager().endRule(idSchedRule);
 
 				// that all went well, signal we've passed
-				tb2.setStatus(TestBarrier.STATUS_DONE);
+				tb2.setStatus(TestBarrier2.STATUS_DONE);
 			}
 		};
 
@@ -92,13 +92,13 @@ public class Bug_307391 extends AbstractJobManagerTest {
 		t2.start();
 
 		// wait for the threads to get to start and acquire sched rules
-		tb1.waitForStatus(TestBarrier.STATUS_WAIT_FOR_START);
-		tb2.waitForStatus(TestBarrier.STATUS_WAIT_FOR_START);
+		tb1.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_START);
+		tb2.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_START);
 
 		// first acquire and yield
-		tb2.setStatus(TestBarrier.STATUS_START);
+		tb2.setStatus(TestBarrier2.STATUS_START);
 		Thread.sleep(1000);
-		tb1.setStatus(TestBarrier.STATUS_START);
+		tb1.setStatus(TestBarrier2.STATUS_START);
 
 		// second acquire and yield
 		tb2.setStatus(ACQUIRE2);
@@ -106,7 +106,7 @@ public class Bug_307391 extends AbstractJobManagerTest {
 		tb1.setStatus(YIELD2);
 
 		// Wait for them to finish
-		tb1.waitForStatus(TestBarrier.STATUS_DONE);
-		tb2.waitForStatus(TestBarrier.STATUS_DONE);
+		tb1.waitForStatus(TestBarrier2.STATUS_DONE);
+		tb2.waitForStatus(TestBarrier2.STATUS_DONE);
 	}
 }

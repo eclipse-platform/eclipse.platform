@@ -13,10 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 
 /**
  * A runnable class that executes the given job and calls done when it is finished
@@ -27,10 +28,11 @@ public class AsynchExecThread extends Thread {
 	private int ticks;
 	private int tickLength;
 	private String jobName;
-	private int[] status;
+	private AtomicIntegerArray status;
 	private int index;
 
-	public AsynchExecThread(IProgressMonitor current, Job job, int ticks, int tickLength, String jobName, int[] status, int index) {
+	public AsynchExecThread(IProgressMonitor current, Job job, int ticks, int tickLength, String jobName,
+			AtomicIntegerArray status, int index) {
 		this.current = current;
 		this.job = job;
 		this.ticks = ticks;
@@ -43,15 +45,15 @@ public class AsynchExecThread extends Thread {
 	@Override
 	public void run() {
 		//wait until the main testing method allows this thread to run
-		TestBarrier.waitForStatus(status, index, TestBarrier.STATUS_WAIT_FOR_RUN);
+		TestBarrier2.waitForStatus(status, index, TestBarrier2.STATUS_WAIT_FOR_RUN);
 
 		//set the current thread as the execution thread
 		job.setThread(Thread.currentThread());
 
-		status[index] = TestBarrier.STATUS_RUNNING;
+		status.set(index, TestBarrier2.STATUS_RUNNING);
 
 		//wait until this job is allowed to run by the tester
-		TestBarrier.waitForStatus(status, index, TestBarrier.STATUS_WAIT_FOR_DONE);
+		TestBarrier2.waitForStatus(status, index, TestBarrier2.STATUS_WAIT_FOR_DONE);
 
 		//must have positive work
 		current.beginTask(jobName, ticks <= 0 ? 1 : ticks);
@@ -60,7 +62,7 @@ public class AsynchExecThread extends Thread {
 			for (int i = 0; i < ticks; i++) {
 				current.subTask("Tick: " + i);
 				if (current.isCanceled()) {
-					status[index] = TestBarrier.STATUS_DONE;
+					status.set(index, TestBarrier2.STATUS_DONE);
 					job.done(Status.CANCEL_STATUS);
 				}
 				try {
@@ -74,7 +76,7 @@ public class AsynchExecThread extends Thread {
 				current.worked(1);
 			}
 		} finally {
-			status[index] = TestBarrier.STATUS_DONE;
+			status.set(index, TestBarrier2.STATUS_DONE);
 			current.done();
 			job.done(Status.OK_STATUS);
 		}

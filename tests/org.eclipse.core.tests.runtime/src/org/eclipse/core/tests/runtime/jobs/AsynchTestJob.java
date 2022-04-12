@@ -13,19 +13,20 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 
 /**
  * A job that executes asynchronously on a separate thread
  */
 class AsynchTestJob extends Job {
-	private int[] status;
+	private AtomicIntegerArray status;
 	private int index;
 
-	public AsynchTestJob(String name, int[] status, int index) {
+	public AsynchTestJob(String name, AtomicIntegerArray status, int index) {
 		super(name);
 		this.status = status;
 		this.index = index;
@@ -33,11 +34,11 @@ class AsynchTestJob extends Job {
 
 	@Override
 	public IStatus run(IProgressMonitor monitor) {
-		status[index] = TestBarrier.STATUS_RUNNING;
+		status.set(index, TestBarrier2.STATUS_RUNNING);
 		AsynchExecThread t = new AsynchExecThread(monitor, this, 100, 10, getName(), status, index);
-		TestBarrier.waitForStatus(status, index, TestBarrier.STATUS_START);
+		TestBarrier2.waitForStatus(status, index, TestBarrier2.STATUS_START);
 		t.start();
-		status[index] = TestBarrier.STATUS_WAIT_FOR_START;
+		status.set(index, TestBarrier2.STATUS_WAIT_FOR_START);
 		return Job.ASYNC_FINISH;
 	}
 

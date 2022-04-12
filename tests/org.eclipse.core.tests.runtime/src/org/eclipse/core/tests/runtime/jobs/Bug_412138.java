@@ -14,11 +14,12 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import java.io.*;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import junit.framework.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.FileSystemHelper;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
 import org.eclipse.core.tests.session.SessionTestSuite;
 
@@ -42,7 +43,7 @@ public class Bug_412138 extends TestCase {
 	public void testRunScenario() throws InterruptedException {
 		// delete the file so that we don't report previous results
 		new File(FILE_NAME).delete();
-		final int[] status = {-1};
+		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { -1 });
 		final Job fakeBuild = new Job("Fake AutoBuildJob") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -50,7 +51,7 @@ public class Bug_412138 extends TestCase {
 					// synchronize on the job object
 					synchronized (this) {
 						// let the other thread call join on this job now
-						status[0] = TestBarrier.STATUS_RUNNING;
+						status.set(0, TestBarrier2.STATUS_RUNNING);
 						// go to sleep to allow the other thread to acquire JobManager.lock inside join
 						Thread.sleep(3000);
 						// call a method that requires JobManager.lock
@@ -65,10 +66,10 @@ public class Bug_412138 extends TestCase {
 		Job job = new Job("Some job") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				TestBarrier.waitForStatus(status, TestBarrier.STATUS_RUNNING);
+				TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_RUNNING);
 				try {
 					fakeBuild.join();
-					status[0] = TestBarrier.STATUS_DONE;
+					status.set(0, TestBarrier2.STATUS_DONE);
 					return Status.OK_STATUS;
 				} catch (InterruptedException e) {
 					return new Status(IStatus.ERROR, RuntimeTestsPlugin.PI_RUNTIME_TESTS, e.getMessage(), e);
@@ -78,7 +79,7 @@ public class Bug_412138 extends TestCase {
 		try {
 			job.schedule();
 			fakeBuild.schedule();
-			TestBarrier.waitForStatus(status, TestBarrier.STATUS_DONE);
+			TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_DONE);
 			job.join();
 			fakeBuild.join();
 			assertTrue(job.getResult() != null && job.getResult().isOK());

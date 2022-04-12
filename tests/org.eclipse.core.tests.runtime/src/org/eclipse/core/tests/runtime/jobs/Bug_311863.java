@@ -15,7 +15,7 @@ package org.eclipse.core.tests.runtime.jobs;
 
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 
 /**
  * Regression test for bug 311863
@@ -38,10 +38,10 @@ public class Bug_311863 extends AbstractJobManagerTest {
 	 * yields and sleeps
 	 */
 	class TestThread extends Thread {
-		private final TestBarrier tb;
+		private final TestBarrier2 tb;
 		private final int yield_time;
 
-		public TestThread(TestBarrier tb, int yield_time) {
+		public TestThread(TestBarrier2 tb, int yield_time) {
 			this.tb = tb;
 			this.yield_time = yield_time;
 		}
@@ -86,9 +86,9 @@ public class Bug_311863 extends AbstractJobManagerTest {
 	 * @throws Exception
 	 */
 	public void testInterruptDuringLockRelease() throws Exception {
-		final TestBarrier tb1 = new TestBarrier(-1);
-		final TestBarrier tb2 = new TestBarrier(-1);
-		final TestBarrier tb3 = new TestBarrier(-1);
+		final TestBarrier2 tb1 = new TestBarrier2(-1);
+		final TestBarrier2 tb2 = new TestBarrier2(-1);
+		final TestBarrier2 tb3 = new TestBarrier2(-1);
 
 		// The threads that will fight over the lock
 		Thread t1 = new TestThread(tb1, 1);

@@ -13,10 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 
 /**
  * Tests API methods IJobManager.beginRule and IJobManager.endRule
@@ -28,9 +29,9 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 	 */
 	private class RuleEnder implements Runnable {
 		private ISchedulingRule rule;
-		private int[] status;
+		private AtomicIntegerArray status;
 
-		public RuleEnder(ISchedulingRule rule, int[] status) {
+		public RuleEnder(ISchedulingRule rule, AtomicIntegerArray status) {
 			this.rule = rule;
 			this.status = status;
 		}
@@ -38,7 +39,7 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		@Override
 		public void run() {
 			try {
-				status[0] = TestBarrier.STATUS_RUNNING;
+				status.set(0, TestBarrier2.STATUS_RUNNING);
 				manager.endRule(rule);
 				fail("Ending Rule");
 
@@ -53,7 +54,8 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		//test how the manager reacts when several different threads try to begin conflicting rules
 		final int NUM_THREADS = 3;
 		//array to communicate with the launched threads
-		final int[] status = {TestBarrier.STATUS_WAIT_FOR_START, TestBarrier.STATUS_WAIT_FOR_START, TestBarrier.STATUS_WAIT_FOR_START};
+		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_WAIT_FOR_START,
+				TestBarrier2.STATUS_WAIT_FOR_START, TestBarrier2.STATUS_WAIT_FOR_START });
 		//number of times to start each rule
 		int NUM_REPEATS = 10;
 
@@ -69,14 +71,14 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 
 		//wait until all the jobs start
 		for (int i = 0; i < jobs.length; i++) {
-			TestBarrier.waitForStatus(status, i, TestBarrier.STATUS_START);
+			TestBarrier2.waitForStatus(status, i, TestBarrier2.STATUS_START);
 		}
 
 		//all jobs should be running
 		//the status flag should be set to START
-		for (int i = 0; i < status.length; i++) {
+		for (int i = 0; i < status.length(); i++) {
 			assertEquals("1." + i, Job.RUNNING, jobs[i].getState());
-			assertEquals("2." + i, TestBarrier.STATUS_START, status[i]);
+			assertEquals("2." + i, TestBarrier2.STATUS_START, status.get(i));
 		}
 
 		//the order that the jobs will be executed
@@ -84,38 +86,38 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 
 		for (int j = 0; j < NUM_REPEATS; j++) {
 			//let the first job in the order run
-			status[order[0]] = TestBarrier.STATUS_WAIT_FOR_RUN;
+			status.set(order[0], TestBarrier2.STATUS_WAIT_FOR_RUN);
 			//wait until the first job in the order reads the flag
-			TestBarrier.waitForStatus(status, order[0], TestBarrier.STATUS_RUNNING);
+			TestBarrier2.waitForStatus(status, order[0], TestBarrier2.STATUS_RUNNING);
 
 			//let all subsequent jobs run (they will be blocked)
 			//before starting next job, wait until previous job is blocked by JobManager
 			for (int i = 1; i < order.length; i++) {
-				status[order[i]] = TestBarrier.STATUS_WAIT_FOR_RUN;
-				TestBarrier.waitForStatus(status, order[i], TestBarrier.STATUS_BLOCKED);
+				status.set(order[i], TestBarrier2.STATUS_WAIT_FOR_RUN);
+				TestBarrier2.waitForStatus(status, order[i], TestBarrier2.STATUS_BLOCKED);
 			}
 
 			//the first job should be running, the remaining jobs should be waiting
-			assertEquals("3.0", TestBarrier.STATUS_RUNNING, status[order[0]]);
-			assertEquals("3.0", TestBarrier.STATUS_BLOCKED, status[order[1]]);
-			assertEquals("3.0", TestBarrier.STATUS_BLOCKED, status[order[2]]);
+			assertEquals("3.0", TestBarrier2.STATUS_RUNNING, status.get(order[0]));
+			assertEquals("3.0", TestBarrier2.STATUS_BLOCKED, status.get(order[1]));
+			assertEquals("3.0", TestBarrier2.STATUS_BLOCKED, status.get(order[2]));
 
 			//let the first job finish
-			status[order[0]] = TestBarrier.STATUS_WAIT_FOR_DONE;
-			TestBarrier.waitForStatus(status, order[0], TestBarrier.STATUS_DONE);
+			status.set(order[0], TestBarrier2.STATUS_WAIT_FOR_DONE);
+			TestBarrier2.waitForStatus(status, order[0], TestBarrier2.STATUS_DONE);
 
 			//the remaining jobs will now compete for execution (order NOT guaranteed)
 			//let them both start and wait until they complete
 			int doneCount = 0;
 			while (doneCount < 2) {
-				if (status[order[1]] == TestBarrier.STATUS_RUNNING) {
-					status[order[1]] = TestBarrier.STATUS_WAIT_FOR_DONE;
-					TestBarrier.waitForStatus(status, order[1], TestBarrier.STATUS_DONE);
+				if (status.get(order[1]) == TestBarrier2.STATUS_RUNNING) {
+					status.set(order[1], TestBarrier2.STATUS_WAIT_FOR_DONE);
+					TestBarrier2.waitForStatus(status, order[1], TestBarrier2.STATUS_DONE);
 					doneCount++;
 				}
-				if (status[order[2]] == TestBarrier.STATUS_RUNNING) {
-					status[order[2]] = TestBarrier.STATUS_WAIT_FOR_DONE;
-					TestBarrier.waitForStatus(status, order[2], TestBarrier.STATUS_DONE);
+				if (status.get(order[2]) == TestBarrier2.STATUS_RUNNING) {
+					status.set(order[2], TestBarrier2.STATUS_WAIT_FOR_DONE);
+					TestBarrier2.waitForStatus(status, order[2], TestBarrier2.STATUS_DONE);
 					doneCount++;
 				}
 			}
@@ -133,7 +135,7 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 
 		for (int i = 0; i < jobs.length; i++) {
 			//check that the final status of all jobs is correct
-			assertEquals("9." + i, TestBarrier.STATUS_DONE, status[i]);
+			assertEquals("9." + i, TestBarrier2.STATUS_DONE, status.get(i));
 			assertEquals("10." + i, Job.NONE, jobs[i].getState());
 			assertEquals("11." + i, IStatus.OK, jobs[i].getResult().getSeverity());
 		}
@@ -143,7 +145,8 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		//start two jobs, each of which will begin and end a rule several times
 		//while one job starts a rule, the second job's call to begin rule should block that thread
 		//until the first job calls end rule
-		final int[] status = {TestBarrier.STATUS_WAIT_FOR_START, TestBarrier.STATUS_WAIT_FOR_START};
+		final AtomicIntegerArray status = new AtomicIntegerArray(
+				new int[] { TestBarrier2.STATUS_WAIT_FOR_START, TestBarrier2.STATUS_WAIT_FOR_START });
 		//number of repetitions of beginning and ending the rule
 		final int NUM_REPEATS = 10;
 		Job[] jobs = new Job[2];
@@ -156,13 +159,13 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 
 		//make sure both jobs are running and their respective run methods have been invoked
 		//waitForStart(jobs[1]);
-		TestBarrier.waitForStatus(status, 0, TestBarrier.STATUS_START);
-		TestBarrier.waitForStatus(status, 1, TestBarrier.STATUS_START);
+		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_START);
+		TestBarrier2.waitForStatus(status, 1, TestBarrier2.STATUS_START);
 
 		assertEquals("2.0", Job.RUNNING, jobs[0].getState());
 		assertEquals("2.1", Job.RUNNING, jobs[1].getState());
-		assertEquals("2.2", TestBarrier.STATUS_START, status[0]);
-		assertEquals("2.3", TestBarrier.STATUS_START, status[1]);
+		assertEquals("2.2", TestBarrier2.STATUS_START, status.get(0));
+		assertEquals("2.3", TestBarrier2.STATUS_START, status.get(1));
 
 		//the order of execution of the jobs (by their index in the status array)
 		int first = 0;
@@ -171,42 +174,42 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		//now both jobs are waiting for the STATUS_WAIT_FOR_RUN flag
 		for (int j = 0; j < NUM_REPEATS; j++) {
 			//let the first job start executing
-			status[first] = TestBarrier.STATUS_WAIT_FOR_RUN;
+			status.set(first, TestBarrier2.STATUS_WAIT_FOR_RUN);
 
 			//wait for the first job to read the flag
-			TestBarrier.waitForStatus(status, first, TestBarrier.STATUS_RUNNING);
+			TestBarrier2.waitForStatus(status, first, TestBarrier2.STATUS_RUNNING);
 
 			//let the second job start, its thread will be blocked by the beginRule method
-			status[second] = TestBarrier.STATUS_WAIT_FOR_RUN;
+			status.set(second, TestBarrier2.STATUS_WAIT_FOR_RUN);
 
 			//only the first job should be running
 			//the other job should be blocked by the beginRule method
-			assertEquals("3.1", TestBarrier.STATUS_RUNNING, status[first]);
-			assertEquals("3.2", TestBarrier.STATUS_WAIT_FOR_RUN, status[second]);
+			assertEquals("3.1", TestBarrier2.STATUS_RUNNING, status.get(first));
+			assertEquals("3.2", TestBarrier2.STATUS_WAIT_FOR_RUN, status.get(second));
 
 			//let the first job finish execution and call endRule
 			//the second thread will then become unblocked
-			status[first] = TestBarrier.STATUS_WAIT_FOR_DONE;
+			status.set(first, TestBarrier2.STATUS_WAIT_FOR_DONE);
 
 			//wait until the first job is done
-			TestBarrier.waitForStatus(status, first, TestBarrier.STATUS_DONE);
+			TestBarrier2.waitForStatus(status, first, TestBarrier2.STATUS_DONE);
 
 			//now wait until the second job begins execution
-			TestBarrier.waitForStatus(status, second, TestBarrier.STATUS_RUNNING);
+			TestBarrier2.waitForStatus(status, second, TestBarrier2.STATUS_RUNNING);
 
 			//the first job is done, the second job is executing
-			assertEquals("4.1", TestBarrier.STATUS_DONE, status[first]);
-			assertEquals("4.2", TestBarrier.STATUS_RUNNING, status[second]);
+			assertEquals("4.1", TestBarrier2.STATUS_DONE, status.get(first));
+			assertEquals("4.2", TestBarrier2.STATUS_RUNNING, status.get(second));
 
 			//let the second job finish execution
-			status[second] = TestBarrier.STATUS_WAIT_FOR_DONE;
+			status.set(second,  TestBarrier2.STATUS_WAIT_FOR_DONE);
 
 			//wait until the second job is finished
-			TestBarrier.waitForStatus(status, second, TestBarrier.STATUS_DONE);
+			TestBarrier2.waitForStatus(status, second, TestBarrier2.STATUS_DONE);
 
 			//both jobs are done now
-			assertEquals("5.1", TestBarrier.STATUS_DONE, status[first]);
-			assertEquals("5.2", TestBarrier.STATUS_DONE, status[second]);
+			assertEquals("5.1", TestBarrier2.STATUS_DONE, status.get(first));
+			assertEquals("5.2", TestBarrier2.STATUS_DONE, status.get(second));
 
 			//flip the order of execution of the jobs
 			int temp = first;
@@ -219,8 +222,8 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		waitForEnd(jobs[first]);
 
 		//check that the final status of both jobs is correct
-		assertEquals("6.1", TestBarrier.STATUS_DONE, status[0]);
-		assertEquals("6.2", TestBarrier.STATUS_DONE, status[1]);
+		assertEquals("6.1", TestBarrier2.STATUS_DONE, status.get(0));
+		assertEquals("6.2", TestBarrier2.STATUS_DONE, status.get(1));
 		assertEquals("6.3", Job.NONE, jobs[0].getState());
 		assertEquals("6.4", Job.NONE, jobs[1].getState());
 		assertEquals("6.5", IStatus.OK, jobs[0].getResult().getSeverity());
@@ -434,12 +437,12 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		ISchedulingRule rule = new IdentityRule();
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		manager.beginRule(rule, monitor);
-		int[] status = new int[1];
+		AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
 		SimpleRuleRunner runner = new SimpleRuleRunner(rule, status, monitor);
 		new Thread(runner).start();
 
 		//wait for the job to start
-		TestBarrier.waitForStatus(status, TestBarrier.STATUS_RUNNING);
+		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_RUNNING);
 		//give the job a chance to enter the wait loop
 		try {
 			Thread.sleep(100);
@@ -449,7 +452,7 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		//cancel the monitor
 		monitor.setCanceled(true);
 
-		TestBarrier.waitForStatus(status, TestBarrier.STATUS_DONE);
+		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_DONE);
 		if (runner.exception != null) {
 			fail("1.0", runner.exception);
 		}
@@ -498,12 +501,12 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 	public void testSimpleOtherThreadAccess() {
 		//ending a rule started on this thread from another thread
 		ISchedulingRule rule1 = new IdentityRule();
-		int[] status = {TestBarrier.STATUS_START};
+		AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_START });
 		Thread endingThread = new Thread(new RuleEnder(rule1, status));
 		manager.beginRule(rule1, null);
 
 		endingThread.start();
-		TestBarrier.waitForStatus(status, TestBarrier.STATUS_RUNNING);
+		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_RUNNING);
 
 		try {
 			endingThread.join();
@@ -526,10 +529,10 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		//end the rules right after starting them
 		for (int i = 0; i < rules.length; i++) {
 			manager.beginRule(rules[i], null);
-			status[0] = TestBarrier.STATUS_START;
+			status.set(0, TestBarrier2.STATUS_START);
 			Thread t = new Thread(new RuleEnder(rules[i], status));
 			t.start();
-			TestBarrier.waitForStatus(status, TestBarrier.STATUS_RUNNING);
+			TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_RUNNING);
 			try {
 				t.join();
 			} catch (InterruptedException e1) {
@@ -541,10 +544,10 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 
 		//try to end the rules when they are all started
 		for (int i = 0; i < rules.length; i++) {
-			status[0] = TestBarrier.STATUS_START;
+			status.set(0, TestBarrier2.STATUS_START);
 			Thread t = new Thread(new RuleEnder(rules[i], status));
 			t.start();
-			TestBarrier.waitForStatus(status, TestBarrier.STATUS_RUNNING);
+			TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_RUNNING);
 			try {
 				t.join();
 			} catch (InterruptedException e1) {
@@ -557,10 +560,10 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		//try to end the rules after manager.endRule() has been called
 		for (int i = rules.length; i > 0; i--) {
 			manager.endRule(rules[i - 1]);
-			status[0] = TestBarrier.STATUS_START;
+			status.set(0, TestBarrier2.STATUS_START);
 			Thread t = new Thread(new RuleEnder(rules[i - 1], status));
 			t.start();
-			TestBarrier.waitForStatus(status, TestBarrier.STATUS_RUNNING);
+			TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_RUNNING);
 			try {
 				t.join();
 			} catch (InterruptedException e1) {

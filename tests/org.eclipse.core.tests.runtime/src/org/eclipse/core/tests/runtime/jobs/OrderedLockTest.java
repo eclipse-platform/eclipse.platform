@@ -16,11 +16,12 @@ package org.eclipse.core.tests.runtime.jobs;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.eclipse.core.internal.jobs.LockManager;
 import org.eclipse.core.internal.jobs.OrderedLock;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.LockListener;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 import org.junit.Test;
 
 /**
@@ -91,16 +92,16 @@ public class OrderedLockTest {
 
 	@Test
 	public void testLockAcquireInterrupt() throws InterruptedException {
-		final TestBarrier barrier = new TestBarrier();
+		final TestBarrier2 barrier = new TestBarrier2();
 		LockManager manager = new LockManager();
 		final ILock lock = manager.newLock();
 		final boolean[] wasInterupted = new boolean[] {false};
 		Thread t = new Thread() {
 			@Override
 			public void run() {
-				barrier.setStatus(TestBarrier.STATUS_RUNNING);
-				barrier.waitForStatus(TestBarrier.STATUS_WAIT_FOR_START);
-				barrier.setStatus(TestBarrier.STATUS_WAIT_FOR_DONE);
+				barrier.setStatus(TestBarrier2.STATUS_RUNNING);
+				barrier.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_START);
+				barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 				lock.acquire();
 				wasInterupted[0] = Thread.currentThread().isInterrupted();
 				lock.release();
@@ -108,12 +109,12 @@ public class OrderedLockTest {
 		};
 		//schedule and wait for thread to start
 		t.start();
-		barrier.waitForStatus(TestBarrier.STATUS_RUNNING);
+		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		//acquire the lock and let the thread proceed
 		lock.acquire();
-		barrier.setStatus(TestBarrier.STATUS_WAIT_FOR_START);
+		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
 		//make sure thread is blocked
-		barrier.waitForStatus(TestBarrier.STATUS_WAIT_FOR_DONE);
+		barrier.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 		Thread.sleep(500);
 		t.interrupt();
 		lock.release();
@@ -131,14 +132,14 @@ public class OrderedLockTest {
 		final LockManager manager = new LockManager();
 		final OrderedLock lock = manager.newLock();
 		//status array for communicating between threads
-		final int[] status = {TestBarrier.STATUS_START};
+		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_START });
 		//array to end a runnable after it is no longer needed
 		final boolean[] alive = {true};
 
 		//first runnable which is going to hold the created lock
 		Runnable getLock = () -> {
 			lock.acquire();
-			status[0] = TestBarrier.STATUS_RUNNING;
+			status.set(0, TestBarrier2.STATUS_RUNNING);
 			while (alive[0]) {
 				try {
 					Thread.sleep(100);
@@ -146,7 +147,7 @@ public class OrderedLockTest {
 				}
 			}
 			lock.release();
-			status[0] = TestBarrier.STATUS_DONE;
+			status.set(0, TestBarrier2.STATUS_DONE);
 		};
 
 		//second runnable which is going to try and acquire the given lock and then time out
@@ -158,7 +159,7 @@ public class OrderedLockTest {
 			}
 			assertTrue("1.0", !success);
 			assertTrue("1.1", !manager.isLockOwner());
-			status[0] = TestBarrier.STATUS_WAIT_FOR_DONE;
+			status.set(0, TestBarrier2.STATUS_WAIT_FOR_DONE);
 		};
 
 		Thread first = new Thread(getLock);
@@ -166,13 +167,13 @@ public class OrderedLockTest {
 
 		//start the first thread and wait for it to acquire the lock
 		first.start();
-		TestBarrier.waitForStatus(status, TestBarrier.STATUS_RUNNING);
+		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_RUNNING);
 		//start the second thread, make sure the assertion passes
 		second.start();
-		TestBarrier.waitForStatus(status, TestBarrier.STATUS_WAIT_FOR_DONE);
+		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_WAIT_FOR_DONE);
 		//let the first thread die
 		alive[0] = false;
-		TestBarrier.waitForStatus(status, TestBarrier.STATUS_DONE);
+		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_DONE);
 		//the underlying array has to be empty
 		assertTrue("Locks not removed from graph.", manager.isEmpty());
 	}
@@ -187,24 +188,25 @@ public class OrderedLockTest {
 		final LockManager manager = new LockManager();
 		final OrderedLock lock = manager.newLock();
 		//status array for communicating between threads
-		final int[] status = {TestBarrier.STATUS_WAIT_FOR_START, TestBarrier.STATUS_WAIT_FOR_START};
+		final AtomicIntegerArray status = new AtomicIntegerArray(
+				new int[] { TestBarrier2.STATUS_WAIT_FOR_START, TestBarrier2.STATUS_WAIT_FOR_START });
 
 		//first runnable which is going to hold the created lock
 		Runnable getLock = () -> {
 			lock.acquire();
-			status[0] = TestBarrier.STATUS_START;
-			TestBarrier.waitForStatus(status, 0, TestBarrier.STATUS_RUNNING);
+			status.set(0, TestBarrier2.STATUS_START);
+			TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_RUNNING);
 			lock.release();
-			status[0] = TestBarrier.STATUS_DONE;
+			status.set(0, TestBarrier2.STATUS_DONE);
 		};
 
 		//second runnable which is going to submit a request for this lock and wait until it is available
 		Runnable waitForLock = () -> {
-			status[1] = TestBarrier.STATUS_START;
+			status.set(1, TestBarrier2.STATUS_START);
 			lock.acquire();
 			assertTrue("1.0", manager.isLockOwner());
 			lock.release();
-			status[1] = TestBarrier.STATUS_DONE;
+			status.set(1, TestBarrier2.STATUS_DONE);
 
 		};
 
@@ -213,7 +215,7 @@ public class OrderedLockTest {
 		Runnable forceGetLock = () -> {
 			lock.acquire();
 			lock.release();
-			status[0] = TestBarrier.STATUS_WAIT_FOR_DONE;
+			status.set(0, TestBarrier2.STATUS_WAIT_FOR_DONE);
 		};
 
 		//a locklistener to force lock manager to give the lock to the third runnable (implicitly)
@@ -231,23 +233,23 @@ public class OrderedLockTest {
 
 		//start the first thread and wait for it to acquire the lock
 		first.start();
-		TestBarrier.waitForStatus(status, 0, TestBarrier.STATUS_START);
+		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_START);
 		//start the second thread, make sure it is added to the lock wait queue
 		second.start();
-		TestBarrier.waitForStatus(status, 1, TestBarrier.STATUS_START);
+		TestBarrier2.waitForStatus(status, 1, TestBarrier2.STATUS_START);
 
 		//assign our listener to the manager
 		manager.setLockListener(listener);
 		//start the third thread
 		third.start();
-		TestBarrier.waitForStatus(status, 0, TestBarrier.STATUS_WAIT_FOR_DONE);
+		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_WAIT_FOR_DONE);
 
 		//let the first runnable complete
-		status[0] = TestBarrier.STATUS_RUNNING;
-		TestBarrier.waitForStatus(status, 0, TestBarrier.STATUS_DONE);
+		status.set(0, TestBarrier2.STATUS_RUNNING);
+		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_DONE);
 
 		//now wait for the second runnable to get the lock, and have the assertion pass
-		TestBarrier.waitForStatus(status, 1, TestBarrier.STATUS_DONE);
+		TestBarrier2.waitForStatus(status, 1, TestBarrier2.STATUS_DONE);
 
 		//the underlying array has to be empty
 		assertTrue("Locks not removed from graph.", manager.isEmpty());

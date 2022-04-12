@@ -13,9 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestProgressMonitor;
 
 /**
@@ -23,14 +24,14 @@ import org.eclipse.core.tests.harness.TestProgressMonitor;
  * becomes blocked.
  */
 class TestBlockingMonitor extends TestProgressMonitor implements IProgressMonitor {
-	private TestBarrier barrier;
+	private TestBarrier2 barrier;
 	private boolean cancelled;
 
-	public TestBlockingMonitor(int[] status, int index) {
-		this(new TestBarrier(status, index));
+	public TestBlockingMonitor(AtomicIntegerArray status, int index) {
+		this(new TestBarrier2(status, index));
 	}
 
-	public TestBlockingMonitor(TestBarrier barrier) {
+	public TestBlockingMonitor(TestBarrier2 barrier) {
 		this.barrier = barrier;
 	}
 
@@ -46,7 +47,7 @@ class TestBlockingMonitor extends TestProgressMonitor implements IProgressMonito
 
 	@Override
 	public void setBlocked(IStatus reason) {
-		barrier.setStatus(TestBarrier.STATUS_BLOCKED);
+		barrier.setStatus(TestBarrier2.STATUS_BLOCKED);
 	}
 
 	@Override

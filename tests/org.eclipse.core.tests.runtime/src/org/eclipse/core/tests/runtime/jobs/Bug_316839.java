@@ -17,7 +17,7 @@ package org.eclipse.core.tests.runtime.jobs;
 import org.eclipse.core.internal.jobs.JobManager;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 
 /**
  * Regression test for bug 316839.
@@ -26,7 +26,7 @@ public class Bug_316839 extends AbstractJobManagerTest {
 
 	ILock LOCK = Job.getJobManager().newLock();
 
-	TestBarrier barrier = new TestBarrier(TestBarrier.STATUS_WAIT_FOR_START);
+	TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
 
 	YieldingTestJob yieldingJob;
 	TestJob interruptingJob;
@@ -47,10 +47,10 @@ public class Bug_316839 extends AbstractJobManagerTest {
 				lockGraphWasEmpty = ((JobManager) Job.getJobManager()).getLockManager().isEmpty();
 			}
 		});
-		barrier.waitForStatus(TestBarrier.STATUS_RUNNING);
+		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		interruptingJob.schedule();
 		//let the yielding job perform its yield
-		barrier.setStatus(TestBarrier.STATUS_WAIT_FOR_DONE);
+		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 
 		// wait for job to complete or for max time...
 		waitForCompletion(yieldingJob);
@@ -84,8 +84,8 @@ public class Bug_316839 extends AbstractJobManagerTest {
 		protected IStatus run(IProgressMonitor monitor) {
 			getJobManager().beginRule(rule, monitor);
 			try {
-				barrier.setStatus(TestBarrier.STATUS_RUNNING);
-				barrier.waitForStatus(TestBarrier.STATUS_WAIT_FOR_DONE);
+				barrier.setStatus(TestBarrier2.STATUS_RUNNING);
+				barrier.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 				// Call to some dependent code that causes a yieldRule().
 				// For example, the various routines of ModelManagerImpl
 				// that get and return a shared model. If another thread /
