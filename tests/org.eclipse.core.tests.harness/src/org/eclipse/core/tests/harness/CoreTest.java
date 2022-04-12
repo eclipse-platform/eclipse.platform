@@ -233,16 +233,25 @@ public class CoreTest extends TestCase {
 	 * @throws AssertionFailedError if creation of the symbolic link failed
 	 */
 	protected void createSymLink(File basedir, String linkName, String linkTarget, boolean isDir) {
+		// The following code creates even a link if
+		// Files.createSymbolicLink(new File(basedir, linkName).toPath(), new
+		// File(basedir, linkTarget).toPath());
+		// would throw java.nio.file.FileSystemException "missing rights"
+		//
 		// Deliberately use an empty environment to make the test reproducible.
 		String[] envp = {};
 		try {
 			Process p;
 			if (Platform.getOS().equals(Platform.OS_WIN32)) {
+				// use absolute Pathnames to avoid 'Illegal argument - ".."' for using "../"
+				// instead of "..\"
 				if (isDir) {
-					String[] cmd = {"cmd", "/c", "mklink", "/d", linkName, linkTarget};
+					String[] cmd = { "cmd", "/c", "mklink", "/d", new File(basedir, linkName).getAbsolutePath(),
+							new File(basedir, linkTarget).getAbsolutePath() };
 					p = Runtime.getRuntime().exec(cmd, envp, basedir);
 				} else {
-					String[] cmd = {"cmd", "/c", "mklink", linkName, linkTarget};
+					String[] cmd = { "cmd", "/c", "mklink", new File(basedir, linkName).getAbsolutePath(),
+							new File(basedir, linkTarget).getAbsolutePath() };
 					p = Runtime.getRuntime().exec(cmd, envp, basedir);
 				}
 			} else {
@@ -251,6 +260,7 @@ public class CoreTest extends TestCase {
 			}
 			int exitcode = p.waitFor();
 			if (exitcode != 0) {
+				// xxx wrong charset. from jdk17+ we could use Console.charset()
 				String result = new BufferedReader(new InputStreamReader(p.getErrorStream())).readLine();
 				assertEquals("createSymLink: " + result + ", exitcode", 0, exitcode);
 			}
