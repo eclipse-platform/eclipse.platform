@@ -19,6 +19,7 @@ package org.eclipse.core.internal.watson;
 import java.io.*;
 import java.util.*;
 import org.eclipse.core.internal.dtree.*;
+import org.eclipse.core.internal.resources.SaveManager;
 import org.eclipse.core.runtime.*;
 
 /** <code>ElementTreeWriter</code> flattens an ElementTree
@@ -78,65 +79,23 @@ public class ElementTreeWriter {
 	}
 
 	/**
-	 * Sorts the given array of trees so that the following rules are true:
-	 * 	 - The first tree has no parent
-	 * 	 - No tree has an ancestor with a greater index in the array.
-	 * If there are no missing parents in the given trees array, this means
-	 * that in the resulting array, the i'th tree's parent will be tree i-1.
-	 * The input tree array may contain duplicate trees.
-	 * The sort order is written to the given output stream.
+	 * Sorts the given array of trees and The sort order is written to the given
+	 * output stream.
 	 */
 	protected ElementTree[] sortTrees(ElementTree[] trees, DataOutput output) throws IOException {
+		ElementTree[] sorted = SaveManager.sortTrees(trees);
 
-		/* the sorted list */
+		// compute indexes from sorted elements:
 		int numTrees = trees.length;
-		ElementTree[] sorted = new ElementTree[numTrees];
-		int[] order = new int[numTrees];
-
-		/* first build a table of ElementTree -> HashMap of Integers(indices in trees array) */
-		HashMap<ElementTree, List<Integer>> table = new HashMap<>(numTrees * 2 + 1);
-		for (int i = 0; i < trees.length; i++) {
-			List<Integer> indices = table.get(trees[i]);
-			if (indices == null) {
-				indices = new ArrayList<>();
-				table.put(trees[i], indices);
-			}
-			indices.add(i);
-		}
-
-		/* find the oldest tree (a descendent of all other trees) */
-		ElementTree oldest = trees[ElementTree.findOldest(trees)];
-
-		/**
-		 * Walk through the chain of trees from oldest to newest,
-		 * adding them to the sorted list as we go.
-		 */
-		int i = numTrees - 1;
-		while (i >= 0) {
-			/* add all instances of the current oldest tree to the sorted list */
-			List<Integer> indices = table.remove(oldest);
-			for (Enumeration<Integer> e = Collections.enumeration(indices); e.hasMoreElements();) {
-				Integer next = e.nextElement();
-				sorted[i] = oldest;
-				order[i] = next.intValue();
-				i--;
-			}
-			if (i >= 0) {
-				/* find the next tree in the list */
-				ElementTree parent = oldest.getParent();
-				while (table.get(parent) == null) {
-					if (parent == null) {
-						throw new IOException("null parent found while sorting trees"); //$NON-NLS-1$
-					}
-					parent = parent.getParent();
-				}
-				oldest = parent;
-			}
+		Map<ElementTree, Deque<Integer>> indicesByTree = new HashMap<>();
+		for (int i = 0; i < numTrees; i++) {
+			indicesByTree.computeIfAbsent(trees[i], k -> new ArrayDeque<>()).push(i);
 		}
 
 		/* write the order array */
-		for (i = 0; i < numTrees; i++) {
-			writeNumber(order[i], output);
+		for (int i = 0; i < numTrees; i++) {
+			Integer order = indicesByTree.get(sorted[i]).pop();
+			writeNumber(order, output);
 		}
 		return sorted;
 	}

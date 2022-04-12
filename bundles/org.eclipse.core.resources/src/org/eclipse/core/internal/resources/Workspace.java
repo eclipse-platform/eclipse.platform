@@ -106,7 +106,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 	protected WorkspacePreferences description;
 	protected FileSystemResourceManager fileSystemManager;
 	protected final CopyOnWriteArrayList<ILifecycleListener> lifecycleListeners = new CopyOnWriteArrayList<>();
-	protected LocalMetaArea localMetaArea;
+	protected final LocalMetaArea localMetaArea;
 	/**
 	 * Helper class for performing validation of resource names and locations.
 	 */
@@ -2160,8 +2160,12 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 	 * modifications to the tree.
 	 */
 	public ElementTree newWorkingTree() {
-		tree = tree.newEmptyDelta();
-		return tree;
+		// synchronized for atomic swap. Should have already synchronized by
+		// getWorkManager().checkIn/checkout, but it's not guaranteed
+		synchronized (this) {
+			tree = tree.newEmptyDelta();
+			return tree;
+		}
 	}
 
 	/**

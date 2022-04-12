@@ -13,7 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.watson;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.io.*;
+import java.util.Arrays;
+import org.eclipse.core.internal.resources.SaveManager;
 import org.eclipse.core.internal.watson.*;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -71,6 +78,141 @@ public class TreeFlatteningTest extends ElementTreeSerializationTest {
 		ElementTree newTree = (ElementTree) doFileTest();
 
 		TestUtil.assertEqualTrees(this.getClass() + "test0", fTree, newTree);
+	}
+
+	@Test
+	public void testSortTreesError() {
+		ElementTree tree1 = new ElementTree();
+		ElementTree tree11 = tree1.newEmptyDelta();
+		ElementTree tree111 = tree11.newEmptyDelta();
+		ElementTree tree1111 = tree111.newEmptyDelta(); // <-still mutable
+		assertFalse(tree1111.isImmutable());
+		assertTrue(tree111.isImmutable());
+		assertTrue(tree11.isImmutable());
+		assertTrue(tree1.isImmutable());
+		ElementTree[] trees = new ElementTree[] { tree1, tree11, tree111, tree1111 };
+		ElementTree[] sorted = SaveManager.sortTrees(trees);
+		assertNull(sorted); // => not sortable
+		// logs java.lang.NullPointerException: Given trees not in unambiguous order
+		// (Bug 35286): 16->17->18, 17->18, 18, mutable! 19->18
+	}
+
+	@Test
+	public void testSortTrees() {
+		ElementTree tree1 = new ElementTree();
+		ElementTree tree11 = tree1.newEmptyDelta();
+		ElementTree tree111 = tree11.newEmptyDelta();
+		ElementTree tree1111 = tree111.newEmptyDelta();
+
+		assertFalse(tree1111.isImmutable());
+		tree1111.newEmptyDelta(); // without this final newEmptyDelta() two trees have same parent (strange)
+		assertTrue(tree1111.isImmutable());
+
+		assertSame(tree1.getParent(), tree11);
+		assertSame(tree11.getParent(), tree111);
+		assertSame(tree111.getParent(), tree1111);
+		assertSame(tree1111.getParent(), null);
+
+		{ // list of all trees
+			ElementTree[] trees12 = new ElementTree[] { tree1, tree11, tree111, tree1111 };
+			ElementTree[] trees21 = reversed(trees12);
+			int oldest12 = ElementTree.findOldest(trees12);
+			int oldest21 = ElementTree.findOldest(trees21);
+
+			assertSame(trees12[oldest12], trees21[oldest21]);
+			assertSame(trees12[oldest12], tree1); // "oldest" is the first created
+
+			System.out.println("oldest=" + trees12[oldest12].toDebugString());
+			ElementTree[] sorted12 = SaveManager.sortTrees(trees12);
+			ElementTree[] sorted21 = SaveManager.sortTrees(trees21);
+			assertTrue(Arrays.equals(sorted12, sorted21));
+			assertSame(tree1111, sorted12[0]); // sorted by creation time desc
+		}
+		{ // trees with duplicates
+			ElementTree[] trees12 = new ElementTree[] { tree1, tree1, tree11, tree11, tree111, tree111, tree1111,
+					tree1111 };
+			ElementTree[] trees21 = reversed(trees12);
+			int oldest12 = ElementTree.findOldest(trees12);
+			int oldest21 = ElementTree.findOldest(trees21);
+
+			assertSame(trees12[oldest12], trees21[oldest21]);
+			assertSame(trees12[oldest12], tree1); // "oldest" is the first created
+
+			System.out.println("oldest=" + trees12[oldest12].toDebugString());
+			ElementTree[] sorted12 = SaveManager.sortTrees(trees12);
+			ElementTree[] sorted21 = SaveManager.sortTrees(trees21);
+			assertTrue(Arrays.equals(sorted12, sorted21));
+			assertSame(tree1111, sorted12[0]); // sorted by creation time desc
+		}
+		{ // sparse (without all intermediate trees)
+			ElementTree[] trees12 = new ElementTree[] { tree1, tree1, tree1111, tree1111 };
+			ElementTree[] trees21 = reversed(trees12);
+			int oldest12 = ElementTree.findOldest(trees12);
+			int oldest21 = ElementTree.findOldest(trees21);
+
+			assertSame(trees12[oldest12], trees21[oldest21]);
+			assertSame(trees12[oldest12], tree1); // "oldest" is the first created
+
+			System.out.println("oldest=" + trees12[oldest12].toDebugString());
+			ElementTree[] sorted12 = SaveManager.sortTrees(trees12);
+			ElementTree[] sorted21 = SaveManager.sortTrees(trees21);
+			assertTrue(Arrays.equals(sorted12, sorted21));
+			assertSame(tree1111, sorted12[0]); // sorted by creation time desc
+		}
+		{ // without newest
+			ElementTree[] trees12 = new ElementTree[] { tree1, tree111 };
+			ElementTree[] trees21 = reversed(trees12);
+			int oldest12 = ElementTree.findOldest(trees12);
+			int oldest21 = ElementTree.findOldest(trees21);
+
+			assertSame(trees12[oldest12], trees21[oldest21]);
+			assertSame(trees12[oldest12], tree1); // "oldest" is the first created
+
+			System.out.println("oldest=" + trees12[oldest12].toDebugString());
+			ElementTree[] sorted12 = SaveManager.sortTrees(trees12);
+			ElementTree[] sorted21 = SaveManager.sortTrees(trees21);
+			assertTrue(Arrays.equals(sorted12, sorted21));
+			assertSame(tree111, sorted12[0]); // sorted by creation time desc
+		}
+		{ // without oldest
+			ElementTree[] trees12 = new ElementTree[] { tree11, tree1111 };
+			ElementTree[] trees21 = reversed(trees12);
+			int oldest12 = ElementTree.findOldest(trees12);
+			int oldest21 = ElementTree.findOldest(trees21);
+
+			assertSame(trees12[oldest12], trees21[oldest21]);
+			assertSame(trees12[oldest12], tree11); // "oldest" is the first created
+
+			System.out.println("oldest=" + trees12[oldest12].toDebugString());
+			ElementTree[] sorted12 = SaveManager.sortTrees(trees12);
+			ElementTree[] sorted21 = SaveManager.sortTrees(trees21);
+			assertTrue(Arrays.equals(sorted12, sorted21));
+			assertSame(tree1111, sorted12[0]); // sorted by creation time desc
+		}
+		{ // trees with odd duplicates
+			ElementTree[] trees12 = new ElementTree[] { tree1, tree11, tree11, tree11, tree111, tree1111, tree1111,
+					tree1111 };
+			ElementTree[] trees21 = reversed(trees12);
+			int oldest12 = ElementTree.findOldest(trees12);
+			int oldest21 = ElementTree.findOldest(trees21);
+
+			assertSame(trees12[oldest12], trees21[oldest21]);
+			assertSame(trees12[oldest12], tree1); // "oldest" is the first created
+
+			System.out.println("oldest=" + trees12[oldest12].toDebugString());
+			ElementTree[] sorted12 = SaveManager.sortTrees(trees12);
+			ElementTree[] sorted21 = SaveManager.sortTrees(trees21);
+			assertTrue(Arrays.equals(sorted12, sorted21));
+			assertSame(tree1111, sorted12[0]); // sorted by creation time desc
+		}
+	}
+
+	private ElementTree[] reversed(ElementTree[] trees) {
+		ElementTree[] result = new ElementTree[trees.length];
+		for (int i = 0; i < trees.length; i++) {
+			result[i] = trees[trees.length - i - 1];
+		}
+		return result;
 	}
 
 	/**

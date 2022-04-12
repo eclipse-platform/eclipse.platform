@@ -29,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
 import java.util.zip.*;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -1495,27 +1496,29 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	}
 
 	/**
-	 * Sorts the given array of trees so that the following rules are true:
-	 * 	 - The first tree has no parent
-	 * 	 - No tree has an ancestor with a greater index in the array.
-	 * If there are no missing parents in the given trees array, this means
-	 * that in the resulting array, the i'th tree's parent will be tree i-1.
-	 * The input tree array may contain duplicate trees.
+	 * Returns a sorted copy of a chain of trees.
+	 *
+	 * @param trees an unordered array of ElementTrees that should be immutable. The
+	 *              array may contain duplicates. The ElementTrees should have been
+	 *              created by repeated calls to Workspace.newWorkingTree() such
+	 *              that the getParent() relationship forms an unambiguous sequence
+	 *              (except of duplicates) from newest ElementTree to oldest. I.e.
+	 *              the newest ElementTree (and its duplicates) has no parent (or at
+	 *              least no ancestor within the given array), while all other
+	 *              ElementTreess have the newest ElementTree as ancestor
+	 *              (transitive parent). The given trees do not need to contain all
+	 *              ElementTrees from the getParent() relationship.
+	 * @return trees ordered by ElementTree.treeStamp descending. i.e. newest
+	 *         ElementTree (without ancestor within the trees) first.
 	 */
-	protected ElementTree[] sortTrees(ElementTree[] trees) {
-		/* the sorted list */
+	public static ElementTree[] sortTrees(ElementTree[] trees) {
 		int numTrees = trees.length;
 		ElementTree[] sorted = new ElementTree[numTrees];
 
-		/* first build a table of ElementTree -> List of Integers(indices in trees array) */
-		Map<ElementTree, List<Integer>> table = new HashMap<>(numTrees * 2 + 1);
-		for (int i = 0; i < trees.length; i++) {
-			List<Integer> indices = table.get(trees[i]);
-			if (indices == null) {
-				indices = new ArrayList<>(10);
-				table.put(trees[i], indices);
-			}
-			indices.add(i);
+		/* first build a table of ElementTree -> Number of duplicates */
+		Map<ElementTree, Integer> duplicateCount = new LinkedHashMap<>(numTrees * 2 + 1);
+		for (ElementTree tree : trees) {
+			duplicateCount.compute(tree, (k, duplicates) -> (duplicates == null ? 0 : duplicates) + 1);
 		}
 
 		/* find the oldest tree (a descendent of all other trees) */
@@ -1526,30 +1529,47 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		 * adding them to the sorted list as we go.
 		 */
 		int i = numTrees - 1;
-		while (i >= 0) {
-			/* add all instances of the current oldest tree to the sorted list */
-			List<Integer> indices = table.remove(oldest);
-			for (Enumeration<Integer> e = Collections.enumeration(indices); e.hasMoreElements();) {
-				e.nextElement();
+		while (oldest != null) {
+			/* add "oldest" and its duplicates at the end of the sorted list: */
+			Integer duplicates = duplicateCount.remove(oldest);
+			for (int j = 0; j < duplicates; j++) {
 				sorted[i] = oldest;
 				i--;
 			}
-			if (i >= 0) {
-				/* find the next tree in the list */
-				ElementTree parent = oldest.getParent();
-				while (parent != null && table.get(parent) == null) {
-					parent = parent.getParent();
-				}
-				if (parent == null) {
-					Exception e = new NullPointerException("null parent found while collapsing trees"); //$NON-NLS-1$
-					IStatus status = new Status(IStatus.WARNING, ResourcesPlugin.PI_RESOURCES, IResourceStatus.INTERNAL_ERROR, e.getMessage(), e);
-					Policy.log(status);
-					return null;
-				}
-				oldest = parent;
+			/* find the next tree in the list */
+			oldest = oldest.getParent();
+			while (oldest != null && duplicateCount.get(oldest) == null) {
+				/* skip elements that are not elements of "trees" */
+				oldest = oldest.getParent();
 			}
 		}
+		if (!duplicateCount.isEmpty()) {
+			// could happen if trees contains elements t3,t2,t1 where the parent relations
+			// are t3->t1, t2->t1, t1->null
+			// either t2 or t3 is not found
+			// because it's not unambiguous defined if t3 or t2 is the "older"
+			// t3 should have parent t2 instead.
+			// happens while trees are mutable.
+			String s = Set.of(trees).stream().sorted(Comparator.comparing(ElementTree::getTreeStamp))
+					.map(t -> (t.isImmutable() ? "" : "mutable! ") + parentChain(t)) //$NON-NLS-1$ //$NON-NLS-2$
+					.collect(Collectors.joining(", ")); //$NON-NLS-1$
+			Exception e = new NullPointerException("Given trees not in unambiguous order (Bug 35286): " + s); //$NON-NLS-1$
+			IStatus status = new Status(IStatus.WARNING, ResourcesPlugin.PI_RESOURCES, IResourceStatus.INTERNAL_ERROR,
+					e.getMessage(), e);
+			Policy.log(status);
+			return null;
+		}
 		return sorted;
+	}
+
+	static String parentChain(ElementTree e) {
+		ArrayList<ElementTree> chain = new ArrayList<>();
+		ElementTree el = e;
+		while (el != null) {
+			chain.add(el);
+			el = el.getParent();
+		}
+		return chain.stream().map(t -> "" + t.getTreeStamp()).collect(Collectors.joining("->")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override

@@ -15,7 +15,8 @@
  *******************************************************************************/
 package org.eclipse.core.internal.watson;
 
-import java.util.HashMap;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.core.internal.dtree.*;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.StringPool;
@@ -79,47 +80,56 @@ import org.eclipse.osgi.util.NLS;
  * 	- "It's ElementTree my dear Watson, ElementTree."
  */
 public class ElementTree {
-	protected DeltaDataTree tree;
-	protected IElementTreeData userData;
+	protected final DeltaDataTree tree;
+	protected volatile IElementTreeData userData;
 
-	private static class ChildIDsCache {
+	private static final class ChildIDsCache {
 		ChildIDsCache(IPath path, IPath[] childPaths) {
 			this.path = path;
 			this.childPaths = childPaths;
 		}
 
-		IPath path;
-		IPath[] childPaths;
+		final IPath path;
+		final IPath[] childPaths;
 	}
 
+	/** synchronized access **/
 	private volatile ChildIDsCache childIDsCache = null;
 
+	/** synchronized access **/
 	private volatile DataTreeLookup lookupCache = null;
 
+	/** synchronized access **/
 	private volatile DataTreeLookup lookupCacheIgnoreCase = null;
 
-	private static int treeCounter = 0;
-	private int treeStamp;
+	private final static AtomicInteger treeCounter = new AtomicInteger();
+	private final int treeStamp;
 
 	/**
 	 * Creates a new empty element tree.
 	 */
 	public ElementTree() {
-		initialize(new DeltaDataTree());
+		this(new DeltaDataTree());
 	}
 
 	/**
 	 * Creates an element tree given its internal node representation.
 	 */
 	protected ElementTree(DataTreeNode rootNode) {
-		initialize(rootNode);
+		/* create the implicit root node */
+		this(new DeltaDataTree(new DataTreeNode(null, null, new AbstractDataTreeNode[] { rootNode })));
 	}
 
 	/**
 	 * Creates a new element tree with the given data tree as its representation.
 	 */
-	protected ElementTree(DeltaDataTree tree) {
-		initialize(tree);
+	protected ElementTree(DeltaDataTree newTree) {
+		// Keep this element tree as the data of the root node.
+		// Useful for canonical results for ElementTree.getParent().
+		// see getParent().
+		treeStamp = treeCounter.incrementAndGet();
+		newTree.setData(newTree.rootKey(), this);
+		this.tree = newTree;
 	}
 
 	/**
@@ -127,17 +137,13 @@ public class ElementTree {
 	 * given tree as its parent.
 	 */
 	protected ElementTree(ElementTree parent) {
-		if (!parent.isImmutable()) {
-			parent.immutable();
-		}
+		this(parent.tree.newEmptyDeltaTree());
 
 		/* copy the user data forward */
 		IElementTreeData data = parent.getTreeData();
 		if (data != null) {
 			userData = (IElementTreeData) data.clone();
 		}
-
-		initialize(parent.tree.newEmptyDeltaTree());
 	}
 
 	/**
@@ -271,16 +277,14 @@ public class ElementTree {
 	public static int findOldest(ElementTree[] trees) {
 
 		/* first put all the trees in a hashtable */
-		HashMap<ElementTree, ElementTree> candidates = new HashMap<>((int) (trees.length * 1.5 + 1));
-		for (ElementTree tree2 : trees) {
-			candidates.put(tree2, tree2);
-		}
+		// using LinkedHashMap to not have a random order in the while-loop below
+		HashSet<ElementTree> candidates = new LinkedHashSet<>(List.of(trees));
 
 		/* keep removing parents until only one tree remains */
 		ElementTree oldestSoFar = null;
-		while (candidates.size() > 0) {
+		while (!candidates.isEmpty()) {
 			/* get a new candidate */
-			ElementTree current = candidates.values().iterator().next();
+			ElementTree current = candidates.iterator().next();
 
 			/* remove this candidate from the table */
 			candidates.remove(current);
@@ -539,26 +543,12 @@ public class ElementTree {
 	 * Returns true if this element tree includes an element with the given
 	 * key, ignoring the case of the key, and false otherwise.
 	 */
-	public boolean includesIgnoreCase(IPath key) {
+	public synchronized boolean includesIgnoreCase(IPath key) {
 		DataTreeLookup lookup = lookupCacheIgnoreCase; // Grab it in case it's replaced concurrently.
 		if (lookup == null || lookup.key != key) {
 			lookupCacheIgnoreCase = lookup = tree.lookupIgnoreCase(key);
 		}
 		return lookup.isPresent;
-	}
-
-	protected void initialize(DataTreeNode rootNode) {
-		/* create the implicit root node */
-		initialize(new DeltaDataTree(new DataTreeNode(null, null, new AbstractDataTreeNode[] {rootNode})));
-	}
-
-	protected void initialize(DeltaDataTree newTree) {
-		// Keep this element tree as the data of the root node.
-		// Useful for canonical results for ElementTree.getParent().
-		// see getParent().
-		treeStamp = treeCounter++;
-		newTree.setData(newTree.rootKey(), this);
-		this.tree = newTree;
 	}
 
 	/**
@@ -631,6 +621,9 @@ public class ElementTree {
 	public synchronized ElementTree newEmptyDelta() {
 		// Don't want old trees hanging onto cached infos.
 		lookupCache = lookupCacheIgnoreCase = null;
+		if (!this.isImmutable()) {
+			this.immutable();
+		}
 		return new ElementTree(this);
 	}
 
@@ -727,6 +720,15 @@ public class ElementTree {
 
 	@Override
 	public String toString() {
-		return "ElementTree(" + treeStamp + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+		ElementTree root = getParent();
+		while (root != null && root.getParent() != null) {
+			root = root.getParent();
+		}
+		return "ElementTree(" + treeStamp + "->" + (getParent() == null ? null : getParent().treeStamp) + "..." //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ (root == null ? null : root.treeStamp) + ")"; //$NON-NLS-1$
+	}
+
+	public int getTreeStamp() {
+		return treeStamp;
 	}
 }

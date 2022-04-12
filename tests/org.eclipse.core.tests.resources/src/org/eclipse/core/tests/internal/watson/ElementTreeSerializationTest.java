@@ -44,6 +44,8 @@ public abstract class ElementTreeSerializationTest implements IPathConstants {
 		public void run() {
 			try {
 				doWrite(fWriter, fDataOutputStream);
+				// inform reader, writing is finished:
+				fDataOutputStream.flush(); // DeltaChainFlatteningTest 30s -> 0s
 			} catch (IOException e) {
 				e.printStackTrace();
 				fail("Error writing delta");
@@ -191,8 +193,8 @@ public abstract class ElementTreeSerializationTest implements IPathConstants {
 			readerThread.setStream(ois);
 			writerThread.setWriter(w);
 			readerThread.setReader(r);
-			Thread thread1 = new Thread(writerThread);
-			Thread thread2 = new Thread(readerThread);
+			Thread thread1 = new Thread(writerThread, "testwriter");
+			Thread thread2 = new Thread(readerThread, "testreader");
 			thread1.start();
 			thread2.start();
 			while (thread2.isAlive()) {
