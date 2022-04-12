@@ -1000,11 +1000,7 @@ public abstract class ResourceTest extends CoreTest {
 	 * Blocks the calling thread until autobuild completes.
 	 */
 	protected void waitForBuild() {
-		try {
-			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
-		} catch (OperationCanceledException | InterruptedException e) {
-			//ignore
-		}
+		((Workspace) getWorkspace()).getBuildManager().waitForAutoBuild();
 	}
 
 	/**

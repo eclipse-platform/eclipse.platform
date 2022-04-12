@@ -739,6 +739,14 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 		autoBuildJob.build(needsBuild);
 	}
 
+	public void waitForAutoBuild() {
+		autoBuildJob.wakeUp(0);
+		try {
+			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
+		} catch (OperationCanceledException | InterruptedException e) {
+			// ignore
+		}
+	}
 	/**
 	 * Returns the value of the boolean configuration element attribute with the
 	 * given name, or <code>false</code> if the attribute is missing.
