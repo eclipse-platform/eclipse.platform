@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import org.eclipse.core.internal.dtree.AbstractDataTreeNode;
 import org.eclipse.core.internal.dtree.DeltaDataTree;
 import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.internal.resources.ComputeProjectOrder.Digraph;
@@ -1271,10 +1272,11 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 			return computed;
 		});
 
+
 		//search for the builder's project
 		if (currentDelta.findNodeAt(builder.getProject().getFullPath()) != null) {
 			if (Policy.DEBUG_BUILD_NEEDED)
-				Policy.debug(toString(builder) + " needs building because of changes in: " + builder.getProject().getName()); //$NON-NLS-1$
+				debugCurrentDeltaNeedsBuilder(builder);
 			return true;
 		}
 
@@ -1283,11 +1285,36 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 		for (IProject project : projects) {
 			if (currentDelta.findNodeAt(project.getFullPath()) != null) {
 				if (Policy.DEBUG_BUILD_NEEDED)
-					Policy.debug(toString(builder) + " needs building because of changes in: " + project.getName()); //$NON-NLS-1$
+					debugCurrentDeltaNeedsBuilder(builder);
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private void debugCurrentDeltaNeedsBuilder(InternalBuilder builder) {
+		String builderString = toString(builder);
+		debugCurrentProjectDeltaNeedsBuilder(builderString, builder.getProject());
+
+		IProject[] projects = builder.getInterestingProjects();
+		for (IProject project : projects)
+			debugCurrentProjectDeltaNeedsBuilder(builderString, project);
+	}
+
+	private void debugCurrentProjectDeltaNeedsBuilder(String builderString, IProject project) {
+		AbstractDataTreeNode found = currentDelta.findNodeAt(project.getFullPath());
+		if (found != null) {
+			Policy.debug(builderString + " needs building because of changes in: " + project.getName()); //$NON-NLS-1$
+			if (Policy.DEBUG_BUILD_NEEDED_DELTA)
+				debugDeltaNode(builderString, found);
+		}
+	}
+
+	private static void debugDeltaNode(String prefix, AbstractDataTreeNode found) {
+		prefix = prefix + "/" + found.getName(); //$NON-NLS-1$
+		Policy.debug(prefix);
+		for (AbstractDataTreeNode child : found.getChildren())
+			debugDeltaNode(prefix, child);
 	}
 
 	/**

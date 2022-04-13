@@ -34,6 +34,10 @@ org.eclipse.core.resources/build/cycle=false
 # and because of changes in which project.
 org.eclipse.core.resources/build/needbuild=false
 
+# For incremental builds, print all delta tree nodes that cause a builder to run.
+# Requires org.eclipse.core.resources/build/needbuild=true
+org.eclipse.core.resources/build/needbuilddelta=false
+
 # Prints a stack trace every time an operation finishes that requires a build
 org.eclipse.core.resources/build/needbuildstack=false
 

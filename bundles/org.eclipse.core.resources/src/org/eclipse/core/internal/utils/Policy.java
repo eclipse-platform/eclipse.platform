@@ -38,6 +38,7 @@ public class Policy {
 			DEBUG_BUILD_INTERRUPT = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/interrupt", false); //$NON-NLS-1$
 			DEBUG_BUILD_INVOKING = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/invoking", false); //$NON-NLS-1$
 			DEBUG_BUILD_NEEDED = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/needbuild", false); //$NON-NLS-1$
+			DEBUG_BUILD_NEEDED_DELTA = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/needbuilddelta", false); //$NON-NLS-1$
 			DEBUG_BUILD_NEEDED_STACK = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/needbuildstack", false); //$NON-NLS-1$
 			DEBUG_BUILD_STACK = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/stacktrace", false); //$NON-NLS-1$
 
@@ -80,6 +81,7 @@ public class Policy {
 	public static boolean DEBUG_BUILD_INTERRUPT = false;
 	public static boolean DEBUG_BUILD_INVOKING = false;
 	public static boolean DEBUG_BUILD_NEEDED = false;
+	public static boolean DEBUG_BUILD_NEEDED_DELTA = false;
 	public static boolean DEBUG_BUILD_NEEDED_STACK = false;
 	public static boolean DEBUG_BUILD_STACK = false;
 
