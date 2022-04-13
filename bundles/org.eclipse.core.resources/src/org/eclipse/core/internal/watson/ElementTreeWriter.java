@@ -79,11 +79,17 @@ public class ElementTreeWriter {
 	}
 
 	/**
-	 * Sorts the given array of trees and The sort order is written to the given
-	 * output stream.
+	 * Writes indexes of sorted trees to output stream.
+	 *
+	 * @return sorted array of trees.
+	 * @throws IOException if sorting can not be done.
+	 * @see SaveManager#sortTrees
 	 */
-	protected ElementTree[] sortTrees(ElementTree[] trees, DataOutput output) throws IOException {
+	protected ElementTree[] writeSortedTrees(ElementTree[] trees, DataOutput output) throws IOException {
 		ElementTree[] sorted = SaveManager.sortTrees(trees);
+		if (sorted == null) {
+			throw new IOException("Trees in ambiguous order (Bug 35286)"); //$NON-NLS-1$
+		}
 
 		// compute indexes from sorted elements:
 		int numTrees = trees.length;
@@ -157,7 +163,7 @@ public class ElementTreeWriter {
 		 * Sort the trees in ancestral order,
 		 * which writes the tree order to the output
 		 */
-		ElementTree[] sortedTrees = sortTrees(trees, output);
+		ElementTree[] sortedTrees = writeSortedTrees(trees, output);
 
 		/* Write the complete tree */
 		writeTree(sortedTrees[0], path, depth, output);

@@ -1508,8 +1508,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 *              ElementTreess have the newest ElementTree as ancestor
 	 *              (transitive parent). The given trees do not need to contain all
 	 *              ElementTrees from the getParent() relationship.
-	 * @return trees ordered by ElementTree.treeStamp descending. i.e. newest
-	 *         ElementTree (without ancestor within the trees) first.
+	 * @return null or trees ordered by ElementTree.treeStamp descending. i.e.
+	 *         newest ElementTree (without ancestor within the trees) first. Returns
+	 *         null when the preconditions for sorting are not met.
 	 */
 	public static ElementTree[] sortTrees(ElementTree[] trees) {
 		int numTrees = trees.length;
