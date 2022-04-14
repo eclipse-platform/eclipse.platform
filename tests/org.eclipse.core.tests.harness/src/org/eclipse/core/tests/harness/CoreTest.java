@@ -243,15 +243,15 @@ public class CoreTest extends TestCase {
 		try {
 			Process p;
 			if (Platform.getOS().equals(Platform.OS_WIN32)) {
-				// use absolute Pathnames to avoid 'Illegal argument - ".."' for using "../"
+				// use File.getPath to avoid 'Illegal argument - ".."' for using "../"
 				// instead of "..\"
 				if (isDir) {
-					String[] cmd = { "cmd", "/c", "mklink", "/d", new File(basedir, linkName).getAbsolutePath(),
-							new File(basedir, linkTarget).getAbsolutePath() };
+					String[] cmd = { "cmd", "/c", "mklink", "/d", new File(linkName).getPath(),
+							new File(linkTarget).getPath() };
 					p = Runtime.getRuntime().exec(cmd, envp, basedir);
 				} else {
-					String[] cmd = { "cmd", "/c", "mklink", new File(basedir, linkName).getAbsolutePath(),
-							new File(basedir, linkTarget).getAbsolutePath() };
+					String[] cmd = { "cmd", "/c", "mklink", new File(linkName).getPath(),
+							new File(linkTarget).getPath() };
 					p = Runtime.getRuntime().exec(cmd, envp, basedir);
 				}
 			} else {
