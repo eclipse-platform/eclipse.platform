@@ -28,7 +28,7 @@ public class HiddenResourceTest extends ResourceTest {
 
 		ResourceDeltaVerifier listener = new ResourceDeltaVerifier();
 		listener.addExpectedChange(subFile, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-		getWorkspace().addResourceChangeListener(listener);
+		addResourceChangeListener(listener);
 		try {
 			setHidden("3.0", folder, true, IResource.DEPTH_ZERO);
 			ensureOutOfSync(subFile);
@@ -39,7 +39,7 @@ public class HiddenResourceTest extends ResourceTest {
 				fail("3.1", e);
 			}
 		} finally {
-			getWorkspace().removeResourceChangeListener(listener);
+			removeResourceChangeListener(listener);
 		}
 	}
 
@@ -579,26 +579,26 @@ public class HiddenResourceTest extends ResourceTest {
 		IFile prefs = settings.getFile("org.eclipse.core.resources.prefs");
 		final IResource[] resources = new IResource[] { project, folder, file, subFile, settings, prefs };
 		final ResourceDeltaVerifier listener = new ResourceDeltaVerifier();
-		getWorkspace().addResourceChangeListener(listener);
 		try {
 			IWorkspaceRunnable body = monitor -> ensureExistsInWorkspace(resources, true);
 			try {
 				listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
 				listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 				listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
+				addResourceChangeListener(listener);
 				getWorkspace().run(body, getMonitor());
 				waitForBuild();
+				// FIXME sometimes fails with "Verifier has not yet been given a resource
+				// delta":
 				assertTrue("1.0." + listener.getMessage(), listener.isDeltaValid());
 				ensureDoesNotExistInWorkspace(resources);
 			} catch (CoreException e) {
 				fail("1.1", e);
 			}
 		} finally {
-			getWorkspace().removeResourceChangeListener(listener);
+			removeResourceChangeListener(listener);
 		}
 
-		// set the folder to be hidden and do the same test
-		getWorkspace().addResourceChangeListener(listener);
 		try {
 			IWorkspaceRunnable body = monitor -> {
 				ensureExistsInWorkspace(resources, true);
@@ -609,18 +609,19 @@ public class HiddenResourceTest extends ResourceTest {
 				listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
 				listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 				listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
+				addResourceChangeListener(listener);
 				getWorkspace().run(body, getMonitor());
+				// FIXME sometimes fails with "Verifier has not yet been given a resource
+				// delta":
 				assertTrue("2.1." + listener.getMessage(), listener.isDeltaValid());
 				ensureDoesNotExistInWorkspace(resources);
 			} catch (CoreException e) {
 				fail("2.2", e);
 			}
 		} finally {
-			getWorkspace().removeResourceChangeListener(listener);
+			removeResourceChangeListener(listener);
 		}
 
-		// set all resources to be hidden and do the same test
-		getWorkspace().addResourceChangeListener(listener);
 		try {
 			IWorkspaceRunnable body = monitor -> {
 				ensureExistsInWorkspace(resources, true);
@@ -631,16 +632,46 @@ public class HiddenResourceTest extends ResourceTest {
 				listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
 				listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 				listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
+				addResourceChangeListener(listener);
 				getWorkspace().run(body, getMonitor());
+				// FIXME sometimes fails with "Verifier has not yet been given a resource
+				// delta":
 				assertTrue("3.1." + listener.getMessage(), listener.isDeltaValid());
 				ensureDoesNotExistInWorkspace(resources);
 			} catch (CoreException e) {
 				fail("3.2", e);
 			}
 		} finally {
-			getWorkspace().removeResourceChangeListener(listener);
+			removeResourceChangeListener(listener);
 		}
 	}
+
+	private void removeResourceChangeListener(final ResourceDeltaVerifier listener) {
+		// removeResourceChangeListener need to happen in an atomic workspace operation
+		// otherwise it would be removed while auto refresh is running
+		// and might even get called in another thread after removing in this thread
+		try {
+			listener.shutDown();
+			getWorkspace().run(p -> getWorkspace().removeResourceChangeListener(listener), null);
+		} catch (CoreException e) {
+			fail("removeResourceChangeListener", e);
+		}
+	}
+
+	private void addResourceChangeListener(ResourceDeltaVerifier listener) {
+		// addResourceChangeListener need to happen in an atomic workspace operation
+		// otherwise it would be added while auto refresh is running
+		// and might get called in another thread before explicit refresh in this thread
+		try {
+			getWorkspace().run(p -> {
+				getWorkspace().addResourceChangeListener(listener);
+				listener.active();
+			}, null);
+		} catch (CoreException e) {
+			fail("removeResourceChangeListener", e);
+		}
+	}
+
 
 	/**
 	 * Resources which are marked as hidden resources return TRUE

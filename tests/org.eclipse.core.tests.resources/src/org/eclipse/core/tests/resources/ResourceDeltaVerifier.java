@@ -119,6 +119,8 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 
 	private int fState = RECEIVING_INPUTS;
 
+	private volatile Thread testThread;
+
 	/**
 	 * @see #addExpectedChange
 	 */
@@ -221,7 +223,6 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 
 	private void checkChanges(IResourceDelta delta) {
 		IResource resource = delta.getResource();
-
 		ExpectedChange expectedChange = fExpectedChanges.remove(resource.getFullPath());
 
 		int status = delta.getKind();
@@ -803,6 +804,10 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 	 * compares child deltas.
 	 */
 	public void verifyDelta(IResourceDelta delta) {
+		if (testThread != null && testThread != Thread.currentThread()) {
+			fMessage.append("\tReceived Delta from unexpected Thread " + Thread.currentThread().getName() + ":\n");
+			// typically "Worker-x: Refreshing workspace" during junit test tearDown/cleanup
+		}
 		internalVerifyDelta(delta);
 		fState = DELTA_VERIFIED;
 	}
@@ -816,5 +821,13 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 	protected void appendToMessage(String message) {
 		fMessage.append(message);
 		fMessage.append(System.lineSeparator());
+	}
+
+	public void shutDown() {
+		testThread = null;
+	}
+
+	public void active() {
+		testThread = Thread.currentThread();
 	}
 }

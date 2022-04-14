@@ -740,12 +740,23 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 		autoBuildJob.build(needsBuild);
 	}
 
+	/**
+	 * Waits till autobuild finished. Tries to finish it as soon as possible.
+	 */
 	public void waitForAutoBuild() {
-		autoBuildJob.wakeUp(0);
-		try {
-			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
-		} catch (OperationCanceledException | InterruptedException e) {
-			// ignore
+		while (!(autoBuildJob.getState() == Job.NONE)) {
+			while (!(autoBuildJob.getState() == Job.RUNNING || autoBuildJob.getState() == Job.NONE)) {
+				Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_BUILD);
+				Thread.yield();
+				// the woken may be go into sleep again when asynchronous workspace save
+				// interrupts autobuild so we need to wait till RUNNING or NONE
+				// (happens after each JUnit class)
+			}
+			try {
+				Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
+			} catch (OperationCanceledException | InterruptedException e) {
+				// ignore
+			}
 		}
 	}
 	/**
