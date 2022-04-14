@@ -44,7 +44,7 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 	private Preferences preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
 	private final Bundle systemBundle = Platform.getBundle("org.eclipse.osgi"); //$NON-NLS-1$
 	private Workspace workspace;
-	private final Job noBuildJob;
+	final Job noBuildJob;
 
 	AutoBuildJob(Workspace workspace) {
 		super(Messages.events_building_0);

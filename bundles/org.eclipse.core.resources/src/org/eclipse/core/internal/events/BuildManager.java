@@ -759,6 +759,28 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 			}
 		}
 	}
+
+	/**
+	 * Waits till noBuildJob finished. Tries to finish it as soon as possible.
+	 */
+	public void waitForAutoBuildOff() {
+		while (!(autoBuildJob.noBuildJob.getState() == Job.NONE)) {
+			while (!(autoBuildJob.noBuildJob.getState() == Job.RUNNING
+					|| autoBuildJob.noBuildJob.getState() == Job.NONE)) {
+				Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_BUILD);
+				Thread.yield();
+				// the woken may be go into sleep again when asynchronous workspace save
+				// interrupts autobuild so we need to wait till RUNNING or NONE
+				// (happens after each JUnit class)
+			}
+			try {
+				Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
+			} catch (OperationCanceledException | InterruptedException e) {
+				// ignore
+			}
+		}
+	}
+
 	/**
 	 * Returns the value of the boolean configuration element attribute with the
 	 * given name, or <code>false</code> if the attribute is missing.
