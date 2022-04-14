@@ -744,39 +744,33 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	 * Waits till autobuild finished. Tries to finish it as soon as possible.
 	 */
 	public void waitForAutoBuild() {
-		while (!(autoBuildJob.getState() == Job.NONE)) {
-			while (!(autoBuildJob.getState() == Job.RUNNING || autoBuildJob.getState() == Job.NONE)) {
-				Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_BUILD);
-				Thread.yield();
-				// the woken may be go into sleep again when asynchronous workspace save
-				// interrupts autobuild so we need to wait till RUNNING or NONE
-				// (happens after each JUnit class)
-			}
-			try {
-				Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
-			} catch (OperationCanceledException | InterruptedException e) {
-				// ignore
-			}
-		}
+		waitFor(autoBuildJob);
 	}
 
 	/**
 	 * Waits till noBuildJob finished. Tries to finish it as soon as possible.
 	 */
 	public void waitForAutoBuildOff() {
-		while (!(autoBuildJob.noBuildJob.getState() == Job.NONE)) {
-			while (!(autoBuildJob.noBuildJob.getState() == Job.RUNNING
-					|| autoBuildJob.noBuildJob.getState() == Job.NONE)) {
+		waitFor(autoBuildJob.noBuildJob);
+	}
+
+	private static void waitFor(Job job) {
+		// Need to loop because jobs can reschedule itself and concurrent running
+		// background jobs change the states too
+		while (!(job.getState() == Job.NONE)) {
+			// Need to wake up thread to finish as soon as possible:
+			while (!(job.getState() == Job.RUNNING || job.getState() == Job.NONE)) {
 				Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_BUILD);
 				Thread.yield();
-				// the woken may be go into sleep again when asynchronous workspace save
-				// interrupts autobuild so we need to wait till RUNNING or NONE
+				// After wakeup the woken job may go into sleep again when asynchronous
+				// workspace save interrupts autobuild so we need to wait till RUNNING or NONE
 				// (happens after each JUnit class)
 			}
+			// Need to wait till job finished:
 			try {
 				Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
 			} catch (OperationCanceledException | InterruptedException e) {
-				// ignore
+				// Ignore
 			}
 		}
 	}
