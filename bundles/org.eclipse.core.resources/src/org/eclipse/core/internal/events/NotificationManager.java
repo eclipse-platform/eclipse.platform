@@ -14,7 +14,9 @@
  *******************************************************************************/
 package org.eclipse.core.internal.events;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.internal.events.ResourceChangeListenerList.ListenerEntry;
 import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.internal.utils.Messages;
@@ -58,13 +60,13 @@ public class NotificationManager implements IManager, ILifecycleListener {
 	/**
 	 * The Threads that are currently avoiding notification.
 	 */
-	private final Set<Thread> avoidNotify = Collections.synchronizedSet(new HashSet<>());
+	private final Set<Thread> avoidNotify = ConcurrentHashMap.newKeySet();
 
 	/**
 	 * Indicates whether a notification is currently in progress. Used to avoid
 	 * causing a notification to be requested as a result of another notification.
 	 */
-	protected boolean isNotifying;
+	protected volatile boolean isNotifying;
 
 	// if there are no changes between the current tree and the last delta state then we
 	// can reuse the lastDelta (if any). If the lastMarkerChangeId is different then the current
@@ -72,40 +74,40 @@ public class NotificationManager implements IManager, ILifecycleListener {
 	/**
 	 * last delta we broadcast
 	 */
-	private ResourceDelta lastDelta;
+	private volatile ResourceDelta lastDelta;
 	/**
 	 * the marker change Id the last time we computed a delta
 	 */
-	private long lastDeltaId;
+	private volatile long lastDeltaId;
 	/**
 	 * tree the last time we computed a delta
 	 */
-	private ElementTree lastDeltaState;
-	protected long lastNotifyDuration = 0L;
+	private volatile ElementTree lastDeltaState;
+	protected volatile long lastNotifyDuration = 0L;
 	/**
 	 * the marker change id at the end of the last POST_AUTO_BUILD
 	 */
-	private long lastPostBuildId = 0;
+	private volatile long lastPostBuildId = 0;
 	/**
 	 * The state of the workspace at the end of the last POST_BUILD
 	 * notification
 	 */
-	private ElementTree lastPostBuildTree;
+	private volatile ElementTree lastPostBuildTree;
 	/**
 	 * the marker change id at the end of the last POST_CHANGE
 	 */
-	private long lastPostChangeId = 0;
+	private volatile long lastPostChangeId = 0;
 	/**
 	 * The state of the workspace at the end of the last POST_CHANGE
 	 * notification
 	 */
-	private ElementTree lastPostChangeTree;
+	private volatile ElementTree lastPostChangeTree;
 
-	private ResourceChangeListenerList listeners;
+	private final ResourceChangeListenerList listeners;
 
 	protected volatile boolean notificationRequested = false;
-	private Job notifyJob;
-	Workspace workspace;
+	private final Job notifyJob;
+	private final Workspace workspace;
 
 	public NotificationManager(Workspace workspace) {
 		this.workspace = workspace;
@@ -333,7 +335,7 @@ public class NotificationManager implements IManager, ILifecycleListener {
 	@Override
 	public void shutdown(IProgressMonitor monitor) {
 		//wipe out any existing listeners
-		listeners = new ResourceChangeListenerList();
+		listeners.clear();
 	}
 
 	@Override

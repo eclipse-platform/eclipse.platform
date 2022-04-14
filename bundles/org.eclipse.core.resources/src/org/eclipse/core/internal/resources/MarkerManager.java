@@ -17,6 +17,7 @@ package org.eclipse.core.internal.resources;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.core.internal.localstore.SafeChunkyInputStream;
 import org.eclipse.core.internal.localstore.SafeFileInputStream;
 import org.eclipse.core.internal.utils.Messages;
@@ -35,12 +36,12 @@ public class MarkerManager implements IManager {
 	private static final MarkerInfo[] NO_MARKER_INFO = new MarkerInfo[0];
 	private static final IMarker[] NO_MARKERS = new IMarker[0];
 	protected MarkerTypeDefinitionCache cache = new MarkerTypeDefinitionCache();
-	private long changeId = 0;
-	protected Map<IPath, MarkerSet> currentDeltas = null;
+	private final AtomicLong changeId = new AtomicLong();
+	protected volatile Map<IPath, MarkerSet> currentDeltas = null;
 	protected final MarkerDeltaManager deltaManager = new MarkerDeltaManager();
 
-	protected Workspace workspace;
-	protected MarkerWriter writer = new MarkerWriter(this);
+	protected final Workspace workspace;
+	protected final MarkerWriter writer = new MarkerWriter(this);
 
 	/**
 	 * Creates a new marker manager
@@ -221,9 +222,9 @@ public class MarkerManager implements IManager {
 	protected void changedMarkers(IResource resource, IMarkerSetElement[] changes) {
 		if (changes == null || changes.length == 0)
 			return;
-		changeId++;
+		long change = changeId.incrementAndGet();
 		if (currentDeltas == null)
-			currentDeltas = deltaManager.newGeneration(changeId);
+			currentDeltas = deltaManager.newGeneration(change);
 		IPath path = resource.getFullPath();
 		MarkerSet previousChanges = currentDeltas.get(path);
 		MarkerSet result = MarkerDelta.merge(previousChanges, changes);
@@ -297,7 +298,7 @@ public class MarkerManager implements IManager {
 	}
 
 	public long getChangeId() {
-		return changeId;
+		return changeId.get();
 	}
 
 	/**

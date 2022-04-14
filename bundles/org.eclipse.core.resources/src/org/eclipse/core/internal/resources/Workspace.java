@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -118,8 +119,8 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 	protected IMoveDeleteHook moveDeleteHook = null;
 	protected NatureManager natureManager;
 	protected FilterTypeManager filterManager;
-	protected long nextMarkerId = 0;
-	protected long nextNodeId = 1;
+	protected final AtomicLong nextMarkerId = new AtomicLong();
+	protected final AtomicLong nextNodeId = new AtomicLong(1L);
 
 	protected NotificationManager notificationManager;
 	protected boolean openFlag = false;
@@ -2172,11 +2173,11 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 	 * Returns the next, previously unassigned, marker id.
 	 */
 	protected long nextMarkerId() {
-		return nextMarkerId++;
+		return nextMarkerId.getAndIncrement();
 	}
 
 	protected long nextNodeId() {
-		return nextNodeId++;
+		return nextNodeId.getAndIncrement();
 	}
 
 	/**

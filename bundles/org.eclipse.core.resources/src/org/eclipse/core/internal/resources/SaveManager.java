@@ -2153,11 +2153,11 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 
 	protected void writeWorkspaceFields(DataOutputStream output, IProgressMonitor monitor) throws IOException {
 		// save the next node id
-		output.writeLong(workspace.nextNodeId);
+		output.writeLong(workspace.nextNodeId.get());
 		// save the modification stamp (no longer used)
 		output.writeLong(0L);
 		// save the marker id counter
-		output.writeLong(workspace.nextMarkerId);
+		output.writeLong(workspace.nextMarkerId.get());
 		// save the registered sync partners in the synchronizer
 		((Synchronizer) workspace.getSynchronizer()).savePartners(output);
 	}
