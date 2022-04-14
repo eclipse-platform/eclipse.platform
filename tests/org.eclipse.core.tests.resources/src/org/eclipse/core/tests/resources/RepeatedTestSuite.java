@@ -21,7 +21,7 @@ public class RepeatedTestSuite extends TestCase {
         TestSuite suite = new TestSuite(RepeatedTestSuite.class.getName());
 
 		for (int i = 0; i < 1000; i++) {
-			suite.addTestSuite(HiddenResourceTest.class); // the test to repeat
+			suite.addTestSuite(MarkerTest.class); // the test to repeat
         }
         return suite;
     }

@@ -21,6 +21,9 @@ import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.internal.watson.IPathRequestor;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 
 public class MarkerTest extends ResourceTest {
 
@@ -29,6 +32,7 @@ public class MarkerTest extends ResourceTest {
 
 	/** The collection of resources used for testing. */
 	IResource[] resources;
+	private boolean originalRefreshSetting;
 
 	/**
 	 * Tests the appearance of marker changes in the resource delta.
@@ -38,7 +42,7 @@ public class MarkerTest extends ResourceTest {
 
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
-		getWorkspace().addResourceChangeListener(listener);
+		addResourceChangeListener(listener);
 
 		try {
 			IResource resource = getWorkspace().getRoot().findMember("1");
@@ -89,7 +93,33 @@ public class MarkerTest extends ResourceTest {
 				fail("99.99", e);
 			}
 		} finally {
-			getWorkspace().removeResourceChangeListener(listener);
+			removeResourceChangeListener(listener);
+		}
+	}
+
+	private void removeResourceChangeListener(final MarkersChangeListener listener) {
+		// removeResourceChangeListener need to happen in an atomic workspace operation
+		// otherwise it would be removed while auto refresh is running
+		// and might even get called in another thread after removing in this thread
+		try {
+			// listener.shutDown();
+			getWorkspace().run(p -> getWorkspace().removeResourceChangeListener(listener), null);
+		} catch (CoreException e) {
+			fail("removeResourceChangeListener", e);
+		}
+	}
+
+	private void addResourceChangeListener(MarkersChangeListener listener) {
+		// addResourceChangeListener need to happen in an atomic workspace operation
+		// otherwise it would be added while auto refresh is running
+		// and might get called in another thread before explicit refresh in this thread
+		try {
+			getWorkspace().run(p -> {
+				getWorkspace().addResourceChangeListener(listener);
+				// listener.active();
+			}, null);
+		} catch (CoreException e) {
+			fail("removeResourceChangeListener", e);
 		}
 	}
 
@@ -409,10 +439,19 @@ public class MarkerTest extends ResourceTest {
 	public void setUp() throws Exception {
 		super.setUp();
 		resources = createHierarchy();
+
+		// disable autorefresh an wait till that is finished
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+		originalRefreshSetting = prefs.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
+		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
+		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
+		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, null);
 	}
 
 	@Override
 	public void tearDown() throws Exception {
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, originalRefreshSetting);
 		super.tearDown();
 		try {
 			getWorkspace().getRoot().delete(true, null);
@@ -431,33 +470,35 @@ public class MarkerTest extends ResourceTest {
 	public void testCreateMarker() {
 		debug("TestCreateMarker");
 
-		// Create and register a listener.
-		MarkersChangeListener listener = new MarkersChangeListener();
-		getWorkspace().addResourceChangeListener(listener);
-
 		// create markers on our hierarchy of resources
 		for (IResource resource : resources) {
-			listener.reset();
-			IMarker[] markers = new IMarker[3];
+			// Create and register a listener.
+			MarkersChangeListener listener = new MarkersChangeListener();
+			addResourceChangeListener(listener);
 			try {
-				markers[0] = resource.createMarker(IMarker.PROBLEM);
-				markers[1] = resource.createMarker(IMarker.BOOKMARK);
-				markers[2] = resource.createMarker(IMarker.TASK);
-				assertExists("1.0." + resource.getFullPath(), markers);
-			} catch (CoreException e) {
-				fail("1.1." + resource.getFullPath(), e);
-			}
-			assertEquals("1.2." + resource.getFullPath(), 1, listener.numAffectedResources());
-			assertTrue("1.3." + resource.getFullPath(), listener.checkChanges(resource, markers, null, null));
+				IMarker[] markers = new IMarker[3];
+				try {
+					markers[0] = resource.createMarker(IMarker.PROBLEM);
+					markers[1] = resource.createMarker(IMarker.BOOKMARK);
+					markers[2] = resource.createMarker(IMarker.TASK);
+					assertExists("1.0." + resource.getFullPath(), markers);
+				} catch (CoreException e) {
+					fail("1.1." + resource.getFullPath(), e);
+				}
+				assertEquals("1.2." + resource.getFullPath(), 1, listener.numAffectedResources());
+				assertTrue("1.3." + resource.getFullPath(), listener.checkChanges(resource, markers, null, null));
 
-			// expect an AssertionFailedException from a null type
-			try {
-				resource.createMarker(null);
-				fail("2.0." + resource.getFullPath());
-			} catch (CoreException e) {
-				fail("2.1." + resource.getFullPath(), e);
-			} catch (RuntimeException e) {
-				// expected
+				// expect an AssertionFailedException from a null type
+				try {
+					resource.createMarker(null);
+					fail("2.0." + resource.getFullPath());
+				} catch (CoreException e) {
+					fail("2.1." + resource.getFullPath(), e);
+				} catch (RuntimeException e) {
+					// expected
+				}
+			} finally {
+				removeResourceChangeListener(listener);
 			}
 		}
 
@@ -470,15 +511,12 @@ public class MarkerTest extends ResourceTest {
 		} catch (CoreException e) {
 			// expected
 		}
-
-		// cleanup
-		getWorkspace().removeResourceChangeListener(listener);
 	}
 
 	public void testCreateMarkerWithAttributes() {
 		// Create and register a listener.
 		MarkersChangeListener listener = new MarkersChangeListener();
-		getWorkspace().addResourceChangeListener(listener);
+		addResourceChangeListener(listener);
 
 		// create markers on our hierarchy of resources
 		for (IResource resource : resources) {
@@ -501,7 +539,7 @@ public class MarkerTest extends ResourceTest {
 		}
 
 		// cleanup
-		getWorkspace().removeResourceChangeListener(listener);
+		removeResourceChangeListener(listener);
 	}
 
 	public void testCreateNullMarkerWithAttributesShouldFail() {
@@ -603,7 +641,7 @@ public class MarkerTest extends ResourceTest {
 
 		// Create and register a listener.
 		MarkersChangeListener listener = new MarkersChangeListener();
-		getWorkspace().addResourceChangeListener(listener);
+		addResourceChangeListener(listener);
 
 		// for each resource in the hierarchy do...
 		for (IResource resource : resources) {
@@ -658,7 +696,7 @@ public class MarkerTest extends ResourceTest {
 		}
 
 		// cleanup
-		getWorkspace().removeResourceChangeListener(listener);
+		removeResourceChangeListener(listener);
 	}
 
 	public void testDeleteMarkers() {
@@ -940,7 +978,7 @@ public class MarkerTest extends ResourceTest {
 
 		// Create and register a listener.
 		MarkersChangeListener listener = new MarkersChangeListener();
-		getWorkspace().addResourceChangeListener(listener);
+		addResourceChangeListener(listener);
 
 		try {
 			IResource resource;
@@ -1046,7 +1084,7 @@ public class MarkerTest extends ResourceTest {
 			}
 
 		} finally {
-			getWorkspace().removeResourceChangeListener(listener);
+			removeResourceChangeListener(listener);
 		}
 	}
 
@@ -1138,7 +1176,7 @@ public class MarkerTest extends ResourceTest {
 
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
-		getWorkspace().addResourceChangeListener(listener);
+		addResourceChangeListener(listener);
 
 		try {
 			// create markers on all the non-project resources
@@ -1208,7 +1246,7 @@ public class MarkerTest extends ResourceTest {
 			//fail("2.99", e);
 			//}
 		} finally {
-			getWorkspace().removeResourceChangeListener(listener);
+			removeResourceChangeListener(listener);
 		}
 	}
 
@@ -1220,7 +1258,7 @@ public class MarkerTest extends ResourceTest {
 
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
-		getWorkspace().addResourceChangeListener(listener);
+		addResourceChangeListener(listener);
 
 		try {
 			for (final IResource resource : resources) {
@@ -1327,7 +1365,7 @@ public class MarkerTest extends ResourceTest {
 				}
 			}
 		} finally {
-			getWorkspace().removeResourceChangeListener(listener);
+			removeResourceChangeListener(listener);
 		}
 	}
 
@@ -1351,9 +1389,8 @@ public class MarkerTest extends ResourceTest {
 		IMarker[] markers = null;
 
 		// Create and register a listener.
-		final MarkersChangeListener listener = new MarkersChangeListener();
-		getWorkspace().addResourceChangeListener(listener);
-
+		MarkersChangeListener listener = new MarkersChangeListener();
+		addResourceChangeListener(listener);
 		try {
 			// create markers on the resources
 			try {
@@ -1366,8 +1403,13 @@ public class MarkerTest extends ResourceTest {
 			} catch (CoreException e) {
 				fail("1.1", e);
 			}
-			listener.reset();
+		} finally {
+			removeResourceChangeListener(listener);
+		}
 
+		listener = new MarkersChangeListener();
+		addResourceChangeListener(listener);
+		try {
 			// move the files
 			try {
 				folder.move(destFolder.getFullPath(), IResource.FORCE, getMonitor());
@@ -1397,7 +1439,7 @@ public class MarkerTest extends ResourceTest {
 			assertTrue("3.11", listener.checkChanges(destSubFile, new IMarker[] {markers[0]}, null, null));
 
 		} finally {
-			getWorkspace().removeResourceChangeListener(listener);
+			removeResourceChangeListener(listener);
 		}
 	}
 
@@ -1421,7 +1463,7 @@ public class MarkerTest extends ResourceTest {
 
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
-		getWorkspace().addResourceChangeListener(listener);
+		addResourceChangeListener(listener);
 
 		try {
 			// create markers on the resources
@@ -1467,7 +1509,7 @@ public class MarkerTest extends ResourceTest {
 			assertTrue("3.11", listener.checkChanges(destSubFile, new IMarker[] {markers[0]}, null, null));
 
 		} finally {
-			getWorkspace().removeResourceChangeListener(listener);
+			removeResourceChangeListener(listener);
 		}
 	}
 
@@ -1479,7 +1521,7 @@ public class MarkerTest extends ResourceTest {
 
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
-		getWorkspace().addResourceChangeListener(listener);
+		addResourceChangeListener(listener);
 
 		try {
 			// create markers on all the resources
@@ -1541,7 +1583,7 @@ public class MarkerTest extends ResourceTest {
 				fail("2.99", e);
 			}
 		} finally {
-			getWorkspace().removeResourceChangeListener(listener);
+			removeResourceChangeListener(listener);
 		}
 	}
 
