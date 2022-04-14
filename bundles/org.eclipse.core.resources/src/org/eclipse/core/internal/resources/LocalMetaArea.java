@@ -265,6 +265,10 @@ public class LocalMetaArea implements ICoreConstants {
 		return metaAreaLocation.toFile().exists() || getBackupLocationFor(metaAreaLocation).toFile().exists();
 	}
 
+	public boolean hasSavedProjects() {
+		return projectMetaLocation.toFile().exists();
+	}
+
 	/**
 	 * Returns the local file system location in which the meta data for the
 	 * resource with the given path is stored.

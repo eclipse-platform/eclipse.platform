@@ -28,6 +28,8 @@ import org.junit.runners.Suite;
 		Bug_266907.class, TestBug297635.class, TestBug323833.class,
 		org.eclipse.core.tests.resources.regression.TestMultipleBuildersOfSameType.class,
 		org.eclipse.core.tests.resources.usecase.SnapshotTest.class, ProjectDescriptionDynamicTest.class,
-		TestBug202384.class, TestBug369177.class, TestBug316182.class, TestBug294854.class, TestBug426263.class })
+		TestBug202384.class, TestBug369177.class, TestBug316182.class, TestBug294854.class, TestBug426263.class,
+		TestWorkspaceEncodingExistingWorkspace.class, TestWorkspaceEncodingNewWorkspace.class,
+		TestWorkspaceEncodingWithJvmArgs.class, TestWorkspaceEncodingWithPluginCustomization.class, })
 public class AllTests {
 }

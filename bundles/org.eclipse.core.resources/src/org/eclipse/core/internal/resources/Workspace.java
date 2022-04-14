@@ -20,6 +20,7 @@ package org.eclipse.core.internal.resources;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -43,6 +44,8 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.resources.team.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 import org.xml.sax.InputSource;
@@ -2231,6 +2234,11 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			ResourcesPlugin.getPlugin().savePluginPreferences();
 		}
 
+		// Set explicit workspace encoding if no projects exist in the workspace
+		if (!localMetaArea.hasSavedProjects()) {
+			setExplicitWorkspaceEncoding();
+		}
+
 		// create root location
 		localMetaArea.locationFor(getRoot()).toFile().mkdirs();
 
@@ -2251,6 +2259,52 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 		stringPoolJob = new StringPoolJob();
 		stringPoolJob.addStringPoolParticipant(saveManager, getRoot());
 		return Status.OK_STATUS;
+	}
+
+	/**
+	 * Writes explicit workspace encoding to workspace preferences
+	 * ("org.eclipse.core.resources/encoding"). If the user started Eclipse with
+	 * explicit encoding set (-Dfile.encoding=XYZ), this encoding used, otherwise
+	 * UTF-8.
+	 * <p>
+	 * With that, if user did not specified any encoding, all projects created in
+	 * this workspace will get explicit UTF-8 encoding set.
+	 */
+	private void setExplicitWorkspaceEncoding() {
+		// ResourcesPlugin.getEncoding() defaults to JVM "file.encoding" value
+		// which is *always* set in the JVM, so it can't be used.
+		// Therefore check preferences directly (encoding could be set even in a new
+		// workspace via product customization file, like
+		// org.eclipse.core.resources/encoding=ISO-8859-1)
+		String defaultEncoding = Platform.getPreferencesService().getString(ResourcesPlugin.PI_RESOURCES,
+				ResourcesPlugin.PREF_ENCODING, /* default */null, /* all scopes */null);
+
+		if (defaultEncoding == null || defaultEncoding.isBlank()) {
+			// Check if -Dfile.encoding= startup argument was given to Eclipse's JVM
+			List<String> commandLineArgs = ManagementFactory.getRuntimeMXBean().getInputArguments();
+			for (String arg : commandLineArgs) {
+				if (arg.startsWith("-Dfile.encoding=")) { //$NON-NLS-1$
+					defaultEncoding = arg.substring("-Dfile.encoding=".length()); //$NON-NLS-1$
+					// continue, it can be specified multiple times, last one wins.
+				}
+			}
+			// Now we are sure user didn't specified encoding, so we can set
+			// default encoding for the workspace
+			if (defaultEncoding == null || defaultEncoding.isBlank()) {
+				defaultEncoding = "UTF-8"; //$NON-NLS-1$
+			}
+
+			// Persist encoding to the workspace preferences - if same workspace is started
+			// later by other Eclipse instance without product customization or system
+			// property or with differently set properties, we want keep same encoding as on
+			// the first startup. Otherwise users may end up with projects in same workspace
+			// created with different encodings. This is surely supported but would surprise
+			// users sooner or later. So better to set it first time, users can always
+			// change it later if needed.
+			IEclipsePreferences workspacePrefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+			workspacePrefs.put(ResourcesPlugin.PREF_ENCODING, defaultEncoding);
+			Assert.isTrue(defaultEncoding.equals(ResourcesPlugin.getEncoding()));
+		}
 	}
 
 	/**

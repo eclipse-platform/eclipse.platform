@@ -325,6 +325,9 @@ public class CharsetTest extends ResourceTest {
 		try {
 			root.setDefaultCharset(null);
 			assertNull("1.0", root.getDefaultCharset(false));
+
+			root.setDefaultCharset(null, new NullProgressMonitor());
+			assertNull("1.0", root.getDefaultCharset(false));
 		} finally {
 			if (originalUserCharset != null) {
 				root.setDefaultCharset(originalUserCharset);
