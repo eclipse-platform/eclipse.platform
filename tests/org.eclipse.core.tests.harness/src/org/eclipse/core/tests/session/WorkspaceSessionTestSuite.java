@@ -79,4 +79,10 @@ public class WorkspaceSessionTestSuite extends SessionTestSuite {
 
 	}
 
+	/**
+	 * @return workspace location
+	 */
+	public IPath getInstanceLocation() {
+		return instanceLocation;
+	}
 }
