@@ -13,12 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
-import org.eclipse.core.tests.harness.TestBarrier;
+import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -56,13 +57,13 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 		ensureExistsInWorkspace(getWorkspace().getRoot().getProject("P1"), true);
 		//add a resource change listener that blocks forever, thus
 		//simulating a scenario where workspace lock is held indefinitely
-		final int[] barrier = new int[1];
+		final AtomicIntegerArray barrier = new AtomicIntegerArray(new int[1]);
 		final Throwable[] error = new Throwable[1];
 		IResourceChangeListener listener = event -> {
 			//block until we are told to do otherwise
-			barrier[0] = TestBarrier.STATUS_START;
+			barrier.set(0, TestBarrier2.STATUS_START);
 			try {
-				TestBarrier.waitForStatus(barrier, TestBarrier.STATUS_DONE);
+				TestBarrier2.waitForStatus(barrier, TestBarrier2.STATUS_DONE);
 			} catch (Throwable e) {
 				error[0] = e;
 			}
@@ -77,7 +78,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 			testJob.schedule();
 
 			//wait until blocked on the listener
-			TestBarrier.waitForStatus(barrier, TestBarrier.STATUS_START);
+			TestBarrier2.waitForStatus(barrier, TestBarrier2.STATUS_START);
 
 			//create a second thread that attempts to modify the workspace, but immediately
 			//cancels itself. This thread should terminate immediately with a cancelation exception
@@ -103,7 +104,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 			assertTrue("2.0", canceled[0]);
 
 			//finally release the listener and ensure the first thread completes
-			barrier[0] = TestBarrier.STATUS_DONE;
+			barrier.set(0, TestBarrier2.STATUS_DONE);
 			try {
 				testJob.join();
 			} catch (InterruptedException e1) {
@@ -173,7 +174,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 		workspace.addResourceChangeListener(listener, IResourceChangeEvent.POST_BUILD);
 		try {
 			//create one job that does a build, and then waits
-			final int[] status = new int[3];
+			final AtomicIntegerArray status = new AtomicIntegerArray(new int[3]);
 			Job jobOne = new Job("jobOne") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
@@ -182,9 +183,9 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 							//do a build
 							workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor1);
 							//signal that the job has done the build
-							status[0] = TestBarrier.STATUS_RUNNING;
+							status.set(0, TestBarrier2.STATUS_RUNNING);
 							//wait for job two to start
-							TestBarrier.waitForStatus(status, 0, TestBarrier.STATUS_WAIT_FOR_DONE);
+							TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_WAIT_FOR_DONE);
 						}, null);
 					} catch (CoreException e) {
 						return e.getStatus();
@@ -194,7 +195,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 			};
 			//schedule and wait for job one to start
 			jobOne.schedule();
-			TestBarrier.waitForStatus(status, 0, TestBarrier.STATUS_RUNNING);
+			TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_RUNNING);
 
 			//create job two that does an empty workspace operation
 			Job jobTwo = new Job("jobTwo") {
@@ -203,11 +204,11 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 					try {
 						workspace.run((IWorkspaceRunnable) monitor1 -> {
 							//signal that this job has started
-							status[1] = TestBarrier.STATUS_RUNNING;
+							status.set(1, TestBarrier2.STATUS_RUNNING);
 							//let job one finish
-							status[0] = TestBarrier.STATUS_WAIT_FOR_DONE;
+							status.set(0, TestBarrier2.STATUS_WAIT_FOR_DONE);
 							//wait for job three to start
-							TestBarrier.waitForStatus(status, 1, TestBarrier.STATUS_WAIT_FOR_DONE);
+							TestBarrier2.waitForStatus(status, 1, TestBarrier2.STATUS_WAIT_FOR_DONE);
 						}, null, IResource.NONE, null);
 					} catch (CoreException e) {
 						return e.getStatus();
@@ -223,13 +224,13 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 					try {
 						workspace.run((IWorkspaceRunnable) monitor1 -> {
 							//signal that this job has started
-							status[2] = TestBarrier.STATUS_RUNNING;
+							status.set(2, TestBarrier2.STATUS_RUNNING);
 							//let job two finish
-							status[1] = TestBarrier.STATUS_WAIT_FOR_DONE;
+							status.set(1, TestBarrier2.STATUS_WAIT_FOR_DONE);
 							//ensure this job does something so the build listener runs
 							ruleFile.touch(null);
 							//wait for the ok to complete
-							TestBarrier.waitForStatus(status, 2, TestBarrier.STATUS_WAIT_FOR_DONE);
+							TestBarrier2.waitForStatus(status, 2, TestBarrier2.STATUS_WAIT_FOR_DONE);
 						}, workspace.getRuleFactory().modifyRule(ruleFile), IResource.NONE, null);
 					} catch (CoreException e) {
 						return e.getStatus();
@@ -242,7 +243,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 			waitForCompletion(jobTwo);
 
 			//let job three complete
-			status[2] = TestBarrier.STATUS_WAIT_FOR_DONE;
+			status.set(2, TestBarrier2.STATUS_WAIT_FOR_DONE);
 
 			//wait for job three to complete
 			waitForCompletion(jobThree);

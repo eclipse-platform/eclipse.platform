@@ -1066,8 +1066,8 @@ public class BuilderTest extends AbstractBuilderTest {
 		final TestJob blockedJob = new TestJob("Interrupt build", 3, 1000);
 		blockedJob.setRule(getWorkspace().getRoot());
 		//use a barrier to ensure the blocking job starts
-		final TestBarrier barrier = new TestBarrier();
-		barrier.setStatus(TestBarrier.STATUS_WAIT_FOR_START);
+		final TestBarrier2 barrier = new TestBarrier2();
+		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
 		//install a listener that will cause autobuild to be interrupted
 		IResourceChangeListener listener = event -> {
 			blockedJob.schedule();
@@ -1080,14 +1080,14 @@ public class BuilderTest extends AbstractBuilderTest {
 				}
 			}
 			//allow the test main method to continue
-			barrier.setStatus(TestBarrier.STATUS_RUNNING);
+			barrier.setStatus(TestBarrier2.STATUS_RUNNING);
 		};
 		try {
 			getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.PRE_BUILD);
 			// Now change a file. The build should not complete until the job triggered by the listener completes
 			file.setContents(getRandomContents(), IResource.NONE, getMonitor());
 			//wait for job to be scheduled
-			barrier.waitForStatus(TestBarrier.STATUS_RUNNING);
+			barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 			//wait for test job to complete
 			try {
 				blockedJob.join();
