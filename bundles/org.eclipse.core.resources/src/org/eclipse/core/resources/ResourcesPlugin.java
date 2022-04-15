@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2019 IBM Corporation and others.
+ *  Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -15,6 +15,7 @@
  *     James Blackburn (Broadcom Corp.) - ongoing development
  *     Tom Hochstein (Freescale) - Bug 409996 - 'Restore Defaults' does not work properly on Project Properties > Resource tab
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
+ *     Christoph Läubrich - Issue #52 - Make ResourcesPlugin more dynamic and better handling early start-up
  *******************************************************************************/
 package org.eclipse.core.resources;
 
@@ -32,12 +33,12 @@ import org.eclipse.osgi.service.debug.DebugOptionsListener;
 import org.osgi.framework.*;
 
 /**
- * The plug-in runtime class for the Resources plug-in.  This is
- * the starting point for all workspace and resource manipulation.
- * A typical sequence of events would be for a dependent plug-in
- * to call <code>ResourcesPlugin.getWorkspace()</code>.
- * Doing so would cause this plug-in to be activated and the workspace
- * (if any) to be loaded from disk and initialized.
+ * The plug-in runtime class for the Resources plug-in. This is the starting
+ * point for all workspace and resource manipulation. A typical sequence of
+ * events would be for a dependent plug-in to track the
+ * <code>org.eclipse.core.resources.IWorkspace</code> service. Doing so would
+ * cause this plug-in to be activated and the workspace (if any) to be loaded
+ * from disk and initialized.
  *
  * @noinstantiate This class is not intended to be instantiated by clients.
  */
@@ -416,12 +417,17 @@ public final class ResourcesPlugin extends Plugin {
 	 * Returns the workspace. The workspace is not accessible after the resources
 	 * plug-in has shutdown.
 	 *
-	 * @return the workspace that was created by the single instance of this
-	 *   plug-in class.
+	 * <b>Hint:</b> Accessing the Workspace in a static way is prone to start-up
+	 * order problem, please consider using any of your favorite techniques
+	 * (Declarative Services, ServiceTracker, Blueprint, ...) instead. Please see
+	 * the documentation of {@link IWorkspace} for more information.
+	 *
+	 * @return the workspace that was created by the single instance of this plug-in
+	 *         class.
 	 */
 	public static IWorkspace getWorkspace() {
 		if (workspace == null)
-			throw new IllegalStateException(Messages.resources_workspaceClosed);
+			throw new IllegalStateException(Messages.resources_workspaceClosedStatic);
 		return workspace;
 	}
 
@@ -476,7 +482,7 @@ public final class ResourcesPlugin extends Plugin {
 		if (!result.isOK())
 			getLog().log(result);
 		workspaceRegistration = context.registerService(IWorkspace.class, workspace, null);
-		checkMissingNaturesListener = new CheckMissingNaturesListener();
+		checkMissingNaturesListener = new CheckMissingNaturesListener(workspace);
 		workspace.addResourceChangeListener(checkMissingNaturesListener, IResourceChangeEvent.POST_CHANGE);
 		InstanceScope.INSTANCE.getNode(PI_RESOURCES).addPreferenceChangeListener(checkMissingNaturesListener);
 	}

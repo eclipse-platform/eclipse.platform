@@ -295,6 +295,7 @@ public class Messages extends NLS {
 	public static String resources_updating;
 	public static String resources_updatingEncoding;
 	public static String resources_workspaceClosed;
+	public static String resources_workspaceClosedStatic;
 	public static String resources_workspaceOpen;
 	public static String resources_writeMeta;
 	public static String resources_writeWorkspaceMeta;

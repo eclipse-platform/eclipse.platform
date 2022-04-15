@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016-2017 Red Hat Inc. and others.
+ * Copyright (c) 2016-2022 Red Hat Inc. and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     Mickael Istria (Red Hat Inc.) - initial API and implementation
+ *     Christoph Läubrich - Issue #52 - Make ResourcesPlugin more dynamic and better handling early start-up
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -32,6 +33,11 @@ public class CheckMissingNaturesListener implements IResourceChangeListener, IPr
 
 	public static final String MARKER_TYPE = ResourcesPlugin.getPlugin().getBundle().getSymbolicName() + ".unknownNature"; //$NON-NLS-1$
 	public static final String NATURE_ID_ATTRIBUTE = "natureId"; //$NON-NLS-1$
+	private final Workspace workspace;
+
+	public CheckMissingNaturesListener(Workspace workspace) {
+		this.workspace = workspace;
+	}
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
@@ -67,11 +73,11 @@ public class CheckMissingNaturesListener implements IResourceChangeListener, IPr
 			final int newSeverity = event.getNewValue() != null ? Integer.parseInt((String) event.getNewValue()) : PreferenceInitializer.PREF_MISSING_NATURE_MARKER_SEVERITY_DEFAULT;
 			final int oldSeverity = event.getOldValue() != null ? Integer.parseInt((String) event.getOldValue()) : PreferenceInitializer.PREF_MISSING_NATURE_MARKER_SEVERITY_DEFAULT;
 			if (newSeverity < 0) {
-				removeAllMarkers(ResourcesPlugin.getWorkspace().getRoot());
+				removeAllMarkers(workspace.getRoot());
 			} else if (oldSeverity < 0 && newSeverity >= 0) {
-				updateMarkers(Arrays.asList(ResourcesPlugin.getWorkspace().getRoot().getProjects()));
+				updateMarkers(Arrays.asList(workspace.getRoot().getProjects()));
 			} else {
-				updateExistingMarkersSeverity(ResourcesPlugin.getWorkspace().getRoot(), newSeverity);
+				updateExistingMarkersSeverity(workspace.getRoot(), newSeverity);
 			}
 		}
 	}

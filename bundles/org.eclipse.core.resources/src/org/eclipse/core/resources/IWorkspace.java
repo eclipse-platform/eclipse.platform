@@ -55,14 +55,48 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * explicitly.
  * </p>
  * <p>
+ **
+ * <p>
+ * The recommended way of accessing the Workspace is fetching it as a service
+ * what could be performed in several ways:
+ * <ul>
+ * <li>For example in a Bundle/Plugin Activator:
+ *
+ * <pre>
+ * ServiceTracker<IWorkspace, IWorkspace> workspaceTracker = new ServiceTracker<>(bundleContext, IWorkspace.class,
+ * 		null);
+ * workspaceTracker.open();
+ * IWorkspace workspace = workspaceTracker.getService();
+ * </pre>
+ *
+ * </li>
+ * <li>Using declarative service with annotations:
+ *
+ * <pre>
+ * &#64;Reference
+ * private IWorkspace workspace;
+ * </pre>
+ *
+ * </li>
+ * <li>Helper classes like ServiceCaller:
+ *
+ * <pre>
+ * ServiceCaller.callOnce(getClass(), IWorkspace.class, workspace -> {
+ * 	// do something with the workspace
+ * });
+ * </pre>
+ * </ul>
+ * <p>
+ * </p>
+ * <p>
  * The workspace resource namespace is always case-sensitive and
- * case-preserving. Thus the workspace allows multiple sibling resources to exist
- * with names that differ only in case.  The workspace also imposes no
- * restrictions on valid characters in resource names, the length of resource names,
- * or the size of resources on disk.  In situations where one or more resources
- * are stored in a file system that is not case-sensitive, or that imposes restrictions
- * on resource names, any failure to store or retrieve those resources will
- * be propagated back to the caller of workspace API.
+ * case-preserving. Thus the workspace allows multiple sibling resources to
+ * exist with names that differ only in case. The workspace also imposes no
+ * restrictions on valid characters in resource names, the length of resource
+ * names, or the size of resources on disk. In situations where one or more
+ * resources are stored in a file system that is not case-sensitive, or that
+ * imposes restrictions on resource names, any failure to store or retrieve
+ * those resources will be propagated back to the caller of workspace API.
  * </p>
  * <p>
  * Workspaces implement the <code>IAdaptable</code> interface; extensions are
