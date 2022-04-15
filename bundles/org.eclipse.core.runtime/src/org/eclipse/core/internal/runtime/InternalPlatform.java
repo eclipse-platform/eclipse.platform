@@ -343,8 +343,12 @@ public final class InternalPlatform {
 			Location location = getInstanceLocation();
 			if (location == null)
 				return null;
+			URL url = location.getURL();
+			if (url == null) {
+				throw new IllegalStateException("instance location is not (yet) set"); //$NON-NLS-1$
+			}
 			//	This makes the assumption that the instance location is a file: URL
-			File file = new File(location.getURL().getFile());
+			File file = new File(url.getFile());
 			cachedInstanceLocation = new Path(file.toString());
 		}
 		return cachedInstanceLocation;
