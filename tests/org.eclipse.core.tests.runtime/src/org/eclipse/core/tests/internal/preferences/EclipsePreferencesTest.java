@@ -17,13 +17,11 @@ import java.io.*;
 import java.util.*;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.internal.preferences.TestHelper;
-import org.eclipse.core.internal.runtime.MetaDataKeeper;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.*;
 import org.eclipse.core.tests.runtime.RuntimeTest;
 import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
-import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -1044,61 +1042,6 @@ public class EclipsePreferencesTest extends RuntimeTest {
 	protected void tearDown() throws Exception {
 		Preferences node = getScopeRoot();
 		node.removeNode();
-	}
-
-	/*
-	 * Regression test for bug 56020 - [runtime] prefs: converted preferences not restored on second session
-	 */
-	public void testLegacy() {
-
-		String pluginID = "org.eclipse.core.tests.preferences." + getUniqueString();
-		String key = "key." + getUniqueString();
-		String value = "value." + getUniqueString();
-		String OLD_PREFS_FILENAME = "pref_store.ini";
-
-		// create fake plug-in and store 2.1 format tests in legacy location
-		Bundle runtimeBundle = Platform.getBundle(Platform.PI_RUNTIME);
-		if (runtimeBundle == null) {
-			return;
-		}
-		String runtimeStateLocation = Platform.getStateLocation(runtimeBundle).toString();
-		IPath pluginStateLocation = new Path(runtimeStateLocation.replaceAll(Platform.PI_RUNTIME, pluginID));
-		IPath oldFile = pluginStateLocation.append(OLD_PREFS_FILENAME);
-		Properties oldProperties = new Properties();
-		oldProperties.put(key, value);
-		OutputStream output = null;
-		try {
-			oldFile.toFile().getParentFile().mkdirs();
-			output = new BufferedOutputStream(new FileOutputStream(oldFile.toFile()));
-			oldProperties.store(output, null);
-		} catch (IOException e) {
-			fail("1.0", e);
-		} finally {
-			if (output != null) {
-				try {
-					output.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-		}
-
-		// access fake plug-in via new preferences APIs which should invoke conversion
-		Preferences node = Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(pluginID);
-
-		// ensure values are in the workspace
-		String actual = node.get(key, null);
-		assertEquals("3.0", value, actual);
-
-		// ensure the values have been flushed to disk
-		// first indication is the new file exists on disk.
-		IPath newFile = MetaDataKeeper.getMetaArea().getStateLocation(Platform.PI_RUNTIME);
-		newFile = newFile.append(EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME).append(pluginID).addFileExtension(EclipsePreferences.PREFS_FILE_EXTENSION);
-		assertTrue("4.0", newFile.toFile().exists());
-		// then check to see if the value is in the file
-		Properties newProperties = loadProperties(newFile);
-		actual = newProperties.getProperty(key);
-		assertEquals("4.2", value, actual);
 	}
 
 	/*
