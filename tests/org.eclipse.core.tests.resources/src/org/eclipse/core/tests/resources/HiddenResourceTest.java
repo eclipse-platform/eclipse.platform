@@ -25,6 +25,7 @@ public class HiddenResourceTest extends ResourceTest {
 		IFile subFile = folder.getFile("subfile.txt");
 		IResource[] resources = new IResource[] {project, folder, file, subFile};
 		ensureExistsInWorkspace(resources, true);
+		waitForEncodingRelatedJobs();
 
 		ResourceDeltaVerifier listener = new ResourceDeltaVerifier();
 		listener.addExpectedChange(subFile, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
@@ -588,6 +589,7 @@ public class HiddenResourceTest extends ResourceTest {
 				addResourceChangeListener(listener);
 				getWorkspace().run(body, getMonitor());
 				waitForBuild();
+				waitForEncodingRelatedJobs();
 				// FIXME sometimes fails with "Verifier has not yet been given a resource
 				// delta":
 				assertTrue("1.0." + listener.getMessage(), listener.isDeltaValid());
@@ -780,7 +782,6 @@ public class HiddenResourceTest extends ResourceTest {
 		IFile file = project.getFile("file.txt");
 
 		ensureExistsInWorkspace(project, true);
-
 		try {
 			folder.create(IResource.HIDDEN, true, getMonitor());
 			file.create(getRandomContents(), IResource.HIDDEN, getMonitor());

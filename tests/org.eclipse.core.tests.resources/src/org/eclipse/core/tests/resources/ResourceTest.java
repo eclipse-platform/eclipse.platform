@@ -1041,8 +1041,9 @@ public abstract class ResourceTest extends CoreTest {
 		return devices;
 	}
 
-	protected void waitForProjectEncodingValidation() {
+	protected void waitForEncodingRelatedJobs() {
 		TestUtil.waitForJobs(getName(), 10, 5_000, ValidateProjectEncoding.class);
+		TestUtil.waitForJobs(getName(), 10, 5_000, CharsetDeltaJob.FAMILY_CHARSET_DELTA);
 	}
 
 	protected void waitForContentDescriptionUpdate() {

@@ -178,7 +178,7 @@ public class CharsetTest extends ResourceTest {
 			return true;
 		};
 		root.accept(visitor);
-		waitForProjectEncodingValidation();
+		waitForEncodingRelatedJobs();
 	}
 
 	private IFile getResourcesPreferenceFile(IProject project, boolean forDerivedResources) {
@@ -242,7 +242,7 @@ public class CharsetTest extends ResourceTest {
 		ResourcesPlugin.getPlugin().getPluginPreferences().setValue(ResourcesPlugin.PREF_ENCODING, savedWorkspaceCharset);
 		// Reset the PREF_LIGHTWEIGHT_AUTO_REFRESH preference to its default value.
 		getResourcesPreferences().remove(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH);
-		waitForProjectEncodingValidation();
+		waitForEncodingRelatedJobs();
 		super.tearDown();
 	}
 
@@ -925,7 +925,7 @@ public class CharsetTest extends ResourceTest {
 			project.setDefaultCharset(null, getMonitor());
 			assertEquals(null, project.getDefaultCharset(false));
 
-			waitForProjectEncodingValidation();
+			waitForEncodingRelatedJobs();
 
 			markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
 			assertEquals("Missing encoding marker should be set", 1, markers.length);
@@ -945,7 +945,7 @@ public class CharsetTest extends ResourceTest {
 
 			// sets project default charset
 			project.setDefaultCharset("BAR", getMonitor());
-			waitForProjectEncodingValidation();
+			waitForEncodingRelatedJobs();
 
 			markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
 			assertEquals("No missing encoding marker should be set", 0, markers.length);
@@ -1135,7 +1135,7 @@ public class CharsetTest extends ResourceTest {
 				fail("3.0", e);
 			}
 			waitForCharsetManagerJob();
-			waitForProjectEncodingValidation();
+			waitForEncodingRelatedJobs();
 
 			assertTrue("3.1", backgroundVerifier.waitForEvent(10000));
 			assertTrue("3.2 " + backgroundVerifier.getMessage(), backgroundVerifier.isDeltaValid());
@@ -1260,7 +1260,7 @@ public class CharsetTest extends ResourceTest {
 			} catch (CoreException e) {
 				fail("7.1", e);
 			}
-			waitForProjectEncodingValidation();
+			waitForEncodingRelatedJobs();
 			verifier.assertExpectedDeltasWereReceived("7.2.");
 
 			// clear all the encoding info before we start working with the root
@@ -1276,7 +1276,7 @@ public class CharsetTest extends ResourceTest {
 			} catch (CoreException e) {
 				fail("8.1", e);
 			}
-			waitForProjectEncodingValidation();
+			waitForEncodingRelatedJobs();
 			verifier.assertExpectedDeltasWereReceived("8.2.");
 		} finally {
 			verifier.removeResourceChangeListeners();
