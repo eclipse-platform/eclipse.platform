@@ -659,16 +659,18 @@ public abstract class ResourceTest extends CoreTest {
 		// with the java.io.File last modified. #isSynchronized() will schedule
 		// out-of-sync resources for refresh, so we don't use that here.
 		for (int count = 0; count < 30 && isInSync(resource); count++) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// ignore
-			}
-			FileTime now = FileTime.fromMillis(System.currentTimeMillis());
+			FileTime now = FileTime.fromMillis(resource.getLocalTimeStamp() + 1000);
 			try {
 				Files.setLastModifiedTime(location.toFile().toPath(), now);
 			} catch (IOException e) {
 				fail("#touchInFilesystem(IResource)", e);
+			}
+			if (!isInSync(resource)) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// ignore
+				}
 			}
 		}
 		assertTrue("File not out of sync: " + location.toOSString(), getLastModifiedTime(location) != resource.getLocalTimeStamp());

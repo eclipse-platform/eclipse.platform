@@ -281,7 +281,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		getWorkspace().getRoot().getProject("inexistingProject").refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 
-	public void testWriteFile() {
+	public void testWriteFile() throws Exception {
 		/* initialize common objects */
 		IProject project = projects[0];
 		IFile file = project.getFile("testWriteFile");
@@ -294,73 +294,52 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 
 		/* write file for the first time */
 		original = getContents(originalContent);
-		try {
-			write(file, original, true, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		write(file, original, true, null);
+
 		original = getContents(originalContent);
-		try {
-			assertTrue("1.1", compareContent(original, getLocalManager().read(file, true, null)));
-		} catch (CoreException e) {
-			fail("1.2", e);
-		}
+		assertTrue("Unexpected content in " + original,
+				compareContent(original, getLocalManager().read(file, true, null)));
 
 		/* test the overwrite parameter (false) */
 		another = getContents(anotherContent);
-		try {
-			write(file, another, false, null);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		write(file, another, false, null);
+
 		another = getContents(anotherContent);
-		try {
-			assertTrue("2.1", compareContent(another, getLocalManager().read(file, true, null)));
-		} catch (CoreException e) {
-			fail("2.2", e);
-		}
+		assertTrue("Unexpected content in " + another,
+				compareContent(another, getLocalManager().read(file, true, null)));
 
 		/* test the overwrite parameter (true) */
 		original = getContents(originalContent);
-		try {
-			write(file, original, true, null);
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		write(file, original, true, null);
+
 		original = getContents(originalContent);
-		try {
-			assertTrue("3.1", compareContent(original, getLocalManager().read(file, true, null)));
-		} catch (CoreException e) {
-			fail("3.2", e);
-		}
+		assertTrue("Unexpected content in " + original,
+				compareContent(original, getLocalManager().read(file, true, null)));
 
 		/* test the overwrite parameter (false) */
 		ensureOutOfSync(file);
 		another = getContents(anotherContent);
 		try {
 			write(file, another, false, null);
-			fail("4.0");
+			fail("Should fail writing out of sync file #1");
 		} catch (CoreException e) {
 			// expected
 		}
+		ensureOutOfSync(file);
 		try {
 			file.setContents(another, false, false, null);
-			fail("4.3");
+			fail("Should fail writing out of sync file #2");
 		} catch (CoreException e) {
 			// expected
 		}
-		try {
-			file.setContents(another, true, false, null);
-		} catch (CoreException e) {
-			fail("4.4", e);
-		}
+		file.setContents(another, true, false, null);
 
 		/* test the overwrite parameter (false) */
 		ensureDoesNotExistInFileSystem(file); // FIXME Race Condition with asynchronous workplace refresh see Bug 571133
 		another = getContents(anotherContent);
 		try {
 			write(file, another, false, null);
-			fail("5.0");
+			fail("Should fail writing non existing file");
 		} catch (CoreException e) {
 			// expected
 		}
