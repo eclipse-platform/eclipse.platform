@@ -37,6 +37,8 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -47,8 +49,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -154,7 +154,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, SWAPPED),
 	};
 	private List<FieldEditor> editors = new ArrayList<>();
-	private TabItem fTextCompareTab;
+	private CTabItem fTextCompareTab;
 	private Button fDisableCappingCheckBox;
 
 
@@ -256,15 +256,16 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		fOverlayStore.load();
 		fOverlayStore.start();
 
-		TabFolder folder= new TabFolder(parent, SWT.NONE);
+		CTabFolder folder= new CTabFolder(parent, SWT.NONE);
 		folder.setLayout(new TabFolderLayout());
 		folder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		TabItem item= new TabItem(folder, SWT.NONE);
+		CTabItem item= new CTabItem(folder, SWT.NONE);
+		folder.setSelection(0);
 		item.setText(Utilities.getString("ComparePreferencePage.generalTab.label"));	//$NON-NLS-1$
 		item.setControl(createGeneralPage(folder));
 
-		item= new TabItem(folder, SWT.NONE);
+		item= new CTabItem(folder, SWT.NONE);
 		item.setText(Utilities.getString("ComparePreferencePage.textCompareTab.label"));	//$NON-NLS-1$
 		item.setControl(createTextComparePage(folder));
 		fTextCompareTab = item;

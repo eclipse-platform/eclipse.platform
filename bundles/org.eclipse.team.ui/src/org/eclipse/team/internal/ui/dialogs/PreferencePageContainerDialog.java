@@ -39,6 +39,8 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -53,8 +55,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.team.internal.ui.TeamUIMessages;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.internal.ui.Utils;
@@ -88,8 +88,8 @@ public class PreferencePageContainerDialog extends TrayDialog
 	 * @see #setMinimumPageSize(Point)
 	 */
 	private Point fMinimumPageSize = new Point(200,200);
-	private TabFolder tabFolder;
-	private Map<TabItem, PreferencePage> pageMap = new HashMap<>();
+	private CTabFolder tabFolder;
+	private Map<CTabItem, PreferencePage> pageMap = new HashMap<>();
 
 	/**
 	 * Must declare our own images as the JFaceResource images will not be created unless
@@ -159,16 +159,17 @@ public class PreferencePageContainerDialog extends TrayDialog
 
 	private void createMultiplePageArea(Composite composite) {
 		// create a tab folder for the page
-		tabFolder = new TabFolder(composite, SWT.NONE);
+		tabFolder = new CTabFolder(composite, SWT.NONE);
 		tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		for (PreferencePage page : pages) {
 			// text decoration options
-			TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
+			CTabItem tabItem = new CTabItem(tabFolder, SWT.NONE);
 			tabItem.setText(page.getTitle());//
 			tabItem.setControl(createPageArea(tabFolder, page));
 			pageMap.put(tabItem, page);
 		}
+		tabFolder.setSelection(0);
 
 		tabFolder.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -180,9 +181,9 @@ public class PreferencePageContainerDialog extends TrayDialog
 	}
 
 	protected void updatePageSelection() {
-		TabItem[] items = tabFolder.getSelection();
-		if (items.length == 1) {
-			currentPage = pageMap.get(items[0]);
+		CTabItem item = tabFolder.getSelection();
+		if (item != null) {
+			currentPage = pageMap.get(item);
 			updateMessage();
 		}
 		firePageChanged(new PageChangedEvent(this, currentPage));
