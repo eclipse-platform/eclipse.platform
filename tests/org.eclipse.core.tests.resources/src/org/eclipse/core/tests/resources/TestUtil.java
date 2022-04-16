@@ -67,38 +67,18 @@ public class TestUtil {
 	 * @return true if the method timed out, false if all the jobs terminated before the timeout
 	 */
 	public static boolean waitForJobs(String owner, long minTimeMs, long maxTimeMs) {
-		if (maxTimeMs < minTimeMs) {
-			throw new IllegalArgumentException("Max time is smaller as min time!");
-		}
-		final long start = System.currentTimeMillis();
-		while (System.currentTimeMillis() - start < minTimeMs) {
-			try {
-				Thread.sleep(Math.min(10, minTimeMs));
-			} catch (InterruptedException e) {
-				// Uninterruptable
-			}
-		}
-		while (!Job.getJobManager().isIdle()) {
-			List<Job> jobs = getRunningOrWaitingJobs((Object) null);
+		return waitForJobs(owner, minTimeMs, maxTimeMs, null);
+	}
 
-			if (!Collections.disjoint(runningJobs, jobs)) {
-				// There is a job which runs already quite some time, don't wait for it to avoid test timeouts
-				dumpRunningOrWaitingJobs(owner, jobs);
-				return true;
-			}
-
-			if (System.currentTimeMillis() - start >= maxTimeMs) {
-				dumpRunningOrWaitingJobs(owner, jobs);
-				return true;
-			}
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				// Uninterruptable
+	private static void wakeUpSleepingJobs(Object family) {
+		List<Job> sleepingJobs = getSleepingJobs(family);
+		for (Job job : sleepingJobs) {
+			// don't return freeze monitor job, it sleeps for a good reason
+			// and shouldn't be touched during test
+			if (!job.belongsTo(FreezeMonitor.class)) {
+				job.wakeUp();
 			}
 		}
-		runningJobs.clear();
-		return false;
 	}
 
 	/**
@@ -123,6 +103,7 @@ public class TestUtil {
 		if (maxTimeMs < minTimeMs) {
 			throw new IllegalArgumentException("Max time is smaller as min time!");
 		}
+		wakeUpSleepingJobs(family);
 		final long start = System.currentTimeMillis();
 		while (System.currentTimeMillis() - start < minTimeMs) {
 			try {
@@ -154,6 +135,7 @@ public class TestUtil {
 			} catch (InterruptedException e) {
 				// Uninterruptable
 			}
+			wakeUpSleepingJobs(family);
 		}
 		runningJobs.clear();
 		return false;
@@ -161,7 +143,7 @@ public class TestUtil {
 
 	static Set<Job> runningJobs = new LinkedHashSet<>();
 
-	public static void dumRunnigOrWaitingJobs(String owner) {
+	public static void dumpRunnigOrWaitingJobs(String owner) {
 		List<Job> jobs = getRunningOrWaitingJobs(null);
 		if (!jobs.isEmpty()) {
 			String message = "Some job is still running or waiting to run: " + asString(jobs);
@@ -202,6 +184,17 @@ public class TestUtil {
 		Job[] jobs = Job.getJobManager().find(jobFamily);
 		for (Job job : jobs) {
 			if (isRunningOrWaitingJob(job)) {
+				running.add(job);
+			}
+		}
+		return running;
+	}
+
+	private static List<Job> getSleepingJobs(Object family) {
+		List<Job> running = new ArrayList<>();
+		Job[] jobs = Job.getJobManager().find(family);
+		for (Job job : jobs) {
+			if (job.getState() == Job.SLEEPING) {
 				running.add(job);
 			}
 		}

@@ -92,7 +92,7 @@ public class TestBug202384 extends WorkspaceSessionTest {
 			long start = System.currentTimeMillis();
 			while (!expectedEncoding.equals(project.getDefaultCharset(false))
 					&& System.currentTimeMillis() - start < timeout) {
-				TestUtil.dumRunnigOrWaitingJobs(getName());
+				TestUtil.dumpRunnigOrWaitingJobs(getName());
 				TestUtil.waitForJobs(getName(), 500, 1000);
 			}
 			assertEquals("2.0", expectedEncoding, project.getDefaultCharset(false));
