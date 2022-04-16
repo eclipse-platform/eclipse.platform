@@ -2526,7 +2526,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			fileSystemManager.startup(monitor);
 			pathVariableManager = new PathVariableManager();
 			pathVariableManager.startup(null);
-			natureManager = new NatureManager();
+			natureManager = new NatureManager(this);
 			natureManager.startup(null);
 			filterManager = new FilterTypeManager();
 			filterManager.startup(null);
@@ -2539,11 +2539,11 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			synchronizer = new Synchronizer(this);
 			saveManager = new SaveManager(this);
 			saveManager.startup(null);
-			propertyManager = new PropertyManager2((Workspace) ResourcesPlugin.getWorkspace());
+			propertyManager = new PropertyManager2(this);
 			propertyManager.startup(monitor);
 			charsetManager = new CharsetManager(this);
 			charsetManager.startup(null);
-			contentDescriptionManager = new ContentDescriptionManager();
+			contentDescriptionManager = new ContentDescriptionManager(this);
 			contentDescriptionManager.startup(null);
 			//must start after save manager, because (read) access to tree is needed
 			//must start after other managers to avoid potential cyclic dependency on uninitialized managers (see bug 316182)
