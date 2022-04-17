@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.core.internal.events.ResourceDelta;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
@@ -245,14 +246,17 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		final IFile foo = project.getFile("foo");
 		create(project, false);
 
+		waitForEncodingRelatedJobs();
+		waitForContentDescriptionUpdate();
+		// wait for noBuildJob so POST_BUILD will fire
+		((Workspace) getWorkspace()).getBuildManager().waitForAutoBuildOff();
+
 		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] {createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1")});
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1") });
 		project.setDescription(desc, getMonitor());
 
 		// Ensure the builder is instantiated
 		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
-
-		waitForContentDescriptionUpdate();
 
 		final TestBarrier2 tb1 = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
 
