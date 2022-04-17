@@ -48,6 +48,7 @@ import java.util.*;
  * not need any callbacks. This will also save potential NPEs when the
  * {@link IWorkspace} shuts down, because the OSGi runtime will handle the
  * deregistration of services automatically:
+ * </p>
  *
  * <pre>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -56,20 +57,21 @@ import java.util.*;
    &lt;service&gt;
       &lt;provide interface="org.eclipse.core.resources.IResourceChangeListener"/&gt;
    &lt;/service&gt;
-   &lt;!-- 1 == IResourceChangeEvent.POST_CHANGE -->
+   &lt;!-- 1 == IResourceChangeEvent.POST_CHANGE --&gt;
    &lt;property name="event.mask" type="Integer" value="1"/&gt;
 &lt;/scr:component&gt;
  * </pre>
- * </p>
+ *
  * <p>
  * If you choose to register it with the core OSGi API (e.g. in an activator)
  * you can use the following pattern:
+ * </p>
  *
  * <pre>
  * bundleContext.registerService(IResourceChangeListener.class, myListener, IResourceChangeListener.getMaskProperties(
  * 		IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE));
  * </pre>
- * </p>
+ *
  *
  *
  * @see IResourceDelta

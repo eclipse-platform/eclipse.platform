@@ -54,16 +54,16 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * in the platform's data area. Individual project locations can be specified
  * explicitly.
  * </p>
- * <p>
- **
+ *
  * <p>
  * The recommended way of accessing the Workspace is fetching it as a service
  * what could be performed in several ways:
+ * </p>
  * <ul>
  * <li>For example in a Bundle/Plugin Activator:
  *
  * <pre>
- * ServiceTracker<IWorkspace, IWorkspace> workspaceTracker = new ServiceTracker<>(bundleContext, IWorkspace.class,
+ * ServiceTracker&lt;IWorkspace, IWorkspace&gt; workspaceTracker = new ServiceTracker&gt;&lt;(bundleContext, IWorkspace.class,
  * 		null);
  * workspaceTracker.open();
  * IWorkspace workspace = workspaceTracker.getService();
@@ -81,13 +81,14 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * <li>Helper classes like ServiceCaller:
  *
  * <pre>
- * ServiceCaller.callOnce(getClass(), IWorkspace.class, workspace -> {
+ * ServiceCaller.callOnce(getClass(), IWorkspace.class, workspace -&gt; {
  * 	// do something with the workspace
  * });
  * </pre>
+ *
+ * </li>
  * </ul>
- * <p>
- * </p>
+ *
  * <p>
  * The workspace resource namespace is always case-sensitive and
  * case-preserving. Thus the workspace allows multiple sibling resources to
