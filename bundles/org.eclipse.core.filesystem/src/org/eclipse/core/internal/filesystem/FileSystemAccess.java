@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 IBM Corporation and others.
+ * Copyright (c) 2007, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,16 +10,18 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Christoph Läubrich - Issue #62 - regression from Bug 550548
  *******************************************************************************/
 package org.eclipse.core.internal.filesystem;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import org.eclipse.core.runtime.*;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.osgi.framework.*;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * This class abstracts away implementation details of the filesystem
@@ -29,7 +31,6 @@ import org.osgi.framework.*;
  * @since org.eclipse.core.filesystem 1.1
  */
 public class FileSystemAccess {
-	private static BundleContext context = FrameworkUtil.getBundle(FileSystemAccess.class).getBundleContext();
 
 	/**
 	 * Returns the local file system location that should be used for
@@ -38,15 +39,20 @@ public class FileSystemAccess {
 	public static IPath getCacheLocation() {
 		//try to put the cache in the instance location if possible (3.2 behaviour)
 		try {
-			if (context != null) {
-				Collection<ServiceReference<Location>> refs = context.getServiceReferences(Location.class, Location.INSTANCE_FILTER);
-				if (refs != null && refs.size() == 1) {
-					ServiceReference<Location> ref = refs.iterator().next();
-					Location location = context.getService(ref);
-					if (location != null) {
-						IPath instancePath = new Path(new File(location.getURL().getFile()).toString());
-						context.ungetService(ref);
-						return instancePath.append(".metadata/.plugins").append(Policy.PI_FILE_SYSTEM); //$NON-NLS-1$
+			Bundle bundle = FrameworkUtil.getBundle(FileSystemAccess.class);
+			if (bundle != null) {
+				BundleContext context = bundle.getBundleContext();
+				if (context != null) {
+					ServiceTracker<Location, Location> tracker = new ServiceTracker<>(context, context.createFilter(Location.INSTANCE_FILTER), null);
+					tracker.open();
+					try {
+						Location location = tracker.getService();
+						if (location != null) {
+							IPath instancePath = new Path(new File(location.getURL().getFile()).toString());
+							return instancePath.append(".metadata/.plugins").append(Policy.PI_FILE_SYSTEM); //$NON-NLS-1$
+						}
+					} finally {
+						tracker.close();
 					}
 				}
 			}
@@ -59,9 +65,11 @@ public class FileSystemAccess {
 	}
 
 	public static Enumeration<URL> findEntries(String path, String filePattern, boolean recurse) {
-		if (context != null)
-			return context.getBundle().findEntries(path, filePattern, recurse);
-		return null;
+		Bundle bundle = FrameworkUtil.getBundle(FileSystemAccess.class);
+		if (bundle != null) {
+			return bundle.findEntries(path, filePattern, recurse);
+		}
+		return Collections.emptyEnumeration();
 	}
 
 }
