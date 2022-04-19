@@ -32,6 +32,8 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -126,7 +128,7 @@ public class IOConsoleTests extends AbstractDebugTest {
 				throw new AssertionError("Test triggered errors in IOConsole", status.getException());
 			}
 		});
-		assertTrue("Test triggered errors in IOConsole: " + loggedErrors.stream().toString(), loggedErrors.isEmpty());
+		assertTrue("Test triggered errors in IOConsole: " + loggedErrors.stream().map(IStatus::toString).collect(Collectors.joining(", ")), loggedErrors.isEmpty());
 	}
 
 	/**
