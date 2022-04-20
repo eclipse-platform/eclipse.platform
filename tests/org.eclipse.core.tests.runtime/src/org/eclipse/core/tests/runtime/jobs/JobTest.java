@@ -22,6 +22,7 @@ package org.eclipse.core.tests.runtime.jobs;
 import static org.junit.Assert.assertNotEquals;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.eclipse.core.internal.jobs.JobManager;
 import org.eclipse.core.internal.jobs.Worker;
@@ -87,8 +88,8 @@ public class JobTest extends AbstractJobTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		shortJob = new TestJob("Short Test Job", 100, 10);
-		longJob = new TestJob("Long Test Job", 1000000, 10);
+		shortJob = new TestJob("Short Test Job", 10, 1); // job that tests wait on
+		longJob = new TestJob("Long Test Job", 10000000, 10); // job that never finishes in time
 		progressProvider = new FussyProgressProvider();
 		Job.getJobManager().setProgressProvider(progressProvider);
 	}
@@ -97,7 +98,9 @@ public class JobTest extends AbstractJobTest {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		Job.getJobManager().setProgressProvider(null);
+		shortJob.cancel();
 		waitForState(shortJob, Job.NONE);
+		longJob.cancel();
 		waitForState(longJob, Job.NONE);
 	}
 
@@ -354,6 +357,7 @@ public class JobTest extends AbstractJobTest {
 		//the threads should have been reset to null
 		for (int i = 0; i < status.length() - 1; i++) {
 			assertEquals("10." + i, TestBarrier2.STATUS_DONE, status.get(i));
+			waitForState(jobs[i], Job.NONE);
 			assertEquals("11." + i, Job.NONE, jobs[i].getState());
 			assertEquals("12." + i, IStatus.OK, jobs[i].getResult().getSeverity());
 			assertNull("13." + i, jobs[i].getThread());
@@ -475,12 +479,12 @@ public class JobTest extends AbstractJobTest {
 	public void testCancelShouldRun() {
 		final String[] failure = new String[1];
 		final Job j = new Job("Test") {
-			volatile int runningCount = 0;
+			AtomicInteger runningCount = new AtomicInteger();
 			boolean cancelled;
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				if (++runningCount > 1) {
+				if (runningCount.incrementAndGet() > 1) {
 					failure[0] = "Multiple running at once!";
 				}
 				try {
@@ -488,7 +492,7 @@ public class JobTest extends AbstractJobTest {
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
-					if (--runningCount != 0) {
+					if (runningCount.decrementAndGet() != 0) {
 						failure[0] = "Multiple were running at once!";
 					}
 				}
@@ -601,11 +605,11 @@ public class JobTest extends AbstractJobTest {
 	public void testCancelAboutToSchedule() {
 		final boolean[] failure = new boolean[1];
 		final Job j = new Job("testCancelAboutToSchedule") {
-			volatile int runningCount = 0;
+			AtomicInteger runningCount = new AtomicInteger();
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				if (++runningCount > 1) {
+				if (runningCount.incrementAndGet() > 1) {
 					failure[0] = true;
 				}
 				try {
@@ -613,7 +617,7 @@ public class JobTest extends AbstractJobTest {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} finally {
-					if (--runningCount != 0) {
+					if (runningCount.decrementAndGet() != 0) {
 						failure[0] = true;
 					}
 				}
@@ -1578,6 +1582,7 @@ public class JobTest extends AbstractJobTest {
 		waitForState(longJob, Job.RUNNING);
 		longJob.cancel();
 		longJob.removeJobChangeListener(listener);
+		waitForState(longJob, Job.NONE);
 		assertNotNull("10.0", thread[0]);
 	}
 
@@ -1596,17 +1601,24 @@ public class JobTest extends AbstractJobTest {
 	 * has a chance to pick up the new job.
 	 */
 	private void waitForState(Job job, int state) {
-		int i = 0;
+		long timeoutInMs = 10_000; // 100*100ms
+		long start = System.nanoTime();
 		while (job.getState() != state) {
+			Thread.yield();
+			long elapsed = (System.nanoTime() - start) / 1_000_000;
+			// sanity test to avoid hanging tests
+			assertTrue("Timeout waiting for job to change state.", elapsed < timeoutInMs);
+		}
+		if (state == Job.RUNNING) {
+			// Internal state InternalJob.ABOUT_TO_RUN is Job.RUNNING
+			// before actually setting the thread.
+			// So wait till internal state changed to RUNNING too
+			Thread.yield();
 			try {
-				Thread.yield();
-				Thread.sleep(100);
-				Thread.yield();
+				Thread.sleep(1);
 			} catch (InterruptedException e) {
-				//ignore
+				// ignore
 			}
-			//sanity test to avoid hanging tests
-			assertTrue("Timeout waiting for job to change state.", i++ < 100);
 		}
 	}
 
