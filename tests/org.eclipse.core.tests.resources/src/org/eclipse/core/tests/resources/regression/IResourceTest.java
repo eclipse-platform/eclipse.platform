@@ -255,7 +255,7 @@ public class IResourceTest extends ResourceTest {
 		}
 
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			fail("0.99", e);
 		}
@@ -268,7 +268,11 @@ public class IResourceTest extends ResourceTest {
 		}
 
 		IFile destination = project.getFile(destinationPath);
-		assertEquals("2.0", source.getLocation().toFile().lastModified(), destination.getLocation().toFile().lastModified());
+		long expected = source.getLocation().toFile().lastModified();
+		long actual = destination.getLocation().toFile().lastModified();
+		// java.io.File.lastModified() has only second accuracy on some OSes
+		long difference = Math.abs(expected - actual);
+		assertTrue("time difference>1000ms: " + difference, difference <= 1000);
 
 		// clean up
 		try {
