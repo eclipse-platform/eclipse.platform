@@ -219,6 +219,7 @@ public class TestUtil {
 				// only uninteresting jobs running
 				break;
 			}
+			jobs.forEach(Job::wakeUp);
 
 			if (!Collections.disjoint(runningJobs, jobs)) {
 				// There is a job which runs already quite some time, don't wait for it to avoid test timeouts
@@ -231,11 +232,7 @@ public class TestUtil {
 				return true;
 			}
 			processUIEvents();
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				// Uninterruptable
-			}
+			Thread.yield();
 		}
 		runningJobs.clear();
 		return false;
@@ -245,7 +242,7 @@ public class TestUtil {
 
 	private static void dumpRunningOrWaitingJobs(String owner, List<Job> jobs) {
 		String message = "Some job is still running or waiting to run: " + dumpRunningOrWaitingJobs(jobs);
-		log(IStatus.ERROR, owner, message);
+		log(IStatus.ERROR, owner, message, new RuntimeException(message));
 	}
 
 	private static String dumpRunningOrWaitingJobs(List<Job> jobs) {

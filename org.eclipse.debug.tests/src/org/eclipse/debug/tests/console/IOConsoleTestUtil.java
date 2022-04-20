@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -694,19 +693,7 @@ public final class IOConsoleTestUtil {
 	 * @return this {@link IOConsoleTestUtil} to chain methods
 	 */
 	public IOConsoleTestUtil waitForScheduledJobs() {
-		boolean jobSleeping = false;
-		for (int i = 0; i < 5 && !jobSleeping; i++) {
-			final boolean jobPending = TestUtil.waitForJobs(name, 25, 2000);
-			if (!jobPending) {
-				jobSleeping = false;
-				for (Job job : TestUtil.getRunningOrWaitingJobs(null)) {
-					if (job.getState() == Job.SLEEPING) {
-						jobSleeping = true;
-						break;
-					}
-				}
-			}
-		}
+		TestUtil.waitForJobs(name, 25, 5 * 2000);
 		return this;
 	}
 
