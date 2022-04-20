@@ -13,17 +13,27 @@
  *******************************************************************************/
 package org.eclipse.core.runtime.jobs;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 /**
- * An interface to mark an Operation that needs an ISchedulingRule.
+ * An interface to mark an operation that needs an {@link ISchedulingRule}.
  *
  * @since 3.13
- *
  */
 public interface ISchedulableOperation {
 	/**
-	 * @return an ISchedulingRule that the operation will acquire - if any. A caller
-	 *         can make sure that this ISchedulableOperation is locked before
-	 *         calling the operation. Returns null if no rule needed.
+	 * Gives the caller a hint whether this operation will acquire a rule to proceed
+	 * in the current thread. If a {@link ISchedulingRule} is returned the caller
+	 * should call {@link IJobManager#beginRule(ISchedulingRule, IProgressMonitor)}
+	 * before and {@link IJobManager#endRule(ISchedulingRule)} after the operation.
+	 *
+	 * @return an {@link ISchedulingRule} that the operation will acquire in the
+	 *         current thread - if any. Returns {@code null} if no rule needed - in
+	 *         that case the caller should not call <code>beginRule</code> or
+	 *         <code>endRule</code>. As this method returns only a hint the
+	 *         operation can not assume that the caller already acquired the rule.
+	 *         The operation still has to acquire it - which will lead to a nested
+	 *         rule.
 	 *
 	 * @since 3.13
 	 */
