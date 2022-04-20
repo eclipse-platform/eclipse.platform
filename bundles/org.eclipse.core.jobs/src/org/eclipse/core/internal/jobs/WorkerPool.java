@@ -61,7 +61,7 @@ class WorkerPool {
 	 */
 	private boolean isDaemon = false;
 
-	private JobManager manager;
+	private final JobManager manager;
 	/**
 	 * The number of workers in the threads array
 	 */

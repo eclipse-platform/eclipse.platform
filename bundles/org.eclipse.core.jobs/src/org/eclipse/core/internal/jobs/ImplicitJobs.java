@@ -289,7 +289,7 @@ class ImplicitJobs {
 		synchronized (((InternalJob) threadJob).jobStateLock) {
 			threadJob.isWaiting = true;
 			notifyWaitingThreadJobs(threadJob);
-			((InternalJob) threadJob).setWaitQueueStamp(manager.waitQueueCounter.increment());
+			((InternalJob) threadJob).setWaitQueueStamp(manager.getNextWaitQueueStamp());
 		}
 		manager.enqueue(manager.waitingThreadJobs, threadJob);
 	}

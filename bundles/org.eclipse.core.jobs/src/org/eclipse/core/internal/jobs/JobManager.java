@@ -100,7 +100,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	/**
 	 * Last time (relative to originTime) returned by {@link #now()}
 	 */
-	private AtomicLong currentTimeInMs;
+	private final AtomicLong currentTimeInMs;
 
 	/**
 	 * Scheduling rule used for validation of client-defined rules.
@@ -201,7 +201,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * Counter to record wait queue insertion order.
 	 * @GuardedBy("lock")
 	 */
-	Counter waitQueueCounter = new Counter();
+	private final AtomicLong waitQueueCounter = new AtomicLong();
 
 	/**
 	 * A set of progress monitors we must track cancellation requests for.
@@ -213,6 +213,10 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 
 	public static void debug(String msg) {
 		DEBUG_TRACE.trace(null, msg);
+	}
+
+	long getNextWaitQueueStamp() {
+		return waitQueueCounter.getAndIncrement();
 	}
 
 	/**
@@ -598,7 +602,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 					changeState(job, Job.SLEEPING);
 				} else {
 					job.setStartTime(now() + delayFor(job.getPriority()));
-					job.setWaitQueueStamp(waitQueueCounter.increment());
+					job.setWaitQueueStamp(getNextWaitQueueStamp());
 					changeState(job, Job.WAITING);
 				}
 			}
@@ -1137,7 +1141,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			InternalJob job = sleeping.peek();
 			while (job != null && job.getStartTime() < now) {
 				job.setStartTime(now + delayFor(job.getPriority()));
-				job.setWaitQueueStamp(waitQueueCounter.increment());
+				job.setWaitQueueStamp(getNextWaitQueueStamp());
 				changeState(job, Job.WAITING);
 				job = sleeping.peek();
 			}
