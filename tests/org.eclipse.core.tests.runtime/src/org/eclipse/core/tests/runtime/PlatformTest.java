@@ -21,7 +21,9 @@ import java.util.*;
 import java.util.jar.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.osgi.framework.log.FrameworkLog;
+import org.junit.Test;
 import org.osgi.framework.*;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Test cases for the Platform API
@@ -241,6 +243,21 @@ public class PlatformTest extends RuntimeTest {
 		bundle.uninstall();
 		bundle = Platform.getBundle(getName());
 		assertNull(getName() + " bundle => expect null result", bundle);
+	}
+
+	@Test
+	public void testILogFactory() {
+		ILog staticLog = RuntimeTestsPlugin.getPlugin().getLog();
+		assertNotNull(staticLog);
+		ServiceTracker<ILog, ILog> tracker = new ServiceTracker<>(
+				RuntimeTestsPlugin.getPlugin().getBundle().getBundleContext(), ILog.class, null);
+		tracker.open();
+		try {
+			ILog serviceLog = tracker.getService();
+			assertEquals(staticLog, serviceLog);
+		} finally {
+			tracker.close();
+		}
 	}
 
 	/**

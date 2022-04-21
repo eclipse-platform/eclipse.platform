@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.internal.runtime;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.equinox.internal.app.CommandLineArgs;
 import org.osgi.framework.BundleContext;
@@ -35,6 +36,7 @@ public class PlatformActivator extends Plugin {
 		startAppContainer();
 		InternalPlatform.getDefault().setRuntimeInstance(this);
 		super.start(runtimeContext);
+		runtimeContext.registerService(ILog.class, new LogServiceFactory(), null);
 	}
 
 	@Override
