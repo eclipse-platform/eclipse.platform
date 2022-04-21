@@ -16,10 +16,11 @@
  *     Tom Hochstein (Freescale) - Bug 409996 - 'Restore Defaults' does not work properly on Project Properties > Resource tab
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
  *     Christoph Läubrich 	- Issue #52 - Make ResourcesPlugin more dynamic and better handling early start-up
- *     						- Issue #68 - Use DS for CheckMissingNaturesListener 
+ *     						- Issue #68 - Use DS for CheckMissingNaturesListener
  *******************************************************************************/
 package org.eclipse.core.resources;
 
+import java.nio.charset.Charset;
 import java.util.Hashtable;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
@@ -27,9 +28,12 @@ import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
 import org.osgi.framework.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * The plug-in runtime class for the Resources plug-in. This is the starting
@@ -42,6 +46,7 @@ import org.osgi.framework.*;
  * @noinstantiate This class is not intended to be instantiated by clients.
  */
 public final class ResourcesPlugin extends Plugin {
+
 	/**
 	 * Unique identifier constant (value <code>"org.eclipse.core.resources"</code>)
 	 * for the standard Resources plug-in.
@@ -357,48 +362,65 @@ public final class ResourcesPlugin extends Plugin {
 	/**
 	 * The single instance of this plug-in runtime class.
 	 */
-	private static ResourcesPlugin plugin;
+	private static volatile ResourcesPlugin plugin;
 
-	/**
-	 * The workspace managed by the single instance of this
-	 * plug-in runtime class, or <code>null</code> is there is none.
-	 */
-	private static Workspace workspace = null;
-
-	private ServiceRegistration<IWorkspace> workspaceRegistration;
 	private ServiceRegistration<DebugOptionsListener> debugRegistration;
 
-	/**
-	 * Constructs an instance of this plug-in runtime class.
-	 * <p>
-	 * An instance of this plug-in runtime class is automatically created
-	 * when the facilities provided by the Resources plug-in are required.
-	 * <b>Clients must never explicitly instantiate a plug-in runtime class.</b>
-	 * </p>
-	 */
-	public ResourcesPlugin() {
-		plugin = this;
-	}
+	private ServiceTracker<Location, Workspace> instanceLocationTracker;
+
+	private WorkspaceInitCustomizer workspaceInitCustomizer;
 
 	/**
-	 * Returns the encoding to use when reading text files in the workspace.
-	 * This is the value of the <code>PREF_ENCODING</code> preference, or the
-	 * file system encoding (<code>System.getProperty("file.encoding")</code>)
-	 * if the preference is not set.
+	 * Returns the encoding to use when reading text files in the workspace. This is
+	 * the value of the <code>PREF_ENCODING</code> preference, or the file system
+	 * encoding (<code>System.getProperty("file.encoding")</code>) if the preference
+	 * is not set, the workspace is not ready yet or any other condition where it
+	 * could not be determined.
 	 * <p>
 	 * Note that this method does not check whether the result is a supported
-	 * encoding.  Callers should be prepared to handle
+	 * encoding. Callers should be prepared to handle
 	 * <code>UnsupportedEncodingException</code> where this encoding is used.
 	 *
-	 * @return  the encoding to use when reading text files in the workspace
+	 * <p>
+	 * <b>Hint:</b> Using this method might return different results depending on
+	 * the system state. Code that don't want to be affected from this ambiguities
+	 * should do the following:
+	 * </p>
+	 * <ol>
+	 * <li>using any of your favorite techniques (Declarative Services,
+	 * ServiceTracker, Blueprint, ...) to track the workspace</li>
+	 * <li>Calling workspace.getRoot().getDefaultCharset(false)</li>
+	 * <li>If <code>null</code> is returned take the appropriate action, e.g fall
+	 * back to <code>System.getProperty("file.encoding")</code> or even better
+	 * {@link Charset#defaultCharset()}</li>
+	 * </ol>
+	 *
+	 * @return the encoding to use when reading text files in the workspace
 	 * @see java.io.UnsupportedEncodingException
 	 */
 	public static String getEncoding() {
-		String enc = getPlugin().getPluginPreferences().getString(PREF_ENCODING);
-		if (enc == null || enc.length() == 0) {
-			enc = System.getProperty("file.encoding"); //$NON-NLS-1$
+		ResourcesPlugin resourcesPlugin = plugin;
+		if (resourcesPlugin == null) {
+			return getSystemEncoding();
 		}
-		return enc;
+		Workspace workspace = resourcesPlugin.workspaceInitCustomizer.workspace;
+		if (workspace == null) {
+			return getSystemEncoding();
+		}
+		try {
+			String enc = workspace.getRoot().getDefaultCharset(false);
+			if (enc == null) {
+				return getSystemEncoding();
+			}
+			return enc;
+		} catch (CoreException e) {
+			// should never happen here... even if we fall back to system encoding...
+			return getSystemEncoding();
+		}
+	}
+
+	private static String getSystemEncoding() {
+		return System.getProperty("file.encoding"); //$NON-NLS-1$
 	}
 
 	/**
@@ -423,8 +445,16 @@ public final class ResourcesPlugin extends Plugin {
 	 *         class.
 	 */
 	public static IWorkspace getWorkspace() {
-		if (workspace == null)
+		ResourcesPlugin resourcesPlugin = plugin;
+		if (resourcesPlugin == null) {
+			// this happens when the resource plugin is shut down already... or never
+			// started!
 			throw new IllegalStateException(Messages.resources_workspaceClosedStatic);
+		}
+		Workspace workspace = resourcesPlugin.workspaceInitCustomizer.workspace;
+		if (workspace == null) {
+			throw new IllegalStateException(Messages.resources_workspaceClosedStatic);
+		}
 		return workspace;
 	}
 
@@ -439,23 +469,11 @@ public final class ResourcesPlugin extends Plugin {
 
 		// unregister debug options listener
 		debugRegistration.unregister();
-		debugRegistration = null;
+		instanceLocationTracker.close();
 
-		if (workspace == null) {
-			return;
-		}
-
-		if (workspaceRegistration != null) {
-			workspaceRegistration.unregister();
-		}
 		// save the preferences for this plug-in
 		getPlugin().savePluginPreferences();
-		workspace.close(null);
-
-		// Forget workspace only if successfully closed, to
-		// make it easier to debug cases where close() is failing.
-		workspace = null;
-		workspaceRegistration = null;
+		plugin = null;
 	}
 
 	/**
@@ -466,18 +484,81 @@ public final class ResourcesPlugin extends Plugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-
+		workspaceInitCustomizer = new WorkspaceInitCustomizer(context);
 		// register debug options listener
 		Hashtable<String, String> properties = new Hashtable<>(2);
 		properties.put(DebugOptions.LISTENER_SYMBOLICNAME, PI_RESOURCES);
-		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.RESOURCES_DEBUG_OPTIONS_LISTENER, properties);
-		// Remember workspace before opening, to
-		// make it easier to debug cases where open() is failing.
-		workspace = new Workspace();
-		IStatus result = workspace.open(null);
-		if (!result.isOK())
-			getLog().log(result);
-		workspaceRegistration = context.registerService(IWorkspace.class, workspace, null);
+		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.RESOURCES_DEBUG_OPTIONS_LISTENER,
+				properties);
+		instanceLocationTracker = new ServiceTracker<>(context,
+				context.createFilter(String.format("(&%s(%s=*))", Location.INSTANCE_FILTER, //$NON-NLS-1$
+						Location.SERVICE_PROPERTY_URL)),
+				workspaceInitCustomizer);
+		plugin = this; // must before open the tracker, as this can cause the registration of the
+						// workspace and this might trigger code that calls the static method then.
+		instanceLocationTracker.open();
+	}
+
+	private final class WorkspaceInitCustomizer implements ServiceTrackerCustomizer<Location, Workspace> {
+		private final BundleContext context;
+		private volatile Workspace workspace;
+		private ServiceRegistration<IWorkspace> workspaceRegistration;
+
+		private WorkspaceInitCustomizer(BundleContext context) {
+			this.context = context;
+		}
+
+		@Override
+		public Workspace addingService(ServiceReference<Location> reference) {
+			if (workspace != null) {
+				return null; // there can only be one workspace right now...
+			}
+			Location location = context.getService(reference);
+			if (location == null) {
+				return null; // we can't use that service...
+			}
+			// the workspace is accessible from now on, this is because some plugins require
+			// access to it in the early startup phase
+			workspace = new Workspace();
+			IStatus result;
+			try {
+				result = workspace.open(null);
+				if (!result.isOK())
+					getLog().log(result);
+				workspaceRegistration = context.registerService(IWorkspace.class, workspace, null);
+				return workspace;
+			} catch (CoreException e) {
+				getLog().log(e.getStatus());
+			} catch (IllegalStateException e) {
+				getLog().log(Status.error("Internal error open workspace", e)); //$NON-NLS-1$
+			}
+			return null;
+		}
+
+		@Override
+		public void modifiedService(ServiceReference<Location> reference, Workspace service) {
+			// nothing to care about here as we already tracking the service with the
+			// properties of interest
+		}
+
+		@Override
+		public void removedService(ServiceReference<Location> reference, Workspace service) {
+			if (service == workspace) {
+				try {
+					workspaceRegistration.unregister();
+				} catch (RuntimeException e) {
+					getLog().log(Status.warning("Unregistering workspaces throws an exception", e)); //$NON-NLS-1$
+				}
+				try {
+					service.close(null);
+				} catch (CoreException e) {
+					getLog().log(e.getStatus());
+				} finally {
+					workspace = null;
+					context.ungetService(reference);
+				}
+			}
+		}
 	}
 
 }
