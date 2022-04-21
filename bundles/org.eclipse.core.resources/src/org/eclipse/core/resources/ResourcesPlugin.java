@@ -448,7 +448,7 @@ public final class ResourcesPlugin extends Plugin {
 			return;
 		}
 		workspace.removeResourceChangeListener(checkMissingNaturesListener);
-		InstanceScope.INSTANCE.getNode(PREF_MISSING_NATURE_MARKER_SEVERITY).removePreferenceChangeListener(checkMissingNaturesListener);
+		InstanceScope.INSTANCE.getNode(PI_RESOURCES).removePreferenceChangeListener(checkMissingNaturesListener);
 		if (workspaceRegistration != null) {
 			workspaceRegistration.unregister();
 		}
