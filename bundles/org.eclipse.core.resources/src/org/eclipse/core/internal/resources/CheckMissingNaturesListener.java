@@ -10,7 +10,8 @@
  *
  * Contributors:
  *     Mickael Istria (Red Hat Inc.) - initial API and implementation
- *     Christoph Läubrich - Issue #52 - Make ResourcesPlugin more dynamic and better handling early start-up
+ *     Christoph Läubrich 	- Issue #52 - Make ResourcesPlugin more dynamic and better handling early start-up
+ *     						- Issue #68 - Use DS for CheckMissingNaturesListener
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -28,15 +29,26 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.service.component.annotations.*;
 
+@Component(service = IResourceChangeListener.class, property = IResourceChangeListener.PROPERTY_EVENT_MASK + ":Integer="
+		+ IResourceChangeEvent.POST_CHANGE)
 public class CheckMissingNaturesListener implements IResourceChangeListener, IPreferenceChangeListener {
 
 	public static final String MARKER_TYPE = ResourcesPlugin.getPlugin().getBundle().getSymbolicName() + ".unknownNature"; //$NON-NLS-1$
 	public static final String NATURE_ID_ATTRIBUTE = "natureId"; //$NON-NLS-1$
-	private final Workspace workspace;
+	@Reference
+	private IWorkspace workspace;
 
-	public CheckMissingNaturesListener(Workspace workspace) {
-		this.workspace = workspace;
+	@Activate
+	public void register() {
+		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).addPreferenceChangeListener(this);
+	}
+
+	@Deactivate
+	public void unregister() {
+
+		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).removePreferenceChangeListener(this);
 	}
 
 	@Override

@@ -15,19 +15,18 @@
  *     James Blackburn (Broadcom Corp.) - ongoing development
  *     Tom Hochstein (Freescale) - Bug 409996 - 'Restore Defaults' does not work properly on Project Properties > Resource tab
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
- *     Christoph Läubrich - Issue #52 - Make ResourcesPlugin more dynamic and better handling early start-up
+ *     Christoph Läubrich 	- Issue #52 - Make ResourcesPlugin more dynamic and better handling early start-up
+ *     						- Issue #68 - Use DS for CheckMissingNaturesListener 
  *******************************************************************************/
 package org.eclipse.core.resources;
 
 import java.util.Hashtable;
-import org.eclipse.core.internal.resources.CheckMissingNaturesListener;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
 import org.osgi.framework.*;
@@ -369,8 +368,6 @@ public final class ResourcesPlugin extends Plugin {
 	private ServiceRegistration<IWorkspace> workspaceRegistration;
 	private ServiceRegistration<DebugOptionsListener> debugRegistration;
 
-	private CheckMissingNaturesListener checkMissingNaturesListener;
-
 	/**
 	 * Constructs an instance of this plug-in runtime class.
 	 * <p>
@@ -447,8 +444,7 @@ public final class ResourcesPlugin extends Plugin {
 		if (workspace == null) {
 			return;
 		}
-		workspace.removeResourceChangeListener(checkMissingNaturesListener);
-		InstanceScope.INSTANCE.getNode(PI_RESOURCES).removePreferenceChangeListener(checkMissingNaturesListener);
+
 		if (workspaceRegistration != null) {
 			workspaceRegistration.unregister();
 		}
@@ -482,9 +478,6 @@ public final class ResourcesPlugin extends Plugin {
 		if (!result.isOK())
 			getLog().log(result);
 		workspaceRegistration = context.registerService(IWorkspace.class, workspace, null);
-		checkMissingNaturesListener = new CheckMissingNaturesListener(workspace);
-		workspace.addResourceChangeListener(checkMissingNaturesListener, IResourceChangeEvent.POST_CHANGE);
-		InstanceScope.INSTANCE.getNode(PI_RESOURCES).addPreferenceChangeListener(checkMissingNaturesListener);
 	}
 
 }
