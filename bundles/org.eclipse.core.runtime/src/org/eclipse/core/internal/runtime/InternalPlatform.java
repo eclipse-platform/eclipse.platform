@@ -79,6 +79,9 @@ public final class InternalPlatform {
 	public static final String PROP_NL = "osgi.nl"; //$NON-NLS-1$
 	public static final String PROP_OS = "osgi.os"; //$NON-NLS-1$
 
+	// OSGI IDE specific property, copied from DataArea
+	private static final String PROP_REQUIRES_EXPLICIT_INIT = "osgi.dataAreaRequiresExplicitInit"; //$NON-NLS-1$ ;
+
 	// Eclipse System Properties
 	public static final String PROP_PRODUCT = "eclipse.product"; //$NON-NLS-1$
 	public static final String PROP_WS = "osgi.ws"; //$NON-NLS-1$
@@ -341,11 +344,24 @@ public final class InternalPlatform {
 	public IPath getLocation() throws IllegalStateException {
 		if (cachedInstanceLocation == null) {
 			Location location = getInstanceLocation();
-			if (location == null)
+			if (location == null) {
 				return null;
+			}
+			if (!location.isSet()) {
+				boolean explicitInitRequired = Boolean
+						.parseBoolean(getBundleContext().getProperty(PROP_REQUIRES_EXPLICIT_INIT));
+				if (explicitInitRequired) {
+					// See bug 514333: don't allow clients to initialize instance location if the
+					// instance area is not explicitly defined yet
+					throw new IllegalStateException(CommonMessages.meta_instanceDataUnspecified);
+				}
+			}
+
+			// Note: if not explicitly set, this call will resolve to default location
+			// therefore we have the check above, but only if PROP_REQUIRES_EXPLICIT_INIT is set.
 			URL url = location.getURL();
 			if (url == null) {
-				throw new IllegalStateException("instance location is not (yet) set"); //$NON-NLS-1$
+				throw new IllegalStateException("Instance location is not (yet) set"); //$NON-NLS-1$
 			}
 			//	This makes the assumption that the instance location is a file: URL
 			File file = new File(url.getFile());
