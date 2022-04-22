@@ -28,6 +28,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
@@ -88,7 +89,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	protected static final String SAVE_NUMBER_PREFIX = "saveNumber_"; //$NON-NLS-1$
 	protected static final int SAVING = 2;
 	protected ElementTree lastSnap;
-	protected MasterTable masterTable;
+	protected final MasterTable masterTable;
 
 	/**
 	 * A flag indicating that a save operation is occurring.  This is a signal
@@ -131,6 +132,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	protected volatile boolean snapshotRequested;
 	private IStatus snapshotRequestor;
 	protected Workspace workspace;
+	private Set<Entry<Object, Object>> savedState;
 	//declare debug messages as fields to get sharing
 	private static final String DEBUG_START = " starting..."; //$NON-NLS-1$
 	private static final String DEBUG_FULL_SAVE = "Full save on workspace: "; //$NON-NLS-1$
@@ -238,6 +240,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			if (!project.exists() || project.isOpen())
 				it.remove();
 		}
+		savedState = null;
 		IPath location = workspace.getMetaArea().getSafeTableLocationFor(ResourcesPlugin.PI_RESOURCES);
 		IPath backup = workspace.getMetaArea().getBackupLocationFor(location);
 		try {
@@ -1256,7 +1259,12 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	}
 
 	protected void saveMasterTable(int kind) throws CoreException {
+		Set<Entry<Object, Object>> state = Set.copyOf(getMasterTable().entrySet());
+		if (Objects.equals(state, savedState)) {
+			return;
+		}
 		saveMasterTable(kind, workspace.getMetaArea().getSafeTableLocationFor(ResourcesPlugin.PI_RESOURCES));
+		savedState = state;
 	}
 
 	protected void saveMasterTable(int kind, IPath location) throws CoreException {
