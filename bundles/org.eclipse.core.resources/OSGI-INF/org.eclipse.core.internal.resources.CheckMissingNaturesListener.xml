@@ -4,6 +4,7 @@
    <service>
       <provide interface="org.eclipse.core.resources.IResourceChangeListener"/>
    </service>
+   <reference cardinality="1..1" field="log" interface="org.eclipse.core.runtime.ILog" name="log"/>
    <reference cardinality="1..1" field="workspace" interface="org.eclipse.core.resources.IWorkspace" name="workspace"/>
    <implementation class="org.eclipse.core.internal.resources.CheckMissingNaturesListener"/>
 </scr:component>

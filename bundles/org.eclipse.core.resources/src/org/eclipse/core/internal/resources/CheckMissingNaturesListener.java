@@ -12,6 +12,7 @@
  *     Mickael Istria (Red Hat Inc.) - initial API and implementation
  *     Christoph Läubrich 	- Issue #52 - Make ResourcesPlugin more dynamic and better handling early start-up
  *     						- Issue #68 - Use DS for CheckMissingNaturesListener
+ *     						- Issue #75 - Use ILog service reference in CheckMissingNaturesListener
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -40,6 +41,9 @@ public class CheckMissingNaturesListener implements IResourceChangeListener, IPr
 	@Reference
 	private IWorkspace workspace;
 
+	@Reference
+	private ILog log;
+
 	@Activate
 	public void register() {
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).addPreferenceChangeListener(this);
@@ -66,7 +70,8 @@ public class CheckMissingNaturesListener implements IResourceChangeListener, IPr
 			});
 			updateMarkers(modifiedProjects);
 		} catch (CoreException e) {
-			ResourcesPlugin.getPlugin().getLog().log(new Status(IStatus.ERROR, ResourcesPlugin.getPlugin().getBundle().getSymbolicName(), e.getMessage(), e));
+			log.log(new Status(IStatus.ERROR, ResourcesPlugin.getPlugin().getBundle().getSymbolicName(), e.getMessage(),
+					e));
 		}
 	}
 
@@ -217,7 +222,7 @@ public class CheckMissingNaturesListener implements IResourceChangeListener, IPr
 					workspaceJob.schedule();
 				}
 			} catch (CoreException e) {
-				ResourcesPlugin.getPlugin().getLog().log(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, e.getMessage(), e));
+				log.log(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, e.getMessage(), e));
 			}
 		}
 	}
@@ -244,7 +249,7 @@ public class CheckMissingNaturesListener implements IResourceChangeListener, IPr
 				marker.setAttribute(IMarker.CHAR_END, matcher.end(1));
 			}
 		} catch (IOException | CoreException e) {
-			ResourcesPlugin.getPlugin().getLog().log(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, e.getMessage(), e));
+			log.log(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, e.getMessage(), e));
 		}
 	}
 
@@ -276,7 +281,7 @@ public class CheckMissingNaturesListener implements IResourceChangeListener, IPr
 		try {
 			return Arrays.asList(project.findMarkers(MARKER_TYPE, true, IResource.DEPTH_ONE));
 		} catch (CoreException e) {
-			ResourcesPlugin.getPlugin().getLog().log(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, e.getMessage(), e));
+			log.log(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, e.getMessage(), e));
 			return Collections.emptyList();
 		}
 	}
