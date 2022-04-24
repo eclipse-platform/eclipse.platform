@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2004, 2015 IBM Corporation and others.
+ *  Copyright (c) 2004, 2022 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -12,11 +12,14 @@
  *     IBM - Initial API and implementation
  *     James Blackburn (Broadcom Corp.) - ongoing development
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427, 483862
+ *     Christoph Läubrich - Issue #84 - RefreshManager access ResourcesPlugin.getWorkspace in the init phase
  *******************************************************************************/
 package org.eclipse.core.internal.refresh;
 
 import java.util.*;
 import org.eclipse.core.internal.localstore.PrefixPool;
+import org.eclipse.core.internal.resources.InternalWorkspaceJob;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.resources.*;
@@ -29,7 +32,7 @@ import org.eclipse.core.runtime.*;
  *
  * @since 3.0
  */
-public class RefreshJob extends WorkspaceJob {
+public class RefreshJob extends InternalWorkspaceJob {
 
 	/**
 	 * Max refresh recursion deep
@@ -78,17 +81,17 @@ public class RefreshJob extends WorkspaceJob {
 	private final int updateDelay;
 	private final int maxRecursionDeep;
 
-	public RefreshJob() {
+	public RefreshJob(Workspace workspace) {
 		this(FAST_REFRESH_THRESHOLD, SLOW_REFRESH_THRESHOLD, BASE_REFRESH_DEPTH, DEPTH_INCREASE_STEP, UPDATE_DELAY,
-				MAX_RECURSION);
+				MAX_RECURSION, workspace);
 	}
 
 	/**
 	 * This method is protected for tests
 	 */
 	protected RefreshJob(int fastRefreshThreshold, int slowRefreshThreshold, int baseRefreshDepth,
-			int depthIncreaseStep, int updateDelay, int maxRecursionDeep) {
-		super(Messages.refresh_jobName);
+			int depthIncreaseStep, int updateDelay, int maxRecursionDeep, Workspace workspace) {
+		super(Messages.refresh_jobName, workspace);
 		this.fRequests = new ArrayList<>(1);
 		this.fastRefreshThreshold = fastRefreshThreshold;
 		this.slowRefreshThreshold = slowRefreshThreshold;

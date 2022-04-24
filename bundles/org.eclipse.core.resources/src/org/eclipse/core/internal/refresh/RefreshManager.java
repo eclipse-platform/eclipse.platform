@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,12 +10,15 @@
  *
  * Contributors:
  *     IBM - Initial API and implementation
+ *     Christoph Läubrich - Issue #84 - RefreshManager access ResourcesPlugin.getWorkspace in the init phase
  *******************************************************************************/
 package org.eclipse.core.internal.refresh;
 
 import org.eclipse.core.internal.resources.IManager;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.refresh.IRefreshMonitor;
 import org.eclipse.core.resources.refresh.IRefreshResult;
 import org.eclipse.core.runtime.*;
@@ -36,9 +39,9 @@ public class RefreshManager implements IRefreshResult, IManager, Preferences.IPr
 	/**
 	 * The workspace.
 	 */
-	private IWorkspace workspace;
+	private Workspace workspace;
 
-	public RefreshManager(IWorkspace workspace) {
+	public RefreshManager(Workspace workspace) {
 		this.workspace = workspace;
 	}
 
@@ -115,7 +118,7 @@ public class RefreshManager implements IRefreshResult, IManager, Preferences.IPr
 		Preferences preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
 		preferences.addPropertyChangeListener(this);
 
-		refreshJob = new RefreshJob();
+		refreshJob = new RefreshJob(workspace);
 		monitors = new MonitorManager(workspace, this);
 		boolean autoRefresh = preferences.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH);
 		if (autoRefresh)

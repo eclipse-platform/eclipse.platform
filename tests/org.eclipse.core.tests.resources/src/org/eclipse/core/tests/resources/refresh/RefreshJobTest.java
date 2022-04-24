@@ -335,7 +335,7 @@ public class RefreshJobTest extends ResourceTest {
 		protected TestRefreshJob(int fastRefreshThreshold, int slowRefreshThreshold, int baseRefreshDepth,
 				int depthIncreaseStep, int updateDelay, int maxRecursionDeep) {
 			super(fastRefreshThreshold, slowRefreshThreshold, baseRefreshDepth,
-					depthIncreaseStep, updateDelay, maxRecursionDeep);
+					depthIncreaseStep, updateDelay, maxRecursionDeep, (Workspace) ResourcesPlugin.getWorkspace());
 		}
 
 		@Override
