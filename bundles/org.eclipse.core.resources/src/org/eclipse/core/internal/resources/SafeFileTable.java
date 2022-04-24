@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -11,6 +11,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     James Blackburn (Broadcom Corp.) - ongoing development
+ *     Christoph Läubrich - Issue #77 - SaveManager access the ResourcesPlugin.getWorkspace at init phase
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -19,7 +20,6 @@ import java.util.Properties;
 import java.util.Set;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.*;
 
 /**
@@ -29,8 +29,10 @@ import org.eclipse.core.runtime.*;
 public class SafeFileTable {
 	protected IPath location;
 	protected Properties table;
+	private Workspace workspace;
 
-	public SafeFileTable(String pluginId) throws CoreException {
+	public SafeFileTable(String pluginId, Workspace workspace) throws CoreException {
+		this.workspace = workspace;
 		location = getWorkspace().getMetaArea().getSafeTableLocationFor(pluginId);
 		restore();
 	}
@@ -45,7 +47,7 @@ public class SafeFileTable {
 	}
 
 	protected Workspace getWorkspace() {
-		return (Workspace) ResourcesPlugin.getWorkspace();
+		return workspace;
 	}
 
 	public IPath lookup(IPath file) {

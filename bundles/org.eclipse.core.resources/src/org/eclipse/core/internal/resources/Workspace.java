@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -15,6 +15,7 @@
  *     Serge Beauchamp (Freescale Semiconductor) - [229633] Group and Project Path Variable Support
  *     Broadcom Corporation - ongoing development
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
+ *     Christoph Läubrich - Issue #77 - SaveManager access the ResourcesPlugin.getWorkspace at init phase
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -294,7 +295,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 
 	public Workspace() {
 		super();
-		localMetaArea = new LocalMetaArea();
+		localMetaArea = new LocalMetaArea(this);
 		tree = new ElementTree();
 		/* tree should only be modified during operations */
 		tree.immutable();
@@ -1978,7 +1979,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 	@Override
 	public IProjectDescription loadProjectDescription(InputStream stream) throws CoreException {
 		IProjectDescription result = null;
-		result = new ProjectDescriptionReader().read(new InputSource(stream));
+		result = new ProjectDescriptionReader(this).read(new InputSource(stream));
 		if (result == null) {
 			String message = NLS.bind(Messages.resources_errorReadProject, stream.toString());
 			IStatus status = new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, IResourceStatus.FAILED_READ_METADATA, message, null);
@@ -1992,7 +1993,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 		IProjectDescription result = null;
 		IOException e = null;
 		try {
-			result = new ProjectDescriptionReader().read(path);
+			result = new ProjectDescriptionReader(this).read(path);
 			if (result != null) {
 				// check to see if we are using in the default area or not. use java.io.File for
 				// testing equality because it knows better w.r.t. drives and case sensitivity

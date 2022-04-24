@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -15,6 +15,7 @@
  *     Sergey Prigogin (Google) - [437005] Out-of-date .snap file prevents Eclipse from running
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
  *     Mickael Istria (Red Hat Inc.) - Bug 488937
+ *     Christoph Läubrich - Issue #77 - SaveManager access the ResourcesPlugin.getWorkspace at init phase
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -57,9 +58,10 @@ public class LocalMetaArea implements ICoreConstants {
 	 * The project location is just stored as an optimization, to avoid recomputing it.
 	 */
 	protected final IPath projectMetaLocation;
+	private Workspace workspace;
 
-	public LocalMetaArea() {
-		super();
+	public LocalMetaArea(Workspace workspace) {
+		this.workspace = workspace;
 		metaAreaLocation = ResourcesPlugin.getPlugin().getStateLocation();
 		projectMetaLocation = metaAreaLocation.append(F_PROJECTS);
 	}
@@ -253,7 +255,7 @@ public class LocalMetaArea implements ICoreConstants {
 	}
 
 	protected Workspace getWorkspace() {
-		return (Workspace) ResourcesPlugin.getWorkspace();
+		return workspace;
 	}
 
 	public boolean hasSavedProject(IProject project) {

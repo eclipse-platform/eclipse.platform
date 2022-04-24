@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -15,6 +15,7 @@
  *     James Blackburn (Broadcom Corp.) - ongoing development
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
  *     Mickael Istria (Red Hat Inc.) - Bug 488937
+ *     Christoph Läubrich - Issue #77 - SaveManager access the ResourcesPlugin.getWorkspace at init phase
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -106,15 +107,17 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 	ProjectDescription projectDescription = null;
 
 	protected int state = S_INITIAL;
+	private Workspace workspace;
 
 	/**
 	 * Returns the SAXParser to use when parsing project description files.
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 */
-	private static synchronized SAXParser createParser() throws ParserConfigurationException, SAXException {
+	private static synchronized SAXParser createParser(Workspace workspace)
+			throws ParserConfigurationException, SAXException {
 		//the parser can't be used concurrently, so only use singleton when workspace is locked
-		if (!isWorkspaceLocked())
+		if (workspace == null || !isWorkspaceLocked(workspace))
 			return createParserFactory().newSAXParser();
 		if (singletonParser == null) {
 			singletonParser = createParserFactory().newSAXParser();
@@ -139,20 +142,27 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 		return singletonParserFactory;
 	}
 
-	private static boolean isWorkspaceLocked() {
+	private static boolean isWorkspaceLocked(Workspace workspace) {
 		try {
-			return ((Workspace) ResourcesPlugin.getWorkspace()).getWorkManager().isLockAlreadyAcquired();
+			return workspace.getWorkManager().isLockAlreadyAcquired();
 		} catch (CoreException e) {
 			return false;
 		}
 	}
 
 	public ProjectDescriptionReader() {
+		this.workspace = null;
+		this.project = null;
+	}
+
+	public ProjectDescriptionReader(Workspace workspace) {
+		this.workspace = workspace;
 		this.project = null;
 	}
 
 	public ProjectDescriptionReader(IProject project) {
 		this.project = project;
+		this.workspace = (Workspace) project.getWorkspace();
 	}
 
 	/**
@@ -927,7 +937,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 		objectStack = new ArrayDeque<>();
 		state = S_INITIAL;
 		try {
-			createParser().parse(input, this);
+			createParser(workspace).parse(input, this);
 		} catch (ParserConfigurationException | IOException | SAXException e) {
 			log(e);
 		}

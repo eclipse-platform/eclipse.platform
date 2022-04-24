@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,10 +10,12 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Christoph Läubrich - Issue #77 - SaveManager access the ResourcesPlugin.getWorkspace at init phase
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
@@ -25,14 +27,16 @@ public class SaveContext implements ISaveContext {
 	protected SafeFileTable fileTable;
 	protected int previousSaveNumber;
 	protected IProject project;
+	private Workspace workspace;
 
-	protected SaveContext(String pluginId, int kind, IProject project) throws CoreException {
+	protected SaveContext(String pluginId, int kind, IProject project, Workspace workspace) throws CoreException {
 		this.kind = kind;
 		this.project = project;
 		this.pluginId = pluginId;
 		needDelta = false;
 		needSaveNumber = false;
-		fileTable = new SafeFileTable(pluginId);
+		this.workspace = workspace;
+		fileTable = new SafeFileTable(pluginId, workspace);
 		previousSaveNumber = getWorkspace().getSaveManager().getSaveNumber(pluginId);
 	}
 
@@ -96,7 +100,7 @@ public class SaveContext implements ISaveContext {
 	}
 
 	protected Workspace getWorkspace() {
-		return (Workspace) ResourcesPlugin.getWorkspace();
+		return workspace;
 	}
 
 	public boolean isDeltaNeeded() {

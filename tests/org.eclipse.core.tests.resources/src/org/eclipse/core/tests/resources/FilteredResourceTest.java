@@ -1677,7 +1677,7 @@ public class FilteredResourceTest extends ResourceTest {
 		assertEquals("4.4", filters[0].getResource(), existingFolderInExistingProject);
 
 		try {
-			new ProjectDescriptionReader().read(existingProject.getFile(".project").getLocation());
+			new ProjectDescriptionReader(existingProject).read(existingProject.getFile(".project").getLocation());
 		} catch (IOException e) {
 			fail("5.0", e);
 		}
