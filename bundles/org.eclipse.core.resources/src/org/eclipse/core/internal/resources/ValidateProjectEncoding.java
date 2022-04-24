@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     Simeon Andreev - initial API and implementation
+ *     Christoph Läubrich - Issue #80 - CharsetManager access the ResourcesPlugin.getWorkspace before init
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -22,26 +23,25 @@ import org.eclipse.osgi.util.NLS;
 /**
  * Reports warning markers on projects without an explicit encoding setting.
  */
-public class ValidateProjectEncoding extends WorkspaceJob {
+public class ValidateProjectEncoding extends InternalWorkspaceJob {
 
 	public static final String MARKER_ID = "noExplicitEncoding"; //$NON-NLS-1$
 
 	public static final String MARKER_TYPE = ResourcesPlugin.getPlugin().getBundle().getSymbolicName() + "." //$NON-NLS-1$
 			+ MARKER_ID;
 
-	public static void scheduleWorkspaceValidation() {
-		IWorkspaceRoot workspaceRoot = getWorkspaceRoot();
-		IProject[] projects = workspaceRoot.getProjects();
-		ValidateProjectEncoding validateProjectEncoding = new ValidateProjectEncoding(projects);
-		validateProjectEncoding.setRule(getWorkspaceRoot());
+	public static void scheduleWorkspaceValidation(Workspace workspace) {
+		IProject[] projects = workspace.getRoot().getProjects();
+		ValidateProjectEncoding validateProjectEncoding = new ValidateProjectEncoding(workspace, projects);
+		validateProjectEncoding.setRule(workspace.getRoot());
 		validateProjectEncoding.schedule();
 	}
 
-	public static void scheduleProjectValidation(IProject project) {
+	public static void scheduleProjectValidation(Workspace workspace, IProject project) {
 		// schedule a job only if marker state would change
 		boolean shouldScheduleValidation = shouldScheduleValidation(project);
 		if (shouldScheduleValidation) {
-			ValidateProjectEncoding validateProjectEncoding = new ValidateProjectEncoding(project);
+			ValidateProjectEncoding validateProjectEncoding = new ValidateProjectEncoding(workspace, project);
 			validateProjectEncoding.setRule(project);
 			validateProjectEncoding.schedule();
 		}
@@ -49,8 +49,8 @@ public class ValidateProjectEncoding extends WorkspaceJob {
 
 	private final IProject[] projects;
 
-	private ValidateProjectEncoding(IProject... projects) {
-		super(Messages.resources_checkExplicitEncoding_jobName);
+	private ValidateProjectEncoding(Workspace workspace, IProject... projects) {
+		super(Messages.resources_checkExplicitEncoding_jobName, workspace);
 		setSystem(true);
 		this.projects = projects;
 	}
@@ -171,7 +171,4 @@ public class ValidateProjectEncoding extends WorkspaceJob {
 		}
 	}
 
-	private static IWorkspaceRoot getWorkspaceRoot() {
-		return ResourcesPlugin.getWorkspace().getRoot();
-	}
 }

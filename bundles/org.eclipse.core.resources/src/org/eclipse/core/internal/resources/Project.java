@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -16,6 +16,7 @@
  *     Markus Schorn (Wind River) - [306575] Save snapshot location with project
  *     Broadcom Corporation - ongoing development
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
+ *     Christoph Läubrich - Issue #80 - CharsetManager access the ResourcesPlugin.getWorkspace before init
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -1115,7 +1116,7 @@ public class Project extends Container implements IProject {
 			monitor.done();
 		}
 		if (!encodingWritten) {
-			ValidateProjectEncoding.scheduleProjectValidation(this);
+			ValidateProjectEncoding.scheduleProjectValidation((Workspace) getWorkspace(), this);
 		}
 	}
 

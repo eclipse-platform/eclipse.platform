@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2015 IBM Corporation and others.
+ * Copyright (c) 2003, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,10 +10,12 @@
  *
  * Contributors:
  *     IBM - Initial API and implementation
+ *     Christoph Läubrich - Issue #80 - CharsetManager access the ResourcesPlugin.getWorkspace before init
  *******************************************************************************/
 package org.eclipse.core.resources;
 
 import org.eclipse.core.internal.resources.InternalWorkspaceJob;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
@@ -63,7 +65,7 @@ public abstract class WorkspaceJob extends InternalWorkspaceJob {
 	 * @param name the name of the job
 	 */
 	public WorkspaceJob(String name) {
-		super(name);
+		super(name, (Workspace) ResourcesPlugin.getWorkspace());
 	}
 
 	/**
