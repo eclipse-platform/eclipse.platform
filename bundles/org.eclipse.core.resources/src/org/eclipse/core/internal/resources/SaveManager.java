@@ -17,6 +17,7 @@
  *     Sergey Prigogin (Google) - [437005] Out-of-date .snap file prevents Eclipse from running
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
  *     Mickael Istria (Red Hat Inc.) - Bug 488937
+ *     Christoph Läubrich - Issue #77 - SaveManager access the ResourcesPlugin.getWorkspace at init phase
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -140,7 +141,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	public SaveManager(Workspace workspace) {
 		this.workspace = workspace;
 		this.masterTable = new MasterTable();
-		this.snapshotJob = new DelayedSnapshotJob(this);
+		this.snapshotJob = new DelayedSnapshotJob(this, workspace);
 		snapshotRequested = false;
 		snapshotRequestor = null;
 		saveParticipants = Collections.synchronizedMap(new HashMap<>(10));
