@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,7 @@
  *     James Blackburn (Broadcom Corp.) - ongoing development
  *     Sergey Prigogin (Google) - [464072] Refresh on Access ignored during text search
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
+ *     Christoph Läubrich - Issue  #82 - ContentDescriptionManager access ResourcesPlugin.getWorkspace in the init phase
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -45,12 +46,12 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 	 * This job causes the content description cache and the related flags
 	 * in the resource tree to be flushed.
 	 */
-	private class FlushJob extends WorkspaceJob {
+	private class FlushJob extends InternalWorkspaceJob {
 		private final List<IPath> toFlush;
 		private boolean fullFlush;
 
-		public FlushJob() {
-			super(Messages.resources_flushingContentDescriptionCache);
+		public FlushJob(Workspace workspace) {
+			super(Messages.resources_flushingContentDescriptionCache, workspace);
 			setSystem(true);
 			setUser(false);
 			setPriority(LONG);
@@ -532,7 +533,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 		if (cacheState == FLUSHING_CACHE || cacheState == ABOUT_TO_FLUSH)
 			// in case we died before completing the last flushing
 			setCacheState(INVALID_CACHE);
-		flushJob = new FlushJob();
+		flushJob = new FlushJob(workspace);
 		// the cache is stale (plug-ins that might be contributing content types were added/removed)
 		if (getCacheTimestamp() != Platform.getStateStamp())
 			invalidateCache(false, null);
