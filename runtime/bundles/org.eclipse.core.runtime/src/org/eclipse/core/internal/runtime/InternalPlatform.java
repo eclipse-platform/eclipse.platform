@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Stream;
 import org.eclipse.core.internal.preferences.exchange.ILegacyPreferences;
 import org.eclipse.core.internal.preferences.exchange.IProductPreferencesService;
 import org.eclipse.core.internal.preferences.legacy.InitLegacyPreferences;
@@ -174,9 +175,7 @@ public final class InternalPlatform {
 
 	public boolean getBooleanOption(String option, boolean defaultValue) {
 		String value = getOption(option);
-		if (value == null)
-			return defaultValue;
-		return "true".equalsIgnoreCase(value); //$NON-NLS-1$
+		return value == null ? defaultValue : Boolean.parseBoolean(value);
 	}
 
 	public BundleContext getBundleContext() {
@@ -223,47 +222,43 @@ public final class InternalPlatform {
 	}
 
 	public Bundle getBundle(String symbolicName) {
-		Bundle[] bundles = getBundles(symbolicName, null);
-		return bundles != null && bundles.length > 0 ? bundles[0] : null;
+		Stream<Bundle> bundles = getBundles0(symbolicName, null);
+		return bundles.findFirst().orElse(null);
 	}
 
 	public Bundle[] getBundles(String symbolicName, String versionRange) {
-		if(!isRunning()) {
-			return null;
+		Stream<Bundle> result = getBundles0(symbolicName, versionRange);
+		Bundle[] results = result.toArray(Bundle[]::new);
+		return results.length > 0 ? results : null;
+	}
+
+	static final Comparator<Bundle> DESCENDING_BUNDLE_VERION = Comparator.comparing(Bundle::getVersion).reversed();
+
+	private Stream<Bundle> getBundles0(String symbolicName, String versionRange) {
+		if (!isRunning()) {
+			return Stream.empty();
 		}
 		if (Constants.SYSTEM_BUNDLE_SYMBOLICNAME.equals(symbolicName)) {
 			symbolicName = context.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).getSymbolicName();
 		}
-		Map<String, String> directives = Collections.singletonMap(Namespace.REQUIREMENT_FILTER_DIRECTIVE,
+		Map<String, String> directives = Map.of(Namespace.REQUIREMENT_FILTER_DIRECTIVE,
 				getRequirementFilter(symbolicName, versionRange));
 		Collection<BundleCapability> matchingBundleCapabilities = fwkWiring.findProviders(ModuleContainer
 				.createRequirement(IdentityNamespace.IDENTITY_NAMESPACE, directives, Collections.emptyMap()));
 
-		if (matchingBundleCapabilities.isEmpty()) {
-			return null;
-		}
-
-		Bundle[] results = matchingBundleCapabilities.stream().map(c -> c.getRevision().getBundle())
+		return matchingBundleCapabilities.stream().map(c -> c.getRevision().getBundle())
 				// Remove all the bundles that are installed or uninstalled
 				.filter(bundle -> (bundle.getState() & (Bundle.INSTALLED | Bundle.UNINSTALLED)) == 0)
-				.sorted(Comparator.comparing(Bundle::getVersion).reversed()) // highest version first
-				.toArray(Bundle[]::new);
-
-		return results.length > 0 ? results : null;
+				.sorted(DESCENDING_BUNDLE_VERION); // highest version first
 	}
 
 	private String getRequirementFilter(String symbolicName, String versionRange) {
-		VersionRange range = versionRange == null ? null : new VersionRange(versionRange);
-		StringBuilder filter = new StringBuilder();
-		if (range != null) {
-			filter.append("(&"); //$NON-NLS-1$
+		String identity = "(" + IdentityNamespace.IDENTITY_NAMESPACE + "=" + symbolicName + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		if (versionRange == null) {
+			return identity;
 		}
-		filter.append('(').append(IdentityNamespace.IDENTITY_NAMESPACE).append('=').append(symbolicName).append(')');
-
-		if (range != null) {
-			filter.append(range.toFilterString(IdentityNamespace.CAPABILITY_VERSION_ATTRIBUTE)).append(')');
-		}
-		return filter.toString();
+		String version = new VersionRange(versionRange).toFilterString(IdentityNamespace.CAPABILITY_VERSION_ATTRIBUTE);
+		return "(&" + identity + version + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public String[] getCommandLineArgs() {
@@ -654,78 +649,37 @@ public final class InternalPlatform {
 	}
 
 	private void openOSGiTrackers() {
-		Filter filter = null;
+		instanceLocation = createOpenTracker(Location.INSTANCE_FILTER);
+		userLocation = createOpenTracker(Location.USER_FILTER);
+		configurationLocation = createOpenTracker(Location.CONFIGURATION_FILTER);
+		installLocation = createOpenTracker(Location.INSTALL_FILTER);
+		logTracker = createOpenTracker(FrameworkLog.class);
+		platformTracker = createOpenTracker(PlatformAdmin.class);
+		contentTracker = createOpenTracker(IContentTypeManager.class);
+		preferencesTracker = createOpenTracker(IPreferencesService.class);
+		groupProviderTracker = createOpenTracker("(objectClass=" + IBundleGroupProvider.class.getName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+		logReaderTracker = createOpenTracker(ExtendedLogReaderService.class);
+		extendedLogTracker = createOpenTracker(ExtendedLogService.class);
+		environmentTracker = createOpenTracker(EnvironmentInfo.class);
+		debugTracker = createOpenTracker(DebugOptions.class);
+	}
+
+	private <T> ServiceTracker<T, T> createOpenTracker(String filterStr) {
 		try {
-			filter = context.createFilter(Location.INSTANCE_FILTER);
+			Filter filter = FrameworkUtil.createFilter(filterStr);
+			ServiceTracker<T, T> tracker = new ServiceTracker<>(context, filter, null);
+			tracker.open();
+			return tracker;
 		} catch (InvalidSyntaxException e) {
-			// ignore this.  It should never happen as we have tested the above format.
+			// It should never happen as we have tested the above format.
+			throw new AssertionError("Invalid service tracker filter"); //$NON-NLS-1$
 		}
-		instanceLocation = new ServiceTracker<>(context, filter, null);
-		instanceLocation.open();
+	}
 
-		try {
-			filter = context.createFilter(Location.USER_FILTER);
-		} catch (InvalidSyntaxException e) {
-			// ignore this.  It should never happen as we have tested the above format.
-		}
-		userLocation = new ServiceTracker<>(context, filter, null);
-		userLocation.open();
-
-		try {
-			filter = context.createFilter(Location.CONFIGURATION_FILTER);
-		} catch (InvalidSyntaxException e) {
-			// ignore this.  It should never happen as we have tested the above format.
-		}
-		configurationLocation = new ServiceTracker<>(context, filter, null);
-		configurationLocation.open();
-
-		try {
-			filter = context.createFilter(Location.INSTALL_FILTER);
-		} catch (InvalidSyntaxException e) {
-			// ignore this.  It should never happen as we have tested the above format.
-		}
-		installLocation = new ServiceTracker<>(context, filter, null);
-		installLocation.open();
-
-		if (context != null) {
-			logTracker = new ServiceTracker<>(context, FrameworkLog.class, null);
-			logTracker.open();
-		}
-
-		if (context != null) {
-			platformTracker = new ServiceTracker<>(context, PlatformAdmin.class, null);
-			platformTracker.open();
-		}
-
-		if (context != null) {
-			contentTracker = new ServiceTracker<>(context, IContentTypeManager.class, null);
-			contentTracker.open();
-		}
-
-		if (context != null) {
-			preferencesTracker = new ServiceTracker<>(context, IPreferencesService.class, null);
-			preferencesTracker.open();
-		}
-
-		try {
-			filter = context.createFilter("(objectClass=" + IBundleGroupProvider.class.getName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-		} catch (InvalidSyntaxException e) {
-			// ignore this, it should never happen
-		}
-		groupProviderTracker = new ServiceTracker<>(context, filter, null);
-		groupProviderTracker.open();
-
-		logReaderTracker = new ServiceTracker<>(context, ExtendedLogReaderService.class, null);
-		logReaderTracker.open();
-
-		extendedLogTracker = new ServiceTracker<>(context, ExtendedLogService.class, null);
-		extendedLogTracker.open();
-
-		environmentTracker = new ServiceTracker<>(context, EnvironmentInfo.class, null);
-		environmentTracker.open();
-
-		debugTracker = new ServiceTracker<>(context, DebugOptions.class, null);
-		debugTracker.open();
+	private <T> ServiceTracker<T, T> createOpenTracker(Class<T> service) {
+		ServiceTracker<T, T> tracker = new ServiceTracker<>(context, service, null);
+		tracker.open();
+		return tracker;
 	}
 
 	private void startServices() {
@@ -757,44 +711,24 @@ public final class InternalPlatform {
 			logs.forEach((b, log) -> logReader.removeLogListener(log));
 		}
 		logs.clear();
-		if (preferencesTracker != null) {
-			preferencesTracker.close();
-		}
-		if (contentTracker != null) {
-			contentTracker.close();
-		}
-		if (debugTracker != null) {
-			debugTracker.close();
-		}
-		if (platformTracker != null) {
-			platformTracker.close();
-		}
-		if (logTracker != null) {
-			logTracker.close();
-		}
-		if (groupProviderTracker != null) {
-			groupProviderTracker.close();
-		}
-		if (environmentTracker != null) {
-			environmentTracker.close();
-		}
-		if (logReaderTracker != null) {
-			logReaderTracker.close();
-		}
-		if (extendedLogTracker != null) {
-			extendedLogTracker.close();
-		}
-		if (installLocation != null) {
-			installLocation.close();
-		}
-		if (userLocation != null) {
-			userLocation.close();
-		}
-		if (configurationLocation != null) {
-			configurationLocation.close();
-		}
-		if (instanceLocation != null) {
-			instanceLocation.close();
+		closeTracker(preferencesTracker);
+		closeTracker(contentTracker);
+		closeTracker(debugTracker);
+		closeTracker(platformTracker);
+		closeTracker(logTracker);
+		closeTracker(groupProviderTracker);
+		closeTracker(environmentTracker);
+		closeTracker(logReaderTracker);
+		closeTracker(extendedLogTracker);
+		closeTracker(installLocation);
+		closeTracker(userLocation);
+		closeTracker(configurationLocation);
+		closeTracker(instanceLocation);
+	}
+
+	private static void closeTracker(ServiceTracker<?, ?> tracker) {
+		if (tracker != null) {
+			tracker.close();
 		}
 	}
 
@@ -803,13 +737,7 @@ public final class InternalPlatform {
 	 * Pre-pend the message with the current date and the name of the current thread.
 	 */
 	public static void message(String message) {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append(new Date(System.currentTimeMillis()));
-		buffer.append(" - ["); //$NON-NLS-1$
-		buffer.append(Thread.currentThread().getName());
-		buffer.append("] "); //$NON-NLS-1$
-		buffer.append(message);
-		System.out.println(buffer.toString());
+		System.out.println(String.format("%s - [%s] %s", new Date(), Thread.currentThread().getName(), message)); //$NON-NLS-1$
 	}
 
 	public static void start(Bundle bundle) throws BundleException {
