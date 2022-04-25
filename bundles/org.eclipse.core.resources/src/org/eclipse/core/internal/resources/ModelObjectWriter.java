@@ -25,7 +25,6 @@ import java.net.URI;
 import java.util.*;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.internal.events.BuildCommand;
-import org.eclipse.core.internal.localstore.SafeFileOutputStream;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IPath;
@@ -152,19 +151,6 @@ public class ModelObjectWriter implements IModelObjectConstants {
 	}
 
 	/**
-	 * The parameter tempLocation is a location to place our temp file (copy of the target one)
-	 * to be used in case we could not successfully write the new file.
-	 */
-	public void write(Object object, IPath location, IPath tempLocation, String lineSeparator) throws IOException {
-		String tempPath = tempLocation == null ? null : tempLocation.toOSString();
-		try (
-			SafeFileOutputStream file = new SafeFileOutputStream(location.toOSString(), tempPath);
-		) {
-			write(object, file, lineSeparator);
-		}
-	}
-
-	/**
 	 * The OutputStream is closed in this method.
 	 */
 	public void write(Object object, OutputStream output, String lineSeparator) throws IOException {
@@ -190,8 +176,7 @@ public class ModelObjectWriter implements IModelObjectConstants {
 			return;
 		}
 		if (obj instanceof WorkspaceDescription) {
-			write((WorkspaceDescription) obj, writer);
-			return;
+			throw new IOException("Workspace description format is not supported anymore."); //$NON-NLS-1$
 		}
 		if (obj instanceof LinkDescription) {
 			write((LinkDescription) obj, writer);
@@ -284,21 +269,4 @@ public class ModelObjectWriter implements IModelObjectConstants {
 		writer.endTag(name);
 	}
 
-	protected void write(WorkspaceDescription description, XMLWriter writer) {
-		writer.startTag(WORKSPACE_DESCRIPTION, null);
-		if (description != null) {
-			writer.printSimpleTag(NAME, description.getName());
-			writer.printSimpleTag(AUTOBUILD, description.isAutoBuilding() ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$
-			writer.printSimpleTag(SNAPSHOT_INTERVAL, description.getSnapshotInterval());
-			writer.printSimpleTag(APPLY_FILE_STATE_POLICY, description.isApplyFileStatePolicy() ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$
-			writer.printSimpleTag(FILE_STATE_LONGEVITY, description.getFileStateLongevity());
-			writer.printSimpleTag(MAX_FILE_STATE_SIZE, description.getMaxFileStateSize());
-			writer.printSimpleTag(MAX_FILE_STATES, description.getMaxFileStates());
-			writer.printSimpleTag(KEEP_DERIVED_STATE, description.isKeepDerivedState() ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$
-			String[] order = description.getBuildOrder(false);
-			if (order != null)
-				write(BUILD_ORDER, PROJECT, order, writer);
-		}
-		writer.endTag(WORKSPACE_DESCRIPTION);
-	}
 }

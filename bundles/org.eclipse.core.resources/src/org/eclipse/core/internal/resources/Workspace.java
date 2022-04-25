@@ -2228,13 +2228,6 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 		}
 		description = new WorkspacePreferences();
 
-		// if we have an old description file, read it (getting rid of it)
-		WorkspaceDescription oldDescription = getMetaArea().readOldWorkspace();
-		if (oldDescription != null) {
-			description.copyFrom(oldDescription);
-			ResourcesPlugin.getPlugin().savePluginPreferences();
-		}
-
 		// Set explicit workspace encoding if no projects exist in the workspace
 		if (!localMetaArea.hasSavedProjects()) {
 			setExplicitWorkspaceEncoding();

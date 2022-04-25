@@ -24,7 +24,6 @@ import java.util.Map.Entry;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
-import org.eclipse.core.internal.localstore.SafeFileOutputStream;
 import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
@@ -251,10 +250,6 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		return createLinkDescription(new Path(path), type, uriFromPortableString(location));
 	}
 
-	protected String getInvalidWorkspaceDescription() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<workspaceDescription>\n" + "<name>Foo</name>\n" + "<autobuild>Foo</autobuild>\n" + "<snapshotInterval>300Foo000</snapshotInterval>\n" + "<fileStateLongevity>Foo480000</fileStateLongevity>\n" + "<maxFileStateSize>104856Foo</maxFileStateSize>\n" + "<maxFileStates>5Foo0</maxFileStates>\n" + "</workspaceDescription>\n";
-	}
-
 	private String getLongDescription() {
 		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<projectDescription>" + "<name>org.eclipse.help.ui</name>" + "<comment></comment>" + "<charset>UTF-8</charset>" + "	<projects>" + "	<project>org.eclipse.core.boot</project>" + "	<project>org.eclipse.core.resources</project>" + "	<project>org.eclipse.core.runtime</project>" + "	<project>org.eclipse.help</project>" + "	<project>org.eclipse.help.appserver</project>" + "	<project>org.eclipse.search</project>" + "	<project>org.eclipse.ui</project>" + "	</projects>" + "	<buildSpec>" + "	<buildCommand>" + "	<name>org.eclipse.jdt.core.javabuilder</name>" + "	<arguments>" + "	</arguments>" + "	</buildCommand>" + "	<buildCommand>" + "	<name>org.eclipse.pde.ManifestBuilder</name>" + "	<arguments>"
 				+ "	</arguments>" + "	</buildCommand>" + "	<buildCommand>" + "	<name>org.eclipse.pde.SchemaBuilder</name>" + "	<arguments>" + "	</arguments>" + "	</buildCommand>" + "	</buildSpec>" + "	<natures>" + "	<nature>org.eclipse.jdt.core.javanature</nature>" + "	<nature>org.eclipse.pde.PluginNature</nature>" + "	</natures>" + "	<linkedResources>" + "	<link>" + "	<name>contexts.xml</name>" + "	<type>1</type>" + "	<location>" + LONG_LOCATION + "</location>" + "	</link>" + "	<link>" + "	<name>doc</name>" + "	<type>2</type>" + "	<location>" + LONG_LOCATION + "</location>" + "	</link>" + "	<link>" + "	<name>icons</name>" + "	<type>2</type>" + "	<location>" + LONG_LOCATION + "</location>" + "	</link>" + "	<link>" + "	<name>preferences.ini</name>"
@@ -401,44 +396,6 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		LinkDescription link = projDesc.getLinks().values().iterator().next();
 		assertEquals("3.7", new Path("newLink"), link.getProjectRelativePath());
 		assertEquals("3.8", PATH_STRING, URIUtil.toPath(link.getLocationURI()).toString());
-	}
-
-	public void testInvalidWorkspaceDescription() {
-		/* initialize common objects */
-		WorkspaceDescriptionReader reader = new WorkspaceDescriptionReader();
-		IPath root = getWorkspace().getRoot().getLocation();
-		IPath location = root.append("ModelObjectWriterTest2.pbs");
-
-		/* write the bogus description */
-		try (FileWriter writer = new FileWriter(location.toFile())) {
-			writer.write(getInvalidWorkspaceDescription());
-		} catch (IOException e) {
-			fail("1.91", e);
-		}
-
-		/* test read */
-		try {
-			Preferences prefs = ResourcesPlugin.getPlugin().getPluginPreferences();
-			FileInputStream input = null;
-			try {
-				input = new FileInputStream(location.toFile());
-			} catch (FileNotFoundException e) {
-				fail("1.99", e);
-			}
-			//on reading invalid values the reader should revert to default values
-			WorkspaceDescription desc2 = (WorkspaceDescription) reader.read(input);
-			//assertion "1.1" removed because workspace name can't be invalid
-			assertEquals("1.2", prefs.getDefaultBoolean(ResourcesPlugin.PREF_AUTO_BUILDING), desc2.isAutoBuilding());
-			assertEquals("1.3", prefs.getDefaultLong(PreferenceInitializer.PREF_DELTA_EXPIRATION), desc2.getDeltaExpiration());
-			assertEquals("1.4", prefs.getDefaultBoolean(ResourcesPlugin.PREF_APPLY_FILE_STATE_POLICY), desc2.isApplyFileStatePolicy());
-			assertEquals("1.5", prefs.getDefaultLong(ResourcesPlugin.PREF_FILE_STATE_LONGEVITY), desc2.getFileStateLongevity());
-			assertEquals("1.6", prefs.getDefaultInt(ResourcesPlugin.PREF_MAX_FILE_STATES), desc2.getMaxFileStates());
-			assertEquals("1.7", prefs.getDefaultLong(ResourcesPlugin.PREF_MAX_FILE_STATE_SIZE), desc2.getMaxFileStateSize());
-			assertEquals("1.8", prefs.getDefaultInt(PreferenceInitializer.PREF_OPERATIONS_PER_SNAPSHOT), desc2.getOperationsPerSnapshot());
-		} finally {
-			/* remove trash */
-			Workspace.clear(location.toFile());
-		}
 	}
 
 	/**
@@ -683,45 +640,6 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		assertTrue("1.1", description.getName().equals(description2.getName()));
 		assertEquals("1.2", location, description.getLocationURI());
 		assertEquals("1.3", locationWithSpaces, description2.getLinkLocationURI(path));
-	}
-
-	public void testWorkspaceDescription() throws Throwable {
-
-		/* initialize common objects */
-		ModelObjectWriter writer = new ModelObjectWriter();
-		WorkspaceDescriptionReader reader = new WorkspaceDescriptionReader();
-		IPath root = getWorkspace().getRoot().getLocation();
-		IPath location = root.append("ModelObjectWriterTest.pbs");
-
-		/* test write */
-		WorkspaceDescription desc = new WorkspaceDescription("MyWorkspace");
-		desc.setName("aName");
-		desc.setAutoBuilding(false);
-		desc.setApplyFileStatePolicy(false);
-		desc.setFileStateLongevity(654321l);
-		desc.setMaxFileStates(1000);
-		desc.setMaxFileStateSize(123456789l);
-
-		SafeFileOutputStream output = new SafeFileOutputStream(location.toFile());
-		writer.write(desc, output, System.lineSeparator());
-		output.close();
-
-		/* test read */
-		try {
-			FileInputStream input = new FileInputStream(location.toFile());
-			WorkspaceDescription desc2 = (WorkspaceDescription) reader.read(input);
-			assertTrue("1.1", desc.getName().equals(desc2.getName()));
-			assertTrue("1.2", desc.isAutoBuilding() == desc2.isAutoBuilding());
-			assertTrue("1.3", desc.getDeltaExpiration() == desc2.getDeltaExpiration());
-			assertTrue("1.4", desc.isApplyFileStatePolicy() == desc2.isApplyFileStatePolicy());
-			assertTrue("1.5", desc.getFileStateLongevity() == desc2.getFileStateLongevity());
-			assertTrue("1.6", desc.getMaxFileStates() == desc2.getMaxFileStates());
-			assertTrue("1.7", desc.getMaxFileStateSize() == desc2.getMaxFileStateSize());
-			assertTrue("1.8", desc.getOperationsPerSnapshot() == desc2.getOperationsPerSnapshot());
-		} finally {
-			/* remove trash */
-			Workspace.clear(location.toFile());
-		}
 	}
 
 	protected URI uriFromPortableString(String pathString) {

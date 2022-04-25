@@ -16,7 +16,8 @@ package org.eclipse.core.tests.internal.resources;
 
 import java.util.*;
 import junit.framework.ComparisonFailure;
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.internal.resources.WorkspacePreferences;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -264,32 +265,6 @@ public class WorkspacePreferencesTest extends ResourceTest {
 		// the original value should remain set
 		assertEquals("3.1", 90000, workspace.getDescription().getFileStateLongevity());
 		assertEquals("3.2", 90000, preferences.getLong(ResourcesPlugin.PREF_FILE_STATE_LONGEVITY));
-	}
-
-	/**
-	 * Checks if a legacy workspace description is correctly loaded and
-	 * its file discarded.
-	 */
-	public void testMigration() {
-		WorkspaceDescription description = new WorkspaceDescription("Legacy workspace");
-		description.setAutoBuilding(false);
-		final String[] buildOrder = new String[] {"g", "r", "e", "p"};
-		description.setBuildOrder(buildOrder);
-		description.setFileStateLongevity(Math.abs((long) (Math.random() * 100000L)));
-		description.setMaxFileStates(Math.abs((int) (Math.random() * 100000L)));
-		description.setMaxFileStateSize(Math.abs((long) (Math.random() * 100000L)));
-		description.setSnapshotInterval(Math.abs((long) (Math.random() * 100000L)));
-		description.setKeepDerivedState(true);
-		LocalMetaArea localMetaArea = ((Workspace) workspace).getMetaArea();
-		try {
-			localMetaArea.write(description);
-		} catch (CoreException ce) {
-			fail("1.0", ce);
-		}
-		assertTrue("2.0 - file .description does not exist", localMetaArea.getOldWorkspaceDescriptionLocation().toFile().isFile());
-		WorkspaceDescription descriptionFromDisk = localMetaArea.readOldWorkspace();
-		assertTrue("2.1 - file .description still exists", !localMetaArea.getOldWorkspaceDescriptionLocation().toFile().isFile());
-		assertEquals("3.0", description, descriptionFromDisk);
 	}
 
 	/**

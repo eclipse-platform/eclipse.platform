@@ -19,9 +19,7 @@ package org.eclipse.core.internal.resources;
 public interface IModelObjectConstants {
 	String ARGUMENTS = "arguments"; //$NON-NLS-1$
 	String ID = "id"; //$NON-NLS-1$
-	String AUTOBUILD = "autobuild"; //$NON-NLS-1$
 	String BUILD_COMMAND = "buildCommand"; //$NON-NLS-1$
-	String BUILD_ORDER = "buildOrder"; //$NON-NLS-1$
 	String BUILD_SPEC = "buildSpec"; //$NON-NLS-1$
 	String BUILD_TRIGGERS = "triggers"; //$NON-NLS-1$
 	String TRIGGER_AUTO = "auto"; //$NON-NLS-1$
@@ -33,11 +31,6 @@ public interface IModelObjectConstants {
 	String KEY = "key"; //$NON-NLS-1$
 	String LOCATION = "location"; //$NON-NLS-1$
 	String LOCATION_URI = "locationURI"; //$NON-NLS-1$
-	String APPLY_FILE_STATE_POLICY = "applyFileStatePolicy"; //$NON-NLS-1$
-	String FILE_STATE_LONGEVITY = "fileStateLongevity"; //$NON-NLS-1$
-	String MAX_FILE_STATE_SIZE = "maxFileStateSize"; //$NON-NLS-1$
-	String MAX_FILE_STATES = "maxFileStates"; //$NON-NLS-1$
-	String KEEP_DERIVED_STATE = "keepDerivedState"; //$NON-NLS-1$
 
 	/**
 	 * The project relative path is called the link name for backwards compatibility
@@ -45,13 +38,11 @@ public interface IModelObjectConstants {
 	String NAME = "name"; //$NON-NLS-1$
 	String NATURE = "nature"; //$NON-NLS-1$
 	String NATURES = "natures"; //$NON-NLS-1$
-	String SNAPSHOT_INTERVAL = "snapshotInterval"; //$NON-NLS-1$
 	String PROJECT = "project"; //$NON-NLS-1$
 	String PROJECT_DESCRIPTION = "projectDescription"; //$NON-NLS-1$
 	String PROJECTS = "projects"; //$NON-NLS-1$
 	String TYPE = "type"; //$NON-NLS-1$
 	String VALUE = "value"; //$NON-NLS-1$
-	String WORKSPACE_DESCRIPTION = "workspaceDescription"; //$NON-NLS-1$
 	String LINKED_RESOURCES = "linkedResources"; //$NON-NLS-1$
 	String LINK = "link"; //$NON-NLS-1$
 	String FILTERED_RESOURCES = "filteredResources"; //$NON-NLS-1$

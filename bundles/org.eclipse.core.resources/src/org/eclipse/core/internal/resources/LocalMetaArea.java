@@ -156,10 +156,6 @@ public class LocalMetaArea implements ICoreConstants {
 		return locationFor(target).append(F_OLD_PROJECT);
 	}
 
-	public IPath getOldWorkspaceDescriptionLocation() {
-		return metaAreaLocation.append(F_DESCRIPTION);
-	}
-
 	public IPath getPropertyStoreLocation(IResource resource) {
 		int type = resource.getType();
 		Assert.isTrue(type != IResource.FILE && type != IResource.FOLDER);
@@ -316,24 +312,6 @@ public class LocalMetaArea implements ICoreConstants {
 	}
 
 	/**
-	 * Provides backward compatibility with existing workspaces based on
-	 * descriptions.
-	 */
-	public WorkspaceDescription readOldWorkspace() {
-		IPath path = getOldWorkspaceDescriptionLocation();
-		IPath tempPath = getBackupLocationFor(path);
-		try {
-			WorkspaceDescription oldDescription = (WorkspaceDescription) new WorkspaceDescriptionReader().read(path, tempPath);
-			// if one of those files exist, get rid of them
-			Workspace.clear(path.toFile());
-			Workspace.clear(tempPath.toFile());
-			return oldDescription;
-		} catch (IOException e) {
-			return null;
-		}
-	}
-
-	/**
 	 * Returns the portions of the project description that are private, and
 	 * adds them to the supplied project description. In particular, the
 	 * project location, the project's dynamic references and build configurations
@@ -423,26 +401,6 @@ public class LocalMetaArea implements ICoreConstants {
 		} catch (IOException e) {
 			//ignore - this is an old location file or an exception occurred
 			// closing the stream
-		}
-	}
-
-	/**
-	 * Writes the workspace description to the local meta area. This method is
-	 * synchronized to prevent multiple current write attempts.
-	 *
-	 * @deprecated should not be called any more - workspace preferences are
-	 *                     now maintained in the plug-in's preferences
-	 */
-	@Deprecated
-	public synchronized void write(WorkspaceDescription description) throws CoreException {
-		IPath path = getOldWorkspaceDescriptionLocation();
-		path.toFile().getParentFile().mkdirs();
-		IPath tempPath = getBackupLocationFor(path);
-		try {
-			new ModelObjectWriter().write(description, path, tempPath, System.lineSeparator());
-		} catch (IOException e) {
-			String message = NLS.bind(Messages.resources_writeWorkspaceMeta, path);
-			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, null, message, e);
 		}
 	}
 
