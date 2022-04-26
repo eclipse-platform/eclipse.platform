@@ -15,7 +15,8 @@
  *     Serge Beauchamp (Freescale Semiconductor) - [229633] Group and Project Path Variable Support
  *     Broadcom Corporation - ongoing development
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
- *     Christoph Läubrich - Issue #77 - SaveManager access the ResourcesPlugin.getWorkspace at init phase
+ *     Christoph Läubrich 	- Issue #77 - SaveManager access the ResourcesPlugin.getWorkspace at init phase
+ *     						- Issue #86 - Cyclic dependency between ProjectPreferences and Workspace init
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -2216,7 +2217,6 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			localMetaArea.createMetaArea();
 		}
 		PlatformURLResourceConnection.startup(getRoot().getLocation());
-		initializePreferenceLookupOrder();
 
 		// This method is not inside an operation because it is the one responsible for
 		// creating the WorkManager object (who takes care of operations).
@@ -2232,6 +2232,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 		if (!localMetaArea.hasSavedProjects()) {
 			setExplicitWorkspaceEncoding();
 		}
+		initializePreferenceLookupOrder();
 
 		// create root location
 		localMetaArea.locationFor(getRoot()).toFile().mkdirs();
