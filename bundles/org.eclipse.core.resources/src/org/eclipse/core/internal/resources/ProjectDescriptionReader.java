@@ -150,13 +150,8 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 		}
 	}
 
-	public ProjectDescriptionReader() {
-		this.workspace = null;
-		this.project = null;
-	}
-
-	public ProjectDescriptionReader(Workspace workspace) {
-		this.workspace = workspace;
+	public ProjectDescriptionReader(IWorkspace workspace) {
+		this.workspace = (Workspace) workspace;
 		this.project = null;
 	}
 
@@ -821,7 +816,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			// Don't bother adding an empty group of referenced projects to the
 			// project descriptor.
 			return;
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IWorkspaceRoot root = workspace.getRoot();
 		IProject[] projects = new IProject[referencedProjects.size()];
 		for (int i = 0; i < projects.length; i++) {
 			projects[i] = root.getProject(referencedProjects.get(i));

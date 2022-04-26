@@ -39,6 +39,7 @@ public class WorkspaceSerializationTest extends WorkspaceSessionTest {
 
 	@Override
 	protected void setUp() throws Exception {
+		super.setUp();
 		workspace = getWorkspace();
 	}
 }
