@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources;
 
 import junit.framework.*;
+import org.eclipse.core.tests.internal.builders.RelaxedSchedRuleBuilderTest;
 
 /** can be manual started for testing random fails **/
 public class RepeatedTestSuite extends TestCase {
@@ -21,7 +22,7 @@ public class RepeatedTestSuite extends TestCase {
         TestSuite suite = new TestSuite(RepeatedTestSuite.class.getName());
 
 		for (int i = 0; i < 1000; i++) {
-			suite.addTestSuite(MarkerTest.class); // the test to repeat
+			suite.addTestSuite(RelaxedSchedRuleBuilderTest.class); // the test to repeat
         }
         return suite;
     }

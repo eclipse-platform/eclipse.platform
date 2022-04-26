@@ -14,8 +14,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.core.internal.runtime.InternalPlatform;
+import org.eclipse.core.internal.utils.StringPoolJob;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.junit.Assert;
@@ -70,12 +73,31 @@ public class TestUtil {
 		return waitForJobs(owner, minTimeMs, maxTimeMs, null);
 	}
 
+	static boolean ignoreJob(Job job) {
+		if (job instanceof StringPoolJob) {
+			// reschedules itself
+			return true;
+		}
+		Class<?> clazz = job.getClass();
+		while ((clazz = clazz.getSuperclass()) != null) {
+			if (clazz.getSimpleName().equals("UIJob")) {
+				// can not be run while waiting in UI thread
+				return true;
+			}
+		}
+		if (job.belongsTo(FreezeMonitor.class)) {
+			// sleeps for a good reason
+			// and shouldn't be touched during test
+			return true;
+		}
+		return false;
+	}
+
 	private static void wakeUpSleepingJobs(Object family) {
 		List<Job> sleepingJobs = getSleepingJobs(family);
 		for (Job job : sleepingJobs) {
-			// don't return freeze monitor job, it sleeps for a good reason
-			// and shouldn't be touched during test
-			if (!job.belongsTo(FreezeMonitor.class)) {
+			if (!ignoreJob(job)) {
+				// System.out.println("wakeup job " + asString(job));
 				job.wakeUp();
 			}
 		}
@@ -119,15 +141,9 @@ public class TestUtil {
 				break;
 			}
 
-			if (!Collections.disjoint(runningJobs, jobs)) {
-				// There is a job which runs already quite some time, don't wait for it to avoid
-				// test timeouts
-				dumpRunningOrWaitingJobs(owner, jobs);
-				return true;
-			}
-
-			if (System.currentTimeMillis() - start >= maxTimeMs) {
-				dumpRunningOrWaitingJobs(owner, jobs);
+			long millisGone = System.currentTimeMillis() - start;
+			if (millisGone >= maxTimeMs) {
+				dumpRunningOrWaitingJobs(owner, jobs, millisGone);
 				return true;
 			}
 			try {
@@ -137,53 +153,51 @@ public class TestUtil {
 			}
 			wakeUpSleepingJobs(family);
 		}
-		runningJobs.clear();
 		return false;
 	}
-
-	static Set<Job> runningJobs = new LinkedHashSet<>();
 
 	public static void dumpRunnigOrWaitingJobs(String owner) {
 		List<Job> jobs = getRunningOrWaitingJobs(null);
 		if (!jobs.isEmpty()) {
 			String message = "Some job is still running or waiting to run: " + asString(jobs);
-			log(IStatus.INFO, owner, message);
+			log(IStatus.INFO, owner, message, new RuntimeException(message));
 		}
 	}
 
-	private static void dumpRunningOrWaitingJobs(String owner, List<Job> jobs) {
-		String message = "Some job is still running or waiting to run: " + dumpRunningOrWaitingJobs(jobs);
-		log(IStatus.ERROR, owner, message);
+	private static void dumpRunningOrWaitingJobs(String owner, List<Job> jobs, long millisGone) {
+		String message = "Some job is still running or waiting to run after " + millisGone + "ms: "
+				+ dumpRunningOrWaitingJobs(jobs);
+		log(IStatus.ERROR, owner, message, new RuntimeException(message));
 	}
 
 	private static String dumpRunningOrWaitingJobs(List<Job> jobs) {
 		if (jobs.isEmpty()) {
 			return "";
 		}
-		// clear "old" running jobs, we only remember most recent
-		runningJobs.clear();
-		for (Job job : jobs) {
-			runningJobs.add(job);
-		}
 		return asString(jobs);
 	}
 
-	private static String asString(List<Job> jobs) {
+	private static String asString(Job job) {
 		StringBuilder sb = new StringBuilder();
-		for (Job job : jobs) {
-			sb.append("'").append(job.getName()).append("'/");
-			sb.append(job.getClass().getName());
-			sb.append(", ");
+		sb.append("'").append(job.getName()).append("'/");
+		sb.append(job.getClass().getName());
+		sb.append(" state=" + job.getState());
+		Thread thread = job.getThread();
+		if (thread != null) {
+			sb.append(" thread=" + thread.getName());
 		}
-		sb.setLength(sb.length() - 2);
 		return sb.toString();
+	}
+
+	private static String asString(List<Job> jobs) {
+		return jobs.stream().map(TestUtil::asString).collect(Collectors.joining(", "));
 	}
 
 	private static List<Job> getRunningOrWaitingJobs(Object jobFamily) {
 		List<Job> running = new ArrayList<>();
 		Job[] jobs = Job.getJobManager().find(jobFamily);
 		for (Job job : jobs) {
-			if (isRunningOrWaitingJob(job)) {
+			if (isRunningOrWaitingJob(job) && !ignoreJob(job)) {
 				running.add(job);
 			}
 		}

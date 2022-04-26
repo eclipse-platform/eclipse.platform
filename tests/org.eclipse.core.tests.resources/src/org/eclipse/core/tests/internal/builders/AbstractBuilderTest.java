@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import java.util.Map;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -72,6 +73,13 @@ public abstract class AbstractBuilderTest extends ResourceTest {
 	 * Sets the workspace autobuilding to the desired value.
 	 */
 	protected void setAutoBuilding(boolean value) throws CoreException {
+		changeAutoBuilding(value);
+		if (!value) {
+			((Workspace) getWorkspace()).getBuildManager().waitForAutoBuild();
+		}
+	}
+
+	private void changeAutoBuilding(boolean value) throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		if (workspace.isAutoBuilding() == value) {
 			return;

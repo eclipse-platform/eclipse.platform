@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
-import org.eclipse.core.tests.resources.TestUtil;
 
 /**
  * This class tests extended functionality (since 3.6) which allows
@@ -258,7 +257,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		// Ensure the builder is instantiated
 		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 
-		final TestBarrier2 tb1 = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
+		final TestBarrier2 tb = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
 
 		// Create a builder set a null scheduling rule
 		EmptyDeltaBuilder builder = EmptyDeltaBuilder.getInstance();
@@ -279,8 +278,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 					return project;
 				}
 				// REMOVE
-				tb1.setStatus(TestBarrier2.STATUS_START);
-				tb1.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
+				tb.setStatus(TestBarrier2.STATUS_START);
+				tb.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
 				try {
 					// Give the resource modification time be queued
 					Thread.sleep(20);
@@ -300,14 +299,14 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 				assertEquals("1.2: " + ((ResourceDelta) delta).toDeepDebugString(), 1,
 						delta.getAffectedChildren().length);
 				assertEquals("1.3.", foo, delta.getAffectedChildren()[0].getResource());
-				tb1.setStatus(TestBarrier2.STATUS_DONE);
+				tb.setStatus(TestBarrier2.STATUS_DONE);
 				return super.build(kind, args, monitor);
 			}
 		});
 
-		AtomicReference<Throwable> error = new AtomicReference<>();
+		AtomicReference<Throwable> error1 = new AtomicReference<>();
 		// Run the incremental build
-		Job j = new Job("IProject.build()") {
+		Job j1 = new Job("IProject.build(1)") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
@@ -316,39 +315,45 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 					IStatus status = e.getStatus();
 					IStatus[] children = status.getChildren();
 					if (children.length > 0) {
-						error.set(children[0].getException());
+						error1.set(children[0].getException());
 					} else {
-						error.set(e);
+						error1.set(e);
 					}
-					fail();
+					throw new AssertionError("build failed", e);
 				}
 				return Status.OK_STATUS;
 			}
 		};
-		j.schedule();
+		Job.getJobManager().wakeUp(null);
+		j1.schedule();
+		// now j1 runs, builds, calls BuilderRuleCallback, that waits for
+		// TestBarrier2.STATUS_WAIT_FOR_RUN, but that will enter only with job2
 
-		TestUtil.waitForJobs(getName(), 100, 1000);
-		if (error.get() != null) {
-			fail("Error observed", error.get());
-		}
+		Job.getJobManager().wakeUp(null);
 
 		// Wait for the build to transition to getRule
-		tb1.waitForStatus(TestBarrier2.STATUS_START);
+		tb.waitForStatus(TestBarrier2.STATUS_START);
 		// Modify a file in the project
-		j = new Job("IProject.build()") {
+		AtomicReference<Throwable> error2 = new AtomicReference<>();
+		Job j2 = new Job("IProject.build(2)") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				tb1.setStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
+				tb.setStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
 				ensureExistsInWorkspace(foo, new ByteArrayInputStream(new byte[0]));
 				return Status.OK_STATUS;
 			}
 		};
-		j.schedule();
-		TestUtil.waitForJobs(getName(), 1000, 5000);
-		if (error.get() != null) {
-			fail("Error observed", error.get());
+		j2.schedule();
+		j2.join();
+		if (error2.get() != null) {
+			fail("Error observed", error2.get());
 		}
-		tb1.waitForStatus(TestBarrier2.STATUS_DONE);
+		j1.join();
+		if (error1.get() != null) {
+			fail("Error observed", error1.get());
+		}
+		tb.waitForStatus(TestBarrier2.STATUS_DONE);
+		assertNoErrorsLogged();
 	}
 
 	/**
