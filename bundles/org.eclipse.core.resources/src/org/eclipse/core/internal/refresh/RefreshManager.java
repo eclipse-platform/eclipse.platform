@@ -10,7 +10,8 @@
  *
  * Contributors:
  *     IBM - Initial API and implementation
- *     Christoph Läubrich - Issue #84 - RefreshManager access ResourcesPlugin.getWorkspace in the init phase
+ *     Christoph Läubrich 	- Issue #84 - RefreshManager access ResourcesPlugin.getWorkspace in the init phase
+ *     						- Issue #97 - RefreshManager.manageAutoRefresh calls ResourcesPlugin.getWorkspace before the Workspace is fully open
  *******************************************************************************/
 package org.eclipse.core.internal.refresh;
 
@@ -63,6 +64,10 @@ public class RefreshManager implements IRefreshResult, IManager, Preferences.IPr
 		}
 	}
 
+	Workspace getWorkspace() {
+		return workspace;
+	}
+
 	@Override
 	public void monitorFailed(IRefreshMonitor monitor, IResource resource) {
 		monitors.monitorFailed(monitor, resource);
@@ -80,7 +85,8 @@ public class RefreshManager implements IRefreshResult, IManager, Preferences.IPr
 			Preferences preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
 			final boolean autoRefresh = preferences.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH);
 			String jobName = autoRefresh ? Messages.refresh_installMonitorsOnWorkspace : Messages.refresh_uninstallMonitorsOnWorkspace;
-			MonitorJob.createSystem(jobName, ResourcesPlugin.getWorkspace().getRoot(), (ICoreRunnable) monitor -> manageAutoRefresh(autoRefresh, monitor)).schedule();
+			MonitorJob.createSystem(jobName, getWorkspace().getRoot(),
+					(ICoreRunnable) monitor -> manageAutoRefresh(autoRefresh, monitor)).schedule();
 		}
 	}
 

@@ -44,14 +44,28 @@ public abstract class TeamHook extends InternalTeamHook {
 	 * @see #setRuleFactory(IProject, IResourceRuleFactory)
 	 * @since 3.0
 	 */
-	protected final IResourceRuleFactory defaultFactory = new ResourceRuleFactory();
+	protected final IResourceRuleFactory defaultFactory;
 
 	/**
-	 * Creates a new team hook.  Default constructor for use by subclasses and the
+	 * Creates a new team hook. Default constructor for use by subclasses and the
 	 * resources plug-in only.
+	 *
+	 * @deprecated this constructor relies on the workspace already initialized and
+	 *             accessible via static access, instead the
+	 *             {@link #TeamHook(IWorkspace)} constructor should be used.
 	 */
+	@Deprecated
 	protected TeamHook() {
-		super();
+		this(ResourcesPlugin.getWorkspace());
+	}
+
+	/**
+	 * Creates a new team hook for the given workspace.
+	 *
+	 * @since 3.17
+	 */
+	protected TeamHook(IWorkspace workspace) {
+		defaultFactory = new ResourceRuleFactory(workspace);
 	}
 
 	/**

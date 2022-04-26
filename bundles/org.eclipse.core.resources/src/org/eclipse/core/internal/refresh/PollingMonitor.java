@@ -12,6 +12,7 @@
  *     IBM - Initial API and implementation
  *     James Blackburn (Broadcom Corp.) - ongoing development
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
+ *     Christoph Läubrich - Issue #97 - RefreshManager.manageAutoRefresh calls ResourcesPlugin.getWorkspace before the Workspace is fully open
  *******************************************************************************/
 package org.eclipse.core.internal.refresh;
 
@@ -170,7 +171,7 @@ public class PollingMonitor extends Job implements IRefreshMonitor {
 			//add all roots to the refresh list, but not to the real set of roots
 			//this will cause the job to never run again once it has exhausted
 			//the set of roots to refresh
-			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects(IContainer.INCLUDE_HIDDEN);
+			IProject[] projects = refreshManager.getWorkspace().getRoot().getProjects(IContainer.INCLUDE_HIDDEN);
 			toRefresh.addAll(Arrays.asList(projects));
 		}
 		schedule(MIN_FREQUENCY);

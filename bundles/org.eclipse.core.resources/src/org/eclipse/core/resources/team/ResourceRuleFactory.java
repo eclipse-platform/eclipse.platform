@@ -30,14 +30,28 @@ import org.eclipse.core.runtime.jobs.MultiRule;
  * @since 3.0
  */
 public class ResourceRuleFactory implements IResourceRuleFactory {
-	private final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+	private final IWorkspace workspace;
 
 	/**
 	 * Creates a new default resource rule factory. This constructor must only
 	 * be called by subclasses.
+	 * @deprecated this constructor relies on the workspace already initialized and
+	 *             accessible via static access, instead the
+	 *             {@link #ResourceRuleFactory(IWorkspace)} constructor should be used.
 	 */
+	@Deprecated
 	protected ResourceRuleFactory() {
-		super();
+		this(ResourcesPlugin.getWorkspace());
+	}
+
+	/**
+	 * Creates a new resource rule factory for the given workspace. This constructor
+	 * must only be called by subclasses.
+	 *
+	 * @since 3.17
+	 */
+	protected ResourceRuleFactory(IWorkspace workspace) {
+		this.workspace = workspace;
 	}
 
 	/**

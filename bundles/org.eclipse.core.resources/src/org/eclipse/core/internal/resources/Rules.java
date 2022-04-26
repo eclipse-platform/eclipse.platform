@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2015 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -12,6 +12,7 @@
  *     IBM - Initial API and implementation
  *     James Blackburn (Broadcom Corp.) - ongoing development
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
+ *     Christoph Läubrich - Issue #97 - RefreshManager.manageAutoRefresh calls ResourcesPlugin.getWorkspace before the Workspace is fully open
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -30,7 +31,7 @@ import org.eclipse.core.runtime.jobs.MultiRule;
  * for the resource that the operation is proposing to modify.
  */
 class Rules implements IResourceRuleFactory, ILifecycleListener {
-	private final ResourceRuleFactory defaultFactory = new ResourceRuleFactory() {/**/};
+	private final IResourceRuleFactory defaultFactory;
 	/**
 	 * Map of project names to the factory for that project.
 	 */
@@ -43,6 +44,8 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
 	 * @param workspace
 	 */
 	Rules(Workspace workspace) {
+		this.defaultFactory = new ResourceRuleFactory(workspace) {
+			/* because constructors are protected */};
 		this.root = workspace.getRoot();
 		this.teamHook = workspace.getTeamHook();
 		workspace.addLifecycleListener(this);
