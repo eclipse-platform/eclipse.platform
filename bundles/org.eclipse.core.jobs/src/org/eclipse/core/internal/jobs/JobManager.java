@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2020 IBM Corporation and others.
+ * Copyright (c) 2003, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -20,7 +20,7 @@
  *     Jan Koehnlein - Fix for bug 60964 (454698)
  *     Terry Parker - Bug 457504, Publish a job group's final status to IJobChangeListeners
  *     Xored Software Inc - Fix for bug 550738
- *     Christoph Laeubrich - remove deprecated API
+ *     Christoph Laeubrich 	- Issue #40
  *******************************************************************************/
 package org.eclipse.core.internal.jobs;
 
@@ -1100,19 +1100,27 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	}
 
 	/**
-	 * Returns a non-null progress monitor instance.  If the monitor is null,
-	 * returns the default monitor supplied by the progress provider, or a
-	 * NullProgressMonitor if no default monitor is available.
+	 * Returns a non-null progress monitor instance. If a progress provider is set,
+	 * it is asked to provide a wrapped instance of the given <code>monitor</code>
+	 * parameter. If no progress provider is set and <code>monitor</code> is null, a
+	 * NullProgressMonitor is returned in all other cases the given
+	 * <code>monitor</code> instance.
+	 *
+	 * @param monitor the monitor instance (could be null) for further usage
+	 * @return a non-null progress monitor instance.
 	 */
 	private IProgressMonitor monitorFor(IProgressMonitor monitor) {
-		if (monitor == null || (monitor instanceof NullProgressMonitor)) {
-			if (progressProvider != null) {
-				try {
-					monitor = progressProvider.getDefaultMonitor();
-				} catch (Exception e) {
-					String msg = NLS.bind(JobMessages.meta_pluginProblems, JobManager.PI_JOBS);
-					RuntimeLog.log(new Status(IStatus.ERROR, JobManager.PI_JOBS, JobManager.PLUGIN_ERROR, msg, e));
+		if (progressProvider != null) {
+			try {
+				IProgressMonitor monitorFor = progressProvider.monitorFor(monitor);
+				if (monitorFor == null) {
+					throw new IllegalStateException("Internal error: " + //$NON-NLS-1$
+							progressProvider.getClass().getName() + "#monitorFor(" + monitor + ") returned null!"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
+				return monitorFor;
+			} catch (Exception e) {
+				String msg = NLS.bind(JobMessages.meta_pluginProblems, JobManager.PI_JOBS);
+				RuntimeLog.log(new Status(IStatus.ERROR, JobManager.PI_JOBS, JobManager.PLUGIN_ERROR, msg, e));
 			}
 		}
 

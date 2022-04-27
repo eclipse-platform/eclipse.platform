@@ -13,11 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.concurrent.atomic.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
+import org.junit.Test;
 
 /**
  * Tests API methods IJobManager.beginRule and IJobManager.endRule
@@ -47,6 +48,39 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 				//should fail
 			}
 
+		}
+	}
+
+	@Test
+	public void testRuleCallsProgressProvider_monitorFor() {
+		AtomicBoolean createdMonitor = new AtomicBoolean();
+		AtomicReference<IProgressMonitor> passedMonitor = new AtomicReference<>();
+		manager.setProgressProvider(new ProgressProvider() {
+
+			@Override
+			public IProgressMonitor createMonitor(Job job) {
+				return new NullProgressMonitor();
+			}
+
+			@Override
+			public IProgressMonitor monitorFor(IProgressMonitor monitor) {
+				assertEquals(passedMonitor.get(), monitor);
+				createdMonitor.set(true);
+				return super.monitorFor(monitor);
+			}
+		});
+		IdentityRule rule = new IdentityRule();
+		IProgressMonitor[] monitors = new IProgressMonitor[] { null, new NullProgressMonitor(),
+				SubMonitor.convert(null) };
+		for (IProgressMonitor monitor : monitors) {
+			createdMonitor.set(false);
+			passedMonitor.set(monitor);
+			manager.beginRule(rule, monitor);
+			try {
+				assertTrue("Monitor not created for " + monitor, createdMonitor.get());
+			} finally {
+				manager.endRule(rule);
+			}
 		}
 	}
 

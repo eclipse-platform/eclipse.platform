@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2012 IBM Corporation and others.
+ * Copyright (c) 2003, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Christoph Läubrich - Issue #40
  *******************************************************************************/
 package org.eclipse.core.runtime.jobs;
 
@@ -95,5 +96,29 @@ public abstract class ProgressProvider {
 	 */
 	public IProgressMonitor getDefaultMonitor() {
 		return new NullProgressMonitor();
+	}
+
+	/**
+	 * Returns a (possibly wrapped) progress monitor to use when running in a job.
+	 * <p>
+	 * The default implementation does the following:
+	 * <ul>
+	 * <li>if <code>monitor</code> is null or an instance of
+	 * {@link NullProgressMonitor} returns the value from a call to
+	 * ProgressProvider#getDefaultMonitor()</li>
+	 * <li>in all other cases return the the <code>monitor</code> passed to this
+	 * method.
+	 * </ul>
+	 *
+	 * @param monitor the monitor to wrap, might be null
+	 * @return a progress monitor for the given <code>monitor</code> but never
+	 *         <code>null</code>
+	 * @since 3.13
+	 */
+	public IProgressMonitor monitorFor(IProgressMonitor monitor) {
+		if (monitor == null || monitor instanceof NullProgressMonitor) {
+			return getDefaultMonitor();
+		}
+		return monitor;
 	}
 }
