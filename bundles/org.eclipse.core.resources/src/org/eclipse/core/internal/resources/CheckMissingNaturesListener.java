@@ -25,10 +25,9 @@ import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.*;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.service.component.annotations.*;
 
@@ -44,15 +43,21 @@ public class CheckMissingNaturesListener implements IResourceChangeListener, IPr
 	@Reference
 	private ILog log;
 
+	@Reference(target = IScopeContext.BUNDLE_SCOPE_FILTER)
+	IScopeContext bundleScope;
+
+	private IEclipsePreferences eclipsePreferences;
+
 	@Activate
 	public void register() {
-		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).addPreferenceChangeListener(this);
+		eclipsePreferences = bundleScope.getNode(""); //$NON-NLS-1$
+		eclipsePreferences.addPreferenceChangeListener(this);
 	}
 
 	@Deactivate
 	public void unregister() {
 
-		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).removePreferenceChangeListener(this);
+		eclipsePreferences.removePreferenceChangeListener(this);
 	}
 
 	@Override
