@@ -219,8 +219,8 @@ public class PathVariableUtil {
 		String items[] = variableString.split("-"); //$NON-NLS-1$
 		if (items.length == 3) {
 			try {
-				Integer count = Integer.valueOf(items[1]);
-				return count.intValue();
+				int count = Integer.parseInt(items[1]);
+				return count;
 			} catch (NumberFormatException e) {
 				// nothing
 			}
