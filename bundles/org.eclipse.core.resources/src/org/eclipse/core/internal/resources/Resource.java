@@ -42,8 +42,8 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.osgi.util.NLS;
 
 public abstract class Resource extends PlatformObject implements IResource, ICoreConstants, Cloneable, IPathRequestor {
-	/* package */IPath path;
-	/* package */Workspace workspace;
+	final IPath path;
+	final Workspace workspace;
 
 	protected Resource(IPath path, Workspace workspace) {
 		this.path = path.removeTrailingSeparator();
