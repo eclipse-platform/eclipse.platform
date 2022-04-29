@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2016 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Christoph Läubrich - Issue #43
  *******************************************************************************/
 
 package org.eclipse.e4.core.contexts;
@@ -17,7 +18,9 @@ package org.eclipse.e4.core.contexts;
 import java.util.WeakHashMap;
 import org.eclipse.e4.core.internal.contexts.EclipseContext;
 import org.eclipse.e4.core.internal.contexts.osgi.EclipseContextOSGi;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * This factory is used to create new context instances.
@@ -63,6 +66,31 @@ public final class EclipseContextFactory {
 			}
 			return result;
 		}
+	}
+
+	/**
+	 * Returns a context that can be used to lookup OSGi services. A client must
+	 * never dispose the provided context, because it may be shared by multiple
+	 * callers.
+	 *
+	 * @param contextClass The class that is used as a context to use for service
+	 *                     lookup
+	 * @return A context containing all OSGi services
+	 * @since 1.10
+	 */
+	public static IEclipseContext getServiceContext(Class<?> contextClass) {
+		Bundle bundle = FrameworkUtil.getBundle(contextClass);
+		if (bundle == null) {
+			throw new IllegalArgumentException("The passed context class is not loaded by an OSGI framework!"); //$NON-NLS-1$
+		}
+		BundleContext bundleContext = bundle.getBundleContext();
+		if (bundleContext == null) {
+			throw new IllegalStateException(
+					String.format(
+							"The bundle %s is not started yet, either start it explicitly or add 'Bundle-ActivationPolicy: lazy' header to it before using this method!", //$NON-NLS-1$
+							bundle.getSymbolicName()));
+		}
+		return getServiceContext(bundleContext);
 	}
 
 	/**
