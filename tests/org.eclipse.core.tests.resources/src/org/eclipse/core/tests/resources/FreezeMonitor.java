@@ -47,6 +47,9 @@ public class FreezeMonitor {
 				ThreadMXBean threadStuff = ManagementFactory.getThreadMXBean();
 				ThreadInfo[] allThreads = threadStuff.getThreadInfo(threadStuff.getAllThreadIds(), 200);
 				for (ThreadInfo threadInfo : allThreads) {
+					if (threadInfo == null) {
+						continue;
+					}
 					result.append("\"");
 					result.append(threadInfo.getThreadName());
 					result.append("\": ");
