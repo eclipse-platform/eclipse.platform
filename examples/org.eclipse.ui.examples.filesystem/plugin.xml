@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         id="org.eclipse.core.filesystem.zip"
+         point="org.eclipse.core.filesystem.filesystems">
+      <filesystem scheme="zip">
+         <run class="org.eclipse.core.internal.filesystem.zip.ZipFileSystem"/>
+      </filesystem>
+   </extension>
+	<extension
+	      point="org.eclipse.core.filesystem.filesystems">
+	   <filesystem scheme="memory">
+	      <run class="org.eclipse.core.internal.filesystem.memory.MemoryFileSystem"/>
+	   </filesystem>
+	</extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="org.eclipse.ui.examples.filesystem.contribution1"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="org.eclipse.ui.examples.filesystem.ExpandZipAction"
+               enablesFor="1"
+               id="org.eclipse.ui.examples.filesystem.expandZip"
+               label="Expand Zip File"
+               menubarPath="additions">
+         		<enablement>
+		            <or>
+		               <objectState name="extension" value="jar"/>
+   		            <objectState name="extension" value="zip"/>
+   		         </or>
+         		</enablement>
+       	</action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="org.eclipse.ui.examples.filesystem.contribution2"
+            objectClass="org.eclipse.core.resources.IFolder">
+         <action
+               class="org.eclipse.ui.examples.filesystem.CollapseZipAction"
+               enablesFor="1"
+               id="org.eclipse.ui.examples.filesystem.collapseZip"
+               label="Collapse Zip File"
+               menubarPath="additions">
+         		<enablement>
+		            <or>
+		               <objectState name="extension" value="jar"/>
+   		            <objectState name="extension" value="zip"/>
+   		         </or>
+         		</enablement>
+           </action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="org.eclipse.ui.examples.filesystem.contribution3"
+            objectClass="org.eclipse.core.resources.IResource">
+         <action
+               class="org.eclipse.ui.examples.filesystem.IncludeResourceAction"
+               enablesFor="1"
+               id="org.eclipse.ui.examples.filesystem.includeResource"
+               label="Include Resource"
+               menubarPath="additions"/>
+         <action
+               class="org.eclipse.ui.examples.filesystem.ExcludeResourceAction"
+               enablesFor="1"
+               id="org.eclipse.ui.examples.filesystem.excludeResource"
+               label="Exclude Resource"
+               menubarPath="additions"/>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="org.eclipse.ui.examples.filesystem.contribution4"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.eclipse.ui.examples.filesystem.CreatedNestedProjectsAction"
+               enablesFor="1"
+               id="org.eclipse.ui.examples.filesystem.createdNested"
+               label="Create Nested Projects"
+               menubarPath="additions"/>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.filesystemSupport">
+      <filesystemContributor
+            class="org.eclipse.core.internal.filesystem.zip.ZipFileSystemContributor"
+            label="Zip file"
+            scheme="zip"/>
+      <filesystemContributor
+            class="org.eclipse.core.internal.filesystem.memory.MemoryFileSystemContributor"
+            label="In Memory"
+            scheme="memory"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.core.internal.filesystem.memory.MemoryFileStore"
+            class="org.eclipse.core.internal.filesystem.memory.MemoryAdapterFactory">
+         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+      </factory>
+   </extension>
+
+</plugin>
