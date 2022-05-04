@@ -46,6 +46,7 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 			"org.eclipse.core.jobs", //
 			"org.eclipse.equinox.registry", //
 			"org.eclipse.equinox.preferences", //
+			"org.osgi.service.prefs", //
 			"org.eclipse.core.contenttype", //
 			"org.eclipse.equinox.app", //
 			"org.eclipse.core.tests.harness", //
