@@ -94,7 +94,7 @@ public class TreeFlatteningTest extends ElementTreeSerializationTest {
 		ElementTree[] sorted = SaveManager.sortTrees(trees);
 		assertNull(sorted); // => not sortable
 		// logs java.lang.NullPointerException: Given trees not in unambiguous order
-		// (Bug 35286): 16->17->18, 17->18, 18, mutable! 19->18
+		// (Bug 352867): 16->17->18, 17->18, 18, mutable! 19->18
 	}
 
 	@Test

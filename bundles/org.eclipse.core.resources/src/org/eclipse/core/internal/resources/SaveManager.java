@@ -1563,7 +1563,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			String s = List.of(trees).stream().distinct().sorted(Comparator.comparing(ElementTree::getTreeStamp))
 					.map(t -> (t.isImmutable() ? "" : "mutable! ") + parentChain(t)) //$NON-NLS-1$ //$NON-NLS-2$
 					.collect(Collectors.joining(", ")); //$NON-NLS-1$
-			Exception e = new NullPointerException("Given trees not in unambiguous order (Bug 35286): " + s); //$NON-NLS-1$
+			Exception e = new NullPointerException("Given trees not in unambiguous order (Bug 352867): " + s); //$NON-NLS-1$
 			IStatus status = new Status(IStatus.WARNING, ResourcesPlugin.PI_RESOURCES, IResourceStatus.INTERNAL_ERROR,
 					e.getMessage(), e);
 			Policy.log(status);
