@@ -199,10 +199,8 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 	 * </p>
 	 */
 	protected void updateTooltip() {
-		CompletableFuture.supplyAsync(this::getToolTip)
-		.thenAccept(tooltip ->
-			Display.getDefault().asyncExec(() -> getAction().setToolTipText(tooltip))
-		);
+		CompletableFuture.supplyAsync(this::getToolTip).thenAcceptAsync(getAction()::setToolTipText,
+				Display.getDefault());
 	}
 
 	/**
