@@ -136,7 +136,7 @@ class ImplicitJobs {
 				return;
 			}
 			String msg = "Worker thread ended job: " + lastJob + ", but still holds rule: " + threadJob; //$NON-NLS-1$ //$NON-NLS-2$
-			error = new Status(IStatus.ERROR, JobManager.PI_JOBS, 1, msg, null);
+			error = new Status(IStatus.ERROR, JobManager.PI_JOBS, 1, msg, new IllegalStateException(msg));
 			//end the thread job
 			endThreadJob(threadJob, false);
 		}
