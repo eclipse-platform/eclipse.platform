@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.osgi;bundle-version="[3.17.0,4.0.0)";visibility:=ree
  org.eclipse.equinox.common;bundle-version="3.16.0";visibility:=reexport,
  org.eclipse.core.jobs;bundle-version="[3.13.0,4.0.0)";visibility:=reexport,
  org.eclipse.equinox.registry;bundle-version="[3.11.0,4.0.0)";visibility:=reexport,
- org.eclipse.equinox.preferences;bundle-version="[3.9.0,4.0.0)";visibility:=reexport,
+ org.eclipse.equinox.preferences;bundle-version="[3.10.0,4.0.0)";visibility:=reexport,
  org.eclipse.core.contenttype;bundle-version="[3.8.0,4.0.0)";visibility:=reexport,
  org.eclipse.equinox.app;bundle-version="1.6.0";visibility:=reexport
 Bundle-ActivationPolicy: lazy
