@@ -1811,7 +1811,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 	public WorkManager getWorkManager() throws CoreException {
 		if (_workManager == null) {
 			String message = Messages.resources_shutdown;
-			throw new ResourceException(new ResourceStatus(IResourceStatus.INTERNAL_ERROR, null, message));
+			throw new ResourceException(IResourceStatus.INTERNAL_ERROR, null, message, null);
 		}
 		return _workManager;
 	}
