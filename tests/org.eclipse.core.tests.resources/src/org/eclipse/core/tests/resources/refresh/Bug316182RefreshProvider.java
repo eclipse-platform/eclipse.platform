@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,10 +10,12 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Christoph Läubrich - Fix #120
  *******************************************************************************/
 package org.eclipse.core.tests.resources.refresh;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.refresh.*;
 import org.eclipse.core.tests.resources.session.TestBug316182;
 
@@ -24,7 +26,7 @@ public class Bug316182RefreshProvider extends RefreshProvider {
 	@Override
 	public IRefreshMonitor installMonitor(IResource resource, IRefreshResult result) {
 		try {
-			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project_TestBug316182");
+			IProject project = resource.getWorkspace().getRoot().getProject("project_TestBug316182");
 			project.getPersistentProperties();
 			project.getDefaultCharset();
 			project.getContentTypeMatcher();
