@@ -1043,7 +1043,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		}
 		try (DataInputStream input = new DataInputStream(new SafeFileInputStream(treeLocation.toOSString(), tempLocation.toOSString(), TREE_BUFFER_SIZE))) {
 			WorkspaceTreeReader.getReader(workspace, input.readInt()).readTree(input, monitor);
-		} catch (IOException e) {
+		} catch (Exception e) { // "Unknown format" is passed as ResourceException
 			String msg = NLS.bind(Messages.resources_readMeta, treeLocation.toOSString());
 			throw new ResourceException(IResourceStatus.FAILED_READ_METADATA, treeLocation, msg, e);
 		}
