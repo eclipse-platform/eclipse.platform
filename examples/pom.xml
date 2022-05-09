@@ -18,6 +18,11 @@
   </parent>
   <artifactId>eclipse.platform.resources.examples</artifactId>
   <packaging>pom</packaging>
+  
+  <properties>
+    <skipAPIAnalysis>true</skipAPIAnalysis>
+  </properties>
+  
   <modules>
     <module>org.eclipse.ui.examples.filesystem</module>
   </modules>

@@ -1,3 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.ui.examples.filesystem;
 
 import java.net.URI;
@@ -52,6 +65,7 @@ public class CollapseZipAction implements IObjectActionDelegate {
 	/**
 	 * @see IActionDelegate#run(IAction)
 	 */
+	@Override
 	public void run(IAction action) {
 		if (!(selection instanceof IStructuredSelection))
 			return;
@@ -65,6 +79,7 @@ public class CollapseZipAction implements IObjectActionDelegate {
 	/**
 	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
 	 */
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		this.selection = selection;
 	}
@@ -72,6 +87,7 @@ public class CollapseZipAction implements IObjectActionDelegate {
 	/**
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
 	 */
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		this.targetPart = targetPart;
 	}

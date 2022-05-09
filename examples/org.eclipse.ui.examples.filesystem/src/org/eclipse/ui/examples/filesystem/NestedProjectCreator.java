@@ -1,3 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.ui.examples.filesystem;
 
 import java.io.IOException;
@@ -62,6 +75,7 @@ public class NestedProjectCreator {
 	private void doCreateNestedProjects(final IProject[] projects, Shell shell) throws InvocationTargetException, InterruptedException {
 		final Object[] result = new Object[1];
 		context.run(true, true, new IRunnableWithProgress() {
+			@Override
 			public void run(IProgressMonitor monitor) {
 				result[0] = findNestedProjects(projects);
 			}
@@ -79,6 +93,7 @@ public class NestedProjectCreator {
 		//create the projects
 		final IWorkspaceRoot root = workspace.getRoot();
 		context.run(true, true, new WorkspaceModifyOperation() {
+			@Override
 			protected void execute(IProgressMonitor monitor) throws CoreException {
 				try {
 					monitor.beginTask("Creating Projects", finalDescriptions.length * 2);
@@ -86,8 +101,8 @@ public class NestedProjectCreator {
 						IProject project = root.getProject(finalDescriptions[i].getName());
 						if (excludeOverlap)
 							excludeOverlap(finalDescriptions[i]);
-						project.create(finalDescriptions[i], new SubProgressMonitor(monitor, 1));
-						project.open(new SubProgressMonitor(monitor, 1));
+						project.create(finalDescriptions[i], SubMonitor.convert(monitor, 1));
+						project.open(SubMonitor.convert(monitor, 1));
 					}
 				} finally {
 					monitor.done();
@@ -142,7 +157,7 @@ public class NestedProjectCreator {
 	 * the given project.
 	 */
 	public IProjectDescription[] findNestedProjects(IProject[] projects) {
-		final ArrayList descriptions = new ArrayList();
+		final ArrayList<IProjectDescription> descriptions = new ArrayList<>();
 		for (int i = 0; i < projects.length; i++) {
 			if (!projects[i].isAccessible())
 				continue;
@@ -152,7 +167,7 @@ public class NestedProjectCreator {
 					 * @param descriptions
 					 * @param description
 					 */
-					private void addDescription(final ArrayList descriptions, IProjectDescription description) {
+					private void addDescription(final ArrayList<IProjectDescription> descriptions, IProjectDescription description) {
 						IProject project = workspace.getRoot().getProject(description.getName());
 						if (!project.exists())
 							descriptions.add(description);
@@ -176,7 +191,7 @@ public class NestedProjectCreator {
 							//ignore projects in invalid locations
 							return;
 						}
-						IFileStore linkStore = projectStore.getChild(link.getProjectRelativePath());
+						IFileStore linkStore = projectStore.getFileStore(link.getProjectRelativePath());
 						searchInStore(linkStore);
 
 					}
@@ -192,14 +207,12 @@ public class NestedProjectCreator {
 							if (store.getName().equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
 								IFileInfo info = store.fetchInfo();
 								if (!info.isDirectory()) {
-									InputStream input = null;
-									try {
-										input = store.openInputStream(EFS.NONE, null);
+									try (InputStream input = store.openInputStream(EFS.NONE, null)) {
 										IProjectDescription description = workspace.loadProjectDescription(input);
 										description.setLocationURI(store.getParent().toURI());
 										addDescription(descriptions, description);
-									} finally {
-										safeClose(input);
+									} catch(IOException e) {
+										// ignore
 									}
 									return;
 								}
@@ -213,18 +226,16 @@ public class NestedProjectCreator {
 						}
 					}
 
+					@Override
 					public boolean visit(IResourceProxy proxy) throws CoreException {
 						if (proxy.getType() == IResource.FILE && proxy.getName().equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
 							IFile file = (IFile) proxy.requestResource();
-							final InputStream input = file.getContents();
-							try {
+							try (InputStream input = file.getContents()) {
 								IProjectDescription description = workspace.loadProjectDescription(input);
 								description.setLocationURI(file.getParent().getLocationURI());
 								addDescription(descriptions, description);
-							} catch (CoreException e) {
+							} catch (CoreException | IOException e) {
 								//ignore this project
-							} finally {
-								safeClose(input);
 							}
 						} else if (proxy.isLinked()) {
 							//search in the directory hidden by the link
@@ -238,7 +249,7 @@ public class NestedProjectCreator {
 				//if the project cannot be visited just ignore it
 			}
 		}
-		return (IProjectDescription[]) descriptions.toArray(new IProjectDescription[descriptions.size()]);
+		return descriptions.toArray(new IProjectDescription[descriptions.size()]);
 	}
 
 	/**
@@ -251,6 +262,7 @@ public class NestedProjectCreator {
 			private LabelProvider realProvider = new WorkbenchLabelProvider();
 			private IWorkspaceRoot root = workspace.getRoot();
 
+			@Override
 			public Image getImage(Object element) {
 				return realProvider.getImage(getProject(element));
 			}
@@ -261,6 +273,7 @@ public class NestedProjectCreator {
 				return null;
 			}
 
+			@Override
 			public String getText(Object element) {
 				return realProvider.getText(getProject(element));
 			}
@@ -286,25 +299,16 @@ public class NestedProjectCreator {
 	 */
 	public IProjectDescription[] promptForCreation(Shell parentShell, IProjectDescription[] descriptions) {
 		String message = "The following projects were found. Select the projects to be created.";
-		ListSelectionDialog dialog = new ListSelectionDialog(parentShell, descriptions, new ArrayContentProvider(), getProjectDescriptionLabelProvider(), message);
+		ListSelectionDialog dialog = ListSelectionDialog.of(descriptions)
+				.contentProvider(new ArrayContentProvider())
+				.labelProvider(getProjectDescriptionLabelProvider())
+				.message(message)
+				.create(parentShell);
 		dialog.open();
 		Object[] result = dialog.getResult();
 		IProjectDescription[] castedResult = new IProjectDescription[result.length];
 		System.arraycopy(result, 0, castedResult, 0, result.length);
 		return castedResult;
-	}
-
-	/**
-	 * @param input
-	 */
-	protected void safeClose(InputStream input) {
-		if (input == null)
-			return;
-		try {
-			input.close();
-		} catch (IOException e) {
-			//ignore
-		}
 	}
 
 	/**

@@ -1,10 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * Copyright (c) 2022 IBM Corporation and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * 
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -22,7 +25,7 @@ import org.eclipse.core.runtime.*;
  */
 public class MemoryTree {
 	static class DirNode extends Node {
-		private final ArrayList children = new ArrayList();
+		private final ArrayList<Node> children = new ArrayList<>();
 
 		DirNode(Node parent, String name) {
 			super(parent, name);
@@ -35,7 +38,7 @@ public class MemoryTree {
 		public String[] childNames() {
 			String[] names = new String[children.size()];
 			for (int i = 0, imax = children.size(); i < imax; i++) {
-				Node child = (Node) children.get(i);
+				Node child = children.get(i);
 				names[i] = child.getInfo(false).getName();
 			}
 			return names;
@@ -48,18 +51,20 @@ public class MemoryTree {
 		 */
 		Node getChild(String name) {
 			for (int i = 0, imax = children.size(); i < imax; i++) {
-				Node child = (Node) children.get(i);
+				Node child = children.get(i);
 				if (child.getInfo(false).getName().equals(name))
 					return child;
 			}
 			return null;
 		}
 
+		@Override
 		protected void initializeInfo(FileInfo fileInfo) {
 			super.initializeInfo(fileInfo);
 			fileInfo.setDirectory(true);
 		}
 
+		@Override
 		boolean isFile() {
 			return false;
 		}
@@ -70,6 +75,7 @@ public class MemoryTree {
 				children.remove(child);
 		}
 
+		@Override
 		public String toString() {
 			return super.toString() + ' ' + children;
 		}
@@ -82,6 +88,7 @@ public class MemoryTree {
 			super(parent, name);
 		}
 
+		@Override
 		boolean isFile() {
 			return true;
 		}
@@ -92,6 +99,7 @@ public class MemoryTree {
 
 		public OutputStream openOutputStream(final int options) {
 			return new ByteArrayOutputStream() {
+				@Override
 				public void close() throws IOException {
 					super.close();
 					setContents(toByteArray(), options);
@@ -149,6 +157,7 @@ public class MemoryTree {
 		/**
 		 * For debugging purposes only.
 		 */
+		@Override
 		public String toString() {
 			return info.getName();
 		}

@@ -1,9 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * Copyright (c) 2022 IBM Corporation and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -29,6 +32,7 @@ public class ZipFileSystemContributor extends FileSystemContributor {
 		super();
 	}
 
+	@Override
 	public URI getURI(String pathString) {
 		try {
 			if (pathString.startsWith(ZipFileSystem.SCHEME_ZIP))
@@ -60,6 +64,7 @@ public class ZipFileSystemContributor extends FileSystemContributor {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.ide.fileSystem.FileSystemContributor#browseFileSystem(java.lang.String, org.eclipse.swt.widgets.Shell)
 	 */
+	@Override
 	public URI browseFileSystem(String initialPath, Shell shell) {
 
 		FileDialog dialog = new FileDialog(shell);
