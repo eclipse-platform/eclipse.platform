@@ -10,32 +10,25 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Patrick Ziegler - Migration from a JFace Action to a Command Handler,
+ *                       in order to be used with the 'org.eclipse.ui.menus'
+ *                       extension point.
  *******************************************************************************/
 package org.eclipse.ui.examples.filesystem;
 
 import java.net.URI;
+import org.eclipse.core.commands.*;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.*;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.*;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-public class ExcludeResourceAction implements IObjectActionDelegate {
+public class ExcludeResourceHandler extends AbstractHandler {
 
-	private ISelection selection;
-	private IWorkbenchPart targetPart;
-
-	/**
-	 * Constructor for Action1.
-	 */
-	public ExcludeResourceAction() {
-		super();
-	}
-
-	private void exclude(IResource resource) {
+	private void exclude(IResource resource, Shell shell) {
 		try {
 			URI nullURI = new URI(EFS.SCHEME_NULL, null, "/", null, null);
 			if (resource.getType() == IResource.FILE) {
@@ -46,45 +39,33 @@ public class ExcludeResourceAction implements IObjectActionDelegate {
 				link.createLink(nullURI, IResource.REPLACE | IResource.ALLOW_MISSING_LOCAL, null);
 			}
 		} catch (Exception e) {
-			MessageDialog.openError(getShell(), "Error", "Error excluding resource");
+			MessageDialog.openError(shell, "Error", "Error excluding resource");
 			e.printStackTrace();
 		}
 	}
 
-	private Shell getShell() {
-		return targetPart.getSite().getShell();
-	}
-
-	/**
-	 * @see IActionDelegate#run(IAction)
-	 */
 	@Override
-	public void run(IAction action) {
-		if (!(selection instanceof IStructuredSelection))
-			return;
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		Shell shell = HandlerUtil.getActiveShell(event);
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+		
+		if (!(selection instanceof IStructuredSelection)) {
+			return null;
+		}
+		
 		Object element = ((IStructuredSelection) selection).getFirstElement();
-		if (!(element instanceof IResource))
-			return;
+		
+		if (!(element instanceof IResource)) {
+			return null;
+		}
+		
 		IResource resource = (IResource) element;
-		if (resource.isLinked())
-			return;
-		exclude(resource);
-	}
-
-	/**
-	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
-	 */
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		this.selection = selection;
-	}
-
-	/**
-	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
-	 */
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		this.targetPart = targetPart;
+		if (resource.isLinked()) {
+			return null;
+		}
+		
+		exclude(resource, shell);
+		return null;
 	}
 
 }

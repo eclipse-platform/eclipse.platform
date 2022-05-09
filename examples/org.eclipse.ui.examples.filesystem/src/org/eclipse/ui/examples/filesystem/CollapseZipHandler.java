@@ -10,33 +10,26 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Patrick Ziegler - Migration from a JFace Action to a Command Handler,
+ *                       in order to be used with the 'org.eclipse.ui.menus'
+ *                       extension point.
  *******************************************************************************/
 package org.eclipse.ui.examples.filesystem;
 
 import java.net.URI;
+import org.eclipse.core.commands.*;
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.*;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-public class CollapseZipAction implements IObjectActionDelegate {
+public class CollapseZipHandler extends AbstractHandler {
 
-	private ISelection selection;
-	private IWorkbenchPart targetPart;
-
-	/**
-	 * Constructor for Action1.
-	 */
-	public CollapseZipAction() {
-		super();
-	}
-
-	private void collapseZip(IFolder folder) {
+	private void collapseZip(IFolder folder, Shell shell) {
 		try {
 			URI zipURI = new URI(folder.getLocationURI().getQuery());
 			//check if the zip file is physically stored below the folder in the workspace
@@ -53,43 +46,28 @@ public class CollapseZipAction implements IObjectActionDelegate {
 				file.createLink(zipURI, IResource.REPLACE, null);
 			}
 		} catch (Exception e) {
-			MessageDialog.openError(getShell(), "Error", "Error opening zip file");
+			MessageDialog.openError(shell, "Error", "Error opening zip file");
 			e.printStackTrace();
 		}
 	}
 
-	private Shell getShell() {
-		return targetPart.getSite().getShell();
-	}
-
-	/**
-	 * @see IActionDelegate#run(IAction)
-	 */
 	@Override
-	public void run(IAction action) {
-		if (!(selection instanceof IStructuredSelection))
-			return;
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		Shell shell = HandlerUtil.getActiveShell(event);
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+		
+		if (!(selection instanceof IStructuredSelection)) {
+			return null;
+		}
+		
 		Object element = ((IStructuredSelection) selection).getFirstElement();
-		if (!(element instanceof IFolder))
-			return;
-		collapseZip((IFolder) element);
-
-	}
-
-	/**
-	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
-	 */
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		this.selection = selection;
-	}
-
-	/**
-	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
-	 */
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		this.targetPart = targetPart;
+		
+		if (!(element instanceof IFolder)) {
+			return null;
+		}
+		
+		collapseZip((IFolder) element, shell);
+		return null;
 	}
 
 }

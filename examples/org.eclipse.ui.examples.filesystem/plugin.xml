@@ -14,77 +14,145 @@
 	      <run class="org.eclipse.core.internal.filesystem.memory.MemoryFileSystem"/>
 	   </filesystem>
 	</extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="org.eclipse.ui.examples.filesystem.contribution1"
-            objectClass="org.eclipse.core.resources.IFile">
-         <action
-               class="org.eclipse.ui.examples.filesystem.ExpandZipAction"
-               enablesFor="1"
-               id="org.eclipse.ui.examples.filesystem.expandZip"
-               label="Expand Zip File"
-               menubarPath="additions">
-         		<enablement>
-		            <or>
-		               <objectState name="extension" value="jar"/>
-   		            <objectState name="extension" value="zip"/>
-   		         </or>
-         		</enablement>
-       	</action>
-      </objectContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="org.eclipse.ui.examples.filesystem.contribution2"
-            objectClass="org.eclipse.core.resources.IFolder">
-         <action
-               class="org.eclipse.ui.examples.filesystem.CollapseZipAction"
-               enablesFor="1"
-               id="org.eclipse.ui.examples.filesystem.collapseZip"
-               label="Collapse Zip File"
-               menubarPath="additions">
-         		<enablement>
-		            <or>
-		               <objectState name="extension" value="jar"/>
-   		            <objectState name="extension" value="zip"/>
-   		         </or>
-         		</enablement>
-           </action>
-      </objectContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="org.eclipse.ui.examples.filesystem.contribution3"
-            objectClass="org.eclipse.core.resources.IResource">
-         <action
-               class="org.eclipse.ui.examples.filesystem.IncludeResourceAction"
-               enablesFor="1"
-               id="org.eclipse.ui.examples.filesystem.includeResource"
-               label="Include Resource"
-               menubarPath="additions"/>
-         <action
-               class="org.eclipse.ui.examples.filesystem.ExcludeResourceAction"
-               enablesFor="1"
-               id="org.eclipse.ui.examples.filesystem.excludeResource"
-               label="Exclude Resource"
-               menubarPath="additions"/>
-      </objectContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="org.eclipse.ui.examples.filesystem.contribution4"
-            objectClass="org.eclipse.core.resources.IProject">
-         <action
-               class="org.eclipse.ui.examples.filesystem.CreatedNestedProjectsAction"
-               enablesFor="1"
-               id="org.eclipse.ui.examples.filesystem.createdNested"
-               label="Create Nested Projects"
-               menubarPath="additions"/>
-      </objectContribution>
+ <extension
+       point="org.eclipse.ui.commands">
+    <command
+          defaultHandler="org.eclipse.ui.examples.filesystem.ExpandZipHandler"
+          id="org.eclipse.ui.examples.filesystem.expandZip"
+          name="Expand Zip File">
+    </command>
+    <command
+          defaultHandler="org.eclipse.ui.examples.filesystem.CollapseZipHandler"
+          id="org.eclipse.ui.examples.filesystem.collapseZip"
+          name="Collapse Zip File">
+    </command>
+    <command
+          defaultHandler="org.eclipse.ui.examples.filesystem.IncludeResourceHandler"
+          id="org.eclipse.ui.examples.filesystem.includeResource"
+          name="Include Resource">
+    </command>
+    <command
+          defaultHandler="org.eclipse.ui.examples.filesystem.ExcludeResourceHandler"
+          id="org.eclipse.ui.examples.filesystem.excludeResource"
+          name="Exclude Resource">
+    </command>
+    <command
+          defaultHandler="org.eclipse.ui.examples.filesystem.CreatedNestedProjectsHandler"
+          id="org.eclipse.ui.examples.filesystem.createdNested"
+          name="Create Nested Projects">
+    </command>
+ </extension>
+ <extension
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          allPopups="false"
+          locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+       <command
+             commandId="org.eclipse.ui.examples.filesystem.expandZip"
+             label="Expand Zip File"
+             style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <with
+                   variable="activeMenuSelection">
+                <iterate
+                      ifEmpty="false">
+                   <adapt
+                         type="org.eclipse.core.resources.IFile">
+                      <or>
+                         <test
+                               property="org.eclipse.core.resources.extension"
+                               value="zip">
+                         </test>
+                         <test
+                               property="org.eclipse.core.resources.extension"
+                               value="jar">
+                         </test>
+                      </or>
+                   </adapt>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </command>
+       <command
+             commandId="org.eclipse.ui.examples.filesystem.collapseZip"
+             label="Collapse Zip File"
+             style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <with
+                   variable="activeMenuSelection">
+                <iterate
+                      ifEmpty="false">
+                   <adapt
+                         type="org.eclipse.core.resources.IFolder">
+                      <or>
+                         <test
+                               property="org.eclipse.core.resources.extension"
+                               value="zip">
+                         </test>
+                         <test
+                               property="org.eclipse.core.resources.extension"
+                               value="jar">
+                         </test>
+                      </or>
+                   </adapt>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </command>
+       <command
+             commandId="org.eclipse.ui.examples.filesystem.includeResource"
+             label="Include Resource"
+             style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <with
+                   variable="activeMenuSelection">
+                <iterate
+                      ifEmpty="false">
+                   <instanceof
+                         value="org.eclipse.core.resources.IResource">
+                   </instanceof>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </command>
+       <command
+             commandId="org.eclipse.ui.examples.filesystem.excludeResource"
+             label="Exclude Resource"
+             style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <with
+                   variable="activeMenuSelection">
+                <iterate
+                      ifEmpty="false">
+                   <instanceof
+                         value="org.eclipse.core.resources.IResource">
+                   </instanceof>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </command>
+       <command
+             commandId="org.eclipse.ui.examples.filesystem.createdNested"
+             label="Create Nested Projects"
+             style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <with
+                   variable="activeMenuSelection">
+                <iterate
+                      ifEmpty="false">
+                   <instanceof
+                         value="org.eclipse.core.resources.IProject">
+                   </instanceof>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </command>
+       </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.ide.filesystemSupport">
