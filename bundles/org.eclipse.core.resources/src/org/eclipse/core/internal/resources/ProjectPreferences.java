@@ -13,6 +13,7 @@
  *     Markus Schorn (Wind River) - [108066] Project prefs marked dirty on read
  *     James Blackburn (Broadcom Corp.) - ongoing development
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427, 483529
+ *     Christoph Läubrich - Issue #124
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -66,6 +67,7 @@ public class ProjectPreferences extends EclipsePreferences {
 
 	// cache
 	private int segmentCount;
+	private Workspace workspace;
 
 	static void deleted(IFile file) throws CoreException {
 		IPath path = file.getFullPath();
@@ -191,7 +193,7 @@ public class ProjectPreferences extends EclipsePreferences {
 	}
 
 	private static void preferencesChanged(IProject project) {
-		Workspace workspace = ((Workspace) ResourcesPlugin.getWorkspace());
+		Workspace workspace = (Workspace) project.getWorkspace();
 		workspace.getCharsetManager().projectPreferencesChanged(project);
 		workspace.getContentDescriptionManager().projectPreferencesChanged(project);
 	}
@@ -361,8 +363,9 @@ public class ProjectPreferences extends EclipsePreferences {
 		super(null, null);
 	}
 
-	private ProjectPreferences(EclipsePreferences parent, String name) {
+	private ProjectPreferences(EclipsePreferences parent, String name, Workspace workspace) {
 		super(parent, name);
+		setWorkspace(workspace);
 
 		// cache the segment count
 		String path = absolutePath();
@@ -374,7 +377,7 @@ public class ProjectPreferences extends EclipsePreferences {
 		// cache the project name
 		String projectName = getSegment(path, 1);
 		if (projectName != null)
-			project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+			project = getWorkspace().getRoot().getProject(projectName);
 
 		// cache the qualifier
 		if (segmentCount > 2)
@@ -486,7 +489,7 @@ public class ProjectPreferences extends EclipsePreferences {
 
 	@Override
 	protected EclipsePreferences internalCreate(EclipsePreferences nodeParent, String nodeName, Object context) {
-		return new ProjectPreferences(nodeParent, nodeName);
+		return new ProjectPreferences(nodeParent, nodeName, workspace);
 	}
 
 	@Override
@@ -507,7 +510,7 @@ public class ProjectPreferences extends EclipsePreferences {
 		silentLoad();
 		if ((segmentCount == 3) && PREFS_REGULAR_QUALIFIER.equals(qualifier) && (project != null)) {
 			if (ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS.equals(key)) {
-				CharsetManager charsetManager = ((Workspace) ResourcesPlugin.getWorkspace()).getCharsetManager();
+				CharsetManager charsetManager = getWorkspace().getCharsetManager();
 				if (Boolean.parseBoolean(newValue))
 					charsetManager.splitEncodingPreferences(project);
 				else
@@ -621,7 +624,7 @@ public class ProjectPreferences extends EclipsePreferences {
 			return super.nodeExists(path);
 		// if we are checking existance of a single segment child of /project, base the answer on
 		// whether or not it exists in the workspace.
-		return ResourcesPlugin.getWorkspace().getRoot().getProject(path).exists() || super.nodeExists(path);
+		return getWorkspace().getRoot().getProject(path).exists() || super.nodeExists(path);
 	}
 
 	@Override
@@ -632,7 +635,7 @@ public class ProjectPreferences extends EclipsePreferences {
 		super.remove(key);
 		if ((segmentCount == 3) && PREFS_REGULAR_QUALIFIER.equals(qualifier) && (project != null)) {
 			if (ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS.equals(key)) {
-				CharsetManager charsetManager = ((Workspace) ResourcesPlugin.getWorkspace()).getCharsetManager();
+				CharsetManager charsetManager = getWorkspace().getCharsetManager();
 				if (ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS)
 					charsetManager.splitEncodingPreferences(project);
 				else
@@ -720,8 +723,8 @@ public class ProjectPreferences extends EclipsePreferences {
 			};
 			//don't bother with scheduling rules if we are already inside an operation
 			try {
-				IWorkspace workspace = ResourcesPlugin.getWorkspace();
-				if (((Workspace) workspace).getWorkManager().isLockAlreadyAcquired()) {
+				Workspace workspace = getWorkspace();
+				if (workspace.getWorkManager().isLockAlreadyAcquired()) {
 					operation.run(null);
 				} else {
 					IResourceRuleFactory factory = workspace.getRuleFactory();
@@ -755,5 +758,17 @@ public class ProjectPreferences extends EclipsePreferences {
 		} finally {
 			node.setLoading(false);
 		}
+	}
+
+	void setWorkspace(Workspace workspace) {
+		this.workspace = workspace;
+	}
+
+	private Workspace getWorkspace() {
+		if (workspace != null) {
+			return workspace;
+		}
+		// last resort...
+		return (Workspace) ResourcesPlugin.getWorkspace();
 	}
 }

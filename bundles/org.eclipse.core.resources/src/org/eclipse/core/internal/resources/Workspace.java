@@ -15,8 +15,7 @@
  *     Serge Beauchamp (Freescale Semiconductor) - [229633] Group and Project Path Variable Support
  *     Broadcom Corporation - ongoing development
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
- *     Christoph Läubrich 	- Issue #77 - SaveManager access the ResourcesPlugin.getWorkspace at init phase
- *     						- Issue #86 - Cyclic dependency between ProjectPreferences and Workspace init
+ *     Christoph Läubrich - Issue #77, Issue #86, Issue #124
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -25,6 +24,7 @@ import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
@@ -50,6 +50,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
+import org.osgi.service.prefs.Preferences;
 import org.xml.sax.InputSource;
 
 /**
@@ -1861,7 +1862,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 	 * Add the project scope to the preference service's default look-up order so
 	 * people get it for free
 	 */
-	private void initializePreferenceLookupOrder() {
+	private void initializePreferenceLookupOrder() throws CoreException {
 		PreferencesService service = PreferencesService.getDefault();
 		String[] original = service.getDefaultDefaultLookupOrder();
 		List<String> newOrder = new ArrayList<>();
@@ -1869,6 +1870,15 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 		newOrder.add(ProjectScope.SCOPE);
 		newOrder.addAll(Arrays.asList(original));
 		service.setDefaultDefaultLookupOrder(newOrder.toArray(new String[newOrder.size()]));
+		Preferences node = service.getRootNode().node(ProjectScope.SCOPE);
+		if (node instanceof ProjectPreferences) {
+			ProjectPreferences projectPreferences = (ProjectPreferences) node;
+			projectPreferences.setWorkspace(this);
+		} else {
+			throw new CoreException(Status.error(MessageFormat.format(
+					"Internal error while open workspace, expected ProjectPreferences for the scope {0} but got {1}", //$NON-NLS-1$
+					ProjectScope.SCOPE, node.getClass().getSimpleName())));
+		}
 	}
 
 	/**
