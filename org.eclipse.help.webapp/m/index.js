@@ -58,6 +58,7 @@
     var renderFullSearch;
     var updateScopeByToc;
     var setSearchScope;
+    var setSearchFieldValue;
     var currentSearch = {};
     var searchScope = {l: 0, s: '', t: 0};
 
@@ -499,8 +500,19 @@
             // close maybe open bookmarks, scopes or search page
             if (bookmarksPage) bookmarksPage.s();
             if (scopesPage) scopesPage.s();
-            searchPage.s();
+            searchPage.s(); // unhides content frame
             updateDeepLink();
+
+            // search result: scroll to first match (does not work automatically when the content frame is hidden)
+            try {
+                if (contentFrame.contentDocument.location.href.indexOf('?resultof=') > 0) {
+                    var contentFrameWindow = contentFrame.contentWindow;
+                    if (contentFrameWindow.pageYOffset == 0) {
+                        contentFrameWindow.scrollIntoView(
+                            contentFrameWindow.getVerticalScroll(contentFrameWindow.firstNodeToBeHighlighted));
+                    }
+                }
+            } catch(e) {}
 
             // font sizing
             setFontSize(0, 1, 1);
@@ -568,7 +580,8 @@
         } catch(e) {}
 
         // ...by legacy query parameters (topic/nav or search link)
-        var params = getParams(window.location.href.replace(/^[^#\?]*(?:\?([^#\?]*))?(#.*)?$/, '$1'));
+        var params = getParams(window.location.href.replace(/^[^#\?]*(?:\?([^#\?]*))?(#.*)?$/, '$1')
+                                                   .replace('&resultof%3D', '&r_='));
         var topicOrNav = params.topic || params.nav;
         if (params.searchWord && params.tab == 'search') {
             window.history.replaceState(null, '', window.location.pathname);
@@ -579,6 +592,7 @@
             getElementById('c').src =   BASE_URL
                                       + (params.nav ? 'nav' : 'topic')
                                       + topicOrNav
+                                      + (params.r_ ? '?resultof=' + decodeURIComponent(params.r_) : '')
                                       + (params.anchor ? '#' + params.anchor : '');
             window.history.replaceState(null, '', window.location.pathname);
             updateDeepLink();
@@ -628,6 +642,8 @@
         var hash;
         if (query) {
             hash = 'q=' + query;
+            var start = query.indexOf('&');
+            setSearchFieldValue(decodeURIComponent(start < 0 ? query : query.substring(0, start)));
         } else {
             try {
                 var src = getElementById('c').contentDocument.location.href;
@@ -640,6 +656,15 @@
                     || 'nftopic/' == current.substring(0, 8)) {
                     hash = current;
                 }
+
+                // fill search field, if the URL contains a query ...&q=...
+                if (src.indexOf('&q=') > 0) {
+                    setSearchFieldValue(decodeURIComponent(src.substring(src.indexOf('&q=') + 3)));
+                }
+
+                // focus on content iFrame
+                getElementById('c').contentWindow.focus();
+
             } catch(e) {}
         }
         try {
@@ -1097,6 +1122,12 @@
         wrap.appendChild(searchField);
         searchField.style.background = 'url("data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw%3D%3D") repeat';
 
+        setSearchFieldValue = function(value) {
+            if (value == searchField.value) return;
+            searchField.value = value;
+            hintField.value = '';
+        }
+
         var searchFieldAreaElements = [booksButton, searchField, searchButton];
         for (var i = 0; i < searchFieldAreaElements.length; i++) {
             addEvent(searchFieldAreaElements[i], 'focus', function() {
@@ -1360,7 +1391,7 @@
                     results.push({
                         /* title       */ t: items[3],
                         /* description */ d: items[5],
-                        /* href        */ h: items[hrefFollowedByTitle ? 0 : 2].substring(8),
+                        /* href        */ h: items[hrefFollowedByTitle ? 0 : 2].substring(8) + '&q=' + encodeURIComponent(searchWord),
                         /* breadcrumb  */ b: match[6] ? breadcrumb : [0, items[hrefFollowedByTitle ? 2 : 0]]
                     });
                 }
