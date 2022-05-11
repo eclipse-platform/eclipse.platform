@@ -29,6 +29,7 @@ import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
 import org.eclipse.debug.internal.core.DebugCoreMessages;
 import org.eclipse.debug.internal.core.LaunchConfiguration;
 import org.eclipse.debug.internal.core.LaunchManager;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -146,7 +147,7 @@ public class ShowCommandLineDialog extends Dialog {
 
 			}
 		} catch (CoreException e) {
-			e.printStackTrace();
+			DebugUIPlugin.log(e);
 		}
 		if (command == null || (command != null && command.length() == 0)) {
 			command = LaunchConfigurationsMessages.LaunchConfigurationDialog_ShowCommandLine_Default;
