@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Christoph Läubrich - Issue #16
  *******************************************************************************/
 package org.eclipse.team.internal.core;
 
@@ -20,7 +21,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceRuleFactory;
-import org.eclipse.core.resources.team.ResourceRuleFactory;
 import org.eclipse.core.resources.team.TeamHook;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -31,13 +31,12 @@ import org.eclipse.team.core.RepositoryProvider;
  */
 public class TeamHookDispatcher extends TeamHook {
 
-	private static final ResourceRuleFactory defaultFactory = new ResourceRuleFactory() {};
 	private static TeamHookDispatcher instance;
 
 	public static void setProviderRuleFactory(IProject project, IResourceRuleFactory factory) {
 		if (instance != null) {
 			if (factory == null) {
-				factory = defaultFactory;
+				factory = instance.defaultFactory;
 			}
 			instance.setRuleFactory(project, factory);
 		}

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.team.core; singleton:=true
-Bundle-Version: 3.9.300.qualifier
+Bundle-Version: 3.9.400.qualifier
 Bundle-Activator: org.eclipse.team.internal.core.TeamPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -23,7 +23,7 @@ Export-Package: org.eclipse.team.core,
  org.eclipse.team.internal.core.mapping;x-friends:="org.eclipse.team.cvs.core,org.eclipse.team.cvs.ssh2,org.eclipse.team.cvs.ui,org.eclipse.team.ui",
  org.eclipse.team.internal.core.streams;x-friends:="org.eclipse.team.cvs.core,org.eclipse.team.cvs.ssh2,org.eclipse.team.cvs.ui,org.eclipse.team.ui",
  org.eclipse.team.internal.core.subscribers;x-friends:="org.eclipse.team.cvs.core,org.eclipse.team.cvs.ssh2,org.eclipse.team.cvs.ui,org.eclipse.team.ui"
-Require-Bundle: org.eclipse.core.resources;bundle-version="[3.3.0,4.0.0)",
+Require-Bundle: org.eclipse.core.resources;bundle-version="[3.17.0,4.0.0)",
  org.eclipse.core.runtime;bundle-version="[3.18.0,4.0.0)",
  org.eclipse.core.filesystem;bundle-version="[1.1.0,2.0.0)",
  org.eclipse.compare.core;bundle-version="[3.5.200,4.0.0)"
