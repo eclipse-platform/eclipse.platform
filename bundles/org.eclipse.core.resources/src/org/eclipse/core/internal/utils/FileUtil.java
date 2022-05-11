@@ -306,9 +306,8 @@ public class FileUtil {
 			}
 		}
 		Preferences rootNode = Platform.getPreferencesService().getRootNode();
-		String value = null;
-		// if the file does not exist or has no content yet, try with project preferences
-		value = getLineSeparatorFromPreferences(rootNode.node(ProjectScope.SCOPE).node(file.getProject().getName()));
+		// if the file does not exist or has no content yet, try with project preference
+		String value = getLineSeparatorFromPreferences(rootNode.node(ProjectScope.SCOPE).node(file.getProject().getName()));
 		if (value != null)
 			return value;
 		// try with instance preferences

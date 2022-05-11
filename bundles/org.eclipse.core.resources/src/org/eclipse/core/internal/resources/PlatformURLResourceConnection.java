@@ -62,8 +62,6 @@ public class PlatformURLResourceConnection extends PlatformURLConnection {
 		}
 
 		IResource resource = null;
-		IPath result = null;
-
 		if (count == 2) {
 			resource = project;
 		} else {
@@ -71,7 +69,7 @@ public class PlatformURLResourceConnection extends PlatformURLConnection {
 			resource = project.getFile(spec);
 		}
 
-		result = resource.getLocation();
+		IPath result = resource.getLocation();
 
 		if (result == null) {
 			URI uri = resource.getLocationURI();

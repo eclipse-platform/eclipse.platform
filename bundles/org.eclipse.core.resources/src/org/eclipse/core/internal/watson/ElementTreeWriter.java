@@ -128,9 +128,7 @@ public class ElementTreeWriter {
 		 */
 		DeltaDataTree completeTree = newerTree.getDataTree();
 		DeltaDataTree derivedTree = olderTree.getDataTree();
-		DeltaDataTree deltaToWrite = null;
-
-		deltaToWrite = completeTree.forwardDeltaWith(derivedTree, comparator);
+		DeltaDataTree deltaToWrite = completeTree.forwardDeltaWith(derivedTree, comparator);
 
 		Assert.isTrue(deltaToWrite.isImmutable());
 		dataTreeWriter.writeTree(deltaToWrite, path, depth, output);

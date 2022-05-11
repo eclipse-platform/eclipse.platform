@@ -103,8 +103,7 @@ public class BuildCommand extends ModelObject implements ICommand {
 
 	@Override
 	public Object clone() {
-		BuildCommand result = null;
-		result = (BuildCommand) super.clone();
+		BuildCommand result = (BuildCommand) super.clone();
 		if (result == null)
 			return null;
 		result.setArguments(getArguments());

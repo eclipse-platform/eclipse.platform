@@ -1989,8 +1989,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 
 	@Override
 	public IProjectDescription loadProjectDescription(InputStream stream) throws CoreException {
-		IProjectDescription result = null;
-		result = new ProjectDescriptionReader(this).read(new InputSource(stream));
+		IProjectDescription result = new ProjectDescriptionReader(this).read(new InputSource(stream));
 		if (result == null) {
 			String message = NLS.bind(Messages.resources_errorReadProject, stream.toString());
 			IStatus status = new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, IResourceStatus.FAILED_READ_METADATA, message, null);
