@@ -22,20 +22,6 @@ import org.eclipse.osgi.util.NLS;
  * Data trees can be viewed as generic multi-leaf trees.  The tree points to a single
  * rootNode, and each node can contain an arbitrary number of children.
  *
- * <p>Internally, data trees can be either complete trees (DataTree class), or delta
- * trees (<code>DeltaDataTree</code> class).  A DataTree is a stand-alone tree
- * that contains all its own data.  A <code>DeltaDataTree</code> only stores the
- * differences between itself and its parent tree.  This sparse representation allows
- * the API user to retain chains of delta trees that represent incremental changes to
- * a system.  Using the delta trees, the user can undo changes to a tree by going up to
- * the parent tree.
- *
- * <p>Both representations of the tree support the same API, so the user of a tree
- * never needs to know if they're dealing with a complete tree or a chain of deltas.
- * Delta trees support an extended API of delta operations.  See the <code>DeltaDataTree
- * </code> class for details.
- *
- * @see DataTree
  * @see DeltaDataTree
  */
 
@@ -50,24 +36,6 @@ public abstract class AbstractDataTree {
 	 * Singleton indicating no children
 	 */
 	protected static final IPath[] NO_CHILDREN = new IPath[0];
-
-	/**
-	 * Creates a new empty tree
-	 */
-	public AbstractDataTree() {
-		this.empty();
-	}
-
-	/**
-	 * Returns a copy of the receiver, which shares the receiver's
-	 * instance variables.
-	 */
-	protected AbstractDataTree copy() {
-		AbstractDataTree newTree = this.createInstance();
-		newTree.setImmutable(this.isImmutable());
-		newTree.setRootNode(this.getRootNode());
-		return newTree;
-	}
 
 	/**
 	 * Returns a copy of the node subtree rooted at the given key.
@@ -103,15 +71,6 @@ public abstract class AbstractDataTree {
 	public abstract void createChild(IPath parentKey, String localName, Object object);
 
 	/**
-	 * Creates and returns a new instance of the tree.  This is an
-	 * implementation of the factory method creational pattern for allowing
-	 * abstract methods to create instances.
-	 *
-	 * @return the new tree.
-	 */
-	protected abstract AbstractDataTree createInstance();
-
-	/**
 	 * Creates or replaces a subtree in the tree.  The parent node must exist.
 	 *
 	 * @param key key of parent of subtree to create/replace
@@ -136,13 +95,6 @@ public abstract class AbstractDataTree {
 	public abstract void deleteChild(IPath parentKey, String localName);
 
 	/**
-	 * Initializes the receiver so that it is a complete, empty tree.  The
-	 * result does not represent a delta on another tree.  An empty tree is
-	 * defined to have a root node with null data and no children.
-	 */
-	public abstract void empty();
-
-	/**
 	 * Returns the key of a node in the tree.
 	 *
 	 * @param parentKey
@@ -163,43 +115,25 @@ public abstract class AbstractDataTree {
 	/**
 	 * Returns the number of children of a node
 	 *
-	 * @param parentKey
-	 *	key of the node for which we want to retreive the number of children
-	 * @exception ObjectNotFoundException
-	 *	parentKey does not exist in the receiver
+	 * @param parentKey key of the node for which we want to retreive the number of
+	 *                  children
+	 * @exception ObjectNotFoundException parentKey does not exist in the receiver
 	 */
-	public int getChildCount(IPath parentKey) {
-		return getNamesOfChildren(parentKey).length;
-	}
+	abstract int getChildCount(IPath parentKey);
 
 	/**
 	 * Returns the keys of all children of a node.
 	 *
-	 * @param parentKey
-	 *	key of parent whose children we want to retrieve.
-	 * @exception ObjectNotFoundException
-	 *	parentKey does not exist in the receiver
+	 * @param parentKey key of parent whose children we want to retrieve.
+	 * @exception ObjectNotFoundException parentKey does not exist in the receiver
 	 */
-	public IPath[] getChildren(IPath parentKey) {
-		String names[] = getNamesOfChildren(parentKey);
-		int len = names.length;
-		if (len == 0)
-			return NO_CHILDREN;
-		IPath answer[] = new IPath[len];
-
-		for (int i = 0; i < len; i++) {
-			answer[i] = parentKey.append(names[i]);
-		}
-		return answer;
-	}
+	abstract IPath[] getChildren(IPath parentKey);
 
 	/**
 	 * Returns the data of a node.
 	 *
-	 * @param key
-	 *	key of node for which we want to retrieve data.
-	 * @exception ObjectNotFoundException
-	 *	key does not exist in the receiver
+	 * @param key key of node for which we want to retrieve data.
+	 * @exception ObjectNotFoundException key does not exist in the receiver
 	 */
 	public abstract Object getData(IPath key);
 
@@ -215,11 +149,7 @@ public abstract class AbstractDataTree {
 	 * @exception ArrayIndexOutOfBoundsException
 	 *	if no child with the given index
 	 */
-	public String getNameOfChild(IPath parentKey, int index) {
-		String childNames[] = getNamesOfChildren(parentKey);
-		/* Return the requested child as long as its in range */
-		return childNames[index];
-	}
+	abstract String getNameOfChild(IPath parentKey, int index);
 
 	/**
 	 * Returns the local names for the children of a node
@@ -232,20 +162,8 @@ public abstract class AbstractDataTree {
 	public abstract String[] getNamesOfChildren(IPath parentKey);
 
 	/**
-	 * Returns the root node of the tree.
-	 *
-	 * <p>Both subclasses must be able to return their root node.  However subclasses
-	 * can have different types of root nodes, so this is not enforced as an abstract
-	 * method
-	 */
-	AbstractDataTreeNode getRootNode() {
-		throw new AbstractMethodError(Messages.dtree_subclassImplement);
-	}
-
-	/**
-	 * Handles the case where an attempt was made to modify
-	 * the tree when it was in an immutable state.  Throws
-	 * an unchecked exception.
+	 * Handles the case where an attempt was made to modify the tree when it was in
+	 * an immutable state. Throws an unchecked exception.
 	 */
 	static void handleImmutableTree() {
 		throw new RuntimeException(Messages.dtree_immutable);

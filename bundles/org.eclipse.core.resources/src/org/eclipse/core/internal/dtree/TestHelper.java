@@ -20,7 +20,7 @@ public class TestHelper {
 	/**
 	 * Returns the root node of a tree.
 	 */
-	public static AbstractDataTreeNode getRootNode(AbstractDataTree tree) {
+	public static AbstractDataTreeNode getRootNode(DeltaDataTree tree) {
 		return tree.getRootNode();
 	}
 }

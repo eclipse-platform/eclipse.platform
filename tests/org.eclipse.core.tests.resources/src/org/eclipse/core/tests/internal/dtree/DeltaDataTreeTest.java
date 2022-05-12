@@ -30,7 +30,8 @@ import org.junit.Test;
 /**
  * Test class for delta trees.
  */
-public class DeltaDataTreeTest extends DataTreeTest {
+public class DeltaDataTreeTest {
+	IPath rootKey, leftKey, rightKey;
 
 	DeltaDataTree tree, emptyTree, changedTree, deltaTree;
 
@@ -76,7 +77,7 @@ public class DeltaDataTreeTest extends DataTreeTest {
 	/**
 	 * Init tests
 	 */
-	@Override
+
 	@Before
 	public void setUp() {
 
@@ -203,7 +204,7 @@ public class DeltaDataTreeTest extends DataTreeTest {
 	 * @exception ObjectNotFoundException
 	 *	parentKey does not exist in the receiver
 	 */
-	@Override
+
 	@Test
 	public void testCreateChild() {
 
@@ -283,7 +284,7 @@ public class DeltaDataTreeTest extends DataTreeTest {
 	 * @exception ObjectNotFoundException
 	 *	a child of parentKey with name localName does not exist in the receiver
 	 */
-	@Override
+
 	@Test
 	public void testDeleteChild() {
 
@@ -396,7 +397,7 @@ public class DeltaDataTreeTest extends DataTreeTest {
 	 * not represent a delta on another tree.  An empty tree is defined to
 	 * have a root node with nil data and no children.
 	 */
-	@Override
+
 	@Test
 	public void testEmpty() {
 
@@ -506,7 +507,7 @@ public class DeltaDataTreeTest extends DataTreeTest {
 	 * @exception ArrayIndexOutOfBoundsException
 	 *	if no child with the given index (runtime exception)
 	 */
-	@Override
+
 	@Test
 	public void testGetChild() {
 
@@ -571,7 +572,7 @@ public class DeltaDataTreeTest extends DataTreeTest {
 	 * @exception ObjectNotFoundException
 	 *	parentKey does not exist in the receiver
 	 */
-	@Override
+
 	@Test
 	public void testGetChildCount() {
 
@@ -624,7 +625,7 @@ public class DeltaDataTreeTest extends DataTreeTest {
 	 * @exception ObjectNotFoundException
 	 *	parentKey does not exist in the receiver"
 	 */
-	@Override
+
 	@Test
 	public void testGetChildren() {
 
@@ -687,7 +688,7 @@ public class DeltaDataTreeTest extends DataTreeTest {
 	 * @exception ObjectNotFoundException
 	 *	parentKey does not exist in the receiver
 	 */
-	@Override
+
 	@Test
 	public void testGetNamesOfChildren() {
 
@@ -754,7 +755,7 @@ public class DeltaDataTreeTest extends DataTreeTest {
 	 * Returns true if the receiver includes a node with the given key, false
 	 * otherwise.
 	 */
-	@Override
+
 	@Test
 	public void testIncludes() {
 

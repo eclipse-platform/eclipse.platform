@@ -39,14 +39,15 @@ import org.eclipse.core.runtime.*;
  */
 
 public class DeltaDataTree extends AbstractDataTree {
-	private AbstractDataTreeNode rootNode;
-	private DeltaDataTree parent;
+	private volatile AbstractDataTreeNode rootNode;
+	private volatile DeltaDataTree parent;
 
 	/**
 	 * Creates a new empty tree.
 	 */
 	public DeltaDataTree() {
-		this.empty();
+		this.rootNode = new DataTreeNode(null, null);
+		this.parent = null;
 	}
 
 	/**
@@ -130,7 +131,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * @param deltaNode delta node to use to assemble the new node.
 	 */
 	protected void assembleNode(IPath key, AbstractDataTreeNode deltaNode) {
-		rootNode = rootNode.assembleWith(deltaNode, key, 0);
+		setRootNode(rootNode.assembleWith(deltaNode, key, 0));
 	}
 
 	/**
@@ -224,8 +225,8 @@ public class DeltaDataTree extends AbstractDataTree {
 		DeltaDataTree c = collapseTo.forwardDeltaWith(this, comparator);
 
 		//update my internal root node and parent pointers.
-		this.parent = collapseTo;
-		this.rootNode = c.rootNode;
+		setParent(collapseTo);
+		setRootNode(c.rootNode);
 		return this;
 	}
 
@@ -295,8 +296,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	/**
 	 * Returns a copy of the tree which shares its instance variables.
 	 */
-	@Override
-	protected AbstractDataTree copy() {
+	protected DeltaDataTree copy() {
 		return new DeltaDataTree(rootNode, parent);
 	}
 
@@ -343,19 +343,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * but introduces no changes).
 	 */
 	static DeltaDataTree createEmptyDelta() {
-
-		DeltaDataTree newTree = new DeltaDataTree();
-		newTree.emptyDelta();
-		return newTree;
-	}
-
-	/**
-	 * Creates and returns an instance of the receiver.
-	 * @see AbstractDataTree#createInstance()
-	 */
-	@Override
-	protected AbstractDataTree createInstance() {
-		return new DeltaDataTree();
+		return new DeltaDataTree(new NoDataDeltaNode(null), null);
 	}
 
 	/**
@@ -385,25 +373,6 @@ public class DeltaDataTree extends AbstractDataTree {
 		if (!includes(childKey))
 			handleNotFound(childKey);
 		assembleNode(parentKey, new NoDataDeltaNode(parentKey.lastSegment(), new DeletedNode(localName)));
-	}
-
-	/**
-	 * Initializes the receiver so that it is a complete, empty tree.
-	 * @see AbstractDataTree#empty()
-	 */
-	@Override
-	public void empty() {
-		rootNode = new DataTreeNode(null, null);
-		parent = null;
-	}
-
-	/**
-	 * Initializes the receiver so that it represents an empty delta.
-	 * (i.e. it represents a delta on another (unspecified) tree,
-	 * it introduces no changes).  The parent is left unchanged.
-	 */
-	void emptyDelta() {
-		rootNode = new NoDataDeltaNode(null);
 	}
 
 	/**
@@ -633,8 +602,12 @@ public class DeltaDataTree extends AbstractDataTree {
 
 	/**
 	 * Returns the root node of the tree.
+	 *
+	 * <p>
+	 * Both subclasses must be able to return their root node. However subclasses
+	 * can have different types of root nodes, so this is not enforced as an
+	 * abstract method
 	 */
-	@Override
 	protected AbstractDataTreeNode getRootNode() {
 		return rootNode;
 	}
@@ -789,10 +762,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	public DeltaDataTree newEmptyDeltaTree() {
 		if (!isImmutable())
 			throw new IllegalArgumentException(Messages.dtree_notImmutable);
-		DeltaDataTree newTree = (DeltaDataTree) this.copy();
-		newTree.setParent(this);
-		newTree.emptyDelta();
-		return newTree;
+		return new DeltaDataTree(new NoDataDeltaNode(null), this);
 	}
 
 	/**
