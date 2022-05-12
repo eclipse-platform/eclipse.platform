@@ -602,7 +602,6 @@ public class ResourceBundleHelper {
 			return defaultLocale;
 		}
 
-		String language = ""; //$NON-NLS-1$
 		String country = ""; //$NON-NLS-1$
 		String variant = ""; //$NON-NLS-1$
 
@@ -618,7 +617,7 @@ public class ResourceBundleHelper {
 			return defaultLocale;
 		}
 
-		language = localeParts[0];
+		String language = localeParts[0];
 
 		if (localeParts.length > 1) {
 			if (!localeParts[1].isEmpty() && !localeParts[1].matches("[a-zA-Z]{2}|[0-9]{3}")) { //$NON-NLS-1$
