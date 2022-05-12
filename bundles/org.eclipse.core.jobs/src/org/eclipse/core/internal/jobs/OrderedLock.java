@@ -98,7 +98,6 @@ public class OrderedLock implements ILock, ISchedulingRule {
 		if (Thread.interrupted())
 			throw new InterruptedException();
 
-		boolean success = false;
 		if (delay <= 0)
 			return attempt();
 		Semaphore semaphore = createSemaphore();
@@ -106,7 +105,7 @@ public class OrderedLock implements ILock, ISchedulingRule {
 			return true;
 		if (DEBUG)
 			System.out.println("[" + Thread.currentThread() + "] Operation waiting to be executed... " + this); //$NON-NLS-1$ //$NON-NLS-2$
-		success = doAcquire(semaphore, delay);
+		boolean success = doAcquire(semaphore, delay);
 		manager.resumeSuspendedLocks(Thread.currentThread());
 		if (DEBUG)
 			System.out.println("[" + Thread.currentThread() + //$NON-NLS-1$
