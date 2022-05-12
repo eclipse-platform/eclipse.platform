@@ -78,7 +78,6 @@ public class PatchReader {
 	public void parse(BufferedReader reader) throws IOException {
 		List<FilePatch2> diffs= new ArrayList<>();
 		HashMap<String, DiffProject> diffProjects= new HashMap<>(4);
-		String line= null;
 		boolean reread= false;
 		String diffArgs= null;
 		String fileName= null;
@@ -91,7 +90,7 @@ public class PatchReader {
 		LineReader lr= new LineReader(reader);
 		lr.ignoreSingleCR(); // Don't treat single CRs as line feeds to be consistent with command line patch
 		// Test for our format
-		line= lr.readLine();
+		String line= lr.readLine();
 		if (line != null && line.startsWith(PatchReader.MULTIPROJECTPATCH_HEADER)) {
 			this.fIsWorkspacePatch= true;
 		} else {
@@ -165,15 +164,14 @@ public class PatchReader {
 
 	public void parse(LineReader lr, String line) throws IOException {
 		List<FilePatch2> diffs= new ArrayList<>();
-		boolean reread= false;
+		boolean reread= line!=null;
 		String diffArgs= null;
 		String fileName= null;
 		List<String> headerLines = new ArrayList<>();
 		boolean foundDiff= false;
 
-		// read leading garbage
-		reread= line!=null;
 		while (true) {
+			// read leading garbage
 			if (!reread)
 				line= lr.readLine();
 			reread= false;

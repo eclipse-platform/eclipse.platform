@@ -34,19 +34,17 @@ public class Hunk implements IHunk {
 	public static Hunk createHunk(FilePatch2 parent, int[] oldRange, int[] newRange,
 			List<String> lines, boolean hasLineAdditions, boolean hasLineDeletions, boolean hasContextLines) {
 		int oldStart = 0;
-		int oldLength = 0;
 		int newStart = 0;
-		int newLength = 0;
 		if (oldRange[0] > 0)
 			oldStart= oldRange[0]-1;	// line number start at 0!
 		else
 			oldStart= 0;
-		oldLength= oldRange[1];
+		int oldLength = oldRange[1];
 		if (newRange[0] > 0)
 			newStart= newRange[0]-1;	// line number start at 0!
 		else
 			newStart= 0;
-		newLength= newRange[1];
+		int newLength = newRange[1];
 		int hunkType = FilePatch2.CHANGE;
 		if (!hasContextLines) {
 			if (hasLineAdditions && !hasLineDeletions) {
