@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 Paul Pazderski and others.
+ * Copyright (c) 2020, 2022 Paul Pazderski and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,8 +14,6 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.console;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
@@ -191,7 +189,7 @@ public class RuntimeProcessTests extends AbstractDebugTest {
 		RuntimeProcess runtimeProcess = mockProcess.toRuntimeProcess();
 
 		DebugException timeoutException = assertThrows(DebugException.class, runtimeProcess::terminate);
-		assertThat(timeoutException.getMessage(), is(DebugCoreMessages.RuntimeProcess_terminate_failed));
+		assertEquals(DebugCoreMessages.RuntimeProcess_terminate_failed, timeoutException.getMessage());
 	}
 
 	/**
@@ -210,7 +208,7 @@ public class RuntimeProcessTests extends AbstractDebugTest {
 		RuntimeProcess runtimeProcess = mockProcess.toRuntimeProcess();
 
 		DebugException timeoutException = assertThrows(DebugException.class, runtimeProcess::terminate);
-		assertThat(timeoutException.getMessage(), is(DebugCoreMessages.RuntimeProcess_terminate_failed));
+		assertEquals(DebugCoreMessages.RuntimeProcess_terminate_failed, timeoutException.getMessage());
 	}
 
 	/**
