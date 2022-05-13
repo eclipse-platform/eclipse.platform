@@ -24,6 +24,8 @@ import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
 
 /**
  * The <code>RefreshJob</code> class maintains a list of resources that
@@ -80,6 +82,7 @@ public class RefreshJob extends InternalWorkspaceJob {
 	private final int depthIncreaseStep;
 	private final int updateDelay;
 	private final int maxRecursionDeep;
+	private final Workspace workspace;
 
 	public RefreshJob(Workspace workspace) {
 		this(FAST_REFRESH_THRESHOLD, SLOW_REFRESH_THRESHOLD, BASE_REFRESH_DEPTH, DEPTH_INCREASE_STEP, UPDATE_DELAY,
@@ -99,6 +102,7 @@ public class RefreshJob extends InternalWorkspaceJob {
 		this.depthIncreaseStep = depthIncreaseStep;
 		this.updateDelay = updateDelay;
 		this.maxRecursionDeep = maxRecursionDeep;
+		this.workspace = workspace;
 	}
 
 	/**
@@ -210,10 +214,13 @@ public class RefreshJob extends InternalWorkspaceJob {
 			int refreshCount = 0;
 			int depth = 2;
 
+			IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
 			IResource toRefresh;
 			while ((toRefresh = nextRequest()) != null) {
+				ISchedulingRule refreshRule = ruleFactory.refreshRule(toRefresh);
 				try {
 					subMonitor.setWorkRemaining(Math.max(fRequests.size(), 100));
+					Job.getJobManager().beginRule(refreshRule, subMonitor);
 					refreshCount++;
 					long refreshTime = -System.currentTimeMillis();
 					toRefresh.refreshLocal(baseRefreshDepth + depth, subMonitor.split(1));
@@ -246,6 +253,8 @@ public class RefreshJob extends InternalWorkspaceJob {
 					addRequests(collectChildrenToDepth(toRefresh, new ArrayList<>(), depth));
 				} catch (CoreException e) {
 					errors.merge(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, 1, errors.getMessage(), e));
+				} finally {
+					Job.getJobManager().endRule(refreshRule);
 				}
 			}
 		} finally {

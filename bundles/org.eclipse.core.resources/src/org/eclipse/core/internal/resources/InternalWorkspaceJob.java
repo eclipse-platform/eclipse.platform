@@ -35,17 +35,18 @@ public abstract class InternalWorkspaceJob extends Job {
 		monitor = Policy.monitorFor(monitor);
 		try {
 			int depth = -1;
+			final WorkManager workManager = workspace.getWorkManager();
 			try {
 				workspace.prepareOperation(null, monitor);
 				workspace.beginOperation(true);
-				depth = workspace.getWorkManager().beginUnprotected();
+				depth = workManager.beginUnprotected();
 				return runInWorkspace(monitor);
 			} catch (OperationCanceledException e) {
-				workspace.getWorkManager().operationCanceled();
+				workManager.operationCanceled();
 				return Status.CANCEL_STATUS;
 			} finally {
 				if (depth >= 0)
-					workspace.getWorkManager().endUnprotected(depth);
+					workManager.endUnprotected(depth);
 				workspace.endOperation(null, false);
 			}
 		} catch (CoreException e) {

@@ -30,8 +30,8 @@ import org.eclipse.core.internal.refresh.RefreshJob;
 import org.eclipse.core.internal.refresh.RefreshManager;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -206,6 +206,88 @@ public class RefreshJobTest extends ResourceTest {
 		runtest(name, minDepth, maxDepth, directoriesCount, filesCount, createDepth);
 	}
 
+	/**
+	 * RefreshJob should use right rule to refresh resources, so it should wait with
+	 * refresh if
+	 */
+	public void testProjectRule() throws Exception {
+		TestRefreshJob refreshJob = createAndReplaceDefaultJob();
+		IProject project = createProject(getName());
+		try {
+			IFolder parent = project.getFolder("parent");
+			parent.create(true, true, null);
+			IFolder child = parent.getFolder("child");
+			child.create(true, true, null);
+			Set<IResource> expected = new LinkedHashSet<>();
+			expected.add(project.getFolder(".settings"));
+			expected.add(parent);
+			expected.add(child);
+			expected.add(project);
+			boolean releaseRule = true;
+			try {
+				Job.getJobManager().beginRule(project, null);
+				Job[] jobs = Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_REFRESH);
+				assertEquals(Arrays.toString(new Job[] {}), Arrays.toString(jobs));
+				refreshJob.refresh(project);
+				Thread.sleep(1000);
+				jobs = Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_REFRESH);
+				assertEquals("Should be one refresh job running", Arrays.toString(new Job[] { refreshJob }),
+						Arrays.toString(jobs));
+				assertTrue("Refresh was not started", refreshJob.refreshStarted);
+				assertFalse("Refresh should wait on rule", refreshJob.refreshDone);
+				assertEquals("Should not visit anything yet", Collections.EMPTY_SET, refreshJob.visitedResources);
+				Job.getJobManager().endRule(project);
+				releaseRule = false;
+				TestUtil.waitForJobs(getName(), 100, 1000);
+				assertTrue("Refresh was not started", refreshJob.refreshStarted);
+				assertTrue("Refresh was not finished", refreshJob.refreshDone);
+				assertEquals("Missing refresh", expected, refreshJob.visitedResources);
+			} finally {
+				if (releaseRule) {
+					Job.getJobManager().endRule(project);
+				}
+			}
+		} finally {
+			deleteProject(getName());
+		}
+	}
+
+	public void testUnrelatedRule() throws Exception {
+		TestRefreshJob refreshJob = createAndReplaceDefaultJob();
+		IProject project = createProject(getName());
+		try {
+			IFolder parent = project.getFolder("parent");
+			parent.create(true, true, null);
+			IFolder child = parent.getFolder("child");
+			child.create(true, true, null);
+
+			Set<IResource> expected = new LinkedHashSet<>();
+			IFolder rule = project.getFolder(".settings");
+			expected.add(child);
+			boolean releaseRule = true;
+			try {
+				Job.getJobManager().beginRule(rule, null);
+				Job[] jobs = Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_REFRESH);
+				assertEquals(Arrays.toString(new Job[] {}), Arrays.toString(jobs));
+				refreshJob.refresh(child);
+				TestUtil.waitForJobs(getName(), 10, 60_000, ResourcesPlugin.FAMILY_AUTO_REFRESH);
+				jobs = Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_REFRESH);
+				assertEquals("Refresh shouldn't run anymore", Arrays.toString(new Job[] {}), Arrays.toString(jobs));
+				assertTrue("Refresh was not started", refreshJob.refreshStarted);
+				assertTrue("Refresh was not finished", refreshJob.refreshDone);
+				Job.getJobManager().endRule(rule);
+				releaseRule = false;
+				assertEquals("Missing refresh", expected, refreshJob.visitedResources);
+			} finally {
+				if (releaseRule) {
+					Job.getJobManager().endRule(rule);
+				}
+			}
+		} finally {
+			deleteProject(getName());
+		}
+	}
+
 	private void runtest(String name, int minDepth, int maxDepth, int directoriesCount, int filesCount,
 			int createDepth) throws Exception, CoreException {
 		try {
@@ -331,11 +413,21 @@ public class RefreshJobTest extends ResourceTest {
 		int maxDepth;
 		int minDepth;
 		Set<IResource> visitedResources = new LinkedHashSet<>();
+		volatile boolean refreshStarted;
+		volatile boolean refreshDone;
 
 		protected TestRefreshJob(int fastRefreshThreshold, int slowRefreshThreshold, int baseRefreshDepth,
 				int depthIncreaseStep, int updateDelay, int maxRecursionDeep) {
 			super(fastRefreshThreshold, slowRefreshThreshold, baseRefreshDepth,
 					depthIncreaseStep, updateDelay, maxRecursionDeep, (Workspace) ResourcesPlugin.getWorkspace());
+		}
+
+		@Override
+		public IStatus runInWorkspace(IProgressMonitor monitor) {
+			refreshStarted = true;
+			IStatus status = super.runInWorkspace(monitor);
+			refreshDone = true;
+			return status;
 		}
 
 		@Override
