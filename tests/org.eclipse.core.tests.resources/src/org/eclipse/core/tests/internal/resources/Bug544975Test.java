@@ -19,6 +19,8 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 public class Bug544975Test extends ResourceTest {
@@ -26,7 +28,11 @@ public class Bug544975Test extends ResourceTest {
 	public void testBug544975ProjectOpenBackgroundRefresh() throws Exception {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = root.getProject("Bug544975");
+		// turn on autorefresh
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+		boolean originalRefreshSetting = prefs.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
 		try {
+			prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
 			create(project, false);
 			createFile(project, "someFile.txt", "some text");
 			IFile file1 = project.getFile("someFile.txt");
@@ -54,6 +60,7 @@ public class Bug544975Test extends ResourceTest {
 					file2.exists());
 		} finally {
 			project.delete(true, new NullProgressMonitor());
+			prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, originalRefreshSetting);
 		}
 	}
 
