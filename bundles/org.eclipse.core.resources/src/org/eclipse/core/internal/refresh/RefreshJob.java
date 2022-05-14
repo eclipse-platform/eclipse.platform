@@ -83,6 +83,7 @@ public class RefreshJob extends InternalWorkspaceJob {
 	private final int updateDelay;
 	private final int maxRecursionDeep;
 	private final Workspace workspace;
+	private volatile boolean disabled;
 
 	public RefreshJob(Workspace workspace) {
 		this(FAST_REFRESH_THRESHOLD, SLOW_REFRESH_THRESHOLD, BASE_REFRESH_DEPTH, DEPTH_INCREASE_STEP, UPDATE_DELAY,
@@ -195,8 +196,9 @@ public class RefreshJob extends InternalWorkspaceJob {
 	 * @see org.eclipse.core.resources.refresh.IRefreshResult#refresh
 	 */
 	public void refresh(IResource resource) {
-		if (resource == null)
+		if (resource == null || disabled) {
 			return;
+		}
 		addRequest(resource);
 		schedule(updateDelay);
 	}
@@ -277,16 +279,20 @@ public class RefreshJob extends InternalWorkspaceJob {
 	 * Starts the refresh job
 	 */
 	public void start() {
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(RefreshManager.DEBUG_PREFIX + " enabling auto-refresh"); //$NON-NLS-1$
+		}
+		disabled = false;
 	}
 
 	/**
 	 * Stops the refresh job
 	 */
 	public void stop() {
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(RefreshManager.DEBUG_PREFIX + " disabling auto-refresh"); //$NON-NLS-1$
+		}
+		disabled = true;
 		cancel();
 	}
 }

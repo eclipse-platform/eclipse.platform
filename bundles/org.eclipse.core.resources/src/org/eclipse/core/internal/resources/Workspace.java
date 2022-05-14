@@ -625,6 +625,8 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 		try {
 			try {
 				stringPoolJob.cancel();
+				// stop accepting refresh tasks & doing refresh
+				refreshManager.shutdown(null);
 				//shutdown save manager now so a last snapshot can be taken before we close
 				//note: you can't call #save() from within a nested operation
 				saveManager.shutdown(null);
