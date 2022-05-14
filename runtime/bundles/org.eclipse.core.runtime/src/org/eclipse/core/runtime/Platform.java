@@ -485,6 +485,8 @@ public final class Platform {
 	private static final String LINE_SEPARATOR_VALUE_LF = "\n"; //$NON-NLS-1$
 	private static final String LINE_SEPARATOR_VALUE_CRLF = "\r\n"; //$NON-NLS-1$
 
+	private static final StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+
 	/**
 	 * Private constructor to block instance creation.
 	 */
@@ -903,13 +905,33 @@ public final class Platform {
 	 * is created.
 	 *
 	 * @param clazz the class in a bundle whose log is returned
-	 * @return the log for the bundle to which the bundle belongs
+	 * @return the log for the bundle to which the class belongs
 	 *
 	 * @since 3.16
 	 */
 	public static ILog getLog(Class<?> clazz) {
 		Bundle bundle = FrameworkUtil.getBundle(clazz);
 		return InternalPlatform.getDefault().getLog(bundle);
+	}
+
+	/**
+	 * Returns the log for the bundle of the calling class. If no such log exists,
+	 * one is created.
+	 * <p>
+	 * There may be a small performance penalty when using this method that
+	 * automatically determines the calling class by using {@link StackWalker}. For
+	 * performance critical code consider to use {@link #getLog(Class)} or
+	 * ultimately {@link #getLog(Bundle)} and pass the calling class respectively
+	 * its bundle directly.
+	 * </p>
+	 *
+	 * @return the log for the bundle to which the caller belongs
+	 *
+	 * @since 3.26
+	 */
+	public static ILog getContextLog() {
+		Class<?> callerClass = STACK_WALKER.getCallerClass();
+		return getLog(callerClass);
 	}
 
 	/**
