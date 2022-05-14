@@ -18,8 +18,11 @@ import java.util.Map;
 import junit.framework.AssertionFailedError;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.TestUtil;
 
@@ -28,14 +31,16 @@ import org.eclipse.core.tests.resources.TestUtil;
  */
 public class RefreshProviderTest extends ResourceTest {
 
+	private boolean originalRefreshSetting;
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		TestRefreshProvider.reset();
 		//turn on autorefresh
-		Preferences preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
-		preferences.setValue(ResourcesPlugin.PREF_AUTO_REFRESH, true);
-
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+		originalRefreshSetting = prefs.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
+		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
 	}
 
 	@Override
@@ -43,8 +48,8 @@ public class RefreshProviderTest extends ResourceTest {
 		super.tearDown();
 		//turn off autorefresh
 		TestRefreshProvider.reset();
-		Preferences preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
-		preferences.setValue(ResourcesPlugin.PREF_AUTO_REFRESH, false);
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, originalRefreshSetting);
 	}
 
 	/**

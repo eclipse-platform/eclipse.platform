@@ -20,6 +20,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -30,6 +31,7 @@ import org.eclipse.core.tests.resources.ResourceTest;
 public class Bug_303517 extends ResourceTest {
 
 	String[] resources = new String[] {"/", "/Bug303517/", "/Bug303517/Folder/", "/Bug303517/Folder/Resource",};
+	private boolean originalRefreshSetting;
 
 	@Override
 	public String[] defineHierarchy() {
@@ -39,13 +41,18 @@ public class Bug_303517 extends ResourceTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, true);
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+		originalRefreshSetting = prefs.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
+		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
+		prefs.putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, true);
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, originalRefreshSetting);
+		prefs.putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false);
 		super.tearDown();
-		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false);
 	}
 
 	/**
