@@ -226,13 +226,8 @@ public class RefreshJobTest extends ResourceTest {
 			boolean releaseRule = true;
 			try {
 				Job.getJobManager().beginRule(project, null);
-				Job[] jobs = Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-				assertEquals(Arrays.toString(new Job[] {}), Arrays.toString(jobs));
 				refreshJob.refresh(project);
 				Thread.sleep(1000);
-				jobs = Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-				assertEquals("Should be one refresh job running", Arrays.toString(new Job[] { refreshJob }),
-						Arrays.toString(jobs));
 				assertTrue("Refresh was not started", refreshJob.refreshStarted);
 				assertFalse("Refresh should wait on rule", refreshJob.refreshDone);
 				assertEquals("Should not visit anything yet", Collections.EMPTY_SET, refreshJob.visitedResources);
@@ -267,12 +262,8 @@ public class RefreshJobTest extends ResourceTest {
 			boolean releaseRule = true;
 			try {
 				Job.getJobManager().beginRule(rule, null);
-				Job[] jobs = Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-				assertEquals(Arrays.toString(new Job[] {}), Arrays.toString(jobs));
 				refreshJob.refresh(child);
 				TestUtil.waitForJobs(getName(), 10, 60_000, ResourcesPlugin.FAMILY_AUTO_REFRESH);
-				jobs = Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-				assertEquals("Refresh shouldn't run anymore", Arrays.toString(new Job[] {}), Arrays.toString(jobs));
 				assertTrue("Refresh was not started", refreshJob.refreshStarted);
 				assertTrue("Refresh was not finished", refreshJob.refreshDone);
 				Job.getJobManager().endRule(rule);
