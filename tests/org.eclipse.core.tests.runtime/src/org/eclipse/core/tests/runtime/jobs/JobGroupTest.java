@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 Google Inc and others.
+ * Copyright (c) 2014, 2022 Google Inc and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -309,7 +309,7 @@ public class JobGroupTest extends AbstractJobTest {
 				assertTrue("1." + i, (group == firstJobGroup || group == secondJobGroup || group == thirdJobGroup || group == fourthJobGroup || group == fifthJobGroup));
 			}
 		}
-		assertEquals("1.2", 0, testJobs.size());
+		assertTrue("1.2", testJobs.isEmpty());
 
 		List<Job> activeJobs;
 
@@ -359,21 +359,21 @@ public class JobGroupTest extends AbstractJobTest {
 
 		// First job group should not contain any active jobs.
 		activeJobs = firstJobGroup.getActiveJobs();
-		assertEquals("7.2", 0, activeJobs.size());
+		assertTrue("7.2", activeJobs.isEmpty());
 
 		// Cancel the second job group.
 		secondJobGroup.cancel();
 		waitForCompletion(secondJobGroup);
 		// Second job group should not contain any active jobs.
 		activeJobs = secondJobGroup.getActiveJobs();
-		assertEquals("9.0", 0, activeJobs.size());
+		assertTrue("9.0", activeJobs.isEmpty());
 
 		// Cancel the fourth job group.
 		fourthJobGroup.cancel();
 		waitForCompletion(fourthJobGroup);
 		// Fourth job group should not contain any active jobs.
 		activeJobs = fourthJobGroup.getActiveJobs();
-		assertEquals("9.1", 0, activeJobs.size());
+		assertTrue("9.1", activeJobs.isEmpty());
 
 		// Finding all jobs by supplying the NULL parameter should return at least 8 jobs
 		// (4 from the 3rd family, and 4 from the 5th family)
@@ -411,9 +411,7 @@ public class JobGroupTest extends AbstractJobTest {
 		allJobs = manager.find(null);
 		for (int i = 0; i < allJobs.length; i++) {
 			// Verify that no jobs that we know about are found (they should have all been removed)
-			if (testJobs.remove(allJobs[i])) {
-				assertTrue("14." + i, false);
-			}
+			assertTrue(testJobs.remove(allJobs[i]));
 		}
 		assertEquals("15.0", NUM_JOBS, testJobs.size());
 		testJobs.clear();
@@ -470,7 +468,7 @@ public class JobGroupTest extends AbstractJobTest {
 
 			// Verify that when the thread is complete then all jobs must be done.
 			if (currentStatus == TestBarrier2.STATUS_DONE) {
-				assertEquals("1." + i, 0, result.size());
+				assertTrue("1." + i, result.isEmpty());
 				break;
 			}
 			sleep(100);
@@ -607,7 +605,7 @@ public class JobGroupTest extends AbstractJobTest {
 		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_DONE);
 
 		// Verify that there are no active jobs in the the first group.
-		assertEquals("2.2", 0, firstJobGroup.getActiveJobs().size());
+		assertTrue("2.2", firstJobGroup.getActiveJobs().isEmpty());
 
 		// Cancel the second job group.
 		secondJobGroup.cancel();
@@ -676,7 +674,7 @@ public class JobGroupTest extends AbstractJobTest {
 		// The first job in the first group should still be running.
 		assertState("2.2", jobs[0], Job.RUNNING);
 		assertEquals("2.3", TestBarrier2.STATUS_DONE, status.get(0));
-		assertTrue("2.4", !firstJobGroup.getActiveJobs().isEmpty());
+		assertFalse("2.4", firstJobGroup.getActiveJobs().isEmpty());
 
 		// Cancel both job groups.
 		secondJobGroup.cancel();
@@ -739,7 +737,7 @@ public class JobGroupTest extends AbstractJobTest {
 		secondJob.setJobGroup(jobGroup);
 		secondJob.schedule();
 		waitForCompletion(secondJob);
-		assertEquals("1.0", true, joinFailed[0]);
+		assertTrue("1.0", joinFailed[0]);
 
 		firstJob.cancel();
 		waitForCompletion(jobGroup);
@@ -1139,7 +1137,7 @@ public class JobGroupTest extends AbstractJobTest {
 					assertEquals("6." + i, IStatus.CANCEL, result.getSeverity());
 				}
 			} else {
-				assertEquals("6." + i, null, jobs[i].getResult());
+				assertNull("6." + i, jobs[i].getResult());
 			}
 		}
 	}
@@ -1462,9 +1460,9 @@ public class JobGroupTest extends AbstractJobTest {
 
 	private void assertState(String msg, Job job, int expectedState) {
 		int actualState = job.getState();
-		if (actualState != expectedState) {
-			assertTrue(msg + ": expected state: " + printState(expectedState) + " actual state: " + printState(actualState), false);
-		}
+		assertSame(
+				msg + ": expected state: " + printState(expectedState) + " actual state: " + printState(actualState),
+				actualState, expectedState);
 	}
 
 	private String printState(int state) {
