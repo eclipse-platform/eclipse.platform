@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.junit.Assert.assertThrows;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -58,15 +60,10 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		assertTrue("3.0", Bug440110FileSystem.hasFetchedFileTree());
 	}
 
-	public void testContainerFor() throws Throwable {
+	public void testContainerFor() {
 
 		/* test null parameter */
-		try {
-			getLocalManager().containerForLocation(null);
-			fail("1.1");
-		} catch (RuntimeException e) {
-			// expected
-		}
+		assertThrows(RuntimeException.class, () -> getLocalManager().containerForLocation(null));
 
 		/* test normal conditions under default mapping */
 
@@ -75,31 +72,31 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		IFolder folder = projects[0].getFolder(path);
 		IPath location = projects[0].getLocation().append(path);
 		IFolder testFolder = (IFolder) getLocalManager().containerForLocation(location);
-		assertTrue("2.1", folder.equals(testFolder));
+		assertEquals("2.1", folder, testFolder);
 
 		// project/folder/target
 		path = new Path("folder/target");
 		folder = projects[0].getFolder(path);
 		location = projects[0].getLocation().append(path);
 		testFolder = (IFolder) getLocalManager().containerForLocation(location);
-		assertTrue("2.2", folder.equals(testFolder));
+		assertEquals("2.2", folder, testFolder);
 
 		// project/folder/folder/target
 		path = new Path("folder/folder/target");
 		folder = projects[0].getFolder(path);
 		location = projects[0].getLocation().append(path);
 		testFolder = (IFolder) getLocalManager().containerForLocation(location);
-		assertTrue("2.3", folder.equals(testFolder));
+		assertEquals("2.3", folder, testFolder);
 
 		/* non-existent location */
 		testFolder = (IFolder) getLocalManager().containerForLocation(new Path("../this/path/must/not/exist"));
-		assertTrue("3.1", testFolder == null);
+		assertNull("3.1", testFolder);
 	}
 
 	/**
 	 * this test should move to FileTest
 	 */
-	public void testCreateFile() throws Throwable {
+	public void testCreateFile() {
 		/* initialize common objects */
 		IProject project = projects[0];
 		File file = (File) project.getFile("testCreateFile");
@@ -122,15 +119,10 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		}
 	}
 
-	public void testFileFor() throws Throwable {
+	public void testFileFor() {
 
 		/* test null parameter */
-		try {
-			getLocalManager().fileForLocation(null);
-			fail("1.1");
-		} catch (RuntimeException e) {
-			// expected
-		}
+		assertThrows(RuntimeException.class, () -> getLocalManager().fileForLocation(null));
 
 		/* test normal conditions under default mapping */
 
@@ -139,28 +131,28 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		IFile file = projects[0].getFile(path);
 		IPath location = projects[0].getLocation().append(path);
 		IFile testFile = getLocalManager().fileForLocation(location);
-		assertTrue("2.1", file.equals(testFile));
+		assertEquals("2.1", file, testFile);
 
 		// project/folder/file
 		path = new Path("folder/file");
 		file = projects[0].getFile(path);
 		location = projects[0].getLocation().append(path);
 		testFile = getLocalManager().fileForLocation(location);
-		assertTrue("2.2", file.equals(testFile));
+		assertEquals("2.2", file, testFile);
 
 		// project/folder/folder/file
 		path = new Path("folder/folder/file");
 		file = projects[0].getFile(path);
 		location = projects[0].getLocation().append(path);
 		testFile = getLocalManager().fileForLocation(location);
-		assertTrue("2.3", file.equals(testFile));
+		assertEquals("2.3", file, testFile);
 
 		/* non-existent location */
 		testFile = getLocalManager().fileForLocation(new Path("../this/path/must/not/exist"));
-		assertTrue("7.1", testFile == null);
+		assertNull("7.1", testFile);
 	}
 
-	public void testIsLocal() throws Throwable {
+	public void testIsLocal() throws CoreException {
 		/* initialize common objects */
 		final IProject project = projects[0];
 
@@ -183,7 +175,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		getWorkspace().run(operation, null);
 		assertTrue("2.0", project.isLocal(IResource.DEPTH_ONE));
 		assertTrue("3.0", folder.isLocal(IResource.DEPTH_ZERO));
-		assertTrue("4.0", !folder.isLocal(IResource.DEPTH_INFINITE));
+		assertFalse("4.0", folder.isLocal(IResource.DEPTH_INFINITE));
 
 		// remove the trash
 		ensureDoesNotExistInWorkspace(project);
@@ -248,7 +240,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		IFile file = projects[0].getFile("file");
 		ensureExistsInFileSystem(file);
 		projects[0].refreshLocal(IResource.DEPTH_ZERO, null);
-		assertTrue("1.1", !file.exists());
+		assertFalse("1.1", file.exists());
 		/* DEPTH_ONE */
 		IFolder folder = projects[0].getFolder("folder");
 		IFolder subfolder = folder.getFolder("subfolder");
@@ -259,8 +251,8 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		projects[0].refreshLocal(IResource.DEPTH_ONE, null);
 		assertTrue("2.1", file.exists());
 		assertTrue("2.2", folder.exists());
-		assertTrue("2.3", !subfolder.exists());
-		assertTrue("2.4", !subfile.exists());
+		assertFalse("2.3", subfolder.exists());
+		assertFalse("2.4", subfile.exists());
 		/* DEPTH_INFINITE */
 		projects[0].refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertTrue("3.1", file.exists());
@@ -273,7 +265,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		projects[0].close(null);
 		ensureExistsInFileSystem(file);
 		projects[0].open(null);
-		assertTrue("4.1", !file.exists());
+		assertFalse("4.1", file.exists());
 		projects[0].refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertTrue("4.2", file.exists());
 
@@ -318,31 +310,19 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 
 		/* test the overwrite parameter (false) */
 		ensureOutOfSync(file);
-		another = getContents(anotherContent);
-		try {
-			write(file, another, false, null);
-			fail("Should fail writing out of sync file #1");
-		} catch (CoreException e) {
-			// expected
-		}
+		InputStream another2 = getContents(anotherContent);
+		assertThrows("Should fail writing out of sync file #1", CoreException.class,
+				() -> write(file, another2, false, null));
 		ensureOutOfSync(file);
-		try {
-			file.setContents(another, false, false, null);
-			fail("Should fail writing out of sync file #2");
-		} catch (CoreException e) {
-			// expected
-		}
+		assertThrows("Should fail writing out of sync file #2", CoreException.class,
+				() -> file.setContents(another2, false, false, null));
 		file.setContents(another, true, false, null);
 
 		/* test the overwrite parameter (false) */
 		ensureDoesNotExistInFileSystem(file); // FIXME Race Condition with asynchronous workplace refresh see Bug 571133
-		another = getContents(anotherContent);
-		try {
-			write(file, another, false, null);
-			fail("Should fail writing non existing file");
-		} catch (CoreException e) {
-			// expected
-		}
+		InputStream another3 = getContents(anotherContent);
+		assertThrows("Should fail writing non existing file", CoreException.class,
+				() -> write(file, another3, false, null));
 
 		/* remove trash */
 		ensureDoesNotExistInWorkspace(project);
@@ -357,17 +337,8 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 
 		/* common contents */
 		String anotherContent = "and this string should not... well, you know...";
-		InputStream another;
-
-		another = getContents(anotherContent);
-		try {
-			write(file, another, false, null);
-			fail("5.0");
-		} catch (CoreException e) {
-			fail("6.0");
-		} catch (IllegalStateException e) {
-			// expected
-		}
+		InputStream another = getContents(anotherContent);
+		assertThrows(IllegalStateException.class, () -> write(file, another, false, null));
 
 		/* remove trash */
 		ensureDoesNotExistInWorkspace(project);
@@ -378,28 +349,15 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		IProject project = projects[0];
 		IFolder folder = project.getFolder("testWriteFolder");
 		ensureExistsInWorkspace(folder, true);
-		boolean ok;
 
 		/* existing file on destination */
 		ensureDoesNotExistInFileSystem(folder);
 		IFile file = project.getFile("testWriteFolder");
 		ensureExistsInFileSystem(file);
 		/* force = true */
-		ok = false;
-		try {
-			write(folder, true, null);
-		} catch (CoreException e) {
-			ok = true;
-		}
-		assertTrue("1.1", ok);
+		assertThrows(CoreException.class, () -> write(folder, true, null));
 		/* force = false */
-		ok = false;
-		try {
-			write(folder, false, null);
-		} catch (CoreException e) {
-			ok = true;
-		}
-		assertTrue("1.2", ok);
+		assertThrows(CoreException.class, () -> write(folder, false, null));
 		ensureDoesNotExistInFileSystem(file);
 
 		/* existing folder on destination */
@@ -408,13 +366,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		write(folder, true, null);
 		assertTrue("2.1", folder.getLocation().toFile().isDirectory());
 		/* force = false */
-		ok = false;
-		try {
-			write(folder, false, null);
-		} catch (CoreException e) {
-			ok = true;
-		}
-		assertTrue("2.2", ok);
+		assertThrows(CoreException.class, () -> write(folder, false, null));
 		ensureDoesNotExistInFileSystem(folder);
 
 		/* inexisting resource on destination */
@@ -440,7 +392,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		// wrap in runnable to prevent snapshot from occurring in the middle.
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			ensureDoesNotExistInFileSystem(project);
-			assertTrue("2.1", !fileStore.fetchInfo().isDirectory());
+			assertFalse("2.1", fileStore.fetchInfo().isDirectory());
 			//write project in a runnable, otherwise tree will be locked
 			((Project) project).writeDescription(IResource.FORCE);
 		}, null);
