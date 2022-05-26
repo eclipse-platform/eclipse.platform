@@ -9,17 +9,17 @@
      https://www.eclipse.org/legal/epl-2.0/
 
      SPDX-License-Identifier: EPL-2.0
-    
+
      Contributors:
          IBM Corporation - initial API and implementation
          Patrick Chuong (Texas Instruments) - Improve usability of the breakpoint view (Bug 238956)
          Patrick Chuong (Texas Instruments) - Move debug toolbar actions to main window (Bug 332784)
          Axel Richard (Obeo) - Bug 41353 - Launch configurations prototypes
-         Alexander Fedorov <alexander.fedorov@arsysop.ru> - Bug 529651 - Launch group launches do not build before launch 
+         Alexander Fedorov <alexander.fedorov@arsysop.ru> - Bug 529651 - Launch group launches do not build before launch
  -->
 
 <plugin>
-    
+
 <!-- Extension points -->
    <extension-point id="consoleColorProviders" name="%ConsoleColorProvidersExtensionName" schema="schema/consoleColorProviders.exsd"/>
    <extension-point id="consoleLineTrackers" name="%ConsoleLineTrackersExtensionName" schema="schema/consoleLineTrackers.exsd"/>
@@ -127,7 +127,7 @@
             icon="$nl$/icons/full/eview16/memory_view.png"
             id="org.eclipse.debug.ui.MemoryView"
             name="%MemoryViewName">
-      </view>      
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -340,7 +340,7 @@
                menubarPath="org.eclipse.ui.run/emptyStepGroup"
                toolbarPath="org.eclipse.debug.ui.main.toolbar/emptyStepGroup"
                initialEnabled="false">
-         </action>                  
+         </action>
          <action
                id="org.eclipse.debug.ui.actions.StepReturn"
                hoverIcon="$nl$/icons/full/elcl16/stepreturn_co.png"
@@ -378,7 +378,7 @@
                label="%StepIntoAction.label"
                menubarPath="org.eclipse.ui.run/stepIntoGroup"
                toolbarPath="org.eclipse.debug.ui.main.toolbar/stepIntoGroup"
-               initialEnabled="false">               
+               initialEnabled="false">
          </action>
          <action
                id="org.eclipse.debug.ui.actions.toolbar.Disconnect"
@@ -591,6 +591,8 @@
                helpContextId="profile_with_configuration_action_context"
                class="org.eclipse.debug.internal.ui.actions.ProfileAsAction"
                menubarPath="org.eclipse.ui.run/profileGroup"
+               icon="$nl$/icons/full/etool16/profile_exc.png"
+               disabledIcon="$nl$/icons/full/dtool16/profile_exc.png"
                id="org.eclipse.debug.internal.ui.actions.ProfileWithConfigurationAction">
          </action>
          <action
@@ -613,24 +615,24 @@
                menubarPath="org.eclipse.ui.run/relaunchGroup">
          </action>
       </actionSet>
-   </extension>         
-   
+   </extension>
+
    <!-- By default hide the Run-to-Line toolbar item (bug 25876 comment #77) -->
    <extension point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension targetID="*">
          <hiddenToolBarItem id="org.eclipse.debug.ui.commands.RunToLine"/>
       </perspectiveExtension>
    </extension>
-   
+
    <!-- Command framework contribution for the main menu  -->
-   <extension 
+   <extension
          point="org.eclipse.ui.menus">
        <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <!-- Need to re-create the menu structure in the command framework
               so that contributed commands will be placed correctly in menus -->
-         <menu 
-              id="org.eclipse.ui.run" 
+         <menu
+              id="org.eclipse.ui.run"
          	  label="%RunMenu.label">
             <separator name="stepGroup" visible="true"/>
             <separator name="stepIntoGroup"/>
@@ -647,12 +649,12 @@
             <separator name="lineBreakpointAfterGroup"/>
             <separator name="lineBreakpointGroup"/>
             <separator name="emptyBreakpointGroup"/>
-         </menu>         
+         </menu>
        </menuContribution>
        <menuContribution
              locationURI="menu:org.eclipse.ui.run?after=breakpointGroup">
-            <menu 
-                 id="breakpointTypes" 
+            <menu
+                 id="breakpointTypes"
             	 label="%BreakpointTypesMenu.label">
                <visibleWhen checkEnabled="false">
                   <and>
@@ -671,12 +673,12 @@
 							value="true">
                   	 </systemTest>
                   </and>
-               </visibleWhen>            
+               </visibleWhen>
                <dynamic
 	               id="org.eclipse.debug.ui.actions.BreakpointTypesContribution"
 	               class="org.eclipse.debug.ui.actions.BreakpointTypesContribution">
 	           </dynamic>
-            </menu>         
+            </menu>
        </menuContribution>
        <menuContribution
              locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
@@ -756,8 +758,8 @@
              </visibleWhen>
           </command>
        </menuContribution>
-   </extension>  
-   
+   </extension>
+
    <extension
          point="org.eclipse.ui.viewActions">
       <viewContribution
@@ -798,7 +800,7 @@
                tooltip="%CollapseAllAction.tooltip">
          </action>
       </viewContribution>
-     
+
 <!-- Contributions to Breakpoints View Toolbar -->
       <viewContribution
             targetID="org.eclipse.debug.ui.BreakpointView"
@@ -882,7 +884,7 @@
                helpContextId="set_default_breakpoint_group_action_context"
                label="%setDefaultGroup.label"
                tooltip="%setDefaultGroup.tooltip">
-         </action>         
+         </action>
          <action
                id="org.eclipse.debug.ui.breakpointsView.toolbar.sortByAction"
                menubarPath="defaultBreakpointGroup"
@@ -1146,6 +1148,7 @@
          <action
                class="org.eclipse.debug.internal.ui.actions.ProfileContextualLaunchAction"
                enablesFor="+"
+               icon="$nl$/icons/full/etool16/profile_exc.png"
                id="org.eclipse.debug.ui.contextualLaunch.profile.submenu"
                label="%ProfileContextMenu.label"
                menubarPath="additions"
@@ -1340,7 +1343,7 @@
                enablesFor="1"
                id="org.eclipse.debug.ui.watchExpressionActions.EditWatchExpression">
          </action>
-      </viewerContribution>      
+      </viewerContribution>
       <viewerContribution
             targetID="org.eclipse.debug.ui.ExpressionView"
             id="org.eclipse.debug.ui.WatchExpressionActions">
@@ -1353,7 +1356,7 @@
                enablesFor="1"
                id="org.eclipse.debug.ui.watchExpressionActions.EnableWatchExpression">
          </action>
-      </viewerContribution>      
+      </viewerContribution>
       <viewerContribution
             targetID="org.eclipse.debug.ui.ExpressionView"
             id="org.eclipse.debug.ui.WatchExpressionActions">
@@ -1393,7 +1396,7 @@
                id="org.eclipse.debug.ui.expressionViewActions.AddWatchExpression">
          </action>
       </viewerContribution>
-<!-- Watchpoint actions -->      
+<!-- Watchpoint actions -->
       <objectContribution
             objectClass="org.eclipse.debug.core.model.IWatchpoint"
             id="org.eclipse.debug.ui.WatchpointToggleActions">
@@ -1656,7 +1659,7 @@
                id="org.eclipse.debug.ui.actions.SelectAllVariablesAction">
          </action>
       </viewerContribution>
-   </extension>  
+   </extension>
    <extension
          point="org.eclipse.ui.elementFactories">
       <factory
@@ -1676,13 +1679,13 @@
             plugin="org.eclipse.debug.ui"
             class="org.eclipse.debug.internal.ui.sourcelookup.Prompter"
             id="org.eclipse.debug.ui.statusHandler.prompter">
-      </statusHandler>  
+      </statusHandler>
       <statusHandler
             code="205"
             plugin="org.eclipse.debug.ui"
             class="org.eclipse.debug.internal.ui.sourcelookup.ResolveDuplicatesHandler"
             id="org.eclipse.debug.ui.statusHandler.selectSourceDialog">
-      </statusHandler>      
+      </statusHandler>
       <statusHandler
             plugin="org.eclipse.debug.core"
             code="201"
@@ -1832,10 +1835,10 @@
       </page>
    </extension>
 <!-- commands and their bindings
-NOTE: 
-M1 = CTRL/COMMAND 
-M2 = SHIFT 
-M3 = ALT 
+NOTE:
+M1 = CTRL/COMMAND
+M2 = SHIFT
+M3 = ALT
 M4 = Platform-specific fourth key
 -->
    <extension
@@ -1981,7 +1984,7 @@ M4 = Platform-specific fourth key
             description="%ActionDefinition.runToLine.description"
             categoryId="org.eclipse.debug.ui.category.run"
             id="org.eclipse.debug.ui.commands.RunToLine">
-      </command>  
+      </command>
       <command
             name="%ActionDefinition.toggleBreakpoint.name"
             description="%ActionDefinition.toggleBreakpoint.description"
@@ -2079,12 +2082,12 @@ M4 = Platform-specific fourth key
        description="%ActionDefinition.toggleLineBreakpoint.description"
        id="org.eclipse.debug.ui.commands.ToggleLineBreakpoint"
        name="%ActionDefinition.toggleLineBreakpoint.name">
- </command> 
+ </command>
    </extension>
    <extension point="org.eclipse.ui.bindings">
      <key
             sequence="M2+F5"
-            
+
             commandId="org.eclipse.debug.ui.commands.ToggleStepFilters"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
@@ -2111,39 +2114,39 @@ M4 = Platform-specific fourth key
             sequence="M1+F2"
             contextId="org.eclipse.debug.ui.debugging"
             commandId="org.eclipse.debug.ui.commands.Terminate"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>            
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
        <key
             sequence="F11"
-            
+
             commandId="org.eclipse.debug.ui.commands.DebugLast"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M1+F11"
-            
+
             commandId="org.eclipse.debug.ui.commands.RunLast"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="F11"
-            
+
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <!-- This should not be necessary, since it is overwritten in the
            next <key> declaration, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=185689 : -->
       <key
             platform="carbon"
             sequence="M1+F11"
-            
+
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M1+F11"
-            
+
             commandId="org.eclipse.debug.ui.commands.DebugLast"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M1+M2+F11"
-            
+
             commandId="org.eclipse.debug.ui.commands.RunLast"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
        <key
@@ -2153,12 +2156,12 @@ M4 = Platform-specific fourth key
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M1+M2+B"
-            
+
             commandId="org.eclipse.debug.ui.commands.ToggleBreakpoint"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="CTRL+M3+B"
-            
+
             commandId="org.eclipse.debug.ui.commands.SkipAllBreakpoints"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
        <key
@@ -2189,7 +2192,7 @@ M4 = Platform-specific fourth key
        <key
             platform="carbon"
             sequence="M2+M3+Q B"
-            
+
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
        <key
              commandId="org.eclipse.ui.views.showView"
@@ -2213,7 +2216,7 @@ M4 = Platform-specific fourth key
        <key
             platform="carbon"
             sequence="M2+M3+Q V"
-            
+
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
        <key
              commandId="org.eclipse.ui.views.showView"
@@ -2254,19 +2257,19 @@ M4 = Platform-specific fourth key
              commandId="org.eclipse.debug.ui.command.gotoaddress"
              contextId="org.eclipse.debug.ui.memory.abstractasynctablerendering"
              schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-             sequence="M1+G"/>     
+             sequence="M1+G"/>
        <key
              commandId="org.eclipse.debug.ui.command.nextpage"
              contextId="org.eclipse.debug.ui.memory.abstractasynctablerendering"
              schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-             sequence="M1+M2+."/>    
+             sequence="M1+M2+."/>
        <key
              commandId="org.eclipse.debug.ui.command.prevpage"
              contextId="org.eclipse.debug.ui.memory.abstractasynctablerendering"
              schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-             sequence="M1+M2+,"/>                                    
+             sequence="M1+M2+,"/>
   	</extension>
-  	
+
   	<extension point="org.eclipse.ui.commandImages">
        <image
           commandId="org.eclipse.debug.ui.commands.ToggleStepFilters"
@@ -2335,7 +2338,7 @@ M4 = Platform-specific fourth key
       <type
          name="org.eclipse.debug.ui.secondaryIP">
       </type>
-   </extension>   
+   </extension>
    <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
@@ -2446,7 +2449,7 @@ M4 = Platform-specific fourth key
             name="selected_resource_name"
             description="%selected_resource_name.description"
             resolver="org.eclipse.debug.internal.ui.stringsubstitution.SelectedResourceResolver">
-      </variable>      
+      </variable>
    </extension>
 <!-- String Variable Presentations -->
    <extension
@@ -2504,7 +2507,7 @@ M4 = Platform-specific fourth key
             id="org.eclipse.debug.ui.workingSetComparator">
       </launchConfigurationComparator>
    </extension>
-   
+
 <!-- Editor -->
    <extension
          point="org.eclipse.ui.editors">
@@ -2526,12 +2529,12 @@ M4 = Platform-specific fourth key
 <!--  Implementation of the Working set source container type			 -->
 <!-- ==================================================================== -->
    <extension
-         point="org.eclipse.debug.core.sourceContainerTypes">     
+         point="org.eclipse.debug.core.sourceContainerTypes">
       <sourceContainerType
             name="%containerName.workingSet"
             class="org.eclipse.debug.internal.ui.sourcelookup.WorkingSetSourceContainerType"
             id="org.eclipse.debug.ui.containerType.workingSet">
-      </sourceContainerType>    
+      </sourceContainerType>
    </extension>
 <!-- ==================================================================== -->
 <!--  Implementations of the 7 provided source containers presentation support-->
@@ -2549,7 +2552,7 @@ M4 = Platform-specific fourth key
             containerTypeID="org.eclipse.debug.ui.containerType.workingSet"
             icon="$nl$/icons/full/obj16/workset.png"
             id="org.eclipse.debug.ui.containerPresentation.workingSet">
-      </sourceContainerPresentation>           
+      </sourceContainerPresentation>
       <sourceContainerPresentation
             browserClass="org.eclipse.debug.internal.ui.sourcelookup.browsers.DirectorySourceContainerBrowser"
             containerTypeID="org.eclipse.debug.core.containerType.directory"
@@ -2573,14 +2576,14 @@ M4 = Platform-specific fourth key
             containerTypeID="org.eclipse.debug.core.containerType.archive"
             icon="$nl$/icons/full/obj16/jar_obj.png"
             id="org.eclipse.debug.ui.containerPresentation.archive">
-      </sourceContainerPresentation>  
+      </sourceContainerPresentation>
       <sourceContainerPresentation
             browserClass="org.eclipse.debug.internal.ui.sourcelookup.browsers.ExternalArchiveSourceContainerBrowser"
             containerTypeID="org.eclipse.debug.core.containerType.externalArchive"
             icon="$nl$/icons/full/obj16/jar_obj.png"
             id="org.eclipse.debug.ui.containerPresentation.externalArchive">
-      </sourceContainerPresentation>      
-      <sourceContainerPresentation           
+      </sourceContainerPresentation>
+      <sourceContainerPresentation
             containerTypeID="org.eclipse.debug.core.containerType.default"
             icon="$nl$/icons/full/obj16/prj_obj.png"
             id="org.eclipse.debug.ui.containerPresentation.default">
@@ -2590,27 +2593,27 @@ M4 = Platform-specific fourth key
 <!-- Adapter factories for source lookup       -->
 <!-- ========================================= -->
 	<extension point="org.eclipse.core.runtime.adapters">
-         <factory 
+         <factory
             class="org.eclipse.debug.internal.ui.sourcelookup.SourceElementAdapterFactory"
             adaptableType="org.eclipse.debug.core.sourcelookup.containers.LocalFileStorage">
             <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
          </factory>
-         <factory 
+         <factory
             class="org.eclipse.debug.internal.ui.sourcelookup.SourceElementAdapterFactory"
             adaptableType="org.eclipse.debug.core.sourcelookup.containers.ZipEntryStorage">
             <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-         </factory>         
-         <factory 
+         </factory>
+         <factory
             class="org.eclipse.debug.internal.ui.sourcelookup.SourceContainerAdapterFactory"
             adaptableType="org.eclipse.debug.core.sourcelookup.containers.FolderSourceContainer">
             <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-         </factory>         
-         <factory 
+         </factory>
+         <factory
             class="org.eclipse.debug.internal.ui.sourcelookup.SourceContainerAdapterFactory"
             adaptableType="org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer">
             <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-         </factory>          
-         <factory 
+         </factory>
+         <factory
             class="org.eclipse.debug.internal.ui.sourcelookup.SourceContainerAdapterFactory"
             adaptableType="org.eclipse.debug.core.sourcelookup.containers.ExternalArchiveSourceContainer">
             <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
@@ -2621,18 +2624,18 @@ M4 = Platform-specific fourth key
             <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
          </factory>
          <!-- "class" below is intentionally empty, see https://bugs.eclipse.org/396822#c3 ff. -->
-         <factory 
-            class="" 
+         <factory
+            class=""
             adaptableType="org.eclipse.ui.part.FileEditorInput">
             <adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
          </factory>
-         <factory 
+         <factory
             class="org.eclipse.debug.internal.ui.DebugUIAdapterFactory"
             adaptableType="org.eclipse.debug.internal.ui.breakpoints.provisional.IBreakpointContainer">
             <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
             <adapter type="org.eclipse.ui.model.IWorkbenchAdapter2"/>
          </factory>
-         <factory 
+         <factory
             class="org.eclipse.debug.internal.ui.DebugUIAdapterFactory"
             adaptableType="org.eclipse.debug.ui.BreakpointTypeCategory">
             <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
@@ -2892,11 +2895,11 @@ M4 = Platform-specific fourth key
             </adapter>
             <adapter
                   type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementMementoProvider">
-            </adapter>            
+            </adapter>
             <adapter
                   type="org.eclipse.debug.internal.ui.viewers.model.provisional.IModelProxyFactory">
             </adapter>
-         </factory>      
+         </factory>
          <factory
                adaptableType="org.eclipse.debug.core.ILaunch"
                class="org.eclipse.debug.internal.ui.contexts.SuspendTriggerAdapterFactory">
@@ -2921,8 +2924,8 @@ M4 = Platform-specific fourth key
 			properties="launchable, contextlaunch"
 			type="java.lang.Object"
 			class="org.eclipse.debug.internal.ui.actions.LaunchablePropertyTester"
-			id="org.eclipse.debug.ui.propertyTesters.launchable">		
-	  </propertyTester>      
+			id="org.eclipse.debug.ui.propertyTesters.launchable">
+	  </propertyTester>
       <propertyTester
             namespace="org.eclipse.debug.ui"
             type="org.eclipse.ui.console.IConsole"
@@ -2951,13 +2954,13 @@ M4 = Platform-specific fourth key
             id="org.eclipse.debug.ui.BreakpointView"
             name="%ActionContext.breakpointsview.name"
             parentId="org.eclipse.ui.contexts.window">
-      </context>     
+      </context>
      <context
            name="%Context.console.name"
            description="%Context.console.description"
            id="org.eclipse.debug.ui.console"
            parentId="org.eclipse.ui.contexts.window">
-     </context>  
+     </context>
      <context
            name="%Context.memoryview.name"
            description="%Context.memoryview.description"
@@ -2968,7 +2971,7 @@ M4 = Platform-specific fourth key
            description="%context.description.0"
            id="org.eclipse.debug.ui.memory.abstractasynctablerendering"
            name="%context.name.0"
-           parentId="org.eclipse.debug.ui.debugging"/>      
+           parentId="org.eclipse.debug.ui.debugging"/>
   </extension>
   <extension
         point="org.eclipse.debug.ui.contextViewBindings">
@@ -2996,7 +2999,7 @@ M4 = Platform-specific fourth key
      <perspective
            perspectiveId="org.eclipse.debug.ui.DebugPerspective"/>
   </extension>
-  
+
    <extension
          point="org.eclipse.ui.themes">
 		<themeElementCategory label="%debugPresentation.label" id="org.eclipse.debug.ui.presentation"/>
@@ -3007,7 +3010,7 @@ M4 = Platform-specific fourth key
             id="org.eclipse.debug.ui.DetailPaneFont">
          <description>
             %DetailPaneFontDefinition.description
-         </description>         
+         </description>
       </fontDefinition>
       <fontDefinition
             label="%MemoryViewTableFontDefinition.label"
@@ -3046,7 +3049,7 @@ M4 = Platform-specific fourth key
          </enablement>
       </consolePageParticipant>
    </extension>
-   
+
     <extension point="org.eclipse.core.runtime.preferences">
 		<initializer class="org.eclipse.debug.internal.ui.DebugUIPreferenceInitializer"/>
 	</extension>
@@ -3069,7 +3072,7 @@ M4 = Platform-specific fourth key
           label="%WorkingSet.label"
           class="org.eclipse.debug.internal.ui.views.breakpoints.WorkingSetBreakpointOrganizer"
           icon="$nl$/icons/full/obj16/fldr_obj.png"
-          id="org.eclipse.debug.ui.workingSetOrganizer"/>          	
+          id="org.eclipse.debug.ui.workingSetOrganizer"/>
           <breakpointOrganizer
                 othersLabel="%BreakpointType.others"
                 label="%BreakpointType.label"
@@ -3082,7 +3085,7 @@ M4 = Platform-specific fourth key
                 class="org.eclipse.debug.internal.ui.views.breakpoints.BreakpointSetOrganizer"
                 icon="$nl$/icons/full/obj16/brkp_grp.png"
                 id="org.eclipse.debug.ui.breakpointWorkingSetOrganizer"/>
-    </extension>    
+    </extension>
    <extension
           point="org.eclipse.debug.ui.memoryRenderings">
        <renderingType
@@ -3226,7 +3229,7 @@ M4 = Platform-specific fourth key
 					    </or>
 	        		</iterate>
 	      		</with>
-	      	</enablement>                   
+	      	</enablement>
        </detailFactories>
     </extension>
 
