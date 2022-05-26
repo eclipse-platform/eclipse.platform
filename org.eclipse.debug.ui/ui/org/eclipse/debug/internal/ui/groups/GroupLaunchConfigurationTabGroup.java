@@ -657,6 +657,9 @@ public class GroupLaunchConfigurationTabGroup extends AbstractLaunchConfiguratio
 			initializeModes();
 		}
 		ILaunchGroup launchGrp = modes.get(mode);
+		if (launchGrp == null) {
+			return ""; //$NON-NLS-1$
+		}
 		return DebugUIPlugin.removeAccelerators(launchGrp.getLabel());
 	}
 }
