@@ -14,7 +14,7 @@
   <parent>
     <artifactId>eclipse.platform.resources.tests</artifactId>
     <groupId>org.eclipse.platform</groupId>
-    <version>4.24.0-SNAPSHOT</version>
+    <version>4.25.0-SNAPSHOT</version>
   </parent>
   <artifactId>org.eclipse.core.tests.resources.saveparticipant3</artifactId>
   <version>3.4.0-SNAPSHOT</version>
