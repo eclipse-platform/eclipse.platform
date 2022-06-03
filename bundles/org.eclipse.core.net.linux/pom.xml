@@ -15,7 +15,7 @@
   <parent>
     <artifactId>eclipse.platform.team</artifactId>
     <groupId>eclipse.platform.team</groupId>
-    <version>4.24.0-SNAPSHOT</version>
+    <version>4.25.0-SNAPSHOT</version>
     <relativePath>../../</relativePath>
   </parent>
   <groupId>org.eclipse.core</groupId>
