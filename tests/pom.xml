@@ -15,7 +15,7 @@
   <parent>
     <groupId>eclipse.platform.runtime</groupId>
     <artifactId>eclipse.platform.runtime</artifactId>
-    <version>4.24.0-SNAPSHOT</version>
+    <version>4.25.0-SNAPSHOT</version>
   </parent>
   <artifactId>eclipse.platform.runtime.tests</artifactId>
   <packaging>pom</packaging>
