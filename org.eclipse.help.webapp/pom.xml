@@ -18,7 +18,7 @@
   </parent>
   <groupId>org.eclipse.help</groupId>
   <artifactId>org.eclipse.help.webapp</artifactId>
-  <version>3.10.700-SNAPSHOT</version>
+  <version>3.10.800-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   <build>
     <plugins>
