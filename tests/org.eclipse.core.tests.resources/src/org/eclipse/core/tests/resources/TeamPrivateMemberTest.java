@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,17 +13,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.junit.Assert.assertThrows;
+
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 
 public class TeamPrivateMemberTest extends ResourceTest {
-	public void testRefreshLocal() {
+	public void testRefreshLocal() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
-		IResource[] resources = new IResource[] {project, folder, file, subFile};
+		IResource[] resources = { project, folder, file, subFile };
 		ensureExistsInWorkspace(resources, true);
 
 		ResourceDeltaVerifier listener = new ResourceDeltaVerifier();
@@ -32,12 +34,8 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		try {
 			setTeamPrivateMember("3.0", folder, true, IResource.DEPTH_ZERO);
 			ensureOutOfSync(subFile);
-			try {
-				project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-				assertTrue(listener.getMessage(), listener.isDeltaValid());
-			} catch (CoreException e) {
-				fail("3.1", e);
-			}
+			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			assertTrue(listener.getMessage(), listener.isDeltaValid());
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
@@ -52,7 +50,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
-		IResource[] resources = new IResource[] {project, folder, file, subFile};
+		IResource[] resources = { project, folder, file, subFile };
 		ensureExistsInWorkspace(resources, true);
 
 		// no team private members
@@ -80,7 +78,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 	 * Resources which are marked as team private members are not included in #members
 	 * calls unless specifically included by calling #members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS)
 	 */
-	public void testMembers() {
+	public void testMembers() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
@@ -95,18 +93,11 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		assertTeamPrivateMember("1.0", project, false, IResource.DEPTH_INFINITE);
 
 		// Check the calls to #members
-		try {
-			members = project.members();
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		members = project.members();
 		// +1 for the project description file
 		assertEquals("2.1", 4, members.length);
-		try {
-			members = folder.members();
-		} catch (CoreException e) {
-			fail("2.2", e);
-		}
+
+		members = folder.members();
 		assertEquals("2.3", 1, members.length);
 
 		// Set the values.
@@ -117,17 +108,9 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		assertTeamPrivateMember("4.0", project, true, IResource.DEPTH_INFINITE);
 
 		// Check the calls to #members
-		try {
-			members = project.members();
-		} catch (CoreException e) {
-			fail("5.0", e);
-		}
+		members = project.members();
 		assertEquals("5.1", 0, members.length);
-		try {
-			members = folder.members();
-		} catch (CoreException e) {
-			fail("5.2", e);
-		}
+		members = folder.members();
 		assertEquals("5.3", 0, members.length);
 
 		// FIXME: add the tests for #members(int)
@@ -137,118 +120,59 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		assertTeamPrivateMember("6.1", project, false, IResource.DEPTH_INFINITE);
 
 		// Check the calls to members(IResource.NONE);
-		try {
-			members = project.members(IResource.NONE);
-		} catch (CoreException e) {
-			fail("7.0", e);
-		}
+		members = project.members(IResource.NONE);
 		// +1 for the project description file
 		assertEquals("7.1", 4, members.length);
-		try {
-			members = project.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		} catch (CoreException e) {
-			fail("7.2", e);
-		}
+		members = project.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
 		// +1 for the project description file
 		assertEquals("7.3", 4, members.length);
-		try {
-			members = folder.members();
-		} catch (CoreException e) {
-			fail("7.4", e);
-		}
+		members = folder.members();
 		assertEquals("7.5", 1, members.length);
 
 		// Set one of the children to be TEAM_PRIVATE and try again
 		setTeamPrivateMember("8.0", folder, true, IResource.DEPTH_ZERO);
-		try {
-			members = project.members();
-		} catch (CoreException e) {
-			fail("8.1", e);
-		}
+		members = project.members();
 		// +1 for project description, -1 for team private folder
 		assertEquals("8.2", 3, members.length);
-		try {
-			members = folder.members();
-		} catch (CoreException e) {
-			fail("8.3", e);
-		}
+		members = folder.members();
 		assertEquals("8.4", 1, members.length);
-		try {
-			members = project.members(IResource.NONE);
-		} catch (CoreException e) {
-			fail("8.5", e);
-		}
+		members = project.members(IResource.NONE);
 		// +1 for project description, -1 for team private folder
 		assertEquals("8.6", 3, members.length);
-		try {
-			members = folder.members();
-		} catch (CoreException e) {
-			fail("8.7", e);
-		}
+		members = folder.members();
 		assertEquals("8.8", 1, members.length);
-		try {
-			members = project.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		} catch (CoreException e) {
-			fail("8.9", e);
-		}
+		members = project.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
 		// +1 for project description
 		assertEquals("8.10", 4, members.length);
-		try {
-			members = folder.members();
-		} catch (CoreException e) {
-			fail("8.11", e);
-		}
+		members = folder.members();
 		assertEquals("8.12", 1, members.length);
 
 		// Set all the resources to be team private
 		setTeamPrivateMember("9.0", project, true, IResource.DEPTH_INFINITE);
 		assertTeamPrivateMember("9.1", project, true, IResource.DEPTH_INFINITE);
-		try {
-			members = project.members(IResource.NONE);
-		} catch (CoreException e) {
-			fail("9.2", e);
-		}
+		members = project.members(IResource.NONE);
 		assertEquals("9.3", 0, members.length);
-		try {
-			members = folder.members(IResource.NONE);
-		} catch (CoreException e) {
-			fail("9.4", e);
-		}
+		members = folder.members(IResource.NONE);
 		assertEquals("9.5", 0, members.length);
-		try {
-			members = project.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		} catch (CoreException e) {
-			fail("9.6", e);
-		}
+		members = project.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
 		// +1 for project description
 		assertEquals("9.7", 4, members.length);
-		try {
-			members = folder.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		} catch (CoreException e) {
-			fail("9.8", e);
-		}
+		members = folder.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
 		assertEquals("9.9", 1, members.length);
-	}
-
-	/**
-	 * Test to ensure that team private values are persisted across project close/open.
-	 */
-	public void testProjectCloseOpen() {
-		// FIXME:
 	}
 
 	/**
 	 * Resources which are marked as team private members should not be visited by
 	 * resource visitors.
 	 */
-	public void testAccept() {
+	public void testAccept() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
 		IFolder settings = project.getFolder(".settings");
 		IFile prefs = settings.getFile("org.eclipse.core.resources.prefs");
-		IResource[] resources = new IResource[] { project, folder, file, subFile, settings, prefs };
+		IResource[] resources = { project, folder, file, subFile, settings, prefs };
 		ensureExistsInWorkspace(resources, true);
 		IResource description = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 
@@ -256,31 +180,19 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ResourceVisitorVerifier visitor = new ResourceVisitorVerifier();
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
-		try {
-			project.accept(visitor);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.accept(visitor);
 		assertTrue("1.1." + visitor.getMessage(), visitor.isValid());
 
 		visitor.reset();
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
-		try {
-			project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-		} catch (CoreException e) {
-			fail("1.2", e);
-		}
+		project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
 		assertTrue("1.3." + visitor.getMessage(), visitor.isValid());
 
 		visitor.reset();
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
-		try {
-			project.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		} catch (CoreException e) {
-			fail("1.4", e);
-		}
+		project.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
 		assertTrue("1.5." + visitor.getMessage(), visitor.isValid());
 
 		// set the folder to be team private. It and its children should
@@ -292,11 +204,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		visitor.addExpected(description);
 		visitor.addExpected(settings);
 		visitor.addExpected(prefs);
-		try {
-			project.accept(visitor);
-		} catch (CoreException e) {
-			fail("2.1", e);
-		}
+		project.accept(visitor);
 		assertTrue("2.2." + visitor.getMessage(), visitor.isValid());
 
 		visitor.reset();
@@ -305,47 +213,27 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		visitor.addExpected(description);
 		visitor.addExpected(settings);
 		visitor.addExpected(prefs);
-		try {
-			project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-		} catch (CoreException e) {
-			fail("2.3", e);
-		}
+		project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
 		assertTrue("2.4." + visitor.getMessage(), visitor.isValid());
 		// should see all resources if we include the flag
 		visitor.reset();
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
-		try {
-			project.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		} catch (CoreException e) {
-			fail("2.5", e);
-		}
+		project.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
 		assertTrue("2.6." + visitor.getMessage(), visitor.isValid());
 		// should NOT visit the folder and its members if we call accept on it directly
 		visitor.reset();
-		try {
-			folder.accept(visitor);
-		} catch (CoreException e) {
-			fail("2.7", e);
-		}
+		folder.accept(visitor);
 		assertTrue("2.8." + visitor.getMessage(), visitor.isValid());
 
 		visitor.reset();
-		try {
-			folder.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-		} catch (CoreException e) {
-			fail("2.9", e);
-		}
+		folder.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
 		assertTrue("2.10." + visitor.getMessage(), visitor.isValid());
 
 		visitor.reset();
 		visitor.addExpected(folder);
 		visitor.addExpected(subFile);
-		try {
-			folder.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		} catch (CoreException e) {
-			fail("2.11", e);
-		}
+		folder.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
 		assertTrue("2.11." + visitor.getMessage(), visitor.isValid());
 
 		// now set all file/folder resources to be team private.
@@ -354,40 +242,28 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		visitor.reset();
 		// projects are never team private
 		visitor.addExpected(project);
-		try {
-			project.accept(visitor);
-		} catch (CoreException e) {
-			fail("3.2", e);
-		}
+		project.accept(visitor);
 		assertTrue("3.3." + visitor.getMessage(), visitor.isValid());
 
 		visitor.reset();
 		visitor.addExpected(project);
-		try {
-			project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-		} catch (CoreException e) {
-			fail("3.4", e);
-		}
+		project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
 		assertTrue("3.5." + visitor.getMessage(), visitor.isValid());
 		// should see all resources if we include the flag
 		visitor.reset();
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
-		try {
-			project.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		} catch (CoreException e) {
-			fail("3.6", e);
-		}
+		project.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
 		assertTrue("3.7." + visitor.getMessage(), visitor.isValid());
 	}
 
-	public void testCopy() {
+	public void testCopy() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
-		IResource[] resources = new IResource[] {project, folder, file, subFile};
+		IResource[] resources = { project, folder, file, subFile };
 		ensureExistsInWorkspace(resources, true);
 
 		// handles to the destination resources
@@ -395,18 +271,14 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFolder destFolder = destProject.getFolder(folder.getName());
 		IFile destFile = destProject.getFile(file.getName());
 		IFile destSubFile = destFolder.getFile(subFile.getName());
-		IResource[] destResources = new IResource[] {destProject, destFolder, destFile, destSubFile};
+		IResource[] destResources = { destProject, destFolder, destFile, destSubFile };
 		ensureDoesNotExistInWorkspace(destResources);
 
 		// set a folder to be team private
 		setTeamPrivateMember("1.0", folder, true, IResource.DEPTH_ZERO);
 		// copy the project
 		int flags = IResource.FORCE;
-		try {
-			project.copy(destProject.getFullPath(), flags, getMonitor());
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
+		project.copy(destProject.getFullPath(), flags, getMonitor());
 		assertExistsInWorkspace("1.2", resources);
 		assertExistsInWorkspace("1.3", destResources);
 
@@ -415,11 +287,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
 		setTeamPrivateMember("2.0", folder, true, IResource.DEPTH_ZERO);
-		try {
-			folder.copy(destFolder.getFullPath(), flags, getMonitor());
-		} catch (CoreException e) {
-			fail("2.1", e);
-		}
+		folder.copy(destFolder.getFullPath(), flags, getMonitor());
 		assertExistsInWorkspace("2.2", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("2.3", new IResource[] {destFolder, destSubFile});
 
@@ -428,11 +296,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(destResources);
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember("3.0", project, true, IResource.DEPTH_INFINITE);
-		try {
-			project.copy(destProject.getFullPath(), flags, getMonitor());
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
+		project.copy(destProject.getFullPath(), flags, getMonitor());
 		assertExistsInWorkspace("3.2", resources);
 		assertExistsInWorkspace("3.3", destResources);
 
@@ -441,22 +305,18 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
 		setTeamPrivateMember("4.0", project, true, IResource.DEPTH_INFINITE);
-		try {
-			folder.copy(destFolder.getFullPath(), flags, getMonitor());
-		} catch (CoreException e) {
-			fail("4.1", e);
-		}
+		folder.copy(destFolder.getFullPath(), flags, getMonitor());
 		assertExistsInWorkspace("4.2", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("4.3", new IResource[] {destFolder, destSubFile});
 	}
 
-	public void testMove() {
+	public void testMove() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
-		IResource[] resources = new IResource[] {project, folder, file, subFile};
+		IResource[] resources = { project, folder, file, subFile };
 		ensureExistsInWorkspace(resources, true);
 
 		// handles to the destination resources
@@ -464,18 +324,14 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFolder destFolder = destProject.getFolder(folder.getName());
 		IFile destFile = destProject.getFile(file.getName());
 		IFile destSubFile = destFolder.getFile(subFile.getName());
-		IResource[] destResources = new IResource[] {destProject, destFolder, destFile, destSubFile};
+		IResource[] destResources = { destProject, destFolder, destFile, destSubFile };
 		ensureDoesNotExistInWorkspace(destResources);
 
 		// set a folder to be team private
 		setTeamPrivateMember("1.0", folder, true, IResource.DEPTH_ZERO);
 		// move the project
 		int flags = IResource.FORCE;
-		try {
-			project.move(destProject.getFullPath(), flags, getMonitor());
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
+		project.move(destProject.getFullPath(), flags, getMonitor());
 		assertDoesNotExistInWorkspace("1.2", resources);
 		assertExistsInWorkspace("1.3", destResources);
 
@@ -484,11 +340,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
 		setTeamPrivateMember("2.0", folder, true, IResource.DEPTH_ZERO);
-		try {
-			folder.move(destFolder.getFullPath(), flags, getMonitor());
-		} catch (CoreException e) {
-			fail("2.1", e);
-		}
+		folder.move(destFolder.getFullPath(), flags, getMonitor());
 		assertDoesNotExistInWorkspace("2.2", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("2.3", new IResource[] {destFolder, destSubFile});
 
@@ -497,11 +349,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(destResources);
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember("3.0", project, true, IResource.DEPTH_INFINITE);
-		try {
-			project.move(destProject.getFullPath(), flags, getMonitor());
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
+		project.move(destProject.getFullPath(), flags, getMonitor());
 		assertDoesNotExistInWorkspace("3.2", resources);
 		assertExistsInWorkspace("3.3", destResources);
 
@@ -510,16 +358,12 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
 		setTeamPrivateMember("4.0", project, true, IResource.DEPTH_INFINITE);
-		try {
-			folder.move(destFolder.getFullPath(), flags, getMonitor());
-		} catch (CoreException e) {
-			fail("4.1", e);
-		}
+		folder.move(destFolder.getFullPath(), flags, getMonitor());
 		assertDoesNotExistInWorkspace("4.2", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("4.3", new IResource[] {destFolder, destSubFile});
 	}
 
-	public void testDelete() {
+	public void testDelete() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -531,28 +375,16 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		// default behaviour with no team private members
 		int flags = IResource.ALWAYS_DELETE_PROJECT_CONTENT | IResource.FORCE;
 		// delete the project
-		try {
-			project.delete(flags, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("1.1", resources);
 		// delete a file
 		ensureExistsInWorkspace(resources, true);
-		try {
-			file.delete(flags, getMonitor());
-		} catch (CoreException e) {
-			fail("1.2", e);
-		}
+		file.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("1.3", file);
 		assertExistsInWorkspace("1.4", new IResource[] {project, folder, subFile});
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
-		try {
-			folder.delete(flags, getMonitor());
-		} catch (CoreException e) {
-			fail("1.5", e);
-		}
+		folder.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("1.6", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("1.7", new IResource[] {project, file});
 
@@ -560,20 +392,12 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember("2.0", folder, true, IResource.DEPTH_ZERO);
 		// delete the project
-		try {
-			project.delete(flags, getMonitor());
-		} catch (CoreException e) {
-			fail("2.1", e);
-		}
+		project.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("2.2", resources);
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember("2.3", folder, true, IResource.DEPTH_ZERO);
-		try {
-			folder.delete(flags, getMonitor());
-		} catch (CoreException e) {
-			fail("2.4", e);
-		}
+		folder.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("2.5", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("2.6", new IResource[] {project, file});
 
@@ -581,35 +405,23 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember("3.0", project, true, IResource.DEPTH_INFINITE);
 		// delete the project
-		try {
-			project.delete(flags, getMonitor());
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
+		project.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("3.2", resources);
 		// delete a file
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember("3.3", project, true, IResource.DEPTH_INFINITE);
-		try {
-			file.delete(flags, getMonitor());
-		} catch (CoreException e) {
-			fail("3.4", e);
-		}
+		file.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("3.5", file);
 		assertExistsInWorkspace("3.6", new IResource[] {project, folder, subFile});
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember("3.7", project, true, IResource.DEPTH_INFINITE);
-		try {
-			folder.delete(flags, getMonitor());
-		} catch (CoreException e) {
-			fail("3.8", e);
-		}
+		folder.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("3.9", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("3.10", new IResource[] {project, file});
 	}
 
-	public void testDeltas() {
+	public void testDeltas() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		final IProject project = root.getProject("MyProject");
 		final IFolder folder = project.getFolder("folder");
@@ -618,23 +430,19 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFolder settings = project.getFolder(".settings");
 		IFile prefs = settings.getFile("org.eclipse.core.resources.prefs");
 		IFile description = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		IResource[] resources = new IResource[] { project, folder, file, subFile, settings, prefs };
+		IResource[] resources = { project, folder, file, subFile, settings, prefs };
 
 		final ResourceDeltaVerifier listener = new ResourceDeltaVerifier();
 		getWorkspace().addResourceChangeListener(listener);
 		try {
 			IWorkspaceRunnable body = monitor -> ensureExistsInWorkspace(resources, true);
-			try {
-				listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
-				listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
-				listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
-				getWorkspace().run(body, getMonitor());
-				waitForBuild();
-				assertTrue("1.0." + listener.getMessage(), listener.isDeltaValid());
-				ensureDoesNotExistInWorkspace(resources);
-			} catch (CoreException e) {
-				fail("1.1", e);
-			}
+			listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
+			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
+			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
+			getWorkspace().run(body, getMonitor());
+			waitForBuild();
+			assertTrue("1.0." + listener.getMessage(), listener.isDeltaValid());
+			ensureDoesNotExistInWorkspace(resources);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
@@ -646,17 +454,13 @@ public class TeamPrivateMemberTest extends ResourceTest {
 				ensureExistsInWorkspace(resources, true);
 				setTeamPrivateMember("2.0", folder, true, IResource.DEPTH_ZERO);
 			};
-			try {
-				listener.reset();
-				listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
-				listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
-				listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
-				getWorkspace().run(body, getMonitor());
-				assertTrue("2.1." + listener.getMessage(), listener.isDeltaValid());
-				ensureDoesNotExistInWorkspace(resources);
-			} catch (CoreException e) {
-				fail("2.2", e);
-			}
+			listener.reset();
+			listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
+			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
+			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
+			getWorkspace().run(body, getMonitor());
+			assertTrue("2.1." + listener.getMessage(), listener.isDeltaValid());
+			ensureDoesNotExistInWorkspace(resources);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
@@ -668,17 +472,13 @@ public class TeamPrivateMemberTest extends ResourceTest {
 				ensureExistsInWorkspace(resources, true);
 				setTeamPrivateMember("3.0", project, true, IResource.DEPTH_INFINITE);
 			};
-			try {
-				listener.reset();
-				listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
-				listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
-				listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
-				getWorkspace().run(body, getMonitor());
-				assertTrue("3.1." + listener.getMessage(), listener.isDeltaValid());
-				ensureDoesNotExistInWorkspace(resources);
-			} catch (CoreException e) {
-				fail("3.2", e);
-			}
+			listener.reset();
+			listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
+			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
+			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
+			getWorkspace().run(body, getMonitor());
+			assertTrue("3.1." + listener.getMessage(), listener.isDeltaValid());
+			ensureDoesNotExistInWorkspace(resources);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
@@ -693,7 +493,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
-		IResource[] resources = new IResource[] {project, folder, file, subFile};
+		IResource[] resources = { project, folder, file, subFile };
 		ensureExistsInWorkspace(resources, true);
 
 		// Check to see if all the resources exist in the workspace tree.
@@ -718,16 +518,11 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
-		IResource[] resources = new IResource[] {project, folder, file, subFile};
+		IResource[] resources = { project, folder, file, subFile };
 
 		// Trying to set the value on non-existing resources will fail
 		for (IResource resource : resources) {
-			try {
-				resource.setTeamPrivateMember(true);
-				fail("0.0." + resource.getFullPath());
-			} catch (CoreException e) {
-				// expected
-			}
+			assertThrows(CoreException.class, () -> resource.setTeamPrivateMember(true));
 		}
 
 		// create the resources
@@ -736,7 +531,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		// Initial values should be false.
 		for (IResource resource2 : resources) {
 			IResource resource = resource2;
-			assertTrue("1.0: " + resource.getFullPath(), !resource.isTeamPrivateMember());
+			assertFalse("1.0: " + resource.getFullPath(), resource.isTeamPrivateMember());
 		}
 
 		// Now set the values.
@@ -758,7 +553,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 					break;
 				case IResource.PROJECT :
 				case IResource.ROOT :
-					assertTrue("3.1: " + resource.getFullPath(), !resource.isTeamPrivateMember());
+					assertFalse("3.1: " + resource.getFullPath(), resource.isTeamPrivateMember());
 					break;
 			}
 		}
@@ -775,7 +570,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		// Values should be false again.
 		for (IResource resource2 : resources) {
 			IResource resource = resource2;
-			assertTrue("5.0: " + resource.getFullPath(), !resource.isTeamPrivateMember());
+			assertFalse("5.0: " + resource.getFullPath(), resource.isTeamPrivateMember());
 		}
 	}
 
