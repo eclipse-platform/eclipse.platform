@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,9 @@
  *     James Blackburn (Broadcom Corp.) - ongoing development
  *******************************************************************************/
 package org.eclipse.core.tests.internal.alias;
+
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThrows;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -178,39 +181,27 @@ public class BasicAliasTest extends ResourceTest {
 	 * This tests regression of bug 32785.  In this bug, moving a linked folder,
 	 * then copying a linked folder, resulted in the alias table having a stale entry
 	 */
-	public void testBug32785() {
+	public void testBug32785() throws CoreException {
 		IProject project = pNoOverlap;
 		IFolder link = project.getFolder("Source");
 		IFile child = link.getFile("Child.txt");
 		IPath location = getRandomLocation();
 		location.toFile().mkdirs();
 		try {
-			try {
-				link.createLink(location, IResource.NONE, getMonitor());
-				ensureExistsInWorkspace(child, getRandomContents());
-			} catch (CoreException e) {
-				fail("1.99", e);
-			}
+			link.createLink(location, IResource.NONE, getMonitor());
+			ensureExistsInWorkspace(child, getRandomContents());
 			//move the link (rename)
 			IFolder movedLink = project.getFolder("MovedLink");
-			try {
-				link.move(movedLink.getFullPath(), IResource.SHALLOW, getMonitor());
-			} catch (CoreException e) {
-				fail("2.99", e);
-			}
-			assertTrue("3.0", !link.exists());
+			link.move(movedLink.getFullPath(), IResource.SHALLOW, getMonitor());
+			assertFalse("3.0", link.exists());
 			assertTrue("3.1", movedLink.exists());
 			assertEquals("3.2", location, movedLink.getLocation());
 			assertTrue("3.3", movedLink.isSynchronized(IResource.DEPTH_INFINITE));
 
 			//now copy the moved link
 			IFolder copiedLink = project.getFolder("CopiedLink");
-			try {
-				movedLink.copy(copiedLink.getFullPath(), IResource.SHALLOW, getMonitor());
-			} catch (CoreException e) {
-				fail("3.99", e);
-			}
-			assertTrue("4.0", !link.exists());
+			movedLink.copy(copiedLink.getFullPath(), IResource.SHALLOW, getMonitor());
+			assertFalse("4.0", link.exists());
 			assertTrue("4.1", movedLink.exists());
 			assertTrue("4.2", copiedLink.exists());
 			assertEquals("4.3", location, movedLink.getLocation());
@@ -227,7 +218,7 @@ public class BasicAliasTest extends ResourceTest {
 	 * other projects, but the other projects don't overlap each other.  I.e.,
 	 * Project Top overlaps Sub1 and Sub2, but Sub1 and Sub2 do not overlap each other.
 	 */
-	public void testBug156082() {
+	public void testBug156082() throws CoreException {
 		IProject top = getWorkspace().getRoot().getProject("Bug156082_Top");
 		IProject sub1 = getWorkspace().getRoot().getProject("Bug156082_Sub1");
 		IProject sub2 = getWorkspace().getRoot().getProject("Bug156082_Sub2");
@@ -236,14 +227,10 @@ public class BasicAliasTest extends ResourceTest {
 		desc1.setLocation(top.getLocation().append(sub1.getName()));
 		IProjectDescription desc2 = getWorkspace().newProjectDescription(sub2.getName());
 		desc2.setLocation(top.getLocation().append(sub2.getName()));
-		try {
-			sub1.create(desc1, getMonitor());
-			sub1.open(getMonitor());
-			sub2.create(desc2, getMonitor());
-			sub2.open(getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		sub1.create(desc1, getMonitor());
+		sub1.open(getMonitor());
+		sub2.create(desc2, getMonitor());
+		sub2.open(getMonitor());
 		IFile sub2File = sub2.getFile("file.txt");
 		IFile topFile = top.getFolder(sub2.getName()).getFile(sub2File.getName());
 		ensureExistsInWorkspace(sub2File, getRandomContents());
@@ -318,18 +305,6 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	/* Bug570896 */
-//	@Ignore("that is already implemented without the uri via store.getFileSystem().getScheme()")
-//	public void testCompareUriSchemeDistinct() throws URISyntaxException {
-//		// AliasManager requires that different scheme are distinct
-//		// (doesnt actually matter if compare yields +1 or -1 for different values)
-//		String[] urisStrings = { //
-//				"scheme1://authority1/path?query#fragment", //
-//				"scheme2://authority1/path?query#fragment", //
-//		};
-//		assertComparedDistinct(urisStrings);
-//	}
-
-	/* Bug570896 */
 	public void testCompareUriAuthorityDistinct() throws URISyntaxException {
 		// AliasManager requires that different authority (server:port) are distinct
 		// (doesnt actually matter if compare yields +1 or -1 for different values)
@@ -345,7 +320,7 @@ public class BasicAliasTest extends ResourceTest {
 		for (BatFSURI bu1 : batfsList) {
 			for (BatFSURI bu2 : batfsList) {
 				if (!bu1.equals(bu2)) {
-					assertTrue("1.0", 0 != bu1.compareTo(bu2));
+					assertNotEquals("1.0", 0, bu1.compareTo(bu2));
 				}
 			}
 		}
@@ -414,7 +389,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertEquals("1.0", batfsList, sorted);
 	}
 
-	public void testBug256837() {
+	public void testBug256837() throws CoreException {
 		final AliasManager aliasManager = ((Workspace) getWorkspace()).getAliasManager();
 		//force AliasManager to restart (simulates a shutdown/startup)
 		aliasManager.startup(null);
@@ -424,33 +399,16 @@ public class BasicAliasTest extends ResourceTest {
 		IProject p2 = root.getProject(getUniqueString());
 		ensureExistsInWorkspace(new IResource[] {p1, p2}, true);
 
-		IFileStore tempStore = null;
-		try {
-			tempStore = getTempStore();
-			tempStore.mkdir(EFS.NONE, getMonitor());
-		} catch (CoreException e1) {
-			fail("1.0", e1);
-		}
+		IFileStore tempStore = getTempStore();
+		tempStore.mkdir(EFS.NONE, getMonitor());
 
-		try {
-			replaceProject(p2, WrapperFileSystem.getWrappedURI(p2.getLocationURI()));
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		replaceProject(p2, WrapperFileSystem.getWrappedURI(p2.getLocationURI()));
 
 		IFolder link2TempFolder = p1.getFolder("link2TempFolder");
-		try {
-			link2TempFolder.createLink(tempStore.toURI(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		link2TempFolder.createLink(tempStore.toURI(), IResource.NONE, getMonitor());
 
 		// change the location of p2 project to the temp folder
-		try {
-			replaceProject(p2, tempStore.toURI());
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		replaceProject(p2, tempStore.toURI());
 
 		// now p2 and link2TempFolder should be aliases
 		IResource[] resources = aliasManager.computeAliases(link2TempFolder, ((Folder) link2TempFolder).getStore());
@@ -462,14 +420,10 @@ public class BasicAliasTest extends ResourceTest {
 		assertEquals("8.0", link2TempFolder, resources[0]);
 	}
 
-	public void testBug258987() {
+	public void testBug258987() throws CoreException {
 		// Create the directory to which you will link. The directory needs a single file.
 		IFileStore dirStore = getTempStore();
-		try {
-			dirStore.mkdir(EFS.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		dirStore.mkdir(EFS.NONE, getMonitor());
 		assertTrue("2.0", dirStore.fetchInfo().exists());
 		assertTrue("3.0", dirStore.fetchInfo().isDirectory());
 
@@ -480,119 +434,94 @@ public class BasicAliasTest extends ResourceTest {
 		// Create and open the first project. Project links to the directory.
 		IProject project1 = ResourcesPlugin.getWorkspace().getRoot().getProject("project1");
 		IFolder folder1 = null;
-		try {
-			project1.create(getMonitor());
-			project1.open(getMonitor());
-			folder1 = project1.getFolder("subdir");
-			folder1.createLink(dirStore.toURI(), IResource.REPLACE, getMonitor());
-		} catch (CoreException e) {
-			fail("5.0", e);
-		}
+		project1.create(getMonitor());
+		project1.open(getMonitor());
+		folder1 = project1.getFolder("subdir");
+		folder1.createLink(dirStore.toURI(), IResource.REPLACE, getMonitor());
 
 		// Create and open the second project. It also links to the directory.
 		IProject project2 = ResourcesPlugin.getWorkspace().getRoot().getProject("project2");
 		IFolder folder2 = null;
-		try {
-			project2.create(getMonitor());
-			project2.open(getMonitor());
-			folder2 = project2.getFolder("subdir");
-			folder2.createLink(dirStore.toURI(), IResource.REPLACE, getMonitor());
-		} catch (CoreException e) {
-			fail("6.0", e);
-		}
+		project2.create(getMonitor());
+		project2.open(getMonitor());
+		folder2 = project2.getFolder("subdir");
+		folder2.createLink(dirStore.toURI(), IResource.REPLACE, getMonitor());
 
 		// Close the second project.
-		try {
-			project2.close(getMonitor());
-		} catch (CoreException e) {
-			fail("7.0", e);
-		}
+		project2.close(getMonitor());
 
 		// Since project2 is closed, folder2 should not be an alias for folder1 anymore
 		IResource[] resources = ((Workspace) getWorkspace()).getAliasManager().computeAliases(folder1, ((Folder) folder1).getStore());
 		assertNull("8.0", resources);
 	}
 
-	public void testCloseOpenProject() {
-		//close the project and make sure aliases in that project are no longer updated
-		try {
-			pOverlap.close(getMonitor());
-			IFile linkFile = fLinked.getFile("ChildFile.txt");
-			linkFile.create(getRandomContents(), IResource.NONE, getMonitor());
-			IFile closedFile = fOverlap.getFile(linkFile.getName());
-			assertTrue("1.0", !closedFile.exists());
-			pOverlap.open(IResource.NONE, getMonitor());
-			//should a refresh be needed when a project has been changed while it was closed?
-			pOverlap.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-			assertTrue("1.1", closedFile.exists());
-		} catch (CoreException e) {
-			fail("4.99", e);
-		}
+	public void testCloseOpenProject() throws CoreException {
+		// close the project and make sure aliases in that project are no longer updated
+		pOverlap.close(getMonitor());
+		IFile linkFile = fLinked.getFile("ChildFile.txt");
+		linkFile.create(getRandomContents(), IResource.NONE, getMonitor());
+		IFile closedFile = fOverlap.getFile(linkFile.getName());
+		assertFalse("1.0", closedFile.exists());
+		pOverlap.open(IResource.NONE, getMonitor());
+		// should a refresh be needed when a project has been changed while it was
+		// closed?
+		pOverlap.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		assertTrue("1.1", closedFile.exists());
 	}
 
 	/**
 	 * Tests adding a file to a duplicate region by copying.
 	 */
-	public void testCopyFile() {
+	public void testCopyFile() throws CoreException {
 		IFile sourceFile = pNoOverlap.getFile("CopySource");
 		ensureExistsInWorkspace(sourceFile, true);
 
-		//file in linked folder
-		try {
-			IFile linkDest = fLinked.getFile("CopyDestination");
-			IFile overlapDest = fOverlap.getFile(linkDest.getName());
+		// file in linked folder
+		IFile linkDest = fLinked.getFile("CopyDestination");
+		IFile overlapDest = fOverlap.getFile(linkDest.getName());
 
-			sourceFile.copy(linkDest.getFullPath(), IResource.NONE, getMonitor());
-			assertTrue("1.1", linkDest.exists());
-			assertTrue("1.2", overlapDest.exists());
-			assertOverlap("1.3", linkDest, overlapDest);
+		sourceFile.copy(linkDest.getFullPath(), IResource.NONE, getMonitor());
+		assertTrue("1.1", linkDest.exists());
+		assertTrue("1.2", overlapDest.exists());
+		assertOverlap("1.3", linkDest, overlapDest);
 
-			linkDest.delete(IResource.NONE, getMonitor());
-			assertTrue("1.4", !linkDest.exists());
-			assertTrue("1.5", !overlapDest.exists());
-			assertOverlap("1.6", linkDest, overlapDest);
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
-		//duplicate file
-		try {
-			IFile linkDest = lLinked;
-			IFile overlapDest = lOverlap;
-			//first delete the file, then copy it back
-			overlapDest.delete(IResource.NONE, getMonitor());
-			//the link will still exist, but the location won't
-			assertTrue("2.1", linkDest.exists());
-			assertTrue("2.2", !overlapDest.exists());
-			assertTrue("2.3", !linkDest.getLocation().toFile().exists());
-			assertEquals("2.4", linkDest.getLocation(), overlapDest.getLocation());
+		linkDest.delete(IResource.NONE, getMonitor());
+		assertFalse("1.4", linkDest.exists());
+		assertFalse("1.5", overlapDest.exists());
+		assertOverlap("1.6", linkDest, overlapDest);
 
-			sourceFile.copy(overlapDest.getFullPath(), IResource.NONE, getMonitor());
-			assertTrue("2.4", linkDest.exists());
-			assertTrue("2.5", overlapDest.exists());
-			assertOverlap("2.6", linkDest, overlapDest);
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
-		//file in duplicate folder
-		try {
-			IFile linkDest = fLinked.getFile("CopyDestination");
-			IFile overlapDest = fOverlap.getFile(linkDest.getName());
+		// duplicate file
+		linkDest = lLinked;
+		overlapDest = lOverlap;
+		// first delete the file, then copy it back
+		overlapDest.delete(IResource.NONE, getMonitor());
+		// the link will still exist, but the location won't
+		assertTrue("2.1", linkDest.exists());
+		assertFalse("2.2", overlapDest.exists());
+		assertFalse("2.3", linkDest.getLocation().toFile().exists());
+		assertEquals("2.4", linkDest.getLocation(), overlapDest.getLocation());
 
-			sourceFile.copy(overlapDest.getFullPath(), IResource.NONE, getMonitor());
-			assertTrue("3.1", linkDest.exists());
-			assertTrue("3.2", overlapDest.exists());
-			assertOverlap("3.3", linkDest, overlapDest);
+		sourceFile.copy(overlapDest.getFullPath(), IResource.NONE, getMonitor());
+		assertTrue("2.4", linkDest.exists());
+		assertTrue("2.5", overlapDest.exists());
+		assertOverlap("2.6", linkDest, overlapDest);
 
-			overlapDest.delete(IResource.NONE, getMonitor());
-			assertTrue("3.4", !linkDest.exists());
-			assertTrue("3.5", !overlapDest.exists());
-			assertOverlap("3.6", linkDest, overlapDest);
-		} catch (CoreException e) {
-			fail("3.99", e);
-		}
+		// file in duplicate folder
+		linkDest = fLinked.getFile("CopyDestination");
+		overlapDest = fOverlap.getFile(linkDest.getName());
+
+		sourceFile.copy(overlapDest.getFullPath(), IResource.NONE, getMonitor());
+		assertTrue("3.1", linkDest.exists());
+		assertTrue("3.2", overlapDest.exists());
+		assertOverlap("3.3", linkDest, overlapDest);
+
+		overlapDest.delete(IResource.NONE, getMonitor());
+		assertFalse("3.4", linkDest.exists());
+		assertFalse("3.5", overlapDest.exists());
+		assertOverlap("3.6", linkDest, overlapDest);
 	}
 
-	public void testCopyFolder() {
+	public void testCopyFolder() throws CoreException {
 		IFolder source = pNoOverlap.getFolder("CopyFolder");
 		ensureExistsInWorkspace(source, true);
 
@@ -602,301 +531,201 @@ public class BasicAliasTest extends ResourceTest {
 		assertDoesNotExistInWorkspace("1.0", allDest);
 
 		//copy to dest 1
-		try {
-			source.copy(destFolder1.getFullPath(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.1");
-		}
+		source.copy(destFolder1.getFullPath(), IResource.NONE, getMonitor());
 		assertExistsInWorkspace("1.2", allDest);
 
-		try {
-			destFolder2.delete(IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.3", e);
-		}
+		destFolder2.delete(IResource.NONE, getMonitor());
 
 		//copy to dest 2
-		try {
-			source.copy(destFolder2.getFullPath(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.4");
-		}
+		source.copy(destFolder2.getFullPath(), IResource.NONE, getMonitor());
 		assertExistsInWorkspace("1.5", allDest);
 
-		try {
-			destFolder1.delete(IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.6", e);
-		}
+		destFolder1.delete(IResource.NONE, getMonitor());
 	}
 
 	/**
 	 * Test copying a linked folder into a child of its alias.
 	 */
-	public void testCopyToChild() {
+	public void testCopyToChild() throws CoreException {
 		//copying link to child should fail
 		IFolder copyDest = fLinkOverlap1.getFolder("CopyDest");
-		try {
-			fLinkOverlap2.copy(copyDest.getFullPath(), IResource.NONE, getMonitor());
-			fail("1.0");
-		} catch (CoreException e) {
-			//should fail
-		}
+		assertThrows(CoreException.class,
+				() -> fLinkOverlap2.copy(copyDest.getFullPath(), IResource.NONE, getMonitor()));
 		//moving link to child should fail
-		try {
-			fLinkOverlap2.move(copyDest.getFullPath(), IResource.NONE, getMonitor());
-			fail("1.0");
-		} catch (CoreException e) {
-			//should fail
-		}
+		assertThrows(CoreException.class,
+				() -> fLinkOverlap2.move(copyDest.getFullPath(), IResource.NONE, getMonitor()));
 
 		//copy to self should fail
 		IFolder copyDest2 = fLinkOverlap2.getFolder(copyDest.getName());
-		try {
-			copyDest.create(IResource.NONE, true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.3");
-		}
-		try {
-			copyDest.copy(copyDest2.getFullPath(), IResource.NONE, getMonitor());
-			fail("1.0");
-		} catch (CoreException e) {
-			//should fail
-		}
+		copyDest.create(IResource.NONE, true, getMonitor());
+
+		assertThrows(CoreException.class, () -> copyDest.copy(copyDest2.getFullPath(), IResource.NONE, getMonitor()));
 		//moving link to self should fail
-		try {
-			copyDest.move(copyDest2.getFullPath(), IResource.NONE, getMonitor());
-			fail("1.0");
-		} catch (CoreException e) {
-			//should fail
-		}
+		assertThrows(CoreException.class, () -> copyDest.move(copyDest2.getFullPath(), IResource.NONE, getMonitor()));
 	}
 
-	public void testCreateDeleteFile() {
-		//file in linked folder
-		try {
-			lChildLinked.delete(IResource.NONE, getMonitor());
-			assertOverlap("1.1", lChildLinked, lChildOverlap);
-			lChildLinked.create(getRandomContents(), IResource.NONE, getMonitor());
-			assertOverlap("1.2", lChildLinked, lChildOverlap);
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+	public void testCreateDeleteFile() throws CoreException {
+		// file in linked folder
+		lChildLinked.delete(IResource.NONE, getMonitor());
+		assertOverlap("1.1", lChildLinked, lChildOverlap);
+		lChildLinked.create(getRandomContents(), IResource.NONE, getMonitor());
+		assertOverlap("1.2", lChildLinked, lChildOverlap);
 		//duplicate file
-		try {
-			lOverlap.delete(IResource.NONE, getMonitor());
-			assertEquals("2.0", lLinked.getLocation(), lOverlap.getLocation());
+		lOverlap.delete(IResource.NONE, getMonitor());
+		assertEquals("2.0", lLinked.getLocation(), lOverlap.getLocation());
 
-			assertTrue("2.1", !lOverlap.exists());
-			assertTrue("2.2", !lOverlap.getLocation().toFile().exists());
-			assertTrue("2.3", lOverlap.isSynchronized(IResource.DEPTH_INFINITE));
+		assertFalse("2.1", lOverlap.exists());
+		assertFalse("2.2", lOverlap.getLocation().toFile().exists());
+		assertTrue("2.3", lOverlap.isSynchronized(IResource.DEPTH_INFINITE));
 
-			//now the linked resource will still exist but its local contents won't
-			assertTrue("2.4", lLinked.exists());
-			assertTrue("2.5", !lLinked.getLocation().toFile().exists());
-			assertTrue("2.6", lLinked.isSynchronized(IResource.DEPTH_INFINITE));
-			try {
-				lLinked.setContents(getRandomContents(), IResource.NONE, getMonitor());
-				//should fail
-				fail("2.7");
-			} catch (CoreException e) {
-				//should fail
-			}
-			lOverlap.create(getRandomContents(), IResource.NONE, getMonitor());
-			assertOverlap("2.8", lLinked, lOverlap);
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		// now the linked resource will still exist but its local contents won't
+		assertTrue("2.4", lLinked.exists());
+		assertFalse("2.5", lLinked.getLocation().toFile().exists());
+		assertTrue("2.6", lLinked.isSynchronized(IResource.DEPTH_INFINITE));
+		assertThrows(CoreException.class, () -> lLinked.setContents(getRandomContents(), IResource.NONE, getMonitor()));
+
+		lOverlap.create(getRandomContents(), IResource.NONE, getMonitor());
+		assertOverlap("2.8", lLinked, lOverlap);
+
 		//file in duplicate folder
-		try {
-			lChildOverlap.delete(IResource.NONE, getMonitor());
-			assertOverlap("1.1", lChildLinked, lChildOverlap);
-			lChildOverlap.create(getRandomContents(), IResource.NONE, getMonitor());
-			assertOverlap("1.2", lChildLinked, lChildOverlap);
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		lChildOverlap.delete(IResource.NONE, getMonitor());
+		assertOverlap("1.1", lChildLinked, lChildOverlap);
+		lChildOverlap.create(getRandomContents(), IResource.NONE, getMonitor());
+		assertOverlap("1.2", lChildLinked, lChildOverlap);
 	}
 
-	public void testCreateDeleteFolder() {
-		//folder in overlapping project
-		try {
-			fOverlap.delete(IResource.NONE, getMonitor());
-			//linked resources don't disappear on deletion of underlying file
-			assertTrue("1.0", fLinked.exists());
-			assertTrue("1.1", !fLinked.getLocation().toFile().exists());
+	public void testCreateDeleteFolder() throws CoreException {
+		// folder in overlapping project
+		fOverlap.delete(IResource.NONE, getMonitor());
+		// linked resources don't disappear on deletion of underlying file
+		assertTrue("1.0", fLinked.exists());
+		assertFalse("1.1", fLinked.getLocation().toFile().exists());
 
-			fOverlap.create(IResource.NONE, true, getMonitor());
-			assertOverlap("1.2", fOverlap, fLinked);
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		fOverlap.create(IResource.NONE, true, getMonitor());
+		assertOverlap("1.2", fOverlap, fLinked);
+
 		//linked folder
-		try {
-			fLinked.delete(IResource.NONE, getMonitor());
-			//deleting a link should not delete file system contents
-			assertTrue("2.0", fOverlap.exists());
-			assertTrue("2.1", fOverlap.getLocation().toFile().exists());
+		fLinked.delete(IResource.NONE, getMonitor());
+		// deleting a link should not delete file system contents
+		assertTrue("2.0", fOverlap.exists());
+		assertTrue("2.1", fOverlap.getLocation().toFile().exists());
 
-			fLinked.createLink(fOverlap.getLocation(), IResource.NONE, getMonitor());
-			assertOverlap("1.4", fOverlap, fLinked);
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		fLinked.createLink(fOverlap.getLocation(), IResource.NONE, getMonitor());
+		assertOverlap("1.4", fOverlap, fLinked);
 
 		//child of linked folders
 		IFolder child1 = fLinkOverlap1.getFolder("LinkChild");
 		IFolder child2 = fLinkOverlap2.getFolder(child1.getName());
 
-		try {
-			child1.create(IResource.NONE, true, getMonitor());
-			assertOverlap("3.0", child1, child2);
-			child1.delete(IResource.NONE, getMonitor());
-			assertTrue("3.1", !child1.exists());
-			assertTrue("3.2", !child2.exists());
+		child1.create(IResource.NONE, true, getMonitor());
+		assertOverlap("3.0", child1, child2);
+		child1.delete(IResource.NONE, getMonitor());
+		assertFalse("3.1", child1.exists());
+		assertFalse("3.2", child2.exists());
 
-			child2.create(IResource.NONE, true, getMonitor());
-			assertOverlap("3.3", child1, child2);
-			child2.delete(IResource.NONE, getMonitor());
-			assertTrue("3.4", !child1.exists());
-			assertTrue("3.5", !child2.exists());
-		} catch (CoreException e) {
-			fail("3.99", e);
-		}
+		child2.create(IResource.NONE, true, getMonitor());
+		assertOverlap("3.3", child1, child2);
+		child2.delete(IResource.NONE, getMonitor());
+		assertFalse("3.4", child1.exists());
+		assertFalse("3.5", child2.exists());
 	}
 
-	public void testCreateDeleteLink() {
+	public void testCreateDeleteLink() throws CoreException {
 		IFolder folder = pNoOverlap.getFolder("folder");
 		IFile folderChild = folder.getFile("Child.txt");
 		IFolder link = pLinked.getFolder("FolderLink");
 		IFile linkChild = link.getFile(folderChild.getName());
 		ensureExistsInWorkspace(folder, true);
 		ensureExistsInWorkspace(folderChild, true);
-		try {
-			link.createLink(folder.getLocationURI(), IResource.NONE, getMonitor());
-			assertTrue("1.0", linkChild.exists());
-			//manipulate file below overlapping folder and make sure alias under link is updated
-			folderChild.delete(IResource.NONE, getMonitor());
-			assertTrue("1.1", !linkChild.exists());
-			ensureExistsInWorkspace(folderChild, true);
-			assertTrue("1.2", linkChild.exists());
+		link.createLink(folder.getLocationURI(), IResource.NONE, getMonitor());
+		assertTrue("1.0", linkChild.exists());
+		// manipulate file below overlapping folder and make sure alias under link is
+		// updated
+		folderChild.delete(IResource.NONE, getMonitor());
+		assertFalse("1.1", linkChild.exists());
+		ensureExistsInWorkspace(folderChild, true);
+		assertTrue("1.2", linkChild.exists());
 
-			link.delete(IResource.NONE, getMonitor());
-			assertTrue("1.3", !linkChild.exists());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		link.delete(IResource.NONE, getMonitor());
+		assertFalse("1.3", linkChild.exists());
 	}
 
-	public void testDeepLink() {
+	public void testDeepLink() throws CoreException {
 		IFolder folder = pNoOverlap.getFolder("folder");
 		IFile folderChild = folder.getFile("Child.txt");
 		final IFolder linkParent = pLinked.getFolder("LinkParent");
 		IFolder link = linkParent.getFolder("FolderLink");
 		IFile linkChild = link.getFile(folderChild.getName());
 		ensureExistsInWorkspace(new IResource[] {folder, folderChild, linkParent}, true);
-		try {
-			link.createLink(folder.getLocationURI(), IResource.NONE, getMonitor());
-			assertTrue("1.0", linkChild.exists());
+		link.createLink(folder.getLocationURI(), IResource.NONE, getMonitor());
+		assertTrue("1.0", linkChild.exists());
 
-			//manipulate file below overlapping folder and make sure alias under link is updated
-			folderChild.delete(IResource.NONE, getMonitor());
-			assertTrue("1.1", !linkChild.exists());
-			ensureExistsInWorkspace(folderChild, true);
-			assertTrue("1.2", linkChild.exists());
+		// manipulate file below overlapping folder and make sure alias under link is
+		// updated
+		folderChild.delete(IResource.NONE, getMonitor());
+		assertFalse("1.1", linkChild.exists());
+		ensureExistsInWorkspace(folderChild, true);
+		assertTrue("1.2", linkChild.exists());
 
-			link.delete(IResource.NONE, getMonitor());
-			assertTrue("1.3", !linkChild.exists());
-			link.createLink(folder.getLocationURI(), IResource.NONE, getMonitor());
+		link.delete(IResource.NONE, getMonitor());
+		assertFalse("1.3", linkChild.exists());
+		link.createLink(folder.getLocationURI(), IResource.NONE, getMonitor());
 
-			//close and reopen the project and ensure the alias is still updated
-			link.getProject().close(getMonitor());
-			link.getProject().open(getMonitor());
+		// close and reopen the project and ensure the alias is still updated
+		link.getProject().close(getMonitor());
+		link.getProject().open(getMonitor());
 
-			folderChild.delete(IResource.NONE, getMonitor());
-			assertTrue("2.1", !linkChild.exists());
-			ensureExistsInWorkspace(folderChild, true);
-			assertTrue("2.2", linkChild.exists());
+		folderChild.delete(IResource.NONE, getMonitor());
+		assertFalse("2.1", linkChild.exists());
+		ensureExistsInWorkspace(folderChild, true);
+		assertTrue("2.2", linkChild.exists());
 
-			final AliasManager aliasManager = ((Workspace) getWorkspace()).getAliasManager();
-			//force AliasManager to restart (simulates a shutdown/startup)
-			aliasManager.startup(null);
+		final AliasManager aliasManager = ((Workspace) getWorkspace()).getAliasManager();
+		// force AliasManager to restart (simulates a shutdown/startup)
+		aliasManager.startup(null);
 
-			folderChild.delete(IResource.NONE, getMonitor());
-			assertTrue("3.1", !linkChild.exists());
-			ensureExistsInWorkspace(folderChild, true);
-			assertTrue("3.2", linkChild.exists());
+		folderChild.delete(IResource.NONE, getMonitor());
+		assertFalse("3.1", linkChild.exists());
+		ensureExistsInWorkspace(folderChild, true);
+		assertTrue("3.2", linkChild.exists());
 
-			//delete the project that contains the links
-			IFile fileInLinkedProject = pLinked.getFile("fileInLinkedProject.txt");
-			createFileInFileSystem(((Resource) fileInLinkedProject).getStore(), getRandomContents());
-			try {
-				getWorkspace().getRoot().delete(IResource.NONE, getMonitor());
-			} catch (CoreException e) {
-				//failure expected here because it is out of sync
-			}
-			waitForRefresh();
+		// delete the project that contains the links
+		IFile fileInLinkedProject = pLinked.getFile("fileInLinkedProject.txt");
+		createFileInFileSystem(((Resource) fileInLinkedProject).getStore(), getRandomContents());
+		// failure expected here because it is out of sync
+		assertThrows(CoreException.class, () -> getWorkspace().getRoot().delete(IResource.NONE, getMonitor()));
+		waitForRefresh();
 
-			//ensure aliases are gone (bug 144458)
-			final IResource[] aliases = aliasManager.computeAliases(folder, ((Folder) folder).getStore());
-			if (aliases != null) {
-				fail("Unexpected aliases: " + Arrays.toString(aliases));
-			}
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		// ensure aliases are gone (bug 144458)
+		final IResource[] aliases = aliasManager.computeAliases(folder, ((Folder) folder).getStore());
+		assertNull("Unexpected aliases: " + Arrays.toString(aliases), aliases);
 	}
 
-	public void testCreateOpenProject() {
+	public void testCreateOpenProject() throws CoreException {
 		//test creating a project whose location is within an existing link
 		IProject newProject = getWorkspace().getRoot().getProject("createOpenProject");
 		IProjectDescription desc = getWorkspace().newProjectDescription(newProject.getName());
 		desc.setLocationURI(fLinkOverlap1.getLocationURI());
-		try {
-			newProject.create(desc, getMonitor());
-			newProject.open(getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		newProject.create(desc, getMonitor());
+		newProject.open(getMonitor());
 
 		//.project file should now exist in link
 		IFile linkChild = fLinkOverlap1.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		assertTrue("1.0", linkChild.exists());
 
-		// TODO more tests
 	}
 
-	public void testDeepCopyLink() {
-		// TODO
-	}
-
-	public void testDeepMoveLink() {
-		// TODO
-	}
-
-	public void testDeleteLink() {
+	public void testDeleteLink() throws CoreException {
 		//test deletion of a link that overlaps a project location
 		IFolder linkOnProject = pLinked.getFolder("LinkOnProject");
-		try {
-			linkOnProject.createLink(pOverlap.getLocation(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		linkOnProject.createLink(pOverlap.getLocation(), IResource.NONE, getMonitor());
 
-		try {
-			linkOnProject.delete(IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		linkOnProject.delete(IResource.NONE, getMonitor());
 
-		//deletion of a link should not delete the project that it overlaps
-		assertTrue("2.1", !linkOnProject.exists());
+		// deletion of a link should not delete the project that it overlaps
+		assertFalse("2.1", linkOnProject.exists());
 		assertTrue("2.2", pOverlap.exists());
 		assertTrue("2.3", fOverlap.exists());
-	}
-
-	public void testDeleteProject() {
-		// TODO
 	}
 
 	/**
@@ -904,19 +733,15 @@ public class BasicAliasTest extends ResourceTest {
 	 * the location of another project.  The nested project should
 	 * be deleted automatically in this case.
 	 */
-	public void testDeleteProjectUnderProject() {
+	public void testDeleteProjectUnderProject() throws CoreException {
 		IProject parent = getWorkspace().getRoot().getProject("parent");
 		IProject child = getWorkspace().getRoot().getProject("child");
 		ensureExistsInWorkspace(parent, true);
 
 		IProjectDescription childDesc = getWorkspace().newProjectDescription(child.getName());
 		childDesc.setLocation(parent.getLocation().append(child.getName()));
-		try {
-			child.create(childDesc, getMonitor());
-			child.open(getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		child.create(childDesc, getMonitor());
+		child.open(getMonitor());
 
 		IFolder childDirInParent = parent.getFolder(child.getName());
 		IFile childProjectFileInParent = childDirInParent.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
@@ -924,111 +749,63 @@ public class BasicAliasTest extends ResourceTest {
 		assertTrue("1.1", childProjectFileInParent.exists());
 
 		//now delete the child and ensure the resources in the parent are gone
-		try {
-			child.delete(IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
-		assertTrue("2.0", !childDirInParent.exists());
-		assertTrue("2.1", !childProjectFileInParent.exists());
+		child.delete(IResource.NONE, getMonitor());
+		assertFalse("2.0", childDirInParent.exists());
+		assertFalse("2.1", childProjectFileInParent.exists());
 
 		//recreate the child and ensure resources in parent are there
-		try {
-			child.create(childDesc, getMonitor());
-			child.open(getMonitor());
-		} catch (CoreException e) {
-			fail("3.99", e);
-		}
+		child.create(childDesc, getMonitor());
+		child.open(getMonitor());
 		assertTrue("3.0", childDirInParent.exists());
 		assertTrue("3.1", childProjectFileInParent.exists());
 
 		//delete the parent and ensure child is also deleted
-		try {
-			parent.delete(IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("4.99", e);
-		}
+		parent.delete(IResource.NONE, getMonitor());
 
-		assertTrue("4.0", !parent.exists());
-		assertTrue("4.1", !child.exists());
-		assertTrue("4.2", !childDirInParent.exists());
-		assertTrue("4.3", !childProjectFileInParent.exists());
+		assertFalse("4.0", parent.exists());
+		assertFalse("4.1", child.exists());
+		assertFalse("4.2", childDirInParent.exists());
+		assertFalse("4.3", childProjectFileInParent.exists());
 	}
 
-	public void testDeleteProjectContents() {
+	public void testDeleteProjectContents() throws CoreException {
 		//delete the overlapping project - it should delete the children of the linked folder
 		//but leave the actual links intact in the resource tree
-		try {
-			pOverlap.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		pOverlap.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
 		assertDoesNotExistInWorkspace("1.1", new IResource[] {pOverlap, fOverlap, lOverlap, lChildOverlap, lChildLinked});
 		assertDoesNotExistInFileSystem("1.2", new IResource[] {pOverlap, fOverlap, lOverlap, lChildOverlap, lChildLinked, lLinked, fLinked});
 		assertExistsInWorkspace("1.3", new IResource[] {pLinked, fLinked, lLinked});
 	}
 
-	public void testFileAppendContents() {
+	public void testFileAppendContents() throws CoreException {
 		//linked file
-		try {
-			lLinked.appendContents(getRandomContents(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		lLinked.appendContents(getRandomContents(), IResource.NONE, getMonitor());
 		assertOverlap("1.1", lLinked, lOverlap);
 
 		//file in linked folder
-		try {
-			lChildLinked.appendContents(getRandomContents(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		lChildLinked.appendContents(getRandomContents(), IResource.NONE, getMonitor());
 		assertOverlap("2.1", lChildLinked, lChildOverlap);
 		//duplicate file
-		try {
-			lOverlap.appendContents(getRandomContents(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		lOverlap.appendContents(getRandomContents(), IResource.NONE, getMonitor());
 		assertOverlap("3.1", lLinked, lOverlap);
 		//file in duplicate folder
-		try {
-			lChildOverlap.appendContents(getRandomContents(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		lChildOverlap.appendContents(getRandomContents(), IResource.NONE, getMonitor());
 		assertOverlap("3.1", lChildLinked, lChildOverlap);
 	}
 
-	public void testFileSetContents() {
+	public void testFileSetContents() throws CoreException {
 		//linked file
-		try {
-			lLinked.setContents(getRandomContents(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		lLinked.setContents(getRandomContents(), IResource.NONE, getMonitor());
 		assertOverlap("1.1", lLinked, lOverlap);
 
 		//file in linked folder
-		try {
-			lChildLinked.setContents(getRandomContents(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		lChildLinked.setContents(getRandomContents(), IResource.NONE, getMonitor());
 		assertOverlap("2.1", lChildLinked, lChildOverlap);
 		//duplicate file
-		try {
-			lOverlap.setContents(getRandomContents(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		lOverlap.setContents(getRandomContents(), IResource.NONE, getMonitor());
 		assertOverlap("3.1", lLinked, lOverlap);
 		//file in duplicate folder
-		try {
-			lChildOverlap.setContents(getRandomContents(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		lChildOverlap.setContents(getRandomContents(), IResource.NONE, getMonitor());
 		assertOverlap("3.1", lChildLinked, lChildOverlap);
 	}
 
@@ -1036,75 +813,47 @@ public class BasicAliasTest extends ResourceTest {
 	 * Tests moving a file into and out of an overlapping area (similar to
 	 * creation/deletion).
 	 */
-	public void testMoveFile() {
+	public void testMoveFile() throws CoreException {
 		IFile destination = pNoOverlap.getFile("MoveDestination");
 		//file in linked folder
-		try {
-			lChildLinked.move(destination.getFullPath(), IResource.NONE, getMonitor());
-			assertDoesNotExistInWorkspace("1.1", lChildLinked);
-			assertDoesNotExistInWorkspace("1.2", lChildOverlap);
-			assertExistsInWorkspace("1.3", destination);
-			assertOverlap("1.4", lChildLinked, lChildOverlap);
-			assertTrue("1.5", lChildLinked.isSynchronized(IResource.DEPTH_INFINITE));
-			assertTrue("1.6", destination.isSynchronized(IResource.DEPTH_INFINITE));
+		lChildLinked.move(destination.getFullPath(), IResource.NONE, getMonitor());
+		assertDoesNotExistInWorkspace("1.1", lChildLinked);
+		assertDoesNotExistInWorkspace("1.2", lChildOverlap);
+		assertExistsInWorkspace("1.3", destination);
+		assertOverlap("1.4", lChildLinked, lChildOverlap);
+		assertTrue("1.5", lChildLinked.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue("1.6", destination.isSynchronized(IResource.DEPTH_INFINITE));
 
-			destination.move(lChildLinked.getFullPath(), IResource.NONE, getMonitor());
-			assertExistsInWorkspace("2.1", lChildLinked);
-			assertExistsInWorkspace("2.2", lChildOverlap);
-			assertDoesNotExistInWorkspace("2.3", destination);
-			assertOverlap("2.4", lChildLinked, lChildOverlap);
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		destination.move(lChildLinked.getFullPath(), IResource.NONE, getMonitor());
+		assertExistsInWorkspace("2.1", lChildLinked);
+		assertExistsInWorkspace("2.2", lChildOverlap);
+		assertDoesNotExistInWorkspace("2.3", destination);
+		assertOverlap("2.4", lChildLinked, lChildOverlap);
 		//duplicate file
-		try {
-			lOverlap.move(destination.getFullPath(), IResource.NONE, getMonitor());
-			assertDoesNotExistInWorkspace("3.1", lOverlap);
-			assertExistsInWorkspace("3.2", lLinked);
-			assertDoesNotExistInFileSystem("3.25", lLinked);
-			assertExistsInWorkspace("3.3", destination);
-			assertEquals("3.4", lLinked.getLocation(), lOverlap.getLocation());
-			assertTrue("3.4.1", lLinked.isSynchronized(IResource.DEPTH_INFINITE));
+		lOverlap.move(destination.getFullPath(), IResource.NONE, getMonitor());
+		assertDoesNotExistInWorkspace("3.1", lOverlap);
+		assertExistsInWorkspace("3.2", lLinked);
+		assertDoesNotExistInFileSystem("3.25", lLinked);
+		assertExistsInWorkspace("3.3", destination);
+		assertEquals("3.4", lLinked.getLocation(), lOverlap.getLocation());
+		assertTrue("3.4.1", lLinked.isSynchronized(IResource.DEPTH_INFINITE));
 
-			destination.move(lOverlap.getFullPath(), IResource.NONE, getMonitor());
-			assertExistsInWorkspace("3.5", lLinked);
-			assertExistsInWorkspace("3.6", lOverlap);
-			assertDoesNotExistInWorkspace("3.7", destination);
-			assertOverlap("3.8", lLinked, lOverlap);
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		destination.move(lOverlap.getFullPath(), IResource.NONE, getMonitor());
+		assertExistsInWorkspace("3.5", lLinked);
+		assertExistsInWorkspace("3.6", lOverlap);
+		assertDoesNotExistInWorkspace("3.7", destination);
+		assertOverlap("3.8", lLinked, lOverlap);
 		//file in duplicate folder
-		try {
-			lChildOverlap.move(destination.getFullPath(), IResource.NONE, getMonitor());
-			assertDoesNotExistInWorkspace("3.1", lChildLinked);
-			assertDoesNotExistInWorkspace("3.2", lChildOverlap);
-			assertExistsInWorkspace("3.3", destination);
-			assertOverlap("3.4", lChildLinked, lChildOverlap);
+		lChildOverlap.move(destination.getFullPath(), IResource.NONE, getMonitor());
+		assertDoesNotExistInWorkspace("3.1", lChildLinked);
+		assertDoesNotExistInWorkspace("3.2", lChildOverlap);
+		assertExistsInWorkspace("3.3", destination);
+		assertOverlap("3.4", lChildLinked, lChildOverlap);
 
-			destination.move(lChildOverlap.getFullPath(), IResource.NONE, getMonitor());
-			assertExistsInWorkspace("3.5", lChildLinked);
-			assertExistsInWorkspace("3.6", lChildOverlap);
-			assertDoesNotExistInWorkspace("3.7", destination);
-			assertOverlap("3.8", lChildLinked, lChildOverlap);
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
-	}
-
-	public void testMoveFolder() {
-		// TODO
-	}
-
-	public void testShallowCopyLink() {
-		// TODO
-	}
-
-	public void testShallowMoveLink() {
-		// TODO
-	}
-
-	public void testShallowDeleteProject() {
-		// TODO
+		destination.move(lChildOverlap.getFullPath(), IResource.NONE, getMonitor());
+		assertExistsInWorkspace("3.5", lChildLinked);
+		assertExistsInWorkspace("3.6", lChildOverlap);
+		assertDoesNotExistInWorkspace("3.7", destination);
+		assertOverlap("3.8", lChildLinked, lChildOverlap);
 	}
 }
