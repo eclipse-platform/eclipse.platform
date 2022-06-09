@@ -19,7 +19,7 @@
   </parent>
   <groupId>org.eclipse.debug</groupId>
   <artifactId>org.eclipse.debug.ui</artifactId>
-  <version>3.16.100-SNAPSHOT</version>
+  <version>3.16.200-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   <properties>
     <code.ignoredWarnings>-warn:+resource,-deprecation,unavoidableGenericProblems</code.ignoredWarnings>
