@@ -20,10 +20,12 @@
  *******************************************************************************/
 package org.eclipse.core.resources;
 
-import java.nio.charset.Charset;
+import java.lang.management.ManagementFactory;
 import java.util.Hashtable;
+import java.util.List;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.internal.utils.*;
+import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
@@ -167,18 +169,19 @@ public final class ResourcesPlugin extends Plugin {
 	public static final Object FAMILY_MANUAL_REFRESH = new Object();
 
 	/**
-	 * Name of a preference indicating the encoding to use when reading text
-	 * files in the workspace.  The value is a string, and may
-	 * be the default empty string, indicating that the file system encoding should
-	 * be used instead.  The file system encoding can be retrieved using
-	 * <code>System.getProperty("file.encoding")</code>.
-	 * There is also a convenience method <code>getEncoding</code> which returns
-	 * the value of this preference, or the file system encoding if this
-	 * preference is not set.
+	 * Name of a preference indicating the encoding to use when reading text files
+	 * in the workspace. The value is a string, and may be the default empty string,
+	 * indicating that the file system encoding should be used instead. The file
+	 * system encoding can be retrieved using
+	 * <code>System.getProperty("file.encoding")</code> before Java 18, and using
+	 * <code>System.getProperty("native.encoding") with Java 18 and higher versions</code>.
+	 * There is also a convenience method <code>getEncoding</code> which returns the
+	 * value of this preference, or the file system encoding if this preference is
+	 * not set.
 	 * <p>
 	 * Note that there is no guarantee that the value is a supported encoding.
-	 * Callers should be prepared to handle <code>UnsupportedEncodingException</code>
-	 * where this encoding is used.
+	 * Callers should be prepared to handle
+	 * <code>UnsupportedEncodingException</code> where this encoding is used.
 	 * </p>
 	 *
 	 * @see #getEncoding()
@@ -371,10 +374,15 @@ public final class ResourcesPlugin extends Plugin {
 
 	/**
 	 * Returns the encoding to use when reading text files in the workspace. This is
-	 * the value of the <code>PREF_ENCODING</code> preference, or the file system
-	 * encoding (<code>System.getProperty("file.encoding")</code>) if the preference
-	 * is not set, the workspace is not ready yet or any other condition where it
-	 * could not be determined.
+	 * the value of the <code>PREF_ENCODING</code> preference. If the preference is
+	 * not set, the workspace is not ready yet or any other condition where it could
+	 * not be determined, returns native file system encoding, as specified by
+	 * <ul>
+	 * <li><code>System.getProperty("native.encoding")</code> on Java 18 and later
+	 * </li>
+	 * <li><code>System.getProperty("sun.jnu.encoding")</code> on previous Java
+	 * versions</li>
+	 * </ul>
 	 * <p>
 	 * Note that this method does not check whether the result is a supported
 	 * encoding. Callers should be prepared to handle
@@ -390,12 +398,12 @@ public final class ResourcesPlugin extends Plugin {
 	 * ServiceTracker, Blueprint, ...) to track the workspace</li>
 	 * <li>Calling workspace.getRoot().getDefaultCharset(false)</li>
 	 * <li>If <code>null</code> is returned take the appropriate action, e.g fall
-	 * back to <code>System.getProperty("file.encoding")</code> or even better
-	 * {@link Charset#defaultCharset()}</li>
+	 * back to {@link Platform#getSystemCharset()}</li>
 	 * </ol>
 	 *
 	 * @return the encoding to use when reading text files in the workspace
 	 * @see java.io.UnsupportedEncodingException
+	 * @see #getSystemEncoding()
 	 */
 	public static String getEncoding() {
 		ResourcesPlugin resourcesPlugin = plugin;
@@ -418,8 +426,34 @@ public final class ResourcesPlugin extends Plugin {
 		}
 	}
 
+	private static String systemEncoding;
+
+	/**
+	 * Retrieves the encoding either explicitly specified via command line argument
+	 * {@code-Dfile.encoding=} or, if not specified, based on the system locale.
+	 *
+	 * @return never null
+	 * @see Platform#getSystemCharset()
+	 */
 	private static String getSystemEncoding() {
-		return System.getProperty("file.encoding"); //$NON-NLS-1$
+		if (systemEncoding == null) {
+			String encoding = null;
+			// Check if -Dfile.encoding= startup argument was given to Eclipse's JVM
+			List<String> commandLineArgs = ManagementFactory.getRuntimeMXBean().getInputArguments();
+			for (String arg : commandLineArgs) {
+				if (arg.startsWith("-Dfile.encoding=")) { //$NON-NLS-1$
+					encoding = arg.substring("-Dfile.encoding=".length()); //$NON-NLS-1$
+					// continue, it can be specified multiple times, last one wins.
+				}
+			}
+			// Now we are sure user didn't specified encoding, so we can use
+			// default native encoding
+			if (encoding == null || encoding.isBlank()) {
+				encoding = Platform.getSystemCharset().name();
+			}
+			systemEncoding = encoding;
+		}
+		return systemEncoding;
 	}
 
 	/**
