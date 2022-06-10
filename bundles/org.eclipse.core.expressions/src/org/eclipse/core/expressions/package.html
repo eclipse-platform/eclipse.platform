@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Package-level Javadoc</title>
+<link rel="stylesheet" href="http://dev.eclipse.org/default_style.css"
+	type="text/css">
+</head>
+<body style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0)">
+Application programming interfaces for the expression language. 
+<h2>Package Specification</h2>
+The package provides API and implementation classes to define a unified
+XML expression language. The expression language isn't only for extension
+points, it can be used in any XML document that supports enablement
+expressions.
+<h3>XML expression language</h3>
+The XML expression language consists of the following predefined
+expression tags. The set is open and can be extended to customize the
+expression language.
+<p><i><u>Boolean operators</u></i></p>
+<p>The expression language provides standard expressions for the Boolean
+operators and, or and not.</p>
+<p><i><u>Instanceof expression</u></i></p>
+<p>The most frequently used check in current extension points is one to
+test if an object conforms to a certain type. The common XML expression
+language provides a special XML element to represent instance of checks.
+A typical usage looks as follows:</p>
+<blockquote><pre>&lt;instanceof value="org.eclipse.jdt.core.IJavaElement"/&gt;</pre>
+</blockquote>
+<p>The above expression tests, if the object under inspection (in most
+cases the element selected in the user interface) is of instance
+"org.eclipse.jdt.core.IJavaElement".</p>
+<p><i><u>Test expression</u></i></p>
+<p>Besides instance of checks the new expression language defines an
+extensible &lt;test&gt; element to support property testing. The
+&lt;test&gt; element is comparable to the &lt;filter&gt; element used in
+Platform/UI. The test element is used as follows:</p>
+<blockquote><pre>&lt;and&gt;
+  &lt;instanceof value="org.eclipse.core.resources.IFile"/&gt;
+  &lt;test property="org.demo.matchesPattern" value="*.html"/&gt;
+&lt;/and&gt;</pre></blockquote>
+<p>The above expression evaluates to true if the object under inspection
+is of type "org.eclipse.core.resources.IFile" and its file name matches
+the pattern "*.html". But who actually provides the code to do the name
+pattern test? Predefining a set of properties to test is too limiting.
+The set of tests must be open. Property testers are added to the system
+using a special extension point <code>propertyTesters</code>.
+The above matchesPattern property is added to the system in the
+following way:</p>
+<pre style="margin-left: 40px">&lt;extension point="org.eclipse.core.expressions.propertyTesters"&gt;
+    &lt;propertyTester
+        id="org.eclipse.jdt.ui.IResourceTypeExtender"
+        type="org.eclipse.core.resources.IResource"
+        namespace="org.demo"
+        properties="matchesPattern, ...."
+        class="org.eclipse....ResourcePropertyTester"&gt;
+     &lt;/propertyTester&gt;
+&lt;/extension&gt;</pre>
+<p>The major characteristics of the extensible test mechanism are:</p>
+<ul>
+	<li>types are enriched with new properties using a property tester,
+	meaning that the code of the actual property test is provided by a
+	different class.</li>
+	<li>a property tester implements a set of properties.</li>
+	<li>property testers and their properties are defined in XML as
+	extension points. This is required to check if an extender provides a
+	property without having to activate it (e.g. load the plug-in).</li>
+	<li>properties belong to a name space. This ensures that two sibling
+	plug-ins can define the same property without causing any ambiguity. If
+	a property is defined more than once for a name space then one of the
+	testers is randomly chosen to test the property. Inheritance only
+	works within the same name space. If, for example, there is a property
+	<code>isPublic</code> defined in the
+	namespace <code>org.myNamespace</code> for type <code>org.eclipse.core.IMethod</code>
+	then this property will not override the property <code>isPublic</code> in the namespace <code>org.yourNamespace</code>
+	for type <code>org.eclipse.core.IMember</code>.&nbsp;</li>
+	<li>testing for an unknown property results in a core exception. This
+	is a programming error.</li>
+</ul>
+<p>The attributes of the propertyTester element have the following
+meaning:</p>
+<ul>
+	<li>id: a unique id</li>
+	<li>type: the type which gets "enriched" with new methods</li>
+	<li>namespace: the name space the properties belong to</li>
+	<li>properties: the comma separated list of properties provided by the
+	tester.</li>
+	<li>class: the implementing class</li>
+</ul>
+<p>The concrete implementation for the above property tester looks like
+this:</p>
+<blockquote><pre style="font-size: small">public class ResourcePropertyTester extends PropertyTester {
+  private static final String PROPERTY_MATCHES_PATTERN= "matchesPattern"; //$NON-NLS-1$
+
+
+
+  public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
+    IResource resource= (IResource)receiver;
+    if (PROPERTY_MATCHES_PATTERN.equals(method)) {
+      String fileName= resource.getName();
+      StringMatcher matcher= new StringMatcher((String)expectedValue, false, false);
+      return expectedValue == null
+          ? matcher.match(fileName)
+          : matcher.match(filename) == ((Boolean)expectedValue).booleanValue();
+    } else if (...) {
+    }
+    Assert.isTrue(false);
+    return false;
+  }
+}</pre></blockquote>
+<p>The string value provided by the value attribute is converted into a
+Java object using the following rules:</p>
+<ul>
+	<li>the string &quot;true&quot; is converted into Boolean.TRUE</li>
+	<li>the string &quot;false&quot; is converted into Boolean.FALSE</li>
+	<li>if the string contains a dot then the interpreter tries to convert
+	the value into a Float object. If this fails the string is treated as a
+	java.lang.String</li>
+	<li>if the string only consists of numbers then the interpreter
+	converts the value in an Integer object.</li>
+	<li>in all other cases the string is treated as a java.lang.String</li>
+	<li>the conversion of the string into a Boolean, Float, or Integer can
+	be suppressed by surrounding the string with single quotes. For
+	example, the attribute value=&quot;'true'&quot; is converted into the
+	string &quot;true&quot;</li>
+</ul>
+<p>Sometimes a property test needs additional arguments to determine the
+exact property to test. If this is the case the arguments can be passed
+using the additional args attribute. An example which validates a name
+using the method IWorkspace.validateName looks as follows:</p>
+<blockquote><pre>&lt;test property="org.demo.validateName" args=&quot;/org.eclipse.demo/A.java, FILE&quot;/&gt;</pre></blockquote>
+<p><i><u>With expression</u></i></p>
+<p>Test expressions don't allow to specify the object they inspect. They
+work on a default object, which for most extension points is the object
+selected in the user interface. However, the enablement logic of some
+extension points need to test other objects as well. For example a Java
+refactoring participant tests if the list of affected projects contains
+a project with the Java nature:</p>
+<blockquote><pre>&lt;with variable="affectedProjects"&gt;
+    &lt;iterate operator=&quot;or&quot;&gt;
+        &lt;test property=&quot;org.demo.projectNature&quot; value=&quot;org.eclipse.jdt.core.javanature&quot;/&gt;
+    &lt;/iterate&gt;
+&lt;/with&gt;</pre></blockquote>
+<p>The plug-in that evaluates the extension point is responsible for
+providing the set of available variables. For example, the code that
+evaluates refactoring participants provides the follow variables:</p>
+<ul>
+	<li><i>selection:</i> its value is a collection containing the objects
+	to be refactored</li>
+	<li><i>affectedProjects</i>: its value is a collection containing the
+	projects affected by the refactoring</li>
+	<li><i>defaultVariable</i>: will be used if no with expression element
+	is active. Is an alias for the variable selection.</li>
+</ul>
+<p>If the variable doesn't exist, the with expression will throw a core
+exception.</p><p><u><i>Resolve expression</i></u></p>
+<p>The resolve expression is comparable to the with expression, but it allows resolving the variable dynamically and to pass additional arguments needed to resolve the argument. For example to resolve the plug-in descriptor for a specific plug-in the following XML element can be used:</p>
+<blockquote><pre>&lt;resolve variable="pluginDescriptor" args=&quot;org.eclipse.core.runtime&quot;&gt;
+    &lt;test property="org.demo.isActive"/&gt;
+&lt;/adapt&gt;</pre></blockquote>
+<p>The actual resolving is delegated to the evaluation context used to evaluate the expressions. See below on how to evaluate an expression and how to create an evaluation context.</p>
+<p><u><i>Adapt expression</i></u></p>
+<p>The adapt expression can be used to adapt the object to be inspected
+to an object of a different type using the adapter mechanism provided by
+the platform. The example below adapts the object to be inspected to an
+IType and then checks if the type is public:</p>
+<blockquote><pre>&lt;adapt type="org.eclipse.jdt.core.IType"&gt;
+    &lt;test property="org.demo.isPrivate"/&gt;
+&lt;/adapt&gt;</pre></blockquote>
+<p>Like the with expression the adapt expression changes the object to
+inspect for all its children. The new object is the one returned from
+IAdapter.getAdapter(). If the adaption fails, the expression evaluates
+to false.</p>
+<p>The adapt expression is implemented based on the IAdapterManager API
+<code>hasAdapter(Object, String)</code> and <code>getAdapter(Object, String)</code>.
+This ensures that the right class loader is taken to convert the type name into a
+corresponding Class object.
+However, using this API requires that the adapter factory providing the actual adapter
+is registered in XML using the extension point &quot;org.eclipse.core.runtime.adapters&quot;.
+Assuming that there is an adapter that converts resources with the extension .java into IType objects,
+the adapter must be declared in XML to make the above adapt expression work correctly.
+The corresponding adapter definition looks like this:</p>
+<blockquote><pre>&lt;extension point=&quot;org.eclipse.core.runtime.adapters&quot;&gt;
+  &lt;factory 
+    class=&quot;org.demo.MyAdapterFactory&quot; 
+    adaptableType=&quot;org.eclipse.core.resources.IFile&quot;&gt;
+    &lt;adapter type=&quot;org.eclipse.jdt.core.IType&quot;/&gt;
+  &lt;/factory&gt;
+&lt;/extension&gt;</pre></blockquote>
+<p><u><i>SytemTest expression</i></u></p>
+<p>There is a special XML element to test system properties.</p>
+<blockquote>
+<p><code>&lt;systemTest property="os.name" value="Windows XP"/&gt;<br>
+&lt;systemTest property="os.version" value="5.1"/&gt;</code></p>
+</blockquote>
+<p><u><i>Dealing with collection of elements</i></u></p>
+<p>Several expressions are evaluated on a collection of objects (for
+example refactoring participants, menu contributions, ...). Up to now, the
+iteration over collections was implicitly coded into the enclosing XML
+element, which isn't part of the expression itself. The new mechanism
+provides explicit expression elements to deal with collections of
+objects. The following element</p>
+<blockquote><pre>&lt;count value="*"/&gt;</pre></blockquote>
+<p>is used to check the number of objects in a collection, and the syntax
+of the attribute value is equal to the enablesFor attribute used for
+object contributions. To iterate over a collection, an element</p>
+<blockquote><pre>&lt;iterate operator="..."&gt;</pre></blockquote>
+<p>is provided. The operator attribute can either be "and" or "or". It
+determines how the evaluation results of all objects in the list are
+combined. The default operator is "and". Using these expression the
+enablement of a typical contribution can be described as follows:</p>
+<blockquote><pre>&lt;with variable="selection"&gt;<br>  &lt;count value="+"/&gt;<br>  &lt;iterate operator="and"/&gt;<br>    &lt;adapt type="org.eclipse.core.resources.IFile"&gt;<br>       &lt;test property="matchesName" value="*.gif"/&gt;<br>       &lt;test property="canDelete"/&gt;<br>    &lt;/adapt&gt;<br>  &lt;/iterate&gt;<br>&lt;/with&gt;</pre>
+</blockquote>
+<p>The expression only evaluates to true if the selection contains one
+or more objects and all objects fulfill the expression defined by the
+adapt element.</p>
+<p><u><i>Enablement expression</i></u></p>
+<p>XML expressions are mostly used to define the availability of an
+extension point contribution, but they can be used in any XML document
+that allows expressions. To separate the expression from other
+child elements the common expression language provides an enablement
+element. Its use is as follows:</p>
+<blockquote><pre>&lt;renameParticipant<br>   id="launchConfigUpdater"<br>   class="org.eclipse...LaunchConfigUpdater"&gt;<br>   &lt;enablement&gt;<br>    ...<br>   &lt;/enablement&gt;<br>&lt;/renameParticipant&gt;</pre>
+</blockquote>
+<p>Most of the time child expression will be combined using the and
+operator. To avoid deep nesting XML "and" will be the default for
+combining children. It can therefore be omitted. The same applies to the
+adapt, iterate, and enablement expression defined in the following
+sections.</p>
+<p><u><i>Extension Point Schema</i></u></p>
+
+<p>An extension point schema exists for the property tester extension
+point and for the expression language itself. The schema for the 
+expression language can be included into other schema files using
+the following include element:
+</p>
+<blockquote><pre>
+&lt;include schemaLocation="schema://org.eclipse.core.expressions/schema/expressionLanguage.exsd"/&gt;
+</pre></blockquote>
+<p><u><i>Converting XML elements into expressions</i></u></p>
+<p>XML elements can be converted into corresponding expression objects using the class ExpressionConverter.
+If only expression tags from the common expression language are used, then the standard expression converter can be used.
+The following example converts the configuration element representing an enablement element into an expression:</p>
+<blockquote>
+<p><code>IConfigurationElement enablementElement= ...;<br>
+Expression expression=
+ExpressionConverter.getDefault().perform(enablementElement);</code></p>
+</blockquote>
+<p><i><u>Evaluating an expression</u></i></p>
+<p>Expressions are evaluated by calling <code>Expression.evaluate(...);</code>. The evaluation 
+context passed to the evaluate method has to be set up by the plug-in that reads an extension point. 
+The plug-in is responsible to set up the default variable and all the other variable used in 
+with expressions. The example below creates a special evaluation context and uses this context to 
+evaluate an expression:
+</p><blockquote>
+<pre>
+<code>
+EvaluationContext context= new EvaluationContext(null, defaultVariable) {
+    public Object resolveVariable(String name, Object[] args) throws CoreException {
+        // do special resolving
+    }
+}</code></pre>
+</blockquote>
+<p>The actual evaluation is done by calling:</p>
+<blockquote><pre>
+<code>
+EvaluationResult= expression.evaluate(context);</code></pre></blockquote>
+</body>
+</html>

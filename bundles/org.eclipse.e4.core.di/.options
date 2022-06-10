@@ -1,0 +1,4 @@
+# Turn on debugging for the bundle
+org.eclipse.e4.core.di/debug=false
+
+# NOTE: You can turn on debugging of the Injector by setting the Java system property org.eclipse.e4.core.di.debug=true

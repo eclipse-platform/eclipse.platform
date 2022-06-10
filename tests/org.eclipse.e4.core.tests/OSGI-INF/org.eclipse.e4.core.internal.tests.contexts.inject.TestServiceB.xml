@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="false" name="org.eclipse.e4.core.internal.tests.contexts.inject.TestServiceB">
+   <property name="service.ranking" type="Integer" value="5"/>
+   <service>
+      <provide interface="org.eclipse.e4.core.internal.tests.contexts.inject.TestService"/>
+      <provide interface="org.eclipse.e4.core.internal.tests.contexts.inject.TestOtherService"/>
+   </service>
+   <implementation class="org.eclipse.e4.core.internal.tests.contexts.inject.TestServiceB"/>
+</scr:component>

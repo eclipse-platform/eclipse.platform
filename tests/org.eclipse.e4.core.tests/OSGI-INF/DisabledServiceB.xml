@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="false" name="DisabledServiceB">
+   <property name="component" value="disabled"/>
+   <property name="service.ranking" type="Integer" value="5"/>
+   <service>
+      <provide interface="org.eclipse.e4.core.internal.tests.di.extensions.TestService"/>
+   </service>
+   <implementation class="org.eclipse.e4.core.internal.tests.di.extensions.DisabledServiceB"/>
+</scr:component>

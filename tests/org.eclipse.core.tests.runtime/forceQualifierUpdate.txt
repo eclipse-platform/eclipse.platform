@@ -1,0 +1,3 @@
+# To force a version qualifier update add the bug here
+Bug 403352 - Update all parent versions to match our build stream
+bug 442102 -- workaround to no sign empty inner jars. 

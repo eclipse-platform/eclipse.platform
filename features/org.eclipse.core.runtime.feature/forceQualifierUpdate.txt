@@ -1,0 +1,8 @@
+# To force a version qualifier update add the bug here
+Bug 403352 - Update all parent versions to match our build stream
+Bug 483585 - I20151203-0800 build failed due to resolution problems
+Bug 493109: Build failed due to qualifier heuristics on core.runtime.feature
+I20180126-2040 build failed as core.runtime bundle changed
+Bug 444188 - EclipsePreferences is not thread safe
+Bug 563268 - 4.16 I-Build: I20200519-1010 - BUILD FAILED
+Bug 565191 - 4.17 I-Build: I20200713-1800 - BUILD FAILED

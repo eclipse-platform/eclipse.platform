@@ -1,0 +1,28 @@
+#### Monitoring settings
+# monitor class loading
+org.eclipse.osgi/monitor/classes=false
+
+# monitor bundle activation
+org.eclipse.osgi/monitor/activation=false
+
+# monitor resource bundle (*.properties) loading
+org.eclipse.osgi/monitor/resources=false
+
+
+#### Trace settings
+# trace class loading - snapshot the execution stack when a class is loaded
+org.eclipse.osgi/trace/classLoading=false
+
+# trace location - file in which execution traces are written
+org.eclipse.osgi/trace/filename=runtime.traces
+
+# trace filters - Java properties file defining which classes should 
+# be traced (if trace/classLoading is true)
+# File format:
+# plugins=<comma separated list of plugins whose classes to trace>
+# packages=<comma separated list of package prefixes of classes to trace>
+# Note that there may be many 'plugins' and 'packages' lines in one file.
+org.eclipse.osgi/trace/filters=trace.properties
+
+# trace bundle activation - snapshot the execution stack when a bundle is activated
+org.eclipse.osgi/trace/activation=false

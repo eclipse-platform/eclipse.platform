@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.core.expressions" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.core.expressions" id="definitions" name="Expression Definitions"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;
+This extension point allows you to create reusable extensions.  They can then be used in other core expression constructs.
+&lt;/p&gt;
+&lt;p&gt;
+The reference element in a core expression will evaluated the expression definition with the evaluation context that is active for the reference element.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <include schemaLocation="expressionLanguage.exsd"/>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="definition" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="definition">
+      <annotation>
+         <documentation>
+            Provides a global definition of an expression to be used with the &amp;lt;reference/&amp;gt; expression element.  This helps to reuse common expressions.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice>
+            <element ref="not"/>
+            <element ref="and"/>
+            <element ref="or"/>
+            <element ref="instanceof"/>
+            <element ref="test"/>
+            <element ref="systemTest"/>
+            <element ref="equals"/>
+            <element ref="count"/>
+            <element ref="with"/>
+            <element ref="resolve"/>
+            <element ref="adapt"/>
+            <element ref="iterate"/>
+         </choice>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A globally unique identifier for the expression definition.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.3
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         You can define and the use core expressions:
+
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.core.expressions.definitions&quot;&gt;
+   &lt;definition id=&quot;com.example.parts.activeProblemsView&quot;&gt;
+       &lt;with variable=&quot;activePartId&quot;&gt;
+          &lt;equals value=&quot;org.eclipse.ui.views.ProblemsView&quot;/&gt;
+       &lt;/with&gt;
+   &lt;/definition&gt;
+   &lt;definition id=&quot;com.example.markers.markerSelection&quot;&gt;
+       &lt;iterate&gt;
+          &lt;instanceof value=&quot;org.eclipse.core.resources.IMarker&quot;/&gt;
+       &lt;/with&gt;
+   &lt;/definition&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+&lt;p&gt;
+Then this expression definition can be used when composing other expressions.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;pre&gt;
+&lt;enabledWhen&gt;
+   &lt;reference definitionId=&quot;com.example.parts.activeProblemsView&quot;&gt;
+&lt;/enabledWhen&gt;
+&lt;/pre&gt;
+&lt;pre&gt;
+&lt;visibleWhen&gt;
+   &lt;and&gt;
+      &lt;reference definitionId=&quot;com.example.parts.activeProblemsView&quot;/&gt;
+      &lt;reference definitionId=&quot;com.example.markers.markerSelection&quot;/&gt;
+   &lt;/and&gt;
+&lt;/visibleWhen&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2007, 2008 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made available under the terms of the Eclipse Public License 2.0 which accompanies this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

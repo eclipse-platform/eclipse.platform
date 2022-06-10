@@ -1,0 +1,4 @@
+# Turn on debugging for the bundle
+org.eclipse.e4.core.services/debug=false
+# Turn on debugging of the Injector  
+org.eclipse.e4.core.services/debug/injector=false

@@ -1,0 +1,373 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.core.runtime" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.core.runtime" id="contentTypes" name="Content Types"/>
+      </appinfo>
+      <documentation>
+               &lt;p&gt;
+&lt;b&gt;WARNING: This extension point is DEPRECATED.&lt;/b&gt;&lt;br&gt;
+Do not use this extension point, it will be removed in future versions of this product.
+Instead, use the extension point &lt;a href=&quot;org_eclipse_core_contenttype_contentTypes.html&quot;&gt;org.eclipse.core.contenttype.contentTypes&lt;/a&gt;
+&lt;/p&gt;
+The content types extension point allows plug-ins to contribute to the platform content type catalog. There are two forms of contributions: &lt;cite&gt;content types&lt;/cite&gt; and &lt;cite&gt;file associations&lt;/cite&gt;.
+&lt;ul&gt;
+&lt;li&gt;
+a content type represents a file format and its naming conventions. Content types can be defined from scratch, or can inherit from existing ones, specializing them. Also, a content type can be made into an alias for another content type (see the &lt;code&gt;alias-for&lt;/code&gt; attribute). When this feature is used:
+  &lt;ul&gt;&lt;li&gt;if the target is absent, the alias content type is processed 
+  as a normal content type;&lt;/li&gt;
+  &lt;li&gt;if the target is present, all references to the alias type are automatically
+  transformed into references to the target type, and the alias type cannot be 
+  accessed nor is exposed through the API.&lt;/li&gt;&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+a file association extends an existing content type by associating new file names and/or extensions to it&lt;/li&gt;
+&lt;/ul&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element deprecated="true" replacement="org.eclipse.core.contenttype.contentTypes" />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="content-type" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="file-association" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="content-type">
+      <complexType>
+         <sequence>
+            <element ref="describer" minOccurs="0" maxOccurs="1"/>
+            <element ref="property" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the identifier for this content type (either a simple id unique for content types within the extension namespace, or a fully qualified id). The token cannot contain whitespace
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="base-type" type="string">
+            <annotation>
+               <documentation>
+                  the fully qualified identifier of this content type&apos;s base type. This content type will inherit its base type&apos;s file associations, content describer and default charset, unless they are redefined
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the human-readable name of this content type
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="file-extensions" type="string">
+            <annotation>
+               <documentation>
+                  a comma-separated list of file extensions to be associated with this content type
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="file-names" type="string">
+            <annotation>
+               <documentation>
+                  a comma-separated list of file names to be associated with this content type
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="priority" use="default" value="normal">
+            <annotation>
+               <documentation>
+                  the priority for this content type. Priorities are used to solve conflicts (when two content types are associated to the same file name/extension)
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="low">
+                  </enumeration>
+                  <enumeration value="normal">
+                  </enumeration>
+                  <enumeration value="high">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="default-charset" type="string">
+            <annotation>
+               <documentation>
+                  the default charset for this content type, or an empty string, if this content type should not have a default charset even if the parent has one. This is a convenience attribute, equivalent to specifying:
+&lt;pre&gt;
+  &lt;content-type&gt;
+    &lt;property name=&quot;org.eclipse.core.runtime.charset&quot; default=&quot;charset-name&quot;/&gt;
+  &lt;/content-type&gt;
+&lt;/pre&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="describer" type="string">
+            <annotation>
+               <documentation>
+                  the fully qualified name of a class that implements &lt;samp&gt;org.eclipse.core.runtime.content.IContentDescriber&lt;/samp&gt; or &lt;samp&gt;org.eclipse.core.runtime.content.ITextContentDescriber&lt;/samp&gt;, or an empty string, if this content type should not have a describer even if the parent has one
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="alias-for" type="string">
+            <annotation>
+               <documentation>
+                  the fully qualified identifier of the content type this content type is an alias for
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="describer">
+      <annotation>
+         <documentation>
+            If the describer attribute is used in the content-type element, this element is ignored.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="parameter" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the fully qualified name of a class that implements &lt;samp&gt;org.eclipse.core.runtime.content.IContentDescriber&lt;/samp&gt; or &lt;samp&gt;org.eclipse.core.runtime.content.ITextContentDescriber&lt;/samp&gt;, or an empty string, if this content type should not have a describer even if the parent has one
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.core.runtime.content.IContentDescriber"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="plugin" type="string">
+            <annotation>
+               <documentation>
+                  the id for the plug-in providing the describer class
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="file-association">
+      <complexType>
+         <attribute name="content-type" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the fully qualified identifier for the content type this file association contributes to
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="file-names" type="string">
+            <annotation>
+               <documentation>
+                  a comma-separated list of file names to be associated with the target content type
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="file-extensions" type="string">
+            <annotation>
+               <documentation>
+                  a comma-separated list of file extensions to be associated with the target content type
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="parameter">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of this parameter made available to instances of the specified content describer class
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  an arbitrary value associated with the given name and made available to instances of the specified content describer class
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="property">
+      <annotation>
+         <documentation>
+            Declares a property related to this content type, optionally assigning a default value. See &lt;samp&gt;org.eclipse.core.runtime.content.IContentDescription&lt;/samp&gt; for more information on properties.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the property. If the property is being overridden and has been originally defined in a different namespace, a fully qualified property name must be used
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="default" type="string">
+            <annotation>
+               <documentation>
+                  the default value of the property, or an empty string, if this content type should not have a default value for this property even if a parent has one
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         Following is an example of an XML-based content type declaration using &lt;code&gt;org.eclipse.core.runtime.content.XMLRootElementContentDescriber2&lt;/code&gt;, 
+a built-in describer: 
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension point=&quot;org.eclipse.core.runtime.contentTypes&quot;&gt; 
+      &lt;content-type id=&quot;ABC&quot;
+       base-type=&quot;org.eclipse.core.runtime.xml&quot;      
+       file-extensions=&quot;a,b,c&quot;&gt;
+       &lt;describer class=&quot;org.eclipse.core.runtime.content.XMLRootElementContentDescriber2&quot;&gt;
+        &lt;parameter name=&quot;element&quot; value=&quot;abc&quot;/&gt;
+       &lt;/describer&gt;
+      &lt;/content-type&gt; 
+   &lt;/extension&gt; 
+&lt;/pre&gt;
+&lt;/p&gt;
+Here is an example of a simple text-based content type that has a specific file extension:
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension point=&quot;org.eclipse.core.runtime.contentTypes&quot;&gt; 
+      &lt;content-type id=&quot;MyText&quot;
+       base-type=&quot;org.eclipse.core.runtime.text&quot;
+       file-extensions=&quot;mytxt&quot;/&gt;
+   &lt;/extension&gt; 
+&lt;/pre&gt;
+&lt;/p&gt;
+When there is need to associate new file names/extensions to an existing content type (as opposed to defining a new content type), a plug-in can contribute a file association as seen below. This has the effect of enhancing the definition of the text content type to include files with names following the &quot;*.mytxt&quot; pattern.
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension point=&quot;org.eclipse.core.runtime.contentTypes&quot;&gt; 
+      &lt;file-association 
+       content-type=&quot;org.eclipse.core.runtime.text&quot;
+       file-extensions=&quot;mytxt&quot;/&gt;
+   &lt;/extension&gt; 
+&lt;/pre&gt;
+&lt;/p&gt;
+Here is an example of a content type that defines properties:
+&lt;pre&gt;
+   &lt;extension point=&quot;org.eclipse.core.runtime.contentTypes&quot;&gt; 
+      &lt;content-type id=&quot;MyContentType&quot;
+       file-extensions=&quot;dat&quot;&gt;
+         &lt;property name=&quot;file-format&quot; value=&quot;1&quot;/&gt;
+      &lt;/content-type&gt;
+   &lt;/extension&gt; 
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         The value of the class attribute in the describer element must represent an 
+implementor of 
+&lt;samp&gt;org.eclipse.core.runtime.content.IContentDescriber&lt;/samp&gt; or &lt;samp&gt;org.eclipse.core.runtime.content.ITextContentDescriber&lt;/samp&gt;.
+
+&lt;samp&gt;org.eclipse.core.runtime.content.IContentDescription&lt;/samp&gt; objects returned by the &lt;samp&gt;org.eclipse.core.runtime.content&lt;/samp&gt; API
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;The org.eclipse.core.runtime plug-in provides the following content types:&lt;ul&gt;
+&lt;li&gt;org.eclipse.core.runtime.text&lt;/li&gt;
+&lt;li&gt;org.eclipse.core.runtime.xml&lt;/li&gt;
+&lt;/ul&gt;
+Other plug-ins in the platform contribute other content types.
+&lt;/p&gt;
+&lt;p&gt;
+Also, the org.eclipse.core.runtime plug-in provides ready-to-use implementations of content describers:&lt;ul&gt;
+&lt;li&gt;org.eclipse.core.runtime.content.XMLRootElementContentDescriber2&lt;/li&gt;
+&lt;li&gt;org.eclipse.core.runtime.content.BinarySignatureDescriber&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2004, 2019 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies 
+this distribution, and is available at 
+&lt;a 
+href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.eclipse.core.contenttype; singleton:=true
+Bundle-Version: 3.8.100.qualifier
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.equinox.preferences;bundle-version="[3.2.0,4.0.0)",
+ org.eclipse.equinox.registry;bundle-version="[3.2.0,4.0.0)",
+ org.eclipse.equinox.common;bundle-version="[3.13.0,4.0.0)"
+Export-Package: org.eclipse.core.internal.content;x-internal:=true,
+ org.eclipse.core.runtime.content
+Bundle-ActivationPolicy: lazy
+Import-Package: javax.xml.parsers,
+ org.eclipse.osgi.service.debug,
+ org.eclipse.osgi.util;version="1.0.0",
+ org.osgi.framework,
+ org.osgi.util.tracker,
+ org.xml.sax,
+ org.xml.sax.ext,
+ org.xml.sax.helpers
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.eclipse.core.contenttype
+Service-Component: OSGI-INF/contenttypemanager.xml

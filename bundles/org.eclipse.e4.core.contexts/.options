@@ -1,0 +1,6 @@
+# Turn on debugging for the eclipse contexts
+org.eclipse.e4.core.contexts/debug=false
+# Show names that changed
+org.eclipse.e4.core.contexts/debug/names=false
+# Debug listeners
+org.eclipse.e4.core.contexts/debug/listeners=false

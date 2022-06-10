@@ -1,0 +1,4 @@
+# To force a version qualifier update add the bug here
+Bug 403352 - Update all parent versions to match our build stream
+Bug 493109: Build failed due to qualifier heuristics on core.runtime.feature
+Bug 547066 - IBuild I20190507-1800 failed due to unresolved project dependencies.

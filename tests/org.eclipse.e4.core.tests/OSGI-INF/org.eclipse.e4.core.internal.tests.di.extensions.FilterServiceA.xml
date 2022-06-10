@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.e4.core.internal.tests.di.extensions.FilterServiceA">
+   <property name="filtervalue" value="Test"/>
+   <property name="service.ranking" type="Integer" value="1"/>
+   <service>
+      <provide interface="org.eclipse.e4.core.internal.tests.di.extensions.TestService"/>
+   </service>
+   <implementation class="org.eclipse.e4.core.internal.tests.di.extensions.FilterServiceA"/>
+</scr:component>

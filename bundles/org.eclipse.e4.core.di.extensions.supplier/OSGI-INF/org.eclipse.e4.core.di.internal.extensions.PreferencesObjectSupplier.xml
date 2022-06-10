@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" deactivate="removeAllListeners" immediate="true" name="org.eclipse.e4.core.di.internal.extensions.PreferencesObjectSupplier">
+   <property name="dependency.injection.annotation" value="org.eclipse.e4.core.di.extensions.Preference"/>
+   <property name="event.topics" value="org/eclipse/e4/core/contexts/IEclipseContext/DISPOSE"/>
+   <service>
+      <provide interface="org.eclipse.e4.core.di.suppliers.ExtendedObjectSupplier"/>
+      <provide interface="org.osgi.service.event.EventHandler"/>
+   </service>
+   <reference bind="setPreferencesService" cardinality="1..1" interface="org.eclipse.core.runtime.preferences.IPreferencesService" name="PreferencesService" policy="static"/>
+   <implementation class="org.eclipse.e4.core.di.internal.extensions.PreferencesObjectSupplier"/>
+</scr:component>

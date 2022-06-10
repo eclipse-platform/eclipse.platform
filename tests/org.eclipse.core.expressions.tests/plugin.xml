@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            namespace="org.eclipse.core.internal.expressions.tests"
+            properties="simple, overridden, ordering, chainOrdering"
+            type="org.eclipse.core.internal.expressions.tests.A"
+            class="org.eclipse.core.internal.expressions.tests.A_TypeExtender"
+            id="org.eclipse.core.internal.expressions.tests.A_TypeExtender">
+      </propertyTester>
+      <propertyTester
+            namespace="org.eclipse.core.internal.expressions.tests"
+            properties="chaining, chainOrdering"
+            type="org.eclipse.core.internal.expressions.tests.A"
+            class="org.eclipse.core.internal.expressions.tests.A_TypeExtender2"
+            id="org.eclipse.core.internal.expressions.tests.A_TypeExtender2">
+      </propertyTester>
+      <propertyTester
+            namespace="org.eclipse.core.internal.expressions.tests"
+            properties="overridden"
+            type="org.eclipse.core.internal.expressions.tests.B"
+            class="org.eclipse.core.internal.expressions.tests.B_TypeExtender"
+            id="org.eclipse.core.internal.expressions.tests.B_TypeExtender">
+      </propertyTester>
+      <propertyTester
+            namespace="org.eclipse.core.internal.expressions.tests"
+            properties="ordering"
+            type="org.eclipse.core.internal.expressions.tests.I"
+            class="org.eclipse.core.internal.expressions.tests.I_TypeExtender"
+            id="org.eclipse.core.internal.expressions.tests.I_TypeExtender">
+      </propertyTester>
+      
+      <propertyTester
+            namespace="org.eclipse.core.internal.expressions.tests2"
+            properties="differentNamespace"
+            type="org.eclipse.core.internal.expressions.tests.A"
+            class="org.eclipse.core.internal.expressions.tests.A_TypeExtender3"
+            id="org.eclipse.core.internal.expressions.tests.A_TypeExtender">
+      </propertyTester>
+   </extension>
+
+   <extension point="org.eclipse.core.runtime.adapters">
+		<factory 
+            class="org.eclipse.core.internal.expressions.tests.TestAdapterFactory" 
+            adaptableType="org.eclipse.core.internal.expressions.tests.Adaptee">
+            <adapter type="org.eclipse.core.internal.expressions.tests.Adapter"/>
+		</factory>
+		<factory
+			adaptableType="org.eclipse.core.internal.expressions.tests.ExpressionTests$CollectionWrapper"
+			class="org.eclipse.core.internal.expressions.tests.CollectionAdapterFactory">
+			<adapter type="org.eclipse.core.expressions.IIterable"/>
+			<adapter type="org.eclipse.core.expressions.ICountable"/>
+		</factory>
+   </extension>
+   
+   <extension-point id="testParticipants" name="%testParticipant" schema="schema/testParticipants.exsd"/>
+   
+	<extension point="org.eclipse.core.expressions.tests.testParticipants">
+	  <testParticipant id="test1">
+		<enablement>
+			<and>
+	            <and/> 
+	            <or/>
+	            <not><count value="1"/></not>
+	            <instanceof value="org.eclipse.core.expressions.Expression"/>
+	            <test property="namespace.isDefault"/>
+	            <systemTest property="isDefault" value="xx"/>
+	            <equals value= "string"/>
+				<count value="1"/>
+				<with variable="eclipse"/>
+				<resolve variable="eclipse"/>
+			    <adapt type="org.eclipse.core.expressions.Expression"/>            
+	            <iterate/> 
+			</and>
+			<or>
+	            <and/> 
+	            <or/>
+	            <not><count value="1"/></not>
+	            <instanceof value="org.eclipse.core.expressions.Expression"/>
+	            <test property="namespace.isDefault"/>
+	            <systemTest property="isDefault" value="xx"/>
+	            <equals value= "string"/>
+				<count value="1"/>
+				<with variable="eclipse"/>
+				<resolve variable="eclipse"/>
+			    <adapt type="org.eclipse.core.expressions.Expression"/>            
+	            <iterate/> 
+			</or> 
+			<not><count value="1"/></not>
+            <instanceof value="org.eclipse.core.expressions.Expression"/>
+            <test property="namespace.isDefault"/>
+            <test property="namespace.isDefault" value="default"/>
+            <test property="namespace.isDefault" args="'arg1', 'arg2'" value="default"/>
+            <test property="namespace.isDefault" forcePluginActivation="true"/>
+	        <systemTest property="isDefault" value="xx"/>
+	        <equals value= "string"/>
+            <count value="1"/>
+            <with variable= "element">
+	            <and/> 
+	            <or/>
+	            <not><count value="1"/></not>
+	            <instanceof value="org.eclipse.core.expressions.Expression"/>
+	            <test property="namespace.isDefault"/>
+	            <systemTest property="isDefault" value="xx"/>
+	            <equals value= "string"/>
+				<count value="1"/>
+				<with variable="eclipse"/>
+				<resolve variable="eclipse"/>
+			    <adapt type="org.eclipse.core.expressions.Expression"/>            
+	            <iterate/> 
+            </with>
+            <resolve variable="eclipse">
+	            <and/> 
+	            <or/>
+	            <not><count value="1"/></not>
+	            <instanceof value="org.eclipse.core.expressions.Expression"/>
+	            <test property="namespace.isDefault"/>
+	            <systemTest property="isDefault" value="xx"/>
+	            <equals value= "string"/>
+				<count value="1"/>
+				<with variable="eclipse"/>
+				<resolve variable="eclipse"/>
+			    <adapt type="org.eclipse.core.expressions.Expression"/>            
+	            <iterate/> 
+            </resolve>
+            <resolve variable="eclipse" args="1, true"/>
+            <adapt type="org.eclipse.core.expressions.Expression">
+	            <and/> 
+	            <or/>
+	            <not><count value="1"/></not>
+	            <instanceof value="org.eclipse.core.expressions.Expression"/>
+	            <test property="namespace.isDefault"/>
+	            <systemTest property="isDefault" value="xx"/>
+	            <equals value= "string"/>
+				<count value="1"/>
+				<with variable="eclipse"/>
+				<resolve variable="eclipse"/>
+			    <adapt type="org.eclipse.core.expressions.Expression"/>            
+	            <iterate/> 
+            </adapt>
+            <iterate>
+	            <and/> 
+	            <or/>
+	            <not><count value="1"/></not>
+	            <instanceof value="org.eclipse.core.expressions.Expression"/>
+	            <test property="namespace.isDefault"/>
+	            <systemTest property="isDefault" value="xx"/>
+	            <equals value= "string"/>
+				<count value="1"/>
+				<with variable="eclipse"/>
+				<resolve variable="eclipse"/>
+			    <adapt type="org.eclipse.core.expressions.Expression"/>            
+	            <iterate/> 
+            </iterate>
+      </enablement>
+     </testParticipant>
+    </extension>
+    
+	<extension point="org.eclipse.core.expressions.tests.testParticipants">
+	  <testParticipant id="test2">
+		<enablement>
+            <test property="namespace.isDefault" forcePluginActivation="true"/>
+            <test property="namespace.isDefault" forcePluginActivation="false"/>
+            <test property="namespace.isDefault"/>
+      	</enablement>
+      </testParticipant>
+   	</extension>
+
+	<extension point="org.eclipse.core.expressions.tests.testParticipants">
+	  <testParticipant id="test3">
+		<enablement>
+			<and>
+            	<test property="org.eclipse.core.runtime.isBundleInstalled" args="org.eclipse.core.expressions"/>
+            	<not>
+            		<test property="org.eclipse.core.runtime.isBundleInstalled" args="org.eclipse.core.expressions.invalid.bundle.name"/>
+            	</not>
+            	<not>
+            		<test property="org.eclipse.core.runtime.product" value="org.eclipse.core.expressions.invalid.product.name"/>
+            	</not>
+            </and>
+      	</enablement>
+      </testParticipant>
+   	</extension>
+ <extension
+       point="org.eclipse.core.expressions.definitions">
+    <definition
+          id="org.eclipse.core.expressions.tests.activeProblemsView">
+       <with
+             variable="activePartId">
+          <equals
+                value="org.eclipse.ui.views.ProblemsView">
+          </equals>
+       </with>
+    </definition>
+    <definition
+          id="org.eclipse.core.expressions.tests.expressionSelection">
+       <iterate ifEmpty="false">
+          <instanceof
+                value="org.eclipse.core.expressions.Expression">
+          </instanceof>
+       </iterate>
+    </definition>
+ </extension>
+ <extension
+       point="org.eclipse.core.expressions.tests.testParticipants">
+    <testParticipant
+          id="refTest1">
+       <enablement>
+          <reference
+                definitionId="org.eclipse.core.expressions.tests.activeProblemsView">
+          </reference>
+       </enablement>
+    </testParticipant>
+    <testParticipant
+          id="refTest2">
+       <enablement>
+          <and>
+          <reference
+                definitionId="org.eclipse.core.expressions.tests.activeProblemsView">
+          </reference>
+          <reference
+                definitionId="org.eclipse.core.expressions.tests.expressionSelection">
+          </reference>
+          </and>
+       </enablement>
+    </testParticipant>
+ </extension>
+   	 
+</plugin>

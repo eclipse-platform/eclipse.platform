@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.eclipse.e4.core.di.internal.extensions.ServiceSupplier">
+   <property name="dependency.injection.annotation" type="String" value="org.eclipse.e4.core.di.extensions.Service"/>
+   <property name="event.topics" value="org/eclipse/e4/core/contexts/IEclipseContext/DISPOSE"/>
+   <service>
+      <provide interface="org.eclipse.e4.core.di.suppliers.ExtendedObjectSupplier"/>
+      <provide interface="org.osgi.service.event.EventHandler"/>
+   </service>
+   <reference bind="setLogger" cardinality="0..1" interface="org.osgi.service.log.LoggerFactory" name="Logger" policy="dynamic" unbind="unsetLogger"/>
+   <implementation class="org.eclipse.e4.core.di.internal.extensions.ServiceSupplier"/>
+</scr:component>
