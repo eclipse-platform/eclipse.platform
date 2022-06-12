@@ -307,7 +307,7 @@ public class ViewPaneRenderingMgr implements IDebugEventSetListener {
 			element.setAttribute(RENDERING_ID, rendering.getRenderingId());
 			rootElement.appendChild(element);
 		}
-		return LaunchManager.serializeDocument(document, System.lineSeparator());
+		return LaunchManager.serializeDocument(document);
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2021 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -528,6 +528,20 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	/**
 	 * Serializes a XML document into a string - encoded in UTF8 format, with
 	 * platform line separators.
+	 *
+	 * @param doc document to serialize
+	 * @return the document as a string
+	 * @throws TransformerException if an unrecoverable error occurs during the
+	 *             serialization
+	 * @throws IOException if I/O error occurs
+	 */
+	public static String serializeDocument(Document doc) throws TransformerException, IOException {
+		return serializeDocument(doc, System.lineSeparator());
+	}
+
+	/**
+	 * Serializes a XML document into a string - encoded in UTF8 format, with
+	 * specified line separator.
 	 *
 	 * @param doc document to serialize
 	 * @param lineDelimiter the new line separator to use

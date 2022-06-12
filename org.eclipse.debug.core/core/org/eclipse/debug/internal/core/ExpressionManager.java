@@ -241,7 +241,7 @@ public class ExpressionManager extends PlatformObject implements IExpressionMana
 				rootElement.appendChild(element);
 			}
 		}
-		return LaunchManager.serializeDocument(document, System.lineSeparator());
+		return LaunchManager.serializeDocument(document);
 	}
 
 	@Override

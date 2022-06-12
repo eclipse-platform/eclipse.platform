@@ -1280,7 +1280,7 @@ public class DebugPlugin extends Plugin {
 	 */
 	public static String serializeDocument(Document document) throws CoreException {
 		try {
-			return LaunchManager.serializeDocument(document, System.lineSeparator());
+			return LaunchManager.serializeDocument(document);
 		} catch (TransformerException e) {
 			abort("Unable to serialize XML document.", e);  //$NON-NLS-1$
 		} catch (IOException e) {
