@@ -34,6 +34,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -41,8 +42,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -271,6 +275,22 @@ public class LaunchConfigurationWorkingCopy extends LaunchConfiguration implemen
 		}
 	}
 
+	private static String getLineDelimiterPreference(IFile file) {
+		IScopeContext[] scopeContext;
+		if (file != null && file.getProject() != null) {
+			// project preference
+			scopeContext = new IScopeContext[] {
+					new ProjectScope(file.getProject()) };
+			String lineDelimiter = Platform.getPreferencesService().getString(Platform.PI_RUNTIME, Platform.PREF_LINE_SEPARATOR, null, scopeContext);
+			if (lineDelimiter != null) {
+				return lineDelimiter;
+			}
+		}
+		// workspace preference
+		scopeContext = new IScopeContext[] { InstanceScope.INSTANCE };
+		return Platform.getPreferencesService().getString(Platform.PI_RUNTIME, Platform.PREF_LINE_SEPARATOR, System.lineSeparator(), scopeContext);
+	}
+
 	/**
 	 * Writes the new configuration information to a file.
 	 * @param monitor the {@link IProgressMonitor}
@@ -278,9 +298,10 @@ public class LaunchConfigurationWorkingCopy extends LaunchConfiguration implemen
 	 * @exception CoreException if writing the file fails
 	 */
 	protected void writeNewFile(IProgressMonitor monitor) throws CoreException {
+		String lineDelimeter = getLineDelimiterPreference(getFile());
 		String xml = null;
 		try {
-			xml = getInfo().getAsXML();
+			xml = getInfo().getAsXML(lineDelimeter);
 		} catch (Exception e) {
 			throw new DebugException(
 					new Status(

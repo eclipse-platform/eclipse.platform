@@ -51,12 +51,7 @@ import java.util.StringTokenizer;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -113,6 +108,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSOutput;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -512,6 +511,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	 */
 	public static final IPath LOCAL_LAUNCH_CONFIGURATION_CONTAINER_PATH =
 		DebugPlugin.getDefault().getStateLocation().append(".launches"); //$NON-NLS-1$
+
 	/**
 	 * Returns a Document that can be used to build a DOM tree
 	 * @return the Document
@@ -530,20 +530,27 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	 * platform line separators.
 	 *
 	 * @param doc document to serialize
+	 * @param lineDelimiter the new line separator to use
 	 * @return the document as a string
 	 * @throws TransformerException if an unrecoverable error occurs during the
 	 *             serialization
 	 * @throws IOException if I/O error occurs
 	 */
-	public static String serializeDocument(Document doc) throws TransformerException, IOException {
+	public static String serializeDocument(Document doc, String lineDelimiter) throws TransformerException, IOException {
 		ByteArrayOutputStream s = new ByteArrayOutputStream();
-		TransformerFactory factory = TransformerFactory.newInstance();
-		Transformer transformer = factory.newTransformer();
-		transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
-		DOMSource source = new DOMSource(doc);
-		StreamResult outputTarget = new StreamResult(s);
-		transformer.transform(source, outputTarget);
+		try {
+			final DOMImplementationLS domRegistry = (DOMImplementationLS) DOMImplementationRegistry.newInstance().getDOMImplementation("LS"); //$NON-NLS-1$
+			final LSSerializer serializer = domRegistry.createLSSerializer();
+			serializer.getDomConfig().setParameter("format-pretty-print", true); //$NON-NLS-1$
+			serializer.getDomConfig().setParameter("http://www.oracle.com/xml/jaxp/properties/isStandalone", true); //$NON-NLS-1$
+			serializer.setNewLine(lineDelimiter);
+			final LSOutput destination = domRegistry.createLSOutput();
+			destination.setEncoding(StandardCharsets.UTF_8.name());
+			destination.setByteStream(s);
+			serializer.write(doc, destination);
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
+			throw new TransformerException("Nested exception occurred!", e); //$NON-NLS-1$
+		}
 		return s.toString(StandardCharsets.UTF_8);
 	}
 
