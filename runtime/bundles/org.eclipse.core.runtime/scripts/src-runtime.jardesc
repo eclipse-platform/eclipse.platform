@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jardesc>
+	<jar path="C:/IBM/Equinox/workspaces/Equinox/org.eclipse.core.runtime/runtime.jar"/>
+	<options compress="true"
+		descriptionLocation="/org.eclipse.core.runtime/scripts/src-runtime.jardesc"
+		exportErrors="true" exportWarnings="true" logErrors="true"
+		logWarnings="true" overwrite="false" saveDescription="true" useSourceFolders="false"/>
+	<manifest generateManifest="false"
+		manifestLocation="/org.eclipse.core.runtime/src-runtime/META-INF/MANIFEST.MF"
+		manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="false">
+		<sealing sealJar="false"><packagesToSeal/><packagesToUnSeal/></sealing>
+	</manifest>
+	<selectedElements exportClassFiles="true" exportJavaFiles="false">
+		<javaElement handleIdentifier="=org.eclipse.core.runtime/src-runtime"/>
+	</selectedElements>
+</jardesc>

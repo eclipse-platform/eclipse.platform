@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" name="org.eclipse.e4.core.internal.tests.contexts.inject.TestServiceController">
+   <service>
+      <provide interface="org.eclipse.e4.core.internal.tests.contexts.inject.TestServiceController"/>
+   </service>
+   <implementation class="org.eclipse.e4.core.internal.tests.contexts.inject.TestServiceController"/>
+</scr:component>

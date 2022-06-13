@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-Version: 3.25.100.qualifier
+Bundle-SymbolicName: org.eclipse.core.runtime; singleton:=true
+Bundle-Vendor: %providerName
+Bundle-Activator: org.eclipse.core.internal.runtime.PlatformActivator
+Bundle-Localization: plugin
+Export-Package: org.eclipse.core.internal.preferences.legacy;x-internal:=true,
+ org.eclipse.core.internal.runtime;x-internal:=true,
+ org.eclipse.core.runtime;version="3.7.0"
+Require-Bundle: org.eclipse.osgi;bundle-version="[3.17.0,4.0.0)";visibility:=reexport,
+ org.eclipse.equinox.common;bundle-version="3.16.0";visibility:=reexport,
+ org.eclipse.core.jobs;bundle-version="[3.13.0,4.0.0)";visibility:=reexport,
+ org.eclipse.equinox.registry;bundle-version="[3.11.0,4.0.0)";visibility:=reexport,
+ org.eclipse.equinox.preferences;bundle-version="[3.10.0,4.0.0)";visibility:=reexport,
+ org.eclipse.core.contenttype;bundle-version="[3.8.0,4.0.0)";visibility:=reexport,
+ org.eclipse.equinox.app;bundle-version="1.6.0";visibility:=reexport
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+DynamicImport-Package: org.eclipse.core.internal.runtime.auth
+Automatic-Module-Name: org.eclipse.core.runtime

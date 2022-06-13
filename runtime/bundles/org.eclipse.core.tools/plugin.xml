@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension-point id="metadataDumpers" name="Metadata Dumpers"/>
+   
+<!-- Metadata dumpers -->
+   <extension point="org.eclipse.core.tools.metadataDumpers">
+      <dumper file-name=".state" class="org.eclipse.core.tools.metadata.StateDumper"/>
+   </extension>
+   
+<!-- The DumpTool headless application -->
+   <extension point="org.eclipse.core.runtime.applications" id="dumptool">
+    <application> 
+      <run class="org.eclipse.core.tools.metadata.DumpTool"/>
+    </application>
+   </extension>   
+   
+
+<!--  Perspectives -->
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Plug-in Dependency"
+            icon="icons/req_plugins_obj.gif"
+            class="org.eclipse.core.tools.runtime.PluginDependencyPerspective"
+            id="org.eclipse.core.tools.runtime.PluginDependencyPerspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Runtime Spy"
+            icon="icons/zoom.gif"
+            class="org.eclipse.core.tools.runtime.RuntimeSpyPerspective"
+            id="org.eclipse.core.tools.runtime.RuntimeSpyPerspective">
+      </perspective>
+   </extension>
+<!--  Metadata Perspective -->
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Metadata"
+            icon="icons/spy.gif"
+            class="org.eclipse.core.tools.metadata.MetadataPerspective"
+            id="org.eclipse.core.tools.metadata.MetadataPerspective">
+      </perspective>
+   </extension>
+<!-- Metadata Views  -->
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Metadata Tools"
+            id="org.eclipse.core.tools.metadata">
+      </category>
+      <view
+            name="Dump Contents"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.metadata"
+            class="org.eclipse.core.tools.metadata.DumpContentsView"
+            id="org.eclipse.core.tools.metadata.DumpContentsView">
+      </view>
+      <view
+            name="Dump Summary"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.metadata"
+            class="org.eclipse.core.tools.metadata.DumpSummaryView"
+            id="org.eclipse.core.tools.metadata.DumpSummaryView">
+      </view>
+      <view
+            name="Metadata Spy"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.metadata"
+            class="org.eclipse.core.tools.metadata.MetadataTreeView"
+            id="org.eclipse.core.tools.metadata.MetadataTreeView">
+      </view>
+   </extension>   
+<!-- Runtime Views -->
+   <extension point="org.eclipse.ui.views">
+      <category name="Runtime Tools" id="org.eclipse.core.tools.runtime"/>
+      <view
+            name="Plug-in Dependency Spy"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.runtime"
+            class="org.eclipse.core.tools.runtime.PluginDependencyView"
+            id="org.eclipse.core.tools.runtime.PluginDependencyView"/>
+      <view
+            name="Plug-in List Spy"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.runtime"
+            class="org.eclipse.core.tools.runtime.PluginListView"
+            id="org.eclipse.core.tools.runtime.PluginListView"/>
+      <view
+            name="Preferences Spy"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.runtime"
+            class="org.eclipse.core.tools.runtime.EclipsePreferencesView"
+            id="org.eclipse.core.tools.runtime.EclipsePreferencesView"/>
+      <view
+            name="Preference Stats Spy"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.runtime"
+            class="org.eclipse.core.tools.runtime.PreferenceStatsView"
+            id="org.eclipse.core.tools.runtime.PreferenceStatsView"/>
+      <view
+            name="Content Types"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.runtime"
+            class="org.eclipse.core.tools.runtime.ContentTypeView"
+            id="org.eclipse.core.tools.runtime.ContentTypeView"/>            
+      <view
+            name="Event Spy"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.runtime"
+            class="org.eclipse.core.tools.runtime.EventsView"
+            id="org.eclipse.core.tools.runtime.EventsView"/>
+   </extension>
+   	<extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.eclipse.core.tools.nls.testing.contribution"
+            objectClass="org.eclipse.jdt.core.ICompilationUnit">
+         <action
+               label="Convert to NLS Messages"
+               class="org.eclipse.core.tools.nls.ConvertMessageBundleAction"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.eclipse.core.tools.nls.ConvertMessageBundleAction">
+         </action>
+         <action
+               label="Remove Unused Messages"
+               class="org.eclipse.core.tools.nls.RemoveUnusedMessagesAction"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.eclipse.core.tools.nls.RemoveUnusedMessagesAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="org.eclipse.core.tools.contribution3"
+            objectClass="org.eclipse.core.resources.IResource">
+         <action
+               label="Find Unreferenced Files"
+               class="org.eclipse.core.tools.search.FindUnreferencedFilesAction"
+               menubarPath="additions"
+               enablesFor="*"
+               id="org.eclipse.core.tools.search.FindUnreferencedFiles">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+    	id="UnusedMembersResultPage"
+        point="org.eclipse.search.searchResultViewPages">
+		<viewPage
+			id="org.eclipse.core.tools.UnusedMembersResultPage"
+			searchResultClass="org.eclipse.core.tools.search.FindUnusedSearchResult"
+			class="org.eclipse.core.tools.search.FindUnusedSearchResultPage">
+		</viewPage>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.eclipse.jdt.ui.source.menu">
+         <command
+               commandId="org.eclipse.core.tools.command.findunusedmembers"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <and>
+                  <with
+                        variable="selection">
+                     <iterate
+                           operator="or">
+                        <instanceof
+                              value="org.eclipse.jdt.core.IJavaElement">
+                        </instanceof>
+                     </iterate>
+                  </with>
+               </and>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.core.tools.search.FindUnusedMemberHandler"
+            id="org.eclipse.core.tools.command.findunusedmembers"
+            name="Find unused members">
+      </command>
+   </extension>  
+   
+</plugin>

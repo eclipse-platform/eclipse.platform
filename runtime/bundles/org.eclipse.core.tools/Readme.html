@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>Core Tools Readme</title>
+</head>
+
+<body>
+<h2 align="center">Core Tools</h2>
+<h3>Introduction</h3>
+
+  
+<p>Core Tools is a set of views and perspectives useful for people writing Eclipse 
+  plugins or just wanting to know what is going on under the covers. Roughly speaking 
+  there are three kinds of tools:</p>
+<dl> 
+  <dt><b>Runtime tools</b></dt>
+  <dd>The runtime tools expose the internal behaviour of the Platform runtime 
+    as well as certain aspects of plugins (activation ordering, classes loaded, 
+    relation to other plugins, ...) and classes (load order, load nesting, ...). 
+    Plugin developers can use this information to ensure that their plugins/classes 
+    are being activated/loaded as expected, and that they are not taking more 
+    time/space than is warranted.</dd>
+  <dt><b>Resources tools</b></dt>
+  <dd>The resources tools expose the behaviour/performance of installed builders 
+    and listeners as well as the structure of the workspace, resources and resource 
+    deltas.</dd>
+  <dt><b>Metadata tools</b></dt>
+  <dd>The metadata tools enable users to investigate the metadata files used in 
+    Eclipse. Point these tools at a metadata location and browse...</dd>
+</dl>
+
+  
+<h3>Installing and Running Core Tools</h3> 
+
+<h4>Installing Core Tools</h4>
+<p>org.eclipse.core.tools are not part of a build anymore. To install the plug-in, select it and 
+   export it as plug-in. Choose Install into host. Repository.</p>
+</ol>
+<h4>Running Core Tools</h4>
+<p>After installing the Core Tools, you must enable them. The tools are enabled 
+  using Eclipse's debug options mechanism. To run Eclipse in &quot;debug&quot; 
+  mode, use the -debug command line option. If nothing else is said, Eclipse will 
+  look for the file &lt;eclipse install&gt;/.options. This is a Java properties 
+  file detailing which debug options should be enabled etc. See the Eclipse runtime 
+  documentation for more details. </p>
+<p>The org.eclipse.core.tools plugin contains an example .options file which enables 
+  all options (except class load trace filters). To run Eclipse with the Core 
+  Tools, either copy this file to your &lt;eclipse install&gt; directory or identify 
+  it on the command line after -debug. For example, </p>
+<pre>    eclipse -debug file:d:/.options</pre>
+<p>Note that not all tools require enablement. You need only enable the debug 
+  options required by the tools you choose to use. See the tool descriptions for 
+  details.</p>
+<p>If you are using PDE's runtime workbench then you can enable tracing and set 
+  the appropriate options for the target workspace. See PDE Guide -&gt; Running 
+  a plug-in -&gt; Running with tracing found in the standard Eclipse documentation 
+  set for more information.</p>
+<p>Once you are running with the Core Tools installed, there are a number of new 
+  perspectives and views. These are accessed by opening a new perspective or using 
+  the Window-&gt;Show View functions in the workbench.</p>
+<h3>Runtime Tools</h3> 
+
+ 
+<p>The runtime tooling contributes a Runtime Spy and Plugin Dependency perspectives. 
+  Note that in some cases the views can be combined or used in other contexts. 
+  The individual views are accessed via the Workspace-&gt;Show View-&gt;Runtime 
+  Tools menu.</p>
+<h4>Runtime Spy Perspective</h4>
+<p>The Runtime Spy perspective shows information about the plugin activation, 
+  class loading, resource bundles etc. It is extremely useful when trying to track 
+  down why plugins are being activated or classes loaded as well as getting a 
+  handle on how much code is loaded. This tool contains four views: </p>
+<dl> 
+  <dt><b>Activated Plugins</b> </dt>
+  <dd>This is the list of plugins which have been activated since the start of 
+    this Eclipse session. Included is total code footprint, startup time, activation 
+    order as well as the number of classes loaded for each plugin.<br>
+    When plugins are activated a snapshot of the execution stack is taken. This 
+    stack trace can be viewed by selecting plugin and clicking on the stack trace 
+    'T' button on the title bar or in the context menu.<br>
+    The classes loaded by the selected plugins is shown in the Loaded Classes 
+    view when the &quot;Classes&quot; button ('C') on the menu bar or context 
+    menu is used.<br>
+    Note that this list is not automatically updated when a new plugin is activated 
+    so users should use the refresh button on the view title bar or in the context 
+    menu.</dd>
+  <dt><b>Loaded Classes</b> </dt>
+  <dd>This view is populated with classes loaded by plugins selected in the Activated 
+    Plugins view. For each class data such as load order and memory footprint 
+    are listed. If the appropriate filtering is enabled when the platform is started 
+    (see below), stack snapshots taken at class loading time are available by 
+    selecting a class and using the Stack Trace menu entry or title bar button.</dd>
+  <dt><b>Plugin Datasheet</b> </dt>
+  <dd>Shows a summary of the currently selected plugin.</dd>
+  <dt><b>Stack Trace</b> </dt>
+  <dd>Shows a snapshot of the execution stack at the time of some event (e.g., 
+    plugin activation, class loading).</dd>
+</dl>
+<p>The following debug options control what data is available in Runtime Spy perspective 
+  views.</p>
+<dl>
+  <dt>org.eclipse.osgi/monitor/classes=&lt;boolean&gt;</dt>
+  <dd>Whether or not to monitor which classes are loaded.</dd>
+  <dt>org.eclipse.osgi/monitor/activation=&lt;boolean&gt;</dt>
+  <dd>Whether or not to monitor which plugins are activated.</dd>
+  <dt>org.eclipse.osgi/monitor/resources=&lt;boolean&gt;</dt>
+  <dd>Whether or not to monitor which resource bundles (i.e., *.properties files 
+    ) are loaded</dd>
+  <dt>org.eclipse.osgi/trace/classLoading=&lt;boolean&gt;</dt>
+  <dd>Whether or not to snapshot the execution stack when a class is loaded</dd>
+  <dt>org.eclipse.osgi/trace/filename=&lt;file location&gt;</dt>
+  <dd>The file in which execution traces are written</dd>
+  <dt>org.eclipse.osgi/trace/filters=&lt;properties file&gt;</dt>
+  <dd>The location of a Java properties file identifying the classes which should 
+    be traced (if trace/classLoading is true). The File format is: <br>
+    plugins=&lt;comma separated list of plugins whose classes to trace&gt;<br>
+    packages=&lt;comma separated list of package prefixes of classes to trace&gt;<br>
+    Note that there may be many 'plugins' and 'packages' lines in one file.</dd>
+  <dt>org.eclipse.osgi/trace/activation=&lt;boolean&gt;</dt>
+  <dd>Whether or not to snapshot the execution stack when a plugin is activated.<br>
+  </dd>
+</dl>
+<h4>Plug-In Dependency Perspective</h4>
+<p>This perspective includes 2 views: a plug-in list view listing all the plug-ins 
+  available in the workspace and a plug-in dependency view. The plug-in ids in 
+  the list view are given in alphabetical order (according to their plug-in id). 
+  Select a plug-in in the list view and the dependency view is updated to show 
+  all plug-ins that the selected plug-in requires as well as all plug-ins that 
+  require this selected plug-in. This information is currently only presented 
+  in a text format.</p>
+<h3>Resources Tools</h3>
+<p>The Resources tooling consists of a number of views described below. These 
+  are accessed via the Workspace-&gt;Show View-&gt;Resources Tools menu and can 
+  be used independently or together to as desired. </p>
+<h4>Resource Spy view</h4>
+This view shows detailed public/internal information about the resource currently 
+selected in any Eclipse view (e.g. Resource Navigator, Package Explorer, etc). 
+It shows details about: flags, markers, synchronization information, session/persistent 
+properties, content type). 
+<h4>Delta Spy View</h4>
+The Delta Spy listens for any resource changes, echoing the resource delta for 
+each change event listened. For each affected resource (and its child resources), 
+it shows the following information: 
+<ul>
+  <li>the resource's full path;</li>
+  <li>the kind of change (between brackets): addition (+), phantom addition (&gt;), 
+    removal (-), phantom removal (&lt;), change (*), no change (~), and unknown 
+    (?);</li>
+  <li>the change flags (between curly braces): CONTENT, MOVED_FROM, MOVED_TO, 
+    OPEN, TYPE, SYNC, MARKERS, REPLACED, DESCRIPTION;</li>
+  <li>in the case it is a marker change, it will show (between brackets) for each 
+    marker changed: 
+    <ul>
+      <li>the kind of marker change: addition (+), removal (-), change (*);</li>
+      <li>the marker's id;</li>
+    </ul>
+  </li>
+  <li>if it is a team private change, a "(team private)" tag.</li>
+</ul>
+<h4>Graphical Delta Spy View</h4>
+<p>The Graphical Delta Spy is similar to the Delta Spy describe above, but it 
+  shows the resource delta tree using a tree widget instead of indented text. 
+  This view can only show the resource delta tree for the last resource change 
+  event only. However, it is easier to visualize a resource delta tree due to 
+  its graphical nature.</p>
+<p>The Graphical Delta Spy view provides a pull-down menu that allows the user 
+  to select which types of events to listen to (PRE_BUILD, POST_BUILD, POST_CHANGE) 
+  and whether phantom resources should be taken into account..</p>
+<h4>Builders/Listeners Spy</h4>
+<p>The Builders/Listeners Spy view displays statistical information about the 
+  behaviour and performance of installed builders and resource change listeners. 
+  The information includes:</p>
+<ul>
+  <li>the name of builder/listener (listeners do not technically have names so 
+    their toString() is used)</li>
+  <li>the project related to the builder (blank for listeners)</li>
+  <li>the number of events (builds or resource changed) processed by the builder/listener</li>
+  <li>the amount of time spent processing these events</li>
+  <li>the number of core exceptions encountered</li>
+</ul>
+<p>For more informatioin on listeners see the Eclipse article &quot;How You've 
+  Changed! Responding to resource changes in the Eclipse workspace&quot; by John 
+  Arthorne (OTI) August 23, 2002. Documentation on builders can be found in the 
+  Platform Plug-in Developer Guide included with the Eclipse documentation.</p>
+<p>The following debug options control what data is available in Builder/Listener 
+  Spy view.</p>
+<dl> 
+  <dt>org.eclipse.core.resources/monitor/builders=&lt;boolean&gt;</dt>
+  <dd>Whether or not to monitor which builders.</dd>
+  <dt>org.eclipse.core.resources/monitor/listeners=&lt;boolean&gt;</dt>
+  <dd>Whether or not to monitor which listeners.</dd>
+</dl>
+<h3>Metadata Tools</h3>
+<p>The metadata tooling contributes a Metadata perspective. The individual views 
+  are not particularly useful on their own but are accessed via the Window-&gt;Show 
+  View-&gt;Metadata Tools menu.</p>
+<h4>The Metadata Perspective</h4>
+This perspective contains three views which allows the user to select a directory, 
+browse any metadata found in it and see contents and integrity status of supported 
+files. 
+<dl> 
+  <dt><b>Metadata Spy</b></dt>
+  <dd>This view allows the user to select a given metadata directory and uses 
+    a tree view to show a directory hierarchy containing all known metadata files 
+    as leaf nodes. If the user double-clicks one of these leaf nodes, the Dump 
+    Contents view will be opened having this file as its current selected file. 
+  </dd>
+  <dt><b>Dump Contents</b></dt>
+  <dd>This view presents to the user the contents of a selected metadata file 
+    in a human-readable format. It provides an action for selecting a new file 
+    to dump. The contents layout will depend on what kind of file is being dumped. 
+    This view has a sub-view called &quot;Dump Summary&quot; that shows whether 
+    the file read was ok or not. </dd>
+  <dt><b>Dump Summary</b></dt>
+  <dd>This view presents to the user the results of a file dumped using the Dump 
+    Contents view. In the case of a error during the dumping process (because 
+    the metadata file being dumped was corrupted), the reason will be shown here, 
+    along with the number of bytes read. This view will only be updated if it 
+    is open when a file is being dumped. </dd>
+</dl>
+<p>Note: the dumping functionality is also available as a headless Eclipse application: 
+  <tt>org.eclipse.core.tools.dumptool</tt>. To run it, you need to pass the file 
+  to be dumped using the <tt>dump.file</tt> system property. For instance:</p>
+<pre>eclipse -application org.eclipse.core.tools.dumptool -vmargs -Ddump.file=d:\eclipse\configuration\org.eclipse.osgi\.state</pre>
+  </body>
+</html>

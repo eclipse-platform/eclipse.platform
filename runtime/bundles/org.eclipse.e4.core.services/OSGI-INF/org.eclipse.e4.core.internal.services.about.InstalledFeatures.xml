@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.e4.core.internal.services.about.InstalledFeatures">
+   <property name="section" value="section.installed.features"/>
+   <service>
+      <provide interface="org.eclipse.e4.core.services.about.ISystemInformation"/>
+   </service>
+   <reference bind="bindBundleProvider" cardinality="0..n" interface="org.eclipse.core.runtime.IBundleGroupProvider" name="BundleProvider" unbind="unbindBundleProvider"/>
+   <implementation class="org.eclipse.e4.core.internal.services.about.InstalledFeatures"/>
+</scr:component>

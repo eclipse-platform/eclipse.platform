@@ -60,5 +60,7 @@
     <module>ant/org.eclipse.ant.tests.ui</module>
     <module>platform/org.eclipse.platform</module>
     <module>platform/org.eclipse.sdk</module>
+    <module>runtime</module>
   </modules>
+
 </project>

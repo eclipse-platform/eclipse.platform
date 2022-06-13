@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Eclipse Core Tests Harness
+Bundle-SymbolicName: org.eclipse.core.tests.harness;singleton:=true
+Bundle-Version: 3.12.300.qualifier
+Bundle-Vendor: Eclipse.org
+Export-Package: org.eclipse.core.tests.harness,
+ org.eclipse.core.tests.session,
+ org.eclipse.core.tests.session.samples
+Require-Bundle: org.junit,
+ org.eclipse.test.performance;resolution:=optional,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Import-Package: javax.xml.parsers,
+ org.w3c.dom,
+ org.xml.sax
+Automatic-Module-Name: org.eclipse.core.tests.harness

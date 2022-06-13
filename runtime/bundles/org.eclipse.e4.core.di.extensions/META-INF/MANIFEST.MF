@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-Vendor: %providerName
+Bundle-SymbolicName: org.eclipse.e4.core.di.extensions;singleton:=true
+Bundle-Version: 0.17.200.qualifier
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: org.eclipse.e4.core.di.extensions;version="0.16.0"
+Bundle-Localization: fragment
+Import-Package: javax.inject;version="1.0.0",
+ org.osgi.framework;version="1.8.0";resolution:=optional
+Automatic-Module-Name: org.eclipse.e4.core.di.extensions

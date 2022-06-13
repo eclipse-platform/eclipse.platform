@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.e4.core.internal.services.MessageFactoryServiceImpl">
+   <service>
+      <provide interface="org.eclipse.e4.core.services.nls.IMessageFactoryService"/>
+   </service>
+   <reference bind="setLogger" cardinality="0..1" interface="org.osgi.service.log.LoggerFactory" name="Logger" policy="dynamic" unbind="unsetLogger"/>
+   <implementation class="org.eclipse.e4.core.internal.services.MessageFactoryServiceImpl"/>
+</scr:component>

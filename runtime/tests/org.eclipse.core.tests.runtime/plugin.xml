@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension
+         id="test-preferences"
+         name="test-preferences"
+         point="org.eclipse.core.runtime.preferences">
+      <!-- TestScope2 is used to test the actual file formats on disk. -->
+      <scope
+            name="test2"
+            class="org.eclipse.core.tests.internal.preferences.TestScope2"/>
+      <!-- -->
+      <scope
+            name="badtest"
+            class="org.eclipse.core.tests.internal.preferences.BadTestScope"/>
+      <scope
+            name="test"
+            storage="org.eclipse.core.tests.internal.preferences.TestNodeStorage"/>
+      <scope
+            name="test3"
+            storage="org.eclipse.core.tests.internal.preferences.TestNodeStorage3"/>
+      <initializer
+            class="org.eclipse.core.tests.internal.preferences.TestInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            class="org.eclipse.core.tests.runtime.TestAdapterFactory"
+            adaptableType="org.eclipse.core.tests.runtime.TestAdaptable">
+         <adapter
+               type="org.eclipse.core.tests.runtime.TestAdapter">
+         </adapter>
+      </factory>
+   </extension>
+   <extension-point id="factoryLoaderTest" name="factoryLoaderTest" schema="schema/factoryLoaderTest.exsd"/>
+   <extension point="org.eclipse.core.runtime.adapters">
+      <factory class="org.eclipse.core.tests.runtime.TestAdapterFactoryLoader" 
+         adaptableType="org.eclipse.core.tests.runtime.TestAdaptable">
+         <adapter type="testAdapter.testUnknown"/>
+      </factory>
+   </extension>
+</plugin>

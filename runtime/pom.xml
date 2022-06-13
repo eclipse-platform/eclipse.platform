@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2012, 2017 Eclipse Foundation and others.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Distribution License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/org/documents/edl-v10.php
+ 
+  Contributors:
+     Igor Fedorenko - initial implementation
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.eclipse</groupId>
+    <artifactId>eclipse-platform-parent</artifactId>
+    <version>4.25.0-SNAPSHOT</version>
+    <relativePath>../eclipse-platform-parent</relativePath>
+  </parent>
+
+  <groupId>eclipse.platform</groupId>
+  <artifactId>eclipse.platform.runtime</artifactId>
+  <packaging>pom</packaging>
+
+   <properties>
+     <tycho.scmUrl>scm:git:https://github.com/eclipse-platform/eclipse.platform.git</tycho.scmUrl>
+  </properties>
+
+  <modules>
+    <module>bundles/org.eclipse.core.contenttype</module>
+    <module>bundles/org.eclipse.core.expressions</module>
+    <module>bundles/org.eclipse.core.jobs</module>
+    <module>bundles/org.eclipse.core.runtime</module>
+    <module>bundles/org.eclipse.e4.core.contexts</module>
+    <module>bundles/org.eclipse.e4.core.di.annotations</module>
+    <module>bundles/org.eclipse.e4.core.di</module>
+    <module>bundles/org.eclipse.e4.core.di.extensions</module>
+    <module>bundles/org.eclipse.e4.core.di.extensions.supplier</module>
+    <module>bundles/org.eclipse.e4.core.services</module>
+    <module>features/org.eclipse.core.runtime.feature</module>
+    <module>tests</module>
+  </modules>
+
+</project>
