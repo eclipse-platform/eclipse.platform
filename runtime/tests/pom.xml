@@ -14,7 +14,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>eclipse.platform</groupId>
-    <artifactId>eclipse.platform</artifactId>
+    <artifactId>eclipse.platform.runtime</artifactId>
     <version>4.25.0-SNAPSHOT</version>
   </parent>
   <artifactId>eclipse.platform.runtime.tests</artifactId>

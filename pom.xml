@@ -60,18 +60,7 @@
     <module>ant/org.eclipse.ant.tests.ui</module>
     <module>platform/org.eclipse.platform</module>
     <module>platform/org.eclipse.sdk</module>
-    <module>bundles/org.eclipse.core.contenttype</module>
-    <module>bundles/org.eclipse.core.expressions</module>
-    <module>bundles/org.eclipse.core.jobs</module>
-    <module>bundles/org.eclipse.core.runtime</module>
-    <module>bundles/org.eclipse.e4.core.contexts</module>
-    <module>bundles/org.eclipse.e4.core.di.annotations</module>
-    <module>bundles/org.eclipse.e4.core.di</module>
-    <module>bundles/org.eclipse.e4.core.di.extensions</module>
-    <module>bundles/org.eclipse.e4.core.di.extensions.supplier</module>
-    <module>bundles/org.eclipse.e4.core.services</module>
-    <module>features/org.eclipse.core.runtime.feature</module>
-    <module>tests</module>
+    <module>runtime</module>
   </modules>
 
 </project>
