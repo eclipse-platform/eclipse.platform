@@ -65,6 +65,9 @@
 	     <viewShortcut
       		   id="org.eclipse.pde.runtime.LogView">
    		 </viewShortcut>
+      <showInPart
+            id="org.eclipse.ui.navigator.ProjectExplorer">
+      </showInPart>
       </perspectiveExtension>
    </extension>
    <extension
