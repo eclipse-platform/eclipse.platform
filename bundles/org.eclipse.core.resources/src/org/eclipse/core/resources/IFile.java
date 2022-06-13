@@ -1162,4 +1162,35 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 * @since 2.0
 	 */
 	void setContents(IFileState source, int updateFlags, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * Returns line separator appropriate for the given file.
+	 * <p>
+	 * If checkParent is <code>false</code>, this method will return the line
+	 * separator by reading the file, or <code>null</code> otherwise.
+	 * </p>
+	 * <p>
+	 * If checkParent is <code>true</code>, this method uses the following algorithm
+	 * to determine the line separator to be returned:
+	 * </p>
+	 * <ol>
+	 * <li>the line separator currently used in that file (same as output with
+	 * checkImplicit=false), or</li>
+	 * <li>delegates to {@link IProject#getDefaultLineSeparator()}</li>
+	 * </ol>
+	 *
+	 * @param checkParent whether to look up in parent containers settings to
+	 *                    retrieve a value
+	 * @return line separator for the current file
+	 * @exception CoreException if this method fails. Reasons include:
+	 *                          <ul>
+	 *                          <li>This resource could not be read.</li>
+	 *                          <li>This resource is not local.</li>
+	 *                          <li>The corresponding location in the local file
+	 *                          system is occupied by a directory.</li>
+	 *                          </ul>
+	 * @see IProject#getDefaultLineSeparator()
+	 * @since 3.18
+	 */
+	public String getLineSeparator(boolean checkParent) throws CoreException;
 }

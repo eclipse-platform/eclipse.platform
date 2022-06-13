@@ -637,7 +637,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		IFile descriptionFile = target.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		try {
-			new ModelObjectWriter().write(description, out, FileUtil.getLineSeparator(descriptionFile));
+			new ModelObjectWriter().write(description, out, descriptionFile.getLineSeparator(true));
 		} catch (IOException e) {
 			String msg = NLS.bind(Messages.resources_writeMeta, target.getFullPath());
 			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, target.getFullPath(), msg, e);
@@ -1243,7 +1243,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 			OutputStream out = fileStore.openOutputStream(EFS.NONE, null)
 		) {
 			IFile file = target.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-			new ModelObjectWriter().write(desc, out, FileUtil.getLineSeparator(file));
+			new ModelObjectWriter().write(desc, out, file.getLineSeparator(true));
 		} catch (IOException e) {
 			String msg = NLS.bind(Messages.resources_writeMeta, target.getFullPath());
 			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, target.getFullPath(), msg, e);
