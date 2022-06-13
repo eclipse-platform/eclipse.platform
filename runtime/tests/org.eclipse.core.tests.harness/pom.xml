@@ -19,6 +19,6 @@
   </parent>
   <groupId>org.eclipse.core</groupId>
   <artifactId>org.eclipse.core.tests.harness</artifactId>
-  <version>3.12.200-SNAPSHOT</version>
+  <version>3.12.300-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

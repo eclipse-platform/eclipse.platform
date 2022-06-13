@@ -19,7 +19,7 @@
   </parent>
   <groupId>org.eclipse.e4</groupId>
   <artifactId>org.eclipse.e4.core.tests</artifactId>
-  <version>1.2.300-SNAPSHOT</version>
+  <version>1.2.400-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
 
   <properties>

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse Core Tests Harness
 Bundle-SymbolicName: org.eclipse.core.tests.harness;singleton:=true
-Bundle-Version: 3.12.200.qualifier
+Bundle-Version: 3.12.300.qualifier
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.core.tests.harness,
  org.eclipse.core.tests.session,
