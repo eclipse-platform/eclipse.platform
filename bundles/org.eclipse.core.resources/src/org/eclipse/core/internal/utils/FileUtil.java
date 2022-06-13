@@ -272,20 +272,15 @@ public class FileUtil {
 	}
 
 	/**
-	 * Returns line separator appropriate for the given file. The returned value
-	 * will be the first available value from the list below:
-	 * <ol>
-	 *   <li> Line separator currently used in that file.
-	 *   <li> Line separator defined in project preferences.
-	 *   <li> Line separator defined in instance preferences.
-	 *   <li> Line separator defined in default preferences.
-	 *   <li> Operating system default line separator.
-	 * </ol>
-	 * @param file the file for which line separator should be returned
-	 * @return line separator for the given file
+	 * @see org.eclipse.core.resources.ResourcesPlugin#getLineSeparator(IResource)
 	 */
-	public static String getLineSeparator(IFile file) {
-		if (file.exists()) {
+	public static String getLineSeparator(IResource resource) {
+		if (resource == null) {
+			// outside workspace use system setting
+			return System.lineSeparator();
+		}
+		if (resource instanceof IFile && resource.exists()) {
+			IFile file = (IFile) resource;
 			try (
 					// for performance reasons the buffer size should
 					// reflect the average length of the first Line:
@@ -307,7 +302,8 @@ public class FileUtil {
 		}
 		Preferences rootNode = Platform.getPreferencesService().getRootNode();
 		// if the file does not exist or has no content yet, try with project preference
-		String value = getLineSeparatorFromPreferences(rootNode.node(ProjectScope.SCOPE).node(file.getProject().getName()));
+		String value = getLineSeparatorFromPreferences(
+				rootNode.node(ProjectScope.SCOPE).node(resource.getProject().getName()));
 		if (value != null)
 			return value;
 		// try with instance preferences

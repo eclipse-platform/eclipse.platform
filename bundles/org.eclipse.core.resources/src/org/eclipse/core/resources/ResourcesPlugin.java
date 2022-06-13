@@ -23,8 +23,7 @@ package org.eclipse.core.resources;
 import java.nio.charset.Charset;
 import java.util.Hashtable;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.internal.utils.Policy;
+import org.eclipse.core.internal.utils.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
@@ -369,6 +368,25 @@ public final class ResourcesPlugin extends Plugin {
 	private ServiceTracker<Location, Workspace> instanceLocationTracker;
 
 	private WorkspaceInitCustomizer workspaceInitCustomizer;
+
+	/**
+	 * Returns line separator appropriate for the given resource. The returned value
+	 * will be the first available value from the list below:
+	 * <ol>
+	 * <li>Line separator currently used in that file.
+	 * <li>Line separator defined in project preferences.
+	 * <li>Line separator defined in workspace preferences.
+	 * <li>Line separator defined in default preferences.
+	 * <li>Operating system default line separator (especially for null resource).
+	 * </ol>
+	 *
+	 * @param resource the resource for which line separator should be returned
+	 * @return line separator for the given resource
+	 * @since 3.18
+	 */
+	public static String getLineSeparator(IResource resource) {
+		return FileUtil.getLineSeparator(resource);
+	}
 
 	/**
 	 * Returns the encoding to use when reading text files in the workspace. This is
