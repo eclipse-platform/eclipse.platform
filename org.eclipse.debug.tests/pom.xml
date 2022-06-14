@@ -18,7 +18,7 @@
   </parent>
   <groupId>org.eclipse.debug</groupId>
   <artifactId>org.eclipse.debug.tests</artifactId>
-  <version>3.12.700-SNAPSHOT</version>
+  <version>3.12.800-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
   <properties>
     <code.ignoredWarnings>${tests.ignoredWarnings}</code.ignoredWarnings>
