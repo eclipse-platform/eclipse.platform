@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2021 Joerg Kubitz and others.
+ *  Copyright (c) 2021, 2022 Joerg Kubitz and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -38,14 +38,14 @@ public class SerialExecutorTest extends AbstractDebugTest {
 	public void testSimpleExecution() throws InterruptedException {
 		SerialExecutor serialExecutor = new SerialExecutor("test", this);
 		AtomicInteger executions = new AtomicInteger(0);
-		serialExecutor.schedule(() -> executions.incrementAndGet());
+		serialExecutor.schedule(executions::incrementAndGet);
 		Job.getJobManager().join(this, null);
 		assertEquals(1, executions.get());
-		serialExecutor.schedule(() -> executions.incrementAndGet());
+		serialExecutor.schedule(executions::incrementAndGet);
 		Job.getJobManager().join(this, null);
 		assertEquals(2, executions.get());
-		serialExecutor.schedule(() -> executions.incrementAndGet());
-		serialExecutor.schedule(() -> executions.incrementAndGet());
+		serialExecutor.schedule(executions::incrementAndGet);
+		serialExecutor.schedule(executions::incrementAndGet);
 		Job.getJobManager().join(this, null);
 		assertEquals(4, executions.get());
 	}
@@ -126,7 +126,7 @@ public class SerialExecutorTest extends AbstractDebugTest {
 		AtomicInteger executions = new AtomicInteger();
 		int RUNS = 200;
 		for (int i = 0; i < RUNS; i++) {
-			serialExecutor.schedule(() -> executions.incrementAndGet());
+			serialExecutor.schedule(executions::incrementAndGet);
 		}
 		Job.getJobManager().join(this, null);
 		Job[] jobs = Job.getJobManager().find(this);
