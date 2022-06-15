@@ -589,7 +589,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 	public String getMemento() throws CoreException {
 		IPath relativePath = null;
 		IFile file = getFile();
-		String lineDelimeter = ResourcesPlugin.getLineSeparator(file);
+		String lineDelimeter = getLineSeparator();
 		boolean local = true;
 		if (file == null) {
 			relativePath = new Path(getName());
@@ -1039,5 +1039,16 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 		}
 
 		return delegate;
+	}
+
+	protected String getLineSeparator() throws CoreException {
+		IFile file = getFile();
+		if (file != null) {
+			// file is in workspace
+			return file.getLineSeparator(true);
+		}
+
+		// file is not in workspace, use platform default
+		return System.lineSeparator();
 	}
 }

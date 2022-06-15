@@ -50,11 +50,14 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -75,6 +78,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.service.prefs.Preferences;
 
 /**
  * Tests for launch configurations
@@ -714,6 +718,96 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		// cleanup
 		handle.delete();
 		assertTrue("Config should not exist after deletion", !handle.exists()); //$NON-NLS-1$
+	}
+
+	@Test
+	public void testSharedConfigurationLineDelimeters() throws CoreException {
+		// we must test non-platgorm-default separator
+		final String systemSeparator = System.lineSeparator();
+		final String nonSystemSeparator = "\n".equals(systemSeparator) ? "\r\n" : "\n";
+
+		// create in workspace metadata - uses system separator
+		ILaunchConfigurationWorkingCopy wc = newConfiguration(null, "shared"); //$NON-NLS-1$
+		ILaunchConfiguration inWorkspaceMetadataHandle = wc.doSave();
+
+		// Test creation of NEW file in workspace with various configs
+		IEclipsePreferences workspacePrefs = InstanceScope.INSTANCE.getNode(Platform.PI_RUNTIME);
+		Preferences rootNode = Platform.getPreferencesService().getRootNode();
+		Preferences projectNode = rootNode.node(ProjectScope.SCOPE).node(getProject().getName());
+
+		// clear preferences
+		workspacePrefs.remove(Platform.PREF_LINE_SEPARATOR);
+		projectNode.node(Platform.PI_RUNTIME).remove(Platform.PREF_LINE_SEPARATOR);
+
+		// move out of metadata, into workspace, should use system separator
+		wc = inWorkspaceMetadataHandle.getWorkingCopy();
+		wc.setContainer(getProject());
+		ILaunchConfiguration sharedHandle = wc.doSave();
+		assertEquals(systemSeparator, sharedHandle.getFile().getLineSeparator(false));
+		sharedHandle.delete();
+		assertTrue("Shared config should not exist after deletion", !sharedHandle.exists()); //$NON-NLS-1$
+
+		// non-platform separator in instance prefs, should override system
+		workspacePrefs.put(Platform.PREF_LINE_SEPARATOR, nonSystemSeparator);
+		sharedHandle = wc.doSave();
+		assertEquals(nonSystemSeparator, sharedHandle.getFile().getLineSeparator(false));
+		sharedHandle.delete();
+		assertTrue("Shared config should not exist after deletion", !sharedHandle.exists()); //$NON-NLS-1$
+
+		// non-platform separator in project prefs, should override system
+		workspacePrefs.put(Platform.PREF_LINE_SEPARATOR, systemSeparator);
+		projectNode.node(Platform.PI_RUNTIME).put(Platform.PREF_LINE_SEPARATOR, nonSystemSeparator);
+		sharedHandle = wc.doSave();
+		assertEquals(nonSystemSeparator, sharedHandle.getFile().getLineSeparator(false));
+		sharedHandle.delete();
+		assertTrue("Shared config should not exist after deletion", !sharedHandle.exists()); //$NON-NLS-1$
+		sharedHandle = null;
+
+		// Test preservation for EXISTING file in workspace with various configs
+
+		// clear preferences
+		workspacePrefs.remove(Platform.PREF_LINE_SEPARATOR);
+		projectNode.node(Platform.PI_RUNTIME).remove(Platform.PREF_LINE_SEPARATOR);
+
+		// control file 1: uses system separator
+		ILaunchConfiguration systemNewlineHandle = wc.doSave();
+		assertEquals(systemSeparator, systemNewlineHandle.getFile().getLineSeparator(false));
+		// configure non-system separator in instance scope
+		workspacePrefs.put(Platform.PREF_LINE_SEPARATOR, nonSystemSeparator);
+		// update of existing file should ignore configuration
+		systemNewlineHandle = wc.doSave();
+		assertEquals(systemSeparator, systemNewlineHandle.getFile().getLineSeparator(false));
+		// configure non-system separator in project scope
+		projectNode.node(Platform.PI_RUNTIME).put(Platform.PREF_LINE_SEPARATOR, nonSystemSeparator);
+		// update of existing file should ignore configuration
+		systemNewlineHandle = wc.doSave();
+		assertEquals(systemSeparator, systemNewlineHandle.getFile().getLineSeparator(false));
+		systemNewlineHandle.delete();
+		assertTrue("Shared config should not exist after deletion", !systemNewlineHandle.exists()); //$NON-NLS-1$
+		systemNewlineHandle = null;
+
+		// control file 2: uses non-system separator
+		ILaunchConfiguration nonSystemNewlineHandle = wc.doSave();
+		assertEquals(nonSystemSeparator, nonSystemNewlineHandle.getFile().getLineSeparator(false));
+		// configure system separator in instance scope
+		workspacePrefs.put(Platform.PREF_LINE_SEPARATOR, systemSeparator);
+		// update of existing file should ignore configuration
+		nonSystemNewlineHandle = wc.doSave();
+		assertEquals(nonSystemSeparator, nonSystemNewlineHandle.getFile().getLineSeparator(false));
+		// configure non-system separator in project scope
+		projectNode.node(Platform.PI_RUNTIME).put(Platform.PREF_LINE_SEPARATOR, systemSeparator);
+		// update of existing file should ignore configuration
+		nonSystemNewlineHandle = wc.doSave();
+		assertEquals(nonSystemSeparator, nonSystemNewlineHandle.getFile().getLineSeparator(false));
+		nonSystemNewlineHandle.delete();
+		assertTrue("Shared config 2 should not exist after deletion", !nonSystemNewlineHandle.exists()); //$NON-NLS-1$
+		nonSystemNewlineHandle = null;
+
+		// cleanup
+		workspacePrefs.remove(Platform.PREF_LINE_SEPARATOR);
+		projectNode.node(Platform.PI_RUNTIME).remove(Platform.PREF_LINE_SEPARATOR);
+		inWorkspaceMetadataHandle.delete();
+		assertTrue("Config should not exist after deletion", !inWorkspaceMetadataHandle.exists()); //$NON-NLS-1$
 	}
 
 	/**

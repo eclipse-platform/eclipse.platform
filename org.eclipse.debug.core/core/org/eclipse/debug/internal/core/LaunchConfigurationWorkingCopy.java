@@ -278,7 +278,7 @@ public class LaunchConfigurationWorkingCopy extends LaunchConfiguration implemen
 	 * @exception CoreException if writing the file fails
 	 */
 	protected void writeNewFile(IProgressMonitor monitor) throws CoreException {
-		String lineDelimeter = ResourcesPlugin.getLineSeparator(getFile());
+		String lineDelimeter = getLineSeparator();
 		String xml = null;
 		try {
 			xml = getInfo().getAsXML(lineDelimeter);
