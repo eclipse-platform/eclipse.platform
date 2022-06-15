@@ -23,8 +23,7 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import org.eclipse.core.internal.preferences.*;
-import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.internal.utils.Policy;
+import org.eclipse.core.internal.utils.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -682,7 +681,7 @@ public class ProjectPreferences extends EclipsePreferences {
 					// print the table to a string and remove the timestamp that Properties#store always adds
 					String s = removeTimestampFromTable(table);
 					String systemLineSeparator = System.lineSeparator();
-					String fileLineSeparator = fileInWorkspace.getLineSeparator(true);
+					String fileLineSeparator = FileUtil.getLineSeparator(fileInWorkspace);
 					if (!systemLineSeparator.equals(fileLineSeparator))
 						s = s.replaceAll(systemLineSeparator, fileLineSeparator);
 					InputStream input = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));

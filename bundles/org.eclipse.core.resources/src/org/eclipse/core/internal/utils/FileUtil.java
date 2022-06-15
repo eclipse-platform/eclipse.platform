@@ -22,11 +22,14 @@ import org.eclipse.core.filesystem.*;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.resources.ResourceAttributes;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.service.environment.Constants;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
 
 /**
  * Static utility methods for manipulating Files and URIs.
@@ -255,6 +258,64 @@ public class FileUtil {
 		attributes.set(EFS.ATTRIBUTE_OTHER_WRITE, fileInfo.getAttribute(EFS.ATTRIBUTE_OTHER_WRITE));
 		attributes.set(EFS.ATTRIBUTE_OTHER_EXECUTE, fileInfo.getAttribute(EFS.ATTRIBUTE_OTHER_EXECUTE));
 		return attributes;
+	}
+
+	private static String getLineSeparatorFromPreferences(Preferences node) {
+		try {
+			// be careful looking up for our node so not to create any nodes as side effect
+			if (node.nodeExists(Platform.PI_RUNTIME))
+				return node.node(Platform.PI_RUNTIME).get(Platform.PREF_LINE_SEPARATOR, null);
+		} catch (BackingStoreException e) {
+			// ignore
+		}
+		return null;
+	}
+
+	/**
+	 * @see org.eclipse.core.resources.ResourcesPlugin#getLineSeparator(IResource)
+	 */
+	public static String getLineSeparator(IResource resource) {
+		if (resource == null) {
+			// outside workspace use system setting
+			return System.lineSeparator();
+		}
+		if (resource instanceof IFile && resource.exists()) {
+			IFile file = (IFile) resource;
+			try (
+					// for performance reasons the buffer size should
+					// reflect the average length of the first Line:
+					InputStream input = new BufferedInputStream(file.getContents(), 128);
+			) {
+				int c = input.read();
+				while (c != -1 && c != '\r' && c != '\n')
+					c = input.read();
+				if (c == '\n')
+					return "\n"; //$NON-NLS-1$
+				if (c == '\r') {
+					if (input.read() == '\n')
+						return "\r\n"; //$NON-NLS-1$
+					return "\r"; //$NON-NLS-1$
+				}
+			} catch (CoreException | IOException e) {
+				// ignore
+			}
+		}
+		Preferences rootNode = Platform.getPreferencesService().getRootNode();
+		// if the file does not exist or has no content yet, try with project preference
+		String value = getLineSeparatorFromPreferences(
+				rootNode.node(ProjectScope.SCOPE).node(resource.getProject().getName()));
+		if (value != null)
+			return value;
+		// try with instance preferences
+		value = getLineSeparatorFromPreferences(rootNode.node(InstanceScope.SCOPE));
+		if (value != null)
+			return value;
+		// try with default preferences
+		value = getLineSeparatorFromPreferences(rootNode.node(DefaultScope.SCOPE));
+		if (value != null)
+			return value;
+		// if there is no preference set, fall back to OS default value
+		return System.lineSeparator();
 	}
 
 	/**

@@ -32,10 +32,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.content.IContentTypeMatcher;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.util.NLS;
-import org.osgi.service.prefs.Preferences;
 
 public class Project extends Container implements IProject {
 	/**
@@ -1422,35 +1419,5 @@ public class Project extends Container implements IProject {
 		} finally {
 			ProjectDescription.isWriting = false;
 		}
-	}
-
-	@Override
-	public String getDefaultLineSeparator() {
-		Preferences rootNode = Platform.getPreferencesService().getRootNode();
-		// if the file does not exist or has no content yet, try with project preference
-		String value = getLineSeparatorFromPreferences(rootNode.node(ProjectScope.SCOPE).node(getProject().getName()));
-		if (value != null)
-			return value;
-		// try with instance preferences
-		value = getLineSeparatorFromPreferences(rootNode.node(InstanceScope.SCOPE));
-		if (value != null)
-			return value;
-		// try with default preferences
-		value = getLineSeparatorFromPreferences(rootNode.node(DefaultScope.SCOPE));
-		if (value != null)
-			return value;
-		// if there is no preference set, fall back to OS default value
-		return System.lineSeparator();
-	}
-
-	private static String getLineSeparatorFromPreferences(Preferences node) {
-		try {
-			// be careful looking up for our node so not to create any nodes as side effect
-			if (node.nodeExists(Platform.PI_RUNTIME))
-				return node.node(Platform.PI_RUNTIME).get(Platform.PREF_LINE_SEPARATOR, null);
-		} catch (org.osgi.service.prefs.BackingStoreException e) {
-			// ignore
-		}
-		return null;
 	}
 }

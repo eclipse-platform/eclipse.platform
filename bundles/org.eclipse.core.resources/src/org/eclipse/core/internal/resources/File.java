@@ -438,35 +438,4 @@ public class File extends Resource implements IFile {
 		updateFlags |= keepHistory ? IResource.KEEP_HISTORY : IResource.NONE;
 		setContents(source.getContents(), updateFlags, monitor);
 	}
-
-	@Override
-	public String getLineSeparator(boolean checkParent) throws CoreException {
-		if (exists()) {
-			try (
-					// for performance reasons the buffer size should
-					// reflect the average length of the first Line:
-					InputStream input = new BufferedInputStream(getContents(), 128);) {
-				int c = input.read();
-				while (c != -1 && c != '\r' && c != '\n')
-					c = input.read();
-				if (c == '\n')
-					return "\n"; //$NON-NLS-1$
-				if (c == '\r') {
-					if (input.read() == '\n')
-						return "\r\n"; //$NON-NLS-1$
-					return "\r"; //$NON-NLS-1$
-				}
-			} catch (CoreException core) {
-				if (!checkParent) {
-					throw core;
-				}
-			} catch (IOException io) {
-				if (!checkParent) {
-					throw new CoreException(Status.error(io.getMessage(), io));
-				}
-			}
-		}
-		return checkParent ? getProject().getDefaultLineSeparator() : null;
-	}
-
 }
