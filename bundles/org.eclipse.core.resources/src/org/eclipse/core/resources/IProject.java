@@ -1054,4 +1054,23 @@ public interface IProject extends IContainer, IAdaptable {
 	 * @since 2.0
 	 */
 	void setDescription(IProjectDescription description, int updateFlags, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * Returns line separator appropriate for new files in the given project.
+	 * <p>
+	 * This method uses the following algorithm to determine the line separator to
+	 * be returned:
+	 * </p>
+	 * <ol>
+	 * <li>the line separator defined in project preferences, or</li>
+	 * <li>the line separator defined in workspace preferences, or</li>
+	 * <li>the line separator defined in default preferences, or</li>
+	 * <li>Operating system default line separator</li>
+	 * </ol>
+	 *
+	 * @return line separator for the current file
+	 * @exception CoreException if this method fails.
+	 * @since 3.18
+	 */
+	String getDefaultLineSeparator() throws CoreException;
 }

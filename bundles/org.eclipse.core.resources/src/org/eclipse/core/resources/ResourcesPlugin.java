@@ -370,25 +370,6 @@ public final class ResourcesPlugin extends Plugin {
 	private WorkspaceInitCustomizer workspaceInitCustomizer;
 
 	/**
-	 * Returns line separator appropriate for the given resource. The returned value
-	 * will be the first available value from the list below:
-	 * <ol>
-	 * <li>Line separator currently used in that file.
-	 * <li>Line separator defined in project preferences.
-	 * <li>Line separator defined in workspace preferences.
-	 * <li>Line separator defined in default preferences.
-	 * <li>Operating system default line separator (especially for null resource).
-	 * </ol>
-	 *
-	 * @param resource the resource for which line separator should be returned
-	 * @return line separator for the given resource
-	 * @since 3.18
-	 */
-	public static String getLineSeparator(IResource resource) {
-		return FileUtil.getLineSeparator(resource);
-	}
-
-	/**
 	 * Returns the encoding to use when reading text files in the workspace. This is
 	 * the value of the <code>PREF_ENCODING</code> preference, or the file system
 	 * encoding (<code>System.getProperty("file.encoding")</code>) if the preference
