@@ -1192,5 +1192,7 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 * @see IProject#getDefaultLineSeparator()
 	 * @since 3.18
 	 */
-	public String getLineSeparator(boolean checkParent) throws CoreException;
+	public default String getLineSeparator(boolean checkParent) throws CoreException {
+		return getProject().getDefaultLineSeparator();
+	}
 }
