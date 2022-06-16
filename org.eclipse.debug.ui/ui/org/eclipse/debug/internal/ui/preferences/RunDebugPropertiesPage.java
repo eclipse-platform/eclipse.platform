@@ -21,7 +21,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.core.DebugPlugin;
@@ -284,7 +286,10 @@ public class RunDebugPropertiesPage extends PropertyPage {
 		if (element instanceof IResource) {
 			resource = (IResource) element;
 		} else if (element != null) {
-			resource = element.getAdapter(IResource.class);
+			resource = Adapters.adapt(element, IResource.class);
+		}
+		if (resource == null && element != null) {
+			return Adapters.adapt(element, IProject.class);
 		}
 		return resource;
 	}
