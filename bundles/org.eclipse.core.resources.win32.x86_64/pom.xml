@@ -18,10 +18,6 @@
   <version>3.5.400-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
-  <properties>
-    <skipAPIAnalysis>true</skipAPIAnalysis>
-  </properties>
-
   <build>
     <plugins>
       <!-- tycho is not able to automatically determine os/ws/arch of this bundle -->

@@ -21,7 +21,6 @@
   <properties>
     <!-- This tests aren't run by legacy build -->
     <skipTests>true</skipTests>
-    <skipAPIAnalysis>true</skipAPIAnalysis>
   </properties>
 
   <artifactId>org.eclipse.core.tests.resources.saveparticipant</artifactId>
