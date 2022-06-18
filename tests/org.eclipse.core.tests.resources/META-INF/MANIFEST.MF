@@ -28,14 +28,11 @@ Export-Package: org.eclipse.core.tests.filesystem,
  org.eclipse.core.tests.resources.regression,
  org.eclipse.core.tests.resources.session,
  org.eclipse.core.tests.resources.usecase
-Require-Bundle: org.eclipse.osgi.services,
- org.eclipse.core.resources,
+Require-Bundle: org.eclipse.core.resources,
  org.eclipse.core.tests.harness,
  org.junit,
- org.eclipse.test.performance,
  org.eclipse.core.filesystem,
  org.eclipse.core.runtime,
- org.eclipse.core.expressions,
  org.eclipse.pde.junit.runtime;bundle-version="3.5.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
