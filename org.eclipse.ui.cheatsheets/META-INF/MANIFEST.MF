@@ -20,13 +20,8 @@ Export-Package: org.eclipse.ui.cheatsheets,
  org.eclipse.ui.internal.cheatsheets.state;x-friends:="org.eclipse.ua.tests",
  org.eclipse.ui.internal.cheatsheets.views;x-friends:="org.eclipse.ua.tests",
  org.eclipse.ui.internal.provisional.cheatsheets;x-friends:="org.eclipse.ua.tests"
-Require-Bundle: org.eclipse.ui;bundle-version="[3.6.0,4.0.0)",
- org.eclipse.ui.forms;bundle-version="[3.5.0,4.0.0)",
- org.eclipse.help;bundle-version="[3.5.0,4.0.0)",
- org.eclipse.core.runtime;bundle-version="[3.6.0,4.0.0)",
- org.eclipse.help.base;bundle-version="[4.0.0,5.0.0)";resolution:=optional,
- org.eclipse.help.ui;bundle-version="[4.0.0,5.0.0)";resolution:=optional,
- org.eclipse.core.expressions;bundle-version="3.4.200"
+Require-Bundle: org.eclipse.ui.forms;bundle-version="[3.5.0,4.0.0)",
+ org.eclipse.help.ui;bundle-version="[4.0.0,5.0.0)";resolution:=optional
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy

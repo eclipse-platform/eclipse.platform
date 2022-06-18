@@ -15,7 +15,7 @@
 <feature
       id="org.eclipse.tips.feature"
       label="%featureName"
-      version="0.2.1700.qualifier"
+      version="0.2.1800.qualifier"
       provider-name="%providerName"
       license-feature="org.eclipse.license"
       license-feature-version="0.0.0">

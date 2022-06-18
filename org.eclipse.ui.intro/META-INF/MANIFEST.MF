@@ -20,11 +20,9 @@ Export-Package: org.eclipse.ui.internal.intro.impl;x-friends:="org.eclipse.ui.in
  org.eclipse.ui.intro.config,
  org.eclipse.ui.intro.contentproviders
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.6.0,4.0.0)",
- org.eclipse.help;bundle-version="[3.5.0,4.0.0)",
  org.eclipse.help.base;bundle-version="[4.0.0,5.0.0)";resolution:=optional,
  org.eclipse.ui;bundle-version="[3.6.0,4.0.0)",
  org.eclipse.ui.forms;bundle-version="[3.5.0,4.0.0)",
- org.eclipse.core.expressions;bundle-version="3.4.200",
  org.eclipse.e4.ui.workbench,
  org.eclipse.e4.ui.model.workbench
 Eclipse-LazyStart: true
@@ -36,8 +34,6 @@ Import-Package: javax.annotation,
  javax.xml.transform.dom,
  javax.xml.transform.stream,
  org.eclipse.e4.core.di.annotations,
- org.eclipse.emf.common,
- org.eclipse.emf.ecore,
  org.w3c.dom,
  org.xml.sax
 Bundle-ActivationPolicy: lazy
