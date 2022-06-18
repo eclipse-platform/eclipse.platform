@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin_name
 Bundle-SymbolicName: org.eclipse.ui.intro; singleton:=true
-Bundle-Version: 3.6.500.qualifier
+Bundle-Version: 3.6.600.qualifier
 Bundle-Activator: org.eclipse.ui.internal.intro.impl.IntroPlugin
 Bundle-Vendor: %provider_name
 Bundle-Localization: plugin
