@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
@@ -42,7 +43,6 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.IStateUpdateListe
 import org.eclipse.debug.internal.ui.viewers.model.provisional.ITreeModelViewer;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdate;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdateListener;
-import org.eclipse.debug.tests.TestsPlugin;
 import org.eclipse.debug.tests.viewer.model.TestModel.TestElement;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -236,7 +236,7 @@ public class TestModelUpdatesListener implements IViewerUpdateListener, ILabelUp
 		fStateRestoreComplete = false;
 		fExpectRestoreAfterSaveComplete = false;
 		fTimeoutTime = System.currentTimeMillis() + fTimeoutInterval;
-		TestsPlugin.getDefault().getLog().log(new Status(IStatus.INFO, TestsPlugin.PLUGIN_ID, "fTimeOut Reset: " + fTimeoutTime)); //$NON-NLS-1$
+		Platform.getLog(TestModelUpdatesListener.class).log(Status.info("fTimeOut Reset: " + fTimeoutTime)); //$NON-NLS-1$
 		resetModelChanged();
 	}
 

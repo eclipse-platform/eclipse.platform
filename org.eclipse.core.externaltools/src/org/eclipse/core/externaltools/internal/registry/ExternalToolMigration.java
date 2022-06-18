@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.externaltools.internal.ExternalToolsCore;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -34,6 +36,9 @@ import org.eclipse.debug.core.RefreshUtil;
  * and migrating it to create a new external tool.
  */
 public final class ExternalToolMigration {
+
+	private static final ILog LOG = Platform.getLog(ExternalToolMigration.class);
+
 	/**
 	 * Structure to represent a variable definition within a
 	 * source string.
@@ -316,7 +321,7 @@ public final class ExternalToolMigration {
 				return configType.newInstance(null, name);
 			}
 		} catch (CoreException e) {
-			ExternalToolsCore.log(e);
+			LOG.log(Status.error("Error logged from Ant UI: ", e)); //$NON-NLS-1$
 		}
 		return null;
 	}
@@ -357,14 +362,14 @@ public final class ExternalToolMigration {
 			try {
 				runInBackground = config.getAttribute(ATTR_RUN_IN_BACKGROUND, runInBackground);
 			} catch (CoreException e) {
-				ExternalToolsCore.log(ExternalToolsMigrationMessages.ExternalToolMigration_37, e);
+				LOG.log(Status.error(ExternalToolsMigrationMessages.ExternalToolMigration_37, e));
 			}
 			try {
 				ILaunchConfigurationWorkingCopy workingCopy= config.getWorkingCopy();
 				workingCopy.setAttribute(IExternalToolConstants.ATTR_LAUNCH_IN_BACKGROUND, runInBackground);
 				return workingCopy.doSave();
 			} catch (CoreException e) {
-				ExternalToolsCore.log(ExternalToolsMigrationMessages.ExternalToolMigration_38, e);
+				LOG.log(Status.error(ExternalToolsMigrationMessages.ExternalToolMigration_38, e));
 			}
 		}
 		return config;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -17,7 +17,6 @@ package org.eclipse.core.externaltools.internal.model;
 
 import java.util.Map;
 
-import org.eclipse.core.externaltools.internal.ExternalToolsCore;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.externaltools.internal.launchConfigurations.ExternalToolsCoreUtil;
 import org.eclipse.core.externaltools.internal.registry.ExternalToolMigration;
@@ -30,19 +29,26 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * This project builder implementation will run an external tool during the
  * build process.
  */
 public final class ExternalToolBuilder extends IncrementalProjectBuilder {
+
+	private static final ILog LOG = Platform.getLog(ExternalToolBuilder.class);
+
 	private static final class IgnoreTeamPrivateChanges implements IResourceDeltaVisitor {
 		private boolean[] fTrueChange;
 		private IgnoreTeamPrivateChanges(boolean[] trueChange) {
@@ -69,13 +75,13 @@ public final class ExternalToolBuilder extends IncrementalProjectBuilder {
 
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
-		if (ExternalToolsCore.getDefault().getBundle().getState() != Bundle.ACTIVE) {
+		if (FrameworkUtil.getBundle(ExternalToolBuilder.class).getState() != Bundle.ACTIVE) {
 			return null;
 		}
 
 		ILaunchConfiguration config= BuilderCoreUtils.configFromBuildCommandArgs(getProject(), args, new String[1]);
 		if (config == null) {
-			throw ExternalToolsCore.newError(ExternalToolsModelMessages.ExternalToolBuilder_0, null);
+			throw new CoreException(Status.error(ExternalToolsModelMessages.ExternalToolBuilder_0, null));
 		}
 		IProject[] projectsWithinScope= null;
 		IResource[] resources = ExternalToolsCoreUtil.getResourcesForBuildScope(config);
@@ -114,7 +120,7 @@ public final class ExternalToolBuilder extends IncrementalProjectBuilder {
 				return command.isBuilding(kind);
 			}
 		} catch (CoreException e) {
-			ExternalToolsCore.log(e);
+			LOG.log(Status.error("Error logged from Ant UI: ", e)); //$NON-NLS-1$
 			return true;
 		}
 		return true;
@@ -154,7 +160,7 @@ public final class ExternalToolBuilder extends IncrementalProjectBuilder {
 		try {
 			return ExternalToolsCoreUtil.isBuilderEnabled(config);
 		} catch (CoreException e) {
-			ExternalToolsCore.log(e);
+			LOG.log(Status.error("Error logged from Ant UI: ", e)); //$NON-NLS-1$
 		}
 		return true;
 	}
@@ -272,7 +278,7 @@ public final class ExternalToolBuilder extends IncrementalProjectBuilder {
 				try {
 					change.accept(new IgnoreTeamPrivateChanges(trueChange));
 				} catch (CoreException e) {
-					ExternalToolsCore.log("Internal error resolving changed resources during build", e); //$NON-NLS-1$
+					LOG.log(Status.error("Internal error resolving changed resources during build", e)); //$NON-NLS-1$
 				}
 
 				return trueChange[0]; //filtered out team private changes

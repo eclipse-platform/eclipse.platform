@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -47,11 +47,6 @@ public final class ExternalToolsPlugin extends AbstractUIPlugin implements
 		ILaunchListener {
 
 	public static final String PLUGIN_ID = "org.eclipse.ui.externaltools"; //$NON-NLS-1$
-
-	/**
-	 * Status representing no problems encountered during operation.
-	 */
-	public static final IStatus OK_STATUS = new Status(IStatus.OK, PLUGIN_ID, 0, IExternalToolConstants.EMPTY_STRING, null);
 
 	private static ExternalToolsPlugin plugin;
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,11 +14,6 @@
 package org.eclipse.core.externaltools.internal.launchConfigurations;
 
 
-import org.eclipse.core.externaltools.internal.ExternalToolsCore;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugPlugin;
@@ -73,18 +68,8 @@ public class BackgroundResourceRefresher implements IDebugEventSetListener  {
 	 * Submits a job to do the refresh
 	 */
 	protected void refresh() {
-		Job job= new Job(ExternalToolsProgramMessages.BackgroundResourceRefresher_0) {
-			@Override
-			public IStatus run(IProgressMonitor monitor) {
-				try {
-					RefreshUtil.refreshResources(fConfiguration, monitor);
-				} catch (CoreException e) {
-					ExternalToolsCore.log(e);
-					return e.getStatus();
-				}
-				return Status.OK_STATUS;
-			}
-		};
-		job.schedule();
+		Job.create(ExternalToolsProgramMessages.BackgroundResourceRefresher_0, monitor -> {
+			RefreshUtil.refreshResources(fConfiguration, monitor);
+		}).schedule();
 	}
 }

@@ -1257,7 +1257,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		ILaunchConfiguration handle = wc.doSave();
 		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
 
-		File dir = TestsPlugin.getDefault().getFileInPlugin(new Path("test-import")); //$NON-NLS-1$
+		File dir = TestsPlugin.getFileInPlugin(new Path("test-import")); //$NON-NLS-1$
 		assertTrue("Import directory does not exist", dir.exists()); //$NON-NLS-1$
 		LaunchManager manager = (LaunchManager) getLaunchManager();
 

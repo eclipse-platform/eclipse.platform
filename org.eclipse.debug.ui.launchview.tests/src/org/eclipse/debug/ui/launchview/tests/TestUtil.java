@@ -27,10 +27,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 import org.junit.Assert;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 
 public class TestUtil {
@@ -58,13 +61,13 @@ public class TestUtil {
 	}
 
 	public static void log(int severity, String owner, String message, Throwable... optionalError) {
-		message = "[" + owner + "] " + message;
 		Throwable error = null;
 		if (optionalError != null && optionalError.length > 0) {
 			error = optionalError[0];
 		}
-		Status status = new Status(severity, TestsPlugin.getDefault().getBundle().getSymbolicName(), message, error);
-		TestsPlugin.getDefault().getLog().log(status);
+		Bundle testBundle = FrameworkUtil.getBundle(TestUtil.class);
+		Status status = new Status(severity, testBundle.getSymbolicName(), "[" + owner + "] " + message, error);
+		Platform.getLog(testBundle).log(status);
 	}
 
 	/**
