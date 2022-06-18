@@ -8,9 +8,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.e4.ui.model.workbench,
- org.eclipse.debug.core,
  org.eclipse.debug.ui,
- org.eclipse.osgi.services,
  org.eclipse.e4.core.di.annotations,
  org.eclipse.e4.ui.di,
  org.eclipse.e4.ui.services
