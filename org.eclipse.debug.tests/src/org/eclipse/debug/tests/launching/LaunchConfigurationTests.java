@@ -722,7 +722,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	@Test
 	public void testSharedConfigurationLineDelimeters() throws CoreException {
-		// we must test non-platgorm-default separator
+		// we must test non-system-default separator
 		final String systemSeparator = System.lineSeparator();
 		final String nonSystemSeparator = "\n".equals(systemSeparator) ? "\r\n" : "\n";
 
@@ -747,14 +747,14 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		sharedHandle.delete();
 		assertTrue("Shared config should not exist after deletion", !sharedHandle.exists()); //$NON-NLS-1$
 
-		// non-platform separator in instance prefs, should override system
+		// non-system separator in instance prefs, should override system
 		workspacePrefs.put(Platform.PREF_LINE_SEPARATOR, nonSystemSeparator);
 		sharedHandle = wc.doSave();
 		assertEquals(nonSystemSeparator, sharedHandle.getFile().getLineSeparator(false));
 		sharedHandle.delete();
 		assertTrue("Shared config should not exist after deletion", !sharedHandle.exists()); //$NON-NLS-1$
 
-		// non-platform separator in project prefs, should override system
+		// non-system separator in project prefs, should override system
 		workspacePrefs.put(Platform.PREF_LINE_SEPARATOR, systemSeparator);
 		projectNode.node(Platform.PI_RUNTIME).put(Platform.PREF_LINE_SEPARATOR, nonSystemSeparator);
 		sharedHandle = wc.doSave();
