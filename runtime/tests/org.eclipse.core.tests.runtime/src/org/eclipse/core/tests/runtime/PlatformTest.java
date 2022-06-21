@@ -16,6 +16,7 @@ package org.eclipse.core.tests.runtime;
 import static java.util.Collections.emptyMap;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.jar.*;
@@ -64,6 +65,20 @@ public class PlatformTest extends RuntimeTest {
 		super.tearDown();
 		logService.setFile(originalLocation, true);
 		RuntimeTestsPlugin.getContext().ungetService(logRef);
+	}
+
+	public void testGetSystemCharset() {
+		Charset encoding = Platform.getSystemCharset();
+		assertNotNull(encoding);
+		String vmSpec = System.getProperty("java.vm.specification.version");
+		int version = Integer.parseInt(vmSpec);
+		String property;
+		if (version >= 18) {
+			property = System.getProperty("native.encoding");
+		} else {
+			property = System.getProperty("sun.jnu.encoding");
+		}
+		assertEquals(Charset.forName(property), encoding);
 	}
 
 	public void testGetCommandLine() {
