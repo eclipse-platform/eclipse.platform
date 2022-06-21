@@ -18,6 +18,7 @@ package org.eclipse.core.runtime;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.*;
 import org.eclipse.core.internal.runtime.*;
 import org.eclipse.core.runtime.content.IContentTypeManager;
@@ -484,6 +485,32 @@ public final class Platform {
 
 	private static final String LINE_SEPARATOR_VALUE_LF = "\n"; //$NON-NLS-1$
 	private static final String LINE_SEPARATOR_VALUE_CRLF = "\r\n"; //$NON-NLS-1$
+	private static final Charset SYSTEM_CHARSET;
+
+	static {
+		Charset result = null;
+		try {
+			// JEP 400: Java 17+ populates this system property.
+			String encoding = System.getProperty("native.encoding"); //$NON-NLS-1$
+			if (encoding != null && !encoding.isBlank()) {
+				result = Charset.forName(encoding);
+			} else {
+				// JVM internal property, works on older JVM's too
+				encoding = System.getProperty("sun.jnu.encoding"); //$NON-NLS-1$
+				if (encoding != null && !encoding.isBlank()) {
+					result = Charset.forName(encoding);
+				}
+			}
+		} catch (Exception e) {
+			// We have no log at this moment, so just print to std error
+			e.printStackTrace();
+		}
+		if (result == null) {
+			// This is always UTF-8 on Java >= 18.
+			result = Charset.defaultCharset();
+		}
+		SYSTEM_CHARSET = result;
+	}
 
 	/**
 	 * Private constructor to block instance creation.
@@ -1461,5 +1488,30 @@ public final class Platform {
 	 */
 	public static boolean inDevelopmentMode() {
 		return PlatformActivator.getContext().getProperty("osgi.dev") != null; //$NON-NLS-1$
+	}
+
+	/**
+	 * Retrieves the system encoding ({@link Charset}) based on the locale set in
+	 * the current user environment.
+	 * <p>
+	 * Note: the return value is <b>not</b> influenced by the
+	 * {@code -Dfile.encoding} system property and is <b>not</b> meant to be used
+	 * for file encoding in general (there is a workspace specific
+	 * <code>IContainer.getDefaultCharset()</code> API for that).
+	 * <p>
+	 * This method should be used if the <b>original</b> system encoding is required
+	 * (which is not necessarily the encoding used by JVM to save files). It can for
+	 * example be used to properly encode <a href=
+	 * "https://docs.oracle.com/en/java/javase/18/docs/specs/man/java.html#java-command-line-argument-files">Java
+	 * Command-Line Argument Files</a> or to encode other platform specific data.
+	 *
+	 * @return system encoding, never null. In case the detection fails, returns
+	 *         {@link Charset#defaultCharset()}, which is always {@code UTF-8} on
+	 *         Java 18 and later.
+	 * @see <a href="https://openjdk.java.net/jeps/400">JEP 400</a>
+	 * @since 3.26
+	 */
+	public static Charset getSystemCharset() {
+		return SYSTEM_CHARSET;
 	}
 }
