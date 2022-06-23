@@ -42,6 +42,11 @@
 	            </requirement>
 	            <requirement>
 	              <type>eclipse-plugin</type>
+	              <id>org.eclipse.jdt.core</id>
+	              <versionRange>0.0.0</versionRange>
+	            </requirement>
+	            <requirement>
+	              <type>eclipse-plugin</type>
 	              <id>org.eclipse.help.ui</id>
 	              <versionRange>0.0.0</versionRange>
 	            </requirement>
