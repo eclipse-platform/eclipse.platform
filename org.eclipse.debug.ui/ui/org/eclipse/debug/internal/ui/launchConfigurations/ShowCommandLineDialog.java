@@ -139,8 +139,10 @@ public class ShowCommandLineDialog extends Dialog {
 							throw new CoreException(status);
 						}
 					}
-					launch.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
-							getLaunchManager().getEncoding(flaunchConfiguration));
+					if (!flaunchConfiguration.getAttribute(DebugPlugin.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING, false)) {
+						launch.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
+								getLaunchManager().getEncoding(flaunchConfiguration));
+					}
 				}
 				command = delegate.showCommandLine(flaunchConfiguration, fMode, launch,
 						null);

@@ -297,8 +297,20 @@ public class DebugPlugin extends Plugin {
 	 * compatibility.
 	 * </p>
 	 * @since 3.3
+	 * @see #ATTR_FORCE_SYSTEM_CONSOLE_ENCODING
 	 */
 	public static final String ATTR_CONSOLE_ENCODING = "org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING"; //$NON-NLS-1$
+
+	/**
+	 * This launch attribute forces system encoding to be used by the
+	 * console associated with the launch, independently on other attributes.
+	 *
+	 * Since 3.20, this flag is used by {@link ILaunchManager} to define
+	 * encoding in <code>getEncoding(ILaunchConfiguration)</code>.
+	 *
+	 * @since 3.20
+	 */
+	public static final String ATTR_FORCE_SYSTEM_CONSOLE_ENCODING = PI_DEBUG_CORE + ".ATTR_FORCE_SYSTEM_CONSOLE_ENCODING"; //$NON-NLS-1$
 
 	/**
 	 * Launch configuration attribute - a boolean value indicating whether a

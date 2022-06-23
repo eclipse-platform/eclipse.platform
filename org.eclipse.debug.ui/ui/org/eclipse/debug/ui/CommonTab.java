@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
@@ -127,6 +128,7 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	private Button fTerminateDescendantsButton;
 	private Button fDefaultEncodingButton;
 	private Button fAltEncodingButton;
+	private Button forceSystemEncodingButton;
 	private Combo fEncodingCombo;
 	private Button fConsoleOutput;
 	private Button fFileOutput;
@@ -433,8 +435,13 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	private void createEncodingComponent(Composite parent) {
 		Group group = SWTFactory.createGroup(parent, LaunchConfigurationsMessages.CommonTab_1, 2, 1, GridData.FILL_BOTH);
 
-		fDefaultEncodingButton = createRadioButton(group, IInternalDebugCoreConstants.EMPTY_STRING);
+		forceSystemEncodingButton = createRadioButton(group, IInternalDebugCoreConstants.EMPTY_STRING);
 		GridData gd = new GridData(SWT.BEGINNING, SWT.NORMAL, true, false);
+		gd.horizontalSpan = 2;
+		forceSystemEncodingButton.setLayoutData(gd);
+
+		fDefaultEncodingButton = createRadioButton(group, IInternalDebugCoreConstants.EMPTY_STRING);
+		gd = new GridData(SWT.BEGINNING, SWT.NORMAL, true, false);
 		gd.horizontalSpan = 2;
 		fDefaultEncodingButton.setLayoutData(gd);
 
@@ -464,6 +471,7 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 				updateLaunchConfigurationDialog();
 			}
 		});
+		forceSystemEncodingButton.addSelectionListener(listener);
 		fAltEncodingButton.addSelectionListener(listener);
 		fDefaultEncodingButton.addSelectionListener(listener);
 		fEncodingCombo.addSelectionListener(listener);
@@ -702,19 +710,37 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	 * @param configuration the local configuration
 	 */
 	private void updateEncoding(ILaunchConfiguration configuration) {
+		boolean forceSystemEncoding = getAttribute(configuration, DebugPlugin.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING,
+				false);
+
 		String encoding = getAttribute(configuration, DebugPlugin.ATTR_CONSOLE_ENCODING, (String) null);
 		String defaultEncoding = getDefaultEncoding(configuration);
+		Charset nativeEncoding = Platform.getSystemCharset();
+
+		forceSystemEncodingButton
+				.setText(MessageFormat.format(LaunchConfigurationsMessages.CommonTab_22, nativeEncoding.name()));
+		forceSystemEncodingButton.pack();
 		fDefaultEncodingButton.setText(MessageFormat.format(LaunchConfigurationsMessages.CommonTab_2, defaultEncoding));
 		fDefaultEncodingButton.pack();
-		if (encoding != null) {
-			fAltEncodingButton.setSelection(true);
+		if (forceSystemEncoding) {
+			forceSystemEncodingButton.setSelection(true);
 			fDefaultEncodingButton.setSelection(false);
-			fEncodingCombo.setText(encoding);
-			fEncodingCombo.setEnabled(true);
-		} else {
-			fDefaultEncodingButton.setSelection(true);
 			fAltEncodingButton.setSelection(false);
 			fEncodingCombo.setEnabled(false);
+		} else {
+			forceSystemEncodingButton.setSelection(false);
+			if (encoding != null) {
+				fAltEncodingButton.setSelection(true);
+				fDefaultEncodingButton.setSelection(false);
+				if (!encoding.isBlank()) {
+					fEncodingCombo.setText(encoding);
+				}
+				fEncodingCombo.setEnabled(true);
+			} else {
+				fDefaultEncodingButton.setSelection(true);
+				fAltEncodingButton.setSelection(false);
+				fEncodingCombo.setEnabled(false);
+			}
 		}
 	}
 
@@ -962,8 +988,10 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 		boolean terminateDescendants = fTerminateDescendantsButton.getSelection();
 		setAttribute(DebugPlugin.ATTR_TERMINATE_DESCENDANTS, configuration, terminateDescendants, true);
 
+		configuration.setAttribute(DebugPlugin.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING,
+				forceSystemEncodingButton.getSelection());
 		String encoding = null;
-		if(fAltEncodingButton.getSelection()) {
+		if (!forceSystemEncodingButton.getSelection() && fAltEncodingButton.getSelection()) {
 			encoding = fEncodingCombo.getText().trim();
 		}
 		configuration.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, encoding);

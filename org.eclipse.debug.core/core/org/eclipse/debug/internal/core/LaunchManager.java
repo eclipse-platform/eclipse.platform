@@ -865,6 +865,10 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 
 	@Override
 	public String getEncoding(ILaunchConfiguration configuration) throws CoreException {
+		boolean forceSystemEncoding = configuration.getAttribute(DebugPlugin.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING, false);
+		if (forceSystemEncoding) {
+			return Platform.getSystemCharset().name();
+		}
 		String encoding = configuration.getAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, (String)null);
 		if(encoding == null) {
 			IResource[] resources = configuration.getMappedResources();

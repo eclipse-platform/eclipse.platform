@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IPersistableSourceLocator;
 import org.eclipse.debug.core.model.IProcess;
@@ -199,6 +200,7 @@ public interface ILaunchManager {
 	 * <li>We ask the <code>ResourcesPlugin</code> for the workspace preference (which resolves back to the system
 	 * property <code>file.encoding</code> if the user has made no changes to the workspace encoding preference).</li>
 	 * </ol>
+	 * <p><b>Note:</b> if {@link DebugPlugin#ATTR_FORCE_SYSTEM_CONSOLE_ENCODING} is set, {@link Platform#getSystemCharset()} is returned.
 	 * @param configuration the <code>ILaunchConfiguration</code> to get the encoding for
 	 * @return the encoding to use when launching the specified <code>ILaunchConfiguration</code>
 	 * @throws CoreException if a problem is encountered

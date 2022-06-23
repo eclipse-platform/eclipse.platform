@@ -757,7 +757,9 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 				} else {
 					launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, null);
 				}
-				launch.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, getLaunchManager().getEncoding(this));
+				if (!getAttribute(DebugPlugin.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING, false)) {
+					launch.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, getLaunchManager().getEncoding(this));
+				}
 				if (register) {
 					getLaunchManager().addLaunch(launch);
 				}

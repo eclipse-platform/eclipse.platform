@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
@@ -368,6 +369,9 @@ public class RuntimeProcess extends PlatformObject implements IProcess {
 			} catch (UnsupportedCharsetException | IllegalCharsetNameException e) {
 				DebugPlugin.log(e);
 			}
+		}
+		if (charset == null) {
+			charset = Platform.getSystemCharset();
 		}
 		return new StreamsProxy(getSystemProcess(), charset, fThreadNameSuffix);
 	}

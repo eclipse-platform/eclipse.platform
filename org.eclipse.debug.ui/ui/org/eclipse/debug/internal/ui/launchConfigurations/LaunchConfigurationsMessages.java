@@ -47,6 +47,7 @@ public class LaunchConfigurationsMessages extends NLS {
 	public static String CommonTab_2;
 	public static String CommonTab_20;
 	public static String CommonTab_21;
+	public static String CommonTab_22;
 	public static String CommonTab_3;
 	public static String CommonTab_4;
 	public static String CommonTab_5;
