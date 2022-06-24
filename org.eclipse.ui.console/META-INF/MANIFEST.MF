@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.ui.console; singleton:=true
-Bundle-Version: 3.11.200.qualifier
+Bundle-Version: 3.11.300.qualifier
 Bundle-Activator: org.eclipse.ui.console.ConsolePlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
