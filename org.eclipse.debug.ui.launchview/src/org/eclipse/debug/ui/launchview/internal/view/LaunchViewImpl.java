@@ -54,7 +54,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -134,7 +133,7 @@ public class LaunchViewImpl implements Supplier<Set<ILaunchObject>> {
 
 			new LaunchAction(DebugPlugin.getDefault().getLaunchManager().getLaunchMode("run"), LaunchViewImpl.this).run(); //$NON-NLS-1$
 		});
-		tree.getViewer().setComparator(new ViewerComparator(String.CASE_INSENSITIVE_ORDER));
+		tree.getViewer().setComparator(new LaunchViewComparator());
 
 		reset();
 	}
