@@ -2147,9 +2147,10 @@
         // "Print topic..."
         createMenuItem('<%js:menu_item_print_topic_label%>', '<%js:menu_item_print_topic_description%>', function() {
             try {
-                getElementById('c').contentWindow.print();
-            } catch (e) {
-            }
+                var toPrint = getElementById('c').contentWindow;
+                toPrint.focus(); // required for Internet Explorer to print not only the first page
+                toPrint.print();
+            } catch (e) {}
         }, 'ap');
 
         // "Print chapter..."
