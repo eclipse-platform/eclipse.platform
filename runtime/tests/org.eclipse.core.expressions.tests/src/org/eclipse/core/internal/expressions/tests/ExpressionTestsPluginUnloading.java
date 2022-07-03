@@ -48,7 +48,9 @@ public class ExpressionTestsPluginUnloading {
 		Bundle bundle= getBundle("com.ibm.icu");
 
 		int state = bundle.getState();
-		assertTrue(state == Bundle.STARTING || state == Bundle.ACTIVE);
+		if (state != Bundle.STARTING && state != Bundle.ACTIVE) {
+			fail("Unexpected bundle state: " + stateToStgring(state) + " for bundle " + bundle);
+		}
 
 		doTestInstanceofICUDecimalFormat(bundle);
 		assertEquals(Bundle.ACTIVE, bundle.getState());
@@ -79,6 +81,24 @@ public class ExpressionTestsPluginUnloading {
 
 		assertInstanceOf(icuObj, "java.io.Serializable", "java.lang.String");
 		assertInstanceOf(icuObj, "java.text.Format", "java.lang.Runnable");
+	}
+
+	static String stateToStgring(int state) {
+		switch (state) {
+		case Bundle.ACTIVE:
+			return "ACTIVE";
+		case Bundle.INSTALLED:
+			return "INSTALLED";
+		case Bundle.RESOLVED:
+			return "RESOLVED";
+		case Bundle.STARTING:
+			return "STARTING";
+		case Bundle.STOPPING:
+			return "STOPPING";
+		case Bundle.UNINSTALLED:
+			return "UNINSTALLED";
+		}
+		throw new IllegalStateException("Unknown state: " + state);
 	}
 
 	private void assertInstanceOf(Object obj, String isInstance, String isNotInstance) throws Exception {
