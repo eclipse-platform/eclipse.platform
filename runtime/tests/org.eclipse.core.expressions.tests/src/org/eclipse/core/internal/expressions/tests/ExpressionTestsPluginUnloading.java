@@ -46,14 +46,14 @@ public class ExpressionTestsPluginUnloading {
 	@Test
 	public void test01PluginStopping() throws Exception {
 		Bundle bundle= getBundle("com.ibm.icu");
-
+		bundle.start();
 		int state = bundle.getState();
-		if (state != Bundle.RESOLVED && state != Bundle.STARTING && state != Bundle.ACTIVE) {
+		if (state != Bundle.ACTIVE) {
 			fail("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle);
 		}
 
 		doTestInstanceofICUDecimalFormat(bundle);
-		assertEquals(Bundle.ACTIVE, bundle.getState());
+		assertEquals("Instanceof with bundle-local class should load extra bundle", state, bundle.getState());
 
 		bundle.stop();
 		assertEquals(Bundle.RESOLVED, bundle.getState());
