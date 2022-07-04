@@ -48,8 +48,8 @@ public class ExpressionTestsPluginUnloading {
 		Bundle bundle= getBundle("com.ibm.icu");
 
 		int state = bundle.getState();
-		if (state != Bundle.STARTING && state != Bundle.ACTIVE) {
-			fail("Unexpected bundle state: " + stateToStgring(state) + " for bundle " + bundle);
+		if (state != Bundle.RESOLVED && state != Bundle.STARTING && state != Bundle.ACTIVE) {
+			fail("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle);
 		}
 
 		doTestInstanceofICUDecimalFormat(bundle);
@@ -83,7 +83,7 @@ public class ExpressionTestsPluginUnloading {
 		assertInstanceOf(icuObj, "java.text.Format", "java.lang.Runnable");
 	}
 
-	static String stateToStgring(int state) {
+	static String stateToString(int state) {
 		switch (state) {
 		case Bundle.ACTIVE:
 			return "ACTIVE";
