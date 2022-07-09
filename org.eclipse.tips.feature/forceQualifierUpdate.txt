@@ -2,3 +2,4 @@
 Bug 546055 - Enable tips for inclusion in older Eclipse products
 Bug 551174 - Comparator errors in 4.14 I build - I20190917-1800
 Bug 574602 - Eclipse 4.21 prerequisites: Orbit
+Update to com.google.gson from maven central
