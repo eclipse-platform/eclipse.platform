@@ -1,6 +1,6 @@
 # Deploying the information center as a Web Archive
 
-Using Eclipse 3.4 or later it is possible to configure the help plugins to be deployed as a web archive (war file) which will act as a fully
+Using Eclipse it is possible to configure the help plugins to be deployed as a web archive (war file) which will act as a fully
 functioning information center. The instructions below assume a Tomcat server has been installed, but with minor modifications
 these steps should work for any full featured server.
 
@@ -13,11 +13,9 @@ these steps should work for any full featured server.
 * Import the `infocenter-web` Maven project using File->Import->Existing Project.
 * Add some documentation plugins to the `infocenter-web/infocenter-app/src/main/webapp/WEB-INF/plugins` directory.
 * Register the plugins in `infocenter-web/infocenter-app/src/main/webapp/WEB-INF/configuration/org.eclipse.equinox.simpleconfigurator/bundles.info`
-* Install required Maven POMs from Eclipse Platform:
-   ``git clone -q --depth 1 https://github.com/eclipse-platform/eclipse.platform.releng.aggregator && mvn install -N -f eclipse.platform.releng.aggregator/eclipse-platform-parent && mvn install -N -f eclipse.platform.releng.aggregator/eclipse.platform.releng.prereqs.sdk``
 * Execute a Maven build in `infocenter-web`
 ** Either within Eclipse, right-click on `infocenter-build.launch` and select _Run As -> infocenter-build_
-** Or from command-line using the command `mvnw`
+** Or from command-line using the command `mvn -Pbuild-individual-bundles`
 * For Tomcat only. In `conf/server.xml` add `URIEncoding="UTF-8"` to the connector element, for example
   ``<Connector port="8080" URIEncoding="UTF-8" etc.>``
   If this step is not performed search will fail if the search term contains non ASCII characters.
