@@ -105,7 +105,7 @@ public class ResultParser extends DefaultHandler {
 			buf.append(element.toJSON(1));
 		}
 
-		if (items.size() > 0)
+		if (!items.isEmpty())
 			buf.append(JSonHelper.NEWLINE + JSonHelper.SPACE);
 
 		buf.append(JSonHelper.END_BRACKET);

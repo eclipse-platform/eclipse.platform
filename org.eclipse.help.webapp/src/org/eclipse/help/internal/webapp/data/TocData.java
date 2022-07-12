@@ -323,7 +323,7 @@ public class TocData extends ActivitiesData {
 				// add topic only if it will not end up being an empty
 				// container
 				if (((((ITopic) c).getHref() != null && ((ITopic) c)
-						.getHref().length() > 0) || getEnabledSubtopicList(c).size() > 0) &&
+						.getHref().length() > 0) || !getEnabledSubtopicList(c).isEmpty()) &&
 						!UAContentFilter.isFiltered(c, HelpEvaluationContext.getContext())) {
 					childTopics.add((ITopic) c);
 				}

@@ -93,7 +93,7 @@ public class ParseElement {
 			}
 		}
 
-		if (children.size() <= 0) {
+		if (children.isEmpty()) {
 			int len = buff.length();
 			char ch = buff.charAt(len - 1);
 			if (ch == ',') {
@@ -148,7 +148,7 @@ public class ParseElement {
 			}
 		}
 
-		if (children.size() <= 0) {
+		if (children.isEmpty()) {
 			int len = buff.length();
 			char ch = buff.charAt(len - 1);
 			if (ch == ',') {
