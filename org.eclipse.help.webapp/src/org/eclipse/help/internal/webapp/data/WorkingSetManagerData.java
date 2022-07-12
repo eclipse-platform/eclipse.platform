@@ -35,10 +35,10 @@ import org.eclipse.help.internal.workingset.WorkingSet;
  * This class manages help working sets
  */
 public class WorkingSetManagerData extends RequestData {
-	private final static int NONE = 0;
-	private final static int ADD = 1;
-	private final static int REMOVE = 2;
-	private final static int EDIT = 3;
+	private static final int NONE = 0;
+	private static final int ADD = 1;
+	private static final int REMOVE = 2;
+	private static final int EDIT = 3;
 
 	private String name;
 	private WebappWorkingSetManager wsmgr;

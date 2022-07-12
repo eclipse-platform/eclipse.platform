@@ -26,7 +26,7 @@ import org.eclipse.help.internal.util.ProductPreferences;
  */
 public class CssUtil {
 
-	private final static String cssLink1 = "<link rel=\"stylesheet\" href=\""; //$NON-NLS-1$
+	private static final String cssLink1 = "<link rel=\"stylesheet\" href=\""; //$NON-NLS-1$
 	private static final String cssLink2 = "\" type=\"text/css\"></link>\n"; //$NON-NLS-1$
 
 	private static String replaceParameters(String input) {

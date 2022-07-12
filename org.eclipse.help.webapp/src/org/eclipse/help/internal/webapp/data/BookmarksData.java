@@ -25,10 +25,10 @@ import org.eclipse.help.internal.base.BookmarkManager;
  * This class manages bookmarks.
  */
 public class BookmarksData extends RequestData {
-	public final static int NONE = 0;
-	public final static int ADD = 1;
-	public final static int REMOVE = 2;
-	public final static int REMOVE_ALL = 3;
+	public static final int NONE = 0;
+	public static final int ADD = 1;
+	public static final int REMOVE = 2;
+	public static final int REMOVE_ALL = 3;
 
 	public BookmarksData(ServletContext context, HttpServletRequest request,
 			HttpServletResponse response) {

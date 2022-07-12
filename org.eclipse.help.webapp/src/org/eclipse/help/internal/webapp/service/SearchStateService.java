@@ -41,8 +41,8 @@ import org.eclipse.help.internal.webapp.utils.Utils;
 public class SearchStateService extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private final static String STATE = "state"; //$NON-NLS-1$
-	private final static String PERCENT = "percent"; //$NON-NLS-1$
+	private static final String STATE = "state"; //$NON-NLS-1$
+	private static final String PERCENT = "percent"; //$NON-NLS-1$
 
 	@Override
 	public void init() throws ServletException {

@@ -52,17 +52,17 @@ public abstract class AbstractButton implements Comparable<AbstractButton> {
 	/**
 	 * The state of a button which is visible but not depressed
 	 */
-	public final static String BUTTON_OUT = "off"; //$NON-NLS-1$
+	public static final String BUTTON_OUT = "off"; //$NON-NLS-1$
 
 	/**
 	 * The state of a button which is visible and depressed
 	 */
-	public final static String BUTTON_IN = "on"; //$NON-NLS-1$
+	public static final String BUTTON_IN = "on"; //$NON-NLS-1$
 
 	/**
 	 * The state of a button which is hidden
 	 */
-	public final static String BUTTON_HIDDEN = "hidden"; //$NON-NLS-1$
+	public static final String BUTTON_HIDDEN = "hidden"; //$NON-NLS-1$
 
 	/**
 	 * Get the state of a button
@@ -121,7 +121,7 @@ public abstract class AbstractButton implements Comparable<AbstractButton> {
 	 * @since 3.7
 	 */
 	@Override
-	final public int compareTo(AbstractButton o) {
+	public final int compareTo(AbstractButton o) {
 		if (o != null) {
 			String objectName = o.getId();
 			return (getId().compareTo(objectName));

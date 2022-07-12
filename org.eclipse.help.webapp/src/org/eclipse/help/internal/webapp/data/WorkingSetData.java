@@ -40,9 +40,9 @@ import org.eclipse.help.internal.workingset.WorkingSet;
  * This class manages help working sets
  */
 public class WorkingSetData extends RequestData {
-	public final static short STATE_UNCHECKED = 0;
-	public final static short STATE_GRAYED = 1;
-	public final static short STATE_CHECKED = 2;
+	public static final short STATE_UNCHECKED = 0;
+	public static final short STATE_GRAYED = 1;
+	public static final short STATE_CHECKED = 2;
 
 	private WebappWorkingSetManager wsmgr;
 

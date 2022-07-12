@@ -73,7 +73,7 @@ public abstract class AbstractFrame implements Comparable<AbstractFrame> {
 	 * @since 3.7
 	 */
 	@Override
-	final public int compareTo(AbstractFrame o) {
+	public final int compareTo(AbstractFrame o) {
 		if (o != null) {
 			String objectName = o.getName();
 			return (getName().compareTo(objectName));

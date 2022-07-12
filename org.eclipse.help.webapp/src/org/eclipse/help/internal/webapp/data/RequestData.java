@@ -23,9 +23,9 @@ import org.eclipse.help.internal.base.BaseHelpSystem;
  * Helper class for contents.jsp initialization
  */
 public class RequestData {
-	public final static int MODE_WORKBENCH = BaseHelpSystem.MODE_WORKBENCH;
-	public final static int MODE_INFOCENTER = BaseHelpSystem.MODE_INFOCENTER;
-	public final static int MODE_STANDALONE = BaseHelpSystem.MODE_STANDALONE;
+	public static final int MODE_WORKBENCH = BaseHelpSystem.MODE_WORKBENCH;
+	public static final int MODE_INFOCENTER = BaseHelpSystem.MODE_INFOCENTER;
+	public static final int MODE_STANDALONE = BaseHelpSystem.MODE_STANDALONE;
 
 	protected ServletContext context;
 	protected HttpServletRequest request;

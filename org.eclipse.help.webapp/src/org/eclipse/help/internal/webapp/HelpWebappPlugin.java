@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
  * Welp web application plug-in.
  */
 public class HelpWebappPlugin extends Plugin {
-	public final static String PLUGIN_ID = "org.eclipse.help.webapp"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.eclipse.help.webapp"; //$NON-NLS-1$
 
 	// debug options
 	public static boolean DEBUG = false;
