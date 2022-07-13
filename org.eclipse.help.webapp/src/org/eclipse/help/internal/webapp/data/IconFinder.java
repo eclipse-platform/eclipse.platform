@@ -135,7 +135,7 @@ public class IconFinder {
 					.getConfigurationElements();
 			for (IConfigurationElement iconElem : configElements) {
 				if (iconElem.getName().equals(TOC_ICON_ELEMENT)) {
-					String attrs[] = iconElem.getAttributeNames();
+					String[] attrs = iconElem.getAttributeNames();
 					String contributorID = iconElem.getContributor().getName();
 
 					for (String attr : attrs) {

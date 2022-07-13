@@ -293,7 +293,7 @@ public class FilterHTMLHeadAndBodyOutputStream extends FilterOutputStream {
 	}
 
 	@Override
-	public void write(byte b[], int off, int len) throws IOException {
+	public void write(byte[] b, int off, int len) throws IOException {
 		if (state == STATE_DONE) {
 			out.write(b, off, len);
 		} else {

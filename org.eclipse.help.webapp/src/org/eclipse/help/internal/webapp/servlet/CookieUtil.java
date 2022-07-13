@@ -214,7 +214,7 @@ public class CookieUtil {
 			// no cookie
 			return null;
 		}
-		String lengthAndSubstring1[] = value1.split("<"); //$NON-NLS-1$
+		String[] lengthAndSubstring1 = value1.split("<"); //$NON-NLS-1$
 		if (lengthAndSubstring1.length < 2) {
 			return null;
 		}

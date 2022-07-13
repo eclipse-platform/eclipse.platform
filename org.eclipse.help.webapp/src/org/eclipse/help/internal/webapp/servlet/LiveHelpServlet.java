@@ -52,7 +52,7 @@ public class LiveHelpServlet extends HttpServlet {
 		}
 		req.setCharacterEncoding("UTF-8"); //$NON-NLS-1$
 		String sessionid = req.getSession().getId();
-		Cookie cookies[] = req.getCookies();
+		Cookie[] cookies = req.getCookies();
 		boolean jsessOK = false;
 		boolean xsessOK = false;
 		boolean lsessOK = false;

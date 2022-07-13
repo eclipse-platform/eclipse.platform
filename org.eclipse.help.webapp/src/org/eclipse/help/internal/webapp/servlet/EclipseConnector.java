@@ -58,12 +58,12 @@ public class EclipseConnector {
 			+ "</head>\n" //$NON-NLS-1$
 			+ "<body><p>\n"; //$NON-NLS-1$
 	private static final String errorPageEnd = "</p></body></html>"; //$NON-NLS-1$
-	private static final IFilter allFilters[] = new IFilter[] {
+	private static final IFilter[] allFilters = new IFilter[] {
 			new HighlightFilter(), new FramesetFilter(), new InjectionFilter(false),
 			new DynamicXHTMLFilter(), new BreadcrumbsFilter(), new PluginsRootFilter(),
 			new ShowInTocFilter(), new ExtraFilters() };
 
-	private static final IFilter errorPageFilters[] = new IFilter[] {
+	private static final IFilter[] errorPageFilters = new IFilter[] {
 			new FramesetFilter(), new InjectionFilter(false),
 			new DynamicXHTMLFilter() };
 
@@ -191,7 +191,7 @@ public class EclipseConnector {
 			}
 
 			OutputStream out = resp.getOutputStream();
-			IFilter filters[] = pageNotFound ? errorPageFilters : allFilters;
+			IFilter[] filters = pageNotFound ? errorPageFilters : allFilters;
 			if (isProcessingRequired(resp.getContentType())) {
 				for (IFilter filter : filters) {
 					// condition for enabling remote css
