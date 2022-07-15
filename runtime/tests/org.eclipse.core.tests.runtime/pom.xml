@@ -53,12 +53,12 @@
   							<versionRange>0.0.0</versionRange>
   						</requirement>
   						<requirement>
-  							<id>org.junit.platform.commons</id>
+  							<id>junit-platform-commons</id>
   							<type>p2-installable-unit</type>
   							<versionRange>0.0.0</versionRange>
   						</requirement>
   						<requirement>
-  							<id>org.junit.jupiter.api</id>
+  							<id>junit-jupiter-api</id>
   							<type>p2-installable-unit</type>
   							<versionRange>0.0.0</versionRange>
   						</requirement>

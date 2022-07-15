@@ -55,9 +55,9 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 			"org.eclipse.pde.junit.runtime", //
 			"org.hamcrest.core", //
 			"org.junit", //
-			"org.junit.jupiter.api", //
-			"org.junit.platform.commons", //
-			"org.apiguardian", //
+			"junit-jupiter-api", //
+			"junit-platform-commons", //
+			"org.apiguardian.api", //
 			"org.opentest4j", //
 			"org.eclipse.test.performance"};
 
