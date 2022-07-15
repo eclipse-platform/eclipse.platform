@@ -636,4 +636,8 @@ public abstract class ViewItem {
 
 	abstract boolean hasCompletionMessage();
 
+	boolean hasFocus() {
+		return bodyText.isFocusControl();
+	}
+
 }

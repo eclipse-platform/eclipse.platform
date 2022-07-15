@@ -1292,8 +1292,12 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 	}
 
 	public void copy() {
-		if (currentItem!=null)
-			currentItem.copy();
+		for (ViewItem viewItem : viewItemList) {
+			if (viewItem.hasFocus()) {
+				viewItem.copy();
+				return;
+			}
+		}
 	}
 
 	public void addListener(CheatSheetListener listener) {
