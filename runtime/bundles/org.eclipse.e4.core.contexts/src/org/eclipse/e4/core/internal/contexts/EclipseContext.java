@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2017 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -12,6 +12,7 @@
  *     IBM Corporation - initial API and implementation
  *     Daniel Kruegler <daniel.kruegler@gmail.com> - Bug 487417
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 492963
+ *     Christoph Läubrich - Issue #215
  *******************************************************************************/
 package org.eclipse.e4.core.internal.contexts;
 
@@ -212,8 +213,9 @@ public class EclipseContext implements IEclipseContext {
 			// ExtendedObjectSupplier implementations
 			EventAdmin admin = parent.get(EventAdmin.class);
 			if (admin != null) {
-				Event osgiEvent = new Event(IEclipseContext.TOPIC_DISPOSE, (Map<String, ?>) null);
-				admin.postEvent(osgiEvent);
+				Event osgiEvent = new Event(IEclipseContext.TOPIC_DISPOSE,
+						Map.of(IEclipseContext.PROPERTY_CONTEXT, this));
+				admin.sendEvent(osgiEvent);
 			}
 		}
 

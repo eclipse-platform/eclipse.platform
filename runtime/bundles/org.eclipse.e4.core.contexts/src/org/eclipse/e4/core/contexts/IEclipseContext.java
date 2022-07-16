@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2017 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Christoph Läubrich - Issue #215
  *******************************************************************************/
 
 package org.eclipse.e4.core.contexts;
@@ -54,6 +55,14 @@ public interface IEclipseContext {
 	 * @since 1.6
 	 */
 	String TOPIC_DISPOSE = "org/eclipse/e4/core/contexts/IEclipseContext/DISPOSE"; //$NON-NLS-1$
+
+	/**
+	 * Property that is used for the event on {@link #TOPIC_DISPOSE} and contains
+	 * the {@link IEclipseContext} that is about to be disposed.
+	 *
+	 * @since 1.11
+	 */
+	String PROPERTY_CONTEXT = "org.eclipse.e4.core.contexts.IEclipseContext"; //$NON-NLS-1$
 
 	/**
 	 * Returns whether this context or a parent has a value stored for the given
