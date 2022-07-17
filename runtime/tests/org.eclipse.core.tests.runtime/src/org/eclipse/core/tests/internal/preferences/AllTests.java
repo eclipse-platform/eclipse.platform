@@ -21,5 +21,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ EclipsePreferencesTest.class, PreferencesServiceTest.class, IScopeContextTest.class,
 		TestBug388004.class, TestBug380859.class, PreferenceExportTest.class, PreferenceForwarderTest.class,
 		PreferencesTest.class })
+@SuppressWarnings("deprecation")
 public class AllTests {
 }

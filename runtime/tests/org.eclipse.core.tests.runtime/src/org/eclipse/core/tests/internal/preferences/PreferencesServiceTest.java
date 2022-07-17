@@ -27,6 +27,7 @@ import org.osgi.service.prefs.Preferences;
 /**
  * @since 3.0
  */
+@SuppressWarnings("restriction")
 public class PreferencesServiceTest extends RuntimeTest {
 
 	static class ExportVerifier {

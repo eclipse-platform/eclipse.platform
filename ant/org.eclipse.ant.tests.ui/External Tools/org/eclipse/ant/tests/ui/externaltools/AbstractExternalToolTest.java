@@ -36,6 +36,7 @@ import org.eclipse.ui.externaltools.internal.model.BuilderUtils;
  * 
  * @since 3.5.100 org.eclipse.ant.tests.ui
  */
+@SuppressWarnings("restriction")
 public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 
 	static final String EXT_BUILD_FILE_NAME = "ext-builders.xml"; //$NON-NLS-1$

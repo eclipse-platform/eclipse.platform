@@ -32,6 +32,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.junit.Assert;
 
+@SuppressWarnings("restriction")
 public class AntUtilTests extends AbstractAntUITest {
 
 	private static final long EXECUTION_THRESHOLD_INCLUDE_TASK = 10000;

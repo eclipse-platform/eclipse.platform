@@ -14,8 +14,8 @@
 
 package org.eclipse.core.tools.runtime;
 
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.*;
+import java.util.List;
 import org.eclipse.core.runtime.PerformanceStats;
 import org.eclipse.core.tools.*;
 import org.eclipse.jface.action.*;
@@ -130,6 +130,7 @@ public class EventsView extends TableWithTotalView {
 
 	class StatsListener extends PerformanceStats.PerformanceListener {
 		private void asyncExec(Runnable runnable) {
+			@SuppressWarnings("synthetic-access")
 			final Control control = viewer.getControl();
 			if (control == null || control.isDisposed())
 				return;
@@ -180,17 +181,19 @@ public class EventsView extends TableWithTotalView {
 	private final StatsListener statsListener = new StatsListener();
 
 	@Override
-	protected String[] computeTotalLine(Iterator iter) {
+	protected String[] computeTotalLine(Iterator<PerformanceStats> iter) {
 		String[] totals = new String[getColumnHeaders().length];
 		int count = 0;
 		int events = 0;
 		int time = 0;
 		if (!iter.hasNext()) {
 			Object[] elements = ((ITreeContentProvider) viewer.getContentProvider()).getElements(viewer.getInput());
-			iter = Arrays.asList(elements == null ? new Object[0] : elements).iterator();
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+			List<PerformanceStats> list = elements == null ? (List) Arrays.asList(elements) : Collections.emptyList();
+			iter = list.iterator();
 		}
 		while (iter.hasNext()) {
-			PerformanceStats element = (PerformanceStats) iter.next();
+			PerformanceStats element = iter.next();
 			events += element.getRunCount();
 			time += element.getRunningTime();
 			count++;

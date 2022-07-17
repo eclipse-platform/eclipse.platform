@@ -372,6 +372,7 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		final Exception[] exception = new Exception[1];
 		Job job = new Job("testFailedNestRuleInJob") {
 			@Override
+			@SuppressWarnings("restriction")
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
 					try {

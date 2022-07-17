@@ -60,6 +60,7 @@ import org.eclipse.ui.internal.console.ConsoleHyperlinkPosition;
 /**
  * Tests for launch configurations
  */
+@SuppressWarnings("restriction")
 public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	public static final int DEFAULT_TIMEOUT = 20000;

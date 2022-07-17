@@ -32,6 +32,7 @@ import org.eclipse.core.tests.session.SessionTestSuite;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
+@SuppressWarnings("restriction")
 public class ContentTypePerformanceTest extends RuntimeTest {
 
 	private final static String CONTENT_TYPE_PREF_NODE = Platform.PI_RUNTIME + IPath.SEPARATOR + "content-types"; //$NON-NLS-1$

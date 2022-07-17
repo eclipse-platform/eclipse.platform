@@ -29,6 +29,7 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 
+@SuppressWarnings("restriction")
 public class AntEditorTests extends AbstractAntUITest {
 
 	public AntEditorTests(String name) {

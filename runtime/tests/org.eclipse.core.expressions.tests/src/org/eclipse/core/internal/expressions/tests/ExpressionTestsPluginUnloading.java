@@ -37,6 +37,7 @@ import org.eclipse.core.internal.expressions.Expressions;
  * <b>WARNING:</b> These tests start, stop, and re-start the <code>com.ibm.icu</code> bundle.
  * Don't include these in another test suite!
  */
+@SuppressWarnings("restriction")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ExpressionTestsPluginUnloading {
 

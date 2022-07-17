@@ -29,6 +29,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.junit.Assert;
 import org.w3c.dom.Element;
 
+@SuppressWarnings("restriction")
 public class TestTextCompletionProcessor extends AntEditorCompletionProcessor {
 
 	public final static int TEST_PROPOSAL_MODE_NONE = AntEditorCompletionProcessor.PROPOSAL_MODE_NONE;

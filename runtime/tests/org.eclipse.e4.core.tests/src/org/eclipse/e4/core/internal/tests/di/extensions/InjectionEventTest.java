@@ -45,6 +45,7 @@ import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventConstants;
 
 // TBD add auto-conversion?
+@SuppressWarnings("restriction")
 public class InjectionEventTest {
 
 	static protected boolean testFailed = false;

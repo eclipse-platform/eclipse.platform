@@ -28,6 +28,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 /*
  * Class that removes field declarations which aren't referenced.
  */
+@SuppressWarnings("restriction")
 public class FindUnusedMembers implements IRunnableWithProgress {
 
 	public static interface IResultReporter {

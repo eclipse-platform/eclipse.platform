@@ -23,7 +23,7 @@ import java.util.*;
  *
  * Note: This class is copied from org.eclipse.core.resources
  */
-public class ObjectMap implements Map {
+public class ObjectMap<K, V> implements Map<K, V> {
 	// 8 attribute keys, 8 attribute values
 	protected static final int DEFAULT_SIZE = 16;
 	protected static final int GROW_SIZE = 10;
@@ -48,7 +48,7 @@ public class ObjectMap implements Map {
 	 * @param map
 	 *                  The entries in the given map will be added to the new map.
 	 */
-	public ObjectMap(Map map) {
+	public ObjectMap(Map<K, V> map) {
 		this(map.size());
 		putAll(map);
 	}
@@ -60,14 +60,6 @@ public class ObjectMap implements Map {
 	public void clear() {
 		elements = null;
 		count = 0;
-	}
-
-	/**
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	public Object clone() {
-		return new ObjectMap(this);
 	}
 
 	/**
@@ -104,7 +96,7 @@ public class ObjectMap implements Map {
 	 * be bound to this map and will not remain in sync with this map.
 	 */
 	@Override
-	public Set entrySet() {
+	public Set<Entry<K, V>> entrySet() {
 		return count == 0 ? Collections.EMPTY_SET : toHashMap().entrySet();
 	}
 
@@ -115,7 +107,8 @@ public class ObjectMap implements Map {
 	public boolean equals(Object o) {
 		if (!(o instanceof Map))
 			return false;
-		Map other = (Map) o;
+		@SuppressWarnings("unchecked")
+		Map<K, V> other = (Map<K, V>) o;
 		//must be same size
 		if (count != other.size())
 			return false;
@@ -134,12 +127,13 @@ public class ObjectMap implements Map {
 	 * @see Map#get(java.lang.Object)
 	 */
 	@Override
-	public Object get(Object key) {
+	@SuppressWarnings("unchecked")
+	public V get(Object key) {
 		if (elements == null || count == 0)
 			return null;
 		for (int i = 0; i < elements.length; i = i + 2)
 			if (elements[i] != null && elements[i].equals(key))
-				return elements[i + 1];
+				return (V) elements[i + 1];
 		return null;
 	}
 
@@ -183,11 +177,12 @@ public class ObjectMap implements Map {
 	 * be bound to this map and will not remain in sync with this map.
 	 */
 	@Override
-	public Set keySet() {
-		Set<Object> result = new HashSet<>(size());
+	@SuppressWarnings("unchecked")
+	public Set<K> keySet() {
+		Set<K> result = new HashSet<>(size());
 		for (int i = 0; i < elements.length; i = i + 2) {
 			if (elements[i] != null) {
-				result.add(elements[i]);
+				result.add((K) elements[i]);
 			}
 		}
 		return result;
@@ -197,7 +192,7 @@ public class ObjectMap implements Map {
 	 * @see Map#put(java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public Object put(Object key, Object value) {
+	public V put(K key, V value) {
 		if (key == null)
 			throw new NullPointerException();
 		if (value == null)
@@ -218,7 +213,8 @@ public class ObjectMap implements Map {
 		for (int i = 0; i < elements.length; i += 2) {
 			if (elements[i] != null) {
 				if (elements[i].equals(key)) {
-					Object oldValue = elements[i + 1];
+					@SuppressWarnings("unchecked")
+					V oldValue = (V) elements[i + 1];
 					elements[i + 1] = value;
 					return oldValue;
 				}
@@ -246,11 +242,9 @@ public class ObjectMap implements Map {
 	 * @see Map#putAll(java.util.Map)
 	 */
 	@Override
-	public void putAll(Map map) {
-		for (Iterator i = map.keySet().iterator(); i.hasNext();) {
-			Object key = i.next();
-			Object value = map.get(key);
-			put(key, value);
+	public void putAll(Map<? extends K, ? extends V> map) {
+		for (Entry<? extends K, ? extends V> entry : map.entrySet()) {
+			put(entry.getKey(), entry.getValue());
 		}
 	}
 
@@ -258,13 +252,14 @@ public class ObjectMap implements Map {
 	 * @see Map#remove(java.lang.Object)
 	 */
 	@Override
-	public Object remove(Object key) {
+	public V remove(Object key) {
 		if (elements == null || count == 0)
 			return null;
 		for (int i = 0; i < elements.length; i = i + 2) {
 			if (elements[i] != null && elements[i].equals(key)) {
 				elements[i] = null;
-				Object result = elements[i + 1];
+				@SuppressWarnings("unchecked")
+				V result = (V) elements[i + 1];
 				elements[i + 1] = null;
 				count--;
 				return result;
@@ -284,11 +279,12 @@ public class ObjectMap implements Map {
 	/**
 	 * Creates a new hash map with the same contents as this map.
 	 */
-	private HashMap<Object, Object> toHashMap() {
-		HashMap<Object, Object> result = new HashMap<>(size());
+	@SuppressWarnings("unchecked")
+	private HashMap<K, V> toHashMap() {
+		HashMap<K, V> result = new HashMap<>(size());
 		for (int i = 0; i < elements.length; i = i + 2) {
 			if (elements[i] != null) {
-				result.put(elements[i], elements[i + 1]);
+				result.put((K) elements[i], (V) elements[i + 1]);
 			}
 		}
 		return result;
@@ -302,11 +298,12 @@ public class ObjectMap implements Map {
 	 * be bound to this map and will not remain in sync with this map.
 	 */
 	@Override
-	public Collection values() {
-		Set<Object> result = new HashSet<>(size());
+	@SuppressWarnings("unchecked")
+	public Collection<V> values() {
+		Set<V> result = new HashSet<>(size());
 		for (int i = 1; i < elements.length; i = i + 2) {
 			if (elements[i] != null) {
-				result.add(elements[i]);
+				result.add((V) elements[i]);
 			}
 		}
 		return result;

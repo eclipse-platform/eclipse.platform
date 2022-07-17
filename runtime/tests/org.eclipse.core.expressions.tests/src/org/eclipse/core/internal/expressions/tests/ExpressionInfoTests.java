@@ -35,6 +35,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 
+@SuppressWarnings("restriction")
 public class ExpressionInfoTests extends TestCase {
 
 	public static Test suite() {

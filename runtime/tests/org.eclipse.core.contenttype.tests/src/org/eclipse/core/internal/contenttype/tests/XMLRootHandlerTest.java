@@ -28,6 +28,7 @@ import org.xml.sax.SAXException;
 
 import org.eclipse.core.internal.content.XMLRootHandler;
 
+@SuppressWarnings("restriction")
 public class XMLRootHandlerTest {
 
 	private XMLRootHandler handler;

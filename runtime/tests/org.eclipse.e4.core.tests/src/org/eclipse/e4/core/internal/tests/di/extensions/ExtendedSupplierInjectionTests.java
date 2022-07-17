@@ -40,6 +40,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 
+@SuppressWarnings("restriction")
 public class ExtendedSupplierInjectionTests {
 	static final String TOPIC = "org/eclipse/e4/core/tests/di/extensions/ExtendedSupplierInjectionTests";
 	static final String TOPIC_430041 = "org/eclipse/e4/core/tests/di/extensions/ExtendedSupplierInjectionTests430041";

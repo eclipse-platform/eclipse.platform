@@ -13,7 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tools;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.core.runtime.IAdaptable;
 
 /**
@@ -25,7 +26,7 @@ public class TreeContentProviderNode implements Comparable<TreeContentProviderNo
 	/**
 	 * A list containing this node's children.
 	 */
-	private List children;
+	private List<TreeContentProviderNode> children;
 
 	/**
 	 * This node's name (may be null).
@@ -77,16 +78,13 @@ public class TreeContentProviderNode implements Comparable<TreeContentProviderNo
 	 *
 	 * @param child a new child to be added.
 	 */
-	public void addChild(Object child) {
+	public void addChild(TreeContentProviderNode child) {
 		// lazilly instantiates the children's list
 		if (this.children == null) {
 			this.children = new ArrayList<>();
 		}
 		this.children.add(child);
-		if (child instanceof TreeContentProviderNode) {
-			TreeContentProviderNode childNode = (TreeContentProviderNode) child;
-			childNode.setParent(this);
-		}
+		child.setParent(this);
 	}
 
 	/**
@@ -179,11 +177,8 @@ public class TreeContentProviderNode implements Comparable<TreeContentProviderNo
 			return;
 		if (children == null)
 			return;
-		for (Iterator<Object> childrenIter = children.iterator(); childrenIter.hasNext();) {
-			Object child = childrenIter.next();
-			// child nodes don't need to be TreeContentProviderNodes
-			if (child instanceof TreeContentProviderNode)
-				((TreeContentProviderNode) child).accept(visitor);
+		for (TreeContentProviderNode child : children) {
+			child.accept(visitor);
 		}
 	}
 
@@ -206,10 +201,11 @@ public class TreeContentProviderNode implements Comparable<TreeContentProviderNo
 			return this;
 		if (children == null || children.isEmpty())
 			return null;
-		for (Iterator<Object> i = children.iterator(); i.hasNext();) {
-			TreeContentProviderNode found = ((TreeContentProviderNode) i.next()).findNode(obj);
-			if (found != null)
+		for (TreeContentProviderNode child : children) {
+			TreeContentProviderNode found = child.findNode(obj);
+			if (found != null) {
 				return found;
+			}
 		}
 		return null;
 	}

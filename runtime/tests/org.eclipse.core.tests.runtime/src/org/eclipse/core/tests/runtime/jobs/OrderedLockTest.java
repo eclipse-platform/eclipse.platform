@@ -27,6 +27,7 @@ import org.junit.Test;
 /**
  * Tests implementation of ILock objects
  */
+@SuppressWarnings("restriction")
 public class OrderedLockTest {
 
 	/**

@@ -28,6 +28,7 @@ import org.eclipse.debug.ui.RefreshTab;
 /**
  * Tests migration of Ant and External Tool configurations from old formats to the current format.
  */
+@SuppressWarnings("restriction")
 public class MigrationTests extends AbstractExternalToolTest {
 
 	public MigrationTests() {

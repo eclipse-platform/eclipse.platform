@@ -28,6 +28,7 @@ import org.osgi.service.prefs.Preferences;
 /**
  * Test suite for API class org.eclipse.core.runtime.Preferences
  */
+@SuppressWarnings("restriction")
 public class EclipsePreferencesTest extends RuntimeTest {
 
 	static class NodeTracer implements IEclipsePreferences.INodeChangeListener {

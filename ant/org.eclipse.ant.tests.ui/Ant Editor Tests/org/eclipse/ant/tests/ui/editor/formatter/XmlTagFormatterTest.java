@@ -23,6 +23,7 @@ import org.eclipse.ant.internal.ui.editor.formatter.XmlTagFormatter;
 import org.eclipse.ant.internal.ui.editor.formatter.XmlTagFormatter.AttributePair;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 
+@SuppressWarnings("restriction")
 public class XmlTagFormatterTest extends AbstractAntUITest {
 
 	// TODO This test is too low level and too tightly coupled to internals.

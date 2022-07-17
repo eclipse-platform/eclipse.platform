@@ -13,8 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.internal.jobs;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
+import java.util.*;
 import org.eclipse.core.internal.runtime.RuntimeLog;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -79,7 +78,7 @@ public class LockManager {
 	 * (a stack is needed because when a thread tries to re-acquire suspended locks,
 	 * it can cause deadlock, and some locks it owns can be suspended again)
 	 */
-	private final HashMap<Thread, ArrayDeque<LockState[]>> suspendedLocks = new HashMap<>();
+	private final Map<Thread, Deque<LockState[]>> suspendedLocks = new HashMap<>();
 
 	public void aboutToRelease() {
 		if (lockListener == null)
@@ -306,10 +305,10 @@ public class LockManager {
 	void resumeSuspendedLocks(Thread owner) {
 		LockState[] toResume;
 		synchronized (suspendedLocks) {
-			ArrayDeque prevLocks = suspendedLocks.get(owner);
+			Deque<LockState[]> prevLocks = suspendedLocks.get(owner);
 			if (prevLocks == null)
 				return;
-			toResume = (LockState[]) prevLocks.pop();
+			toResume = prevLocks.pop();
 			if (prevLocks.isEmpty())
 				suspendedLocks.remove(owner);
 		}

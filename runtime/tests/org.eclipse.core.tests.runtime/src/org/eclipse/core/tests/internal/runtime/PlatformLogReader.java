@@ -26,6 +26,7 @@ import org.eclipse.osgi.util.NLS;
  * General strategy: log entries that are malformed in any way are skipped, and an extra
  * status is returned mentioned that there were problems.
  */
+@SuppressWarnings("restriction")
 public class PlatformLogReader {
 	private ArrayList<IStatus> list = null;
 	private String currentLine = "";

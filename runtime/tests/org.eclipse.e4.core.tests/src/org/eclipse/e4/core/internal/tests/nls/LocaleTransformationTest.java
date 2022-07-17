@@ -21,6 +21,7 @@ import java.util.Locale;
 import org.eclipse.e4.core.internal.services.ResourceBundleHelper;
 import org.junit.Test;
 
+@SuppressWarnings("restriction")
 public class LocaleTransformationTest {
 
 	@Test

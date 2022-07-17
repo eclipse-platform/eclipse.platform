@@ -785,12 +785,12 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * with the scheduling rule of the given job.  Returns null if there are no
 	 * conflicting jobs.
 	 */
-	InternalJob findBlockedJob(InternalJob job, Iterator jobs) {
+	private InternalJob findBlockedJob(InternalJob job) {
 		synchronized (lock) {
-			while (jobs.hasNext()) {
-				InternalJob waitingJob = (InternalJob) jobs.next();
-				if (waitingJob.isConflicting(job))
+			for (InternalJob waitingJob : waitingThreadJobs) {
+				if (waitingJob.isConflicting(job)) {
 					return waitingJob;
+				}
 			}
 			return null;
 		}
@@ -851,8 +851,8 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 				previous = previous.previous();
 			}
 			// consider threads waiting on IJobManager#beginRule
-			for (Iterator i = waitingThreadJobs.iterator(); i.hasNext();) {
-				ThreadJob waitingJob = (ThreadJob) i.next();
+			for (InternalJob waitingThreadJob : waitingThreadJobs) {
+				ThreadJob waitingJob = (ThreadJob) waitingThreadJob;
 				if (runningJob.isConflicting(waitingJob) && waitingJob.shouldInterrupt())
 					return true;
 			}
@@ -1518,13 +1518,13 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 						if (unblocked == null) {
 
 							// look for any implicit (or yielding) jobs we may be blocking.
-							unblocked = findBlockedJob(likeThreadJob, waitingThreadJobs.iterator());
+							unblocked = findBlockedJob(likeThreadJob);
 						}
 
 					} else {
 
 						// look for any implicit (or yielding) jobs we may be blocking.
-						unblocked = findBlockedJob(job, waitingThreadJobs.iterator());
+						unblocked = findBlockedJob(job);
 					}
 				}
 

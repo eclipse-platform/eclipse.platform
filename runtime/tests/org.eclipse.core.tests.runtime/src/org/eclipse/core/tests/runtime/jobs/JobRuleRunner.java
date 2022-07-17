@@ -54,6 +54,7 @@ class JobRuleRunner extends Job {
 	}
 
 	@Override
+	@SuppressWarnings("restriction")
 	protected IStatus run(IProgressMonitor monitor) {
 		//begin executing the job
 		monitor.beginTask(getName(), numRepeats);

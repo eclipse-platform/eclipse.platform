@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.junit.Test;
 
+@SuppressWarnings("restriction")
 public class WorkerPoolTest {
 	@Test
 	public void testIdleWorkerCap() throws Exception {

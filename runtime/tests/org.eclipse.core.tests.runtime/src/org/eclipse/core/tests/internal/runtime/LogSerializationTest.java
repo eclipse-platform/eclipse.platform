@@ -19,6 +19,7 @@ import org.eclipse.core.internal.runtime.RuntimeLog;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.tests.runtime.RuntimeTest;
 
+@SuppressWarnings("restriction")
 public class LogSerializationTest extends RuntimeTest {
 
 	static class TestException extends Exception {

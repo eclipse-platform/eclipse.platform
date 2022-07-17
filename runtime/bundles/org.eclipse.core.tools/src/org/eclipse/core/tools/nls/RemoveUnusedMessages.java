@@ -34,6 +34,7 @@ import org.eclipse.ltk.core.refactoring.*;
 /*
  * Class that removes field declarations which aren't referenced.
  */
+@SuppressWarnings("restriction")
 public class RemoveUnusedMessages extends Refactoring {
 
 	IType accessorClass;

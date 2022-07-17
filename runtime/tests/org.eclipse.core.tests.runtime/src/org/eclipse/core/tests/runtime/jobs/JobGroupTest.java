@@ -25,6 +25,7 @@ import org.eclipse.core.tests.harness.*;
 /**
  * Tests for {@link JobGroup}.
  */
+@SuppressWarnings("restriction")
 public class JobGroupTest extends AbstractJobTest {
 	private IJobManager manager;
 	private FussyProgressProvider progressProvider;

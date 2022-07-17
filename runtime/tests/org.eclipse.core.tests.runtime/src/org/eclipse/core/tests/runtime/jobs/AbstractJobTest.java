@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.jobs.Job;
  * Common superclass for all tests of the org.eclipse.core.runtime.jobs API. Provides
  * convenience methods useful for testing jobs.
  */
+@SuppressWarnings("restriction")
 public class AbstractJobTest extends TestCase {
 	public AbstractJobTest() {
 		super("");

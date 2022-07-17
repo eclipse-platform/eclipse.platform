@@ -23,6 +23,7 @@ import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
  * Tests the tasks description provider.
  * 
  */
+@SuppressWarnings("restriction")
 public class TaskDescriptionProviderTest extends AbstractAntUITest {
 
 	public TaskDescriptionProviderTest(String name) {

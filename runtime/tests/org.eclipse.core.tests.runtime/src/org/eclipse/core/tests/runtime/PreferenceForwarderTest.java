@@ -30,6 +30,7 @@ import org.osgi.service.prefs.BackingStoreException;
  * added to hide deprecation reference warnings.
  */
 @Deprecated
+@SuppressWarnings("restriction")
 public class PreferenceForwarderTest extends RuntimeTest {
 
 	static class Tracer implements Preferences.IPropertyChangeListener {

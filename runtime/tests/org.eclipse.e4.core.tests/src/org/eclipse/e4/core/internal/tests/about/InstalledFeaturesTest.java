@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IBundleGroupProvider;
 import org.eclipse.e4.core.internal.services.about.InstalledFeatures;
 import org.junit.Test;
 
+@SuppressWarnings("restriction")
 public class InstalledFeaturesTest {
 
 	@Test

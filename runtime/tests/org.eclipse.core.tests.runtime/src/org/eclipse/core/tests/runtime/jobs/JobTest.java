@@ -34,6 +34,7 @@ import org.junit.Assert;
 /**
  * Tests the implemented get/set methods of the abstract class Job
  */
+@SuppressWarnings("restriction")
 public class JobTest extends AbstractJobTest {
 	protected Job longJob;
 	protected Job shortJob;

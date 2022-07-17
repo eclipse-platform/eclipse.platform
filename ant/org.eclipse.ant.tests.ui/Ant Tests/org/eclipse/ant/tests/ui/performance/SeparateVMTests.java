@@ -22,6 +22,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.IDebugUIConstants;
 
+@SuppressWarnings("restriction")
 public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
 
 	public SeparateVMTests(String name) {

@@ -36,7 +36,7 @@ public class JobActivator implements BundleActivator {
 	/**
 	 * This plugin provides a JobManager service.
 	 */
-	private ServiceRegistration jobManagerService = null;
+	private ServiceRegistration<IJobManager> jobManagerService = null;
 
 	/**
 	 * This method is called upon plug-in activation
@@ -67,7 +67,7 @@ public class JobActivator implements BundleActivator {
 	}
 
 	private void registerServices() {
-		jobManagerService = bundleContext.registerService(IJobManager.class.getName(), JobManager.getInstance(), new Hashtable<>());
+		jobManagerService = bundleContext.registerService(IJobManager.class, JobManager.getInstance(), new Hashtable<>());
 	}
 
 	private void unregisterServices() {
