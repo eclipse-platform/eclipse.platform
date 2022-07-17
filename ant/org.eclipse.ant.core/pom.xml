@@ -19,7 +19,7 @@
   </parent>
   <groupId>org.eclipse.ant</groupId>
   <artifactId>org.eclipse.ant.core</artifactId>
-  <version>3.6.400-SNAPSHOT</version>
+  <version>3.6.500-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   <properties>
     <defaultSigning-excludeInnerJars>true</defaultSigning-excludeInnerJars>
