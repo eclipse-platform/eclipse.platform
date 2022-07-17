@@ -23,15 +23,18 @@
   <artifactId>eclipse.platform</artifactId>
   <packaging>pom</packaging>
 
-   <properties>
-     <tycho.scmUrl>scm:git:https://github.com/eclipse-platform/eclipse.platform.git</tycho.scmUrl>
+  <properties>
+    <tycho.scmUrl>scm:git:https://github.com/eclipse-platform/eclipse.platform.git</tycho.scmUrl>
+    <tycho.surefire.useUIHarness>false</tycho.surefire.useUIHarness>
+    <tycho.surefire.useUIThread>true</tycho.surefire.useUIThread>
+    <tycho.surefire.testClassesDirectory>${project.build.outputDirectory}</tycho.surefire.testClassesDirectory>
   </properties>
 
   <!-- 
     To build individual bundles, we specify a repository where to find parent pom, 
     in case it is not in local maven cache already
     and that parent pom also has fuller individual-bundle profile 
-    defined that is combined with this one. --> 
+    defined that is combined with this one. -->
   <profiles>
     <profile>
       <id>build-individual-bundles</id>
@@ -62,5 +65,19 @@
     <module>platform/org.eclipse.sdk</module>
     <module>runtime</module>
   </modules>
-
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-surefire-plugin</artifactId>
+          <configuration>
+            <testClassesDirectory>${tycho.surefire.testClassesDirectory}</testClassesDirectory>
+            <useUIHarness>${tycho.surefire.useUIHarness}</useUIHarness>
+            <useUIThread>${tycho.surefire.useUIThread}</useUIThread>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 </project>
