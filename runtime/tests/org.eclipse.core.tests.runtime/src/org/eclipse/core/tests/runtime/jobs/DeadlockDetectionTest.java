@@ -31,6 +31,7 @@ import org.junit.rules.TestName;
 /**
  * Tests implementation of ILock objects
  */
+@SuppressWarnings("restriction")
 public class DeadlockDetectionTest {
 	private final IJobManager manager = Job.getJobManager();
 

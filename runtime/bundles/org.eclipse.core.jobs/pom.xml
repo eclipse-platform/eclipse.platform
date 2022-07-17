@@ -22,7 +22,4 @@
   <artifactId>org.eclipse.core.jobs</artifactId>
   <version>3.13.100-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
-  <properties>
-    <code.ignoredWarnings>-warn:-deprecation,raw,unchecked</code.ignoredWarnings>
-  </properties>
 </project>

@@ -26,6 +26,7 @@ import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ui.*;
 
+@SuppressWarnings("restriction")
 public class RemoveUnusedMessagesAction implements IObjectActionDelegate {
 
 	private ICompilationUnit fAccessorUnit;

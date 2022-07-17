@@ -13,10 +13,6 @@
  *******************************************************************************/
 package org.eclipse.core.internal.expressions.tests;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.osgi.framework.Bundle;
 
 import org.eclipse.core.expressions.EvaluationContext;
@@ -29,6 +25,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+@SuppressWarnings("restriction")
 public class PropertyTesterTests extends TestCase {
 
 	private A a;

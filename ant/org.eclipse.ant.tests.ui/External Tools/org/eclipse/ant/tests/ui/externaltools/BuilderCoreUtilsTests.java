@@ -32,6 +32,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
  * 
  * @since 3.5.100 org.eclipse.ant.tests.ui
  */
+@SuppressWarnings("restriction")
 public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 
 	public BuilderCoreUtilsTests() {

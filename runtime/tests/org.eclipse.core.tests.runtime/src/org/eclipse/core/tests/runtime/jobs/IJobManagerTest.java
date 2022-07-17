@@ -24,6 +24,7 @@ import org.eclipse.core.tests.harness.*;
 /**
  * Tests the API of the class IJobManager
  */
+@SuppressWarnings("restriction")
 public class IJobManagerTest extends AbstractJobManagerTest {
 	class TestJobListener extends JobChangeAdapter {
 		private Set<Job> scheduled = Collections.synchronizedSet(new HashSet<Job>());

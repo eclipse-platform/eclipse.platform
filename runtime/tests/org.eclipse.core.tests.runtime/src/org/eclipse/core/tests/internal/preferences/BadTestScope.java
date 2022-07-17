@@ -24,6 +24,7 @@ import org.osgi.service.prefs.BackingStoreException;
 /**
  * @since 3.5
  */
+@SuppressWarnings("restriction")
 public class BadTestScope extends EclipsePreferences implements IScopeContext {
 
 	public static final String SCOPE = "badtest"; //$NON-NLS-1$

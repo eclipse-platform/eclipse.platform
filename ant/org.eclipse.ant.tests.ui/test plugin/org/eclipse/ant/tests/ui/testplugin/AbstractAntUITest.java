@@ -80,6 +80,7 @@ import junit.framework.TestCase;
 /**
  * Abstract Ant UI test class
  */
+@SuppressWarnings("restriction")
 public abstract class AbstractAntUITest extends TestCase {
 
 	public static String ANT_EDITOR_ID = "org.eclipse.ant.ui.internal.editor.AntEditor"; //$NON-NLS-1$

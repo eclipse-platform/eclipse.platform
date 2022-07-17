@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.*;
 /**
  * A linked list based priority queue.
  */
-public final class JobQueue {
+public final class JobQueue implements Iterable<InternalJob> {
 	/**
 	 * The dummy entry sits between the head and the tail of the queue.
 	 * dummy.previous() is the head, and dummy.next() is the tail.
@@ -146,8 +146,9 @@ public final class JobQueue {
 		return dummy.previous() == dummy ? null : dummy.previous();
 	}
 
-	public Iterator iterator() {
-		return new Iterator() {
+	@Override
+	public Iterator<InternalJob> iterator() {
+		return new Iterator<>() {
 			InternalJob pointer = dummy;
 
 			@Override
@@ -160,7 +161,7 @@ public final class JobQueue {
 			}
 
 			@Override
-			public Object next() {
+			public InternalJob next() {
 				return pointer;
 			}
 

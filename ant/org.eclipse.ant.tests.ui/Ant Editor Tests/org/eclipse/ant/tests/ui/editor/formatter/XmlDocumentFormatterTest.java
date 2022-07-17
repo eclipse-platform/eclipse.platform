@@ -17,6 +17,7 @@ import org.eclipse.ant.internal.ui.editor.formatter.FormattingPreferences;
 import org.eclipse.ant.internal.ui.editor.formatter.XmlDocumentFormatter;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 
+@SuppressWarnings("restriction")
 public class XmlDocumentFormatterTest extends AbstractAntUITest {
 
 	public XmlDocumentFormatterTest(String name) {

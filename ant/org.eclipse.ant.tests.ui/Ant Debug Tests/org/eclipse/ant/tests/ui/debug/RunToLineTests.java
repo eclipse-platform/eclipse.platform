@@ -39,6 +39,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 /**
  * Tests run to line debug functionality
  */
+@SuppressWarnings("restriction")
 public class RunToLineTests extends AbstractAntDebugTest {
 
 	public RunToLineTests(String name) {

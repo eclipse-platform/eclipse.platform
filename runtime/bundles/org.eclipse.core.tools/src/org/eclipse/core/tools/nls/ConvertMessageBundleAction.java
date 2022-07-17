@@ -16,7 +16,6 @@ package org.eclipse.core.tools.nls;
 import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.jface.action.IAction;
@@ -27,6 +26,7 @@ import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ui.*;
 
+@SuppressWarnings("restriction")
 public class ConvertMessageBundleAction implements IObjectActionDelegate {
 
 	private ICompilationUnit fAccessorUnit;
@@ -43,12 +43,7 @@ public class ConvertMessageBundleAction implements IObjectActionDelegate {
 			return;
 		try {
 			final GotoResourceAction pAction = new GotoResourceAction(fPart);
-			IRunnableWithProgress runnable = new IRunnableWithProgress() {
-				@Override
-				public void run(IProgressMonitor monitor) {
-					pAction.run();
-				}
-			};
+			IRunnableWithProgress runnable = monitor -> pAction.run();
 			PlatformUI.getWorkbench().getProgressService().run(false, false, runnable);
 			IFile propertiesFile = (IFile) pAction.getResource();
 			if (propertiesFile == null)

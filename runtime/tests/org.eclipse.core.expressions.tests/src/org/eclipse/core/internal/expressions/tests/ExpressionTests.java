@@ -68,6 +68,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 
 
+@SuppressWarnings("restriction")
 public class ExpressionTests {
 
 	private static final int TYPE_ITERATIONS = 100000;
@@ -959,7 +960,10 @@ public class ExpressionTests {
 
 		DocumentBuilder builder= DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		URL url = FrameworkUtil.getBundle(ExpressionTests.class).getEntry("plugin.xml");
-		Document document= builder.parse(url.openStream());
+		Document document;
+		try (var in = url.openStream()) {
+			document = builder.parse(in);
+		}
 		NodeList testParticipants= document.getElementsByTagName("testParticipant");
 		for (int i= 0; i < testParticipants.getLength(); i++) {
 			Element elem= (Element)testParticipants.item(i);

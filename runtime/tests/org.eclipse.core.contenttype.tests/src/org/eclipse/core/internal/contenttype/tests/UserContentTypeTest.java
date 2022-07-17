@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 
+@SuppressWarnings("restriction")
 public class UserContentTypeTest {
 
 	private IContentType createdUserContentType;

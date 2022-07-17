@@ -33,6 +33,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.console.IHyperlink;
 
+@SuppressWarnings("restriction")
 public class BuildTests extends AbstractAntUIBuildTest {
 
 	public BuildTests(String name) {

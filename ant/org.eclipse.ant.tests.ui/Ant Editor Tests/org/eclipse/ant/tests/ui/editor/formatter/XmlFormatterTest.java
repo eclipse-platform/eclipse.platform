@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.junit.Test;
 
+@SuppressWarnings("restriction")
 public class XmlFormatterTest {
 	@Test
 	public final void testFormatUsingPreferenceStore() throws Exception {

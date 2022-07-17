@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.internal.jobs;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -64,7 +66,7 @@ public class OrderedLock implements ILock, ISchedulingRule {
 	 * on the lock. This queue is not thread-safe, so access
 	 * to this queue must be synchronized on the lock instance.
 	 */
-	private final Queue operations = new Queue();
+	private final Queue<Semaphore> operations = new ArrayDeque<>();
 
 	/**
 	 * Creates a new workspace lock.
@@ -187,7 +189,7 @@ public class OrderedLock implements ILock, ISchedulingRule {
 		//notify hook
 		manager.aboutToRelease();
 		depth = 0;
-		Semaphore next = (Semaphore) operations.peek();
+		Semaphore next = operations.peek();
 		setCurrentOperationThread(null);
 		if (next != null)
 			next.release();
@@ -198,9 +200,9 @@ public class OrderedLock implements ILock, ISchedulingRule {
 	 * queue, the other is returned and the new one is not added.
 	 */
 	private synchronized Semaphore enqueue(Semaphore newSemaphore) {
-		Semaphore semaphore = (Semaphore) operations.get(newSemaphore);
+		Semaphore semaphore = operations.stream().filter(s -> s.equals(newSemaphore)).findAny().orElse(null);
 		if (semaphore == null) {
-			operations.enqueue(newSemaphore);
+			operations.offer(newSemaphore);
 			return newSemaphore;
 		}
 		return semaphore;
@@ -283,7 +285,7 @@ public class OrderedLock implements ILock, ISchedulingRule {
 	 * Remove the request from the queue and update both the graph and the lock.
 	 */
 	private synchronized void updateCurrentOperation() {
-		operations.dequeue();
+		operations.poll();
 		setCurrentOperationThread(Thread.currentThread());
 	}
 

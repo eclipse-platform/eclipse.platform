@@ -39,6 +39,7 @@ import org.eclipse.osgi.service.datalocation.Location;
 import org.junit.Assert;
 import org.osgi.framework.Bundle;
 
+@SuppressWarnings("restriction")
 public class ConfigurationSessionTestSuite extends SessionTestSuite {
 	// include configurator as it is required by compatibility, but do not set it to start
 	public static String[] MINIMAL_BUNDLE_SET = {"org.eclipse.equinox.common@2:start", //

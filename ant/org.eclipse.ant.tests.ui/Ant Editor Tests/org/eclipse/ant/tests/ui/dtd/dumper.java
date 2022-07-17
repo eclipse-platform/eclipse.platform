@@ -34,6 +34,7 @@ import org.eclipse.ant.internal.ui.dtd.Parser;
  * 
  * @author Bob Foster
  */
+@SuppressWarnings("restriction")
 public class dumper {
 
 	public static int main(String[] args) {

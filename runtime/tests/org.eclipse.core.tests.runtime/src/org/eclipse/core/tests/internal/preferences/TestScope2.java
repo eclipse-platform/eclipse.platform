@@ -25,6 +25,7 @@ import org.osgi.service.prefs.BackingStoreException;
  * Test scope used for testing the file format on disk.
  * Specifically in EclipsePreferencesTest.test_342709.
  */
+@SuppressWarnings("restriction")
 public class TestScope2 extends EclipsePreferences implements IScopeContext {
 
 	public static final String SCOPE = "test2"; //$NON-NLS-1$

@@ -25,6 +25,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.ui.PartInitException;
 
+@SuppressWarnings("restriction")
 public class OccurrencesFinderTests extends AbstractAntUITest {
 
 	public OccurrencesFinderTests(String name) {

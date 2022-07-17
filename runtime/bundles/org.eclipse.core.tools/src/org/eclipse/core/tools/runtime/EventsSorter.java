@@ -65,8 +65,10 @@ public class EventsSorter extends ViewerComparator implements ISorter {
 		reversed = newReversed;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void sort(final Viewer viewer, Object[] elements) {
+		@SuppressWarnings("rawtypes")
 		Comparator comparator = new Comparator<PerformanceStats>() {
 			Collator c = Collator.getInstance();
 

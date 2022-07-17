@@ -27,6 +27,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.ui.PartInitException;
 
+@SuppressWarnings("restriction")
 public class OpenAntEditorTest extends AbstractAntPerformanceTest {
 
 	@Override

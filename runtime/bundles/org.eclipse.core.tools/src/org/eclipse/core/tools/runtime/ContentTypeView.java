@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
  * the content type registry .
  *
  */
+@SuppressWarnings("restriction")
 public class ContentTypeView extends SpyView {
 
 	private static class ContentTypeContentProvider extends AbstractTreeContentProvider {

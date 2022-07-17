@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("restriction")
 public class JobQueueTest {
 	class Entry extends InternalJob {
 		Entry(int value) {

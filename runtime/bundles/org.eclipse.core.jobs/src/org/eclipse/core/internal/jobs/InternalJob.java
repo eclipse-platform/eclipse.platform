@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.jobs.*;
  * Internal implementation class for jobs. Clients must not implement this class
  * directly.  All jobs must be subclasses of the API <code>org.eclipse.core.runtime.jobs.Job</code> class.
  */
-public abstract class InternalJob extends PlatformObject implements Comparable {
+public abstract class InternalJob extends PlatformObject implements Comparable<InternalJob> {
 	/**
 	 * Job state code (value 16) indicating that a job has been removed from
 	 * the wait queue and is about to start running. From an API point of view,
@@ -106,7 +106,7 @@ public abstract class InternalJob extends PlatformObject implements Comparable {
 	 * Arbitrary properties (key,value) pairs, attached
 	 * to a job instance by a third party.
 	 */
-	private ObjectMap properties;
+	private ObjectMap<QualifiedName, Object> properties;
 
 	/**
 	 * Volatile because it is usually set via a Worker thread and is read via a
@@ -193,8 +193,8 @@ public abstract class InternalJob extends PlatformObject implements Comparable {
 	}
 
 	@Override
-	public final int compareTo(Object otherJob) {
-		return ((InternalJob) otherJob).startTime >= startTime ? 1 : -1;
+	public final int compareTo(InternalJob otherJob) {
+		return otherJob.startTime >= startTime ? 1 : -1;
 	}
 
 	protected void done(IStatus endResult) {
@@ -226,7 +226,7 @@ public abstract class InternalJob extends PlatformObject implements Comparable {
 
 	protected Object getProperty(QualifiedName key) {
 		// thread safety: (Concurrency001 - copy on write)
-		Map temp = properties;
+		Map<QualifiedName, Object> temp = properties;
 		if (temp == null)
 			return null;
 		return temp.get(key);
@@ -456,18 +456,18 @@ public abstract class InternalJob extends PlatformObject implements Comparable {
 		if (value == null) {
 			if (properties == null)
 				return;
-			ObjectMap temp = (ObjectMap) properties.clone();
+			ObjectMap<QualifiedName, Object> temp = new ObjectMap<>(properties);
 			temp.remove(key);
 			if (temp.isEmpty())
 				properties = null;
 			else
 				properties = temp;
 		} else {
-			ObjectMap temp = properties;
+			ObjectMap<QualifiedName, Object> temp = properties;
 			if (temp == null)
-				temp = new ObjectMap(5);
+				temp = new ObjectMap<>(5);
 			else
-				temp = (ObjectMap) properties.clone();
+				temp = new ObjectMap<>(properties);
 			temp.put(key, value);
 			properties = temp;
 		}

@@ -49,6 +49,7 @@ import org.w3c.dom.Element;
  * Tests everything about code completion and code assistance.
  * 
  */
+@SuppressWarnings("restriction")
 public class CodeCompletionTest extends AbstractAntUITest {
 
 	/**

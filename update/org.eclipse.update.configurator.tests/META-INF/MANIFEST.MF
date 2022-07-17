@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.junit;bundle-version="4.12.0",
  org.eclipse.update.configurator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: %providerName
 Export-Package: org.eclipse.update.configurator.tests,
  org.eclipse.update.internal.configurator.tests

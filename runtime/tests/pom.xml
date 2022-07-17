@@ -19,9 +19,6 @@
   </parent>
   <artifactId>eclipse.platform.runtime.tests</artifactId>
   <packaging>pom</packaging>
-  <properties>
-    <code.ignoredWarnings>${tests.ignoredWarnings}</code.ignoredWarnings>
-  </properties>
   <modules>
     <module>org.eclipse.core.expressions.tests</module>
     <module>org.eclipse.core.tests.harness</module>

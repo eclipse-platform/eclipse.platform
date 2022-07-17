@@ -31,6 +31,7 @@ import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.PerformanceTestCase;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
+@SuppressWarnings("restriction")
 public class OpenLaunchConfigurationDialogTests extends PerformanceTestCase {
 
 	public static String fgIdentifier = IExternalToolConstants.ID_EXTERNAL_TOOLS_LAUNCH_GROUP;

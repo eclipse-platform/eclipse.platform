@@ -29,6 +29,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PlatformUI;
 
+@SuppressWarnings("restriction")
 public class AntViewTests extends AbstractAntUITest {
 
 	public AntViewTests(String name) {

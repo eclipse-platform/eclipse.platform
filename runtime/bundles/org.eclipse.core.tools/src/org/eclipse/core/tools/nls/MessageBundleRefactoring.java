@@ -31,6 +31,7 @@ import org.eclipse.jdt.internal.corext.refactoring.util.RefactoringFileBuffers;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ltk.core.refactoring.*;
 
+@SuppressWarnings("restriction")
 public class MessageBundleRefactoring extends Refactoring {
 
 	IType fAccessorClass;
@@ -133,10 +134,10 @@ public class MessageBundleRefactoring extends Refactoring {
 					return true;
 				if (!"java.lang.String".equals(params[0].getQualifiedName()))
 					return true;
-				List args = node.arguments();
+				List<Expression> args = node.arguments();
 				if (args.size() != 1)
 					return true;
-				Object obj = args.get(0);
+				Expression obj = args.get(0);
 				if (!(obj instanceof StringLiteral))
 					return true;
 				// compute the key of the message property

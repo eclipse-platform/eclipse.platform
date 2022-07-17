@@ -21,9 +21,6 @@
   <artifactId>org.eclipse.ant.tests.core</artifactId>
   <version>3.6.300-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
-  <properties>
-    <code.ignoredWarnings>${tests.ignoredWarnings}</code.ignoredWarnings>
-  </properties>
   <build>
   	<plugins>
   	    <plugin>

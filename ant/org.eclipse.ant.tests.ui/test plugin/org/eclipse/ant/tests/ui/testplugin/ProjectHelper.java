@@ -50,6 +50,7 @@ import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 /**
  * Helper methods to set up an IProject.
  */
+@SuppressWarnings("restriction")
 public class ProjectHelper {
 
 	public static final IPath TEST_BUILDFILES_DIR = new Path("testbuildfiles"); //$NON-NLS-1$

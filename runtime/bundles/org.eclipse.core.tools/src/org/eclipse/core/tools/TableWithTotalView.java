@@ -14,6 +14,7 @@
 package org.eclipse.core.tools;
 
 import java.util.Iterator;
+import org.eclipse.core.runtime.PerformanceStats;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
@@ -189,7 +190,7 @@ public abstract class TableWithTotalView extends ViewPart implements ISelectionP
 		createContextMenu();
 	}
 
-	abstract protected String[] computeTotalLine(Iterator elements);
+	abstract protected String[] computeTotalLine(Iterator<PerformanceStats> elements);
 
 	private void createCommonActions() {
 		copyAction = new Action() {

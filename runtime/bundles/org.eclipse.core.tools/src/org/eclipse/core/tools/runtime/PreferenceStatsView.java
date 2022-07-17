@@ -37,6 +37,7 @@ import org.osgi.service.prefs.BackingStoreException;
  *
  * @since 3.0
  */
+@SuppressWarnings("restriction")
 public class PreferenceStatsView extends SpyView {
 
 	// The JFace widget used for showing the Element Tree info.
@@ -169,15 +170,14 @@ public class PreferenceStatsView extends SpyView {
 			return count;
 		}
 
-		private int basicSizeof(Map map) {
+		private int basicSizeof(Map<?, ?> map) {
 			if (map == null)
 				return 0;
 
 			//formula taken from BundleStats
 			int count = (int) Math.round(44 + (16 + (map.size() * 1.25 * 4)) + (24 * map.size()));
 
-			for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
-				Map.Entry entry = (Map.Entry) it.next();
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
 				count += sizeof(entry.getKey());
 				count += sizeof(entry.getValue());
 			}
@@ -198,7 +198,7 @@ public class PreferenceStatsView extends SpyView {
 			if (object instanceof Integer)
 				return 16;
 			if (object instanceof Map)
-				return basicSizeof((Map) object);
+				return basicSizeof((Map<?, ?>) object);
 			if (object instanceof IEclipsePreferences)
 				return basicSizeof((IEclipsePreferences) object);
 			if (object instanceof QualifiedName) {

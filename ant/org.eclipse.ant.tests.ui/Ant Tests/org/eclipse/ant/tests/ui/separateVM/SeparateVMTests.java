@@ -38,6 +38,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.console.IHyperlink;
 
+@SuppressWarnings("restriction")
 public class SeparateVMTests extends AbstractAntUIBuildTest {
 
 	protected static final String PLUGIN_VERSION = "org.apache.ant_1.10.12"; //$NON-NLS-1$
