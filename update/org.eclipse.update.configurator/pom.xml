@@ -19,6 +19,6 @@
   </parent>
   <groupId>org.eclipse.update</groupId>
   <artifactId>org.eclipse.update.configurator</artifactId>
-  <version>3.4.800-SNAPSHOT</version>
+  <version>3.4.900-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
