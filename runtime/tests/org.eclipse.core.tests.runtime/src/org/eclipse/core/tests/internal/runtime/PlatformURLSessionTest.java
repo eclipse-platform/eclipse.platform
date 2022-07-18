@@ -59,11 +59,8 @@ public class PlatformURLSessionTest extends RuntimeTest {
 		ConfigurationSessionTestSuite suite = new ConfigurationSessionTestSuite(PI_RUNTIME_TESTS, PlatformURLSessionTest.class);
 		suite.setReadOnly(true);
 		suite.setCascaded(true);
-		String[] ids = ConfigurationSessionTestSuite.MINIMAL_BUNDLE_SET;
-		for (String id : ids) {
-			suite.addBundle(id);
-		}
-		suite.addBundle(PI_RUNTIME_TESTS);
+		suite.addMinimalBundleSet();
+		suite.addThisBundle();
 		return suite;
 	}
 

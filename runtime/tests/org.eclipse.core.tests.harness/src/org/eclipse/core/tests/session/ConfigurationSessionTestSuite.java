@@ -13,18 +13,23 @@
  *******************************************************************************/
 package org.eclipse.core.tests.session;
 
-import java.io.BufferedOutputStream;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.StackWalker.Option;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
@@ -38,6 +43,8 @@ import org.eclipse.core.tests.session.SetupManager.SetupException;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.junit.Assert;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
 
 @SuppressWarnings("restriction")
 public class ConfigurationSessionTestSuite extends SessionTestSuite {
@@ -96,8 +103,49 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		super(pluginId, name);
 	}
 
+	public void addMinimalBundleSet() {
+		// Just use any class from the bundles we want to add as minimal bundle set
+
+		addBundle(org.eclipse.core.runtime.FileLocator.class, "@2:start"); // org.eclipse.equinox.common
+		addBundle(org.eclipse.core.runtime.Platform.class, "@:start"); // org.eclipse.core.runtime
+		addBundle(org.eclipse.core.runtime.jobs.Job.class); // org.eclipse.core.jobs
+		addBundle(org.eclipse.core.runtime.IExtension.class); // org.eclipse.equinox.registry
+		addBundle(org.eclipse.core.runtime.preferences.IEclipsePreferences.class); // org.eclipse.equinox.preferences
+		addBundle(org.osgi.service.prefs.Preferences.class); // org.osgi.service.prefs
+		addBundle(org.eclipse.core.runtime.content.IContentType.class); // org.eclipse.core.contenttype
+		addBundle(org.eclipse.equinox.app.IApplication.class); // org.eclipse.equinox.app
+
+		addBundle(org.eclipse.core.tests.harness.CoreTest.class); // org.eclipse.core.tests.harness
+		addBundle(org.eclipse.test.performance.Performance.class); // org.eclipse.test.performance
+
+		addBundle(org.eclipse.jdt.internal.junit.runner.ITestLoader.class); // org.eclipse.jdt.junit.runtime
+		addBundle(org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader.class); // org.eclipse.jdt.junit4.runtime
+		addBundle(org.eclipse.pde.internal.junit.runtime.CoreTestApplication.class); // org.eclipse.pde.junit.runtime
+
+		addBundle(org.hamcrest.CoreMatchers.class); // org.hamcrest.core
+		addBundle(org.junit.Test.class); // org.junit
+		addBundle(org.junit.jupiter.api.Test.class); // junit-jupiter-api
+		addBundle(org.junit.platform.commons.JUnitException.class); // junit-platform-commons
+		addBundle(org.apiguardian.api.API.class); // org.apiguardian.api
+		addBundle(org.opentest4j.AssertionFailedError.class); // org.opentest4j
+	}
+
 	public void addBundle(String id) {
 		bundles.addAll(getURLs(id));
+	}
+
+	private static final StackWalker STACK_WALKER = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
+
+	public void addThisBundle() {
+		addBundle(STACK_WALKER.getCallerClass());
+	}
+
+	public void addBundle(Class<?> classFromBundle) {
+		addBundle(classFromBundle, null);
+	}
+
+	public void addBundle(Class<?> classFromBundle, String suffix) {
+		bundles.add(getURL(classFromBundle, suffix));
 	}
 
 	public void setConfigIniValue(String key, String value) {
@@ -114,7 +162,9 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		}
 		osgiBundles.deleteCharAt(osgiBundles.length() - 1);
 		contents.put("osgi.bundles", osgiBundles.toString());
-		String osgiFramework = getURLs("org.eclipse.osgi").get(0);
+		Bundle osgiFrameworkBundle = FrameworkUtil.getBundle(ConfigurationSessionTestSuite.class).getBundleContext()
+				.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
+		String osgiFramework = getBundleReference(osgiFrameworkBundle, null);
 		contents.put("osgi.framework", osgiFramework);
 		contents.put("osgi.bundles.defaultStartLevel", "4");
 		contents.put("osgi.install.area", Platform.getInstallLocation().getURL().toExternalForm());
@@ -128,7 +178,7 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		}
 		// save the properties
 		File configINI = configurationPath.append("config.ini").toFile();
-		try (OutputStream out = new BufferedOutputStream(new FileOutputStream(configINI))) {
+		try (OutputStream out = new FileOutputStream(configINI)) {
 			contents.store(out, null);
 		}
 	}
@@ -147,7 +197,6 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 	}
 
 	private List<String> getURLs(String id) {
-		List<String> result = new ArrayList<>();
 		String suffix = "";
 		int atIndex = id.indexOf('@');
 		if (atIndex >= 0) {
@@ -155,30 +204,29 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 			id = id.substring(0, atIndex);
 		}
 		Bundle[] allVersions = Platform.getBundles(id, null);
-		Assert.assertNotNull("0.0.1." + id, allVersions);
-		for (Bundle bundle : allVersions) {
-			Assert.assertNotNull("0.1 " + id, bundle);
-			URL url = bundle.getEntry("/");
-			Assert.assertNotNull("0.2 " + id, url);
-			try {
-				url = FileLocator.resolve(url);
-			} catch (IOException e) {
-				CoreTest.fail("0.3 " + url, e);
-			}
-			String externalForm;
-			if (url.getProtocol().equals("jar")) {
-				// if it is a JAR'd plug-in, URL is jar:file:/path/file.jar!/ - see bug 86195
-				String path = url.getPath();
-				// change it to be file:/path/file.jar
-				externalForm = path.substring(0, path.length() - 2);
-			} else {
-				externalForm = url.toExternalForm();
-			}
-			// workaround for bug 88070
-			externalForm = "reference:" + externalForm;
-			result.add(externalForm + suffix);
+		Assert.assertNotNull("No bundles found in test runtime with id: " + id, allVersions);
+		String refSuffix = suffix;
+		return Arrays.stream(allVersions).map(b -> getBundleReference(b, refSuffix)).collect(Collectors.toList());
+	}
+
+	private String getURL(Class<?> classFromBundle, String suffix) {
+		Bundle bundle = FrameworkUtil.getBundle(classFromBundle);
+		Assert.assertNotNull("Class is not from a bundle: " + classFromBundle, bundle);
+		return getBundleReference(bundle, suffix);
+	}
+
+	private String getBundleReference(Bundle bundle, String suffix) {
+		Optional<File> location = FileLocator.getBundleFileLocation(bundle);
+		assertTrue("Unable to locate bundle with id: " + bundle.getSymbolicName(), location.isPresent());
+		String externalForm;
+		try {
+			externalForm = location.get().toURI().toURL().toExternalForm();
+		} catch (Exception e) {
+			CoreTest.fail("Failed to convert file to URL string:" + location.get(), e);
+			return null; // Cannot happen
 		}
-		return result;
+		// workaround for bug 88070
+		return "reference:" + externalForm + (suffix != null ? suffix : "");
 	}
 
 	public boolean isCascaded() {
