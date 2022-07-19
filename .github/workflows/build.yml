@@ -39,6 +39,7 @@ jobs:
         -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss.SSS
         -DtrimStackTrace=false
         -Dmaven.compiler.failOnWarning=true
+        -T1C
         clean verify
     - name: Upload Test Results
       uses: actions/upload-artifact@v3
