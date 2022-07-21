@@ -11,6 +11,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     James Blackburn (Broadcom Corp.) - ongoing development
+ *     Ingo Mohr - Issue #166 - Add Preference to Turn Off Warning-Check for Project Specific Encoding
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -50,6 +51,13 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 * @since 3.12
 	 */
 	public static final int PREF_MISSING_NATURE_MARKER_SEVERITY_DEFAULT = IMarker.SEVERITY_WARNING;
+	/**
+	 * Default setting for
+	 * {@value ResourcesPlugin#PREF_MISSING_ENCODING_MARKER_SEVERITY}.
+	 *
+	 * @since 3.18
+	 */
+	public static final int PREF_MISSING_ENCODING_MARKER_SEVERITY_DEFAULT = IMarker.SEVERITY_WARNING;
 
 	/**
 	 * @since 3.13
@@ -76,6 +84,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		node.putInt(ResourcesPlugin.PREF_MAX_BUILD_ITERATIONS, PREF_MAX_BUILD_ITERATIONS_DEFAULT);
 		node.putBoolean(ResourcesPlugin.PREF_DEFAULT_BUILD_ORDER, PREF_DEFAULT_BUILD_ORDER_DEFAULT);
 		node.putInt(ResourcesPlugin.PREF_MISSING_NATURE_MARKER_SEVERITY, PREF_MISSING_NATURE_MARKER_SEVERITY_DEFAULT);
+		node.putInt(ResourcesPlugin.PREF_MISSING_ENCODING_MARKER_SEVERITY,
+				PREF_MISSING_ENCODING_MARKER_SEVERITY_DEFAULT);
 
 
 		// history store defaults

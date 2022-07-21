@@ -14,6 +14,7 @@
  *     Tom Hochstein (Freescale) - Bug 409996 - 'Restore Defaults' does not work properly on Project Properties > Resource tab
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
  *     Christoph Läubrich - Issue #80 - CharsetManager access the ResourcesPlugin.getWorkspace before init
+ *     Ingo Mohr - Issue #166 - Add Preference to Turn Off Warning-Check for Project Specific Encoding
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -25,6 +26,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
@@ -250,6 +252,7 @@ public class CharsetManager implements IManager {
 	private CharsetDeltaJob charsetListener;
 	CharsetManagerJob job;
 	private IResourceChangeListener resourceChangeListener;
+	private IPreferenceChangeListener preferenceChangeListener;
 	protected final Bundle systemBundle = Platform.getBundle("org.eclipse.osgi"); //$NON-NLS-1$
 	Workspace workspace;
 
@@ -460,6 +463,9 @@ public class CharsetManager implements IManager {
 
 	@Override
 	public void shutdown(IProgressMonitor monitor) {
+		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES)
+				.removePreferenceChangeListener(preferenceChangeListener);
+
 		workspace.removeResourceChangeListener(resourceChangeListener);
 		if (charsetListener != null)
 			charsetListener.shutdown();
@@ -509,5 +515,18 @@ public class CharsetManager implements IManager {
 		charsetListener = new CharsetDeltaJob(workspace);
 		charsetListener.startup();
 		ValidateProjectEncoding.scheduleWorkspaceValidation(workspace);
+		initPreferenceChangeListener();
 	}
+
+	private void initPreferenceChangeListener() {
+		preferenceChangeListener = event -> {
+			if (ResourcesPlugin.PREF_MISSING_ENCODING_MARKER_SEVERITY.equals(event.getKey())) {
+				ValidateProjectEncoding.scheduleWorkspaceValidation(workspace);
+			}
+		};
+
+		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES)
+				.addPreferenceChangeListener(preferenceChangeListener);
+	}
+
 }

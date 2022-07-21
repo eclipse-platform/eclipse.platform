@@ -10,6 +10,7 @@
  *
  *  Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Ingo Mohr - Issue #166 - Add Preference to Turn Off Warning-Check for Project Specific Encoding
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
@@ -24,7 +25,8 @@ import org.junit.runners.Suite;
 		IResourceChangeListenerTest.class, IResourceDeltaTest.class, IResourceTest.class, ISynchronizerTest.class,
 		IWorkspaceRootTest.class, IWorkspaceTest.class, LinkedResourceTest.class,
 		LinkedResourceWithPathVariableTest.class, LinkedResourceSyncMoveAndCopyTest.class, MarkerSetTest.class,
-		MarkerTest.class, NatureTest.class, NonLocalLinkedResourceTest.class, ProjectOrderTest.class,
+		MarkerTest.class, NatureTest.class, NonLocalLinkedResourceTest.class, ProjectEncodingTest.class,
+		ProjectOrderTest.class,
 		ProjectScopeTest.class, ProjectSnapshotTest.class, ResourceAttributeTest.class, ResourceURLTest.class,
 		TeamPrivateMemberTest.class, WorkspaceTest.class })
 public class AllTests {

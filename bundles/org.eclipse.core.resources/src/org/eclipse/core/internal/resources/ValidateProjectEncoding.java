@@ -11,6 +11,7 @@
  * Contributors:
  *     Simeon Andreev - initial API and implementation
  *     Christoph Läubrich - Issue #80 - CharsetManager access the ResourcesPlugin.getWorkspace before init
+ *     Ingo Mohr - Issue #166 - Add Preference to Turn Off Warning-Check for Project Specific Encoding
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
@@ -29,6 +30,12 @@ public class ValidateProjectEncoding extends InternalWorkspaceJob {
 
 	public static final String MARKER_TYPE = ResourcesPlugin.getPlugin().getBundle().getSymbolicName() + "." //$NON-NLS-1$
 			+ MARKER_ID;
+
+	/**
+	 * Severity value to specify that a missing explicit project encoding shall not
+	 * produce any problem marker.
+	 */
+	public static final int SEVERITY_IGNORE = -1;
 
 	public static void scheduleWorkspaceValidation(Workspace workspace) {
 		IProject[] projects = workspace.getRoot().getProjects();
@@ -83,9 +90,10 @@ public class ValidateProjectEncoding extends InternalWorkspaceJob {
 	static void updateMissingEncodingMarker(IProject project) {
 		try {
 			if (project.isAccessible() && !project.isHidden()) {
+				int severity = getSeverity();
 				String defaultCharset = getDefaultCharset(project);
-				if (defaultCharset == null) {
-					createEncodingMarker(project);
+				if (severity != SEVERITY_IGNORE && defaultCharset == null) {
+					createOrUpdateMissingEncodingMarker(project, severity);
 				} else {
 					deleteEncodingMarkers(project);
 				}
@@ -93,6 +101,20 @@ public class ValidateProjectEncoding extends InternalWorkspaceJob {
 		} catch (CoreException e) {
 			logException(e);
 		}
+	}
+
+	/**
+	 * Returns the current severity for
+	 * {@link ResourcesPlugin#PREF_MISSING_ENCODING_MARKER_SEVERITY}.
+	 *
+	 * @return current severity. Returns the default value if nothing else is
+	 *         specified.
+	 */
+	private static int getSeverity() {
+		int severity = PreferenceInitializer.PREF_MISSING_ENCODING_MARKER_SEVERITY_DEFAULT;
+		severity = Platform.getPreferencesService().getInt(ResourcesPlugin.PI_RESOURCES,
+				ResourcesPlugin.PREF_MISSING_ENCODING_MARKER_SEVERITY, severity, null);
+		return severity;
 	}
 
 	private static boolean shouldScheduleValidation(IProject project) {
@@ -125,25 +147,35 @@ public class ValidateProjectEncoding extends InternalWorkspaceJob {
 		return defaultCharset;
 	}
 
-	private static void createEncodingMarker(IProject project) throws CoreException {
+	private static void createOrUpdateMissingEncodingMarker(IProject project, int severity) throws CoreException {
 		String message = NLS.bind(Messages.resources_checkExplicitEncoding_problemText, project.getName());
 
-		String[] attributeNames = { IMarker.MESSAGE, IMarker.SEVERITY, IMarker.LOCATION };
-		Object[] attributevalues = { message, IMarker.SEVERITY_WARNING, project.getFullPath().toString() };
+		String[] attributeNames = { IMarker.MESSAGE, IMarker.LOCATION };
+		Object[] attributevalues = { message, project.getFullPath().toString() };
 
 		IMarker[] existing = project.findMarkers(MARKER_TYPE, false, IResource.DEPTH_ONE);
 		for (IMarker marker : existing) {
 			Object[] markerValues = marker.getAttributes(attributeNames);
 			if (Arrays.equals(attributevalues, markerValues)) {
+				updateMarkerSeverity(marker, severity);
 				return;
 			}
 		}
 
 		Map<String, Object> attributes = new HashMap<>();
 		for (int i = 0; i < attributeNames.length; i++) {
-		    attributes.put(attributeNames[i], attributevalues[i]);
+			attributes.put(attributeNames[i], attributevalues[i]);
 		}
+		attributes.put(IMarker.SEVERITY, severity);
 		project.createMarker(MARKER_TYPE, attributes);
+	}
+
+	private static void updateMarkerSeverity(IMarker marker, int severity) throws CoreException {
+		int currentSeverity = (int) marker.getAttribute(IMarker.SEVERITY);
+
+		if (currentSeverity != severity) {
+			marker.setAttribute(IMarker.SEVERITY, severity);
+		}
 	}
 
 	private static void deleteEncodingMarkers(IProject project) throws CoreException {

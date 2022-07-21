@@ -17,6 +17,7 @@
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
  *     Christoph Läubrich 	- Issue #52 - Make ResourcesPlugin more dynamic and better handling early start-up
  *     						- Issue #68 - Use DS for CheckMissingNaturesListener
+ *     Ingo Mohr - Issue #166 - Add Preference to Turn Off Warning-Check for Project Specific Encoding
  *******************************************************************************/
 package org.eclipse.core.resources;
 
@@ -354,6 +355,18 @@ public final class ResourcesPlugin extends Plugin {
 	 * @since 3.13
 	 */
 	public static final String PREF_MISSING_NATURE_MARKER_SEVERITY = "missingNatureMarkerSeverity"; //$NON-NLS-1$
+
+	/**
+	 * Name of a preference for configuring the marker severity in case project does
+	 * not specify its encoding.
+	 * <p>
+	 * Supported severities are those from {@link IMarker} and also <code>-1</code>
+	 * for "ignore".
+	 * </p>
+	 *
+	 * @since 3.18
+	 */
+	public static final String PREF_MISSING_ENCODING_MARKER_SEVERITY = "missingEncodingMarkerSeverity"; //$NON-NLS-1$
 
 	/**
 	 * Name of the preference to set max number of concurrent jobs running the workspace build.
