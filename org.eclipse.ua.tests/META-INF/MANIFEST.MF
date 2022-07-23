@@ -27,7 +27,8 @@ Require-Bundle: org.junit,
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: javax.servlet;version="3.1.0",
- javax.servlet.http;version="3.1.0"
+ javax.servlet.http;version="3.1.0",
+ org.apache.commons.fileupload;version="1.3.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.ua.tests,
  org.eclipse.ua.tests.browser.servlet,
