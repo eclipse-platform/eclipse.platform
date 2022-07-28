@@ -20,6 +20,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.eclipse.core.internal.preferences.exchange.ILegacyPreferences;
 import org.eclipse.core.internal.preferences.exchange.IProductPreferencesService;
 import org.eclipse.core.internal.preferences.legacy.InitLegacyPreferences;
@@ -57,11 +58,11 @@ public final class InternalPlatform {
 	public static boolean DEBUG_PLUGIN_PREFERENCES = false;
 
 	private boolean splashEnded = false;
-	private boolean initialized;
+	private volatile boolean initialized;
 	private static final String KEYRING = "-keyring"; //$NON-NLS-1$
 	private String keyringFile;
 
-	private Map<Bundle, Log> logs = new ConcurrentHashMap<>(5);
+	private ConcurrentMap<Bundle, Log> logs = new ConcurrentHashMap<>(5);
 
 	private static final String[] OS_LIST = { Platform.OS_LINUX, Platform.OS_MACOSX, Platform.OS_WIN32 };
 	private String password = ""; //$NON-NLS-1$
@@ -378,14 +379,20 @@ public final class InternalPlatform {
 	 * The system log listener needs to be optional: turned on or off. What about a system property? :-)
 	 */
 	public ILog getLog(Bundle bundle) {
-		return logs.computeIfAbsent(bundle, b -> {
-			ExtendedLogService logService = extendedLogTracker.getService();
-			Logger logger = logService != null ? logService.getLogger(b, PlatformLogWriter.EQUINOX_LOGGER_NAME) : null;
-			Log log = new Log(b, logger);
-			ExtendedLogReaderService logReader = logReaderTracker.getService();
-			logReader.addLogListener(log, log);
-			return log;
-		});
+		if (isRunning()) {
+			return logs.computeIfAbsent(bundle, b -> {
+				ExtendedLogService logService = extendedLogTracker.getService();
+				Logger logger = logService != null ? logService.getLogger(b, PlatformLogWriter.EQUINOX_LOGGER_NAME)
+						: null;
+				Log log = new Log(b, logger);
+				ExtendedLogReaderService logReader = logReaderTracker.getService();
+				if (logReader != null) {
+					logReader.addLogListener(log, log);
+				}
+				return log;
+			});
+		}
+		return new Log(bundle, null);
 	}
 
 	public String getNL() {
@@ -745,6 +752,11 @@ public final class InternalPlatform {
 	}
 
 	private void closeOSGITrackers() {
+		ExtendedLogReaderService logReader = logReaderTracker.getService();
+		if (logReader != null) {
+			logs.forEach((b, log) -> logReader.removeLogListener(log));
+		}
+		logs.clear();
 		if (preferencesTracker != null) {
 			preferencesTracker.close();
 		}
