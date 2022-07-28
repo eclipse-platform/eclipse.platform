@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Save Participant 1
 Bundle-Activator: org.eclipse.core.tests.resources.saveparticipant1.SaveParticipant1Plugin
 Bundle-SymbolicName: org.eclipse.core.tests.resources.saveparticipant1
-Bundle-Version: 3.4.0.qualifier
+Bundle-Version: 3.4.100.qualifier
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.core.tests.resources.saveparticipant1
 Require-Bundle: org.eclipse.core.resources,

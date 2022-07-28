@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core Resource Management Spy Support Fragment
 Bundle-SymbolicName: org.eclipse.core.resources.spysupport
-Bundle-Version: 1.5.200.qualifier
+Bundle-Version: 1.5.300.qualifier
 Bundle-Vendor: Eclipse.org
 Fragment-Host: org.eclipse.core.resources;bundle-version="[3.0.0,4.0.0)"
 Export-Package: org.eclipse.core.internal.dtree;x-friends:="org.eclipse.core.tools.resources",

@@ -24,6 +24,6 @@
   </properties>
 
   <artifactId>org.eclipse.core.tests.resources.saveparticipant</artifactId>
-  <version>3.4.0-SNAPSHOT</version>
+  <version>3.4.100-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
 </project>

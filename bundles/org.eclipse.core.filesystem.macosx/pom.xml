@@ -18,7 +18,7 @@
     <relativePath>../../</relativePath>
   </parent>
   <artifactId>org.eclipse.core.filesystem.macosx</artifactId>
-  <version>1.3.300-SNAPSHOT</version>
+  <version>1.3.400-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
   <properties>
