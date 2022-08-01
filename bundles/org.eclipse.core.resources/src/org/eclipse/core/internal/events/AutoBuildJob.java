@@ -319,6 +319,9 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
+			// if the system is shutting down, don't build
+			if (systemBundle.getState() == Bundle.STOPPING)
+				return Status.OK_STATUS;
 			final ISchedulingRule rule = workspace.getRuleFactory().buildRule();
 			try {
 				workspace.prepareOperation(rule, monitor);
