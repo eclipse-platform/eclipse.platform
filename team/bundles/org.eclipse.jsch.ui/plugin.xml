@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<!--
+    Copyright (c) 2007, 2011 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+   <extension
+   		point="org.eclipse.ui.keywords">
+    <keyword
+            label="%PreferenceKeywords.SSH"
+            id="org.eclipse.jsch.ui.ssh2"/>
+   </extension>  
+   
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.eclipse.jsch.internal.ui.preference.PreferencePage"
+            id="org.eclipse.jsch.ui.SSHPreferences"
+            name="%ssh2PreferencePage.name"
+            category="org.eclipse.ui.net.NetPreferences">
+      <keywordReference id="org.eclipse.jsch.ui.ssh2"/>
+      </page>
+   </extension>
+   
+   <extension
+         point="org.eclipse.jsch.core.authenticator">
+      <authenticator>
+         <run
+               class="org.eclipse.jsch.internal.ui.authenticator.WorkbenchUserAuthenticator">
+         </run>
+      </authenticator>
+   </extension>
+
+</plugin>

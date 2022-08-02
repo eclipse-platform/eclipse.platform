@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2005, 2015 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<component xmlns="http://eclipse.org/component"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://eclipse.org/component ../component.xsd "
+   name="Eclipse Platform Team/CVS">
+   
+ <component-depends unrestricted="true"/>
+
+ <plugin id="org.eclipse.team.core" />
+ <plugin id="org.eclipse.team.ui" />
+ <plugin id="org.eclipse.team.cvs.core" />
+ <plugin id="org.eclipse.team.cvs.ui" />
+ <plugin id="org.eclipse.team.cvs.ssh2" />
+
+ <package name="org.eclipse.core.resources">
+   <type name="IFileContentManager" implement="false" />
+   <type name="IFileTypeInfo" implement="false" />
+   <type name="IIgnoreInfo" implement="false" />
+   <type name="IStringMapping" implement="false" />
+   <type name="Team" instantiate="false" />
+ </package>
+ 
+ <package name="org.eclipse.team.core.subscribers">
+   <type name="ISubscriberChangeEvent" implement="false" />
+ </package>
+ 
+ <package name="org.eclipse.team.core.synchronize">
+ </package>
+ 
+ <package name="org.eclipse.team.core.variants">
+   <type name="IResourceVariantTree" implement="false" />
+   <type name="PersistantResourceVariantByteStore" subclass="false" />
+   <type name="SessionResourceVariantByteStore" subclass="false" />
+ </package>
+ 
+ <package name="org.eclipse.team.ui">
+   <type name="TeamUI" subclass="false" instantiate="false" />
+   <type name="TeamImages" subclass="false" instantiate="false" />
+ </package>
+ 
+ <package name="org.eclipse.team.ui.synchronize">
+    <type name="ISynchronizeManager" implement="false" />
+    <type name="ISynchronizePageConfiguration" implement="false" />
+    <type name="ISynchronizePageSite" implement="false" />
+    <type name="ISynchronizeParticipant" implement="false" />
+    <type name="ISynchronizeParticipantDescriptor" implement="false" />
+    <type name="ISynchronizeParticipantReference" implement="false" />
+    <type name="ISynchronizeScope" implement="false" />
+    <type name="ISynchronizeView" implement="false" />
+    <type name="ResourceScope" subclass="false" />
+    <type name="WorkingSetScope" subclass="false" />
+    <type name="WorkspaceScope" subclass="false" />
+ </package>
+
+</component>

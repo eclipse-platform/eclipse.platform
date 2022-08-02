@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.team.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.team.ui" id="synchronizeParticipants" name="Synchronize Participants"/>
+      </appInfo>
+      <documentation>
+         This extension point is used to register a synchronize participant. A synchronize participant is a component that displays changes between resources and typically allows the user to manipulate the changes. For example, CVS defines a workspace synchronize participant that allows showing changes between workspace resources and the resources at a remote location that is used to share those resources. Synchronize participants are typically created via a synchronize participant wizard or they can be created via a plug-in action and then registered with the ISynchronizeManager. The Synchronize View displays synchronize participants.
+&lt;p&gt;
+A participant is a generic component that provides access to creating a page and is shown to the user and a configuration that defines common configuration parameters for the page. The Synchronize View doesn&apos;t enforce any restrictions on how changes are shown to the user, and instead only manages the participants.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="participant" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  An optional identifier of the extension instance.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  An optional name for this extension instance.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="participant">
+      <complexType>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  An icon that will be used when showing this participant in lists and menus.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A unique name that will be used to identify this type of participant.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A fully qualified name of the class the extends &lt;samp&gt;org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant&lt;/samp&gt;.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.team.ui.synchronize.ISynchronizeParticipant"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name of the participant. This will be shown in the UI.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="persistent" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  By default participants will be persisted between sessions. Set this attribute to false if this participant should not be persisted between sessions.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="helpContextId" type="string">
+            <annotation>
+               <documentation>
+                  Since 3.5. A unique identifier indicating the help context for this participant.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         &lt;p&gt;&lt;pre&gt;
+
+&lt;extension
+ point=&quot;org.eclipse.team.ui.synchronizeParticipants&quot;&gt;
+ &lt;participant
+  name=&quot;CVS Workspace&quot;
+  icon=&quot;icons/full/cview16/server.gif&quot;         
+  class=&quot;org.eclipse.team.internal.ccvs.ui.subscriber.WorkspaceSynchronizeParticipant&quot;
+  id=&quot;org.eclipse.team.cvs.ui.cvsworkspace-participant&quot;
+  helpContextId=&quot;org.eclipse.team.cvs.ui.cvs_workspace_sync_view_context&quot;&gt;
+ &lt;/participant&gt;
+ &lt;participant
+  name=&quot;CVS Merge&quot;
+  icon=&quot;icons/full/obj16/prjversions_rep.gif&quot;
+  class=&quot;org.eclipse.team.internal.ccvs.ui.subscriber.MergeSynchronizeParticipant&quot;
+  type=&quot;dynamic&quot;
+  id=&quot;org.eclipse.team.cvs.ui.cvsmerge-participant&quot;&gt;
+ &lt;/participant&gt;
+&lt;/extension&gt;
+
+&lt;/pre&gt;&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         The value of the &lt;samp&gt;class&lt;/samp&gt; attribute must represent a class that implements &lt;samp&gt;org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant&lt;/samp&gt;.
+      </documentation>
+   </annotation>
+
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2005, 2009 IBM Corporation and others.
+
+This program and the accompanying materials are made available under the terms of the Eclipse Public License 2.0 which accompanies this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

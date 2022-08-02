@@ -1,0 +1,16 @@
+# Debugging options for the org.eclipse.team.ui plugin.
+
+# Turn on debugging for the plugin.
+org.eclipse.team.ui/debug=false
+
+# Shows stream debugging information
+org.eclipse.team.ui/syncmodels=false
+
+# Shows history debugging information
+org.eclipse.team.ui/history=false
+
+# Shows DnD related debugging information
+org.eclipse.team.ui/dnd=false
+
+# Shows information about the compare editor input lifecycle
+org.eclipse.team.ui/compare_editor_input=false

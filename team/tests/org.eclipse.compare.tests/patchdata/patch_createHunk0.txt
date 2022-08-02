@@ -1,0 +1,19 @@
+### Eclipse Workspace Patch 1.0
+#P Bug202944
+Index: tmp/list.txt
+===================================================================
+RCS file: /TEST/Bug202944/tmp/list.txt,v
+retrieving revision 1.2
+diff -u -r1.2 list.txt
+--- tmp/list.txt	20 Feb 2009 11:02:27 -0000	1.2
++++ tmp/list.txt	20 Feb 2009 11:03:29 -0000
+@@ -1,6 +1,8 @@
++[a1]
++[a2]
++[a3]
+ [a]
+ [b]
+-[c]
+ [d]
+ [e]
+ [f]

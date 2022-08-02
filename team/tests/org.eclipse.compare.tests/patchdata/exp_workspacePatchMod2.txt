@@ -1,0 +1,35 @@
+package testPkg;
+
+public class TestProjectClass1 implements IWorkspacePatcherTest {
+
+	public TestProjectClass1(){};
+	
+	/**
+	 * Does something - how much is dictated by howMuchSomething, the something
+	 * is called nameOfSomething
+	 * 
+	 * @param howMuchSomething
+	 * @param nameOfSomething
+	 */
+	public void doSomething(int howMuchSomething, String nameOfSomething){
+		//does something
+	}
+
+	public boolean canApplyToMultipleProjects() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void doSomething() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean isWorkspacePatcherTest() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
+
+}

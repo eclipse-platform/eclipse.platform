@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+    Copyright (c) 2002, 2011 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<!-- =================================================================================== -->
+<!-- Team Examples Plug-in Manifest 					                                 -->
+<!-- =================================================================================== -->
+<plugin>
+
+<!-- =================================================================================== -->
+<!-- Libraries						 					                                 -->
+<!-- =================================================================================== -->
+
+
+<!-- =================================================================================== -->
+<!-- Imports						 					                                 -->
+<!-- =================================================================================== -->
+   
+
+<!-- =================================================================================== -->
+<!-- Repository Providers																 -->
+<!-- =================================================================================== -->
+
+<extension point="org.eclipse.team.core.repository">
+	<repository
+    	class="org.eclipse.team.examples.filesystem.FileSystemProvider"
+		id="org.eclipse.team.examples.filesystem.FileSystemProvider">
+	</repository>
+</extension>
+
+<extension point="org.eclipse.team.core.repository">
+	<repository
+		class="org.eclipse.team.examples.pessimistic.PessimisticFilesystemProvider"
+		id="org.eclipse.team.examples.pessimistic.pessimisticnature">
+	</repository>
+</extension>
+
+<!-- =================================================================================== -->
+<!-- Synchronize Participants -->
+<!-- =================================================================================== -->
+
+ <extension
+       point="org.eclipse.team.ui.synchronizeParticipants">
+    <participant
+          persistent="false"
+          class="org.eclipse.team.examples.filesystem.ui.FileSystemSynchronizeParticipant"
+          icon="icons/full/wizards/fsicon_wiz.gif"
+          name="File System Example"
+          id="org.eclipse.team.examples.filesystem.participant"/>
+ </extension>
+ 
+ <extension
+       point="org.eclipse.team.ui.synchronizeWizards">
+    <wizard
+          class="org.eclipse.team.examples.filesystem.ui.SynchronizeWizard"
+          icon="icons/full/wizards/fsicon_wiz.gif"
+          description="Synchronize files managed with the file system provider."
+          name="Synchronize File System Provider"
+          id="org.eclipse.team.examples.filesystem.synchronizeWizard"/>
+ </extension>
+ 
+ <extension
+         point="org.eclipse.team.ui.synchronizeParticipants">
+      <participant
+            persistent="false"
+            icon="icons/full/wizards/synced.gif"
+            class="org.eclipse.team.examples.localhistory.LocalHistoryParticipant"
+            name="Latest From Local History"
+            id="org.eclipse.team.synchronize.example"/>
+   </extension>
+   
+   <extension
+         point="org.eclipse.team.ui.synchronizeWizards">
+      <wizard
+            class="org.eclipse.team.examples.localhistory.LocalHistorySynchronizeWizard"
+            icon="icons/full/wizards/synced.gif"
+            description="Synchronize resources with their previous contents in the local history"
+            name="Synchronize with Latest From Local History"
+            id="ExampleSynchronizeSupport.wizard1"/>
+   </extension>
+      
+<!-- =================================================================================== -->
+<!-- Common Navigator viewer for the file systen synchronizations						 -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+       <viewer
+           viewerId="org.eclipse.team.examples.filesystem.syncViewer">
+           <popupMenu
+                allowsPlatformContributions="false"
+                id="org.eclipse.team.examples.filesystem.syncViewer#PopupMenu">  
+             <insertionPoint name="file"/>  
+             <insertionPoint name="edit"/>          
+             <insertionPoint name="synchronize"/>
+             <insertionPoint
+                   name="navigate"
+                   separator="true"/>
+             <insertionPoint
+                   name="merge"
+                   separator="true"/>
+             <insertionPoint
+                   name="put"
+                   separator="false"/>
+             <insertionPoint
+                   name="overwrite"
+                   separator="true"/> 
+             <insertionPoint
+                   name="other"
+                   separator="true"/> 
+             <insertionPoint
+                   name="sort"
+                   separator="true"/>
+             <insertionPoint
+                   name="additions"
+                   separator="true"/>              
+             <insertionPoint
+                   name="properties"
+                   separator="true"/>
+          </popupMenu>
+       </viewer>
+   </extension>
+   
+<!-- =================================================================================== -->
+<!-- Menus for File System Example														 -->
+<!-- =================================================================================== -->
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.mapping.ResourceMapping"
+            adaptable="true"
+            id="org.eclipse.team.examples.filesystem.ResourceContributions">
+         <enablement>
+               <adapt type="org.eclipse.core.resources.mapping.ResourceMapping">
+                   <test property="org.eclipse.core.resources.projectPersistentProperty"
+                         args="org.eclipse.team.core.repository,org.eclipse.team.examples.filesystem.FileSystemProvider"/>
+               </adapt>
+         </enablement>
+         <action
+               label="%Put.name"
+               tooltip="%Put.tooltip"
+               class="org.eclipse.team.examples.filesystem.ui.PutAction"
+               menubarPath="team.main/group1"
+               id="org.eclipse.team.examples.filesystem.put">
+         </action>
+         <action
+               label="%Get.name"
+               tooltip="%Get.tooltip"
+               class="org.eclipse.team.examples.filesystem.ui.GetAction"
+               menubarPath="team.main/group1"
+               id="org.eclipse.team.examples.filesystem.get">
+         </action>
+         <action
+               label="Merge"
+               tooltip="Merge"
+               class="org.eclipse.team.examples.filesystem.ui.MergeAction"
+               menubarPath="team.main/group1"
+               id="org.eclipse.team.examples.filesystem.merge">
+         </action>
+         <action
+               label="%Synchronize.name"
+               tooltip="%Synchronize.tooltip"
+               class="org.eclipse.team.examples.filesystem.ui.SynchronizeAction"
+               menubarPath="team.main/group1"
+               id="org.eclipse.team.examples.filesystem.synchronize">
+         </action>
+         <action
+               label="%Replace.name"
+               tooltip="%ReplaceAction.tooltip"
+               class="org.eclipse.team.examples.filesystem.ui.ReplaceAction"
+               menubarPath="replaceWithMenu/replaceWithGroup"
+               id="org.eclipse.team.examples.filesystem.replace">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.eclipse.team.examples.filesystem.ProjectContributions">
+         <filter
+               name="projectPersistentProperty"
+               value="org.eclipse.team.core.repository=org.eclipse.team.examples.filesystem.FileSystemProvider">
+         </filter>
+         <action
+               label="%Unmanage.name"
+               tooltip="%Unmanage.tooltip"
+               class="org.eclipse.team.examples.filesystem.ui.DisconnectAction"
+               menubarPath="team.main/group2"
+               id="org.eclipse.team.examples.filesystem.unmanage">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.eclipse.team.examples.filesystem.fileContribution"
+            objectClass="org.eclipse.core.resources.IFile">
+          <enablement>
+            <adapt type="org.eclipse.core.resources.mapping.ResourceMapping">
+              <test property="org.eclipse.core.resources.projectPersistentProperty"
+              args="org.eclipse.team.core.repository,org.eclipse.team.examples.filesystem.FileSystemProvider"/>
+            </adapt>
+         </enablement>
+         <action
+               class="org.eclipse.team.examples.filesystem.ui.ShowHistoryAction"
+               id="org.eclipse.team.examples.filesystem.showHistory"
+               label="Show History"
+               menubarPath="team.main/group4">
+         </action>
+      </objectContribution>
+   </extension>
+
+<!-- =================================================================================== -->
+<!-- Sharing Wizards 														 			 -->
+<!-- =================================================================================== -->
+
+   <extension
+         point="org.eclipse.team.ui.configurationWizards">
+      <wizard
+            name="%fswizard.name"
+            icon="icons/full/wizards/fsicon_wiz.gif"
+            class="org.eclipse.team.examples.filesystem.ui.ConfigurationWizard"
+            id="org.eclipse.team.examples.filesystem.ui.ConfigurationWizard">
+      </wizard>
+   </extension>
+   
+      <extension
+         point="org.eclipse.team.ui.configurationWizards">
+      <wizard
+            name="Pessimistic Simple Provider (Non-Versioning)"
+            icon="icons/full/wizards/fsicon_wiz.gif"
+            class="org.eclipse.team.examples.pessimistic.ui.ConfigurationWizard"
+            id="org.eclipse.team.examples.pessimistic.ui.ConfigurationWizard">
+      </wizard>
+   </extension>
+   
+<!-- =================================================================================== -->
+<!-- Property Pages																		 -->
+<!-- =================================================================================== -->
+
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            name="%fspropertypage.name"
+            class="org.eclipse.team.examples.filesystem.ui.FileSystemPropertiesPage"
+            id="org.eclipse.team.examples.filesystem.ui.FileSystemPropertiesPage">
+         <filter
+               name="projectPersistentProperty"
+               value="org.eclipse.team.core.repository=org.eclipse.team.examples.filesystem.FileSystemProvider">
+         </filter>
+      </page>
+   </extension>
+
+<!-- =================================================================================== -->
+<!-- Preference Pages																	 -->
+<!-- =================================================================================== -->
+
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Pessimistic Filesystem Provider"
+            category="org.eclipse.team.ui.TeamPreferences"
+            class="org.eclipse.team.examples.pessimistic.ui.PessimisticPreferencesPage"
+            id="org.eclipse.team.examples.pessimistic.ui.PessimisticPreferences">
+      </page>
+   </extension>
+
+<!-- =================================================================================== -->
+<!-- Decorators																		 -->
+<!-- =================================================================================== -->
+
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            adaptable="true"
+            label="Pessimistic Filesystem Provider Decorator"
+            state="true"
+            class="org.eclipse.team.examples.pessimistic.ui.PessimisticDecorator"
+            id="org.eclipse.team.pessimistic.ui.decorator">
+         <description>
+            Provides simple checked-in, checked-out decorations on files.
+         </description>
+         <enablement>
+             <objectClass name="org.eclipse.core.resources.IResource"/> 
+         </enablement>
+      </decorator>
+   </extension>
+
+<!-- =================================================================================== -->
+<!-- Menus for Pessimistic Provider														 -->
+<!-- =================================================================================== -->
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.eclipse.team.cvs.ui.filesystem.ResourceContributions">
+         <filter
+               name="projectPersistentProperty"
+               value="org.eclipse.team.core.repository=org.eclipse.team.examples.pessimistic.pessimisticnature">
+         </filter>
+         <action
+               label="Checkout"
+               tooltip="Check resources out of the repository"
+               class="org.eclipse.team.examples.pessimistic.ui.CheckOutAction"
+               menubarPath="team.main/group1"
+               id="org.eclipse.team.examples.pessimistic.checkout">
+         </action>
+         <action
+               label="Checkin"
+               tooltip="Check resources into the repository"
+               class="org.eclipse.team.examples.pessimistic.ui.CheckInAction"
+               menubarPath="team.main/group1"
+               id="org.eclipse.team.examples.pessimistic.checkin">
+         </action>
+         <action
+               label="Uncheckout"
+               tooltip="Revert checked out status of resources"
+               class="org.eclipse.team.examples.pessimistic.ui.UncheckOutAction"
+               menubarPath="team.main/group1"
+               id="org.eclipse.team.examples.pessimistic.uncheckout">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            adaptable="true"
+            id="org.eclipse.team.cvs.ui.filesystem.ResourceContributions">
+         <filter
+               name="projectPersistentProperty"
+               value="org.eclipse.team.core.repository=org.eclipse.team.examples.pessimistic.pessimisticnature">
+         </filter>            
+         <action
+               label="Add to control"
+               class="org.eclipse.team.examples.pessimistic.ui.AddToControlAction"
+               menubarPath="team.main/group2"
+               id="org.eclipse.team.examples.pessimistic.addFileToControl">
+         </action>
+         <action
+               label="Remove from control"
+               class="org.eclipse.team.examples.pessimistic.ui.RemoveFromControlAction"
+               menubarPath="team.main/group2"
+               id="org.eclipse.team.examples.pessimistic.removeFileFromControl">
+         </action>
+      </objectContribution>              
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFolder"
+            adaptable="true"
+            id="org.eclipse.team.cvs.ui.filesystem.ResourceContributions">
+         <filter
+               name="projectPersistentProperty"
+               value="org.eclipse.team.core.repository=org.eclipse.team.examples.pessimistic.pessimisticnature">
+         </filter>            
+         <action
+               label="Add to control"
+               class="org.eclipse.team.examples.pessimistic.ui.AddToControlAction"
+               menubarPath="team.main/group2"
+               id="org.eclipse.team.examples.pessimistic.addFolderToControl">
+         </action>
+         <action
+               label="Remove from control"
+               class="org.eclipse.team.examples.pessimistic.ui.RemoveFromControlAction"
+               menubarPath="team.main/group2"
+               id="org.eclipse.team.examples.pessimistic.removeFolderFromControl">
+         </action>
+      </objectContribution>              
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.eclipse.team.cvs.ui.filesystem.ResourceContributions">
+         <filter
+               name="projectPersistentProperty"
+               value="org.eclipse.team.core.repository=org.eclipse.team.examples.pessimistic.pessimisticnature">
+         </filter>
+         <action
+               label="Stop sharing"
+               tooltip="Stop sharing the project using the pessimistic file provider"
+               class="org.eclipse.team.examples.pessimistic.ui.DisconnectAction"
+               menubarPath="team.main/projectGroup"
+               id="org.eclipse.team.examples.pessimistic.disconnect">
+         </action>
+      </objectContribution>
+   </extension>
+   
+<!-- =================================================================================== -->
+<!-- Definitions used for the example logical model										 -->
+<!-- =================================================================================== -->
+
+   <!-- ================================================================================ -->
+   <!-- Nature that identifies model projects											 -->
+   <!-- ================================================================================ -->
+   <extension
+        id="modelNature"
+        point="org.eclipse.core.resources.natures">
+     <runtime>
+        <run class="org.eclipse.team.examples.model.ModelNature"/>
+     </runtime>
+   </extension>
+    
+   <!-- ================================================================================ -->
+   <!-- Common Navigator viewer for use in the Project Explorer							 -->
+   <!-- ================================================================================ -->
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="org.eclipse.team.examples.model.ui.ModelNavigatorContentProvider"
+            icon="$nl$/icons/full/obj/root_obj.gif"
+            id="org.eclipse.team.examples.model.navigator"
+            labelProvider="org.eclipse.team.examples.model.ui.ModelNavigatorLabelProvider"
+            name="Example Model"
+            providesSaveables="true">
+         <triggerPoints>
+            <or>
+               <instanceof value="org.eclipse.team.examples.model.ModelObject"/>
+               <instanceof value="org.eclipse.core.resources.IWorkspaceRoot"/>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            <instanceof value="org.eclipse.team.examples.model.ModelObject"/>
+         </possibleChildren>
+         <override
+               policy="InvokeAlwaysRegardlessOfSuppressedExt"
+               suppressedExtensionId="org.eclipse.ui.navigator.resourceContent"/>
+         <actionProvider
+               class="org.eclipse.team.examples.model.ui.ModelNavigatorActionProvider"
+               id="org.eclipse.team.examples.model.actionProvider"/>
+      </navigatorContent>
+   </extension>
+      <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+         <includes>
+            <contentExtension
+                  pattern="org.eclipse.team.examples.model.navigator"/>
+         </includes>
+      </viewerContentBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+         <category name="Team Logical Model Example" id="org.eclipse.team.examples.model.newWizards">
+         </category>
+      <wizard
+            category="org.eclipse.team.examples.model.newWizards"
+            icon="$nl$/icons/full/obj/root_obj.gif"
+            name="Model Project"
+            class="org.eclipse.team.examples.model.ui.NewModelProjectWizard"
+            project="true"
+            id="org.eclipse.team.examples.model.newModelProject">
+            <description> 
+              This wizard creates a model project that illustrates some of the logical model support in the Eclipse Platform
+            </description>
+      </wizard>
+   </extension>
+   
+   <!-- ================================================================================ -->
+   <!-- Model provider for the model example											 -->
+   <!-- ================================================================================ -->
+   <extension
+         id="modelProvider"
+         name="Example Model"
+         point="org.eclipse.core.resources.modelProviders">
+      <modelProvider class="org.eclipse.team.examples.model.mapping.ExampleModelProvider"/>
+      <extends-model id="org.eclipse.core.resources.modelProvider"/>
+      <enablement>
+          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.team.examples.filesystem.modelNature" />
+      </enablement>
+   </extension>
+   
+   <!-- ================================================================================ -->
+   <!-- Adapter factories for the model example											 -->
+   <!-- ================================================================================ -->
+      <extension
+            point="org.eclipse.core.runtime.adapters">
+         <factory
+               adaptableType="org.eclipse.team.examples.model.ModelObject"
+               class="org.eclipse.team.examples.model.ui.AdapterFactory">
+            <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+            <adapter type="org.eclipse.core.resources.mapping.ResourceMapping"/>
+         </factory>
+         <factory
+               adaptableType="org.eclipse.team.examples.model.mapping.ExampleModelProvider"
+               class="org.eclipse.team.examples.model.ui.AdapterFactory">
+            <adapter type="org.eclipse.team.core.mapping.IResourceMappingMerger"/>
+            <adapter type="org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter"/>
+         </factory>
+         <factory
+               adaptableType="org.eclipse.team.core.history.provider.FileHistoryProvider"
+               class="org.eclipse.team.examples.model.ui.AdapterFactory">
+            <adapter type="org.eclipse.team.ui.history.IHistoryPageSource"/>
+         </factory>
+      </extension>
+      <extension
+            point="org.eclipse.team.ui.teamContentProviders">
+         <teamContentProvider
+               contentExtensionId="org.eclipse.team.examples.model.synchronizeContent"
+               icon="$nl$/icons/full/obj/root_obj.gif"
+               modelProviderId="org.eclipse.team.examples.filesystem.modelProvider"/>
+      </extension>
+      <extension
+            point="org.eclipse.ui.navigator.navigatorContent">
+         <navigatorContent
+               contentProvider="org.eclipse.team.examples.model.ui.mapping.ModelSyncContentProvider"
+               icon="$nl$/icons/full/obj/root_obj.gif"
+               id="org.eclipse.team.examples.model.synchronizeContent"
+               labelProvider="org.eclipse.team.examples.model.ui.mapping.ModelSyncLabelProvider"
+               name="Example Model"
+               priority="normal">
+            <actionProvider class="org.eclipse.team.examples.model.ui.mapping.ModelSyncActionProvider"/>
+            <override
+                  policy="InvokeAlwaysRegardlessOfSuppressedExt"
+                  suppressedExtensionId="org.eclipse.team.ui.resourceContent"/>
+            <triggerPoints>
+               <or>
+                  <instanceof value="org.eclipse.team.core.mapping.ISynchronizationScope"/>
+                  <instanceof value="org.eclipse.team.core.mapping.ISynchronizationContext"/>
+                  <instanceof value="org.eclipse.team.examples.model.ModelObject"/>
+                  <instanceof value="org.eclipse.team.examples.model.mapping.ExampleModelProvider"/>
+               </or>
+            </triggerPoints>
+            <possibleChildren>
+               <or>
+                  <instanceof value="org.eclipse.team.examples.model.ModelObject"/>
+                  <instanceof value="org.eclipse.team.examples.model.mapping.ExampleModelProvider"/>
+               </or>
+            </possibleChildren>
+         </navigatorContent>
+         <actionProvider
+               class="org.eclipse.team.examples.model.ui.mapping.ThirdPartyActionProvider"
+               id="org.eclipse.team.examples.model.ThirdPartyActionProvider">
+            <enablement>
+               <adapt type="org.eclipse.core.resources.mapping.ResourceMapping"/>
+            </enablement>
+         </actionProvider>
+      </extension>
+      <extension
+            point="org.eclipse.ui.navigator.viewer">
+         <viewerActionBinding viewerId="org.eclipse.team.cvs.ui.workspaceSynchronization">
+            <includes>
+               <actionExtension pattern="org.eclipse.team.examples.model.ThirdPartyActionProvider"/>
+            </includes>
+         </viewerActionBinding>
+      </extension>
+
+  
+<!-- =================================================================================== -->
+<!-- Capability Support (a.k.a. Activities)														 -->
+<!-- Note: Uncomment the lines below to enable the capabilities. These can't be enabled in the -->
+<!-- examples because some products ship the examples with the product. -->
+<!-- =================================================================================== -->   
+<!--  
+	<extension point="org.eclipse.ui.activities">
+    
+	<activity
+		name="%activity.team.examples.filesystem.name"
+		description="%activity.team.examples.filesystem.description"
+		id="org.eclipse.team.examples.filesystem">
+	</activity> 
+	   
+	<activityRequirementBinding
+		activityId="org.eclipse.team.examples.filesystem"
+		requiredActivityId="org.eclipse.team">
+	</activityRequirementBinding>
+	  
+	<activityPatternBinding
+		activityId="org.eclipse.team.examples.filesystem"
+		pattern="org\.eclipse\.team\.examples\.filesystem/.*filesystem\.ui.*">
+	</activityPatternBinding>
+	  
+	<activityPatternBinding
+		activityId="org.eclipse.team.examples.filesystem"
+		pattern="org\.eclipse\.team\.examples\.filesystem/.*FileSystemProvider">
+	</activityPatternBinding>
+	  
+	<categoryActivityBinding
+		activityId="org.eclipse.team.examples.filesystem"
+		categoryId="org.eclipse.categories.teamCategory">
+	</categoryActivityBinding>
+ 
+    <activity
+		name="%activity.team.examples.pessimistic.name"
+		description="%activity.team.examples.pessimistic.description"
+		id="org.eclipse.team.examples.pessimistic">
+	</activity> 
+	   
+	<activityRequirementBinding
+		activityId="org.eclipse.team.examples.pessimistic"
+		requiredActivityId="org.eclipse.team">
+	</activityRequirementBinding>
+	  
+	<activityPatternBinding
+		activityId="org.eclipse.team.examples.pessimistic"
+		pattern="org\.eclipse\.team\.examples\.filesystem/.*pessimistic\.ui.*">
+	</activityPatternBinding>
+	  
+	<activityPatternBinding
+		activityId="org.eclipse.team.examples.pessimistic"
+		pattern="org\.eclipse\.team\.examples\.filesystem/.*pessimisticnature">
+	</activityPatternBinding>
+	  
+	<categoryActivityBinding
+		activityId="org.eclipse.team.examples.pessimistic"
+		categoryId="org.eclipse.categories.teamCategory">
+	</categoryActivityBinding>
+
+	</extension>
+-->
+</plugin>

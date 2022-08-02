@@ -1,0 +1,7 @@
+# Debugging options for the org.eclipse.compare plugin.
+
+# Turn on debugging for the org.eclipse.compare plugin.
+org.eclipse.compare/debug=false
+
+# Turn on debugging for the ContentMergeViewer
+org.eclipse.compare/content_merge_viewer=false

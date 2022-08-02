@@ -1,0 +1,213 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2013. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <link rel="stylesheet" href="../../../book.css" charset="ISO-8859-1" type="text/css">
+   <title>Tutorial and Examples</title>
+</head>
+<body>
+<h1>Tutorial and Examples</h1>
+<h2><a id="id_mapping" name="id_mapping">
+General Matching vs. ID Mapping Schemes:<br>How to create an ID Mapping Scheme to improve compare results
+</a></h2>
+Consider an example XML file in two slightly different versions, left and right. Assume that the element <tt>extension-point</tt> is uniquely identified by the attribute <tt>id</tt>.
+The textual differences are shown in bold.
+<table>
+<tr>
+<td>
+<blockquote><pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<br>&lt;plugin
+&nbsp;&nbsp;&nbsp;name="%Plugin.name"
+&nbsp;&nbsp;&nbsp;id="org.eclipse.ui"
+&nbsp;&nbsp;&nbsp;version="1.0"
+&nbsp;&nbsp;&nbsp;provider-name="Object Technology International, Inc."
+&nbsp;&nbsp;&nbsp;class="org.eclipse.ui.internal.WorkbenchPlugin"&gt;
+<br>&lt;extension-point name="%ExtPoint.editorMenus " id="editorActions"/&gt;
+&lt;extension-point name="%ExtPoint.popupMenus " id="popupMenus"/&gt;
+&lt;extension-point name="%ExtPoint.<b>importWizards</b>" id="<b>importWizards</b>"/&gt;
+<br>&lt;/plugin&gt;
+</pre></blockquote>
+</td>
+<td>
+&nbsp;&nbsp;
+</td>
+<td>
+<blockquote><pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<br>&lt;plugin
+&nbsp;&nbsp;&nbsp;name="%Plugin.name"
+&nbsp;&nbsp;&nbsp;id="org.eclipse.ui"
+&nbsp;&nbsp;&nbsp;version="1.0"
+&nbsp;&nbsp;&nbsp;provider-name="Object Technology International, Inc."
+&nbsp;&nbsp;&nbsp;class="org.eclipse.ui.internal.WorkbenchPlugin"&gt;
+<br>&lt;extension-point name="%ExtPoint.editorMenus " id="editorActions"/&gt;
+&lt;extension-point name="%ExtPoint.popupMenus " id="popupMenus"/&gt;
+&lt;extension-point name="%ExtPoint.<b>exportWizards</b>" id="<b>exportWizards</b>"/&gt;
+<br>&lt;/plugin&gt;
+</pre></blockquote>
+</td>
+</tr>
+</table>
+<br>
+Assume that the order of the elements should be ignored. The structural difference between the two documents consists in the <tt>extension-point</tt> element on the left with <tt>id="importWizards"</tt> being replaced on the right with a new <tt>extension-point</tt> with <tt>id="exportWizards"</tt>.
+Using the general matching algorithm called <em>Unordered</em>, because it ignores the order in which the XML elements appear in the document, we obtain the following tree of differences.
+<br>
+<br>
+<img src="IDMap_GeneralMatching.gif" alt="Difference Tree using General Matching Algorithm">
+<br>
+<br>
+The first two <tt>extension-point</tt> elements are identical and are therefore matched and are not shown in the difference tree. There remains the third <tt>extension-point</tt> element on both sides which, having the same element name, are also matched.
+The difference tree then shows the differences between the third <tt>extension-point</tt> element left and the third <tt>extension-point</tt> element right.
+These differences consist in the values of the attributes <tt>id</tt> and <tt>name</tt>.
+<br>
+However, this is not what we would like to see. We would like the difference tree to show us that an <tt>extension-point</tt> element was removed from the left side and a new <tt>extension-point</tt> element was added on the right side.
+<br>
+To achieve this, we create a new ID Mapping Scheme. We can do this by using the appropriate button on toolbar.
+<br><br>
+<img src="IDMap_NewIDMapScheme.gif" alt="Creating a new ID Mapping Scheme">
+<br><br>
+Assume we call the ID Mapping Scheme <em>MyPlugin</em>. We now select the ID Mapping Scheme MyPlugin from the drop-down list in the Toolbar
+<br><br>
+<img src="IDMap_SelectMyPlugin.gif" alt="Select MyPlugin ID Map Scheme">
+<br><br>
+and add to it the following Mapping:
+<br><br>
+<table>
+<tr>
+<td>
+<img src="IDMap_NewMapping_PreferencePage.gif" alt="Creating a new mapping from the preference page">
+</td>
+<td>
+&nbsp;&nbsp;&nbsp;
+</td>
+<td>
+<img src="IDMap_NewMapping_ContextMenu.gif" alt="Creating a new mapping using the context menu">
+</td>
+</tr>
+</table>
+<br>
+This can be done from the preference page (left) or from the context menu in the structure view (right).
+<br>
+The difference tree now becomes:
+<br>
+(To refresh the structure view, click on the <img src="smartmode_co.gif" alt="Button for updating view"> button of the drop-down list in the toolbar.)
+<br><br>
+<img src="IDMap_MyPlugin.gif" alt="Difference Tree using MyPlugin ID Mapping Scheme">
+<br><br>
+This is the compare result that we wanted and that we achieved by created an ID Mapping Scheme.
+<br>
+<br>
+The XML Compare Plugin already comes with a ID Mapping Scheme for Plugin files, which can be customized for particular Plugin files.
+<br><br>
+<b>Warning:</b>
+<br>
+If an ID Mapping is created, it is assumed that the id is unique, i.e. there are no two XML elements with the same name and path that have the same id.
+Should this not be the case, the ID Mapping Scheme may not deliver a sensible difference tree.
+<br>
+When an id can appear more than once, one should rely on the general algorithm.
+<br>
+<br>
+Also, when an ID Mapping Scheme is used and there are elements with no id mapping specified, the <em>Unordered</em> compare method will be used, i.e. elements are matched by their similarity and not by the order in which they appear in the document.
+To specify that the children of an element should be compared in order of appearance. See the next section on Ordered entries.
+
+<h2>Adding Ordered entries</h2>
+Ordered entries are used to specify that the direct children (excluding attributes) of an xml element - identified by its path - should be compared in ordered way instead of the default unordered method.
+<br> As an example consider the following ANT file in two slightly different versions:
+<table>
+<tr>
+<td>
+<blockquote><pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<br>&lt;project name="org.junit.wizards" default="export" basedir=".."&gt;
+&nbsp;&nbsp;&nbsp;&lt;target name="export" depends="build"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mkdir dir="${destdir}" /&gt;
+<b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;delete dir="${dest}" /&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mkdir dir="${dest}" /&gt;
+</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;jar
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jarfile="${dest}/JUnitWizard.jar"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;basedir="bin"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&gt;
+<br>&lt;/project&gt;
+</pre></blockquote>
+</td>
+<td>
+&nbsp;&nbsp;
+</td>
+<td>
+<blockquote><pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<br>&lt;project name="org.junit.wizards" default="export" basedir=".."&gt;
+&nbsp;&nbsp;&nbsp;&lt;target name="export" depends="build"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mkdir dir="${destdir}"/&gt;
+<b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mkdir dir="${dest}"/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;delete dir="${dest}"/&gt;
+</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;jar
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jarfile="${dest}/JUnitWizard.jar"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;basedir="bin"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&gt;
+<b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;copy file="plugin.xml" todir="${dest}"/&gt;
+</b>
+<br>&lt;/project&gt;
+</pre></blockquote>
+</td>
+</tr>
+</table>
+<br>
+The differences between the two documents are shown in bold. Two elements have been swapped (<tt>&lt;mkdir dir="${dest}"/&gt;</tt> and <tt>&lt;delete dir="${dest}"/&gt;</tt>) and a new element (<tt>&lt;copy .../&gt;</tt>) has been appended to the target element.
+<br>
+Performing an unordered compare will result in the following tree of differences:
+<br>
+<br>
+<img src="Ordered_UnorderedScheme.gif" alt="Difference Tree using Unordered Matching">
+<br>
+<br>
+The fact that two elements have been swapped is not shown since the order of elements is ignored.
+<br>
+However, from an ANT point of view, the two documents cause very different behaviour, because the order of the elements inside a <tt>target</tt> is important.
+We therefore want to create an <i>ordered entry</i> for target to instruct the compare engine to compare the direct children of target in ordered fashion.
+<br>
+We do so by first creating a new ID Mapping Scheme. This can be done using the appropriate button in the toolbar.
+<br><br>
+<img src="Ordered_NewIDMapScheme.gif" alt="Creating a new ID Mapping Scheme">
+<br><br>
+Assume we call the ID Mapping Scheme <em>MyANT</em>.
+<br>We now select the ID Mapping Scheme MyANT from the drop-down list in the Toolbar and add to it the following Ordered Entry:
+<br><br>
+<table>
+<tr>
+<td>
+<img src="Ordered_NewOrderedEntry_PreferencePage.gif" alt="Creating a new orderered entry from the preference page">
+</td>
+<td>
+&nbsp;&nbsp;&nbsp;
+</td>
+<td>
+<img src="Ordered_NewOrderedEntry_ContextMenu.gif" alt="Creating a new ordered entry using the context menu">
+</td>
+</tr>
+</table>
+<br>
+This can be done from the preference page (left) or from the context menu in the structure view (right).
+<br>
+The difference tree now becomes:
+<br>
+(To refresh the structure view, click on the <img src="smartmode_co.gif" alt="Button for updating view"> button of the drop-down list in the toolbar.)
+<br><br>
+<img src="Ordered_MyANT.gif" alt="Difference Tree using MyANT ID Mapping Scheme">
+<br><br>
+This is the compare result that we wanted and that we achieved by creating an Ordered Entry.
+<br>
+<br>
+Additionally, Id Mappings (see <a href="#id_mapping">previous section</a>) can be used to uniquely identify ordered children. Especially when there are many changes, this will improve compare results.
+<br>
+<br>
+The XML Compare Plugin already comes with a ID Mapping Scheme for ANT files, which can be customized for particular ANT files.
+</body>
+</html>

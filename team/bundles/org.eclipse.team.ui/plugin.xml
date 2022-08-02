@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+    Copyright (c) 2001, 2014 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+   <extension-point id="configurationWizards" name="%configurationWizards" schema="schema/configurationWizards.exsd"/>
+   <extension-point id="synchronizeParticipants" name="%synchronizeParticipants" schema="schema/synchronizeParticipants.exsd"/>
+   <extension-point id="synchronizeWizards" name="%synchronizeWizards" schema="schema/synchronizeWizards.exsd"/>
+   <extension-point id="teamContentProviders" name="%TeamContentProvider" schema="schema/teamContentProviders.exsd"/>
+   <extension-point id="teamDecorators" name="%TeamDecorators" schema="schema/teamDecorators.exsd"/>
+   <extension-point id="scmUrlImportPages" name="%scmUrlImportPages" schema="schema/scmUrlImportPages.exsd"/>
+
+<!-- **************** PREFERENCES ******************* -->
+   <extension
+   		point="org.eclipse.ui.keywords">
+    <keyword
+            label="%PreferenceKeywords.Team"
+            id="org.eclipse.team.ui.team"/>
+    <keyword
+            label="%PreferenceKeywords.IgnoredResources"
+            id="org.eclipse.team.ui.team.ignoredResources"/>
+    <keyword
+            label="%PreferenceKeywords.Models"
+            id="org.eclipse.team.ui.team.models"/>
+    <keyword
+            label="%PreferenceKeywords.FileContent"
+            id="org.eclipse.team.ui.team.fileContent"/>
+    <keyword
+          id="org.eclipse.team.ui.team.projectSet"
+          label="%PreferenceKeywords.ProjectSet">
+    </keyword>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="%TeamPreferencePage.name"
+            class="org.eclipse.team.internal.ui.preferences.SyncViewerPreferencePage"
+            id="org.eclipse.team.ui.TeamPreferences">
+            <keywordReference id="org.eclipse.team.ui.team"/>
+      </page>
+      <page
+            name="%TextPreferencePage.name"
+            category="org.eclipse.team.ui.TeamPreferences"
+            class="org.eclipse.team.internal.ui.preferences.TextPreferencePage"
+            id="org.eclipse.team.ui.TextPreferences">
+            <keywordReference id="org.eclipse.team.ui.team.fileContent"/>
+      </page>
+      <page
+            name="%IgnorePreferencePage.name"
+            category="org.eclipse.team.ui.TeamPreferences"
+            class="org.eclipse.team.internal.ui.preferences.IgnorePreferencePage"
+            id="org.eclipse.team.ui.IgnorePreferences">
+            <keywordReference id="org.eclipse.team.ui.team.ignoredResources"/>
+      </page>
+      <page
+            name="%EnabledModels"
+            category="org.eclipse.team.ui.TeamPreferences"
+            class="org.eclipse.team.internal.ui.mapping.ModelEnablementPreferencePage"
+            id="org.eclipse.team.ui.enabledModels">
+            <keywordReference id="org.eclipse.team.ui.team.models"/>
+      </page>
+   </extension>
+<!-- ****************** POPUP ACTIONS *************** -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.mapping.ResourceMapping"
+            adaptable="true"
+            id="org.eclipse.team.ui.ResourceContributions">
+         <menu
+               label="%TeamGroupMenu.label"
+               path="additions"
+               id="team.main">
+            <separator
+                  name="group1">
+            </separator>
+            <groupMarker
+                  name="applyPatchGroup">
+            </groupMarker>
+            <separator
+                  name="group2">
+            </separator>
+            <separator
+                  name="group3">
+            </separator>
+            <separator
+                  name="group4">
+            </separator>
+            <separator
+                  name="group5">
+            </separator>
+            <separator
+                  name="group6">
+            </separator>
+            <separator
+                  name="group7">
+            </separator>
+            <separator
+                  name="group8">
+            </separator>
+            <separator
+                  name="group9">
+            </separator>
+            <separator
+                  name="group10">
+            </separator>
+            <separator
+                  name="targetGroup">
+            </separator>
+            <separator
+                  name="projectGroup">
+            </separator>
+         </menu>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.mapping.ResourceMapping"
+            adaptable="true"
+            id="org.eclipse.team.ui.ProjectContributions">
+         <action
+               class="org.eclipse.team.internal.ui.actions.ConfigureProjectAction"
+               enablesFor="1"
+               helpContextId="org.eclipse.team.ui.share_project_action_context"
+               id="nonbound.org.eclipse.team.ui.ConfigureProject"
+               label="%ConfigureProject.label"
+               menubarPath="team.main/projectGroup"
+               tooltip="%ConfigureProject.tooltip">
+         </action>
+        <enablement>
+		  <not>
+           <adapt type="org.eclipse.core.resources.mapping.ResourceMapping">
+              <test property="org.eclipse.core.resources.projectPersistentProperty" args="org.eclipse.team.core.repository" />
+           </adapt>
+           </not>
+         </enablement>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.psf"
+            id="org.eclipse.team.ui.ProjectSetFileContributions">
+         <action
+               label="%ImportProjectSet.label"
+               class="org.eclipse.team.internal.ui.actions.ImportProjectSetAction"
+               menubarPath="team.main"
+               enablesFor="*"
+               id="nonbound.org.eclipse.team.ui.ImportProjectSetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="org.eclipse.team.ui.UnmanagedFileContributions"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="org.eclipse.team.internal.ui.history.ShowLocalHistory"
+               id="org.eclipse.team.ui.showLocalHistory"
+               label="%ShowLocalHistory.label"
+               menubarPath="team.main/group4"
+               enablesFor="1"
+               tooltip="%ShowLocalHistory.label"/>
+         <action
+               class="org.eclipse.team.internal.ui.history.CompareLocalHistory"
+               id="org.eclipse.team.ui.compareLocalHistory"
+               label="%CompareLocalHistory.label"
+               menubarPath="compareWithMenu/compareWithGroup"
+               enablesFor="1"
+               overrideActionId="compareWithHistory"
+               tooltip="%CompareLocalHistory.tooltip"/>
+         <action
+               class="org.eclipse.team.internal.ui.history.ReplaceLocalHistory"
+               enablesFor="1"
+               helpContextId="org.eclipse.compare.replace_with_edition_action_context"
+               id="org.eclipse.team.ui.replaceLocalHistory"
+               label="%ReplaceLocalHistory.label"
+               menubarPath="replaceWithMenu/replaceWithGroup"
+               overrideActionId="replaceFromHistory"
+               tooltip="%ReplaceLocalHistory.tooltip"/>
+         <action
+               class="org.eclipse.team.internal.ui.actions.CompareAction"
+               enablesFor="2+"
+               id="org.eclipse.team.ui.compareWithEachOther"
+               label="%CompareWithEachOtherAction.label"
+               menubarPath="compareWithMenu/compareWithGroup"
+               overrideActionId="compareWithEachOther"
+               tooltip="%CompareWithEachOtherAction.tooltip">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.mapping.ResourceMapping"
+            adaptable="true"
+            id="org.eclipse.team.ui.ResourceMappingContributions">
+         <action
+               class="org.eclipse.team.internal.ui.actions.ApplyPatchAction"
+               definitionId="org.eclipse.team.ui.applyPatch"
+               enablesFor="*"
+               helpContextId="org.eclipse.team.ui.apply_patch_action_context"
+               id="org.eclipse.team.ui.applyPatch"
+               label="%ApplyPatch.label"
+               menubarPath="team.main/applyPatchGroup"
+               tooltip="%ApplyPatch.tooltip">
+         </action>
+      </objectContribution>
+   </extension>
+<!-- ****************** Menus *************** -->
+   <extension point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="team.main"
+               label="%TeamGroupMenu.label">
+            <separator
+                  name="group1"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group2"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group3"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group4"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group5"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group6"
+                  visible="true">
+            </separator>
+            <separator
+                  name="applyPatchGroup"
+                  visible="false">
+            </separator>
+            <separator
+                  name="group7"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group8"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group9"
+                  visible="true">
+            </separator>
+            <separator
+                  name="showAnnotationsGroup"
+                  visible="false">
+            </separator>
+            <separator
+                  name="group10"
+                  visible="true">
+            </separator>
+            <separator
+                  name="targetGroup"
+                  visible="true">
+            </separator>
+            <separator
+                  name="projectGroup"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group11"
+                  visible="true">
+            </separator>
+         </menu>
+      </menuContribution>
+   </extension>
+<!-- ************** Views ********************** -->
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="%Team.viewCategory"
+            id="org.eclipse.team.ui">
+      </category>
+      <view
+            name="%SyncView.name"
+            icon="$nl$/icons/full/eview16/synch_synch.png"
+            fastViewWidthRatio="0.25"
+            category="org.eclipse.team.ui"
+            allowMultiple="true"
+            class="org.eclipse.team.internal.ui.synchronize.SynchronizeView"
+            id="org.eclipse.team.sync.views.SynchronizeView">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.eclipse.team.ui"
+            class="org.eclipse.team.internal.ui.history.GenericHistoryView"
+            icon="icons/full/eview16/history_view.png"
+            id="org.eclipse.team.ui.GenericHistoryView"
+            name="%HistoryView"/>
+    <!--  <view
+            name="%CompareView.name"
+            icon="$nl$/icons/full/eview16/compare_view.png"
+            fastViewWidthRatio="0.25"
+            category="org.eclipse.team.ui"
+            class="org.eclipse.team.internal.ui.synchronize.CompareView"
+            id="org.eclipse.team.sync.views.CompareView">
+      </view> -->
+   </extension>
+<!-- **************** Synchronizing Perspective ******************* -->
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="%Synchronizing.perspective"
+            icon="$nl$/icons/full/eview16/synch_synch.png"
+            class="org.eclipse.team.internal.ui.synchronize.TeamSynchronizingPerspective"
+            id="org.eclipse.team.ui.TeamSynchronizingPerspective">
+         <description>
+            %Synchronizing.perspective.description
+         </description>
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <perspectiveShortcut
+               id="org.eclipse.team.ui.TeamSynchronizingPerspective">
+         </perspectiveShortcut>
+         <showInPart
+               id="org.eclipse.team.ui.GenericHistoryView">
+         </showInPart>
+      </perspectiveExtension>
+   </extension>
+<!-- ****************** Import Wizards ********************* -->
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <category
+            name="%Team"
+            id="org.eclipse.team.ui.importWizards">
+      </category>
+
+      <wizard
+            name="%ProjectSetImportWizard.name"
+            icon="$nl$/icons/full/obj/import_projectset.png"
+            class="org.eclipse.team.internal.ui.wizards.ProjectSetImportWizard"
+            category="org.eclipse.team.ui.importWizards"
+            id="org.eclipse.team.ui.ProjectSetImportWizard">
+         <description>
+            %ProjectSetImportWizard.description
+         </description>
+         <selection
+               class="org.eclipse.core.resources.IProject">
+         </selection>
+         <keywordReference
+               id="org.eclipse.team.ui.team.projectSet">
+         </keywordReference>
+      </wizard>
+   </extension>
+<!-- ****************** Export Wizards ********************* -->
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <category
+            name="%Team"
+            id="org.eclipse.team.ui.exportWizards">
+      </category>
+      <wizard
+            name="%ProjectSetExportWizard.name"
+            icon="$nl$/icons/full/obj/export_projectset.png"
+            class="org.eclipse.team.internal.ui.wizards.ProjectSetExportWizard"
+            category="org.eclipse.team.ui.exportWizards"
+            id="org.eclipse.team.ui.ProjectSetExportWizard">
+         <description>
+            %ProjectSetExportWizard.description
+         </description>
+         <selection
+               class="org.eclipse.core.resources.IProject">
+         </selection>
+         <keywordReference
+               id="org.eclipse.team.ui.team.projectSet">
+         </keywordReference>
+      </wizard>
+   </extension>
+<!-- ***************** Perspective Extensions ********************** -->
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.team.ui.TeamSynchronizingPerspective">
+         <showInPart
+               id="org.eclipse.ui.navigator.ProjectExplorer">
+         </showInPart>
+         <showInPart
+               id="org.eclipse.team.ui.GenericHistoryView">
+         </showInPart>
+         <showInPart
+               id="org.eclipse.team.sync.views.SynchronizeView">
+         </showInPart>
+      </perspectiveExtension>
+   </extension>
+<!-- ***************** Actions ********************** -->
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="%Command.category.name"
+            description="%Command.category.description"
+            id="org.eclipse.team.ui.category.team">
+      </category>
+      <command
+            name="%Command.syncAll.name"
+            categoryId="org.eclipse.team.ui.category.team"
+            description="%Command.syncAll.description"
+            id="org.eclipse.team.ui.synchronizeAll">
+      </command>
+      <command
+            name="%Command.syncLast.name"
+            categoryId="org.eclipse.team.ui.category.team"
+            description="%Command.syncLast.description"
+            id="org.eclipse.team.ui.synchronizeLast">
+      </command>
+      <command
+            categoryId="org.eclipse.team.ui.category.team"
+            defaultHandler="org.eclipse.team.internal.ui.actions.ApplyPatchAction"
+            description="%Command.applyPatch.description"
+            id="org.eclipse.team.ui.applyPatch"
+            name="%Command.applyPatch.name">
+      </command>
+      <command
+       		name="%Synchronizing.perspective"
+        	description="%Synchronizing.openPerspectiveDescription"
+        	categoryId="org.eclipse.ui.category.perspectives"
+        	id="org.eclipse.team.ui.TeamSynchronizingPerspective"/>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.ui.views.showView"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+M3+Q Y">
+         <parameter
+               id="org.eclipse.ui.views.showView.viewId"
+               value="org.eclipse.team.sync.views.SynchronizeView">
+         </parameter>
+      </key>
+      <key
+            platform="carbon"
+            sequence="M2+M3+Q Y"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <key
+            commandId="org.eclipse.ui.views.showView"
+            platform="carbon"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+Q Y">
+         <parameter
+               id="org.eclipse.ui.views.showView.viewId"
+               value="org.eclipse.team.sync.views.SynchronizeView">
+         </parameter>
+      </key>
+      <key
+            commandId="org.eclipse.ui.views.showView"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+M3+Q Z">
+         <parameter
+               id="org.eclipse.ui.views.showView.viewId"
+               value="org.eclipse.team.ui.GenericHistoryView">
+         </parameter>
+      </key>
+      <key
+            platform="carbon"
+            sequence="M2+M3+Q Z"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <key
+            commandId="org.eclipse.ui.views.showView"
+            platform="carbon"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+Q Z">
+         <parameter
+               id="org.eclipse.ui.views.showView.viewId"
+               value="org.eclipse.team.ui.GenericHistoryView">
+         </parameter>
+      </key>
+   </extension>
+<!-- action sets -->
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="%Command.category.name"
+            description="%Command.category.description"
+            visible="false"
+            id="org.eclipse.team.ui.actionSet">
+         <action
+               allowLabelUpdate="true"
+               toolbarPath="Normal/Team"
+               label="%Command.syncAll.name"
+               tooltip="%Command.syncAll.name"
+               class="org.eclipse.team.internal.ui.synchronize.actions.GlobalRefreshAction"
+               icon="$nl$/icons/full/elcl16/synch_participants.png"
+               style="pulldown"
+               id="org.eclipse.team.ui.synchronizeAll">
+         </action>
+         <action
+               allowLabelUpdate="true"
+               label="%ConfigureProject.label"
+               tooltip="%ConfigureProject.tooltip"
+               class="org.eclipse.team.internal.ui.actions.ConfigureProjectAction"
+               menubarPath="project/open.ext"
+               id="org.eclipse.team.ui.ConfigureProject"/>
+         <action
+               allowLabelUpdate="true"
+               class="org.eclipse.team.internal.ui.actions.ApplyPatchAction"
+               definitionId="org.eclipse.team.ui.applyPatch"
+               id="org.eclipse.team.ui.ApplyPatchAction"
+               label="%ApplyPatch.label"
+               menubarPath="project/additions"
+               tooltip="%ApplyPatch.tooltip"/>
+      </actionSet>
+   </extension>
+
+ <!-- file modification validator -->
+
+   <extension
+         point="org.eclipse.team.core.defaultFileModificationValidator">
+      <validator class="org.eclipse.team.internal.ui.DefaultUIFileModificationValidator"/>
+   </extension>
+
+    <!-- adapter factory -->
+
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.compare.structuremergeviewer.DiffNode"
+            class="org.eclipse.team.internal.ui.TeamAdapterFactory">
+         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.core.resources.mapping.ModelProvider"
+            class="org.eclipse.team.internal.ui.TeamAdapterFactory">
+         <adapter type="org.eclipse.team.core.mapping.IResourceMappingMerger"/>
+         <adapter type="org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter"/>
+         <adapter type="org.eclipse.team.core.mapping.ISynchronizationScopeParticipantFactory"/>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.team.core.RepositoryProviderType"
+            class="org.eclipse.team.internal.ui.TeamAdapterFactory">
+         <adapter type="org.eclipse.team.ui.mapping.ITeamStateProvider"/>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.team.internal.ui.history.FileRevisionEditorInput"
+            class="org.eclipse.team.internal.ui.TeamAdapterFactory">
+         <adapter
+               type="org.eclipse.team.core.history.IFileRevision">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+            contentProvider="org.eclipse.team.internal.ui.mapping.ResourceModelContentProvider"
+            id="org.eclipse.team.ui.resourceContent"
+            labelProvider="org.eclipse.team.internal.ui.mapping.ResourceModelLabelProvider"
+            name="%ResourcesContentExtension"
+            priority="lowest">
+         <enablement>
+           <or>
+            <instanceof value="org.eclipse.core.internal.resources.mapping.ResourceModelProvider"/>
+            <instanceof value="org.eclipse.core.resources.IResource"/>
+            <instanceof value="org.eclipse.team.core.mapping.ISynchronizationScope"/>
+            <instanceof value="org.eclipse.team.core.mapping.ISynchronizationContext"/>
+           </or>
+         </enablement>
+         <actionProvider
+               class="org.eclipse.team.internal.ui.mapping.ResourceModelActionProvider">
+            <enablement>
+               <adapt
+                     type="org.eclipse.core.resources.IResource">
+               </adapt>
+            </enablement>
+         </actionProvider>
+         <commonSorter
+            class="org.eclipse.team.internal.ui.mapping.ResourceModelSorter"
+            id="org.eclipse.team.ui.resourceSorter"/>
+       </navigatorContent>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+       <viewer
+             viewerId="org.eclipse.team.ui.navigatorViewer">
+           <popupMenu
+                allowsPlatformContributions="false"
+                id="org.eclipse.team.ui.navigatorViewer#PopupMenu">
+             <insertionPoint name="file"/>
+             <insertionPoint name="edit"/>
+             <insertionPoint name="synchronize"/>
+             <insertionPoint
+                   name="navigate"
+                   separator="true"/>
+             <insertionPoint
+                   name="merge"
+                   separator="true"/>
+             <insertionPoint
+                   name="other"
+                   separator="true"/>
+             <insertionPoint
+                   name="sort"
+                   separator="true"/>
+             <insertionPoint
+                   name="additions"
+                   separator="true"/>
+             <insertionPoint
+                   name="properties"
+                   separator="true"/>
+          </popupMenu>
+       </viewer>
+   </extension>
+
+   <!-- *************** Synchronize View Participant **************** -->
+   <extension
+         point="org.eclipse.team.ui.synchronizeParticipants">
+      <participant
+            class="org.eclipse.team.ui.synchronize.ModelSynchronizeParticipant"
+            icon="$nl$/icons/full/eview16/synch_synch.png"
+            id="org.eclipse.team.ui.synchronization_context_synchronize_participant"
+            name="%ModelSyncParticipant"
+            persistent="false">
+      </participant>
+   </extension>
+   <extension
+         id="teamContentProvider"
+         name="%Workspace"
+         point="org.eclipse.team.ui.teamContentProviders">
+      <teamContentProvider
+            contentExtensionId="org.eclipse.team.ui.resourceContent"
+            icon="$nl$/icons/full/obj/workspace_obj.png"
+            modelProviderId="org.eclipse.core.resources.modelProvider"
+            preferencePage="org.eclipse.team.internal.ui.preferences.ResourceModelPreferencePage"
+            supportsFlatLayout="true"/>
+   </extension>
+
+   <!-- *************** Activity Support **************** -->
+    <extension
+          point="org.eclipse.ui.activitySupport">
+      <triggerPoint id="org.eclipse.team.ui.activityTriggerPoint">
+         <hint
+               id="interactive"
+               value="true"/>
+      </triggerPoint>
+    </extension>
+
+   <!-- ******* Export/Import ignored resources ******** -->
+   <extension
+         point="org.eclipse.ui.preferenceTransfer">
+      <transfer
+            id="org.eclipse.team.transfer.ignores"
+            icon="$nl$/icons/full/obj/ignoreprefs.png"
+            name="%ignoresTransferName">
+         <mapping
+               scope="instance">
+            <entry
+                  node="org.eclipse.team.core">
+               <key
+                     name="ignore_files">
+               </key>
+            </entry>
+         </mapping>
+      </transfer>
+   </extension>
+
+   <!-- ******* Apply Patch in Sync View ******** -->
+   <extension
+         point="org.eclipse.team.ui.synchronizeWizards">
+      <wizard
+            class="org.eclipse.team.internal.ui.synchronize.patch.ApplyPatchSynchronizationWizard"
+            description="%PatchSyncWizard_description"
+            icon="icons/full/obj/hunk_obj.png"
+            id="org.eclipse.team.ui.applyPatchWizard"
+            name="%PatchSyncWizard">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.team.ui.synchronizeParticipants">
+      <participant
+            class="org.eclipse.team.internal.ui.synchronize.patch.ApplyPatchModelSynchronizeParticipant"
+            icon="icons/full/obj/hunk_obj.png"
+            id="org.eclipse.team.ui.applyPatchModelParticipant"
+            name="%PatchSyncParticipant"
+            persistent="false">
+      </participant>
+   </extension>
+   <extension
+         id="patchModelProvider"
+         name="%PatchModelProvider"
+         point="org.eclipse.core.resources.modelProviders">
+      <modelProvider
+            class="org.eclipse.team.internal.ui.synchronize.patch.PatchModelProvider"/>
+      <extends-model id="org.eclipse.core.resources.modelProvider"/>
+   </extension>
+      <extension
+            point="org.eclipse.ui.navigator.navigatorContent">
+         <navigatorContent
+               contentProvider="org.eclipse.team.internal.ui.synchronize.patch.PatchSyncContentProvider"
+               icon="icons/full/obj/hunk_obj.png"
+               id="org.eclipse.team.ui.patchSyncNavigatorContent"
+               labelProvider="org.eclipse.team.internal.ui.synchronize.patch.PatchSyncLabelProvider"
+               name="%PatchNavigatorContent"
+               priority="normal">
+            <enablement>
+               <or>
+                  <instanceof
+                        value="org.eclipse.team.internal.ui.synchronize.patch.PatchWorkspace">
+                  </instanceof>
+                  <instanceof
+                        value="org.eclipse.compare.internal.patch.PatchDiffNode">
+                  </instanceof>
+                  <instanceof
+                        value="org.eclipse.team.internal.ui.synchronize.patch.PatchModelProvider">
+                  </instanceof>
+               </or>
+            </enablement>
+            <actionProvider
+                  class="org.eclipse.team.internal.ui.synchronize.patch.ApplyPatchSynchronizationActionProvider">
+            </actionProvider>
+            <commonSorter
+                  class="org.eclipse.compare.internal.patch.DiffViewerComparator">
+               <parentExpression>
+                  <instanceof
+                        value="org.eclipse.compare.internal.patch.PatchFileDiffNode">
+                  </instanceof>
+               </parentExpression>
+            </commonSorter>
+         </navigatorContent>
+      </extension>
+      <extension
+            point="org.eclipse.core.runtime.adapters">
+         <factory
+               adaptableType="org.eclipse.compare.internal.patch.PatchProjectDiffNode"
+               class="org.eclipse.team.internal.ui.synchronize.patch.AdapterFactory">
+            <adapter
+                  type="org.eclipse.core.resources.mapping.ResourceMapping">
+            </adapter>
+            <adapter
+                  type="org.eclipse.ui.model.IWorkbenchAdapter">
+            </adapter>
+         </factory>
+         <factory
+               adaptableType="org.eclipse.compare.internal.patch.PatchFileDiffNode"
+               class="org.eclipse.team.internal.ui.synchronize.patch.AdapterFactory">
+            <adapter
+                  type="org.eclipse.core.resources.mapping.ResourceMapping">
+            </adapter>
+            <adapter
+                  type="org.eclipse.core.resources.IResource">
+            </adapter>
+            <adapter
+                  type="org.eclipse.ui.model.IWorkbenchAdapter">
+            </adapter>
+         </factory>
+         <factory
+               adaptableType="org.eclipse.compare.internal.patch.HunkDiffNode"
+               class="org.eclipse.team.internal.ui.synchronize.patch.AdapterFactory">
+            <adapter
+                  type="org.eclipse.core.resources.mapping.ResourceMapping">
+            </adapter>
+            <adapter
+                  type="org.eclipse.ui.model.IWorkbenchAdapter">
+            </adapter>
+         </factory>
+         <factory
+               adaptableType="org.eclipse.team.internal.ui.synchronize.patch.PatchWorkspace"
+               class="org.eclipse.team.internal.ui.synchronize.patch.AdapterFactory">
+            <adapter
+                  type="org.eclipse.ui.model.IWorkbenchAdapter">
+            </adapter>
+         </factory>
+         <factory
+               adaptableType="org.eclipse.team.internal.ui.synchronize.patch.PatchModelProvider"
+               class="org.eclipse.team.internal.ui.synchronize.patch.AdapterFactory">
+            <adapter type="org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter"/>
+         </factory>
+      </extension>
+      <extension
+            point="org.eclipse.team.ui.teamContentProviders">
+         <teamContentProvider
+               contentExtensionId="org.eclipse.team.ui.patchSyncNavigatorContent"
+               icon="icons/full/obj/hunk_obj.png"
+               modelProviderId="org.eclipse.team.ui.patchModelProvider">
+         </teamContentProvider>
+      </extension>
+      <extension
+            point="org.eclipse.ui.trace.traceComponents">
+         <component
+               id="org.eclipse.team.ui.trace"
+               label="%TraceComponentLabel">
+            <bundle
+                  consumed="false"
+                  name="org.eclipse.team.ui">
+            </bundle>
+         </component>
+      </extension>
+</plugin>

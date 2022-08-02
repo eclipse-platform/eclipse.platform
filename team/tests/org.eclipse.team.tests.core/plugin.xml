@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+    Copyright (c) 2002, 2011 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+    
+<!-- *************** Repository Providers **************** -->
+   <extension
+         point="org.eclipse.team.core.repository">
+      <repository
+            class="org.eclipse.team.tests.core.RepositoryProviderBic"
+            id="org.eclipse.team.tests.core.bic-provider">
+      </repository>
+   </extension>
+   <extension
+         point="org.eclipse.team.core.repository">
+      <repository
+            class="org.eclipse.team.tests.core.RepositoryProviderNaish"
+            id="org.eclipse.team.tests.core.naish-provider">
+      </repository>
+   </extension>
+<!-- *************** Bad provider that is not registered **************** 
+	<extension
+         point="org.eclipse.team.core.repository">
+      <repository
+      		id="org.eclipse.team.tests.core.other"
+            class="org.eclipse.team.tests.core.RepositoryProviderOtherSport">
+      </repository>
+	</extension>
+	-->
+   <extension
+         point="org.eclipse.team.core.repository">
+      <repository
+            class="org.eclipse.team.tests.core.RepositoryProviderWithLinking"
+            id="org.eclipse.team.tests.core.linking">
+      </repository>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Team Test Views"
+            id="org.eclipse.team.tests.core">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.team.core.storageMergers">
+      <storageMerger
+            class="org.eclipse.team.tests.core.TestStorageMerger"
+            extensions="blah"
+            id="org.eclipse.team.tests.core.storageMerger1"/>
+      <contentTypeBinding
+            contentTypeId="org.eclipse.team.tests.core.content-type1"
+            storageMergerId="org.eclipse.team.tests.core.storageMerger1"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            id="org.eclipse.team.tests.core.content-type1"
+            name="org.eclipse.team.tests.core.content-type1"
+            priority="normal"/>
+   </extension>
+   <extension
+         point="org.eclipse.team.core.repository">
+      <repository
+            class="org.eclipse.team.tests.core.regression.PessimisticRepositoryProvider"
+            id="org.eclipse.team.tests.core.regression.pessimistic-provider">
+      </repository>
+   </extension>
+</plugin>

@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+    Copyright (c) 2001, 2019 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+<!-- Compare extension point definitions -->
+   <extension-point id="streamMergers" name="%streamMergers" schema="schema/streamMergers.exsd"/>
+   <extension-point id="structureCreators" name="%structureCreators" schema="schema/structureCreators.exsd"/>
+   <extension-point id="structureMergeViewers" name="%structureMergeViewers" schema="schema/structureMergeViewers.exsd"/>
+   <extension-point id="contentMergeViewers" name="%contentMergeViewers" schema="schema/contentMergeViewers.exsd"/>
+   <extension-point id="contentViewers" name="%contentViewers" schema="schema/contentViewers.exsd"/>
+   <extension-point id="compareFilters" name="%compareFilters" schema="schema/compareFilters.exsd"/>
+
+<!-- Extensions -->
+   <extension
+         point="org.eclipse.ui.themes">
+      <themeElementCategory
+            label="%textCompareAppearance.label"
+            id="org.eclipse.compare.contentmergeviewer.TextMergeViewer">
+      </themeElementCategory>
+      <colorDefinition
+            label="%compareIncomingColor.label"
+            categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
+            value="COLOR_BLUE"
+            id="INCOMING_COLOR">
+         <description>
+            %compareIncomingColor.description
+         </description>
+      </colorDefinition>
+      <colorDefinition
+            label="%compareOutgoingColor.label"
+            categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
+            value="COLOR_BLACK"
+            id="OUTGOING_COLOR">
+         <description>
+            %compareOutgoingColor.description
+         </description>
+      </colorDefinition>
+      <colorDefinition
+            label="%compareConflictColor.label"
+            categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
+            value="COLOR_RED"
+            id="CONFLICTING_COLOR">
+         <description>
+            %compareConflictColor.description
+         </description>
+      </colorDefinition>
+      <colorDefinition
+            label="%compareResolvedColor.label"
+            categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
+            value="COLOR_GREEN"
+            id="RESOLVED_COLOR">
+         <description>
+            %compareResolvedColor.description
+         </description>
+      </colorDefinition>
+      <fontDefinition
+            label="%compareFontDefiniton.label"
+            defaultsTo="org.eclipse.jface.textfont"
+            categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
+            id="org.eclipse.compare.contentmergeviewer.TextMergeViewer">
+          <description>
+            %compareFontDefiniton.description
+         </description>
+      </fontDefinition>
+      <colorDefinition
+            categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
+            id="DELETION_COLOR"
+            label="%compareDeletionColor.label"
+            value="COLOR_RED">
+         <description>
+            %compareDeletionColor.description
+         </description>
+      </colorDefinition>
+      <colorDefinition
+            categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
+            id="EDITION_COLOR"
+            label="%compareEditionColor.label"
+            value="COLOR_BLACK">
+         <description>
+            %compareEditionColor.description
+         </description>
+      </colorDefinition>
+      <colorDefinition
+            categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
+            id="ADDITION_COLOR"
+            label="%compareAdditionColor.label"
+            value="COLOR_DARK_GREEN">
+         <description>
+            %compareAdditionColor.description
+         </description>
+      </colorDefinition>
+   </extension>
+
+   <extension
+         id="rejectedPatchMarker"
+         name="%rejectedPatchMarker.name"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.taskmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="%defaultCompareEditor.name"
+            icon="$nl$/icons/full/eview16/compare_view.png"
+            contributorClass="org.eclipse.compare.internal.CompareEditorContributor"
+            class="org.eclipse.compare.internal.CompareEditor"
+            id="org.eclipse.compare.CompareEditor">
+      </editor>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="org.eclipse.ui.edit.text.actionSet.presentation">
+         <part
+               id="org.eclipse.compare.CompareEditor">
+         </part>
+      </actionSetPartAssociation>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="%ComparePreferencePage.name"
+            category="org.eclipse.ui.preferencePages.Workbench"
+            class="org.eclipse.compare.internal.ComparePreferencePage"
+            id="org.eclipse.compare.internal.ComparePreferencePage">
+            <keywordReference id="org.eclipse.compare.general"/>
+      </page>
+   </extension>
+
+	<extension
+		point="org.eclipse.ui.keywords">
+		<keyword
+			label="%preferenceKeywords.general"
+			id="org.eclipse.compare.general"/>
+	</extension>
+
+<!-- commands and their bindings -->
+
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            name="%context.name"
+            description="%context.description"
+            parentId="org.eclipse.ui.contexts.window"
+            id="org.eclipse.compare.compareEditorScope">
+      </context>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="%compareCategory.name"
+            description="%compareCategory.description"
+            id="org.eclipse.compare.ui.category.compare">
+      </category>
+      <command
+            name="%Command.copyRightToLeft.name"
+            description="%Command.copyRightToLeft.description"
+            categoryId="org.eclipse.compare.ui.category.compare"
+            id="org.eclipse.compare.copyRightToLeft">
+      </command>
+      <command
+            name="%Command.copyLeftToRight.name"
+            description="%Command.copyLeftToRight.description"
+            categoryId="org.eclipse.compare.ui.category.compare"
+            id="org.eclipse.compare.copyLeftToRight">
+      </command>
+      <command
+            name="%Command.copyAllRightToLeft.name"
+            description="%Command.copyAllRightToLeft.description"
+            categoryId="org.eclipse.compare.ui.category.compare"
+            id="org.eclipse.compare.copyAllRightToLeft">
+      </command>
+      <command
+            name="%Command.copyAllLeftToRight.name"
+            description="%Command.copyAllLeftToRight.description"
+            categoryId="org.eclipse.compare.ui.category.compare"
+            id="org.eclipse.compare.copyAllLeftToRight">
+      </command>
+      <command
+            name="%Command.switchLeftAndRight.name"
+            description="%Command.switchLeftAndRight.description"
+            categoryId="org.eclipse.compare.ui.category.compare"
+            id="org.eclipse.compare.switchLeftAndRight">
+      </command>
+      <command
+            name="%Command.selectNextChange.name"
+            description="%Command.selectNextChange.description"
+            categoryId="org.eclipse.compare.ui.category.compare"
+            id="org.eclipse.compare.selectNextChange">
+      </command>
+      <command
+            name="%Command.selectPreviousChange.name"
+            description="%Command.selectPreviousChange.description"
+            categoryId="org.eclipse.compare.ui.category.compare"
+            id="org.eclipse.compare.selectPreviousChange">
+      </command>
+      <command
+            categoryId="org.eclipse.compare.ui.category.compare"
+            description="%Command.ignoreWhiteSpace.description"
+            id="org.eclipse.compare.ignoreWhiteSpace"
+            name="%Command.ignoreWhiteSpace.name">
+      </command>
+      <command
+            categoryId="org.eclipse.compare.ui.category.compare"
+            defaultHandler="org.eclipse.compare.internal.CompareWithOtherResourceHandler"
+            description="%Command.compareWithOther.description"
+            id="org.eclipse.compare.compareWithOther"
+            name="%Command.compareWithOther.name">
+      </command>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.mapping.ResourceMapping"
+            adaptable="true"
+            id="org.eclipse.compare.MenuGroups">
+         <menu
+               label="%ReplaceWithMenu.label"
+               path="additions"
+               id="replaceWithMenu">
+            <separator
+                  name="replaceWithGroup">
+            </separator>
+         </menu>
+         <menu
+               label="%CompareWithMenu.label"
+               path="additions"
+               id="compareWithMenu">
+            <separator
+                  name="compareWithGroup">
+            </separator>
+         </menu>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.eclipse.compare.CompareAction">
+         <action
+               label="%CompareWithEachOtherAction.label"
+               tooltip="%CompareWithEachOtherAction.tooltip"
+               class="org.eclipse.compare.internal.CompareAction"
+               menubarPath="compareWithMenu/compareWithGroup"
+               enablesFor="2+"
+               id="compareWithEachOther">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            adaptable="true"
+            id="org.eclipse.compare.ReplaceWithEditionAction">
+         <menu
+               label="%ReplaceWithMenu.label"
+               path="additions"
+               id="replaceWithMenu">
+            <separator
+                  name="replaceWithGroup">
+            </separator>
+         </menu>
+         <action
+               class="org.eclipse.compare.internal.ReplaceWithEditionAction"
+               enablesFor="1"
+               helpContextId="org.eclipse.compare.replace_with_edition_action_context"
+               id="replaceFromHistory"
+               label="%ReplaceFromHistoryAction.label"
+               menubarPath="replaceWithMenu/replaceWithGroup"
+               tooltip="%ReplaceFromHistoryAction.tooltip">
+         </action>
+         <action
+               label="%ReplaceWithPreviousFromHistoryAction.label"
+               tooltip="%ReplaceWithPreviousFromHistoryAction.tooltip"
+               class="org.eclipse.compare.internal.ReplaceWithPreviousEditionAction"
+               menubarPath="replaceWithMenu/replaceWithGroup"
+               enablesFor="1"
+               id="replaceWithPreviousFromHistory">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            adaptable="true"
+            id="org.eclipse.compare.CompareWithEditionAction">
+         <menu
+               label="%CompareWithMenu.label"
+               path="additions"
+               id="compareWithMenu">
+            <separator
+                  name="compareWithGroup">
+            </separator>
+         </menu>
+         <action
+               label="%CompareWithHistoryAction.label"
+               tooltip="%CompareWithHistoryAction.tooltip"
+               class="org.eclipse.compare.internal.CompareWithEditionAction"
+               menubarPath="compareWithMenu/compareWithGroup"
+               enablesFor="1"
+               id="compareWithHistory">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IContainer"
+            adaptable="true"
+            id="org.eclipse.compare.AddFromHistoryAction">
+         <action
+               label="%addFromHistoryAction.label"
+               tooltip="%addFromHistoryAction.tooltip"
+               class="org.eclipse.compare.internal.AddFromHistoryAction"
+               menubarPath="replaceWithMenu"
+               enablesFor="1"
+               id="addFromHistoryAction">
+         </action>
+      </objectContribution>
+   </extension>
+
+   <extension
+         point="org.eclipse.compare.streamMergers">
+      <streamMerger
+            extensions="txt"
+            class="org.eclipse.compare.internal.merge.TextStreamMerger"
+            id="org.eclipse.compare.internal.merge.TextStreamMerger">
+      </streamMerger>
+      <contentTypeBinding
+      		contentTypeId="org.eclipse.core.runtime.text"
+      		streamMergerId="org.eclipse.compare.internal.merge.TextStreamMerger">
+      </contentTypeBinding>
+   </extension>
+
+   <extension
+         point="org.eclipse.compare.structureCreators">
+      <structureCreator
+            extensions="zip"
+            class="org.eclipse.compare.ZipFileStructureCreator"
+            id="org.eclipse.compare.ZipFileStructureCreator">
+      </structureCreator>
+   </extension>
+
+   <extension
+         point="org.eclipse.compare.contentMergeViewers">
+      <viewer
+            class="org.eclipse.compare.internal.BinaryCompareViewerCreator"
+            extensions="class,exe,dll,binary,zip,jar"
+            id="org.eclipse.compare.BinaryCompareViewerCreator"
+            label="%BinaryCompare.label">
+      </viewer>
+      <viewer
+            class="org.eclipse.compare.internal.TextMergeViewerCreator"
+            extensions="txt"
+            id="org.eclipse.compare.TextMergeViewerCreator"
+            label="%TextCompare.label">
+      </viewer>
+      <viewer
+            class="org.eclipse.compare.internal.ImageMergeViewerCreator"
+            extensions="gif,jpg,jpeg,png,bmp,ico,tif,tiff"
+            id="org.eclipse.compare.ImageMergeViewerCreator"
+            label="%ImageCompare.label">
+      </viewer>
+      <contentTypeBinding
+			contentTypeId="org.eclipse.core.runtime.text"
+            contentMergeViewerId="org.eclipse.compare.TextMergeViewerCreator">
+	  </contentTypeBinding>
+   </extension>
+
+   <extension
+         point="org.eclipse.compare.contentViewers">
+      <viewer
+            extensions="txt"
+            class="org.eclipse.compare.internal.TextViewerCreator"
+            id="org.eclipse.compare.TextViewerCreator">
+      </viewer>
+      <contentTypeBinding
+			contentTypeId="org.eclipse.core.runtime.text"
+            contentViewerId="org.eclipse.compare.TextViewerCreator">
+	  </contentTypeBinding>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.compare.internal.ComparePreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.compare.CompareEditorInput"
+            class="org.eclipse.compare.internal.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.IContributorResourceAdapter">
+         </adapter>
+      </factory>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerContentBinding
+            viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+      <includes>
+      <contentExtension
+            pattern="org.eclipse.compare.linkHelper">
+      </contentExtension>
+      </includes>
+      </viewerContentBinding>
+      
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.linkHelper">
+      <linkHelper
+            class="org.eclipse.compare.internal.CompareLinkHelper"
+            id="org.eclipse.compare.linkHelper">
+         <editorInputEnablement>
+             <instanceof value="org.eclipse.compare.CompareEditorInput"/>
+         </editorInputEnablement>
+      </linkHelper>
+   </extension>
+
+</plugin>

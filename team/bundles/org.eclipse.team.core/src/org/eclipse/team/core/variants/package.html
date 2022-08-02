@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+  <meta content="IBM" name="Author">
+  <title>Package-level Javadoc</title>
+</head>
+<body>
+Application programming interfaces for accessing and managing resource variants. 
+<h2>Package Specification</h2>
+<p>This package specifies the API for accessing and managing variants for local 
+  workspace resources. The classes in this package can be used by Subscribers 
+  (see the org.eclipse.team.core.subscribers package) or others. The classes are 
+  roughly divided into three categories: <br>
+</p>
+<h3>Access to Resource Variants</h3>
+<p>The following interfaces define the API required for subscribers to access 
+  and manage variants of local resources.</p>
+<ul>
+  <li>IResourceVariant: provides access to information about a variant resource, 
+    such as it's name, its type (file or container) and its contents.</li>
+  <li>IResourceVariantComparator: supports the comparison of a local resource 
+    with a variant or the comparison of two variants (if three-way comparison 
+    is supported).</li>
+  <li>IResourceVariantTree: provides access to a tree of locally cached resource 
+    variants along with API to refresh the cached variants.</li>
+</ul>
+<h3>Implementing Resource Variants</h3>
+<p>Several classes are available that provide partial, extandable implementations 
+  of the above mentioned interfaces.</p>
+<ul>
+  <li>CachedResourceVariant: an IResourceVariant implementation that supports 
+    the caching of the contents of the variant. Subclasses must override to provide 
+    fecthing of contents.</li>
+  <li>AbstractResourceVariantTree: an IResourceVariantTree that contains logic 
+    for performing a refresh of the cached resource variants. The caching mechanism 
+    is delegated to subclasses as is the fetching of the resource variants.
+    <ul>
+      <li>ResourceVariantTree: An AbstractResourceVariantTree that uses a ResourceVariantByteStore 
+        to cache the resource variants. Subclasses must still provide the fecthing 
+        of the remote state.</li>
+    </ul>
+  </li>
+  <li>ResourceVariantByteStore: An abstract class that defines the API required 
+    for caching resource variants as byte arrays. 
+    <ul>
+      <li>PersistantResourceVariantByteStore: a ResourceVariantByteStore that 
+        persists the bytes accross workbench invocations.</li>
+      <li>SessionResourceVariantByteStore: a ResourceVariantByteStore that caches 
+        the bytes in a session store and does not persist them.</li>
+    </ul>
+  </li>
+</ul>
+<h3>Implementing Subscribers</h3>
+<p>This package also contains two partial subscriber implementations.</p>
+<ul>
+  <li>ResourceVariantTreeSubscriber: a subscriber that makes use of IResourceVariantTree 
+    objects to provide the traversal and refresh of the base and remote trees.</li>
+  <li>ThreeWaySubscriber: a ResourceVariantTreeSubscriber that is build on top 
+    of the following classes. 
+    <ul>
+      <li>ThreeWaySynchronizer: a byte store that maintains the complete synchronization 
+        state (local, base and remote) required by a subscriber. It provides API 
+        to access and set the base and remote bytes corresponding to resource 
+        variants as well as change notification to registered ISynchronizerChangeListener 
+        instances. </li>
+      <li>ThreeWayRemoteTree: A remote tree that uses the ThreeWaySynchronizer 
+        remote slot as its byte store. Subclasses of ResourceVariantTreeSubscriber 
+        must also subclass ThreeWayRemoteTree in order to provide the tree refresh 
+        behavior.</li>
+      <li>ThreeWayResourceComparator: a IResourceVariantComparator that uses the 
+        state from a ThreeWaySynchronizer to compare local resources to their 
+        variants.</li>
+    </ul>
+  </li>
+</ul>
+<p>&nbsp;</p>
+</body>
+</html>

@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.eclipse.compare.examples.xml; singleton:=true
+Bundle-Version: 3.5.0.qualifier
+Bundle-Activator: org.eclipse.compare.examples.xml.XMLPlugin
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Export-Package: org.eclipse.compare.examples.xml,
+ org.eclipse.compare.examples.xml.ui
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.compare,
+ org.eclipse.ui,
+ org.eclipse.jface.text,
+ org.junit
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.eclipse.compare.examples.xml

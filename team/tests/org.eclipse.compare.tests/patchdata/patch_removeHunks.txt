@@ -1,0 +1,55 @@
+### Eclipse Workspace Patch 1.0
+#P Bug202944
+Index: tmp/context_full.txt
+===================================================================
+RCS file: /TEST/Bug202944/tmp/context_full.txt,v
+retrieving revision 1.1
+diff -u -r1.1 context_full.txt
+--- tmp/context_full.txt	23 Feb 2009 09:39:56 -0000	1.1
++++ tmp/context_full.txt	23 Feb 2009 10:03:51 -0000
+@@ -1,3 +1,5 @@
++[a1]
++[a2]
+ [a]
+ [b]
+ [c]
+@@ -11,6 +13,8 @@
+ [k]
+ [l]
+ [m]
++[m1]
++[m2]
+ [n]
+ [o]
+ [p]
+@@ -20,8 +24,6 @@
+ [t]
+ [u]
+ [v]
+-[w]
+-[x]
+ [y]
+ [z]
+ [A]
+@@ -30,10 +32,9 @@
+ [D]
+ [E]
+ [F]
+-[G]
+-[H]
+ [I]
+ [J]
++[J1]
+ [K]
+ [L]
+ [M]
+@@ -47,6 +48,8 @@
+ [U]
+ [V]
+ [W]
+-[X]
++[W1]
++[W2]
++[W3]
+ [Y]
+ [Z]

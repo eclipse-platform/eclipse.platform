@@ -1,0 +1,25 @@
+Goals of the API:
+- Option 1: Can add page to synchronize view and wizard to synchronize wizard (complete control over presentation and behavior)
+
+- Option 2: ISVs that implement Subscriber gets our synchronize workflows with the following configuration points (FTP, CVS, WEBDAV)
+  - can provide configurability of context/toolbar actions (how?)
+  - resource selection synchronize wizard
+  - inherit presaentation models, workflows for refreshing
+  - use of sync info compare input, synchronize input, synchronize dialog
+  - (internal) adding model provider
+  
+- Option 3: ISVs that don't implement a Subscriber but builds their own SynInfo?
+  - synchronize dialog (displays compare input in a dialog)
+  - synchronize input (displays a participant page in the compare infrastructure)
+  - sync info compare input (display sync info in compare editor)
+  - can they display the sync info using the default model providers?
+  
+  
+  
+  NOTES:
+  - working set in compare with latest to scope the changes shown
+  x navigate actions in dialogs
+  x progress fetching contents in dialog part
+  - progress in dialog/wizards
+  x fix-up actions enabled in dialogs/wizards
+  x SubscriberPageConfiguration never created? I would expect SubscriberParticipant to create one.
