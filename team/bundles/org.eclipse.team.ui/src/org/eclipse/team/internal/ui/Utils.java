@@ -103,6 +103,7 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.osgi.framework.Bundle;
 
+@SuppressWarnings("restriction")
 public class Utils {
 
 	/**

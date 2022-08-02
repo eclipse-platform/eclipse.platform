@@ -63,6 +63,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
  * editor is opened on the file.
  * </p>
  */
+@SuppressWarnings("restriction")
 public class OpenWithMenu extends ContributionItem {
 	private IStructuredSelection selection;
 

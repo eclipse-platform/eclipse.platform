@@ -29,6 +29,7 @@ import org.eclipse.jface.text.IRegion;
  * A <code>DocLineComparator</code> doesn't know anything about line separators because
  * its notion of lines is solely defined in the underlying <code>IDocument</code>.
  */
+@SuppressWarnings("restriction")
 public class DocLineComparator implements ITokenComparator {
 
 	private IDocument fDocument;

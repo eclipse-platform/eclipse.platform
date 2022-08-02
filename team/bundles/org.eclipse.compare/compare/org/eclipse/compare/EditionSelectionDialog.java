@@ -193,9 +193,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 	/**
 	 * Maps from members to their corresponding selected edition.
 	 */
-	private HashMap<List, ITypedElement> fMemberSelection;
+	private HashMap<List<?>, ITypedElement> fMemberSelection;
 	/** The editions of the current selected member */
-	private List fCurrentEditions;
+	private List<?> fCurrentEditions;
 	private Thread fThread;
 	private Pair fTargetPair;
 	/** The selected edition in the edition viewer */
