@@ -20,7 +20,7 @@
   </parent>
   <groupId>org.eclipse.core</groupId>
   <artifactId>org.eclipse.core.net.linux</artifactId>
-  <version>1.0.100-SNAPSHOT</version>
+  <version>1.0.200-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
   <properties>
