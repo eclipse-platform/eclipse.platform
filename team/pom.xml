@@ -37,11 +37,9 @@
     <module>bundles/org.eclipse.team.ui</module>
     <module>bundles/org.eclipse.team.genericeditor.diff.extension</module>
     <module>bundles/org.eclipse.ui.net</module>
-    <!-- Examples, currently deactivated due to warnings in the code 
     <module>examples/org.eclipse.compare.examples</module>
     <module>examples/org.eclipse.compare.examples.xml</module>
     <module>examples/org.eclipse.team.examples.filesystem</module>
-    -->
 
     <!-- fragments -->
     <module>bundles/org.eclipse.core.net.linux</module>
