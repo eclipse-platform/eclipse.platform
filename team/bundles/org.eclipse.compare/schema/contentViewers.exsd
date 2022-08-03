@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.compare" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.compare" id="contentViewers" name="Content Viewers"/>
+      </appinfo>
+      <documentation>
+         This extension point allows a plug-in to register 
+viewers for specific content types. 
+These viewers are used in the &lt;samp&gt;EditionSelectionDialog&lt;/samp&gt; when presenting an edition of a resource or a subsection thereof. The viewer is expected to extend &lt;samp&gt;org.eclipse.jface.viewers.Viewer&lt;/samp&gt;. 
+However since viewers don&apos;t have a default constructor the extension point must implement the factory interface for viewers &lt;samp&gt;org.eclipse.compare.IViewerCreator&lt;/samp&gt;.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="viewer" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="contentTypeBinding" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="viewer">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier that can be used to reference the viewer
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified name of a class that implements a factory for the 
+content viewer and implements &lt;samp&gt;org.eclipse.compare.IViewerCreator&lt;/samp&gt;
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.compare.IViewerCreator"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="extensions" type="string">
+            <annotation>
+               <documentation>
+                  a comma separated list of file extensions e.g. &quot;java, gif&quot;
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="contentTypeBinding">
+      <annotation>
+         <documentation>
+            A &lt;code&gt;contentTypeBinding&lt;/code&gt; binds a content viewer to a content type.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="contentTypeId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of a content type defined using the &lt;code&gt;org.eclipse.core.contenttype.contentTypes&lt;/code&gt; extension point.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.core.contenttype.contentTypes/content-type/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="contentViewerId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of a content viewer defined using the &lt;code&gt;viewer&lt;/code&gt; element of this extension point (i.e. &lt;code&gt;org.eclipse.compare.contentViewers&lt;/code&gt;)
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.compare.contentViewers/viewer/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following is an example of a viewer for text 
+files (extension &quot;txt&quot;): 
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point = &quot;org.eclipse.compare.contentViewers&quot;&gt; 
+     &lt;viewer 
+         id=&quot;org.eclipse.compare.internal.TextViewer&quot; 
+         class=&quot;org.eclipse.compare.internal.TextViewerCreator&quot; 
+         extensions=&quot;txt&quot; 
+    /&gt; 
+&lt;/extension&gt; 
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         The contributed class must implement &lt;code&gt;org.eclipse.compare.IViewerCreator&lt;/code&gt;
+      </documentation>
+   </annotation>
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         The Compare UI plugin defines content viewers for 
+text and images.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2000, 2008 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made available under the terms of the Eclipse Public License 2.0 which accompanies this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

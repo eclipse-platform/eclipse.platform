@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.team.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.team.ui" id="scmUrlImportPages" name="SCM URLs Import Pages"/>
+      </appInfo>
+      <documentation>
+         &lt;strong&gt;EXPERIMENTAL&lt;/strong&gt;. This extension point has been added as part of a work in progress. There is no guarantee that this API will work or that it will remain the same in future releases. Please do not use this API without consulting with the Team team.
+&lt;p&gt;
+This extension point is used to register a page to import projects basing on their SCM URLs.
+&lt;/p&gt;
+&lt;p&gt;
+Providers may provide an extension for this extension point, and an implementation of &lt;samp&gt;org.eclipse.team.ui.IScmUrlImportWizardPage&lt;/samp&gt; which allows to set and retrive project import descriptions.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="scmUrlImportPage"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="scmUrlImportPage">
+      <complexType>
+         <attribute name="page" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A wizard page that can be displayed by wizards that import projects basing on information from SCM URLs.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.team.ui.IScmUrlImportWizardPage"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="importer" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of the org.eclipse.team.core.bundleImporters extension which is associated with the page extension.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.team.core.bundleImporters/importer/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.6
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of an import page CVS:
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.team.ui.scmUrlImportPages&quot;&gt;
+ &lt;scmUrlImportPage
+  importer=&quot;org.eclipse.team.core.cvs.importer&quot;
+  page=&quot;org.eclipse.team.internal.ccvs.ui.wizards.CVSScmUrlImportWizardPage&quot;&gt;
+ &lt;/scmUrlImportPage&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiinfo"/>
+      </appInfo>
+      <documentation>
+         Value of a page&apos;s &lt;b&gt;page&lt;/b&gt; attribute must be a fully qualified name of a Java class that implements the interface &lt;b&gt;org.eclipse.team.ui.IScmUrlImportWizardPage&lt;/b&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         CVS UI provides a page extension capable of configuring import from CVS.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2011, 2012 IBM Corporation and others.
+
+This program and the accompanying materials are made available under the terms of the Eclipse Public License 2.0 which accompanies this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

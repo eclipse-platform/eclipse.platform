@@ -1,0 +1,84 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2013. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <link rel="stylesheet" href="../../../book.css" charset="ISO-8859-1" type="text/css">
+   <title>XML Compare Plugin</title>
+</head>
+<body>
+<center><h1>Eclipse Platform XML Compare</h1></center>
+The XML Compare plugin allows you to perform a structural compare of two XML documents. It returns
+a difference tree which indicates which XML elements have been added or removed and - for modified XML elements -
+what differences there are with respect to attributes or body text.
+<h2>Installing the plugin</h2>
+<ul>
+<li>Copy the folder <tt>org.eclipse.compare.examples.xml</tt> to the <tt>plugins</tt> subfolder of Eclipse.
+</ul>
+<h2>Using the plugin</h2>
+The plugin is automatically used when comparing files with the extension .cxml. The reason for this is that the plug-in illustrates how to register a compare merge viewer and other viewers, not to provide a compare of real XML files itself.
+<br>
+By default, the XML compare uses the <em>Unordered</em> compare method, which ignores the order in which the XML elements appear in the document and matches them so that elements which are most similar are matched.
+There is also an <em>Ordered</em> compare method, which simply compares the XML elements exactly in the order in which they appear in the document. In most cases, this compare method will not be of much use.
+<br>
+The compare method can be changed from a drop-down list in the toolbar of the structure view.
+<br>
+<br>
+When an XML document
+contains elements that can uniquely be identified by an attribute or the text of a child element,
+it is recommended that an ID Mapping Scheme be created for this type of XML document.
+<br>
+<br>
+See <a href="tutorial_and_examples.html">Tutorial and Examples</a> for more information on using the plugin.
+<br>
+<h3>ID Mapping Schemes</h3>
+An ID Mapping Scheme specifies for XML elements an attribute or the text of a child element that
+uniquely identifies this element. This assures that - in the compare process - the right elements will be 
+matched and therefore compared with each other. If for an XML element no ID Mapping is specified, a general matching algorithm
+is be used. However, this general matching algorithm does not always return the desired result.
+The reason for this is that the general matching algorithm looks for a matching of the nodes of the two parsed trees
+to compare that minimizes the differences. The effect is that often two XML elements are matched with are
+structurally similar but represent two completely different entities of information.
+<br>
+<h3>Ordered entries</h3>
+When using the default Unordered compare (with or without id mappings) it is sometimes desired to specify that the children of certain elements be compared in ordered fashion intead of the usual unordered method.
+For example, when comparing ANT files the order of appearance of the children of <tt>target</tt> elements is important.
+<br>In such cases one can create an <i>Ordered entry</i>. An Ordered entry specifies that the direct children of an xml element, identified by its path, will be compared in ordered fashion (attributes however are still compared in unordered way).
+The children of these children will continue to be compared in unordered way, unless otherwise specified.
+<h3>Defining ID Mapping Schemes and Ordered entries</h3>
+ID Mapping Schemes can be created in three different ways:
+<ol>
+<li>By extending the extension point <a href="idMapping.html"><em>idMapping</em></a></li>
+<li>Using the <a href="PreferencePage.gif">XML Compare Preference page</a>.</li>
+<li>Using the <a href="CreateNewIDMapButton.gif">Create new Id Map Scheme button</a> in the toolbar and the <a href="IDMapContextMenu.gif">context menu</a>
+</ol>
+Method 1 creates a so-called <em>internal</em> mapping scheme. An internal ID Mapping Scheme
+cannot be edited at runtime. However, using the <a href="EditCopy.gif"><em>Edit Copy</em></a> button in the Preference Page, an editable copy of the
+internal ID Mapping Scheme can be created.
+<br>
+Methods 2 and 3 create so-called <em>user</em> mapping schemes. These are created by the user at runtime and
+can be modified anytime in the Preference Page.
+<p>Internal and user mapping schemes can be associated with a file extension. As a result, when comparing two XML files with this file extension, the particular ID Mapping scheme with this extension
+is automatically used.
+<br>
+<br>
+When creating or editing the ID mapping for a particular XML element, four items must be specified (see <a href="IDMap_NewMapping_PreferencePage.gif">example</a>):
+<ol>
+<li>The element name.</li>
+<li>The element path. This is the path of the element from the root of the XML document to the element's parent.</li>
+<li>The name of the id which will identify the element</li>
+<li>Whether the id name in point 3 is the name of an attribute of the element or the name of one of its children (in which case the text of this child element
+will be used as id).</li>
+</ol>
+<br>
+<hr WIDTH="100%">
+<h1>
+Extension Points</h1>
+Only one extension point is available in the XML Compare plugin. It is used to create
+internal ID Mapping Schemes:
+<ul>
+<li>
+<a href="idMapping.html">org.eclipse.compare.examples.xml.idMapping</a></li>
+</ul>
+</body>
+</html>

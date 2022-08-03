@@ -1,0 +1,83 @@
+### Eclipse Workspace Patch 1.0
+#P TestProject2
+Index: testPkg2/TestProject2Class2.java
+===================================================================
+RCS file: /home/bog/repo/TestProject2/testPkg2/TestProject2Class2.java,v
+retrieving revision 1.3
+diff -u -r1.3 TestProject2Class2.java
+--- testPkg2/TestProject2Class2.java	6 Sep 2005 16:13:09 -0000	1.3
++++ testPkg2/TestProject2Class2.java	6 Sep 2005 18:17:06 -0000
+@@ -1,12 +1,11 @@
+ package testPkg2;
+ 
+-public class TestProject2Class2 {
++public abstract class TestProject2Class2  {
+ 
+-	/**
+-	 * @param args
+-	 */
+-	public static void main(String[] args) {
+-		// TODO Auto-generated method stub
+-	}
++  public TestProject2Class2(){
++	 
++  }
+ 
++  protected abstract void doAnything();
++  
+ }
+#P TestProject
+Index: testPkg/TestProjectClass1.java
+===================================================================
+RCS file: /home/bog/repo/TestProject/testPkg/TestProjectClass1.java,v
+retrieving revision 1.3
+diff -u -r1.3 TestProjectClass1.java
+--- testPkg/TestProjectClass1.java	6 Sep 2005 16:13:09 -0000	1.3
++++ testPkg/TestProjectClass1.java	6 Sep 2005 18:17:06 -0000
+@@ -1,6 +1,6 @@
+ package testPkg;
+ 
+-public class TestProjectClass1 {
++public class TestProjectClass1 implements IWorkspacePatcherTest {
+ 
+ 	public TestProjectClass1(){};
+ 	
+@@ -15,5 +15,21 @@
+ 		//does something
+ 	}
+ 
++	public boolean canApplyToMultipleProjects() {
++		// TODO Auto-generated method stub
++		return false;
++	}
++
++	public void doSomething() {
++		// TODO Auto-generated method stub
++		
++	}
++
++	public boolean isWorkspacePatcherTest() {
++		// TODO Auto-generated method stub
++		return false;
++	}
++
++	
+ 
+ }
+Index: testPkg/IWorkspacePatcherTest.java
+===================================================================
+RCS file: testPkg/IWorkspacePatcherTest.java
+diff -N testPkg/IWorkspacePatcherTest.java
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ testPkg/IWorkspacePatcherTest.java	1 Jan 1970 00:00:00 -0000
+@@ -0,0 +1,10 @@
++package testPkg;
++
++public interface IWorkspacePatcherTest {
++	
++	public boolean canApplyToMultipleProjects();
++	
++	public void doSomething();
++	
++	public boolean isWorkspacePatcherTest();
++}

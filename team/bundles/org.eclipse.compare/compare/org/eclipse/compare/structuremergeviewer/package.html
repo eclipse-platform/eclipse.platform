@@ -1,0 +1,76 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="IBM">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (WinNT; U) [Netscape]">
+   <title>Package-level Javadoc</title>
+</head>
+<body>
+Provides support for finding and displaying the differences
+between hierarchically structured data.
+<h2>
+Package Specification</h2>
+
+The class <b>Differencer</b> is a differencing engine for hierarchically
+structured data. It takes two or three inputs and performs a two-way or
+three-way compare on them.
+<p>
+
+If the input elements to the differencing engine implement the <b>IStructureComparator</b>
+interface the engine recursively applies itself to the children of
+the input element. Leaf elements must implement the <b>org.eclipse.compare.IStreamContentAccessor</b>
+interface so that the differencer can perform a bytewise comparison on their contents.
+<p>
+
+One good example for this is <b>org.eclipse.compare.ResourceNode</b> which implements both interfaces
+(and more) for Eclipse workspace resources (org.eclipse.core.resources.IResource).
+<p>
+
+Another example is the <b>DocumentRangeNode</b> which can be used to compare hierarchical structures
+that are superimposed on a document, that is where nodes and leafs correspond to ranges in a document
+(<b>org.eclipse.compare.contentmergeviewer.IDocumentRange</b>).
+<br>
+Typically <b>DocumentRangeNode</b>s are created while parsing a document and they represent
+the semantic entities of the document (e.g. a Java class, method or field).
+The two subclasses <b>JavaNode</b> (in org.eclipse.jdt.internal.ui.compare)
+and <b>PropertyNode</b> (in org.eclipse.jdt.internal.ui.compare) are good examples for this.
+<p>
+
+By default the differencing engine returns the result of the compare operation
+as a tree of <b>DiffNode</b> objects. However, this can be changed by overriding
+a single method of the engine.
+<p>
+
+Every <b>DiffNode</b> describes the changes among the two or three inputs.
+<p>
+
+A tree of <b>DiffNodes</b> can be displayed in a <b>DiffTreeViewer</b>.
+The <b>DiffTreeViewer</b> requires that inner nodes of the tree implement
+the <b>IDiffContainer</b> interface and leafs the <b>IDiffElement</b> interface.
+<p>
+
+The typical steps to compare hierarchically structured data and to display
+the differences would be to:
+<ul>
+<li>
+map the input data into a tree of <b>IStructureComparator</b> and <b>IStreamContentAccessor</b>s,</li>
+
+<li>
+perform the compare operation by means of the <b>Differencer</b>, and</li>
+
+<li>
+feed the differencing result into the <b>DiffTreeViewer</b>.</li>
+
+</ul>
+
+The <b>StructureDiffViewer</b> is a specialized <b>DiffTreeViewer</b>
+that automates the three steps from above. It takes a single input object
+of type <b>ICompareInput</b> from which it retrieves the two or three
+input elements to compare. Then it uses a <b>IStructureCreator</b> to
+extract a tree of <b>IStructureComparator</b> and <b>IStreamContentAccessor</b>
+from them. These trees are then compared with the differencing engine and
+the result is displayed in the tree viewer.
+
+</body>
+</html>

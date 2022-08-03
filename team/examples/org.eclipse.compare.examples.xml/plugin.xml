@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+    Copyright (c) 2003, 2011 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+     <extension-point id="idMapping" name="%idMapping" schema="schema/idMapping.exsd"/>
+
+   <extension
+         point="org.eclipse.compare.examples.xml.idMapping">
+      <idmap
+            name="%antMap"
+            id="antMap">
+         <mapping
+               signature="project"
+               id="name">
+         </mapping>
+         <mapping
+               signature="project&gt;target"
+               id="name">
+         </mapping>
+         <ordered
+               signature="project&gt;target">
+         </ordered>
+      </idmap>
+      <idmap
+            name="%eclipsePluginMap"
+            id="eclipsePluginMap">
+         <mapping
+               signature="plugin"
+               id="id">
+         </mapping>
+         <mapping
+               signature="plugin&gt;requires&gt;import"
+               id="plugin">
+         </mapping>
+         <mapping
+               signature="plugin&gt;runtime&gt;library"
+               id="name">
+         </mapping>
+         <mapping
+               signature="plugin&gt;runtime&gt;library&gt;export"
+               id="name">
+         </mapping>
+         <mapping
+               signature="plugin&gt;extension-point"
+               id="id">
+         </mapping>
+         <mapping
+               signature="plugin&gt;extension"
+               id="point">
+         </mapping>
+      </idmap>
+      <idmap
+            name="%classpathMap"
+            extension="CLASSPATH"
+            id="classpathMap">
+         <mapping
+               signature="classpath&gt;classpathentry"
+               id="path">
+         </mapping>
+      </idmap>
+   </extension>
+   
+   <extension
+         point="org.eclipse.compare.structureMergeViewers">
+      <viewer
+            extensions="cxml,classpath"
+            class="org.eclipse.compare.examples.xml.XMLStructureViewerCreator"
+            id="org.eclipse.compare.examples.xml.XMLStructureViewerCreator">
+      </viewer>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="%pluginNamePreferencePage"
+            category="org.eclipse.ui.preferencePages.Workbench"
+            class="org.eclipse.compare.examples.xml.XMLComparePreferencePage"
+            id="org.eclipse.compare.examples.xml.XMLComparePreferencePage">
+      </page>
+   </extension>
+
+</plugin>

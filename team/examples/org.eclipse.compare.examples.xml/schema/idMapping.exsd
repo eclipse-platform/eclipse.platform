@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.compare.examples.xml" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.compare.examples.xml" id="idMapping" name="XML Id Mapping"/>
+      </appinfo>
+      <documentation>
+         This extension point allows to define internal XML ID Mapping schemes using the &lt;i&gt;mapping&lt;/i&gt; element.
+These schemes can then be used when performing an XML compare to uniquely identify XML elements by the
+value of an attribute or the text in a child element.
+Additionally, &lt;i&gt;ordered&lt;/i&gt; elements can be used to specify that the direct children of an element
+should be compared in an ordered fashion instead of the default unordered way.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="idMap" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="idMap">
+      <complexType>
+         <sequence>
+            <element ref="mapping"/>
+            <element ref="ordered"/>
+         </sequence>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the ID Mapping scheme. Should be unique.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="extension" type="string">
+            <annotation>
+               <documentation>
+                  a file extension associated with this ID Mapping Scheme.
+When comparing files with this extension, the current ID Mapping
+Scheme will automatically be used. 
+If an extension is specified, then the extension should also be added
+in the plugin.xml file of the XML Compare Plugin. For example, if we
+create an ID Mapping Scheme with extension cd, the plugin.xml of the
+XML Compare Plugin is updated as follows (update shown in bold): 
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension 
+    point=&quot;org.eclipse.compare.structureMergeViewers&quot;&gt; 
+ &lt;structureMergeViewer 
+    extensions=&quot;xml,classpath,cd&quot;
+    class=&quot;org.eclipse.compare.xml.XMLStructureViewerCreator&quot;
+ /&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+&lt;p&gt;
+Warning: If an extension is associated more than once, only the first
+association will be considered. Also, internal ID Mapping schemes have
+priority over user ID Mapping schemes when duplicate extensions are defined. 
+&lt;/p&gt;
+&lt;p&gt;
+Warning: When an internal ID Mapping scheme with extension association is
+removed (from a plugin.xml ), the XML Compare plugin has to be reloaded
+to disassociate itself from the extension. If not, on the first compare
+of files with this extension, the XML Compare plugin will be used with
+the default Unordered algorithm. (However, at this point the extension
+will have been disassociated from the XML Plugin, as the plugin has been loaded.)
+&lt;/p&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="mapping">
+      <complexType>
+         <attribute name="signature" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the XML path from the root to the current element (see examples below).
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the attribute that identifies this element or the name of the child element whose text identifies this element.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id-source" type="string">
+            <annotation>
+               <documentation>
+                  if id is the name of a child element, then this attribute must have the value body.
+If id-source is left out, it is assumed that id is an attribute.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="ordered">
+      <complexType>
+         <attribute name="signature" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the XML path from the root to the element whose direct children will be
+compared in ordered fashion instead of the default unordered way.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.0.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following is an example ID Mappings Scheme for ANT files. 
+&lt;i&gt;project&lt;/i&gt; elements are identified by an &lt;i&gt;attribute name&lt;/i&gt;. &lt;i&gt;target&lt;/i&gt; elements (which are children of &lt;i&gt;project&lt;/i&gt;) are also identified by an attribute &lt;i&gt;name&lt;/i&gt;. Also, the children of &lt;i&gt;target&lt;/i&gt; will be compared in the order in which they appear in the document.
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point = &quot;org.eclipse.compare.examples.xml.idMapping&quot;&gt; 
+ &lt;idmap name=&quot;ANT&quot;&gt;
+  &lt;mapping signature=&quot;project&quot; id=&quot;name&quot;/&gt;
+  &lt;mapping signature=&quot;project&gt;target&quot; id=&quot;name&quot;/&gt;
+  &lt;ordered signature=&quot;project&gt;target&quot;/&gt;
+ &lt;idmap&gt;
+&lt;/extension&gt; 
+&lt;/pre&gt;
+&lt;/p&gt;
+The following example illustrates a case where the text of a child element is used as the id:
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point = &quot;org.eclipse.compare.examples.xml.idMapping&quot;&gt; 
+ &lt;idmap name=&quot;Book Catalog&quot; extension=&quot;book&quot;&gt;
+  &lt;mapping signature=&quot;catalog&gt;book&quot; id=&quot;isbn&quot; id-source=&quot;body&quot;/&gt;
+ &lt;idmap&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         The XML Compare plugin defines an ID Mapping scheme for Eclipse &lt;samp&gt;plugin.xml&lt;/samp&gt; files, one for &lt;samp&gt;.classpath&lt;/samp&gt; files and one for Ant files.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2000, 2008 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made available under the terms of the Eclipse Public License 2.0 which accompanies this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

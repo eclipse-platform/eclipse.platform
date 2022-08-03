@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="Content-Type">
+  <meta content="IBM" name="Author">
+  <title>Package-level Javadoc</title>
+</head>
+<body>
+Application programming interfaces for generating and refreshing
+synchronization state.
+<h2>Package Specification</h2>
+<p>This package specifies the API for Team subscribers. A Subscriber
+provides access to the synchronization state between the local
+workspace resources and a set of variants of those resources, whether
+it be a code repository or some other type of server (e.g. FTP). A
+subscriber is typically associated with only a subset of the resources
+in the local workspace, referred to as the set of resources the
+subscriber supervises. The supervised local resources have a
+corresponding variant state which describes the state of the remote
+resources that correspond to the local resources.</p>
+<p>A Subscriber provides:</p>
+<ul>
+  <li>a set of root resources that define the subset of resources in
+the workspace that the subscriber supervises (some children of the
+roots may not be supervised, as indicated by the isSupervised method).</li>
+  <li>access to the synchronization state (using SyncInfo) between the
+resources it supervises and their corresponding variant resources.</li>
+  <li> the ability to refresh the the remote state</li>
+  <li>change notification to registered listeners (of type
+ISubscriberChangeListener) when the variant state changes or when roots
+are added or removed.</li>
+</ul>
+<h3>Implementing a Subscriber </h3>
+<p>An implementation of a subscriber must provide:
+</p>
+<ul>
+  <li>a subclass of Subcriber which maintains the synchronization state
+between its local resources and their corresponding variants.</li>
+  <li>an implemenation of org.eclipse.team.core.variants.IResourceVariant which provides access to the
+contents and other state of a variant resource that corresponds to a
+local resource</li>
+  <li>an implementation of org.eclipse.team.core.variants.IResourceVariantComparator which is used by
+org.eclipse.team.core.synchronize.SyncInfo to determine the synchronization state of a resource.</li>
+</ul>
+Optionally, a subscriber may provide a subclass of org.eclipse.team.core.synchronize.SyncInfo in order to
+customize the algorithm used to
+determine the synchronization state of a resource.
+</body>
+</html>

@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.team.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.team.core" id="repository" name="Team Repository Provider"/>
+      </appinfo>
+      <documentation>
+         The Team plugin contains the notion of Repositories. The job of a repository is to provide support for sharing resources between Team members. Repositories are configured on a per-project basis. Only one repository can be mapped to a project at a time.
+&lt;p&gt;
+Repositories that extend this extension point can provide implementations for common repository specific rules for resource modifications, moving and deleting. See the following interfaces for more details &lt;code&gt;IFileModificationValidator&lt;/code&gt; and &lt;code&gt;MoveDeleteHook&lt;/code&gt;.
+&lt;/p&gt;
+&lt;p&gt;
+A Repository type can also be specified in order to provide non-project specific funtionality such as a &lt;samp&gt;org.eclipse.team.core.ProjectSetCapability&lt;/samp&gt;.
+&lt;/p&gt;
+&lt;p&gt;
+Optionally, a repository provider type can designate that it can import projects from a second provider, in the case where the second provider&apos;s plugin is not available in the current install. This is provided as a means to support the migration from one provider implementation to another where the resuse of the same id for the two providers was not possible.
+&lt;/p&gt;
+&lt;p&gt;
+A repository provider type can also specify one or more meta-file paths (delimited by comas) that are relative to a parent container. If an unshared project or folder contains files that match all the meta-file paths associated with a repository definition, the method &lt;code&gt;RepositoryProviderType#metaFilesDetected&lt;/code&gt; will be invoked with the parent container as an argument. This is done to give the repository type a chance to mark the files team-private and potentially share the project as well. see the javadoc of the above mentioned method for more details.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="repository"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="repository">
+      <complexType>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the fully-qualified name of a subclass of 
+     &lt;samp&gt;org.eclipse.team.core.RepositoryProvider&lt;/samp&gt;.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.team.core.RepositoryProvider"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="typeClass" type="string">
+            <annotation>
+               <documentation>
+                  the fully-qualified name of a subclass of 
+     &lt;samp&gt;org.eclipse.team.core.RepositoryProviderType&lt;/samp&gt;.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.team.core.RepositoryProviderType"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="canImportId" type="string">
+            <annotation>
+               <documentation>
+                  ID of another team provider this provider can import from
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.team.core.repository/repository/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="metaFilePaths" type="string">
+            <annotation>
+               <documentation>
+                  Comma separated list of file paths that are considered to be version control metadata.  If any of these files are detected in a newly imported
+                  project the provider&apos;s Repository Provider Type will be notified so the project can be mapped to the provider.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="fileSystemScheme" type="string">
+            <annotation>
+               <documentation>
+                  This field identifies the scheme of a filesystem registered with the org.eclipse.core.filesystem.filesystems extension point
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.core.filesystem.filesystems/filesystem/@scheme"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         2.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         &lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.team.core.repository&quot;&gt;
+  &lt;repository
+    class=&quot;org.eclipse.myprovider.MyRepositoryProvider&quot;
+    typeClass=&quot;org.eclipse.myprovider.MyRepositoryProviderType&quot;
+    id=&quot;org.eclipse.myprovider.myProviderID&quot;
+    canImportId=&quot;org.eclipse.myprovider.myOldProviderID&quot;
+    metaFilePaths=&quot;.meta/files,.meta/version&quot;&gt;
+  &lt;/repository&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         The value of the class attribute must represent a subclass of &lt;samp&gt;org.eclipse.team.core.RepositoryProvider&lt;/samp&gt; and the value of the typeClass attribute must represent a subclass of &lt;samp&gt;org.eclipse.team.core.RepositoryProviderType&lt;/samp&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         The provided implementation of RepositoryProvider provides helper methods and common code for mapping and unmapping providers to projects.
+The optional RepositoryProviderType provides project set import and export through a ProjectSetCapability.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2005, 2008 IBM Corporation and others.
+
+This program and the accompanying materials are made available under the terms of the Eclipse Public License 2.0 which accompanies this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

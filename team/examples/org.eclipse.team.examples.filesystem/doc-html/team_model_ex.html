@@ -1,0 +1,51 @@
+<!doctype html public "-//w3c//dtd html 4.0//en">
+<html>
+<head>
+   <meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2013. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <link rel="stylesheet" href="../../../book.css" charset="ISO-8859-1" type="text/css">
+   <title>Team - Logical Model Integration Example</title>
+</head>
+<body>
+
+<h2>Team - Logical Model Integration Example</h2>
+
+<h3>Introduction</h3>
+<p>
+The Logical Model Integration example shows how to make a repository provider 
+logical-model-aware and how to make a logical model team-aware. In particular you
+this example shows how to:
+<ul>
+<li>Use ResourceMappings and ModelProviders to ensure that team operations are
+performed on the proper set of resources.</li>
+<li>Support model participation in synchronization and merge operations.</li>
+<li>Use the Common Navigator framework to show logical model trees.</li>
+</ul>
+The example consists of code for both the repository provider and the model provider arranged in the following packages:
+<ul>
+<li><em>org.eclipse.team.examples.filesystem.subscriber</em>: Low level repository synchronization/merge support.</li>
+<li><em>org.eclipse.team.examples.filesystem.ui</em>: Use of ResourceMapping to ensure operations are performed on 
+the proper set of resources and Synchronize view integration.</li>
+<li><em>org.eclipse.team.examples.model</em>: The core component of the example model.</li>
+<li><em>org.eclipse.team.examples.model.ui</em>: Use of the Common Navigator to provide a tree-based view
+of the example model.</li>
+<li><em>org.eclipse.team.examples.model.mapping</em>: ModelProvider/ResourceMapping support for the example model.</li>
+<li><em>org.eclipse.team.examples.model.mapping.ui</em>: Synchronize view integration for the model.</li>
+</ul>
+
+<h3>Running the example</h3>
+<p>
+To start using this example:
+<ul>
+<li>Create an Example model project (File/New/Other followed by Team Logical Model Example/Model Project)
+<li>Open the Project Explorer to see the new project
+<li>Add Folders and MOD files as desired.
+<li>Add MOE files to MOD files.
+<li>Share the project with the Basic file system provider.
+<li>Perform various team operations including synchronizations to see the results.
+</li>
+</ul>
+<p>
+</body>
+</html>
+

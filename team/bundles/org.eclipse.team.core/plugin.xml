@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+    Copyright (c) 2001, 2014 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+   <extension-point id="fileTypes" name="%FileTypesRegistry" schema="schema/fileTypes.exsd"/>
+   <extension-point id="ignore" name="%GlobalIgnoreRegistry" schema="schema/ignore.exsd"/>
+   <extension-point id="projectSets" name="%TeamProjectSets" schema="schema/projectSets.exsd"/>
+   <extension-point id="repository" name="%Repository" schema="schema/repository.exsd"/>
+   <extension-point id="defaultFileModificationValidator" name="%DefaultValidator" schema="schema/defaultFileModificationValidator.exsd"/>
+   <extension-point id="storageMergers" name="%StorageMergers" schema="schema/storageMergers.exsd"/>
+   <extension-point id="bundleImporters" name="%BundleImporters" schema="schema/bundleImporters.exsd"/>
+<!-- Define common known file types -->
+   <extension
+         point="org.eclipse.team.core.fileTypes">
+      <fileTypes
+            type="text"
+            extension="txt">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="properties">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="xml">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="xsl">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="html">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="htm">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="jpg">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="jpeg">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="gif">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="png">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="ico">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="bmp">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="tif">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="tiff">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="doc">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="xls">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="pdf">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="ppt">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="zip">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="exe">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="dll">
+      </fileTypes>
+      <fileTypes
+            type="binary"
+            extension="so">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="project">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="options">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="exsd">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="mxsd">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="MF">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="prefs">
+      </fileTypes>
+      <fileTypes
+            extension="ini"
+            type="text">
+      </fileTypes>
+   </extension>
+   <extension
+         id="FileValidator"
+         point="org.eclipse.core.resources.fileModificationValidator">
+      <fileModificationValidator
+            class="org.eclipse.team.internal.core.FileModificationValidatorManager">
+      </fileModificationValidator>
+   </extension>
+   <extension
+         id="MoveDeleteHook"
+         point="org.eclipse.core.resources.moveDeleteHook">
+      <moveDeleteHook
+            class="org.eclipse.team.internal.core.MoveDeleteManager">
+      </moveDeleteHook>
+   </extension>
+   <extension
+         id="TeamHook"
+         point="org.eclipse.core.resources.teamHook">
+      <teamHook
+            class="org.eclipse.team.internal.core.TeamHookDispatcher">
+      </teamHook>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.core.resources.mapping.ModelProvider"
+            class="org.eclipse.team.internal.core.AdapterFactory">
+         <adapter type="org.eclipse.core.resources.mapping.ResourceMapping"/>
+      </factory>
+   </extension>
+
+   <extension
+         point="org.eclipse.team.core.storageMergers">
+      <storageMerger
+            class="org.eclipse.team.internal.core.mapping.TextStorageMerger"
+            extensions="txt"
+            id="org.eclipse.team.ui.textStorageMerger"/>
+      <contentTypeBinding
+            contentTypeId="org.eclipse.core.runtime.text"
+            storageMergerId="org.eclipse.team.ui.textStorageMerger"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.trace.traceComponents">
+      <component
+            id="org.eclipse.team.core.trace"
+            label="%TraceComponentLabel">
+         <bundle
+               consumed="false"
+               name="org.eclipse.team.core">
+         </bundle>
+      </component>
+   </extension>
+</plugin>

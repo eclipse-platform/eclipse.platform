@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.team.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.team.ui" id="teamContentProviders" name="Team Content Providers"/>
+      </appinfo>
+      <documentation>
+         This extension point associates a model provider with a content provider. Repository providers will use this information to enable appropriate content providers when performing team operations.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="teamContentProvider"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="teamContentProvider">
+      <annotation>
+         <documentation>
+            Associates a model provder with a content extension.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="modelProviderId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of the org.eclipse.core.resoures.modelProvider extension which is associated with the content extension.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.core.resources.modelProviders/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="contentExtensionId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of org.eclipse.ui.navigator.navigatorContent extension that is associated with this model provider.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.navigator.navigatorContent/navigatorContent/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  An icon that will be used when showing this model in lists and menus.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="preferencePage" type="string">
+            <annotation>
+               <documentation>
+                  A preference page that can be displayed by views that host the content extension
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.jface.preference.PreferencePage:org.eclipse.jface.preference.IPreferencePage"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="supportsFlatLayout" type="boolean">
+            <annotation>
+               <documentation>
+                  Indicates whether this content provider supports the flat layout. By default, content providers do not support the flat layout. See the PROP_PAGE_LAYOUT constant in class org.eclipse.team.ui.mapping.ITeamContentProviderManager for more information.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.2
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         Here is an example teamContentProvider extension
+&lt;pre&gt;
+   &lt;extension
+         id=&quot;jdtContentProvider&quot;
+         point=&quot;org.eclipse.team.ui.teamContentProviders&quot;&gt;
+      &lt;teamContentProvider
+            contentExtensionId=&quot;org.eclipse.jdt.ui.resourceContent&quot;
+            modelProviderId=&quot;org.eclipse.jdt.ui.modelProvider&quot;/&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         The modelProviderId must correspond to a model provider registered with the org.eclipse.core.resources.modelProviders extension point. Similarly, the contentExtensionId must correspond to a navigator content extension registered with the org.eclipse.ui.navigator.navigatorContent extension point.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         There is no implementation directly associated with this extension point.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2005, 2008 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies 
+this distribution, and is available at 
+&lt;a 
+href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

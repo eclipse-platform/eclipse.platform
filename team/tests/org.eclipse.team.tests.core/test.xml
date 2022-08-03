@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Copyright (c) 2002, 2014 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<project name="Team Automated Tests" default="run" basedir=".">
+
+  <!-- The property ${eclipse-home} should be passed into this script -->
+  
+  <!-- sets the properties eclipse-home, and library-file -->
+  <property name="eclipse-home" value="${basedir}/../../"/>
+  <property name="library-file" value="${eclipse-home}/plugins/org.eclipse.test/library.xml"/>
+  <property name="org.eclipse.team.tests.core" value="org.eclipse.team.tests.core"/>
+  <property name="team-home" value="${eclipse-home}/plugins/${org.eclipse.team.tests.core}"/>
+
+  <!-- This target holds all initialization code that needs to be done for -->
+  <!-- all tests that are to be run. Initialization for individual tests -->
+  <!-- should be done within the body of the suite target. -->
+  <target name="init">
+    <tstamp/>
+  </target>
+
+  <!-- This target defines the tests that need to be run. -->
+  <target name="suite">
+    <property name="location" value="${eclipse-home}/team_test_workspace"/>
+    <delete dir="${location}" quiet="true"/>
+
+    <!-- Session Test ** Team Core ** -->
+    <ant target="core-test" antfile="${library-file}" dir="${eclipse-home}">
+      <property name="data-dir" value="${location}"/>
+      <property name="plugin-name" value="org.eclipse.team.tests.core"/>
+      <property name="classname" value="org.eclipse.team.tests.core.AllTeamTests"/>
+    </ant>
+  	
+    <!-- Session Test ** Team UI ** -->
+    <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
+      <property name="data-dir" value="${location}"/>
+      <property name="plugin-name" value="org.eclipse.team.tests.core"/>
+      <property name="classname" value="org.eclipse.team.tests.core.AllTeamUITests"/>
+    </ant>
+    
+  </target>
+  
+  <!-- This target holds code to cleanup the testing environment after the tests -->
+  <!-- have been run. You can use this to delete temporary files that are created. -->
+  <target name="cleanup">
+  </target>
+
+  <!-- This target runs the test suite. Any actions that need to happen after all -->
+  <!-- the tests have been run should go here. -->
+  <target name="run" depends="init,suite,cleanup">
+    <ant target="collect" antfile="${library-file}" dir="${eclipse-home}">
+      <property name="includes" value="org*.xml"/>
+      <property name="output-file" value="org.eclipse.team.tests.core.xml"/>
+    </ant>
+  </target>
+
+</project>

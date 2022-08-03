@@ -1,0 +1,12 @@
+### Eclipse Workspace Patch 1.0
+#P Bug202944
+Index: tmp/a.txt
+===================================================================
+RCS file: tmp/a.txt
+diff -N tmp/a.txt
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ tmp/a.txt	1 Jan 1970 00:00:00 -0000
+@@ -0,0 +1,3 @@
++[aa]
++[bb]
++[cc]

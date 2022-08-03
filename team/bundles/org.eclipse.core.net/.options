@@ -1,0 +1,7 @@
+# Debugging options for the org.eclipse.core.net plugin.
+
+# Turn on debugging for the plugin.
+org.eclipse.core.net/debug=false
+
+# Shows system providers information
+org.eclipse.core.net/systemproviders=false

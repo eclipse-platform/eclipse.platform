@@ -1,0 +1,45 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="IBM">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (WinNT; U) [Netscape]">
+   <title>Package-level Javadoc</title>
+</head>
+<body>
+Support for compare and merge viewers which show the
+content side-by-side.
+<h2>
+Package Specification</h2>
+
+The <b>ContentMergeViewer</b> is an abstract compare and merge viewer
+with two side-by-side content areas and an optional content area for a
+common ancestor (for three-way compare). Because the implementation makes
+no assumptions about the content type it is a subclass responsibility to
+deal with a specific type. Its subclass <b>ImageMergeViewer</b> in
+package org.eclipse.compare.internal shows how to base a simple
+mergeviewer for images on <b>ContentMergeViewer</b>.
+<p>
+
+A <b>ContentMergeViewer</b> accesses its model by means of a content
+provider which must implement the <b>IMergeViewerContentProvider</b> interface.
+<p>
+
+The <b>TextMergeViewer</b> is the standard concrete subclass of
+<b>ContentMergeViewer</b> for comparing and merging text content.
+<br>
+A text merge viewer uses the <b>org.eclipse.compare.rangedifferencer.RangeDifferencer</b>
+to perform a textual, line-by-line comparison of two (or three) input documents.
+For text lines that differ the <b>TextMergeViewer</b> uses an <b>ITokenComparator</b>
+to find longest sequences of matching and non-matching tokens.
+The <b>TextMergeViewer</b>'s
+default token compare works on characters separated by whitespace. If a
+different strategy is needed (for example, Java tokens in a Java-aware
+merge viewer), clients can create their own token comparators by implementing
+the <b>ITokenComparator</b> interface.
+<p>The <b>TextMergeViewer</b> not only works on whole documents but on
+subranges of documents too. In this case the viewer's input must be an
+<b>IDocumentRange</b> instead of an <b>IDocument</b>.
+
+</body>
+</html>

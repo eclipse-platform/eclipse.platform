@@ -1,0 +1,10 @@
+Native Build Info:
+------------------
+
+platform:         win32.x86_64
+built by:         Pawel.Pogorzelski@pl.ibm.com
+build date:       05-Mar-2009
+OS Name:          Microsoft Windows XP Professional SP 2
+OS Version:       5.1.2600 Service Pack 2 Build 2600
+Compiler version: Microsoft Visual Studio 2008 Professional 9.0.21022.8 RTM
+Java version:     Standard Edition (build 1.4.2-b28)
