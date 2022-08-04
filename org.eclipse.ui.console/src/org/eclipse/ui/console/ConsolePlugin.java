@@ -192,6 +192,4 @@ public class ConsolePlugin extends AbstractUIPlugin {
 		}
 		super.stop(context);
 	}
-
-
 }
