@@ -49,17 +49,34 @@
           rootFolder="${github.clone.platform.resources.location}"
           locateNestedProjects="true">
         <predicate
-            xsi:type="predicates:NotPredicate">
+            xsi:type="predicates:AndPredicate">
           <operand
-              xsi:type="predicates:NamePredicate"
-              pattern="org\.eclipse\.core\.tools\.resources">
-            <annotation
-                source="http://www.eclipse.org/oomph/base/Warning">
-              <detail
-                  key="diagnostic">
-                <value>This bundle appears to be very old and no longer supported.</value>
-              </detail>
-            </annotation>
+              xsi:type="predicates:NotPredicate">
+            <operand
+                xsi:type="predicates:NamePredicate"
+                pattern="org\.eclipse\.core\.tools\.resources">
+              <annotation
+                  source="http://www.eclipse.org/oomph/base/Warning">
+                <detail
+                    key="diagnostic">
+                  <value>This bundle appears to be very old and no longer supported.</value>
+                </detail>
+              </annotation>
+            </operand>
+          </operand>
+          <operand
+              xsi:type="predicates:NotPredicate">
+            <operand
+                xsi:type="predicates:NamePredicate"
+                pattern="examples">
+              <annotation
+                  source="http://www.eclipse.org/oomph/base/Warning">
+                <detail
+                    key="diagnostic">
+                  <value>This project is just a pom container and has errors because of the m2e nature</value>
+                </detail>
+              </annotation>
+            </operand>
           </operand>
         </predicate>
       </sourceLocator>
