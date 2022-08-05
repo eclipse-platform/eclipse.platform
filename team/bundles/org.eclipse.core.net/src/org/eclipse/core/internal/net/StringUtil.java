@@ -29,6 +29,9 @@ public class StringUtil {
 	 * @return array of tokens
 	 */
 	public static String[] split(String value, String[] delimiters) {
+		if (value == null) {
+			return new String[0];
+		}
 		ArrayList<String> result = new ArrayList<>();
 		int firstIndex = 0;
 		int separator = 0;
