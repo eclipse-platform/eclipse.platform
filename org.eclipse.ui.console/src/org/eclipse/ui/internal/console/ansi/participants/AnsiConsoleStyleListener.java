@@ -133,7 +133,7 @@ public class AnsiConsoleStyleListener implements LineStyleListener, IPositionUpd
 		Position[] positions;
 		try {
 			positions = document.getPositions(AnsiPosition.POSITION_NAME);
-		} catch (@SuppressWarnings("unused") BadPositionCategoryException e) {
+		} catch (BadPositionCategoryException e) {
 			return;
 		}
 
@@ -240,7 +240,7 @@ public class AnsiConsoleStyleListener implements LineStyleListener, IPositionUpd
 				eventDocument.addPosition(AnsiPosition.POSITION_NAME, apos);
 			}
 		} catch (BadPositionCategoryException | BadLocationException e) {
-			e.printStackTrace();
+			// ignored
 		}
 	}
 
@@ -274,7 +274,7 @@ public class AnsiConsoleStyleListener implements LineStyleListener, IPositionUpd
 			// Would probably be possible to re-calculate things. But let's measure first (premature optimization and all that :-)
 			offsetToStyleRangeCache.clear();
 		} catch (BadPositionCategoryException e) {
-			e.printStackTrace();
+			// ignored
 		}
 	}
 }
