@@ -1,26 +1,14 @@
 {
   "problemMatcher": [
     {
-      "owner": "api-errors",
-      "severity": "error",
+      "owner": "api-problems",
       "pattern": [
         {
-          "regexp": "^.*on\\:\\s*\\/(.+\\.java),.*lineNumber:\\s*(\\d+).*message:\\s*(.*),\\s*messagearguments.*severity:\\s2.*sourceId:\\sAPI Tools.*\\]$",
-          "file": 1,
+          "regexp": "^\\[API\\s(\\w+)\\].*line\\s(\\d+):\\s(.+)\\(location:\\s(.+)\\)$",
+          "severity": 1,
           "line": 2,
-          "message": 3
-        }
-      ]
-    },
-    {
-      "owner": "api-warnings",
-      "severity": "warning",
-      "pattern": [
-        {
-          "regexp": "^.*on\\:\\s*\\/(.+\\.java),.*lineNumber:\\s*(\\d+).*message:\\s*(.*),\\s*messagearguments.*severity:\\s1.*sourceId:\\sAPI Tools.*\\]$",
-          "file": 1,
-          "line": 2,
-          "message": 3
+          "message": 3,
+          "file": 4
         }
       ]
     }
