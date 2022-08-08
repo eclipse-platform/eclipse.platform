@@ -11,12 +11,14 @@
 package org.eclipse.ui.internal.console.ansi.preferences;
 
 public class AnsiConsolePreferenceConstants {
-	public static final String PREF_ANSI_CONSOLE_ENABLED = "booleanEnabled"; //$NON-NLS-1$
-	public static final String PREF_WINDOWS_MAPPING = "booleanWindowsMapping"; //$NON-NLS-1$
-	public static final String PREF_SHOW_ESCAPES = "booleanShowEscapes"; //$NON-NLS-1$
-	public static final String PREF_COLOR_PALETTE = "choiceColorPalette"; //$NON-NLS-1$
-	public static final String PREF_KEEP_STDERR_COLOR = "booleanKeepStderrColor"; //$NON-NLS-1$
-	public static final String PREF_PUT_RTF_IN_CLIPBOARD = "booleanPutRtfInClipboard"; //$NON-NLS-1$
+	private static final String PREFIX = "ANSI_support_"; //$NON-NLS-1$
+
+	public static final String PREF_ANSI_CONSOLE_ENABLED = PREFIX + "enabled"; //$NON-NLS-1$
+	public static final String PREF_WINDOWS_MAPPING = PREFIX + "use_windows_color_mapping"; //$NON-NLS-1$
+	public static final String PREF_SHOW_ESCAPES = PREFIX + "show_escapes"; //$NON-NLS-1$
+	public static final String PREF_COLOR_PALETTE = PREFIX + "color_palette"; //$NON-NLS-1$
+	public static final String PREF_KEEP_STDERR_COLOR = PREFIX + "keep_stderr_color"; //$NON-NLS-1$
+	public static final String PREF_PUT_RTF_IN_CLIPBOARD = PREFIX + "put_rtf_to_clipboard"; //$NON-NLS-1$
 
 	private AnsiConsolePreferenceConstants() {
 		// Utility class, should not be instantiated
