@@ -13,6 +13,7 @@ package org.eclipse.ui.internal.console.ansi.preferences;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbench;
@@ -26,6 +27,13 @@ import org.eclipse.ui.internal.console.ansi.utils.AnsiConsoleColorPalette;
 
 public class AnsiConsolePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+	private BooleanFieldEditor fAnsiEnabled;
+	private BooleanFieldEditor fWindowsMapping;
+	private BooleanFieldEditor fShowEscapes;
+	private BooleanFieldEditor fKeepStderrColor;
+	private BooleanFieldEditor fRtfInClipboard;
+	private ComboFieldEditor fColorPalette;
+
 	public AnsiConsolePreferencePage() {
 		super(GRID);
 		setPreferenceStore(ConsolePlugin.getDefault().getPreferenceStore());
@@ -36,22 +44,29 @@ public class AnsiConsolePreferencePage extends FieldEditorPreferencePage impleme
 	public void createFieldEditors() {
 		final Composite parent = getFieldEditorParent();
 
-		addField(new BooleanFieldEditor(AnsiConsolePreferenceConstants.PREF_ANSI_CONSOLE_ENABLED,
-				AnsiMessages.PreferencePage_PluginEnabled, parent));
+		fAnsiEnabled = new BooleanFieldEditor(
+				AnsiConsolePreferenceConstants.PREF_ANSI_CONSOLE_ENABLED,
+				AnsiMessages.PreferencePage_PluginEnabled, parent);
+		addField(fAnsiEnabled);
 
-		addField(new BooleanFieldEditor(AnsiConsolePreferenceConstants.PREF_WINDOWS_MAPPING,
-				AnsiMessages.PreferencePage_Option_WindowsMapping, parent));
+		fWindowsMapping = new BooleanFieldEditor(AnsiConsolePreferenceConstants.PREF_WINDOWS_MAPPING,
+				AnsiMessages.PreferencePage_Option_WindowsMapping, parent);
+		addField(fWindowsMapping);
 
-		addField(new BooleanFieldEditor(AnsiConsolePreferenceConstants.PREF_SHOW_ESCAPES,
-				AnsiMessages.PreferencePage_Option_ShowEscapes, parent));
+		fShowEscapes = new BooleanFieldEditor(AnsiConsolePreferenceConstants.PREF_SHOW_ESCAPES,
+				AnsiMessages.PreferencePage_Option_ShowEscapes, parent);
+		addField(fShowEscapes);
 
-		addField(new BooleanFieldEditor(AnsiConsolePreferenceConstants.PREF_KEEP_STDERR_COLOR,
-				AnsiMessages.PreferencePage_Option_HonorStderr, parent));
+		fKeepStderrColor = new BooleanFieldEditor(AnsiConsolePreferenceConstants.PREF_KEEP_STDERR_COLOR,
+				AnsiMessages.PreferencePage_Option_HonorStderr, parent);
+		addField(fKeepStderrColor);
 
-		addField(new BooleanFieldEditor(AnsiConsolePreferenceConstants.PREF_PUT_RTF_IN_CLIPBOARD,
-				AnsiMessages.PreferencePage_Option_RtfInClipboard, parent));
+		fRtfInClipboard = new BooleanFieldEditor(
+				AnsiConsolePreferenceConstants.PREF_PUT_RTF_IN_CLIPBOARD,
+				AnsiMessages.PreferencePage_Option_RtfInClipboard, parent);
+		addField(fRtfInClipboard);
 
-		addField(new ComboFieldEditor(AnsiConsolePreferenceConstants.PREF_COLOR_PALETTE,
+		fColorPalette = new ComboFieldEditor(AnsiConsolePreferenceConstants.PREF_COLOR_PALETTE,
 						AnsiMessages.PreferencePage_Option_ColorPaletteSectionTitle,
 				new String[][] {
 						{ AnsiMessages.PreferencePage_Option_ColorPaletteVGA, AnsiConsoleColorPalette.PALETTE_VGA },
@@ -63,12 +78,19 @@ public class AnsiConsolePreferencePage extends FieldEditorPreferencePage impleme
 						{ AnsiMessages.PreferencePage_Option_ColorPaletteMirc, AnsiConsoleColorPalette.PALETTE_MIRC },
 						{ AnsiMessages.PreferencePage_Option_ColorPaletteUbuntu, AnsiConsoleColorPalette.PALETTE_UBUNTU }
 				},
-				parent));
+				parent);
+		addField(fColorPalette);
 	}
 
 	@Override
 	public void init(IWorkbench workbench) {
 		// Nothing to do, but we are forced to implement it for IWorkbenchPreferencePage
+	}
+
+	@Override
+	protected void initialize() {
+		super.initialize();
+		enableDisableAll();
 	}
 
 	@Override
@@ -81,5 +103,25 @@ public class AnsiConsolePreferencePage extends FieldEditorPreferencePage impleme
 			System.out.println("AnsiConsole: Command '" + EnableDisableHandler.COMMAND_ID + "' not found"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return result;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		super.propertyChange(event);
+
+		Object source = event.getSource();
+		if (source != null && source.equals(fAnsiEnabled)) {
+			enableDisableAll();
+		}
+	}
+
+	private void enableDisableAll() {
+		final Composite parent = getFieldEditorParent();
+		final boolean enable = fAnsiEnabled.getBooleanValue();
+		fWindowsMapping.setEnabled(enable, parent);
+		fShowEscapes.setEnabled(enable, parent);
+		fKeepStderrColor.setEnabled(enable, parent);
+		fRtfInClipboard.setEnabled(enable, parent);
+		fColorPalette.setEnabled(enable, parent);
 	}
 }
