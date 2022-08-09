@@ -114,12 +114,14 @@ public class DoNothingMainTab extends AbstractLaunchConfigurationTab implements 
 			Set<String> modes = configuration.getModes();
 			modes.add(getLaunchConfigurationDialog().getMode());
 			if (!fButton.isDisposed()) {
-				boolean sel = fButton.getSelection();
-				if (!sel & modes.containsAll(getModes())) {
-					fButton.setSelection(true);
-				} else if (sel & !modes.containsAll(getModes())) {
-					fButton.setSelection(false);
-				}
+				fButton.getDisplay().syncExec(() -> {
+					boolean sel = fButton.getSelection();
+					if (!sel & modes.containsAll(getModes())) {
+						fButton.setSelection(true);
+					} else if (sel & !modes.containsAll(getModes())) {
+						fButton.setSelection(false);
+					}
+				});
 			}
 		} catch (CoreException ce) {
 			DebugUIPlugin.log(ce);
