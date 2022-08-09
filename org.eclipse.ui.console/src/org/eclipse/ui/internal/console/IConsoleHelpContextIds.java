@@ -49,5 +49,6 @@ public interface IConsoleHelpContextIds {
 
 	// Preference pages
 	String CONSOLE_PREFERENCE_PAGE = PREFIX + "console_preference_page_context"; //$NON-NLS-1$
+	String CONSOLE_ANSI_PREFERENCE_PAGE = PREFIX + "console_ansi_preference_page_context"; //$NON-NLS-1$
 }
 

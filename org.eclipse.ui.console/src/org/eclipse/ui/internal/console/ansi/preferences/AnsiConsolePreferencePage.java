@@ -21,6 +21,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.internal.console.ansi.AnsiMessages;
 import org.eclipse.ui.internal.console.ansi.commands.EnableDisableHandler;
 import org.eclipse.ui.internal.console.ansi.utils.AnsiConsoleColorPalette;
@@ -38,6 +39,13 @@ public class AnsiConsolePreferencePage extends FieldEditorPreferencePage impleme
 		super(GRID);
 		setPreferenceStore(ConsolePlugin.getDefault().getPreferenceStore());
 		setDescription(AnsiMessages.PreferencePage_Title);
+	}
+
+	@Override
+	public void createControl(Composite parent) {
+		super.createControl(parent);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(
+				getControl(), IConsoleHelpContextIds.CONSOLE_ANSI_PREFERENCE_PAGE);
 	}
 
 	@Override
