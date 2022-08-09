@@ -11,6 +11,7 @@
 package org.eclipse.ui.internal.console.ansi.commands;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.Command;
@@ -46,11 +47,17 @@ public class EnableDisableHandler extends AbstractHandler implements IElementUpd
 	}
 
 	@Override
-	public void updateElement(UIElement element, @SuppressWarnings("rawtypes") Map parameters) {
+	public void updateElement(UIElement element, Map parameters) {
+		boolean ansiConsoleEnabled = AnsiConsolePreferenceUtils.isAnsiConsoleEnabled();
+		element.setChecked(ansiConsoleEnabled);
+
 		ICommandService service = PlatformUI.getWorkbench().getService(ICommandService.class);
 		Command command = service.getCommand(COMMAND_ID);
 		State state = command.getState(RegistryToggleState.STATE_ID);
-		AnsiConsolePreferenceUtils.setAnsiConsoleEnabled((Boolean) state.getValue());
+		Boolean oldValue = (Boolean) state.getValue();
+		if (!Objects.equals(ansiConsoleEnabled, oldValue)) {
+			state.setValue(ansiConsoleEnabled);
+		}
 	}
 
 	// If I executed the command "by hand" from the properties dialog
