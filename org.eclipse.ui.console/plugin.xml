@@ -82,13 +82,13 @@ M4 = Platform-specific fourth key
            commandId="AnsiConsole.command.copy_with_escapes"
            contextId="org.eclipse.ui.console.ConsoleView"
            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-           sequence="M1+Shift+C">
+           sequence="M1+M2+C">
      </key>
      <key
            commandId="AnsiConsole.command.copy_with_escapes"
            contextId="org.eclipse.ui.console.ConsoleView"
            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-           sequence="M1+Shift+Insert">
+           sequence="M1+M2+Insert">
      </key>
      -->
     </extension>
@@ -127,34 +127,6 @@ M4 = Platform-specific fourth key
     </extension>
 
     <extension
-        point="org.eclipse.ui.menus">
-      <menuContribution
-          allPopups="false"
-          locationURI="menu:org.eclipse.ui.console.ConsoleView">
-        <command
-            commandId="AnsiConsole.command.enable_disable"
-            icon="$nl$/icons/full/eview16/ansiconsole.png"
-            style="toggle">
-        </command>
-        <command
-            commandId="AnsiConsole.command.copy_with_escapes"
-            icon="$nl$/icons/full/eview16/ansiconsolecopy.png"
-            style="push">
-        </command>
-        <command
-            commandId="AnsiConsole.command.copy_without_escapes"
-            icon="platform:/plugin/org.eclipse.ui/icons/full/etool16/copy_edit.png"
-            style="push">
-        </command>
-        <command
-            commandId="AnsiConsole.command.show_quick_settings"
-            icon="$nl$/icons/full/eview16/ansiconsoleprefs.png"
-            style="push">
-        </command>
-      </menuContribution>
-    </extension>
-
-    <extension
         point="org.eclipse.ui.commands">
       <category
            id="AnsiConsole.command.categoryid"
@@ -184,13 +156,6 @@ M4 = Platform-specific fourth key
             class="org.eclipse.ui.handlers.RegistryToggleState:true"
             id="org.eclipse.ui.commands.toggleState">
         </state>
-      </command>
-      <command
-          categoryId="AnsiConsole.command.categoryid"
-          defaultHandler="org.eclipse.ui.internal.console.ansi.commands.ShowQuickPrefsHandler"
-          description="%command.show_quick_settings.description"
-          id="AnsiConsole.command.show_quick_settings"
-          name="%command.show_quick_settings.name">
       </command>
     </extension>
 

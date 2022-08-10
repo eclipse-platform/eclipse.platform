@@ -30,9 +30,16 @@ public class ConsoleShowPreferencesAction extends Action implements IViewActionD
 	@Override
 	public void init(IViewPart view) {}
 
+	private static final String PREF_PAGE_NAME = "org.eclipse.debug.ui.ConsolePreferencePage"; //$NON-NLS-1$
+	private static final String[] PREFS_PAGES_TO_SHOW = {
+			PREF_PAGE_NAME,
+			"org.eclipse.debug.ui.DebugPreferencePage", //$NON-NLS-1$
+			"org.eclipse.ui.internal.console.ansi.preferences.AnsiConsolePreferencePage" //$NON-NLS-1$
+	};
+
 	@Override
 	public void run(IAction action) {
-		SWTFactory.showPreferencePage("org.eclipse.debug.ui.ConsolePreferencePage"); //$NON-NLS-1$
+		SWTFactory.showPreferencePage(PREF_PAGE_NAME, PREFS_PAGES_TO_SHOW);
 	}
 
 	@Override
