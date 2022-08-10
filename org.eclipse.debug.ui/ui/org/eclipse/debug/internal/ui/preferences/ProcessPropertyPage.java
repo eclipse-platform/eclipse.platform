@@ -58,7 +58,7 @@ public class ProcessPropertyPage extends PropertyPage {
 
 		IProcess proc = getProcess();
 		Text text;
-		if (proc.getAttribute(IProcess.ATTR_PROCESS_ID) != null) {
+		if (proc != null && proc.getAttribute(IProcess.ATTR_PROCESS_ID) != null) {
 			SWTFactory.createLabel(parent, DebugPreferencesMessages.ProcessPropertyPage_11, fHeadingFont, 1);
 			text = SWTFactory.createText(parent, SWT.READ_ONLY, 1);
 			((GridData) text.getLayoutData()).horizontalIndent = 10;
