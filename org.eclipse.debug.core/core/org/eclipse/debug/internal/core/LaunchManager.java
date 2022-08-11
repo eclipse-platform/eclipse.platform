@@ -966,7 +966,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	 */
 	protected List<ILaunchConfiguration> findLaunchConfigurations(IContainer container) {
 		if (container instanceof IProject && !((IProject)container).isOpen()) {
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
 		List<IResource> list = new ArrayList<>(10);
 		ResourceProxyVisitor visitor= new ResourceProxyVisitor(list);
@@ -1033,7 +1033,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 			}
 			return configs;
 		}
-		return Collections.EMPTY_LIST;
+		return Collections.emptyList();
 	}
 
 	/**
