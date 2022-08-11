@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.bundle02
+Bundle-SymbolicName: org.eclipse.bundle02; singleton:="true"
+Bundle-Version: 1.0
+Bundle-Vendor: Eclipse.org
+
+

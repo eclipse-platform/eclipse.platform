@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         id="org.eclipse.core.filesystem.zip"
+         point="org.eclipse.core.filesystem.filesystems">
+      <filesystem scheme="zip">
+         <run class="org.eclipse.core.internal.filesystem.zip.ZipFileSystem"/>
+      </filesystem>
+   </extension>
+	<extension
+	      point="org.eclipse.core.filesystem.filesystems">
+	   <filesystem scheme="memory">
+	      <run class="org.eclipse.core.internal.filesystem.memory.MemoryFileSystem"/>
+	   </filesystem>
+	</extension>
+ <extension
+       point="org.eclipse.ui.commands">
+    <command
+          defaultHandler="org.eclipse.ui.examples.filesystem.ExpandZipHandler"
+          id="org.eclipse.ui.examples.filesystem.expandZip"
+          name="Expand Zip File">
+    </command>
+    <command
+          defaultHandler="org.eclipse.ui.examples.filesystem.CollapseZipHandler"
+          id="org.eclipse.ui.examples.filesystem.collapseZip"
+          name="Collapse Zip File">
+    </command>
+    <command
+          defaultHandler="org.eclipse.ui.examples.filesystem.IncludeResourceHandler"
+          id="org.eclipse.ui.examples.filesystem.includeResource"
+          name="Include Resource">
+    </command>
+    <command
+          defaultHandler="org.eclipse.ui.examples.filesystem.ExcludeResourceHandler"
+          id="org.eclipse.ui.examples.filesystem.excludeResource"
+          name="Exclude Resource">
+    </command>
+    <command
+          defaultHandler="org.eclipse.ui.examples.filesystem.CreatedNestedProjectsHandler"
+          id="org.eclipse.ui.examples.filesystem.createdNested"
+          name="Create Nested Projects">
+    </command>
+ </extension>
+ <extension
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          allPopups="false"
+          locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+       <command
+             commandId="org.eclipse.ui.examples.filesystem.expandZip"
+             label="Expand Zip File"
+             style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <with
+                   variable="activeMenuSelection">
+                <iterate
+                      ifEmpty="false">
+                   <adapt
+                         type="org.eclipse.core.resources.IFile">
+                      <or>
+                         <test
+                               property="org.eclipse.core.resources.extension"
+                               value="zip">
+                         </test>
+                         <test
+                               property="org.eclipse.core.resources.extension"
+                               value="jar">
+                         </test>
+                      </or>
+                   </adapt>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </command>
+       <command
+             commandId="org.eclipse.ui.examples.filesystem.collapseZip"
+             label="Collapse Zip File"
+             style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <with
+                   variable="activeMenuSelection">
+                <iterate
+                      ifEmpty="false">
+                   <adapt
+                         type="org.eclipse.core.resources.IFolder">
+                      <or>
+                         <test
+                               property="org.eclipse.core.resources.extension"
+                               value="zip">
+                         </test>
+                         <test
+                               property="org.eclipse.core.resources.extension"
+                               value="jar">
+                         </test>
+                      </or>
+                   </adapt>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </command>
+       <command
+             commandId="org.eclipse.ui.examples.filesystem.includeResource"
+             label="Include Resource"
+             style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <with
+                   variable="activeMenuSelection">
+                <iterate
+                      ifEmpty="false">
+                   <instanceof
+                         value="org.eclipse.core.resources.IResource">
+                   </instanceof>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </command>
+       <command
+             commandId="org.eclipse.ui.examples.filesystem.excludeResource"
+             label="Exclude Resource"
+             style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <with
+                   variable="activeMenuSelection">
+                <iterate
+                      ifEmpty="false">
+                   <instanceof
+                         value="org.eclipse.core.resources.IResource">
+                   </instanceof>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </command>
+       <command
+             commandId="org.eclipse.ui.examples.filesystem.createdNested"
+             label="Create Nested Projects"
+             style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <with
+                   variable="activeMenuSelection">
+                <iterate
+                      ifEmpty="false">
+                   <instanceof
+                         value="org.eclipse.core.resources.IProject">
+                   </instanceof>
+                </iterate>
+             </with>
+          </visibleWhen>
+       </command>
+       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.filesystemSupport">
+      <filesystemContributor
+            class="org.eclipse.core.internal.filesystem.zip.ZipFileSystemContributor"
+            label="Zip file"
+            scheme="zip"/>
+      <filesystemContributor
+            class="org.eclipse.core.internal.filesystem.memory.MemoryFileSystemContributor"
+            label="In Memory"
+            scheme="memory"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.core.internal.filesystem.memory.MemoryFileStore"
+            class="org.eclipse.core.internal.filesystem.memory.MemoryAdapterFactory">
+         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+      </factory>
+   </extension>
+
+</plugin>

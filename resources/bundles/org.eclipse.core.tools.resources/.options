@@ -1,0 +1,11 @@
+
+#### Resources settings
+# enable Resourced debugging
+org.eclipse.core.resources/debug=true
+
+# Monitor builders and gather time statistics etc.
+org.eclipse.core.resources/monitor/builders=true
+
+# Monitor resource change listeners and gather time statistics etc.
+org.eclipse.core.resources/monitor/listeners=true
+

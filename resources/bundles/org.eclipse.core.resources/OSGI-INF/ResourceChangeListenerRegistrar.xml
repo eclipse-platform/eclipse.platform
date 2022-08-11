@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.4.0" name="ResourceChangeListenerRegistrar" init="1">
+   <implementation class="org.eclipse.core.internal.resources.ResourceChangeListenerRegistrar"/>
+   <reference name="IWorkspace"
+    interface="org.eclipse.core.resources.IWorkspace" parameter="0"/>
+   <reference name="LoggerFactory"
+    interface="org.osgi.service.log.LoggerFactory"
+    bind="setLoggerFactory"
+    unbind="unsetLogger"
+    policy="dynamic"
+    cardinality="0..1"/>
+   <reference name="IResourceChangeListener"
+    interface="org.eclipse.core.resources.IResourceChangeListener"
+    bind="addResourceChangeListener"
+    unbind="removeResourceChangeListener"
+    policy="dynamic"
+    cardinality="1..n"/>
+</scr:component>

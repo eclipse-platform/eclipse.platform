@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.bundle04
+Bundle-SymbolicName: org.eclipse.bundle04; singleton:="true"
+Bundle-Version: 1.0
+Bundle-Vendor: Eclipse.org
+Require-Bundle: org.eclipse.core.tests.resources
+Bundle-ActivationPolicy: lazy
+
+
