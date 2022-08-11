@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2009, 2017 QNX Software Systems and others.
+ *  Copyright (c) 2009, 2022 QNX Software Systems and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -34,7 +34,7 @@ public class GroupLaunchElement {
 	 * {@link GroupLaunchElement} has been launched, before the next one is
 	 * launched (or launching is finished).
 	 */
-	public static enum GroupElementPostLaunchAction {
+	public enum GroupElementPostLaunchAction {
 		NONE(DebugCoreMessages.GroupLaunchConfigurationDelegate_None), //
 		WAIT_FOR_TERMINATION(DebugCoreMessages.GroupLaunchConfigurationDelegate_Wait_until_terminated), //
 		DELAY(DebugCoreMessages.GroupLaunchConfigurationDelegate_Delay), //
