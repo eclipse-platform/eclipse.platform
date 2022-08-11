@@ -231,9 +231,9 @@ public class OutputStreamMonitor implements IBinaryStreamMonitor {
 	/**
 	 * Continually reads from the stream.
 	 * <p>
-	 * This method, along with the {@link #startMonitoring()} method is used to
-	 * allow {@link OutputStreamMonitor} to implement {@link Runnable} without
-	 * publicly exposing a {@link Runnable#run()} method.
+	 * This method, along with the {@link #startMonitoring(String)} method is
+	 * used to allow {@link OutputStreamMonitor} to implement {@link Runnable}
+	 * without publicly exposing a {@link Runnable#run()} method.
 	 */
 	private void internalRead() {
 		long lastSleep = System.currentTimeMillis();
