@@ -1,37 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <component id="org.eclipse.debug.ui" version="2">
-    <resource path="META-INF/MANIFEST.MF" type="org.eclipse.debug.internal.core.groups.GroupLaunch">
-        <filter comment="Bug 548841 - Mark internal package as x-internal in manifest" id="305426566">
-            <message_arguments>
-                <message_argument value="org.eclipse.debug.internal.core.groups.GroupLaunch"/>
-                <message_argument value="org.eclipse.debug.ui_3.14.200"/>
-            </message_arguments>
-        </filter>
-    </resource>
-    <resource path="META-INF/MANIFEST.MF" type="org.eclipse.debug.internal.core.groups.GroupLaunchConfigurationDelegate">
-        <filter comment="Bug 548841 - Mark internal package as x-internal in manifest" id="305426566">
-            <message_arguments>
-                <message_argument value="org.eclipse.debug.internal.core.groups.GroupLaunchConfigurationDelegate"/>
-                <message_argument value="org.eclipse.debug.ui_3.14.200"/>
-            </message_arguments>
-        </filter>
-    </resource>
-    <resource path="META-INF/MANIFEST.MF" type="org.eclipse.debug.internal.core.groups.GroupLaunchElement">
-        <filter comment="Bug 548841 - Mark internal package as x-internal in manifest" id="305426566">
-            <message_arguments>
-                <message_argument value="org.eclipse.debug.internal.core.groups.GroupLaunchElement"/>
-                <message_argument value="org.eclipse.debug.ui_3.14.200"/>
-            </message_arguments>
-        </filter>
-    </resource>
-    <resource path="META-INF/MANIFEST.MF" type="org.eclipse.debug.internal.core.groups.GroupMemberChangeListener">
-        <filter comment="Bug 548841 - Mark internal package as x-internal in manifest" id="305426566">
-            <message_arguments>
-                <message_argument value="org.eclipse.debug.internal.core.groups.GroupMemberChangeListener"/>
-                <message_argument value="org.eclipse.debug.ui_3.14.200"/>
-            </message_arguments>
-        </filter>
-    </resource>
     <resource path="ui/org/eclipse/debug/internal/ui/launchConfigurations/LaunchConfigurationViewer.java" type="org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationViewer">
         <filter comment="Known illegal extension" id="571473929">
             <message_arguments>
