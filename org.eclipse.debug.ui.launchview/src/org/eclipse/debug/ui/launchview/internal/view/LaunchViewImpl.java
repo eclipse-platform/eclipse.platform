@@ -66,7 +66,7 @@ public class LaunchViewImpl implements Supplier<Set<ILaunchObject>> {
 	private static final String CONTEXT_MENU_ID = "LaunchViewContextMenu"; //$NON-NLS-1$
 
 	private LaunchViewModel model;
-	private final Runnable reset = () -> queueReset();
+	private final Runnable reset = LaunchViewImpl.this::queueReset;
 	private final Job resetJob;
 	private FilteredTree tree;
 
@@ -262,7 +262,7 @@ public class LaunchViewImpl implements Supplier<Set<ILaunchObject>> {
 			}
 		}
 
-		return elements.stream().map(m -> m.getObject()).filter(Objects::nonNull).collect(Collectors.toCollection(TreeSet::new));
+		return elements.stream().map(LaunchObjectModel::getObject).filter(Objects::nonNull).collect(Collectors.toCollection(TreeSet::new));
 	}
 
 	private synchronized void reset() {
