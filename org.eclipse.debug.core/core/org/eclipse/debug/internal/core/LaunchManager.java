@@ -522,8 +522,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	public static Document getDocument() throws ParserConfigurationException {
 		DocumentBuilderFactory dfactory= DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder= dfactory.newDocumentBuilder();
-		Document doc= docBuilder.newDocument();
-		return doc;
+		return docBuilder.newDocument();
 	}
 
 	/**
