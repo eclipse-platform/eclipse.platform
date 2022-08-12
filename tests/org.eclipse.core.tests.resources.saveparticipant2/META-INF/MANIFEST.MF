@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Save Participant 2
+Bundle-SymbolicName: org.eclipse.core.tests.resources.saveparticipant2
+Bundle-Version: 3.4.100.qualifier
+Bundle-Vendor: Eclipse.org
+Export-Package: org.eclipse.core.tests.resources.saveparticipant2
+Require-Bundle: org.eclipse.core.resources,
+ org.eclipse.core.tests.resources,
+ org.junit,
+ org.eclipse.core.runtime
+Bundle-Activator: org.eclipse.core.tests.resources.saveparticipant2.SaveParticipant2Plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy

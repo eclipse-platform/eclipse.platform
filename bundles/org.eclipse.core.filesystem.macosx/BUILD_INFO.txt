@@ -1,0 +1,9 @@
+Native Build Info:
+------------------
+
+Platform:         Jenkins Mac slave (b9h15-macos10.15)
+OS Name:          macOS
+OS Version:       10.15.7
+Compiler version: Apple clang version 12.0.0
+Java version:     jdk1.8.0_192
+Architecture:	  x86_64 and arm64 (universal binary)

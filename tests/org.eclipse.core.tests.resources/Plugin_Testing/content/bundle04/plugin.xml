@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension point="org.eclipse.core.runtime.contentTypes">
+		<content-type id="empty_extension1" name="Empty Extension 1" file-extensions=""/>	
+		<content-type id="empty_extension2" name="Empty Extension 2" file-extensions="foo,"/>
+		<content-type id="empty_extension3" name="Empty Extension 3" file-extensions=",foo"/>
+		<content-type id="empty_extension4" name="Empty Extension 4" file-extensions="foo,,bar"/>
+		<content-type id="non_empty_extension" name="Non-Empty Extension" file-extensions="non-empty"/>
+	</extension>	
+</plugin>

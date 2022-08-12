@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+      <extension point="org.eclipse.core.runtime.contentTypes">
+      <!-- this content type has an invalid describer, it should never be picked on content-based content type lookup -->
+      <content-type
+            name="Invalid Describer"
+            id="invalid-describer"
+            file-names="invalid.describer"
+            describer="a_non_existant_class_expected_to_cause_failure.class"/>
+      <content-type
+            id="invalid-missing-name"
+            file-names="invalid.missing.name"/>                        
+      <content-type
+            name="Invalid (Missing identifier)"
+            file-names="invalid.missing.identifier"/>
+	</extension>	
+</plugin>

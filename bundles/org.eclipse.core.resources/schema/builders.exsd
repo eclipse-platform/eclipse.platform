@@ -1,0 +1,239 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.core.resources" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.core.resources" id="builders" name="Incremental Project Builders"/>
+      </appInfo>
+      <documentation>
+         The workspace supports the notion of an incremental 
+project builder (or &quot;builder&quot; for short&quot;).  The job 
+of a builder is to process a set of resource changes 
+(supplied as a resource delta).  For example, a Java 
+builder would recompile changed Java files and produce 
+new class files. 
+&lt;p&gt;
+Builders are configured on a per-project basis and run 
+automatically when resources within their project are 
+changed.  As such, builders should be fast and scale 
+with respect to the amount of change rather than the 
+number of resources in the project.  This typically 
+implies that builders are able to incrementally update 
+their &quot;built state&quot;. 
+&lt;p&gt;
+The builders extension-point allows builder writers 
+to register their builder implementation under a 
+symbolic name that is then used from within the 
+workspace to find and run builders. The symbolic 
+name is the id of the builder extension. When defining a builder extension, users are encouraged to include a human-readable value for the &quot;name&quot; attribute which identifies their builder and potentially may be presented to users.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="builder"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="builder">
+      <complexType>
+         <sequence>
+            <element ref="dynamicReference" minOccurs="0" maxOccurs="1"/>
+            <element ref="run" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="hasNature" type="boolean">
+            <annotation>
+               <documentation>
+                  &quot;&lt;tt&gt;true&lt;/tt&gt;&quot; or &quot;&lt;tt&gt;false&lt;/tt&gt;&quot; indicating whether the builder is owned by
+a project nature.  If &quot;&lt;tt&gt;true&lt;/tt&gt;&quot; and no corresponding nature is
+found, this builder will not run but will remain in the project&apos;s
+build spec.  If the attribute is not specified, it is assumed to be &quot;&lt;tt&gt;false&lt;/tt&gt;&quot;.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="isConfigurable" type="boolean">
+            <annotation>
+               <documentation>
+                  &quot;&lt;tt&gt;true&lt;/tt&gt;&quot; or &quot;&lt;tt&gt;false&lt;/tt&gt;&quot; indicating whether the builder allows customization of what build triggers it will respond to.  If &quot;&lt;tt&gt;true&lt;/tt&gt;&quot;, clients will be able to use the API &lt;tt&gt;ICommand.setBuilding&lt;/tt&gt; to specify if this builder should be run for a particular build trigger. If the attribute is not specified, it is assumed to be &quot;&lt;tt&gt;false&lt;/tt&gt;&quot;.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="callOnEmptyDelta" type="boolean">
+            <annotation>
+               <documentation>
+                  &quot;&lt;tt&gt;true&lt;/tt&gt;&quot; or &quot;&lt;tt&gt;false&lt;/tt&gt;&quot; indicating whether the builder should be called on &lt;tt&gt;INCREMENTAL_BUILD&lt;/tt&gt; when the resource deltas for its affected projects are empty.  If &quot;&lt;tt&gt;true&lt;/tt&gt;&quot;, the builder will always be called on builds of type &lt;tt&gt;INCREMENTAL_BUILD&lt;/tt&gt;, regardless of whether any resources in the affected projects have changed.  If &quot;&lt;tt&gt;false&lt;/tt&gt;&quot; or unspecified, the builder will only be called when affected projects have changed.  The value of this attribute does not affect the behaviour of builders for other build triggers, such as &lt;tt&gt;AUTO_BUILD&lt;/tt&gt; or &lt;tt&gt;FULL_BUILD&lt;/tt&gt;This attribute is intended to be used by builders that incrementally react to changing circumstances outside of the workspace, such as external libraries.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="supportsConfigurations" type="boolean">
+            <annotation>
+               <documentation>
+                  &quot;&lt;tt&gt;true&lt;/tt&gt;&quot; or &quot;&lt;tt&gt;false&lt;/tt&gt;&quot; indicating whether the builder supports multiple build configurations.  If &quot;&lt;tt&gt;true&lt;/tt&gt;&quot; the builder is provided with a configuration specific delta.
+If &quot;&lt;tt&gt;false&lt;/tt&gt;&quot; the delta is the delta since build was last called.
+&lt;p&gt;
+ If the attribute is not specified, it is assumed to be &quot;&lt;tt&gt;false&lt;/tt&gt;&quot;.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="run">
+      <complexType>
+         <sequence>
+            <element ref="parameter" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the fully-qualified name of a subclass of 
+&lt;samp&gt;org.eclipse.core.resources.IncrementalProjectBuilder&lt;/samp&gt; which can
+additionally optionally implement &lt;samp&gt;org.eclipse.core.resources.IIncrementalProjectBuilder2&lt;/samp&gt;.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.core.resources.IncrementalProjectBuilder"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="parameter">
+      <annotation>
+         <appInfo>
+            <meta.element labelAttribute="name"/>
+         </appInfo>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of this parameter made available to 
+instances of the specified builder class
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  an arbitrary value associated with the given 
+name and made available to instances of the 
+specified builder class
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="dynamicReference">
+      <complexType>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  The fully-qualified name of a class that implements &lt;samp&gt;org.eclipse.core.resources.IDynamicReferenceProvider&lt;/samp&gt;.
+                  If supplied, the given class will be asked to return a list of other projects that
+                  must be built before this one when the build system is computing the build order.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.core.resources.IDynamicReferenceProvider"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         Following is an example of a builder configuration: 
+
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension id=&quot;coolbuilder&quot; name=&quot;Cool Builder&quot; point=&quot;org.eclipse.core.resources.builders&quot;&gt; 
+      &lt;builder hasNature=&quot;false&quot;&gt; 
+         &lt;run class=&quot;com.xyz.builders.Cool&quot;&gt; 
+            &lt;parameter name=&quot;optimize&quot; value=&quot;true&quot;/&gt; 
+            &lt;parameter name=&quot;comment&quot; value=&quot;Produced by the Cool Builder&quot;/&gt; 
+         &lt;/run&gt; 
+      &lt;/builder&gt; 
+   &lt;/extension&gt; 
+&lt;/pre&gt;
+&lt;/p&gt;
+
+If this extension was defined in a plug-in with id &quot;com.xyz.coolplugin&quot;, the fully qualified name of this builder would be &quot;com.xyz.coolplugin.coolbuilder&quot;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         The value of the class attribute must represent a 
+subclass of &lt;samp&gt;org.eclipse.core.resources.IncrementalProjectBuilder&lt;/samp&gt; which can
+additionally optionally implement &lt;samp&gt;org.eclipse.core.resources.IIncrementalProjectBuilder2&lt;/samp&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The platform itself does not have any predefined 
+builders. Particular product installs may include 
+builders as required.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2002, 2010 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

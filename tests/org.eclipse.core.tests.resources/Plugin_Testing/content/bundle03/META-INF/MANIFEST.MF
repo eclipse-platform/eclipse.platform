@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.bundle03
+Bundle-SymbolicName: org.eclipse.bundle03; singleton:="true"
+Bundle-Version: 1.0
+Bundle-Vendor: Eclipse.org
+Require-Bundle: org.eclipse.core.tests.resources
+
+

@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (Windows NT 5.0; U) [Netscape]">
+   <title>Workbench Extension Points</title>
+</head>
+<body link="#0000FF" vlink="#800080">
+
+<center>
+<h1>
+Pre-defined Marker Types</h1></center>
+The Resources plug-in comes with the pre-defined marker types listed below.&nbsp;
+Each has a corresponding constant declaration defining its id on the type
+<tt>org.eclipse.core.resources.IMarker</tt>.
+<ul>
+<li>
+<a href="#marker">org.eclipse.core.resources.marker</a></li>
+
+<li>
+<a href="#problem">org.eclipse.core.resources.problemmarker</a></li>
+
+<li>
+<a href="#task">org.eclipse.core.resources.taskmarker</a></li>
+
+<li>
+<a href="#bookmark">org.eclipse.core.resources.bookmark</a></li>
+
+<li>
+<a href="#text">org.eclipse.core.resources.textmarker</a></li>
+</ul>
+
+<h3>
+<a NAME="marker"></a>Marker</h3>
+<b><i>See:</i></b> <tt>org.eclipse.core.resources.IMarker.MARKER</tt>
+<br>The pre-defined marker type <tt>org.eclipse.core.resources.marker</tt>
+is the root of the marker type hierarchy.&nbsp; All markers should inherit
+(directly or indirectly) from this type.
+<p>The <i>marker</i> marker type has the following characteristics:
+<dl>
+<dl>
+<dt>
+<b>transient</b></dt>
+
+<dd>
+true</dd>
+
+<dt>
+<b>super</b></dt>
+
+<dd>
+no super types</dd>
+
+<dt>
+<b>attributes</b></dt>
+
+<dd>
+no attributes</dd>
+</dl>
+</dl>
+
+<h2>
+<a NAME="problem"></a>Problem Marker</h2>
+<b><i>See:</i></b> <tt>org.eclipse.core.resources.IMarker.PROBLEM</tt>
+<br>The pre-defined marker type <tt>org.eclipse.core.resources.problemmarker</tt>
+is used to represent problems in resources.&nbsp; Typically this will be
+a compilation error, bad movie frames, etc..
+<p>The <i>problemmarker</i> marker type has the following characteristics:
+<dl>
+<dl>
+<dt>
+<b>transient</b></dt>
+
+<dd>
+false</dd>
+
+<dt>
+<b>super</b></dt>
+
+<dd>
+<tt>org.eclipse.core.resources.marker</tt></dd>
+
+<dt>
+<b>attributes</b></dt>
+
+<dl><i>severity</i>
+<dl>A number from the set of error, warning and info severities defined
+by the plaform</dl>
+<i>message</i>
+<dd>
+An arbitary string describing the nature of the marker (e.g., a name for
+a bookmark or task).&nbsp; The content and form of this attribute is not
+specified or interpreted by the platform.</dd>
+
+<br><i>location</i>
+<dl>The location is a human-readable string which can be used to distinguish
+between markers on a resource.&nbsp; As such it should be concise and aimed
+at users.&nbsp; The content and form of this attribute is not specified
+or interpreted by the platform.</dl>
+</dl>
+</dl>
+</dl>
+
+<h2>
+<a NAME="task"></a>Task Marker</h2>
+<b><i>See:</i></b> <tt>org.eclipse.core.resources.IMarker.TASK</tt>
+<br>The pre-defined marker type <tt>org.eclipse.core.resources.taskmarker</tt>
+is used to represent user <i>todo</i> items and the like.
+<p>The <i>taskmarker</i> marker type has the following characteristics:
+<dl>
+<dl>
+<dt>
+<b>transient</b></dt>
+
+<dd>
+false</dd>
+
+<dt>
+<b>super</b></dt>
+
+<dd>
+<tt>org.eclipse.core.resources.marker</tt></dd>
+
+<dt>
+<b>attributes</b></dt>
+
+<dl><i>priority</i>
+<dl>&nbsp;A number from the set of high, normal and low priorities defined
+by the plaform.</dl>
+<i>message</i>
+<dd>
+An arbitary string describing the nature of the marker (e.g., a name for
+a bookmark or task).&nbsp; The content and form of this attribute is not
+specified or interpreted by the platform.</dd>
+
+<br><i>done</i>
+<dl>A boolean value indicating whether or not a the marker (e.g., a task)
+is considered done.</dl>
+</dl>
+</dl>
+</dl>
+
+<h2>
+<a NAME="bookmark"></a>Bookmark</h2>
+<b><i>See:</i></b> <tt>org.eclipse.core.resources.IMarker.BOOKMARK</tt>
+<br>The pre-defined marker type <tt>org.eclipse.core.resources.bookmark</tt>
+is used to remember interesting resources or places in resources.&nbsp;
+This may be as the result of a user action or some sort of automated search.
+<p>The <i>bookmark</i> marker type has the following characteristics:
+<dl>
+<dl>
+<dt>
+<b>transient</b></dt>
+
+<dd>
+false</dd>
+
+<dt>
+<b>super</b></dt>
+
+<dd>
+<tt>org.eclipse.core.resources.marker</tt></dd>
+
+<dt>
+<b>attributes</b></dt>
+
+<dl><i>message</i>
+<dd>
+An arbitary string describing the nature of the marker (e.g., a name for
+a bookmark or task).&nbsp; The content and form of this attribute is not
+specified or interpreted by the platform.</dd>
+
+<br><i>location</i>
+<dl>The location is a human-readable string which can be used to distinguish
+between markers on a resource.&nbsp; As such it should be concise and aimed
+at users.&nbsp; The content and form of this attribute is not specified
+or interpreted by the platform.</dl>
+</dl>
+</dl>
+</dl>
+
+<h2>
+<a NAME="text"></a>Text Marker</h2>
+<b><i>See:</i></b> <tt>org.eclipse.core.resources.IMarker.TEXT</tt>
+<br>The pre-defined marker type <tt>org.eclipse.core.resources.textmarker</tt>
+is used to indicate a particular location in a text file.&nbsp; Typically
+this is used to refine another marker type and produce a type of marker
+which is fully locatable.&nbsp; For example, a Java problem marker would
+also be a text marker as it would need to locate the problem within Java
+source files.
+<p>The <i>textmarker</i> marker type has the following characteristics:
+<dl>
+<dl>
+<dt>
+<b>transient</b></dt>
+
+<dd>
+true</dd>
+
+<dt>
+<b>super</b></dt>
+
+<dd>
+<tt>org.eclipse.core.resources.marker</tt></dd>
+
+<dt>
+<b>attributes</b></dt>
+
+<dl><i>charStart</i>
+<dd>
+An integer value indicating where a text marker starts.&nbsp; This attribute
+is zero-relative and inclusive.</dd>
+
+<br><i>charEnd</i>
+<dl>An integer value indicating where a text marker ends.&nbsp; This attribute
+is zero-relative and inclusive.</dl>
+<i>lineNumber</i>
+<dl>An integer value indicating the line number for a text marker.&nbsp;
+This attribute is 1-relative.</dl>
+</dl>
+</dl>
+</dl>
+<a href="hglegal.htm"><img SRC="ngibmcpy.gif" ALT="Copyright IBM Corp. 2000, 2002.  All Rights Reserved." BORDER=0 height=12 width=195></a>
+</body>
+</html>

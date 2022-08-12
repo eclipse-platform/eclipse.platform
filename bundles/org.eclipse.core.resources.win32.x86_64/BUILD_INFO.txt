@@ -1,0 +1,10 @@
+Native Build Info:
+------------------
+
+platform:         win32.x86_64
+built by:         Szymon.Brandys@pl.ibm.com
+build date:       29-Nov-2012
+OS Name:          Microsoft Windows 7
+Compiler version: Microsoft (R) C/C++ Optimizing Compiler Version 15.00.30729.01 for x64
+Linker version:   Microsoft (R) Incremental Linker Version 9.00.30729.01
+Java version:     Standard Edition (ibm-java2-sdk-50-win-i386)

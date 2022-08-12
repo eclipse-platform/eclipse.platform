@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>def.project</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>newLink</name>
+			<type>2</type>
+			<location>d:/abc/def</location>
+		</link>
+		<link>
+			<name>link2</name>
+			<type>2</type>
+			<location>d:/abc</location>
+		</link>
+		<link>
+			<name>link3</name>
+			<type>2</type>
+			<location>d:/abc/def/ghi</location>
+		</link>
+		<link>
+			<name>link4</name>
+			<type>1</type>
+			<location>d:/abc/def/afile.txt</location>
+		</link>
+	</linkedResources>
+</projectDescription>
