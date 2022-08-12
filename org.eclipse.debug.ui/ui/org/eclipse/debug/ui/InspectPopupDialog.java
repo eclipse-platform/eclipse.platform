@@ -38,6 +38,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -169,6 +170,17 @@ public class InspectPopupDialog extends DebugPopup {
 		fViewer.setInput(treeRoot);
 
 		return fTree;
+	}
+
+	/**
+	 * The viewer is initialized after the dialog is constructed, so only after open
+	 * is called.
+	 *
+	 * @since 3.17
+	 * @return the tree viewer used by the dialog.
+	 */
+	public TreeViewer getTreeViewer() {
+		return fViewer;
 	}
 
 	/**
