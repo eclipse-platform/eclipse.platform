@@ -31,6 +31,8 @@
 
     <module>bundles/org.eclipse.core.resources</module>
     <module>bundles/org.eclipse.core.resources.win32.x86_64</module>
+    <module>bundles/org.eclipse.core.resources.spysupport</module>
+    <module>bundles/org.eclipse.core.tools.resources</module>
     <module>examples</module>
     <module>tests</module>
   </modules>
