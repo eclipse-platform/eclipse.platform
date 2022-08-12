@@ -1,0 +1,102 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2005. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <title>XML Compare Extension Points: idMapping</title>
+</head>
+<body link="#0000FF" vlink="#800080">
+
+<center>
+<h1>
+idMapping</h1></center>
+<b><i>Identifier: </i></b>org.eclipse.compare.examples.xml.idMapping
+<p><b><i>Description: </i></b>This extension point allows to define internal XML ID Mapping
+schemes using the <i>mapping</i> element. These schemes can then be used when performing an XML compare to uniquely identify XML elements by the value of an
+attribute or the text in a child element.
+<br>Additionally, <i>ordered</i> elements can be used to specify that the direct children of an element should be compared in ordered fashion instead of the
+default unordered way.
+<p><b><i>Configuration Markup:</i></b>
+<p><tt>&nbsp;&nbsp; &lt;!ELEMENT idmap (mapping*)></tt>
+<br><tt>&nbsp;&nbsp; &lt;!ATTLIST idmap</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CDATA #REQUIRED</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; extension&nbsp;
+CDATA</tt>
+<br><tt>&nbsp;&nbsp; ></tt>
+<ul>
+<li>
+<b>name</b> - the name of the ID Mapping scheme. Should be unique.</li>
+<li>
+<b>extension</b> - (optional) a file extension associated with this ID Mapping Scheme.
+When comparing files with this extension, the current ID Mapping Scheme will automatically be used.
+<br>If an extension is specified, then the extension should also be added in the plugin.xml file of the XML Compare Plugin.
+For example, if we create an ID Mapping Scheme with extension cd, the plugin.xml of the XML Compare Plugin is updated as follows
+(update shown in bold):
+<tt>
+<p>&lt;extension
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;point="org.eclipse.compare.structureMergeViewers">
+<br>&nbsp;&nbsp;&nbsp;&lt;structureMergeViewer
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extensions="cxml,classpath,<b>cd</b>"
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;class="org.eclipse.compare.xml.XMLStructureViewerCreator">
+<br>&nbsp;&nbsp;&nbsp;&lt;/structureMergeViewer>
+</tt>
+<p><b>Warning: </b>If an extension is associated more than once, only the first association will be considered.
+Also, internal ID Mapping schemes have priority over user ID Mapping schemes when duplicate extensions are defined.
+<p><b>Warning: </b>When an internal ID Mapping scheme with extension association is removed (from a <tt>plugin.xml</tt>), the XML Compare plugin has to be reloaded to disassociate itself from the extension.
+If not, on the first compare of files with this extension, the XML Compare plugin will be used with the default <em>Unordered</em> algorithm.
+(However, at this point the extension will have been disassociated from the XML Plugin, as the plugin has been loaded.)
+</ul>
+<br>
+<p><tt>&nbsp;&nbsp; &lt;!ELEMENT mapping EMPTY></tt>
+<br><tt>&nbsp;&nbsp; &lt;!ATTLIST mapping</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; signature&nbsp;
+CDATA #REQUIRED</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CDATA #REQUIRED</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id-source &nbsp;CDATA</tt>
+<br><tt>&nbsp;&nbsp; ></tt>
+<ul>
+<li>
+<b>signature</b> - the XML path from the root to the current element (see examples below).</li>
+
+<li>
+<b>id</b> - the attribute that identifies this element or the name of the child element
+whose text identifies this element.</li>
+
+<li>
+<b>id-source</b> - (optional) if <em>id</em> is the name of a child element, then this attribute must have
+the value <em>body</em>. If <em>id-source</em> is left out, it is assumed that <em>id</em> is an attribute.</li>
+</ul>
+<br>
+<p><tt>&nbsp;&nbsp; &lt;!ELEMENT ordered EMPTY></tt>
+<br><tt>&nbsp;&nbsp; &lt;!ATTLIST ordered</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; signature&nbsp;
+CDATA #REQUIRED</tt>
+<br><tt>&nbsp;&nbsp; ></tt>
+<ul>
+<li>
+<b>signature</b> - the XML path from the root to the element whose direct children will be compared in ordered fashion instead of the default unordered way.</li>
+</li>
+</ul>
+<b><i>Examples:</i></b>
+<br>The following is an example ID Mappings Scheme for ANT files.
+<br><i>project</i> elements are identified by an attribute <i>name</i>. <i>target</i> elements (which are children of <i>project</i>) are also identified by an attribute <i>name</i>.
+Also, the children of <i>target</i> will be compared in the order in which they appear in the document.
+<tt>
+<p>&lt;idmap name="ANT">
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;mapping signature="project" id="name"/>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;mapping signature="project>target" id="name"/>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;ordered signature="project>target"/>
+<br>&lt;idmap>
+</tt>
+<p>The following example illustrates a case where the text of a child element is used as id:
+<tt>
+<p>&lt;idmap name="Book Catalog" extension="book">
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;mapping signature="catalog>book" id="isbn" id-source="body"/>
+<br>&lt;idmap>
+</tt>
+<p><b><i>Supplied Implementation:</i></b>
+<br>The XML Compare plugin defines an ID Mapping scheme for Eclipse <tt>plugin.xml</tt> files, one for <tt>.classpath</tt> files and one for ANT files.
+</body>
+</html>

@@ -1,0 +1,11 @@
+package testPkg2;
+
+public abstract class TestProject2Class2  {
+
+  public TestProject2Class2(){
+	 
+  }
+
+  protected abstract void doAnything();
+  
+}

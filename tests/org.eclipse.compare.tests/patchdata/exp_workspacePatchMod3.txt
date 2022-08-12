@@ -1,0 +1,10 @@
+package testPkg;
+
+public interface IWorkspacePatcherTest {
+	
+	public boolean canApplyToMultipleProjects();
+	
+	public void doSomething();
+	
+	public boolean isWorkspacePatcherTest();
+}

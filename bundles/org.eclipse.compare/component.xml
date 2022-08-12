@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Copyright (c) 2005, 2011 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<component xmlns="http://eclipse.org/component"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://eclipse.org/component ../component.xsd "
+   name="Compare Support">
+ <plugin id="org.eclipse.compare" />
+
+ <package name="org.eclipse.compare">
+   <type name= "BufferedContent"/>
+   <type name= "CompareConfiguration"/>
+   <type name= "CompareEditorInput"/>
+   <type name= "CompareUI" subclass="false" instantiate="false"/>
+   <type name= "CompareViewerPane"/>
+   <type name= "CompareViewerSwitchingPane"/>
+   <type name= "EditionSelectionDialog" subclass="false"/>
+   <type name= "HistoryItem" subclass="false"/>
+   <type name= "ICompareNavigator"/>
+   <type name= "IContentChangeListener"/>
+   <type name= "IContentChangeNotifier"/>
+   <type name= "IEditableContent"/>
+   <type name= "IEncodedStreamContentAccessor"/>
+   <type name= "IModificationDate"/>
+   <type name= "IPropertyChangeNotifier"/>
+   <type name= "IResourceProvider"/>
+   <type name= "IStreamContentAccessor"/>
+   <type name= "IStreamMerger"/>
+   <type name= "ITypedElement"/>
+   <type name= "IViewerCreator"/>
+   <type name= "NavigationAction" subclass="false"/>
+   <type name= "ResourceNode" subclass="false"/>
+   <type name= "Splitter"/>
+   <type name= "ZipFileStructureCreator"/>
+ </package>
+
+ <package name="org.eclipse.compare.contentmergeviewer">
+   <type name= "ContentMergeViewer"/>
+   <type name= "IDocumentRange"/>
+   <type name= "IMergeViewerContentProvider"/>
+   <type name= "ITokenComparator"/>
+   <type name= "TextMergeViewer"/>
+ </package>
+ 
+ <package name="org.eclipse.compare.rangedifferencer">
+   <type name= "IRangeComparator"/>
+   <type name= "RangeDifference" subclass="false" instantiate="false"/>
+   <type name= "RangeDifferencer" subclass="false"/>
+ </package>
+ 
+  <package name="org.eclipse.compare.structuremergeviewer">
+   <type name= "DiffContainer"/>
+   <type name= "DiffElement"/>
+   <type name= "Differencer"/>
+   <type name= "DiffNode"/>
+   <type name= "DiffTreeViewer" subclass="false"/>
+   <type name= "DocumentRangeNode"/>
+   <type name= "ICompareInput"/>
+   <type name= "ICompareInputChangeListener"/>
+   <type name= "IDiffContainer"/>
+   <type name= "IDiffElement"/>
+   <type name= "IStructureComparator"/>
+   <type name= "IStructureCreator"/>
+   <type name= "StructureDiffViewer" subclass="false"/>
+ </package>
+ 
+ <package name="org.eclipse.compare.patch">
+   <type name= "WorkspacePatcherUI" subclass="false" instantiate="false"/>
+ </package>
+ 
+ <component-depends unrestricted="true"/>
+</component>

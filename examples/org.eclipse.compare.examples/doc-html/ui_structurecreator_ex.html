@@ -1,0 +1,83 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2013. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <link rel="stylesheet" href="../../../book.css" charset="ISO-8859-1" type="text/css">
+   <title>Structural Compare for Key/Value Pairs</title>
+</head>
+<body>
+
+<h2>Compare Example - Structural Compare for Key/Value Pairs</h2>
+
+<h3>Introduction</h3>
+
+This example demonstrates how to support structural compare for
+files consisting of key/value pairs. It shows how to implement and register a
+custom structure creator that parses key/value pairs into a tree structure
+that is used as the input to the structural compare framework provided by the
+Compare plugin. In addition, it registers a standard text viewer for the individual
+key/value pairs.
+
+<p>
+
+This example is only for demonstration purposes. Structural compare support
+for Java property files (another key/value format) is provided by the Eclipse Java Tooling. 
+
+<h3> Running the example</h3>
+
+<ol>
+	<li>Create a project (not necessarily a Java project)</li>
+	
+	<li>Create a key/value pair file f1.kv</li>
+	
+	<li>Open <strong>Window</strong> &gt; <strong>Preferences</strong> &gt; <strong>Workbench</strong> &gt; <strong>File Association</strong>
+	and associate the default text editor with the file extension "kv"</li>
+	
+	<li>Open f1.kv with the editor and enter this contents
+	<pre>
+lastname=Doe
+firstname=John
+city=Chicago
+state=IL
+</pre></li>
+	
+	<li>Make a copy of this file and rename it f2.kv</li>
+	
+	<li>Open f2.kv and change the firstname "John" to "Mary"</li>
+
+	<li>Add another key/value pair "country=US" to f2.kv</li>
+	
+	<li>Select both files f1.kv and f2.kv</li>
+	
+	<li>From the context menu select <strong>Compare With</strong> &gt; <strong>Each Other</strong></li>
+	
+	<li>A new compare editor opens that shows the structural differences of both files in its
+	top pane. Selecting one of the properties "firstname" or "country" feeds the text of the
+	corresponding key/value pair into the standard text compare viewer in the bottom pane.
+	</li>
+	
+</ol>
+
+<h3>Code organization of the example</h3>
+The example code is organized in a single package <tt>org.eclipse.compare.examples.structurecreator</tt>:
+
+<ul>
+	<li><tt>KeyValuePairStructureCreator</tt><br>
+	is the structure creator that parses the contents of a stream into a tree of
+	<tt>IStructureComparator</tt>s.
+	</li>
+	
+	<li><tt>TextMergeViewerCreator</tt><br>
+	is a factory for TextMergeViewers. It is registered for the type "kvtxt" which is the
+	type of an individual key/value pair.
+	</li>
+	
+	<li><tt>Util</tt><br>
+	provides utility methods for NLS support and for reading an InputStream as a String.
+	</li>
+	
+</ul>
+
+</body>
+</html>

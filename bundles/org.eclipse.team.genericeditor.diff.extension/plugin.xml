@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+  Copyright (c) 2017 Red Hat Inc. and others.
+
+  This program and the accompanying materials
+  are made available under the terms of the Eclipse Distribution License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/org/documents/edl-v10.php
+
+  Contributors:
+     Sopot Cela (Red Hat Inc.) - initial implementation
+-->
+<plugin>
+   <extension
+         point="org.eclipse.ui.genericeditor.presentationReconcilers">
+      <presentationReconciler
+            class="org.eclipse.team.internal.genericeditor.diff.extension.presentation.DiffPresentationReconciler"
+            contentType="org.eclipse.team.genericeditor.diff.extension.patch">
+      </presentationReconciler>
+   </extension>
+   <extension point="org.eclipse.ui.editors">
+		<editorContentTypeBinding
+    		contentTypeId="org.eclipse.team.genericeditor.diff.extension.patch"
+    		editorId="org.eclipse.ui.genericeditor.GenericEditor">
+  		</editorContentTypeBinding>
+	</extension>
+   <extension
+         point="org.eclipse.core.filebuffers.documentSetup">
+      <participant
+            class="org.eclipse.team.internal.genericeditor.diff.extension.partitioner.DiffPartitioner"
+            contentTypeId="org.eclipse.team.genericeditor.diff.extension.patch"
+            extensions="patch,diff">
+      </participant>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="patch,diff"
+            id="org.eclipse.team.genericeditor.diff.extension.patch"
+            name="%patch_ContentTypeName"
+            priority="normal">
+      </content-type>
+   </extension>
+
+</plugin>

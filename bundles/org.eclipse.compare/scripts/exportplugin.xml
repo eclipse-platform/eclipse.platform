@@ -1,0 +1,66 @@
+<!--
+    Copyright (c) 2001, 2011 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="org.eclipse.compare" default="export" basedir="..">
+	<target name="init">
+		<tstamp/>
+		<property name="destdir" value="../../plugin-export" />
+		<property name="plugin" value="org.eclipse.compare" />
+		<property name="qualifier" value="zzz${DSTAMP}-${TSTAMP}" />
+		
+		<!-- define property ${plugin_version} by reading version from MANIFEST.MF: -->
+		<tempfile property="plugin_version_file" suffix=".plugin_version.tmp" destdir="${destdir}"/>
+		<copy file="META-INF/MANIFEST.MF" tofile="${plugin_version_file}"/>
+		<replaceregexp file="${plugin_version_file}" match=".*Bundle-Version: ((\d)+\.(\d)+\.(\d)+\.)qualifier.*" replace="plugin_version=_\1${qualifier}" flags="s" />
+		<property file="${plugin_version_file}"/>
+		<delete file="${plugin_version_file}" />
+		
+		<property name="dest" value="${destdir}/${plugin}${plugin_version}" />
+		<property name="destjar" value="${destdir}/${plugin}${plugin_version}.jar" />
+	</target>
+
+	<target name="build" depends="init">
+    	<eclipse.incrementalBuild project="${plugin}" kind="incr"/>
+	</target>
+
+	<target name="export" depends="build">
+		<mkdir dir="${destdir}" />
+		<delete dir="${dest}" />
+		<mkdir dir="${dest}" />
+		
+		<copy todir="${dest}/META-INF">
+			<fileset dir="META-INF" />
+		</copy>		
+		
+		<replaceregexp file="${dest}/META-INF/MANIFEST.MF" match="Bundle-Version: ((\d)+\.(\d)+\.(\d)+\.)qualifier" replace="Bundle-Version: \1${qualifier}" byline="true" />
+
+		<delete file="${destjar}" />
+		<zip zipfile="${destjar}">
+			<fileset dir=".">
+			  <include name="plugin.xml" />
+			  <include name="plugin.properties" />
+			  <include name="icons/**" />
+			  <include name=".options" />
+			  <include name="schema/**" />
+			  <include name="src/**" />
+			</fileset>
+			<fileset dir="bin" />
+			<fileset dir="${dest}">
+			  <include name="META-INF/**" />
+			</fileset>
+		</zip>
+		
+		<delete dir="${dest}" />
+		
+	</target>
+</project>

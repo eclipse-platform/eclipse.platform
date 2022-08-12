@@ -1,0 +1,48 @@
+### Eclipse Workspace Patch 1.0
+#P TestProject2
+Index: testPkg2/TestProject2Class2.java
+===================================================================
+RCS file: testPkg2/TestProject2Class2.java
+diff -N testPkg2/TestProject2Class2.java
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ testPkg2/TestProject2Class2.java	1 Jan 1970 00:00:00 -0000
+@@ -0,0 +1,12 @@
++package testPkg2;
++
++public class TestProject2Class2 {
++
++	/**
++	 * @param args
++	 */
++	public static void main(String[] args) {
++		// TODO Auto-generated method stub
++	}
++
++}
+#P TestProject
+Index: testPkg/TestProjectClass1.java
+===================================================================
+RCS file: testPkg/TestProjectClass1.java
+diff -N testPkg/TestProjectClass1.java
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ testPkg/TestProjectClass1.java	1 Jan 1970 00:00:00 -0000
+@@ -0,0 +1,19 @@
++package testPkg;
++
++public class TestProjectClass1 {
++
++	public TestProjectClass1(){};
++	
++	/**
++	 * Does something - how much is dictated by howMuchSomething, the something
++	 * is called nameOfSomething
++	 * 
++	 * @param howMuchSomething
++	 * @param nameOfSomething
++	 */
++	public void doSomething(int howMuchSomething, String nameOfSomething){
++		//does something
++	}
++
++
++}

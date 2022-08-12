@@ -1,0 +1,10 @@
+# Debugging options for the org.eclipse.team.core plugin.
+
+# Turn on debugging for the plugin.
+org.eclipse.team.core/debug=false
+
+# Shows stream debugging information
+org.eclipse.team.core/streams=false
+org.eclipse.team.core/refreshjob=false
+org.eclipse.team.core/backgroundevents=false
+org.eclipse.team.core/threading=false

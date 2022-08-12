@@ -1,0 +1,19 @@
+package testPkg;
+
+public class TestProjectClass1 {
+
+	public TestProjectClass1(){};
+	
+	/**
+	 * Does something - how much is dictated by howMuchSomething, the something
+	 * is called nameOfSomething
+	 * 
+	 * @param howMuchSomething
+	 * @param nameOfSomething
+	 */
+	public void doSomething(int howMuchSomething, String nameOfSomething){
+		//does something
+	}
+
+
+}

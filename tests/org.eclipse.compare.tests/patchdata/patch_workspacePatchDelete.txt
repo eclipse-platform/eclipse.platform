@@ -1,0 +1,106 @@
+### Eclipse Workspace Patch 1.0
+#P TestProject
+Index: testPkg/TestProjectClass1.java
+===================================================================
+RCS file: testPkg/TestProjectClass1.java
+diff -N testPkg/TestProjectClass1.java
+--- testPkg/TestProjectClass1.java	6 Sep 2005 18:42:52 -0000	1.4
++++ /dev/null	1 Jan 1970 00:00:00 -0000
+@@ -1,35 +0,0 @@
+-package testPkg;
+-
+-public class TestProjectClass1 implements IWorkspacePatcherTest {
+-
+-	public TestProjectClass1(){};
+-	
+-	/**
+-	 * Does something - how much is dictated by howMuchSomething, the something
+-	 * is called nameOfSomething
+-	 * 
+-	 * @param howMuchSomething
+-	 * @param nameOfSomething
+-	 */
+-	public void doSomething(int howMuchSomething, String nameOfSomething){
+-		//does something
+-	}
+-
+-	public boolean canApplyToMultipleProjects() {
+-		// TODO Auto-generated method stub
+-		return false;
+-	}
+-
+-	public void doSomething() {
+-		// TODO Auto-generated method stub
+-		
+-	}
+-
+-	public boolean isWorkspacePatcherTest() {
+-		// TODO Auto-generated method stub
+-		return false;
+-	}
+-
+-	
+-
+-}
+Index: testPkg/TestProject2Class2.java
+===================================================================
+RCS file: testPkg/TestProject2Class2.java
+diff -N testPkg/TestProject2Class2.java
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ testPkg/TestProject2Class2.java	1 Jan 1970 00:00:00 -0000
+@@ -0,0 +1,11 @@
++package testPkg;
++
++public abstract class TestProject2Class2  {
++
++  public TestProject2Class2(){
++	 
++  }
++
++  protected abstract void doAnything();
++  
++}
+#P TestProject2
+Index: testPkg2/TestProject2Class2.java
+===================================================================
+RCS file: testPkg2/TestProject2Class2.java
+diff -N testPkg2/TestProject2Class2.java
+--- testPkg2/TestProject2Class2.java	6 Sep 2005 18:42:53 -0000	1.4
++++ /dev/null	1 Jan 1970 00:00:00 -0000
+@@ -1,11 +0,0 @@
+-package testPkg2;
+-
+-public abstract class TestProject2Class2  {
+-
+-  public TestProject2Class2(){
+-	 
+-  }
+-
+-  protected abstract void doAnything();
+-  
+-}
+Index: testPkg2/YetAnotherClass.java
+===================================================================
+RCS file: testPkg2/YetAnotherClass.java
+diff -N testPkg2/YetAnotherClass.java
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ testPkg2/YetAnotherClass.java	1 Jan 1970 00:00:00 -0000
+@@ -0,0 +1,18 @@
++package testPkg2;
++
++public class YetAnotherClass extends Exception {
++
++	/**
++	 * 
++	 */
++	private static final long serialVersionUID = 1L;
++
++	/**
++	 * @param args
++	 */
++	public static void main(String[] args) {
++		// TODO Auto-generated method stub
++
++	}
++
++}

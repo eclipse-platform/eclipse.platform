@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="Author" content="IBM">
+  <title>Package-level Javadoc</title>
+</head>
+<body>
+<p>Contains the team synchronization presentation framework and support
+for the Synchronize View.<br>
+</p>
+<h2>Package Specification</h2>
+<p>Contains the team synchronization presentation framework and support
+for the Synchronize View. A synchronization framework is a unified
+architecture for presenting and manipulating resource synchronization
+state. Consider the
+synchronization model described by the classes in
+<code>org.eclipse.team.core.synchronize</code> as the physical
+representation of synchronization state then the classes in this
+package allow you to control
+how the model is presented to the user. This framework doesn't attempt
+to provide common operations for manipulating synchronization state.
+Instead it is left up to the framework user to add their own domain
+specific operations to the presentation.<br>
+</p>
+<p>The primary advantages of this synchronization presentation
+framework are that it:<br>
+</p>
+<ul>
+  <li><span style="font-weight: bold;">Provides a unified
+synchronization experience</span> in the workbench. It makes it easier
+to present one synchronization story to the user across multiple tools
+that synchronize resources. This includes access to the Synchronize
+View, the Team Synchronizing Perspective, the global Synchronize
+Action, Synchronize dialogs, and compare editors.<br>
+  </li>
+  <li><span style="font-weight: bold;">Reduces the effort required to
+learn other APIs</span> by eliminating the need to learn many workbench
+APIs to enable this rich support.<br>
+  </li>
+  <li><span style="font-weight: bold;">Fosters software re-use</span>
+by allowing multiple repository providers and other tools to enable
+rich integration without the initial cost of learning how to integrate
+into Eclipse.<br>
+  </li>
+</ul>
+<p>The synchronization presentation framework consists of:<br>
+</p>
+<ul>
+  <li><span style="font-weight: bold;">Synchronize View Interfaces</span>
+- Represents a set of classes and interfaces
+to support a generic synchronize view that can show multiple
+synchronize participants.<br>
+  </li>
+  <li><span style="font-weight: bold;">SubscriberParticipants</span> -
+Concrete implementation of the synchronize view interfaces for
+synchronizations that are SyncInfo based. Subclasses get the well-known
+synchronize page that supports 4 modes (e.g.
+incomming/outgoing/conficting/both) and the standard resource layouts
+(compressed folder and hierarchical). This is the easy entry point into
+the Synchronize View since all a client would have to provide is a
+Subscriber class that generates SyncInfo instances for resources and a
+set of operations that run on the sync nodes.<br>
+  </li>
+  <li><span style="font-weight: bold;">Compare Inputs</span> - These
+are helpers for allowing users to display and edit the resources being
+synchronized.</li>
+  <li><span style="font-weight: bold;">Synchronize action and operation
+utilities</span> - Represent helpers for writing actions that are
+performed on elements shown in synchronization viewers.<br>
+  </li>
+</ul>
+<hr style="width: 100%; height: 2px;">
+<h3>Synchronize View Interfaces<br>
+</h3>
+<p>These interfaces and classes support a generic Synchronize View that
+can show multiple
+synchronize participants. The basic model for integrating into the
+Synchronize View consists of:<br>
+</p>
+<ul>
+  <li>A ISynchronizeManager manages registered synchronize
+participants. Every participant has a type and and instance identifier.</li>
+  <li>A ISynchronizeParticipant is a logical representation of a
+connection between workspace resources and a remote location used to
+shared those resources. A participant creates a page in that shows the
+synchronization for the participant.<br>
+  </li>
+  <li>A ISynchronizeView is a page book view of participants. The
+synchronize view has support for showing multiple synchronizations. As
+described above, you will see merges, 2 way-compares, and basic
+synchronizations. Synchronizations are categorized into types, for
+example the CVS plugin defines three types: CVS, CVS Merge, and CVS
+Compare. You can switch between synchronizations using the drop-down
+menu in the sync view. When you create a new synchronization it will
+replace the first existing synchronization of the same type unless it
+is pinned. Pinning allows you to manage the synchronizations that are
+of interest to you and ensure that they remain easily accessible. This
+should provide for easy management of multiple synchronizations.<br>
+  </li>
+  <li>A ISynchronizeParticipant must create a page that will be
+displayed in the ISynchronizeView page book view.</li>
+  <li>The ISynchronizeView shows a drop-down of all registered
+participants and allows switching between them.</li>
+  <li>A ISynchronizeParticipant creates a configuration which is used
+to configure the presentation of the participant by clients. For
+example, clients using a ISynchronizeParticipant instances can decide
+to show the participant page with a set of customized menus or toolbar
+actions.<br>
+  </li>
+</ul>
+<p>Synchronize participants are declared by extending the <strong>synchronizeParticipants
+</strong>extension point. A synchronize manager
+manages all active synchronize participants, and provides notification
+of participants which are added and removed. Participants are displayed
+in a page book view. Each participant implementation is reponsible for
+creating its page, which provides freedom of
+presentation to the synchronize view implementation. A single
+participant may be displayed simultaneously in multiple synchronize
+views, and in different workbench windows.<br>
+</p>
+<hr style="width: 100%; height: 2px;">
+<h3>SubscriberParticipants<br>
+</h3>
+&nbsp;SubscriberParticipant is an abstract class that is intented to
+support a common synchronization workflow. It is the easy way to get
+into the Synchronize View and essentially inherit the default
+synchronize experience. The requirement for using a
+SubscriberParticipant is to create a subscriber that can produce
+SyncInfo (e.g. objects that describe the synchronization between local
+and remote resources).
+<hr style="width: 100%; height: 2px;">
+<h3>Compare Inputs</h3>
+These are helpers for allowing users to display and edit resources
+being synchronized by integrating with the compare support available in
+Eclipse. <br>
+<hr style="width: 100%; height: 2px;">
+<h3>Synchronize action and operation utilities</h3>
+These are helpers for writing actions that are performed on elements
+shown in synchronize viewers.<br>
+<hr style="width: 100%; height: 2px;">
+<h3>Related Documentation</h3>
+<ul>
+  <li>For examples of these APIs in action please see the <a
+ href="http://dev.eclipse.org/viewcvs/index.cgi/org.eclipse.team.examples.filesystem/">org.eclipse.team.examples.filesystem</a>
+plug-in example and also refer to the <span style="font-weight: bold;">Platform
+Plug-in Developer Guide &gt; Programmer's Guide &gt; Team Support</span>
+documentation.<br>
+  </li>
+</ul>
+</body>
+</html>

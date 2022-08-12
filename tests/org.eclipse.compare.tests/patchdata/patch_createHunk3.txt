@@ -1,0 +1,14 @@
+### Eclipse Workspace Patch 1.0
+#P Bug202944
+Index: tmp/a.txt
+===================================================================
+RCS file: /TEST/Bug202944/tmp/a.txt,v
+retrieving revision 1.1
+diff -u -r1.1 a.txt
+--- tmp/a.txt	20 Feb 2009 11:37:35 -0000	1.1
++++ tmp/a.txt	20 Feb 2009 11:38:40 -0000
+@@ -1,4 +0,0 @@
+-[aa]
+-[bb]
+-[cc]
+-[dd]

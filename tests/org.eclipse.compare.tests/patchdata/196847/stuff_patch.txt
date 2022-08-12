@@ -1,0 +1,16 @@
+#
+diff -u -N stuff.txt stuff.txt
+--- stuff.txt	2007-06-27 08:50:46.000000603 -0400
++++ stuff.txt	2007-07-11 17:24:45.000000000 -0400
+@@ -4,5 +4,6 @@
+-this
+-is
+-only
+-a
+-test
++this
++might
++be
++a
++monkey
++test

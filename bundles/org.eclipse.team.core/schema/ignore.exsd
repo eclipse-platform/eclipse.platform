@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.team.core">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.team.core" id="ignore" name="Ignore"/>
+      </appInfo>
+      <documentation>
+         This extension point is used to register information about whether particular resources should be ignored;
+that is, excluded from version configuration management operations.
+Providers may provide an extension for this extension point.  No code beyond the XML extension declaration is required.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="ignore" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="ignore">
+      <annotation>
+         <appInfo>
+            <meta.element labelAttribute="pattern"/>
+         </appInfo>
+      </annotation>
+      <complexType>
+         <attribute name="pattern" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the pattern against which resources will be compared.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="enabled" type="boolean" use="required">
+            <annotation>
+               <documentation>
+                  one of &quot;true&quot; or &quot;false&quot;, determines whether this ignore pattern is enabled.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         Following is an example of an ignore extension:
+
+&lt;p&gt;
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.team.core.ignore&quot;&gt;
+  &lt;ignore pattern=&quot;*.class&quot; enabled=&quot;true&quot;/&gt;
+ &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         2.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2004 IBM Corporation and others.
+
+This program and the accompanying materials are made available under the terms of the Eclipse Public License 2.0 which accompanies this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>
