@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tools.resources;
 
-import java.util.*;
+import java.util.Map;
 import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
@@ -57,7 +57,7 @@ public class ResourceContentProvider extends AbstractTreeContentProvider {
 
 		if (!(selectedResource instanceof Resource)) {
 			String message = NLS.bind(Messages.resource_error_unknown_resource_impl, selectedResource.getClass().getName());
-			getRootNode().addChild(message);
+			getRootNode().addChild(new TreeContentProviderNode(message));
 			return;
 		}
 
