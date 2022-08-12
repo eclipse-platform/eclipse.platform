@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension point="org.eclipse.core.tools.metadataDumpers">
+    	<dumper file-name=".markers" class="org.eclipse.core.tools.resources.metadata.MarkersDumper"/>
+    	<dumper file-name=".markers.snap" class="org.eclipse.core.tools.resources.metadata.MarkersSnapshotDumper"/>
+    	<dumper file-name=".syncinfo" class="org.eclipse.core.tools.resources.metadata.SyncInfoDumper"/>
+    	<dumper file-name=".syncinfo.snap" class="org.eclipse.core.tools.resources.metadata.SyncInfoSnapshotDumper"/>
+    	<dumper file-name=".location" class="org.eclipse.core.tools.resources.metadata.LocationDumper"/>    	    	    	    	    	
+    	<dumper file-name="properties.index" class="org.eclipse.core.tools.resources.metadata.PropertiesIndexDumper"/>    	    	    	    	    	    	
+    	<dumper file-name="history.index" class="org.eclipse.core.tools.resources.metadata.HistoryIndexDumper"/>    	    	    	    	    	    	    	
+   </extension>
+<!--  Actions -->
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Count resources"
+            visible="true"
+            id="org.eclipse.core.tools.resources.actionSet">
+         <action
+               label="Count resources"
+               icon="icons/spy.gif"
+               class="org.eclipse.core.tools.resources.CountResourcesAction"
+               tooltip="Count resources"
+               toolbarPath="Normal/spyGroup"
+               id="org.eclipse.core.tools.countResourcesAction">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <actionSet
+               id="org.eclipse.core.tools.resources.actionSet">
+         </actionSet>
+      </perspectiveExtension>
+   </extension>
+<!-- Resources Views  -->
+   <extension point="org.eclipse.ui.views">
+      <category name="Resources Tools" id="org.eclipse.core.tools.resources"/>
+      <view
+            name="Delta Spy"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.resources"
+            class="org.eclipse.core.tools.resources.DeltaView"
+            id="org.eclipse.core.tools.resources.DeltaView"/>
+      <view
+            name="Element Tree Spy"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.resources"
+            class="org.eclipse.core.tools.resources.ElementTreeView"
+            id="org.eclipse.core.tools.resources.ElementTreeView"/>
+      <view
+            name="Resource Spy"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.resources"
+            class="org.eclipse.core.tools.resources.ResourceView"
+            id="org.eclipse.core.tools.resources.ResourceView"/>
+      <view
+            name="Project Spy"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.resources"
+            class="org.eclipse.core.tools.resources.ProjectView"
+            id="org.eclipse.core.tools.resources.ProjectView"/>
+      <view
+            name="Graphical Delta Spy"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.resources"
+            class="org.eclipse.core.tools.resources.ResourceChangeView"
+            id="org.eclipse.core.tools.resources.ResourceChangeView"/>
+      <view
+            name="Local History Browser"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.resources"
+            class="org.eclipse.core.tools.resources.LocalHistoryBrowserView"
+            id="org.eclipse.core.tools.resources.LocalHistoryBrowserView"/>
+      <view
+            name="Marker View"
+            icon="icons/spy.gif"
+            category="org.eclipse.core.tools.resources"
+            class="org.eclipse.core.tools.resources.markers.MarkerView"
+            id="org.eclipse.core.tools.resources.markers.MarkerView"/>
+   </extension>
+
+</plugin>

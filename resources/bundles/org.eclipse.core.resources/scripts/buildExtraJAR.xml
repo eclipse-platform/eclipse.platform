@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<project name="org.eclipse.core.resources" default="main" basedir="..">
+
+	<target name="main" depends="clean, ant_tasks/resources-ant.jar">
+	</target>
+
+	<target name="init" depends="properties">
+		<property name="plugin" value="org.eclipse.core.resources"/>
+		<property name="temp.folder" value="${basedir}/temp.folder"/>
+		<property name="plugin.destination" value="${basedir}"/>
+		<property name="build.result.folder" value="${basedir}/ant_tasks"/>
+		<property name="version.suffix" value="_3.1.0"/>
+	</target>
+
+	<target name="properties" if="eclipse.running">
+		<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+	</target>
+
+	<target name="ant_tasks/resources-ant.jar" depends="init" unless="ant_tasks/resources-ant.jar">
+		<property name="destdir" value="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
+		<delete dir="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
+		<mkdir dir="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
+		<!-- compile the source code -->
+		<javac destdir="${temp.folder}/ant_tasks/resources-ant.jar.bin" failonerror="true" verbose="true" debug="on" target="1.5" source="1.5">
+			<compilerarg value="-warn:-unavoidableGenericProblems"/>
+			<classpath>
+				<dirset dir="${basedir}/..">
+					<include name="org.eclipse.core.resources/bin"/>
+					<include name="org.eclipse.core.runtime/bin"/>
+					<include name="org.eclipse.equinox.common/bin"/>
+					<include name="org.eclipse.core.jobs/bin"/>
+					<include name="org.eclipse.osgi/bin"/>
+					<include name="org.eclipse.ant.core/bin"/>
+				</dirset>
+				<fileset dir="${eclipse.home}">
+					<include name="plugins/org.eclipse.core.resources*.jar"/>
+					<include name="plugins/org.eclipse.core.runtime*.jar"/>
+					<include name="plugins/org.eclipse.equinox.common*.jar"/>
+					<include name="plugins/org.eclipse.core.jobs*.jar"/>
+					<include name="plugins/org.eclipse.osgi*.jar"/>
+					<include name="plugins/org.eclipse.ant.core*.jar"/>
+				</fileset>
+			</classpath>
+			<src path="src_ant/"/>
+		</javac>
+		<!-- copy necessary resources -->
+		<copy todir="${temp.folder}/ant_tasks/resources-ant.jar.bin">
+			<fileset dir="src_ant/" excludes="**/*.java"/>
+		</copy>
+		<mkdir dir="${build.result.folder}"/>
+		<jar jarfile="${build.result.folder}/resources-ant.jar" basedir="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
+		<delete dir="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+
+	<target name="clean" depends="init">
+		<delete file="${build.result.folder}/resources-ant.jar"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+</project>

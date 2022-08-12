@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="register" deactivate="unregister" name="org.eclipse.core.internal.resources.CheckMissingNaturesListener">
+   <property name="event.mask" type="Integer" value="1"/>
+   <service>
+      <provide interface="org.eclipse.core.resources.IResourceChangeListener"/>
+   </service>
+   <reference cardinality="1..1" field="bundleScope" interface="org.eclipse.core.runtime.preferences.IScopeContext" name="bundleScope" target="(&amp;(objectClass=org.eclipse.core.runtime.preferences.IScopeContext)(type=bundle))"/>
+   <reference cardinality="1..1" field="log" interface="org.eclipse.core.runtime.ILog" name="log"/>
+   <reference cardinality="1..1" field="workspace" interface="org.eclipse.core.resources.IWorkspace" name="workspace"/>
+   <implementation class="org.eclipse.core.internal.resources.CheckMissingNaturesListener"/>
+</scr:component>

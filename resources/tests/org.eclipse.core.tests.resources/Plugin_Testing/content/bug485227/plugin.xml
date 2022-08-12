@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="bug485227"
+            file-names="*.bug485227"
+            id="bug485227_contentType"
+            name="Dummy Content Type for bug 485227"
+            priority="normal">
+      </content-type>
+      <file-association
+            content-type="bug485227_contentType"
+            file-extensions="bug485227_2">
+      </file-association>
+   </extension>
+</plugin>

@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.core.resources" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.core.resources" id="variableResolvers" name="Path variable resolver"/>
+      </appInfo>
+      <documentation>
+         A variable resolver extends the default list of project path variables that can be used to specify the relative location of a linked resource.
+      </documentation>
+   </annotation>
+
+   <include schemaLocation="schema://org.eclipse.core.expressions/schema/expressionLanguage.exsd"/>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="variableResolver" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="variableResolver">
+      <complexType>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  A class dynamically providing the value of the variable.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.core.resources.variableresolvers.PathVariableResolver:"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string">
+            <annotation>
+               <documentation>
+                  The value of the variable, either as refering another variable or an absolute path.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="variable" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The prefix for supported variables. We could use wildcards in the future.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.6
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         The value of the class attribute must represent a subclass of &lt;tt&gt;org.eclipse.core.resources.PathVariableResolver&lt;/tt&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         &lt;p&gt;
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.core.resources.variableResolvers&quot;&gt;
+ &lt;variableResolver class=&quot;org.eclipse.core.internal.resources.projectVariables.EclipseHomeProjectVariable&quot; name=&quot;ECLIPSE_HOME&quot;&gt;
+ &lt;/variableResolver&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The &lt;tt&gt;org.eclipse.core.resources&lt;/tt&gt; bundle provides resolvers for the following variables:  &lt;tt&gt;ECLIPSE_HOME&lt;/tt&gt;, &lt;tt&gt;PROJECT_LOC&lt;/tt&gt;, &lt;tt&gt;WORKSPACE_LOC&lt;/tt&gt;, and &lt;tt&gt;PARENT&lt;/tt&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2008, 2010 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies 
+this distribution, and is available at 
+&lt;a 
+href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

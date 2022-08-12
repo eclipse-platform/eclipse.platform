@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.core.resources" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.core.resources" id="markers" name="Resource Markers"/>
+      </appinfo>
+      <documentation>
+         The workspace supports the notion of markers on arbitrary
+resources.  A marker is a kind of metadata 
+(similar to properties) which can be used to 
+tag resources with user information.  Markers are 
+optionally persisted by the workspace whenever a 
+workspace save or snapshot is done. 
+&lt;p&gt;
+Users can define and query for markers of a given type.  
+Marker types are defined in a hierarchy that supports 
+multiple-inheritance.  Marker type definitions also 
+specify a number attributes which must or may be 
+present on a marker of that type as well as whether 
+or not markers of that type should be persisted. 
+&lt;p&gt;
+The markers extension-point allows marker writers to 
+register their marker types under a symbolic name that 
+is then used from within the workspace to create and 
+query markers. The symbolic name is the id of the 
+marker extension. When defining a marker extension, 
+users are encouraged to include a human-readable value 
+for the &quot;name&quot; attribute which indentifies their marker 
+and potentially may be presented to users.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="super" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="persistent" minOccurs="0" maxOccurs="1"/>
+            <element ref="attribute" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a required identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="super">
+      <complexType>
+         <attribute name="type" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the fully-qualified id of a marker super type (i.e., a marker type defined by another marker extension)
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.core.resources.markers/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="persistent">
+      <complexType>
+         <attribute name="value" type="boolean" use="required">
+            <annotation>
+               <documentation>
+                  &quot;&lt;tt&gt;true&lt;/tt&gt;&quot; or &quot;&lt;tt&gt;false&lt;/tt&gt;&quot; indicating whether or not markers of this type
+should be persisted by the workspace.  If the persistent characteristic
+is not specified, the marker type is &lt;b&gt;not&lt;/b&gt; persisted.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="attribute">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of an attribute which may be present on markers of this type
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         Following is an example of a marker configuration: 
+
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension id=&quot;com.xyz.coolMarker&quot; point=&quot;org.eclipse.core.resources.markers&quot; name=&quot;Cool Marker&quot;&gt; 
+      &lt;persistent value=&quot;true&quot;/&gt; 
+      &lt;super type=&quot;org.eclipse.core.resources.problemmarker&quot;/&gt; 
+      &lt;super type=&quot;org.eclipse.core.resources.textmarker&quot;/&gt; 
+      &lt;attribute name=&quot;owner&quot;/&gt; 
+   &lt;/extension&gt; 
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         All markers, regardless of their type, are instances of 
+&lt;samp&gt;org.eclipse.core.resources.IMarker&lt;/samp&gt;.
+      </documentation>
+   </annotation>
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         The platform itself has a number of pre-defined 
+marker types. Particular product installs may 
+include additional markers as required.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2002, 2008 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies 
+this distribution, and is available at 
+&lt;a 
+href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

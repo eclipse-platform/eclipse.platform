@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Eclipse Core Tests Save Participant
+Bundle-SymbolicName: org.eclipse.core.tests.resources.saveparticipant; singleton:=true
+Bundle-Version: 3.4.100.qualifier
+Bundle-Vendor: Eclipse.org
+Export-Package: org.eclipse.core.tests.resources.saveparticipant
+Require-Bundle: org.eclipse.core.resources,
+ org.eclipse.core.tests.harness,
+ org.eclipse.core.runtime,
+ org.junit,
+ org.eclipse.core.tests.resources,
+ org.eclipse.core.tests.resources.saveparticipant1,
+ org.eclipse.core.tests.resources.saveparticipant2,
+ org.eclipse.core.tests.resources.saveparticipant3,
+ org.eclipse.core.filesystem
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy

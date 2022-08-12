@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Efs Examples Plug-in
+Bundle-SymbolicName: org.eclipse.ui.examples.filesystem;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: eclipse.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.filesystem,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.eclipse.ui,
+ org.eclipse.osgi,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-11

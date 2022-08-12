@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.core.resources" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.core.resources" id="modelProviders" name="Model Providers"/>
+      </appInfo>
+      <documentation>
+         A model provider serves two purposes. Firstly, it is a means of grouping the resource mappings of a single model together for the purposes of performing operations, display, etc. Also, it provides a means of mapping a set of file system resources to the resource mappings that describe how a model maps to resources.
+      </documentation>
+   </annotation>
+
+   <include schemaLocation="schema://org.eclipse.core.expressions/schema/expressionLanguage.exsd"/>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="modelProvider"/>
+            <element ref="extends-model" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="enablement" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="modelProvider">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.core.resources.mapping.ModelProvider"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="extends-model">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.core.resources.modelProviders/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         The value of the class attribute must represent an implementation of &lt;tt&gt;org.eclipse.core.resources.mapping.ModelProvider&lt;/tt&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.2
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of using the modelProvider extension point. 
+(in file plugin.xml)
+&lt;pre&gt;
+   &lt;extension
+         id=&quot;modelProvider&quot;
+         name=&quot;Library Model Provider&quot;
+         point=&quot;org.eclipse.core.resources.modelProviders&quot;&gt;
+      &lt;modelProvider
+            class=&quot;org.eclipse.examples.library.LibraryModelProvider&quot;
+            name=&quot;Library Model Provider&quot;/&gt;
+      &lt;extends-model id=&quot;org.eclipse.core.resources.modelProvider&quot;/&gt;
+      &lt;enablement&gt;
+           &lt;with variable=&quot;affectedNatures&quot;&gt;
+             &lt;iterate operator=&quot;or&quot;&gt;
+               &lt;equals value=&quot;org.eclipse.team.examples.library.nature&quot;/&gt;
+             &lt;/iterate&gt;
+           &lt;/with&gt;
+           &lt;with variable=&quot;element&quot;&gt;
+             &lt;instanceof value=&quot;org.eclipse.core.resources.IFile&quot;/&gt;
+           &lt;/with&gt;
+       &lt;/enablement&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The platform itself does not have any predefined 
+model providers. Particular product installs may include 
+model providers as required.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2005, 2010 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies 
+this distribution, and is available at 
+&lt;a 
+href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

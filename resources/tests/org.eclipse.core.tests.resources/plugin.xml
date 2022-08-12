@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+  <extension id="transientmarker" point="org.eclipse.core.resources.markers">
+    <super type="org.eclipse.core.resources.marker"/>
+  </extension>   
+  <extension id="testproblem" point="org.eclipse.core.resources.markers">
+    <super type="org.eclipse.core.resources.problemmarker"/>
+  </extension>   
+
+  <extension point="org.eclipse.core.resources.builders" id="deltaverifierbuilder" name="Delta Verifier">
+    <builder>
+      <run class="org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder"/> 
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="sortbuilder" name="Sort Builder">
+    <builder>
+      <run class="org.eclipse.core.tests.internal.builders.SortBuilder"/> 
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="rebuildingbuilder" name="Rebuilding Builder">
+    <builder
+          callOnEmptyDelta="true">
+      <run
+            class="org.eclipse.core.tests.internal.builders.RebuildingBuilder">
+      </run> 
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="brokenbuilder" name="Broken Builder">
+    <builder>
+      <run class="org.eclipse.core.tests.internal.builders.BrokenBuilder"/> 
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="exceptionbuilder" name="Exception Builder">
+    <builder>
+      <run class="org.eclipse.core.tests.internal.builders.ExceptionBuilder"/> 
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="refreshbuilder" name="Refresh local builder">
+    <builder>
+      <run class="org.eclipse.core.tests.internal.builders.RefreshLocalJavaFileBuilder"/>
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="sigbuilder" name="Signaled Builder">
+    <builder>
+      <run class="org.eclipse.core.tests.resources.usecase.SignaledBuilder"/> 
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="simplebuilder" name="Simple Builder">
+    <builder hasNature="false">
+      <run class="org.eclipse.core.tests.resources.regression.SimpleBuilder"/>
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="snowbuilder" name="Snow Builder">
+    <builder hasNature="true">
+      <run class="org.eclipse.core.tests.internal.builders.SnowBuilder"/>
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="cyclebuilder" name="Cycle Builder">
+    <builder>
+      <run class="org.eclipse.core.tests.internal.builders.CycleBuilder"/>
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="flexbuilder" name="Flexible Builder">
+    <builder isConfigurable="true">
+      <run class="org.eclipse.core.tests.internal.builders.CustomTriggerBuilder"/>
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="clearmarkersbuilder" name="Clear Markers Builder">
+    <builder>
+      <run class="org.eclipse.core.tests.internal.builders.ClearMarkersBuilder"/>
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="emptydeltabuilder" name="Empty Delta Builder">
+    <builder callOnEmptyDelta="true">
+      <run class="org.eclipse.core.tests.internal.builders.EmptyDeltaBuilder"/>
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="emptydeltabuilder2" name="Empty Delta Builder2">
+    <builder callOnEmptyDelta="true">
+      <run class="org.eclipse.core.tests.internal.builders.EmptyDeltaBuilder2"/>
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="configbuilder" name="Configuration Builder">
+    <builder
+          callOnEmptyDelta="false"
+          supportsConfigurations="true">
+      <run class="org.eclipse.core.tests.internal.builders.ConfigurationBuilder"/>
+    </builder>
+  </extension>
+  <extension point="org.eclipse.core.resources.builders" id="contextbuilder" name="Context Builder">
+    <builder
+          callOnEmptyDelta="true"
+          supportsConfigurations="true">
+      <run class="org.eclipse.core.tests.internal.builders.ContextBuilder"/>
+    </builder>
+  </extension>
+  
+<extension
+      id="simpleNature"
+      name="Simple"
+      point="org.eclipse.core.resources.natures">
+	<runtime>
+		<run class="org.eclipse.core.tests.internal.resources.SimpleNature"/>
+   </runtime>
+   <options allowLinking="false"/>
+</extension>
+<extension
+      id="snowNature"
+      name="Snow"
+      point="org.eclipse.core.resources.natures">
+	<runtime>
+		<run class="org.eclipse.core.tests.internal.resources.SnowNature"/>
+   </runtime>
+   <requires-nature
+         id="org.eclipse.core.tests.resources.waterNature">
+   </requires-nature>
+   <one-of-nature
+         id="org.eclipse.core.tests.resources.otherSet">
+   </one-of-nature>
+   <builder id="org.eclipse.core.tests.resources.snowbuilder"/>
+</extension>
+<extension
+      id="waterNature"
+      name="Water"
+      point="org.eclipse.core.resources.natures">
+   <one-of-nature
+         id="org.eclipse.core.tests.resources.stateSet">
+   </one-of-nature>
+	<runtime>
+		<run class="org.eclipse.core.tests.internal.resources.WaterNature">
+			<parameter name="installBuilder" value="true"/>
+		</run>
+   </runtime>
+</extension>
+<extension
+      id="earthNature"
+      name="Earth"
+      point="org.eclipse.core.resources.natures">
+	<runtime>
+		<run class="org.eclipse.core.tests.internal.resources.EarthNature">
+		</run>
+   </runtime>
+   <one-of-nature id="org.eclipse.core.tests.resources.stateSet"/>
+</extension>
+<extension
+      id="mudNature"
+      name="Mud"
+      point="org.eclipse.core.resources.natures">
+	<runtime>
+		<run class="org.eclipse.core.tests.internal.resources.MudNature"/>
+   </runtime>
+   <requires-nature id="org.eclipse.core.tests.resources.waterNature"/>
+   <requires-nature id="org.eclipse.core.tests.resources.earthNature"/>
+   <one-of-nature id="org.eclipse.core.tests.resources.otherSet"/>
+</extension>
+<extension
+	id="invalidNature"
+	point="org.eclipse.core.resources.natures">
+	<run-thyme>
+		<rrrrun class="foo"/>
+	</run-thyme>
+	<two-of-nature ic="baz"/>
+</extension>
+<extension
+      id="missingPrerequisiteNature"
+      name="Bogus Nature"
+      point="org.eclipse.core.resources.natures">
+	<runtime>
+		<run class="org.eclipse.core.tests.internal.resources.MissingPrerequisiteNature"/>
+   </runtime>
+   <requires-nature id="does.not.exist.Nature"/>
+</extension>
+<extension
+      id="cycle1"
+      name="Cycle1"
+      point="org.eclipse.core.resources.natures">
+	<runtime>
+		<run class="org.eclipse.core.tests.internal.resources.Cycle1Nature"/>
+   </runtime>
+   <requires-nature id="org.eclipse.core.tests.resources.cycle2"/>
+</extension>
+<extension
+      id="cycle2"
+      name="Cycle2"
+      point="org.eclipse.core.resources.natures">
+	<runtime>
+		<run class="org.eclipse.core.tests.internal.resources.Cycle2Nature"/>
+   </runtime>
+   <requires-nature id="org.eclipse.core.tests.resources.cycle3"/>
+</extension>
+<extension
+      id="cycle3"
+      name="Cycle3"
+      point="org.eclipse.core.resources.natures">
+	<runtime>
+		<run class="org.eclipse.core.tests.internal.resources.Cycle3Nature"/>
+   </runtime>
+   <requires-nature id="org.eclipse.core.tests.resources.cycle1"/>
+</extension>
+<extension
+      id="nature29116"
+      name="Test Bug 29116"
+      point="org.eclipse.core.resources.natures">
+	<runtime>
+		<run class="org.eclipse.core.tests.internal.resources.Bug29116Nature"/>
+   </runtime>
+</extension>
+<extension
+      point="org.eclipse.core.contenttype.contentTypes">
+   <content-type      
+         name="My Content Type 2"
+         id="myContent2"
+         file-extensions="resources-mc"
+         default-charset="PROVIDER_CHARSET"/>            
+   <content-type
+         name="A more specific XML"
+         id="anotherXML"
+         base-type="org.eclipse.core.runtime.xml"          
+         describer="org.eclipse.core.runtime.content.XMLRootElementContentDescriber:org.eclipse.core.tests.resources.anotherXML"/>
+   <content-type
+         name="Describer used in testBug182337"
+         id="Bug182337_A"
+         file-names="Bug182337.Bug182337"
+         file-extensions="Bug182337"
+         base-type="org.eclipse.core.runtime.xml"          
+         describer="org.eclipse.core.runtime.content.XMLRootElementContentDescriber:org.eclipse.core.tests.resources.Bug182337_A"/>
+   <content-type
+         name="Describer used in testBug182337"
+         id="Bug182337_B"
+         file-extensions="Bug182337"
+         base-type="org.eclipse.core.runtime.xml"          
+         describer="org.eclipse.core.runtime.content.XMLRootElementContentDescriber:org.eclipse.core.tests.resources.Bug182337_B"/>
+   <!-- content types for nature-content type association tests -->
+   <content-type
+         name="A content type for testing nature association"
+         id="nature_associated_1"
+         file-extensions="nature-associated"
+         base-type="org.eclipse.core.runtime.text"/>
+   <content-type
+         name="A derived content type for testing nature association"
+         id="nature_associated_2"
+         base-type="org.eclipse.core.tests.resources.nature_associated_1"/>
+</extension>
+<extension
+         point="org.eclipse.core.contenttype.contentTypes">      
+      <content-type      
+            name="My Content Type"
+            id="myContent"
+            file-names=" myContent.mc1 , myContent.mc2 "
+            file-extensions=" myContent1, myContent2 "
+            describer="org.eclipse.core.tests.resources.content.MyContentDescriber"/>
+      <!-- content types for content/name matching tests -->
+      <content-type
+            name="BinaryBase"
+            id="binary_base"
+            file-extensions="mybinary">
+         <describer
+            class="org.eclipse.core.runtime.content.BinarySignatureDescriber">
+            <parameter name="signature" value="0A, 0B"/>
+            <parameter name="required" value="false"/>            
+         </describer>
+      </content-type>
+      <content-type                  
+            name="BinaryDerived1"
+            id="binary_derived1"
+            file-names="foo.mybinary"
+            file-extensions="mybinary"
+            base-type="binary_base">            
+         <describer
+            class="org.eclipse.core.runtime.content.BinarySignatureDescriber">
+            <parameter name="signature" value="0A, 0B, 0C"/>
+            <parameter name="required" value="false"/>
+         </describer>
+      </content-type>
+      <content-type                  
+            name="BinaryDerived2"
+            id="binary_derived2"
+            base-type="binary_base">
+         <describer
+            class="org.eclipse.core.runtime.content.BinarySignatureDescriber">
+            <parameter name="signature" value="0A, 0B, 0D"/>
+            <parameter name="required" value="false"/>
+         </describer>
+      </content-type>            
+      <!-- A base type and a sub-type are in conflict. Sub type should be picked. --> 
+      <content-type      
+            file-extensions="conflict1"
+            name="Conflict 1"
+            id="base_conflict1"/>         
+      <content-type      
+            base-type="base_conflict1"     
+            name="Specialized Conflict 1"
+            id="sub_conflict1"/>
+      <!-- 
+      	A base type and a sub-type (that restates file-spec) are in conflict. 
+      	Base type still should be picked. 
+      -->
+      <content-type      
+            file-extensions="conflict2"
+            name="Conflict 2"
+            id="base_conflict2"/>         
+      <content-type      
+            base-type="base_conflict2"         
+            file-extensions="conflict2"
+            name="Specialized Conflict 2"
+            id="sub_conflict2"/>
+      <!-- 
+      	Two unrelated types (sub_conflict3 and unrelated conflict3) are in conflict. 
+      	Order will be arbitrary.
+      	-->
+      <content-type            		
+            id="base_conflict3"                  
+            file-extensions="base_conflict3"
+            name="Conflict 3"/>
+      <content-type
+            id="sub_conflict3"      
+            base-type="base_conflict3"         
+            file-extensions="conflict3"
+            name="Deeper Conflict 3"/>
+      <content-type
+            id="unrelated_conflict3"      
+            file-extensions="conflict3"
+            name="Unrelated Conflict 3"/>                                              
+      <!-- end of conflict-related content types -->
+	  <content-type
+            file-extensions="tzt"
+            name="My Text"
+            id="mytext">
+            <property name="property1" default="value1"/>
+            <!-- declares property for documentation purposes only -->
+            <property name="property2"/>            
+            <property name="property3" default="value3"/>
+            <!-- overrides (non-local) parent property definition -->
+            <property name="org.eclipse.core.runtime.charset" default="BAR"/>
+      </content-type>
+      <content-type
+      		base-type="mytext"
+            file-extensions="tzt1"
+            name="My Text1"
+            id="mytext1">
+            <!-- overrides parent property definition by assigning a default value -->
+            <property name="property2" default="value2"/>
+            <!-- overrides parent property definition by clearing the default value -->
+            <property name="property3"/>
+            <property name="property4" default="value4"/>
+      </content-type>
+      <!-- overrides parent charset definition by clearing the default value -->                              
+      <!-- Here we really want to use the deprecated way for defining charsets. -->      
+      <content-type
+      		base-type="mytext"      
+            file-extensions="tzt2"
+            default-charset=""
+            name="My Text2"
+            id="mytext2">
+            <property name="property1"/>
+            <property name="property2"/>
+            <property name="property3"/>
+            <property name="property4"/>
+            <!-- Use a local property name clashing with an inherited one -->
+            <property name="charset" default="mytext2"/>
+      </content-type>
+      <content-type
+            file-names="foo.bar"
+            file-extensions="bar"
+            name="Foo Bar"
+            id="fooBar"/>
+      <content-type
+            base-type="fooBar"
+            name="Sub Foo Bar"
+            id="subFooBar"/>
+      <content-type
+            file-extensions="xml2"
+            base-type="org.eclipse.core.runtime.xml"
+            name="XML Based with Different Extension"
+            id="xml-based-different-extension">
+      </content-type>
+      <content-type
+            file-names="xml-based.xml"
+            base-type="org.eclipse.core.runtime.xml"
+            name="XML Based with Specific Name"
+            id="xml-based-specific-name"/>
+      <content-type
+            file-extensions="samplebin1"
+            name="Sample Binary 1"
+            id="sample-binary1">
+         <describer
+            class="org.eclipse.core.runtime.content.BinarySignatureDescriber">
+            <parameter name="signature" value="10, AB, CD, FF"/>
+            <parameter name="offset" value="5"/>                           
+         </describer>
+      </content-type>
+      <content-type
+            file-extensions="samplebin2"
+            name="Sample Binary 2"
+            id="sample-binary2">
+         <describer
+            class="org.eclipse.core.runtime.content.BinarySignatureDescriber">
+            <parameter name="signature" value="10, AB, CD, EF"/>   
+         </describer>
+      </content-type>            
+      <content-type
+            file-extensions="class"
+            name="Java Class file"
+            id="javaClass">
+         <describer
+            class="org.eclipse.core.runtime.content.BinarySignatureDescriber">
+            <parameter name="signature" value="CA, FE, BA, BE"/>   
+         </describer>
+      </content-type>            
+      
+      <!-- content types for association tests -->
+	  <content-type
+            id="assoc1" 
+            name="Association Test 1"
+            base-type="org.eclipse.core.runtime.text"
+            describer="org.eclipse.core.tests.resources.content.NaySayerContentDescriber"/>
+	  <content-type
+            id="assoc2" 
+            name="Association Test 2"
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="txt_assoc2builtin"            
+            describer="org.eclipse.core.tests.resources.content.NaySayerContentDescriber"/>
+      <file-association
+            file-extensions="txt_assoc1pluginadded"
+            content-type="org.eclipse.core.tests.resources.assoc1"/>
+      <file-association
+            file-extensions="txt_assoc2pluginadded"
+            content-type="org.eclipse.core.tests.resources.assoc2"/>
+      <file-association
+            file-extensions="txt_pluginadded"
+            content-type="org.eclipse.core.runtime.text"/>            
+            
+      <!-- content types for orphan tests -->            
+      <content-type
+            file-names="foo.orphan"
+            file-extensions="orphan"
+            base-type="org.eclipse.bundle01.missing"
+            name="Orphan Type"
+            id="orphan"/>
+      <file-association
+            file-extensions="orphan2"
+            content-type="org.eclipse.bundle01.missing"/>
+      <!-- content types for alias tests -->                        
+      <content-type 
+      		id="alias"
+            name="Alias Type"
+      		file-extensions="missing-target"
+      		alias-for="org.eclipse.bundle02.missing-target"/>
+      <content-type 
+      		id="derived-from-alias"      		
+            name="Derived from Alias Type"      		
+      		base-type="alias"/>
+      <!-- content types for content describer tests -->
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            name="Root Element"
+            id="root-element"
+            describer="org.eclipse.core.runtime.content.XMLRootElementContentDescriber:org.eclipse.core.resources.tests.root-element"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            name="Root Element in namespace"
+            id="ns-root-element">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter name="element" value="{urn:eclipse.core.runtime.ns1}rootElement1"/>
+            <parameter name="element" value="{urn:eclipse.core.runtime.ns2}rootElement2"/>
+         </describer>
+      </content-type>      
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            name="Wildcard element in namespace"
+            id="ns-wildcard">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter name="element" value="*/org.eclipse.core.resources.tests.some.dtd3"/>
+            <parameter name="element" value="{urn:eclipse.core.runtime.nsWild}*"/>
+         </describer>
+      </content-type>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            id="empty-ns-root-element"
+            name="Root Element in empty namespace">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="{}rootElement">
+            </parameter>
+         </describer>
+      </content-type>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            name="DTD"
+            id="dtd">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+            <parameter name="dtd" value="org.eclipse.core.resources.tests.some.dtd"/>
+         </describer>
+      </content-type>      
+      <!-- this content type is used by the content description tests -->
+      <content-type
+            name="Void content type"
+            id="void"/>      
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="xml2"
+            id="xml-based-different-extension-low-priority"
+            name="XML Based with Different Extension and Low Priority"
+            priority="low">
+      </content-type>
+      <content-type
+            id="org.eclipse.core.tests.resources.predefinedContentTypeWithRegexp"
+            name="Predefined content type with regexp matching *predefinedContentTypeWithRegexp* files"
+            file-patterns="*predefinedContentTypeWithRegexp*,*predefinedContentTypeWithPattern*"
+            priority="low">
+      </content-type>
+      <file-association
+            content-type="org.eclipse.core.tests.resources.predefinedContentTypeWithRegexp"
+            file-patterns="*predefinedContentTypeWithWildcards*,somethingElseToCheckCommaSeparated">
+      </file-association>
+   </extension>
+<extension
+      id="contentTypeRelated1"
+      name="Content-type related nature 1"
+      point="org.eclipse.core.resources.natures">
+      <content-type id="org.eclipse.core.tests.resources.nature_associated_1"/>
+</extension>
+<extension
+      id="contentTypeRelated2"
+      name="Content-type related nature 2"
+      point="org.eclipse.core.resources.natures">
+      <content-type id="org.eclipse.core.tests.resources.nature_associated_2"/>       
+</extension>
+
+<extension
+      point="org.eclipse.core.resources.refreshProviders">
+   <refreshProvider
+         class="org.eclipse.core.tests.resources.refresh.TestRefreshProvider"
+         name="org.eclipse.core.tests.resources.testRefreshProvider"/>
+</extension>
+<extension
+      point="org.eclipse.core.resources.refreshProviders">
+   <refreshProvider
+         class="org.eclipse.core.tests.resources.refresh.Bug316182RefreshProvider"
+         name="org.eclipse.core.tests.resources.bug316182RefreshProvider"/>
+</extension>
+
+<extension point="org.eclipse.core.runtime.preferences">
+	<modifier class="org.eclipse.core.tests.internal.resources.ProjectPreferenceModifyListener"/>
+</extension>
+<extension
+      point="org.eclipse.core.filesystem.filesystems">
+   <filesystem scheme="mem">
+      <run class="org.eclipse.core.tests.internal.filesystem.ram.MemoryFileSystem"/>
+   </filesystem>
+</extension>
+<extension
+      point="org.eclipse.core.filesystem.filesystems">
+   <filesystem scheme="wrapped">
+      <run class="org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem"/>
+   </filesystem>
+</extension>
+<extension
+      point="org.eclipse.core.filesystem.filesystems">
+   <filesystem scheme="broken">
+      <run class="org.eclipse.core.tests.internal.filesystem.broken.BrokenFileSystem"/>
+   </filesystem>
+</extension>
+<extension
+      point="org.eclipse.core.filesystem.filesystems">
+   <filesystem scheme="bogus">
+      <run class="org.eclipse.core.tests.internal.filesystem.bogus.BogusFileSystem"/>
+   </filesystem>
+</extension>
+<extension
+      point="org.eclipse.core.filesystem.filesystems">
+   <filesystem scheme="bug369177">
+      <run class="org.eclipse.core.tests.internal.filesystem.bug369177.Bug369177FileSystem"/>
+   </filesystem>
+</extension>
+<extension
+      point="org.eclipse.core.filesystem.filesystems">
+   <filesystem scheme="bug440110">
+      <run class="org.eclipse.core.tests.internal.filesystem.bug440110.Bug440110FileSystem"/>
+   </filesystem>
+</extension>
+<extension
+      point="org.eclipse.core.filesystem.filesystems">
+   <filesystem scheme="remote">
+      <run class="org.eclipse.core.tests.internal.filesystem.remote.RemoteFileSystem"/>
+   </filesystem>
+</extension>
+<extension
+      id="modelProvider"
+      point="org.eclipse.core.resources.modelProviders">
+   <modelProvider
+         class="org.eclipse.core.tests.internal.mapping.TestModelProvider"
+         name="Resources Tests Model"/>
+   <extends-model id="org.eclipse.core.resources.modelProvider"/>
+   <enablement>
+      <instanceof value="org.eclipse.core.resources.IResource"/>
+   </enablement>
+</extension>
+<extension
+      id="bug127562Nature"
+      point="org.eclipse.core.resources.natures">
+   <runtime>
+      <run
+            class="org.eclipse.core.tests.internal.resources.Bug127562Nature">
+      </run>
+   </runtime>
+</extension>
+   <extension
+         point="org.eclipse.core.filesystem.filesystems">
+      <filesystem scheme="test342968">
+         <run class="org.eclipse.core.tests.internal.localstore.Test342968FileSystem"/>
+      </filesystem>
+   </extension>
+	<extension id="bug338185"
+		point="org.eclipse.core.resources.variableResolvers">
+		<variableResolver
+			variable="Test338185"
+            value="${ECLIPSE_HOME}/plugins">
+		</variableResolver>
+	</extension>
+ <extension
+       id="timerbuilder"
+       name="Timer Builder"
+       point="org.eclipse.core.resources.builders">
+    <builder
+          callOnEmptyDelta="false"
+          supportsConfigurations="false">
+       <run
+             class="org.eclipse.core.tests.internal.builders.TimerBuilder">
+       </run>
+    </builder>
+ </extension>
+ <extension
+       id="dynamicProjectReferenceBuilder"
+       name="Dynamic Project Reference Builder"
+       point="org.eclipse.core.resources.builders">
+    <builder>
+       <dynamicReference
+             class="org.eclipse.core.tests.internal.resources.ProjectDynamicReferencesTest$DynamicReferenceProvider">
+       </dynamicReference>
+    </builder>
+ </extension>
+</plugin>
