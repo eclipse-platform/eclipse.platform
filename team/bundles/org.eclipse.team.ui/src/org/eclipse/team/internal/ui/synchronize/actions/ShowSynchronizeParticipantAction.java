@@ -32,11 +32,13 @@ import org.eclipse.team.ui.synchronize.ISynchronizeParticipantReference;
 import org.eclipse.team.ui.synchronize.ISynchronizeView;
 import org.eclipse.team.ui.synchronize.SubscriberParticipant;
 
+@SuppressWarnings("deprecation")
 public class ShowSynchronizeParticipantAction extends Action implements IPropertyChangeListener {
 
 	private ISynchronizeParticipantReference fPage;
 	private ISynchronizeView fView;
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public void run() {
 		try {

@@ -77,7 +77,7 @@ public interface ICompareFilter {
 	 * @return Regions of <code>THIS_LINE</code> to be ignored for comparison
 	 *         purposes.
 	 */
-	public IRegion[] getFilteredRegions(HashMap lineComparison);
+	public IRegion[] getFilteredRegions(@SuppressWarnings("rawtypes") HashMap lineComparison);
 
 	/**
 	 * Returns whether the filter should be enabled when first initialized

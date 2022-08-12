@@ -64,6 +64,7 @@
     <module>platform/org.eclipse.platform</module>
     <module>platform/org.eclipse.sdk</module>
     <module>runtime</module>
+    <module>team</module>
   </modules>
   <build>
     <pluginManagement>
