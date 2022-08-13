@@ -23,6 +23,7 @@ import org.eclipse.core.tools.metadata.*;
  * @see org.eclipse.core.tools.resources.metadata.SyncInfoDumpingStrategy_2
  * @see org.eclipse.core.tools.resources.metadata.SyncInfoDumpingStrategy_3
  */
+@SuppressWarnings("restriction")
 public class SyncInfoDumper extends MultiStrategyDumper {
 
 	// type constants

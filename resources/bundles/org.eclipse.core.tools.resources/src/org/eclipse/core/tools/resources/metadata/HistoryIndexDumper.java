@@ -13,28 +13,31 @@
  *******************************************************************************/
 package org.eclipse.core.tools.resources.metadata;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.PushbackInputStream;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.tools.metadata.AbstractDumper;
 import org.eclipse.core.tools.metadata.DumpException;
 
+@SuppressWarnings("restriction")
 public class HistoryIndexDumper extends AbstractDumper {
 
-	private final static int LONG_LENGTH = 8;
+	private static final int LONG_LENGTH = 8;
 
-	private final static int UUID_LENGTH = UniversalUniqueIdentifier.BYTES_SIZE;
+	private static final int UUID_LENGTH = UniversalUniqueIdentifier.BYTES_SIZE;
 
-	public final static int DATA_LENGTH = UUID_LENGTH + LONG_LENGTH;
+	public static final int DATA_LENGTH = UUID_LENGTH + LONG_LENGTH;
 
 	private static long getTimestamp(byte[] state) {
 		long timestamp = 0;
-		for (int j = 0; j < LONG_LENGTH; j++)
+		for (int j = 0; j < LONG_LENGTH; j++) {
 			timestamp += (state[UUID_LENGTH + j] & 0xFFL) << j * 8;
+		}
 		return timestamp;
 	}
 
 	@Override
-	protected void dumpContents(PushbackInputStream input, StringBuilder contents) throws IOException, Exception, DumpException {
+	protected void dumpContents(PushbackInputStream input, StringBuilder contents) throws Exception {
 		DataInputStream source = new DataInputStream(input);
 		int version = source.readByte();
 		contents.append("version: ");
@@ -56,8 +59,9 @@ public class HistoryIndexDumper extends AbstractDumper {
 			contents.append("\n");
 			for (int j = 0; j < stateCount; j++) {
 				int read;
-				if ((read = source.read(data)) < data.length)
+				if ((read = source.read(data)) < data.length) {
 					throw new DumpException("Data incomplete. Read " + read + " byte(s)");
+				}
 				contents.append('\t');
 				contents.append("UUID: ");
 				contents.append(new UniversalUniqueIdentifier(data));

@@ -38,6 +38,7 @@ import org.eclipse.ui.IActionBars;
  * including space usage for the tree, and all resource metadata including markers,
  * sync info, and session properties.
  */
+@SuppressWarnings("restriction")
 public class ElementTreeView extends SpyView implements IResourceChangeListener {
 
 	class UpdateAction extends Action {
@@ -98,8 +99,9 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 		}
 
 		void addToStringCount(String name) {
-			if (name == null)
+			if (name == null) {
 				return;
+			}
 			//want to track the number of non-identical strings
 			if (!DeepSize.ignore(name)) {
 				nonIdenticalStrings++;
@@ -108,10 +110,11 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 
 				//now want to count the number of duplicate equal but non-identical strings
 				Counter counter = strings.get(name);
-				if (counter == null)
+				if (counter == null) {
 					strings.put(name, new Counter(name));
-				else
+				} else {
 					counter.add();
+				}
 			}
 		}
 
@@ -131,8 +134,9 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 		}
 
 		int basicSizeof(Map<?, ?> map) {
-			if (map == null)
+			if (map == null) {
 				return 0;
+			}
 
 			//formula taken from BundleStats
 			int count = (int) Math.round(44 + (16 + (map.size() * 1.25 * 4)) + (24 * map.size()));
@@ -149,8 +153,9 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 			Object[] elements = SpySupport.getElements(markerMap);
 			if (elements != null) {
 				count += DeepSize.ARRAY_HEADER_SIZE + 4 * elements.length;
-				for (int i = 0; i < elements.length; i++)
-					count += sizeof(elements[i]);
+				for (Object element : elements) {
+					count += sizeof(element);
+				}
 			}
 			return count;
 		}
@@ -163,15 +168,18 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 		}
 
 		int basicSizeof(MarkerSet markerSet) {
-			if (markerSet == null)
+			if (markerSet == null) {
 				return 0;
+			}
 			int count = DeepSize.OBJECT_HEADER_SIZE + 8;//object size plus two slots
 			IMarkerSetElement[] elements = SpySupport.getElements(markerSet);
 			if (elements != null) {
 				count += DeepSize.ARRAY_HEADER_SIZE + 4 * elements.length;//size of elements array object
-				for (int i = 0; i < elements.length; i++)
-					if (elements[i] != null)
-						count += sizeof(elements[i]);
+				for (IMarkerSetElement element : elements) {
+					if (element != null) {
+						count += sizeof(element);
+					}
+				}
 			}
 			return count;
 		}
@@ -191,21 +199,27 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 			syncInfoCount = 0;
 			IElementContentVisitor visitor = (tree, requestor, elementContents) -> {
 				ResourceInfo info = (ResourceInfo) elementContents;
-				if (info == null)
+				if (info == null) {
 					return true;
+				}
 				resourceCount++;
-				if (info.isSet(ICoreConstants.M_TEAM_PRIVATE_MEMBER))
+				if (info.isSet(ICoreConstants.M_TEAM_PRIVATE_MEMBER)) {
 					teamPrivateCount++;
-				if (info.isSet(ICoreConstants.M_PHANTOM))
+				}
+				if (info.isSet(ICoreConstants.M_PHANTOM)) {
 					phantomCount++;
-				if (info.isSet(ICoreConstants.M_HIDDEN))
+				}
+				if (info.isSet(ICoreConstants.M_HIDDEN)) {
 					hiddenCount++;
+				}
 				MarkerSet markers = info.getMarkers();
-				if (markers != null)
+				if (markers != null) {
 					markerCount += markers.size();
+				}
 				Map<QualifiedName, Object> syncInfo = SpySupport.getSyncInfo(info);
-				if (syncInfo != null)
+				if (syncInfo != null) {
 					syncInfoCount += syncInfo.size();
+				}
 				return true;
 			};
 			new ElementTreeIterator(workspace.getElementTree(), Path.ROOT).iterate(visitor);
@@ -270,22 +284,30 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 		 * duplicates.
 		 */
 		int sizeof(Object object) {
-			if (object == null || DeepSize.ignore(object))
+			if (object == null || DeepSize.ignore(object)) {
 				return 0;
-			if (object instanceof String)
+			}
+			if (object instanceof String) {
 				return basicSizeof((String) object);
-			if (object instanceof byte[])
+			}
+			if (object instanceof byte[]) {
 				return DeepSize.ARRAY_HEADER_SIZE + ((byte[]) object).length;
-			if (object instanceof MarkerAttributeMap)
+			}
+			if (object instanceof MarkerAttributeMap) {
 				return basicSizeof((MarkerAttributeMap) object);
-			if (object instanceof MarkerInfo)
+			}
+			if (object instanceof MarkerInfo) {
 				return basicSizeof((MarkerInfo) object);
-			if (object instanceof MarkerSet)
+			}
+			if (object instanceof MarkerSet) {
 				return basicSizeof((MarkerSet) object);
-			if (object instanceof Integer)
+			}
+			if (object instanceof Integer) {
 				return DeepSize.OBJECT_HEADER_SIZE + 4;
-			if (object instanceof Map)
+			}
+			if (object instanceof Map) {
 				return basicSizeof((Map<?, ?>) object);
+			}
 			if (object instanceof QualifiedName) {
 				QualifiedName name = (QualifiedName) object;
 				return 20 + sizeof(name.getQualifier()) + sizeof(name.getLocalName());
@@ -321,8 +343,7 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 		 * objects, in decreasing order by the integer value.
 		 */
 		private List<Map.Entry<Object, Integer>> sortEntrySet(Set<Map.Entry<Object, Integer>> set) {
-			List<Map.Entry<Object, Integer>> result = new ArrayList<>();
-			result.addAll(set);
+			List<Map.Entry<Object, Integer>> result = new ArrayList<>(set);
 			result.sort((arg0, arg1) -> arg1.getValue().intValue() - arg0.getValue().intValue());
 			return result;
 		}
@@ -350,7 +371,7 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 			//breakdown of session property size by class
 			List<Map.Entry<Object, Integer>> sortedEntries = sortEntrySet(sessionPropertyMemory.getSizes().entrySet());
 			for (Map.Entry<Object, Integer> entry : sortedEntries) {
-				buffer.append("\t\t" + entry.getKey() + ": " + prettyPrint(entry.getValue().intValue()) + "\n");
+				buffer.append("\t\t" + entry.getKey() + ": " + prettyPrint(entry.getValue()) + "\n");
 			}
 
 			int max = 20;
@@ -358,8 +379,9 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 			buffer.append("The top " + max + " equal but non-identical strings are:\n");
 			for (int i = 0; i < sortedList.size() && sortedList.get(i).getCount() > 1; i++) {
 				Counter c = sortedList.get(i);
-				if (i < max)
+				if (i < max) {
 					buffer.append("\t" + c.getName() + "->" + prettyPrint(c.getCount()) + "\n");
+				}
 				savings += ((c.getCount() - 1) * basicSizeof(c.getName()));
 			}
 			buffer.append("Potential savings of using unique strings: " + prettyPrint(savings) + "\n");
@@ -382,8 +404,9 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 			addToStringCount(node.getName());
 			treeNodeMemory += sizeof(node);
 			AbstractDataTreeNode[] children = node.getChildren();
-			for (int i = 0; i < children.length; i++)
-				visit(children[i]);
+			for (AbstractDataTreeNode child : children) {
+				visit(child);
+			}
 		}
 
 		void visit(ElementTree tree) {
@@ -424,8 +447,9 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 		this.viewer.getControl().addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.character == SWT.DEL)
+				if (e.character == SWT.DEL) {
 					clearOutputAction.run();
+				}
 			}
 		});
 
@@ -447,8 +471,9 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 
 		// populate the view with the initial data
-		if (updateAction != null)
+		if (updateAction != null) {
 			updateAction.run();
+		}
 	}
 
 	/**
@@ -468,10 +493,12 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 				String val = Integer.toString(i);
 				//pad with zeros if necessary
 				if (buf.length() > 0) {
-					if (val.length() < 2)
+					if (val.length() < 2) {
 						buf.append('0');
-					if (val.length() < 3)
+					}
+					if (val.length() < 3) {
 						buf.append('0');
+					}
 				}
 				buf.append(val);
 				return buf.toString();
@@ -480,10 +507,12 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 				String val = Integer.toString(i / 1000);
 				//pad with zeros if necessary
 				if (buf.length() > 0) {
-					if (val.length() < 2)
+					if (val.length() < 2) {
 						buf.append('0');
-					if (val.length() < 3)
+					}
+					if (val.length() < 3) {
 						buf.append('0');
+					}
 				}
 				buf.append(val);
 				buf.append(',');
@@ -501,7 +530,8 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 	 */
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		if (updateAction != null)
+		if (updateAction != null) {
 			updateAction.run();
+		}
 	}
 }

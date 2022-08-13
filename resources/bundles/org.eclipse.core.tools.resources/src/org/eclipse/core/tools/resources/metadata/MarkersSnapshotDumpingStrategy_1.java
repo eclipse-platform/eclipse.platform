@@ -42,6 +42,7 @@ import org.eclipse.core.tools.metadata.*;
  * NULL_VALUE -> byte
  * }</pre>
  */
+@SuppressWarnings("restriction")
 class MarkersSnapshotDumpingStrategy_1 implements IStringDumpingStrategy {
 	@Override
 	public String dumpStringContents(DataInputStream input) throws IOException, DumpException {

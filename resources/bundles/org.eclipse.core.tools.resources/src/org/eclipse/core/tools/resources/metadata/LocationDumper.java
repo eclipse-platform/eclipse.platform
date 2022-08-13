@@ -24,6 +24,7 @@ import org.eclipse.core.tools.metadata.MultiStrategyDumper;
  * @see org.eclipse.core.tools.metadata.AbstractDumper
  * @see org.eclipse.core.tools.resources.metadata.LocationStrategy
  */
+@SuppressWarnings("restriction")
 public class LocationDumper extends MultiStrategyDumper {
 
 	/**

@@ -13,13 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tools.resources;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 import org.eclipse.core.internal.events.BuildManager;
 import org.eclipse.core.internal.events.BuilderPersistentInfo;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.watson.ElementTree;
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.tools.AbstractTreeContentProvider;
 import org.eclipse.core.tools.TreeContentProviderNode;
 import org.eclipse.jface.util.SafeRunnable;
@@ -47,6 +49,7 @@ import org.eclipse.jface.viewers.Viewer;
  *
  * @see org.eclipse.core.tools.TreeContentProviderNode
  */
+@SuppressWarnings("restriction")
 public class ProjectContentProvider extends AbstractTreeContentProvider {
 
 	/**
@@ -85,9 +88,9 @@ public class ProjectContentProvider extends AbstractTreeContentProvider {
 
 	protected void extractBuildersInfo(IProject project, IProjectDescription description) {
 		ICommand[] commands = description.getBuildSpec();
-		if (commands.length == 0)
+		if (commands.length == 0) {
 			return;
-
+		}
 		// tries to retrieve builder persistent info for all builders in this
 		// project's builder spec
 		Workspace workspace = (Workspace) ResourcesPlugin.getWorkspace();
@@ -103,13 +106,13 @@ public class ProjectContentProvider extends AbstractTreeContentProvider {
 		// extracts information for each builder
 		TreeContentProviderNode buildersRoot = createNode("Builders"); //$NON-NLS-1$
 		getRootNode().addChild(buildersRoot);
-		for (int i = 0; i < commands.length; i++) {
-			String builderName = commands[i].getBuilderName();
+		for (ICommand command : commands) {
+			String builderName = command.getBuilderName();
 			TreeContentProviderNode builderNode = createNode("Builder name", builderName); //$NON-NLS-1$
 			buildersRoot.addChild(builderNode);
 
 			// extracts information about arguments
-			extractBuilderArguments(builderNode, commands[i].getArguments());
+			extractBuilderArguments(builderNode, command.getArguments());
 
 			// extracts information from persistent info (if available)
 			if (allPersistInfo != null) {
@@ -131,9 +134,9 @@ public class ProjectContentProvider extends AbstractTreeContentProvider {
 	 * @param builderArgs a map containing arguments for a builder
 	 */
 	protected void extractBuilderArguments(TreeContentProviderNode builderNode, Map<String, String> builderArgs) {
-		if (builderArgs == null || builderArgs.isEmpty())
+		if (builderArgs == null || builderArgs.isEmpty()) {
 			return;
-
+		}
 		TreeContentProviderNode builderArgsRoot = createNode("Builder args"); //$NON-NLS-1$
 		builderNode.addChild(builderArgsRoot);
 		for (Map.Entry<String, String> entry : builderArgs.entrySet()) {
@@ -150,15 +153,16 @@ public class ProjectContentProvider extends AbstractTreeContentProvider {
 	 */
 	protected void extractBuilderPersistentInfo(TreeContentProviderNode builderNode, BuilderPersistentInfo persistInfo) {
 
-		if (persistInfo == null)
+		if (persistInfo == null) {
 			return;
-
+		}
 		// extracts information about interesting projects
 		IProject[] interestingProjects = persistInfo.getInterestingProjects();
 		if (interestingProjects.length > 0) {
 			TreeContentProviderNode interestingRoot = createNode("Interesting projects"); //$NON-NLS-1$
-			for (int j = 0; j < interestingProjects.length; j++)
-				interestingRoot.addChild(createNode(interestingProjects[j].getName()));
+			for (IProject interestingProject : interestingProjects) {
+				interestingRoot.addChild(createNode(interestingProject.getName()));
+			}
 			builderNode.addChild(interestingRoot);
 		}
 
@@ -175,16 +179,16 @@ public class ProjectContentProvider extends AbstractTreeContentProvider {
 	 */
 	protected void extractNaturesInfo(IProjectDescription description) {
 		String[] natureIds = description.getNatureIds();
-		if (natureIds.length == 0)
+		if (natureIds.length == 0) {
 			return;
-
+		}
 		// extracts information about each nature assigned to the project
 		TreeContentProviderNode naturesRoot = createNode("Natures"); //$NON-NLS-1$
 		getRootNode().addChild(naturesRoot);
 		Workspace workspace = (Workspace) ResourcesPlugin.getWorkspace();
-		for (int i = 0; i < natureIds.length; i++) {
-			IProjectNatureDescriptor descriptor = workspace.getNatureDescriptor(natureIds[i]);
-			String nodeName = (descriptor == null ? "Missing" : descriptor.getLabel()) + " (" + natureIds[i] + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		for (String natureId : natureIds) {
+			IProjectNatureDescriptor descriptor = workspace.getNatureDescriptor(natureId);
+			String nodeName = (descriptor == null ? "Missing" : descriptor.getLabel()) + " (" + natureId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			TreeContentProviderNode natureNode = createNode(nodeName);
 			naturesRoot.addChild(natureNode);
 
@@ -195,8 +199,9 @@ public class ProjectContentProvider extends AbstractTreeContentProvider {
 				String[] natureSets = descriptor.getNatureSetIds();
 				if (natureSets.length > 0) {
 					TreeContentProviderNode setsNode = createNode("Nature sets"); //$NON-NLS-1$
-					for (int j = 0; j < natureSets.length; j++)
-						setsNode.addChild(createNode(natureSets[i]));
+					for (String natureSet : natureSets) {
+						setsNode.addChild(createNode(natureSet));
+					}
 					natureNode.addChild(setsNode);
 				}
 
@@ -204,8 +209,9 @@ public class ProjectContentProvider extends AbstractTreeContentProvider {
 				String[] requiredNatures = descriptor.getRequiredNatureIds();
 				if (requiredNatures.length > 0) {
 					TreeContentProviderNode requiredNaturesNode = createNode("Required natures", null); //$NON-NLS-1$
-					for (int j = 0; j < requiredNatures.length; j++)
-						requiredNaturesNode.addChild(createNode(requiredNatures[j], null));
+					for (String requiredNature : requiredNatures) {
+						requiredNaturesNode.addChild(createNode(requiredNature, null));
+					}
 					natureNode.addChild(requiredNaturesNode);
 				}
 			}

@@ -41,6 +41,7 @@ import org.eclipse.osgi.util.NLS;
  *
  * @see org.eclipse.core.tools.TreeContentProviderNode
  */
+@SuppressWarnings("restriction")
 public class ResourceContentProvider extends AbstractTreeContentProvider {
 
 	/**
@@ -66,9 +67,9 @@ public class ResourceContentProvider extends AbstractTreeContentProvider {
 		ResourceInfo info = resource.getResourceInfo(true, false);
 		// Resource#getResourceInfo may return null when the resource
 		// does not exist anymore. In this case, we just ignore it.
-		if (info == null)
+		if (info == null) {
 			return;
-
+		}
 		extractBasicInfo(resource, info);
 		extractFlags(info);
 		extractContentDescription(resource);
@@ -87,8 +88,9 @@ public class ResourceContentProvider extends AbstractTreeContentProvider {
 	protected void extractPersistentProperties(IResource resource) {
 		try {
 			Map<QualifiedName, String> properties = ((Workspace) ResourcesPlugin.getWorkspace()).getPropertyManager().getProperties(resource);
-			if (properties.isEmpty())
+			if (properties.isEmpty()) {
 				return;
+			}
 			// creates a node for persistent properties and populates it
 			TreeContentProviderNode propertiesRootNode = createNode(Messages.resource_persistent_properties);
 			getRootNode().addChild(propertiesRootNode);
@@ -109,9 +111,9 @@ public class ResourceContentProvider extends AbstractTreeContentProvider {
 
 		// retrieves all session properties for the selected resource
 		Map<QualifiedName, Object> properties = org.eclipse.core.internal.resources.SpySupport.getSessionProperties(resource);
-		if (properties == null || properties.size() == 0)
+		if (properties == null || properties.size() == 0) {
 			return;
-
+		}
 		// creates a node for session properties and populates it
 		TreeContentProviderNode propertiesRootNode = createNode(Messages.resource_session_properties);
 		getRootNode().addChild(propertiesRootNode);
@@ -203,8 +205,9 @@ public class ResourceContentProvider extends AbstractTreeContentProvider {
 	}
 
 	protected void extractContentDescription(Resource resource) {
-		if (resource.getType() != IResource.FILE)
+		if (resource.getType() != IResource.FILE) {
 			return;
+		}
 		File file = (File) resource;
 		// creates a node for flags
 		try {
@@ -228,13 +231,13 @@ public class ResourceContentProvider extends AbstractTreeContentProvider {
 	 */
 	protected void extractMarkersInfo(IResource resource, ResourceInfo info) {
 		MarkerSet markerSet = info.getMarkers();
-		if (markerSet == null)
+		if (markerSet == null) {
 			return;
-
+		}
 		IMarkerSetElement[] markerSetElements = markerSet.elements();
-		if (markerSetElements.length == 0)
+		if (markerSetElements.length == 0) {
 			return;
-
+		}
 		// creates a root node for all markers
 		TreeContentProviderNode markersParentNode = createNode(Messages.resource_markers);
 		getRootNode().addChild(markersParentNode);
@@ -272,9 +275,9 @@ public class ResourceContentProvider extends AbstractTreeContentProvider {
 	protected void extractMarkerAttributes(TreeContentProviderNode markerNode, IMarker marker) throws CoreException {
 
 		Map<String, Object> attributes = marker.getAttributes();
-		if (attributes == null || attributes.size() == 0)
+		if (attributes == null || attributes.size() == 0) {
 			return;
-
+		}
 		// create a node (under markerNode) for each attribute found
 		for (Map.Entry<String, Object> mapEntry : attributes.entrySet()) {
 			String attributeName = mapEntry.getKey();
@@ -295,9 +298,9 @@ public class ResourceContentProvider extends AbstractTreeContentProvider {
 	 */
 	protected void extractSyncInfo(ResourceInfo info) {
 		Map<QualifiedName, Object> syncInfo = info.getSyncInfo(true);
-		if (syncInfo == null || syncInfo.isEmpty())
+		if (syncInfo == null || syncInfo.isEmpty()) {
 			return;
-
+		}
 		// creates a root node for all sync info
 		TreeContentProviderNode syncInfoParentNode = createNode(Messages.resource_sync_info);
 		getRootNode().addChild(syncInfoParentNode);

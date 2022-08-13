@@ -30,6 +30,7 @@ import org.eclipse.ui.*;
  *
  * @see org.eclipse.core.tools.resources.ProjectContentProvider
  */
+@SuppressWarnings("restriction")
 public class ProjectView extends SpyView {
 
 	/** JFace's tree component used to present project details. */
@@ -99,19 +100,20 @@ public class ProjectView extends SpyView {
 	 */
 	protected void processSelection(ISelection selection) {
 		// if it is not a strucutured selection, ignore
-		if (!(selection instanceof IStructuredSelection))
+		if (!(selection instanceof IStructuredSelection)) {
 			return;
-
+		}
 		IResource resource = null;
 
 		IStructuredSelection structuredSel = (IStructuredSelection) selection;
 		if (!structuredSel.isEmpty()) {
 			Object item = ((IStructuredSelection) selection).getFirstElement();
 
-			if (item instanceof IResource)
+			if (item instanceof IResource) {
 				resource = (IResource) item;
-			else if (item instanceof IAdaptable)
+			} else if (item instanceof IAdaptable) {
 				resource = ((IAdaptable) item).getAdapter(IResource.class);
+			}
 		}
 
 		// loads a new resource (or cleans the resource view, if resource == null)
@@ -142,9 +144,9 @@ public class ProjectView extends SpyView {
 	 */
 	public void loadResource(IResource resource) {
 
-		if (viewer.getControl().isDisposed())
+		if (viewer.getControl().isDisposed()) {
 			return;
-
+		}
 		// turn redraw off so the UI will reflect changes only after we are done
 		viewer.getControl().setRedraw(false);
 
@@ -190,17 +192,17 @@ public class ProjectView extends SpyView {
 			final IResource currentResource = (IResource) viewer.getInput();
 
 			// if we don't have a resource currently loaded, ignore the event
-			if (event.getType() != IResourceChangeEvent.POST_CHANGE || currentResource == null)
+			if (event.getType() != IResourceChangeEvent.POST_CHANGE || currentResource == null) {
 				return;
-
+			}
 			// looks for a delta for the currently loaded resource's project
 			IResourceDelta rootDelta = event.getDelta();
 			IResourceDelta projectDelta = rootDelta.findMember(currentResource.getProject().getFullPath());
 
 			// if there is no delta, ignore
-			if (projectDelta == null)
+			if (projectDelta == null) {
 				return;
-
+			}
 			// rebuild the project view contents with the new state
 			Display.getDefault().asyncExec(() -> loadResource(currentResource));
 		}

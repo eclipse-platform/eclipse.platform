@@ -16,7 +16,7 @@ package org.eclipse.core.tools.resources;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.tools.*;
-import org.eclipse.jface.action.*;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
@@ -30,6 +30,7 @@ import org.eclipse.ui.*;
  *
  * @see org.eclipse.core.tools.resources.ResourceContentProvider
  */
+@SuppressWarnings("restriction")
 public class ResourceView extends SpyView {
 	/** JFace's tree component used to present resource details. */
 	protected AbstractTreeViewer viewer;
@@ -103,9 +104,9 @@ public class ResourceView extends SpyView {
 	 */
 	protected void processSelection(ISelection sel) {
 		// if it is not a strucutured selection, ignore
-		if (!(sel instanceof IStructuredSelection))
+		if (!(sel instanceof IStructuredSelection)) {
 			return;
-
+		}
 		IResource resource = null;
 
 		IStructuredSelection structuredSel = (IStructuredSelection) sel;
@@ -113,14 +114,16 @@ public class ResourceView extends SpyView {
 		if (!structuredSel.isEmpty()) {
 			Object item = ((IStructuredSelection) sel).getFirstElement();
 
-			if (item instanceof IResource)
+			if (item instanceof IResource) {
 				resource = (IResource) item;
-			else if (item instanceof IAdaptable)
+			} else if (item instanceof IAdaptable) {
 				resource = ((IAdaptable) item).getAdapter(IResource.class);
+			}
 		}
 		// loads the selected resource
-		if (resource != null)
+		if (resource != null) {
 			loadResource(resource);
+		}
 	}
 
 	/**
@@ -161,9 +164,9 @@ public class ResourceView extends SpyView {
 	 */
 	public void loadResource(IResource resource) {
 
-		if (viewer.getControl().isDisposed())
+		if (viewer.getControl().isDisposed()) {
 			return;
-
+		}
 		// turn redraw off so the UI will reflect changes only after we are done
 		viewer.getControl().setRedraw(false);
 
@@ -193,9 +196,9 @@ public class ResourceView extends SpyView {
 	 * Removes the resource change listener added by this view.
 	 */
 	private void removeResourceChangeListener() {
-		if (resourceChangeListener == null)
+		if (resourceChangeListener == null) {
 			return;
-
+		}
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceChangeListener);
 
 		resourceChangeListener = null;
@@ -205,9 +208,9 @@ public class ResourceView extends SpyView {
 	 * Removes the selection listener added by this view.
 	 */
 	private void removeSelectionListener() {
-		if (selectionListener == null)
+		if (selectionListener == null) {
 			return;
-
+		}
 		ISelectionService selectionService = getSite().getPage().getWorkbenchWindow().getSelectionService();
 
 		selectionService.removeSelectionListener(selectionListener);
@@ -229,9 +232,9 @@ public class ResourceView extends SpyView {
 			final IResource currentResource = (IResource) viewer.getInput();
 
 			// if we don't have a resource currently loaded, ignore the event
-			if (event.getType() != IResourceChangeEvent.POST_CHANGE || currentResource == null)
+			if (event.getType() != IResourceChangeEvent.POST_CHANGE || currentResource == null) {
 				return;
-
+			}
 			// looks for a delta for the currently loaded resource
 			IResourceDelta rootDelta = event.getDelta();
 			IResourceDelta resourceDelta = rootDelta.findMember(currentResource.getFullPath());

@@ -31,6 +31,7 @@ import org.eclipse.core.tools.metadata.IStringDumpingStrategy;
  * BYTES -> byte[]
  * }</pre>
  */
+@SuppressWarnings("restriction")
 class SyncInfoSnapshotDumpingStrategy_3 implements IStringDumpingStrategy {
 	@Override
 	public String dumpStringContents(DataInputStream dataInput) throws IOException {

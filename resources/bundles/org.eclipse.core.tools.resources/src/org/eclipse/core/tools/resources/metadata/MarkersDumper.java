@@ -24,6 +24,7 @@ import org.eclipse.core.tools.metadata.*;
  * @see org.eclipse.core.tools.resources.metadata.MarkersDumpingStrategy_2
  * @see org.eclipse.core.tools.resources.metadata.MarkersDumpingStrategy_3
  */
+@SuppressWarnings("restriction")
 public class MarkersDumper extends MultiStrategyDumper {
 
 	// type constants
