@@ -26,26 +26,11 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>bundles/org.eclipse.compare</module>
-    <module>bundles/org.eclipse.compare.win32</module>
-    <module>bundles/org.eclipse.compare.core</module>
-    <module>bundles/org.eclipse.core.net</module>
-    <module>bundles/org.eclipse.jsch.core</module>
-    <module>bundles/org.eclipse.jsch.ui</module>
-    <module>bundles/org.eclipse.team.core</module>
-    <module>bundles/org.eclipse.team.ui</module>
-    <module>bundles/org.eclipse.team.genericeditor.diff.extension</module>
-    <module>bundles/org.eclipse.ui.net</module>
+    <module>bundles</module>
+    <module>tests</module>
     <module>examples/org.eclipse.compare.examples</module>
     <module>examples/org.eclipse.compare.examples.xml</module>
     <module>examples/org.eclipse.team.examples.filesystem</module>
-
-    <!-- fragments -->
-    <module>bundles/org.eclipse.core.net.linux</module>
-    <module>bundles/org.eclipse.core.net.win32</module>
-    <module>bundles/org.eclipse.core.net.win32.x86_64</module>
-    <module>tests</module>
-   
   </modules>
 </project>
 

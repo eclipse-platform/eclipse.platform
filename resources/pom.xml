@@ -21,17 +21,7 @@
   <artifactId>eclipse.platform.resources</artifactId>
   <packaging>pom</packaging>
   <modules>
-    <module>bundles/org.eclipse.core.filesystem</module>
-    <module>bundles/org.eclipse.core.filesystem.linux.aarch64</module>
-    <module>bundles/org.eclipse.core.filesystem.linux.ppc64le</module>
-    <module>bundles/org.eclipse.core.filesystem.linux.x86_64</module>
-    <module>bundles/org.eclipse.core.filesystem.macosx</module>
-    <module>bundles/org.eclipse.core.filesystem.win32.x86_64</module>
-
-    <module>bundles/org.eclipse.core.resources</module>
-    <module>bundles/org.eclipse.core.resources.win32.x86_64</module>
-    <module>bundles/org.eclipse.core.resources.spysupport</module>
-    <module>bundles/org.eclipse.core.tools.resources</module>
+    <module>bundles</module>
     <module>examples</module>
     <module>tests</module>
   </modules>
