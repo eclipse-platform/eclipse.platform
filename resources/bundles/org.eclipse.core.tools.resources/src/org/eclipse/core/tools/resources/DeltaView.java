@@ -34,6 +34,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * @see org.eclipse.core.resources.IResourceChangeListener
  */
 
+@SuppressWarnings("restriction")
 public class DeltaView extends SpyView implements IResourceChangeListener {
 
 	/** The JFace widget used for showing resource deltas. */
@@ -81,8 +82,9 @@ public class DeltaView extends SpyView implements IResourceChangeListener {
 		this.viewer.getControl().addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.character == SWT.DEL)
+				if (e.character == SWT.DEL) {
 					clearOutputAction.run();
+				}
 			}
 		});
 
@@ -124,23 +126,23 @@ public class DeltaView extends SpyView implements IResourceChangeListener {
 	 */
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		if (event.getType() != IResourceChangeEvent.POST_CHANGE)
+		if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
 			return;
-
-		if (parent == null || parent.isDisposed())
+		}
+		if (parent == null || parent.isDisposed()) {
 			return;
-
+		}
 		// if we have no changes, there is nothing to do
 		final ResourceDelta delta = (ResourceDelta) event.getDelta();
-		if (delta == null)
+		if (delta == null) {
 			return;
-
+		}
 		// we need to access UI widgets from a SWT thread
 		Runnable update = () -> {
 			// the view might have been disposed at the moment this code runs
-			if (parent.isDisposed())
+			if (parent.isDisposed()) {
 				return;
-
+			}
 			// updates viewer document, appending new delta information
 			IDocument doc = viewer.getDocument();
 			StringBuilder contents = new StringBuilder(doc.get());

@@ -35,6 +35,7 @@ import org.eclipse.core.tools.metadata.*;
  * BYTES -> byte[]
  * }</pre>
  */
+@SuppressWarnings("restriction")
 class SyncInfoDumpingStrategy_3 implements IStringDumpingStrategy {
 	@Override
 	public String dumpStringContents(DataInputStream dataInput) throws IOException, DumpException {
@@ -64,10 +65,11 @@ class SyncInfoDumpingStrategy_3 implements IStringDumpingStrategy {
 				case SyncInfoDumper.QNAME :
 					String qualifier = input.readUTF();
 					String localName = input.readUTF();
-					if (qualifier.length() > 0)
+					if (qualifier.length() > 0) {
 						qualifiedName = qualifier + ":" + localName; //$NON-NLS-1$
-					else
+					} else {
 						qualifiedName = localName;
+					}
 					readPartners.add(qualifiedName);
 					break;
 				case SyncInfoDumper.INDEX :

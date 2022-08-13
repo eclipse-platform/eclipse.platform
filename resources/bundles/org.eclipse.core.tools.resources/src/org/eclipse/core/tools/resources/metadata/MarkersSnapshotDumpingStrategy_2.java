@@ -43,6 +43,7 @@ import org.eclipse.core.tools.metadata.*;
  * CREATION_TIME -> long
  * }</pre>
  */
+@SuppressWarnings("restriction")
 class MarkersSnapshotDumpingStrategy_2 implements IStringDumpingStrategy {
 	@Override
 	public String dumpStringContents(DataInputStream input) throws IOException, DumpException {

@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.core.tools.resources;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IContainer;
 import java.util.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
@@ -30,6 +28,7 @@ import org.eclipse.ui.*;
  * This action pops-up a <code>MessageDialog</code> showing the number of
  * resources (and their child resources) currently selected.
  */
+@SuppressWarnings("restriction")
 public class CountResourcesAction implements IWorkbenchWindowActionDelegate {
 
 	/** A reference to the window where this action will work in.*/
@@ -61,7 +60,6 @@ public class CountResourcesAction implements IWorkbenchWindowActionDelegate {
 	 *
 	 * @return a list of resources
 	 */
-	@SuppressWarnings("rawtypes")
 	private List<IResource> getSelectedResources() {
 
 		List<IResource> resources = new LinkedList<>();
@@ -71,17 +69,19 @@ public class CountResourcesAction implements IWorkbenchWindowActionDelegate {
 
 		if (selection instanceof IStructuredSelection) {
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-			for (Iterator elements = structuredSelection.iterator(); elements.hasNext();) {
-				IResource resource = convertToResource(elements.next());
-				if (resource != null)
+			for (Object element : structuredSelection) {
+				IResource resource = convertToResource(element);
+				if (resource != null) {
 					resources.add(resource);
+				}
 			}
 			eliminateRedundancies(resources);
 		}
 
 		// if no resources were selected, add the workspace root to the list
-		if (resources.size() == 0)
+		if (resources.size() == 0) {
 			resources.add(ResourcesPlugin.getWorkspace().getRoot());
+		}
 
 		return resources;
 	}
@@ -121,8 +121,9 @@ public class CountResourcesAction implements IWorkbenchWindowActionDelegate {
 	 */
 	private IResource convertToResource(Object object) {
 
-		if (object instanceof IResource)
+		if (object instanceof IResource) {
 			return (IResource) object;
+		}
 
 		if (object instanceof IAdaptable) {
 			IAdaptable adaptable = (IAdaptable) object;
@@ -145,8 +146,9 @@ public class CountResourcesAction implements IWorkbenchWindowActionDelegate {
 
 		ResourceCounterVisitor counter = new ResourceCounterVisitor();
 
-		for (IResource resource : resources)
+		for (IResource resource : resources) {
 			resource.accept(counter, IResource.DEPTH_INFINITE, IContainer.INCLUDE_PHANTOMS | IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS | IContainer.INCLUDE_HIDDEN);
+		}
 
 		return counter.count;
 	}
@@ -203,8 +205,9 @@ public class CountResourcesAction implements IWorkbenchWindowActionDelegate {
 	 * @param resourcesList a <code>List</code> object containing resource objects.
 	 */
 	private void eliminateRedundancies(List<IResource> resourcesList) {
-		if (resourcesList.size() <= 1)
+		if (resourcesList.size() <= 1) {
 			return;
+		}
 
 		//	we sort the resources list by path so it is easier to check for redundancies
 		resourcesList.sort((resource1, resource2) -> resource1.getFullPath().toString().compareTo(resource2.getFullPath().toString()));
@@ -215,10 +218,11 @@ public class CountResourcesAction implements IWorkbenchWindowActionDelegate {
 		IResource last = resourcesIter.next();
 		while (resourcesIter.hasNext()) {
 			IResource current = resourcesIter.next();
-			if (last.getFullPath().isPrefixOf(current.getFullPath()))
+			if (last.getFullPath().isPrefixOf(current.getFullPath())) {
 				resourcesIter.remove();
-			else
+			} else {
 				last = current;
+			}
 		}
 	}
 }

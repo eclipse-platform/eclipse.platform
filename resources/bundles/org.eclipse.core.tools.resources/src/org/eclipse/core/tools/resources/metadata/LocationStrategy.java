@@ -20,6 +20,7 @@ import org.eclipse.core.tools.metadata.IStringDumpingStrategy;
 /**
  * A strategy for reading .location files.
  */
+@SuppressWarnings("restriction")
 class LocationStrategy implements IStringDumpingStrategy {
 
 	/**
@@ -34,8 +35,9 @@ class LocationStrategy implements IStringDumpingStrategy {
 		contents.append('\'');
 		//try to read the dynamic references
 		int numRefs = dataInput.readInt();
-		if (numRefs < 0)
+		if (numRefs < 0) {
 			return contents.toString();
+		}
 		contents.append('\n');
 		contents.append("Dynamic references ("); //$NON-NLS-1$
 		contents.append(numRefs);

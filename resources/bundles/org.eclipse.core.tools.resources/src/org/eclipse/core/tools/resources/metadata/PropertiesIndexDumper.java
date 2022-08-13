@@ -20,6 +20,7 @@ import org.eclipse.core.internal.properties.PropertyBucket;
 import org.eclipse.core.tools.metadata.AbstractDumper;
 import org.eclipse.core.tools.metadata.DumpException;
 
+@SuppressWarnings("restriction")
 public class PropertiesIndexDumper extends AbstractDumper {
 
 	@Override
@@ -53,8 +54,9 @@ public class PropertiesIndexDumper extends AbstractDumper {
 						break;
 					case PropertyBucket.INDEX :
 						int index = source.readInt();
-						if (index < 0 || index >= qualifierIndex.size())
+						if (index < 0 || index >= qualifierIndex.size()) {
 							throw new DumpException("Invalid qualifier index: " + index + ". Table size is " + qualifierIndex.size());
+						}
 						qualifier = qualifierIndex.get(index);
 						break;
 					default : {
@@ -72,12 +74,13 @@ public class PropertiesIndexDumper extends AbstractDumper {
 				contents.append('=');
 				contents.append(propertyValue);
 				contents.append('\n');
-				if (qualifier == null)
+				if (qualifier == null) {
 					throw new DumpException("Missing qualifier");
-				if (localName == null)
+				} else if (localName == null) {
 					throw new DumpException("Missing local name");
-				if (propertyValue == null)
+				} else if (propertyValue == null) {
 					throw new DumpException("Missing property value");
+				}
 			}
 		}
 

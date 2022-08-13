@@ -13,10 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tools.resources;
 
-import java.util.*;
-import org.eclipse.core.internal.localstore.IHistoryStore;
-import org.eclipse.core.internal.resources.FileState;
-import org.eclipse.core.internal.resources.Workspace;
+import java.util.ArrayList;
+import java.util.Set;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -50,10 +48,9 @@ public class LocalHistoryBrowserView extends ViewPart {
 	}
 
 	static class FileStateEditorInput implements IStorageEditorInput {
-		private IFileState state;
+		private final IFileState state;
 
 		public FileStateEditorInput(IFileState state) {
-			super();
 			this.state = state;
 		}
 
@@ -73,9 +70,11 @@ public class LocalHistoryBrowserView extends ViewPart {
 		}
 
 		@Override
+		@SuppressWarnings("restriction")
 		public String getName() {
-			if (state instanceof FileState)
-				return ((FileState) state).getUUID() + " (" + state.getFullPath() + ')'; //$NON-NLS-1$
+			if (state instanceof org.eclipse.core.internal.resources.FileState) {
+				return ((org.eclipse.core.internal.resources.FileState) state).getUUID() + " (" + state.getFullPath() + ')'; //$NON-NLS-1$
+			}
 			return state.getFullPath().toString();
 		}
 
@@ -102,7 +101,6 @@ public class LocalHistoryBrowserView extends ViewPart {
 		ArrayList<Object> children;
 
 		public Node(Node parent, String name) {
-			super();
 			this.parent = parent;
 			this.name = name;
 			this.children = new ArrayList<>();
@@ -126,9 +124,8 @@ public class LocalHistoryBrowserView extends ViewPart {
 
 		public Object getChild(String childName) {
 			for (Object child : children) {
-				if (child instanceof Node) {
-					if (((Node) child).getName().equals(childName))
-						return child;
+				if (child instanceof Node && ((Node) child).getName().equals(childName)) {
+					return child;
 				}
 			}
 			return null;
@@ -141,7 +138,8 @@ public class LocalHistoryBrowserView extends ViewPart {
 	}
 
 	class ViewContentProvider implements IStructuredContentProvider, ITreeContentProvider {
-		private IHistoryStore store = ((Workspace) ResourcesPlugin.getWorkspace()).getFileSystemManager().getHistoryStore();
+		@SuppressWarnings("restriction")
+		private final org.eclipse.core.internal.localstore.IHistoryStore store = ((org.eclipse.core.internal.resources.Workspace) ResourcesPlugin.getWorkspace()).getFileSystemManager().getHistoryStore();
 
 		private Node invisibleRoot;
 
@@ -158,8 +156,9 @@ public class LocalHistoryBrowserView extends ViewPart {
 		@Override
 		public Object[] getElements(Object parent) {
 			if (parent.equals(getViewSite())) {
-				if (invisibleRoot == null)
+				if (invisibleRoot == null) {
 					initialize();
+				}
 				return getChildren(invisibleRoot);
 			}
 			return getChildren(parent);
@@ -177,26 +176,28 @@ public class LocalHistoryBrowserView extends ViewPart {
 
 		@Override
 		public boolean hasChildren(Object parent) {
-			return parent instanceof Node ? ((Node) parent).getChildren().length != 0 : false;
+			return parent instanceof Node && ((Node) parent).getChildren().length != 0;
 		}
 
+		@SuppressWarnings("restriction")
 		public void initialize() {
 			invisibleRoot = new Node(null, "/"); //$NON-NLS-1$
 			Set<IPath> allFiles = store.allFiles(Path.ROOT, IResource.DEPTH_INFINITE, null);
 			for (IPath path : allFiles) {
 				Node current = invisibleRoot;
 				String[] segments = path.segments();
-				for (int i = 0; i < segments.length; i++) {
-					Object child = current.getChild(segments[i]);
+				for (String segment : segments) {
+					Object child = current.getChild(segment);
 					if (child == null) {
-						child = new Node(current, segments[i]);
+						child = new Node(current, segment);
 						current.addChild(child);
 					}
 					current = (Node) child;
 				}
 				IFileState[] states = store.getStates(path, null);
-				for (int i = 0; i < states.length; i++)
-					current.addChild(states[i]);
+				for (IFileState state : states) {
+					current.addChild(state);
+				}
 			}
 		}
 	}
@@ -211,14 +212,11 @@ public class LocalHistoryBrowserView extends ViewPart {
 		@Override
 		public Image getImage(Object obj) {
 			String imageKey = ISharedImages.IMG_OBJ_FOLDER;
-			if (obj instanceof IFileState)
+			if (obj instanceof IFileState) {
 				imageKey = ISharedImages.IMG_OBJ_ELEMENT;
+			}
 			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 		}
-	}
-
-	public LocalHistoryBrowserView() {
-		super();
 	}
 
 	@Override

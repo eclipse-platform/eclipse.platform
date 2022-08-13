@@ -22,6 +22,7 @@ import org.eclipse.core.tools.metadata.*;
  *
  * @see org.eclipse.core.tools.resources.metadata.SyncInfoSnapshotDumpingStrategy_3
  */
+@SuppressWarnings("restriction")
 public class SyncInfoSnapshotDumper extends MultiStrategyDumper {
 	static final byte INDEX = 1;
 	static final byte QNAME = 2;
@@ -30,7 +31,9 @@ public class SyncInfoSnapshotDumper extends MultiStrategyDumper {
 	protected IStringDumpingStrategy getStringDumpingStrategy(DataInputStream dataInput) throws Exception {
 		int versionId = dataInput.readInt();
 		if (versionId != 3)
+		{
 			throw new DumpException("Unknown sync info's snapshot file version: " + versionId); //$NON-NLS-1$
+		}
 		return new SyncInfoSnapshotDumpingStrategy_3();
 	}
 

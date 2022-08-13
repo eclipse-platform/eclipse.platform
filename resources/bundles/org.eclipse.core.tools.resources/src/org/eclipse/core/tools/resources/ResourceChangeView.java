@@ -14,8 +14,6 @@
  **********************************************************************/
 package org.eclipse.core.tools.resources;
 
-import org.eclipse.jface.action.Action;
-
 import java.util.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IAdaptable;
@@ -33,9 +31,10 @@ import org.eclipse.ui.*;
  * This spy view displays a tree-based representation of resource deltas from
  * resource change events.
  */
+@SuppressWarnings("restriction")
 public class ResourceChangeView extends SpyView implements IResourceChangeListener {
 	static class DeltaNode implements IAdaptable {
-		private ArrayList<DeltaNode> children;
+		private final List<DeltaNode> children;
 		private int deltaFlags = -1;
 		private int deltaKind = -1;
 		private DeltaNode parent = null;
@@ -59,8 +58,9 @@ public class ResourceChangeView extends SpyView implements IResourceChangeListen
 		@Override
 		@SuppressWarnings("unchecked")
 		public <T> T getAdapter(Class<T> key) {
-			if (key != IResource.class)
+			if (key != IResource.class) {
 				return null;
+			}
 			return (T) resource;
 		}
 
@@ -98,8 +98,9 @@ public class ResourceChangeView extends SpyView implements IResourceChangeListen
 			path = delta.getFullPath();
 			resource = delta.getResource();
 			IResourceDelta[] deltaChildren = delta.getAffectedChildren();
-			for (int i = 0; i < deltaChildren.length; i++)
-				addChild(new DeltaNode(deltaChildren[i]));
+			for (IResourceDelta deltaChild : deltaChildren) {
+				addChild(new DeltaNode(deltaChild));
+			}
 		}
 
 		public void removeChild(DeltaNode child) {
@@ -118,7 +119,7 @@ public class ResourceChangeView extends SpyView implements IResourceChangeListen
 	}
 
 	class FilterAction extends Action {
-		private int type;
+		private final int type;
 
 		public FilterAction(String text, int eventType) {
 			super(text);
@@ -150,7 +151,7 @@ public class ResourceChangeView extends SpyView implements IResourceChangeListen
 	}
 
 	static class ResourceEventNode extends DeltaNode {
-		private int eventType;
+		private final int eventType;
 
 		public ResourceEventNode(IResourceChangeEvent event) {
 			super(event.getDelta());
@@ -209,8 +210,9 @@ public class ResourceChangeView extends SpyView implements IResourceChangeListen
 		}
 
 		private void initialize(Object input) {
-			if (!(input instanceof IResourceChangeEvent))
+			if (!(input instanceof IResourceChangeEvent)) {
 				return;
+			}
 			IResourceChangeEvent evt = (IResourceChangeEvent) input;
 			ResourceEventNode root = new ResourceEventNode(evt);
 			invisibleRoot = new DeltaNode();
@@ -333,8 +335,9 @@ public class ResourceChangeView extends SpyView implements IResourceChangeListen
 		}
 
 		private String getKindAsString(int kind) {
-			if (kind == -1)
+			if (kind == -1) {
 				return ""; //$NON-NLS-1$
+			}
 			return " kind(" + getFlagsAsString(kind) + ") "; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
@@ -366,13 +369,6 @@ public class ResourceChangeView extends SpyView implements IResourceChangeListen
 	protected int typeFilter = IResourceChangeEvent.POST_CHANGE;
 
 	protected TreeViewer viewer;
-
-	/**
-	 * The constructor.
-	 */
-	public ResourceChangeView() {
-		super();
-	}
 
 	/**
 	 * This is a callback that will allow us
@@ -419,8 +415,9 @@ public class ResourceChangeView extends SpyView implements IResourceChangeListen
 	protected void fillPullDownBar(IMenuManager manager) {
 		manager.removeAll();
 
-		for (Action action : eventActions)
+		for (Action action : eventActions) {
 			manager.add(action);
+		}
 		manager.add(new Separator("phantoms")); //$NON-NLS-1$
 		manager.add(PHANTOMS);
 	}
@@ -443,17 +440,20 @@ public class ResourceChangeView extends SpyView implements IResourceChangeListen
 	 */
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		if (event.getType() != typeFilter)
+		if (event.getType() != typeFilter) {
 			return;
+		}
 		setRoot(event);
 	}
 
 	private void setRoot(IResourceChangeEvent event) {
-		if (viewer == null)
+		if (viewer == null) {
 			return;
+		}
 		Display display = viewer.getControl().getDisplay();
-		if (display == null)
+		if (display == null) {
 			return;
+		}
 		rootObject = event;
 		display.asyncExec(() -> {
 			viewer.getControl().setRedraw(false);
