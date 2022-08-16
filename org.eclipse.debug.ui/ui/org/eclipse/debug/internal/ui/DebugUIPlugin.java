@@ -1252,7 +1252,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 		job.setName(MessageFormat.format(DebugUIMessages.DebugUIPlugin_25, new Object[] {configuration.getName()}));
 
 		if (wait) {
-			progressService.showInDialog(workbench.getActiveWorkbenchWindow().getShell(), job);
+			progressService.showInDialog(getShell(), job);
 		}
 		job.schedule();
 	}
