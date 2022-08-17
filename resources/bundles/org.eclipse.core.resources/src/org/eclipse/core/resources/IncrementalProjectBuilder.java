@@ -335,7 +335,6 @@ public abstract class IncrementalProjectBuilder extends InternalBuilder implemen
 	 * the earliest opportunity. This method allows long running builders to
 	 * respond to this interruption in a timely manner. Builders are not
 	 * required to respond to interruption requests.
-	 * <p>
 	 *
 	 * @return <code>true</code> if the build cycle has been interrupted, and
 	 * <code>false</code> otherwise.
