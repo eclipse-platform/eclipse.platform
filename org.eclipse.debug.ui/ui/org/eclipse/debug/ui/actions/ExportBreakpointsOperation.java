@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2018 IBM Corporation and others.
+ * Copyright (c) 2005, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -46,7 +46,8 @@ import org.eclipse.ui.XMLMemento;
  * Exports breakpoints to a file or string buffer.
  * <p>
  * This class may be instantiated.
- * <p>
+ * </p>
+ *
  * @since 3.2
  * @noextend This class is not intended to be sub-classed by clients.
  */

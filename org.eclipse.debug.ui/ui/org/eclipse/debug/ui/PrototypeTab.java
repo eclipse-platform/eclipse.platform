@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2018 Obeo and others.
+ * Copyright (c) 2017,2022 Obeo and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -74,9 +74,9 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
  * <p>
  * Clients may instantiate this class only if the associated launch
  * configuration type allows prototypes.
+ * </p>
  *
  * @see ILaunchConfigurationType#supportsPrototypes()
- *      </p>
  *
  * @since 3.13
  * @noextend This class is not intended to be subclassed by clients.
