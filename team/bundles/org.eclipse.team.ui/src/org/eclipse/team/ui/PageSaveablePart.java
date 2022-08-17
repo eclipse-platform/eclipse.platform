@@ -56,7 +56,6 @@ import org.eclipse.ui.progress.IProgressService;
 /**
  * Abstract class for hosting a page based structure input view for the purposes
  * of feeding compare viewers.
- * <p>
  *
  * @since 3.2
  * @noextend This class is not intended to be subclassed by clients outside of the Team framework.

@@ -44,9 +44,10 @@ public interface IRequestor {
 	/**
 	 * Call this method to perform requestor's task. This method should be called
 	 * whenever the dependent value changes.
-	 * <p>
+	 *
 	 * @return result of the task
-	 * @throws InjectionException if an exception occurred while performing this task
+	 * @throws InjectionException if an exception occurred while performing this
+	 *                            task
 	 */
 	Object execute() throws InjectionException;
 

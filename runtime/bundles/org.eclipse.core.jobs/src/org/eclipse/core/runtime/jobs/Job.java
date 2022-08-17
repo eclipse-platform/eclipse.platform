@@ -937,13 +937,15 @@ public abstract class Job extends InternalJob {
 	 * there are no {@link #WAITING} jobs that conflict with this job's scheduling
 	 * rule.
 	 * <p>
-	 * Note: If this job has acquired any other locks, implicit or explicit, they
-	 * will <i>not</i> be released. This may increase the risk of deadlock, so this
-	 * method should only be used when it is known that the environment is safe.
+	 * <b>Note:</b> If this job has acquired any other locks, implicit or explicit,
+	 * they will <i>not</i> be released. This may increase the risk of deadlock, so
+	 * this method should only be used when it is known that the environment is
+	 * safe.
+	 * </p>
 	 * <p>
 	 * This method must be invoked by this job's <code>Thread</code>, and only when
 	 * it is {@link #RUNNING} state.
-	 * <p>
+	 * </p>
 	 *
 	 * @param monitor a progress monitor, or <code>null</code> if progress reporting
 	 *                is not desired. Cancellation attempts will be ignored.
