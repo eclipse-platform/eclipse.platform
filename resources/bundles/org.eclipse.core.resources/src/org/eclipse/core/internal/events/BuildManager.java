@@ -23,8 +23,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import org.eclipse.core.internal.dtree.AbstractDataTreeNode;
-import org.eclipse.core.internal.dtree.DeltaDataTree;
 import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.internal.resources.ComputeProjectOrder.Digraph;
 import org.eclipse.core.internal.utils.Messages;
@@ -117,7 +115,6 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 
 	//the following four fields only apply for the lifetime of a single builder invocation.
 	protected final Set<InternalBuilder> currentBuilders;
-	private DeltaDataTree currentDelta;
 	private ElementTree currentLastBuiltTree;
 	private ElementTree currentTree;
 
@@ -125,10 +122,6 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	 * Caches the IResourceDelta for a pair of trees
 	 */
 	final private DeltaCache<IResourceDelta> deltaCache = new DeltaCache<>();
-	/**
-	 * Caches the DeltaDataTree used to determine if a build is necessary
-	 */
-	final private DeltaCache<DeltaDataTree> deltaTreeCache = new DeltaCache<>();
 
 	private ILock lock;
 
@@ -282,7 +275,6 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 			currentBuilders.remove(currentBuilder);
 			currentTree = null;
 			currentLastBuiltTree = null;
-			currentDelta = null;
 		}
 	}
 
@@ -954,34 +946,33 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 					Policy.debug("Build: project not interesting for current builders " + debugBuilder() + " [" + debugProject() + "] " + project.getFullPath()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				return null;
 			}
-			//check if this project has changed
-			if (currentDelta != null && currentDelta.findNodeAt(project.getFullPath()) == null) {
-				//if the project never existed (not in delta and not in current tree), return null
-				if (!project.exists())
-					return null;
-				//just return an empty delta rooted at this project
-				return ResourceDeltaFactory.newEmptyDelta(project);
-			}
 
 			//now check against the cache
-			IResourceDelta resultDelta = deltaCache.computeIfAbsent(project.getFullPath(), currentLastBuiltTree, currentTree, () -> {
-				long startTime = 0L;
-				if (Policy.DEBUG_BUILD_DELTA) {
-					startTime = System.currentTimeMillis();
-					Policy.debug("Computing delta for project: " + project.getName()); //$NON-NLS-1$
-				}
-				IResourceDelta result = ResourceDeltaFactory.computeDelta(workspace, currentLastBuiltTree, currentTree, project.getFullPath(), -1);
-				if (Policy.DEBUG_BUILD_FAILURE && result == null)
-					Policy.debug("Build: no delta " + debugBuilder() + " [" + debugProject() + "] " + project.getFullPath()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				if (Policy.DEBUG_BUILD_DELTA)
-					Policy.debug("Finished computing delta, time: " + (System.currentTimeMillis() - startTime) + "ms" + ((ResourceDelta) result).toDeepDebugString()); //$NON-NLS-1$ //$NON-NLS-2$
-
-				return result;
-			});
-			return resultDelta;
+			return getDeltaCached(project, currentLastBuiltTree, currentTree);
 		} finally {
 			lock.release();
 		}
+	}
+
+	private IResourceDelta getDeltaCached(IProject project, ElementTree oldTree, ElementTree newTree) {
+		IResourceDelta resultDelta = deltaCache.computeIfAbsent(project.getFullPath(), oldTree, newTree, () -> {
+			long startTime = 0L;
+			if (Policy.DEBUG_BUILD_DELTA) {
+				startTime = System.currentTimeMillis();
+				Policy.debug("Computing delta for project: " + project.getName()); //$NON-NLS-1$
+			}
+			IResourceDelta result = ResourceDeltaFactory.computeDelta(workspace, oldTree, newTree,
+					project.getFullPath(), -1);
+			if (Policy.DEBUG_BUILD_FAILURE && result == null)
+				Policy.debug(
+						"Build: no delta " + debugBuilder() + " [" + debugProject() + "] " + project.getFullPath()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			if (Policy.DEBUG_BUILD_DELTA)
+				Policy.debug("Finished computing delta, time: " + (System.currentTimeMillis() - startTime) + "ms" //$NON-NLS-1$ //$NON-NLS-2$
+						+ ((ResourceDelta) result).toDeepDebugString());
+
+			return result;
+		});
+		return resultDelta;
 	}
 
 	/**
@@ -1092,7 +1083,6 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	private void hookEndBuild(int trigger) {
 		builtProjects.clear();
 		deltaCache.flush();
-		deltaTreeCache.flush();
 		//ensure autobuild runs after a clean
 		if (trigger == IncrementalProjectBuilder.CLEAN_BUILD)
 			autoBuildJob.forceBuild();
@@ -1285,63 +1275,43 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 		//compute the delta since the last built state
 		ElementTree oldTree = builder.getLastBuiltTree();
 		ElementTree newTree = workspace.getElementTree();
-		long start = System.currentTimeMillis();
-		currentDelta = deltaTreeCache.computeIfAbsent(null, oldTree, newTree, () -> {
-			if (Policy.DEBUG_BUILD_NEEDED) {
-				String message = "Checking if need to build. Starting delta computation between: " + oldTree + " and " //$NON-NLS-1$ //$NON-NLS-2$
-						+ newTree;
-				Policy.debug(message);
-			}
-			DeltaDataTree computed = newTree.getDataTree().forwardDeltaWith(oldTree.getDataTree(), ResourceComparator.getBuildComparator());
-			if (Policy.DEBUG_BUILD_NEEDED)
-				Policy.debug("End delta computation. (" + (System.currentTimeMillis() - start) + "ms)."); //$NON-NLS-1$ //$NON-NLS-2$
-
-			return computed;
-		});
-
 
 		//search for the builder's project
-		if (currentDelta.findNodeAt(builder.getProject().getFullPath()) != null) {
-			if (Policy.DEBUG_BUILD_NEEDED)
-				debugCurrentDeltaNeedsBuilder(builder);
+		if (hasDelta(builder, builder.getProject(), oldTree, newTree)) {
 			return true;
 		}
 
 		//search for builder's interesting projects
 		IProject[] projects = builder.getInterestingProjects();
 		for (IProject project : projects) {
-			if (currentDelta.findNodeAt(project.getFullPath()) != null) {
-				if (Policy.DEBUG_BUILD_NEEDED)
-					debugCurrentDeltaNeedsBuilder(builder);
+			if (project != builder.getProject() // was already checked.
+					&& hasDelta(builder, project, oldTree, newTree)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private void debugCurrentDeltaNeedsBuilder(InternalBuilder builder) {
-		String builderString = toString(builder);
-		debugCurrentProjectDeltaNeedsBuilder(builderString, builder.getProject());
-
-		IProject[] projects = builder.getInterestingProjects();
-		for (IProject project : projects)
-			debugCurrentProjectDeltaNeedsBuilder(builderString, project);
-	}
-
-	private void debugCurrentProjectDeltaNeedsBuilder(String builderString, IProject project) {
-		AbstractDataTreeNode found = currentDelta.findNodeAt(project.getFullPath());
-		if (found != null) {
-			Policy.debug(builderString + " needs building because of changes in: " + project.getName()); //$NON-NLS-1$
-			if (Policy.DEBUG_BUILD_NEEDED_DELTA)
-				debugDeltaNode(builderString, found);
+	private boolean hasDelta(InternalBuilder builder, IProject project, ElementTree oldTree, ElementTree newTree) {
+		IResourceDelta delta = getDeltaCached(project, currentLastBuiltTree, currentTree);
+		IResourceDelta[] children = delta.getAffectedChildren();
+		boolean hasDelta = delta.getKind() != IResourceDelta.NO_CHANGE || children.length > 0;
+		if (hasDelta && Policy.DEBUG_BUILD_NEEDED) {
+			Policy.debug(toString(builder) + " needs building because of changes in: " + project.getName()); //$NON-NLS-1$
+			if (Policy.DEBUG_BUILD_NEEDED_DELTA) {
+				debugPrintDeltaRecursive(delta);
+			}
 		}
+		return hasDelta;
 	}
 
-	private static void debugDeltaNode(String prefix, AbstractDataTreeNode found) {
-		prefix = prefix + "/" + found.getName(); //$NON-NLS-1$
-		Policy.debug(prefix);
-		for (AbstractDataTreeNode child : found.getChildren())
-			debugDeltaNode(prefix, child);
+	private void debugPrintDeltaRecursive(IResourceDelta delta) {
+		if (delta.getKind() != IResourceDelta.NO_CHANGE) {
+			Policy.debug(((ResourceDelta) delta).toDebugString());
+		}
+		for (IResourceDelta childDelta : delta.getAffectedChildren()) {
+			debugPrintDeltaRecursive(childDelta);
+		}
 	}
 
 	/**
