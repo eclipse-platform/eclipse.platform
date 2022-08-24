@@ -99,11 +99,6 @@
             id="org.eclipse.team">
       </activity>
       
-      <activityRequirementBinding
-            activityId="org.eclipse.team.cvs"
-            requiredActivityId="org.eclipse.team">
-      </activityRequirementBinding>
-      
       <activityPatternBinding
             activityId="org.eclipse.javaDevelopment"
             pattern="org\.eclipse\.jdt\.debug/debugModel">
@@ -151,14 +146,6 @@
             activityId="org.eclipse.team"
             pattern="org\.eclipse\.compare/compareWithPatch">
       </activityPatternBinding>           
-      <activityPatternBinding
-            activityId="org.eclipse.team.cvs"
-            pattern="org\.eclipse\.team\.cvs\.ui/.*">
-      </activityPatternBinding>
-      <activityPatternBinding
-            activityId="org.eclipse.team.cvs"
-            pattern="org\.eclipse\.team\.cvs\.core/.*cvsnature">
-      </activityPatternBinding>
       
       <category
             name="%activity.cat.development"
@@ -192,11 +179,6 @@
             categoryId="org.eclipse.categories.teamCategory">
       </categoryActivityBinding>        
       
-      <categoryActivityBinding
-            activityId="org.eclipse.team.cvs"
-            categoryId="org.eclipse.categories.teamCategory">
-      </categoryActivityBinding>
-  
       <!-- bind all elements that start with "org" -->      
        
       <defaultEnablement
@@ -214,9 +196,6 @@
             id="org.eclipse.team">
       </defaultEnablement>     
       
-      <defaultEnablement
-            id="org.eclipse.team.cvs">
-      </defaultEnablement>
        <activity
              description="%activity.ant.desc"
              id="org.eclipse.antDevelopment"
