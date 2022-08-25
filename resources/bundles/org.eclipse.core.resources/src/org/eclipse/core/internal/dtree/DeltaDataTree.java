@@ -178,7 +178,7 @@ public class DeltaDataTree extends AbstractDataTree {
 			/* Iterate through the receiver's ancestors until the receiver is reached */
 			while ((tree = tree.getParent()) != this) {
 				//ancestor may not contain the given path
-				AbstractDataTreeNode treeNode = tree.searchNodeAt(path);
+				AbstractDataTreeNode treeNode = tree.searchLocalNodeAt(path);
 				if (treeNode != null) {
 					assembled = treeNode.assembleWith(assembled);
 				}
@@ -901,6 +901,36 @@ public class DeltaDataTree extends AbstractDataTree {
 		return null;
 	}
 
+	/**
+	 * Returns the specified node. Return null if the node is not found or if it has
+	 * been deleted. Like {@link DeltaDataTree#searchNodeAt(IPath)} but does NOT
+	 * search in the parent.
+	 */
+	protected AbstractDataTreeNode searchLocalNodeAt(IPath key) {
+		int keyLength = key.segmentCount();
+		DeltaDataTree tree = this;
+		AbstractDataTreeNode node = tree.rootNode;
+		boolean complete = !node.isDelta();
+		for (int i = 0; i < keyLength; i++) {
+			node = node.childAtOrNull(key.segment(i));
+			if (node == null) {
+				break;
+			}
+			if (!node.isDelta()) {
+				complete = true;
+			}
+		}
+		if (node != null) {
+			if (node.isDeleted())
+				return null;
+			return node;
+		}
+		if (complete) {
+			// Not found, but complete node encountered, so should not check parent tree.
+			return null;
+		}
+		return null;
+	}
 	/**
 	 * @see AbstractDataTree#setData(IPath, Object)
 	 */
