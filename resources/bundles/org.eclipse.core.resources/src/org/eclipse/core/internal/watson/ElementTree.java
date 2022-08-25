@@ -24,60 +24,75 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.osgi.util.NLS;
 
 /**
- * An ElementTree can be viewed as a generic rooted tree that stores
- * a hierarchy of elements.  An element in the tree consists of a
- * (name, data, children) 3-tuple.  The name can be any String, and
- * the data can be any Object.  The children are a collection of zero
- * or more elements that logically fall below their parent in the tree.
- * The implementation makes no guarantees about the ordering of children.
+ * <p>
+ * An ElementTree can be viewed as a generic rooted tree that stores a hierarchy
+ * of elements. An element in the tree consists of a (name, data, children)
+ * 3-tuple. The name ({@link #getNamesOfChildren(IPath)}) can be any String, and
+ * the data ({@link #getElementData(IPath)}) can be any Object. The children
+ * ({@link #getChildren(IPath)}) are a collection of zero or more elements that
+ * logically fall below their parent in the tree. The implementation makes no
+ * guarantees about the ordering of children.
+ * </p>
  *
- * Elements in the tree are referenced by a key that consists of the names
- * of all elements on the path from the root to that element in the tree.
- * For example, if root node "a" has child "b", which has child "c", element
- * "c" can be referenced in the tree using the key (/a/b/c).  Keys are represented
- * using IPath objects, where the Paths are relative to the root element of the
- * tree.
- * @see IPath
+ * <p>
+ * Elements in the tree are referenced by a key that consists of the names of
+ * all elements on the path from the root to that element in the tree. For
+ * example, if root node "a" has child "b", which has child "c", element "c" can
+ * be referenced in the tree using the key (/a/b/c). Keys are represented using
+ * {@link IPath} objects, where the Paths are relative to the root element of
+ * the tree.
+ * </p>
  *
- * Each ElementTree has a single root element that is created implicitly and
- * is always present in any tree.  This root corresponds to the key (/),
- * or the singleton <code>Path.ROOT</code>.  The root element cannot be created
- * or deleted, and its data and name cannot be set.  The root element's children
- * however can be modified (added, deleted, etc).  The root path can be obtained
+ * <p>
+ * Each ElementTree has a single root element that is created implicitly and is
+ * always present in any tree. This root corresponds to the key (/), or the
+ * singleton <code>Path.ROOT</code>. The root element cannot be created or
+ * deleted, and its data and name cannot be set. The root element's children
+ * however can be modified (added, deleted, etc). The root path can be obtained
  * using the <code>getRoot()</code> method.
+ * </p>
  *
- * ElementTrees are modified in generations.  The method <code>newEmptyDelta()</code>
+ * <p>
+ * ElementTrees are modified in generations. The method {@link #newEmptyDelta()}
  * returns a new tree generation that can be modified arbitrarily by the user.
- * For the purpose of explanation, we call such a tree "active".
- * When the method <code>immutable()</code> is called, that tree generation is
- * frozen, and can never again be modified.  A tree must be immutable before
- * a new tree generation can start.  Since all ancestor trees are immutable,
- * different active trees can have ancestors in common without fear of
- * thread corruption problems.
+ * For the purpose of explanation, we call such a tree "active". When the method
+ * {@link #immutable()} is called, that tree generation is frozen, and can never
+ * again be modified. A tree must be immutable before a new tree generation can
+ * start. Since all ancestor trees are immutable, different active trees can
+ * have ancestors in common without fear of thread corruption problems.
+ * </p>
  *
- * Internally, any single tree generation is simply stored as the
- * set of changes between itself and its most recent ancestor (its parent).
- * This compact delta representation allows chains of element trees to
- * be created at relatively low cost.  Clients of the ElementTree can
- * instantaneously "undo" sets of changes by navigating up to the parent
- * tree using the <code>getParent()</code> method.
+ * <p>
+ * Internally, any single tree generation is simply stored as the set of changes
+ * between itself and its most recent ancestor (its parent). This compact delta
+ * representation allows chains of element trees to be created at relatively low
+ * cost. Clients of the ElementTree can instantaneously "undo" sets of changes
+ * by navigating up to the parent tree using the {@link #getParent()} method.
+ * </p>
  *
- * Although the delta representation is compact, extremely long delta
- * chains make for a large structure that is potentially slow to query.
- * For this reason, the client is encouraged to minimize delta chain
- * lengths using the <code>collapsing(int)</code> and <code>makeComplete()</code>
- * methods.  The <code>getDeltaDepth()</code> method can be used to
- * discover the length of the delta chain.  The entire delta chain can
- * also be re-oriented in terms of the current element tree using the
- * <code>reroot()</code> operation.
+ * <p>
+ * Although the delta representation is compact, extremely long delta chains
+ * make for a large structure that is potentially slow to query. For this
+ * reason, the client is encouraged to minimize delta chain lengths using the
+ * {@link #collapseTo(ElementTree)} and {@link DeltaDataTree#makeComplete()}
+ * methods. The entire delta chain can also be re-oriented in terms of the
+ * current element tree using the {@link DeltaDataTree#reroot()} operation.
+ * </p>
  *
- * Classes are also available for tree serialization and navigation.
- * @see ElementTreeReader
- * @see ElementTreeWriter
- * @see ElementTreeIterator
+ * <p>
+ * Classes are also available for tree serialization and navigation (
+ * {@link ElementTreeReader}, {@link ElementTreeWriter},
+ * {@link ElementTreeIterator} )
+ * </p>
  *
- * Finally, why are ElementTrees in a package called "watson"?
- * 	- "It's ElementTree my dear Watson, ElementTree."
+ * Finally, the package name is called "watson" because - (misquoting Sherlock
+ * Holmes)
+ *
+ * <pre>
+ * "It's ElementTree my dear Watson, ElementTree."
+ * </pre>
+ *
+ * @see DeltaDataTree
  */
 public class ElementTree {
 	protected final DeltaDataTree tree;
