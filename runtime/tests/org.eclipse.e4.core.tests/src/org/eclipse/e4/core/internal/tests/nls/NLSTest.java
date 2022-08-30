@@ -363,6 +363,56 @@ public class NLSTest {
 	}
 
 	@Test
+	public void testSimpleMessagesRegionCode() {
+		// set Locale to "de_CH"
+
+		Locale locale = new Locale("de", "CH");
+		this.context.set(TranslationService.LOCALE, locale);
+		TestSimpleObject o = ContextInjectionFactory.make(TestSimpleObject.class, this.context);
+
+		SimpleMessages messages = o.simpleMessages;
+
+		// test if relevant values are set
+		assertNotNull(messages);
+		assertNotNull(messages.message);
+		assertNotNull(messages.messageOne);
+
+		// test the set relevant values
+		assertEquals("Region", messages.message);
+		assertEquals("RegionOne", messages.messageOne);
+	}
+
+	@Test
+	public void testSimpleMessagesRegionAndVariantCode() {
+		// set Locale to "de_CH_TEST"
+
+		Locale locale = new Locale("de", "CH", "TEST");
+		this.context.set(TranslationService.LOCALE, locale);
+		TestSimpleObject o = ContextInjectionFactory.make(TestSimpleObject.class, this.context);
+
+		SimpleMessages messages = o.simpleMessages;
+
+		// test all values are set
+		assertNotNull(messages);
+		assertNotNull(messages.message);
+		assertNotNull(messages.messageOne);
+
+		// test the set values
+		assertEquals("RegionWithTestVariant", messages.message);
+		assertEquals("RegionWithTestVariantOne", messages.messageOne);
+
+		locale = new Locale("de", "CH", "OTHER");
+		this.context.set(TranslationService.LOCALE, locale);
+		TestSimpleObject otherO = ContextInjectionFactory.make(TestSimpleObject.class, this.context);
+
+		SimpleMessages otherMessages = otherO.simpleMessages;
+
+		// test the set values
+		assertEquals("RegionWithOtherVariant", otherMessages.message);
+		assertEquals("RegionWithOtherVariantOne", otherMessages.messageOne);
+	}
+
+	@Test
 	public void testMessagesUseDefaultLocaleForInvalidLocale() {
 		//change the default Locale for this testcase
 		Locale.setDefault(new Locale("de"));
