@@ -31,6 +31,12 @@ public class Semaphore {
 	 * and false otherwise.
 	 */
 	public synchronized boolean acquire(long delay) throws InterruptedException {
+		if (notifications == 0) {
+			// constructor already acquires Semaphore
+			// has to be released before requiring again or gets stuck in wait.
+			System.err.println("Semaphore already acquired"); //$NON-NLS-1$
+			throw new IllegalStateException("Semaphore already acquired"); //$NON-NLS-1$
+		}
 		if (Thread.interrupted())
 			throw new InterruptedException();
 		long start = System.nanoTime();
@@ -76,6 +82,11 @@ public class Semaphore {
 	}
 
 	public synchronized void release() {
+		if (notifications > 0) {
+			System.err.println("Semaphore already released"); //$NON-NLS-1$
+			throw new IllegalStateException("Semaphore already released"); //$NON-NLS-1$
+			// TODO just do not increment any further?
+		}
 		notifications++;
 		notifyAll();
 	}
