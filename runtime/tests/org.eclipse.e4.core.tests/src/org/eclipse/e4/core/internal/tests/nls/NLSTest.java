@@ -25,12 +25,12 @@ import javax.inject.Inject;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.e4.core.internal.tests.CoreTestsActivator;
 import org.eclipse.e4.core.services.nls.Translation;
 import org.eclipse.e4.core.services.translation.TranslationService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 public class NLSTest {
 
@@ -69,7 +69,7 @@ public class NLSTest {
 
 	@Before
 	public void setUp() {
-		this.context = EclipseContextFactory.getServiceContext(CoreTestsActivator.getDefault().getBundleContext());
+		this.context = EclipseContextFactory.getServiceContext(FrameworkUtil.getBundle(getClass()).getBundleContext());
 		ContextInjectionFactory.setDefault(context);
 
 		beforeLocale = Locale.getDefault();
