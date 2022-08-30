@@ -62,6 +62,7 @@ import org.eclipse.e4.core.internal.tests.di.extensions.InjectionOSGiHandlerTest
 import org.eclipse.e4.core.internal.tests.di.extensions.InjectionOSGiTest;
 import org.eclipse.e4.core.internal.tests.di.extensions.InjectionPreferencesTest;
 import org.eclipse.e4.core.internal.tests.di.extensions.ServiceSupplierTestCase;
+import org.eclipse.e4.core.internal.tests.nls.MessageRegistryTest;
 import org.eclipse.e4.core.internal.tests.nls.NLSTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -129,6 +130,7 @@ import junit.framework.Test;
 
 		// NLS
 		NLSTest.class,
+		MessageRegistryTest.class,
 	})
 public class CoreTestSuite {
 	public static Test suite() {
