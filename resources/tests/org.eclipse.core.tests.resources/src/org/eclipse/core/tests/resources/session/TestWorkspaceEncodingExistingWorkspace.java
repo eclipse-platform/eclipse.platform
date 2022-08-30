@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import junit.framework.Test;
@@ -50,8 +51,8 @@ public class TestWorkspaceEncodingExistingWorkspace extends WorkspaceSessionTest
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
 		// Should be system default
-		assertEquals(defaultValue, ResourcesPlugin.getEncoding());
-		assertEquals(defaultValue, workspace.getRoot().getDefaultCharset(true));
+		assertEquals(Charset.forName(defaultValue), Charset.forName(ResourcesPlugin.getEncoding()));
+		assertEquals(Charset.forName(defaultValue), Charset.forName(workspace.getRoot().getDefaultCharset(true)));
 
 		// and not defined in workspace
 		String charset = workspace.getRoot().getDefaultCharset(false);
