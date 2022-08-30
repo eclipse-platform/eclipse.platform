@@ -13,7 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.stream.Collectors;
 import org.junit.Assert;
 
 /**
@@ -82,9 +88,39 @@ public class TestBarrier2 {
 			Thread.yield();
 			//sanity test to avoid hanging tests
 			long elapsed = (System.nanoTime() - start) / 1_000_000;
-			Assert.assertTrue("Timeout after " + elapsed + "ms waiting for status to change from "
-					+ getStatus(statuses.get(index)) + " to " + getStatus(status), elapsed / 100 < timeout);
+			boolean condition = elapsed < timeout;
+			if (!condition) {
+				String dump = getThreadDump();
+				if (statuses.get(index) > status) {
+					Assert.fail("Timeout after " + elapsed + "ms - Status already in state "
+							+ getStatus(statuses.get(index)) + " - waiting for " + getStatus(status) + "\n" + dump);
+				} else {
+					Assert.fail("Timeout after " + elapsed + "ms waiting for status to change from "
+						+ getStatus(statuses.get(index)) + " to " + getStatus(status) + "\n" + dump);
+				}
+			}
 		}
+	}
+
+	public static String getThreadDump() {
+		StringBuilder out = new StringBuilder();
+		out.append(" [ThreadDump taken from thread '" + Thread.currentThread().getName() + "' at "
+				+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + ":\n");
+		Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
+		Comparator<Entry<Thread, StackTraceElement[]>> byId = Comparator.comparing(e -> e.getKey().getId());
+		for (Entry<Thread, StackTraceElement[]> entry : stackTraces.entrySet().stream().sorted(byId)
+				.collect(Collectors.toList())) {
+			Thread thread = entry.getKey();
+			String name = thread.getName();
+			out.append("   Thread \"" + name + "\" #" + thread.getId() + " prio=" + thread.getPriority() + " "
+					+ thread.getState() + "\n");
+			StackTraceElement[] stack = entry.getValue();
+			for (StackTraceElement se : stack) {
+				out.append("     at " + se + "\n");
+			}
+		}
+		out.append(" ] // ThreadDump end\n");
+		return out.toString();
 	}
 
 	private static String getStatus(int status) {
@@ -109,7 +145,7 @@ public class TestBarrier2 {
 	}
 
 	public static void waitForStatus(AtomicIntegerArray location, int status) {
-		doWaitForStatus(location, 0, status, 100);
+		doWaitForStatus(location, 0, status, 1000);
 	}
 
 	/**
@@ -117,7 +153,7 @@ public class TestBarrier2 {
 	 * value Times out after a predefined period to avoid hanging tests
 	 */
 	public static void waitForStatus(AtomicIntegerArray location, int index, int status) {
-		doWaitForStatus(location, index, status, 500);
+		doWaitForStatus(location, index, status, 5000);
 	}
 
 	/**
@@ -164,6 +200,20 @@ public class TestBarrier2 {
 	 * that are explicitly very long running.
 	 */
 	public void waitForStatusNoFail(int status) {
-		doWaitForStatus(myStatus, myIndex, status, 100000);
+		doWaitForStatus(myStatus, myIndex, status, 100_000);
+	}
+
+	public void upgradeTo(int newValue) {
+		int actual = myStatus.get(myIndex);
+		if (actual >= newValue) {
+			String s = "wrong state " + myStatus.get(myIndex) + " should be < " + newValue;
+			System.out.println(s);
+			throw new IllegalStateException(s);
+		}
+		if (!myStatus.compareAndSet(myIndex, actual, newValue)) {
+			String s = "wrong state " + myStatus.get(myIndex) + " should be " + actual + " upgrade to " + newValue;
+			System.out.println(s);
+			throw new IllegalStateException(s);
+		}
 	}
 }
