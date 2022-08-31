@@ -410,6 +410,8 @@ public class BasicAliasTest extends ResourceTest {
 		// change the location of p2 project to the temp folder
 		replaceProject(p2, tempStore.toURI());
 
+		waitForRefresh(); // takes some milliseconds until aliasManager is notified
+
 		// now p2 and link2TempFolder should be aliases
 		IResource[] resources = aliasManager.computeAliases(link2TempFolder, ((Folder) link2TempFolder).getStore());
 		assertEquals("5.0", 1, resources.length);
