@@ -57,7 +57,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.cheatsheets.CheatSheetListener;
 import org.eclipse.ui.cheatsheets.ICheatSheetEvent;
 import org.eclipse.ui.cheatsheets.ICheatSheetViewer;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.internal.cheatsheets.CheatSheetPlugin;
 import org.eclipse.ui.internal.cheatsheets.CheatSheetStopWatch;
@@ -151,11 +150,13 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 			nextItem.handleButtons();
 		}
 		nextItem.setAsCurrentActiveItem();
+		currentItem = nextItem;
 		/* LP-item event */
 		// fireManagerItemEvent(ICheatSheetItemEvent.ITEM_ACTIVATED, nextItem);
 		collapseAllButCurrent(false);
 
 		saveCurrentSheet();
+		Display.getDefault().asyncExec(() -> currentPage.form.showControl(currentItem.getMainItemComposite()));
 	}
 
 	/**
@@ -258,7 +259,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 				currentItem = nextItem;
 			}
 
-			FormToolkit.ensureVisible(currentItem.getMainItemComposite());
+			Display.getDefault().asyncExec(() -> currentPage.form.showControl(currentItem.getMainItemComposite()));
 		} else if (indexNextItem == viewItemList.size()) {
 			if (!currentItem.isCompletionMessageExpanded()) { // The event will already have been fired
 				getManager().fireEvent(ICheatSheetEvent.CHEATSHEET_COMPLETED);
@@ -272,6 +273,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 	private void showIntroItem() {
 		ViewItem item = getViewItemAtIndex(0);
 		item.setAsCurrentActiveItem();
+		currentItem = item;
 	}
 
 	public void advanceSubItem(ImageHyperlink link, boolean markAsCompleted, int subItemIndex) {
@@ -492,6 +494,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 				// fireManagerItemEvent(ICheatSheetItemEvent.ITEM_ACTIVATED, currentItem);
 			} else {
 				getViewItemAtIndex(0).setAsCurrentActiveItem();
+				currentItem = getViewItemAtIndex(0);
 				/* LP-item event */
 				// fireManagerItemEvent(ICheatSheetItemEvent.ITEM_ACTIVATED, items[0]);
 			}

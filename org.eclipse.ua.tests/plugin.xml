@@ -215,6 +215,13 @@
             This cheat sheet has items to test the framework
          </description>
       </cheatsheet>
+      <cheatsheet
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            composite="false"
+            contentFile="data/cheatsheet/other/ExtraLongContent.xml"
+            id="org.eclipse.ua.tests.cheatsheetExtraLongContent"
+            name="Extra Long Content">
+      </cheatsheet>
    </extension>
 
    <!-- 
