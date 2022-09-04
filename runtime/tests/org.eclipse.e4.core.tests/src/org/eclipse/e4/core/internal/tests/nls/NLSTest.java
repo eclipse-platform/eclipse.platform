@@ -25,12 +25,12 @@ import javax.inject.Inject;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.e4.core.internal.tests.CoreTestsActivator;
 import org.eclipse.e4.core.services.nls.Translation;
 import org.eclipse.e4.core.services.translation.TranslationService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 public class NLSTest {
 
@@ -69,7 +69,7 @@ public class NLSTest {
 
 	@Before
 	public void setUp() {
-		this.context = EclipseContextFactory.getServiceContext(CoreTestsActivator.getDefault().getBundleContext());
+		this.context = EclipseContextFactory.getServiceContext(FrameworkUtil.getBundle(getClass()).getBundleContext());
 		ContextInjectionFactory.setDefault(context);
 
 		beforeLocale = Locale.getDefault();
@@ -360,6 +360,56 @@ public class NLSTest {
 		assertEquals("MessageCamelCaseAndUnderscoreDeCamelCasifiedAndDeUnderscorified", messages.messageSeven_Sub);
 		assertEquals("MessageCamelCaseAndUnderscoreDeUnderscorified", messages.messageEight_Sub);
 		assertEquals("MessageCamelCaseAndUnderscoreDeUnderscorifiedAndDeCamelCasified", messages.messageNine_Sub);
+	}
+
+	@Test
+	public void testSimpleMessagesRegionCode() {
+		// set Locale to "de_CH"
+
+		Locale locale = new Locale("de", "CH");
+		this.context.set(TranslationService.LOCALE, locale);
+		TestSimpleObject o = ContextInjectionFactory.make(TestSimpleObject.class, this.context);
+
+		SimpleMessages messages = o.simpleMessages;
+
+		// test if relevant values are set
+		assertNotNull(messages);
+		assertNotNull(messages.message);
+		assertNotNull(messages.messageOne);
+
+		// test the set relevant values
+		assertEquals("Region", messages.message);
+		assertEquals("RegionOne", messages.messageOne);
+	}
+
+	@Test
+	public void testSimpleMessagesRegionAndVariantCode() {
+		// set Locale to "de_CH_TEST"
+
+		Locale locale = new Locale("de", "CH", "TEST");
+		this.context.set(TranslationService.LOCALE, locale);
+		TestSimpleObject o = ContextInjectionFactory.make(TestSimpleObject.class, this.context);
+
+		SimpleMessages messages = o.simpleMessages;
+
+		// test all values are set
+		assertNotNull(messages);
+		assertNotNull(messages.message);
+		assertNotNull(messages.messageOne);
+
+		// test the set values
+		assertEquals("RegionWithTestVariant", messages.message);
+		assertEquals("RegionWithTestVariantOne", messages.messageOne);
+
+		locale = new Locale("de", "CH", "OTHER");
+		this.context.set(TranslationService.LOCALE, locale);
+		TestSimpleObject otherO = ContextInjectionFactory.make(TestSimpleObject.class, this.context);
+
+		SimpleMessages otherMessages = otherO.simpleMessages;
+
+		// test the set values
+		assertEquals("RegionWithOtherVariant", otherMessages.message);
+		assertEquals("RegionWithOtherVariantOne", otherMessages.messageOne);
 	}
 
 	@Test
