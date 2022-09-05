@@ -711,14 +711,14 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			job.setThread(null);
 			rescheduleDelay = job.getStartTime();
 			changeState(job, Job.NONE);
+			// notify listeners INSIDE sync block :-(
+			final boolean reschedule = active && rescheduleDelay > InternalJob.T_NONE && job.shouldSchedule();
+			if (notify)
+				jobListeners.done((Job) job, result, reschedule);
+			// reschedule the job if requested and we are still active
+			if (reschedule)
+				schedule(job, rescheduleDelay, reschedule);
 		}
-		//notify listeners outside sync block
-		final boolean reschedule = active && rescheduleDelay > InternalJob.T_NONE && job.shouldSchedule();
-		if (notify)
-			jobListeners.done((Job) job, result, reschedule);
-		//reschedule the job if requested and we are still active
-		if (reschedule)
-			schedule(job, rescheduleDelay, reschedule);
 		//log result if it is warning or error. When the job belongs to a job group defer the logging
 		//until the whole group is completed (see JobManager#updateJobGroup).
 		if (job.getJobGroup() == null && result.matches(IStatus.ERROR | IStatus.WARNING))

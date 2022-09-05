@@ -124,7 +124,7 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	 * or -1 if the job should not be rescheduled.
 	 * @GuardedBy("manager.lock")
 	 */
-	private long startTime;
+	private volatile long startTime;
 
 	/**
 	 * Stamp added when a job is added to the wait queue. Used to ensure
