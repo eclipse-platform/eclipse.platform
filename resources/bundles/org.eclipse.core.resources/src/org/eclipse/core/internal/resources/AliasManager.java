@@ -20,6 +20,7 @@ package org.eclipse.core.internal.resources;
 
 import java.net.URI;
 import java.util.*;
+import java.util.function.Consumer;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.events.ILifecycleListener;
@@ -55,29 +56,18 @@ import org.eclipse.osgi.util.NLS;
  *  - when linked resources are created, deleted, or moved.
  */
 public class AliasManager implements IManager, ILifecycleListener, IResourceChangeListener {
-	public static class AddToCollectionDoit implements Doit {
-		Collection<IResource> collection;
 
-		@Override
-		public void doit(IResource resource) {
-			collection.add(resource);
+	class FindAliasesDoit implements Consumer<IResource> {
+		private final int aliasType;
+		private final IPath searchPath;
+
+		public FindAliasesDoit(IResource aliasResource) {
+			this.aliasType = aliasResource.getType();
+			this.searchPath = aliasResource.getFullPath();
 		}
 
-		public void setCollection(Collection<IResource> collection) {
-			this.collection = collection;
-		}
-	}
-
-	interface Doit {
-		void doit(IResource resource);
-	}
-
-	class FindAliasesDoit implements Doit {
-		private int aliasType;
-		private IPath searchPath;
-
 		@Override
-		public void doit(IResource match) {
+		public void accept(IResource match) {
 			//don't record the resource we're computing aliases against as a match
 			if (match.getFullPath().isPrefixOf(searchPath))
 				return;
@@ -112,13 +102,6 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 				}
 		}
 
-		/**
-		 * Sets the resource that we are searching for aliases for.
-		 */
-		public void setSearchAlias(IResource aliasResource) {
-			this.aliasType = aliasResource.getType();
-			this.searchPath = aliasResource.getFullPath();
-		}
 	}
 
 	/**
@@ -169,7 +152,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		 * Invoke the given doit for every resource whose location has the
 		 * given location as a prefix.
 		 */
-		public void matchingPrefixDo(IFileStore prefix, Doit doit) {
+		public void matchingPrefixDo(IFileStore prefix, Consumer<IResource> doit) {
 			SortedMap<IFileStore, Object> matching;
 			IFileStore prefixParent = prefix.getParent();
 			if (prefixParent != null) {
@@ -187,9 +170,9 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 					@SuppressWarnings("unchecked")
 					Iterator<IResource> duplicates = ((List<IResource>) value).iterator();
 					while (duplicates.hasNext())
-						doit.doit(duplicates.next());
+						doit.accept(duplicates.next());
 				} else {
-					doit.doit((IResource) value);
+					doit.accept((IResource) value);
 				}
 			}
 		}
@@ -198,7 +181,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		 * Invoke the given doit for every resource that matches the given
 		 * location.
 		 */
-		public void matchingResourcesDo(IFileStore location, Doit doit) {
+		public void matchingResourcesDo(IFileStore location, Consumer<IResource> doit) {
 			Object value = map.get(location);
 			if (value == null)
 				return;
@@ -206,9 +189,9 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 				@SuppressWarnings("unchecked")
 				Iterator<IResource> duplicates = ((List<IResource>) value).iterator();
 				while (duplicates.hasNext())
-					doit.doit(duplicates.next());
+					doit.accept(duplicates.next());
 			} else {
-				doit.doit((IResource) value);
+				doit.accept((IResource) value);
 			}
 		}
 
@@ -216,7 +199,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		 * Calls the given doit with the project of every resource in the map
 		 * whose location overlaps another resource in the map.
 		 */
-		public void overLappingResourcesDo(Doit doit) {
+		public void overLappingResourcesDo(Consumer<IResource> doit) {
 			Iterator<Map.Entry<IFileStore, Object>> entries = map.entrySet().iterator();
 			IFileStore previousStore = null;
 			IResource previousResource = null;
@@ -231,7 +214,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 					@SuppressWarnings("unchecked")
 					Iterator<IResource> duplicates = ((List<IResource>) value).iterator();
 					while (duplicates.hasNext())
-						doit.doit(duplicates.next().getProject());
+						doit.accept(duplicates.next().getProject());
 				} else {
 					//value is a single resource
 					currentResource = (IResource) value;
@@ -243,12 +226,12 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 						//resources will be null if they were in a list, in which case
 						//they've already been passed to the doit
 						if (previousResource != null) {
-							doit.doit(previousResource.getProject());
+							doit.accept(previousResource.getProject());
 							//null out previous resource so we don't call doit twice with same resource
 							previousResource = null;
 						}
 						if (currentResource != null)
-							doit.doit(currentResource.getProject());
+							doit.accept(currentResource.getProject());
 						//keep iterating with the same previous store because there may be more overlaps
 						continue;
 					}
@@ -283,11 +266,6 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 	}
 
 	/**
-	 * Doit convenience class for adding items to a list
-	 */
-	private final AddToCollectionDoit addToCollection = new AddToCollectionDoit();
-
-	/**
 	 * The set of IProjects that have aliases.
 	 */
 	protected final Set<IResource> aliasedProjects = new HashSet<>();
@@ -310,11 +288,6 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 	 * location map has not been updated accordingly.
 	 */
 	private boolean changedProjects = false;
-
-	/**
-	 * The Doit class used for finding aliases.
-	 */
-	private final FindAliasesDoit findAliases = new FindAliasesDoit();
 
 	/**
 	 * This maps IFileStore -&gt; IResource, associating a file system location
@@ -388,8 +361,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		if (nonDefaultResourceCount <= 0)
 			return;
 		//for every resource that overlaps another, marked its project as aliased
-		addToCollection.setCollection(aliasedProjects);
-		locationsMap.overLappingResourcesDo(addToCollection);
+		locationsMap.overLappingResourcesDo(aliasedProjects::add);
 	}
 
 	/**
@@ -465,8 +437,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		//get the normal aliases (resources rooted in parent locations)
 		internalComputeAliases(resource, location);
 		//get all resources rooted below this resource's location
-		addToCollection.setCollection(aliases);
-		locationsMap.matchingPrefixDo(location, addToCollection);
+		locationsMap.matchingPrefixDo(location, aliases::add);
 		//if this is a project, get all resources rooted below links in this project
 		if (resource.getType() == IResource.PROJECT) {
 			try {
@@ -476,7 +447,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 					if (member.isLinked()) {
 						IFileStore linkLocation = localManager.getStore(member);
 						if (linkLocation != null)
-							locationsMap.matchingPrefixDo(linkLocation, addToCollection);
+							locationsMap.matchingPrefixDo(linkLocation, aliases::add);
 					}
 				}
 			} catch (CoreException e) {
@@ -559,7 +530,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 			return;
 
 		suffix = Path.EMPTY;
-		findAliases.setSearchAlias(resource);
+		FindAliasesDoit findAliases = new FindAliasesDoit(resource);
 		/*
 		 * Walk up the location segments for this resource, looking for a
 		 * resource with a matching location.  All matches are then added to the
