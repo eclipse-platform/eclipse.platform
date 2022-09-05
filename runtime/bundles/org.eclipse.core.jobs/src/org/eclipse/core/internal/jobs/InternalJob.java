@@ -124,7 +124,7 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	 * or -1 if the job should not be rescheduled.
 	 * @GuardedBy("manager.lock")
 	 */
-	private long startTime;
+	private volatile long startTime;
 
 	/**
 	 * Stamp added when a job is added to the wait queue. Used to ensure
@@ -151,6 +151,11 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	 * @GuardedBy("itself")
 	 */
 	final Object jobStateLock = new Object();
+
+	/**
+	 * This signal is used to synchronize Job listener notification
+	 */
+	volatile boolean waitForNotificationFinsished;
 
 	private static synchronized int getNextJobNumber() {
 		return nextJobNumber++;
@@ -389,7 +394,9 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	 * Sets whether this job was canceled when it was about to run
 	 */
 	final void setAboutToRunCanceled(boolean value) {
-		flags = value ? flags | M_ABOUT_TO_RUN_CANCELED : flags & ~M_ABOUT_TO_RUN_CANCELED;
+		synchronized (jobStateLock) {
+			flags = value ? flags | M_ABOUT_TO_RUN_CANCELED : flags & ~M_ABOUT_TO_RUN_CANCELED;
+		}
 
 	}
 
@@ -397,7 +404,9 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	 * Sets whether this job was canceled when it was running
 	 */
 	final void setRunCanceled(boolean value) {
-		flags = value ? flags | M_RUN_CANCELED : flags & ~M_RUN_CANCELED;
+		synchronized (jobStateLock) {
+			flags = value ? flags | M_RUN_CANCELED : flags & ~M_RUN_CANCELED;
+		}
 	}
 
 	protected void setName(String name) {
@@ -497,9 +506,11 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	}
 
 	protected void setSystem(boolean value) {
-		if (getState() != Job.NONE)
-			throw new IllegalStateException();
-		flags = value ? flags | M_SYSTEM : flags & ~M_SYSTEM;
+		synchronized (jobStateLock) {
+			if (getState() != Job.NONE)
+				throw new IllegalStateException();
+			flags = value ? flags | M_SYSTEM : flags & ~M_SYSTEM;
+		}
 	}
 
 	protected void setThread(Thread thread) {
@@ -507,9 +518,11 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	}
 
 	protected void setUser(boolean value) {
-		if (getState() != Job.NONE)
-			throw new IllegalStateException();
-		flags = value ? flags | M_USER : flags & ~M_USER;
+		synchronized (jobStateLock) {
+			if (getState() != Job.NONE)
+				throw new IllegalStateException();
+			flags = value ? flags | M_USER : flags & ~M_USER;
+		}
 	}
 
 	protected void setJobGroup(JobGroup jobGroup) {
