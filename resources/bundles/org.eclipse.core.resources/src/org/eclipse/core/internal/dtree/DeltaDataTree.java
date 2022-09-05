@@ -13,9 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.internal.dtree;
 
+import java.util.Objects;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.StringPool;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * Externally, a <code>DeltaDataTree</code> appears to have the same content as
@@ -56,11 +58,13 @@ public class DeltaDataTree extends AbstractDataTree {
 	 *	root node of new tree.
 	 */
 	public DeltaDataTree(AbstractDataTreeNode rootNode) {
+		Objects.requireNonNull(rootNode);
 		this.rootNode = rootNode;
 		this.parent = null;
 	}
 
 	protected DeltaDataTree(AbstractDataTreeNode rootNode, DeltaDataTree parent) {
+		Objects.requireNonNull(rootNode);
 		this.rootNode = rootNode;
 		this.parent = parent;
 	}
@@ -166,7 +170,7 @@ public class DeltaDataTree extends AbstractDataTree {
 		DeltaDataTree newTree;
 		if (this == other) {
 			newTree = new DeltaDataTree();
-			newTree.setData(Path.ROOT, new NodeComparison(null, null, 0, 0));
+			newTree.setRootData(new NodeComparison(null, null, 0, 0));
 		} else if (other.hasAncestor(this)) {
 			AbstractDataTreeNode assembled = other.searchNodeAt(path);
 			DeltaDataTree tree = other;
@@ -241,7 +245,7 @@ public class DeltaDataTree extends AbstractDataTree {
 		DeltaDataTree newTree;
 		if (this == other) {
 			newTree = new DeltaDataTree();
-			newTree.setData(Path.ROOT, new NodeComparison(null, null, 0, 0));
+			newTree.setRootData(new NodeComparison(null, null, 0, 0));
 		} else if (other.hasAncestor(this)) {
 
 			AbstractDataTreeNode assembled = other.getRootNode();
@@ -909,6 +913,14 @@ public class DeltaDataTree extends AbstractDataTree {
 		assembleNode(key, new DataDeltaNode(key.lastSegment(), data));
 	}
 
+	public void setRootData(Object data) {
+		setData(rootKey(), data);
+	}
+
+	public Object getRootData() {
+		return getData(rootKey());
+	}
+
 	/**
 	 * Sets the parent of the tree.
 	 */
@@ -951,8 +963,17 @@ public class DeltaDataTree extends AbstractDataTree {
 	/** for debugging purposes only */
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + " " + Integer.toHexString(System.identityHashCode(this)) + " parent=" //$NON-NLS-1$ //$NON-NLS-2$
-				+ (parent == null ? null : Integer.toHexString(System.identityHashCode(parent))) + " rootNode=" //$NON-NLS-1$
-				+ rootNode.toShortString();
+		DeltaDataTree root = getParent();
+		int depth = root == null ? 0 : 1;
+		while (root != null && root.getParent() != null) {
+			root = root.getParent();
+			depth++;
+		}
+
+		return this.getClass().getSimpleName() + ' ' + getRootData() //
+				+ "->" + (parent == null ? null : parent.getRootData()) // $NON-NLS-1$ //$NON-NLS-1$
+				+ "->...depth " + depth + "..." //$NON-NLS-1$ //$NON-NLS-2$
+				+ "->" + (parent == null ? null : root.getRootData()) // $NON-NLS-1$ //$NON-NLS-1$
+				+ " rootNode=" + rootNode.toShortString(); //$NON-NLS-1$
 	}
 }

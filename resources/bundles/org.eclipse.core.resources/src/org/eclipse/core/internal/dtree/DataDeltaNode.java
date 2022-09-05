@@ -61,7 +61,7 @@ public class DataDeltaNode extends DataTreeNode {
 		Object newData = data;
 		/* don't compare data of root */
 		int userComparison = 0;
-		if (key != parent.rootKey()) {
+		if (!parent.isRoot(key)) {
 			/* allow client to specify user comparison bits */
 			userComparison = comparator.compare(oldData, newData);
 		}

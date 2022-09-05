@@ -213,8 +213,18 @@ public abstract class AbstractDataTree {
 	/**
 	 * Returns the key of the root node.
 	 */
-	public IPath rootKey() {
+	public static final IPath rootKey() {
 		return Path.ROOT;
+	}
+
+	public boolean isRoot(IPath key) {
+		return key == rootKey();
+	}
+
+	private static final IPath[] ROOT_PATHS = new IPath[] { rootKey() };
+
+	public IPath[] rootPaths() {
+		return ROOT_PATHS;
 	}
 
 	/**
