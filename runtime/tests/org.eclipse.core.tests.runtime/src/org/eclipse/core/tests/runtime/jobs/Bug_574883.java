@@ -105,12 +105,46 @@ public class Bug_574883 extends AbstractJobManagerTest {
 					length);
 			assertEquals(RUNS, executions.get());
 		} catch (Throwable t) {
-			// TODO: print the fail only, as long as bug 574883 is not fixed yet
-			t.printStackTrace(System.out);
-			t.printStackTrace(System.err);
 			Job.getJobManager().cancel(this);
 			Thread.sleep(1000);
 			Job.getJobManager().join(this, null);
+			throw t;
+		}
+	}
+
+	/**
+	 * same as testReschedulingLambda but repeated with more joins to be more likely
+	 * to fail
+	 */
+	@Test
+	public void testJoinLambdaOften() throws InterruptedException {
+		for (int l = 0; l < RUNS; l++) {
+			// Executor has to execute every task. Even when they are scheduled fast
+			// and execute fast
+			SerialExecutor serialExecutor = new SerialExecutor("test", this);
+			AtomicInteger executions = new AtomicInteger();
+			int INNER_RUNS = 10;
+			for (int i = 0; i < INNER_RUNS; i++) {
+				serialExecutor.schedule(() -> executions.incrementAndGet());
+			}
+			Job.getJobManager().join(this, null);
+			Job[] jobs = Job.getJobManager().find(this);
+			int length = jobs.length;
+			int firstState = executions.get();
+			try {
+				if (executions.get() != INNER_RUNS) {
+					System.out.println("error");
+				}
+				assertEquals("after " + l + " tries: Job still running after join, executed: " + firstState
+						+ ", cpu: " + processors, 0,
+						length);
+				assertEquals("after " + l + " tries", INNER_RUNS, executions.get());
+			} catch (Throwable t) {
+				Job.getJobManager().cancel(this);
+				Thread.sleep(1000);
+				Job.getJobManager().join(this, null);
+				throw t;
+			}
 		}
 	}
 
@@ -140,12 +174,10 @@ public class Bug_574883 extends AbstractJobManagerTest {
 					length);
 			assertEquals(RUNS, executions.get());
 		} catch (Throwable t) {
-			// TODO: print the fail only, as long as bug 574883 is not fixed yet
-			t.printStackTrace(System.out);
-			t.printStackTrace(System.err);
 			Job.getJobManager().cancel(this);
 			Thread.sleep(1000);
 			Job.getJobManager().join(this, null);
+			throw t;
 		}
 	}
 
@@ -185,12 +217,10 @@ public class Bug_574883 extends AbstractJobManagerTest {
 					length);
 			assertEquals(RUNS, executions.get());
 		} catch (Throwable t) {
-			// TODO: print the fail only, as long as bug 574883 is not fixed yet
-			t.printStackTrace(System.out);
-			t.printStackTrace(System.err);
 			Job.getJobManager().cancel(this);
 			Thread.sleep(1000);
 			Job.getJobManager().join(this, null);
+			throw t;
 		}
 	}
 
