@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2015 IBM Corporation and others.
+ *  Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -24,17 +24,15 @@ import org.junit.Assert;
  */
 abstract public class TestPerformer {
 	private int count = 0;
-	String name = null;
 
 	/**
 	 * TestPerformer constructor comment.
 	 */
 	public TestPerformer(String name) {
 		super();
-		this.name = name;
 	}
 
-	public void cleanUp(Object[] args, int count) {
+	public void cleanUp(Object[] args, int countArg) {
 		// do nothing
 	}
 
@@ -43,7 +41,7 @@ abstract public class TestPerformer {
 		return null;
 	}
 
-	abstract public Object invokeMethod(Object[] args, int count) throws Exception;
+	abstract public Object invokeMethod(Object[] args, int countArg) throws Exception;
 
 	final public void performTest(Object[][] inputs) {
 		// call helper method
@@ -80,7 +78,7 @@ abstract public class TestPerformer {
 						}
 						buffer.deleteCharAt(buffer.length() - 1);
 						buffer.append(']');
-						Assert.assertTrue(buffer.toString(), false);
+						Assert.fail(buffer.toString());
 					} catch (Exception ex) {
 					}
 				} else {
@@ -88,17 +86,15 @@ abstract public class TestPerformer {
 					try {
 						oldState = interestingOldState(args);
 					} catch (Exception ex) {
-						ex.printStackTrace();
-						throw new RuntimeException("call to interestingOldState failed");
+						throw new RuntimeException("call to interestingOldState failed", ex);
 					}
 					Object result = null;
 					try {
 						result = invokeMethod(args, count);
 					} catch (FussyProgressMonitor.FussyProgressAssertionFailed fussyEx) {
-						Assert.assertTrue("invocation " + count + ": " + fussyEx.getMessage(), false);
+						throw new AssertionError("invocation " + count + ": " + fussyEx.getMessage(), fussyEx);
 					} catch (Exception ex) {
-						ex.printStackTrace();
-						Assert.assertTrue("invocation " + count + " failed with " + ex, false);
+						throw new AssertionError("invocation " + count + " failed with " + ex, ex);
 					}
 					boolean success = false;
 					try {
@@ -143,7 +139,7 @@ abstract public class TestPerformer {
 		}
 	}
 
-	abstract public boolean shouldFail(Object[] args, int count);
+	abstract public boolean shouldFail(Object[] args, int countArg);
 
 	abstract public boolean wasSuccess(Object[] args, Object result, Object[] oldState) throws Exception;
 }
