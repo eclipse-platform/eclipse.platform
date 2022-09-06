@@ -143,7 +143,7 @@ public class ElementTree {
 		// Useful for canonical results for ElementTree.getParent().
 		// see getParent().
 		treeStamp = treeCounter.incrementAndGet();
-		newTree.setData(newTree.rootKey(), this);
+		newTree.setRootData(this);
 		this.tree = newTree;
 	}
 
@@ -206,7 +206,7 @@ public class ElementTree {
 		try {
 			tree.createChild(parent, key.lastSegment(), data);
 		} catch (ObjectNotFoundException e) {
-			elementNotFound(parent);
+			throw createElementNotFoundException(parent);
 		}
 		// Set the lookup to be this newly created object.
 		lookupCache = DataTreeLookup.newLookup(key, true, data, true);
@@ -248,7 +248,7 @@ public class ElementTree {
 			tree.createSubtree(key, node);
 
 		} catch (ObjectNotFoundException e) {
-			elementNotFound(key);
+			throw createElementNotFoundException(key);
 		}
 	}
 
@@ -270,15 +270,12 @@ public class ElementTree {
 		try {
 			tree.deleteChild(key.removeLastSegments(1), key.lastSegment());
 		} catch (ObjectNotFoundException e) {
-			elementNotFound(key);
+			throw createElementNotFoundException(key);
 		}
 	}
 
-	/**
-	 * Complains that an element was not found
-	 */
-	protected void elementNotFound(IPath key) {
-		throw new IllegalArgumentException(NLS.bind(Messages.watson_elementNotFound, key));
+	private IllegalArgumentException createElementNotFoundException(IPath key) {
+		return new IllegalArgumentException(NLS.bind(Messages.watson_elementNotFound, key));
 	}
 
 	/**
@@ -349,15 +346,14 @@ public class ElementTree {
 		if (cache != null && cache.path == key) {
 			return cache.childPaths;
 		}
+		if (key == null)
+			return tree.rootPaths();
 		try {
-			if (key == null)
-				return new IPath[] {tree.rootKey()};
 			IPath[] children = tree.getChildren(key);
 			childIDsCache = new ChildIDsCache(key, children); // Cache the result
 			return children;
 		} catch (ObjectNotFoundException e) {
-			elementNotFound(key);
-			return null; // can't get here
+			throw createElementNotFoundException(key);
 		}
 	}
 
@@ -391,8 +387,7 @@ public class ElementTree {
 			lookupCache = lookup = tree.lookup(key);
 		if (lookup.isPresent)
 			return lookup.data;
-		elementNotFound(key);
-		return null; // can't get here
+		throw createElementNotFoundException(key);
 	}
 
 	/**
@@ -408,8 +403,7 @@ public class ElementTree {
 			lookupCacheIgnoreCase = lookup = tree.lookupIgnoreCase(key);
 		if (lookup.isPresent)
 			return lookup.data;
-		elementNotFound(key);
-		return null; // can't get here
+		throw createElementNotFoundException(key);
 	}
 
 	/**
@@ -423,8 +417,7 @@ public class ElementTree {
 				return new String[] {""}; //$NON-NLS-1$
 			return tree.getNamesOfChildren(key);
 		} catch (ObjectNotFoundException e) {
-			elementNotFound(key);
-			return null; // can't get here
+			throw createElementNotFoundException(key);
 		}
 	}
 
@@ -438,7 +431,7 @@ public class ElementTree {
 		}
 		// The parent ElementTree is stored as the node data of the parent DeltaDataTree,
 		// to simplify canonicalization in the presence of rerooting.
-		return (ElementTree) parentTree.getData(tree.rootKey());
+		return (ElementTree) parentTree.getRootData();
 	}
 
 	/**
@@ -466,8 +459,7 @@ public class ElementTree {
 			DataTreeNode elementNode = (DataTreeNode) tree.copyCompleteSubtree(key);
 			return new ElementTree(elementNode);
 		} catch (ObjectNotFoundException e) {
-			elementNotFound(key);
-			return null;
+			throw createElementNotFoundException(key);
 		}
 	}
 
@@ -674,11 +666,11 @@ public class ElementTree {
 					lookupCache = lookupCacheIgnoreCase = null;
 					return newData;
 				} catch (ObjectNotFoundException e) {
-					elementNotFound(key);
+					throw createElementNotFoundException(key);
 				}
 			}
 		} else {
-			elementNotFound(key);
+			throw createElementNotFoundException(key);
 		}
 		return null;
 	}
@@ -701,7 +693,7 @@ public class ElementTree {
 		try {
 			tree.setData(key, data);
 		} catch (ObjectNotFoundException e) {
-			elementNotFound(key);
+			throw createElementNotFoundException(key);
 		}
 	}
 
@@ -733,14 +725,10 @@ public class ElementTree {
 		return buffer.toString();
 	}
 
+	/** for debugging purposes only */
 	@Override
 	public String toString() {
-		ElementTree root = getParent();
-		while (root != null && root.getParent() != null) {
-			root = root.getParent();
-		}
-		return "ElementTree(" + treeStamp + "->" + (getParent() == null ? null : getParent().treeStamp) + "..." //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				+ (root == null ? null : root.treeStamp) + ")"; //$NON-NLS-1$
+		return "ElementTree(" + treeStamp + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public int getTreeStamp() {
