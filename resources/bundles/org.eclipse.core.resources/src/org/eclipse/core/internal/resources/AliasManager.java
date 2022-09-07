@@ -20,6 +20,7 @@ package org.eclipse.core.internal.resources;
 
 import java.net.URI;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -167,10 +168,11 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 				if (value == null)
 					return;
 				if (value instanceof List) {
-					@SuppressWarnings("unchecked")
-					Iterator<IResource> duplicates = ((List<IResource>) value).iterator();
-					while (duplicates.hasNext())
-						doit.accept(duplicates.next());
+					for (Object element : ((List<?>) value)) {
+						if (element instanceof IResource) {
+							doit.accept((IResource) element);
+						}
+					}
 				} else {
 					doit.accept((IResource) value);
 				}
@@ -186,10 +188,11 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 			if (value == null)
 				return;
 			if (value instanceof List) {
-				@SuppressWarnings("unchecked")
-				Iterator<IResource> duplicates = ((List<IResource>) value).iterator();
-				while (duplicates.hasNext())
-					doit.accept(duplicates.next());
+				for (Object element : ((List<?>) value)) {
+					if (element instanceof IResource) {
+						doit.accept((IResource) element);
+					}
+				}
 			} else {
 				doit.accept((IResource) value);
 			}
@@ -200,21 +203,19 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		 * whose location overlaps another resource in the map.
 		 */
 		public void overLappingResourcesDo(Consumer<IResource> doit) {
-			Iterator<Map.Entry<IFileStore, Object>> entries = map.entrySet().iterator();
 			IFileStore previousStore = null;
 			IResource previousResource = null;
-			while (entries.hasNext()) {
-				Map.Entry<IFileStore, Object> current = entries.next();
+			for (Entry<IFileStore, Object> current : map.entrySet()) {
 				//value is either single resource or List of resources
 				IFileStore currentStore = current.getKey();
 				IResource currentResource = null;
 				Object value = current.getValue();
 				if (value instanceof List) {
-					//if there are several then they're all overlapping
-					@SuppressWarnings("unchecked")
-					Iterator<IResource> duplicates = ((List<IResource>) value).iterator();
-					while (duplicates.hasNext())
-						doit.accept(duplicates.next().getProject());
+					for (Object element : ((List<?>) value)) {
+						if (element instanceof IResource) {
+							doit.accept(((IResource) element).getProject());
+						}
+					}
 				} else {
 					//value is a single resource
 					currentResource = (IResource) value;
