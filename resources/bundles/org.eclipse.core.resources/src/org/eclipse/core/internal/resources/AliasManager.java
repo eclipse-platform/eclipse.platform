@@ -21,6 +21,7 @@ package org.eclipse.core.internal.resources;
 import java.net.URI;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -282,17 +283,17 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 	 * invalidate the locations map or aliased projects set.  These will be
 	 * updated incrementally on the next alias request.
 	 */
-	private final Set<IResource> changedLinks = new HashSet<>();
+	private final Set<IResource> changedLinks = ConcurrentHashMap.newKeySet();
 
 	/**
 	 * This flag is true when projects have been created or deleted and the
 	 * location map has not been updated accordingly.
 	 */
-	private boolean changedProjects = false;
+	private volatile boolean changedProjects = false;
 
 	/**
-	 * This maps IFileStore -&gt; IResource, associating a file system location
-	 * with the projects and/or linked resources that are rooted at that location.
+	 * This maps IFileStore -&gt; IResource, associating a file system location with
+	 * the projects and/or linked resources that are rooted at that location.
 	 */
 	protected final LocationMap locationsMap = new LocationMap();
 	/**
@@ -473,11 +474,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 					removeFromLocationsMap(link, link.getStore());
 				//fall through
 			case LifecycleEvent.PRE_FILTER_ADD :
-				changedLinks.add(event.resource);
-				break;
 			case LifecycleEvent.PRE_FILTER_REMOVE :
-				changedLinks.add(event.resource);
-				break;
 			case LifecycleEvent.PRE_LINK_CREATE :
 				changedLinks.add(event.resource);
 				break;
@@ -504,18 +501,10 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		boolean noAliases = !aliasedProjects.contains(project);
 
 		//now update any structure changes and check again if an update is needed
-		if (hasStructureChanges()) {
-			updateStructureChanges();
+		if (checkStructuralChanges()) {
 			noAliases &= nonDefaultResourceCount <= 0 || !aliasedProjects.contains(project);
 		}
 		return noAliases;
-	}
-
-	/**
-	 * Returns whether there are any structure changes that we have not yet processed.
-	 */
-	private boolean hasStructureChanges() {
-		return changedProjects || !changedLinks.isEmpty();
 	}
 
 	/**
@@ -552,12 +541,20 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
+		if (changedProjects) {
+			// no need to evaluate delta, we already know projects have changed
+			// and recomputation is necessary.
+			return;
+		}
 		final IResourceDelta delta = event.getDelta();
 		if (delta == null)
 			return;
 		//invalidate location map if there are added or removed projects.
-		if (delta.getAffectedChildren(IResourceDelta.ADDED | IResourceDelta.REMOVED, IContainer.INCLUDE_HIDDEN).length > 0)
+		if (delta.getAffectedChildren(IResourceDelta.ADDED | IResourceDelta.REMOVED,
+				IContainer.INCLUDE_HIDDEN).length > 0) {
 			changedProjects = true;
+			return;
+		}
 
 		// invalidate location map if any project has the description changed
 		// or was closed/opened
@@ -565,7 +562,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		for (IResourceDelta element : changed) {
 			if ((element.getFlags() & IResourceDelta.DESCRIPTION) == IResourceDelta.DESCRIPTION || (element.getFlags() & IResourceDelta.OPEN) == IResourceDelta.OPEN) {
 				changedProjects = true;
-				break;
+				return;
 			}
 		}
 	}
@@ -624,27 +621,39 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 	/**
 	 * Process any structural changes that have occurred since the last alias
 	 * request.
+	 *
+	 * @return <code>true</code> if some structural changes where processed,
+	 *         <code>false</code> if no structural changes were detected
 	 */
-	private void updateStructureChanges() {
+	/*
+	 * This method is synchronized as it calls
+	 * buildLocationsMap/addToLocationsMap/addToLocationsMap which are not meant to
+	 * run in parallel. Incoming events/notifications that cause a structural change
+	 * can come from different threads, but we only want a single thread to process
+	 * them at a time.
+	 */
+	private synchronized boolean checkStructuralChanges() {
 		boolean hadChanges = false;
 		if (changedProjects) {
 			//if a project is added or removed, just recompute the whole world
 			changedProjects = false;
+			changedLinks.clear(); // buildLocationMaps will also process links
 			hadChanges = true;
 			buildLocationsMap();
 		} else {
-			//incrementally update location map for changed links
-			for (IResource resource : changedLinks) {
-				hadChanges = true;
-				if (!resource.isAccessible())
-					continue;
-				if (resource.isLinked())
+			// incrementally update location map for changed links
+			Collection<IResource> changedLinksSnapshots = new HashSet<>(changedLinks);
+			changedLinks.removeAll(changedLinksSnapshots);
+			hadChanges = !changedLinksSnapshots.isEmpty();
+			for (IResource resource : changedLinksSnapshots) {
+				if (resource.isAccessible() && resource.isLinked()) {
 					addToLocationsMap(resource, ((Resource) resource).getStore());
+				}
 			}
 		}
-		changedLinks.clear();
-		if (hadChanges)
+		if (hadChanges) {
 			buildAliasedProjectsSet();
-		changedProjects = false;
+		}
+		return hadChanges;
 	}
 }
