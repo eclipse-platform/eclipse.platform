@@ -99,6 +99,7 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 			case Job.SLEEPING :
 				wakeUp(delay);
 				break;
+			case RUNNING :
 			case NONE :
 				if (isAutoBuilding) {
 					schedule(delay);
@@ -166,7 +167,6 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 			if (!result.isOK()) {
 				throw new ResourceException(result);
 			}
-			buildNeeded = false;
 		} finally {
 			//building may close the tree, but we are still inside an
 			// operation so open it
