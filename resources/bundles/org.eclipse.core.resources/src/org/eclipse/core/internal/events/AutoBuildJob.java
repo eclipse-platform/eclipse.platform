@@ -95,6 +95,7 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 		//don't mess with the interrupt flag if the job is still running
 		if (state != Job.RUNNING)
 			setInterrupted(false);
+
 		switch (state) {
 			case Job.SLEEPING :
 				wakeUp(delay);
@@ -109,6 +110,17 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 					if (noBuildJob.getState() != Job.RUNNING) {
 						noBuildJob.schedule(delay);
 					}
+				}
+				break;
+			case RUNNING:
+				// In rare cases, we can end up in a situation where some other thread calls
+				// WorkManager.setBuild(true) while the AutoBuildJob is already running.
+				// In this case the AutoBuildJob should be rescheduled so we are certain that
+				// the new build request is eventually processed and does not get lost.
+				// Therefore, if a build is needed and the autobuild is enabled, then reschedule
+				// the job
+				if (isAutoBuilding && buildNeeded && !avoidBuild && Job.getJobManager().currentJob() != this) {
+					schedule(delay);
 				}
 				break;
 		}
@@ -157,6 +169,7 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 			workspace.broadcastBuildEvent(workspace, IResourceChangeEvent.PRE_BUILD, trigger);
 			IStatus result = Status.OK_STATUS;
 			try {
+				// Note: shouldBuild() also resets the need/force/avoid build flags!
 				if (shouldBuild())
 					result = workspace.getBuildManager().build(workspace.getBuildOrder(), ICoreConstants.EMPTY_BUILD_CONFIG_ARRAY, trigger, subMonitor.split(Policy.opWork));
 			} finally {
@@ -166,7 +179,6 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 			if (!result.isOK()) {
 				throw new ResourceException(result);
 			}
-			buildNeeded = false;
 		} finally {
 			//building may close the tree, but we are still inside an
 			// operation so open it
