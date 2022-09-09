@@ -32,6 +32,7 @@ public class Bug_574884Schedule extends AbstractJobManagerTest {
 
 		private final Queue<Runnable> queue;
 		private final Object myFamily;
+		AtomicInteger reschedules = new AtomicInteger();
 
 		/**
 		 * @param jobName descriptive job name
@@ -54,13 +55,15 @@ public class Bug_574884Schedule extends AbstractJobManagerTest {
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			Runnable action = queue.poll();
+			boolean empty = queue.isEmpty();
 			try {
 				if (action != null && !monitor.isCanceled()) {
 					action.run();
 				}
 			} finally {
-				if (!queue.isEmpty() && !monitor.isCanceled()) {
-					schedule(); // this sometimes does not work?
+				if (!empty && !monitor.isCanceled()) {
+					reschedules.incrementAndGet();
+					schedule(); // typically not executed when error occurs
 				}
 			}
 			return Status.OK_STATUS;
@@ -71,16 +74,18 @@ public class Bug_574884Schedule extends AbstractJobManagerTest {
 		 */
 		public void schedule(Runnable action) {
 			queue.offer(action);
-			schedule(); // or this sometimes does not work?
+			// according to contract the schedule() should run the Job at least once more.
+			schedule(); // this sometimes does not work when job is already scheduled (i.e may be
+						// waiting/running)
 		}
 	}
 
-	final int RUNS = 1_000_000;
+	final int RUNS = 10_000_000;
 
 
 	/**
 	 * starts many jobs that should run three times but sometimes only run exactly
-	 * once (i have never seen running twice)
+	 * once (with reschedules=0 or 1) and rarely twice (reschedules=1)
 	 */
 	@Test
 	public void testJoinLambdaQuick() throws InterruptedException {
@@ -97,14 +102,19 @@ public class Bug_574884Schedule extends AbstractJobManagerTest {
 			}
 			Job.getJobManager().join(this, null);
 			int executionsAfterJoin = executions.get();
-			String message = "after " + l + " tries: executionsAfterJoin: " + executionsAfterJoin + "/" + INNER_RUNS;
+			String message = "after " + l + " tries: executionsAfterJoin: " + executionsAfterJoin + "/" + INNER_RUNS
+					+ " reschedules=" + serialExecutor.reschedules;
 			if (executionsAfterJoin != INNER_RUNS) {
 				System.out.println(message);
-				Thread.sleep(1000); // wait till the Job did finish (no way such a simple job can still be running)
+				Thread.yield();
+				Thread.sleep(1); // wait till the Job did finish
+				// only small chance such a simple job can still be running
+				Thread.yield();
 				int executionsCured = executions.get();
 				if (executionsCured != INNER_RUNS) {
 					System.out.println("but did finish"); // would be a join() bug
 				} else {
+					// assertEquals("Job was not (re)scheduled " + message, 0, fails);
 					fails++;
 					if (firstMessage == null) {
 						firstMessage = message;
@@ -114,4 +124,5 @@ public class Bug_574884Schedule extends AbstractJobManagerTest {
 		}
 		assertEquals("Job was not (re)scheduled " + fails + "/" + RUNS + " times. example: " + firstMessage, 0, fails);
 	}
+
 }
