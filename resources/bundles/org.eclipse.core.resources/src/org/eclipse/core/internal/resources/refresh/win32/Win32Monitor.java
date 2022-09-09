@@ -608,7 +608,9 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 			// we ran into a problem
 			int error = Win32Natives.GetLastError();
 			if (error != Win32Natives.ERROR_INVALID_HANDLE && error != Win32Natives.ERROR_SUCCESS) {
-				addException(NLS.bind(Messages.WM_nativeErr, Integer.toString(error)));
+				if (error != Win32Natives.ERROR_ACCESS_DENIED) {
+					addException(NLS.bind(Messages.WM_nativeErr, Integer.toString(error)));
+				}
 				refreshResult.monitorFailed(this, null);
 			}
 			return;
