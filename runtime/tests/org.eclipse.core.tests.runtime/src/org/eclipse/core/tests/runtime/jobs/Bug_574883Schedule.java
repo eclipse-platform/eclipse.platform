@@ -26,7 +26,7 @@ import org.junit.runners.MethodSorters;
  * Test for bug https://github.com/eclipse-platform/eclipse.platform/issues/160
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class Bug_574884Schedule extends AbstractJobManagerTest {
+public class Bug_574883Schedule extends AbstractJobManagerTest {
 
 	static class SerialExecutor extends Job {
 
@@ -80,7 +80,7 @@ public class Bug_574884Schedule extends AbstractJobManagerTest {
 		}
 	}
 
-	final int RUNS = 10_000_000;
+	final int RUNS = 1_000_000;
 
 
 	/**
