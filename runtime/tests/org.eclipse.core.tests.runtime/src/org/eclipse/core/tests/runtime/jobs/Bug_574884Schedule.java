@@ -54,12 +54,10 @@ public class Bug_574884Schedule extends AbstractJobManagerTest {
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			Runnable action = queue.poll();
-			try {
-				if (action != null && !monitor.isCanceled()) {
+			if (action != null && !monitor.isCanceled()) {
+				try {
 					action.run();
-				}
-			} finally {
-				if (!queue.isEmpty() && !monitor.isCanceled()) {
+				} finally {
 					schedule(); // this sometimes does not work?
 				}
 			}
