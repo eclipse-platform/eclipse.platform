@@ -100,6 +100,11 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 				wakeUp(delay);
 				break;
 			case RUNNING :
+				// in rare cases, we can end up in a situation where the AutoBuildJob is still running and buildNeeded is already
+				// true again. To prevent a state in which buildNeeded is true, but no AutoBuildJob is scheduled, we schedule it again.
+				if (isAutoBuilding && buildNeeded)
+					schedule(delay);
+				break;
 			case NONE :
 				if (isAutoBuilding) {
 					schedule(delay);
@@ -158,7 +163,8 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 			workspace.broadcastBuildEvent(workspace, IResourceChangeEvent.PRE_BUILD, trigger);
 			IStatus result = Status.OK_STATUS;
 			try {
-				if (shouldBuild())
+				// Note: shouldBuild() also resets the need/force/avoid build flags!
+				if (shouldBuild()) 
 					result = workspace.getBuildManager().build(workspace.getBuildOrder(), ICoreConstants.EMPTY_BUILD_CONFIG_ARRAY, trigger, subMonitor.split(Policy.opWork));
 			} finally {
 				//always send POST_BUILD if there has been a PRE_BUILD
