@@ -34,6 +34,9 @@ public class Win32Natives {
 	 * invalid.
 	 */
 	public static final int ERROR_INVALID_HANDLE;
+
+	/** Access is denied. */
+	public static final int ERROR_ACCESS_DENIED = 5;
 	/**
 	 * The combination of all of the error constants.
 	 */
