@@ -19,7 +19,7 @@
     <relativePath>../eclipse-platform-parent</relativePath>
   </parent>
 
-  <groupId>eclipse.platform</groupId>
+  <groupId>org.eclipse.platform</groupId>
   <artifactId>eclipse.platform</artifactId>
   <packaging>pom</packaging>
 
