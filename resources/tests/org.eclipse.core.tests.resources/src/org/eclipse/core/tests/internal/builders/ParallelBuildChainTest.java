@@ -229,7 +229,10 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 		duration = System.currentTimeMillis() - duration;
 		assertEquals(getWorkspace().getRoot().getProjects().length, TimerBuilder.getTotalBuilds());
 		assertEquals(1, TimerBuilder.getMaxSimultaneousBuilds());
-		assertTrue(duration > projectWithLongRunningBuilds().length * LONG_BUILD_DURATION);
+		assertTrue(
+				"Running " + projectWithLongRunningBuilds().length + " conflicting jobs of duration "
+						+ LONG_BUILD_DURATION + " should have taken more than " + duration,
+				duration > projectWithLongRunningBuilds().length * LONG_BUILD_DURATION);
 	}
 
 	@Test
