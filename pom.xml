@@ -22,7 +22,7 @@
   <artifactId>eclipse.platform.ua</artifactId>
   <packaging>pom</packaging>
   <properties>
-    <tycho.scmUrl>scm:git:https://gihub.com/eclipse-platform/eclipse.platform.ua.git</tycho.scmUrl>
+    <tycho.scmUrl>scm:git:https://github.com/eclipse-platform/eclipse.platform.ua.git</tycho.scmUrl>
   </properties>
 
   <!-- 
