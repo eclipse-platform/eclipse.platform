@@ -155,7 +155,7 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	/**
 	 * This signal is used to synchronize Job listener notification
 	 */
-	volatile boolean waitForNotificationFinished;
+	volatile Thread notifyPendingThread;
 
 	private static synchronized int getNextJobNumber() {
 		return nextJobNumber++;

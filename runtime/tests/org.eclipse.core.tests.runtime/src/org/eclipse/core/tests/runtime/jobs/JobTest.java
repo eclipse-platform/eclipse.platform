@@ -1425,6 +1425,53 @@ public class JobTest extends AbstractJobTest {
 		assertEquals("2.1", 1, runCount[0]);
 	}
 
+	/**
+	 * It's OK to reschedule the same job from the JobChangeAdapter done()
+	 * notification.
+	 *
+	 * @see <a href=
+	 *      "https://github.com/eclipse-jdt/eclipse.jdt.debug/issues/122">eclipse.jdt.debug/issues/122</a>
+	 */
+	public void testRescheduleFromDone() throws InterruptedException {
+		AtomicInteger runningCount = new AtomicInteger();
+		final Job j = new Job("testCancelAboutToSchedule") {
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				runningCount.incrementAndGet();
+				return Status.OK_STATUS;
+			}
+
+			@Override
+			public boolean belongsTo(Object family) {
+				return JobTest.this == family;
+			}
+		};
+		JobChangeAdapter listener = new JobChangeAdapter() {
+
+			@Override
+			public void done(IJobChangeEvent event) {
+				if (runningCount.get() < 3) {
+					j.schedule();
+				}
+			}
+		};
+		Job.getJobManager().addJobChangeListener(listener);
+		try {
+			j.schedule();
+			int ONE_SECOND = 1_000_000_000;
+			long n0 = System.nanoTime();
+			while (runningCount.get() < 3) {
+				Thread.yield();
+				assertTrue("timeout runningCount=" + runningCount.get(), (System.nanoTime() - n0) < ONE_SECOND);
+			}
+			j.join();
+			assertEquals(3, runningCount.get());
+		} finally {
+			Job.getJobManager().removeJobChangeListener(listener);
+		}
+	}
+
 	/*
 	 * see bug #43458
 	 */
