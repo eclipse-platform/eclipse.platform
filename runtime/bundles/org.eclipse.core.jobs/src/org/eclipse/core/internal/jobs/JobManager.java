@@ -701,7 +701,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		final boolean scheduled;
 		try {
 			// do not restart job before notification finished:
-			job.waitForNotificationFinished = true;
+			job.waitForNotificationFinsished = true;
 			synchronized (lock) {
 				//if the job is finishing asynchronously, there is nothing more to do for now
 				if (result == Job.ASYNC_FINISH)
@@ -734,7 +734,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			}
 		} finally {
 			// now job may be restartet eventually in other thread:
-			job.waitForNotificationFinished = false;
+			job.waitForNotificationFinsished = false;
 		}
 		//log result if it is warning or error. When the job belongs to a job group defer the logging
 		//until the whole group is completed (see JobManager#updateJobGroup).
@@ -1202,7 +1202,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 					Assert.isTrue(job.next() == null);
 					Assert.isTrue(job.previous() == null);
 					blocker.addLast(job);
-				} else if (job.waitForNotificationFinished) {
+				} else if (job.waitForNotificationFinsished) {
 					// do not start this job yet!
 				} else if (jobGroup == null || jobGroup.getMaxThreads() == 0 || (jobGroup.getState() != JobGroup.CANCELING && jobGroup.getRunningJobsCount() < jobGroup.getMaxThreads())) {
 					break;
@@ -1350,12 +1350,6 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 
 	protected void schedule(InternalJob job, long delay, boolean reschedule) {
 		if (scheduleInternal(job, delay, reschedule)) {
-			while (job.waitForNotificationFinished) {
-				// Do not notify next schedule until notification finished delivered.
-				// Which will happen very soon as the job is already finished and only waiting
-				// for the listeners
-				Thread.onSpinWait();
-			}
 			scheduleNotify(job, delay, reschedule);
 		}
 	}
