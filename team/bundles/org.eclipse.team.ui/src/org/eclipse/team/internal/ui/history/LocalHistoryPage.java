@@ -567,8 +567,19 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 					if (sel instanceof IStructuredSelection) {
 						IStructuredSelection tempSelection = (IStructuredSelection) sel;
 						if (tempSelection.size() == 1) {
-							manager.add(new Separator("getContents")); //$NON-NLS-1$
-							manager.add(getContentsAction);
+							boolean showGetContentsAction = true;
+							// Issue 178 avoid presenting this action against the current
+							// revision which would result in an undesired truncation
+							if (tempSelection.getFirstElement() instanceof LocalFileRevision) {
+								LocalFileRevision lfr = (LocalFileRevision) tempSelection.getFirstElement();
+								if (lfr.isCurrentState()) {
+									showGetContentsAction = false;
+								}
+							}
+							if (showGetContentsAction) {
+								manager.add(new Separator("getContents")); //$NON-NLS-1$
+								manager.add(getContentsAction);
+							}
 						}
 					}
 				}
