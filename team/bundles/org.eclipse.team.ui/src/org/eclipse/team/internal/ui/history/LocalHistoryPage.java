@@ -51,6 +51,7 @@ import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -562,29 +563,35 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			if (compareAction != null)
 				manager.add(compareAction);
 			if (getContentsAction != null) {
-				ISelection sel = treeViewer.getSelection();
-				if (!sel.isEmpty()) {
-					if (sel instanceof IStructuredSelection) {
-						IStructuredSelection tempSelection = (IStructuredSelection) sel;
-						if (tempSelection.size() == 1) {
-							boolean showGetContentsAction = true;
-							// Issue 178 avoid presenting this action against the current
-							// revision which would result in an undesired truncation
-							if (tempSelection.getFirstElement() instanceof LocalFileRevision) {
-								LocalFileRevision lfr = (LocalFileRevision) tempSelection.getFirstElement();
-								if (lfr.isCurrentState()) {
-									showGetContentsAction = false;
-								}
-							}
-							if (showGetContentsAction) {
-								manager.add(new Separator("getContents")); //$NON-NLS-1$
-								manager.add(getContentsAction);
-							}
-						}
-					}
+				if (showGetContentsAction(treeViewer.getStructuredSelection())) {
+					manager.add(new Separator("getContents")); //$NON-NLS-1$
+					manager.add(getContentsAction);
 				}
 			}
 		}
+	}
+
+	/**
+	 * Ensures we have a single selection, and not an invalid selection
+	 * (such as getting the contents of the already-current local file revision)
+	 * @param sel selection to work against
+	 * @return whether the Get Contents action should be displayed to the user
+	 */
+	private boolean showGetContentsAction(ITreeSelection sel) {
+		if (sel.size() == 1) {
+			Object selectedElem = sel.getFirstElement();
+			// Issue #178 avoid presenting this action against the current
+			// revision which results in an undesired file truncation
+			if (selectedElem instanceof LocalFileRevision) {
+				if (((LocalFileRevision) selectedElem).isCurrentState()) {
+					return false;
+				}
+			}
+			// default to showing if we have a single selection we didn't otherwise reject
+			return true;
+		}
+		// selection of wrong size, do not show
+		return false;
 	}
 
 	/**
