@@ -68,7 +68,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * Therefore, in order to make sure that no deadlock is possible,
  * the deadlock will still be resolved at this point.
  */
-class DeadlockDetector {
+public class DeadlockDetector {
 	private static int NO_STATE = 0;
 	//state variables in the graph
 	private static int WAITING_FOR_LOCK = -1;
@@ -82,6 +82,7 @@ class DeadlockDetector {
 	private final ArrayList<Thread> lockThreads = new ArrayList<>();
 	//whether the graph needs to be resized
 	private boolean resize = false;
+	private static volatile boolean noDeadlockReport;
 
 	/**
 	 * Recursively check if any of the threads that prevent the current thread from running
@@ -597,9 +598,24 @@ class DeadlockDetector {
 	}
 
 	/**
+	 * For tests that are supposed to create deadlocks.
+	 */
+	public static void runSilent(Runnable runnable) {
+		DeadlockDetector.noDeadlockReport = true;
+		try {
+			runnable.run();
+		} finally {
+			DeadlockDetector.noDeadlockReport = false;
+		}
+	}
+
+	/**
 	 * Adds a 'deadlock detected' message to the log with a stack trace.
 	 */
 	private void reportDeadlock(Deadlock deadlock) {
+		if (noDeadlockReport) {
+			return;
+		}
 		String msg = "Deadlock detected. All locks owned by thread " + deadlock.getCandidate().getName() + " will be suspended."; //$NON-NLS-1$ //$NON-NLS-2$
 		MultiStatus main = new MultiStatus(JobManager.PI_JOBS, JobManager.PLUGIN_ERROR, msg, new IllegalStateException());
 		Thread[] threads = deadlock.getThreads();
