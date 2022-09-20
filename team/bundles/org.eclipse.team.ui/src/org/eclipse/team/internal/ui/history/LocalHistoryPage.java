@@ -562,11 +562,9 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			}
 			if (compareAction != null)
 				manager.add(compareAction);
-			if (getContentsAction != null) {
-				if (showGetContentsAction(treeViewer.getStructuredSelection())) {
-					manager.add(new Separator("getContents")); //$NON-NLS-1$
-					manager.add(getContentsAction);
-				}
+			if (getContentsAction != null && showGetContentsAction(treeViewer.getStructuredSelection())) {
+				manager.add(new Separator("getContents")); //$NON-NLS-1$
+				manager.add(getContentsAction);
 			}
 		}
 	}
