@@ -37,7 +37,7 @@ public abstract class EventHandlerModelProxy extends AbstractModelProxy implemen
 	/**
 	 * Timer for timer tasks
 	 */
-	private Timer fTimer = new Timer(true);
+	private volatile Timer fTimer;
 
 	/**
 	 * Map of event source to resume events with a pending suspend that timed
@@ -91,7 +91,9 @@ public abstract class EventHandlerModelProxy extends AbstractModelProxy implemen
 	@Override
 	public synchronized void dispose() {
 		super.dispose();
-		fTimer.cancel();
+		if (fTimer != null) {
+			fTimer.cancel();
+		}
 		fTimerTasks.clear();
 		DebugPlugin.getDefault().removeDebugEventListener(this);
 		for (DebugEventHandler handler : fHandlers) {
@@ -212,6 +214,9 @@ public abstract class EventHandlerModelProxy extends AbstractModelProxy implemen
 				if (!isDisposed()) {
 					PendingSuspendTask task = new PendingSuspendTask(handler, event);
 					fTimerTasks.put(event.getSource(), task);
+					if (fTimer == null) {
+						fTimer = new Timer(getClass().getSimpleName(), true);
+					}
 					fTimer.schedule(task, 500);
 				}
 			}
