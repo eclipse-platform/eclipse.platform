@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.internal.jobs;
 
+import org.eclipse.core.internal.jobs.JobListeners.IListenerDoit;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -22,27 +23,59 @@ public class JobChangeEvent implements IJobChangeEvent {
 	/**
 	 * The job on which this event occurred.
 	 */
-	Job job = null;
+	final Job job;
 	/**
 	 * The result returned by the job's run method, or <code>null</code> if
 	 * not applicable.
 	 */
-	IStatus result = null;
+	final IStatus result;
 	/**
 	 * The result returned by the job's job group, if this event signals
 	 * completion of the last job in a group, or <code>null</code> if not
 	 * applicable.
 	 */
-	IStatus jobGroupResult = null;
+	IStatus jobGroupResult;
 	/**
 	 * The amount of time to wait after scheduling the job before it should be run,
 	 * or <code>-1</code> if not applicable for this type of event.
 	 */
-	long delay = -1;
+	final long delay;
 	/**
 	 * Whether this job is being immediately rescheduled.
 	 */
-	boolean reschedule = false;
+	final boolean reschedule;
+
+	final IListenerDoit doit;
+
+	JobChangeEvent(IListenerDoit doit, Job job) {
+		this.doit = doit;
+		this.job = job;
+
+		this.result = null;
+		this.jobGroupResult = null;
+		this.reschedule = false;
+		this.delay = -1;
+	}
+
+	JobChangeEvent(IListenerDoit doit, Job job, IStatus result, boolean reschedule) {
+		this.doit = doit;
+		this.job = job;
+		this.result = result;
+
+		this.jobGroupResult = null;
+		this.reschedule = reschedule;
+		this.delay = -1;
+	}
+
+	JobChangeEvent(IListenerDoit doit, Job job, long delay, boolean reschedule) {
+		this.doit = doit;
+		this.job = job;
+		this.delay = delay;
+
+		this.result = null;
+		this.jobGroupResult = null;
+		this.reschedule = reschedule;
+	}
 
 	@Override
 	public long getDelay() {

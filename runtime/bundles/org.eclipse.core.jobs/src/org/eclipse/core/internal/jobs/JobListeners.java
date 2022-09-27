@@ -39,34 +39,24 @@ class JobListeners {
 	 */
 	protected final ListenerList<IJobChangeListener> global = new ListenerList<>(ListenerList.IDENTITY);
 
-	/**
-	 * TODO Could use an instance pool to re-use old event objects
-	 */
-	static JobChangeEvent newEvent(Job job) {
-		JobChangeEvent instance = new JobChangeEvent();
-		instance.job = job;
-		return instance;
-	}
-
-	static JobChangeEvent newEvent(Job job, IStatus result) {
-		JobChangeEvent instance = new JobChangeEvent();
-		instance.job = job;
-		instance.result = result;
-		return instance;
-	}
-
-	static JobChangeEvent newEvent(Job job, long delay) {
-		JobChangeEvent instance = new JobChangeEvent();
-		instance.job = job;
-		instance.delay = delay;
-		return instance;
+	/** Should not be used during a lock */
+	void sendEvents(InternalJob job) {
+		JobChangeEvent event;
+		// Synchronize eventQueue to get a stable order of events across Threads.
+		// There is however no guarantee in which Thread the event is delivered.
+		synchronized (job.eventQueue) {
+			while ((event = job.eventQueue.poll()) != null) {
+				sendEvent(event);
+			}
+		}
 	}
 
 	/**
-	 * Process the given doit for all global listeners and all local listeners
-	 * on the given job.
+	 * Process the given event for all global listeners and all local listeners on
+	 * the given job.
 	 */
-	private void doNotify(final IListenerDoit doit, final IJobChangeEvent event) {
+	private void sendEvent(final JobChangeEvent event) {
+		IListenerDoit doit = event.doit;
 		//notify all global listeners
 		for (IJobChangeListener listener : global) {
 			try {
@@ -82,6 +72,11 @@ class JobListeners {
 				handleException(listener, e);
 			}
 		}
+	}
+
+	/** Can be used while synchronize(JobManager.lock) */
+	private void queueEvent(final JobChangeEvent event) {
+		((InternalJob) event.job).eventQueue.offer(event);
 	}
 
 	private void handleException(IJobChangeListener listener, Throwable e) {
@@ -104,31 +99,27 @@ class JobListeners {
 		global.remove(listener);
 	}
 
-	public void aboutToRun(Job job) {
-		doNotify(aboutToRun, newEvent(job));
+	public void queueAboutToRun(Job job) {
+		queueEvent(new JobChangeEvent(aboutToRun, job));
 	}
 
-	public void awake(Job job) {
-		doNotify(awake, newEvent(job));
+	public void queueAwake(Job job) {
+		queueEvent(new JobChangeEvent(awake, job));
 	}
 
-	public void done(Job job, IStatus result, boolean reschedule) {
-		JobChangeEvent event = newEvent(job, result);
-		event.reschedule = reschedule;
-		doNotify(done, event);
+	public void queueDone(Job job, IStatus result, boolean reschedule) {
+		queueEvent(new JobChangeEvent(done, job, result, reschedule));
 	}
 
-	public void running(Job job) {
-		doNotify(running, newEvent(job));
+	public void queueRunning(Job job) {
+		queueEvent(new JobChangeEvent(running, job));
 	}
 
-	public void scheduled(Job job, long delay, boolean reschedule) {
-		JobChangeEvent event = newEvent(job, delay);
-		event.reschedule = reschedule;
-		doNotify(scheduled, event);
+	public void queueScheduled(Job job, long delay, boolean reschedule) {
+		queueEvent(new JobChangeEvent(scheduled, job, delay, reschedule));
 	}
 
-	public void sleeping(Job job) {
-		doNotify(sleeping, newEvent(job));
+	public void queueSleeping(Job job) {
+		queueEvent(new JobChangeEvent(sleeping, job));
 	}
 }
