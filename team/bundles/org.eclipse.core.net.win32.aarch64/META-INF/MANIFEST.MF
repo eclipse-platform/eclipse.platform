@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %fragmentName
+Bundle-Vendor: %providerName
+Bundle-Localization: fragment
+Bundle-SymbolicName: org.eclipse.core.net.win32.aarch64;singleton:=true
+Bundle-Version: 1.1.700.qualifier
+Fragment-Host: org.eclipse.core.net;bundle-version="1.1.0"
+Eclipse-PlatformFilter: (& (osgi.os=win32) (osgi.arch=aarch64))
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.eclipse.core.net.win32.aarch64
