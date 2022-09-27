@@ -340,6 +340,10 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 				default :
 					changeState(job, Job.NONE);
 			}
+			if (monitor == null) {
+				// only notify listeners if the job was waiting or sleeping
+				jobListeners.queueDone((Job) job, Status.CANCEL_STATUS, false);
+			}
 		}
 		//call monitor and canceling outside sync block
 		if (monitor != null) {
@@ -350,8 +354,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			}
 			return false;
 		}
-		//only notify listeners if the job was waiting or sleeping
-		jobListeners.done((Job) job, Status.CANCEL_STATUS, false);
+		jobListeners.sendEvents(job);
 		return true;
 	}
 
@@ -606,9 +609,10 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 					changeState(job, Job.WAITING);
 				}
 			}
+			if (cancelling) {
+				jobListeners.queueDone((Job) job, Status.CANCEL_STATUS, false);
+			}
 		}
-		if (cancelling)
-			jobListeners.done((Job) job, Status.CANCEL_STATUS, false);
 		return !cancelling;
 	}
 
@@ -699,43 +703,38 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		long rescheduleDelay = InternalJob.T_NONE;
 		final boolean reschedule;
 		final boolean scheduled;
-		try {
-			// do not restart job before notification finished:
-			job.notifyPendingThread = Thread.currentThread();
-			synchronized (lock) {
-				//if the job is finishing asynchronously, there is nothing more to do for now
-				if (result == Job.ASYNC_FINISH)
-					return;
-				//if job is not known then it cannot be done
-				if (job.getState() == Job.NONE)
-					return;
-				if (JobManager.DEBUG && notify)
-					JobManager.debug("Ending job: " + job); //$NON-NLS-1$
-				job.setResult(result);
-				job.setProgressMonitor(null);
-				job.setThread(null);
-				rescheduleDelay = job.getStartTime(); // XXX time used as delay
-				changeState(job, Job.NONE); // removes from #running without adding to #sleeping or #waiting
-				reschedule = active && rescheduleDelay > InternalJob.T_NONE && job.shouldSchedule();
-				if (reschedule) {
-					// adds to #sleeping or #waiting
-					// since reschedule==true doSchedule will not notify CANCEL_STATUS
-					scheduled = scheduleInternal(job, rescheduleDelay, reschedule);
-				} else {
-					scheduled = false;
-				}
+		synchronized (lock) {
+			//if the job is finishing asynchronously, there is nothing more to do for now
+			if (result == Job.ASYNC_FINISH)
+				return;
+			//if job is not known then it cannot be done
+			if (job.getState() == Job.NONE)
+				return;
+			if (JobManager.DEBUG && notify)
+				JobManager.debug("Ending job: " + job); //$NON-NLS-1$
+			job.setResult(result);
+			job.setProgressMonitor(null);
+			job.setThread(null);
+			rescheduleDelay = job.getStartTime(); // XXX time used as delay
+			changeState(job, Job.NONE); // removes from #running without adding to #sleeping or #waiting
+			reschedule = active && rescheduleDelay > InternalJob.T_NONE && job.shouldSchedule();
+			if (reschedule) {
+				// adds to #sleeping or #waiting
+				// since reschedule==true doSchedule will not notify CANCEL_STATUS
+				scheduled = scheduleInternal(job, rescheduleDelay, reschedule);
+			} else {
+				scheduled = false;
 			}
-			//notify listeners outside sync block
 			if (notify)
-				jobListeners.done((Job) job, result, reschedule);
-			//reschedule the job if requested and we are still active
-			if (scheduled) {
-				scheduleNotify(job, rescheduleDelay, reschedule);
-			}
-		} finally {
-			// now job may be restartet eventually in other thread:
-			job.notifyPendingThread = null;
+				jobListeners.queueDone((Job) job, result, reschedule);
 		}
+		//reschedule the job if requested and we are still active
+		if (scheduled) {
+			pool.jobQueued();
+		}
+		//notify listeners outside sync block
+		jobListeners.sendEvents(job);
+
 		//log result if it is warning or error. When the job belongs to a job group defer the logging
 		//until the whole group is completed (see JobManager#updateJobGroup).
 		if (job.getJobGroup() == null && result.matches(IStatus.ERROR | IStatus.WARNING))
@@ -1202,8 +1201,6 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 					Assert.isTrue(job.next() == null);
 					Assert.isTrue(job.previous() == null);
 					blocker.addLast(job);
-				} else if (job.notifyPendingThread != null) {
-					// do not start this job yet!
 				} else if (jobGroup == null || jobGroup.getMaxThreads() == 0 || (jobGroup.getState() != JobGroup.CANCELING && jobGroup.getRunningJobsCount() < jobGroup.getMaxThreads())) {
 					break;
 				}
@@ -1350,13 +1347,8 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 
 	protected void schedule(InternalJob job, long delay, boolean reschedule) {
 		if (scheduleInternal(job, delay, reschedule)) {
-			while (job.notifyPendingThread != null && job.notifyPendingThread != Thread.currentThread()) {
-				// Do not notify next schedule until notification finished delivered.
-				// Which will happen very soon as the job is already finished and only waiting
-				// for the listeners
-				Thread.onSpinWait();
-			}
-			scheduleNotify(job, delay, reschedule);
+			pool.jobQueued();
+			jobListeners.sendEvents(job);
 		}
 	}
 
@@ -1381,17 +1373,11 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			//remember that we are about to schedule the job
 			//to prevent multiple schedule attempts from succeeding (bug 68452)
 			changeState(job, InternalJob.ABOUT_TO_SCHEDULE);
+			jobListeners.queueScheduled((Job) job, delay, reschedule);
 		}
 		//schedule the job
 		doSchedule(job, delay);
 		return true;
-	}
-
-	private void scheduleNotify(InternalJob job, long delay, boolean reschedule) {
-		// notify listeners outside sync block
-		jobListeners.scheduled((Job) job, delay, reschedule);
-		//call the pool outside sync block to avoid deadlock
-		pool.jobQueued();
 	}
 
 	/**
@@ -1503,8 +1489,9 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			}
 			job.setStartTime(InternalJob.T_INFINITE);
 			changeState(job, Job.SLEEPING);
+			jobListeners.queueSleeping((Job) job);
 		}
-		jobListeners.sleeping((Job) job);
+		jobListeners.sendEvents(job);
 		return true;
 	}
 
@@ -1735,8 +1722,10 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			//must perform this outside sync block because it is third party code
 			boolean shouldRun = shouldRun(job);
 			//check for listener veto
-			if (shouldRun)
-				jobListeners.aboutToRun(job);
+			if (shouldRun) {
+				jobListeners.queueAboutToRun(job);
+				jobListeners.sendEvents(job);
+			}
 			//listeners may have canceled or put the job to sleep
 			boolean endJob = false;
 			synchronized (lock) {
@@ -1752,6 +1741,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 							internal.setThread(worker);
 							internal.internalSetState(Job.RUNNING);
 							internal.jobStateLock.notifyAll();
+							jobListeners.queueRunning(job);
 							break;
 						}
 						endJob = true;
@@ -1765,7 +1755,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 				continue;
 			}
 		}
-		jobListeners.running(job);
+		jobListeners.sendEvents(job);
 		return job;
 
 	}
@@ -1823,13 +1813,13 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			if (job.getState() != Job.SLEEPING)
 				return;
 			scheduled = doSchedule(job, delay);
+			// only notify of wake up if immediate
+			if (scheduled && delay == 0)
+				jobListeners.queueAwake((Job) job);
 		}
 		//call the pool outside sync block to avoid deadlock
 		pool.jobQueued();
-
-		//only notify of wake up if immediate
-		if (scheduled && delay == 0)
-			jobListeners.awake((Job) job);
+		jobListeners.sendEvents(job);
 	}
 
 	@Override

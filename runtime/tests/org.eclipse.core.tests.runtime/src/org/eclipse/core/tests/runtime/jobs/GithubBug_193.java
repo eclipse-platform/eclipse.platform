@@ -16,8 +16,7 @@ package org.eclipse.core.tests.runtime.jobs;
 import static org.junit.Assert.assertEquals;
 
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import junit.framework.TestCase;
 import org.eclipse.core.runtime.*;
@@ -96,7 +95,7 @@ public class GithubBug_193 extends TestCase {
 					if (myFamily == JOB_FAMILY2 && jobId % 3 == 0) {
 						Job.getJobManager().join(JOB_FAMILY3, null);
 					} else {
-						Thread.sleep(jobId % 10);
+						Thread.sleep(0, jobId % 10);
 					}
 				}
 			} catch (InterruptedException e) {
@@ -148,7 +147,8 @@ class JobWatcher {
 	 */
 	private final List<Job> jobsToWaitFor = new LinkedList<>();
 
-	private CountDownLatch allJobsDoneSignal;
+	private CountDownLatch testDoneSignal;
+	Collection<String> errors = new ConcurrentLinkedQueue<>();
 
 	private final JobChangeAdapter jobListener = new JobChangeAdapter() {
 
@@ -161,7 +161,7 @@ class JobWatcher {
 					boolean wasEmpty = jobsToWaitFor.isEmpty();
 					jobsToWaitFor.add(scheduledJob);
 					if (wasEmpty) {
-						allJobsDoneSignal = new CountDownLatch(1);
+						testDoneSignal = new CountDownLatch(1);
 					}
 				}
 			}
@@ -169,12 +169,12 @@ class JobWatcher {
 
 		private void rememberScheduled(Job job) {
 			sheduled.addAndGet(1);
-			System.out.println("-> " + job.getName());
+			// System.out.println("-> " + job.getName());
 		}
 
 		private void rememberDone(Job job) {
 			done.addAndGet(1);
-			System.out.println("OK " + job.getName());
+			// System.out.println("OK " + job.getName());
 		}
 
 		@Override
@@ -184,15 +184,18 @@ class JobWatcher {
 				rememberDone(job);
 				boolean removed = jobsToWaitFor.remove(job);
 				if (!removed) {
-					System.out.println("!!! 'done' before 'schedule' for " + job);
+					if (testDoneSignal != null && jobNeedsToBeWatched(job)) {
+						errors.add("received 'done' before 'schedule' for " + job);
+						testDoneSignal.countDown(); // fail
+					}
 				}
 				if (!jobsToWaitFor.isEmpty()) {
 					return;
 				}
 
-				if (allJobsDoneSignal != null) {
-					allJobsDoneSignal.countDown();
-					allJobsDoneSignal = null;
+				if (testDoneSignal != null) {
+					testDoneSignal.countDown();
+					testDoneSignal = null;
 				}
 			}
 		}
@@ -223,8 +226,8 @@ class JobWatcher {
 		}
 
 		synchronized (jobsToWaitFor) {
-			if (allJobsDoneSignal != null) {
-				allJobsDoneSignal.countDown();
+			if (testDoneSignal != null) {
+				testDoneSignal.countDown();
 			}
 		}
 	}
@@ -239,7 +242,7 @@ class JobWatcher {
 			if (jobsToWaitFor.isEmpty()) {
 				return;
 			}
-			latchToWaitFor = allJobsDoneSignal;
+			latchToWaitFor = testDoneSignal;
 		}
 
 		if (latchToWaitFor != null) {
@@ -248,6 +251,9 @@ class JobWatcher {
 			} catch (InterruptedException e) {
 				// ignore
 			}
+			errors.forEach(e -> {
+				throw new AssertionError(e);
+			});
 			assertEquals("Jobs delivered in wrong order for " + getJobsToWaitFor(), 0, latchToWaitFor.getCount());
 		}
 	}

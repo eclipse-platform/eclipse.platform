@@ -26,7 +26,7 @@ import org.junit.runners.Suite;
 		BeginEndRuleTest.class, JobTest.class, DeadlockDetectionTest.class, Bug_129551.class, Bug_211799.class,
 		Bug_307282.class, Bug_307391.class, MultiRuleTest.class, Bug_311756.class, Bug_311863.class, Bug_316839.class,
 		Bug_320329.class, Bug_478634.class, Bug_550738.class, Bug_574883.class, Bug_412138.class,
-		Bug_574883Join.class,
+		Bug_574883Join.class, GithubBug_193.class,
 		WorkerPoolTest.class
 })
 public class AllTests {

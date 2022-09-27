@@ -18,6 +18,8 @@
 package org.eclipse.core.internal.jobs;
 
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
 
@@ -153,9 +155,9 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	final Object jobStateLock = new Object();
 
 	/**
-	 * This signal is used to synchronize Job listener notification
+	 * Used to synchronize Job listener notification
 	 */
-	volatile Thread notifyPendingThread;
+	final Queue<JobChangeEvent> eventQueue = new ConcurrentLinkedQueue<>();
 
 	private static synchronized int getNextJobNumber() {
 		return nextJobNumber++;
@@ -567,4 +569,5 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	long getWaitQueueStamp() {
 		return waitQueueStamp;
 	}
+
 }
