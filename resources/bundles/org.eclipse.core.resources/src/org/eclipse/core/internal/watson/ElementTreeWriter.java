@@ -88,7 +88,7 @@ public class ElementTreeWriter {
 	protected ElementTree[] writeSortedTrees(ElementTree[] trees, DataOutput output) throws IOException {
 		ElementTree[] sorted = SaveManager.sortTrees(trees);
 		if (sorted == null) {
-			throw new IOException("Trees in ambiguous order (Bug 352867)"); //$NON-NLS-1$
+			throw new IOException("Unable to save workspace - Trees in ambiguous order (Bug 352867)"); //$NON-NLS-1$
 		}
 
 		// compute indexes from sorted elements:
