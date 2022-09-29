@@ -16,8 +16,8 @@ package org.eclipse.core.tests.resources;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BooleanSupplier;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.*;
@@ -852,7 +852,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 
 		assertTrue("1.0", p.isOpen());
 		assertTrue("2.0", project1.isOpen());
-
+		List<String> fails = new CopyOnWriteArrayList<>();
 		// the listener checks if an attempt to modify the tree succeeds if made in a job
 		// that belongs to FAMILY_MANUAL_REFRESH
 		class Listener1 implements IResourceChangeListener {
@@ -874,6 +874,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 							}
 							wasPerformed = true;
 						} catch (Exception e) {
+							fails.add("3.0");
 							fail("3.0", e);
 						}
 						return Status.OK_STATUS;
@@ -892,6 +893,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 					if (event.getResource() != p) {
 						p.refreshLocal(IResource.DEPTH_INFINITE, null);
 					}
+					fails.add("4.0");
 					fail("4.0");
 				} catch (Exception e) {
 					// should fail
@@ -919,6 +921,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			getWorkspace().removeResourceChangeListener(listener1);
 			getWorkspace().removeResourceChangeListener(listener2);
 		}
+		fails.forEach(s -> fail(s));
 	}
 
 	public void testPreRefreshNotification() throws Exception {
