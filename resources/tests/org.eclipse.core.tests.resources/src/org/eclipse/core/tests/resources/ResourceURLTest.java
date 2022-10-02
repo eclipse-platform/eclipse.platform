@@ -29,7 +29,6 @@ public class ResourceURLTest extends ResourceTest {
 	private static final String CONTENT = "content";
 	protected static IPath[] interestingPaths;
 	protected static IResource[] interestingResources;
-	static boolean noSideEffects = false;
 
 	/**
 	 * Need a zero argument constructor to satisfy the test harness.
