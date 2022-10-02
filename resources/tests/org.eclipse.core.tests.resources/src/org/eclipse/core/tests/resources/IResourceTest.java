@@ -32,7 +32,6 @@ public class IResourceTest extends ResourceTest {
 	protected static IPath[] interestingPaths;
 	protected static IResource[] interestingResources;
 	protected static Set<IResource> nonExistingResources = new HashSet<>();
-	static boolean noSideEffects = false;
 	protected static final IProgressMonitor[] PROGRESS_MONITORS = { new FussyProgressMonitor(),
 			new CancelingProgressMonitor(), null };
 
@@ -370,11 +369,6 @@ public class IResourceTest extends ResourceTest {
 		description.setAutoBuilding(false);
 		getWorkspace().setDescription(description);
 
-		if (noSideEffects) {
-			noSideEffects = false;
-			return;
-		}
-
 		try {
 			// open project
 			IProject openProject = getWorkspace().getRoot().getProject("openProject");
@@ -532,9 +526,6 @@ public class IResourceTest extends ResourceTest {
 
 	@Override
 	protected void tearDown() throws Exception {
-		if (noSideEffects) {
-			return;
-		}
 		if (verifier != null) {
 			getWorkspace().removeResourceChangeListener(verifier);
 		}
@@ -550,8 +541,6 @@ public class IResourceTest extends ResourceTest {
 	 * accept(IResourceVisitor)
 	 */
 	public void testAccept2() {
-		noSideEffects = true;
-
 		class LoggingResourceVisitor implements IResourceVisitor {
 			Vector<IResource> visitedResources = new Vector<>();
 
@@ -1308,7 +1297,6 @@ public class IResourceTest extends ResourceTest {
 	 * equals(Object)
 	 */
 	public void testEquals() {
-		noSideEffects = true;
 		Object[][] inputs = { interestingResources, interestingResources };
 		new TestPerformer("IResourceTest.testEquals") {
 
@@ -1347,8 +1335,6 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * Performs black box testing of the following method: boolean exists() */
 	public void testExists() {
-		noSideEffects = true;
-
 		Object[][] inputs = { interestingResources };
 		new TestPerformer("IResourceTest.testExists") {
 
@@ -1380,7 +1366,6 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * Performs black box testing of the following method: IPath getLocation() */
 	public void testGetLocation() {
-		noSideEffects = true;
 		Object[][] inputs = { interestingResources };
 		new TestPerformer("IResourceTest.testGetLocation") {
 
