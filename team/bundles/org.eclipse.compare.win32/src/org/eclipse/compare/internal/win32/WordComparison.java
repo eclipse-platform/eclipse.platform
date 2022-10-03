@@ -37,6 +37,8 @@ import org.eclipse.ui.IWorkbenchWindow;
  */
 public class WordComparison {
 
+	private static final int OFFICE_VER_2007 = 12;
+
 	private final OleFrame frame;
 	private OleClientSite site;
 	private boolean inplace;
@@ -198,10 +200,20 @@ public class WordComparison {
 		resetSite(null);
 		OleAutomation application = createApplication();
 		try {
-			OleAutomation document = openDocument(application, revisedDocument);
+			final String primaryDocument;
+			final String secondDocument;
+			if (getWordVersion(application) >= OFFICE_VER_2007) {
+				primaryDocument = baseDocument;
+				secondDocument = revisedDocument;
+			} else {
+				primaryDocument = revisedDocument;
+				secondDocument = baseDocument;
+			}
+
+			OleAutomation document = openDocument(application, primaryDocument);
 			try {
 				setDocumentVisible(document,false);
-				compareDocument(document, baseDocument, revisedDocument);
+				compareDocument(document, secondDocument, primaryDocument);
 				OleAutomation activeDocument = getActiveDocument(application);
 				try {
 					Variant varResult = invoke(activeDocument, document, "SaveAs", workingCopy); //$NON-NLS-1$
@@ -302,6 +314,19 @@ public class WordComparison {
 	
 	private OleAutomation getActiveDocument(OleAutomation application) {
 		return getAutomationProperty(application, "ActiveDocument"); //$NON-NLS-1$
+	}
+
+	private int getWordVersion(OleAutomation application) {
+		String versionString = getVariantProperty(application, "Version").getString(); //$NON-NLS-1$
+
+		// It is expected that the Word application returns a decimal "number" here
+		// (e.g. `10.0`). We take just the integer part (e. g. `10`) for our checks.
+		final int dotIndex = versionString.indexOf('.');
+		if (dotIndex >= 1) {
+			versionString = versionString.substring(0, dotIndex);
+		}
+
+		return Integer.parseInt(versionString);
 	}
 
 	/*
