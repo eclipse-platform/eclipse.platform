@@ -168,7 +168,8 @@ public class SessionTestSuite extends TestSuite {
 			fillTestDescriptor(test);
 			test.run(result);
 		} catch (SetupException e) {
-			result.addError(test.getTest(), e.getCause());
+			Throwable cause = e.getCause();
+			result.addError(test.getTest(), cause != null ? cause : e);
 		}
 	}
 

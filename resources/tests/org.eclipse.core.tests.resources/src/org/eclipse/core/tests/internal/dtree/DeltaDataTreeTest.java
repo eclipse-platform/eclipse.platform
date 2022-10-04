@@ -143,6 +143,117 @@ public class DeltaDataTreeTest {
 		tree2.makeComplete();
 	}
 
+	@Test
+	public void testCompareWithPath() {
+		// setup data:
+		String X = "x";
+		IPath elementX = Path.ROOT.append(X);
+		DeltaDataTree treeA;
+		DeltaDataTree treeB;
+		DeltaDataTree treeC;
+		DeltaDataTree treeD;
+		treeA = new DeltaDataTree();
+		String oldData = "A Data for x";
+		treeA.createChild(Path.ROOT, X, oldData);
+		treeA.immutable();
+		treeB = treeA.newEmptyDeltaTree();
+		String newData = "B Data for x";
+		treeB.createChild(Path.ROOT, X, newData);
+		treeB.immutable();
+		treeC = treeB.newEmptyDeltaTree();
+		treeC.immutable();
+		treeD = treeC.newEmptyDeltaTree();
+		treeD.immutable();
+
+		// the method to test:
+		DeltaDataTree delta = treeA.compareWith(treeC, DefaultElementComparator.getComparator(), elementX);
+
+		// check:
+		assertNull(delta.getParent());
+		Object rootData = delta.getRootData();
+		assertTrue(delta.isImmutable());
+		assertTrue(rootData instanceof NodeComparison);
+		NodeComparison nodeComparison=(NodeComparison) rootData;
+		assertEquals(NodeComparison.K_CHANGED, nodeComparison.getComparison());
+		assertEquals(oldData, nodeComparison.getOldData());
+		assertEquals(newData, nodeComparison.getNewData());
+	}
+
+	@Test
+	public void testCompareWithPath2() {
+		// setup data:
+		String X = "x";
+		IPath elementX = Path.ROOT.append(X);
+		DeltaDataTree treeD;
+		DeltaDataTree treeC;
+		DeltaDataTree treeB;
+		DeltaDataTree treeA;
+		treeD = new DeltaDataTree();
+		String oldData = "D Data for x";
+		treeD.createChild(Path.ROOT, X, oldData);
+		treeD.immutable();
+		treeC = treeD.newEmptyDeltaTree();
+		treeC.immutable();
+		treeB = treeC.newEmptyDeltaTree();
+		String newData = "B Data for x";
+		treeB.createChild(Path.ROOT, X, newData);
+		treeB.immutable();
+		treeA = treeB.newEmptyDeltaTree();
+		treeA.immutable();
+
+		// the method to test:
+		DeltaDataTree delta = treeA.compareWith(treeC, DefaultElementComparator.getComparator(), elementX);
+
+		// reverse to swap oldData & newData
+		delta = delta.asReverseComparisonTree(DefaultElementComparator.getComparator());
+
+		// check:
+		assertNull(delta.getParent());
+		Object rootData = delta.getRootData();
+		assertTrue(delta.isImmutable());
+		assertTrue(rootData instanceof NodeComparison);
+		NodeComparison nodeComparison = (NodeComparison) rootData;
+		assertEquals(NodeComparison.K_CHANGED, nodeComparison.getComparison());
+		assertEquals(oldData, nodeComparison.getOldData());
+		assertEquals(newData, nodeComparison.getNewData());
+	}
+
+	@Test
+	public void testCompareWithPathUnchanged() {
+		// setup data:
+		String X = "x";
+		IPath elementX = Path.ROOT.append(X);
+		DeltaDataTree treeA;
+		DeltaDataTree treeB;
+		treeA = new DeltaDataTree();
+		String oldData = "Old Data for x";
+		treeA.createChild(Path.ROOT, X, oldData);
+		treeA.immutable();
+		treeB = treeA.newEmptyDeltaTree();
+		treeB.immutable();
+
+		// the method to test:
+		DeltaDataTree deltaAA = treeA.compareWith(treeA, DefaultElementComparator.getComparator(), elementX);
+		assertUnchanged(deltaAA);
+		DeltaDataTree deltaAB = treeA.compareWith(treeB, DefaultElementComparator.getComparator(), elementX);
+		assertUnchanged(deltaAB);
+		DeltaDataTree deltaBA = treeB.compareWith(treeA, DefaultElementComparator.getComparator(), elementX);
+		assertUnchanged(deltaBA);
+	}
+
+	private void assertUnchanged(DeltaDataTree delta) {
+		// check:
+		assertNull(delta.getParent());
+		Object rootData = delta.getRootData();
+		assertTrue(delta.isImmutable());
+		assertTrue(rootData instanceof NodeComparison);
+		NodeComparison nodeComparison = (NodeComparison) rootData;
+		assertEquals(nodeComparison.getNewData(), nodeComparison.getOldData());
+		// assertEquals(0, nodeComparison.getComparison()); XXX fails for tree!=other
+		assertEquals(0, delta.getChildren(AbstractDataTree.rootKey()).length);
+
+	}
+
 	/**
 	 * Test for problem when two complete nodes exist, and then
 	 * the deleting only masks the first one.

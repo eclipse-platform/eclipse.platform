@@ -1560,10 +1560,8 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			// because it's not unambiguous defined if t3 or t2 is the "older"
 			// t3 should have parent t2 instead.
 			// happens while trees are mutable.
-			String s = List.of(trees).stream().distinct().sorted(Comparator.comparing(ElementTree::getTreeStamp))
-					.map(t -> (t.isImmutable() ? "" : "mutable! ") + parentChain(t)) //$NON-NLS-1$ //$NON-NLS-2$
-					.collect(Collectors.joining(", ")); //$NON-NLS-1$
-			Exception e = new NullPointerException("Given trees not in unambiguous order (Bug 352867): " + s); //$NON-NLS-1$
+			Exception e = new NullPointerException(
+					"Unable to save workspace - Given trees not in unambiguous order (Bug 352867)"); //$NON-NLS-1$
 			IStatus status = new Status(IStatus.WARNING, ResourcesPlugin.PI_RESOURCES, IResourceStatus.INTERNAL_ERROR,
 					e.getMessage(), e);
 			Policy.log(status);

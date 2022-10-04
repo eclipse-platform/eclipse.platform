@@ -18,8 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
-import org.eclipse.core.internal.jobs.LockManager;
-import org.eclipse.core.internal.jobs.OrderedLock;
+import org.eclipse.core.internal.jobs.*;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.LockListener;
 import org.eclipse.core.tests.harness.TestBarrier2;
@@ -46,32 +45,36 @@ public class OrderedLockTest {
 
 	@Test
 	public void testComplex() {
-		ArrayList<LockAcquiringRunnable> allRunnables = new ArrayList<>();
-		LockManager manager = new LockManager();
-		OrderedLock lock1 = manager.newLock();
-		OrderedLock lock2 = manager.newLock();
-		OrderedLock lock3 = manager.newLock();
-		createRunnables(new ILock[] {lock1, lock2, lock3}, 5, allRunnables);
-		createRunnables(new ILock[] {lock3, lock2, lock1}, 5, allRunnables);
-		createRunnables(new ILock[] {lock1, lock3, lock2}, 5, allRunnables);
-		createRunnables(new ILock[] {lock2, lock3, lock1}, 5, allRunnables);
-		execute(allRunnables);
-		//the underlying array has to be empty
-		assertTrue("Locks not removed from graph.", manager.isEmpty());
+		DeadlockDetector.runSilent(() -> {
+			ArrayList<LockAcquiringRunnable> allRunnables = new ArrayList<>();
+			LockManager manager = new LockManager();
+			OrderedLock lock1 = manager.newLock();
+			OrderedLock lock2 = manager.newLock();
+			OrderedLock lock3 = manager.newLock();
+			createRunnables(new ILock[] { lock1, lock2, lock3 }, 5, allRunnables);
+			createRunnables(new ILock[] { lock3, lock2, lock1 }, 5, allRunnables);
+			createRunnables(new ILock[] { lock1, lock3, lock2 }, 5, allRunnables);
+			createRunnables(new ILock[] { lock2, lock3, lock1 }, 5, allRunnables);
+			execute(allRunnables);
+			// the underlying array has to be empty
+			assertTrue("Locks not removed from graph.", manager.isEmpty());
+		});
 	}
 
 	@Test
 	public void testSimple() {
-		ArrayList<LockAcquiringRunnable> allRunnables = new ArrayList<>();
-		LockManager manager = new LockManager();
-		OrderedLock lock1 = manager.newLock();
-		OrderedLock lock2 = manager.newLock();
-		OrderedLock lock3 = manager.newLock();
-		createRunnables(new ILock[] {lock1, lock2, lock3}, 1, allRunnables);
-		createRunnables(new ILock[] {lock3, lock2, lock1}, 1, allRunnables);
-		execute(allRunnables);
-		//the underlying array has to be empty
-		assertTrue("Locks not removed from graph.", manager.isEmpty());
+		DeadlockDetector.runSilent(() -> {
+			ArrayList<LockAcquiringRunnable> allRunnables = new ArrayList<>();
+			LockManager manager = new LockManager();
+			OrderedLock lock1 = manager.newLock();
+			OrderedLock lock2 = manager.newLock();
+			OrderedLock lock3 = manager.newLock();
+			createRunnables(new ILock[] { lock1, lock2, lock3 }, 1, allRunnables);
+			createRunnables(new ILock[] { lock3, lock2, lock1 }, 1, allRunnables);
+			execute(allRunnables);
+			// the underlying array has to be empty
+			assertTrue("Locks not removed from graph.", manager.isEmpty());
+		});
 	}
 
 	@Test
@@ -288,9 +291,13 @@ public class OrderedLockTest {
 			thread.start();
 		}
 		randomOrder.waitForEnd();
+		long joinMillis = 500;
 		for (Thread thread : threads) {
 			try {
-				thread.join(500);
+				long n0 = System.nanoTime();
+				thread.join(joinMillis);
+				long n1 = System.nanoTime();
+				joinMillis = Math.max(joinMillis - (n1 - n0) / 1000_000, 1);
 				if (thread.isAlive()) {
 					throw new IllegalStateException("thread did not end");
 
@@ -300,4 +307,5 @@ public class OrderedLockTest {
 			}
 		}
 	}
+
 }

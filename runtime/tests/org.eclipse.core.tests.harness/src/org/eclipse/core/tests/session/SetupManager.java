@@ -231,7 +231,8 @@ public class SetupManager {
 				return;
 			}
 			// no setup files found, and we are not running in Eclipse...
-			throw new SetupException("No setup descriptions found. Ensure you are specifying the path for an existing setup file (e.g. -Dsetup.files=<setup-file-location1>[...,<setup-file-locationN>])");
+			throw new SetupException(
+					"No setup descriptions found. Run as Plug-in Test or ensure you are specifying the path for an existing setup file (e.g. -Dsetup.files=<setup-file-location1>[...,<setup-file-locationN>])");
 		}
 		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		for (int fileIndex = 0; fileIndex < found; fileIndex++) {

@@ -31,7 +31,6 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestResult;
 import org.eclipse.core.internal.runtime.InternalPlatform;
 import org.eclipse.core.runtime.FileLocator;
@@ -48,26 +47,6 @@ import org.osgi.framework.FrameworkUtil;
 
 @SuppressWarnings("restriction")
 public class ConfigurationSessionTestSuite extends SessionTestSuite {
-	// include configurator as it is required by compatibility, but do not set it to start
-	public static String[] MINIMAL_BUNDLE_SET = {"org.eclipse.equinox.common@2:start", //
-			"org.eclipse.core.runtime@:start", //
-			"org.eclipse.core.jobs", //
-			"org.eclipse.equinox.registry", //
-			"org.eclipse.equinox.preferences", //
-			"org.osgi.service.prefs", //
-			"org.eclipse.core.contenttype", //
-			"org.eclipse.equinox.app", //
-			"org.eclipse.core.tests.harness", //
-			"org.eclipse.jdt.junit.runtime", //
-			"org.eclipse.jdt.junit4.runtime", //
-			"org.eclipse.pde.junit.runtime", //
-			"org.hamcrest.core", //
-			"org.junit", //
-			"junit-jupiter-api", //
-			"junit-platform-commons", //
-			"org.apiguardian.api", //
-			"org.opentest4j", //
-			"org.eclipse.test.performance"};
 
 	private static final String PROP_CONFIG_AREA_READ_ONLY = InternalPlatform.PROP_CONFIG_AREA + ".readOnly";
 	private static final String PROP_CONFIG_CASCADED = "osgi.configuration.cascaded";
@@ -85,17 +64,8 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 	// should the test cases be run in alphabetical order?
 	private boolean shouldSort;
 
-	public ConfigurationSessionTestSuite(String pluginId) {
-		super(pluginId);
-	}
-
 	public ConfigurationSessionTestSuite(String pluginId, Class<?> theClass) {
 		super(pluginId, theClass);
-		this.shouldSort = true;
-	}
-
-	public ConfigurationSessionTestSuite(String pluginId, Class<? extends TestCase> theClass, String name) {
-		super(pluginId, theClass, name);
 		this.shouldSort = true;
 	}
 
@@ -131,7 +101,17 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 	}
 
 	public void addBundle(String id) {
-		bundles.addAll(getURLs(id));
+		String suffix = "";
+		int atIndex = id.indexOf('@');
+		if (atIndex >= 0) {
+			suffix = id.substring(atIndex);
+			id = id.substring(0, atIndex);
+		}
+		Bundle[] allVersions = Platform.getBundles(id, null);
+		Assert.assertNotNull("No bundles found in test runtime with id: " + id, allVersions);
+		String refSuffix = suffix;
+		List<String> urLs = Arrays.stream(allVersions).map(b -> getBundleReference(b, refSuffix)).collect(Collectors.toList());
+		bundles.addAll(urLs);
 	}
 
 	private static final StackWalker STACK_WALKER = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
@@ -145,7 +125,10 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 	}
 
 	public void addBundle(Class<?> classFromBundle, String suffix) {
-		bundles.add(getURL(classFromBundle, suffix));
+		Bundle bundle = FrameworkUtil.getBundle(classFromBundle);
+		Assert.assertNotNull("Class is not from a bundle: " + classFromBundle, bundle);
+		String url = getBundleReference(bundle, suffix);
+		bundles.add(url);
 	}
 
 	public void setConfigIniValue(String key, String value) {
@@ -194,25 +177,6 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 
 	public IPath getConfigurationPath() {
 		return configurationPath;
-	}
-
-	private List<String> getURLs(String id) {
-		String suffix = "";
-		int atIndex = id.indexOf('@');
-		if (atIndex >= 0) {
-			suffix = id.substring(atIndex);
-			id = id.substring(0, atIndex);
-		}
-		Bundle[] allVersions = Platform.getBundles(id, null);
-		Assert.assertNotNull("No bundles found in test runtime with id: " + id, allVersions);
-		String refSuffix = suffix;
-		return Arrays.stream(allVersions).map(b -> getBundleReference(b, refSuffix)).collect(Collectors.toList());
-	}
-
-	private String getURL(Class<?> classFromBundle, String suffix) {
-		Bundle bundle = FrameworkUtil.getBundle(classFromBundle);
-		Assert.assertNotNull("Class is not from a bundle: " + classFromBundle, bundle);
-		return getBundleReference(bundle, suffix);
 	}
 
 	private String getBundleReference(Bundle bundle, String suffix) {
