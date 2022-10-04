@@ -17,10 +17,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import junit.framework.TestCase;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.tests.harness.TestBarrier2;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -30,6 +32,80 @@ import org.junit.runners.MethodSorters;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GithubBug_193 extends TestCase {
+
+	@Test
+	public void testDeadlock() throws Exception {
+		Object deadlock = new Object();
+		AtomicBoolean stopped = new AtomicBoolean();
+		CountDownLatch testDoneSignal1 = new CountDownLatch(1);
+		CountDownLatch testDoneSignal2 = new CountDownLatch(1);
+		Collection<String> errors = new ConcurrentLinkedQueue<>();
+
+		Job job = new Job("testjob") {
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				return null;
+			}
+
+		};
+		IJobChangeListener jobListener = new JobChangeAdapter() {
+
+			@Override
+			public void done(IJobChangeEvent event) {
+				testDoneSignal1.countDown();
+				try {
+					testDoneSignal2.await(5, TimeUnit.SECONDS);
+				} catch (InterruptedException e) {
+				}
+				synchronized (deadlock) {
+					// wait till done() is called and won't progress
+					while (!stopped.get()) {
+						// do not progress until timeout
+					}
+				}
+			}
+		};
+
+		Job.getJobManager().addJobChangeListener(jobListener);
+		try {
+			job.schedule();
+			job.wakeUp();
+			Timer timeout = new Timer();
+			timeout.schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+					System.out.println(TestBarrier2.getThreadDump());
+					errors.add("timeout (probably deadlock)");
+					stopped.set(true);
+				}
+			}, 3000);
+			// wait till synchronized (deadlock) in other test thread
+			try {
+				testDoneSignal1.await(5, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+			}
+			synchronized (deadlock) {
+				testDoneSignal2.countDown();
+				Thread thread = new Thread("deadlock") {
+					@Override
+					public void run() {
+						job.schedule(); // will not progress if notification
+					}
+				};
+																				// waiting for JobChangeAdapter.done
+				thread.start();
+				thread.join(5000);
+			}
+			errors.forEach(e -> {
+				throw new AssertionError(e);
+			});
+		} finally {
+			Job.getJobManager().removeJobChangeListener(jobListener);
+			stopped.set(true);
+		}
+	}
 
 	final static Object JOB_FAMILY1 = " family 1";
 	final static Object JOB_FAMILY2 = " family 2";
@@ -86,7 +162,6 @@ public class GithubBug_193 extends TestCase {
 			this.jobId = jobId;
 			myFamily = getFamily(jobId);
 		}
-
 
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
@@ -168,12 +243,16 @@ class JobWatcher {
 		}
 
 		private void rememberScheduled(Job job) {
-			sheduled.addAndGet(1);
+			if (jobNeedsToBeWatched(job)) {
+				sheduled.incrementAndGet();
+			}
 			// System.out.println("-> " + job.getName());
 		}
 
 		private void rememberDone(Job job) {
-			done.addAndGet(1);
+			if (jobNeedsToBeWatched(job)) {
+				done.incrementAndGet();
+			}
 			// System.out.println("OK " + job.getName());
 		}
 
@@ -273,4 +352,3 @@ class JobWatcher {
 	}
 
 }
-

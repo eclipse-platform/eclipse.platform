@@ -41,13 +41,26 @@ class JobListeners {
 
 	/** Should not be used during a lock */
 	void sendEvents(InternalJob job) {
-		JobChangeEvent event;
 		// Synchronize eventQueue to get a stable order of events across Threads.
 		// There is however no guarantee in which Thread the event is delivered.
-		synchronized (job.eventQueue) {
-			while ((event = job.eventQueue.poll()) != null) {
-				sendEvent(event);
+		// But do not wait for a lock while calling listeners:
+		// https://github.com/eclipse-cdt/cdt/issues/81
+		// because Listeners may not progress.
+		// Instead just continue if another thread is currently doing event handling
+		while (!job.eventQueue.isEmpty()) {
+			if (!job.eventQueueLock.tryLock()) {
+				// Another Thread is doing notification, we can just resume
+				return;
 			}
+			try {
+				JobChangeEvent event;
+				while ((event = job.eventQueue.poll()) != null) {
+					sendEvent(event);
+				}
+			} finally {
+				job.eventQueueLock.unlock();
+			}
+			// now repeat draining in case another thread added an event meanwhile
 		}
 	}
 
