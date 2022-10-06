@@ -20,7 +20,7 @@ import java.nio.file.Path;
 import junit.framework.Test;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -30,7 +30,7 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 public class TestWorkspaceEncodingExistingWorkspace extends WorkspaceSessionTest {
 
 	public static Test suite() {
-		WorkspaceSessionTestSuite suite = new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS,
+		WorkspaceSessionTestSuite suite = new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS,
 				TestWorkspaceEncodingExistingWorkspace.class);
 		Path wspRoot = suite.getInstanceLocation().toFile().toPath();
 		Path projectsTree = wspRoot.resolve(".metadata/.plugins/org.eclipse.core.resources/.projects");

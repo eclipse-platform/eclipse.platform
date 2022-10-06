@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2012 IBM Corporation and others.
+ * Copyright (c) 2009, 2012 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,18 +10,14 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- * Martin Oberhuber (Wind River) - [] add SymlinkTest tests
  *******************************************************************************/
-package org.eclipse.core.tests.filesystem;
+package org.eclipse.core.tests.internal.propertytester;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-/**
- * Class for collecting all test classes that deal with the file system API.
- */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ CreateDirectoryTest.class, DeleteTest.class, EFSTest.class, FileCacheTest.class,
-		FileStoreTest.class, OpenOutputStreamTest.class, PutInfoTest.class, SymlinkTest.class, URIUtilTest.class })
-public class AllTests {
+@Suite.SuiteClasses({ FilePropertyTesterTest.class })
+public class AllPropertytesterTests {
+
 }

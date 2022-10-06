@@ -18,7 +18,7 @@ import junit.framework.TestSuite;
 import org.eclipse.core.internal.resources.TestingSupport;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.SessionTestSuite;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
@@ -34,15 +34,15 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		TestSuite suite = new TestSuite(TestBug294854.class.getName());
 		//		suite.addTest(new TestBug294854("testRenameUsingResourcePath_01"));
 
-		SessionTestSuite scenario1 = new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, "renameUsingProjectDescription");
+		SessionTestSuite scenario1 = new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, "renameUsingProjectDescription");
 		scenario1.addCrashTest(new TestBug294854("testRenameUsingProjectDescription_01"));
 		scenario1.addTest(new TestBug294854("testRenameUsingProjectDescription_02"));
 
-		SessionTestSuite scenario2 = new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, "renameUsingResourcePath");
+		SessionTestSuite scenario2 = new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, "renameUsingResourcePath");
 		scenario2.addCrashTest(new TestBug294854("testRenameUsingResourcePath_01"));
 		scenario2.addTest(new TestBug294854("testRenameUsingResourcePath_02"));
 
-		SessionTestSuite scenario3 = new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, "delete");
+		SessionTestSuite scenario3 = new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, "delete");
 		scenario3.addCrashTest(new TestBug294854("testDelete_01"));
 		scenario3.addTest(new TestBug294854("testDelete_02"));
 

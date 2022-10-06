@@ -21,7 +21,7 @@ import org.eclipse.core.internal.filesystem.FileCache;
 import org.eclipse.core.internal.filesystem.local.LocalFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -74,6 +74,6 @@ public class TestBug323833 extends WorkspaceSessionTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, TestBug323833.class);
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug323833.class);
 	}
 }

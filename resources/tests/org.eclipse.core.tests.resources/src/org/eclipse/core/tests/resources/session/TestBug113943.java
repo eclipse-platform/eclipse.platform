@@ -19,7 +19,7 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -30,7 +30,7 @@ public class TestBug113943 extends WorkspaceSerializationTest {
 	IPath location = Platform.getLocation().removeLastSegments(1).append("OtherLocation");
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, TestBug113943.class);
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug113943.class);
 	}
 
 	/**

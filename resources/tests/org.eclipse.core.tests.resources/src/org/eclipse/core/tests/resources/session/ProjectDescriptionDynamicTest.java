@@ -15,7 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.*;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -128,7 +128,7 @@ public class ProjectDescriptionDynamicTest extends WorkspaceSessionTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, ProjectDescriptionDynamicTest.class);
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, ProjectDescriptionDynamicTest.class);
 	}
 
 }

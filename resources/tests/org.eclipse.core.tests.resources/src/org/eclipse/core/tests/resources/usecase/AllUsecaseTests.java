@@ -11,12 +11,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.tests.internal.dtree;
+package org.eclipse.core.tests.resources.usecase;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ DeltaDataTreeTest.class })
-public class AllTests {
+@Suite.SuiteClasses({
+		ConcurrencyTest.class, IFileTest.class, IFolderTest.class, IProjectTest.class,
+		IWorkspaceRunnableUseCaseTest.class
+})
+public class AllUsecaseTests {
 }

@@ -11,19 +11,15 @@
  *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.tests.resources.perf;
+package org.eclipse.core.tests.resources.refresh;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * @since 3.1
+ * Runs all tests in this package.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ BenchFileStore.class, BenchWorkspace.class, BenchMiscWorkspace.class,
-		BuilderPerformanceTest.class, MarkerPerformanceTest.class, LocalHistoryPerformanceTest.class,
-		WorkspacePerformanceTest.class, PropertyManagerPerformanceTest.class, FileSystemPerformanceTest.class })
-public class AllTests {
-	// these tests are flawed - see bug 57137
-	// ContentDescriptionPerformanceTest.class
+@Suite.SuiteClasses({ RefreshProviderTest.class, RefreshJobTest.class })
+public class AllRefreshTests {
 }

@@ -16,7 +16,7 @@ package org.eclipse.core.tests.resources.session;
 import junit.framework.Test;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -71,6 +71,6 @@ public class TestSnapSaveSnap extends WorkspaceSerializationTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, TestSnapSaveSnap.class);
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestSnapSaveSnap.class);
 	}
 }

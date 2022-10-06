@@ -11,15 +11,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.tests.resources.usecase;
+package org.eclipse.core.tests.internal.alias;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * Class for collecting all test classes that deal with alias support. An alias
+ * is a resource in the workspace that has the same file system location as
+ * another resource in the workspace. When a resource changes in a way that
+ * affects the contents on disk, all aliases need to be updated.
+ */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-		ConcurrencyTest.class, IFileTest.class, IFolderTest.class, IProjectTest.class,
-		IWorkspaceRunnableUseCaseTest.class
-})
-public class AllTests {
+@Suite.SuiteClasses({ BasicAliasTest.class, SyncAliasTest.class })
+public class AllAliasTests {
 }

@@ -38,6 +38,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ FrameworkTests.class, TargetTests.class, ProjectTests.class, OptionTests.class, TaskTests.class, TypeTests.class,
 		PropertyTests.class, AntSecurityManagerTest.class })
-public class AutomatedSuite {
+public class AutomatedAntSuite {
 	// SUITE
 }

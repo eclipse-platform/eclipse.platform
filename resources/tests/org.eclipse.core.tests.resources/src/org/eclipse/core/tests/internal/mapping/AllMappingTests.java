@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2006, 2012 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -11,18 +11,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.tests.internal.alias;
+package org.eclipse.core.tests.internal.mapping;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * Class for collecting all test classes that deal with alias support. An alias
- * is a resource in the workspace that has the same file system location as
- * another resource in the workspace. When a resource changes in a way that
- * affects the contents on disk, all aliases need to be updated.
+ * Suite containing all tests in the org.eclipse.core.tests.internal.mapping
+ * package.
+ *
+ * @since 3.2
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ BasicAliasTest.class, SyncAliasTest.class })
-public class AllTests {
+@Suite.SuiteClasses({ 
+	ChangeValidationTest.class,
+	TestProjectDeletion.class
+	})
+public class AllMappingTests {
 }

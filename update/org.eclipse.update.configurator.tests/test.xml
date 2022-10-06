@@ -42,7 +42,7 @@
       <property name="data-dir" value="${platform-debug-folder}"/>
       <property name="plugin-name" value="${plugin-name}"/>
       <property name="classname" 
-                value="org.eclipse.update.configurator.tests.AutomatedSuite"/>
+                value="org.eclipse.update.configurator.tests.AutomatedConfiguratorSuite"/>
     </ant>
   </target>
 

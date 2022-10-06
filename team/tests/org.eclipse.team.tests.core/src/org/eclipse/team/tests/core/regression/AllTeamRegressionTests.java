@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2008, 2010 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -11,16 +11,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.tests.internal.watson;
+package org.eclipse.team.tests.core.regression;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import junit.framework.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-		DeltaChainFlatteningTest.class, DeltaFlatteningTest.class, ElementTreeDeltaChainTest.class,
-		ElementTreeIteratorTest.class, ElementTreeHasChangesTest.class, TreeFlatteningTest.class
-})
-public class AllTests {
+public class AllTeamRegressionTests extends TestCase {
+	public AllTeamRegressionTests() {
+		super(null);
+	}
 
+	public AllTeamRegressionTests(String name) {
+		super(name);
+	}
+
+	public static Test suite() {
+		TestSuite suite = new TestSuite(AllTeamRegressionTests.class.getName());
+		suite.addTest(Bug_217673.suite());
+		suite.addTest(DoNotRemoveTest.suite());
+		return suite;
+	}
 }

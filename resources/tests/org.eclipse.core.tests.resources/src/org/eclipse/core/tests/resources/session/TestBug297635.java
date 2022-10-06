@@ -24,7 +24,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.harness.BundleTestingHelper;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.resources.content.ContentTypeTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
@@ -38,7 +38,7 @@ public class TestBug297635 extends WorkspaceSessionTest implements ISaveParticip
 	private static final String BUNDLE01_ID = "org.eclipse.bundle01";
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, TestBug297635.class);
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug297635.class);
 	}
 
 	public BundleContext getContext() {

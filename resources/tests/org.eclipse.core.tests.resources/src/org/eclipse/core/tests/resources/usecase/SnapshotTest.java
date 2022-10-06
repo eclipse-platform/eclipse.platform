@@ -15,7 +15,7 @@ package org.eclipse.core.tests.resources.usecase;
 
 import junit.framework.Test;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -34,7 +34,7 @@ public class SnapshotTest extends WorkspaceSessionTest {
 	static final String PROJECT_2 = "Project2";
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, SnapshotTest.class);
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, SnapshotTest.class);
 	}
 
 	private boolean skipTest() {

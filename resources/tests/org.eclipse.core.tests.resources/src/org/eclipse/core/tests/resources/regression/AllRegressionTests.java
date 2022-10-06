@@ -31,5 +31,5 @@ import org.junit.runners.Suite;
 		PR_1GEAB3C_Test.class,
 		PR_1GH2B0N_Test.class, PR_1GHOM0N_Test.class, Bug_530868.class, Bug_185247_recursiveLinks.class,
 		Bug_185247_LinuxTests.class })
-public class AllTests {
+public class AllRegressionTests {
 }

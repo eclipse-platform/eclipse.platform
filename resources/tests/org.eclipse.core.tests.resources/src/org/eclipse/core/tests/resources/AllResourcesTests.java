@@ -29,6 +29,6 @@ import org.junit.runners.Suite;
 		ProjectOrderTest.class,
 		ProjectScopeTest.class, ProjectSnapshotTest.class, ResourceAttributeTest.class, ResourceURLTest.class,
 		TeamPrivateMemberTest.class, WorkspaceTest.class })
-public class AllTests {
+public class AllResourcesTests {
 
 }

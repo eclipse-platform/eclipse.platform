@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 public class TestBug94498 extends TestCase {
@@ -27,7 +27,7 @@ public class TestBug94498 extends TestCase {
 	private static final String FILE_NAME = "foo.bar.zoo";
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, TestBug94498.class);
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug94498.class);
 	}
 
 	public void test1() throws CoreException {

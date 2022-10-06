@@ -45,7 +45,7 @@
     <ant target="core-test" antfile="${library-file}" dir="${eclipse-home}">
       <property name="data-dir" value="${runtime_location}"/>
       <property name="plugin-name" value="org.eclipse.core.tests.runtime"/>
-      <property name="classname" value="org.eclipse.core.tests.runtime.AutomatedTests"/>
+      <property name="classname" value="org.eclipse.core.tests.runtime.AutomatedRuntimeTests"/>
     </ant>
   </target>  
 
@@ -53,7 +53,7 @@
     <ant target="core-test" antfile="${library-file}" dir="${eclipse-home}">
       <property name="data-dir" value="${runtime_location}"/>
       <property name="plugin-name" value="org.eclipse.core.tests.runtime"/>
-      <property name="classname" value="org.eclipse.core.tests.runtime.perf.AllTests"/>
+      <property name="classname" value="org.eclipse.core.tests.runtime.perf.AllPerfTests"/>
     </ant>
   </target>  
 

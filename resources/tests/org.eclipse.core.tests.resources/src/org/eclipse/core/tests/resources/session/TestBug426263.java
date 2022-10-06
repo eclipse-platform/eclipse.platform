@@ -15,7 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.IPathVariableManager;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -24,7 +24,7 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  */
 public class TestBug426263 extends WorkspaceSessionTest {
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, TestBug426263.class);
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug426263.class);
 	}
 
 	public void testBug() {

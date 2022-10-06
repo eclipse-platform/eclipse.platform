@@ -18,7 +18,7 @@ import java.net.URISyntaxException;
 import junit.framework.Test;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -42,6 +42,6 @@ public class TestBug369177 extends WorkspaceSessionTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, TestBug369177.class);
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug369177.class);
 	}
 }
