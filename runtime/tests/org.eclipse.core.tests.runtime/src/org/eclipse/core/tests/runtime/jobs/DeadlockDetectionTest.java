@@ -72,21 +72,23 @@ public class DeadlockDetectionTest {
 	 */
 	@Test
 	public void testComplex() {
-		ArrayList<RandomTestRunnable> allRunnables = new ArrayList<>();
-		LockManager lockManager = new LockManager();
-		OrderedLock lock1 = lockManager.newLock();
-		OrderedLock lock2 = lockManager.newLock();
-		OrderedLock lock3 = lockManager.newLock();
-		OrderedLock lock4 = lockManager.newLock();
-		OrderedLock lock5 = lockManager.newLock();
-		OrderedLock lock6 = lockManager.newLock();
-		createRunnables(new ILock[] {lock1, lock2, lock3}, 1, allRunnables, true);
-		createRunnables(new ILock[] {lock2, lock3, lock4}, 1, allRunnables, true);
-		createRunnables(new ILock[] {lock3, lock4, lock5}, 1, allRunnables, true);
-		createRunnables(new ILock[] {lock4, lock5, lock6}, 1, allRunnables, true);
-		createRunnables(new ILock[] {lock5, lock6, lock1}, 1, allRunnables, true);
-		createRunnables(new ILock[] {lock6, lock1, lock2}, 1, allRunnables, true);
-		wait(allRunnables, lockManager);
+		DeadlockDetector.runSilent(() -> {
+			ArrayList<RandomTestRunnable> allRunnables = new ArrayList<>();
+			LockManager lockManager = new LockManager();
+			OrderedLock lock1 = lockManager.newLock();
+			OrderedLock lock2 = lockManager.newLock();
+			OrderedLock lock3 = lockManager.newLock();
+			OrderedLock lock4 = lockManager.newLock();
+			OrderedLock lock5 = lockManager.newLock();
+			OrderedLock lock6 = lockManager.newLock();
+			createRunnables(new ILock[] { lock1, lock2, lock3 }, 1, allRunnables, true);
+			createRunnables(new ILock[] { lock2, lock3, lock4 }, 1, allRunnables, true);
+			createRunnables(new ILock[] { lock3, lock4, lock5 }, 1, allRunnables, true);
+			createRunnables(new ILock[] { lock4, lock5, lock6 }, 1, allRunnables, true);
+			createRunnables(new ILock[] { lock5, lock6, lock1 }, 1, allRunnables, true);
+			createRunnables(new ILock[] { lock6, lock1, lock2 }, 1, allRunnables, true);
+			wait(allRunnables, lockManager);
+		});
 	}
 
 	private void wait(ArrayList<RandomTestRunnable> allRunnables, LockManager lockManager) {
@@ -115,15 +117,17 @@ public class DeadlockDetectionTest {
 	 */
 	@Test
 	public void testSimpleDeadlock() {
-		ArrayList<RandomTestRunnable> allRunnables = new ArrayList<>();
-		LockManager localManager = new LockManager();
-		OrderedLock lock1 = localManager.newLock();
-		OrderedLock lock2 = localManager.newLock();
+		DeadlockDetector.runSilent(() -> {
+			ArrayList<RandomTestRunnable> allRunnables = new ArrayList<>();
+			LockManager localManager = new LockManager();
+			OrderedLock lock1 = localManager.newLock();
+			OrderedLock lock2 = localManager.newLock();
 
-		createRunnables(new ILock[] {lock1, lock2}, 1, allRunnables, false);
-		createRunnables(new ILock[] {lock2, lock1}, 1, allRunnables, false);
+			createRunnables(new ILock[] { lock1, lock2 }, 1, allRunnables, false);
+			createRunnables(new ILock[] { lock2, lock1 }, 1, allRunnables, false);
 
-		wait(allRunnables, localManager);
+			wait(allRunnables, localManager);
+		});
 	}
 
 	/**
@@ -131,17 +135,19 @@ public class DeadlockDetectionTest {
 	 */
 	@Test
 	public void testThreeLocks() {
-		ArrayList<RandomTestRunnable> allRunnables = new ArrayList<>();
-		LockManager lockManager = new LockManager();
-		OrderedLock lock1 = lockManager.newLock();
-		OrderedLock lock2 = lockManager.newLock();
-		OrderedLock lock3 = lockManager.newLock();
+		DeadlockDetector.runSilent(() -> {
+			ArrayList<RandomTestRunnable> allRunnables = new ArrayList<>();
+			LockManager lockManager = new LockManager();
+			OrderedLock lock1 = lockManager.newLock();
+			OrderedLock lock2 = lockManager.newLock();
+			OrderedLock lock3 = lockManager.newLock();
 
-		createRunnables(new ILock[] {lock1, lock2}, 1, allRunnables, false);
-		createRunnables(new ILock[] {lock2, lock3}, 1, allRunnables, false);
-		createRunnables(new ILock[] {lock3, lock1}, 1, allRunnables, false);
+			createRunnables(new ILock[] { lock1, lock2 }, 1, allRunnables, false);
+			createRunnables(new ILock[] { lock2, lock3 }, 1, allRunnables, false);
+			createRunnables(new ILock[] { lock3, lock1 }, 1, allRunnables, false);
 
-		wait(allRunnables, lockManager);
+			wait(allRunnables, lockManager);
+		});
 	}
 
 	/**
@@ -402,6 +408,7 @@ public class DeadlockDetectionTest {
 	 */
 	@Test
 	public void testDetectDeadlock() {
+		DeadlockDetector.runSilent(() -> {
 		final int NUM_JOBS = 3;
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[NUM_JOBS]);
 		fill(status, TestBarrier2.STATUS_WAIT_FOR_START);
@@ -501,6 +508,7 @@ public class DeadlockDetectionTest {
 		}
 		//the underlying graph has to be empty
 		assertTrue("Jobs not removed from graph.", getLockManager().isEmpty());
+		});
 	}
 
 	/**
@@ -958,21 +966,23 @@ public class DeadlockDetectionTest {
 	 */
 	@Test
 	public void testVeryComplex() {
-		ArrayList<RandomTestRunnable> allRunnables = new ArrayList<>();
-		LockManager lockManager = new LockManager();
-		OrderedLock lock1 = lockManager.newLock();
-		OrderedLock lock2 = lockManager.newLock();
-		OrderedLock lock3 = lockManager.newLock();
-		OrderedLock lock4 = lockManager.newLock();
-		OrderedLock lock5 = lockManager.newLock();
-		OrderedLock lock6 = lockManager.newLock();
-		createRunnables(new ILock[] {lock1, lock2, lock3}, 10, allRunnables, true);
-		createRunnables(new ILock[] {lock2, lock3, lock4}, 10, allRunnables, true);
-		createRunnables(new ILock[] {lock3, lock4, lock5}, 10, allRunnables, true);
-		createRunnables(new ILock[] {lock4, lock5, lock6}, 10, allRunnables, true);
-		createRunnables(new ILock[] {lock5, lock6, lock1}, 10, allRunnables, true);
-		createRunnables(new ILock[] {lock6, lock1, lock2}, 10, allRunnables, true);
-		wait(allRunnables, lockManager);
+		DeadlockDetector.runSilent(() -> {
+			ArrayList<RandomTestRunnable> allRunnables = new ArrayList<>();
+			LockManager lockManager = new LockManager();
+			OrderedLock lock1 = lockManager.newLock();
+			OrderedLock lock2 = lockManager.newLock();
+			OrderedLock lock3 = lockManager.newLock();
+			OrderedLock lock4 = lockManager.newLock();
+			OrderedLock lock5 = lockManager.newLock();
+			OrderedLock lock6 = lockManager.newLock();
+			createRunnables(new ILock[] { lock1, lock2, lock3 }, 10, allRunnables, true);
+			createRunnables(new ILock[] { lock2, lock3, lock4 }, 10, allRunnables, true);
+			createRunnables(new ILock[] { lock3, lock4, lock5 }, 10, allRunnables, true);
+			createRunnables(new ILock[] { lock4, lock5, lock6 }, 10, allRunnables, true);
+			createRunnables(new ILock[] { lock5, lock6, lock1 }, 10, allRunnables, true);
+			createRunnables(new ILock[] { lock6, lock1, lock2 }, 10, allRunnables, true);
+			wait(allRunnables, lockManager);
+		});
 	}
 
 	/**
