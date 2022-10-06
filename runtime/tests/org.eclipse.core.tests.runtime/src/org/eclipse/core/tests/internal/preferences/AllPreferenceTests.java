@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2012 IBM Corporation and others.
+ * Copyright (c) 2004, 2013 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -9,19 +9,18 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM - Initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.tests.resources.content;
+package org.eclipse.core.tests.internal.preferences;
 
+import org.eclipse.core.tests.runtime.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-/**
- * Runs all content type tests
- */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ IContentTypeManagerTest.class, SpecificContextTest.class, ContentDescriptionTest.class,
-		XMLContentDescriberTest.class, LazyInputStreamTest.class, LazyReaderTest.class, TestBug94498.class })
-public class AllTests {
-
+@Suite.SuiteClasses({ EclipsePreferencesTest.class, PreferencesServiceTest.class, IScopeContextTest.class,
+		TestBug388004.class, TestBug380859.class, PreferenceExportTest.class, PreferenceForwarderTest.class,
+		PreferencesTest.class })
+@SuppressWarnings("deprecation")
+public class AllPreferenceTests {
 }

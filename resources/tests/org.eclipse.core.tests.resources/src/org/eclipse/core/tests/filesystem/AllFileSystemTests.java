@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2005, 2012 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,14 +10,18 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Sergey Prigogin (Google) - [338010] Resource.createLink() does not preserve symbolic links
+ * Martin Oberhuber (Wind River) - [] add SymlinkTest tests
  *******************************************************************************/
-package org.eclipse.core.tests.internal.utils;
+package org.eclipse.core.tests.filesystem;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * Class for collecting all test classes that deal with the file system API.
+ */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ ObjectMapTest.class, CacheTest.class, FileUtilTest.class })
-public class AllTests {
+@Suite.SuiteClasses({ CreateDirectoryTest.class, DeleteTest.class, EFSTest.class, FileCacheTest.class,
+		FileStoreTest.class, OpenOutputStreamTest.class, PutInfoTest.class, SymlinkTest.class, URIUtilTest.class })
+public class AllFileSystemTests {
 }

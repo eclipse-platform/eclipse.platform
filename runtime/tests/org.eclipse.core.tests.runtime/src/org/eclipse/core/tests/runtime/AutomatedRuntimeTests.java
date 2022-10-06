@@ -10,21 +10,20 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Broadcom Corp. - build configurations
  *******************************************************************************/
-package org.eclipse.core.tests.internal.resources;
+package org.eclipse.core.tests.runtime;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * The suite method for this class contains test suites for all automated tests
- * in this test package.
+ * Runs the sniff tests for the build. All tests listed here should be
+ * automated.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ ModelObjectReaderWriterTest.class, ProjectPreferencesTest.class,
-		ResourceInfoTest.class,
-		WorkspaceConcurrencyTest.class, WorkspacePreferencesTest.class, ProjectReferencesTest.class,
-		ProjectDynamicReferencesTest.class, ProjectBuildConfigsTest.class, Bug544975Test.class, })
-public class AllTests {
+@Suite.SuiteClasses({ org.eclipse.core.tests.internal.runtime.AllInternalRuntimeTests.class,
+		org.eclipse.core.tests.runtime.AllRuntimeTests.class, org.eclipse.core.tests.runtime.jobs.AllJobTests.class,
+		org.eclipse.core.tests.internal.preferences.AllPreferenceTests.class })
+public class AutomatedRuntimeTests {
+
 }

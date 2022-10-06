@@ -29,7 +29,7 @@
       <property name="data-dir" value="${expressions-folder}"/>
       <property name="plugin-name" value="${plugin-name}"/>
       <property name="classname" 
-                value="org.eclipse.core.internal.expressions.tests.AllTests"/>
+                value="org.eclipse.core.internal.expressions.tests.AllExpressionTests"/>
     </ant>
   </target>
 	

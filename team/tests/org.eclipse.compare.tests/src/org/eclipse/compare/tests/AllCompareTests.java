@@ -40,6 +40,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	CompareUIPluginTest.class,
 	StructureCreatorTest.class,
 	CompareFileRevisionEditorInputTest.class})
-public class AllTests {
+public class AllCompareTests {
 	// test suite
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -11,16 +11,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.tests.internal.preferences;
+package org.eclipse.core.tests.internal.watson;
 
-import org.eclipse.core.tests.runtime.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ EclipsePreferencesTest.class, PreferencesServiceTest.class, IScopeContextTest.class,
-		TestBug388004.class, TestBug380859.class, PreferenceExportTest.class, PreferenceForwarderTest.class,
-		PreferencesTest.class })
-@SuppressWarnings("deprecation")
-public class AllTests {
+@Suite.SuiteClasses({
+		DeltaChainFlatteningTest.class, DeltaFlatteningTest.class, ElementTreeDeltaChainTest.class,
+		ElementTreeIteratorTest.class, ElementTreeHasChangesTest.class, TreeFlatteningTest.class
+})
+public class AllWatsonTests {
+
 }

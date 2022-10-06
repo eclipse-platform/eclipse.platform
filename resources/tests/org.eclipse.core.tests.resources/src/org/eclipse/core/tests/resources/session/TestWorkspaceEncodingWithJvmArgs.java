@@ -16,7 +16,7 @@ package org.eclipse.core.tests.resources.session;
 import junit.framework.Test;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.Setup;
 import org.eclipse.core.tests.session.SetupManager.SetupException;
@@ -30,7 +30,7 @@ public class TestWorkspaceEncodingWithJvmArgs extends WorkspaceSessionTest {
 	private static final String CHARSET = "UTF-16";
 
 	public static Test suite() {
-		WorkspaceSessionTestSuite suite = new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS,
+		WorkspaceSessionTestSuite suite = new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS,
 				TestWorkspaceEncodingWithJvmArgs.class);
 		try {
 

@@ -18,7 +18,7 @@ import junit.framework.Test;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.tests.harness.FileSystemHelper;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.Setup;
 import org.eclipse.core.tests.session.SetupManager.SetupException;
@@ -33,7 +33,7 @@ public class TestWorkspaceEncodingWithPluginCustomization extends WorkspaceSessi
 	private static final String FILE_NAME = FileSystemHelper.getTempDir().append("plugin_customization_encoding.ini").toOSString();
 
 	public static Test suite() {
-		WorkspaceSessionTestSuite suite = new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS,
+		WorkspaceSessionTestSuite suite = new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS,
 				TestWorkspaceEncodingWithPluginCustomization.class);
 		try {
 			// create plugin_customization.ini file

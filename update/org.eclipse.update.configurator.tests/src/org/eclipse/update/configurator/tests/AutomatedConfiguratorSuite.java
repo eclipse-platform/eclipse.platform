@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 Torbjörn Svensson and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -9,14 +9,21 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ *     Torbjörn Svensson <azoff@svenskalinuxforeningen.se> - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.tests.internal.properties;
+package org.eclipse.update.configurator.tests;
 
+import org.eclipse.update.internal.configurator.tests.FeatureEntryTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * Tests for integration and nightly builds.
+ *
+ * @since 0.1
+ */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ PropertyManagerTest.class })
-public class AllTests {
+@Suite.SuiteClasses({ FeatureEntryTests.class })
+public class AutomatedConfiguratorSuite {
+
 }

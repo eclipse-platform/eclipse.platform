@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.content;
 
-import static org.eclipse.core.tests.resources.AutomatedTests.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.AutomatedResourceTests.PI_RESOURCES_TESTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -80,7 +80,7 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 	private final static String XML_ROOT_ELEMENT_EXTERNAL_ENTITY2 = "<?xml version=\"1.0\"?><!DOCTYPE org.eclipse.core.resources.tests.root-element PUBLIC \"org.eclipse.core.resources.tests.root-elementId\" \"org.eclipse.core.resources.tests.root-element.dtd\" ><org.eclipse.core.resources.tests.root-element/>";
 	private final static String XML_ROOT_ELEMENT_ISO_8859_1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><org.eclipse.core.resources.tests.root-element/>";
 	private final static String XML_ROOT_ELEMENT_NO_DECL = "<org.eclipse.core.resources.tests.root-element/>";
-	private final static String XML_US_ASCII_INVALID = "<?xml version='1.0' encoding='us-ascii'?><!-- Non-ASCII chars: áéíóú --><org.eclipse.core.resources.tests.root/>";
+	private final static String XML_US_ASCII_INVALID = "<?xml version='1.0' encoding='us-ascii'?><!-- Non-ASCII chars: ï¿½ï¿½ï¿½ï¿½ï¿½ --><org.eclipse.core.resources.tests.root/>";
 	private final static String XML_UTF_16 = "<?xml version=\"1.0\" encoding=\"UTF-16\"?><org.eclipse.core.resources.tests.root/>";
 	private final static String XML_UTF_16BE = "<?xml version=\"1.0\" encoding=\"UTF-16BE\"?><org.eclipse.core.resources.tests.root/>";
 	private final static String XML_UTF_16LE = "<?xml version=\"1.0\" encoding=\"UTF-16LE\"?><org.eclipse.core.resources.tests.root/>";

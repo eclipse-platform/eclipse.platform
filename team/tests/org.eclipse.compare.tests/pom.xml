@@ -23,7 +23,7 @@
 
   <properties>
     <testSuite>${project.artifactId}</testSuite>
-    <testClass>org.eclipse.compare.tests.AllTests</testClass>
+    <testClass>org.eclipse.compare.tests.AllCompareTests</testClass>
   </properties>
 
   <build>

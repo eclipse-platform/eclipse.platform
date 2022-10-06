@@ -31,5 +31,5 @@ import org.junit.runners.Suite;
 		TestBug202384.class, TestBug369177.class, TestBug316182.class, TestBug294854.class, TestBug426263.class,
 		TestWorkspaceEncodingExistingWorkspace.class, TestWorkspaceEncodingNewWorkspace.class,
 		TestWorkspaceEncodingWithJvmArgs.class, TestWorkspaceEncodingWithPluginCustomization.class, })
-public class AllTests {
+public class AllSessionTests {
 }

@@ -18,9 +18,9 @@ import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
 import org.eclipse.core.tests.session.*;
 import org.eclipse.core.tests.session.SetupManager.SetupException;
 
-public class AllTests extends TestCase {
+public class AllPerfTests extends TestCase {
 	public static Test suite() {
-		TestSuite suite = new TestSuite(AllTests.class.getName());
+		TestSuite suite = new TestSuite(AllPerfTests.class.getName());
 
 		// make sure that the first run of the startup test is not recorded - it is heavily
 		// influenced by the presence and validity of the cached information
