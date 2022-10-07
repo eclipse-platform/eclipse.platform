@@ -671,16 +671,16 @@ public abstract class ResourceTest extends CoreTest {
 		// Manually check that the core.resource time-stamp is out-of-sync
 		// with the java.io.File last modified. #isSynchronized() will schedule
 		// out-of-sync resources for refresh, so we don't use that here.
-		for (int count = 0; count < 30 && isInSync(resource); count++) {
+		for (int count = 0; count < 3000 && isInSync(resource); count++) {
 			FileTime now = FileTime.fromMillis(resource.getLocalTimeStamp() + 1000);
 			try {
 				Files.setLastModifiedTime(location.toFile().toPath(), now);
 			} catch (IOException e) {
 				fail("#touchInFilesystem(IResource)", e);
 			}
-			if (!isInSync(resource)) {
+			if (count > 1) {
 				try {
-					Thread.sleep(100);
+					Thread.sleep(1);
 				} catch (InterruptedException e) {
 					// ignore
 				}
@@ -1040,6 +1040,7 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	protected void waitForRefresh() {
 		try {
+			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, null);
 		} catch (OperationCanceledException | InterruptedException e) {
 			//ignore

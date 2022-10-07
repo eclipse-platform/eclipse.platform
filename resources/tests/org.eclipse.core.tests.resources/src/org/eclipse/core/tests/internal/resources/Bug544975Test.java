@@ -50,6 +50,7 @@ public class Bug544975Test extends ResourceTest {
 			Files.createFile(filePath);
 
 			project.open(IResource.BACKGROUND_REFRESH, new NullProgressMonitor());
+			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, new NullProgressMonitor());
 
 			file1 = project.getFile("someFile.txt");
@@ -85,6 +86,7 @@ public class Bug544975Test extends ResourceTest {
 			Files.createFile(filePath);
 
 			project.open(IResource.NONE, new NullProgressMonitor());
+			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, new NullProgressMonitor());
 
 			file1 = project.getFile("someFile.txt");
