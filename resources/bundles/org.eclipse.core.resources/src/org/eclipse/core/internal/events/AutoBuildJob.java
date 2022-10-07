@@ -120,7 +120,7 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 				// the new build request is eventually processed and does not get lost.
 				// Therefore, if a build is needed and the autobuild is enabled, then reschedule
 				// the job
-				if (isAutoBuilding && buildNeeded)
+				if (isAutoBuilding && buildNeeded && !avoidBuild)
 					schedule(delay);
 		}
 	}
