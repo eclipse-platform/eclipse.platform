@@ -23,7 +23,7 @@ import org.eclipse.core.tests.harness.TestJob;
 public class Bug_320329 extends AbstractJobManagerTest {
 
 	public void testBug() {
-		Job j1 = new TestJob("job1", 100, 50);//5 seconds
+		Job j1 = new TestJob("job1", 10, 5);// 50 ms
 		Job j2 = new TestJob("job2");
 		ISchedulingRule rule1 = new IdentityRule();
 		ISchedulingRule rule2 = new IdentityRule();
@@ -38,7 +38,7 @@ public class Bug_320329 extends AbstractJobManagerTest {
 
 		// Clean up
 		Job.getJobManager().endRule(rule2);
-		waitForCompletion(j1, 6000);
-		waitForCompletion(j2, 6000);
+		waitForCompletion(j1, 60);
+		waitForCompletion(j2, 60);
 	}
 }
