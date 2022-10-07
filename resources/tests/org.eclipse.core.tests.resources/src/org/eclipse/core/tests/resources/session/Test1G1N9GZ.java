@@ -19,7 +19,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -82,7 +82,7 @@ public class Test1G1N9GZ extends WorkspaceSerializationTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, Test1G1N9GZ.class);
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, Test1G1N9GZ.class);
 	}
 
 }

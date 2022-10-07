@@ -16,7 +16,7 @@ package org.eclipse.core.tests.resources.content;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -26,7 +26,7 @@ public abstract class ContentTypeTest {
 	public static final String TEST_FILES_ROOT = "Plugin_Testing/";
 
 	public BundleContext getContext() {
-		return Platform.getBundle(AutomatedTests.PI_RESOURCES_TESTS).getBundleContext();
+		return Platform.getBundle(AutomatedResourceTests.PI_RESOURCES_TESTS).getBundleContext();
 	}
 
 	/**

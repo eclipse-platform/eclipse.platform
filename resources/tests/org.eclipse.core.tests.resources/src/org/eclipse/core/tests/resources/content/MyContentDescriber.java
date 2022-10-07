@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.content;
 
-import static org.eclipse.core.tests.resources.AutomatedTests.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.AutomatedResourceTests.PI_RESOURCES_TESTS;
 
 import java.io.IOException;
 import java.io.InputStream;

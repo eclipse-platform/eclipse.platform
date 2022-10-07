@@ -21,7 +21,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -104,7 +104,7 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, TestMultipleBuildersOfSameType.class);
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestMultipleBuildersOfSameType.class);
 	}
 
 }

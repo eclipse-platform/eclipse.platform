@@ -23,7 +23,7 @@
 
   <properties>
   	<testSuite>${project.artifactId}</testSuite>
-  	<testClass>org.eclipse.core.tests.resources.AutomatedTests</testClass>
+  	<testClass>org.eclipse.core.tests.resources.AutomatedResourceTests</testClass>
   </properties>
 
   <build>

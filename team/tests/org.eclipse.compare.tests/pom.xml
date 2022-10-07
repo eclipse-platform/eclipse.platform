@@ -18,12 +18,12 @@
     <relativePath>..</relativePath>
   </parent>
   <artifactId>org.eclipse.compare.tests</artifactId>
-  <version>3.7.100-SNAPSHOT</version>
+  <version>3.7.200-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
 
   <properties>
     <testSuite>${project.artifactId}</testSuite>
-    <testClass>org.eclipse.compare.tests.AllTests</testClass>
+    <testClass>org.eclipse.compare.tests.AllCompareTests</testClass>
   </properties>
 
   <build>

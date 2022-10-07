@@ -19,7 +19,7 @@ import org.eclipse.core.internal.resources.TestingSupport;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -68,6 +68,6 @@ public class TestMasterTableCleanup extends WorkspaceSerializationTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedTests.PI_RESOURCES_TESTS, TestMasterTableCleanup.class);
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestMasterTableCleanup.class);
 	}
 }

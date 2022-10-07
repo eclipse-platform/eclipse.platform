@@ -28,7 +28,7 @@
       <property name="data-dir" value="${jdt-folder}"/>
       <property name="plugin-name" value="${plugin-name}"/>
       <property name="classname" 
-                value="org.eclipse.ant.tests.core.AutomatedSuite"/>
+                value="org.eclipse.ant.tests.core.AutomatedAntSuite"/>
     </ant>
   </target>
 

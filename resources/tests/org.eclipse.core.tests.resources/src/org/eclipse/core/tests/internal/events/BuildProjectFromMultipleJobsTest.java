@@ -20,7 +20,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.internal.builders.ConfigurationBuilder;
-import org.eclipse.core.tests.resources.AutomatedTests;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.regression.SimpleBuilder;
 
@@ -207,7 +207,7 @@ public class BuildProjectFromMultipleJobsTest extends ResourceTest {
 			} catch (CoreException e) {
 				return e.getStatus();
 			}
-			return new Status(IStatus.OK, AutomatedTests.PI_RESOURCES_TESTS, getName() + " finished");
+			return new Status(IStatus.OK, AutomatedResourceTests.PI_RESOURCES_TESTS, getName() + " finished");
 		}
 
 		@Override

@@ -291,7 +291,7 @@ public class OrderedLockTest {
 			thread.start();
 		}
 		randomOrder.waitForEnd();
-		long joinMillis = 500;
+		long joinMillis = 5000;
 		for (Thread thread : threads) {
 			try {
 				long n0 = System.nanoTime();
