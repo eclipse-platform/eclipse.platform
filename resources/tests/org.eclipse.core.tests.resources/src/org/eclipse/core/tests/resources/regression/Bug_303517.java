@@ -77,6 +77,7 @@ public class Bug_303517 extends ResourceTest {
 		}
 
 		// Wait for auto-refresh to happen
+		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
 
 		// Core.resources should be aware that the file no longer exists...
@@ -104,6 +105,7 @@ public class Bug_303517 extends ResourceTest {
 		}
 
 		// Wait for auto-refresh to happen
+		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
 
 		// File is now in sync.
@@ -134,6 +136,7 @@ public class Bug_303517 extends ResourceTest {
 		}
 
 		// Wait for auto-refresh to happen
+		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
 
 		// File is now in sync.
@@ -168,6 +171,7 @@ public class Bug_303517 extends ResourceTest {
 		assertFalse("1.2", f.isSynchronized(IResource.DEPTH_ONE));
 
 		// Wait for auto-refresh to happen
+		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
 
 		// File is now in sync.
@@ -195,6 +199,7 @@ public class Bug_303517 extends ResourceTest {
 		assertFalse("1.2", f.isSynchronized(IResource.DEPTH_ONE));
 
 		// Wait for auto-refresh to happen
+		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
 
 		// File is no longer a file - i.e. still out-of-sync

@@ -810,6 +810,9 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 		}
 		internalVerifyDelta(delta);
 		fState = DELTA_VERIFIED;
+		synchronized (this) {
+			this.notifyAll();
+		}
 	}
 
 	/**

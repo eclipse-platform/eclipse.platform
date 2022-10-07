@@ -97,13 +97,16 @@ public class CharsetTest extends ResourceTest {
 		}
 
 		public synchronized boolean waitForEvent(long limit) {
-			if (hasBeenNotified()) {
-				return true;
-			}
-			try {
-				this.wait(limit);
-			} catch (InterruptedException e) {
-				// ignore
+			Job.getJobManager().wakeUp(CharsetManager.class);
+			for (int i = 1; i < limit; i++) {
+				if (hasBeenNotified()) {
+					return true;
+				}
+				try {
+					this.wait(1);
+				} catch (InterruptedException e) {
+					// ignore
+				}
 			}
 			return hasBeenNotified();
 		}
@@ -394,6 +397,7 @@ public class CharsetTest extends ResourceTest {
 		assertTrue("4.5", file.getContentDescription().getCharset().equals("ascii"));
 
 		// getContentDescription will have noticed out-of-sync
+		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
 		// Prime the cache...
 		assertTrue("4.6", file.getCharset().equals("ascii"));
@@ -408,6 +412,7 @@ public class CharsetTest extends ResourceTest {
 		// #getContentDescription checks sync and discovers the real content type
 		assertTrue("5.5", file.getContentDescription().getCharset().equals("UTF-8"));
 		// getContentDescription will have noticed out-of-sync
+		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
 		// #getCharset will now have noticed that the file has changed.
 		assertTrue("5.6", file.getCharset().equals("UTF-8"));
@@ -422,6 +427,7 @@ public class CharsetTest extends ResourceTest {
 		// #getContentDescription checks sync and discovers the real content type
 		assertTrue("6.8", file.getContentDescription().getCharset().equals("ascii"));
 		// getContentDescription will have noticed out-of-sync
+		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
 		assertTrue("6.9", file.getCharset().equals("ascii"));
 	}
@@ -473,7 +479,7 @@ public class CharsetTest extends ResourceTest {
 			// TODO update the test when bug 345271 is fixed
 			a.setDerived(true, getMonitor());
 			//wait for all resource deltas
-			Thread.sleep(500);
+			// Thread.sleep(500);
 			waitForCharsetManagerJob();
 			assertExistsInWorkspace("3.1", regularPrefs);
 			assertExistsInWorkspace("3.2", derivedPrefs);
@@ -483,7 +489,7 @@ public class CharsetTest extends ResourceTest {
 			// TODO update the test when bug 345271 is fixed
 			a.setDerived(false, getMonitor());
 			//wait for all resource deltas
-			Thread.sleep(500);
+			// Thread.sleep(500);
 			waitForCharsetManagerJob();
 			assertExistsInWorkspace("4.1", regularPrefs);
 			assertDoesNotExistInWorkspace("4.2", derivedPrefs);
@@ -1330,6 +1336,7 @@ public class CharsetTest extends ResourceTest {
 			assertEquals(otherCharset, project.getDefaultCharset());
 			project.delete(false, getMonitor());
 			Thread.sleep(100); // leave some time for CharsetDeltaJob.to be scheduled;
+			Job.getJobManager().wakeUp(CharsetDeltaJob.FAMILY_CHARSET_DELTA);
 			Job.getJobManager().join(CharsetDeltaJob.FAMILY_CHARSET_DELTA, getMonitor());
 			assertTrue(listener.getResult().isOK());
 		} finally {
