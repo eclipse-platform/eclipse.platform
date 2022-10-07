@@ -55,7 +55,7 @@ public class JobGroupTest extends AbstractJobTest {
 
 		// Create and schedule the long running test jobs.
 		for (int i = 0; i < NUM_JOBS; i++) {
-			jobs[i] = new TestJob("TestJob", 1000000, 10);
+			jobs[i] = new TestJob("TestJob", 1000000, 1);
 			jobs[i].setJobGroup(jobGroup);
 			jobs[i].schedule();
 		}
@@ -96,12 +96,12 @@ public class JobGroupTest extends AbstractJobTest {
 	}
 
 	public void testSeedJobsWhenAllJobsAreKnown() {
-		final int NUM_SEED_JOBS = 10;
+		final int NUM_SEED_JOBS = 3;
 		final JobGroup jobGroup = new JobGroup("JobGroup", 1, NUM_SEED_JOBS);
 
 		for (int i = 1; i <= NUM_SEED_JOBS; i++) {
 			// Create and schedule a long running test job.
-			TestJob job = new TestJob("TestJob", 1000000, 10);
+			TestJob job = new TestJob("TestJob", 1000000, 1);
 			job.setJobGroup(jobGroup);
 			job.schedule();
 			waitForStart(job);
@@ -138,7 +138,7 @@ public class JobGroupTest extends AbstractJobTest {
 				@Override
 				public IStatus run(IProgressMonitor monitor) {
 					for (int j = 0; j < NUM_CHILD_JOBS; j++) {
-						TestJob childJob = new TestJob("ChildTestJob", 1000000, 10);
+						TestJob childJob = new TestJob("ChildTestJob", 1000000, 1);
 						childJob.setJobGroup(getJobGroup());
 						childJob.schedule();
 					}
@@ -431,7 +431,7 @@ public class JobGroupTest extends AbstractJobTest {
 		for (int i = 0; i < NUM_JOBS; i++) {
 			// Assign half the jobs to the first group, the other half to the second group.
 			if (i % 2 == 0) {
-				jobs[i] = new TestJob("TestFirstJobGroup", 10, 10);
+				jobs[i] = new TestJob("TestFirstJobGroup", 1, 1);
 				jobs[i].setJobGroup(firstJobGroup);
 				jobs[i].schedule(1000000);
 			} else {
@@ -463,7 +463,7 @@ public class JobGroupTest extends AbstractJobTest {
 		}
 
 		int i = 0;
-		for (; i < 100; i++) {
+		for (; i < 10000; i++) {
 			int currentStatus = status.get(0);
 			List<Job> result = firstJobGroup.getActiveJobs();
 
@@ -472,9 +472,9 @@ public class JobGroupTest extends AbstractJobTest {
 				assertTrue("1." + i, result.isEmpty());
 				break;
 			}
-			sleep(100);
+			sleep(1);
 		}
-		assertTrue("2.0", i < 100);
+		assertTrue("2.0", i < 10000);
 
 		// Cancel the second job group.
 		secondJobGroup.cancel();
@@ -499,18 +499,18 @@ public class JobGroupTest extends AbstractJobTest {
 		for (int i = 0; i < NUM_JOBS; i++) {
 			// Assign half the jobs to the first group, the other half to the second group.
 			if (i % 2 == 0) {
-				jobs[i] = new TestJob("TestFirstGroup", 1000000, 10);
+				jobs[i] = new TestJob("TestFirstGroup", 1000000, 1);
 				jobs[i].setJobGroup(firstJobGroup);
 				jobs[i].schedule();
 			} else {
-				jobs[i] = new TestJob("TestSecondGroup", 1000000, 10);
+				jobs[i] = new TestJob("TestSecondGroup", 1000000, 1);
 				jobs[i].setJobGroup(secondJobGroup);
 				jobs[i].schedule();
 			}
 
 		}
 
-		final long timeout = 1000;
+		final long timeout = 100;
 		final long duration[] = {-1};
 
 		Thread t = new Thread(() -> {
@@ -752,7 +752,7 @@ public class JobGroupTest extends AbstractJobTest {
 		JobGroup jobGroup = new JobGroup("JobGroup", 10, NUM_JOBS);
 		final TestBarrier2 barrier = new TestBarrier2();
 		for (int i = 0; i < NUM_JOBS; i++) {
-			TestJob testJob = new TestJob("TestJob", 10, 10) {
+			TestJob testJob = new TestJob("TestJob", 1, 10) {
 				@Override
 				public IStatus run(IProgressMonitor monitor) {
 					barrier.waitForStatus(TestBarrier2.STATUS_START);
@@ -873,9 +873,9 @@ public class JobGroupTest extends AbstractJobTest {
 		final JobGroup jobGroup = new JobGroup("JobGroup", 1, 1);
 		final TestBarrier2 barrier = new TestBarrier2();
 		final int[] groupJobsCount = new int[] {-1};
-		final TestJob waiting = new TestJob("WaitingJob", 1000000, 10);
+		final TestJob waiting = new TestJob("WaitingJob", 1000000, 1);
 		waiting.setJobGroup(jobGroup);
-		final TestJob running = new TestJob("RunningJob", 200, 10);
+		final TestJob running = new TestJob("RunningJob", 2, 1);
 		running.setJobGroup(jobGroup);
 		Job job = new Job("MainJob") {
 			@Override
@@ -1076,7 +1076,7 @@ public class JobGroupTest extends AbstractJobTest {
 		final Job jobs[] = new Job[NUM_SEED_JOBS + NUM_ADDITIONAL_JOBs];
 		final JobGroup jobGroup = new JobGroup("JobGroup", NUM_SEED_JOBS, NUM_SEED_JOBS);
 		for (int i = 0; i < NUM_SEED_JOBS - 1; i++) {
-			TestJob job = new TestJob("TestJob", 1000000, 10);
+			TestJob job = new TestJob("TestJob", 1000000, 1);
 			jobs[i] = job;
 			job.setJobGroup(jobGroup);
 			job.schedule();
@@ -1108,7 +1108,7 @@ public class JobGroupTest extends AbstractJobTest {
 		assertState("3.1", failedJob, Job.RUNNING);
 
 		for (int i = NUM_SEED_JOBS; i < NUM_SEED_JOBS + NUM_ADDITIONAL_JOBs; i++) {
-			Job job = new TestJob("AdditionalJob", 1000000, 10);
+			Job job = new TestJob("AdditionalJob", 1000000, 1);
 			jobs[i] = job;
 			job.setJobGroup(jobGroup);
 			job.schedule();
@@ -1163,7 +1163,7 @@ public class JobGroupTest extends AbstractJobTest {
 			}
 		};
 		for (int i = 0; i < NUM_JOBS; i++) {
-			Job job = new TestJob("TestJob", 10, 10);
+			Job job = new TestJob("TestJob", 1, 1);
 			job.setJobGroup(jobGroup);
 			job.schedule();
 		}
@@ -1205,7 +1205,7 @@ public class JobGroupTest extends AbstractJobTest {
 		for (int i = 0; i < status.length; i++) {
 			final int jobNumber = i;
 			final IStatus returnedStatus[] = new IStatus[1];
-			Job job = new TestJob("TestJob", 10, 10) {
+			Job job = new TestJob("TestJob", 1, 1) {
 				@Override
 				public IStatus run(IProgressMonitor monitor) {
 					super.run(monitor);
@@ -1265,7 +1265,7 @@ public class JobGroupTest extends AbstractJobTest {
 		};
 		for (int i = 0; i < NUM_JOBS; i++) {
 			final int jobNumber = i;
-			Job job = new TestJob("TestJob", 10, 10) {
+			Job job = new TestJob("TestJob", 1, 1) {
 				@Override
 				public IStatus run(IProgressMonitor monitor) {
 					barrier.waitForStatus(TestBarrier2.STATUS_START);
@@ -1498,10 +1498,10 @@ public class JobGroupTest extends AbstractJobTest {
 		int i = 0;
 		while (jobGroup.getState() != JobGroup.NONE) {
 			Thread.yield();
-			sleep(100);
+			sleep(1);
 			Thread.yield();
 			// Sanity test to avoid hanging tests.
-			if (i++ >= 100) {
+			if (i++ >= 10000) {
 				dumpState();
 				fail("Timeout waiting for job group " + jobGroup.getName() + " to be completed");
 			}

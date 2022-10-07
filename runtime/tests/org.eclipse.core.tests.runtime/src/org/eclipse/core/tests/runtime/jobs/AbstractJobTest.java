@@ -99,7 +99,7 @@ public class AbstractJobTest extends TestCase {
 	 */
 	protected void waitForCompletion(Job job, int waitTime) {
 		int i = 0;
-		int tickLength = 10;
+		int tickLength = 1;
 		int ticks = waitTime / tickLength;
 		long start = now();
 		while (job.getState() != Job.NONE && now() - start < waitTime) {

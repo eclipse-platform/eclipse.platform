@@ -14,7 +14,9 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import junit.framework.AssertionFailedError;
 import org.eclipse.core.runtime.*;
@@ -41,7 +43,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 			synchronized (IJobManagerTest.this) {
 				if (scheduled.remove(event.getJob())) {
 					//wake up the waitForCompletion method
-					completedJobs++;
+					completedJobs.incrementAndGet();
 					IJobManagerTest.this.notify();
 				}
 			}
@@ -52,7 +54,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 			Job job = event.getJob();
 			synchronized (IJobManagerTest.this) {
 				if (job instanceof TestJob) {
-					scheduledJobs++;
+					scheduledJobs.incrementAndGet();
 					scheduled.add(job);
 				}
 			}
@@ -65,10 +67,10 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	 */
 	private static final boolean PEDANTIC = false;
 
-	protected int completedJobs;
+	protected AtomicInteger completedJobs;
 	private IJobChangeListener[] jobListeners;
 
-	protected int scheduledJobs;
+	protected AtomicInteger scheduledJobs;
 
 	public IJobManagerTest() {
 		super("");
@@ -114,8 +116,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		completedJobs = 0;
-		scheduledJobs = 0;
+		completedJobs = new AtomicInteger();
+		scheduledJobs = new AtomicInteger();
 		jobListeners = new IJobChangeListener[] {/* new VerboseJobListener(),*/
 		new TestJobListener()};
 		for (IJobChangeListener jobListener : jobListeners) {
@@ -379,13 +381,13 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		TestJob jobA = new TestJob("Job1");
 		TestJob jobB = new TestJob("Job2");
 		//schedule jobA
-		jobA.schedule(5000);
+		jobA.schedule(50);
 		//schedule jobB so it gets behind jobA in the queue
-		jobB.schedule(10000);
+		jobB.schedule(100);
 		//now put jobA to sleep indefinitely
 		jobA.sleep();
 		//jobB should still run within ten seconds
-		waitForCompletion(jobB, 30000);
+		waitForCompletion(jobB, 300);
 	}
 
 	/**
@@ -541,7 +543,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 
 	public void testDelayedJob() {
 		//schedule a delayed job and ensure it doesn't start until instructed
-		int[] sleepTimes = new int[] {0, 10, 50, 100, 500, 1000, 2000, 2500};
+		int[] sleepTimes = new int[] { 0, 1, 5, 10, 50, 100, 200, 250 };
 		for (int i = 0; i < sleepTimes.length; i++) {
 			long start = now();
 			TestJob job = new TestJob("Noop", 0, 0);
@@ -837,11 +839,11 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		for (int i = 0; i < NUM_JOBS; i++) {
 			//assign half the jobs to the first family, the other half to the second family
 			if (i % 2 == 0) {
-				jobs[i] = new FamilyTestJob("TestFirstFamily", 10, 10, TestJobFamily.TYPE_ONE);
+				jobs[i] = new FamilyTestJob("TestFirstFamily", 10, 1, TestJobFamily.TYPE_ONE);
 				jobs[i].setRule(rule1);
 				jobs[i].schedule(1000000);
 			} else /*if(i%2 == 1)*/{
-				jobs[i] = new FamilyTestJob("TestSecondFamily", 1000000, 10, TestJobFamily.TYPE_TWO);
+				jobs[i] = new FamilyTestJob("TestSecondFamily", 1000000, 1, TestJobFamily.TYPE_TWO);
 				jobs[i].setRule(rule2);
 				jobs[i].schedule();
 			}
@@ -868,7 +870,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		manager.wakeUp(first);
 
 		int i = 0;
-		for (; i < 100; i++) {
+		for (; i < 10000; i++) {
 			int currentStatus = status.get(0);
 			Job[] result = manager.find(first);
 
@@ -877,9 +879,9 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 				assertEquals("2." + i, 0, result.length);
 				break;
 			}
-			sleep(100);
+			sleep(1);
 		}
-		assertTrue("2.0", i < 100);
+		assertTrue("2.0", i < 10000);
 
 		//cancel the second family of jobs
 		manager.cancel(second);
@@ -1040,7 +1042,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		int count = 5;
 		Job[] jobs = new Job[count];
 		for (int i = 0; i < jobs.length; i++) {
-			jobs[i] = new FamilyTestJob("TestJobFamilyJoinLockListener" + i, 5, 500, family.getType());
+			jobs[i] = new FamilyTestJob("TestJobFamilyJoinLockListener" + i, 5, 5, family.getType());
 			jobs[i].schedule();
 		}
 		TestLockListener lockListener = new TestLockListener();
@@ -1200,7 +1202,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		final int[] familyJobsCount = new int[] {-1};
 		final TestBarrier2 barrier = new TestBarrier2();
 		final Job waiting = new FamilyTestJob("waiting job", 1000000, 10, TestJobFamily.TYPE_ONE);
-		final Job running = new FamilyTestJob("running job", 200, 10, TestJobFamily.TYPE_ONE);
+		final Job running = new FamilyTestJob("running job", 2, 1, TestJobFamily.TYPE_ONE);
 		final IJobChangeListener listener = new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -1287,7 +1289,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		final int[] familyJobsCount = new int[] {-1};
 		final TestBarrier2 barrier = new TestBarrier2();
 		final Job waiting = new FamilyTestJob("waiting job", 1000000, 10, TestJobFamily.TYPE_ONE);
-		final Job running = new FamilyTestJob("running job", 200, 10, TestJobFamily.TYPE_ONE);
+		final Job running = new FamilyTestJob("running job", 2, 1, TestJobFamily.TYPE_ONE);
 		final IJobChangeListener listener = new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -1373,8 +1375,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	public void testJobFamilyJoinWhenSuspended_3() throws InterruptedException {
 		final Object family = new TestJobFamily(TestJobFamily.TYPE_ONE);
 		final TestBarrier2 barrier = new TestBarrier2();
-		final Job waiting = new FamilyTestJob("waiting job", 400, 10, TestJobFamily.TYPE_ONE);
-		final Job running = new FamilyTestJob("running job", 200, 10, TestJobFamily.TYPE_ONE);
+		final Job waiting = new FamilyTestJob("waiting job", 4, 1, TestJobFamily.TYPE_ONE);
+		final Job running = new FamilyTestJob("running job", 2, 1, TestJobFamily.TYPE_ONE);
 		final IJobChangeListener listener = new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -1572,7 +1574,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		//need one common scheduling rule so that the jobs would be executed one by one
 		ISchedulingRule rule = new IdentityRule();
 		//create and schedule a seed job that will cause all others to be blocked
-		TestJob seedJob = new FamilyTestJob("SeedJob", 1000000, 10, TestJobFamily.TYPE_THREE);
+		TestJob seedJob = new FamilyTestJob("SeedJob", 1000000, 1, TestJobFamily.TYPE_THREE);
 		seedJob.setRule(rule);
 		seedJob.schedule();
 		waitForStart(seedJob);
@@ -1580,7 +1582,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 
 		//create jobs in first family and put them to sleep
 		for (int i = 0; i < JOBS_PER_FAMILY; i++) {
-			family1[i] = new FamilyTestJob("TestFirstFamily", 1000000, 10, TestJobFamily.TYPE_ONE);
+			family1[i] = new FamilyTestJob("TestFirstFamily", 1000000, 1, TestJobFamily.TYPE_ONE);
 			family1[i].setRule(rule);
 			family1[i].schedule();
 			assertState("1.1." + i, family1[i], Job.WAITING);
@@ -1589,7 +1591,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 		//create jobs in second family and put them to sleep
 		for (int i = 0; i < JOBS_PER_FAMILY; i++) {
-			family2[i] = new FamilyTestJob("TestSecondFamily", 1000000, 10, TestJobFamily.TYPE_TWO);
+			family2[i] = new FamilyTestJob("TestSecondFamily", 1000000, 1, TestJobFamily.TYPE_TWO);
 			family2[i].setRule(rule);
 			family2[i].schedule();
 			assertState("2.1." + i, family2[i], Job.WAITING);
@@ -1683,7 +1685,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		TestJob[] jobs = new TestJob[JOB_COUNT];
 		ISchedulingRule mutex = new IdentityRule();
 		for (int i = 0; i < JOB_COUNT; i++) {
-			jobs[i] = new TestJob("testMutexRule", 1000000, 10);
+			jobs[i] = new TestJob("testMutexRule", 1000000, 1);
 			jobs[i].setRule(mutex);
 			jobs[i].schedule();
 		}
@@ -1708,76 +1710,60 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 
 	public void testOrder() {
 		//ensure jobs are run in order from lowest to highest sleep time.
-		final List<Job> done = Collections.synchronizedList(new ArrayList<Job>());
-		IJobChangeListener listener = new JobChangeAdapter() {
-			@Override
-			public void done(IJobChangeEvent event) {
-				if (event.getJob() instanceof TestJob) {
-					done.add(event.getJob());
-				}
-			}
-		};
-		int[] sleepTimes = new int[] {50, 250, 500, 800, 1000, 1500};
+		final Queue<Job> done = new ConcurrentLinkedQueue<>();
+		int[] sleepTimes = new int[] { 5, 100, 200, 300 };
 		Job[] jobs = new Job[sleepTimes.length];
-		manager.addJobChangeListener(listener);
-		try {
-			for (int i = 0; i < sleepTimes.length; i++) {
-				jobs[i] = new TestJob("testOrder(" + i + ")", 1, 1);
-			}
-			for (int i = 0; i < sleepTimes.length; i++) {
-				jobs[i].schedule(sleepTimes[i]);
-			}
-			waitForCompletion();
-			//make sure listener has had a chance to process the finished job
-			while (done.size() != jobs.length) {
-				Thread.yield();
-				sleep(100);
-			}
-			Job[] doneOrder = done.toArray(new Job[done.size()]);
-			assertEquals("1.0", jobs.length, doneOrder.length);
-			for (int i = 0; i < doneOrder.length; i++) {
-				assertEquals("1.1." + i, jobs[i], doneOrder[i]);
-			}
-		} finally {
-			manager.removeJobChangeListener(listener);
+		for (int i = 0; i < sleepTimes.length; i++) {
+			jobs[i] = new Job("testOrder(" + i + ")") {
+
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					done.add(this);
+					return Status.OK_STATUS;
+				}
+
+			};
+		}
+		for (int i = 0; i < sleepTimes.length; i++) {
+			jobs[i].schedule(sleepTimes[i]);
+		}
+		// make sure listener has had a chance to process the finished job
+		while (done.size() != jobs.length) {
+			Thread.yield();
+		}
+		Job[] doneOrder = done.toArray(new Job[done.size()]);
+		assertEquals("1.0", jobs.length, doneOrder.length);
+		for (int i = 0; i < doneOrder.length; i++) {
+			assertEquals("1.1." + i, jobs[i], doneOrder[i]);
 		}
 	}
 
 	public void testReverseOrder() {
 		//ensure jobs are run in order from lowest to highest sleep time.
-		final List<Job> done = Collections.synchronizedList(new ArrayList<Job>());
-		IJobChangeListener listener = new JobChangeAdapter() {
-			@Override
-			public void done(IJobChangeEvent event) {
-				if (event.getJob() instanceof TestJob) {
-					//add at start of list to get reverse order
-					done.add(0, event.getJob());
-				}
-			}
-		};
-		int[] sleepTimes = new int[] {4000, 3000, 2000, 1000, 500};
+		final Queue<Job> done = new ConcurrentLinkedQueue<>();
+		int[] sleepTimes = new int[] { 300, 200, 100, 5 };
 		Job[] jobs = new Job[sleepTimes.length];
-		manager.addJobChangeListener(listener);
-		try {
-			for (int i = 0; i < sleepTimes.length; i++) {
-				jobs[i] = new TestJob("testReverseOrder(" + i + ")", 0, 1);
-			}
-			for (int i = 0; i < sleepTimes.length; i++) {
-				jobs[i].schedule(sleepTimes[i]);
-			}
-			waitForCompletion();
-			//make sure listener has had a chance to process the finished job
-			while (done.size() != jobs.length) {
-				Thread.yield();
-				sleep(100);
-			}
-			Job[] doneOrder = done.toArray(new Job[done.size()]);
-			assertEquals("1.0", jobs.length, doneOrder.length);
-			for (int i = 0; i < doneOrder.length; i++) {
-				assertEquals("1.1." + i, jobs[i], doneOrder[i]);
-			}
-		} finally {
-			manager.removeJobChangeListener(listener);
+		for (int i = 0; i < sleepTimes.length; i++) {
+			jobs[i] = new Job("testReverseOrder(" + i + ")") {
+
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					done.add(this);
+					return Status.OK_STATUS;
+				}
+
+			};
+		}
+		for (int i = 0; i < sleepTimes.length; i++) {
+			jobs[i].schedule(sleepTimes[i]);
+		}
+		while (done.size() != jobs.length) {
+			Thread.yield();
+		}
+		Job[] doneOrder = done.toArray(new Job[done.size()]);
+		assertEquals("1.0", jobs.length, doneOrder.length);
+		for (int i = 0; i < doneOrder.length; i++) {
+			assertEquals("1.1." + i, jobs[i], doneOrder[doneOrder.length - 1 - i]);
 		}
 	}
 
@@ -1801,7 +1787,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 						}
 					}
 					//sleep for awhile to let duplicate job start running
-					Thread.sleep(1000);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					//ignore
 				} finally {
@@ -1828,12 +1814,12 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	public void testSimple() {
 		final int JOB_COUNT = 10;
 		for (int i = 0; i < JOB_COUNT; i++) {
-			new TestJob("testSimple").schedule();
+			new TestJob("testSimple", 1, 1).schedule();
 		}
 		waitForCompletion();
 		//
 		for (int i = 0; i < JOB_COUNT; i++) {
-			new TestJob("testSimple").schedule(50);
+			new TestJob("testSimple", 1, 1).schedule(50);
 		}
 		waitForCompletion();
 	}
@@ -1886,7 +1872,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	}
 
 	public void testSleep() {
-		TestJob job = new TestJob("ParentJob", 10, 100);
+		TestJob job = new TestJob("ParentJob", 10, 10);
 		//sleeping a job that isn't scheduled should have no effect
 		assertEquals("1.0", Job.NONE, job.getState());
 		assertTrue("1.1", job.sleep());
@@ -1909,7 +1895,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		assertState("3.2", job, Job.SLEEPING);
 		//wait awhile and ensure the job is still sleeping
 		Thread.yield();
-		sleep(600);
+		sleep(60);
 		Thread.yield();
 		assertState("3.3", job, Job.SLEEPING);
 		assertTrue("3.4", job.cancel()); //should be possible to cancel a sleeping job
@@ -2392,7 +2378,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		ISchedulingRule evens = new IdentityRule();
 		ISchedulingRule odds = new IdentityRule();
 		for (int i = 0; i < JOB_COUNT; i++) {
-			jobs[i] = new TestJob("testSimpleRules", 1000000, 10);
+			jobs[i] = new TestJob("testSimpleRules", 1000000, 1);
 			jobs[i].setRule(((i & 0x1) == 0) ? evens : odds);
 			jobs[i].schedule();
 		}
@@ -2439,17 +2425,19 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
-	private synchronized void waitForCompletion() {
+	private void waitForCompletion() {
 		int i = 0;
-		assertTrue("Jobs completed that weren't scheduled", completedJobs <= scheduledJobs);
-		while (completedJobs < scheduledJobs) {
+		assertTrue("Jobs completed that weren't scheduled", completedJobs.get() <= scheduledJobs.get());
+		while (completedJobs.get() < scheduledJobs.get()) {
 			try {
-				wait(500);
+				synchronized (this) {
+					this.wait(1);
+				}
 			} catch (InterruptedException e) {
 				//ignore
 			}
 			//sanity test to avoid hanging tests
-			if (i++ > 1000) {
+			if (i++ > 100000) {
 				dumpState();
 				assertTrue("Timeout waiting for job to complete", false);
 			}
