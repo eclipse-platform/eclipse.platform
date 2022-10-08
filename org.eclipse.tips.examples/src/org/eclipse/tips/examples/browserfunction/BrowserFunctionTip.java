@@ -27,7 +27,6 @@ import org.eclipse.tips.examples.DateUtil;
 import org.eclipse.tips.ui.IBrowserFunctionProvider;
 import org.eclipse.ui.PlatformUI;
 
-@SuppressWarnings("restriction")
 public class BrowserFunctionTip extends Tip implements IHtmlTip, IBrowserFunctionProvider {
 
 	public BrowserFunctionTip(String providerId) {
