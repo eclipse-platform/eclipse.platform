@@ -67,10 +67,7 @@ public class BrowserFunctionTip extends Tip implements IHtmlTip, IBrowserFunctio
 
 		ParameterizedCommand command = commandService.createCommand("org.eclipse.ui.window.preferences",
 				Collections.singletonMap("preferencePageId", "org.eclipse.ui.preferencePages.Keys"));
-		Display.getDefault().asyncExec(() -> {
-			handlerService.executeHandler(command);
-		});
-
+		Display.getDefault().asyncExec(() -> handlerService.executeHandler(command));
 		return null;
 	}
 }
