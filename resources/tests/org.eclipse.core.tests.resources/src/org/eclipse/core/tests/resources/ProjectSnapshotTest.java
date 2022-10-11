@@ -18,6 +18,7 @@ package org.eclipse.core.tests.resources;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Project;
@@ -136,9 +137,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 		// wait before recreating the .project file on disk, to ensure it will have
 		// a different time stamp and be reported as a modification. This is
 		// because some file systems only have a 1 second timestamp granularity.
-		IFolder dummy = project.getFolder(".dummy");
-		dummy.create(true, true, getMonitor());
-		touchInFilesystem(dummy);
+		TimeUnit.MILLISECONDS.sleep(1001);
 		// close and delete project contents
 		project.close(null);
 		// delete the project and import refresh snapshot
