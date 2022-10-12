@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.HTMLTransfer;
 import org.eclipse.swt.dnd.RTFTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -30,18 +31,21 @@ public class AnsiClipboardUtils {
 		clipboard.clearContents();
 		styledText.copy(); // copy to clipboard using the default Eclipse behavior
 
-		List<Object> clipboardData = new ArrayList<>(2);
-		List<Transfer> clipboardTransfers = new ArrayList<>(2);
+		// If we don't want to remove the escape sequences the default copy is enough.
+		if (!removeEscapeSeq) {
+			clipboard.dispose();
+			return;
+		}
+
+		List<Object> clipboardData = new ArrayList<>(3);
+		List<Transfer> clipboardTransfers = new ArrayList<>(3);
 
 		TextTransfer textTransfer = TextTransfer.getInstance();
 		Object textData = clipboard.getContents(textTransfer);
 		if (textData != null && textData instanceof String) {
-			String plainText = (String) textData;
-			if (removeEscapeSeq) {
-				plainText = AnsiConsoleUtils.ESCAPE_SEQUENCE_REGEX_TXT
-						.matcher(plainText)
-						.replaceAll(""); //$NON-NLS-1$
-			}
+			String plainText = AnsiConsoleUtils.ESCAPE_SEQUENCE_REGEX_TXT
+					.matcher((String) textData)
+					.replaceAll(""); //$NON-NLS-1$
 			clipboardData.add(plainText);
 			clipboardTransfers.add(textTransfer);
 		}
@@ -50,12 +54,9 @@ public class AnsiClipboardUtils {
 			RTFTransfer rtfTransfer = RTFTransfer.getInstance();
 			Object rtfData = clipboard.getContents(rtfTransfer);
 			if (rtfData != null && rtfData instanceof String) {
-				String rtfText = (String) rtfData;
-				if (removeEscapeSeq) {
-					rtfText = AnsiConsoleUtils.ESCAPE_SEQUENCE_REGEX_RTF
-							.matcher(rtfText)
-							.replaceAll(""); //$NON-NLS-1$
-				}
+				String rtfText = AnsiConsoleUtils.ESCAPE_SEQUENCE_REGEX_RTF
+						.matcher((String) rtfData)
+						.replaceAll(""); //$NON-NLS-1$
 				// The Win version of MS Word, and Write, understand \chshdng and \chcbpat, but not \cb
 				// The MacOS tools seem to understand \cb, but not \chshdng and \chcbpat
 				// But using both seems to work fine, both systems just ignore the tags they don't understand.
@@ -64,6 +65,16 @@ public class AnsiClipboardUtils {
 						.replaceAll(AnsiConsoleUtils.ESCAPE_SEQUENCE_REGEX_RTF_FIX_TRG);
 				clipboardData.add(rtfText);
 				clipboardTransfers.add(rtfTransfer);
+			}
+
+			HTMLTransfer htmlTransfer = HTMLTransfer.getInstance();
+			Object htmlData = clipboard.getContents(htmlTransfer);
+			if (htmlData != null && htmlData instanceof String) {
+				String htmlText = AnsiConsoleUtils.ESCAPE_SEQUENCE_REGEX_HTML
+						.matcher((String) htmlData)
+						.replaceAll(""); //$NON-NLS-1$
+				clipboardData.add(htmlText);
+				clipboardTransfers.add(htmlTransfer);
 			}
 		}
 

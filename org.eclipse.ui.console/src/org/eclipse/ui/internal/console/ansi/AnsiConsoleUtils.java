@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 public class AnsiConsoleUtils {
 	public static final Pattern ESCAPE_SEQUENCE_REGEX_TXT = Pattern.compile("\u001b\\[[\\d;]*[A-HJKSTfimnsu]"); //$NON-NLS-1$
+	public static final Pattern ESCAPE_SEQUENCE_REGEX_HTML = Pattern.compile("<span[^>]*>\u001b\\[[\\d;]*[A-HJKSTfimnsu]</span>"); //$NON-NLS-1$
 	public static final Pattern ESCAPE_SEQUENCE_REGEX_RTF = Pattern.compile("\\{\\\\cf\\d+[^}]* \u001b\\[[\\d;]*[A-HJKSTfimnsu][^}]*\\}"); //$NON-NLS-1$
 	// These two are used to replace \chshdng#1\chcbpat#2 with \chshdng#1\chcbpat#2\cb#2
 	public static final Pattern ESCAPE_SEQUENCE_REGEX_RTF_FIX_SRC = Pattern.compile("\\\\chshdng\\d+\\\\chcbpat(\\d+)"); //$NON-NLS-1$
