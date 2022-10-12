@@ -22,8 +22,7 @@ package org.eclipse.core.tests.runtime.jobs;
 import static org.junit.Assert.assertNotEquals;
 
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.concurrent.atomic.*;
 import org.eclipse.core.internal.jobs.JobManager;
 import org.eclipse.core.internal.jobs.Worker;
 import org.eclipse.core.runtime.*;
@@ -1289,9 +1288,78 @@ public class JobTest extends AbstractJobTest {
 		}
 		assertTrue("1.0", timeout < 100);
 		assertEquals("1.1", REPEATS, count[0]);
-	} /*
-		* Schedule a simple job that repeats several times from within the run method.
-		*/
+	}
+
+	/*
+	 * Schedule a long running job several times without blocking current thread.
+	 */
+	public void testRescheduleRepeating() {
+		AtomicLong runCount = new AtomicLong();
+		AtomicLong scheduledCount = new AtomicLong();
+		AtomicBoolean keepRunning = new AtomicBoolean(true);
+		Job job = new Job("testRescheduleRepeat") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				runCount.incrementAndGet();
+				while (!monitor.isCanceled() && keepRunning.get()) {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						Thread.interrupted();
+						return Status.CANCEL_STATUS;
+					}
+				}
+				return Status.OK_STATUS;
+			}
+
+			@Override
+			public boolean belongsTo(Object family) {
+				return family == this;
+			}
+		};
+
+		job.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void scheduled(IJobChangeEvent event) {
+				scheduledCount.incrementAndGet();
+			}
+		});
+		job.schedule();
+		int timeout = 0;
+		while (timeout++ < 100 && scheduledCount.get() == 0) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// ignore
+			}
+		}
+		for (int i = 0; i < 100; i++) {
+			job.schedule(i);
+		}
+		timeout = 0;
+		while (timeout++ < 100 && runCount.get() < 1) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// ignore
+			}
+		}
+		try {
+			Job[] found = Job.getJobManager().find(job);
+			assertEquals("Job should still run", 1, found.length);
+			assertSame("Job should still run", job, found[0]);
+			long currentRuns = runCount.get();
+			if (currentRuns != 1) {
+				fail("Expected to see exact one job execution, but saw: " + currentRuns);
+			}
+		} finally {
+			keepRunning.set(false);
+		}
+	}
+
+	/*
+	 * Schedule a simple job that repeats several times from within the run method.
+	 */
 
 	public void testRescheduleRepeatWithDelay() {
 		final int[] count = new int[] {0};
