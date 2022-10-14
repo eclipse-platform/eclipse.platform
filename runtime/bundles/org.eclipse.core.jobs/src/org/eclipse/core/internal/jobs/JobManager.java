@@ -321,7 +321,9 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	protected boolean cancel(InternalJob job) {
 		IProgressMonitor monitor = null;
 		boolean runCanceling = false;
+		waitEventsSend(job);
 		synchronized (lock) {
+			waitEventsSend2(job);
 			// signal that the job should be canceled before it gets a chance to run
 			job.setAboutToRunCanceled(true);
 			switch (job.getState()) {
@@ -354,7 +356,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			}
 			return false;
 		}
-		jobListeners.sendEvents(job);
+		sendEvents(job);
 		return true;
 	}
 
@@ -371,7 +373,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 
 	void cancel(InternalJobGroup jobGroup, boolean cancelDueToError) {
 		Assert.isLegal(jobGroup != null, "jobGroup should not be null"); //$NON-NLS-1$
-		synchronized (lock) {
+		synchronized (jobGroup.jobGroupStateLock) {
 			switch (jobGroup.getState()) {
 				case JobGroup.NONE :
 					return;
@@ -392,91 +394,90 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * necessary queues or sets.
 	 */
 	private void changeState(InternalJob job, int newState) {
+		assert Thread.holdsLock(lock);
 		boolean blockedJobs = false;
-		synchronized (lock) {
-			int oldJobState;
-			synchronized (job.jobStateLock) {
-				job.jobStateLock.notifyAll();
-				oldJobState = job.getState();
-				int oldState = job.internalGetState();
-				switch (oldState) {
-					case InternalJob.YIELDING :
-						yielding.remove(job);
-					case Job.NONE :
-					case InternalJob.ABOUT_TO_SCHEDULE :
-						break;
-					case InternalJob.BLOCKED :
-						//remove this job from the linked list of blocked jobs
-						job.remove();
-						break;
-					case Job.WAITING :
-						try {
-							waiting.remove(job);
-						} catch (RuntimeException e) {
-							Assert.isLegal(false, "Tried to remove a job that wasn't in the queue"); //$NON-NLS-1$
-						}
-						break;
-					case Job.SLEEPING :
-						try {
-							sleeping.remove(job);
-						} catch (RuntimeException e) {
-							Assert.isLegal(false, "Tried to remove a job that wasn't in the queue"); //$NON-NLS-1$
-						}
-						break;
-					case Job.RUNNING :
-					case InternalJob.ABOUT_TO_RUN :
-						running.remove(job);
-						//add any blocked jobs back to the wait queue
-						InternalJob blocked = job.previous();
-						job.remove();
-						blockedJobs = blocked != null;
-						while (blocked != null) {
-							InternalJob previous = blocked.previous();
-							changeState(blocked, Job.WAITING);
-							blocked = previous;
-						}
-						break;
-					default :
-						Assert.isLegal(false, "Invalid job state: " + job + ", state: " + oldState); //$NON-NLS-1$ //$NON-NLS-2$
+		int oldJobState;
+		synchronized (job.jobStateLock) {
+			job.jobStateLock.notifyAll();
+			oldJobState = job.getState();
+			int oldState = job.internalGetState();
+			switch (oldState) {
+			case InternalJob.YIELDING:
+				yielding.remove(job);
+			case Job.NONE:
+			case InternalJob.ABOUT_TO_SCHEDULE:
+				break;
+			case InternalJob.BLOCKED:
+				// remove this job from the linked list of blocked jobs
+				job.remove();
+				break;
+			case Job.WAITING:
+				try {
+					waiting.remove(job);
+				} catch (RuntimeException e) {
+					Assert.isLegal(false, "Tried to remove a job that wasn't in the queue"); //$NON-NLS-1$
 				}
-				job.internalSetState(newState);
-				switch (newState) {
-					case Job.NONE :
-						job.setStartTime(InternalJob.T_NONE);
-						job.setWaitQueueStamp(InternalJob.T_NONE);
-						job.setRunCanceled(false);
-					case InternalJob.BLOCKED :
-						break;
-					case Job.WAITING :
-						waiting.enqueue(job);
-						break;
-					case Job.SLEEPING :
-						try {
-							sleeping.enqueue(job);
-						} catch (RuntimeException e) {
-							throw new RuntimeException("Error changing from state: " + oldState); //$NON-NLS-1$
-						}
-						break;
-					case Job.RUNNING :
-					case InternalJob.ABOUT_TO_RUN :
-						// These flags must be reset in all cases, including resuming from yield
-						job.setStartTime(InternalJob.T_NONE);
-						job.setWaitQueueStamp(InternalJob.T_NONE);
-						running.add(job);
-						break;
-					case InternalJob.YIELDING :
-						yielding.add(job);
-					case InternalJob.ABOUT_TO_SCHEDULE :
-						break;
-					default :
-						Assert.isLegal(false, "Invalid job state: " + job + ", state: " + newState); //$NON-NLS-1$ //$NON-NLS-2$
+				break;
+			case Job.SLEEPING:
+				try {
+					sleeping.remove(job);
+				} catch (RuntimeException e) {
+					Assert.isLegal(false, "Tried to remove a job that wasn't in the queue"); //$NON-NLS-1$
 				}
+				break;
+			case Job.RUNNING:
+			case InternalJob.ABOUT_TO_RUN:
+				running.remove(job);
+				// add any blocked jobs back to the wait queue
+				InternalJob blocked = job.previous();
+				job.remove();
+				blockedJobs = blocked != null;
+				while (blocked != null) {
+					InternalJob previous = blocked.previous();
+					changeState(blocked, Job.WAITING);
+					blocked = previous;
+				}
+				break;
+			default:
+				Assert.isLegal(false, "Invalid job state: " + job + ", state: " + oldState); //$NON-NLS-1$ //$NON-NLS-2$
 			}
+			job.internalSetState(newState);
+			switch (newState) {
+			case Job.NONE:
+				job.setStartTime(InternalJob.T_NONE);
+				job.setWaitQueueStamp(InternalJob.T_NONE);
+				job.setRunCanceled(false);
+			case InternalJob.BLOCKED:
+				break;
+			case Job.WAITING:
+				waiting.enqueue(job);
+				break;
+			case Job.SLEEPING:
+				try {
+					sleeping.enqueue(job);
+				} catch (RuntimeException e) {
+					throw new RuntimeException("Error changing from state: " + oldState); //$NON-NLS-1$
+				}
+				break;
+			case Job.RUNNING:
+			case InternalJob.ABOUT_TO_RUN:
+				// These flags must be reset in all cases, including resuming from yield
+				job.setStartTime(InternalJob.T_NONE);
+				job.setWaitQueueStamp(InternalJob.T_NONE);
+				running.add(job);
+				break;
+			case InternalJob.YIELDING:
+				yielding.add(job);
+			case InternalJob.ABOUT_TO_SCHEDULE:
+				break;
+			default:
+				Assert.isLegal(false, "Invalid job state: " + job + ", state: " + newState); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+		}
 
-			InternalJobGroup jobGroup = job.getJobGroup();
-			if (jobGroup != null) {
-				jobGroup.jobStateChanged(job, oldJobState, job.getState());
-			}
+		InternalJobGroup jobGroup = job.getJobGroup();
+		if (jobGroup != null) {
+			jobGroup.jobStateChanged(job, oldJobState, job.getState());
 		}
 
 		//notify queue outside sync block
@@ -503,6 +504,38 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			return monitor;
 		}
 	}
+
+	/**
+	 * Should be called after each <code>synchronized (lock)</code> that is used to
+	 * change job state to send the enqueued Events. Should never be called while
+	 * holding a lock.
+	 **/
+	private void sendEvents(InternalJob job) {
+		assert !Thread.holdsLock(lock);
+		jobListeners.waitAndSendEvents(job, true);
+	}
+
+	/**
+	 * Should be called before each <code>synchronized (lock)</code> that is used to
+	 * change job state to make sure there are no outstanding done() notifications
+	 * that could happen in another thread after job is scheduled again.
+	 **/
+	private void waitEventsSend(InternalJob job) {
+		assert !Thread.holdsLock(lock);
+		jobListeners.waitAndSendEvents(job, false);
+	}
+
+	/**
+	 * Should be first call inside each <code>synchronized (lock)</code> that is
+	 * used to change job state to make sure there are no outstanding done()
+	 * notifications that could happen in another thread after job is scheduled
+	 * again.
+	 **/
+	private void waitEventsSend2(InternalJob job) {
+		assert Thread.holdsLock(lock);
+		jobListeners.waitAndSendEvents(job, false);
+	}
+
 
 	/**
 	 * Returns a new progress monitor for this job.  Never returns null.
@@ -580,38 +613,37 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * @return true on success, false if cancelled, or scheduled by another thread
 	 */
 	private boolean doSchedule(InternalJob job, long delay) {
+		assert Thread.holdsLock(lock);
 		boolean cancelling = false;
-		synchronized (lock) {
-			//job may have been canceled already
-			int state = job.internalGetState();
-			if (state != InternalJob.ABOUT_TO_SCHEDULE && state != Job.SLEEPING)
-				return false;
+		// job may have been canceled already
+		int state = job.internalGetState();
+		if (state != InternalJob.ABOUT_TO_SCHEDULE && state != Job.SLEEPING)
+			return false;
 
-			if (job.isAboutToRunCanceled()) {
-				cancelling = true;
-				job.setResult(Status.CANCEL_STATUS);
-				job.setProgressMonitor(null);
-				job.setThread(null);
-				changeState(job, Job.NONE);
+		if (job.isAboutToRunCanceled()) {
+			cancelling = true;
+			job.setResult(Status.CANCEL_STATUS);
+			job.setProgressMonitor(null);
+			job.setThread(null);
+			changeState(job, Job.NONE);
+		} else {
+			// if it's a decoration job with no rule, don't run it right now if the system
+			// is busy
+			if (job.getPriority() == Job.DECORATE && job.getRule() == null) {
+				long minDelay = running.size() * 100;
+				delay = Math.max(delay, minDelay);
+			}
+			if (delay > 0) {
+				job.setStartTime(now() + delay);
+				changeState(job, Job.SLEEPING);
 			} else {
-				// if it's a decoration job with no rule, don't run it right now if the system
-				// is busy
-				if (job.getPriority() == Job.DECORATE && job.getRule() == null) {
-					long minDelay = running.size() * 100;
-					delay = Math.max(delay, minDelay);
-				}
-				if (delay > 0) {
-					job.setStartTime(now() + delay);
-					changeState(job, Job.SLEEPING);
-				} else {
-					job.setStartTime(now() + delayFor(job.getPriority()));
-					job.setWaitQueueStamp(getNextWaitQueueStamp());
-					changeState(job, Job.WAITING);
-				}
+				job.setStartTime(now() + delayFor(job.getPriority()));
+				job.setWaitQueueStamp(getNextWaitQueueStamp());
+				changeState(job, Job.WAITING);
 			}
-			if (cancelling) {
-				jobListeners.queueDone((Job) job, Status.CANCEL_STATUS, false);
-			}
+		}
+		if (cancelling) {
+			jobListeners.queueDone((Job) job, Status.CANCEL_STATUS, false);
 		}
 		return !cancelling;
 	}
@@ -699,12 +731,15 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * can be called under OutOfMemoryError conditions and thus must be paranoid
 	 * about allocating objects.
 	 */
-	protected void endJob(InternalJob job, IStatus result, boolean notify) {
+	protected void endJob(InternalJob job, IStatus result, boolean notify, boolean worker) {
+		// if the job is finishing asynchronously, there is nothing more to do for now
+		if (result == Job.ASYNC_FINISH)
+			return;
 		long rescheduleDelay = InternalJob.T_NONE;
+		waitEventsSend(job);
+		boolean scheduled = false;
 		synchronized (lock) {
-			//if the job is finishing asynchronously, there is nothing more to do for now
-			if (result == Job.ASYNC_FINISH)
-				return;
+			waitEventsSend2(job);
 			//if job is not known then it cannot be done
 			if (job.getState() == Job.NONE)
 				return;
@@ -716,19 +751,21 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			rescheduleDelay = job.getStartTime(); // XXX time used as delay
 			changeState(job, Job.NONE); // removes from #running without adding to #sleeping or #waiting
 			boolean reschedule = active && rescheduleDelay > InternalJob.T_NONE && job.shouldSchedule();
-			if (reschedule) {
-				// adds to #sleeping or #waiting
-				scheduleInternal(job, rescheduleDelay, reschedule);
-			}
 			if (notify)
 				jobListeners.queueDone((Job) job, result, reschedule);
+			if (reschedule) {
+				// adds to #sleeping or #waiting
+				scheduled = scheduleInternal(job, rescheduleDelay, reschedule);
+			}
 		}
 		// No need to wake up other worker threads with to pool.jobQueued() if
 		// rescheduled, since this thread can and should run the job again after
 		// listeners returned.
-
+		if (scheduled && !worker) {
+			pool.jobQueued();
+		}
 		//notify listeners outside sync block
-		jobListeners.sendEvents(job);
+		sendEvents(job);
 
 		//log result if it is warning or error. When the job belongs to a job group defer the logging
 		//until the whole group is completed (see JobManager#updateJobGroup).
@@ -968,13 +1005,17 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			jobCount = jobs.size();
 			if (jobCount > 0) {
 				listener = new JobChangeAdapter() {
-					/* Normally called in the thread that did executed the job. */
 					@Override
 					public void done(IJobChangeEvent event) {
-						//don't remove from list if job is being rescheduled
-						if (!((JobChangeEvent) event).reschedule) {
-							jobs.remove(event.getJob()); // sometimes nothing to remove anymore
-							if (jobs.isEmpty()) { // minimal notification
+						Job job = event.getJob();
+						if (family == null || job.belongsTo(family)) {
+							// don't remove from list if job is being rescheduled
+							if (((JobChangeEvent) event).reschedule) {
+								return;
+							}
+							boolean removed = jobs.remove(job);
+							assert removed;
+							if (removed && jobs.isEmpty()) { // minimal notification
 								synchronized (jobs) {
 									jobs.notifyAll();
 								}
@@ -982,35 +1023,28 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 						}
 					}
 
-					/*
-					 * Normally called in the thread that will execute the job (may be another thread
-					 * then the last execute). Will (now) always be reported after done() finished
-					 */
 					@Override
 					public void running(IJobChangeEvent event) {
 						Job job = event.getJob();
 						if (family == null || job.belongsTo(family)) {
-							jobs.add(job); // never really adds, as it already was added by scheduled()
+							boolean added = jobs.add(job); // never really adds, as it already was added by scheduled()
+							assert !added;
 							// no notification upon increased size
 						}
 					}
 
-					/*
-					 * Normally called in the thread that scheduled the job - which may be the job's
-					 * thread itself or an unrelated thread. This may happen after running() is
-					 * reported.
-					 */
 					@Override
 					public void scheduled(IJobChangeEvent event) {
-						//don't add to list if job is being rescheduled
-						if (((JobChangeEvent) event).reschedule)
-							return;
-						//if job manager is suspended we only wait for running jobs
-						if (isSuspended())
-							return;
 						Job job = event.getJob();
 						if (family == null || job.belongsTo(family)) {
-							jobs.add(job);
+							// don't add to list if job is being rescheduled
+							if (((JobChangeEvent) event).reschedule)
+								return;
+							// if job manager is suspended we only wait for running jobs
+							if (isSuspended())
+								return;
+							boolean added = jobs.add(job);
+							assert added;
 							// no notification upon increased size
 						}
 					}
@@ -1341,37 +1375,40 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	}
 
 	protected void schedule(InternalJob job, long delay) {
-		if (scheduleInternal(job, delay, false)) {
-			pool.jobQueued();
-			jobListeners.sendEvents(job);
+		waitEventsSend(job);
+		synchronized (lock) {
+			waitEventsSend2(job);
+			if (scheduleInternal(job, delay, false)) {
+				pool.jobQueued();
+			}
 		}
+		sendEvents(job);
 	}
 
 	protected boolean scheduleInternal(InternalJob job, long delay, boolean reschedule) {
+		assert Thread.holdsLock(lock);
 		if (!active)
 			throw new IllegalStateException("Job manager has been shut down."); //$NON-NLS-1$
 		Assert.isNotNull(job, "Job is null"); //$NON-NLS-1$
 		Assert.isLegal(delay >= 0, "Scheduling delay is negative"); //$NON-NLS-1$
-		synchronized (lock) {
-			if (!reschedule)
-				job.setAboutToRunCanceled(false);
-			//if the job is already running, set it to be rescheduled when done
-			if (job.getState() == Job.RUNNING) {
-				job.setStartTime(delay); //XXX delay used as time
-				return false;
-			}
-			//can't schedule a job that is waiting or sleeping
-			if (job.internalGetState() != Job.NONE)
-				return false;
-			if (JobManager.DEBUG)
-				JobManager.debug("Scheduling job: " + job); //$NON-NLS-1$
-			//remember that we are about to schedule the job
-			//to prevent multiple schedule attempts from succeeding (bug 68452)
-			changeState(job, InternalJob.ABOUT_TO_SCHEDULE);
-			jobListeners.queueScheduled((Job) job, delay, reschedule);
+		if (!reschedule)
+			job.setAboutToRunCanceled(false);
+		// if the job is already running, set it to be rescheduled when done
+		if (job.getState() == Job.RUNNING) {
+			job.setStartTime(delay); // XXX delay used as time
+			return false;
 		}
-		//schedule the job
+		// can't schedule a job that is waiting or sleeping
+		if (job.internalGetState() != Job.NONE)
+			return false;
+		if (JobManager.DEBUG)
+			JobManager.debug("Scheduling job: " + job); //$NON-NLS-1$
+		// remember that we are about to schedule the job
+		// to prevent multiple schedule attempts from succeeding (bug 68452)
+		changeState(job, InternalJob.ABOUT_TO_SCHEDULE);
+		jobListeners.queueScheduled((Job) job, delay, reschedule);
 		doSchedule(job, delay);
+		//schedule the job
 		return true;
 	}
 
@@ -1462,7 +1499,9 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * Puts a job to sleep. Returns true if the job was successfully put to sleep.
 	 */
 	protected boolean sleep(InternalJob job) {
+		waitEventsSend(job);
 		synchronized (lock) {
+			waitEventsSend2(job);
 			switch (job.getState()) {
 				case Job.RUNNING :
 					//cannot be paused if it is already running (as opposed to ABOUT_TO_RUN)
@@ -1486,7 +1525,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			changeState(job, Job.SLEEPING);
 			jobListeners.queueSleeping((Job) job);
 		}
-		jobListeners.sendEvents(job);
+		sendEvents(job);
 		return true;
 	}
 
@@ -1719,11 +1758,13 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			//check for listener veto
 			if (shouldRun) {
 				jobListeners.queueAboutToRun(job);
-				jobListeners.sendEvents(job);
+				sendEvents(job); //aboutToRun
 			}
 			//listeners may have canceled or put the job to sleep
 			boolean endJob = false;
+			waitEventsSend(job);
 			synchronized (lock) {
+				waitEventsSend2(job);
 				JobGroup jobGroup = job.getJobGroup();
 				if (jobGroup != null && jobGroup.getState() == JobGroup.CANCELING)
 					shouldRun = false;
@@ -1746,11 +1787,11 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			}
 			if (endJob) {
 				//job has been vetoed or canceled, so mark it as done
-				endJob(job, Status.CANCEL_STATUS, true);
+				endJob(job, Status.CANCEL_STATUS, true, false);
 				continue;
 			}
 		}
-		jobListeners.sendEvents(job);
+		sendEvents(job); // running
 		return job;
 
 	}
@@ -1803,7 +1844,9 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	protected void wakeUp(InternalJob job, long delay) {
 		Assert.isLegal(delay >= 0, "Scheduling delay is negative"); //$NON-NLS-1$
 		boolean scheduled;
+		waitEventsSend(job);
 		synchronized (lock) {
+			waitEventsSend2(job);
 			//cannot wake up if it is not sleeping
 			if (job.getState() != Job.SLEEPING)
 				return;
@@ -1814,7 +1857,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		}
 		//call the pool outside sync block to avoid deadlock
 		pool.jobQueued();
-		jobListeners.sendEvents(job);
+		sendEvents(job);
 	}
 
 	@Override

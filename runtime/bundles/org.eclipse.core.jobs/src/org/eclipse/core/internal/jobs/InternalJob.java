@@ -20,6 +20,9 @@ package org.eclipse.core.internal.jobs;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
 
@@ -158,6 +161,8 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	 * Used to synchronize Job listener notification
 	 */
 	final Queue<JobChangeEvent> eventQueue = new ConcurrentLinkedQueue<>();
+	final Lock eventQueueLock = new ReentrantLock();
+	final AtomicReference<Thread> eventQueueThread = new AtomicReference<>();
 
 	private static synchronized int getNextJobNumber() {
 		return nextJobNumber++;
@@ -205,7 +210,7 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	}
 
 	protected void done(IStatus endResult) {
-		manager.endJob(this, endResult, true);
+		manager.endJob(this, endResult, true, false);
 	}
 
 	/**

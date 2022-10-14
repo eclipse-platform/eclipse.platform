@@ -40,7 +40,7 @@ public class InternalJobGroup {
 	 *
 	 * @GuardedBy("itself")
 	 */
-	private final Object jobGroupStateLock = new Object();
+	final Object jobGroupStateLock = new Object();
 
 	private static final JobManager manager = JobManager.getInstance();
 
