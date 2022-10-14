@@ -13,20 +13,23 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.eclipse.core.internal.jobs.JobListeners;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.runtime.jobs.OrderAsserter.Event;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Test for bug https://github.com/eclipse-platform/eclipse.platform/issues/193
  */
+@SuppressWarnings("restriction")
 public class JobEventTest {
 	@Test
 	public void testScheduleOrderOfEvents() {
@@ -118,8 +121,8 @@ public class JobEventTest {
 		Event ABOUTTORUN1 = asserter.getNext("First IJobChangeEvent.aboutToRun()");
 		Event RUNNING1 = asserter.getNext("First IJobChangeEvent.running()");
 		Event RUN1 = asserter.getNext("First Job.run()");
-		Event SCHEDULED2 = asserter.getNext("Second IJobChangeEvent.scheduled()");
 		Event DONE1 = asserter.getNext("First IJobChangeEvent.done()");
+		Event SCHEDULED2 = asserter.getNext("Second IJobChangeEvent.scheduled()");
 		// RETURN_FROM_JOIN1 race condition with ABOUTTORUN2
 		// Event RETURN_FROM_JOIN1 = asserter.getNext("First RETURN FROM Job.join()");
 
@@ -385,17 +388,14 @@ public class JobEventTest {
 			job.removeJobChangeListener(jobListener);
 		}
 	}
-
 	@Test
-	@Ignore("https://github.com/eclipse-platform/eclipse.platform/issues/193")
-	public void testDeadlock() throws Exception {
+	public void testDeadlockRecovery() throws Exception {
 		Object deadlock = new Object();
-		AtomicBoolean stopped = new AtomicBoolean();
 		CountDownLatch testDoneSignal1 = new CountDownLatch(1);
 		CountDownLatch testDoneSignal2 = new CountDownLatch(1);
 		Collection<String> errors = new ConcurrentLinkedQueue<>();
-
-		Job job = new Job("testDeadlock") {
+		int TIMEOUT = 500;
+		Job job = new Job("testDeadlockRecovery") {
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -409,55 +409,53 @@ public class JobEventTest {
 			public void done(IJobChangeEvent event) {
 				testDoneSignal1.countDown();
 				try {
-					testDoneSignal2.await(5, TimeUnit.SECONDS);
+					// wait for a bad moment
+					testDoneSignal2.await();
 				} catch (InterruptedException e) {
 				}
 				synchronized (deadlock) {
-					// wait till done() is called and won't progress
-					while (!stopped.get()) {
-						// do not progress until timeout
-					}
+					// can not enter while lock is hold
 				}
 			}
 		};
 
 		job.addJobChangeListener(jobListener);
+		Timer timeout = new Timer();
 		try {
+			JobListeners.setJobListenerTimeout(TIMEOUT / 2);
 			job.schedule();
-			job.wakeUp();
-			Timer timeout = new Timer();
 			timeout.schedule(new TimerTask() {
-
 				@Override
 				public void run() {
 					System.out.println(TestBarrier2.getThreadDump());
 					errors.add("timeout (probably deadlock)");
-					stopped.set(true);
 				}
-			}, 3000);
-			// wait till synchronized (deadlock) in other test thread
-			try {
-				testDoneSignal1.await(5, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {
-			}
-			synchronized (deadlock) {
-				testDoneSignal2.countDown();
-				Thread thread = new Thread("deadlock") {
-					@Override
-					public void run() {
-						job.schedule(); // will not progress if notification
+			}, TIMEOUT);
+			Thread thread = new Thread("deadlock") {
+				@Override
+				public void run() {
+					try {
+						// wait for a bad moment
+						testDoneSignal1.await();
+					} catch (InterruptedException e) {
 					}
-				};
-				// waiting for JobChangeAdapter.done
-				thread.start();
-				thread.join(5000);
-			}
+					synchronized (deadlock) {
+						testDoneSignal2.countDown();
+						job.schedule(); // NOK - deadlock
+					}
+					// job.schedule(); // would be OK
+				}
+			};
+			thread.start();
+			thread.join(TIMEOUT * 2);
 			errors.forEach(e -> {
 				throw new AssertionError(e);
 			});
+			assertEquals(0, JobListeners.getJobListenerTimeout());
 		} finally {
+			JobListeners.resetJobListenerTimeout();
 			job.removeJobChangeListener(jobListener);
-			stopped.set(true);
+			timeout.cancel();
 		}
 	}
 }
