@@ -115,6 +115,42 @@ public class GithubBug_193 extends TestCase {
 		}
 	}
 
+	@Test
+	public void testNestedSchedule() throws Exception {
+		Job job1 = new Job("testNestedSchedule1") {
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				return Status.OK_STATUS;
+			}
+
+		};
+		Job job2 = new Job("testNestedSchedule2") {
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				return Status.OK_STATUS;
+			}
+
+		};
+		Object syncObject = new Object();
+		job1.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void running(IJobChangeEvent event) {
+				job2.schedule();
+				synchronized (syncObject) {
+					syncObject.notify();
+				}
+			}
+		});
+
+		synchronized (syncObject) {
+			job1.schedule();
+			syncObject.wait();
+		}
+		job1.join();
+		job2.join();
+	}
 }
 
 class JobWatcher {
@@ -271,6 +307,5 @@ class JobWatcher {
 	public long getDone() {
 		return done.get();
 	}
-
 }
 
