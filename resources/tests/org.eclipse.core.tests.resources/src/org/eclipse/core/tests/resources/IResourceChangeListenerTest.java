@@ -293,6 +293,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			getWorkspace().run(body, getMonitor());
 			//wait for autobuild so POST_BUILD will fire
 			try {
+				Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_BUILD);
 				Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
 			} catch (OperationCanceledException | InterruptedException e) {
 				//ignore
@@ -826,6 +827,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			getWorkspace().addResourceChangeListener(listener1, IResourceChangeEvent.PRE_REFRESH);
 
 			project2.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, null);
 
 			assertTrue("4.0", listener1.wasPerformed);
@@ -905,6 +907,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			getWorkspace().addResourceChangeListener(listener2, IResourceChangeEvent.PRE_REFRESH);
 
 			project1.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, null);
 
 			assertTrue("5.0", listener1.wasPerformed);
@@ -947,6 +950,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			getWorkspace().addResourceChangeListener(listener1, IResourceChangeEvent.PRE_REFRESH);
 
 			root.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, null);
 
 			assertTrue("2.0", listener1.wasPerformed);
@@ -954,6 +958,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			assertEquals("4.0", null, listener1.eventResource);
 
 			project1.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, null);
 
 			assertTrue("5.0", listener1.wasPerformed);

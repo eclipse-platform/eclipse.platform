@@ -148,6 +148,7 @@ public class ProjectEncodingTest extends ResourceTest {
 		IEclipsePreferences node = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		node.putInt(ResourcesPlugin.PREF_MISSING_ENCODING_MARKER_SEVERITY, value);
 		node.flush();
+		Job.getJobManager().wakeUp(ValidateProjectEncoding.class);
 		Job.getJobManager().join(ValidateProjectEncoding.class, getMonitor());
 	}
 

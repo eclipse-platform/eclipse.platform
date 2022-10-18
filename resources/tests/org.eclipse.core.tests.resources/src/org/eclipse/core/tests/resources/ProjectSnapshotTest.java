@@ -18,6 +18,7 @@ package org.eclipse.core.tests.resources;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Project;
@@ -133,18 +134,14 @@ public class ProjectSnapshotTest extends ResourceTest {
 		// save project refresh snapshot outside the project
 		URI snapshotLocation = getSnapshotLocation(projects[1]);
 		project.saveSnapshot(IProject.SNAPSHOT_TREE, snapshotLocation, null);
+		// wait before recreating the .project file on disk, to ensure it will have
+		// a different time stamp and be reported as a modification. This is
+		// because some file systems only have a 1 second timestamp granularity.
+		TimeUnit.MILLISECONDS.sleep(1001);
 		// close and delete project contents
 		project.close(null);
 		// delete the project and import refresh snapshot
 		project.delete(true, false, null);
-		// wait before recreating the .project file on disk, to ensure it will have
-		// a different time stamp and be reported as a modification. This is
-		// because some file systems only have a 1 second timestamp granularity.
-		try {
-			Thread.sleep(1500);
-		} catch (InterruptedException e) {
-			fail("0.0");
-		}
 		project.create(null);
 		project.loadSnapshot(IProject.SNAPSHOT_TREE, snapshotLocation, null);
 		project.open(IResource.NONE, null);

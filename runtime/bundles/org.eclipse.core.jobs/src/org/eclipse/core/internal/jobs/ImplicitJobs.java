@@ -116,7 +116,7 @@ class ImplicitJobs {
 		if (threadJob == null)
 			Assert.isLegal(rule == null, "endRule without matching beginRule: " + rule); //$NON-NLS-1$
 		else if (threadJob.pop(rule)) {
-			endThreadJob(threadJob, resume);
+			endThreadJob(threadJob, resume, false);
 		}
 	}
 
@@ -138,7 +138,7 @@ class ImplicitJobs {
 			String msg = "Worker thread ended job: " + lastJob + ", but still holds rule: " + threadJob; //$NON-NLS-1$ //$NON-NLS-2$
 			error = new Status(IStatus.ERROR, JobManager.PI_JOBS, 1, msg, new IllegalStateException(msg));
 			//end the thread job
-			endThreadJob(threadJob, false);
+			endThreadJob(threadJob, false, true);
 		}
 		try {
 			RuntimeLog.log(error);
@@ -151,7 +151,7 @@ class ImplicitJobs {
 	/**
 	 * @GuardedBy("this")
 	 */
-	private void endThreadJob(ThreadJob threadJob, boolean resume) {
+	private void endThreadJob(ThreadJob threadJob, boolean resume, boolean worker) {
 		Thread currentThread = Thread.currentThread();
 		//clean up when last rule scope exits
 		threadJobs.remove(currentThread);
@@ -166,7 +166,7 @@ class ImplicitJobs {
 		}
 		//if the job was started, we need to notify job manager to end it
 		if (threadJob.isRunning())
-			manager.endJob(threadJob, Status.OK_STATUS, false);
+			manager.endJob(threadJob, Status.OK_STATUS, false, worker);
 		recycle(threadJob);
 	}
 

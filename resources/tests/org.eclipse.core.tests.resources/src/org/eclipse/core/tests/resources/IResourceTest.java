@@ -425,6 +425,7 @@ public class IResourceTest extends ResourceTest {
 	protected void setupBeforeState(IResource receiver, IResource target, int state, int depth, boolean addVerifier) {
 		// Wait for any outstanding refresh to finish
 		try {
+			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
 		} catch (InterruptedException e) {
 			fail("interrupted unexpectedly");

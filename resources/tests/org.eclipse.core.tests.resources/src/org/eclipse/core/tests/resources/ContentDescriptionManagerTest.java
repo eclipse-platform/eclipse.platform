@@ -35,6 +35,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 	 */
 	public static void waitForCacheFlush() {
 		try {
+			Job.getJobManager().wakeUp(ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH);
 			Job.getJobManager().join(ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH, null);
 		} catch (OperationCanceledException | InterruptedException e) {
 			//ignore

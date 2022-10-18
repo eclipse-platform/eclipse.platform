@@ -26,6 +26,8 @@ package org.eclipse.core.runtime.jobs;
  * all job state changes, but whether the state change occurs before, during, or
  * after listeners are notified is unspecified.
  * </p><p>
+ * It is undefined in which Thread the notification occurs.
+ * </p><p>
  * Clients may implement this interface.
  * </p>
  * @see JobChangeAdapter
@@ -38,51 +40,81 @@ package org.eclipse.core.runtime.jobs;
  */
 public interface IJobChangeListener {
 	/**
-	 * Notification that a job is about to be run. Listeners are allowed to sleep, cancel,
-	 * or change the priority of the job before it is started (and as a result may prevent
-	 * the run from actually occurring).
+	 * <p>
+	 * Notification that a job is about to be run. Listeners are allowed to sleep,
+	 * cancel, or change the priority of the job before it is started (and as a
+	 * result may prevent the run from actually occurring).
+	 * </p>
+	 * <p>
+	 * Implementations should not block and return promptly.
+	 * </p>
 	 *
 	 * @param event the event details
 	 */
 	void aboutToRun(IJobChangeEvent event);
 
 	/**
+	 * <p>
 	 * Notification that a job was previously sleeping and has now been rescheduled
 	 * to run.
+	 * </p>
+	 * <p>
+	 * Implementations should not block and return promptly.
+	 * </p>
 	 *
 	 * @param event the event details
 	 */
 	void awake(IJobChangeEvent event);
 
 	/**
-	 * Notification that a job has completed execution, either due to cancelation, successful
-	 * completion, or failure.  The event status object indicates how the job finished,
-	 * and the reason for failure, if applicable.
+	 * <p>
+	 * Notification that a job has completed execution, either due to cancelation,
+	 * successful completion, or failure. The event status object indicates how the
+	 * job finished, and the reason for failure, if applicable.
+	 * </p>
+	 * <p>
+	 * Implementations should not block and return promptly.
+	 * </p>
 	 *
 	 * @param event the event details
 	 */
 	void done(IJobChangeEvent event);
 
 	/**
+	 * <p>
 	 * Notification that a job has started running.
+	 * </p>
+	 * <p>
+	 * Implementations should not block and return promptly.
+	 * </p>
 	 *
 	 * @param event the event details
 	 */
 	void running(IJobChangeEvent event);
 
 	/**
-	 * Notification that a job is being added to the queue of scheduled jobs.
-	 * The event details includes the scheduling delay before the job should start
+	 * <p>
+	 * Notification that a job is being added to the queue of scheduled jobs. The
+	 * event details includes the scheduling delay before the job should start
 	 * running.
+	 * </p>
+	 * <p>
+	 * Implementations should not block and return promptly.
+	 * </p>
 	 *
 	 * @param event the event details, including the job instance and the scheduling
-	 * delay
+	 *              delay
 	 */
 	void scheduled(IJobChangeEvent event);
 
 	/**
+	 * <p>
 	 * Notification that a job was waiting to run and has now been put in the
 	 * sleeping state.
+	 * </p>
+	 * <p>
+	 * Implementations should not block and return promptly.
+	 * </p>
 	 *
 	 * @param event the event details
 	 */

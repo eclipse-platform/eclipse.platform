@@ -163,6 +163,7 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		// some tests here will trigger a charset delta job (any causing
 		// ContentTypeChangeEvents to be broadcast)
 		// ensure none is left running after we finish
+		Job.getJobManager().wakeUp(FAMILY_CHARSET_DELTA);
 		Job.getJobManager().join(FAMILY_CHARSET_DELTA, new FussyProgressMonitor());
 	}
 

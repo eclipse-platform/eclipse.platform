@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
 public class RepeatingJob extends Job {
 	final int repeats;
 	int runCount = 0;
-	private static final int DELAY = 20;
+	private static final int DELAY = 1;
 	private Object myFamily;
 
 	public RepeatingJob(String name, int repeats) {

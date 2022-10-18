@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.internal.jobs;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.eclipse.core.internal.runtime.RuntimeLog;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
@@ -22,7 +24,8 @@ import org.eclipse.osgi.util.NLS;
  * Responsible for notifying all job listeners about job lifecycle events.  Uses a
  * specialized iterator to ensure the complex iteration logic is contained in one place.
  */
-class JobListeners {
+public class JobListeners {
+
 	interface IListenerDoit {
 		void notify(IJobChangeListener listener, IJobChangeEvent event);
 	}
@@ -34,20 +37,78 @@ class JobListeners {
 	private final IListenerDoit scheduled = IJobChangeListener::scheduled;
 	private final IListenerDoit sleeping = IJobChangeListener::sleeping;
 
+	private static final int DEFAULT_JOB_LISTENER_TIMEOUT = 3000;
+	/**
+	 * When any IJobChangeListener does not return within that time (in ms) an error
+	 * will be logged and calls to IJobChangeListener will not be guaranteed to be
+	 * in order. This is to detect deadlocking Listeners which relied on buggy
+	 * implementation that calls to IJobChangeListener can overtake each other in
+	 * different threads.
+	 **/
+	public static volatile int jobListenerTimeout = DEFAULT_JOB_LISTENER_TIMEOUT;
 	/**
 	 * The global job listeners.
 	 */
 	protected final ListenerList<IJobChangeListener> global = new ListenerList<>(ListenerList.IDENTITY);
 
-	/** Should not be used during a lock */
-	void sendEvents(InternalJob job) {
-		JobChangeEvent event;
+	/** Send=true should not be used during a lock */
+	void waitAndSendEvents(InternalJob job, boolean send) {
 		// Synchronize eventQueue to get a stable order of events across Threads.
 		// There is however no guarantee in which Thread the event is delivered.
-		synchronized (job.eventQueue) {
-			while ((event = job.eventQueue.poll()) != null) {
-				sendEvent(event);
+		while (!job.eventQueue.isEmpty()) {
+			if (getJobListenerTimeout() == 0) {
+				// backward compatibility mode for listeners that may deadlock
+				if (send) {
+					sendEventsAsync(job);
+				}
+				return;
 			}
+			try {
+				if (job.eventQueueLock.tryLock(getJobListenerTimeout(), TimeUnit.MILLISECONDS)) {
+					try {
+						job.eventQueueThread.set(Thread.currentThread());
+						if (send) {
+							sendEventsAsync(job);
+						}
+						job.eventQueueThread.set(null);
+						return;
+					} finally {
+						job.eventQueueLock.unlock();
+					}
+				}
+			} catch (InterruptedException ie) {
+				continue;
+			}
+			Thread eventQueueThread = job.eventQueueThread.get();
+			if (eventQueueThread != null) {
+				setJobListenerTimeout(0);
+				StackTraceElement[] stackTrace = eventQueueThread.getStackTrace();
+				String msg = "IJobChangeListener timeout detected. Further calls to IJobChangeListener may occur in random order and join(family) can return too soo. IJobChangeListener should return within " //$NON-NLS-1$
+						+ getJobListenerTimeout()
+						+ " ms. IJobChangeListener methods should not block. Possible deadlock."; //$NON-NLS-1$
+				MultiStatus status = new MultiStatus(JobManager.PI_JOBS, JobManager.PLUGIN_ERROR, msg,
+						new TimeoutException(msg));
+				StringBuilder buf = new StringBuilder(
+						"Thread that is running the IJobChangeListener: " + eventQueueThread.getName()); //$NON-NLS-1$
+				buf.append(System.lineSeparator());
+				for (StackTraceElement stackTraceElement : stackTrace) {
+					buf.append('\t');
+					buf.append("at "); //$NON-NLS-1$
+					buf.append(stackTraceElement);
+					buf.append(System.lineSeparator());
+				}
+				Status child = new Status(IStatus.ERROR, JobManager.PI_JOBS, JobManager.PLUGIN_ERROR, buf.toString(),
+						null);
+				status.add(child);
+				RuntimeLog.log(status);
+			}
+		}
+	}
+
+	private void sendEventsAsync(InternalJob job) {
+		JobChangeEvent event;
+		while ((event = job.eventQueue.poll()) != null) {
+			sendEvent(event);
 		}
 	}
 
@@ -121,5 +182,17 @@ class JobListeners {
 
 	public void queueSleeping(Job job) {
 		queueEvent(new JobChangeEvent(sleeping, job));
+	}
+
+	public static void resetJobListenerTimeout() {
+		setJobListenerTimeout(DEFAULT_JOB_LISTENER_TIMEOUT);
+	}
+
+	public static int getJobListenerTimeout() {
+		return jobListenerTimeout;
+	}
+
+	public static void setJobListenerTimeout(int jobListenerTimeout) {
+		JobListeners.jobListenerTimeout = jobListenerTimeout;
 	}
 }

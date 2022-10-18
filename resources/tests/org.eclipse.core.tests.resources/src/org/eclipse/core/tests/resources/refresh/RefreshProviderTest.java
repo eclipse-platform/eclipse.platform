@@ -187,6 +187,7 @@ public class RefreshProviderTest extends ResourceTest {
 		// and the job scheduled by MonitorManager.monitorAsync. For simplicity, the job
 		// scheduled by MonitorManager.monitorAsync has been set to belong to the same family
 		// as the RefreshJob.
+		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, null);
 	}
 }

@@ -114,7 +114,7 @@ class WorkerPool {
 				//remove any locks this thread may be owning on that rule
 				manager.getLockManager().removeLockCompletely(Thread.currentThread(), job.getRule());
 			}
-			manager.endJob(job, result, true);
+			manager.endJob(job, result, true, false);
 			//ensure this thread no longer owns any scheduling rules
 			manager.implicitJobs.endJob(job);
 		} finally {

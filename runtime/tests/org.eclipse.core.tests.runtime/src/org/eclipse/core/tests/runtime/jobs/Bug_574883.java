@@ -13,7 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import java.util.*;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.core.runtime.*;
@@ -30,7 +31,7 @@ public class Bug_574883 extends AbstractJobManagerTest {
 
 	static class SerialExecutor extends Job {
 
-		private final List<Runnable> queue;
+		private final Queue<Runnable> queue;
 		private final Object myFamily;
 
 		/**
@@ -41,7 +42,7 @@ public class Bug_574883 extends AbstractJobManagerTest {
 			super(jobName);
 			Assert.isNotNull(family);
 			this.myFamily = family;
-			this.queue = Collections.synchronizedList(new LinkedList<>());
+			this.queue = new ConcurrentLinkedQueue<>();
 			setSystem(true);
 		}
 
@@ -52,7 +53,7 @@ public class Bug_574883 extends AbstractJobManagerTest {
 
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
-			Runnable action = queue.remove(0);
+			Runnable action = queue.poll();
 			try {
 				if (action != null && !monitor.isCanceled()) {
 					action.run();
