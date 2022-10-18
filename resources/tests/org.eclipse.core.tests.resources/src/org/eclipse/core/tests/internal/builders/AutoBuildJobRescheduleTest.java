@@ -16,7 +16,8 @@ package org.eclipse.core.tests.internal.builders;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
@@ -112,51 +113,49 @@ public class AutoBuildJobRescheduleTest extends AbstractBuilderTest {
 
 		var project = getWorkspace().getRoot().getProject("PROJECT");
 		file = project.getFile("file");
-		try {
-			// Turn auto-building off to prevent too early builds
-			setAutoBuilding(false);
-			// Create and open the project
-			project.create(getMonitor());
-			project.open(getMonitor());
-			// Create the file
-			ensureExistsInWorkspace(file, getRandomContents());
+		// Turn auto-building off to prevent too early builds
+		setAutoBuilding(false);
+		// Create and open the project
+		project.create(getMonitor());
+		project.open(getMonitor());
+		// Create the file
+		ensureExistsInWorkspace(file, getRandomContents());
 
-			// Add the EmptyDeltaBuilder. The behavior of that builder is configured below.
-			IProjectDescription desc = project.getDescription();
-			desc.setBuildSpec(new ICommand[] { createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "ProjectBuild") });
-			project.setDescription(desc, getMonitor());
-			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		// Add the EmptyDeltaBuilder. The behavior of that builder is configured below.
+		IProjectDescription desc = project.getDescription();
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "ProjectBuild") });
+		project.setDescription(desc, getMonitor());
 
-			// Perform the first build. This instantiates the EmptyDeltaBuilder and makes
-			// its instance accessible.
-			setAutoBuilding(true);
+		// Do an explicit build. This will instantiate EmptyDataBuilder and make its
+		// instance available
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
 
-			// Configure the behavior of the builder
-			EmptyDeltaBuilder.getInstance().setRuleCallback(new BuilderRuleCallback() {
-				// We only execute the block-continue on the first run in the test case.
-				// Therefore, we remember whether we have already run with this flag.
-				private AtomicBoolean buildRan = new AtomicBoolean(false);
+		// Configure the behavior of the builder
+		EmptyDeltaBuilder.getInstance().setRuleCallback(new BuilderRuleCallback() {
+			// We only execute the block-continue on the first run in the test case.
+			// Therefore, we remember whether we have already run with this flag.
+			private AtomicBoolean buildRan = new AtomicBoolean(false);
 
-				@Override
-				public IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor)
-						throws CoreException {
-					// only on the first run, block the builder
-					if (!buildRan.getAndSet(true)) {
-						barrier.setStatus(AUTOBUILD_RUNNING_BLOCKED);
-						// block until the WorkspaceJob has made the file dirty
-						barrier.waitForStatus(AUTOBUILD_CONTINUE);
-					}
-					return new IProject[] { project };
+			@Override
+			public IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+				// only on the first run, block the builder
+				if (!buildRan.getAndSet(true)) {
+					barrier.setStatus(AUTOBUILD_RUNNING_BLOCKED);
+					// block until the WorkspaceJob has made the file dirty
+					barrier.waitForStatus(AUTOBUILD_CONTINUE);
 				}
-			});
+				return new IProject[] { project };
+			}
+		});
 
-			// Wait until the Content Description Update job has finished, because it also
-			// might schedule a build and we don't want that interfere with our test
-			// process.
-			waitForContentDescriptionUpdate();
-		} catch (CoreException e) {
-			fail("Unexpected exception in project setup", e);
-		}
+		// Perform the first build. This instantiates the EmptyDeltaBuilder and makes
+		// its instance accessible.
+		setAutoBuilding(true);
+
+		// Wait until the Content Description Update job has finished, because it also
+		// might schedule a build and we don't want that interfere with our test
+		// process.
+		waitForContentDescriptionUpdate();
 	}
 
 	@Override
@@ -171,25 +170,17 @@ public class AutoBuildJobRescheduleTest extends AbstractBuilderTest {
 		// to block.
 		dirty(file);
 
-		// Let a concurrent job modify the file
-		var job = new WorkspaceJob("ModifyFile") {
-			@Override
-			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-				// Make sure the builder is blocking
-				barrier.waitForStatus(AUTOBUILD_RUNNING_BLOCKED);
-				// Now modify the file - this requests another build
-				dirty(file);
-				// Register our jobChangeListener so we can record when the AutoBuildJob is
-				// rescheduled and done.
-				Job.getJobManager().addJobChangeListener(jobChangeListener);
-				// Signal to the builder that it can continue now
-				barrier.setStatus(AUTOBUILD_CONTINUE);
-				return Status.OK_STATUS;
-			}
-		};
-		job.setRule(new SpoiledSchedulingRule());
-		job.schedule();
-		job.join();
+		getWorkspace().run(mon -> {
+			// Make sure the builder is blocking
+			barrier.waitForStatus(AUTOBUILD_RUNNING_BLOCKED);
+			// Now modify the file - this requests another build
+			dirty(file);
+			// Register our jobChangeListener so we can record when the AutoBuildJob is
+			// rescheduled and done.
+			Job.getJobManager().addJobChangeListener(jobChangeListener);
+			// Signal to the builder that it can continue now
+			barrier.setStatus(AUTOBUILD_CONTINUE);
+		}, null, IResource.NONE, getMonitor());
 
 		// Wait for the autobuild job to finish
 		barrier.waitForStatus(AUTOBUILD_DONE);
