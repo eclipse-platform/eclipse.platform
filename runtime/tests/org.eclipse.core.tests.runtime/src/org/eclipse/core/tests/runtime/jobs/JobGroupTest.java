@@ -412,7 +412,7 @@ public class JobGroupTest extends AbstractJobTest {
 		allJobs = manager.find(null);
 		for (int i = 0; i < allJobs.length; i++) {
 			// Verify that no jobs that we know about are found (they should have all been removed)
-			assertTrue(allJobs[i].toString(), testJobs.remove(allJobs[i]));
+			assertFalse(allJobs[i].toString(), testJobs.remove(allJobs[i]));
 		}
 		assertEquals("15.0", NUM_JOBS, testJobs.size());
 		testJobs.clear();
