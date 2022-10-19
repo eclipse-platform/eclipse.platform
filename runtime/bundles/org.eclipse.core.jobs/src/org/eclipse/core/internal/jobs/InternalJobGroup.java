@@ -210,13 +210,24 @@ public class InternalJobGroup {
 	 */
 	final void cancelAndNotify(boolean cancelDueToError) {
 		synchronized (jobGroupStateLock) {
+			switch (getState()) {
+			case JobGroup.NONE:
+				return;
+			case JobGroup.CANCELING:
+				if (!cancelDueToError) {
+					// User cancellation takes precedence over the cancel due to error.
+					updateCancelingReason(cancelDueToError);
+				}
+				return;
+			}
 			state = JobGroup.CANCELING;
 			updateCancelingReason(cancelDueToError);
 			jobGroupStateLock.notifyAll();
 		}
-		for (Job job : internalGetActiveJobs())
-			job.cancel();
 
+		for (Job job : internalGetActiveJobs()) {
+			job.cancel();
+		}
 	}
 
 	/**
