@@ -144,7 +144,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	/**
 	 * A job listener to check for the cancellation and completion of the job groups.
 	 */
-	private final IJobChangeListener jobGroupUpdater = new JobGroupUpdater(lock);
+	private final IJobChangeListener jobGroupUpdater = new JobGroupUpdater();
 
 	private final LockManager lockManager = new LockManager();
 
@@ -373,20 +373,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 
 	void cancel(InternalJobGroup jobGroup, boolean cancelDueToError) {
 		Assert.isLegal(jobGroup != null, "jobGroup should not be null"); //$NON-NLS-1$
-		synchronized (jobGroup.jobGroupStateLock) {
-			switch (jobGroup.getState()) {
-				case JobGroup.NONE :
-					return;
-				case JobGroup.CANCELING :
-					if (!cancelDueToError) {
-						// User cancellation takes precedence over the cancel due to error.
-						jobGroup.updateCancelingReason(cancelDueToError);
-					}
-					return;
-				default :
-					jobGroup.cancelAndNotify(cancelDueToError);
-			}
-		}
+		jobGroup.cancelAndNotify(cancelDueToError);
 	}
 
 	/**
@@ -1892,11 +1879,6 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * computes and logs the group result.
 	 */
 	private class JobGroupUpdater extends JobChangeAdapter {
-		Object jobManagerLock;
-
-		public JobGroupUpdater(Object jobManagerLock) {
-			this.jobManagerLock = jobManagerLock;
-		}
 
 		@Override
 		public void done(IJobChangeEvent event) {
@@ -1913,7 +1895,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			int canceledJobsCount;
 			int seedJobsRemainingCount;
 			List<IStatus> jobResults = Collections.emptyList();
-			synchronized (jobManagerLock) {
+			synchronized (lock) {
 				// Collect the required details to check for the group cancellation and completion
 				// outside the synchronized block.
 				jobGroupState = jobGroup.getState();
@@ -1931,7 +1913,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 				MultiStatus jobGroupResult = jobGroup.computeGroupResult(jobResults);
 				Assert.isLegal(jobGroupResult != null, "The group result should not be null"); //$NON-NLS-1$
 				boolean isJobGroupCompleted = false;
-				synchronized (jobManagerLock) {
+				synchronized (lock) {
 					// If more jobs were added to the group while were computing the result, the job group
 					// remains in the ACTIVE state and the computed result is discarded to be recomputed later,
 					// after the new jobs finish.
