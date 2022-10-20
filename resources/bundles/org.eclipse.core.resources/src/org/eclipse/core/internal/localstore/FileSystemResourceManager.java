@@ -1185,7 +1185,8 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 			ResourceInfo info = ((Resource) target).getResourceInfo(false, true);
 			if (info == null) {
 				// happens see Bug 571133
-				throw new IllegalStateException("No ResourceInfo for: " + target); //$NON-NLS-1$
+				throw new ResourceException(IResourceStatus.OUT_OF_SYNC_LOCAL, target.getFullPath(),
+						"No ResourceInfo for: " + target, null); //$NON-NLS-1$
 			}
 			updateLocalSync(info, lastModified);
 			info.incrementContentId();
