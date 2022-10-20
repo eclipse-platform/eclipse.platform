@@ -139,7 +139,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * held while third party code is being called.
 	 * @GuardedBy("itself")
 	 */
-	private final Object lock = new Object();
+	final Object lock = new Object();
 
 	/**
 	 * A job listener to check for the cancellation and completion of the job groups.
@@ -373,7 +373,13 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 
 	void cancel(InternalJobGroup jobGroup, boolean cancelDueToError) {
 		Assert.isLegal(jobGroup != null, "jobGroup should not be null"); //$NON-NLS-1$
-		jobGroup.cancelAndNotify(cancelDueToError);
+		List<Job> jobsToCancel;
+		synchronized (lock) {
+			jobsToCancel = jobGroup.cancelAndNotify(cancelDueToError);
+		}
+		for (Job job : jobsToCancel) {
+			job.cancel();
+		}
 	}
 
 	/**
