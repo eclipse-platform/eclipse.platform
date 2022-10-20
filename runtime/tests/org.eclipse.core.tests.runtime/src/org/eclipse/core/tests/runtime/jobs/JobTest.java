@@ -21,10 +21,11 @@ package org.eclipse.core.tests.runtime.jobs;
 
 import static org.junit.Assert.assertNotEquals;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.atomic.*;
-import org.eclipse.core.internal.jobs.JobManager;
-import org.eclipse.core.internal.jobs.Worker;
+import org.eclipse.core.internal.jobs.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.core.tests.harness.*;
@@ -1719,22 +1720,20 @@ public class JobTest extends AbstractJobTest {
 	private void waitForState(Job job, int state) {
 		long timeoutInMs = 10_000; // 100*100ms
 		long start = System.nanoTime();
-		while (job.getState() != state) {
-			Thread.yield();
-			long elapsed = (System.nanoTime() - start) / 1_000_000;
-			// sanity test to avoid hanging tests
-			assertTrue("Timeout waiting for job to change state.", elapsed < timeoutInMs);
-		}
-		if (state == Job.RUNNING) {
-			// Internal state InternalJob.ABOUT_TO_RUN is Job.RUNNING
-			// before actually setting the thread.
-			// So wait till internal state changed to RUNNING too
-			Thread.yield();
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				// ignore
+		try {
+			Method internalGetState = InternalJob.class.getDeclaredMethod("internalGetState");
+			internalGetState.setAccessible(true);
+			// use internalGetState instead of getState() to avoid to hit ABOUT_TO_RUN when
+			// waiting for RUNNING
+			while (((state == Job.RUNNING) ? ((int) internalGetState.invoke(job)) : job.getState()) != state) {
+				Thread.yield();
+				long elapsed = (System.nanoTime() - start) / 1_000_000;
+				// sanity test to avoid hanging tests
+				assertTrue("Timeout waiting for job to change state.", elapsed < timeoutInMs);
 			}
+		} catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
