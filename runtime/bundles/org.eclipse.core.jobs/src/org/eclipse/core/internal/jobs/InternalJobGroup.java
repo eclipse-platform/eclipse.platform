@@ -47,15 +47,25 @@ public class InternalJobGroup {
 	private final String name;
 	private final int maxThreads;
 
+	/** write is synchronized by jobGroupStateLock, read is not synchronized **/
 	private volatile int state = JobGroup.NONE;
+	/** write is synchronized by jobGroupStateLock, read is not synchronized **/
 	private volatile MultiStatus result;
+	/** synchronized by JobManager.lock **/
 	private final Set<InternalJob> runningJobs = new HashSet<>();
+	/** synchronized by JobManager.lock **/
 	private final Set<InternalJob> otherActiveJobs = new HashSet<>();
+	/** synchronized by JobManager.lock **/
 	private final List<IStatus> results = new ArrayList<>();
+	/** synchronized by JobManager.lock **/
 	private boolean cancelingDueToError;
+	/** synchronized by JobManager.lock **/
 	private int failedJobsCount;
+	/** synchronized by JobManager.lock **/
 	private int canceledJobsCount;
+	/** synchronized by JobManager.lock **/
 	private int seedJobsCount;
+	/** synchronized by JobManager.lock **/
 	private int seedJobsRemainingCount;
 
 	protected InternalJobGroup(String name, int maxThreads, int seedJobsCount) {
@@ -106,6 +116,7 @@ public class InternalJobGroup {
 	 * @GuardedBy("JobManager.lock")
 	 */
 	final void jobStateChanged(InternalJob job, int oldState, int newState) {
+		assert Thread.holdsLock(manager.lock);
 		switch (oldState) {
 			case Job.NONE :
 				break;
@@ -190,6 +201,7 @@ public class InternalJobGroup {
 	 * @GuardedBy("JobManager.lock")
 	 */
 	final void updateCancelingReason(boolean cancelDueToError) {
+		assert Thread.holdsLock(manager.lock);
 		cancelingDueToError = cancelDueToError;
 		if (!cancelDueToError) {
 			// add a dummy cancel status to the results to make sure the combined status
@@ -208,25 +220,22 @@ public class InternalJobGroup {
 	 * @GuardedBy("JobManager.lock")
 	 * @GuardedBy("jobGroupStateLock")
 	 */
-	final void cancelAndNotify(boolean cancelDueToError) {
+	final List<Job> cancelAndNotify(boolean cancelDueToError) {
 		synchronized (jobGroupStateLock) {
 			switch (getState()) {
 			case JobGroup.NONE:
-				return;
+				return Collections.emptyList();
 			case JobGroup.CANCELING:
 				if (!cancelDueToError) {
 					// User cancellation takes precedence over the cancel due to error.
 					updateCancelingReason(cancelDueToError);
 				}
-				return;
+				return Collections.emptyList();
 			}
 			state = JobGroup.CANCELING;
 			updateCancelingReason(cancelDueToError);
 			jobGroupStateLock.notifyAll();
-		}
-
-		for (Job job : internalGetActiveJobs()) {
-			job.cancel();
+			return internalGetActiveJobs();
 		}
 	}
 
@@ -239,6 +248,7 @@ public class InternalJobGroup {
 	 * @GuardedBy("jobGroupStateLock")
 	 */
 	final void endJobGroup(MultiStatus groupResult) {
+		assert Thread.holdsLock(manager.lock);
 		synchronized (jobGroupStateLock) {
 			if (seedJobsRemainingCount > 0 && !groupResult.matches(IStatus.CANCEL))
 				throw new IllegalStateException("Invalid initial jobs remaining count"); //$NON-NLS-1$
@@ -275,6 +285,7 @@ public class InternalJobGroup {
 	}
 
 	final List<Job> internalGetActiveJobs() {
+		assert Thread.holdsLock(manager.lock);
 		List<Job> activeJobs = new ArrayList<>(runningJobs.size() + otherActiveJobs.size());
 		for (InternalJob job : runningJobs)
 			activeJobs.add((Job) job);
@@ -291,26 +302,32 @@ public class InternalJobGroup {
 	 * @return the count of initial jobs remaining to be scheduled
 	 */
 	final int getSeedJobsRemainingCount() {
+		assert Thread.holdsLock(manager.lock);
 		return seedJobsRemainingCount;
 	}
 
 	final int getActiveJobsCount() {
+		assert Thread.holdsLock(manager.lock);
 		return runningJobs.size() + otherActiveJobs.size();
 	}
 
 	final int getRunningJobsCount() {
+		assert Thread.holdsLock(manager.lock);
 		return runningJobs.size();
 	}
 
 	final int getFailedJobsCount() {
+		assert Thread.holdsLock(manager.lock);
 		return failedJobsCount;
 	}
 
 	final int getCanceledJobsCount() {
+		assert Thread.holdsLock(manager.lock);
 		return canceledJobsCount;
 	}
 
 	final List<IStatus> getCompletedJobResults() {
+		assert Thread.holdsLock(manager.lock);
 		return new ArrayList<>(results);
 	}
 
