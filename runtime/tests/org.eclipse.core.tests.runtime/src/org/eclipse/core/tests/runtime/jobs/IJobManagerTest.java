@@ -1359,7 +1359,10 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 			assertEquals(1, familyJobsCount[0]);
 		} catch (AssertionFailedError e) {
 			// interrupt to avoid deadlock and perform cleanup
-			job.getThread().interrupt();
+			Thread thread = job.getThread();
+			if (thread != null) {
+				thread.interrupt();
+			}
 			// re-throw since the test failed
 			throw e;
 		} finally {

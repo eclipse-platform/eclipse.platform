@@ -913,7 +913,10 @@ public class JobGroupTest extends AbstractJobTest {
 			assertEquals(1, groupJobsCount[0]);
 		} catch (AssertionFailedError e) {
 			// interrupt to avoid deadlock and perform cleanup
-			job.getThread().interrupt();
+			Thread thread = job.getThread();
+			if (thread != null) {
+				thread.interrupt();
+			}
 			// re-throw since the test failed
 			throw e;
 		} finally {
@@ -985,7 +988,10 @@ public class JobGroupTest extends AbstractJobTest {
 			assertEquals(1, groupJobsCount[0]);
 		} catch (AssertionFailedError e) {
 			// interrupt to avoid deadlock and perform cleanup
-			job.getThread().interrupt();
+			Thread thread = job.getThread();
+			if (thread != null) {
+				thread.interrupt();
+			}
 			// re-throw since the test failed
 			throw e;
 		} finally {
@@ -1053,7 +1059,10 @@ public class JobGroupTest extends AbstractJobTest {
 			assertEquals(0, groupJobsCount[0]);
 		} catch (AssertionFailedError e) {
 			// interrupt to avoid deadlock and perform cleanup
-			job.getThread().interrupt();
+			Thread thread = job.getThread();
+			if (thread != null) {
+				thread.interrupt();
+			}
 			// re-throw since the test failed
 			throw e;
 		} finally {
