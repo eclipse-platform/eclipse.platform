@@ -93,13 +93,6 @@ public class OrderAsserter {
 				lock.unlock();
 			}
 
-			lock.lock();
-			try {
-
-			} finally {
-				lock.unlock();
-			}
-
 			assertFalse("Too late. Expected to happen as " + event + " but was " + getEventString(currentProgress),
 					currentProgress > event.eventNumber);
 			assertFalse("Too early. Expected to happen as " + event + " but was " + getEventString(currentProgress),
