@@ -526,7 +526,13 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 **/
 	private void waitEventsSend2(InternalJob job) {
 		assert Thread.holdsLock(lock);
-		jobListeners.waitAndSendEvents(job, false);
+		// FIXME: When there are Events to send there may be stale done() Events which
+		// would terminate a Job.join() ahead of time.
+		// But it is not allowed to send messages while holding a lock, because that
+		// could result in a deadlock. see
+		// https://github.com/eclipse-platform/eclipse.platform/issues/193#issuecomment-1286837139
+		// TODO: If there are still events to send it is needed to release the lock
+		// before sending and try again until all messages send BEFORE the lock.
 	}
 
 
