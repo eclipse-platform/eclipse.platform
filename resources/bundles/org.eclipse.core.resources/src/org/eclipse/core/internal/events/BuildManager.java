@@ -955,17 +955,22 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	}
 
 	private IResourceDelta getDeltaCached(IProject project, ElementTree oldTree, ElementTree newTree) {
-		IResourceDelta resultDelta = deltaCache.computeIfAbsent(project.getFullPath(), oldTree, newTree, () -> {
+		final IPath fullPath = project.getFullPath();
+		IResourceDelta resultDelta = deltaCache.computeIfAbsent(fullPath, oldTree, newTree, () -> {
 			long startTime = 0L;
 			if (Policy.DEBUG_BUILD_DELTA) {
 				startTime = System.currentTimeMillis();
 				Policy.debug("Computing delta for project: " + project.getName()); //$NON-NLS-1$
 			}
-			IResourceDelta result = ResourceDeltaFactory.computeDelta(workspace, oldTree, newTree,
-					project.getFullPath(), -1);
+			IResourceDelta result;
+			if (!project.exists() && !newTree.includes(fullPath) && !oldTree.includes(fullPath)) {
+				result = null;
+			} else {
+				result = ResourceDeltaFactory.computeDelta(workspace, oldTree, newTree, fullPath, -1);
+			}
 			if (Policy.DEBUG_BUILD_FAILURE && result == null)
 				Policy.debug(
-						"Build: no delta " + debugBuilder() + " [" + debugProject() + "] " + project.getFullPath()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						"Build: no delta " + debugBuilder() + " [" + debugProject() + "] " + fullPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if (Policy.DEBUG_BUILD_DELTA)
 				Policy.debug("Finished computing delta, time: " + (System.currentTimeMillis() - startTime) + "ms" //$NON-NLS-1$ //$NON-NLS-2$
 						+ ((ResourceDelta) result).toDeepDebugString());
@@ -1294,6 +1299,9 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 
 	private boolean hasDelta(InternalBuilder builder, IProject project, ElementTree oldTree, ElementTree newTree) {
 		IResourceDelta delta = getDeltaCached(project, currentLastBuiltTree, currentTree);
+		if (delta == null) {
+			return false;
+		}
 		IResourceDelta[] children = delta.getAffectedChildren();
 		boolean hasDelta = delta.getKind() != IResourceDelta.NO_CHANGE || children.length > 0;
 		if (hasDelta && Policy.DEBUG_BUILD_NEEDED) {

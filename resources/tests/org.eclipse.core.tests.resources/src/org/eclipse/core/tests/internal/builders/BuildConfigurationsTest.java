@@ -14,8 +14,11 @@
  ******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import java.util.Map;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
 
 /**
@@ -335,4 +338,44 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 			}
 		}
 	}
+
+	/**
+	 * Regression test for
+	 * https://github.com/eclipse-platform/eclipse.platform/issues/243.
+	 *
+	 * Build should not be broken by a builder that references not existing project.
+	 *
+	 * Application use case: importing an Xtext based project that references
+	 * another (not yet imported) project. Xtext builder reports it is interested in
+	 * the project that isn't there (but is referenced in the .project file).
+	 */
+	public void testBuildProjectWithNotExistingReference() throws Exception {
+		// need a build to create builder
+		IBuildConfiguration buildConfig = project0.getBuildConfig(variant0);
+		project0.build(buildConfig, IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+
+		// Configure builder to report "interesting" projects
+		ConfigurationBuilder builder = ConfigurationBuilder.getBuilder(buildConfig);
+		IProject notExistingProject = getWorkspace().getRoot().getProject("not_existing_one");
+
+		builder.setRuleCallback(new BuilderRuleCallback() {
+			@Override
+			public IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+				// return not existing project, it will be remembered via
+				// InternalBuilder.setInterestingProjects(IProject[])
+				// after full build
+				return new IProject[] { notExistingProject };
+			}
+		});
+
+		// need a full build to remember "interesting" projects
+		project0.build(buildConfig, IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+
+		// need a delta NOT in the builder's own project
+		project1.touch(getMonitor());
+
+		// this will try to find delta for non existing resource
+		project0.build(buildConfig, IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+	}
+
 }
