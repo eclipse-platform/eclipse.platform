@@ -994,6 +994,9 @@ public class DeltaDataTree extends AbstractDataTree {
 	@Override
 	public String toString() {
 		DeltaDataTree root = getParent();
+		if (root == null && isEmptyDelta()) {
+			return this.getClass().getSimpleName() + " -> rootNode=" + rootNode.toShortString(); //$NON-NLS-1$
+		}
 		int depth = root == null ? 0 : 1;
 		while (root != null && root.getParent() != null) {
 			root = root.getParent();
