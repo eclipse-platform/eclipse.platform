@@ -26,6 +26,7 @@ package org.eclipse.core.internal.jobs;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 import org.eclipse.core.internal.runtime.RuntimeLog;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
@@ -319,11 +320,9 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * Cancels a job
 	 */
 	protected boolean cancel(InternalJob job) {
-		IProgressMonitor monitor = null;
-		boolean runCanceling = false;
-		waitEventsSend(job);
-		synchronized (lock) {
-			waitEventsSend2(job);
+		IProgressMonitor[] monitor = new  IProgressMonitor[1];
+		boolean[] runCanceling = new boolean[1];
+		Boolean canceled = withWriteLock(job, j -> {
 			// signal that the job should be canceled before it gets a chance to run
 			job.setAboutToRunCanceled(true);
 			switch (job.getState()) {
@@ -332,31 +331,36 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 				case Job.RUNNING :
 					//cannot cancel a job that has already started (as opposed to ABOUT_TO_RUN)
 					if (job.internalGetState() == Job.RUNNING) {
-						monitor = job.getProgressMonitor();
-						runCanceling = !job.isRunCanceled();
-						if (runCanceling)
+						monitor[0] = job.getProgressMonitor();
+						runCanceling[0] = !job.isRunCanceled();
+						if (runCanceling[0]) {
 							job.setRunCanceled(true);
+						}
 						break;
 					}
 					return false;
 				default :
 					changeState(job, Job.NONE);
 			}
-			if (monitor == null) {
+			if (monitor[0] == null) {
 				// only notify listeners if the job was waiting or sleeping
 				jobListeners.queueDone((Job) job, Status.CANCEL_STATUS, false);
 			}
+			return null;
+		});
+		if (canceled != null) {
+			return canceled;
 		}
 		//call monitor and canceling outside sync block
-		if (monitor != null) {
-			if (runCanceling) {
-				if (!monitor.isCanceled())
-					monitor.setCanceled(true);
+		if (monitor[0] != null) {
+			if (runCanceling[0]) {
+				if (!monitor[0].isCanceled()) {
+					monitor[0].setCanceled(true);
+				}
 				job.canceling();
 			}
 			return false;
 		}
-		sendEvents(job);
 		return true;
 	}
 
@@ -499,42 +503,28 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	}
 
 	/**
-	 * Should be called after each <code>synchronized (lock)</code> that is used to
-	 * change job state to send the enqueued Events. Should never be called while
-	 * holding a lock.
-	 **/
-	private void sendEvents(InternalJob job) {
-		assert !Thread.holdsLock(lock);
-		jobListeners.waitAndSendEvents(job, true);
+	 * Waits till all Events send, synchronizes on lock and then sends new Events
+	 */
+	private <T, J extends InternalJob> T withWriteLock(J job, Function<J, T> function) {
+		do {
+			// Need to wait till all events for this job are send.
+			jobListeners.waitAndSendEvents(job, false);
+			T result;
+			synchronized (lock) {
+				// Must not send events while holding lock, because that
+				// could result in a deadlock. see
+				// https://github.com/eclipse-platform/eclipse.platform/issues/193#issuecomment-1286837139
+				// If there are still/again events to send we need to leave lock first
+				if (JobListeners.getJobListenerTimeout() != 0 && !job.eventQueue.isEmpty()) {
+					continue;
+				}
+				result = function.apply(job);
+			}
+			// finally send new events:
+			jobListeners.waitAndSendEvents(job, true);
+			return result;
+		} while (true); // retry until eventQueue is empty
 	}
-
-	/**
-	 * Should be called before each <code>synchronized (lock)</code> that is used to
-	 * change job state to make sure there are no outstanding done() notifications
-	 * that could happen in another thread after job is scheduled again.
-	 **/
-	private void waitEventsSend(InternalJob job) {
-		assert !Thread.holdsLock(lock);
-		jobListeners.waitAndSendEvents(job, false);
-	}
-
-	/**
-	 * Should be first call inside each <code>synchronized (lock)</code> that is
-	 * used to change job state to make sure there are no outstanding done()
-	 * notifications that could happen in another thread after job is scheduled
-	 * again.
-	 **/
-	private void waitEventsSend2(InternalJob job) {
-		assert Thread.holdsLock(lock);
-		// FIXME: When there are Events to send there may be stale done() Events which
-		// would terminate a Job.join() ahead of time.
-		// But it is not allowed to send messages while holding a lock, because that
-		// could result in a deadlock. see
-		// https://github.com/eclipse-platform/eclipse.platform/issues/193#issuecomment-1286837139
-		// TODO: If there are still events to send it is needed to release the lock
-		// before sending and try again until all messages send BEFORE the lock.
-	}
-
 
 	/**
 	 * Returns a new progress monitor for this job.  Never returns null.
@@ -732,44 +722,48 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 */
 	protected void endJob(InternalJob job, IStatus result, boolean notify, boolean worker) {
 		// if the job is finishing asynchronously, there is nothing more to do for now
-		if (result == Job.ASYNC_FINISH)
+		if (result == Job.ASYNC_FINISH) {
 			return;
-		long rescheduleDelay = InternalJob.T_NONE;
-		waitEventsSend(job);
-		boolean scheduled = false;
-		synchronized (lock) {
-			waitEventsSend2(job);
+		}
+		Boolean scheduled = withWriteLock(job, j -> {
+			long rescheduleDelay = InternalJob.T_NONE;
 			//if job is not known then it cannot be done
-			if (job.getState() == Job.NONE)
-				return;
-			if (JobManager.DEBUG && notify)
+			if (job.getState() == Job.NONE) {
+				return null;
+			}
+			if (JobManager.DEBUG && notify) {
 				JobManager.debug("Ending job: " + job); //$NON-NLS-1$
+			}
 			job.setResult(result);
 			job.setProgressMonitor(null);
 			job.setThread(null);
 			rescheduleDelay = job.getStartTime(); // XXX time used as delay
 			changeState(job, Job.NONE); // removes from #running without adding to #sleeping or #waiting
 			boolean reschedule = active && rescheduleDelay > InternalJob.T_NONE && job.shouldSchedule();
-			if (notify)
+			if (notify) {
 				jobListeners.queueDone((Job) job, result, reschedule);
+			}
 			if (reschedule) {
 				// adds to #sleeping or #waiting
-				scheduled = scheduleInternal(job, rescheduleDelay, reschedule);
+				return scheduleInternal(job, rescheduleDelay, reschedule);
 			}
+			return false;
+		});
+		if (scheduled == null) {
+			return;
 		}
 		// No need to wake up other worker threads with to pool.jobQueued() if
 		// rescheduled, since this thread can and should run the job again after
 		// listeners returned.
-		if (scheduled && !worker) {
+		if (scheduled.booleanValue() && !worker) {
 			pool.jobQueued();
 		}
-		//notify listeners outside sync block
-		sendEvents(job);
 
 		//log result if it is warning or error. When the job belongs to a job group defer the logging
 		//until the whole group is completed (see JobManager#updateJobGroup).
-		if (job.getJobGroup() == null && result.matches(IStatus.ERROR | IStatus.WARNING))
+		if (job.getJobGroup() == null && result.matches(IStatus.ERROR | IStatus.WARNING)) {
 			RuntimeLog.log(result);
+		}
 	}
 
 	@Override
@@ -1026,8 +1020,10 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 					public void running(IJobChangeEvent event) {
 						Job job = event.getJob();
 						if (family == null || job.belongsTo(family)) {
-							boolean added = jobs.add(job); // never really adds, as it already was added by scheduled()
-							assert !added;
+							// Rarely really adds, as it was in most cases already was added by scheduled().
+							// But may happen - for example in
+							// IJobManagerTest.testJobFamilyJoinLockListener():
+							jobs.add(job);
 							// no notification upon increased size
 						}
 					}
@@ -1374,14 +1370,12 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	}
 
 	protected void schedule(InternalJob job, long delay) {
-		waitEventsSend(job);
-		synchronized (lock) {
-			waitEventsSend2(job);
+		withWriteLock(job, j -> {
 			if (scheduleInternal(job, delay, false)) {
 				pool.jobQueued();
 			}
-		}
-		sendEvents(job);
+			return (Void) null;
+		});
 	}
 
 	protected boolean scheduleInternal(InternalJob job, long delay, boolean reschedule) {
@@ -1498,9 +1492,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * Puts a job to sleep. Returns true if the job was successfully put to sleep.
 	 */
 	protected boolean sleep(InternalJob job) {
-		waitEventsSend(job);
-		synchronized (lock) {
-			waitEventsSend2(job);
+		return withWriteLock(job, j -> {
 			switch (job.getState()) {
 				case Job.RUNNING :
 					//cannot be paused if it is already running (as opposed to ABOUT_TO_RUN)
@@ -1523,9 +1515,8 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			job.setStartTime(InternalJob.T_INFINITE);
 			changeState(job, Job.SLEEPING);
 			jobListeners.queueSleeping((Job) job);
-		}
-		sendEvents(job);
-		return true;
+			return true;
+		});
 	}
 
 	@Override
@@ -1750,47 +1741,47 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		Job job = null;
 		while (true) {
 			job = nextJob();
-			if (job == null)
+			if (job == null) {
 				return null;
+			}
 			//must perform this outside sync block because it is third party code
 			boolean shouldRun = shouldRun(job);
 			//check for listener veto
 			if (shouldRun) {
 				jobListeners.queueAboutToRun(job);
-				sendEvents(job); //aboutToRun
+				jobListeners.waitAndSendEvents(job, true); // aboutToRun
 			}
 			//listeners may have canceled or put the job to sleep
-			boolean endJob = false;
-			waitEventsSend(job);
-			synchronized (lock) {
-				waitEventsSend2(job);
-				JobGroup jobGroup = job.getJobGroup();
-				if (jobGroup != null && jobGroup.getState() == JobGroup.CANCELING)
-					shouldRun = false;
-				InternalJob internal = job;
+			Boolean endJob = withWriteLock(job, j -> {
+				JobGroup jobGroup = j.getJobGroup();
+				boolean shouldReallyRun = shouldRun && !(jobGroup != null && jobGroup.getState() == JobGroup.CANCELING);
+				InternalJob internal = j;
 				synchronized (internal.jobStateLock) {
 					if (internal.internalGetState() == InternalJob.ABOUT_TO_RUN) {
-						if (shouldRun && !internal.isAboutToRunCanceled()) {
-							internal.setProgressMonitor(createMonitor(job));
+						if (shouldReallyRun && !internal.isAboutToRunCanceled()) {
+							internal.setProgressMonitor(createMonitor(j));
 							//change from ABOUT_TO_RUN to RUNNING
 							internal.setThread(worker);
 							internal.internalSetState(Job.RUNNING);
 							internal.jobStateLock.notifyAll();
-							jobListeners.queueRunning(job);
-							break;
+							jobListeners.queueRunning(j);
+							return null;
 						}
-						endJob = true;
+						return true;
 						//fall through and end the job below
 					}
 				}
+				return false;
+			});
+			if (endJob == null) {
+				break;
 			}
-			if (endJob) {
+			if (endJob.booleanValue()) {
 				//job has been vetoed or canceled, so mark it as done
 				endJob(job, Status.CANCEL_STATUS, true, false);
 				continue;
 			}
 		}
-		sendEvents(job); // running
 		return job;
 
 	}
@@ -1842,21 +1833,23 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 
 	protected void wakeUp(InternalJob job, long delay) {
 		Assert.isLegal(delay >= 0, "Scheduling delay is negative"); //$NON-NLS-1$
-		boolean scheduled;
-		waitEventsSend(job);
-		synchronized (lock) {
-			waitEventsSend2(job);
+		boolean notSleeping = withWriteLock(job, j -> {
 			//cannot wake up if it is not sleeping
-			if (job.getState() != Job.SLEEPING)
-				return;
-			scheduled = doSchedule(job, delay);
+			if (job.getState() != Job.SLEEPING) {
+				return true;
+			}
+			boolean scheduled = doSchedule(job, delay);
 			// only notify of wake up if immediate
-			if (scheduled && delay == 0)
+			if (scheduled && delay == 0) {
 				jobListeners.queueAwake((Job) job);
+			}
+			return false;
+		});
+		if (notSleeping) {
+			return;
 		}
 		//call the pool outside sync block to avoid deadlock
 		pool.jobQueued();
-		sendEvents(job);
 	}
 
 	@Override
@@ -1948,6 +1941,15 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 
 			if (jobGroupState != JobGroup.CANCELING && jobGroup.shouldCancel(jobResult, failedJobsCount, canceledJobsCount))
 				cancel(jobGroup, true);
+		}
+	}
+
+	/** for debugging only **/
+	@Override
+	public String toString() {
+		synchronized (lock) {
+			return "waiting: " + waiting + "\nsleeping: " + sleeping + "\nrunnning: " + running + "\nyielding: " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					+ yielding;
 		}
 	}
 }
