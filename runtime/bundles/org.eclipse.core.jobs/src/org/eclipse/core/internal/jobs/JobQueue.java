@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.internal.jobs;
 
-import java.util.Iterator;
+import java.util.*;
 import org.eclipse.core.runtime.*;
 
 /**
@@ -171,5 +171,13 @@ public final class JobQueue implements Iterable<InternalJob> {
 			}
 
 		};
+	}
+
+	/** for debugging only **/
+	@Override
+	public String toString() {
+		List<InternalJob> all = new ArrayList<>();
+		iterator().forEachRemaining(all::add);
+		return all.toString();
 	}
 }
