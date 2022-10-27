@@ -914,16 +914,20 @@ public class JobTest extends AbstractJobTest {
 		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_START);
 		assertEquals("1.0", TestBarrier2.STATUS_START, status.get(0));
 		int i = 0;
-		for (; i < 11; i++) {
+		long n0 = System.nanoTime();
+		for (; i < 999999; i++) {
 			if (status.get(0) == TestBarrier2.STATUS_DONE) {
 				// Verify that the join call is blocked for at least for the duration of given timeout
 				assertTrue("2.0 duration: " + Arrays.toString(duration) + " timeout: " + timeout, duration[0] >= timeout);
 				break;
 			}
-			sleep(100);
+			sleep(1);
 		}
+		long n1 = System.nanoTime();
 		// Verify that the join call is finished with in reasonable time of 1100 ms (given timeout + 100ms)
-		assertTrue("3.0", i < 11);
+		long took = (n1 - n0) / 1_000_000;
+		assertTrue("3.0 took:" + took, took < timeout + 100);
+		assertTrue("3.1 took:" + took, took >= timeout - 100);
 		// Verify that the join call is still running
 		assertEquals("4.0", Job.RUNNING, longJob.getState());
 		// Finally cancel the job
