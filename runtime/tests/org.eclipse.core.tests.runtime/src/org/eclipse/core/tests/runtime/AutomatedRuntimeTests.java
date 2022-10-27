@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime;
 
+import org.eclipse.core.tests.internal.preferences.AllPreferenceTests;
+import org.eclipse.core.tests.internal.runtime.AllInternalRuntimeTests;
+import org.eclipse.core.tests.runtime.jobs.AllJobTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,9 +24,19 @@ import org.junit.runners.Suite;
  * automated.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ org.eclipse.core.tests.internal.runtime.AllInternalRuntimeTests.class,
-		org.eclipse.core.tests.runtime.AllRuntimeTests.class, org.eclipse.core.tests.runtime.jobs.AllJobTests.class,
-		org.eclipse.core.tests.internal.preferences.AllPreferenceTests.class })
+@Suite.SuiteClasses({
+		AllInternalRuntimeTests.class,
+
+		AllRuntimeTests.class,
+
+		AllPreferenceTests.class,
+
+		/*
+		 * Intentional the LAST TEST in the list to let JobEventTest.testNoTimeoutOccured() verify the other
+		 * tests:
+		 */
+		AllJobTests.class
+})
 public class AutomatedRuntimeTests {
 
 }

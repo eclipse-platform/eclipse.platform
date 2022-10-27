@@ -388,6 +388,15 @@ public class JobEventTest {
 			job.removeJobChangeListener(jobListener);
 		}
 	}
+
+	@Test
+	public void testNoTimeoutOccured() throws Exception {
+		int jobListenerTimeout = JobListeners.getJobListenerTimeout();
+		JobListeners.resetJobListenerTimeout();
+		int defaultTimeout = JobListeners.getJobListenerTimeout();
+		assertEquals(defaultTimeout, jobListenerTimeout);
+	}
+
 	@Test
 	public void testDeadlockRecovery() throws Exception {
 		Object deadlock = new Object();
@@ -395,7 +404,7 @@ public class JobEventTest {
 		CountDownLatch testDoneSignal2 = new CountDownLatch(1);
 		Collection<String> errors = new ConcurrentLinkedQueue<>();
 		int TIMEOUT = 500;
-		Job job = new Job("testDeadlockRecovery") {
+		Job job = new Job("testDeadlockRecovery: INTENTIONAL LOGS TIMEOUTEXCEPTION!") {
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -422,6 +431,7 @@ public class JobEventTest {
 		job.addJobChangeListener(jobListener);
 		Timer timeout = new Timer();
 		try {
+			testNoTimeoutOccured(); // before changing timeout
 			JobListeners.setJobListenerTimeout(TIMEOUT / 2);
 			job.schedule();
 			timeout.schedule(new TimerTask() {
