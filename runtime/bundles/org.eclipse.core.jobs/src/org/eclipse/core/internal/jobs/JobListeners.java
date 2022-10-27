@@ -84,7 +84,7 @@ public class JobListeners {
 			if (eventQueueThread != null) {
 				setJobListenerTimeout(0);
 				StackTraceElement[] stackTrace = eventQueueThread.getStackTrace();
-				String msg = "IJobChangeListener timeout detected. Further calls to IJobChangeListener may occur in random order and join(family) can return too soo. IJobChangeListener should return within " //$NON-NLS-1$
+				String msg = "IJobChangeListener timeout detected. Further calls to IJobChangeListener may occur in random order and join(family) can return too soon. IJobChangeListener should return within " //$NON-NLS-1$
 						+ timeout
 						+ " ms. IJobChangeListener methods should not block. Possible deadlock."; //$NON-NLS-1$
 				MultiStatus status = new MultiStatus(JobManager.PI_JOBS, JobManager.PLUGIN_ERROR, msg,
