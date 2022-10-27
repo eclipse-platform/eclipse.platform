@@ -603,6 +603,12 @@ public class JobTest extends AbstractJobTest {
 		}
 	}
 
+	public void testCancelAboutToScheduleLegacy() {
+		JobListeners.setJobListenerTimeout(0);
+		testCancelAboutToSchedule();
+		JobListeners.resetJobListenerTimeout();
+	}
+
 	public void testCancelAboutToSchedule() {
 		final boolean[] failure = new boolean[1];
 		final Job j = new Job("testCancelAboutToSchedule") {

@@ -52,7 +52,13 @@ public class JobListeners {
 	protected final ListenerList<IJobChangeListener> global = new ListenerList<>(ListenerList.IDENTITY);
 
 	/** Send=true should not be used during a lock */
-	void waitAndSendEvents(InternalJob job, boolean send) {
+	void waitAndSendEvents(InternalJob job, boolean shouldSend) {
+		// Instead of just waiting this threads may also need to help to send
+		// to make sure there is progress.
+		// For example during a Job.cancel() within a IJobChangeListener.scheduled()
+		// this thread already has a lock for sending so it can not wait for another
+		// Thread. See JobTest.testCancelAboutToSchedule() for an example.
+		boolean send = shouldSend || job.eventQueueLock.isHeldByCurrentThread();
 		// Synchronize eventQueue to get a stable order of events across Threads.
 		// There is however no guarantee in which Thread the event is delivered.
 		while (!job.eventQueue.isEmpty()) {

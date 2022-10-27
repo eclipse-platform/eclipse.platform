@@ -391,10 +391,7 @@ public class JobEventTest {
 
 	@Test
 	public void testNoTimeoutOccured() throws Exception {
-		int jobListenerTimeout = JobListeners.getJobListenerTimeout();
-		JobListeners.resetJobListenerTimeout();
-		int defaultTimeout = JobListeners.getJobListenerTimeout();
-		assertEquals(defaultTimeout, jobListenerTimeout);
+		AbstractJobTest.assertNoTimeoutOccured();
 	}
 
 	@Test

@@ -16,6 +16,7 @@ package org.eclipse.core.tests.runtime.jobs;
 
 import java.io.*;
 import junit.framework.TestCase;
+import org.eclipse.core.internal.jobs.JobListeners;
 import org.eclipse.core.internal.jobs.JobManager;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -133,5 +134,24 @@ public class AbstractJobTest extends TestCase {
 
 	public static long now() {
 		return ((JobManager) (Job.getJobManager())).now();
+	}
+
+	@Override
+	protected void setUp() throws Exception {
+		assertNoTimeoutOccured();
+		super.setUp();
+	}
+
+	@Override
+	protected void tearDown() throws Exception {
+		assertNoTimeoutOccured();
+		super.tearDown();
+	}
+
+	public static void assertNoTimeoutOccured() throws Exception {
+		int jobListenerTimeout = JobListeners.getJobListenerTimeout();
+		JobListeners.resetJobListenerTimeout();
+		int defaultTimeout = JobListeners.getJobListenerTimeout();
+		assertEquals("See logfile for TimeoutException to get details.", defaultTimeout, jobListenerTimeout);
 	}
 }
