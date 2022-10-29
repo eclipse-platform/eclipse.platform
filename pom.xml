@@ -25,8 +25,6 @@
 
   <properties>
     <tycho.scmUrl>scm:git:https://github.com/eclipse-platform/eclipse.platform.git</tycho.scmUrl>
-    <tycho.surefire.useUIHarness>false</tycho.surefire.useUIHarness>
-    <tycho.surefire.useUIThread>true</tycho.surefire.useUIThread>
     <tycho.surefire.testClassesDirectory>${project.build.outputDirectory}</tycho.surefire.testClassesDirectory>
   </properties>
 
@@ -75,8 +73,6 @@
           <artifactId>tycho-surefire-plugin</artifactId>
           <configuration>
             <testClassesDirectory>${tycho.surefire.testClassesDirectory}</testClassesDirectory>
-            <useUIHarness>${tycho.surefire.useUIHarness}</useUIHarness>
-            <useUIThread>${tycho.surefire.useUIThread}</useUIThread>
           </configuration>
         </plugin>
       </plugins>
