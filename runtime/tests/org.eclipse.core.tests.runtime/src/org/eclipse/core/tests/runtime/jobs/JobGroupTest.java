@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLong;
 import junit.framework.AssertionFailedError;
@@ -1427,18 +1428,18 @@ public class JobGroupTest extends AbstractJobTest {
 	/**
 	 * Tests that the JobManager publishes a final job group status to IJobChangeListeners.
 	 */
-	public void testJobManagerPublishesJobGroupResults() {
+	public void testJobManagerPublishesJobGroupResults() throws InterruptedException {
 		final int NUM_GROUP_JOBS = 3;
 		final String GROUP_NAME = "TestJobGroup";
 		final JobGroup jobGroup = new JobGroup(GROUP_NAME, 1, NUM_GROUP_JOBS);
 
 		// Record job completion events for all jobs in this job group.
-		final List<IJobChangeEvent> events = new ArrayList<>(NUM_GROUP_JOBS);
+		Collection<IJobChangeEvent> eventQueue = new ConcurrentLinkedQueue<>();
 		IJobChangeListener listener = new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
 				if (event.getJob().getJobGroup() == jobGroup) {
-					events.add(event);
+					eventQueue.add(event);
 				}
 			}
 		};
@@ -1452,6 +1453,15 @@ public class JobGroupTest extends AbstractJobTest {
 				testJob.schedule();
 			}
 			waitForCompletion(jobGroup);
+
+			// That the job state completed is no guarantee that all Notifications did
+			// happen. Lets wait some more:
+			for (int i = 0; i < 1000 && eventQueue.size() < NUM_GROUP_JOBS; i++) {
+				Thread.sleep(1);
+			}
+
+			List<IJobChangeEvent> events = new ArrayList<>();
+			eventQueue.forEach(events::add);
 
 			assertEquals("Should have seen as many job completion events as the count of jobs in the job group.", NUM_GROUP_JOBS, events.size());
 			for (int i = 0; i < NUM_GROUP_JOBS; i++) {
