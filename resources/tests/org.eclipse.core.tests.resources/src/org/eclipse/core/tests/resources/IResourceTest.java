@@ -1867,8 +1867,7 @@ public class IResourceTest extends ResourceTest {
 					return null;
 				}
 				setupBeforeState(receiver, target, state, depth, false);
-				boolean result = receiver.isSynchronized(depth);
-				return result ? Boolean.TRUE : Boolean.FALSE;
+				return receiver.isSynchronized(depth);
 			}
 
 			@Override
