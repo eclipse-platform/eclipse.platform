@@ -13,6 +13,8 @@
  ******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import junit.framework.Test;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
@@ -90,8 +92,8 @@ public class ProjectDescriptionDynamicTest extends WorkspaceSessionTest {
 	 */
 	public void test2() throws Exception {
 		assertTrue("1.0", proj.isAccessible());
-		assertEquals("1.1", dynRefs, proj.getDescription().getDynamicReferences());
-		assertEquals("1.2", configs, proj.getBuildConfigs());
+		assertArrayEquals("1.1", dynRefs, proj.getDescription().getDynamicReferences());
+		assertArrayEquals("1.2", configs, proj.getBuildConfigs());
 		assertEquals("1.3", configs[0], proj.getActiveBuildConfig());
 
 		// set build configuration level dynamic references on the project
@@ -114,17 +116,18 @@ public class ProjectDescriptionDynamicTest extends WorkspaceSessionTest {
 		assertTrue("2.0", proj.isAccessible());
 		assertEquals("2.1", configs[1], proj.getActiveBuildConfig());
 		// At description dynamic refs are what was set
-		assertEquals("2.2", dynRefs, proj.getDescription().getDynamicReferences());
+		assertArrayEquals("2.2", dynRefs, proj.getDescription().getDynamicReferences());
 		// At project all references are union of build configuration and project references
-		assertEquals("2.4", configRefsProjects, proj.getReferencedProjects());
+		assertArrayEquals("2.4", configRefsProjects, proj.getReferencedProjects());
 
 		// At the description level, dynamic config references match what was set.
-		assertEquals("2.5", configRefs, proj.getDescription().getBuildConfigReferences(configs[1].getName()));
+		assertArrayEquals("2.5", configRefs, proj.getDescription().getBuildConfigReferences(configs[1].getName()));
 		// At the project level, references are the union of project and build configuration level references
 		IBuildConfiguration[] refs = new IBuildConfiguration[] {configRefs[0], configRefs[1], configRefs[2], getRef(dynRefs[0]), getRef(dynRefs[1])};
-		assertEquals("2.6", refs, proj.getReferencedBuildConfigs(configs[1].getName(), true));
+		assertArrayEquals("2.6", refs, proj.getReferencedBuildConfigs(configs[1].getName(), true));
 		// No other projects exist, so check references are empty if we want to filter empty projects
-		assertEquals("2.7", new IBuildConfiguration[0], proj.getReferencedBuildConfigs(configs[1].getName(), false));
+		assertArrayEquals("2.7", new IBuildConfiguration[0],
+				proj.getReferencedBuildConfigs(configs[1].getName(), false));
 	}
 
 	public static Test suite() {

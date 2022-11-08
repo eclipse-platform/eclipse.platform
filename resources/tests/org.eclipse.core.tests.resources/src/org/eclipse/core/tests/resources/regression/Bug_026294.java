@@ -29,13 +29,12 @@ public class Bug_026294 extends ResourceTest {
 	 * Tries to delete an open project containing an unremovable file.
 	 * Works only for Windows.
 	 */
-	public void testDeleteOpenProjectWindows() {
+	public void testDeleteOpenProjectWindows() throws IOException, CoreException {
 		if (!(isWindows())) {
 			return;
 		}
 
 		IProject project = null;
-		InputStream input = null;
 		File projectRoot = null;
 		try {
 			IWorkspace workspace = getWorkspace();
@@ -56,51 +55,46 @@ public class Bug_026294 extends ResourceTest {
 			assertExistsInFileSystem("0.4", projectFile);
 
 			// opens a file so it cannot be removed on Windows
-			try {
-				input = file1.getContents();
-			} catch (CoreException ce) {
-				ce.printStackTrace();
-				fail("1.0");
+			try (InputStream input = file1.getContents()) {
+				assertTrue("1.2", projectFile.exists());
+				assertTrue("1.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
+
+				try {
+					project.delete(IResource.FORCE, getMonitor());
+					fail("2.0 - should have failed");
+				} catch (CoreException ce) {
+					// success - a file couldn't be removed
+				}
+
+				// Delete is best-case so check all the files.
+				// Do a check on disk and in the workspace in case something is out of sync.
+				assertExistsInWorkspace("2.1.1", project);
+				assertExistsInFileSystem("2.1.2", project);
+
+				assertExistsInWorkspace("2.2.1", file1);
+				assertExistsInFileSystem("2.2.2", file1);
+				assertTrue("2.2.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
+
+				assertDoesNotExistInWorkspace("2.3.1", file2);
+				assertDoesNotExistInFileSystem("2.3.2", file2);
+				assertTrue("2.3.3", file2.isSynchronized(IResource.DEPTH_INFINITE));
+
+				assertDoesNotExistInWorkspace("2.4.1", file3);
+				assertDoesNotExistInFileSystem("2.4.2", file3);
+				assertTrue("2.4.3", file3.isSynchronized(IResource.DEPTH_INFINITE));
+
+				assertExistsInWorkspace("2.5.1", folder);
+				assertExistsInFileSystem("2.5.2", folder);
+				assertTrue("2.5.3", folder.isSynchronized(IResource.DEPTH_INFINITE));
+
+				assertExistsInWorkspace("2.6.1", projectFile);
+				assertExistsInFileSystem("2.6.2", projectFile);
+				assertTrue("2.6.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
+
+				assertTrue("2.7.0", project.isSynchronized(IResource.DEPTH_ZERO));
+				assertTrue("2.7.1", project.isSynchronized(IResource.DEPTH_INFINITE));
+
 			}
-			assertTrue("1.2", projectFile.exists());
-			assertTrue("1.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
-
-			try {
-				project.delete(IResource.FORCE, getMonitor());
-				fail("2.0 - should have failed");
-			} catch (CoreException ce) {
-				// success - a file couldn't be removed
-			}
-
-			// Delete is best-case so check all the files.
-			// Do a check on disk and in the workspace in case something is out of sync.
-			assertExistsInWorkspace("2.1.1", project);
-			assertExistsInFileSystem("2.1.2", project);
-
-			assertExistsInWorkspace("2.2.1", file1);
-			assertExistsInFileSystem("2.2.2", file1);
-			assertTrue("2.2.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
-
-			assertDoesNotExistInWorkspace("2.3.1", file2);
-			assertDoesNotExistInFileSystem("2.3.2", file2);
-			assertTrue("2.3.3", file2.isSynchronized(IResource.DEPTH_INFINITE));
-
-			assertDoesNotExistInWorkspace("2.4.1", file3);
-			assertDoesNotExistInFileSystem("2.4.2", file3);
-			assertTrue("2.4.3", file3.isSynchronized(IResource.DEPTH_INFINITE));
-
-			assertExistsInWorkspace("2.5.1", folder);
-			assertExistsInFileSystem("2.5.2", folder);
-			assertTrue("2.5.3", folder.isSynchronized(IResource.DEPTH_INFINITE));
-
-			assertExistsInWorkspace("2.6.1", projectFile);
-			assertExistsInFileSystem("2.6.2", projectFile);
-			assertTrue("2.6.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
-
-			assertTrue("2.7.0", project.isSynchronized(IResource.DEPTH_ZERO));
-			assertTrue("2.7.1", project.isSynchronized(IResource.DEPTH_INFINITE));
-
-			assertClose(input);
 
 			assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
 			try {
@@ -116,12 +110,8 @@ public class Bug_026294 extends ResourceTest {
 
 			assertTrue("6.0", !projectRoot.exists());
 		} finally {
-			try {
-				assertClose(input);
-			} finally {
-				if (projectRoot != null) {
-					ensureDoesNotExistInFileSystem(projectRoot);
-				}
+			if (projectRoot != null) {
+				ensureDoesNotExistInFileSystem(projectRoot);
 			}
 		}
 	}
@@ -198,13 +188,12 @@ public class Bug_026294 extends ResourceTest {
 	 * Tries to delete a closed project containing an unremovable file.
 	 * Works only for Windows.
 	 */
-	public void testDeleteClosedProjectWindows() {
+	public void testDeleteClosedProjectWindows() throws IOException, CoreException {
 		if (!isWindows()) {
 			return;
 		}
 
 		IProject project = null;
-		InputStream input = null;
 		File projectRoot = null;
 		IFile file1 = null;
 		try {
@@ -221,30 +210,25 @@ public class Bug_026294 extends ResourceTest {
 			projectRoot = project.getLocation().toFile();
 
 			// opens a file so it cannot be removed on Windows
-			try {
-				input = file1.getContents();
-			} catch (CoreException ce) {
-				ce.printStackTrace();
-				fail("1.0");
-			}
+			try (InputStream input = file1.getContents()) {
 
-			try {
-				project.close(getMonitor());
-			} catch (CoreException e) {
-				fail("1.1", e);
-			}
+				try {
+					project.close(getMonitor());
+				} catch (CoreException e) {
+					fail("1.1", e);
+				}
 
-			try {
-				project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
-				fail("2.0 - should have failed");
-			} catch (CoreException ce) {
-				// success - a file couldn't be removed
-			}
-			assertTrue("2.1", project.exists());
-			assertTrue("2.7", project.isSynchronized(IResource.DEPTH_INFINITE));
-			assertExistsInFileSystem("2.8", projectFile);
+				try {
+					project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+					fail("2.0 - should have failed");
+				} catch (CoreException ce) {
+					// success - a file couldn't be removed
+				}
+				assertTrue("2.1", project.exists());
+				assertTrue("2.7", project.isSynchronized(IResource.DEPTH_INFINITE));
+				assertExistsInFileSystem("2.8", projectFile);
 
-			assertClose(input);
+			}
 			assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
 			try {
 				project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
@@ -258,16 +242,8 @@ public class Bug_026294 extends ResourceTest {
 			assertTrue("6.0", !projectRoot.exists());
 			assertDoesNotExistInFileSystem("7.0", projectFile);
 		} finally {
-			try {
-				if (input != null) {
-					input.close();
-				}
-			} catch (IOException e) {
-				fail("8.0", e);
-			} finally {
-				if (projectRoot != null) {
-					ensureDoesNotExistInFileSystem(projectRoot);
-				}
+			if (projectRoot != null) {
+				ensureDoesNotExistInFileSystem(projectRoot);
 			}
 		}
 	}
@@ -350,13 +326,12 @@ public class Bug_026294 extends ResourceTest {
 	 * Tries to delete a folder containing an unremovable file.
 	 * Works only for Windows.
 	 */
-	public void testDeleteFolderWindows() {
+	public void testDeleteFolderWindows() throws IOException, CoreException {
 		if (!isWindows()) {
 			return;
 		}
 
 		IProject project = null;
-		InputStream input = null;
 		File projectRoot = null;
 		try {
 			IWorkspace workspace = getWorkspace();
@@ -369,25 +344,18 @@ public class Bug_026294 extends ResourceTest {
 			projectRoot = project.getLocation().toFile();
 
 			// opens a file so it cannot be removed on Windows
-			try {
-				input = file1.getContents();
-			} catch (CoreException ce) {
-				ce.printStackTrace();
-				fail("1.0");
+			try (InputStream input = file1.getContents()) {
+				try {
+					folder.delete(IResource.FORCE, getMonitor());
+					fail("2.0 - should have failed");
+				} catch (CoreException ce) {
+					// success - a file couldn't be removed
+				}
+				assertTrue("2.2", file1.exists());
+				assertTrue("2.4", !file3.exists());
+				assertTrue("2.5", folder.exists());
+				assertTrue("2.7", folder.isSynchronized(IResource.DEPTH_INFINITE));
 			}
-
-			try {
-				folder.delete(IResource.FORCE, getMonitor());
-				fail("2.0 - should have failed");
-			} catch (CoreException ce) {
-				// success - a file couldn't be removed
-			}
-			assertTrue("2.2", file1.exists());
-			assertTrue("2.4", !file3.exists());
-			assertTrue("2.5", folder.exists());
-			assertTrue("2.7", folder.isSynchronized(IResource.DEPTH_INFINITE));
-
-			assertClose(input);
 
 			assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
 			try {
@@ -401,12 +369,8 @@ public class Bug_026294 extends ResourceTest {
 			assertTrue("5.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
 			assertTrue("5.4", folder.isSynchronized(IResource.DEPTH_INFINITE));
 		} finally {
-			try {
-				assertClose(input);
-			} finally {
-				if (projectRoot != null) {
-					ensureDoesNotExistInFileSystem(projectRoot);
-				}
+			if (projectRoot != null) {
+				ensureDoesNotExistInFileSystem(projectRoot);
 			}
 		}
 	}
