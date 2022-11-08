@@ -22,7 +22,7 @@ import org.junit.Assert;
  * For debugging certain failure cases, insert a breakpoint in performTestRecursiveLoop
  * according to the comment in that method.
  */
-abstract public class TestPerformer {
+public abstract class TestPerformer {
 	private int count = 0;
 
 	/**
@@ -41,9 +41,9 @@ abstract public class TestPerformer {
 		return null;
 	}
 
-	abstract public Object invokeMethod(Object[] args, int countArg) throws Exception;
+	public abstract Object invokeMethod(Object[] args, int countArg) throws Exception;
 
-	final public void performTest(Object[][] inputs) {
+	public final void performTest(Object[][] inputs) {
 		// call helper method
 		int permutations = 1;
 		for (Object[] input : inputs) {
@@ -115,7 +115,7 @@ abstract public class TestPerformer {
 	/**
 	 * scrambles an array in a deterministic manner (note the constant seed...).
 	 */
-	static protected void scramble(Object[] first) {
+	protected static void scramble(Object[] first) {
 		Random random = new Random(4711);
 
 		final int len = first.length;
@@ -139,7 +139,7 @@ abstract public class TestPerformer {
 		}
 	}
 
-	abstract public boolean shouldFail(Object[] args, int countArg);
+	public abstract boolean shouldFail(Object[] args, int countArg);
 
-	abstract public boolean wasSuccess(Object[] args, Object result, Object[] oldState) throws Exception;
+	public abstract boolean wasSuccess(Object[] args, Object result, Object[] oldState) throws Exception;
 }
