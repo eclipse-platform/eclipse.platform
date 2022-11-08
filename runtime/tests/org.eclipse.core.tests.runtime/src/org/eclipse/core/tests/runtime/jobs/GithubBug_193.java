@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReentrantLock;
 import junit.framework.TestCase;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
@@ -77,6 +78,37 @@ public class GithubBug_193 extends TestCase {
 		}
 	}
 
+	static final class SillyJob extends Job {
+		private final ReentrantLock lock;
+		private final int timeout;
+
+		private SillyJob(String name, ReentrantLock lock, int timeout) {
+			super(name);
+			setRule(new ExclusiveRule());
+			this.lock = lock;
+			this.timeout = timeout;
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			if (monitor.isCanceled()) {
+				return Status.CANCEL_STATUS;
+			}
+			try {
+				lock.tryLock(timeout, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException e) {
+				Thread.interrupted();
+				return Status.error("Job interrupted while waiting", e);
+			}
+			return monitor.isCanceled()? Status.CANCEL_STATUS : Status.OK_STATUS;
+		}
+
+		@Override
+		public boolean belongsTo(Object family) {
+			return family == GithubBug_193.class;
+		}
+	}
+
 	private final class MyJob extends Job {
 		private final int jobId;
 		Object myFamily;
@@ -115,6 +147,99 @@ public class GithubBug_193 extends TestCase {
 		}
 	}
 
+	@Test
+	public void testNestedSchedule() throws Exception {
+		int count = 10000;
+		for (int i = 0; i < count; i++) {
+			twoNestedJobs(i);
+		}
+	}
+
+	private void twoNestedJobs(int i) throws InterruptedException {
+		System.out.println("Starting " + i + " round");
+		int dummyJobsCount = i;
+		final int timeout = 10;
+		for (int j = 0; j < dummyJobsCount; j++) {
+			String name = "dummy_" + j;
+			Job job = Job.create(name, m -> {
+				// nada
+			});
+			if (i % 2 != 0) {
+				job.schedule(i % timeout);
+			} else {
+				job.schedule();
+			}
+			if (i % 2 == 0) {
+				job.join();
+			}
+		}
+
+		Job job1;
+		Job job2;
+		ReentrantLock lock = new ReentrantLock();
+		try {
+			lock.lock();
+
+			String jobName = "job_1_" + i;
+			job1 = new SillyJob(jobName, lock, timeout);
+			jobName = "job_2_" + i;
+			job2 = new SillyJob(jobName, lock, timeout);
+			Object syncObject = new Object();
+			job1.addJobChangeListener(new JobChangeAdapter() {
+				@Override
+				public void running(IJobChangeEvent event) {
+					job2.schedule();
+					synchronized (syncObject) {
+						syncObject.notify();
+					}
+				}
+			});
+
+			synchronized (syncObject) {
+				job1.schedule();
+//				Thread.sleep(10);
+				syncObject.wait();
+			}
+			assertEquals(Job.RUNNING, job1.getState());
+			assertEquals(Job.WAITING, job2.getState());
+			weirdCancel(timeout);
+		} finally {
+			lock.unlock();
+		}
+		Job.getJobManager().join(GithubBug_193.class, null);
+	}
+
+	private void weirdCancel(int timeout) {
+		try {
+			Thread.sleep(((int) (Math.random() * timeout / 2)));
+		} catch (InterruptedException e) {
+			// ignore
+		}
+		Job[] jobs = Job.getJobManager().find(null);
+		for (Job job : jobs) {
+			int state = job.getState();
+			if (state == Job.RUNNING || job.getName().contains("_2_")) {
+				job.cancel();
+			} else {
+				job.sleep();
+				job.wakeUp(timeout / 2);
+			}
+		}
+	}
+
+	static class ExclusiveRule implements ISchedulingRule {
+
+		@Override
+		public boolean contains(ISchedulingRule rule) {
+			return rule instanceof ExclusiveRule;
+		}
+
+		@Override
+		public boolean isConflicting(ISchedulingRule rule) {
+			return rule instanceof ExclusiveRule;
+		}
+
+	}
 }
 
 class JobWatcher {
