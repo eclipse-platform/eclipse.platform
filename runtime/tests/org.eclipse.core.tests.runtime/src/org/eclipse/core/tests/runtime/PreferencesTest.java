@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -84,11 +84,11 @@ public class PreferencesTest extends RuntimeTest {
 
 	public void testConstants() {
 		// make sure that the preference store constants are defined properly
-		assertSame("Different values", Preferences.BOOLEAN_DEFAULT_DEFAULT, false);
-		assertSame("Different values", Preferences.INT_DEFAULT_DEFAULT, 0);
-		assertSame("Different values", Preferences.LONG_DEFAULT_DEFAULT, 0L);
-		assertSame("Different values", Preferences.FLOAT_DEFAULT_DEFAULT, 0.0f);
-		assertSame("Different values", Preferences.DOUBLE_DEFAULT_DEFAULT, 0.0);
+		assertEquals("Different values", Preferences.BOOLEAN_DEFAULT_DEFAULT, false);
+		assertEquals("Different values", Preferences.INT_DEFAULT_DEFAULT, 0);
+		assertEquals("Different values", Preferences.LONG_DEFAULT_DEFAULT, 0L);
+		assertEquals("Different values", Preferences.FLOAT_DEFAULT_DEFAULT, 0.0f);
+		assertEquals("Different values", Preferences.DOUBLE_DEFAULT_DEFAULT, 0.0);
 		assertTrue(Preferences.STRING_DEFAULT_DEFAULT.isEmpty());
 	}
 

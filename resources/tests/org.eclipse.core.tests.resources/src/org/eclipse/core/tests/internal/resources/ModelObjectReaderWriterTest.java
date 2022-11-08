@@ -15,6 +15,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -270,14 +272,10 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 	 * @throws CoreException
 	 * @throws IOException
 	 */
-	private ProjectDescription readDescription(IFileStore store) throws CoreException {
-		InputStream input = null;
-		try {
-			input = store.openInputStream(EFS.NONE, getMonitor());
+	private ProjectDescription readDescription(IFileStore store) throws CoreException, IOException {
+		try (InputStream input = store.openInputStream(EFS.NONE, getMonitor())) {
 			InputSource in = new InputSource(input);
 			return new ProjectDescriptionReader(getWorkspace()).read(in);
-		} finally {
-			assertClose(input);
 		}
 	}
 
@@ -354,9 +352,9 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		assertNull("2.1", projDesc.getName());
 		assertEquals("2.2", 0, projDesc.getComment().length());
 		assertNull("2.3", projDesc.getLocationURI());
-		assertEquals("2.4", new IProject[0], projDesc.getReferencedProjects());
-		assertEquals("2.5", new String[0], projDesc.getNatureIds());
-		assertEquals("2.6", new ICommand[0], projDesc.getBuildSpec());
+		assertArrayEquals("2.4", new IProject[0], projDesc.getReferencedProjects());
+		assertArrayEquals("2.5", new String[0], projDesc.getNatureIds());
+		assertArrayEquals("2.6", new ICommand[0], projDesc.getBuildSpec());
 		assertNull("2.7", projDesc.getLinks());
 	}
 
@@ -373,9 +371,9 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		assertTrue("3.1", projDesc.getName().equals("abc"));
 		assertEquals("3.2", 0, projDesc.getComment().length());
 		assertNull("3.3", projDesc.getLocationURI());
-		assertEquals("3.4", new IProject[0], projDesc.getReferencedProjects());
-		assertEquals("3.5", new String[0], projDesc.getNatureIds());
-		assertEquals("3.6", new ICommand[0], projDesc.getBuildSpec());
+		assertArrayEquals("3.4", new IProject[0], projDesc.getReferencedProjects());
+		assertArrayEquals("3.5", new String[0], projDesc.getNatureIds());
+		assertArrayEquals("3.6", new ICommand[0], projDesc.getBuildSpec());
 		assertNull("3.7", projDesc.getLinks());
 	}
 
@@ -391,9 +389,9 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		assertTrue("3.1", projDesc.getName().equals("abc"));
 		assertEquals("3.2", 0, projDesc.getComment().length());
 		assertNull("3.3", projDesc.getLocationURI());
-		assertEquals("3.4", new IProject[0], projDesc.getReferencedProjects());
-		assertEquals("3.5", new String[0], projDesc.getNatureIds());
-		assertEquals("3.6", new ICommand[0], projDesc.getBuildSpec());
+		assertArrayEquals("3.4", new IProject[0], projDesc.getReferencedProjects());
+		assertArrayEquals("3.5", new String[0], projDesc.getNatureIds());
+		assertArrayEquals("3.6", new ICommand[0], projDesc.getBuildSpec());
 		LinkDescription link = projDesc.getLinks().values().iterator().next();
 		assertEquals("3.7", new Path("newLink"), link.getProjectRelativePath());
 		assertEquals("3.8", PATH_STRING, URIUtil.toPath(link.getLocationURI()).toString());
@@ -656,12 +654,8 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 	 * @throws CoreException
 	 */
 	private void writeDescription(IFileStore store, ProjectDescription description) throws IOException, CoreException {
-		OutputStream output = null;
-		try {
-			output = store.openOutputStream(EFS.NONE, getMonitor());
+		try (OutputStream output = store.openOutputStream(EFS.NONE, getMonitor());) {
 			new ModelObjectWriter().write(description, output, System.lineSeparator());
-		} finally {
-			assertClose(output);
 		}
 
 	}

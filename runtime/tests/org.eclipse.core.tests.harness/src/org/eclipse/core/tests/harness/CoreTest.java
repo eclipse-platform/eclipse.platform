@@ -130,55 +130,6 @@ public class CoreTest extends TestCase {
 		super(name);
 	}
 
-	/**
-	 * Asserts that a stream closes successfully. Null streams
-	 * are ignored, but failure to close the stream is reported as
-	 * an assertion failure.
-	 * @since 3.2
-	 */
-	protected void assertClose(InputStream stream) {
-		if (stream == null) {
-			return;
-		}
-		try {
-			stream.close();
-		} catch (IOException e) {
-			fail("Failed close in assertClose", e);
-		}
-	}
-
-	/**
-	 * Asserts that a stream closes successfully. Null streams
-	 * are ignored, but failure to close the stream is reported as
-	 * an assertion failure.
-	 * @since 3.2
-	 */
-	protected void assertClose(OutputStream stream) {
-		if (stream == null) {
-			return;
-		}
-		try {
-			stream.close();
-		} catch (IOException e) {
-			fail("Failed close in assertClose", e);
-		}
-	}
-
-	protected void assertEquals(String message, Object[] expected, Object[] actual) {
-		if (expected == null && actual == null) {
-			return;
-		}
-		if (expected == null || actual == null) {
-			fail(message);
-		}
-		if (expected.length != actual.length) {
-			fail(message);
-		}
-		for (int i = 0; i < expected.length; i++) {
-			assertEquals(message, expected[i], actual[i]);
-		}
-	}
-
 	protected void assertEquals(String message, Object[] expected, Object[] actual, boolean orderImportant) {
 		// if the order in the array must match exactly, then call the other method
 		if (orderImportant) {
@@ -219,7 +170,7 @@ public class CoreTest extends TestCase {
 	public void createFileInFileSystem(File file, InputStream contents) throws IOException {
 		file.getParentFile().mkdirs();
 		FileOutputStream output = new FileOutputStream(file);
-		transferData(contents, output);
+		contents.transferTo(output);
 	}
 
 	/**
@@ -383,27 +334,6 @@ public class CoreTest extends TestCase {
 
 	/**
 	 * Copy the data from the input stream to the output stream.
-	 * Close both streams when finished.
-	 */
-	public void transferData(InputStream input, OutputStream output) {
-		try {
-			try {
-				int c = 0;
-				while ((c = input.read()) != -1) {
-					output.write(c);
-				}
-			} finally {
-				input.close();
-				output.close();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue(e.toString(), false);
-		}
-	}
-
-	/**
-	 * Copy the data from the input stream to the output stream.
 	 * Do not close either of the streams.
 	 */
 	public void transferDataWithoutClose(InputStream input, OutputStream output) {
@@ -418,83 +348,4 @@ public class CoreTest extends TestCase {
 		}
 	}
 
-	public static void assertSame(String message, int expected, int actual) {
-		if (expected == actual) {
-			return;
-		}
-		failNotSame(message, expected, actual);
-	}
-
-	public static void failNotSame(String message, int expected, int actual) {
-		StringBuilder formatted = new StringBuilder();
-		if (message != null) {
-			formatted.append(message).append(' ');
-		}
-		formatted.append("expected same:<").append(expected).append("> was not:<").append(actual).append(">");
-		fail(String.valueOf(formatted));
-	}
-
-	public static void assertSame(String message, boolean expected, boolean actual) {
-		if (expected == actual) {
-			return;
-		}
-		failNotSame(message, expected, actual);
-	}
-
-	public static void failNotSame(String message, boolean expected, boolean actual) {
-		StringBuilder formatted = new StringBuilder();
-		if (message != null) {
-			formatted.append(message).append(' ');
-		}
-		formatted.append("expected same:<").append(expected).append("> was not:<").append(actual).append(">");
-		fail(String.valueOf(formatted));
-	}
-
-	public static void assertSame(String message, float expected, float actual) {
-		if (expected == actual) {
-			return;
-		}
-		failNotSame(message, expected, actual);
-	}
-
-	public static void failNotSame(String message, float expected, float actual) {
-		StringBuilder formatted = new StringBuilder();
-		if (message != null) {
-			formatted.append(message).append(' ');
-		}
-		formatted.append("expected same:<").append(expected).append("> was not:<").append(actual).append(">");
-		fail(String.valueOf(formatted));
-	}
-
-	public static void assertSame(String message, double expected, double actual) {
-		if (expected == actual) {
-			return;
-		}
-		failNotSame(message, expected, actual);
-	}
-
-	public static void failNotSame(String message, double expected, double actual) {
-		StringBuilder formatted = new StringBuilder();
-		if (message != null) {
-			formatted.append(message).append(' ');
-		}
-		formatted.append("expected same:<").append(expected).append("> was not:<").append(actual).append(">");
-		fail(String.valueOf(formatted));
-	}
-
-	public static void assertSame(String message, long expected, long actual) {
-		if (expected == actual) {
-			return;
-		}
-		failNotSame(message, expected, actual);
-	}
-
-	public static void failNotSame(String message, long expected, long actual) {
-		StringBuilder formatted = new StringBuilder();
-		if (message != null) {
-			formatted.append(message).append(' ');
-		}
-		formatted.append("expected same:<").append(expected).append("> was not:<").append(actual).append(">");
-		fail(String.valueOf(formatted));
-	}
 }
