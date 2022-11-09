@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -40,7 +40,7 @@ import org.eclipse.help.IUAElement;
 import org.eclipse.help.internal.toc.TocContribution;
 import org.eclipse.help.internal.toc.TocFile;
 import org.eclipse.help.internal.toc.TocFileParser;
-import org.eclipse.osgi.service.resolver.ExportPackageDescription;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
 import org.junit.Test;
@@ -48,6 +48,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.wiring.BundleRevision;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -276,31 +277,17 @@ public class ApiDocTest {
 	private static void checkPackages(Set<String> packageIds, StringBuilder problems) {
 		Set<String> exportedPackageIds = new TreeSet<>();
 
-		exportedPackageIds.add("org.eclipse.core.runtime.adaptor"); // not exported, but makes sense to document since accessible from outside of OSGi framework
-		exportedPackageIds.add("org.eclipse.swt.ole.win32"); // somehow missing from State#getExportedPackages(), maybe because it's declared in the fragment only
+		exportedPackageIds.add("org.eclipse.core.runtime.adaptor"); // not exported, but makes sense to document since
+																	// accessible from outside of OSGi framework
+		exportedPackageIds.add("org.eclipse.swt.ole.win32"); // somehow missing from State#getExportedPackages(), maybe
+																// because it's declared in the fragment only
 		BundleContext context = FrameworkUtil.getBundle(ApiDocTest.class).getBundleContext();
 		ServiceReference<PlatformAdmin> platformAdminReference = context.getServiceReference(PlatformAdmin.class);
 		PlatformAdmin service = context.getService(platformAdminReference);
 		State state = service.getState(false);
-		ExportPackageDescription[] exportedPackages = state.getExportedPackages();
-		for (ExportPackageDescription exportPackageDescription : exportedPackages) {
-			String name = exportPackageDescription.getName();
-			if (!NON_API_PACKAGES.matcher(name).matches()) {
-				if (Boolean.TRUE.equals(exportPackageDescription.getDirective("x-internal"))
-						|| exportPackageDescription.getDirective("x-friends") != null) {
-					continue;
-				}
-				exportedPackageIds.add(name);
-//				Enumeration<String> packageChildren = exportPackageDescription.getSupplier().getBundle().getEntryPaths(name.replace('.', '/'));
-//				while (packageChildren != null && packageChildren.hasMoreElements()) {
-//					String child = packageChildren.nextElement();
-//					if (child.endsWith(".class")) {
-//						exportedPackageIds.add(name);
-//						break pack;
-//					}
-//				}
-//				System.out.append("Exported package without class files: ").append(name).append('\n');
-			}
+		for (BundleDescription bundle : state.getBundles()) {
+			bundle.getCapabilities(BundleRevision.PACKAGE_NAMESPACE)
+					.forEach((t) -> exportedPackageIds.add((String) t.getAttributes().get("osgi.wiring.package")));
 		}
 
 		TreeSet<String> unexpectedPackageIds = new TreeSet<>(packageIds);
