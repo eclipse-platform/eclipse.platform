@@ -20,7 +20,6 @@ import java.net.URL;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -110,8 +109,6 @@ public class ApiDocTest {
 	private static final String TOPICS_REFERENCE_XML = "topics_Reference.xml";
 	private static final String REFERENCE_EXTENSION_POINTS = "reference/extension-points/";
 	private static final String REFERENCE_API = "reference/api/";
-	private static final Pattern NON_API_PACKAGES = Pattern.compile(".+\\.(?:internal|tests|examples)(?:\\..+)?");
-
 	/**
 	 * Missing extension points / API packages currently don't make this test
 	 * fail, since the list contains false positives (esp. when run locally).
