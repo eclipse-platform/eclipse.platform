@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.update.configurator; singleton:=true
-Bundle-Version: 3.4.900.qualifier
+Bundle-Version: 3.4.1000.qualifier
 Bundle-Activator: org.eclipse.update.internal.configurator.ConfigurationActivator
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -11,8 +11,7 @@ Export-Package: org.eclipse.update.configurator,
  org.eclipse.update.internal.configurator.branding;x-friends:="org.eclipse.update.core"
 Eclipse-LazyStart: true
 Require-Bundle: org.eclipse.equinox.common;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.osgi;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.osgi.services;bundle-version="3.9.0";resolution:=optional
+ org.eclipse.osgi;bundle-version="[3.2.0,4.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.xml.parsers,
  org.w3c.dom,
