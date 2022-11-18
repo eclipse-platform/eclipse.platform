@@ -929,9 +929,12 @@ public class EclipsePreferencesTest extends RuntimeTest {
 		ArrayList<String> expected = new ArrayList<>();
 		final ArrayList<String> actual = new ArrayList<>();
 
-		IPreferenceNodeVisitor visitor = node -> {
-			actual.add(node.absolutePath());
-			return true;
+		IPreferenceNodeVisitor visitor = new IPreferenceNodeVisitor() {
+			@Override
+			public boolean visit(IEclipsePreferences node) {
+				actual.add(node.absolutePath());
+				return true;
+			}
 		};
 
 		// just the scope root

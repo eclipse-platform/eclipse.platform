@@ -14,8 +14,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import java.io.*;
 import java.io.File;
 import java.util.*;
@@ -1920,11 +1918,11 @@ public class MarkerTest extends ResourceTest {
 				values[2] = Boolean.FALSE;
 				marker.setAttributes(keys, values);
 				Object[] found = marker.getAttributes(keys);
-				assertArrayEquals("3.0." + resource.getFullPath(), values, found);
+				assertEquals("3.0." + resource.getFullPath(), values, found);
 				marker.setAttribute(IMarker.SEVERITY, null);
 				values[1] = null;
 				found = marker.getAttributes(keys);
-				assertArrayEquals("3.1." + resource.getFullPath(), values, found);
+				assertEquals("3.1." + resource.getFullPath(), values, found);
 				values[1] = Integer.valueOf(5);
 				marker.setAttribute(IMarker.SEVERITY, values[1]);
 				Map<String, ? extends Object> all = marker.getAttributes();
@@ -2083,11 +2081,11 @@ public class MarkerTest extends ResourceTest {
 				values[2] = Boolean.FALSE;
 				marker.setAttributes(keys, values);
 				Object[] found = marker.getAttributes(keys);
-				assertArrayEquals("3.0." + resource.getFullPath(), values, found);
+				assertEquals("3.0." + resource.getFullPath(), values, found);
 				marker.setAttribute(IMarker.SEVERITY, null);
 				values[1] = null;
 				found = marker.getAttributes(keys);
-				assertArrayEquals("3.1." + resource.getFullPath(), values, found);
+				assertEquals("3.1." + resource.getFullPath(), values, found);
 				values[1] = Integer.valueOf(5);
 				marker.setAttribute(IMarker.SEVERITY, values[1]);
 				Map<String, ? extends Object> all = marker.getAttributes();

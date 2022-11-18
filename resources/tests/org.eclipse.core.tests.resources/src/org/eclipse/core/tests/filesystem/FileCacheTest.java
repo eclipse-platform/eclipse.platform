@@ -61,9 +61,14 @@ public class FileCacheTest extends FileSystemTest {
 	 * Returns the byte[] contents of the given file.
 	 */
 	private byte[] getBytes(File cachedFile) {
-		try (FileInputStream in = new FileInputStream(cachedFile);
-				ByteArrayOutputStream out = new ByteArrayOutputStream();) {
-			in.transferTo(out);
+		FileInputStream in = null;
+		ByteArrayOutputStream out = null;
+		try {
+			in = new FileInputStream(cachedFile);
+			out = new ByteArrayOutputStream();
+			transferData(in, out);
+			in.close();
+			out.close();
 			return out.toByteArray();
 		} catch (IOException e) {
 			fail("Exception in FileCacheTest.getBytes", e);

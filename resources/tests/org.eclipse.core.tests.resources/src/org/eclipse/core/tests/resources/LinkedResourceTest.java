@@ -76,11 +76,10 @@ public class LinkedResourceTest extends ResourceTest {
 		createFileInFileSystem(resolve(localFile), getRandomContents());
 	}
 
-	private byte[] getFileContents(IFile file) throws CoreException, IOException {
-		try (ByteArrayOutputStream bout = new ByteArrayOutputStream()) {
-			new BufferedInputStream(file.getContents()).transferTo(bout);
-			return bout.toByteArray();
-		}
+	private byte[] getFileContents(IFile file) throws CoreException {
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		transferData(new BufferedInputStream(file.getContents()), bout);
+		return bout.toByteArray();
 	}
 
 	/**
@@ -737,53 +736,70 @@ public class LinkedResourceTest extends ResourceTest {
 	 * Tests creating a linked resource by modifying the .project file directly.
 	 * This is a regression test for bug 63331.
 	 */
-	public void testCreateLinkInDotProject() throws CoreException, IOException {
+	public void testCreateLinkInDotProject() {
 		final IFile dotProject = existingProject.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		IFile link = nonExistingFileInExistingProject;
 		byte[] oldContents = null;
-		// create a linked file
-		link.createLink(localFile, IResource.NONE, getMonitor());
-		// copy the .project file contents
-		oldContents = getFileContents(dotProject);
-		// delete linked file
-		link.delete(IResource.NONE, getMonitor());
+		try {
+			//create a linked file
+			link.createLink(localFile, IResource.NONE, getMonitor());
+			//copy the .project file contents
+			oldContents = getFileContents(dotProject);
+			//delete linked file
+			link.delete(IResource.NONE, getMonitor());
+		} catch (CoreException e) {
+			fail("1.99", e);
+		}
 		final byte[] finalContents = oldContents;
-		// recreate the link in a workspace runnable with create scheduling rule
-		getWorkspace().run(
-				(IWorkspaceRunnable) monitor -> dotProject.setContents(new ByteArrayInputStream(finalContents),
-						IResource.NONE, getMonitor()),
-				getWorkspace().getRuleFactory().modifyRule(dotProject), IResource.NONE, getMonitor());
+		try {
+			//recreate the link in a workspace runnable with create scheduling rule
+			getWorkspace().run((IWorkspaceRunnable) monitor -> dotProject.setContents(new ByteArrayInputStream(finalContents), IResource.NONE, getMonitor()), getWorkspace().getRuleFactory().modifyRule(dotProject), IResource.NONE, getMonitor());
+		} catch (CoreException e1) {
+			fail("2.99", e1);
+		}
 	}
 
 	/**
 	 * Tests creating a project whose .project file already defines links at
 	 * depth greater than one. See bug 121322.
 	 */
-	public void testCreateProjectWithDeepLinks() throws CoreException {
+	public void testCreateProjectWithDeepLinks() {
 		IProject project = existingProject;
 		IFolder parent = existingFolderInExistingProject;
 		IFolder folder = nonExistingFolderInExistingFolder;
-		folder.createLink(localFolder, IResource.NONE, getMonitor());
-		// delete and recreate the project
-		project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, getMonitor());
-		project.create(getMonitor());
-		project.open(IResource.BACKGROUND_REFRESH, getMonitor());
-		assertTrue("1.0", folder.exists());
-		assertTrue("1.1", parent.exists());
-		assertTrue("1.2", parent.isLocal(IResource.DEPTH_INFINITE));
+		try {
+			folder.createLink(localFolder, IResource.NONE, getMonitor());
+			//delete and recreate the project
+			project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, getMonitor());
+			project.create(getMonitor());
+			project.open(IResource.BACKGROUND_REFRESH, getMonitor());
+			assertTrue("1.0", folder.exists());
+			assertTrue("1.1", parent.exists());
+			assertTrue("1.2", parent.isLocal(IResource.DEPTH_INFINITE));
+		} catch (CoreException e) {
+			fail("1.99", e);
+		}
 	}
 
 	/**
 	 * Tests whether {@link IFile#createLink} and {@link IFolder#createLink}
 	 * handle {@link IResource#HIDDEN} flag properly.
 	 */
-	public void testCreateHiddenLinkedResources() throws CoreException {
+	public void testCreateHiddenLinkedResources() {
 		IFolder folder = existingProject.getFolder("folder");
 		IFile file = existingProject.getFile("file.txt");
 
-		folder.createLink(localFolder, IResource.HIDDEN, getMonitor());
+		try {
+			folder.createLink(localFolder, IResource.HIDDEN, getMonitor());
+		} catch (CoreException e) {
+			fail("1.0", e);
+		}
 
-		file.createLink(localFile, IResource.HIDDEN, getMonitor());
+		try {
+			file.createLink(localFile, IResource.HIDDEN, getMonitor());
+		} catch (CoreException e) {
+			fail("2.0", e);
+		}
 
 		assertTrue("3.0", folder.isHidden());
 		assertTrue("4.0", file.isHidden());

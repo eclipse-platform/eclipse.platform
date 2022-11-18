@@ -72,11 +72,10 @@ public abstract class LocalStoreTest extends ResourceTest {
 	 * Create a file with random content. If a resource exists in the same path,
 	 * the resource is deleted.
 	 */
-	protected void createFile(IFileStore target, String content) throws CoreException, IOException {
+	protected void createFile(IFileStore target, String content) throws CoreException {
 		target.delete(EFS.NONE, null);
-		try (InputStream input = new ByteArrayInputStream(content.getBytes())) {
-			input.transferTo(target.openOutputStream(EFS.NONE, null));
-		}
+		InputStream input = new ByteArrayInputStream(content.getBytes());
+		transferData(input, target.openOutputStream(EFS.NONE, null));
 		IFileInfo info = target.fetchInfo();
 		assertTrue(info.exists() && !info.isDirectory());
 	}
@@ -87,24 +86,23 @@ public abstract class LocalStoreTest extends ResourceTest {
 	 */
 	protected void createIOFile(java.io.File target, String content) throws IOException {
 		target.delete();
-		try (InputStream input = new ByteArrayInputStream(content.getBytes())) {
-			input.transferTo(new FileOutputStream(target));
-		}
+		InputStream input = new ByteArrayInputStream(content.getBytes());
+		transferData(input, new FileOutputStream(target));
 		assertTrue(target.exists() && !target.isDirectory());
 	}
 
-	protected void createNode(IFileStore node) throws CoreException, IOException {
+	protected void createNode(IFileStore node) throws CoreException {
 		char type = node.getName().charAt(0);
 		if (type == 'd') {
 			node.mkdir(EFS.NONE, null);
 		} else {
-			try (InputStream input = getRandomContents(); OutputStream output = node.openOutputStream(EFS.NONE, null)) {
-				input.transferTo(output);
-			}
+			InputStream input = getRandomContents();
+			OutputStream output = node.openOutputStream(EFS.NONE, null);
+			transferData(input, output);
 		}
 	}
 
-	protected void createTree(IFileStore[] tree) throws CoreException, IOException {
+	protected void createTree(IFileStore[] tree) throws CoreException {
 		for (IFileStore element : tree) {
 			createNode(element);
 		}
