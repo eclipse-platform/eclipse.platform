@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
-import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.internal.localstore.BlobStore;
@@ -90,7 +89,7 @@ public class BlobStoreTest extends LocalStoreTest {
 		return root;
 	}
 
-	public void testDeleteBlob() throws CoreException, IOException {
+	public void testDeleteBlob() {
 		/* initialize common objects */
 		IFileStore root = createStore();
 		BlobStore store = new BlobStore(root, 64);
@@ -103,14 +102,18 @@ public class BlobStoreTest extends LocalStoreTest {
 
 		/* delete existing blob */
 		IFileStore target = root.getChild("target");
-		createFile(target, "bla bla bla");
-		uuid = store.addBlob(target, true);
+		try {
+			createFile(target, "bla bla bla");
+			uuid = store.addBlob(target, true);
+		} catch (CoreException e) {
+			fail("4.1", e);
+		}
 		assertTrue("4.2", store.fileFor(uuid).fetchInfo().exists());
 		store.deleteBlob(uuid);
 		assertTrue("4.3", !store.fileFor(uuid).fetchInfo().exists());
 	}
 
-	public void testGetBlob() throws CoreException, IOException {
+	public void testGetBlob() {
 		/* initialize common objects */
 		IFileStore root = createStore();
 		BlobStore store = new BlobStore(root, 64);
@@ -121,6 +124,8 @@ public class BlobStoreTest extends LocalStoreTest {
 			store.getBlob(null);
 		} catch (RuntimeException e) {
 			ok = true;
+		} catch (CoreException e) {
+			fail("2.0", e);
 		}
 		assertTrue("2.1", ok);
 
@@ -128,13 +133,22 @@ public class BlobStoreTest extends LocalStoreTest {
 		IFileStore target = root.getChild("target");
 		UniversalUniqueIdentifier uuid = null;
 		String content = "nothing important........tnatropmi gnihton";
-		createFile(target, content);
-		uuid = store.addBlob(target, true);
-		InputStream input = store.getBlob(uuid);
+		try {
+			createFile(target, content);
+			uuid = store.addBlob(target, true);
+		} catch (CoreException e) {
+			fail("3.1", e);
+		}
+		InputStream input = null;
+		try {
+			input = store.getBlob(uuid);
+		} catch (CoreException e) {
+			fail("3.4", e);
+		}
 		assertTrue("4.1", compareContent(getContents(content), input));
 	}
 
-	public void testSetBlob() throws CoreException, IOException {
+	public void testSetBlob() {
 		/* initialize common objects */
 		IFileStore root = createStore();
 		BlobStore store = new BlobStore(root, 64);
@@ -143,9 +157,18 @@ public class BlobStoreTest extends LocalStoreTest {
 		IFileStore target = root.getChild("target");
 		UniversalUniqueIdentifier uuid = null;
 		String content = "nothing important........tnatropmi gnihton";
-		createFile(target, content);
-		uuid = store.addBlob(target, true);
-		InputStream input = store.getBlob(uuid);
+		try {
+			createFile(target, content);
+			uuid = store.addBlob(target, true);
+		} catch (CoreException e) {
+			fail("2.1", e);
+		}
+		InputStream input = null;
+		try {
+			input = store.getBlob(uuid);
+		} catch (CoreException e) {
+			fail("2.4", e);
+		}
 		assertTrue("2.5", compareContent(getContents(content), input));
 	}
 }

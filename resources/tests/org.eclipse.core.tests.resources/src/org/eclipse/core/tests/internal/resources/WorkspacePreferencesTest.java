@@ -14,8 +14,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import java.util.*;
 import junit.framework.ComparisonFailure;
 import org.eclipse.core.internal.resources.Workspace;
@@ -292,7 +290,7 @@ public class WorkspacePreferencesTest extends ResourceTest {
 	 */
 	public void assertEquals(String message, IWorkspaceDescription description1, IWorkspaceDescription description2) throws ComparisonFailure {
 		assertEquals(message + " - 1", description1.isAutoBuilding(), description2.isAutoBuilding());
-		assertArrayEquals(message + " - 2", description1.getBuildOrder(), description2.getBuildOrder());
+		assertEquals(message + " - 2", description1.getBuildOrder(), description2.getBuildOrder());
 		assertEquals(message + " - 3", WorkspacePreferences.convertStringArraytoString(description1.getBuildOrder()), WorkspacePreferences.convertStringArraytoString(description2.getBuildOrder()));
 		assertEquals(message + " - 4", description1.isApplyFileStatePolicy(), description2.isApplyFileStatePolicy());
 		assertEquals(message + " - 5", description1.getFileStateLongevity(), description2.getFileStateLongevity());

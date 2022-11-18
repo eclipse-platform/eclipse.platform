@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import junit.framework.Test;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
@@ -56,7 +54,7 @@ public class WorkspaceDescriptionTest extends WorkspaceSessionTest {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceDescription desc = workspace.getDescription();
 		assertTrue("2.0", !desc.isAutoBuilding());
-		assertArrayEquals("2.1", BUILD_ORDER, desc.getBuildOrder());
+		assertEquals("2.1", BUILD_ORDER, desc.getBuildOrder());
 		assertEquals("2.2", APPLY_POLICY, desc.isApplyFileStatePolicy());
 		assertEquals("2.3", STATE_LONGEVITY, desc.getFileStateLongevity());
 		assertEquals("2.4", MAX_STATES, desc.getMaxFileStates());

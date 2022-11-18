@@ -1198,7 +1198,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 * Test to ensure that discovering a new pref file (e.g. loading from a repo)
 	 * is the same as doing an import. (ensure the modify listeners are called)
 	 */
-	public void testLoadIsImport() throws IOException, CoreException {
+	public void testLoadIsImport() {
 
 		// setup
 		IProject project = getProject(getUniqueString());
@@ -1222,11 +1222,16 @@ public class ProjectPreferencesTest extends ResourceTest {
 
 		// copy the data into a buffer for later use
 		File fileInFS = getFileInFilesystem(project, qualifier);
+		InputStream input = null;
+		OutputStream output = null;
 		byte[] buffer = null;
-		try (InputStream input = new BufferedInputStream(new FileInputStream(fileInFS));
-				OutputStream output = new ByteArrayOutputStream(1024)) {
-			input.transferTo(output);
+		try {
+			input = new BufferedInputStream(new FileInputStream(fileInFS));
+			output = new ByteArrayOutputStream(1024);
+			transferData(input, output);
 			buffer = ((ByteArrayOutputStream) output).toByteArray();
+		} catch (IOException e) {
+			fail("2.99", e);
 		}
 
 		// remove the file from the project
@@ -1248,11 +1253,18 @@ public class ProjectPreferencesTest extends ResourceTest {
 		//		assertNull("3.3", projectNode.node(qualifier).get(oldKey, null));
 
 		// create the file in the project and discover it via a refresh local
-		try (OutputStream output = new BufferedOutputStream(new FileOutputStream(fileInFS));
-				InputStream input = new BufferedInputStream(new ByteArrayInputStream(buffer))) {
-			input.transferTo(output);
+		try {
+			output = new BufferedOutputStream(new FileOutputStream(fileInFS));
+		} catch (FileNotFoundException e) {
+			fail("4.90", e);
 		}
-		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		input = new BufferedInputStream(new ByteArrayInputStream(buffer));
+		transferData(input, output);
+		try {
+			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		} catch (CoreException e) {
+			fail("4.91", e);
+		}
 		// ensure that the resource changes happen
 		waitForBuild();
 

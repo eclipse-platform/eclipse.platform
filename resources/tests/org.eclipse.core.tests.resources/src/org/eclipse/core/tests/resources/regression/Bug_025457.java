@@ -13,7 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -28,7 +29,7 @@ import org.eclipse.core.tests.resources.ResourceTest;
  */
 public class Bug_025457 extends ResourceTest {
 
-	public void testFile() throws IOException, CoreException {
+	public void testFile() {
 		//this test only works on windows
 		if (!isWindows()) {
 			return;
@@ -41,7 +42,13 @@ public class Bug_025457 extends ResourceTest {
 		ensureExistsInWorkspace(sourceFile, content);
 
 		//open a stream in the source to cause the rename to fail
-		try (InputStream stream = sourceFile.getContents()) {
+		InputStream stream = null;
+		try {
+			try {
+				stream = sourceFile.getContents();
+			} catch (CoreException e) {
+				fail("0.99", e);
+			}
 			//try to rename the file (should fail)
 			try {
 				sourceFile.move(destFile.getFullPath(), IResource.NONE, getMonitor());
@@ -49,18 +56,25 @@ public class Bug_025457 extends ResourceTest {
 			} catch (CoreException e1) {
 				//should fail
 			}
+		} finally {
+			assertClose(stream);
 		}
 		//ensure source still exists and has same content
 		assertTrue("2.0", source.exists());
 		assertTrue("2.1", sourceFile.exists());
-		try (InputStream stream = sourceFile.getContents()) {
+		try {
+			stream = sourceFile.getContents();
 			assertTrue("2.2", compareContent(stream, new ByteArrayInputStream(content.getBytes())));
+		} catch (CoreException e) {
+			fail("3.99", e);
+		} finally {
+			assertClose(stream);
 		}
 		//ensure destination file does not exist
 		assertTrue("2.3", !destFile.exists());
 	}
 
-	public void testFolder() throws IOException, CoreException {
+	public void testFolder() {
 		//this test only works on windows
 		//native code must also be present so move can detect the case change
 		if (!isWindows() || !isReadOnlySupported()) {
@@ -76,7 +90,13 @@ public class Bug_025457 extends ResourceTest {
 		ensureExistsInWorkspace(sourceFile, true);
 
 		//open a stream in the source to cause the rename to fail
-		try (InputStream stream = sourceFile.getContents()) {
+		InputStream stream = null;
+		try {
+			try {
+				stream = sourceFile.getContents();
+			} catch (CoreException e) {
+				fail("0.99", e);
+			}
 			//try to rename the project (should fail)
 			try {
 				sourceFolder.move(destFolder.getFullPath(), IResource.NONE, getMonitor());
@@ -92,10 +112,13 @@ public class Bug_025457 extends ResourceTest {
 			//ensure destination does not exist
 			assertTrue("2.3", !destFolder.exists());
 			assertTrue("2.4", !destFile.exists());
+
+		} finally {
+			assertClose(stream);
 		}
 	}
 
-	public void testProject() throws IOException, CoreException {
+	public void testProject() {
 		//this test only works on windows
 		if (!isWindows()) {
 			return;
@@ -108,7 +131,13 @@ public class Bug_025457 extends ResourceTest {
 		ensureExistsInWorkspace(sourceFile, true);
 
 		//open a stream in the source to cause the rename to fail
-		try (InputStream stream = sourceFile.getContents()) {
+		InputStream stream = null;
+		try {
+			try {
+				stream = sourceFile.getContents();
+			} catch (CoreException e) {
+				fail("1.99", e);
+			}
 			//try to rename the project (should fail)
 			try {
 				source.move(destination.getFullPath(), IResource.NONE, getMonitor());
@@ -123,6 +152,9 @@ public class Bug_025457 extends ResourceTest {
 			//ensure destination does not exist
 			assertTrue("2.2", destination.exists());
 			assertTrue("2.3", destFile.exists());
+
+		} finally {
+			assertClose(stream);
 		}
 	}
 }

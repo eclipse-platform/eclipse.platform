@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import java.io.*;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -190,7 +188,7 @@ public class NatureTest extends ResourceTest {
 	/**
 	 * Test simple addition and removal of natures.
 	 */
-	public void testSimpleNature() throws CoreException {
+	public void testSimpleNature() {
 		ensureExistsInWorkspace(project, true);
 
 		String[][] valid = getValidNatureSets();
@@ -205,11 +203,15 @@ public class NatureTest extends ResourceTest {
 		String[][] invalid = getInvalidNatureSets();
 		for (int i = 0; i < invalid.length; i++) {
 			setNatures("invalid: " + i, project, invalid[i], true);
-			assertTrue("2.0", project.hasNature(NATURE_SIMPLE));
-			assertTrue("2.1", !project.hasNature(NATURE_EARTH));
-			assertTrue("2.2", project.isNatureEnabled(NATURE_SIMPLE));
-			assertTrue("2.3", !project.isNatureEnabled(NATURE_EARTH));
-			assertArrayEquals("2.4", project.getDescription().getNatureIds(), currentSet);
+			try {
+				assertTrue("2.0", project.hasNature(NATURE_SIMPLE));
+				assertTrue("2.1", !project.hasNature(NATURE_EARTH));
+				assertTrue("2.2", project.isNatureEnabled(NATURE_SIMPLE));
+				assertTrue("2.3", !project.isNatureEnabled(NATURE_EARTH));
+				assertEquals("2.4", project.getDescription().getNatureIds(), currentSet);
+			} catch (CoreException e) {
+				fail("2.99", e);
+			}
 		}
 	}
 

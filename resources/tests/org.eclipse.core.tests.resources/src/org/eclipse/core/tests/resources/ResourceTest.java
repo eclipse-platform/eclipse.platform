@@ -394,7 +394,7 @@ public abstract class ResourceTest extends CoreTest {
 		if (a == null && b == null) {
 			return true;
 		}
-		try (a; b) {
+		try {
 			if (a == null || b == null) {
 				return false;
 			}
@@ -404,6 +404,9 @@ public abstract class ResourceTest extends CoreTest {
 			return (c == -1 && d == -1);
 		} catch (IOException e) {
 			return false;
+		} finally {
+			assertClose(a);
+			assertClose(b);
 		}
 	}
 
@@ -452,13 +455,15 @@ public abstract class ResourceTest extends CoreTest {
 	 * Create the given file in the local store.
 	 */
 	public void createFileInFileSystem(IFileStore file, InputStream contents) {
+		OutputStream output = null;
 		try {
 			file.getParent().mkdir(EFS.NONE, null);
-			try (OutputStream output = file.openOutputStream(EFS.NONE, null)) {
-				contents.transferTo(output);
-			}
-		} catch (CoreException | IOException e) {
+			output = file.openOutputStream(EFS.NONE, null);
+			transferData(contents, output);
+		} catch (CoreException e) {
 			fail("ResourceTest#createFileInFileSystem.2", e);
+		} finally {
+			assertClose(output);
 		}
 	}
 
@@ -903,11 +908,10 @@ public abstract class ResourceTest extends CoreTest {
 				return null;
 			}
 			java.io.File osFile = location.toFile();
-			try (FileInputStream is = new FileInputStream(osFile);
-					ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-				is.transferTo(os);
-				return os.toByteArray();
-			}
+			FileInputStream is = new FileInputStream(osFile);
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			transferData(is, os);
+			return os.toByteArray();
 		} catch (IOException e) {
 			fail(m + "0.0", e);
 		}
@@ -922,10 +926,12 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	protected byte[] readBytesInWorkspace(IFile file) {
 		String m = getClassName() + ".readBytesInWorkspace(IFile): ";
-		try (InputStream is = file.getContents(false); ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-			is.transferTo(os);
+		try {
+			InputStream is = file.getContents(false);
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			transferData(is, os);
 			return os.toByteArray();
-		} catch (CoreException | IOException e) {
+		} catch (CoreException e) {
 			fail(m + "0.0", e);
 		}
 		return null;
