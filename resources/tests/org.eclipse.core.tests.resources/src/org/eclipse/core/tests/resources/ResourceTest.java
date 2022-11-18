@@ -774,9 +774,7 @@ public abstract class ResourceTest extends CoreTest {
 
 	protected String getLineSeparatorFromFile(IFile file) {
 		if (file.exists()) {
-			InputStream input = null;
-			try {
-				input = file.getContents();
+			try (InputStream input = file.getContents()) {
 				int c = input.read();
 				while (c != -1 && c != '\r' && c != '\n') {
 					c = input.read();
@@ -794,12 +792,6 @@ public abstract class ResourceTest extends CoreTest {
 				}
 			} catch (CoreException | IOException e) {
 				// ignore
-			} finally {
-				try {
-					input.close();
-				} catch (IOException e) {
-					// ignore
-				}
 			}
 		}
 		return null;

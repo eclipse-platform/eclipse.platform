@@ -104,31 +104,25 @@ public class SortBuilder extends TestBuilder {
 	 * @exception Exception if the build can't proceed
 	 */
 	private void build(IFile unsortedFile) throws CoreException {
-		InputStream is = unsortedFile.getContents();
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-		try {
-			try {
+		try (InputStream is = unsortedFile.getContents(); ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 				int c;
 				while ((c = is.read()) != -1) {
 					bos.write(c);
 				}
-			} finally {
-				is.close();
-			}
+				byte[] bytes = bos.toByteArray();
+
+				quicksort(bytes, 0, bytes.length - 1, isSortOrderAscending());
+
+				IFile sortedFile = (IFile) convertToSortedResource(unsortedFile);
+				createResource(sortedFile);
+				try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
+					sortedFile.setContents(bis, true, false, null);
+				}
 		} catch (IOException e) {
 			throw new ResourceException(IResourceStatus.BUILD_FAILED, null, "IOException sorting file", e);
 		}
 
-		byte[] bytes = bos.toByteArray();
 
-		quicksort(bytes, 0, bytes.length - 1, isSortOrderAscending());
-
-		IFile sortedFile = (IFile) convertToSortedResource(unsortedFile);
-		createResource(sortedFile);
-
-		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-		sortedFile.setContents(bis, true, false, null);
 	}
 
 	/**

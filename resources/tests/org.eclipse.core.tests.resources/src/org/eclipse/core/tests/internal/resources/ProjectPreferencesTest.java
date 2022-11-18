@@ -829,9 +829,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		}
 
 		IFile prefsFile = getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES);
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(prefsFile.getContents()));
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(prefsFile.getContents()))) {
 			String currentLine = null;
 			String prevLine = null;
 			while ((currentLine = reader.readLine()) != null) {
@@ -858,14 +856,6 @@ public class ProjectPreferencesTest extends ResourceTest {
 			fail("1.2", e);
 		} catch (IOException e) {
 			fail("1.3", e);
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					fail("1.4", e);
-				}
-			}
 		}
 
 	}
