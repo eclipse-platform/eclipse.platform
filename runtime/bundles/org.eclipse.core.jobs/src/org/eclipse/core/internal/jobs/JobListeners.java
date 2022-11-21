@@ -61,7 +61,7 @@ public class JobListeners {
 		boolean send = shouldSend || job.eventQueueLock.isHeldByCurrentThread();
 		// Synchronize eventQueue to get a stable order of events across Threads.
 		// There is however no guarantee in which Thread the event is delivered.
-		while (!job.eventQueue.isEmpty()) {
+		while (true) {
 			if (getJobListenerTimeout() == 0) {
 				// backward compatibility mode for listeners that may deadlock
 				if (send) {
