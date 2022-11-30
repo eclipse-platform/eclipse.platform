@@ -14,7 +14,7 @@
   <parent>
     <groupId>org.eclipse.platform</groupId>
     <artifactId>eclipse.platform.team.tests</artifactId>
-    <version>4.26.0-SNAPSHOT</version>
+    <version>4.27.0-SNAPSHOT</version>
   </parent>
   <groupId>org.eclipse.team</groupId>
   <artifactId>org.eclipse.team.tests.core</artifactId>
