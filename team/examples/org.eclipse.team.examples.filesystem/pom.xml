@@ -14,7 +14,7 @@
   <parent>
     <groupId>org.eclipse.platform</groupId>
     <artifactId>eclipse.platform.team</artifactId>
-    <version>4.26.0-SNAPSHOT</version>
+    <version>4.27.0-SNAPSHOT</version>
     <relativePath>../../</relativePath>
   </parent>
   <artifactId>org.eclipse.team.examples.filesystem</artifactId>
