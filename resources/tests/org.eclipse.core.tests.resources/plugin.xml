@@ -647,4 +647,15 @@
        </dynamicReference>
     </builder>
  </extension>
+ <extension
+       id="interruptingBuilder"
+       name="Interrupting Builder"
+       point="org.eclipse.core.resources.builders">
+    <builder
+          callOnEmptyDelta="true">
+       <run
+             class="org.eclipse.core.tests.internal.builders.InterruptingBuilder">
+       </run>
+    </builder>
+ </extension>
 </plugin>
