@@ -91,6 +91,11 @@ public class InterruptingBuilder extends IncrementalProjectBuilder {
 
 			return Status.OK_STATUS;
 		}
+
+		@Override
+		public boolean belongsTo(Object family) {
+			return ResourcesPlugin.FAMILY_AUTO_BUILD.equals(family);
+		}
 	}
 
 	private static class WorkerSchedulingRule implements ISchedulingRule {

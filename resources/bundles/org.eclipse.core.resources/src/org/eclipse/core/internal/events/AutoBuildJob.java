@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2015 IBM Corporation and others.
+ * Copyright (c) 2003, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -201,8 +201,7 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 				setInterrupted(!sleep());
 				break;
 			case RUNNING :
-				//make sure autobuild doesn't interrupt itself
-				if (Job.getJobManager().currentJob() == this)
+				if (!shouldInterrupt())
 					return;
 				setInterrupted(true);
 				break;
@@ -296,6 +295,18 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 			//regardless of the result, clear the build flags for next time
 			forceBuild = avoidBuild = buildNeeded = false;
 		}
+	}
+
+	/**
+	 * Returns {@code true}, if the auto-build job should be interrupted. The job
+	 * should always be interrupted, unless this method is called by a job within
+	 * the {@link ResourcesPlugin#FAMILY_AUTO_BUILD} family.
+	 */
+	private synchronized boolean shouldInterrupt() {
+		Job currentJob = Job.getJobManager().currentJob();
+
+		// make sure autobuild doesn't interrupt itself
+		return currentJob == null || !currentJob.belongsTo(ResourcesPlugin.FAMILY_AUTO_BUILD);
 	}
 
 	/**
