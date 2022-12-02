@@ -28,27 +28,27 @@ import org.eclipse.core.runtime.jobs.Job;
 public class InterruptingBuilder extends IncrementalProjectBuilder {
 
 	public static final String BUILDER_NAME = "org.eclipse.core.tests.resources.interruptingBuilder";
-	private static CountDownLatch LATCH = new CountDownLatch(1);
-	private static Job AUTO_BUILD_JOB;
+	private static CountDownLatch latch = new CountDownLatch(1);
+	private static Job autoBuildJob;
 
 	public static void reset() {
-		LATCH = new CountDownLatch(1);
-		AUTO_BUILD_JOB = null;
+		latch = new CountDownLatch(1);
+		autoBuildJob = null;
 	}
 
 	public static boolean waitForStart() {
 		try {
-			return LATCH.await(15, TimeUnit.SECONDS);
+			return latch.await(15, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			return false;
 		}
 	}
 
 	public static boolean waitForEnd() {
-		Objects.requireNonNull(AUTO_BUILD_JOB);
+		Objects.requireNonNull(autoBuildJob);
 
 		try {
-			return AUTO_BUILD_JOB.join(15000, new NullProgressMonitor());
+			return autoBuildJob.join(15000, new NullProgressMonitor());
 		} catch (InterruptedException e) {
 			return false;
 		}
@@ -56,8 +56,8 @@ public class InterruptingBuilder extends IncrementalProjectBuilder {
 
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
-		AUTO_BUILD_JOB = Job.getJobManager().currentJob();
-		LATCH.countDown();
+		autoBuildJob = Job.getJobManager().currentJob();
+		latch.countDown();
 
 		Job worker = new WorkerJob();
 		worker.setPriority(Job.LONG);
@@ -70,7 +70,8 @@ public class InterruptingBuilder extends IncrementalProjectBuilder {
 			// ignored
 		}
 
-		// Simulate a job cancellation
+		// The interrupt flag is set whenever the build finishes successfully. Hence we
+		// have to simulate clicking the "Cancel Job" button.
 		throw new OperationCanceledException();
 	}
 

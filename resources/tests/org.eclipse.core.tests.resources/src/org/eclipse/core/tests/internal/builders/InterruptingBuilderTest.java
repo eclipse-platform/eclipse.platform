@@ -37,6 +37,7 @@ public class InterruptingBuilderTest extends AbstractBuilderTest {
 	public void setUp() throws Exception {
 		super.setUp();
 		setAutoBuilding(false);
+		waitForBuild();
 		project = setUpProject();
 		file = setUpFile(project);
 	}
