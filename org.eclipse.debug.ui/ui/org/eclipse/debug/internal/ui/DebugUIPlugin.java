@@ -506,41 +506,43 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 		Hashtable<String, String> props = new Hashtable<>(2);
 		props.put(org.eclipse.osgi.service.debug.DebugOptions.LISTENER_SYMBOLICNAME, getUniqueIdentifier());
 		context.registerService(DebugOptionsListener.class.getName(), this, props);
-		ResourcesPlugin.getWorkspace().addSaveParticipant(getUniqueIdentifier(),
-				new ISaveParticipant() {
-					@Override
-					public void saving(ISaveContext saveContext) throws CoreException {
-						IEclipsePreferences node = InstanceScope.INSTANCE.getNode(getUniqueIdentifier());
-						if(node != null) {
-							try {
-								node.flush();
-							} catch (BackingStoreException e) {
-								log(e);
-							}
-						}
+		ResourcesPlugin.getWorkspace().addSaveParticipant(getUniqueIdentifier(), new ISaveParticipant() {
+			@Override
+			public void saving(ISaveContext saveContext) throws CoreException {
+				IEclipsePreferences node = InstanceScope.INSTANCE.getNode(getUniqueIdentifier());
+				if (node != null) {
+					try {
+						node.flush();
+					} catch (BackingStoreException e) {
+						log(e);
+					}
+				}
 				for (ISaveParticipant sp : fSaveParticipants) {
 					sp.saving(saveContext);
-						}
-					}
-					@Override
-					public void rollback(ISaveContext saveContext) {
+				}
+			}
+
+			@Override
+			public void rollback(ISaveContext saveContext) {
 				for (ISaveParticipant sp : fSaveParticipants) {
 					sp.rollback(saveContext);
-						}
-					}
-					@Override
-					public void prepareToSave(ISaveContext saveContext) throws CoreException {
+				}
+			}
+
+			@Override
+			public void prepareToSave(ISaveContext saveContext) throws CoreException {
 				for (ISaveParticipant sp : fSaveParticipants) {
 					sp.prepareToSave(saveContext);
-						}
-					}
-					@Override
-					public void doneSaving(ISaveContext saveContext) {
+				}
+			}
+
+			@Override
+			public void doneSaving(ISaveContext saveContext) {
 				for (ISaveParticipant sp : fSaveParticipants) {
 					sp.doneSaving(saveContext);
-						}
-					}
-				});
+				}
+			}
+		});
 
 		// make sure the perspective manager is created
 		// and be the first debug event listener
