@@ -21,8 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -218,7 +218,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	 *
 	 * @since 3.3
 	 */
-	private Set<ISaveParticipant> fSaveParticipants = new HashSet<>();
+	private Set<ISaveParticipant> fSaveParticipants = new LinkedHashSet<>();
 
 	/**
 	 * Theme listener.
@@ -461,7 +461,9 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 
 			DebugElementHelper.dispose();
 
-			fSaveParticipants.clear();
+			synchronized (fSaveParticipants) {
+				fSaveParticipants.clear();
+			}
 
 			ResourcesPlugin.getWorkspace().removeSaveParticipant(getUniqueIdentifier());
 
@@ -485,7 +487,11 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	 * @since 3.3
 	 */
 	public boolean addSaveParticipant(ISaveParticipant participant) {
-		return fSaveParticipants.add(participant);
+		boolean added;
+		synchronized (fSaveParticipants) {
+			added = fSaveParticipants.add(participant);
+		}
+		return added;
 	}
 
 	/**
@@ -497,7 +503,11 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	 * @since 3.3
 	 */
 	public boolean removeSaveParticipant(ISaveParticipant participant) {
-		return fSaveParticipants.remove(participant);
+		boolean removed;
+		synchronized (fSaveParticipants) {
+			removed = fSaveParticipants.remove(participant);
+		}
+		return removed;
 	}
 
 	@Override
@@ -506,7 +516,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 		Hashtable<String, String> props = new Hashtable<>(2);
 		props.put(org.eclipse.osgi.service.debug.DebugOptions.LISTENER_SYMBOLICNAME, getUniqueIdentifier());
 		context.registerService(DebugOptionsListener.class.getName(), this, props);
-		ResourcesPlugin.getWorkspace().addSaveParticipant(getUniqueIdentifier(), new ISaveParticipant() {
+		class DebugUIPluginSaveParticipant implements ISaveParticipant {
 			@Override
 			public void saving(ISaveContext saveContext) throws CoreException {
 				IEclipsePreferences node = InstanceScope.INSTANCE.getNode(getUniqueIdentifier());
@@ -517,32 +527,36 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 						log(e);
 					}
 				}
-				for (ISaveParticipant sp : fSaveParticipants) {
+				Set<ISaveParticipant> saveParticipants = getSaveParticipants();
+				for (ISaveParticipant sp : saveParticipants) {
 					sp.saving(saveContext);
 				}
 			}
 
 			@Override
 			public void rollback(ISaveContext saveContext) {
-				for (ISaveParticipant sp : fSaveParticipants) {
+				Set<ISaveParticipant> saveParticipants = getSaveParticipants();
+				for (ISaveParticipant sp : saveParticipants) {
 					sp.rollback(saveContext);
 				}
 			}
 
 			@Override
 			public void prepareToSave(ISaveContext saveContext) throws CoreException {
-				for (ISaveParticipant sp : fSaveParticipants) {
+				Set<ISaveParticipant> saveParticipants = getSaveParticipants();
+				for (ISaveParticipant sp : saveParticipants) {
 					sp.prepareToSave(saveContext);
 				}
 			}
 
 			@Override
 			public void doneSaving(ISaveContext saveContext) {
-				for (ISaveParticipant sp : fSaveParticipants) {
+				Set<ISaveParticipant> saveParticipants = getSaveParticipants();
+				for (ISaveParticipant sp : saveParticipants) {
 					sp.doneSaving(saveContext);
 				}
 			}
-		});
+		};
 
 		// make sure the perspective manager is created
 		// and be the first debug event listener
@@ -585,6 +599,9 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 					// key-bindings work
 					getLaunchConfigurationManager().getLaunchShortcuts();
 				});
+
+		DebugUIPluginSaveParticipant saveParticipant = new DebugUIPluginSaveParticipant();
+		ResourcesPlugin.getWorkspace().addSaveParticipant(getUniqueIdentifier(), saveParticipant);
 	}
 
 	@Override
@@ -1420,6 +1437,14 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 			parent = esrvc.getCurrentState();
 		}
 		return new EvaluationContext(parent, defaultvar);
+	}
+
+	private Set<ISaveParticipant> getSaveParticipants() {
+		Set<ISaveParticipant> copy = new LinkedHashSet<>();
+		synchronized (fSaveParticipants) {
+			copy.addAll(fSaveParticipants);
+		}
+		return copy;
 	}
 }
 
