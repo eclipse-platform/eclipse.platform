@@ -4,3 +4,4 @@ Bug 551174 - Comparator errors in 4.14 I build - I20190917-1800
 Bug 574602 - Eclipse 4.21 prerequisites: Orbit
 Update to com.google.gson from maven central
 Update to gson 2.9.1
+Update to gson 2.10
