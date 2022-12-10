@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<fragment>
+    <extension
+         id="win32"
+         point="org.eclipse.core.resources.refreshProviders">
+      <refreshProvider
+            name="%win32MonitorFactoryName"
+            class="org.eclipse.core.internal.resources.refresh.win32.Win32RefreshProvider">
+      </refreshProvider>
+   </extension>
+</fragment>

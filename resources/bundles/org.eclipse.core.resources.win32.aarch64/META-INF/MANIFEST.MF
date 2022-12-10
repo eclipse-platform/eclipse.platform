@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %win32FragmentName
+Bundle-SymbolicName: org.eclipse.core.resources.win32.aarch64;singleton:=true
+Bundle-Version: 3.5.500.qualifier
+Bundle-Vendor: %providerName
+Fragment-Host: org.eclipse.core.resources;bundle-version="[3.5.0,4.0.0)"
+Bundle-Localization: fragment
+Eclipse-PlatformFilter: (& (osgi.os=win32) (osgi.arch=aarch64))
