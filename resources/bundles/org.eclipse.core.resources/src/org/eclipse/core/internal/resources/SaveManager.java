@@ -29,8 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.zip.*;
 import org.eclipse.core.filesystem.EFS;
@@ -1762,8 +1761,14 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		if (root.getType() == IResource.PROJECT)
 			return;
 		IProject[] projects = ((IWorkspaceRoot) root).getProjects(IContainer.INCLUDE_HIDDEN);
-		// never use a shared ForkJoinPool.commonPool() as it may be busy with other tasks, which might deadlock:
-		ForkJoinPool forkJoinPool =  new ForkJoinPool(ForkJoinPool.getCommonPoolParallelism());
+		// Never use a shared ForkJoinPool.commonPool() as it may be busy with other tasks, which might deadlock.
+		// Also use a custom ForkJoinWorkerThreadFactory, to prevent issues with a
+		// potential SecurityManager, since the threads created by it get no permissions.
+		// See https://github.com/eclipse-platform/eclipse.platform/issues/294
+		ForkJoinPool forkJoinPool = new ForkJoinPool(ForkJoinPool.getCommonPoolParallelism(),
+				pool -> new ForkJoinWorkerThread(pool) {
+					// anonymous subclass to access protected constructor
+				}, null, false);
 		IStatus[] stats;
 		try {
 			stats = forkJoinPool.submit(() -> Arrays.stream(projects).parallel().map(project -> {
