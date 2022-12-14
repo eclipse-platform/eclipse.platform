@@ -88,20 +88,26 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 		buildNeeded |= needsBuild;
 		long delay = computeScheduleDelay();
 		int state = getState();
-		if (Policy.DEBUG_BUILD_NEEDED)
-			Policy.debug("Auto-Build requested, needsBuild: " + needsBuild + " state: " + state + " delay: " + delay); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		if (needsBuild && Policy.DEBUG_BUILD_NEEDED_STACK && state != Job.RUNNING)
-			Policy.debug(new RuntimeException("Build needed")); //$NON-NLS-1$
+		if (Policy.DEBUG_BUILD_NEEDED) {
+			Policy.debug("build requested, needsBuild: " + needsBuild + " state: " + state + ", delay: " + delay); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
+
 		//don't mess with the interrupt flag if the job is still running
 		if (state != Job.RUNNING)
 			setInterrupted(false);
 
 		switch (state) {
 			case Job.SLEEPING :
+				if (Policy.DEBUG_BUILD_INVOKING) {
+					traceMessageOrFullStack("wakeup, needsBuild: " + needsBuild + ", delay: " + delay); //$NON-NLS-1$ //$NON-NLS-2$
+				}
 				wakeUp(delay);
 				break;
 			case NONE :
 				if (isAutoBuilding) {
+					if (Policy.DEBUG_BUILD_INVOKING) {
+						traceMessageOrFullStack("scheduled, needsBuild: " + needsBuild + ", delay: " + delay); //$NON-NLS-1$//$NON-NLS-2$
+					}
 					schedule(delay);
 				} else {
 					// The code below is required to maintain the ancient contract
@@ -120,9 +126,24 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 				// Therefore, if a build is needed and the autobuild is enabled, then reschedule
 				// the job
 				if (isAutoBuilding && buildNeeded && !avoidBuild && Job.getJobManager().currentJob() != this) {
+					if (Policy.DEBUG_BUILD_INVOKING) {
+						traceMessageOrFullStack("scheduled from other thread with delay: " + delay); //$NON-NLS-1$
+					}
 					schedule(delay);
 				}
 				break;
+		}
+	}
+
+	/**
+	 * Should only be called after check for enabled trace flag
+	 */
+	private static void traceMessageOrFullStack(String message) {
+		message = "AutoBuildJob: " + message; //$NON-NLS-1$
+		if (Policy.DEBUG_BUILD_NEEDED_STACK) {
+			Policy.debug(new RuntimeException(message));
+		} else {
+			Policy.debug(message);
 		}
 	}
 
@@ -150,8 +171,9 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 		buildNeeded = true;
 		//schedule a rebuild immediately if build was implicitly canceled
 		if (interrupted) {
-			if (Policy.DEBUG_BUILD_INTERRUPT)
-				Policy.debug("Scheduling rebuild due to interruption"); //$NON-NLS-1$
+			if (Policy.DEBUG_BUILD_INTERRUPT) {
+				traceMessageOrFullStack("scheduling due to interruption"); //$NON-NLS-1$
+			}
 			setInterrupted(false);
 			schedule(computeScheduleDelay());
 		}
@@ -285,8 +307,9 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 		// for example JDT builder can not resume from canceled autobuild but requires full build
 		// cancel = explicit user request
 		// interrupt = automatic conflict solving
-		if (interrupted && Policy.DEBUG_BUILD_INTERRUPT)
-			Policy.debug(new RuntimeException("Autobuild was interrupted")); //$NON-NLS-1$
+		if (interrupted && Policy.DEBUG_BUILD_INTERRUPT) {
+			traceMessageOrFullStack("was interrupted"); //$NON-NLS-1$
+		}
 	}
 
 	/**
