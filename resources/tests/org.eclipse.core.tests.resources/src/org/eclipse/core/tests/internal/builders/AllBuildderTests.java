@@ -22,7 +22,7 @@ import org.junit.runners.Suite;
 		RebuildTest.class,
 		BuildDeltaVerificationTest.class, CustomBuildTriggerTest.class, EmptyDeltaTest.class,
 		MultiProjectBuildTest.class, RelaxedSchedRuleBuilderTest.class, BuildConfigurationsTest.class,
-		BuildContextTest.class, ParallelBuildChainTest.class, ComputeProjectOrderTest.class })
+		BuildContextTest.class, ParallelBuildChainTest.class, ComputeProjectOrderTest.class, AutoBuildJobTest.class })
 public class AllBuildderTests {
 
 }
