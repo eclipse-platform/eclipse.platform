@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2020 IBM Corporation and others.
+ * Copyright (c) 2005, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.lucene.util.Version;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -144,13 +145,12 @@ public class PluginIndex {
 		try (InputStream in = ProxyUtil.getStream(url)) {
 			Properties prop = new Properties();
 			prop.load(in);
-			String lucene = prop
-					.getProperty(SearchIndex.DEPENDENCIES_KEY_LUCENE);
-			String analyzer = prop
-					.getProperty(SearchIndex.DEPENDENCIES_KEY_ANALYZER);
+			String lucene = prop.getProperty(SearchIndex.DEPENDENCIES_KEY_LUCENE);
+			String analyzer = prop.getProperty(SearchIndex.DEPENDENCIES_KEY_ANALYZER);
+
 			if (!targetIndex.isLuceneCompatible(lucene) || !targetIndex.isAnalyzerCompatible(analyzer)) {
 				String message = "Unable to consume Lucene index from bundle '" + bundle.toString() //$NON-NLS-1$
-						+ "'. The index should be rebuilt with Lucene 8.4.1"; //$NON-NLS-1$
+						+ "'. The index should be rebuilt with Lucene " + Version.LATEST; //$NON-NLS-1$
 				Platform.getLog(getClass()).warn(message);
 				return false;
 			}

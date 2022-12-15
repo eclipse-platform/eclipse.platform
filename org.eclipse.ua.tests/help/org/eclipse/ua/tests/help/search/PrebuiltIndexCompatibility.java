@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -16,7 +16,7 @@
 package org.eclipse.ua.tests.help.search;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexFormatTooOldException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
@@ -60,62 +59,27 @@ import org.osgi.framework.Bundle;
 public class PrebuiltIndexCompatibility {
 
 	/**
-	 * Test index built with Lucene 7.0.0
-	 */
-	@Test(expected = IndexFormatTooOldException.class)
-	public void test7_0_0_IndexUnReadable() throws Exception {
-		checkReadable("data/help/searchindex/index700");
-	}
-
-	/**
-	 * Test index built with Lucene 8.0.0 IllegalArgumentException with message
-	 * proposing to add lucene-backward-codecs
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void test8_0_0_IndexUnReadable() throws Exception {
-		checkReadable("data/help/searchindex/index800");
-	}
-
-	/**
 	 * Test index built with Lucene 8.4.1
 	 */
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void test8_4_1_IndexReadable() throws Exception {
 		checkReadable("data/help/searchindex/index841");
 	}
 
-	/**
-	 ** Test compatibility of Lucene 7.0.0 index with current Lucene
-	 */
-	@Test
-	public void test7_0_0Compatible() {
-		checkCompatible("data/help/searchindex/index700", false);
-	}
-
-	@Test
-	public void test8_0_0Compatible() {
-		checkCompatible("data/help/searchindex/index800", false);
-	}
-
-	@Test
-	public void test7_0_0LuceneCompatible() {
-		checkLuceneCompatible("7.0.0", false);
-	}
-
-	@Test
-	public void test8_0_0LuceneCompatible() {
-		checkLuceneCompatible("8.0.0", false);
-	}
-
 	@Test
 	public void test8_4_1LuceneCompatible() {
-		checkLuceneCompatible("8.4.1", true);
+		checkLuceneCompatible("8.4.1", false);
+	}
+
+	@Test
+	public void test9_4_2LuceneCompatible() {
+		checkLuceneCompatible("9.4.2", true);
 	}
 
 	@Test
 	public void testPluginIndexEqualToItself() {
 		PluginIndex index = createPluginIndex("data/help/searchindex/index841");
-		assertTrue(index.equals(index));
+		assertEquals(index, index);
 	}
 
 	/**
@@ -125,7 +89,7 @@ public class PrebuiltIndexCompatibility {
 	public void testPluginIndexEquality() {
 		PluginIndex index1a = createPluginIndex("data/help/searchindex/index841");
 		PluginIndex index1b = createPluginIndex("data/help/searchindex/index841");
-		assertTrue(index1a.equals(index1b));
+		assertEquals(index1a, index1b);
 	}
 
 	/**
@@ -145,7 +109,7 @@ public class PrebuiltIndexCompatibility {
 	public void testPluginIndexInequality() {
 		PluginIndex index1 = createPluginIndex("data/help/searchindex/index841");
 		PluginIndex index2 = createPluginIndex("data/help/searchindex/index800");
-		assertFalse(index1.equals(index2));
+		assertNotEquals(index1, index2);
 	}
 
 	/*
@@ -172,15 +136,6 @@ public class PrebuiltIndexCompatibility {
 		}
 	}
 
-	/*
-	 * Tests the isCompatible method in PluginIndex
-	 */
-	private void checkCompatible(String versionDirectory, boolean expected) {
-		PluginIndex pluginIndex = createPluginIndex(versionDirectory);
-		Path path = new Path(versionDirectory);
-		assertEquals(expected, pluginIndex.isCompatible(UserAssistanceTestPlugin.getDefault().getBundle(), path));
-	}
-
 	public PluginIndex createPluginIndex(String versionDirectory) {
 		PluginIndex pluginIndex;
 		SearchIndexWithIndexingProgress index = BaseHelpSystem.getLocalSearchManager().getIndex("en_us".toString());
@@ -201,4 +156,5 @@ public class PrebuiltIndexCompatibility {
 				index);
 		assertEquals(expected, index.isLuceneCompatible(version));
 	}
+
 }

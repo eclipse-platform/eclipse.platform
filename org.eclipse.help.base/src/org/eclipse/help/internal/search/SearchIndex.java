@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -55,7 +55,7 @@ import org.apache.lucene.index.LogByteSizeMergePolicy;
 import org.apache.lucene.index.LogMergePolicy;
 import org.apache.lucene.index.PostingsEnum;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
@@ -177,7 +177,6 @@ public class SearchIndex implements IHelpSearchIndex {
 		this.indexDir = indexDir;
 
 		this.relativePath = relativePath;
-		// System.out.println("Index for a relative path: "+relativePath);
 		inconsistencyFile = new File(indexDir.getParentFile(), locale + ".inconsistent"); //$NON-NLS-1$
 		htmlSearchParticipant = new HTMLSearchParticipant(indexDir.getAbsolutePath());
 		try {
@@ -248,7 +247,7 @@ public class SearchIndex implements IHelpSearchIndex {
 			String pid = urlc.getValue("participantId"); //$NON-NLS-1$
 			if (pid != null)
 				participant = BaseHelpSystem.getLocalSearchManager().getGlobalParticipant(pid);
-			// NEW: check for file extension-based search participant;
+			// check for file extension-based search participant;
 			if (participant == null)
 				participant = BaseHelpSystem.getLocalSearchManager().getParticipant(pluginId, name);
 			if (participant != null) {
@@ -598,32 +597,28 @@ public class SearchIndex implements IHelpSearchIndex {
 	 * @throws IOException
 	 */
 	private void removeDocuments(PostingsEnum doc1, PostingsEnum docs2) throws IOException {
-		if (doc1.nextDoc() == PostingsEnum.NO_MORE_DOCS) {
+		if (doc1.nextDoc() == DocIdSetIterator.NO_MORE_DOCS) {
 			return;
 		}
-		if (docs2.nextDoc() == PostingsEnum.NO_MORE_DOCS) {
+		if (docs2.nextDoc() == DocIdSetIterator.NO_MORE_DOCS) {
 			return;
 		}
 		while (true) {
 			if (doc1.docID() < docs2.docID()) {
-				if (doc1.advance(docs2.docID()) == PostingsEnum.NO_MORE_DOCS) {
-					if (doc1.nextDoc() == PostingsEnum.NO_MORE_DOCS) {
-						return;
-					}
+				if (doc1.advance(docs2.docID()) == DocIdSetIterator.NO_MORE_DOCS
+						&& doc1.nextDoc() == DocIdSetIterator.NO_MORE_DOCS) {
+					return;
 				}
-			} else if (doc1.docID() > docs2.docID()) {
-				if (docs2.advance(doc1.docID()) == PostingsEnum.NO_MORE_DOCS) {
-					if (doc1.nextDoc() == PostingsEnum.NO_MORE_DOCS) {
-						return;
-					}
-				}
+			} else if (doc1.docID() > docs2.docID() && docs2.advance(doc1.docID()) == DocIdSetIterator.NO_MORE_DOCS
+					&& doc1.nextDoc() == DocIdSetIterator.NO_MORE_DOCS) {
+				return;
 			}
 			if (doc1.docID() == docs2.docID()) {
 				iw.tryDeleteDocument(ir, doc1.docID());
-				if (doc1.nextDoc() == PostingsEnum.NO_MORE_DOCS) {
+				if (doc1.nextDoc() == DocIdSetIterator.NO_MORE_DOCS) {
 					return;
 				}
-				if (docs2.nextDoc() == PostingsEnum.NO_MORE_DOCS) {
+				if (docs2.nextDoc() == DocIdSetIterator.NO_MORE_DOCS) {
 					return;
 				}
 			}
@@ -665,7 +660,7 @@ public class SearchIndex implements IHelpSearchIndex {
 				TopDocs topDocs = searcher.search(luceneQuery, 1000);
 				collector.addHits(LocalSearchManager.asList(topDocs, searcher), highlightTerms);
 			}
-		} catch (BooleanQuery.TooManyClauses tmc) {
+		} catch (IndexSearcher.TooManyClauses tmc) {
 			collector.addQTCException(new QueryTooComplexException());
 		} catch (QueryTooComplexException qe) {
 			collector.addQTCException(qe);
@@ -752,17 +747,12 @@ public class SearchIndex implements IHelpSearchIndex {
 	 */
 	public boolean isLuceneCompatible(String indexVersionString) {
 		if (indexVersionString==null) return false;
-		String luceneVersionString = ""; //$NON-NLS-1$
-		Bundle luceneBundle = Platform.getBundle(LUCENE_BUNDLE_ID);
-		if (luceneBundle != null) {
-			luceneVersionString += luceneBundle.getHeaders()
-					.get(Constants.BUNDLE_VERSION);
-		}
-		Version luceneVersion = new Version(luceneVersionString);
+		org.apache.lucene.util.Version nativeLuceneVersion = org.apache.lucene.util.Version.LATEST;
+		Version luceneVersion = new Version(nativeLuceneVersion.toString());
 		Version indexVersion = new Version(indexVersionString);
-		Version v840 = new Version(8, 4, 0);
-		if (indexVersion.compareTo(v840) < 0) {
-			// index is older than Lucene 8.4.0
+		Version luceneMajMin = new Version(nativeLuceneVersion.major, nativeLuceneVersion.minor, 0);
+		if (indexVersion.compareTo(luceneMajMin) < 0) {
+			// index is older than Lucene Maj.Min.0
 			return false;
 		}
 		if ( luceneVersion.compareTo(indexVersion) >= 0 ) {
@@ -880,7 +870,6 @@ public class SearchIndex implements IHelpSearchIndex {
 		byte[] buf = new byte[8192];
 		File destDir = indexDir;
 
-		FileOutputStream fos = null;
 		try (ZipInputStream zis = new ZipInputStream(zipIn)) {
 			ZipEntry zEntry;
 			while ((zEntry = zis.getNextEntry()) != null) {
@@ -900,21 +889,15 @@ public class SearchIndex implements IHelpSearchIndex {
 				new File(destDir, fileDir).mkdirs();
 				// write file
 				File outFile = new File(destDir, filePath);
-				fos = new FileOutputStream(outFile);
-				int n = 0;
-				while ((n = zis.read(buf)) >= 0) {
-					fos.write(buf, 0, n);
+				try (FileOutputStream fos = new FileOutputStream(outFile)) {
+					int n = 0;
+					while ((n = zis.read(buf)) >= 0) {
+						fos.write(buf, 0, n);
+					}
 				}
-				fos.close();
 			}
 			setInconsistent(false);
 		} catch (IOException ioe) {
-			if (fos != null) {
-				try {
-					fos.close();
-				} catch (IOException ioe2) {
-				}
-			}
 		} finally {
 			try {
 				zipIn.close();
