@@ -19,7 +19,7 @@
   </parent>
   <groupId>org.eclipse.ua</groupId>
   <artifactId>org.eclipse.ua.tests</artifactId>
-  <version>3.5.400-SNAPSHOT</version>
+  <version>3.5.500-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
 
   <properties>
