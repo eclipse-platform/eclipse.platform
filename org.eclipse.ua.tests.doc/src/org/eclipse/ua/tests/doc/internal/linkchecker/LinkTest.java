@@ -24,8 +24,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -36,12 +38,14 @@ import org.eclipse.help.internal.search.QueryTooComplexException;
 import org.eclipse.help.internal.search.SearchHit;
 import org.eclipse.help.internal.search.SearchQuery;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.junit.Test;
 
 public class LinkTest {
 
 	@Test
 	public void testAllLinks() {
+		IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench().getHelpSystem();
 		ISearchQuery query = new SearchQuery("*", false, Collections.emptyList(), Platform.getNL());
 		final Set<URI> indexedPagesURIs = new HashSet<>();
 		ISearchHitCollector collector = new ISearchHitCollector() {
@@ -54,27 +58,38 @@ public class LinkTest {
 			public void addHits(List<SearchHit> hits, String wordsSearched) {
 				hits.stream().map(SearchHit::getHref).map(href -> {
 					try {
-						return PlatformUI.getWorkbench().getHelpSystem().resolve(href, false).toURI();
+						return helpSystem.resolve(href, false).toURI();
 					} catch (URISyntaxException e) {
 						e.printStackTrace();
 						return null;
 					}
-				}).peek(System.err::println).forEach(indexedPagesURIs::add);
+				}).sorted().peek(System.err::println).forEach(indexedPagesURIs::add);
 			}
 		};
 		BaseHelpSystem.getSearchManager().search(query, collector, new NullProgressMonitor());
-		Set<String> linkFailures = Collections.synchronizedSet(new HashSet<>());
-		Set<Exception> ex = Collections.synchronizedSet(new HashSet<>());
-		Set<URI> allKnownPageURIs = new HashSet<>(indexedPagesURIs);
+		Set<String> linkFailures = Collections.synchronizedSet(new TreeSet<>());
+		Set<Exception> ex = Collections.synchronizedSet(new LinkedHashSet<>());
+		Set<URI> allKnownPageURIs = new TreeSet<>(indexedPagesURIs);
 		indexedPagesURIs.parallelStream().forEach(t -> {
+			String path = t.getPath();
+			if (path.lastIndexOf('/') > 0) {
+				path = path.substring(path.lastIndexOf('/'));
+			}
+			boolean notFile = false;
+			if (!path.contains(".")) {
+				notFile = true;
+				System.out.println("Not a file?: " + t);
+			}
 			try (InputStream stream = t.toURL().openStream()) {
 				linkFailures.addAll(checkLinks(stream, t, allKnownPageURIs));
 			} catch (IOException e) {
-				ex.add(e);
+				if (!notFile) {
+					ex.add(e);
+				}
 			}
 		});
-		assertEquals(Collections.emptySet(), ex);
-		assertEquals(Collections.emptySet(), linkFailures);
+		assertEquals(Collections.emptySet().toString(), ex.toString());
+		assertEquals(Collections.emptySet().toString(), linkFailures.toString());
 	}
 
 	private Set<String> checkLinks(InputStream stream, URI currentDoc, Set<URI> knownPagesURIs) throws IOException {
