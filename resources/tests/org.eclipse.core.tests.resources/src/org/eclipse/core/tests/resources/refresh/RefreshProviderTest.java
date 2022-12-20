@@ -37,6 +37,7 @@ public class RefreshProviderTest extends ResourceTest {
 	protected void setUp() throws Exception {
 		super.setUp();
 		TestRefreshProvider.reset();
+		LowerPriorityProvider.reset();
 		//turn on autorefresh
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		originalRefreshSetting = prefs.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
@@ -50,6 +51,7 @@ public class RefreshProviderTest extends ResourceTest {
 		TestRefreshProvider.reset();
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, originalRefreshSetting);
+		LowerPriorityProvider.check();
 	}
 
 	/**

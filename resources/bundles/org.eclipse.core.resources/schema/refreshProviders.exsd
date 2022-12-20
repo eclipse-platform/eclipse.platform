@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.core.resources">
+<schema targetNamespace="org.eclipse.core.resources" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.core.resources" id="refreshProviders" name="Auto-refresh providers"/>
@@ -11,6 +11,11 @@
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence>
             <element ref="refreshProvider"/>
@@ -62,6 +67,14 @@
                <appInfo>
                   <meta.attribute kind="java" basedOn="org.eclipse.core.resources.refresh.RefreshProvider"/>
                </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string">
+            <annotation>
+               <documentation>
+                  If more than one provider is aviable, providers with a higher priority will be asked first.
+The value must be parsable as an integer, otherwhise 0 is assumed as default.
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

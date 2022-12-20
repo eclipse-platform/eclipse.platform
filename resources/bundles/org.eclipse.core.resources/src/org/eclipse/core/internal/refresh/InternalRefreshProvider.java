@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM - Initial API and implementation
+ *     Christoph Läubrich - #300 - add priority
  *******************************************************************************/
 package org.eclipse.core.internal.refresh;
 
@@ -27,6 +28,8 @@ import org.eclipse.core.runtime.SubMonitor;
  * @since 3.0
  */
 public class InternalRefreshProvider {
+	private int priority;
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.refresh.RefreshProvider#createPollingMonitor(IResource)
 	 */
@@ -47,5 +50,13 @@ public class InternalRefreshProvider {
 		MonitorManager manager = ((Workspace) resource.getWorkspace()).getRefreshManager().monitors;
 		manager.unmonitor(resource, subMonitor.split(1));
 		manager.monitor(resource, subMonitor.split(1));
+	}
+
+	void setPriority(int priority) {
+		this.priority = priority;
+	}
+
+	int getPriority() {
+		return priority;
 	}
 }

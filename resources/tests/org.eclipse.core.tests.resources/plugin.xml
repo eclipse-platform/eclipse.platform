@@ -534,18 +534,33 @@
       <content-type id="org.eclipse.core.tests.resources.nature_associated_2"/>       
 </extension>
 
+<!-- ORDER MATTER HERE START -->
+<!-- We want a particular oder of the providers and even if the first one is declared first it should be the last in the chain (and thus never be asked!) -->
+<extension
+      point="org.eclipse.core.resources.refreshProviders">
+   <refreshProvider
+         class="org.eclipse.core.tests.resources.refresh.LowerPriorityProvider"
+         name="org.eclipse.core.tests.resources.testRefreshProvider"
+         priority="1"
+         />
+</extension>
 <extension
       point="org.eclipse.core.resources.refreshProviders">
    <refreshProvider
          class="org.eclipse.core.tests.resources.refresh.TestRefreshProvider"
-         name="org.eclipse.core.tests.resources.testRefreshProvider"/>
+         name="org.eclipse.core.tests.resources.testRefreshProvider"
+         priority="5"
+         />
 </extension>
 <extension
       point="org.eclipse.core.resources.refreshProviders">
    <refreshProvider
          class="org.eclipse.core.tests.resources.refresh.Bug316182RefreshProvider"
-         name="org.eclipse.core.tests.resources.bug316182RefreshProvider"/>
+         name="org.eclipse.core.tests.resources.bug316182RefreshProvider"
+         priority="10"
+         />
 </extension>
+<!-- ORDER MATTER HERE END -->
 
 <extension point="org.eclipse.core.runtime.preferences">
 	<modifier class="org.eclipse.core.tests.internal.resources.ProjectPreferenceModifyListener"/>

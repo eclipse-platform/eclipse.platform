@@ -6,7 +6,8 @@
          point="org.eclipse.core.resources.refreshProviders">
       <refreshProvider
             name="%win32MonitorFactoryName"
-            class="org.eclipse.core.internal.resources.refresh.win32.Win32RefreshProvider">
+            class="org.eclipse.core.internal.resources.refresh.win32.Win32RefreshProvider"
+            priority="10">
       </refreshProvider>
    </extension>
 </fragment>
