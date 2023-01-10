@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.internal.jobs;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.eclipse.core.internal.runtime.RuntimeLog;
@@ -72,16 +74,24 @@ public class JobListeners {
 			int timeout = getJobListenerTimeout();
 			try {
 				if (job.eventQueueLock.tryLock(timeout, TimeUnit.MILLISECONDS)) {
+					job.eventQueueThread.set(Thread.currentThread());
 					try {
-						job.eventQueueThread.set(Thread.currentThread());
 						if (send) {
 							sendEventsAsync(job);
+							return;
 						}
-						job.eventQueueThread.set(null);
-						return;
+						// if !send wait until queue empty:
+						if (job.eventQueue.isEmpty()) {
+							return;
+						}
 					} finally {
+						job.eventQueueThread.set(null);
 						job.eventQueueLock.unlock();
 					}
+					// if !send wait until queue empty - let other thread progress while waiting:
+					Thread.yield();
+					Thread.onSpinWait();
+					continue;
 				}
 			} catch (InterruptedException ie) {
 				continue;
@@ -89,7 +99,6 @@ public class JobListeners {
 			Thread eventQueueThread = job.eventQueueThread.get();
 			if (eventQueueThread != null) {
 				setJobListenerTimeout(0);
-				StackTraceElement[] stackTrace = eventQueueThread.getStackTrace();
 				String msg = "IJobChangeListener timeout detected. Further calls to IJobChangeListener may occur in random order and join(family) can return too soon. IJobChangeListener should return within " //$NON-NLS-1$
 						+ timeout
 						+ " ms. IJobChangeListener methods should not block. Possible deadlock."; //$NON-NLS-1$
@@ -98,11 +107,24 @@ public class JobListeners {
 				StringBuilder buf = new StringBuilder(
 						"Thread that is running the IJobChangeListener: " + eventQueueThread.getName()); //$NON-NLS-1$
 				buf.append(System.lineSeparator());
-				for (StackTraceElement stackTraceElement : stackTrace) {
-					buf.append('\t');
-					buf.append("at "); //$NON-NLS-1$
-					buf.append(stackTraceElement);
+				try {
+					StackTraceElement[] stackTrace = eventQueueThread.getStackTrace();
+					for (StackTraceElement stackTraceElement : stackTrace) {
+						buf.append('\t');
+						buf.append("at "); //$NON-NLS-1$
+						buf.append(stackTraceElement);
+						buf.append(System.lineSeparator());
+					}
 					buf.append(System.lineSeparator());
+					buf.append("All thread infos: "); //$NON-NLS-1$
+					ThreadInfo[] infos = ManagementFactory.getThreadMXBean().dumpAllThreads(true, true);
+					buf.append(System.lineSeparator());
+					for (ThreadInfo info : infos) {
+						buf.append(info);
+					}
+				} catch (UnsupportedOperationException | SecurityException e) {
+					// Stacktrace not available
+					buf.append(e);
 				}
 				Status child = new Status(IStatus.ERROR, JobManager.PI_JOBS, JobManager.PLUGIN_ERROR, buf.toString(),
 						null);
