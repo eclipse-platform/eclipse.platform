@@ -33,6 +33,16 @@ pipeline {
 					junit '**/target/surefire-reports/TEST-*.xml'
 					publishIssues issues:[scanForIssues(tool: java()), scanForIssues(tool: mavenConsole())]
 				}
+				failure {
+					script {
+						if (env.BRANCH_NAME == 'master') {
+				            emailext body: "Please go to <a href='${BUILD_URL}console'>${BUILD_URL}console</a> and check the build failure.<br><br>",
+				            subject: "eclipse.platform.ua  master build - BUILD FAILED", 
+				            to: "platform-dev@eclipse.org	",
+				            from:"genie.releng@eclipse.org"
+			            }
+		            }
+		        }
 			}
 		}
 	}
