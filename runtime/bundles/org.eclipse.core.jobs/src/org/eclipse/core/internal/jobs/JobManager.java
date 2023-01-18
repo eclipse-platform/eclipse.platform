@@ -145,7 +145,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	/**
 	 * A job listener to check for the cancellation and completion of the job groups.
 	 */
-	private final IJobChangeListener jobGroupUpdater = new JobGroupUpdater();
+	private final IJobChangeListener jobGroupUpdater = IJobChangeListener.onDone(this::updateJobGroup);
 
 	private final LockManager lockManager = new LockManager();
 
@@ -1883,65 +1883,65 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * Listens for the job completion events and checks for the job group cancellation,
 	 * computes and logs the group result.
 	 */
-	private class JobGroupUpdater extends JobChangeAdapter {
+	private void updateJobGroup(IJobChangeEvent event) {
+		InternalJob job = event.getJob();
+		InternalJobGroup jobGroup = job.getJobGroup();
+		if (jobGroup == null)
+			return;
+		IStatus jobResult = event.getResult();
+		boolean reschedule = ((JobChangeEvent) event).reschedule;
 
-		@Override
-		public void done(IJobChangeEvent event) {
-			InternalJob job = event.getJob();
-			InternalJobGroup jobGroup = job.getJobGroup();
-			if (jobGroup == null)
-				return;
-			IStatus jobResult = event.getResult();
-			boolean reschedule = ((JobChangeEvent) event).reschedule;
-
-			int jobGroupState;
-			int activeJobsCount;
-			int failedJobsCount;
-			int canceledJobsCount;
-			int seedJobsRemainingCount;
-			List<IStatus> jobResults = Collections.emptyList();
-			synchronized (lock) {
-				// Collect the required details to check for the group cancellation and completion
-				// outside the synchronized block.
-				jobGroupState = jobGroup.getState();
-				activeJobsCount = jobGroup.getActiveJobsCount();
-				failedJobsCount = jobGroup.getFailedJobsCount();
-				canceledJobsCount = jobGroup.getCanceledJobsCount();
-				seedJobsRemainingCount = jobGroup.getSeedJobsRemainingCount();
-				if (activeJobsCount == 0)
-					jobResults = jobGroup.getCompletedJobResults();
-			}
-
-			// Check for the group completion.
-			if (!reschedule && jobGroupState != JobGroup.NONE && activeJobsCount == 0 && (seedJobsRemainingCount <= 0 || jobGroupState == JobGroup.CANCELING)) {
-				// Must perform this outside the sync block to avoid a potential deadlock
-				MultiStatus jobGroupResult = jobGroup.computeGroupResult(jobResults);
-				Assert.isLegal(jobGroupResult != null, "The group result should not be null"); //$NON-NLS-1$
-				boolean isJobGroupCompleted = false;
-				synchronized (lock) {
-					// If more jobs were added to the group while were computing the result, the job group
-					// remains in the ACTIVE state and the computed result is discarded to be recomputed later,
-					// after the new jobs finish.
-					if (jobGroup.getState() != JobGroup.NONE && jobGroup.getActiveJobsCount() == 0) {
-						jobGroup.endJobGroup(jobGroupResult);
-						isJobGroupCompleted = true;
-					}
-				}
-
-				// If the job group is completing, add the job group's status to the event
-				// and log errors and warnings.
-				if (isJobGroupCompleted) {
-					((JobChangeEvent) event).jobGroupResult = jobGroupResult;
-					if (jobGroupResult.matches(IStatus.ERROR | IStatus.WARNING))
-						RuntimeLog.log(jobGroupResult);
-				}
-
-				return;
-			}
-
-			if (jobGroupState != JobGroup.CANCELING && jobGroup.shouldCancel(jobResult, failedJobsCount, canceledJobsCount))
-				cancel(jobGroup, true);
+		int jobGroupState;
+		int activeJobsCount;
+		int failedJobsCount;
+		int canceledJobsCount;
+		int seedJobsRemainingCount;
+		List<IStatus> jobResults = Collections.emptyList();
+		synchronized (lock) {
+			// Collect the required details to check for the group cancellation and
+			// completion
+			// outside the synchronized block.
+			jobGroupState = jobGroup.getState();
+			activeJobsCount = jobGroup.getActiveJobsCount();
+			failedJobsCount = jobGroup.getFailedJobsCount();
+			canceledJobsCount = jobGroup.getCanceledJobsCount();
+			seedJobsRemainingCount = jobGroup.getSeedJobsRemainingCount();
+			if (activeJobsCount == 0)
+				jobResults = jobGroup.getCompletedJobResults();
 		}
+
+		// Check for the group completion.
+		if (!reschedule && jobGroupState != JobGroup.NONE && activeJobsCount == 0
+				&& (seedJobsRemainingCount <= 0 || jobGroupState == JobGroup.CANCELING)) {
+			// Must perform this outside the sync block to avoid a potential deadlock
+			MultiStatus jobGroupResult = jobGroup.computeGroupResult(jobResults);
+			Assert.isLegal(jobGroupResult != null, "The group result should not be null"); //$NON-NLS-1$
+			boolean isJobGroupCompleted = false;
+			synchronized (lock) {
+				// If more jobs were added to the group while were computing the result, the job
+				// group
+				// remains in the ACTIVE state and the computed result is discarded to be
+				// recomputed later,
+				// after the new jobs finish.
+				if (jobGroup.getState() != JobGroup.NONE && jobGroup.getActiveJobsCount() == 0) {
+					jobGroup.endJobGroup(jobGroupResult);
+					isJobGroupCompleted = true;
+				}
+			}
+
+			// If the job group is completing, add the job group's status to the event
+			// and log errors and warnings.
+			if (isJobGroupCompleted) {
+				((JobChangeEvent) event).jobGroupResult = jobGroupResult;
+				if (jobGroupResult.matches(IStatus.ERROR | IStatus.WARNING))
+					RuntimeLog.log(jobGroupResult);
+			}
+
+			return;
+		}
+
+		if (jobGroupState != JobGroup.CANCELING && jobGroup.shouldCancel(jobResult, failedJobsCount, canceledJobsCount))
+			cancel(jobGroup, true);
 	}
 
 	/** for debugging only **/
