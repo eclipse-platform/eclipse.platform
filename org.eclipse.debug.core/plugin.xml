@@ -9,14 +9,14 @@
      https://www.eclipse.org/legal/epl-2.0/
 
      SPDX-License-Identifier: EPL-2.0
-    
+
      Contributors:
          IBM Corporation - initial API and implementation
  -->
 
 <plugin>
 
-    
+
 <!-- Extension points -->
    <extension-point id="breakpoints" name="%breakpointExtensionPointName" schema="schema/breakpoints.exsd"/>
    <extension-point id="launchConfigurationComparators" name="%launchConfigurationComparatorsExtensionPointName" schema="schema/launchConfigurationComparators.exsd"/>
@@ -79,6 +79,10 @@
             type="text"
             extension="launch">
       </fileTypes>
+      <fileTypes
+            type="text"
+            extension="prototype">
+      </fileTypes>
    </extension>
    <extension
          point="org.eclipse.debug.core.launchModes">
@@ -98,7 +102,7 @@
             mode="profile">
       </launchMode>
    </extension>
-<!-- Dynamic (String Substitution) Variables -->	
+<!-- Dynamic (String Substitution) Variables -->
    <extension
          point="org.eclipse.core.variables.dynamicVariables">
       <variable
@@ -120,7 +124,7 @@
             description="%workspace_loc.description"
             name="workspace_loc"
             resolver="org.eclipse.debug.internal.core.variables.WorkspaceResolver">
-      </variable>      
+      </variable>
       <variable
             name="project_loc"
             description="%project_loc.description"
@@ -171,11 +175,11 @@
             name="current_date"
             resolver="org.eclipse.debug.internal.core.variables.DateTimeResolver"
             supportsArgument="true">
-      </variable>       
+      </variable>
    </extension>
-   
+
 <!-- ====================== -->
-<!--  source containers     -->                        					 
+<!--  source containers     -->
 <!-- ====================== -->
    <extension
          point="org.eclipse.debug.core.sourceContainerTypes">
@@ -202,29 +206,29 @@
             class="org.eclipse.debug.internal.core.sourcelookup.containers.WorkspaceSourceContainerType"
             id="org.eclipse.debug.core.containerType.workspace"
             description="%containerDescription.workspace">
-      </sourceContainerType>      
+      </sourceContainerType>
       <sourceContainerType
             name="%containerName.default"
 			class="org.eclipse.debug.internal.core.sourcelookup.containers.DefaultSourceContainerType"
             id="org.eclipse.debug.core.containerType.default"
             description="%containerDescription.default">
-      </sourceContainerType>    
+      </sourceContainerType>
       <sourceContainerType
             name="%containerName.archive"
 			class="org.eclipse.debug.internal.core.sourcelookup.containers.ArchiveSourceContainerType"
             id="org.eclipse.debug.core.containerType.archive"
             description="%containerDescription.archive">
-      </sourceContainerType>      
+      </sourceContainerType>
       <sourceContainerType
             name="%containerName.externalArchive"
 			class="org.eclipse.debug.internal.core.sourcelookup.containers.ExternalArchiveSourceContainerType"
             id="org.eclipse.debug.core.containerType.externalArchive"
             description="%containerDescription.externalArchive">
-      </sourceContainerType>      
+      </sourceContainerType>
    </extension>
-   
+
 <!-- ===================================== -->
-<!--  launch configuration comparators     -->                        					 
+<!--  launch configuration comparators     -->
 <!-- ===================================== -->
    <extension
          point="org.eclipse.debug.core.launchConfigurationComparators">
@@ -250,7 +254,7 @@
    </extension>
 
 <!-- ===================================== -->
-<!--  property testers 					   -->                        					 
+<!--  property testers 					   -->
 <!-- ===================================== -->
 	<extension point="org.eclipse.core.expressions.propertyTesters">
 	  <propertyTester
@@ -258,8 +262,8 @@
 			properties="launchable"
 			type="java.lang.Object"
 			class="org.eclipse.debug.internal.core.LaunchablePropertyTester"
-			id="org.eclipse.debug.core.propertyTesters.launchable">		
-	  </propertyTester>  
+			id="org.eclipse.debug.core.propertyTesters.launchable">
+	  </propertyTester>
 	</extension>
  <extension
        point="org.eclipse.debug.core.launchDelegates">
@@ -287,6 +291,13 @@
           file-extensions="launch"
           id="org.eclipse.debug.core.launch"
           name="%LaunchConfiguration"
+          priority="normal">
+    </content-type>
+    <content-type
+          base-type="org.eclipse.debug.core.launch"
+          file-extensions="prototype"
+          id="org.eclipse.debug.core.launch.prototype"
+          name="%LaunchConfigurationPrototype"
           priority="normal">
     </content-type>
  </extension>
