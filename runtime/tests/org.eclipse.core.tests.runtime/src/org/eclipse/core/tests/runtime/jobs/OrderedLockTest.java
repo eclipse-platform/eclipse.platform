@@ -15,6 +15,8 @@ package org.eclipse.core.tests.runtime.jobs;
 
 import static org.junit.Assert.assertTrue;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
@@ -291,21 +293,29 @@ public class OrderedLockTest {
 			thread.start();
 		}
 		randomOrder.waitForEnd();
-		long joinMillis = 5000;
+		long maxNano = System.nanoTime() + 5000 * 1_000_000;
 		for (Thread thread : threads) {
 			try {
-				long n0 = System.nanoTime();
-				thread.join(joinMillis);
-				long n1 = System.nanoTime();
-				joinMillis = Math.max(joinMillis - (n1 - n0) / 1000_000, 1);
-				if (thread.isAlive()) {
-					throw new IllegalStateException("thread did not end");
+				long joinMs = (maxNano - System.nanoTime()) / 1_000_000;
+				thread.join(Math.max(joinMs, 1));
+				if (thread.isAlive() || joinMs < 0) {
+					throw new IllegalStateException(
+							"Threads did not end in time. All thread infos begin: ----\n" + getThreadDump()
+									+ "---- All thread infos end.\n");
 
 				}
 			} catch (InterruptedException e) {
 				throw new IllegalStateException("interrupted");
 			}
 		}
+	}
+
+	public static String getThreadDump() {
+		StringBuilder b = new StringBuilder();
+		for (ThreadInfo info : ManagementFactory.getThreadMXBean().dumpAllThreads(true, true)) {
+			b.append(info);
+		}
+		return b.toString();
 	}
 
 }
