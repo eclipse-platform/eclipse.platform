@@ -14,6 +14,7 @@
 package org.eclipse.compare.tests;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.compare.internal.DocLineComparator;
@@ -256,6 +257,56 @@ public class DiffTest {
 		assertTrue(result[0].leftLength() == 1);
 		assertTrue(result[0].rightStart() == 2);
 		assertTrue(result[0].rightLength() == 0);
+	}
+
+	@Test
+	public void testBlockAdditionCommonHeadAndTail() {
+		String s1 = "{" + SEPARATOR + "a" + SEPARATOR + "}" + SEPARATOR;
+		String s2 = "{" + SEPARATOR + "b" + SEPARATOR + "}" + SEPARATOR;
+		String s3 = "{" + SEPARATOR + "c" + SEPARATOR + "}";
+		TextLineLCS.TextLine[] l1 = TextLineLCS.getTextLines(s1 + s3);
+		TextLineLCS.TextLine[] l2 = TextLineLCS.getTextLines(s1 + s2 + s3);
+		TextLineLCS lcs = new TextLineLCS(l1, l2);
+		lcs.longestCommonSubsequence(SubMonitor.convert(null, 100));
+		TextLineLCS.TextLine[][] result = lcs.getResult();
+		assertEquals(6, result[1].length);
+		assertEquals(6, result[0].length);
+		for (int i = 0; i < result[0].length; i++) {
+			assertTrue(result[0][i].sameText(result[1][i]));
+			assertEquals(i, result[0][i].lineNumber());
+		}
+
+		assertEquals(0, result[1][0].lineNumber());
+		assertEquals(1, result[1][1].lineNumber());
+		assertEquals(5, result[1][2].lineNumber()); // was 2
+		assertEquals(6, result[1][3].lineNumber()); // was 3
+		assertEquals(7, result[1][4].lineNumber());
+		assertEquals(8, result[1][5].lineNumber());
+	}
+
+	@Test
+	public void testBlockAdditionNoCommonHeadOrTail() {
+		String s1 = "{" + SEPARATOR + "a" + SEPARATOR + "}" + SEPARATOR;
+		String s2 = "{" + SEPARATOR + "b" + SEPARATOR + "}" + SEPARATOR;
+		String s3 = "{" + SEPARATOR + "c" + SEPARATOR + "}";
+		TextLineLCS.TextLine[] l1 = TextLineLCS.getTextLines("x" + SEPARATOR + s1 + s3 + SEPARATOR + "y");
+		TextLineLCS.TextLine[] l2 = TextLineLCS.getTextLines("y" + SEPARATOR + s1 + s2 + s3 + SEPARATOR + "x");
+		TextLineLCS lcs = new TextLineLCS(l1, l2);
+		lcs.longestCommonSubsequence(SubMonitor.convert(null, 100));
+		TextLineLCS.TextLine[][] result = lcs.getResult();
+		assertEquals(6, result[1].length);
+		assertEquals(6, result[0].length);
+		for (int i = 0; i < result[0].length; i++) {
+			assertTrue(result[0][i].sameText(result[1][i]));
+			assertEquals(i + 1, result[0][i].lineNumber());
+		}
+
+		assertEquals(1, result[1][0].lineNumber());
+		assertEquals(2, result[1][1].lineNumber());
+		assertEquals(6, result[1][2].lineNumber()); // was 3
+		assertEquals(7, result[1][3].lineNumber()); // was 4
+		assertEquals(8, result[1][4].lineNumber());
+		assertEquals(9, result[1][5].lineNumber());
 	}
 
 }

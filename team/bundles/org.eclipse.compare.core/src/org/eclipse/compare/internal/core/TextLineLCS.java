@@ -69,11 +69,8 @@ public class TextLineLCS extends LCS {
 
 	/**
 	 * This method takes an lcs result interspersed with nulls, compacts it and
-	 * shifts the LCS chunks as far towards the front as possible. This tends to
-	 * produce good results most of the time.
-	 *
-	 * TODO: investigate what to do about comments. shifting either up or down
-	 * hurts them
+	 * shifts the LCS chunks as far towards the end as possible. This tends to
+	 * produce good results most of the time especially for block-structured text.
 	 *
 	 * @param lcsSide A subsequence of original, presumably it is the LCS of it and
 	 *            some other collection of lines
@@ -82,36 +79,36 @@ public class TextLineLCS extends LCS {
 	 *            subsequence
 	 *
 	 * @return The subsequence lcs compacted and chunks shifted towards the
-	 *         front
+	 *         end
 	 */
-	private TextLine[] compactAndShiftLCS(TextLine[] lcsSide, int len,
-			TextLine[] original) {
+	private TextLine[] compactAndShiftLCS(TextLine[] lcsSide, int len, TextLine[] original) {
 		TextLine[] result = new TextLine[len];
 
 		if (len == 0) {
 			return result;
 		}
 
-		int j = 0;
+		int j = lcsSide.length - 1;
 
 		while (lcsSide[j] == null) {
-			j++;
+			j--;
 		}
 
-		result[0] = lcsSide[j];
-		j++;
+		result[len - 1] = lcsSide[j];
+		j--;
 
-		for (int i = 1; i < len; i++) {
+		for (int i = len - 2; i >= 0; i--) {
 			while (lcsSide[j] == null) {
-				j++;
+				j--;
 			}
 
-			if (original[result[i - 1].lineNumber() + 1].sameText(lcsSide[j])) {
-				result[i] = original[result[i - 1].lineNumber() + 1];
+			int k = result[i + 1].lineNumber() - 1;
+			if (original[k].sameText(lcsSide[j])) {
+				result[i] = original[k];
 			} else {
 				result[i] = lcsSide[j];
 			}
-			j++;
+			j--;
 		}
 
 		return result;
