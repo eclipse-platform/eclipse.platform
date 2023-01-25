@@ -1002,7 +1002,7 @@ public class JobTest extends AbstractJobTest {
 	}
 
 	public void testJoinInterruptNonUIThread() throws InterruptedException {
-		final Job job = new TestJob("job", 1000, 100);
+		final Job job = new TestJob("job", 50000, 100);
 		Thread t = new Thread(() -> {
 			job.schedule();
 			try {
