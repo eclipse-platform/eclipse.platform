@@ -55,10 +55,6 @@ public class ExternalToolsUIMessages extends NLS {
 	public static String FileSelectionDialog_Ok_2;
 	public static String FileSelectionDialog_Cancel_3;
 
-	public static String ExternalToolsPreferencePage_External_tool_project_builders_migration_2;
-	public static String ExternalToolsPreferencePage_Prompt_before_migrating_3;
-	public static String ExternalToolsPreferencePage_1;
-
 	public static String EditCommandDialog_0;
 	public static String EditCommandDialog_1;
 	public static String EditCommandDialog_2;
