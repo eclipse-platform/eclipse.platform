@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2004, 2021 IBM Corporation and others.
+ *  Copyright (c) 2004, 2023 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -41,7 +41,7 @@ import org.eclipse.ui.console.IHyperlink;
 @SuppressWarnings("restriction")
 public class SeparateVMTests extends AbstractAntUIBuildTest {
 
-	protected static final String PLUGIN_VERSION = "org.apache.ant_1.10.12"; //$NON-NLS-1$
+	protected static final String PLUGIN_VERSION = "org.apache.ant_1.10.13"; //$NON-NLS-1$
 
 	public SeparateVMTests(String name) {
 		super(name);

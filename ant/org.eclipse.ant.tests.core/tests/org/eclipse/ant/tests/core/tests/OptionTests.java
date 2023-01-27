@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2021 IBM Corporation and others.
+ *  Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -37,8 +37,8 @@ public class OptionTests extends AbstractAntTest {
 
 	protected static final String UNKNOWN_ARG = "Unknown argument: "; //$NON-NLS-1$
 	protected static final String START_OF_HELP = "ant [options] [target [target2 [target3] ...]]"; //$NON-NLS-1$
-	protected static final String VERSION = "Apache Ant(TM) version 1.10.12"; //$NON-NLS-1$
-	protected static final String PLUGIN_VERSION = "org.apache.ant_1.10.12"; //$NON-NLS-1$
+	protected static final String VERSION = "Apache Ant(TM) version 1.10.13"; //$NON-NLS-1$
+	protected static final String PLUGIN_VERSION = "org.apache.ant_1.10.13"; //$NON-NLS-1$
 
 	/**
 	 * Tests the "-help" option
