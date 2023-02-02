@@ -14,6 +14,7 @@
 package org.eclipse.debug.tests;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -111,7 +112,7 @@ public class AbstractDebugTest {
 	 *            exception in case the condition will still return {@code true}
 	 *            after given timeout
 	 */
-	public void waitWhile(Function<AbstractDebugTest, Boolean> condition, long timeout, Function<AbstractDebugTest, String> errorMessage) throws Exception {
+	public void waitWhile(Predicate<AbstractDebugTest> condition, long timeout, Function<AbstractDebugTest, String> errorMessage) throws Exception {
 		TestUtil.waitWhile(condition, this, timeout, errorMessage);
 	}
 
@@ -128,7 +129,7 @@ public class AbstractDebugTest {
 	 *            exception in case the condition will still return {@code true}
 	 *            after given timeout
 	 */
-	public void waitWhile(Function<AbstractDebugTest, Boolean> condition, Function<AbstractDebugTest, String> errorMessage) throws Exception {
+	public void waitWhile(Predicate<AbstractDebugTest> condition, Function<AbstractDebugTest, String> errorMessage) throws Exception {
 		TestUtil.waitWhile(condition, this, testTimeout, errorMessage);
 	}
 

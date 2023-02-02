@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.IStatus;
@@ -120,10 +121,10 @@ public class TestUtil {
 	 *            exception in case the condition will still return {@code true}
 	 *            after given timeout
 	 */
-	public static <T> void waitWhile(Function<T, Boolean> condition, T context, long timeout, Function<T, String> errorMessage) throws Exception {
+	public static <T> void waitWhile(Predicate<T> condition, T context, long timeout, Function<T, String> errorMessage) throws Exception {
 		long start = System.currentTimeMillis();
 		Display display = Display.getCurrent();
-		while (System.currentTimeMillis() - start < timeout && condition.apply(context)) {
+		while (System.currentTimeMillis() - start < timeout && condition.test(context)) {
 			if (display != null && !display.isDisposed()) {
 				if (!display.readAndDispatch()) {
 					Thread.sleep(0);
@@ -132,7 +133,7 @@ public class TestUtil {
 				Thread.sleep(5);
 			}
 		}
-		Boolean stillTrue = condition.apply(context);
+		Boolean stillTrue = condition.test(context);
 		if (stillTrue) {
 			fail(errorMessage.apply(context));
 		}
