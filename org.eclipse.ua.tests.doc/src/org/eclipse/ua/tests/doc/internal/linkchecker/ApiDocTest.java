@@ -142,8 +142,7 @@ public class ApiDocTest {
 			IUAElement[] children = toc.getChildren();
 			for (IUAElement child : children) {
 				for (IUAElement child2 : child.getChildren()) {
-					if (child2 instanceof IHelpResource) {
-						IHelpResource topic = (IHelpResource) child2;
+					if (child2 instanceof IHelpResource topic) {
 						String href = topic.getHref();
 						if (href != null) {
 							if (href.startsWith(REFERENCE_EXTENSION_POINTS)) {

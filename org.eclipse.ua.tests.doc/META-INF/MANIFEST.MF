@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.ua.tests.doc;singleton:=true
-Bundle-Version: 1.1.600.qualifier
+Bundle-Version: 1.2.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.equinox.http.registry;bundle-version="1.0.200",
@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.ui,
  org.junit;bundle-version="3.8.2",
  org.eclipse.equinox.simpleconfigurator.manipulator;bundle-version="2.0.100",
  org.eclipse.equinox.frameworkadmin;bundle-version="2.0.200"
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.servlet;version="3.1.0",
  javax.servlet.http;version="3.1.0"
