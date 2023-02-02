@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 public class TestServerManager {
 
 	private static JettyTestServer[] server = new JettyTestServer[2];
-	private static boolean serverRunning[] = new boolean[] { false, false };
+	private static boolean serverRunning[] = { false, false };
 
 	private static JettyTestServer getHelpServer(int index) {
 		if (server[index] == null) {

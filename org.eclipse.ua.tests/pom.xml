@@ -42,11 +42,6 @@
 	            </requirement>
 	            <requirement>
 	              <type>eclipse-plugin</type>
-	              <id>org.eclipse.jdt.core</id>
-	              <versionRange>0.0.0</versionRange>
-	            </requirement>
-	            <requirement>
-	              <type>eclipse-plugin</type>
 	              <id>org.eclipse.help.ui</id>
 	              <versionRange>0.0.0</versionRange>
 	            </requirement>
@@ -60,6 +55,16 @@
 	              <id>org.eclipse.platform</id>
 	              <versionRange>0.0.0</versionRange>
 	            </requirement>
+	             <requirement>
+	              <type>eclipse-plugin</type>
+	              <id>org.eclipse.jdt.core.compiler.batch</id>
+	              <versionRange>0.0.0</versionRange>
+	            </requirement>
+				<requirement>
+					<type>eclipse-plugin</type>
+					<id>org.apache.jasper.glassfish</id>
+					<versionRange>0.0.0</versionRange>
+				</requirement>
 	          </extraRequirements>
 	      </dependency-resolution>
         </configuration>
