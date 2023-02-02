@@ -24,26 +24,24 @@ more.
 
 The project maintains the following source code repositories
 
-* http://git.eclipse.org/c/platform/eclipse.platform.common.git
-* http://git.eclipse.org/c/platform/eclipse.platform.debug.git
-* http://git.eclipse.org/c/platform/eclipse.platform.git
-* http://git.eclipse.org/c/platform/eclipse.platform.releng.aggregator.git
-* http://git.eclipse.org/c/platform/eclipse.platform.releng.buildtools.git
-* http://git.eclipse.org/c/platform/eclipse.platform.releng.git
-* http://git.eclipse.org/c/platform/eclipse.platform.resources.git
-* http://git.eclipse.org/c/platform/eclipse.platform.runtime.git
-* http://git.eclipse.org/c/platform/eclipse.platform.swt.git
-* http://git.eclipse.org/c/platform/eclipse.platform.swt.binaries.git
-* http://git.eclipse.org/c/platform/eclipse.platform.team.git
-* http://git.eclipse.org/c/platform/eclipse.platform.text.git
-* http://git.eclipse.org/c/platform/eclipse.platform.ua.git
-* http://git.eclipse.org/c/platform/eclipse.platform.ui.git
-* http://git.eclipse.org/c/platform/eclipse.platform.ui.tools.git
+* https://github.com/eclipse-platform/eclipse.platform.common
+* https://github.com/eclipse-platform/eclipse.platform.debug
+* https://github.com/eclipse-platform/eclipse.platform
+* https://github.com/eclipse-platform/eclipse.platform.releng.aggregator
+* https://github.com/eclipse-platform/eclipse.platform.releng.buildtools
+* https://github.com/eclipse-platform/eclipse.platform.releng
+* https://github.com/eclipse-platform/eclipse.platform.swt
+* https://github.com/eclipse-platform/eclipse.platform.swt.binaries
+* https://github.com/eclipse-platform/eclipse.platform.text
+* https://github.com/eclipse-platform/eclipse.platform.ua
+* https://github.com/eclipse-platform/eclipse.platform.ui
+* https://github.com/eclipse-platform/eclipse.platform.ui.tools
 
-This project uses Bugzilla to track ongoing development and issues.
+This project uses Github to track ongoing development and issues.
 
-* Search for issues: https://eclipse.org/bugs/buglist.cgi?product=Platform
-* Create a new report: https://eclipse.org/bugs/enter_bug.cgi?product=Platform
+```
+https://github.com/issues?user=eclipse-platform
+```
 
 Be sure to search for existing bugs before you create another one. Remember that
 contributions are always welcome!
