@@ -15,7 +15,7 @@
 package org.eclipse.ua.tests.help.remote;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
 
 import java.net.URL;
@@ -122,7 +122,7 @@ public class GetContentUsingRemoteHelp {
 		String remoteContent1 = RemoteTestUtils.createMockContent(plugin, path, "en", port1);
 
 		assertEquals(remoteContent0, helpContent);
-		assertFalse(remoteContent1.equals(helpContent));
+		assertNotEquals(remoteContent1, helpContent);
 
 	}
 
@@ -147,7 +147,7 @@ public class GetContentUsingRemoteHelp {
 
 
 		assertEquals(remoteContent1, helpContent);
-		assertFalse(remoteContent0.equals(helpContent));
+		assertNotEquals(remoteContent0, helpContent);
 
 	}
 
