@@ -556,7 +556,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 					sp.doneSaving(saveContext);
 				}
 			}
-		};
+		}
 
 		// make sure the perspective manager is created
 		// and be the first debug event listener
