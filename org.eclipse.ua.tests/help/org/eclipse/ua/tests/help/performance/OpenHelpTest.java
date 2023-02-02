@@ -32,8 +32,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.PerformanceTestCase;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ui.PlatformUI;
+import org.osgi.framework.FrameworkUtil;
 
 public class OpenHelpTest extends PerformanceTestCase {
 
@@ -139,7 +139,7 @@ public class OpenHelpTest extends PerformanceTestCase {
 	private static class TestTocFileProvider extends TocFileProvider {
 		@Override
 		protected TocFile[] getTocFiles(String locale) {
-			String id = UserAssistanceTestPlugin.getPluginId();
+			String id = FrameworkUtil.getBundle(getClass()).getSymbolicName();
 			String nl = Platform.getNL();
 			return new TocFile[] {
 				new TocFile(id, "data/help/performance/org.eclipse.jdt.doc.isv/toc.xml", true, nl, null, null),

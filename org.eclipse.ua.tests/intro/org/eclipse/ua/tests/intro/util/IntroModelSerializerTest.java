@@ -25,7 +25,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.ui.internal.HelpUIPlugin;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ua.tests.util.XHTMLUtil;
 import org.eclipse.ui.internal.intro.impl.model.AbstractIntroPage;
@@ -36,6 +35,8 @@ import org.eclipse.ui.internal.intro.impl.model.loader.ExtensionPointManager;
 import org.eclipse.ui.internal.intro.impl.presentations.BrowserIntroPartImplementation;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /*
  * A utility for regenerating the _expected.txt files that contain the expected
@@ -72,12 +73,13 @@ public class IntroModelSerializerTest {
 		 * Serialize the test intros.
 		 */
 		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.ui.intro.config");
+		Bundle bundle = FrameworkUtil.getBundle(IntroModelSerializerTest.class);
 		for (IConfigurationElement element : elements) {
 			/*
 			 * Only use the ones from this test plugin.
 			 */
-			if (element.getDeclaringExtension().getContributor().getName().equals(UserAssistanceTestPlugin.getDefault().getBundle().getSymbolicName())) {
-				String pluginRoot = UserAssistanceTestPlugin.getDefault().getBundle().getLocation().substring("update@".length());
+			if (element.getDeclaringExtension().getContributor().getName().equals(bundle.getSymbolicName())) {
+				String pluginRoot = bundle.getLocation().substring("update@".length());
 				String content = element.getAttribute("content");
 				String id = element.getAttribute("id");
 

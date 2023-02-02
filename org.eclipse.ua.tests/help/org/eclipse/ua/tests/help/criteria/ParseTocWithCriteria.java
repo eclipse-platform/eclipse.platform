@@ -41,8 +41,8 @@ import org.eclipse.help.internal.toc.TocFileParser;
 import org.eclipse.ua.tests.help.other.UserCriteria;
 import org.eclipse.ua.tests.help.other.UserToc2;
 import org.eclipse.ua.tests.help.other.UserTopic2;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
 
 public class ParseTocWithCriteria {
@@ -52,7 +52,7 @@ public class ParseTocWithCriteria {
 		IToc toc;
 		TocFileParser parser = new TocFileParser();
 		TocContribution cToc = parser.parse(new TocFile(
-				UserAssistanceTestPlugin.getPluginId(), filename, true, "en",
+				FrameworkUtil.getBundle(getClass()).getSymbolicName(), filename, true, "en",
 				null, null));
 		toc = cToc.getToc();
 		return (IToc2) toc;

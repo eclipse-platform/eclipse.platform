@@ -16,13 +16,13 @@ package org.eclipse.ua.tests.intro.performance;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.PerformanceTestCase;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.intro.impl.model.loader.ExtensionPointManager;
 import org.eclipse.ui.intro.IIntroManager;
 import org.eclipse.ui.intro.IIntroPart;
 import org.eclipse.ui.intro.config.CustomizableIntroPart;
+import org.osgi.framework.FrameworkUtil;
 
 public class OpenIntroTest extends PerformanceTestCase {
 
@@ -32,7 +32,7 @@ public class OpenIntroTest extends PerformanceTestCase {
 		closeIntro();
 		// test extensions filter by this system property
 		System.setProperty("org.eclipse.ua.tests.property.isTesting", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-		ExtensionPointManager.getInst().setExtensionFilter(UserAssistanceTestPlugin.getPluginId());
+		ExtensionPointManager.getInst().setExtensionFilter(FrameworkUtil.getBundle(getClass()).getSymbolicName());
 	}
 
 	@Override

@@ -24,13 +24,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.ResourceFinder;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheet;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
 import org.eclipse.ui.internal.cheatsheets.data.ICheatSheet;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 public class NoError {
 	private static final String NO_ERROR_FOLDER = "data/cheatsheet/no_error/";
@@ -44,9 +44,9 @@ public class NoError {
 	}
 
 	private ICheatSheet parseTestFile(String path) {
-		URL testURL = ResourceFinder.findFile(UserAssistanceTestPlugin.getDefault(),
-							path);
-		return parser.parse(testURL, UserAssistanceTestPlugin.getPluginId(), CheatSheetParser.SIMPLE_ONLY);
+		URL testURL = ResourceFinder.findFile(FrameworkUtil.getBundle(NoError.class), path);
+		return parser.parse(testURL, FrameworkUtil.getBundle(getClass()).getSymbolicName(),
+				CheatSheetParser.SIMPLE_ONLY);
 	}
 
 	@Test

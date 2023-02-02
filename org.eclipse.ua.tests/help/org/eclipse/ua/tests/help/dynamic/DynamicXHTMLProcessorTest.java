@@ -27,11 +27,11 @@ import javax.xml.transform.TransformerException;
 
 import org.eclipse.help.internal.xhtml.DynamicXHTMLProcessor;
 import org.eclipse.help.ui.internal.HelpUIPlugin;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.XMLUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
 
 public class DynamicXHTMLProcessorTest {
@@ -43,7 +43,7 @@ public class DynamicXHTMLProcessorTest {
 	}
 
 	private String process(String path) throws Exception {
-		Bundle bundle = UserAssistanceTestPlugin.getDefault().getBundle();
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
 		try (InputStream is = getProcessedInput(path, bundle)) {
 			return readStream(is);
 		}

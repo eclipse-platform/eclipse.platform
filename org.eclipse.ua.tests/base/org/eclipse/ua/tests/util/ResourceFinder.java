@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Plugin;
+import org.osgi.framework.Bundle;
 
 /*
  * Utility methods for finding resources.
@@ -34,16 +34,16 @@ public class ResourceFinder {
 	/*
 	 * Finds the specified file in the given plugin and returns a URL to it.
 	 */
-	public static URL findFile(Plugin plugin, String path) {
-		return FileLocator.find(plugin.getBundle(),  new Path(path), null);
+	public static URL findFile(Bundle plugin, String path) {
+		return FileLocator.find(plugin, new Path(path), null);
 	}
 
 	/*
 	 * Finds and returns URLs to all files in the plugin directory under the given
 	 * folder with the given suffix. Can also recursively traverse all subfolders.
 	 */
-	public static URL[] findFiles(Plugin plugin, String folder, String suffix, boolean recursive) {
-		String fullLocation = plugin.getBundle().getLocation();
+	public static URL[] findFiles(Bundle plugin, String folder, String suffix, boolean recursive) {
+		String fullLocation = plugin.getLocation();
 		String location = fullLocation.substring(fullLocation.indexOf('@') + 1);
 		IPath path = new Path(location).append(folder);
 		File file = path.toFile();

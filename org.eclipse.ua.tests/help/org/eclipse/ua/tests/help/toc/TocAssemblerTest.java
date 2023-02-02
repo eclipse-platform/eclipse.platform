@@ -28,17 +28,19 @@ import org.eclipse.help.internal.toc.TocAssembler;
 import org.eclipse.help.internal.toc.TocContribution;
 import org.eclipse.help.internal.toc.TocFile;
 import org.eclipse.help.internal.toc.TocFileParser;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.XMLUtil;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 public class TocAssemblerTest {
 	@Test
 	public void testAssemble() throws Exception {
 		TocFileParser parser = new TocFileParser();
-		TocContribution b = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/b.xml", true, "en", null, null));
-		TocContribution c = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/c.xml", true, "en", null, null));
-		TocContribution result_b_c = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/result_b_c.xml", true, "en", null, null));
+		String bsn = FrameworkUtil.getBundle(getClass()).getSymbolicName();
+		TocContribution b = parser.parse(new TocFile(bsn, "data/help/toc/assembler/b.xml", true, "en", null, null));
+		TocContribution c = parser.parse(new TocFile(bsn, "data/help/toc/assembler/c.xml", true, "en", null, null));
+		TocContribution result_b_c = parser
+				.parse(new TocFile(bsn, "data/help/toc/assembler/result_b_c.xml", true, "en", null, null));
 
 		TocAssembler assembler = new TocAssembler();
 		List<TocContribution> contributions = new ArrayList<>(Arrays.asList(b, c));
@@ -48,11 +50,12 @@ public class TocAssemblerTest {
 		String actual = serialize(contributions.get(0));
 		XMLUtil.assertXMLEquals("Assembled TOC did not match expected result", expected, actual);
 
-		TocContribution a = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/a.xml", true, "en", null, null));
-		b = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/b.xml", true, "en", null, null));
-		c = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/c.xml", true, "en", null, null));
-		TocContribution d = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/d.xml", false, "en", null, null));
-		TocContribution result_a_b_c_d = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/result_a_b_c_d.xml", true, "en", null, null));
+		TocContribution a = parser.parse(new TocFile(bsn, "data/help/toc/assembler/a.xml", true, "en", null, null));
+		b = parser.parse(new TocFile(bsn, "data/help/toc/assembler/b.xml", true, "en", null, null));
+		c = parser.parse(new TocFile(bsn, "data/help/toc/assembler/c.xml", true, "en", null, null));
+		TocContribution d = parser.parse(new TocFile(bsn, "data/help/toc/assembler/d.xml", false, "en", null, null));
+		TocContribution result_a_b_c_d = parser
+				.parse(new TocFile(bsn, "data/help/toc/assembler/result_a_b_c_d.xml", true, "en", null, null));
 
 		contributions = new ArrayList<>(Arrays.asList(a, b, c, d));
 		contributions = assembler.assemble(contributions);
@@ -66,9 +69,13 @@ public class TocAssemblerTest {
 	@Test
 	public void testInvalidLinkTo() throws Exception {
 		TocFileParser parser = new TocFileParser();
-		TocContribution linkTo1 = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/linkTo1.xml", true, "en", null, null));
-		TocContribution linkTo2 = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/linkTo2.xml", true, "en", null, null));
-		TocContribution linkTo3 = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/linkTo3.xml", true, "en", null, null));
+		String bsn = FrameworkUtil.getBundle(getClass()).getSymbolicName();
+		TocContribution linkTo1 = parser
+				.parse(new TocFile(bsn, "data/help/toc/assembler/linkTo1.xml", true, "en", null, null));
+		TocContribution linkTo2 = parser
+				.parse(new TocFile(bsn, "data/help/toc/assembler/linkTo2.xml", true, "en", null, null));
+		TocContribution linkTo3 = parser
+				.parse(new TocFile(bsn, "data/help/toc/assembler/linkTo3.xml", true, "en", null, null));
 
 		TocAssembler assembler = new TocAssembler();
 		List<TocContribution> contributions = new ArrayList<>(Arrays.asList(linkTo1, linkTo2, linkTo3));
@@ -79,8 +86,9 @@ public class TocAssemblerTest {
 	@Test
 	public void testHrefMap() throws Exception {
 		TocFileParser parser = new TocFileParser();
-		TocContribution b = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/b.xml", true, "en", null, null));
-		TocContribution c = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/c.xml", true, "en", null, null));
+		String bsn = FrameworkUtil.getBundle(getClass()).getSymbolicName();
+		TocContribution b = parser.parse(new TocFile(bsn, "data/help/toc/assembler/b.xml", true, "en", null, null));
+		TocContribution c = parser.parse(new TocFile(bsn, "data/help/toc/assembler/c.xml", true, "en", null, null));
 		TocAssembler assembler = new TocAssembler();
 		List<TocContribution> contributions = new ArrayList<>(Arrays.asList(b, c));
 		contributions = assembler.assemble(contributions);

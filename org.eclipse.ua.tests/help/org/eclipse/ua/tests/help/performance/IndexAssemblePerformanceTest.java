@@ -28,7 +28,7 @@ import org.eclipse.help.internal.index.IndexFile;
 import org.eclipse.help.internal.index.IndexFileParser;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.PerformanceTestCase;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
+import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
 
 public class IndexAssemblePerformanceTest extends PerformanceTestCase {
@@ -57,9 +57,10 @@ public class IndexAssemblePerformanceTest extends PerformanceTestCase {
 	private void assembleIndex() throws IOException, SAXException,
 			ParserConfigurationException {
 		IndexFileParser parser = new IndexFileParser();
-		IndexContribution a = parser.parse(new IndexFile(UserAssistanceTestPlugin.getPluginId(), "data/help/performance/index/index1.xml", "en"));
-		IndexContribution b = parser.parse(new IndexFile(UserAssistanceTestPlugin.getPluginId(), "data/help/performance/index/index2.xml", "en"));
-		IndexContribution c = parser.parse(new IndexFile(UserAssistanceTestPlugin.getPluginId(), "data/help/performance/index/index3.xml", "en"));
+		String bsn = FrameworkUtil.getBundle(getClass()).getSymbolicName();
+		IndexContribution a = parser.parse(new IndexFile(bsn, "data/help/performance/index/index1.xml", "en"));
+		IndexContribution b = parser.parse(new IndexFile(bsn, "data/help/performance/index/index2.xml", "en"));
+		IndexContribution c = parser.parse(new IndexFile(bsn, "data/help/performance/index/index3.xml", "en"));
 		IndexAssembler assembler = new IndexAssembler();
 		List<IndexContribution> contributions = new ArrayList<>(Arrays.asList(a, b, c));
 		Index assembled = assembler.assemble(contributions, Platform.getNL());

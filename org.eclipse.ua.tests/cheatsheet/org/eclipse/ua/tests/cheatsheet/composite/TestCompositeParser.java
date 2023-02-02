@@ -27,7 +27,6 @@ import java.util.Dictionary;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ua.tests.cheatsheet.util.StatusCheck;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.ResourceFinder;
 import org.eclipse.ui.internal.cheatsheets.composite.model.AbstractTask;
 import org.eclipse.ui.internal.cheatsheets.composite.model.CompositeCheatSheetModel;
@@ -35,6 +34,7 @@ import org.eclipse.ui.internal.cheatsheets.composite.model.EditableTask;
 import org.eclipse.ui.internal.cheatsheets.composite.parser.CompositeCheatSheetParser;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 public class TestCompositeParser {
 
@@ -47,8 +47,8 @@ public class TestCompositeParser {
 	}
 
 	private CompositeCheatSheetModel parseTestFile(String path) {
-		URL testURL = ResourceFinder.findFile(UserAssistanceTestPlugin.getDefault(),
-							COMPOSITES_FOLDER + path);
+		URL testURL = ResourceFinder.findFile(FrameworkUtil.getBundle(TestCompositeParser.class),
+				COMPOSITES_FOLDER + path);
 		return parser.parseGuide(testURL);
 	}
 

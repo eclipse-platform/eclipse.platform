@@ -27,11 +27,11 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.help.internal.HelpData;
 import org.eclipse.help.internal.HelpPlugin;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 /*
  * Tests the help data ordering of tocs and hiding tocs, indexes, etc.
@@ -91,7 +91,7 @@ public class HelpDataTest {
 			List<String> expectedTocOrder = Arrays.asList(entry[1]);
 			Set<String> expectedHiddenTocs = new HashSet<>(Arrays.asList(entry[2]));
 			Set<String> expectedHiddenIndexes = new HashSet<>(Arrays.asList(entry[3]));
-			URL url = UserAssistanceTestPlugin.getDefault().getBundle().getEntry(file);
+			URL url = FrameworkUtil.getBundle(HelpDataTest.class).getEntry(file);
 			HelpData data = new HelpData(url);
 			Assert.assertEquals("Did not get the expected toc order from help data file " + file, expectedTocOrder, data.getTocOrder());
 			Assert.assertEquals("Did not get the expected hidden tocs from help data file " + file, expectedHiddenTocs, data.getHiddenTocs());

@@ -21,14 +21,15 @@ import org.eclipse.help.internal.toc.TocContribution;
 import org.eclipse.help.internal.toc.TocFile;
 import org.eclipse.help.internal.toc.TocFileParser;
 import org.eclipse.help.internal.toc.TopicSorter;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 public class TopicSortingTest {
 	@Test
 	public void testSortTocChildren() throws Exception {
 		TocFileParser parser = new TocFileParser();
-		TocContribution contribution = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/sorted.xml", true, "en", null, null));
+		TocContribution contribution = parser.parse(new TocFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(),
+				"data/help/toc/assembler/sorted.xml", true, "en", null, null));
 		TopicSorter sorter = new TopicSorter();
 		Toc toc = (Toc) contribution.getToc();
 		sorter.sortChildren(toc);
@@ -41,7 +42,8 @@ public class TopicSortingTest {
 	@Test
 	public void testSortNestedTopics() throws Exception {
 		TocFileParser parser = new TocFileParser();
-		TocContribution contribution = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/sorted.xml", true, "en", null, null));
+		TocContribution contribution = parser.parse(new TocFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(),
+				"data/help/toc/assembler/sorted.xml", true, "en", null, null));
 		TopicSorter sorter = new TopicSorter();
 		Toc toc = (Toc) contribution.getToc();
 		sorter.sortChildren(toc);
@@ -56,7 +58,8 @@ public class TopicSortingTest {
 	@Test
 	public void testUnsortedNestedTopics() throws Exception {
 		TocFileParser parser = new TocFileParser();
-		TocContribution contribution = parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), "data/help/toc/assembler/sorted.xml", true, "en", null, null));
+		TocContribution contribution = parser.parse(new TocFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(),
+				"data/help/toc/assembler/sorted.xml", true, "en", null, null));
 		TopicSorter sorter = new TopicSorter();
 		Toc toc = (Toc) contribution.getToc();
 		sorter.sortChildren(toc);

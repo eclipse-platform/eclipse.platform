@@ -27,14 +27,15 @@ import org.eclipse.help.internal.toc.TocFile;
 import org.eclipse.help.internal.toc.TocFileParser;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.PerformanceTestCase;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
+import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
 
 public class TocAssemblePerformanceTest extends PerformanceTestCase {
 
 	private TocContribution parse(TocFileParser parser, String tocFile)
 			throws IOException, SAXException, ParserConfigurationException {
-		return parser.parse(new TocFile(UserAssistanceTestPlugin.getPluginId(), tocFile, true, "en", null, null));
+		return parser.parse(
+				new TocFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(), tocFile, true, "en", null, null));
 	}
 
 	public void assembleToc() throws Exception {

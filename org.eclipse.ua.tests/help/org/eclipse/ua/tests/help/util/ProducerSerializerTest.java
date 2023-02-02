@@ -19,10 +19,10 @@ import java.io.PrintWriter;
 import org.eclipse.help.HelpSystem;
 import org.eclipse.help.IToc;
 import org.eclipse.help.ITopic;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ua.tests.util.XHTMLUtil;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 /*
  * A utility for regenerating the _expected.txt files that contain the
@@ -46,6 +46,7 @@ public class ProducerSerializerTest {
 	@Test
 	public void testGenerateOutput() throws Exception {
 		IToc[] tocs = HelpSystem.getTocs();
+		String pluginRoot = FrameworkUtil.getBundle(getClass()).getLocation().substring("update@".length());
 		for (IToc toc : tocs) {
 			// only look for content in data/help/producer
 			if (toc.getHref().contains("data/help/producer/")) {
@@ -53,7 +54,6 @@ public class ProducerSerializerTest {
 				// only goes one level deep - don't need subtopics here
 				for (ITopic topic : topics) {
 					String href = topic.getHref();
-					String pluginRoot = UserAssistanceTestPlugin.getDefault().getBundle().getLocation().substring("update@".length());
 					String relativePath = href.substring(href.indexOf('/', 1));
 					String absolutePath = pluginRoot + relativePath;
 					String resultFile = FileUtil.getResultFile(absolutePath);

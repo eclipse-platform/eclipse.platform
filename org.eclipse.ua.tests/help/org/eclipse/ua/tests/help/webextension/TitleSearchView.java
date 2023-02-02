@@ -18,7 +18,7 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.webapp.AbstractView;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
+import org.osgi.framework.FrameworkUtil;
 
 public class TitleSearchView extends AbstractView {
 
@@ -58,13 +58,13 @@ public class TitleSearchView extends AbstractView {
 	@Override
 	public boolean isVisible() {
 		return Platform.getPreferencesService().getBoolean
-			(UserAssistanceTestPlugin.getPluginId(), "extraView", false, null);
+		(FrameworkUtil.getBundle(getClass()).getSymbolicName(), "extraView", false, null);
 	}
 
 	@Override
 	public boolean isVisibleBasic() {
 		return Platform.getPreferencesService().getBoolean
-			(UserAssistanceTestPlugin.getPluginId(), "extraView", false, null);
+		(FrameworkUtil.getBundle(getClass()).getSymbolicName(), "extraView", false, null);
 	}
 
 }

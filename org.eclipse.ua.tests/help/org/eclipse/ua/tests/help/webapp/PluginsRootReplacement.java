@@ -25,9 +25,9 @@ import java.io.OutputStream;
 import java.net.URL;
 
 import org.eclipse.help.internal.webapp.servlet.PluginsRootResolvingStream;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.ResourceFinder;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * Test for replacing PLUGINS_ROOT with a relative path
@@ -160,8 +160,8 @@ public class PluginsRootReplacement {
 	 * when it is transformed.
 	 */
 	private void checkFileContentsPreserved(String filename) throws IOException {
-		URL testURL = ResourceFinder.findFile(UserAssistanceTestPlugin.getDefault(),
-		"/data/help/performance/search/" + filename);
+		URL testURL = ResourceFinder.findFile(FrameworkUtil.getBundle(PluginsRootReplacement.class),
+				"/data/help/performance/search/" + filename);
 		assertNotNull(testURL);
 		try (InputStream input = testURL.openStream(); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 			while (input.available() > 0) {

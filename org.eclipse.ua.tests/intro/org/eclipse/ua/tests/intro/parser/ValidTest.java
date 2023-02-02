@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.ui.internal.HelpUIPlugin;
 import org.eclipse.ua.tests.intro.util.IntroModelSerializer;
 import org.eclipse.ua.tests.intro.util.IntroModelSerializerTest;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ui.internal.intro.impl.model.IntroModelRoot;
 import org.eclipse.ui.internal.intro.impl.model.loader.ExtensionPointManager;
@@ -33,6 +32,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /*
  * Tests the intro parser on valid intro content.
@@ -81,18 +81,17 @@ public class ValidTest {
 	 */
 	private void singleConfigTest(String configId) throws IOException {
 		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.ui.intro.config");
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
 		for (IConfigurationElement element : elements) {
 			/*
 			 * Only use the ones from this test plugin.
 			 */
-			if (element.getDeclaringExtension().getContributor().getName().equals(UserAssistanceTestPlugin.getDefault().getBundle().getSymbolicName())) {
+			if (element.getDeclaringExtension().getContributor().getName().equals(bundle.getSymbolicName())) {
 				String content = element.getAttribute("content");
 				String id = element.getAttribute("id");
 				if (id.equals(configId)) {
 					for (int x = 0; x < 10; x++) {
 						 // Perform 10 times to better detect intermittent ordering bugs
-						Bundle bundle = UserAssistanceTestPlugin.getDefault().getBundle();
-
 						IntroModelRoot model = ExtensionPointManager.getInst().getModel(id);
 						IntroModelSerializer serializer = new IntroModelSerializer(model);
 

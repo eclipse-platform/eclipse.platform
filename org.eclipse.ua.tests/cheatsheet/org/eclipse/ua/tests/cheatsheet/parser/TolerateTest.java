@@ -18,11 +18,11 @@ import java.net.URL;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
-import org.eclipse.ui.internal.cheatsheets.data.CheatSheet;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
+import org.eclipse.ui.internal.cheatsheets.data.ICheatSheet;
 import org.junit.Assert;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 /*
  * Tests the cheat sheets parser on tolerable cheat sheets. This means they're not strictly correct,
@@ -32,9 +32,10 @@ public class TolerateTest {
 
 	private void parseCheatsheet(String file) {
 		Path path = new Path("data/cheatsheet/valid/tolerate/" + file);
-		URL url = FileLocator.find(UserAssistanceTestPlugin.getDefault().getBundle(), path, null);
+		URL url = FileLocator.find(FrameworkUtil.getBundle(TolerateTest.class), path, null);
 		CheatSheetParser parser = new CheatSheetParser();
-		CheatSheet sheet = (CheatSheet)parser.parse(url, UserAssistanceTestPlugin.getPluginId(), CheatSheetParser.SIMPLE_ONLY);
+		ICheatSheet sheet = parser.parse(url, FrameworkUtil.getBundle(getClass()).getSymbolicName(),
+				CheatSheetParser.SIMPLE_ONLY);
 		Assert.assertEquals("Warning not generated: " + url, IStatus.WARNING, parser.getStatus().getSeverity());
 		Assert.assertNotNull("Tried parsing a tolerable cheat sheet but parser returned null: " + url, sheet);
 	}

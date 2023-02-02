@@ -18,12 +18,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ui.internal.cheatsheets.ActionRunner;
 import org.eclipse.ui.internal.cheatsheets.data.Action;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 public class TestActionExecution {
 
@@ -109,7 +109,7 @@ public class TestActionExecution {
 	}
 
 	private String getPluginId() {
-		return UserAssistanceTestPlugin.getPluginId();
+		return FrameworkUtil.getBundle(getClass()).getSymbolicName();
 	}
 
 }

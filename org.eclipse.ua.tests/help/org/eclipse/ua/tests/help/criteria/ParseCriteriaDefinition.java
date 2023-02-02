@@ -26,16 +26,20 @@ import org.eclipse.help.internal.criteria.CriteriaDefinitionContribution;
 import org.eclipse.help.internal.criteria.CriteriaDefinitionFile;
 import org.eclipse.help.internal.criteria.CriteriaDefinitionFileParser;
 import org.eclipse.help.internal.dynamic.DocumentWriter;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 public class ParseCriteriaDefinition {
 	@Test
 	public void testAssemble() throws Exception {
 		CriteriaDefinitionFileParser parser = new CriteriaDefinitionFileParser();
-		CriteriaDefinitionContribution a = parser.parse(new CriteriaDefinitionFile(UserAssistanceTestPlugin.getPluginId(), "data/help/criteria/criteria_definition/a.xml", "en"));
-		CriteriaDefinitionContribution b = parser.parse(new CriteriaDefinitionFile(UserAssistanceTestPlugin.getPluginId(), "data/help/criteria/criteria_definition/b.xml", "en"));
-		CriteriaDefinitionContribution result_a_b = parser.parse(new CriteriaDefinitionFile(UserAssistanceTestPlugin.getPluginId(), "data/help/criteria/criteria_definition/result_a_b.xml", "en"));
+		String bsn = FrameworkUtil.getBundle(getClass()).getSymbolicName();
+		CriteriaDefinitionContribution a = parser
+				.parse(new CriteriaDefinitionFile(bsn, "data/help/criteria/criteria_definition/a.xml", "en"));
+		CriteriaDefinitionContribution b = parser
+				.parse(new CriteriaDefinitionFile(bsn, "data/help/criteria/criteria_definition/b.xml", "en"));
+		CriteriaDefinitionContribution result_a_b = parser
+				.parse(new CriteriaDefinitionFile(bsn, "data/help/criteria/criteria_definition/result_a_b.xml", "en"));
 
 		CriteriaDefinitionAssembler assembler = new CriteriaDefinitionAssembler();
 		List<CriteriaDefinitionContribution> contributions = new ArrayList<>(Arrays.asList(a, b));

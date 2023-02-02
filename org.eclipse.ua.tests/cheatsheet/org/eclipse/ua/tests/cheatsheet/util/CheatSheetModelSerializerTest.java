@@ -18,13 +18,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ua.tests.util.ResourceFinder;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheet;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
 import org.junit.Assert;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 /*
  * A utility for regenerating the _expected.txt files that contain the expected
@@ -46,11 +46,13 @@ import org.junit.Test;
 public class CheatSheetModelSerializerTest {
 	@Test
 	public void testRunSerializer() throws IOException {
-		URL[] urls = ResourceFinder.findFiles(UserAssistanceTestPlugin.getDefault(), "data/cheatsheet/valid", ".xml", true);
+		URL[] urls = ResourceFinder.findFiles(FrameworkUtil.getBundle(getClass()), "data/cheatsheet/valid", ".xml",
+				true);
 		Assert.assertTrue("Unable to find sample cheat sheets to test parser", urls.length > 0);
 		for (URL url : urls) {
 			CheatSheetParser parser = new CheatSheetParser();
-			CheatSheet sheet = (CheatSheet)parser.parse(url, UserAssistanceTestPlugin.getPluginId(), CheatSheetParser.ANY);
+			CheatSheet sheet = (CheatSheet) parser.parse(url, FrameworkUtil.getBundle(getClass()).getSymbolicName(),
+					CheatSheetParser.ANY);
 			Assert.assertNotNull("Tried parsing a valid cheat sheet but parser returned null: " + url, sheet);
 
 			try (PrintWriter out = new PrintWriter(

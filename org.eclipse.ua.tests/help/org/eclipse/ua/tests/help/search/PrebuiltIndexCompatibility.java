@@ -40,9 +40,9 @@ import org.eclipse.help.internal.search.AnalyzerDescriptor;
 import org.eclipse.help.internal.search.PluginIndex;
 import org.eclipse.help.internal.search.QueryBuilder;
 import org.eclipse.help.internal.search.SearchIndexWithIndexingProgress;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * Verify that older versions of the index can be read by this
@@ -118,7 +118,7 @@ public class PrebuiltIndexCompatibility {
 	private void checkReadable(String indexPath) throws IOException,
 			CorruptIndexException {
 		Path path = new Path(indexPath);
-		Bundle bundle = UserAssistanceTestPlugin.getDefault().getBundle();
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
 		URL url = FileLocator.find(bundle, path, null);
 		URL resolved = FileLocator.resolve(url);
 		if ("file".equals(resolved.getProtocol())) { //$NON-NLS-1$

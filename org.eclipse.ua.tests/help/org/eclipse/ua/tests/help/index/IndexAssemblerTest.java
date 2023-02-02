@@ -36,18 +36,20 @@ import org.eclipse.help.internal.index.IndexEntry;
 import org.eclipse.help.internal.index.IndexFile;
 import org.eclipse.help.internal.index.IndexFileParser;
 import org.eclipse.help.internal.index.IndexSee;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXParseException;
 
 public class IndexAssemblerTest {
 	@Test
 	public void testAssemble() throws Exception {
 		IndexFileParser parser = new IndexFileParser();
-		IndexContribution a = parser.parse(new IndexFile(UserAssistanceTestPlugin.getPluginId(), "data/help/index/assembler/a.xml", "en"));
-		IndexContribution b = parser.parse(new IndexFile(UserAssistanceTestPlugin.getPluginId(), "data/help/index/assembler/b.xml", "en"));
-		IndexContribution c = parser.parse(new IndexFile(UserAssistanceTestPlugin.getPluginId(), "data/help/index/assembler/c.xml", "en"));
-		IndexContribution result_a_b_c = parser.parse(new IndexFile(UserAssistanceTestPlugin.getPluginId(), "data/help/index/assembler/result_a_b_c.xml", "en"));
+		String bsn = FrameworkUtil.getBundle(getClass()).getSymbolicName();
+		IndexContribution a = parser.parse(new IndexFile(bsn, "data/help/index/assembler/a.xml", "en"));
+		IndexContribution b = parser.parse(new IndexFile(bsn, "data/help/index/assembler/b.xml", "en"));
+		IndexContribution c = parser.parse(new IndexFile(bsn, "data/help/index/assembler/c.xml", "en"));
+		IndexContribution result_a_b_c = parser
+				.parse(new IndexFile(bsn, "data/help/index/assembler/result_a_b_c.xml", "en"));
 
 		IndexAssembler assembler = new IndexAssembler();
 		List<IndexContribution> contributions = new ArrayList<>(Arrays.asList(a, b, c));
@@ -61,7 +63,8 @@ public class IndexAssemblerTest {
 	@Test
 	public void testAssembleWithSeeAlso() throws Exception {
 		IndexFileParser parser = new IndexFileParser();
-		IndexContribution contrib = parser.parse(new IndexFile(UserAssistanceTestPlugin.getPluginId(), "data/help/index/assembler/d.xml", "en"));
+		IndexContribution contrib = parser.parse(new IndexFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(),
+				"data/help/index/assembler/d.xml", "en"));
 		IndexAssembler assembler = new IndexAssembler();
 		List<IndexContribution> contributions = new ArrayList<>(Arrays.asList(contrib));
 		Index index = assembler.assemble(contributions, Platform.getNL());
@@ -89,7 +92,8 @@ public class IndexAssemblerTest {
 	@Test
 	public void testTitle() throws Exception{
 		IndexFileParser parser = new IndexFileParser();
-		IndexContribution contrib = parser.parse(new IndexFile(UserAssistanceTestPlugin.getPluginId(), "data/help/index/assembler/hasTitle.xml", "en"));
+		IndexContribution contrib = parser.parse(new IndexFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(),
+				"data/help/index/assembler/hasTitle.xml", "en"));
 		IndexAssembler assembler = new IndexAssembler();
 		List<IndexContribution> contributions = new ArrayList<>(Arrays.asList(contrib));
 		Index index = assembler.assemble(contributions, Platform.getNL());
@@ -107,7 +111,8 @@ public class IndexAssemblerTest {
 	public void testInvalid() throws Exception {
 		IndexFileParser parser = new IndexFileParser();
 		IndexContribution contrib = parser.parse(
-				new IndexFile(UserAssistanceTestPlugin.getPluginId(), "data/help/index/assembler/invalid.xml", "en"));
+				new IndexFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(),
+						"data/help/index/assembler/invalid.xml", "en"));
 		IndexAssembler assembler = new IndexAssembler();
 		List<IndexContribution> contributions = new ArrayList<>(Arrays.asList(contrib));
 		assembler.assemble(contributions, Platform.getNL());

@@ -26,12 +26,12 @@ import org.eclipse.help.internal.dynamic.IncludeHandler;
 import org.eclipse.help.internal.dynamic.ProcessorHandler;
 import org.eclipse.help.internal.dynamic.XMLProcessor;
 import org.eclipse.help.ui.internal.HelpUIPlugin;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ua.tests.util.XMLUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 public class XMLProcessorTest {
 
@@ -49,7 +49,7 @@ public class XMLProcessorTest {
 				new FilterHandler(HelpEvaluationContext.getContext())
 		};
 		XMLProcessor processor = new XMLProcessor(handlers);
-		Bundle bundle = UserAssistanceTestPlugin.getDefault().getBundle();
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
 		URL url1 = bundle.getEntry(FileUtil.getResultFile(path));
 		if(url1 == null) {
 			throw new IOException("No entry to '"+FileUtil.getResultFile(path)+"' could be found or caller does not have the appropriate permissions.");//$NON-NLS-1$ //$NON-NLS-2$

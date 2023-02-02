@@ -29,7 +29,7 @@ import org.eclipse.help.internal.toc.TocFileProvider;
 import org.eclipse.help.internal.toc.TocManager;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.PerformanceTestCase;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
+import org.osgi.framework.FrameworkUtil;
 
 public class BuildHtmlSearchIndex extends PerformanceTestCase {
 
@@ -142,7 +142,7 @@ public class BuildHtmlSearchIndex extends PerformanceTestCase {
 	private static class TestTocFileProvider extends TocFileProvider {
 		@Override
 		protected TocFile[] getTocFiles(String locale) {
-			String id = UserAssistanceTestPlugin.getPluginId();
+			String id = FrameworkUtil.getBundle(getClass()).getSymbolicName();
 			String nl = Platform.getNL();
 			return new TocFile[] {
 				new TocFile(id, "data/help/performance/org.eclipse.jdt.doc.isv/toc.xml", true, nl, null, null),

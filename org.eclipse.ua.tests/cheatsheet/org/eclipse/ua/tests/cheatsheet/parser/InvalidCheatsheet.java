@@ -23,32 +23,34 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ua.tests.cheatsheet.util.StatusCheck;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.ResourceFinder;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
 import org.eclipse.ui.internal.cheatsheets.data.ICheatSheet;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 public class InvalidCheatsheet {
 	private static final String INVALID_CHEATSHEET_FOLDER = "data/cheatsheet/invalid/";
 	private CheatSheetParser parser;
+	private String bundleSymbolicName;
 
 	@Before
 	public void setUp() throws Exception {
 		parser = new CheatSheetParser();
+		bundleSymbolicName = FrameworkUtil.getBundle(getClass()).getSymbolicName();
 	}
 
 	private ICheatSheet parseTestFile(String path) {
-		URL testURL = ResourceFinder.findFile(UserAssistanceTestPlugin.getDefault(),
+		URL testURL = ResourceFinder.findFile(FrameworkUtil.getBundle(InvalidCheatsheet.class),
 							INVALID_CHEATSHEET_FOLDER + path);
-		return parser.parse(testURL, UserAssistanceTestPlugin.getPluginId(), CheatSheetParser.SIMPLE_ONLY);
+		return parser.parse(testURL, bundleSymbolicName, CheatSheetParser.SIMPLE_ONLY);
 	}
 
 	@Test
 	public void testBadURL() {
 		try {
-			assertNull(parser.parse(new URL("file:/nonexistent"), UserAssistanceTestPlugin.getPluginId(), CheatSheetParser.SIMPLE_ONLY));
+			assertNull(parser.parse(new URL("file:/nonexistent"), bundleSymbolicName, CheatSheetParser.SIMPLE_ONLY));
 		} catch (MalformedURLException e) {
 			fail("Exception thrown");
 		}

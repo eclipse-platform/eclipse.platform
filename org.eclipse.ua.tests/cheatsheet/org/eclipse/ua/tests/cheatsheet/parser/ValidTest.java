@@ -20,13 +20,13 @@ import java.net.URL;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ua.tests.cheatsheet.util.CheatSheetModelSerializer;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheet;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
 import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /*
  * Tests the cheat sheets parser on valid cheat sheets.
@@ -35,10 +35,10 @@ public class ValidTest {
 
 	private void parseCheatsheet(String file) throws IOException {
 		Path path = new Path("data/cheatsheet/valid/" + file);
-		Bundle bundle = UserAssistanceTestPlugin.getDefault().getBundle();
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
 		URL url = FileLocator.find(bundle, path, null);
 		CheatSheetParser parser = new CheatSheetParser();
-		CheatSheet sheet = (CheatSheet)parser.parse(url, UserAssistanceTestPlugin.getPluginId(), CheatSheetParser.ANY);
+		CheatSheet sheet = (CheatSheet) parser.parse(url, bundle.getSymbolicName(), CheatSheetParser.ANY);
 		Assert.assertNotNull("Tried parsing a valid cheat sheet but parser returned null: " + url, sheet);
 		String expectedPath = "data/cheatsheet/valid/" + getExpected(file);
 		String expected = FileUtil.getContents(bundle, expectedPath);

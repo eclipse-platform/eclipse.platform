@@ -16,7 +16,7 @@ package org.eclipse.ua.tests.help.webextension;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.webapp.AbstractFrame;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
+import org.osgi.framework.FrameworkUtil;
 
 public class TestFrame extends AbstractFrame {
 
@@ -43,7 +43,7 @@ public class TestFrame extends AbstractFrame {
 	@Override
 	public boolean isVisible() {
 		return Platform.getPreferencesService().getBoolean
-		(UserAssistanceTestPlugin.getPluginId(), "extraFrame", false, null);
+		(FrameworkUtil.getBundle(getClass()).getSymbolicName(), "extraFrame", false, null);
 	}
 
 }

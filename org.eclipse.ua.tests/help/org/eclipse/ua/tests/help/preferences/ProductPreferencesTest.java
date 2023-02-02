@@ -20,9 +20,9 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.eclipse.help.internal.util.ProductPreferences;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.junit.Assert;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 /*
  * Tests the products preferences utility
@@ -157,7 +157,8 @@ public class ProductPreferencesTest {
 	public void testGetPropertiesFile() {
 		for (String[] data : GET_PROPERTIES_FILE_DATA) {
 			String path = "data/help/preferences/" + data[0];
-			Properties properties = ProductPreferences.loadPropertiesFile(UserAssistanceTestPlugin.getDefault().getBundle().getSymbolicName(), path);
+			Properties properties = ProductPreferences
+					.loadPropertiesFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(), path);
 
 			Assert.assertNotNull("The result of loading a properties file was unexpectedly null", properties);
 			Assert.assertEquals(data.length - 1, properties.size());
@@ -177,10 +178,12 @@ public class ProductPreferencesTest {
 		for (String[] data : GET_VALUE_DATA) {
 			String key = data[0];
 			Set<String> allowableValues = new HashSet<>(ProductPreferences.tokenize(data[1]));
-			Properties primary = ProductPreferences.loadPropertiesFile(UserAssistanceTestPlugin.getDefault().getBundle().getSymbolicName(), "data/help/preferences/" + data[2]);
+			Properties primary = ProductPreferences.loadPropertiesFile(
+					FrameworkUtil.getBundle(getClass()).getSymbolicName(), "data/help/preferences/" + data[2]);
 			Properties[] secondary = new Properties[data.length - 3];
 			for (int j=0;j<secondary.length;++j) {
-				secondary[j] = ProductPreferences.loadPropertiesFile(UserAssistanceTestPlugin.getDefault().getBundle().getSymbolicName(), "data/help/preferences/" + data[j + 3]);
+				secondary[j] = ProductPreferences.loadPropertiesFile(
+						FrameworkUtil.getBundle(getClass()).getSymbolicName(), "data/help/preferences/" + data[j + 3]);
 			}
 
 			String value = ProductPreferences.getValue(key, primary, secondary);

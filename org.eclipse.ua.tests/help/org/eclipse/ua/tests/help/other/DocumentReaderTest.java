@@ -23,8 +23,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.help.internal.dynamic.DocumentReader;
 import org.eclipse.help.internal.util.ResourceLocator;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
 
 public class DocumentReaderTest {
@@ -33,7 +33,7 @@ public class DocumentReaderTest {
 	private final static int FAILURE = 2;
 
 	private void readFile(DocumentReader docReader, String file) throws IOException, SAXException, ParserConfigurationException {
-		String pluginId = UserAssistanceTestPlugin.getPluginId();
+		String pluginId = FrameworkUtil.getBundle(getClass()).getSymbolicName();
 		String locale = "en";
 		try (InputStream in = ResourceLocator.openFromPlugin(pluginId, file, locale)) {
 			docReader.read(in);

@@ -23,13 +23,13 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
 import org.eclipse.ua.tests.util.ResourceFinder;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
 import org.eclipse.ui.internal.cheatsheets.data.ICheatSheet;
 import org.eclipse.ui.internal.cheatsheets.data.ParserInput;
 import org.eclipse.ui.internal.cheatsheets.registry.CheatSheetElement;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
 
 public class ParseFromString {
 
@@ -72,9 +72,9 @@ public class ParseFromString {
 
 	@Test
 	public void testUrlParserInput() {
-		URL testURL = ResourceFinder.findFile(UserAssistanceTestPlugin.getDefault(),
+		URL testURL = ResourceFinder.findFile(FrameworkUtil.getBundle(ParseFromString.class),
 					"data/cheatsheet/valid/HelloWorld.xml");
-		ParserInput input = new ParserInput(testURL, UserAssistanceTestPlugin.getPluginId(), null);
+		ParserInput input = new ParserInput(testURL, FrameworkUtil.getBundle(getClass()).getSymbolicName(), null);
 		assertNull(input.getXml());
 		assertTrue(testURL.equals(input.getUrl()));
 	}

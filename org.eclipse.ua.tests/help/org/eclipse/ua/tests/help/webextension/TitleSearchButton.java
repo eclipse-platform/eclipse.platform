@@ -18,7 +18,7 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.webapp.AbstractButton;
-import org.eclipse.ua.tests.plugin.UserAssistanceTestPlugin;
+import org.osgi.framework.FrameworkUtil;
 
 public class TitleSearchButton extends AbstractButton {
 
@@ -53,7 +53,7 @@ public class TitleSearchButton extends AbstractButton {
 	@Override
 	public boolean isAddedToToolbar(String toolbarName) {
 		boolean addButton = Platform.getPreferencesService().getBoolean
-		(UserAssistanceTestPlugin.getPluginId(), "extraButton", false, null);
+		(FrameworkUtil.getBundle(getClass()).getSymbolicName(), "extraButton", false, null);
 		return (addButton & toolbarName.equals(AbstractButton.CONTENT_TOOLBAR));
 	}
 
