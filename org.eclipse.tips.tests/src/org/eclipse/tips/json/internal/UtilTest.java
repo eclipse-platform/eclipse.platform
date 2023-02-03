@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.tips.json.internal;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -27,8 +28,8 @@ public class UtilTest {
 	public void testGetValueOrDefaultJsonObjectStringString() {
 		String jsonString = "{\"first\": \"Wim\", \"last\": \"Jongman\", \"variables\": {\"title\": \"Mr.\", \"age\": 53}}";
 		JsonObject jsonObject = (JsonObject) JsonParser.parseString(jsonString);
-		assertTrue(Util.getValueOrDefault(jsonObject, "first", "Mark").equals("Wim"));
-		assertTrue(Util.getValueOrDefault(jsonObject, "fake", "Mark").equals("Mark"));
+		assertEquals("Wim", Util.getValueOrDefault(jsonObject, "first", "Mark"));
+		assertEquals("Mark", Util.getValueOrDefault(jsonObject, "fake", "Mark"));
 	}
 
 	@SuppressWarnings("restriction")
@@ -36,8 +37,8 @@ public class UtilTest {
 	public void testGetValueOrDefaultJsonObjectStringInt() {
 		String jsonString = "{\"age\": \"53\", \"last\": \"Jongman\"}";
 		JsonObject jsonObject = (JsonObject) JsonParser.parseString(jsonString);
-		assertTrue(Util.getValueOrDefault(jsonObject, "age", 100) == 53);
-		assertTrue(Util.getValueOrDefault(jsonObject, "fake", 101) == 101);
+		assertEquals(53, Util.getValueOrDefault(jsonObject, "age", 100));
+		assertEquals(101, Util.getValueOrDefault(jsonObject, "fake", 101));
 	}
 
 	@SuppressWarnings("restriction")
@@ -45,8 +46,8 @@ public class UtilTest {
 	public void testGetValueOrDefaultJsonObjectStringDouble() {
 		String jsonString = "{\"double\": 5.21, \"last\": \"Jongman\"}";
 		JsonObject jsonObject = (JsonObject) JsonParser.parseString(jsonString);
-		assertTrue(Util.getValueOrDefault(jsonObject, "double", 10.10) == 5.21);
-		assertTrue(Util.getValueOrDefault(jsonObject, "fake", 101.6) == 101.6);
+		assertEquals(5.21, Util.getValueOrDefault(jsonObject, "double", 10.10), 0);
+		assertEquals(101.6, Util.getValueOrDefault(jsonObject, "fake", 101.6), 0);
 	}
 
 	@SuppressWarnings("restriction")

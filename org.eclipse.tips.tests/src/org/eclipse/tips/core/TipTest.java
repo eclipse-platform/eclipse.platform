@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.tips.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -51,14 +55,14 @@ public class TipTest {
 
 	@Test
 	public void testHashCode() {
-		assertTrue(fProvider.getNextTip().hashCode() != 0);
+		assertNotEquals(0, fProvider.getNextTip().hashCode());
 	}
 
 	@Test
 	public void testHashCode2() {
 		TestTip testTip = new TestTip(fProvider.getID(), HTML, SUBJECT_TIP);
 		TestTip testTip2 = new TestTip(fProvider.getID(), HTML, SUBJECT_TIP);
-		assertTrue(testTip.hashCode() == testTip2.hashCode());
+		assertEquals(testTip2.hashCode(), testTip.hashCode());
 	}
 
 	@Test
@@ -75,35 +79,35 @@ public class TipTest {
 	public void testGetCreationDate() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(fTip.getCreationDate());
-		assertTrue(calendar.get(Calendar.MONTH) == 11);
-		assertTrue(calendar.get(Calendar.YEAR) == 1964);
-		assertTrue(calendar.get(Calendar.DAY_OF_MONTH) == 31);
+		assertEquals(11, calendar.get(Calendar.MONTH));
+		assertEquals(1964, calendar.get(Calendar.YEAR));
+		assertEquals(31, calendar.get(Calendar.DAY_OF_MONTH));
 	}
 
 	@Test
 	public void testGetHTML() {
-		assertTrue(fTip.getHTML() != null);
+		assertNotNull(fTip.getHTML());
 	}
 
 	@Test
 	public void testGetImage() {
-		assertTrue(fTip.getImage() == null);
+		assertNotNull(fTip.getImage());
 	}
 
 	@Test
 	public void testGetSubject() {
-		assertTrue(fTip.getSubject() != null);
-		assertTrue(fTip.getSubject().equals(SUBJECT_TIP));
+		assertNotNull(fTip.getSubject());
+		assertEquals(SUBJECT_TIP, fTip.getSubject());
 	}
 
 	@Test
 	public void testEqualsObject() {
 		TestTip testTip = new TestTip(fProvider.getID(), HTML, SUBJECT_TIP);
 		TestTip testTipx = new TestTip(fProvider.getID(), HTML, SUBJECT_TIP);
-		assertTrue(!testTip.equals(null));
-		assertTrue(testTip.equals(testTip));
-		assertTrue(!testTip.equals(fTip));
-		assertTrue(testTip.equals(testTipx));
+		assertNotNull(testTip);
+		assertEquals(testTip, testTip.equals(testTip));
+		assertNotEquals(fTip, testTip);
+		assertEquals(testTipx, testTip);
 
 		TestTipProvider testTipProvider = new TestTipProvider() {
 			@Override
@@ -126,33 +130,33 @@ public class TipTest {
 			}
 		};
 
-		assertTrue(!testTipProvider.equals(testTipProvider2));
-		assertTrue(!testTipProvider.equals(testTipProvider3));
+		assertNotEquals(testTipProvider2, testTipProvider);
+		assertNotEquals(testTipProvider3, testTipProvider);
 		TestTip testTip2 = new TestTip(fProvider.getID(), HTML, SUBJECT_TIP + "DDD");
-		assertTrue(!testTip.equals(testTip2));
-		assertTrue(!testTip.equals(testTip2));
+		assertNotEquals(testTip2, testTip);
+		assertNotEquals(testTip2, testTip);
 
 		TestTip testTip3 = new TestTip(fProvider.getID(), HTML, SUBJECT_TIP + "DDD");
-		assertTrue(!testTip.equals(testTip3));
-		assertTrue(!testTip3.equals(testTip));
+		assertNotEquals(testTip3, testTip);
+		assertNotEquals(testTip3, testTip3);
 
 		TestTip testTip4 = new TestTip(fProvider.getID(), HTML, SUBJECT_TIP + "DDD");
-		assertTrue(!testTip.equals(testTip4));
-		assertTrue(!testTip4.equals(testTip));
+		assertNotEquals(testTip4, testTip);
+		assertNotEquals(testTip, testTip4);
 
 		TestTip testTip5 = new TestTip(fProvider.getID(), HTML, SUBJECT_TIP + "DDDWW");
-		assertTrue(!testTip.equals(testTip5));
-		assertTrue(!testTip5.equals(testTip));
+		assertNotEquals(testTip5, testTip);
+		assertNotEquals(testTip, testTip5);
 
 		TestTip testTip6 = new TestTip(fProvider.getID(), HTML, null);
-		assertTrue(!testTip.equals(testTip6));
-		assertTrue(!testTip6.equals(testTip));
+		assertNotEquals(testTip6, testTip);
+		assertNotEquals(testTip, testTip6);
 
 	}
 
 	@Test
 	public void testIsRead() {
-		assertTrue(!fManager.isRead(fTip));
+		assertFalse(fManager.isRead(fTip));
 		fManager.setAsRead(fTip);
 		fManager.setAsRead(fTip);
 		assertTrue(fManager.isRead(fTip));

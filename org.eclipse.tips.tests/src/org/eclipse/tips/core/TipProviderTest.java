@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,7 +13,11 @@
  *******************************************************************************/
 package org.eclipse.tips.core;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -47,30 +51,30 @@ public class TipProviderTest {
 
 	@Test
 	public void testGetDescription() {
-		assertTrue(fProvider.getDescription() != null);
+		assertNotNull(fProvider.getDescription());
 	}
 
 	@Test
 	public void testGetID() {
-		assertTrue(fProvider.getID() != null);
-		assertTrue(fProvider.getID().equals(fProvider.getClass().getName()));
+		assertNotNull(fProvider.getID());
+		assertEquals(fProvider.getClass().getName(), fProvider.getID());
 	}
 
 	@Test
 	public void testGetImage() {
-		assertTrue(fProvider.getImage() != null);
+		assertNotNull(fProvider.getImage());
 	}
 
 	@Test
 	public void testGetTips() {
-		assertTrue(fProvider.getTips(null).size() == 0);
+		assertEquals(0, fProvider.getTips(null).size());
 		createTestData();
 		fManager.setAsRead(fProvider.getNextTip());
-		assertTrue(fProvider.getTips(null).size() == 2);
-		assertTrue(fProvider.getTips(null).size() == 2);
-		assertTrue(fProvider.getTips().size() == 1);
+		assertEquals(2, fProvider.getTips(null).size());
+		assertEquals(2, fProvider.getTips(null).size());
+		assertEquals(1, fProvider.getTips().size());
 		((TipManager) fProvider.getManager()).setServeReadTips(true);
-		assertTrue(fProvider.getTips(null).size() == 2);
+		assertEquals(2, fProvider.getTips(null).size());
 	}
 
 	private void createTestData() {
@@ -80,65 +84,65 @@ public class TipProviderTest {
 
 	@Test
 	public void testGetCurrentTip() {
-		assertTrue(fProvider.getNextTip().equals(fProvider.getCurrentTip()));
+		assertEquals(fProvider.getNextTip(), fProvider.getCurrentTip());
 	}
 
 	@Test
 	public void testGetCurrentTip2() {
-		assertTrue(fProvider.getCurrentTip().equals(fProvider.getPreviousTip()));
+		assertEquals(fProvider.getPreviousTip(), fProvider.getCurrentTip());
 	}
 
 	@Test
 	public void testGetNextTip() {
 		createTestData();
 		fManager.setAsRead(fProvider.getNextTip());
-		assertTrue(fProvider.getNextTip().equals(fProvider.getCurrentTip()));
+		assertEquals(fProvider.getCurrentTip(), fProvider.getNextTip());
 		Tip nextTip = fProvider.getNextTip();
 		fManager.setAsRead(nextTip);
 		assertTrue(fManager.isRead(nextTip));
 		Tip nextTip2 = fProvider.getNextTip();
 		fManager.setAsRead(nextTip2);
 		assertTrue(fManager.isRead(nextTip2));
-		assertTrue(fProvider.getNextTip().getClass().getSimpleName().equals("FinalTip"));
+		assertEquals("FinalTip", fProvider.getNextTip().getClass().getSimpleName());
 		((TipManager) fProvider.getManager()).setServeReadTips(true);
-		assertFalse(fProvider.getNextTip().getClass().getSimpleName().equals("FinalTip"));
+		assertNotEquals("FinalTip", fProvider.getNextTip().getClass().getSimpleName());
 	}
 
 	@Test
 	public void testGetPreviousTip() {
-		assertTrue(fProvider.getPreviousTip().equals(fProvider.getCurrentTip()));
-		assertTrue(fProvider.getPreviousTip().equals(fProvider.getCurrentTip()));
+		assertEquals(fProvider.getCurrentTip(), fProvider.getPreviousTip());
+		assertEquals(fProvider.getCurrentTip(), fProvider.getPreviousTip());
 	}
 
 	@Test
 	public void testGetPreviousTip2() {
-		assertTrue(!fProvider.getPreviousTip().equals(null));
-		assertTrue(fProvider.getNextTip().getClass().getSimpleName().equals("FinalTip"));
+		assertNotNull(fProvider.getPreviousTip());
+		assertEquals("FinalTip", fProvider.getNextTip().getClass().getSimpleName());
 	}
 
 	@Test
 	public void testGetPreviousTip3() {
 		((TipManager) fProvider.getManager()).setServeReadTips(true);
-		assertTrue(fProvider.getPreviousTip().equals(fProvider.getCurrentTip()));
+		assertEquals(fProvider.getCurrentTip(), fProvider.getPreviousTip());
 	}
 
 	@Test
 	public void testGetPreviousTip4() {
 		createTestData();
-		assertTrue(fProvider.getPreviousTip() != null);
-		assertTrue(fProvider.getPreviousTip() != null);
-		assertTrue(fProvider.getPreviousTip() != null);
+		assertNotNull(fProvider.getPreviousTip());
+		assertNotNull(fProvider.getPreviousTip());
+		assertNotNull(fProvider.getPreviousTip());
 	}
 
 	@Test
 	public void testGetTipManager() {
-		assertTrue(fProvider.getManager().equals(fManager));
+		assertEquals(fManager, fProvider.getManager());
 	}
 
 	@Test
 	public void testIsReady() {
 		TestTipProvider p = (TestTipProvider) new TestTipProvider().setManager(fManager);
-		assertTrue(!p.isReady());
+		assertFalse(p.isReady());
 		p.setTips(Collections.emptyList());
 		assertTrue(p.isReady());
 	}
@@ -146,7 +150,7 @@ public class TipProviderTest {
 	@Test
 	public void testLoad() {
 		TestTipProvider p = (TestTipProvider) new TestTipProvider().setManager(fManager);
-		assertTrue(!p.isReady());
+		assertFalse(p.isReady());
 		p.loadNewTips(new NullProgressMonitor());
 		assertTrue(p.isReady());
 	}
@@ -154,9 +158,9 @@ public class TipProviderTest {
 	@Test
 	public void testSetManager() {
 		TestTipProvider p = new TestTipProvider();
-		assertTrue(p.getManager() == null);
+		assertNull(p.getManager());
 		p.setManager(fManager);
-		assertTrue(p.getManager() != null);
+		assertNotNull(p.getManager());
 	}
 
 	@Test
@@ -164,15 +168,14 @@ public class TipProviderTest {
 		TestTipProvider p = new TestTipProvider() {
 			@Override
 			public IStatus loadNewTips(IProgressMonitor pMonitor) {
-				assertTrue(getTips(null).size() == 0);
-				assertTrue(setTips(Arrays.asList(new TestTip(getID(), "DDD", "XXX"))).getTips(null)
-						.size() == 1);
+				assertEquals(0, getTips(null).size());
+				assertEquals(1, setTips(Arrays.asList(new TestTip(getID(), "DDD", "XXX"))).getTips(null).size());
 				return Status.OK_STATUS;
 			}
 		};
-		assertTrue(p.getTips(null).size() == 0);
+		assertEquals(0, p.getTips(null).size());
 		fManager.register(p);
-		assertTrue(p.getTips(null).size() == 1);
+		assertEquals(1, p.getTips(null).size());
 	}
 
 	@Test
@@ -180,11 +183,9 @@ public class TipProviderTest {
 		TestTipProvider p = new TestTipProvider() {
 			@Override
 			public IStatus loadNewTips(IProgressMonitor pMonitor) {
-				assertTrue(getTips(null).size() == 0);
-				assertTrue(setTips(Arrays.asList(new TestTip(getID(), "DDD", "XXX"))).getTips(null)
-						.size() == 1);
-				assertTrue(addTips(Arrays.asList(new TestTip(getID(), "DDD", "XXX"))).getTips(null)
-						.size() == 2);
+				assertEquals(0, getTips(null).size());
+				assertEquals(1, setTips(Arrays.asList(new TestTip(getID(), "DDD", "XXX"))).getTips(null).size());
+				assertEquals(2, addTips(Arrays.asList(new TestTip(getID(), "DDD", "XXX"))).getTips(null).size());
 				return Status.OK_STATUS;
 			}
 		};

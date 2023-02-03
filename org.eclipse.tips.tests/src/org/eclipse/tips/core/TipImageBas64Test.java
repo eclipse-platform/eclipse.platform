@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.tips.core;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.AssertionFailedException;
@@ -57,7 +58,7 @@ public class TipImageBas64Test {
 
 	@Test
 	public void testGetBase64() {
-		assertTrue(getTipImage().getBase64Image().equals(BASE64));
+		assertEquals(BASE64, getTipImage().getBase64Image());
 	}
 
 	@Test

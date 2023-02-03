@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.tips.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -45,14 +48,14 @@ public class TipManagerTest {
 	public void testGetProvider() {
 		fManager.register(fProvider1);
 		TipProvider provider = fManager.getProvider(fProvider1.getID());
-		assertTrue(provider == fProvider1);
+		assertEquals(fProvider1, provider);
 	}
 
 	@Test
 	public void testRegister() {
 		fManager.register(fProvider1);
 		TipProvider provider = fManager.getProvider(fProvider1.getID());
-		assertTrue(provider == fProvider1);
+		assertEquals(provider, fProvider1);
 	}
 
 	/**
@@ -63,24 +66,24 @@ public class TipManagerTest {
 		fManager.register(fProvider1);
 		fManager.register(fProvider2);
 		fManager.register(fProvider2);
-		assertTrue(fManager.getProviders().size() + "", fManager.getProviders().size() == 1);
+		assertEquals(fManager.getProviders().size() + "", 1, fManager.getProviders().size());
 	}
 
 	@Test
 	public void testGetStartupBeahvior() {
-		assertTrue(fManager.getStartupBehavior() == TipManager.START_DIALOG);
-		assertTrue(fManager.getStartupBehavior() != TipManager.START_BACKGROUND);
-		assertTrue(fManager.getStartupBehavior() != TipManager.START_DISABLE);
+		assertEquals(TipManager.START_DIALOG, fManager.getStartupBehavior());
+		assertNotEquals(TipManager.START_BACKGROUND, fManager.getStartupBehavior());
+		assertNotEquals(TipManager.START_DISABLE, fManager.getStartupBehavior());
 
 		fManager.setStartupBehavior(TipManager.START_BACKGROUND);
-		assertTrue(fManager.getStartupBehavior() == TipManager.START_BACKGROUND);
-		assertTrue(fManager.getStartupBehavior() != TipManager.START_DIALOG);
-		assertTrue(fManager.getStartupBehavior() != TipManager.START_DISABLE);
+		assertEquals(TipManager.START_BACKGROUND, fManager.getStartupBehavior());
+		assertNotEquals(TipManager.START_DIALOG, fManager.getStartupBehavior());
+		assertNotEquals(TipManager.START_DISABLE, fManager.getStartupBehavior());
 
 		fManager.setStartupBehavior(TipManager.START_DISABLE);
-		assertTrue(fManager.getStartupBehavior() != TipManager.START_BACKGROUND);
-		assertTrue(fManager.getStartupBehavior() != TipManager.START_DIALOG);
-		assertTrue(fManager.getStartupBehavior() == TipManager.START_DISABLE);
+		assertNotEquals(TipManager.START_BACKGROUND, fManager.getStartupBehavior());
+		assertNotEquals(TipManager.START_DIALOG, fManager.getStartupBehavior());
+		assertEquals(TipManager.START_DISABLE, fManager.getStartupBehavior());
 	}
 
 	@Test
@@ -94,7 +97,7 @@ public class TipManagerTest {
 			}
 		};
 		fManager.register(testTipProvider);
-		assertTrue(!test.isEmpty());
+		assertFalse(test.isEmpty());
 	}
 
 	@Test
@@ -108,7 +111,7 @@ public class TipManagerTest {
 			}
 		};
 		fManager.register(testTipProvider);
-		assertTrue(!test.isEmpty());
+		assertFalse(test.isEmpty());
 	}
 
 	@Test
@@ -127,10 +130,10 @@ public class TipManagerTest {
 			}
 		};
 		m.open(true);
-		assertTrue(test.size() == 1);
+		assertEquals(1, test.size());
 		test.clear();
 		m.open(false);
-		assertTrue(test.size() == 2);
+		assertEquals(2, test.size());
 	}
 
 	@Test
@@ -176,12 +179,12 @@ public class TipManagerTest {
 		fManager.setAsRead(fProvider1.getCurrentTip());
 		assertTrue(fProvider1.getTips().size() + "", fProvider1.getTips().size() == 1);
 		fManager.setServeReadTips(true);
-		assertTrue(fProvider1.getTips().size() == 2);
+		assertEquals(2, fProvider1.getTips().size());
 	}
 
 	@Test
 	public void testIsServeUnread() {
-		assertTrue(fManager.mustServeReadTips() == false);
+		assertFalse(fManager.mustServeReadTips());
 		fManager.setServeReadTips(true);
 		assertTrue(fManager.mustServeReadTips());
 	}
