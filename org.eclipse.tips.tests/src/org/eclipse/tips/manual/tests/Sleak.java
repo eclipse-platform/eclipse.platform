@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2021 IBM Corp.
+ * Copyright (c) 2000, 2023 IBM Corp.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -184,26 +184,26 @@ public class Sleak {
 		}
 		GC gc = event.gc;
 		Object object = objects[index];
-		if (object instanceof Color) {
-			if (((Color) object).isDisposed()) {
+		if (object instanceof Color color) {
+			if (color.isDisposed()) {
 				return;
 			}
-			gc.setBackground((Color) object);
+			gc.setBackground(color);
 			gc.fillRectangle(canvas.getClientArea());
 			return;
 		}
-		if (object instanceof Cursor) {
-			if (((Cursor) object).isDisposed()) {
+		if (object instanceof Cursor cursor) {
+			if (cursor.isDisposed()) {
 				return;
 			}
-			canvas.setCursor((Cursor) object);
+			canvas.setCursor(cursor);
 			return;
 		}
-		if (object instanceof Font) {
-			if (((Font) object).isDisposed()) {
+		if (object instanceof Font font) {
+			if (font.isDisposed()) {
 				return;
 			}
-			gc.setFont((Font) object);
+			gc.setFont(font);
 			FontData[] array = gc.getFont().getFontData();
 			String string = "";
 			String lf = text.getLineDelimiter();
@@ -227,18 +227,18 @@ public class Sleak {
 		// if (object instanceof GC) {
 		// return;
 		// }
-		if (object instanceof Image) {
-			if (((Image) object).isDisposed()) {
+		if (object instanceof Image image) {
+			if (image.isDisposed()) {
 				return;
 			}
-			gc.drawImage((Image) object, 0, 0);
+			gc.drawImage(image, 0, 0);
 			return;
 		}
-		if (object instanceof Region) {
-			if (((Region) object).isDisposed()) {
+		if (object instanceof Region region) {
+			if (region.isDisposed()) {
 				return;
 			}
-			String string = ((Region) object).getBounds().toString();
+			String string = region.getBounds().toString();
 			gc.drawString(string, 0, 0);
 			return;
 		}
