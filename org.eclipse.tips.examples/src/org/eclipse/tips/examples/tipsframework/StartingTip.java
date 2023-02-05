@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -40,9 +40,12 @@ public class StartingTip extends Tip implements IHtmlTip {
 
 	@Override
 	public String getHTML() {
-		return "<h2>Opening the Tips Dialog</h2>The tips are started automatically at startup but you can switch this off."
-				+ " In case the tips are not loaded at startup you can active the tips manually from the Help menu."
-				+ "<br><br>" + "Press <b><i>Next Tip</i></b> to see how to navigate Tips.<br><br>";
+		return """
+				<h2>Opening the Tips Dialog</h2>
+				The tips are started automatically at startup but you can switch this off.
+				In case the tips are not loaded at startup you can active the tips manually
+				from the Help menu.<br><br>
+				Press <b><i>Next Tip</i></b> to see how to navigate Tips.<br><br>""";
 	}
 
 	private TipImage fImage;

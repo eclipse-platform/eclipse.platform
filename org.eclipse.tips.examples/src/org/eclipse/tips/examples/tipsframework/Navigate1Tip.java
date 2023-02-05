@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -90,13 +90,19 @@ public class Navigate1Tip extends Tip implements IHtmlTip {
 
 	@Override
 	public String getHTML() {
-		return "<h2>Navigating Tips</h2>You can navigate tips by using the button bar. "
-				+ "<br><b>Next Tip</b><br>Navigates to the next tip."
-				+ "<br><b>Previous Tip</b></br>Navigates to the previous tip."
-				+ "<br><b>Close</b></br>Closes the Dialog (<b>Escape</b> does the same)."
-				+ "<br><b>Show tips at startup</b><br/>A toggle to show this dialog when you start Eclipse."
-				+ "<br><br>"
-				+ "If a tip can do something special then the <b>More...</b> button is activated, like with this tip."
-				+ "<br>Go on, press it!";
+		return """
+				<h2>Navigating Tips</h2>
+				You can navigate tips by using the button bar.
+				<br><b>Next Tip</b>
+				<br>Navigates to the next tip.
+				<br><b>Previous Tip</b>
+				<br>Navigates to the previous tip.
+				<br><b>Close</b>
+				<br>Closes the Dialog (<b>Escape</b> does the same).
+				<br><b>Show tips at startup</b>
+				<br>A toggle to show this dialog when you start Eclipse.
+				<br><br>If a tip can do something special then the <b>More...</b> button
+				is activated, like with this tip.
+				<br>Go on, press it!""";
 	}
 }

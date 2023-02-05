@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 vogella GmbH
+ * Copyright (c) 2018, 2023 vogella GmbH
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
@@ -40,10 +40,14 @@ public class BrowserFunctionTip extends Tip implements IHtmlTip, IBrowserFunctio
 
 	@Override
 	public String getHTML() {
-		return "<html><head><title>IHtmlTip with IBrowserFunctionProvider</title></head>"
-				+ "<body><p>This tip shows HTML and provides a BrowserFunction, which can be invoked by using JavaScript.</p>"
-				+ "<p><button onclick=\"openPreferencesBrowserFunction()\">I gonna open the preferences from the Browser</button></p></body></html>"
-				+ "<p><a href=\"#\" onclick=\"openPreferencesBrowserFunction()\">I do the same but with a link</a></p></body></html>";
+		return """
+				<html><head><title>IHtmlTip with IBrowserFunctionProvider</title></head>
+				<body>
+					<p>This tip shows HTML and provides a BrowserFunction, which can be invoked by using JavaScript.</p>
+					<p><button onclick="openPreferencesBrowserFunction()">I gonna open the preferences from the Browser</button></p>
+					<p><a href="#" onclick="openPreferencesBrowserFunction()">I do the same but with a link</a></p>
+				</body>
+				</html>""";
 	}
 
 	@Override

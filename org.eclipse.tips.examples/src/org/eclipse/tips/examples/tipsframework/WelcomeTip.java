@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -38,9 +38,13 @@ public class WelcomeTip extends Tip implements IHtmlTip {
 
 	@Override
 	public String getHTML() {
-		return "<h2>Welcome to the Tips Framework</h2>It can show tips from various tip providers. This provider has tips about tips which will show you how to navigate this UI."
-				+ " The dialog is this Tip UI. Tips appear here in various forms. They can come from Twitter, a Wiki, a Website, a file or even from Java, like this one."
-				+ "<br><br>" + "Press <b><i>Next Tip</i></b> to see how to start tips manually.";
+		return """
+				<h2>Welcome to the Tips Framework</h2>
+				It can show tips from various tip providers. This provider has tips about tips
+				which will show you how to navigate this UI. The dialog is this Tip UI.
+				Tips appear here in various forms. They can come from Twitter, a Wiki, a Website,
+				a file or even from Java, like this one.<br><br>
+				Press <b><i>Next Tip</i></b> to see how to start tips manually.""";
 	}
 
 	@Override

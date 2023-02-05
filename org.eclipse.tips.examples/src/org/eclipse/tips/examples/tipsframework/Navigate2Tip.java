@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -42,10 +42,12 @@ public class Navigate2Tip extends Tip implements IHtmlTip {
 
 	@Override
 	public String getHTML() {
-		return "<h2>Navigating Tips</h2>You can activate other Tip Providers by clicking on the big icons below."
-				+ "<br>"
-				+ "You are currently looking at the Tips tips but as you can see there are other providers. Go ahead and"
-				+ " select some of the other providers. If you click on the lightbulb below you will return to this tip.<br><br>";
+		return """
+				<h2>Navigating Tips</h2>
+				You can activate other Tip Providers by clicking on the big icons below.
+				<br>You are currently looking at the Tips tips but as you can see there are
+				other providers. Go ahead and select some of the other providers.
+				If you click on the lightbulb below you will return to this tip.<br><br>""";
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -38,9 +38,24 @@ public class TwitterTip extends Tip implements IHtmlTip {
 
 	@Override
 	public String getHTML() {
-		return "<html><head><style>"
-				+ "</style></head><body><div><blockquote class=\"twitter-tweet\" data-lang=\"en\"><p lang=\"en\" dir=\"ltr\">The &#39;Extract class...&#39; refactoring (from Alt+Shift+T) extracts a group of fields into a separate class and replaces all occurrences to fit the new structure. See example. <a href=\"https://twitter.com/hashtag/EclipseTips?src=hash&amp;ref_src=twsrc%5Etfw\">#EclipseTips</a> <a href=\"https://t.co/tEI7ic7C1g\">pic.twitter.com/tEI7ic7C1g</a></p>&mdash; Eclipse Java IDE (@EclipseJavaIDE) <a href=\"https://twitter.com/EclipseJavaIDE/status/949238007051235328?ref_src=twsrc%5Etfw\">January 5, 2018</a></blockquote>"
-				+ "<script src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script></div></body></html>";
+		return """
+				<html>
+				<head><style></style></head>
+				<body>
+					<div>
+						<blockquote class="twitter-tweet" data-lang="en">
+						<p lang="en" dir="ltr">The &#39;Extract class...&#39; refactoring
+						(from Alt+Shift+T) 	extracts a group of fields into a separate class
+						and replaces all occurrences to fit the new structure. See example.
+						<a href="https://twitter.com/hashtag/EclipseTips?src=hash&amp;ref_src=twsrc%5Etfw">#EclipseTips</a>
+						<a href="https://t.co/tEI7ic7C1g">pic.twitter.com/tEI7ic7C1g</a></p>
+						&mdash; Eclipse Java IDE (@EclipseJavaIDE)
+						<a href="https://twitter.com/EclipseJavaIDE/status/949238007051235328?ref_src=twsrc%5Etfw">January 5, 2018</a>
+						</blockquote>
+						<script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+					</div>
+				</body>
+				</html>""";
 	}
 
 	@Override

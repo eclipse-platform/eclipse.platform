@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -41,13 +41,13 @@ public class Tip1 extends Tip implements IHtmlTip {
 
 	@Override
 	public String getHTML() {
-		return "<h1>Iterate with Iterator</h1>" //
-				+ "Workbench editors keep a navigation history." //
-				+ " If  you open a second editor while you're editing,"
-				+ " you can press <b>Navigate > Backward (Alt+Left Arrow,"
-				+ " or the Left arrow icon back arrow icon on the"
-				+ " workbench toolbar)</b> to go back to the last editor."
-				+ " This makes working with several open editors a whole lot easier." + "<br/><br/>";
+		return """
+				<h1>Iterate with Iterator</h1>
+				Workbench editors keep a navigation history. If  you open a second editor
+				while you're editing, you can press <b>Navigate > Backward (Alt+Left Arrow,
+				or the Left arrow icon back arrow icon on the workbench toolbar)</b> to
+				go back to the last editor. This makes working with several open editors
+				a whole lot easier.<br/><br/>""";
 	}
 
 	@Override

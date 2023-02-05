@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -42,7 +42,11 @@ public class Tip3 extends Tip implements IHtmlTip {
 
 	@Override
 	public String getHTML() {
-		return "<h1>Automatic Save of dirty editors</h1>You can configure the automatic save of dirty editors in Eclipse via the <b>General > Editors > Autosave</b> preference page which allows you to enable/disable the autosave and change the interval of autosave.";
+		return """
+				<h1>Automatic Save of dirty editors</h1>
+				You can configure the automatic save of dirty editors in Eclipse via
+				the <b>General > Editors > Autosave</b> preference page which allows you
+				to enable/disable the autosave and change the interval of autosave.""";
 	}
 
 	@Override

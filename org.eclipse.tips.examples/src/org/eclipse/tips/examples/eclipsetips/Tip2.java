@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -42,15 +42,15 @@ public class Tip2 extends Tip implements IHtmlTip {
 
 	@Override
 	public String getHTML() {
-		return "<h1>Quick access</h1>You can quickly find all manner of"
-				+ " user interface elements with the <b>Quick Access</b>"
-				+ " search bar at the top of the workbench window. Click"
-				+ " in the field or use the <b>Ctrl+3</b> binding to switch"
-				+ " focus to it. Matching elements include (but are not limited to)"
-				+ " open editors, available perspectives, views, preferences, wizards,"
-				+ " and commands. Simply start typing the name of the item you wish to"
-				+ " invoke and we will attempt to find something in the Workbench that"
-				+ " matches the provided string. ";
+		return """
+				<h1>Quick access</h1>
+				You can quickly find all manner of user interface elements with the
+				<b>Quick Access</b> search bar at the top of the workbench window.
+				Click in the field or use the <b>Ctrl+3</b> binding to switch focus to it.
+				Matching elements include (but are not limited to) open editors, available
+				perspectives, views, preferences, wizards, and commands.
+				Simply start typing the name of the item you wish to invoke and we will
+				attempt to find something in the Workbench that matches the provided string.""";
 	}
 
 	@Override

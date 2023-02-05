@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -85,10 +85,12 @@ public class Tip1 extends Tip implements IHtmlTip {
 	 */
 	@Override
 	public String getHTML() {
-		return "<h2>Javatip 1</h2>You see this tip because the Tip UI was opened when the java perspective "
-				+ "was active or because you selected the Java icon below." + "<br><br>"
-				+ "More java tips will be displayed here in the near future. For now, select one of the other providers"
-				+ " by clicking on the icons below.";
+		return """
+				<h2>Javatip 1</h2>
+				You see this tip because the Tip UI was opened when the java perspective
+				was active or because you selected the Java icon below.<br><br>
+				More java tips will be displayed here in the near future. For now, select one
+				of the other providers by clicking on the icons below.""";
 	}
 
 	/**

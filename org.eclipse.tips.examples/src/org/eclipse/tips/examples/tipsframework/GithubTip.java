@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -69,9 +69,11 @@ public class GithubTip extends Tip implements IHtmlTip {
 
 	@Override
 	public String getHTML() {
-		return "<h2>Incubating on GitHub</h2>We are incubating this project on Github "
-				+ "and we could use your help. Press the <b>More...</b> button to open the " + "GitHub repository. "
-				+ "<br>" + "<br>" + "We are looking forward to your pull requests." + "<br>";
+		return """
+				<h2>Incubating on GitHub</h2>
+				We are incubating this project on Github and we could use your help.
+				Press the <b>More...</b> button to open the GitHub repository.<br><br>
+				We are looking forward to your pull requests.<br>""";
 	}
 
 	private TipImage fImage;
