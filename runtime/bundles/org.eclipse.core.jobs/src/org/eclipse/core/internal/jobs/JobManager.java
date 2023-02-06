@@ -1403,12 +1403,13 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		return blocking;
 	}
 
-	protected void schedule(InternalJob job, long delay) {
-		withWriteLock(job, j -> {
+	protected boolean schedule(InternalJob job, long delay) {
+		return withWriteLock(job, j -> {
 			if (scheduleInternal(job, delay, false)) {
 				pool.jobQueued();
+				return true;
 			}
-			return (Void) null;
+			return false;
 		});
 	}
 

@@ -392,8 +392,14 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	protected abstract IStatus run(IProgressMonitor progressMonitor);
 
 	protected void schedule(long delay) {
-		if (shouldSchedule())
-			manager.schedule(this, delay);
+		trySchedule(delay);
+	}
+
+	protected final boolean trySchedule(long delay) {
+		if (shouldSchedule()) {
+			return manager.schedule(this, delay);
+		}
+		return false;
 	}
 
 	/**
