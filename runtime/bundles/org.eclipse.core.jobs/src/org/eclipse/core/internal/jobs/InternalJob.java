@@ -200,7 +200,10 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	}
 
 	protected void canceling() {
-		//default implementation does nothing
+		Thread t = getThread();
+		if (t != null) {
+			t.interrupt();
+		}
 	}
 
 	@Override

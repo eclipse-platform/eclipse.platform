@@ -301,6 +301,7 @@ public abstract class Job extends InternalJob {
 	@Override
 	protected void canceling() {
 		//default implementation does nothing
+		super.canceling();
 	}
 
 	/**
