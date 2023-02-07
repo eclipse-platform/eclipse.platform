@@ -584,7 +584,7 @@
             </enablement>
          </actionProvider>
          <commonSorter
-            class="org.eclipse.team.internal.ui.mapping.ResourceModelSorter"
+            class="org.eclipse.team.internal.ui.mapping.ResourceModelComparator"
             id="org.eclipse.team.ui.resourceSorter"/>
        </navigatorContent>
    </extension>
