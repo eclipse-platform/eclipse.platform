@@ -65,27 +65,7 @@
     <module>runtime</module>
     <module>team</module>
     <module>resources</module>
-    <module>org.eclipse.help</module>
-    <module>org.eclipse.help.base</module>
-    <module>org.eclipse.help.ui</module>
-    <module>org.eclipse.help.webapp</module>
-    <module>org.eclipse.ua.tests</module>
-    <module>org.eclipse.ua.tests.doc</module>
-    <module>org.eclipse.ui.cheatsheets</module>
-    <module>org.eclipse.ui.intro</module>
-    <module>org.eclipse.ui.intro.universal</module>
-
-    <module>org.eclipse.ui.intro.quicklinks</module>
-    <module>org.eclipse.ui.intro.quicklinks.examples</module>
-    <module>org.eclipse.ui.intro.solstice.examples</module>
-    
-    <module>org.eclipse.tips.core</module>
-    <module>org.eclipse.tips.ui</module>
-    <module>org.eclipse.tips.ide</module>
-    <module>org.eclipse.tips.json</module>
-    <module>org.eclipse.tips.feature</module>
-    
-    <module>infocenter-web</module>
+    <module>ua</module>
   </modules>
   <build>
     <pluginManagement>

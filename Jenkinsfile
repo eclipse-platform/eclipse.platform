@@ -11,6 +11,7 @@ pipeline {
 	environment {
 		MAVEN_OPTS = "-Dbuild.sysclasspath=ignore -Dincludeantruntime=false"
 	}
+	
 	tools {
 		maven 'apache-maven-latest'
 		jdk 'openjdk-jdk17-latest'
@@ -25,7 +26,7 @@ pipeline {
 						-Dcompare-version-with-baselines.skip=false \
 						-Dmaven.compiler.failOnWarning=true -Dproject.build.sourceEncoding=UTF-8 -T1C \
 						-Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss.SSS \
-						-DtrimStackTrace=false						
+						-DtrimStackTrace=false 
 					"""
 				}
 			}
@@ -37,5 +38,6 @@ pipeline {
 					recordIssues publishAllIssues: true, tools: [java(), mavenConsole(), javaDoc()]
 				}
 			}
+		}
 	}
 }

@@ -13,7 +13,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>eclipse.platform.ua</artifactId>
-    <groupId>eclipse.platform.ua</groupId>
+    <groupId>org.eclipse.platform</groupId>
     <version>4.27.0-SNAPSHOT</version>
   </parent>
   <groupId>org.eclipse.help</groupId>
