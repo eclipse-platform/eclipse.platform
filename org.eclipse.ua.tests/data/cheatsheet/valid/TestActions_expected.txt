@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cheatsheet
+      title="Test Actions">
+   <item
+         title="Introduction"
+         description="Welcome to the Test Actions cheat sheet.
+This cheat sheet will test the various setting combinations for actions.
+Let's get started!"
+         Href="null"
+         contextId="null">
+      <nullAction/>
+      <nullList/>
+      <nullPerformWhen/>
+      <nullList/>
+   </item>
+   <list>
+      <item
+            title="Test 1"
+            description="Test with no action."
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test 2"
+            description="Test with no action and skip=false."
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test 3"
+            description="Test with no action and skip=true."
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test 4"
+            description="Test with action."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+               pluginId="org.eclipse.ua.tests"
+               when="null"
+               isConfirm="false">
+            <nullArray/>
+         </action>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test 5"
+            description="Test with action and skip=false."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+               pluginId="org.eclipse.ua.tests"
+               when="null"
+               isConfirm="false">
+            <nullArray/>
+         </action>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test 6"
+            description="Test action and skip=true."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+               pluginId="org.eclipse.ua.tests"
+               when="null"
+               isConfirm="false">
+            <nullArray/>
+         </action>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test 7"
+            description="Test action and confirm=false."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+               pluginId="org.eclipse.ua.tests"
+               when="null"
+               isConfirm="false">
+            <nullArray/>
+         </action>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test 8"
+            description="Test action and confirm=true."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+               pluginId="org.eclipse.ua.tests"
+               when="null"
+               isConfirm="true">
+            <nullArray/>
+         </action>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test 9"
+            description="Test action, skip=false and confirm=false."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+               pluginId="org.eclipse.ua.tests"
+               when="null"
+               isConfirm="false">
+            <nullArray/>
+         </action>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test 10"
+            description="Test action, skip=true and confirm=false."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+               pluginId="org.eclipse.ua.tests"
+               when="null"
+               isConfirm="false">
+            <nullArray/>
+         </action>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test 11"
+            description="Test action, skip=false and confirm=true."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+               pluginId="org.eclipse.ua.tests"
+               when="null"
+               isConfirm="true">
+            <nullArray/>
+         </action>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test 12"
+            description="Test action, skip=true and confirm=true."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+               pluginId="org.eclipse.ua.tests"
+               when="null"
+               isConfirm="true">
+            <nullArray/>
+         </action>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="All done!"
+            description="Did the test work?"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+   </list>
+</cheatsheet>

@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGIN__ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Active help</title>
+</head>
+<body>
+
+<h2>Active help</h2>
+
+<p>Active help is the ability to invoke Eclipse code from on-line
+documentation.&nbsp;It is implemented by including some JavaScript in your
+documentation that describes a class that should be run inside the Eclipse
+platform. </p>
+
+<p>For example, instead of writing, &quot;Go to the Window Menu and open the
+message dialog,&quot; your on-line help can include a link that will open your
+application's message dialog for the user.&nbsp; Active help links look like hyperlinks in
+the on-line help.</p>
+
+<p>Below is an active help link that opens the cheatsheet "Check out a CVS project".&nbsp;
+We will take a look at how to create and reference your own actions.</p>
+
+<p><a href='javascript:liveAction(
+	"org.eclipse.ui.cheatsheets", 
+	"org.eclipse.ui.cheatsheets.OpenCheatSheetFromHelpAction",
+	"org.eclipse.platform.cvs.checkout")'>Open a cheatsheet.</a></p>
+
+</body>
+</html>

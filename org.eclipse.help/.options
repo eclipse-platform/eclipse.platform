@@ -1,0 +1,4 @@
+org.eclipse.help/debug = true
+org.eclipse.help/debug/context = false
+org.eclipse.help/debug/search = false
+org.eclipse.help/debug/toc = false

@@ -1,0 +1,8 @@
+
+#
+# This is a simple properties file to ensure that it is correctly loaded and parsed.
+#
+
+key1=value1
+key2 = value2
+this.is.another/key   =   this.is.another.value

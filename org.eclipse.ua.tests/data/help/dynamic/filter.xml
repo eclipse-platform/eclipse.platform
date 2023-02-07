@@ -1,0 +1,273 @@
+<?xml version="1.0"?>
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<root>
+
+	<description>
+		This file tests the filtering capability. Below are some filters, some
+		of which should be applied and others which shouldn't.
+	</description>
+	
+	<!--
+	     Valid cases
+	-->
+	
+	<!-- simple test cases; don't filter -->
+	<element filter="os!=invalid"/>
+	<element filter="ws!=invalid"/>
+	<element filter="arch!=invalid"/>
+	<element filter="product!=invalid"/>
+	<element filter="plugin!=invalid"/>
+	<element filter="category!=invalid"/>
+	<element filter="activity!=invalid"/>
+	<element filter="systemProperty!=invalid"/>
+
+	<!-- simple test case; filter -->
+	<element filter="os=invalid"/>
+	<element filter="ws=invalid"/>
+	<element filter="arch=invalid"/>
+	<element filter="product=invalid"/>
+	<element filter="plugin=invalid"/>
+	<element filter="category=invalid"/>
+	<element filter="activity=invalid"/>
+	<element filter="systemProperty=invalid"/>
+
+	<!-- filter element test cases; don't filter -->
+	<element>
+		<filter name="os" value="!invalid"/>
+	</element>
+	<element>
+		<filter name="ws" value="!invalid"/>
+	</element>
+	<element>
+		<filter name="arch" value="!invalid"/>
+	</element>
+	<element>
+		<filter name="product" value="!invalid"/>
+	</element>
+	<element>
+		<filter name="plugin" value="!invalid"/>
+	</element>
+	<element>
+		<filter name="category" value="!invalid"/>
+	</element>
+	<element>
+		<filter name="activity" value="!invalid"/>
+	</element>
+	<element>
+		<filter name="systemProperty" value="!invalid"/>
+	</element>
+
+	<!-- filter element test cases; filter -->
+	<element>
+		<filter name="os" value="invalid"/>
+	</element>
+	<element>
+		<filter name="ws" value="invalid"/>
+	</element>
+	<element>
+		<filter name="arch" value="invalid"/>
+	</element>
+	<element>
+		<filter name="product" value="invalid"/>
+	</element>
+	<element>
+		<filter name="plugin" value="invalid"/>
+	</element>
+	<element>
+		<filter name="category" value="invalid"/>
+	</element>
+	<element>
+		<filter name="activity" value="invalid"/>
+	</element>
+	<element>
+		<filter name="systemProperty" value="invalid"/>
+	</element>
+
+	<!-- multiple filters; shouldn't filter -->
+	<element>
+		<filter name="os" value="!invalid"/>
+		<filter name="ws" value="!invalid"/>
+	</element>
+
+	<!-- multiple filters; should filter -->
+	<element>
+		<filter name="os" value="!invalid"/>
+		<filter name="ws" value="invalid"/>
+	</element>
+
+	<!-- filter with children; shouldn't filter -->
+	<element>
+		<filter name="os" value="!invalid"/>
+		<child>This child element shouldnt be filtered</child>
+	</element>
+
+	<!-- filter with children; should filter all -->
+	<element>
+		<filter name="os" value="invalid"/>
+		<child>This child element should be filtered along with parent</child>
+	</element>
+
+	<!-- filter with dynamic content; should filter -->
+	<element filter="os=invalid">
+		<include path="/org.eclipse.ua.tests/data/help/dynamic/shared/doc1.xml#doc.1"/>
+	</element>
+	<element>
+		<filter name="os" value="invalid"/>
+		<include path="/org.eclipse.ua.tests/data/help/dynamic/shared/doc1.xml#doc.1"/>
+	</element>
+
+	<!-- filter with dynamic content; shouldn't filter -->
+	<element filter="os!=invalid">
+		<include path="/org.eclipse.ua.tests/data/help/dynamic/shared/doc1.xml#doc.1"/>
+	</element>
+	<element>
+		<filter name="os" value="!invalid"/>
+		<include path="/org.eclipse.ua.tests/data/help/dynamic/shared/doc1.xml#doc.1"/>
+	</element>
+
+	<!-- enablement expressions; should not filter -->
+	<element>
+		<enablement>
+			<not>
+				<systemTest property="osgi.os" value="invalid"/>
+			</not>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<not>
+				<systemTest property="osgi.ws" value="invalid"/>
+			</not>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<not>
+				<systemTest property="osgi.arch" value="invalid"/>
+			</not>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<not>
+				<systemTest property="eclipse.product" value="org.eclipse.ua.invalid"/>
+			</not>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<with variable="platform">
+				<test property="org.eclipse.core.runtime.isBundleInstalled" args="org.eclipse.help"/>
+				<not>
+					<test property="org.eclipse.core.runtime.isBundleInstalled" args="org.eclipse.ua.invalid"/>
+				</not>
+			</with>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<with variable="workbench">
+				<not>
+					<test property="org.eclipse.ui.isActivityEnabled" args="invalid"/>
+				</not>
+			</with>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<with variable="workbench">
+				<not>
+					<test property="org.eclipse.ui.isCategoryEnabled" args="invalid"/>
+				</not>
+			</with>
+		</enablement>
+	</element>
+
+	<!-- enablement expressions; should filter -->
+	<element>
+		<enablement>
+			<systemTest property="osgi.os" value="invalid"/>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<systemTest property="osgi.ws" value="invalid"/>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<systemTest property="osgi.arch" value="invalid"/>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<systemTest property="eclipse.product" value="invalid"/>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<with variable="platform">
+				<test property="org.eclipse.core.runtime.isBundleInstalled" args="org.eclipse.ua.invalid"/>
+			</with>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<with variable="workbench">
+				<test property="org.eclipse.ui.isActivityEnabled" args="invalid"/>
+			</with>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<with variable="workbench">
+				<test property="org.eclipse.ui.isCategoryEnabled" args="invalid"/>
+			</with>
+		</enablement>
+	</element>
+
+	<!--
+	     Invalid cases
+	-->
+
+	<!-- empty filter value -->
+	<element filter=""/>
+
+	<!-- no equals -->
+	<element filter="invalid"/>
+
+	<!-- no value -->
+	<element filter="invalid="/>
+
+	<!-- no name -->
+	<element filter="=invalid"/>
+
+	<!-- missing params -->
+	<element>
+		<filter/>
+	</element>
+
+	<!-- missing name -->
+	<element>
+		<filter value="invalid"/>
+	</element>
+
+	<!-- missing value -->
+	<element>
+		<filter name="invalid"/>
+	</element>
+
+</root>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<!-- ========================== -->
+<!-- Define topics for the GettingStarted -->
+<!-- ========================== -->
+<toc label="GettingStarted" extradir="gettingStarted/intro.htm">
+   <topic label="Basic tutorial" href="gettingStarted/qs-01.htm">
+      <topic label="The Workbench" href="gettingStarted/qs-02a.htm"/>
+      <topic label="Editors and views" href="gettingStarted/qs-02b.htm">
+         <topic label="Editors" href="gettingStarted/qs-02d.xhtml"/>
+         <topic label="Views" href="gettingStarted/qs-02e.htm"/>
+      </topic>
+          
+      <topic label="A simple project" href="gettingStarted/qs-07a.htm">
+         <topic label="Using the File menu" href="gettingStarted/qs-07b.htm"/>
+         <topic label="Using the popup" href="gettingStarted/qs-07c.htm"/>
+         <topic label="Using the New button" href="gettingStarted/qs-07d.htm"/>
+      </topic>
+ 
+      <topic label="Closing an editor" href="gettingStarted/qs-10b.htm"/>
+
+      <topic label="Navigating resources" href="gettingStarted/qs-12.htm">
+         <topic label="Opening resources in the Navigator" href="gettingStarted/qs-12b.htm"/>
+         <topic label="Go To" href="gettingStarted/qs-12c.htm"/>
+         <topic label="Go Into" href="gettingStarted/qs-12d.htm"/>
+      </topic>
+
+      <topic label="Files" href="gettingStarted/qs-13.htm"/>
+
+      <topic label="Exporting files" href="gettingStarted/qs-24a.xhtml">
+      </topic>
+
+      <topic label="Importing files" href="gettingStarted/qs-31a.htm">
+         <topic label="Drag and drop or copy and paste" href="gettingStarted/qs-31b.htm"/>
+         <topic label="Import wizard" href="gettingStarted/qs-31c.htm"/>
+      </topic>
+
+      <topic label="Deleting resources" href="gettingStarted/qs-32.htm"/>
+	  
+      <topic label="Working with other editors" href="gettingStarted/qs-34a.xhtml">
+         <topic label="External editors" href="gettingStarted/qs-34b.xhtml"/>
+         <topic label="Embedded editors" href="gettingStarted/qs-34c.xhtml"
+             filter="ws=win32"/>
+         <topic label="Editing files outside the Workbench" href="gettingStarted/qs-34d.htm"/>
+	 </topic>
+
+      <topic label="Copying, renaming and moving" href="gettingStarted/qs-35.htm">
+         <topic label="Copying" href="gettingStarted/qs-35b.htm"/>
+         <topic label="Renaming" href="gettingStarted/qs-35c.htm"/>
+         <topic label="Moving" href="gettingStarted/qs-35d.htm"/>
+      </topic>
+
+      <topic label="Searching" href="gettingStarted/qs-36.htm">
+         <topic label="Starting a search" href="gettingStarted/qs-36a.htm"/>
+         <topic label="The Search view" href="gettingStarted/qs-36b.htm"/>
+      </topic>
+
+      <topic label="Tasks and markers" href="gettingStarted/qs-37-2b.htm">
+         <topic label="Unassociated tasks" href="gettingStarted/qs-37-2d.htm"/>
+         <topic label="Associated tasks" href="gettingStarted/qs-37-2d2.htm"/>
+         <topic label="Opening files" href="gettingStarted/qs-37-2f.htm"/>
+      </topic>
+
+      <topic label="Bookmarks" href="gettingStarted/qs-37-3b.htm">
+         <topic label="Adding and viewing bookmarks" href="gettingStarted/qs-37-3c.htm"/>
+         <topic label="Using bookmarks" href="gettingStarted/qs-37-3e.htm"/>
+        <topic label="Removing bookmarks" href="gettingStarted/qs-37-3f.htm"/>
+      </topic>
+
+      <topic label="Rearranging views and editors" href="gettingStarted/qs-39.htm">
+         <topic label="Drop cursors" href="gettingStarted/qs-39c.htm"/>
+         <topic label="Rearranging views" href="gettingStarted/qs-39d.htm"/>
+         <topic label="Tiling editors" href="gettingStarted/qs-39e.htm"/>
+         <topic label="Rearranging tabbed views" href="gettingStarted/qs-39f.htm" />
+         <topic label="Maximizing" href="gettingStarted/qs-39g.htm"/>
+      </topic>
+
+      <topic label="Fast views" href="gettingStarted/qs-40.htm">
+         <topic label="Creating fast views" href="gettingStarted/qs-40a.htm"/>
+         <topic label="Working with fast views" href="gettingStarted/qs-40b.htm"/>
+      </topic>
+
+      <topic label="Perspectives" href="gettingStarted/qs-43.htm">
+         <topic label="New perspectives" href="gettingStarted/qs-43b.htm"/>
+         <topic label="New windows" href="gettingStarted/qs-43c.htm"/>
+         <topic label="Saving perspectives" href="gettingStarted/qs-43e.htm"/>
+         <topic label="Configuring perspectives" href="gettingStarted/qs-43f.htm"/>
+      </topic>
+
+      <topic label="Comparing" href="gettingStarted/qs-52.htm">
+         <topic label="Simple compare" href="gettingStarted/qs-52c.htm"/>
+         <topic label="Understanding the comparison" href="gettingStarted/qs-52d.htm"/>
+         <topic label="Working with the comparison" href="gettingStarted/qs-52e.htm"/>
+      </topic>
+
+      <topic label="Local history" href="gettingStarted/qs-55.htm"/>
+	  
+	  <topic label="Responsive UI" href="gettingStarted/qs-responsiveUI.htm"/>	
+
+      <topic label="Exiting the Workbench" href="gettingStarted/qs-55b.htm"/>
+
+   </topic>
+   
+   <anchor id="gs_afterbasic" />
+
+   <topic label="Team CVS tutorial" href="gettingStarted/qs-60_team.htm">
+      <topic label="Setting up a CVS repository" href="gettingStarted/qs-60a_setup.htm"/>
+      <topic label="Starting offline" href="gettingStarted/qs-61c_offline.htm"/>
+
+      <topic label="Sharing the project" href="gettingStarted/qs-61d_repoloca.htm">
+         <topic label="Specifying a repository location" href="gettingStarted/qs-61d_repolocb.htm"/>
+         <topic label="Repository locations" href="gettingStarted/qs-61e_whatisloc.htm"/>
+         <topic label="Sharing a project" href="gettingStarted/qs-61f_syncproject.htm"/>
+      </topic>
+
+      <topic label="Working with another user" href="gettingStarted/qs-64a_another.htm">
+         <topic label="Checking out a project" href="gettingStarted/qs-64b_fredadd.htm"/>
+         <topic label="Another user making changes" href="gettingStarted/qs-64b_fredmod.htm"/>
+         <topic label="Making our own changes" href="gettingStarted/qs-64c_catch_mod.htm"/>
+         <topic label="Working with conflicting changes" href="gettingStarted/qs-64c_catch_sync_view.htm"/>
+         <topic label="Replacing" href="gettingStarted/qs-70_replace.htm"/>
+         <topic label="Versioning your project" href="gettingStarted/qs-74_version.htm"/>
+         <topic label="A quick review" href="gettingStarted/qs-74_review.htm"/>
+      </topic>
+      <topic label="Working with CVS History" href="gettingStarted/qs-70_workingWithHistory.htm"/>
+   </topic>
+
+   <anchor id="gs_afterteam" />
+
+   <topic label="Ant &amp; external tools tutorial" href="gettingStarted/qs-80_ant.htm">
+     <topic label="Eclipse Ant basics" href="gettingStarted/qs-81_basics.htm">
+       <topic label="Creating Ant buildfiles" href="gettingStarted/qs-82_create.htm"/>
+       <topic label="Editing Ant buildfiles" href="gettingStarted/qs-83_edit.htm"/>
+       <topic label="Running Ant buildfiles" href="gettingStarted/qs-84_run_ant.htm"/>
+       <topic label="Saving &amp; Reusing Ant options" href="gettingStarted/qs-85_ant_configs.htm"/>
+       <topic label="Using the Ant view" href="gettingStarted/qs-85a_ant_view.htm"/>
+     </topic>    
+     <topic label="Ant buildfiles as project builders" href="gettingStarted/qs-92_project_builders.htm">
+       <topic label="Creating a project builder Ant buildfile" href="gettingStarted/qs-93_project_builder.htm"/>
+       <topic label="Executing project builders" href="gettingStarted/qs-94_run_pj.htm"/>       
+     </topic>      	
+     <topic label="External tools" href="gettingStarted/qs-95_external_tools.htm">
+       <topic label="Non-Ant project builders" href="gettingStarted/qs-96_non_ant_pjs.htm"/>
+       <topic label="Stand-alone external tools" href="gettingStarted/qs-97_standalone_ets.htm"/>
+     </topic>	
+   </topic>
+   
+   <anchor id="gs_afterant" />
+   
+</toc>

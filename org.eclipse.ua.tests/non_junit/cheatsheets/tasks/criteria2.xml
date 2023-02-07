@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2010 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<cheatsheet
+      title="Defining criteria in Webapp">
+   <intro>
+      <description>
+         This tests for the creation of a criteria based scope
+      </description>
+   </intro>
+   <item
+         title="Open the help Browser">
+      <description>
+         Help/Help Contents.<br/>
+Verify that the help contents opens.
+      </description>
+   </item>
+   <item
+         title="Define a scope with criteria">
+      <description>
+         Create a scope which filters based on criteria
+      </description>
+      <subitem
+            label="Click on the scope link next to the search typein, a dialog called &quot;Select Scope&quot; should open.">
+      </subitem>
+      <subitem
+            label="In the select scope dialog press &quot;New...&quot;. A dialog named New Scope should be opened">
+      </subitem>
+      <subitem
+            label="Verify that to the right of the topics there is a list of criteria and that none of them is checked">
+      </subitem>
+      <subitem
+            label="Verify that the following criteria are displayed: Title contains the letter, platform, version">
+      </subitem>
+      <subitem
+            label="Expand Title contains the letter. Verify that there are five checkboxes underneath it: letter c, letter k, letter t, letter v and uncategorized.">
+      </subitem>
+      <subitem
+            label="Check letter v, and press OK, verify that a dialog shows saying &quot;You must select at least one topic&quot;">
+      </subitem>
+      <subitem
+            label="Check the checkbox for each of the topics on the left of the dialog">
+      </subitem>
+      <subitem
+            label="Hit the OK button">
+      </subitem>
+   </item>
+   <item
+         title="Check the scope">
+      <description>
+         From the select scope dialog hit Edit and verify that letter v is the only criterion selected. Hit OK to dismiss the Edit scope dialog.
+      </description>
+   </item>
+   <item
+         title="Apply the new scope">
+      <description>
+         Hit OK to get out of the Select Scope Dialog. The table of contents view should be redrawn with less books included. Check that every book displayed contains the letter &apos;v&apos;
+      </description>
+   </item>
+   <item
+         title="Expand the books">
+      <description>
+         Expand each of the books in the toc. Verify that each book displayed expands correctly and that every subtopic contains a letter &apos;v&apos; in the title.
+      </description>
+   </item>
+</cheatsheet>

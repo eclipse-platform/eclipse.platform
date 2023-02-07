@@ -1,0 +1,496 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Help system customization</title>
+
+<style type="text/css">
+	.deprecated {
+		color: #444444;
+	}
+	.warning {
+		color: red;
+	}
+</style>
+
+</head>
+<body>
+
+<h2>Help system customization</h2>
+
+<p>The Eclipse help system can be configured and branded to suit your
+product by
+specifying custom defaults for number of help preferences.<br>
+</p>
+<p>The Help system itself is divided up into a number of separate
+plug-ins.
+These tables shows available preferences, and which plug-in
+defines them.
+</p>
+
+<h3>org.eclipse.help plug-in:</h3>
+
+<table border="1">
+  <tbody>
+    <tr>
+      <td style="font-weight: bold;">Preference key</td>
+      <td style="font-weight: bold;">Usage<br>
+      </td>
+      <td style="font-weight: bold;">Default</td>
+    </tr>
+    <tr>
+      <td><code>HELP_DATA</code></td>
+      <td>Specifies the path of an XML file containing help data, such
+      as the order in which the table of contents should be displayed, and which books
+      and index contributions should be hidden from the user. The path may 
+      either be of the form PLUGINS_ROOT/ pluginId/path or &quot;path&quot;. If the value 
+      does not start with PLUGINS_ROOT the path is resolved relative to the 
+      product plugin.&nbsp; For example,
+      &quot;<code>helpData.xml</code>&quot; or &quot;PLUGINS_ROOT/org.eclipse.platform/helpData.xml&quot;. Consult the
+      <a href="ua_help_setup_help_data.htm">schema documentation</a> for details.</td>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td><code class="deprecated">baseTOCS</code> <span class="warning">(deprecated; use <code>HELP_DATA</code> instead)</span></td>
+      <td><span class="deprecated">Toc ordering. Ordered list of help TOC's (books) or TOC
+categories as they would appear on the bookshelf. All the other TOCS and categories
+will follow these. Non-present TOCs or categories on this list will be ignored. For TOCs, use
+the location of the TOC as /pluginId/path/to/toc.xml. For categories, use the category
+id.</span></td>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td><code class="deprecated">ignoredTOCS</code> <span class="warning">(deprecated; use <code>HELP_DATA</code> instead)</span></td>
+      <td><span class="deprecated">Disabling TOCs. List of help TOCs (books) or TOC categories that
+will be ignored by the help system.  The disabled TOCs/categories will not
+appear in the list of books, cannot be linked. Topics defined by disabled TOCs
+will not be available from search.
+Non-present TOCs or categories in this list will be ignored. For TOCs, use the
+location of the TOC as /pluginId/path/to/toc.xml. For categories, use the
+category id.</span></td>
+      <td><br>
+      </td>
+    </tr>
+    <tr>
+      <td><code class="deprecated">ignoredIndexes</code> <span class="warning">(deprecated; use <code>HELP_DATA</code> instead)</span></td>
+      <td><span class="deprecated">Disabling keyword indexes. List of help keyword index contributions that
+will be ignored by the help system. Keywords from the disabled indexes will not
+appear in the index view. For index XML files, use the path to the file in the form
+/pluginId/path/to/index.xml.</span></td>
+      <td><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>org.eclipse.help.base plug-in:</h3>
+
+<table border="1">
+  <tbody>
+    <tr>
+      <td style="font-weight: bold;">Preference key</td>
+      <td style="font-weight: bold;">Usage<br>
+      </td>
+      <td style="font-weight: bold;">Default</td>
+    </tr>
+    <tr>
+      <td><code>banner</code></td>
+      <td>Location of the banner page to display in the top frame<br>
+Example: <code>banner=/org.eclipse.help.webapp/advanced/banner.html</code></td>
+      <td><br>
+      </td>
+    </tr>
+    <tr>
+      <td><code>banner_height</code></td>
+      <td>Height of the banner frame<br>
+Example: <code>banner_height=60</code></td>
+      <td><br>
+      </td>
+    </tr>
+    <tr>
+      <td><code>help_home</code></td>
+      <td>The page to show in the content area when opening help.
+Specify your html page as <code>/pluginId/path/to/home.html</code>.</td>
+      <td><code>/org.eclipse.help.base/doc/help_home.html</code></td>
+    </tr>
+    <tr>
+      <td><code>page_not_found</code></td>
+      <td>The page to show in the content area when a topic file cannot be 
+      opened. If this variable is not specified the browser will show it's 
+      default 404 error page.</td>
+      <td><code>/org.eclipse.help.base/doc/page_not_found.html</code></td>
+    </tr>
+    <tr>
+      <td><code>showBreadcrumbs</code></td>
+      <td>Set to <code>true</code> or <code>false</code> to control the 
+      visibility of breadcrumbs.</td>
+      <td><code>true</code></td>
+    </tr>
+    <tr>
+      <td><code>bookmarksView</code></td>
+      <td>Set to <code>true</code> or <code>false</code> to control the 
+      visibility of the bookmarks view.<br>
+      Note: this option has no effect in the infocenter.</td>
+      <td><code>true</code></td>
+    </tr>
+    <tr>
+      <td><code>indexView</code></td>
+      <td>Set to <code>true</code> or <code>false</code> to control the 
+      visibility of the index view.</td>
+      <td><code>true</code></td>
+    </tr>
+    <tr>
+      <td><code>windowTitlePrefix</code></td>
+      <td>Set to <code>true</code> or <code>false</code> to control the title of
+the browser
+window. If <code>true</code>, the
+title will have a form "Help - <code>&lt;PRODUCT_NAME&gt;</code>",
+otherwise the title will be
+"<code>&lt;PRODUCT_NAME&gt;</code>",
+where <code>&lt;PRODUCT_NAME&gt;</code>
+is the name of
+Eclipse product set in the primary feature.</td>
+      <td><code>true</code></td>
+    </tr>
+    <tr>
+      <td><code>imagesDirectory</code></td>
+      <td>Directory containing images used in the help view. Images
+must have the same name as those in the org.eclipse.help.webapp
+plug-in.
+Use the <code>/pluginID/directory</code>
+format.</td>
+      <td><code>images</code></td>
+    </tr>
+    <tr>
+      <td><code>advanced.toolbarBackground</code></td>
+      <td>CSS background for toolbars. Value is used in browsers
+that display advanced help UI.</td>
+      <td><code>ButtonFace</code></td>
+    </tr>
+    <tr>
+      <td><code>advanced.viewBackground</code></td>
+      <td>CSS background for navigation views. Value is used in
+browsers that display advanced help UI. May be the empty string.</td>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td><code>advanced.toolbarFont</code></td>
+      <td>CSS font for toolbars. Value is used in browsers that
+display advanced help UI.</td>
+      <td><code>icon</code></td>
+    </tr>
+    <tr>
+      <td><code>advanced.viewFont</code></td>
+      <td>CSS font for navigation views. Value is used in browsers
+that display advanced help UI.</td>
+      <td><code>icon</code></td>
+    </tr>
+    <tr>
+      <td><code>advanced.syncDefault</code></td>
+      <td>The default boolean value for whether the toc should automatically
+      be synchronized with the contents.</td>
+      <td><code>true</code></td>
+    </tr>
+    <tr>
+      <td><code>basic.toolbarBackground</code></td>
+      <td>Background color for toolbars. Value is used in browsers
+displaying basic help UI.</td>
+      <td><code>#D4D0C8</code></td>
+    </tr>
+    <tr>
+      <td><code>basic.viewBackground</code></td>
+      <td>Background color for navigation views. Value is used in
+browsers displaying basic help UI.</td>
+      <td><code>#FFFFFF</code></td>
+    </tr>
+    <tr>
+      <td><code>locales</code></td>
+      <td>List of locales that infocenter will recognize and
+provide a customized content for; if locales (or languages) accepted by
+client browser are not matched with any locales in this list, the
+browser will be served content for default locale - the server locale,
+or locale specified by eclipse <code>-nl</code>
+command line option; if list is not
+specified, the browser will be served contents for its preferred
+locale; note: not providing this option may result in a large
+memory and disk space requirements as navigations and indexes will be
+created for each distinct preferred locale among browsers accessing the
+infocenter.<br>
+Example: <code>locales=en ja zh_CN
+zh_TW</code></td>
+      <td><br>
+      </td>
+    </tr>
+    <tr>
+      <td><code>productIndex</code></td>
+      <td>If per-product, pre-built documentation index is provided with the
+product, the ID of the plug-in delivering the index must be specified
+to the help system here.</td>
+      <td><br>
+      </td>
+    </tr>
+    <tr>
+      <td><code>always_external_browser</code></td>
+      <td style="vertical-align: top;">Use embedded when possible (on
+Windows or Linux), or always external.&nbsp; Setting to true will force
+use of external browser.&nbsp; Option has no effect if embedded browser
+is not available on a given platform.<br>
+      </td>
+      <td><code>false</code></td>
+    </tr>
+    <tr>
+      <td><code>default_browser</code></td>
+      <td><p>Default external browser.&nbsp; ID of one of the external
+  web browsers contributed to org.eclipse.help.base.browser extension
+  point that help system will use. The browser's adapter <code>available()</code>
+  method must return true on the current system.</p>
+      <p>This preference controls external browsers in stand-alone help mode.
+      In the workbench mode, help uses browsers provided by workbench browser
+        support.</p></td>
+      <td>default dynamically set based on the browser available on a
+given system<br>
+      </td>
+    </tr>
+    <tr>
+      <td><code>custom_browser_path</code></td>
+      <td><p>Executable path for custom browser</p>
+      <p>This preference controls external browsers in stand-alone help mode.
+        In the workbench mode, help uses browsers provided by workbench browser
+      support.</p></td>
+      <td><code>C:\Program Files\Internet Explorer\IEXPLORE.EXE" %1</code> - on
+Windows,<br>
+      <code>"konqueror %1"</code> - on
+Linux<br>
+      <code>"mozilla %1"</code> - on
+other platforms
+      </td>
+    </tr>
+    <tr>
+      <td><code>showDisabledActivityTopics</code></td>
+      <td>Help system filters topics from disabled
+capabilities.&nbsp; This option controls this behavior and existence
+of&nbsp; Show All Topics button.<br>
+Accepted values: <code>never</code>, <code>off</code>, <code>on</code>, <code>always</code><br>
+&nbsp;<code>never</code> - topic from
+disabled capabilities are not shown<br>
+&nbsp;<code>off</code> - user can
+choose to show all topics, disabled topics
+initially hidden<br>
+&nbsp;<code>on</code> - user can choose
+to show all topics, all topics initially
+shown<br>
+&nbsp;<code>always</code> - topic from
+disabled capabilities are shown (filtering
+disabled)</td>
+      <td><code>off</code></td>
+    </tr>
+    <tr>
+      <td><code>activeHelp</code></td>
+      <td>Allows enabling and disabling execution of active help.
+The option has no effect in the infocenter setup, where active help is
+disabled.<br>
+Accepted values:<br>
+&nbsp;<code>true</code> - default
+active help actions enabled<br>
+&nbsp;<code>false</code> - active help
+framework disabled</td>
+      <td><code>true</code></td>
+    </tr>
+    <tr>
+      <td><code>restrictTopicParameter</code></td>
+      <td>Since 3.4. When true prevents topic parameters with an http or other 
+      protocol from causing an external URL to open in the content frame of the 
+      infocenter. This improves security and the recommended setting is true.</td>
+      <td><code>true</code></td>
+    </tr>
+    <tr>
+      <td><code>window_infopop</code></td>
+      <td>Allows enabling the old-style infopops when help key is pressed in 
+		workbench windows. If false, the new dynamic help view will open 
+		instead.</td>
+      <td><code>false</code></td>
+    </tr>
+    <tr>
+      <td><code>dialog_infopop</code><br>
+      </td>
+      <td>Allows enabling the old-style infopops 
+		when help key is pressed in dialogs. If false, the new dynamic help 
+		window will open instead.<br>
+      </td>
+      <td><code>false</code><br>
+      </td>
+    </tr>
+    <tr>
+      <td>help_view_open_mode</td>
+      <td>Controls where links in the help view are opened.&nbsp; <br>
+Accepted values:<br>
+&nbsp;<code>in_place</code> 
+      - open documents in the help view<br>
+&nbsp;<code>in_editor</code> - open document in an editor<br>
+&nbsp;<code>in_browser</code> - open document in a browser</td>
+      <td>in_place</td>
+    </tr>
+    <tr>
+      <td><a name="remoteHelp"></a>
+      <code>remoteHelpOn</code><br>
+      </td>
+      <td>Controls whether or not remote help is enabled.<br>
+Accepted values:<br>
+&nbsp;<code>true</code> - remote help enabled<br>
+&nbsp;<code>false</code> - remote help disabled</td>
+      <td><code>false</code><br></td>
+    </tr>
+    <tr>
+      <td colspan="3">The 5 remote help preferences below can each have multiple 
+      comma separated values if there is more than one infocenter contributing 
+      remote content. </td>
+    </tr>
+    <tr>
+      <td>remoteHostName</td>
+      <td>Specifies a name for this remote host which will appear in the table 
+      on the preference page</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><code>remoteHelpHost</code><br></td>
+      <td>Specifies the host name to access for remote help content. This must
+      be specified as a host name and cannot be a URL (i.e. do not include "http://").</td>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td><code>remoteHelpPath</code><br>
+      </td>
+      <td>Specifies the context root of the Infocenter application running on the
+      specified host.</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><code>remoteHelpPort</code><br>
+      </td>
+      <td>Specifies the port to use to access remote help content.</td>
+      <td>&nbsp;</td>
+    </tr>   
+    <tr>
+      <td>remoteHelpICEnabled</td>
+      <td>Specifies that the infocenter will contribute remote content</td>
+      <td>&nbsp;</td>
+    </tr>   
+    <tr>
+      <td colspan="3">The four css preferences allow for the control of 
+      page appearance by inserting css files into every page served by the help 
+      server. Each can each contain zero or more comma separated paths of the 
+      form /plugin/path. These paths should contain only ASCII characters.<br>
+      If a path contains ${os} then that will be replaced with the name of the 
+      OS, any other parameters of the form ${parameter} are reserved for future 
+      use.</td>
+    </tr>
+    <tr>
+      <td><code>topic_css</code></td>
+      <td>A list of css file(s) to include in every non navigation page served by 
+      help system.</td>
+      <td >&nbsp;</td>
+    </tr>
+    <tr>
+      <td><code>nav_css</code></td>
+      <td>A list of css file(s) to include in every navigation page served by 
+      help system</td>
+      <td ><code>/PRODUCT_PLUGIN/book.css</code></td>
+    </tr>
+    <tr>
+      <td><code>narrow_css</code></td>
+      <td>A list of&nbsp; css file(s) to include in every page 
+      displayed in the help view or help tray .</td>
+      <td><code>/PRODUCT_PLUGIN/narrow_book.css,/PRODUCT_PLUGIN/${os}_narrow_book.css</code></td>
+    </tr>
+    <tr>
+      <td><code>disabled_css</code></td>
+      <td>A list of&nbsp; css file(s) to include in every page 
+      served by help system from a capability that is not enabled..</td>
+      <td><code>/PRODUCT_PLUGIN/disabled_book.css</code></td>
+    </tr>   
+  </tbody>
+</table>
+
+<h3 class="deprecated">org.eclipse.help.appserver plug-in:</h3>
+<span class="warning">Deprecated: This plug-in is no longer used by help. See table for alternative usage.</span>
+
+<table border="1">
+  <tbody>
+    <tr>
+      <td style="font-weight: bold;"><span class="deprecated">Preference key</span></td>
+      <td style="font-weight: bold;"><span class="deprecated">Usage</span></td>
+      <td style="font-weight: bold;"><span class="deprecated">Default</span></td>
+    </tr>
+    <tr>
+      <td><code class="deprecated">port</code> <span class="warning">(deprecated)</span></td>
+      <td><p class="deprecated">The port number on which the sever listens for http
+requests. If port is not given, an arbitrary
+port is picked by the system.</p>
+<p class="warning">Start Eclipse with "-vmargs -Dserver_port=&lt;port&gt;" instead</p></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><code class="deprecated">host</code> <span class="warning">(deprecated)</span><br>
+      </td>
+      <td><p class="deprecated">The host address or name to use
+  for connecting to the server. The default is nothing, and eclipse will
+  pick up an available local address.</p>
+        <p class="deprecated">Products using help in local mode (workbench or stand-alone, not infocenter),
+          can set this preference to &quot;<code>127.0.0.1</code>&quot; to
+          ensure help server is not exposed to other users on the network.<br>
+        </p>
+        <p class="warning">Start Eclipse with "-vmargs -Dserver_host=&lt;host&gt;" instead</p></td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 class="deprecated">org.eclipse.tomcat plug-in:</h3>
+<span class="warning">Deprecated: This plug-in is no longer used by help. No alternative commands available.</span>
+
+<table border="1">
+  <tbody>
+    <tr>
+      <td style="font-weight: bold;"><span class="deprecated">Preference key</span></td>
+      <td style="font-weight: bold;"><span class="deprecated">Usage</span></td>
+      <td style="font-weight: bold;"><span class="deprecated">Default</span></td>
+    </tr>
+    <tr>
+      <td><code class="deprecated">acceptCount</code> <span class="warning">(deprecated)</span></td>
+      <td><span class="deprecated">The maximum queue length for incoming connection requests
+when all possible request processing threads are in use. Any requests
+received when the queue is full will be refused.</span></td>
+      <td><code class="deprecated">100</code></td>
+    </tr>
+    <tr>
+      <td><code class="deprecated">maxProcessors</code> <span class="warning">(deprecated)</span><br>
+      </td>
+      <td><span class="deprecated">The maximum number of request
+processing threads to be created by this Connector, which therefore
+determines the maximum number of simultaneous requests that can be
+handled.</span>
+      </td>
+      <td><code class="deprecated">75</code><br>
+      </td>
+    </tr>
+    <tr>
+      <td><code class="deprecated">minProcessors</code> <span class="warning">(deprecated)</span><br>
+      </td>
+      <td><span class="deprecated">The number of request processing
+threads that will be created when this Connector is first started. This
+attribute should be set to a value smaller than that set for
+maxProcessors.</span>
+      </td>
+      <td><code class="deprecated">5</code><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+
+</body>
+</html>

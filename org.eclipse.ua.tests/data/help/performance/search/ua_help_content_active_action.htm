@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGIN__ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Writing the help action</title>
+</head>
+<body>
+
+<h3>Writing the help action</h3>
+
+<p>The interface <a href="../reference/api/org/eclipse/help/ILiveHelpAction.html"><b>ILiveHelpAction</b></a>
+is used to build an active help action.</p>
+
+
+<p>It is straightforward to implement an <a href="../reference/api/org/eclipse/help/ILiveHelpAction.html"><b>ILiveHelpAction</b></a><b>.</b>&nbsp;
+You must implement two methods.</p>
+
+
+<ul>
+  <li><b>run()</b> - This method is called to run the live help action.&nbsp;
+    This method will be called by the help system from a non-UI thread, so UI
+    access must be wrapped in a <b><a href="../reference/api/org/eclipse/swt/widgets/Display.html">Display.syncExec()</a></b>
+    method.&nbsp;&nbsp;</li>
+  <li><b>setInitializationString(String)</b> - This method is called to
+    initialize your action with a String data parameter you can specify in the
+    HTML which runs the JavaScript <b>liveAction</b>.&nbsp;&nbsp;
+If you don't need initialization data, you can just implement
+this method to do nothing.&nbsp; This method is called before <b>run()</b>.</li>
+</ul>
+
+
+<p>Here is a simple implementation of a live help action that opens a message
+dialog. We don't need any information from the JavaScript, so the
+initialization data is ignored.</p>
+
+
+<pre>package org.eclipse.platform.doc.isv.activeHelp;
+
+import org.eclipse.help.ILiveHelpAction;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.*;
+/**
+ * Sample Active Help action.
+ */
+public class ActiveHelpOpenDialogAction implements ILiveHelpAction {
+
+     public void setInitializationString(String data) {
+          // ignore the data.  We do not use any javascript parameters.
+     }
+
+     public void run() {
+          // Active help does not run on the UI thread, so we must use syncExec
+          Display.getDefault().syncExec(new Runnable() {
+               public void run() {
+                    IWorkbenchWindow window =
+                         PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                    if (window != null) {
+                         // Bring the Workbench window to the top of other windows;
+                         // On some Windows systems, it will only flash the Workbench
+                         // icon on the task bar
+                         Shell shell = window.getShell();
+                         shell.setMinimized(false);
+                         shell.forceActive();
+                         // Open a message dialog
+                         MessageDialog.openInformation(
+                              window.getShell(),
+                              &quot;Hello World.&quot;,
+                              &quot;Hello World.&quot;);
+                    }
+               }
+          });
+     }
+}</pre>
+
+</body>
+</html>

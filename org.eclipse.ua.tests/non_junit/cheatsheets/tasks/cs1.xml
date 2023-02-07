@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2008 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Test for tray dialog and help">
+  <intro>
+    <description>This cheat sheet will test that cheat sheets can be opened in a tray next to a dialog.</description>
+  </intro>
+  <item title="Open search dialog with tray." dialog="true">
+     <description>This is a step with a command which opens the search dialog. Verify that this cheatsheet is opened to the right of the search dialog 
+     when click to perform is pressed. You should cancel out of the search dialog.</description>
+     <command serialization="org.eclipse.search.ui.openSearchDialog"/>  
+  </item>
+  <item title="Open search dialog without tray." >
+     <description>This is a step with a command which opens the search dialog. Verify that this cheatsheet is <b>not</b> opened to the right of the search dialog 
+     when click to perform is pressed. You should cancel out of the search dialog.</description>
+     <command serialization="org.eclipse.search.ui.openSearchDialog"/>  
+  </item>
+  <item
+        href="/org.eclipse.ua.tests/data/help/index/topic4.html"
+        title="Open Help Topic">
+     <description>
+        In the cheat sheet view click on the (?) to the right of this step - the help topic topic4 should be opened.
+     </description>
+  </item>
+  <item
+        href="http://www.eclipse.org"
+        title="Open External Help Topic">
+     <description>
+        In the cheat sheet view click on the (?) to the right of this step - eclipse.org should be opened.
+     </description>
+  </item>
+  <item
+        contextId="org.eclipse.ui.cheatsheets.cheatSheetSelection"
+        title="Open Context Help">
+     <description>
+        In the cheat sheet view click on the (?) to the right of this step. The context help for the cheat sheet selection dialog should be opened.
+     </description>
+  </item>
+</cheatsheet>
+

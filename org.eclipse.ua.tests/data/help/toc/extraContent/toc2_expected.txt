@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<toc
+      label="Samples"
+      href="/org.eclipse.ua.tests/data/help/toc/extraContent/toc2.xml">
+   <topic
+         label="Tests FOR product: Unit Tests, WAS; version: 9.0,8.0 ; platform: z/OS;AIX"
+         href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      <topic
+            label="Creating a unit test FOR Version: 9.0; platform: z/OS; product: WAS"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+      <topic
+            label="Documenting your test FOR Version: 8.0; platform: AIX; product: Happy Tests"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+      <topic
+            label="Maintaining your test"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+      <topic
+            label="Test classes"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+      <topic
+            label="Test artifacts"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+      <topic
+            label="Test history"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+      <topic
+            label="Test reuse"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+   </topic>
+   <topic
+         label="Tests FOR product: Unit Tests"
+         href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      <topic
+            label="Maintaining your test"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+      <topic
+            label="Test classes"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+      <topic
+            label="Test artifacts"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+      <topic
+            label="Test history"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+      <topic
+            label="Test reuse"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+   </topic>
+</toc>

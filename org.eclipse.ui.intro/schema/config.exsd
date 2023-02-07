@@ -1,0 +1,381 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.ui.intro" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.ui.intro" id="config" name="Intro Part Configuration"/>
+      </appinfo>
+      <documentation>
+         This extension point is used to register an intro configuration. This configuration provides presentation implementations and content for a given intro contribution. An intro appears when the workbench is first launched and as a choice from the &quot;Help&quot; menu. The intro is typically used to introduce a user to a product built on Eclipse.
+&lt;p&gt;
+The intros are organized into pages which usually reflect a particular category of introductory material.  For instance, a What&apos;s New page may introduce new concepts or functionality since previous versions.  The content defined by one intro configuration can be referenced and extended from other plug-ins using the &lt;a href=&quot;org_eclipse_ui_intro_configExtension.html&quot;&gt;org.eclipse.ui.intro.configExtension&lt;/a&gt; extension point.
+&lt;p&gt;
+      </documentation>
+   </annotation>
+
+   <include schemaLocation="IntroContent.exsd"/>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="config"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="config">
+      <annotation>
+         <documentation>
+            A config element can be used to configure a customizable Intro Part. A config element must specify an id, an introId, and a content file.
+The intro content file is an XML file that describes the pages, groups and links that the intro has.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="presentation"/>
+         </sequence>
+         <attribute name="introId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the id of an intro part contribution that this configuration will be associated with.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.intro/intro/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique name that can be used to identify this intro configuration
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="content" type="string" use="required">
+            <annotation>
+               <documentation>
+                  an intro content file. The content file is an XML file that contains the specifics of the intro (&lt;a href=&quot;introContentFileSpec.html&quot;&gt;intro content file format specification)&lt;/a&gt;.
+The content file is parsed at run time by the intro framework. Based on the settings in this file, a certain number of pages, groups, and links are shown to the user when the intro is opened.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="configurer" type="string">
+            <annotation>
+               <documentation>
+                  a name of the fully qualified class that provides for dynamic aspects of the intro configuration. This class can provide values of the substitution variables, children of the dynamic groups and resolve incomplete target paths. The class must extend &lt;code&gt;org.eclipse.ui.intro.IntroConfigurer&lt;/code&gt;.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.ui.intro.config.IntroConfigurer"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="presentation">
+      <annotation>
+         <documentation>
+            Presentation element that defines all the possible implementations of an intro part&apos;s presentation. It can have one or more implementation defined in it. Only one implementation will be chosen at startup, based the os/ws attributes of the implementations. Otherwise, the first one with no os/ws attributes defined will be chosen.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="implementation" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="launchBar" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="home-page-id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the id of the home (root) page, which is the first page of the introduction.  This page can be used as an entry point to the other main pages that make up the intro.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="standby-page-id" type="string">
+            <annotation>
+               <documentation>
+                  an optional attribute to define the id of the standby page. The standby page will be shown to the user when the Intro is set to standby.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="implementation">
+      <annotation>
+         <documentation>
+            The presentation of the Platform&apos;s out of the box experience has two implementations. One of them is SWT Browser based, while the other is UI Forms based. The customizable intro part can be configured to pick one of those two presentations based on the current OS and WS. The type of the implementation can be swt or html.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="head" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="kind" use="required">
+            <annotation>
+               <documentation>
+                  Specifies the type of this implementation.  The swt kind indicates a UI Forms based implementation, and the html kind indicates an SWT Browser based implementation
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="swt">
+                  </enumeration>
+                  <enumeration value="html">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="style" type="string">
+            <annotation>
+               <documentation>
+                  The shared style that will be applied to all pages presented by this intro presentation implementation.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="os" type="string">
+            <annotation>
+               <documentation>
+                  The optional operating system specification used when choosing the presentation&apos;s implementation.  It can be any of the os designators defined by Eclipse, e.g., win32, linux, etc (see Javadoc for &lt;code&gt;org.eclipse.core.runtime.Platform&lt;/code&gt;).
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="ws" type="string">
+            <annotation>
+               <documentation>
+                  The optional windowing system specification used when choosing the presentation&apos;s implementation.  It can be any of the ws designators defined by Eclipse (see Javadoc for &lt;code&gt;org.eclipse.core.runtime.Platform&lt;/code&gt;).
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="launchBar">
+      <annotation>
+         <documentation>
+            Launch bar works in conjuction with &apos;switchToLaunchBar&apos; command. When executed, the command will close intro and create a launch bar in one of the trim areas of the main window. The launch bar will contain at least one button that would allow users to return to the last intro page. Optionally, it can contain additional buttons defined using &lt;code&gt;shortcut&lt;/code&gt; elements. These buttons can be used to quickly go to a certain intro page. since 3.1
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="handle" minOccurs="0" maxOccurs="1"/>
+            <element ref="shortcut" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="location" use="default" value="fastview">
+            <annotation>
+               <documentation>
+                  the location of the launch bar relative to the content area in the main window (one of &lt;code&gt;left&lt;/code&gt;, &lt;code&gt;bottom&lt;/code&gt; or &lt;code&gt;right&lt;/code&gt;). If the choice is set to &lt;code&gt;fastview&lt;/code&gt; (the default), the launch bar will be initially created where the fast view bar is.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="left">
+                  </enumeration>
+                  <enumeration value="bottom">
+                  </enumeration>
+                  <enumeration value="right">
+                  </enumeration>
+                  <enumeration value="fastview">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="bg" type="string">
+            <annotation>
+               <documentation>
+                  background color that will be applied to the launch bar if specified. Expected format is hex, as in: #rrggbb (for example, #80a4a1).
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="fg" type="string">
+            <annotation>
+               <documentation>
+                  foreground color that will be used to paint the border of the launch bar if specified. Expected format is hex, as in: #rrggbb (for example, #80a4a1).
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="computed" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  an optional boolean flag that indicates whether the launch bar shortcuts will be computed by the intro configurer. When set to &lt;code&gt;true&lt;/code&gt;, static &lt;code&gt;shortcut&lt;/code&gt; elements defined in plugin.xml will be ignored.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="shortcut">
+      <annotation>
+         <appinfo>
+            <meta.element labelAttribute="tooltip" icon="icon"/>
+         </appinfo>
+         <documentation>
+            a button will be created in the intro launch bar for each shortcut element. The URL defined in the shortcut will be executed when the button is pressed. since 3.1
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="tooltip" type="string">
+            <annotation>
+               <documentation>
+                  a tooltip to be used for this shortcut
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a relative path to the image icon that should be used for this shortcut in the intro launch bar.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="url" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the URL to execute when the shortcut in the launch bar is activated
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="handle">
+      <annotation>
+         <appinfo>
+            <meta.element deprecated="true"/>
+         </appinfo>
+         <documentation>
+            an optional element that controls how launch bar handle is rendered. since 3.1. Deprecated because the workbench now handles all aspects of window trim.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="close" type="boolean" use="default" value="true">
+            <annotation>
+               <documentation>
+                  an optional flag that controls if the handle will have a close button (default is &lt;code&gt;true&lt;/code&gt;).
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="image" type="string">
+            <annotation>
+               <documentation>
+                  a plug-in-relative path of the branding image to be tiled on the handle.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         Here is a sample usage of the config extension point.
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension id=&quot;intro&quot; point=&quot;org.eclipse.ui.intro.config&quot;&gt;
+   &lt;config
+      introId=&quot;com.org.xyz.intro&quot;
+      id=&quot;com.org.xyz.introConfig&quot;
+      content=&quot;introContent.xml&quot;&gt;
+      &lt;presentation
+         home-page-id=&quot;root&quot;
+         title=&quot;%intro.title&quot;&gt;
+         &lt;implementation
+            ws=&quot;win32&quot;
+            style=&quot;css/shared.css&quot;
+            kind=&quot;html&quot;
+            os=&quot;win32&quot;&gt;
+         &lt;/implementation&gt;
+         &lt;implementation
+            style=&quot;css/shared_swt.properties&quot;
+            kind=&quot;swt&quot;&gt;
+         &lt;/implementation&gt;
+      &lt;/presentation&gt;
+   &lt;/config&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         For further details see the spec for the org.eclipse.ui.intro.config API package.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         The intro contributed by the org.eclipse.platform plugin is the only implementation within Eclipse.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2004, 2006 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

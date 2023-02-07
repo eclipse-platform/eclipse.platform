@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<!-- ============================================================================= -->
+<!-- Define topics for the references                                              -->
+<!-- ============================================================================= -->
+<toc label="Reference">
+	<topic label="API Reference" href="reference/api/overview-summary.html">
+	</topic>
+	<topic label="Extension Points Reference" href="reference/extension-points/index.html">
+	</topic>
+	<topic label="Other Reference Information" href="reference/misc/index.html">
+	</topic>
+</toc>

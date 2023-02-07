@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<!-- ========================== -->
+<!-- Define topics for the Reference -->
+<!-- ========================== -->
+<toc label="Reference">
+
+<!-- <topic label="Keyboard shortcuts" /> -->
+<topic label="Crash recovery" href="reference/ref-8.htm" />
+
+<anchor id="r_aftercrash" />
+
+	<topic label="Preferences" href="reference/ref-72.htm">
+		<topic label="Accessibility" href="reference/ref-7.htm"></topic>
+		<topic label="Annotations" href="reference/ref-22.htm"></topic>
+		<topic label="Ant" href="reference/ref-antprefs.htm"></topic>
+		<topic label="Ant Code Assist" href="reference/ref-antcodeassist.htm"></topic>		
+		<topic label="Ant Editor" href="reference/ref-anteditorprefs.htm"></topic>		
+		<topic label="Ant Formatter" href="reference/ref-antformatter.htm"></topic>		
+		<topic label="Ant Runtime" href="reference/ref-antruntimeprefs.htm"></topic>
+		<topic label="Ant Templates" href="reference/ref-anttemplates.htm"></topic>	
+		<topic label="Appearance" href="reference/ref-16.htm"></topic>
+		<topic label="Automatic Updates" href="reference/ref-21a.htm"></topic>
+		<topic label="Build Order" href="reference/ref-17.htm"></topic>
+		<topic label="Capabilities" href="reference/ref-capabilitiespref.htm"></topic>
+		<topic label="Colors and Fonts" href="reference/ref-fonts.htm"></topic>
+		<topic label="Compare/Patch" href="reference/ref-11.htm"></topic>
+		<topic label="Content Types" href="reference/ref-content-type.htm"></topic>
+		<topic label="CVS" href="reference/ref-19cvs.htm"></topic>
+		<topic label="CVS Annotate" href="reference/ref-19cvs-annotate.htm"></topic>
+		<topic label="CVS Comment Templates" href="reference/ref-19cvs-commenttemplates.htm"></topic>
+		<topic label="CVS Console" href="reference/ref-19cvs-console.htm"></topic>
+		<topic label="CVS Ext Connection Method" href="reference/ref-19cvs-ext.htm"></topic>
+		<topic label="CVS Label Decorations" href="reference/ref-19cvs-decorations.htm"></topic>
+		<topic label="CVS Password Management" href="reference/ref-19cvs-password.htm"></topic>
+		<topic label="CVS Proxy Settings" href="reference/ref-19cvs-proxysettings.htm"></topic>
+		<topic label="CVS SSH2 Connection Method" href="reference/ref-19cvs-ssh2.htm"></topic>
+		<topic label="CVS Synchronize/Compare" href="reference/ref-19cvs-sync.htm"></topic>
+		<topic label="CVS Update/Merge" href="reference/ref-19cvs-updatemerge.htm"></topic>
+		<topic label="CVS Watch/Edit" href="reference/ref-19cvs-watch-edit.htm"></topic>
+		<topic label="Editors" href="reference/ref-12.htm"></topic>
+		<topic label="External Tools" href="reference/ref-exttoolsprefs.htm"></topic>
+		<topic label="File Associations" href="reference/ref-13.htm"></topic>
+		<topic label="General" href="reference/ref-10.htm"></topic>
+		<topic label="Help" href="reference/help_preferences.htm"></topic>
+		<topic label="Help Server" href="reference/help_preferences_server.htm"></topic>
+		<topic label="Install/Update" href="reference/ref-21.htm"></topic>
+		<topic label="Keys" href="concepts/accessibility/keyboardshortcuts.htm"></topic>
+		<topic label="Label Decorations" href="reference/ref-decorations.htm"></topic>
+		<topic label="Linked Resources" href="reference/ref-14b.htm"></topic>
+		<topic label="Local History" href="reference/ref-14.htm"></topic>
+		<topic label="Perspectives" href="reference/ref-15.htm"></topic>
+		<topic label="Quick Diff" href="reference/ref-35.htm"></topic>
+		<topic label="Search" href="reference/ref-search.htm"></topic>
+		<topic label="Spelling" href="reference/ref-36.htm"></topic>
+		<topic label="Startup and Shutdown" href="reference/ref-startup.htm"></topic>
+		<topic label="Team" href="reference/ref-19.htm"></topic>
+		<topic label="Team File Content" href="reference/ref-20-fileContent.htm"></topic>
+		<topic label="Team Ignored Resources" href="reference/ref-20.htm"></topic>
+		<topic label="Team Models" href="reference/ref-20team-models.htm"></topic>
+		<topic label="Text editors" href="reference/ref-texteditorprefs.htm"></topic>
+		<topic label="Web Browser" href="reference/ref-42.htm"></topic>
+		<topic label="Welcome" href="reference/welcome_preferences.htm"></topic>
+		<topic label="Workspace" href="reference/ref-9.htm"></topic>
+	</topic>
+    
+    <anchor id="r_afterpref" />
+	
+	<topic label="Team support with CVS">
+		<topic label="CVS" href="reference/ref-47.htm"></topic>
+		<topic label="CVS Checkout wizard" href="reference/ref-40a.htm"></topic>
+		<topic label="CVS Console" href="reference/ref-32b.htm"></topic>
+		<topic label="CVS History view" href="reference/ref-32a.htm"></topic>
+		<topic label="CVS Repositories view" href="reference/ref-32.htm"></topic>
+		<topic label="CVS Workspace Synchronization" href="reference/ref-33.htm"></topic>
+		<topic label="CVS Merge Synchronization" href="reference/ref-33a.htm"></topic>
+		<topic label="Merge wizard" href="reference/ref-41a.htm"></topic>
+	    <topic label="Add CVS Repository wizard" href="reference/ref-40.htm"></topic>
+		<topic label="CVS Sharing wizard" href="reference/ref-40b.htm"></topic>
+		<topic label="CVS Label Decorations" href="reference/ref-cvs-decorations.htm"></topic>
+		<topic label="Ignoring resources from version control" href="reference/ref-48a.htm" ></topic>
+	</topic>
+	
+	<anchor id="r_afterteam" />
+	
+<topic label="User interface information" >
+	<topic label="Development environment">
+		<topic label="Workbench toolbar" href="reference/ref-2.htm"></topic>
+		<topic label="Perspective Bar" href="reference/ref-3.htm"></topic>
+		<topic label="Fast View Bar" href="reference/ref-3a.htm"></topic>
+		<topic label="View toolbars" href="reference/ref-4.htm"></topic>
+		<topic label="Builds" href="reference/ref-5.htm"></topic>
+		<topic label="Perspectives" href="reference/ref-6.htm"></topic>
+		<topic label="Local history" href="reference/ref-6a.htm"></topic>		
+		<topic label="List of key bindings" href="reference/ref-keybindings.htm"></topic>
+	</topic>
+
+
+	<topic label="Views and editors">
+		<topic label="Workbench window layout" href="reference/ref-23.htm"></topic>
+		<topic label="Editor area" href="reference/ref-24.htm"></topic>
+		<topic label="Compare editor" href="reference/ref-25.htm"></topic>
+		<topic label="Search view" href="reference/ref-26.htm"></topic>
+		<topic label="Navigator view" href="reference/ref-27.htm"></topic>
+		<topic label="Bookmarks view" href="reference/ref-28.htm"></topic>
+		<topic label="Properties view" href="reference/ref-29.htm"></topic>
+		<topic label="Outline view" href="reference/ref-30.htm"></topic>
+		<topic label="CVS views" href="reference/ref-30a.htm"></topic>
+        <topic label="Tasks view" href="reference/ref-31.htm"></topic>
+		<topic label="Problems view" href="reference/ref-31a.htm"></topic>
+		<topic label="Ant editor" href="reference/ref-anteditor.htm"></topic>
+		<topic label="Ant view" href="reference/ref-antview.htm"></topic>
+	</topic>
+
+	<topic label="Wizards">
+		<topic label="New Project wizard" href="reference/ref-37.htm"></topic>
+		<topic label="New Folder wizard" href="reference/ref-38.htm"></topic>
+		<topic label="New File wizard" href="reference/ref-39.htm"></topic>
+		<topic label="CVS Wizards" href="reference/ref-39a.htm"></topic>
+        <topic label="Import wizard" href="reference/ref-70.htm"></topic>
+		<topic label="Export wizard" href="reference/ref-71.htm"></topic>
+	</topic>
+
+
+	<topic label="Help contents">
+		<topic label="Workbench User Guide" href="reference/ref-43.htm"></topic>
+		<topic label="Working with cheat sheets" href="reference/ref-cheatsheets.htm">
+		    <topic label="Working with composite cheat sheets" href="reference/ref-composite-cheatsheets.htm"></topic>
+		</topic>
+	</topic>
+
+	<topic label="Search">
+		<topic label="File search" href="reference/ref-45.htm"></topic>
+	</topic>
+
+	<topic label="Workbench menus">
+		<topic label="File menu" href="reference/ref-56.htm"></topic>
+		<topic label="Edit menu" href="reference/ref-57.htm"></topic>
+		<topic label="Navigate menu" href="reference/ref-58.htm"></topic>
+		<topic label="Project menu" href="reference/ref-59.htm"></topic>
+		<topic label="Window menu" href="reference/ref-60.htm"></topic>
+		<topic label="Help menu" href="reference/ref-61.htm"></topic>
+	</topic>
+
+	<topic label="Icons and buttons">
+		<topic label="Navigator view icons" href="reference/ref-65.htm"></topic>
+		<topic label="Editor area marker bar" href="reference/ref-66.htm"></topic>
+		<topic label="Tasks view" href="reference/ref-67.htm"></topic>
+		<topic label="Toolbar buttons" href="reference/ref-68.htm"></topic>
+		<topic label="External Tools and Ant Icons" href="reference/ref-anticons.htm"></topic>
+	</topic>
+</topic>
+
+<anchor id="r_afteruser" />
+
+</toc>

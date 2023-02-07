@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2005, 2009 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Test commands in subitems">
+  <intro>
+    <description>A cheat sheet which demonstrates the use of perform-when and conditional subitems
+    <br/><br/>Verify that each step performs as indicated in the description, that the description 
+    for each step is visible and that all steps can be completed.
+    </description>
+  </intro>
+  <item title="Formatting in subitems. ">
+     <description>Verifies that subitems can be formatted. </description> 
+     <subitem skip = "true">
+         <description>Verify this subitem contains a <b>bold</b> word</description> 
+     </subitem>
+     <subitem skip = "true">
+         <description>Verify that there is a line break between lines 1 and 2.<br/>Line 1<br/>Line 2</description> 
+     </subitem>
+  </item> 
+    <item
+        title="Open Resource in Browser test">
+     <description>
+        Test the open resource in browser command
+<br/>
+Verify when you Click to perform that the Testing Scenarios for User Assistance page is opened in an editor window.
+     </description>
+     <command
+           required="false"
+           serialization="org.eclipse.ui.browser.openBundleResource(plugin=org.eclipse.ua.tests,path=non_junit/test_plan.htm)"/>
+ </item>
+  <item title="Select a view to open">
+     <description>Select a view which will be opened in the following steps. Pick either, they work
+     equally well.</description>
+     <command returns = "result"
+      serialization="org.eclipse.ui.dialogs.openMessageDialog(title=Select View,buttonLabel0=Package Explorer,message=Select a view ,buttonLabel1=Search View)"/>  
+      <onCompletion> Selected the ${result}. </onCompletion>
+  </item> 
+  <item title="Close Views">
+     <description>Close the search view and package explorer if open</description>
+  </item>
+  <item title="Open the view from a perform when item." skip = "true">
+     <description>Uses perform when to open the view seleted previously.</description> 
+     <perform-when condition = "${result}">
+           <command when = "Package Explorer" 
+            serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.eclipse.jdt.ui.PackageExplorer)"/>
+           <command when = "Search View" 
+            serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.eclipse.search.ui.views.SearchView)"/>      
+     </perform-when>
+  </item> 
+  <item title="Close Views">
+     <description>First verify that the view you selected was opened. 
+     Close the Search View/Package explorer, whichever is open.</description>
+  </item>
+  <item title="Open the view from a perform when subitem. ">
+     <description>Uses perform when to open the view seleted previously. </description> 
+     <subitem label="Perform when subitem" skip = "true">
+     <perform-when condition = "${result}">
+           <command when = "Package Explorer"      
+            serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.eclipse.jdt.ui.PackageExplorer)"/>
+           <command when = "Search View" 
+            serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.eclipse.search.ui.views.SearchView)"/>      
+     </perform-when>
+     </subitem>
+  </item> 
+   <item title="Close Views">
+     <description>First verify that the view you selected was opened. 
+     Close the Search View/Package explorer, whichever is open.</description>
+  </item>
+  <item title="Open the view from a conditional subitem">
+     <description>Uses perform when to open the view seleted previously.</description> 
+      <conditional-subitem condition="${result}">
+         <subitem when="Package Explorer" label="Open package explorer."> 
+            <command serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.eclipse.jdt.ui.PackageExplorer)"/>
+         </subitem>
+         <subitem when="Search View" label="Open Search View">
+             <command serialization = "org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.eclipse.search.ui.views.SearchView)"/>
+         </subitem>
+     </conditional-subitem>
+  </item>  
+   <item title="Close Views">
+     <description>First verify that the view you selected was opened. 
+     Close the Search View/Package explorer, whichever is open.</description>
+  </item>
+   <item title="Open both views from a repeated-subitem">
+     <description>Uses repeated-subitem to open the view seleted previously.</description> 
+      <repeated-subitem values="org.eclipse.jdt.ui.PackageExplorer,org.eclipse.search.ui.views.SearchView">
+		<subitem label="Show ${this}">
+           <command serialization="org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=${this})"/>      
+		</subitem>
+	 </repeated-subitem>    
+  </item>  
+  <item title="Final checks">
+     <description>Verify that both the package explorer and search view are open.<br/>
+     Verify that every item except this one has a checkmark to the left of the title.</description>
+  </item>
+</cheatsheet>

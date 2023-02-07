@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2005, 2010 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Dialog Help">
+   <intro>
+      <description>
+         Test for dialog help.
+      </description>
+   </intro>
+   <item title="Test tray help" dialog="true" skip="false">
+      <description>
+         Test preferences dialog
+      </description>
+      <subitem label="Open the preferences dialog" skip="false">
+         <command serialization="org.eclipse.ui.window.preferences" confirm="false">
+         </command>
+      </subitem>
+      <subitem label="Click on the help button (?) at the lower left part of the dialog and Confirm the help tray opens and is usable. Try Contents, search, bookmarks." skip="false">
+      </subitem>
+      <subitem label="Close the tray and verify that clicking the help button (?) behaves the same way as pressing F1. Exit the preferences dialog." skip="false">
+      </subitem>
+   </item>
+   <item title="Non resizeable dialogs" dialog="false" skip="true">
+      <description>
+         Open the preferences and go to the help/content page. Select the radio button to include help content from a remote infocenter and give it priority. Hit the new button which opens a small and non resizable dialog. Hit F1 in this Add new infocenter dialog. Check that help opens externally and not in a tray.
+      </description>
+   </item>
+   <item title="Short dialog" dialog="false" skip="false">
+      <description>
+         From the workbench menu select File/New/File and resize the dialog to make it short. The dialog should grow a bit to accommodate the tray, then go back to original size when the tray is closed.
+      </description>
+   </item>
+</cheatsheet>

@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGIN__ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Contributing XHTML help documents</title>
+</head>
+<body>
+
+<h2>Contributing XHTML help documents</h2>
+
+<p><b>Why use XHTML?</b></p>
+
+<p>
+The help system provides the ability to produce <a href="ua_dynamic.htm">dynamic help
+content</a> by annotating your XHTML markup with special tags to
+<a href="ua_dynamic_filters.htm">filter</a>,
+<a href="ua_dynamic_includes.htm">include</a>, and
+<a href="ua_dynamic_extensions.htm">extend</a> documents. These features are not
+available when using HTML.
+</p>
+
+<p><b>How to contribute XHTML</b></p>
+
+<p>
+XHTML help documents are contributed in much the same way as HTML, except there 
+is an important difference that must be there in order to support dynamic content.
+</p>
+
+<ul>
+   <li>
+      <p>
+         If using dyamic content, you <b>must</b> bind the XHTML dynamic content
+         producer to your doc plugin.
+      </p>
+      <p>
+         If you want to produce dynamic content using the XML annotations, you need
+         to tell the help system that it should process your documents. This is
+         done by binding the XHTML dynamic content producer to your plugin.
+      </p>
+      <pre>   &lt;extension
+         point="org.eclipse.help.contentProducer"&gt;
+      &lt;binding producerId="org.eclipse.help.dynamic"/&gt;
+   &lt;/extension&gt;</pre>
+      <p>Since Eclipse 3.4 it is no longer necessary to bind the "org.eclipse.help.base.xhtml&quot; search participant to your
+         doc plugin.</p> 
+   </li>
+</ul>
+
+<p><a name="include_format"><b>XHTML include format</b></a></p>
+
+<p>
+If you wish to use <a href="ua_dynamic_includes.htm">includes</a> in your XHTML,
+the format of the <code>path</code> attribute is as follow: (explained below)
+</p>
+
+<pre>   &lt;plugin_id&gt;/&lt;path_to_xhtml_file&gt;/&lt;filename_xhtml&gt;/&lt;element_id&gt;
+</pre>
+
+<p>
+Where the fields are:
+</p>
+
+<ul>
+   <li>
+      <b>plugin_id</b>: The id of the plug-in containing the content to include
+      (e.g. <code>org.eclipse.help</code>)
+   </li>
+   <li>
+      <b>path_to_xhtml_file</b>: The plug-in relative path to the file (e.g. <code>
+      /my_folder/my_sub_folder/</code>)
+   </li>
+   <li>
+      <b>filename_xhtml</b>: The name of the XHTML file, including extension (e.g.
+      <code>my_file.xhtml</code>)
+   </li>
+   <li>
+      <b>element_id</b>: The unique identifier for the element you wish to include. This
+      is set by adding an <code>id</code> attribute to that element (e.g. <code>
+      my.element.id</code>)
+   </li>
+</ul>
+
+<p>
+For example, if you wish to include the paragraph (<code>&lt;p&gt;</code> element)
+with the id <code>my_copyright</code> from the file <code>/copyrights/copyright.xhtml
+</code> in plugin <code>my.product.plugin</code>, you would specify the following:
+</p>
+
+<pre>   my.product.plugin/copyrights/copyright.xhtml/my_copyright
+</pre>
+
+</body>
+</html>

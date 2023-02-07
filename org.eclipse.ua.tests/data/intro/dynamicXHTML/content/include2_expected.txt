@@ -1,0 +1,17 @@
+<!--
+   This page contains a line with an ID that is included from another page (include.xhtml).
+   You don't ever see this page when viewed.
+--><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<title>include2.xhtml</title>
+</head>
+
+<body>
+<h2>include2.xhtml</h2>
+<ul id="my.include.id">
+<li>This text comes from include2.xhtml and can be included by other documents.</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Intro Content File XML Format</title>
+<style>@import url("../../book.css");</style>
+<style>@import url("../../schema.css");</style>
+</HEAD>
+<BODY>
+<H1 style="text-align:center">Intro Content File XML Format</H1>
+<p></p>
+<h6 class="CaptionFigColumn SchemaHeader">Identifier: </h6>Intro Content File XML Format..<p></p>
+<h6 class="CaptionFigColumn SchemaHeader">Description: </h6>This document describes the intro content file structure as a series of DTD fragments.<p></p>
+<h6 class="CaptionFigColumn SchemaHeader">Configuration Markup:</h6>
+<p></p>
+<p class="code SchemaDtd">&lt;!ELEMENT <a name="e.introContent">introContent</a> ((<a href="#e.page">page</a> | <a href="#e.group">group</a>)+ | (<a href="#e.extensionContent">extensionContent</a> | <a href="#e.replacementContent">replacementContent</a>))&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+The introContent element defines the body of the intro content file.  The content file is made up of pages, shared groups that can be included in multiple pages, extensions to anchor points defined in other configurations, or replacements of existing elements.</p>
+<br><br>
+<p class="code SchemaDtd">&lt;!ELEMENT <a name="e.page">page</a> (<a href="#e.group">group</a> | <a href="#e.link">link</a> | <a href="#e.text">text</a> | <a href="#e.head">head</a> | <a href="#e.img">img</a> | <a href="#e.include">include</a> | <a href="#e.html">html</a> | <a href="#e.title">title</a> | <a href="#e.anchor">anchor</a> | <a href="#e.contentProvider">contentProvider</a>)+&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST page</p>
+<p class="code SchemaDtdAttlist">id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED<p class="code SchemaDtdAttlist">url&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">style&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">alt-style&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">filteredFrom&nbsp;(swt|html) <p class="code SchemaDtdAttlist">content&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">style-id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">shared-style&nbsp;(true | false) <p class="code SchemaDtdAttlist">bgImage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED&gt;</p>
+<p></p>
+<div class="ConfigMarkupElementDesc">
+<p>
+This element is used to describe a page to be displayed. The intro can display both dynamic and static pages. Content for dynamic pages is generated from the subelements of the page, described below. The style or alt-style will be applied depending on the presentation. The styles can be further enhanced by referencing the id or class-id.
+</p>
+<p>
+Static pages allow for the reuse of existing HTML documents within one's introduction, and can be linked to from any static or dynamic page. Static pages are not defined in a page element, they are simply html files that can be linked to by other pages.
+</p>
+<p>
+The home page, whose id is specified in the presentation element of the intro config extension point, can have a url indicating that it is a static page.  If no url is specified then the home page is assumed to be dynamic.  All other pages described using the page element are dynamic. Also note that when the SWT presentation is used and a static page is to be displayed, an external brower is launched and the current page remains visible.
+</p>
+<p>
+The subelements used in a dynamic page are as follows: A <b>group</b> subelement is used to group related content and apply style across the grouped content. A <b>link</b> subelement defines a link which can be used to link to a static or dynamic page and run an intro action/command.  A link is normally defined at the page level to navigate between main pages versus links within a page. A <b>text</b> subelement defines textual content at the page level. A <b>head</b> subelement is only applicable for the Web based presentation and allows for additional html to be added to the HTML <b>head</b> section. This is useful for adding java scripts or extra style sheets. An <b>img</b> subelement defines image content for the page level. An <b>include</b> subelement allows for reuse of any element other than a page. An <b>html</b> subelement is only applicable for the Web based presentation and allows for the embedding or inclusion of html into the page's content. Embedding allows for a fully defined html file to be embeded within an HTML <b>object</b> by referencing the html file. Inclusion allows for including an html snippet directly from an html file. A <b>title</b> subelement defines the title of the page.  An <b>anchor</b> subelement defines a point where external contributions can be made by an &lt;extensionContent&gt; element.
+</p></div>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>id</b> - A unique name that can be used to identify this page.</li>
+<li><b>url</b> - The optional relative path to an HTML file. When using the Web based presentation, this HTML file will be displayed instead of any content defined for this page.  This attribute is only applicable to the home page, which is identified in the presentation element of the intro config extension point. It is ignored for all other pages.</li>
+<li><b>style</b> - A relative path to a CSS file which is applied to the page only when using the Web based presentation. The path is relative to the location of this xml content file. <br >
+Since 3.1, styles can also be a comma separated list of styles. These styles will be injected into the HTML HEAD element in the order in which they are listed in the style attribute.</li>
+<li><b>alt-style</b> - A relative path to a SWT presentation properies file which is applied to the page only when using the SWT based presentation. The path is relative to the location of this xml content file. <br >
+
+Since 3.1, styles can also be a comma separated list of styles. These styles will be used when creating the SWT presentation of the welcome page.</li>
+<li><b>filteredFrom</b> - an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.</li>
+<li><b>content</b> - an optional attribute which can define the location of an introContent.xml file that represents the content of this page. When this attribute is defined, all children and attributes in this page element, except id, are ignored. This is because the content of this page is now assumed to reside in the xml file pointed to by the content file attribute. When resolving to the content of this file, the page with an id that matches the id defined in this page element is chosen.
+This seperation of pages can be used when performance is an issue, as the content of a page is now loaded more lazily.<br >
+
+Since 3.1, if the content of the external file is XHTML 1.0, then the page is rendered as is.</li>
+<li><b>style-id</b> - A means to classifiy the page into a given category so that a common style may be applied.</li>
+<li><b>shared-style</b> - a boolean flag that controls the addition of the shared style into this page's list of styles. If <code>true</code> (the default), the shared style is added to this page's styles. If <code>false</code>, the shared style defined in the Intro configuration will not be injected into the styles of this page.</li>
+<li><b>bgImage</b> - an optional URL of the image to use as a background for this group</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.group">group</a> (<a href="#e.group">group</a> | <a href="#e.link">link</a> | <a href="#e.text">text</a> | <a href="#e.img">img</a> | <a href="#e.include">include</a> | <a href="#e.html">html</a> | <a href="#e.anchor">anchor</a> | <a href="#e.contentProvider">contentProvider</a>)*&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST group</p>
+<p class="code SchemaDtdAttlist">id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED<p class="code SchemaDtdAttlist">label&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">style-id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">filteredFrom&nbsp;(swt|html) <p class="code SchemaDtdAttlist">computed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(true | false) "false"<p class="code SchemaDtdAttlist">bgImage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">expandable&nbsp;&nbsp;&nbsp;(true | false) "false"<p class="code SchemaDtdAttlist">expanded&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(true | false) "false"&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+Used to group related content, content that should have similar style applied, or content that will be included together in other pages.</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>id</b> - unique identifier of the group</li>
+<li><b>label</b> - a label or heading for this group</li>
+<li><b>style-id</b> - A means to classifiy this group into a given category so that a common style may be applied.</li>
+<li><b>filteredFrom</b> - an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.</li>
+<li><b>computed</b> - if <code>true</code>, the children of this group will be provided by the intro configurer at run time. It is advised not to define any children statically in this case.</li>
+<li><b>bgImage</b> - an optional URL of the image to use as a background for this group</li>
+<li><b>expandable</b> - specifies whether or not the group can be expanded and collapsed. Defaults to false if not specified. If true, the expanded attribute will be consulted to determine whether or not the group should be expanded by default or not.</li>
+<li><b>expanded</b> - specifies whether the expandable group should be expanded by default or not. Defaults to false (collapsed) if not specified. This only applies to expandable groups (where expandable was set to true). Has no effect otherwise.</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.head">head</a> EMPTY&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST head</p>
+<p class="code SchemaDtdAttlist">src&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED<p class="code SchemaDtdAttlist">encoding&nbsp;CDATA #IMPLIED&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+Direct HTML to include in a page's HEAD content area. It allows for additional html to be added to the HTML HEAD section. This is useful for adding java srcipts or extra styles sheets. If the content contains substitution segments of the form $plugin:plugin_id$ then they will be replaced with the absolute path to the plugin with id plugin_id.
+This markup is only to be used with an HTML based intro part implementation. It is simply ignored in the case of a UI Forms implementation. A page can have more than one head element. An implementation can have one and only one head element (since it is a shared across all pages).</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>src</b> - relative or absolute URL to a file containing HTML to include directly into the HTML head section. If the content contains substitution segments of the form $plugin:plugin_id$ then they will be replaced with the absolute path to the plugin with id plugin_id.</li>
+<li><b>encoding</b> - an optional attribute to specify the encoding of the inlined file containing the head snippet. Default is UTF-8. Since 3.0.1</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.title">title</a> EMPTY&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST title</p>
+<p class="code SchemaDtdAttlist">id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">style-id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">filteredFrom&nbsp;(swt|html) &gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+a snippet of text that can optionally contain escaped HTML tags. It is only used as a Page Title, and so a given page can have a maximum of one title element.</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>id</b> - unique identifier of this title.</li>
+<li><b>style-id</b> - A means to classifiy this element into a given category so that a common style may be applied</li>
+<li><b>filteredFrom</b> - an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.link">link</a> (<a href="#e.text">text</a>? , <a href="#e.img">img</a>?)&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST link</p>
+<p class="code SchemaDtdAttlist">url&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED<p class="code SchemaDtdAttlist">id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">label&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">style-id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">filteredFrom&nbsp;(swt|html) &gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+Can link to a static HTML file, an external web site, or can run an Intro URL action.</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>url</b> - A valid URL to an external web site, a static html file, or an Intro URL that represents an Intro action. All intro URLs have the following form:  http://org.eclipse.ui.intro/&lt;action name&gt;?param1=value1&amp;param2=value2 and will be processed by the intro framework.<br>
+The predefined actions will be described using this format:<br>
+<p style="margin-left:15px;">
+<b>action name</b> - descripton of action<br>
+<i>action parameter1</i> - description of parameter<br>
+<i>action parameter2 (optional)</i> - description of parameter<br>
+<i>action parameter3 (optional) = ("true" 
+ "false") "false"</i> - description of parameter, choice of either true or false and "false" is the default<br>
+</p>
+
+<br>
+The following predefined actions are included in the intro framework:
+<p style="margin-left:15px;">
+<b>close</b> - closes the intro part<br>
+no parameters required<br>
+<br>
+
+<b>navigate</b> - navigate through the intro pages in a given direction or return to the home page<br>
+<i>direction = ("backward" 
+ "forward" 
+ "home")</i> - specifies the direction to navigate<br>
+<br>
+
+<b>openBrowser</b> - open the url in an external browser. Since 3.1, this action relies on the workbench Browser support. This means that any user preferences set for the browser will be honored.<br>
+<i>url</i> - a valid URL to an external web site or a local HTML file<br>
+<i>pluginId (optional)</i> - if the url is relative, then it is relative to a plugin. Specify here the id of the plug-in containing the file.<br>
+<br>
+
+<b>openURL</b> - open the url embedded in the Welcome page. In the case of SWT presentation, the url is displayed in an external browser (similar to the openBrowser action above). since 3.1<br>
+<i>url</i> - a valid URL to an external web site or to a local HTML file<br>
+<i>pluginId (optional)</i> - if the url is relative, then this specifies the id of the plug-in containing the file.<br>
+<br>
+
+<b>runAction</b> - runs the specified action<br>
+<i>class</i> - the fully qualified class name of the class that implements one of <code>org.eclipse.ui.intro.config.IIntroAction</code>,
+               <code>org.eclipse.jface.actino.IAction</code>, or <code>org.eclipse.ui.IActionDelegate</code><br>
+<i>pluginId</i> - The id of the plug-in which contains the class.<br>
+<i>standby (optional) = ("true" 
+ "false") "false"</i> - indicate whether to set the intro into standby mode after executing the action<br>
+additional parameters - any additional parameters are passed to actions that implement <code>org.eclipse.ui.intro.config.IIntroAction</code><br>
+<br>
+
+<b>execute</b> - executes the specified command.  See the <code>serialize()</code> method on <code>org.eclipse.core.command.ParameterizedCommand</code> for details of the command serialization format. Since 3.2.<br>
+<i>command</i> - a serialized <code>ParameterizedCommand</code><br>
+<i>standby (optional) = ("true" | "false") "false"</i> - indicate whether to set the intro into standby mode after executing the command<br>
+<br>
+
+<b>setStandbyMode</b> - sets the state of the intro part<br>
+<i>standby = ("true" 
+ "false")</i> - true to put the intro part in its partially visible standy mode, and false to make it fully visible<br>
+<br>
+
+<b>showHelp</b> - Open the help system.<br>
+no parameters required<br>
+<br>
+
+<b>showHelpTopic</b> - Open a help topic.<br>
+<i>id</i> - the URL of the help resource. (See Javadoc for <code>org.eclipse.ui.help.WorkbenchHelp.displayHelpResource)</code><br>
+<i>embed (optional) = ("true" 
+ "false")</i> "true" - indicates that the help resource needs to be displayed embedded as part of the Welcome pages. Default is false. This flag is simply ignored in the case of the SWT presentation. This is equivalent to openURL() command, but for Help System topics. The embedded URL occupies the full real-estate of the current page. since 3.1<br>
+<i>embedTarget (optional)</i> - the path to a div in the current Welcome page that will hold the content of the Help topic. If specified, then <i>embed</i> is true by default and the embedded URL is inserted inside the div with the specified path. The path is relative to the page and so it should not start with the page id. The children of the div are replaced by the content of the URL. Only one div per page can be used as an embed target. This flag is simply ignored in the case of the SWT presentation. It is also unsupported when using XHTML as intro content. since 3.1<br>
+<br>
+
+<b>showMessage</b> - Displays a message to the user using a standard information dialog.<br>
+<i>message</i> - the message to show the user<br>
+<br>
+
+<b>showStandby</b> - Sets the intro part to standby mode and shows the standbyContentPart with the given input<br>
+<i>partId</i> - the id of the standbyContentPart to show<br>
+<i>input</i> - the input to set on the standbyContentPart<br>
+<br>
+
+<b>showPage</b> - show the intro page with the given id<br>
+<i>id</i> - the id of the intro page to show<br>
+<i>standby (optional) = ("true" 
+ "false") "false"</i> - indicate whether to set the intro into standby mode after showing the page<br><br>
+
+If any of the parameters passed to these actions have special characters (ie: characters that are illegal in a URL), then they should be encoded using UTF-8 url encoding. To receive these parametrs in there decoded state a special parameter, <i>decode = ("true" "false")</i>  can be used to force a decode of these parameters when the Intro framework processes them.<br>
+For example, the following Intro url: <br><i>
+http://org.eclipse.ui.intro/showMessage?message=This+is+a+message</i><br>
+will process the message parameter as "This+is+a+message"<br>
+whereas<br><i>
+http://org.eclipse.ui.intro/showMessage?message=This+is+a+message&amp;amp;decode=true</i><br>
+will process the message parameter as "This is a message".<br>
+
+
+<br></li>
+<li><b>id</b> - A unique id that can be used to identify this link</li>
+<li><b>label</b> - The text name of this link</li>
+<li><b>style-id</b> - A means to classifiy this link into a given category so that a common style may be applied.</li>
+<li><b>filteredFrom</b> - an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.text">text</a> EMPTY&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST text</p>
+<p class="code SchemaDtdAttlist">id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">style-id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">filteredFrom&nbsp;(swt|html) &gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+a snippet of text that can optionally contain escaped HTML tags. It can include b and li tags. It can also contain anchors for urls. 
+If multiple paragraphs are needed, then the text can be divided into multiple sections each begining and ending with the p tag.</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>id</b> - unique identifier of this text.</li>
+<li><b>style-id</b> - A means to classify this element into a given category so that a common style may be applied</li>
+<li><b>filteredFrom</b> - an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.img">img</a> EMPTY&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST img</p>
+<p class="code SchemaDtdAttlist">src&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED<p class="code SchemaDtdAttlist">id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">style-id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">filteredFrom&nbsp;(swt|html) &gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+An image that represents intro content and not presentation (as opposed to decoration images defined in styles).</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>src</b> - the file to load the image from</li>
+<li><b>id</b> - unique identifier of this image</li>
+<li><b>alt</b> - the alternative text to use when the image can not be loaded and as tooltip text for the image.</li>
+<li><b>style-id</b> - A means to classifiy this image into a given category so that a common style may be applied.</li>
+<li><b>filteredFrom</b> - an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.html">html</a> (<a href="#e.img">img</a> | <a href="#e.text">text</a>)&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST html</p>
+<p class="code SchemaDtdAttlist">id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED<p class="code SchemaDtdAttlist">src&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED<p class="code SchemaDtdAttlist">type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(inline|embed) <p class="code SchemaDtdAttlist">style-id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">filteredFrom&nbsp;(swt|html) <p class="code SchemaDtdAttlist">encoding&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+direct HTML to include in the page either by embedding the entire document, or inlining a snippet of HTML in-place. A fallback image or text must be defined for alternative swt presentation rendering. If the content contains substitution segments of the form $plugin:plugin_id$ then they will be replaced with the absolute path to the plugin with id plugin_id.
+<br>
+Embedding allows for a fully defined html file to be embedded within the dynamic page's content.  An HTML <b>object</b> element is created that references the html file. 
+<br>
+Inclusion allows for including an html snippet directly from a file into the dynamic html page.</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>id</b> - unique identifier of this HTML element</li>
+<li><b>src</b> - relative or absolute URL to a file containing HTML. If the content contains substitution segments of the form $plugin:plugin_id$ then they will be replaced with the absolute path to the plugin with id plugin_id.</li>
+<li><b>type</b> - if 'embed', a valid (full) HTML document will be embedded using HTML 'OBJECT' tag. If 'inline', value of 'src' will be treated as a snippet of HTML to emit 'in-place'. (if type is not specified, this html object is ignored by the intro configuration).</li>
+<li><b>style-id</b> - A means to classifiy this HTML element into a given category so that a common style may be applied.</li>
+<li><b>filteredFrom</b> - an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.</li>
+<li><b>encoding</b> - an optional attribute to specify the encoding of the inlined file (in the case where type=inline is specified). If not specified, the default is UTF-8. Since 3.0.1</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.include">include</a> EMPTY&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST include</p>
+<p class="code SchemaDtdAttlist">path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED<p class="code SchemaDtdAttlist">configId&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">merge-style&nbsp;(true | false) &gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+expands an element targeted by the given path and optional configId attributes. Path should uniquely address an element within the specified configuration. It could point to a shared group defined at the configuration level, or any element in a page.</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>path</b> - the path that uniquely represents the target element within the configuration (e.g. page/group1/group2). It may be a group element, or any element that may be contained in a group. You can not include a page.</li>
+<li><b>configId</b> - identifier of a configuration where the included element is defined. If specified, it is assumed that the element to be included is specified in another configuration, and not the enclosing configuration. In this case, that external config is loaded and the element is resolved from that new config. If not specified, enclosing (parent) configuration of this include is assumed.</li>
+<li><b>merge-style</b> - if <code>true</code>, style belonging to the page that owns the included element will be added to list of styles of the including page. If <code>false</code> (the default), the including page is responsible for controlling properties of the included element.</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.anchor">anchor</a> EMPTY&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST anchor</p>
+<p class="code SchemaDtdAttlist">id&nbsp;CDATA #REQUIRED&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+an anchor is the element used to declare extensibility. It is a location in the configurtaion that allows for external contributions. Only anchors are valid target values for the path attribute in an extensionContent</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>id</b> - unique id to identify this anchor.</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.extensionContent">extensionContent</a> (<a href="#e.text">text</a> | <a href="#e.group">group</a> | <a href="#e.link">link</a> | <a href="#e.html">html</a> | <a href="#e.include">include</a>)+&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST extensionContent</p>
+<p class="code SchemaDtdAttlist">path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED<p class="code SchemaDtdAttlist">style&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">alt-style&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">content&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+The content to be added to the target anchor. Only one <code>extensionContent</code> or <code>replacementContent</code> is allowed in a given configExtension because if this extension could not be resolved (if the config could not be found, or the target anchor could not be found) then the pages and/or groups in the extension need to be ingnored.</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>path</b> - the path that uniquely represents the path to an anchor. (e.g. page/group1/group2/anchorId) within the target configuration to be extended. It can only be an anchor which can be in any page or group, including shared groups at configuration level.</li>
+<li><b>style</b> - A relative path to a CSS file which is applied to the page only when using the Web based presentation. The path is relative to the location of this xml content file. <br>
+
+Since 3.1, styles can also be a comma separated list of styles. These styles will be injected into the HTML HEAD element in the order in which they are listed in the style attribute.</li>
+<li><b>alt-style</b> - A relative path to a SWT presentation properies file which is applied to the page only when using the SWT based presentation. The path is relative to the location of this xml content file. <br>
+
+Since 3.1, styles can also be a comma separated list of styles. These styles will be used when creating the SWT presentation of the welcome page.</li>
+<li><b>content</b> - if content is defined, it is assumed that the extension content is defined in an external XHTML file. In that case the resource pointed to by this content attribute is loaded and the path attribute is now resolved in this external file. since 3.1</li>
+<li><b>id</b> - (since 3.2) a unique identifier of this extension required when used in conjunction with intro configurer.</li>
+<li><b>name</b> - (since 3.2) a translatable name of this extension required when used in conjunction with intro configurer</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.replacementContent">replacementContent</a> (<a href="#e.text">text</a> | <a href="#e.group">group</a> | <a href="#e.link">link</a> | <a href="#e.html">html</a> | <a href="#e.include">include</a>)+&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST replacementContent</p>
+<p class="code SchemaDtdAttlist">path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED<p class="code SchemaDtdAttlist">style&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">alt-style&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">content&nbsp;&nbsp;&nbsp;CDATA #IMPLIED&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+(since 3.3) The content to replace the target element. Only one <code>extensionContent</code> or <code>replacementContent</code> is allowed in a given configExtension because if this extension could not be resolved (if the config could not be found, or the target element could not be found) then the pages and/or groups in the extension need to be ignored.</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>path</b> - the path that uniquely represents the path to the element to be replaced. (e.g. page/group1/group2/elementId) within the target configuration to be extended. To replace content contributed from an <code>extensionContent</code>, you may use a path of the form <code>pageId/@extension_id/path_in_extension</code> and it will be resolved to the specified extension.</li>
+<li><b>style</b> - A relative path to a CSS file which is applied to the page only when using the Web based presentation. The path is relative to the location of this xml content file. <br>
+
+Since 3.1, styles can also be a comma separated list of styles. These styles will be injected into the HTML HEAD element in the order in which they are listed in the style attribute.</li>
+<li><b>alt-style</b> - A relative path to a SWT presentation properies file which is applied to the page only when using the SWT based presentation. The path is relative to the location of this xml content file. <br>
+
+Since 3.1, styles can also be a comma separated list of styles. These styles will be used when creating the SWT presentation of the welcome page.</li>
+<li><b>content</b> - if content is defined, it is assumed that the extension content is defined in an external XHTML file. In that case the resource pointed to by this content attribute is loaded and the path attribute is now resolved in this external file. since 3.1</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.contentProvider">contentProvider</a> (<a href="#e.text">text</a>?)&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST contentProvider</p>
+<p class="code SchemaDtdAttlist">id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED<p class="code SchemaDtdAttlist">class&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED<p class="code SchemaDtdAttlist">pluginId&nbsp;CDATA #IMPLIED&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+A proxy for an intro content provider, which allows an intro page to dynamically pull data from various sources (e.g., the web, eclipse, etc) and provide content at runtime based on this dynamic data.  If the IIntroContentProvider class that is specified in the class attribute can not be loaded, then the contents of the text element will be rendered instead. 
+This is a dynamic version of the html intro tag. While the html tag allows for embedding or inlining a static html content into the generated html intro page, the contentProvider tag allows for dynamic creation of that content at runtime. 
+Another difference between the tags is that the html tag is only supported for the HTML presentation, while this contentProvider tag is supported for both the HTML and SWT presentations. Since 3.0.1</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>id</b> - unique identifier of this content provider element. It is a required attribute because having a unique id is what prevents the intro framework from reinstantiating this content provider class and recreating its content.</li>
+<li><b>class</b> - A class that implements the IContentProvider interface</li>
+<li><b>pluginId</b> - The id of the plugin that contains the IContentProvider class specified by the class attribute.  This is an optional attribute that should be used if the class doesn't come from the same plugin that defined the markup.</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.hr">hr</a> EMPTY&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST hr</p>
+<p class="code SchemaDtdAttlist">id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">style-id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED<p class="code SchemaDtdAttlist">filteredFrom&nbsp;(swt|html) &gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+a horizontal rule.</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>id</b> - unique identifier of this hr</li>
+<li><b>style-id</b> - A means to classify this element into a given category so that a common style may be applied</li>
+<li><b>filteredFrom</b> - an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.</li>
+</ul>
+<br><br>
+<p class="note SchemaCopyright">
+Copyright (c) 2004, 2006 IBM Corporation and others.<br>
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at <a href="https://www.eclipse.org/legal/epl-2.0/">https://www.eclipse.org/legal/epl-2.0/</a>
+
+SPDX-License-Identifier: EPL-2.0
+</p>
+</BODY>
+</HTML>

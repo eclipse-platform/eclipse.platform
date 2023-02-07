@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cheatsheet
+      title="Testing Context Help and Help Links">
+   <item
+         title="Introduction"
+         description="This cheat sheet will test context help and help link.
+Let's get started!"
+         Href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm"
+         contextId="null">
+      <nullAction/>
+      <nullList/>
+      <nullPerformWhen/>
+      <nullList/>
+   </item>
+   <list>
+      <item
+            title="Test help link"
+            description="Try the help link, you should see the concepts for the help system."
+            Href="/org.eclipse.platform.doc.user/concepts/chelpsys.htm"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test item without help link"
+            description="This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link."
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Display the gathered data and additional parameters"
+            description="Try the help link, you should see context help with some sample text."
+            Href="null"
+            contextId="org.eclipse.ua.tests.test_cheatsheets">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Display the gathered data and additional parameters"
+            description="Try the help link, you should see the same context help again."
+            Href="/org.eclipse.platform.doc.user/concepts/chelpsys.htm"
+            contextId="org.eclipse.ua.tests.test_cheatsheets">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test item without help link"
+            description="This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link."
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+   </list>
+</cheatsheet>

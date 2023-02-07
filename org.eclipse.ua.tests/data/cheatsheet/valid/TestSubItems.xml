@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Testing SubItems">
+
+<intro 
+	href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm">
+	<description>
+This cheat sheet will test subitems.
+Let's get started!
+	</description>
+</intro>
+
+<item
+	title="Test SubItems"
+	href="/org.eclipse.platform.doc.user/concepts/chelpsys.htm">
+	<description>
+Try the help link, you should see the concepts for the help system.
+	</description>
+	<subitem label="sub 1" skip="true"/>
+	<subitem label="sub 2" skip="true">
+		<action
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"/>
+	</subitem>
+	<subitem label="sub 3" skip="false"/>
+	<subitem label="sub 4" skip="false">
+		<action
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"/>
+	</subitem>
+	<subitem label="sub 5"/>
+	<subitem label="sub 6">
+		<action
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"/>
+	</subitem>
+	<subitem label="sub 7">
+		<action
+			confirm="true"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"/>
+	</subitem>
+	<subitem label="sub 8">
+		<action
+			confirm="false"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"/>
+	</subitem>
+	<subitem label="sub 9" skip="true">
+		<action
+			confirm="true"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"/>
+	</subitem>
+	<subitem label="sub 10" skip="true">
+		<action
+			confirm="false"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"/>
+	</subitem>
+	<subitem label="sub 11" skip="false">
+		<action
+			confirm="false"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	</subitem>
+	<subitem label="sub 12" skip="false">
+		<action
+			confirm="true"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"/>
+	</subitem>
+</item>
+
+
+<item
+	title="All done!">
+	<description>
+Did the test work?
+	</description>
+</item>
+
+</cheatsheet>

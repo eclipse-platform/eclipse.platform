@@ -1,0 +1,293 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Infocenter</title>
+</head>
+<body>
+
+<h2>Infocenter</h2>
+
+<p>
+You can allow your users to access the help system over the Internet or an 
+intranet by installing an infocenter and the documentation plug-ins on a
+server. Clients view help by navigating to a URL, and the help system is shown
+in their Web browser. The infocenter help system can be used for both client
+and web applications, either of which can have their help accessed remotely.
+All features of help system except context help, active help, command support,
+and the help view are supported.
+</p>
+
+<p>
+The infocenter help system allows passing number of options that can be used to
+customize various aspects of the infocenter. The following options are
+supported:
+</p>
+
+<ul>
+	<li>
+	<strong>-eclipsehome</strong> <em>eclipseInstallPath</em> - specifies
+	the Eclipse installation directory. This directory is the parent of the
+	plugins directory and Eclipse executable. The option must be provided when
+	the current directory from which the infocenter is launched is not the same
+	as the Eclipse installation	directory.
+	</li>
+
+	<li>
+	<strong>-data</strong> <em>instanceArea</em> - specifies a path that Eclipse
+	can use to write instance data. The value can be the absolute path of a
+	directory or a path relative to Eclipse installation directory. The option
+	must be provided when Eclipse is installed in a read only location, or has
+	been customized to override the <code>osgi.instance.area</code> or <code>
+	osgi.instance.area.default</code> properties.
+	</li>
+
+	<li>
+	<strong>-host</strong> <em>helpServerHost</em> - specifies the host name of
+	the	interface that the help server will use. This overrides the host name
+	specified in the application server plugin preferences.
+	</li>
+
+	<li>
+	<strong>-port</strong> <em>helpServerPort</em> - specifies the port number
+	that the help server will use. This overrides the port number specified in
+	the	application server plugin preferences.
+	</li>
+
+	<li>
+	<strong>-locales</strong> <em>localeList</em> - specifies a list of locales
+	that the infocenter	will recognize and provide customized content for. If
+	the option is not specified, the infocenter will build navigation and index
+	documents for each preferred locale of the browsers accessing the
+	infocenter. When the option is present, locales from browser requests will
+	be matched with locales in the list. If no browser preferred locale exists
+	in the list, but its language part does, it will be used instead.
+	Subsequently, additional browser locales in decreased order of preference
+	will be matched against the list. If none of the browser locales (or its
+	language part) match any locale on the list, the client will be served
+	content in the default locale - server locale or locale passed with -nl
+	option. For example, using options <code>-nl en -locales de en es fr it ja
+	ko pt_BR zh_CN zh_TW</code> will cause infocenter to operate in 10 locales.
+	All	other locales will receive content from the <code>en</code> locale.
+	</li>
+
+	<li>
+	<strong>-dir ltr</strong> or <strong>-dir rtl</strong> - forces
+	left-to-right or right-to-left rendering direction of the help UI in the
+	browser for all languages. By default, the direction is determined by the
+	browser locale.
+	</li>
+
+	<li>
+	<strong>-noexec</strong> - indicates that the Eclipse executable should not
+	be used. You need to use this option when running on a platform for which
+	the Eclipse executable is not available.
+	</li>
+
+	<li>
+	Additionally, most
+	<a href="../../org.eclipse.platform.doc.user/tasks/running_eclipse.htm">
+	options accepted by the Eclipse executable</a> are allowed. They are
+	especially useful during debugging and for applying customization to
+	Eclipse. For example, passing options <code>-vmargs -Xmx256M</code>
+	increases memory available to the infocenter and will allow serving of a
+	larger book collection.
+	</li>
+</ul>
+
+<h3>Installation/packaging</h3>
+
+<p>
+These steps are for the help system integrator and are not meant to address all
+the possible scenarios. It is assumed that all your documentation is delivered
+as Eclipse plug-ins and, in general, you are familiar with the eclipse help
+system.
+</p>
+
+<ol>
+	<li>
+	Download the Eclipse Platform Runtime Binary driver from
+	<a target="_blank" href="http://www.eclipse.org/downloads/">eclipse.org</a>.
+	</li>
+	
+	<li>
+	Install (unzip) the driver in a directory, say <code>d:\myApp</code>. This
+	will create an eclipse sub-directory, <code>d:\myApp\eclipse</code> that
+	contains the code required for the Eclipse platform (which includes the
+	help system).
+	</li>
+</ol>
+
+<h3>How to start or stop infocenter from command line</h3>
+
+<p>
+The <code>org.eclipse.help.standalone.Infocenter</code> class has a <code>
+main()</code> method that you can use to launch the infocenter from the command
+line. The command line argument syntax is:
+</p>
+
+<pre>-command start | shutdown | [-eclipsehome eclipseInstallPath] [-data instanceArea] [-host helpServerHost] [-locales localeList] [-port helpServerPort] [-dir rtl] [-noexec] [platform options] [-vmargs JavaVMarguments]</pre>
+
+<p>
+To start an infocenter on port 8081, issue a <code>start</code> command by running
+</p>
+
+<pre>java -classpath d:\myApp\eclipse\plugins\org.eclipse.help.base_[version].jar org.eclipse.help.standalone.Infocenter -command start -eclipsehome d:\myApp\eclipse -port 8081</pre>
+
+<p>
+To shut down the infocenter issue a <code>shutdown</code> command by running
+</p>
+
+<pre>java -classpath d:\myApp\eclipse\plugins\org.eclipse.help.base_[version].jar org.eclipse.help.standalone.Infocenter -command shutdown -eclipsehome d:\myApp\eclipse</pre>
+
+<h3>Using the infocenter</h3>
+
+<p>
+Start the infocenter using the instructions above. Point a web browser to the
+&quot;/help/index.jsp&quot; starting point for the Web application running on
+the port specified when starting the infocenter (e.g. 8081). For example, from
+the machine on which the infocenter is installed, this would be
+<code>http://localhost:8081/help/index.jsp</code>.
+</p>
+
+<h3>How to start and stop an infocenter from Java</h3>
+
+<p>
+When including an infocenter as part of another application, it may be more
+convenient to start it and stop it using Java API calls instead of system
+commands. If this is the case, follow the steps:
+</p>
+
+<ol>
+	<li>
+	Make sure <code>d:\myApp\eclipse\plugins\org.eclipse.help.base_[version].jar
+	</code> is on your application's classpath. The class you use to start and
+	shut down the infocenter is <code>org.eclipse.help.standalone.Infocenter
+	</code>.
+	</li>
+	
+	<li>
+	Create an array of <code>String</code> objects containing options that you
+	want to pass to the infocenter. Typically, the <code>eclipsehome</code> and
+	<code>port</code> options are needed.
+	<pre>String[] options = new String[] { &quot;-eclipsehome&quot;, &quot;d:\\myApp\\eclipse&quot; , &quot;-port&quot;, &quot;8081&quot; };</pre>
+	</li>
+	
+	<li>
+	In your application, create an instance of the <code>Help</code> class by
+	passing in the options.
+	<pre>Infocenter infocenter = new Help(options);</pre>
+	</li>
+	
+	<li>
+	To start the help system:
+	<pre>infocenter.start();</pre>
+	</li>
+	
+	<li>
+	To shut down the infocenter:
+	<pre>infocenter.shutdown();</pre>
+	</li>
+</ol>
+
+<h3>Making infocenter available on the web</h3>
+
+<p>
+Eclipse contains a complete infocenter and does not require any other server
+software to run. However, in an unsecure environment like the Internet, it is
+not recommended to allow direct access by the clients, but instead made
+available through an HTTP server or an application server. Most servers come
+with modules or servlets for delegating certain request to other Web resources.
+For example, one may configure a proxy module of the Apache HTTP Server to
+redirect requests made to <code>http://mycompany.com/myproduct/infocenter</code>
+to <code>http://internalserver:8081/help</code> that runs an infocenter. Adding
+the lines
+</p>
+
+<pre>LoadModule proxy_module modules/ApacheModuleProxy.dll
+ProxyPass /myproduct/infocenter http://internalserver:8081/help
+ProxyPassReverse /myproduct/infocenter http://internalserver:8081/help</pre>
+
+<p>
+to the <code>conf/httpd.conf</code> file of Apache server running the mycompany
+web site accomplishes this.
+</p>
+
+<p>
+Some versions of the Apache HTTP server may contain an AddDefaultCharset
+directive enabled in configuration file. Remove the directive or replace it with
+</p>
+
+<pre>AddDefaultCharset Off</pre>
+
+<p>
+to have browsers display documents using correct character set.
+</p>
+
+<h3>Running multiple instances of an infocenter</h3>
+
+<p>
+Multiple instances of an infocenter can be run on a machine from one
+installation. Each started instance must use its own port and must be provided
+with a workspace, hence the <code>-port</code> and <code>-data</code> options
+must be specified. The instances can serve documentation from different sets of
+plug-ins by providing a valid platform configuration with the
+<code>-configuration</code> option.
+</p>
+
+<p>
+If <code>-configuration</code> is not used and the configuration directory is
+shared among multiple infocenter instances with overlapping sets of locales,
+you must be ensure that all search indexes are created by one infocenter
+instance before another instance is started. Indexes are saved in the
+configuration directory, and write access is not synchronized across infocenter
+instances.
+</p>
+
+<h3>Filtering</h3>
+
+<p>
+<a href="ua_dynamic_filters.htm">Filtering</a> support is turned
+<strong>off</strong> when running in infocenter mode, causing all content,
+including filtered content, to be visible. If you intent to host your
+documentation in both workbench and infocenter modes, you should use filters in
+a way that makes sense even if filtering is turned off.
+</p>
+
+<h3>[Optional] Installing a minimal set of plug-ins</h3>
+
+<p>The infocenter does not require the entire Eclipse Platform package. It is
+possible to run an infocenter with the following plug-ins (located in the
+<code>eclipse\plugins</code> directory):
+</p>
+
+<p>
+<code>
+org.apache.lucene<br>
+org.eclipse.core.runtime<br>
+org.eclipse.help<br>
+org.eclipse.help.appserver<br>
+org.eclipse.help.base<br>
+org.eclipse.help.webapp<br>
+org.eclipse.osgi<br>
+org.eclipse.tomcat<br>
+</code>
+</p>
+
+<p>
+Some documentation plug-ins may have dependencies on other plug-ins, usually by
+specifying the required plug-ins in their bundle manifest. The dependent
+plug-ins need to be installed on the infocenter as well.
+</p>
+
+<p>
+See the <a href="ua_help_setup_preferences.htm">Product customization</a>
+topic for more information on customizing the help system.
+</p>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+     Copyright (c) 2005, 2007 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<!--
+   An intro for testing dynamic content in intro XML. This is a very simple intro with no
+   images or graphics that has filtering, includes and anchor examples.
+-->
+<introContent>
+
+	
+    <page id="dynamic1">
+        <title>Dynamic Page 1</title>
+        <group>
+           <link label="Dynamic Page 2" url="http://org.eclipse.ui.intro/showPage?id=dynamic2"/>
+           <link label="Dynamic Page 3" url="http://org.eclipse.ui.intro/showPage?id=dynamic3"/>
+           <link label="Static Page 1" url="http://org.eclipse.ui.intro/showPage?id=static1"/>
+           <link label="Static Page 2" url="http://org.eclipse.ui.intro/showPage?id=static2"/>
+           <link label="Static Page 3" url="http://org.eclipse.ui.intro/showPage?id=static3"/>
+        </group>
+    </page>
+    <page id="dynamic2">
+        <title>Dynamic Page 2</title>
+        <group>
+           <link label="Dynamic Page 1" url="http://org.eclipse.ui.intro/showPage?id=dynamic1"/>
+           <link label="Dynamic Page 3" url="http://org.eclipse.ui.intro/showPage?id=dynamic3"/>
+           <link label="Static Page 1" url="http://org.eclipse.ui.intro/showPage?id=static1"/>
+           <link label="Static Page 2" url="http://org.eclipse.ui.intro/showPage?id=static2"/>
+           <link label="Static Page 3" url="http://org.eclipse.ui.intro/showPage?id=static3"/>
+        </group>
+    </page>
+    <page id="dynamic3">
+        <title>Dynamic Page 3</title>
+        <group>
+           <link label="Dynamic Page 1" url="http://org.eclipse.ui.intro/showPage?id=dynamic1"/>
+           <link label="Dynamic Page 2" url="http://org.eclipse.ui.intro/showPage?id=dynamic2"/>
+           <link label="Static Page 1" url="http://org.eclipse.ui.intro/showPage?id=static1"/>
+           <link label="Static Page 2" url="http://org.eclipse.ui.intro/showPage?id=static2"/>
+           <link label="Static Page 3" url="http://org.eclipse.ui.intro/showPage?id=static3"/>
+        </group>
+    </page>
+
+	<!--
+	   A simple static page that shows one link, no dynamic content. Used as a sanity test.
+	-->
+    <page id="static1" url="../html/static1.html"/> 
+    <page id="static2" url="../html/inner/static2.html"/> 
+    <page id="static3" url="../html/static3.html"/> 
+
+
+</introContent>

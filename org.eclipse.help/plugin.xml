@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+    Copyright (c) 2005, 2010 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+   <extension-point id="contentExtension" name="%content_extension_point_name" schema="schema/contentExtension.exsd"/>
+   <extension-point id="contentProducer" name="%content_producer_extension_point_name" schema="schema/contentProducer.exsd"/>
+   <extension-point id="contexts" name="%contexts_extension_point_name" schema="schema/contexts.exsd"/>
+   <extension-point id="index" name="%index_extension_point_name" schema="schema/index.exsd"/>
+   <extension-point id="toc" name="%toc_extension_point_name" schema="schema/toc.exsd"/>
+   <extension-point id="criteriaDefinition" name="%criteriaDefinition_extension_point_name" schema="schema/criteriaDefinition.exsd"/>
+   <extension-point id="criteriaProvider" name="%criteria_provider_extension_point_name" schema="schema/criteriaProvider.exsd"/>
+   <extension
+         point="org.eclipse.help.contentExtension">
+      <contentExtensionProvider class="org.eclipse.help.internal.extension.ContentExtensionFileProvider"/>
+   </extension>
+
+   <extension
+         point="org.eclipse.help.contexts">
+      <contextProvider class="org.eclipse.help.internal.context.ContextFileProvider"/>
+   </extension>
+
+   <extension
+         point="org.eclipse.help.index">
+      <indexProvider class="org.eclipse.help.internal.index.IndexFileProvider"/>
+   </extension>
+   
+   <extension
+         point="org.eclipse.help.toc">
+      <tocProvider class="org.eclipse.help.internal.toc.TocFileProvider"/>
+   </extension>
+   
+    <extension
+         point="org.eclipse.help.criteriaDefinition">
+      <criteriaDefinitionProvider
+            class="org.eclipse.help.internal.criteria.CriteriaDefinitionFileProvider">
+      </criteriaDefinitionProvider>
+   </extension>
+   
+</plugin>

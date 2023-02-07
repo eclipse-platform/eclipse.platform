@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+    Copyright (c) 2018 Remain Software
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        wim.jongman@remainsoftware.com - initial API and implementation
+ -->
+
+<plugin>
+   <extension
+         point="org.eclipse.tips.core.tips">
+      <provider
+            class="org.eclipse.tips.examples.tipsframework.TipsTipProvider"
+            description="Eclipse Tips"
+            id="org.eclipse.tips.examples.tips.tipsframework.TipsTipProvider">
+      </provider>
+      <provider
+            class="org.eclipse.tips.examples.json.JsonTipProviderPhoton"
+            description="Eclipse Photon New and Noteworthy"
+            id="org.eclipse.tips.examples.tips.tipsframework.photonnn">
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.tips.core.tips">
+      <provider
+            class="org.eclipse.tips.examples.java.java9.Java9TipProvider"
+            description="Java 9 Tips"
+            id="org.eclipse.tips.examples.tips.java.java9.Java9TipProvider">
+         <enablement>
+            <with
+                  variable="activeWorkbenchWindow.activePerspective">
+               <equals
+                     value="org.eclipse.jdt.ui.JavaPerspective">
+               </equals>
+            </with>
+         </enablement>
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.tips.core.tips">
+      <provider
+            class="org.eclipse.tips.examples.eclipsetips.EclipseTipsProvider"
+            description="Eclipse Tips"
+            id="org.eclipse.tips.examples.tips.eclipsetips.EclipseTipsProvider">
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.tips.core.tips">
+      <provider
+            class="org.eclipse.tips.examples.test.TestProvider"
+            description="Test Provider"
+            id="org.eclipse.tips.examples.tips.test.TestProvider">
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.tips.core.tips">
+      <provider
+            class="org.eclipse.tips.examples.swttip.SwtTipsProvider"
+            description="SWT Tips Provider"
+            id="org.eclipse.tips.examples.swttip.SWTTipsProvider">
+      </provider>
+   </extension>
+
+</plugin>

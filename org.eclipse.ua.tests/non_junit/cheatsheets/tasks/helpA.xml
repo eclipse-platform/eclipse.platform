@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2007 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Help Test Scenario A - Integration with workbench">
+   <intro>
+      <description>
+         These tests exercise interactions with help system from workbench.
+      </description>
+   </intro>
+   <item title="A1 Help Browser Preferences" dialog="true" skip="false">
+      <description>
+         Test the setting of preferences
+      </description>
+      <subitem label="Launch &quot;Window&quot;-&gt;&quot;Preferences&quot;.  Preferences dialog will open." skip="true">
+         <command serialization="org.eclipse.ui.window.preferences" confirm="false">
+         </command>
+      </subitem>
+      <subitem label="Choose &quot;Help&quot; on the left.  This should show help preference page on the right" skip="true">
+      </subitem>
+      <subitem label="On Windows and Linux help uses embedded browser, and the preference should contain a checkbox to use external browser which is unchecked. Leave this unchecked." skip="true">
+      </subitem>
+      <subitem label="Close the preferences dialog" skip="true">
+      </subitem>
+      <subitem label="Choose &quot;Help&quot;-&gt;&quot;Help Contents&quot; from the workbench menu, ensure a browser opens and displays Help browser." skip="true">
+      </subitem>
+      <subitem label="Go back to help preferences, select &quot;Use external browser&quot;.  Follow hyperlink to Workbench Browsers preference page.  Choose a browser to use, Click &quot;OK&quot;." skip="true">
+      </subitem>
+      <subitem label="Choose &quot;Help&quot;-&gt;&quot;Help Contents&quot; from the workbench menu, ensure a browser selected opens and displays Help." skip="true">
+      </subitem>
+      <subitem label="Go back to help preferences.  If you have more browser adapters available, try selecting each browser adapter and launch help." skip="true">
+      </subitem>
+   </item>
+   <item title="A2 Displaying Help Preferences" dialog="false" skip="false">
+      <description>
+         Check that help preferences can be modified
+      </description>
+      <subitem label="Press &quot;F1&quot; key (Ctrl+F1 on GTK, Help on carbon) in the workbench &quot;Navigator&quot; view (&quot;Resources&quot; perspective). This should open help view in the workbench, turned to Related Topics page.  Verify &quot;About ...&quot; section displays description of workbench part in focus." skip="true">
+      </subitem>
+      <subitem label="Click on one of the related links.  A topic should open in the help view." skip="true">
+      </subitem>
+      <subitem label="Change help preferences to open context help in an infopop, dialog context help in an infopop, help view document open mode - in editor." skip="true">
+      </subitem>
+      <subitem label="Click &quot;back&quot; in the help view to arrive at Related Topics page.  Select a link from Dynamic Help section.  Verify it opens in the editor area." skip="true">
+      </subitem>
+      <subitem label="Press &quot;F1&quot; key (Ctrl+F1 on GTK, Help on carbon) in the workbench &quot;Navigator&quot; view (&quot;Resources&quot; perspective) again. This time it should open an infopop with a description and related links.  Focus should be on the first link (&quot;Views&quot;)." skip="true">
+      </subitem>
+      <subitem label="Click &quot;Navigator View&quot; link.  This should launch help web browser, and display &quot;Navigator View&quot; document on the right and the list of related topics on the left.  The link called &quot;Navigator View&quot; should be selected." skip="true">
+      </subitem>
+      <subitem label="Open help preferences, press &quot;F1&quot;.  and infopop should open." skip="true">
+      </subitem>
+      <subitem label="Restore defaults in the the browser preference page, and apply." skip="true">
+      </subitem>
+      <subitem label="Press F1 again.  A small help view with Related Topics should open adjacent to the preferences dialog." skip="true">
+      </subitem>
+   </item>
+   <item title="A3 Opening / closing help browser:" dialog="false" skip="false">
+      <description>
+         Test Opening / closing help browser
+      </description>
+      <subitem label="Without closing the browser that opened in the previous test case, choose &quot;Help&quot;-&gt;&quot;Help&quot; Contents&quot; from the workbench menu.  No new browser window should launch, and the existing help browser should load the table of contents, with lists of books on the left, and &quot;Welcome to Eclipse help&quot; document on the right." skip="true">
+      </subitem>
+      <subitem label="Close the help browser.  Browser window should close." skip="true">
+      </subitem>
+   </item>
+   <item title="A4 Search" dialog="false" skip="false">
+      <description>
+         Test Search
+      </description>
+      <subitem label="Choose &quot;Search&quot; from the workbench Help menu. Help search page should open." skip="false">
+      </subitem>
+      <subitem label="Type a query &quot;open project&quot; (without quotes), click &quot;Go&quot;." skip="true">
+      </subitem>
+      <subitem label="Choose a result.  The document should open with occurrences of the words &quot;open&quot; and &quot;project&quot; highlighted." skip="true">
+      </subitem>
+   </item>
+   <item title="A7:  Live help:" dialog="false" skip="false">
+      <description>
+         Note there is no step A5 or A6.
+      </description>
+      <subitem label="Type &quot;active link below&quot; (no quotes) in the search field in the help view, and search." skip="true">
+      </subitem>
+      <subitem label="Choose a document titled &quot;Active help&quot; from the search results." skip="true">
+      </subitem>
+      <subitem label="Click once &quot;Click here for a Message&quot; link at the bottom of the document." skip="true">
+      </subitem>
+      <subitem label="Ensure that a &quot;Hello World&quot; is being displayed in a dialog on top of the workbench." skip="true">
+      </subitem>
+   </item>
+</cheatsheet>

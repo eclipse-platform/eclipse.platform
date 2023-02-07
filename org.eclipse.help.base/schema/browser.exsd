@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.help.base">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.help.base" id="browser" name="Browser"/>
+      </appInfo>
+      <documentation>
+         For providing web browsers capable of displaying html documents at a given URL.
+
+&lt;p&gt;&lt;b&gt;Note: since 3.1, help system uses workbench browser support (see &lt;code&gt;org.eclipse.ui.browserSupport&lt;/code&gt;). The extension point described in this document remains to be used for standalone help only. Any custom browser adapters that need to work in the workbench mode need to be moved to the workbench extension point.&lt;/b&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="browser" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="browser">
+      <complexType>
+         <sequence>
+            <element ref="factoryclass" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the unique ID of the browser.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="factoryclass" type="string">
+            <annotation>
+               <documentation>
+                  the implementation class for the browser factory.  This class must implement the &lt;samp&gt;org.eclipse.help.browser.IBrowserFactory&lt;/samp&gt; interface.  This attribute may be omitted, and the nested &lt;samp&gt;factoryclass&lt;/samp&gt; element may be provided instead.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.browser.IBrowserFactory"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the browser (translatable).
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="factoryclass">
+      <complexType>
+         <sequence>
+            <element ref="parameter" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the implementation class for the browser factory.  This class must implement the &lt;samp&gt;org.eclipse.help.browser.IBrowserFactory&lt;/samp&gt; interface.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.browser.IBrowserFactory"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="parameter">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  name of a parameter passed to the implementation class
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  value of a parameter passed to the implementation class
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.0 (originally added in release 2.0 as org.eclipse.help.ui.browser)
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is a sample usage of the browser extension point:
+
+&lt;p&gt;
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.help.base.browser&quot;&gt;
+  &lt;browser 
+   id=&quot;org.eclipse.myPlugin.myBrowserID&quot;
+   factoryclass=&quot;org.eclipse.myPlugin.myPackage.MyFactoryClass&quot;
+   name=&quot;My Browser&quot;&gt;
+  &lt;/browser&gt;
+ &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         The supplied factory class must implement the &lt;samp&gt;org.eclipse.help.browser.IBrowserFactory&lt;/samp&gt; interface.
+Methods in that interface determine whether the factory is available on the given system, i.e. is capable
+of supplying browser instances, and create browser instances that implement IBrowser interface.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The &lt;samp&gt;org.eclipse.help.base&lt;/samp&gt; and &lt;samp&gt;org.eclipse.help.ui&lt;/samp&gt; plug-ins contain implementation of browsers on common platforms.
+Other plug-ins can provide different implementations.  In the preferences, the user can select the default
+browser from among available browsers.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2000, 2005 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Bug 317055 -  [Webapp][Security] URLEncode url requests from local users</title>
+	<script type="text/javascript" src="server.js"></script>
+	<script type="text/javascript">
+	    function loadhandler() {
+            showHelpPath();
+            patchAnchors();
+        }
+
+	</script>
+</head>
+
+<body onload = "loadhandler()">
+<h1> Bug 317055 -  [Webapp][Security] URLEncode url requests from local users</h1>
+
+<h3 id="path"></h3>
+To reproduce open help in an external browser ((The bug reproduces on both IE and Firefox)
+<br>
+Right on the link below and open in a new window. If an alert containing cookie values such as JSESSIONID shows the test is failing.
+<p>
+<a href = "../../../../&quot;+alert(document.cookie)+&quot;.html" > Open this link in a new window </a>
+</p>
+
+</body>
+</html>

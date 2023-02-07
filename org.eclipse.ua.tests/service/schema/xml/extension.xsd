@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+	<xs:element name="contentExtensions">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element ref="contribution" minOccurs="0"
+					maxOccurs="unbounded" />
+				<xs:element ref="replacement" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="contribution">
+		<xs:complexType mixed="true">
+			<xs:attribute name="content" type="xs:string"/> <!-- optional attribute for contribution -->
+			<xs:attribute name="path" type="xs:string"/> <!-- optional attribute for contribution -->
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="replacement">
+		<xs:complexType mixed="true">
+			<xs:attribute name="content" type="xs:string"/> <!-- optional attribute for replacement -->
+			<xs:attribute name="path" type="xs:string"/> <!-- optional attribute for replacement -->
+		</xs:complexType>
+	</xs:element>
+	
+</xs:schema>

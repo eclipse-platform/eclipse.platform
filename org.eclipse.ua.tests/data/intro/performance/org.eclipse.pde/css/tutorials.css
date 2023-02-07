@@ -1,0 +1,10 @@
+a#rcp img { background-image : url(graphics/obj_48/rcpapp_obj.gif); }
+a#rcp:hover img { background-image : url(graphics/obj_48/rcpapphov_obj.gif); }
+
+a#pde-hello-world img { background-image : url(graphics/obj_48/plugin_obj.gif); }
+a#pde-hello-world:hover img { background-image : url(graphics/obj_48/pluginhov_obj.gif); }
+
+a#features img { background-image : url(graphics/obj_48/features_obj.gif); }
+a#features:hover img { background-image : url(graphics/obj_48/featureshov_obj.gif); }
+
+

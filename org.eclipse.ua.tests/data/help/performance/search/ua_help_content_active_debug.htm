@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGIN__ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Tips for debugging active help</title>
+</head>
+<body>
+
+<h2>Tips for debugging active help</h2>
+
+
+<p>The code and markup that triggered our active help link looks pretty
+straightforward.&nbsp; But what do you do if your active help link doesn't seem
+to work?</p>
+
+
+<h4>Test your action ahead of time</h4>
+
+
+<p>If your action implementation is fairly involved, you should invoke the
+action yourself with some test code inside Eclipse.&nbsp; This way, you'll know
+that the action is error-free before invoking it from the JavaScript.&nbsp; </p>
+
+
+<h4>Ensure the JavaScript is running</h4>
+
+
+<p>You can modify &quot;<b>liveHelp.js</b>&quot; (make a copy of this from the plugins/org.eclipse.help
+plugin and change your <code>script</code> statement to refer to your local copy)
+to include a call to the <b>alert</b> function as the first statement in the <b>liveAction</b>
+function:</p>
+
+
+<pre>function liveAction(pluginId, className, argument)
+{
+<b>	alert(&quot;liveAction called&quot;);
+	...</b></pre>
+
+
+<p>The <b>alert</b> function opens a warning dialog in the browser and can be
+used to verify that the <b>liveAction</b> was properly invoked in your
+HTML.&nbsp; If you don't see a warning dialog when you click on your help link,
+then you have a problem in the HTML markup.</p>
+
+
+<h4>Debug the active help action</h4>
+
+
+<p>Once you know that the JavaScript is running, you can debug your action from
+inside Eclipse.&nbsp; To do this, you can set a breakpoint in your help action
+class and start up a self-hosted Eclipse instance.&nbsp; You must test your
+active help with the Help browser from the newly launched Eclipse instance, not
+from your host instance, since the JavaScript from your help HTML calls a
+servlet on the Eclipse help server that launched the browser.</p>
+
+
+<p>If nothing happens after you've set up the breakpoint and clicked on the
+active help link, it's likely that your plug-in and active help class were not
+correctly specified in the JavaScript.&nbsp; </p>
+
+
+<p>Once you've managed to stop at the breakpoint in your action, you can debug
+the action as you would any other Java code.</p>
+
+
+<h4>Make sure your UI code is wrapped in Display.syncExec</h4>
+
+
+<p>A common runtime problem is improperly accessing UI code from the thread that
+invokes the active help.&nbsp; If your live help action came from code that ran
+originally in a UI thread, it will need to be modified to handle the fact that
+it is running from a non-UI thread.&nbsp; </p>
+
+
+<pre>public void run() {
+		// Active help does not run on the UI thread, so we must use syncExec
+		Display.getDefault().syncExec(new Runnable() {
+							public void run() {
+								//do the UI work in here;
+							}
+		});		
+	}
+
+</pre>
+
+</body>
+</html>

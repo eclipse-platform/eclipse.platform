@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<!--
+     Copyright (c) 2005, 2011 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<toc label="filter.xml">
+
+	<!-- Tocs -->
+
+	<topic label="This topic should always appear" href="data/help/toc/filteredToc/simple_page.html">
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+
+	<!-- should never appear -->
+	<topic filter="os=invalid" label="Your OS is invalid" href="data/help/toc/filteredToc/simple_page.html">
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+	<topic filter="ws=invalid" label="Your WS is invalid" href="data/help/toc/filteredToc/simple_page.html">
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+	<topic filter="arch=invalid" label="Your ARCH is invalid" href="data/help/toc/filteredToc/simple_page.html">
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+	<topic label="Your OS is win32 AND your WS is invalid" href="data/help/toc/filteredToc/simple_page.html">
+	    <filter name="os" value="win32"/>
+        <filter name="ws" value="invalid"/>
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+
+	<topic filter="plugin=org.eclipse.help" label="The plugin org.eclipse.help is installed" href="data/help/toc/filteredToc/simple_page.html">
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+
+	<!-- should never appear -->
+	<topic filter="plugin=invalid" label="The plugin invalid is installed" href="data/help/toc/filteredToc/simple_page.html">
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+
+	<topic filter="product=org.eclipse.sdk.ide" label="The product org.eclipse.sdk.ide is running" href="data/help/toc/filteredToc/simple_page.html">
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+
+	<!-- should never appear -->
+	<topic filter="product=invalid" label="The product invalid is running" href="data/help/toc/filteredToc/simple_page.html">
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+
+	<topic filter="category=org.eclipse.categories.developmentCategory" label="The category org.eclipse.categories.developmentCategory is enabled" href="data/help/toc/filteredToc/simple_page.html">
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+
+	<!-- should never appear -->
+	<topic filter="category=invalid" label="The category invalid is enabled" href="data/help/toc/filteredToc/simple_page.html">
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+
+	<topic filter="activity=org.eclipse.javaDevelopment" label="The activity org.eclipse.javaDevelopment is enabled" href="data/help/toc/filteredToc/simple_page.html">
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+
+	<!-- should never appear -->
+	<topic filter="activity=invalid" label="The activity invalid is enabled" href="data/help/toc/filteredToc/simple_page.html">	
+		<link toc="data/help/toc/filteredToc/simple_toc.xml" />
+	</topic>
+
+
+	<!-- Topics -->
+
+	<topic label="This topic should always appear" href="data/help/toc/filteredToc/simple_page.html"/>
+
+	<!-- should never appear -->
+	<topic filter="os=invalid" label="Your OS is invalid" href="data/help/toc/filteredToc/filteredOutPage.html"/>
+	<topic filter="ws=invalid" label="Your WS is invalid" href="data/help/toc/filteredToc/simple_page.html"/>
+	<topic filter="arch=invalid" label="Your ARCH is invalid" href="data/help/toc/filteredToc/simple_page.html"/>
+	<topic label="Your OS is win32 AND your WS is invalid" href="data/help/toc/filteredToc/simple_page.html">
+	    <filter name="os" value="win32"/>
+        <filter name="ws" value="invalid"/>
+	</topic>
+
+	<topic filter="plugin=org.eclipse.help" label="The plugin org.eclipse.help is installed" href="data/help/toc/filteredToc/helpInstalled.html"/>
+
+	<!-- should never appear -->
+	<topic filter="plugin=invalid" label="The plugin invalid is installed" href="data/help/toc/filteredToc/simple_page.html"/>
+
+	<topic filter="product=org.eclipse.sdk.ide" label="The product org.eclipse.sdk.ide is running" href="data/help/toc/filteredToc/simple_page.html"/>
+
+	<!-- should never appear -->
+	<topic filter="product=invalid" label="The product invalid is running" href="data/help/toc/filteredToc/simple_page.html"/>
+
+	<topic filter="category=org.eclipse.categories.developmentCategory" label="The category org.eclipse.categories.developmentCategory is enabled" href="data/help/toc/filteredToc/simple_page.html"/>
+
+	<!-- should never appear -->
+	<topic filter="category=invalid" label="The category invalid is enabled" href="data/help/toc/filteredToc/simple_page.html"/>
+
+	<topic filter="activity=org.eclipse.javaDevelopment" label="The activity org.eclipse.javaDevelopment is enabled" href="data/help/toc/filteredToc/simple_page.html"/>
+
+	<!-- should never appear -->
+	<topic filter="activity=invalid" label="The activity invalid is enabled" href="data/help/toc/filteredToc/simple_page.html"/>
+ <topic
+       label="Non filtered topic with children and custom icon" icon="org.eclipse.ua.tests.iconSet">
+    <topic
+          href="data/help/toc/filteredToc/filterChild.html"
+          label="Child of non filtered topic with custom icon"
+          icon="org.eclipse.ua.tests.iconSet">
+    </topic>
+ </topic>
+ <topic label="Node with sorted children" sort = "true">
+    <topic href="data/help/toc/filteredToc/simple_page.html" label="B">
+    </topic>
+    <topic href="data/help/toc/filteredToc/simple_page.html" label="C">
+    </topic>
+    <topic href="data/help/toc/filteredToc/simple_page.html" label="A">
+    </topic>
+ </topic>
+ <topic label="Node with unsorted children">
+    <topic href="data/help/toc/filteredToc/simple_page.html" label="B">
+    </topic>
+    <topic href="data/help/toc/filteredToc/simple_page.html" label="C">
+    </topic>
+    <topic href="data/help/toc/filteredToc/simple_page.html" label="A">
+    </topic>
+ </topic>	
+ <topic label="UTF8 page with child links" href = "data/help/toc/filteredToc/parentUTF8.html" >
+     <topic href="data/help/toc/filteredToc/simple_page.html" label="España">
+     </topic>
+     <topic href="data/help/toc/filteredToc/simple_page.html" label="second UTF8 Child">
+     </topic>
+     <topic label="navigation topic">
+        <topic href="data/help/toc/filteredToc/simple_page.html" label="Topic">
+        </topic>
+     </topic>
+ </topic>
+ <topic label="ISO 8859 page with child links" href = "data/help/toc/filteredToc/parent8859.html" >
+     <topic href="data/help/toc/filteredToc/simple_page.html" label="brasileño">
+     </topic>
+     <topic href="data/help/toc/filteredToc/simple_page.html" label="second ISO 8859 Child">
+     </topic>
+ </topic>
+</toc>

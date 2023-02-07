@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<!--
+   An intro for testing dynamic content in intro XML. This is a very simple intro with no
+   images or graphics that has filtering, includes and anchor examples.
+-->
+<introContent>
+
+	<!--
+	   The main page, containing links to the various examples.
+	-->
+    <page id="root">
+        <title>Dynamic XML Intro</title>
+        <group>
+            <link label="Static Content Example" url="http://org.eclipse.ui.intro/showPage?id=static"/>
+        </group>
+        <group>
+            <link label="Filter Example" url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+        </group>
+        <group>
+            <link label="Include Example" url="http://org.eclipse.ui.intro/showPage?id=include"/>
+        </group>
+        <group>
+            <link label="Anchor Example" url="http://org.eclipse.ui.intro/showPage?id=anchor"/>
+        </group>
+    </page>
+
+	<!--
+	   A simple static page that shows one link, no dynamic content. Used as a sanity test.
+	-->
+    <page id="static">
+        <title>Static Content Example</title>
+        <group>
+            <link label="This page contains static content only." url="http://org.eclipse.ui.intro/showPage?id=static"/>
+        </group>
+    </page>
+
+	<!--
+	   The filter examples page. Has links that are os/ws/arch/etc specific. When viewed, this page
+	   should state facts about your environment. For exmaple, your OS is win32, your WS is win32, etc.
+	-->
+    <page id="filter">
+        <title>Filter Example</title>
+        <group>
+            <link label="Sanity test" url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+
+            <!-- should never appear -->
+            <link filter="os=invalid" label="Your OS is invalid." url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+            <link filter="ws=invalid" label="Your WS is invalid." url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+            <link filter="arch=invalid" label="Your ARCH is invalid." url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+            <link label="Your OS is win32 AND your WS is invalid." url="http://org.eclipse.ui.intro/showPage?id=filter">
+                <filter name="os" value="win32"/>
+                <filter name="ws" value="invalid"/>
+            </link>
+        </group>
+        <group>
+            <link filter="plugin=org.eclipse.help" label="The plugin org.eclipse.help is installed." url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+
+            <!-- should never appear -->
+            <link filter="plugin=invalid" label="The plugin invalid is installed." url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+        </group>
+        <group>
+            <link filter="product=org.eclipse.sdk.ide" label="The product org.eclipse.sdk.ide is running." url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+
+            <!-- should never appear -->
+            <link filter="plugin=invalid" label="The product invalid is running." url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+        </group>
+        <group>
+            <link filter="category=org.eclipse.categories.developmentCategory" label="The category org.eclipse.categories.developmentCategory is enabled." url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+
+            <!-- should never appear -->
+            <link filter="category=invalid" label="The category invalid is enabled." url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+        </group>
+        <group>
+            <link filter="activity=org.eclipse.javaDevelopment" label="The activity org.eclipse.javaDevelopment is enabled." url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+
+            <!-- should never appear -->
+            <link filter="activity=invalid" label="The activity invalid is enabled." url="http://org.eclipse.ui.intro/showPage?id=filter"/>
+        </group>
+    </page>
+
+	<!--
+	   The include examples page. The include should bring in the group from the page include2 below.
+	   There should be two links on this page when viewed.
+	-->
+    <page id="include">
+        <title>Include Example</title>
+        <group>
+            <link label="There should be one link below included from another page." url="http://org.eclipse.ui.intro/showPage?id=include"/>
+        </group>
+        <include path="include2/my.id.include2"/>
+    </page>
+
+	<!--
+	   You never actually see this page, it is only used to define a group that is included in page
+	   "include" above.
+	-->
+    <page id="include2">
+        <title>Include Example 2</title>
+        <group id="my.id.include2">
+            <link label="This link is from page id=include2 and is to be included into other pages." url="http://org.eclipse.ui.intro/showPage?id=include"/>
+        </group>
+    </page>
+
+	<!--
+	   The anchor examples page. This page contains an anchor. The content is contributed from an intro
+	   extension. See ext.xml in the same folder.
+	-->
+    <page id="anchor">
+        <title>Anchor Example</title>
+        <group>
+            <link label="There is an anchor below this link that should be populated from another page." url="http://org.eclipse.ui.intro/showPage?id=anchor"/>
+        </group>
+        <anchor id="my.id.anchor"/>
+    </page>
+
+</introContent>

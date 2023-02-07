@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2009 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Dynamic content">
+   <intro>
+      <description>
+         This test requires org.eclipse.ua.tests to be installed
+      </description>
+   </intro>
+   <item title="Find filtered topics" dialog="false" skip="false">
+      <description>
+         Test that topics and subtopics can be filtered.
+      </description>
+      <subitem label="Launch Help by selecting Help-&gt;Help Contents from the menu. You should see a book called &quot;User Assistance Tests&quot; in the bookshelf." skip="false">
+      </subitem>
+      <subitem label="Open the topic &quot;filter&quot; in the book &quot;tests&quot;." skip="false">
+      </subitem>
+      <subitem label="Check that there are two subtopics &quot;The plugin org.eclipse.help is installed&quot;" skip="false">
+      </subitem>
+      <subitem label="Check that there are two subtopics &quot;This topic should always appear&quot;" skip="false">
+      </subitem>
+      <subitem label="Check that there are two subtopics &quot;The product org.eclipse.sdk.ide is running&quot;" skip="false">
+      </subitem>
+      <subitem label="Check that there are two subtopics &quot;The activity org.eclipse.javaDevelopment is enabled&quot;" skip="false">
+      </subitem>
+      <subitem label="Check that there are two subtopics &quot;The category org.eclipse.categories.developmentCategory is enabled&quot;" skip="false">
+      </subitem>
+      <subitem label="Check there are no subtopics with &quot;invalid&quot; in the title" skip="false">
+      </subitem>
+   </item>
+   <item title="Check page with filtering" dialog="false" skip="false">
+      <description>
+         Open the help page Tests/Manual/Filter
+      </description>
+      <subitem label="Check that there is a line &quot;The plugin org.eclipse.help is installed&quot; in both the Enablement and Legacy sections." skip="false">
+      </subitem>
+      <subitem label="Check that there is a line &quot;The product org.eclipse.sdk.ide is running&quot;  in both the Enablement and Legacy sections." skip="false">
+      </subitem>
+      <subitem label="Check that there is a line &quot;The activity org.eclipse.javaDevelopment is enabled&quot;  in both the Enablement and Legacy sections." skip="false">
+      </subitem>
+      <subitem label="Check that there a line &quot;The category org.eclipse.categories.developmentCategory is enabled&quot;  in both the Enablement and Legacy sections." skip="false">
+      </subitem>
+      <subitem label="Check there is no line containing the word with &quot;invalid&quot;" skip="false">
+      </subitem>
+   </item>
+   <item title="Search for word in xhtml page" dialog="false" skip="false">
+      <description>
+         Search for &quot;plugin invalid is installed&quot;. Verify that Dynamic Content (potential hit) shows at or near the top of the search hits.
+      </description>
+   </item>
+   <item
+         title="Non Filtered Topic with Children">
+      <description>
+         Locate the topic &quot;Non filtered topic with children and custom icon&quot; in User Assistance Tests/filter.
+      </description>
+      <subitem
+            label="Verify that the icon is a flashlight  and changes to an eclipse logo when the topic is expanded.">
+      </subitem>
+      <subitem
+            label="Verify that there is a child topic &quot;Child of non filtered topic with custon icon&quot; and that it can be opened.">
+      </subitem>
+      <subitem
+            label="Verify that the breadcrumb for this child topic is correct.">
+      </subitem>
+      <subitem
+            label="Press the show in table of contents button and verify that the correct topic shows in the TOC view.">
+      </subitem>
+   </item>
+</cheatsheet>

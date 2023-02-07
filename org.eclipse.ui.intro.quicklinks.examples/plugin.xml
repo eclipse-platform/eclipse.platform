@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+    Copyright (c) 2016 Manumitting Technologies Inc and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+         Manumitting Technologies Inc - initial API and implementation
+ -->
+<plugin>
+   <extension
+         point="org.eclipse.ui.intro.quicklinks">
+      <!-- Invoke a simple command -->
+      <command
+            description="%openlocalfile.description"
+            id="org.eclipse.ui.edit.text.openLocalFile"
+            label="%openlocalfile.label"
+            resolution="launchbar">
+      </command>
+      
+      <!--
+      	Open the New Java Project wizard; note that icon is provided by <override> below;
+      	want to override label and description as the command description is generic
+       -->
+      <command
+            description="%newjavaproject.description"
+            id="org.eclipse.ui.newWizard(newWizardId=org.eclipse.jdt.ui.wizards.JavaProjectWizard)"
+            label="%newjavaproject.label">
+      </command>
+      
+      <!-- Open the Import Existing Project -->
+      <command
+            description="%importexistingproject.description"
+            icon="platform:/plugin/org.eclipse.ui/icons/full/wizban/import_wiz.png"
+            id="org.eclipse.ui.file.import(importWizardId=org.eclipse.ui.wizards.import.ExternalProject)"
+            label="%importexistingproject.label"
+            resolution="standby">
+      </command>
+      
+      <!-- Cause all New XXX quicklinks to use the wizban/new_wiz image -->
+      <override
+            command="org.eclipse.ui.newWizard*"
+            icon="platform:/plugin/org.eclipse.ui/icons/full/wizban/new_wiz.png"
+            theme="org.eclipse.ui.intro.universal.solstice">
+      </override>
+      
+      <!--
+      	Use default labelling and icon from showMPC command; importance should
+      	cause it to be sorted above other commands
+       -->
+      <command
+            id="org.eclipse.epp.mpc.ui.command.showMarketplaceWizard"
+            importance="high"
+            resolution="close">
+      </command>
+      <url
+            location="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.eclipse.jdt.helloworld"
+            label="%helloworld.label"
+            description="%helloworld.description"
+            importance="high">
+      </url>
+      <url
+            location="http://google.com"
+            label="%opengoogle.label"
+            description="%opengoogle.description"
+            importance="medium">
+      </url>
+   </extension>
+
+</plugin>

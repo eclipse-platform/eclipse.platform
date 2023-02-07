@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.help.webapp" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.help.webapp" id="validatedServlet" name="Validated Servlet"/>
+      </appInfo>
+      <documentation>
+         This extension points implements a webapp security validator around a servlet.  All calls to the servlet are checked for known malicious threats before returning to the client.  Important: All context paths to servlet validator resources must start with /vs.  For example: http://host:port/help/vs/service/toc
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="servlet"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="servlet">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="javax.servlet.http.HttpServlet:"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="alias" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.7
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+      	None provided.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiinfo"/>
+      </appInfo>
+      <documentation>
+         The supplied servlet class must extend the class &lt;samp&gt;javax.servlet.http.HttpServlet&lt;/samp&gt;.  The servlet class should function no differently then general servlets.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         A supplied implementation of this point can be found in &lt;samp&gt;org.eclipse.help.webapp&lt;/samp&gt; for any of the services in org.eclipse.help.internal.webapp.services.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2011 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

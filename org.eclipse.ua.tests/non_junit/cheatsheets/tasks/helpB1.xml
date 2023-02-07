@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2005, 2009 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Basic Topic Navigation">
+   <intro>
+      <description>
+         Test navigation
+      </description>
+   </intro>
+   <item title="Launch Help" dialog="false" skip="false">
+      <description>
+         Launch help from the workbench menu: Help-&gt;Help Contents. This should open the help view to the main bookshelf that lists the available books.
+      </description>
+   </item>
+   <item title="Open First Book" dialog="false" skip="false">
+      <description>
+         In the Contents page click on the plus sign next to the Workbench User Guide book. This should expand that book and show it contents. All the other books must still be available in the navigation frame (i.e. only the select book expands).
+      </description>
+   </item>
+   <item title="Open topic" dialog="false" skip="false">
+      <description>
+         In the table of contents tree navigate to Concepts -&gt;Workbench. Selecting the &quot;Workbench&quot; topic should show some content in the main help area.
+      </description>
+   </item>
+   <item title="Follow link" dialog="false" skip="false">
+      <description>
+         Click on the &quot;Installing new software&quot; link in the displayed document. This should load a new document.
+      </description>
+   </item>
+</cheatsheet>

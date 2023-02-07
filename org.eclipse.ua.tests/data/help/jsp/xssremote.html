@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>XSS bugs</title>
+	<script type="text/javascript" src="server.js"></script>
+	<script type="text/javascript">
+	    function loadhandler() {
+            showHelpPath();
+            patchAnchors();
+        }
+
+	</script>
+</head>
+
+<body onload = "loadhandler()">
+<h1>Other JSP bugs</h1>
+
+<h3 id="path"></h3>
+
+This bug can be tested on an infocenter or in Workbench mode.
+<br>
+Click on each of the links in turn, if any cause a message dialog or new window or tab to open that is a symptom of an xss bug.
+If you see an warning in the browser that it has modified the site to prevent cross site scripting
+that is also a problem.
+<br>
+<a href = "../../../../../advanced/search.jsp?searchWord=&maxHits=500&workingSet=All%20topics%27/%3E%3Cscript%3Ealert%2842752%29%3C/script%3E" >
+Link X1</a>
+<br>
+<a href = "../../../../../advanced/search.jsp?searchWord=%3E%22%27%3E%3Cscript%3Ealert%283854%29%3C/script%3E&maxHits=%3E%22%27%3E%3Cscript%3Ealert%283854%29%3C/script%3E&workingSet=%3E%22%27%3E%3Cscript%3Ealert%283854%29%3C/script%3E" >
+Link X2</a>
+<br>
+<a href = "../../../../../advanced/workingSet.jsp?operation=add%22/%3E%27;%3C/script%3E%3Cscript%3Ealert%2853827%29%3C/script%3E&workingSet=" >
+Link X3</a>
+<br>
+<a href = "../../../../../basic/searchView.jsp?searchWord=%27/%3E%3Cscript%3Ealert%2851887%29%3C/script%3E&maxHits=500&scopedSearch=true" >
+Link X4</a>
+<br>
+<a href = "../../../../../basic/searchView.jsp?searchWord=%3E%22%27%3E%3Cscript%3Ealert%2850929%29%3C/script%3E&maxHits=%3E%22%27%3E%3Cscript%3Ealert%2850929%29%3C/script%3E&scopedSearch=%3E%22%27%3E%3Cscript%3Ealert%2850929%29%3C/script%3E" >
+Link X5</a>
+<br>
+<a href = "../../../../../advanced/search.jsp?searchWord=&maxHits=500&workingSet=<script>window.open('http://www.eclipse.org/')</script>" >
+Link X6</a>
+<br>
+<a href = "../../../../../index.jsp?'onload='alert(0)">
+Link X7</a>
+
+</body>
+</html>

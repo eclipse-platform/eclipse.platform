@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+    Copyright (c) 2018 Remain Software
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        wim.jongman@remainsoftware.com - initial API and implementation
+ -->
+
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.tips.ide.internal.TipsHandler"
+            id="org.eclipse.tips.ide.command.open"
+            name="%command.name">
+      </command>
+      <command
+            id="org.eclipse.tips.ide.command.trim.open"
+            name="%command.name.0">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:help?before=tipsAndTricks">
+         <command
+               commandId="org.eclipse.tips.ide.command.open"
+               icon="platform:/plugin/org.eclipse.tips.ui/icons/lightbulb.png"
+               id="org.eclipse.tips.ide.tip.menu"
+               label="%command.label"
+               style="push"> variable="newtips">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.trim.status">
+         <toolbar
+               id="org.eclipse.tips.ide.toolbar.status"
+               label="%toolbar.label">
+            <command
+                  commandId="org.eclipse.tips.ide.command.trim.open"
+                  icon="platform:/plugin/org.eclipse.tips.ui/icons/lightbulb.png"
+                  id="org.eclipse.tips.ide.tip.tool"
+                  label="%command.label.0"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="newtips">
+                     <equals
+                           value="true">
+                     </equals>
+                  </with>
+               </visibleWhen>
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.tips.ide.internal.TipsHandler"
+            commandId="org.eclipse.tips.ide.command.trim.open">
+         <activeWhen>
+            <with
+                  variable="newtips">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </activeWhen>
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.tips.ide.internal.TipsPreferences">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.tips.core.tips">
+      <provider
+            class="org.eclipse.tips.ide.internal.provider.TipsTipProvider"
+            description="Tips about Tips"
+            id="org.eclipse.tips.ide.internal.provider.TipsTipProvider">
+      </provider>
+            <provider
+            class="org.eclipse.tips.ide.internal.provider.TwitterTipProvider"
+            description="Eclipse IDE Twitter Tip Collection"
+            id="org.eclipse.tips.ide.internal.provider.TwitterTipProvider">
+            <enablement>
+            <with
+                  variable="activeWorkbenchWindow.activePerspective">
+               <equals
+                     value="org.eclipse.jdt.ui.JavaPerspective">
+               </equals>
+            </with>
+         </enablement>
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <e4view
+            category="org.eclipse.help.ui"
+            class="org.eclipse.tips.ide.internal.TipPart"
+            icon="platform:/plugin/org.eclipse.tips.ui/icons/lightbulb.png"
+            id="org.eclipse.tips.ide.tipPart"
+            name="%e4view.name"
+            restorable="true">
+      </e4view>
+   </extension>
+</plugin>

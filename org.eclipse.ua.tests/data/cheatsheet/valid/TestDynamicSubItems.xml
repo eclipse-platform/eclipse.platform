@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Testing SubItems">
+
+<intro 
+	href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm">
+	<description>
+This cheat sheet will test subitems.
+Let's get started!
+	</description>
+</intro>
+
+	<item
+		title="Select a pattern">
+		<action
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ui.examples.cheatsheets.pattern.actions.LaunchPatternSelectionDialogAction"/>
+		<description>
+Launch the wizard to begin. You can select a pattern to create. There
+are a few different patterns that you can try out, follow the steps in the
+cheat sheet to help guide you through building the patterns.
+		</description>
+</item>
+
+<!--
+Run the cheat once with the following 2 items commented out. Work through the cheat sheet
+until the second "Customize your pattern" item. Exit the cheat sheet and uncomment the items
+to test the error page during the restoration of saved state data.
+-->
+<!--
+	<item
+		title="Test conditional-subitem">
+		<description>
+You should see the "Step for A." subitem.
+		</description>
+		<conditional-subitem condition="a">
+			<subitem when="a" label="Step for A." />
+			<subitem when="b" label="Step for B." />
+		</conditional-subitem>
+	</item>
+
+	<item
+		title="Test repeated-subitem">
+		<description>
+You should see the "Step for A.", "Step for B." and "Step for C." subitems.
+		</description>
+		<repeated-subitem values="A,B,C">
+			<subitem label="Step for ${this}"/>
+		</repeated-subitem>
+	</item>
+-->
+	<item
+		title="Customize your pattern">
+		<description>
+Now that you have chosen the pattern that you would like to create, customize your options.
+		</description>
+	<conditional-subitem condition="${pattern}">
+		<subitem
+			when="Factory"
+			label="Customize the Factory Pattern"
+			skip="true">
+			<action
+				confirm="true"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.FactoryCustomizeAction"/>
+		</subitem>
+		<subitem
+			when="Singleton"
+			label="Customize the Singleton Pattern"
+			skip="false">
+			<action
+				confirm="true"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.SingletonCustomizeAction"/>
+		</subitem>
+		<subitem
+			when="Visitor"
+			label="Customize the Visitor Pattern"
+			skip="true">
+			<action
+				confirm="false"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.VisitorCustomizeAction"/>
+		</subitem>
+	</conditional-subitem>
+	</item>
+
+<item
+	title="Test SubItems"
+	href="/org.eclipse.platform.doc.user/concepts/chelpsys.htm">
+	<description>
+Try the help link, you should see the concepts for the help system.
+	</description>
+	<subitem label="sub 1" skip="true"/>
+	<subitem label="sub 2" skip="true">
+		<action
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	</subitem>
+	<conditional-subitem condition="${pattern}">
+		<subitem
+			when="Factory"
+			label="Customize the Factory Pattern"
+			skip="false">
+			<action
+				confirm="false"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.FactoryCustomizeAction"/>
+		</subitem>
+		<subitem
+			when="Singleton"
+			label="Customize the Singleton Pattern"
+			skip="false">
+			<action
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.SingletonCustomizeAction"/>
+		</subitem>
+		<subitem
+			when="Visitor"
+			label="Customize the Visitor Pattern"
+			skip="true">
+			<action
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.VisitorCustomizeAction"/>
+		</subitem>
+	</conditional-subitem>
+	<conditional-subitem condition="${pattern}">
+		<subitem
+			when="Factory"
+			label="Customize the Factory Pattern">
+			<action
+				confirm="true"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.FactoryCustomizeAction"/>
+		</subitem>
+		<subitem
+			when="Singleton"
+			label="Customize the Singleton Pattern">
+			<action
+				confirm="false"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.SingletonCustomizeAction"/>
+		</subitem>
+		<subitem
+			when="Visitor"
+			label="Customize the Visitor Pattern">
+		</subitem>
+	</conditional-subitem>
+	<conditional-subitem condition="${pattern}">
+		<subitem
+			when="Factory"
+			label="Customize the Factory Pattern"
+			skip="true">
+		</subitem>
+		<subitem
+			when="Singleton"
+			label="Customize the Singleton Pattern"
+			skip="false">
+		</subitem>
+		<subitem
+			when="Visitor"
+			label="Customize the Visitor Pattern">
+		</subitem>
+	</conditional-subitem>
+	<subitem label="sub 3" skip="false"/>
+	<subitem label="sub 4" skip="false">
+		<action
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	</subitem>
+	<subitem label="sub 5"/>
+	<subitem label="sub 6">
+		<action
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	</subitem>
+	<subitem label="sub 7">
+		<action
+			confirm="true"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	</subitem>
+	<subitem label="sub 8">
+		<action
+			confirm="false"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	</subitem>
+	<subitem label="sub 9" skip="true">
+		<action
+			confirm="true"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	</subitem>
+	<subitem label="sub 10" skip="true">
+		<action
+			confirm="false"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	</subitem>
+	<repeated-subitem values="${files}">
+		<subitem label="Create class ${this}">
+			<action
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.OpenClassNameFilledAction"
+				param1="${this}"
+				param2="${project}"/>
+		</subitem>
+	</repeated-subitem>
+	<subitem label="sub 11" skip="false">
+		<action
+			confirm="false"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	</subitem>
+	<subitem label="sub 12" skip="false">
+		<action
+			confirm="true"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	</subitem>
+</item>
+
+	<item
+		title="Select a pattern">
+		<action
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ui.examples.cheatsheets.pattern.actions.LaunchPatternSelectionDialogAction"/>
+		<description>
+Launch the wizard to begin. You can select a pattern to create. There
+are a few different patterns that you can try out, follow the steps in the
+cheat sheet to help guide you through building the patterns.
+		</description>
+</item>
+
+<item
+	title="Test SubItems with PerformWhen"
+	href="/org.eclipse.platform.doc.user/concepts/chelpsys.htm">
+	<description>
+Try the help link, you should see the concepts for the help system.
+	</description>
+	<subitem label="sub 1">
+		<perform-when condition="${pattern}">
+			<action
+				when="Factory"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.FactoryCustomizeAction"/>
+			<action
+				when="Singleton"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.SingletonCustomizeAction"/>
+			<action
+				when="Visitor"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.VisitorCustomizeAction"/>
+		</perform-when>
+	</subitem>
+	<subitem label="sub 2" skip="false">
+		<perform-when condition="${pattern}">
+			<action
+				when="Factory"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.FactoryCustomizeAction"/>
+			<action
+				when="Singleton"
+				confirm="true"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.SingletonCustomizeAction"/>
+			<action
+				when="Visitor"
+				confirm="false"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.VisitorCustomizeAction"/>
+		</perform-when>
+	</subitem>
+	<subitem label="sub 3" skip="true">
+		<perform-when condition="${pattern}">
+			<action
+				when="Factory"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.FactoryCustomizeAction"/>
+			<action
+				when="Singleton"
+				confirm="false"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.SingletonCustomizeAction"/>
+			<action
+				when="Visitor"
+				confirm="true"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.VisitorCustomizeAction"/>
+		</perform-when>
+	</subitem>
+</item>
+
+	<item
+		title="Customize your pattern">
+		<description>
+Now that you have chosen the pattern that you would like to create, customize your options.
+		</description>
+	<conditional-subitem condition="${pattern}">
+		<subitem
+			when="Factory"
+			label="Customize the Factory Pattern"
+			skip="true">
+			<perform-when condition="${pattern}">
+				<!-- The "when"  are set incorrectly to ensure the perform when is working. -->
+				<action
+					when="Singleton"
+					pluginId="org.eclipse.ua.tests"
+					class="org.eclipse.ui.examples.cheatsheets.pattern.actions.FactoryCustomizeAction"/>
+				<action
+					when="Visitor"
+					confirm="false"
+					pluginId="org.eclipse.ua.tests"
+					class="org.eclipse.ui.examples.cheatsheets.pattern.actions.SingletonCustomizeAction"/>
+				<action
+					when="Factory"
+					confirm="true"
+					pluginId="org.eclipse.ua.tests"
+					class="org.eclipse.ui.examples.cheatsheets.pattern.actions.VisitorCustomizeAction"/>
+			</perform-when>
+		</subitem>
+		<subitem
+			when="Singleton"
+			label="Customize the Singleton Pattern"
+			skip="false">
+			<action
+				confirm="true"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.SingletonCustomizeAction"/>
+		</subitem>
+		<subitem
+			when="Visitor"
+			label="Customize the Visitor Pattern"
+			skip="true">
+			<action
+				confirm="false"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.VisitorCustomizeAction"/>
+		</subitem>
+	</conditional-subitem>
+	</item>
+
+	<item
+		title="Customize your pattern">
+		<description>
+Now that you have chosen the pattern that you would like to create, customize your options.
+		</description>
+	<repeated-subitem values="${files}">
+		<subitem label="Create class ${this}">
+			<perform-when condition="${pattern}">
+				<!-- The "when"  are set incorrectly to ensure the perform when is working. -->
+				<action
+					when="Singleton"
+					pluginId="org.eclipse.ua.tests"
+					class="org.eclipse.ui.examples.cheatsheets.pattern.actions.FactoryCustomizeAction"/>
+				<action
+					when="Visitor"
+					confirm="false"
+					pluginId="org.eclipse.ua.tests"
+					class="org.eclipse.ui.examples.cheatsheets.pattern.actions.SingletonCustomizeAction"/>
+				<action
+					when="Factory"
+					confirm="true"
+					pluginId="org.eclipse.ua.tests"
+					class="org.eclipse.ui.examples.cheatsheets.pattern.actions.VisitorCustomizeAction"/>
+			</perform-when>
+		</subitem>
+	</repeated-subitem>
+	</item>
+
+<item
+	title="All done!">
+	<description>
+Did the test work?
+	</description>
+</item>
+
+</cheatsheet>

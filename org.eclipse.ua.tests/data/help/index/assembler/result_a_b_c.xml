@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2007 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+<index><entry keyword="keyword1">
+      
+   <entry keyword="keyword2">
+         
+      <topic href="/org.eclipse.ua.tests/topic2.html" label="topic2"/></entry></entry><entry keyword="keyword3">
+      
+   <topic href="/org.eclipse.ua.tests/topic3.html" label="topic3"/><topic href="/org.eclipse.ua.tests/topic3b.html" label="topic3b"/><entry keyword="keyword9">
+         
+      <topic href="/org.eclipse.ua.tests/topic9.html" label="topic9"/></entry></entry><entry keyword="keyword4">
+      
+   <topic href="/org.eclipse.ua.tests/topic4.html" label="topic4"/></entry><entry keyword="keyword5">
+      
+   <topic href="/org.eclipse.ua.tests/topic5.html" label="topic5"/></entry><entry keyword="keyword6">
+      
+      
+   <entry keyword="keyword7">
+         
+      <topic href="/org.eclipse.ua.tests/topic7.html" label="topic7"/></entry><entry keyword="keyword8">
+         
+         
+      <topic href="/org.eclipse.ua.tests/topic8a.html" label="topic8a"/><topic href="/org.eclipse.ua.tests/topic8b.html" label="topic8b"/></entry></entry></index>

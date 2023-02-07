@@ -1,0 +1,193 @@
+Intro Model Content:
+======================
+
+Model has valid config = true
+Presentation type = 2
+Home page id = dynamic1
+Number of pages (not including Root Page) = 5
+Number of shared groups = 0
+Number of unresolved extensions = 0
+
+HOME PAGE: 
+--------------
+	is dynamic= true
+	id = dynamic1
+	title = Dynamic Page 1
+	style = null
+	alt-style = null
+	url = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 2
+
+		TITLE: id = null
+				title = Dynamic Page 1
+				style-id = null
+		GROUP: id = null
+				label = null
+				children = 5
+				style-id = null
+						LINK: id = null
+								label = Dynamic Page 2
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=dynamic2
+								style-id = null
+						LINK: id = null
+								label = Dynamic Page 3
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=dynamic3
+								style-id = null
+						LINK: id = null
+								label = Static Page 1
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=static1
+								style-id = null
+						LINK: id = null
+								label = Static Page 2
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=static2
+								style-id = null
+						LINK: id = null
+								label = Static Page 3
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=static3
+								style-id = null
+
+PAGE id = dynamic2
+----------
+	title = Dynamic Page 2
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 2
+
+		TITLE: id = null
+				title = Dynamic Page 2
+				style-id = null
+		GROUP: id = null
+				label = null
+				children = 5
+				style-id = null
+						LINK: id = null
+								label = Dynamic Page 1
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=dynamic1
+								style-id = null
+						LINK: id = null
+								label = Dynamic Page 3
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=dynamic3
+								style-id = null
+						LINK: id = null
+								label = Static Page 1
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=static1
+								style-id = null
+						LINK: id = null
+								label = Static Page 2
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=static2
+								style-id = null
+						LINK: id = null
+								label = Static Page 3
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=static3
+								style-id = null
+
+PAGE id = dynamic3
+----------
+	title = Dynamic Page 3
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 2
+
+		TITLE: id = null
+				title = Dynamic Page 3
+				style-id = null
+		GROUP: id = null
+				label = null
+				children = 5
+				style-id = null
+						LINK: id = null
+								label = Dynamic Page 1
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=dynamic1
+								style-id = null
+						LINK: id = null
+								label = Dynamic Page 2
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=dynamic2
+								style-id = null
+						LINK: id = null
+								label = Static Page 1
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=static1
+								style-id = null
+						LINK: id = null
+								label = Static Page 2
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=static2
+								style-id = null
+						LINK: id = null
+								label = Static Page 3
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=static3
+								style-id = null
+
+PAGE id = static1
+----------
+	title = null
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 0
+
+
+PAGE id = static2
+----------
+	title = null
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 0
+
+
+PAGE id = static3
+----------
+	title = null
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 0
+
+
+Model Flag Tests: 
+----------------
+		First page children are: 
+			Groups: 1
+			Links: 0
+			Texts: 0
+			HTMLs: 0
+			Images: 0
+			Includes: 0
+			Page Titles: 1
+			Page Heads: 0
+			Model Elements: 2
+			Containers: 1
+			All Pages: 0
+			Anchors: 0
+			Content providers: 0
+			Elements with Text child(AbstractTextElemets): 0
+			Groups and Links: 1

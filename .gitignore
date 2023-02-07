@@ -25,3 +25,19 @@ target/
 .DS_Store
 .polyglot.*
 pom.tycho
+
+# Entries from UA, not yet cleaned up after the merge
+*/bin/
+*/bin2/
+*~
+*.rej
+*.bak
+javacore.*
+heapdump.*
+core.*
+Snap.*
+
+# maven
+/*/target/
+.DS_Store
+/target/

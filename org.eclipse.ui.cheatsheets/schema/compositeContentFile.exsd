@@ -1,0 +1,266 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.ui.cheatsheets">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.ui.cheatsheets" id="composite_schema" name="Composite Cheat Sheets"/>
+      </appInfo>
+      <documentation>
+         The schema definition for a composite cheat sheet content file. A composite cheat sheet consists of a set of tasks organized into task groups. Each task can be a simple cheat sheet or a user contributed task kind.
+
+(&lt;a href=&quot;cheatSheetContentFileSpec.exsd&quot;&gt;machine readable XML schema.&lt;/a&gt;
+      </documentation>
+   </annotation>
+
+   <element name="compositeCheatsheet">
+      <annotation>
+         <documentation>
+            The root element of a composite cheatsheet
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice>
+            <element ref="taskGroup"/>
+            <element ref="task"/>
+         </choice>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name of the composite cheat sheet which will be displayed in large font when the composite cheat sheet is opened.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="taskGroup">
+      <annotation>
+         <documentation>
+            A task group represents a collection of related tasks. If the kind is &quot;choice&quot; only one of the child tasks need to be completed. If the kind is &quot;set&quot; or &quot;sequence&quot; all children must be completed.
+
+Note that the child elements &amp;lt;task&amp;gt;, &amp;lt;taskGroup&amp;gt;, &amp;lt;intro&amp;gt;, &amp;lt;onCompletion&amp;gt; and &amp;lt;dependsOn&amp;gt; may occur in any order. The order of the &amp;lt;task&amp;gt; and &amp;lt;taskGroup&amp;gt; elements determines the order in which they will be displayed and in the case of a sequence the order in which they must be performed.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <choice minOccurs="1" maxOccurs="unbounded">
+               <element ref="task"/>
+               <element ref="taskGroup"/>
+            </choice>
+            <element ref="intro" minOccurs="0" maxOccurs="1"/>
+            <element ref="onCompletion" minOccurs="0" maxOccurs="1"/>
+            <element ref="dependsOn" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="kind" use="default" value="set">
+            <annotation>
+               <documentation>
+                  The kind of this task group which can be &quot;set&quot;, &quot;sequence&quot; or &quot;choice&quot;. If the kind is set or sequence this task group is complete when all of its child tasks/task groups have been completed. In addition the subtasks of a sequence must be completed in order. A choice is complete when any of its subtasks has been completed.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="set">
+                  </enumeration>
+                  <enumeration value="sequence">
+                  </enumeration>
+                  <enumeration value="choice">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name of this task group which will be displayed in the task explorer.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  An id for this task group which is required if this task group is referenced by a dependsOn element.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="skip" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  If true this group of tasks may be skipped.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="task">
+      <annotation>
+         <documentation>
+            A leaf task within a composite cheat sheet. A task does not have children, but it does have a task editor which shows in the lower/right hand pane of the cheat sheet view. The task kind determines which task editor will be opened, a task kind of &quot;cheatsheet&quot; represents a simple cheatsheet. Other task kinds may be contributed.
+
+Note that the child elements &amp;lt;intro&amp;gt;, &amp;lt;onCompletion&amp;gt;, &amp;lt;param&amp;gt; and &amp;lt;dependsOn&amp;gt; may occur in any order.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="intro" minOccurs="0" maxOccurs="1"/>
+            <element ref="onCompletion" minOccurs="0" maxOccurs="1"/>
+            <element ref="param" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="dependsOn" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="kind" type="string" use="default" value="set">
+            <annotation>
+               <documentation>
+                  The task kind. A task kind of &quot;cheatsheet&quot; represents a simple cheatsheet, other task kinds can be contributed using the extension point org.eclipse.ui.cheatsheets.cheatSheetContent.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name of this task which will be displayed in the task explorer.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  An id for this task group which is required if this task group is referenced by a dependsOn element.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="skip" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  If true this task may be skipped.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="param">
+      <annotation>
+         <documentation>
+            A parameter to a task within a composite cheatsheet. Each parameter has a name and value, both of which are strings. A task may have any number of parameters, two parameters for a single task may not share the same name.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name of this parameter. A task of kind=&quot;cheatsheet&quot; can have the following parameters:
+
+&lt;p&gt;id: The id of a cheat sheet which has been registered using the extension point org.eclipse.ui.cheatsheets.cheatSheetContent. This identifies the cheatsheet which will be associated with this task. Either the id or the path parameter (but not both) should be specified.&lt;/p&gt;
+
+&lt;p&gt;path: The URL of a cheat sheet content file. This may be an absolute URL, or relative to the content file for the composite cheat sheet. If both id and path are specified the path will be used to locate the content file and the id parameter will be ignored.&lt;/p&gt; 
+
+&lt;p&gt;showIntro: A boolean parameter with default value of true. If &quot;false&quot; the cheat sheet when started will initially show the first step rather than the introduction.&lt;/p&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The value of this parameter.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="intro" type="string">
+      <annotation>
+         <documentation>
+            Contains the text which will be displayed before this task has been started. May contain 
+&lt;a href=&quot;../../../org.eclipse.platform.doc.isv/guide/forms_controls_text_markup.htm&quot;&gt;form text markup&lt;/a&gt;.
+         </documentation>
+      </annotation>
+   </element>
+
+   <element name="onCompletion" type="string">
+      <annotation>
+         <documentation>
+            Contains the text which will be displayed in the completion panel for this task. May contain 
+&lt;a href=&quot;../../../org.eclipse.platform.doc.isv/guide/forms_controls_text_markup.htm&quot;&gt;form text markup&lt;/a&gt;.
+         </documentation>
+      </annotation>
+   </element>
+
+   <element name="dependsOn">
+      <annotation>
+         <documentation>
+            Creates a dependency between two tasks or subtasks.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="task" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of the task or task group which must be completed before this task can be started.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.2
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2006, 2007 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

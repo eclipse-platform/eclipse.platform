@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.ui.cheatsheets">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.ui.cheatsheets" id="cheatSheetItemExtension" name="Cheat Sheet Item Extension"/>
+      </appInfo>
+      <documentation>
+         This extension point should be used when an extra button needs to be added to a step in the cheat sheet.
+You can put a new attribute into the &quot;item&quot; tag in the cheat sheet content file, and when that value is read by the cheat sheet framework,
+it will check to see if there is a class registered through this extension point that will handle this attribute.  The attribute name found in the
+cheat sheet content file is matched against all of the values found in the &quot;itemAttribute&quot; attribute of all of the registered cheatsheetItemExtension point implementations.  If there is a match, the class specified to handle this item attribute is loaded by the cheat sheet framework and is called to handle the attribute specified in the cheat sheet content file.
+
+After having parsed the value of the item attribute, the class remains available to the cheat sheets framework.  When the item is rendered for the cheat sheets view, the class is once again called to handle the addition of components to a Composite.  The items that are added to this composite are displayed in the cheat sheet step (currently, beside the help icon).  It is displayed only for the step that is described by the &quot;item&quot; tag that the attribute appeared in the cheat sheet content file.
+
+The suggested use of this extension point is adding a small (16x16) button with a graphic that opens a dialog box when pressed.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="itemExtension"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="itemExtension">
+      <annotation>
+         <appInfo>
+            <meta.element labelAttribute="name"/>
+         </appInfo>
+         <documentation>
+            Use this item extension to add elements to cheat sheet steps.  You can use this extension point to add icons and buttons (currently, beside the
+help icon) for a step in the cheat sheet.
+You specify the name of an attribute that you will put into the cheat sheet item tag.  You also specify a class that will handle the parsing of the attribute value from the cheat sheet content file when the cheat sheet is loaded.  The attribute valuemust be a string. The specified class must subclass &lt;code&gt;org.eclipse.ui.cheatsheets.AbstractItemExtensionElement&lt;/code&gt;.  After the cheat sheet content file is parsed and loaded, the class specified in the extension point is called again through the interface to add graphics or buttons to the step in the cheat sheet (currently, next to the help button).
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="itemAttribute" type="string" use="required">
+            <annotation>
+               <documentation>
+                  This attribute value must be the string value of an attribute name that is put into an item tag in the cheat sheet content file.  If this attribute string matches an attribute parsed from the item tag in the cheat sheet content file, the class specified will be loaded and will be called to parse the full value of the attribute using the w3 DOM specification.  It will later be called to add controls to a Composite, and the added components (usually graphics or buttons) will appear in the step of the cheat sheet for the item specified (currently, beside the help icon for that step).
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The fully qualified class name of the class that subclasses &lt;code&gt;org.eclipse.ui.cheatsheets.AbstractItemExtensionElement&lt;/code&gt; to handle unknown attributes in the cheat sheet content file and extend the steps in the cheat sheet. The class must be public, and have a public 1-argument constructor that accepts the attribute name
+(a &lt;code&gt;String&lt;/code&gt;).
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.ui.cheatsheets.AbstractItemExtensionElement"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         Here is an example implementation of this extension point:
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.ui.cheatsheets.cheatSheetItemExtension&quot;&gt;
+ &lt;itemExtension
+   itemAttribute=&quot;xyzButton&quot;
+   class=&quot;com.example.HandleParsingAndAddButton&quot;&gt;
+ &lt;/itemExtension&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+And here is the item attribute for that extension:
+&lt;p&gt;
+&lt;pre&gt;
+&lt;item title=&quot;XYZ Title&quot; xyzButton=&quot;/icon/button.gif&quot;/&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+Note that the value of the attribute in the item tag can be ANYTHING. It can be anything because
+the class that parses that attribute is the class HandleParsingAndAddButton, which in this example parses
+a string /icon/button.gif from the attribute.  It later will use that info to load the gif and use it as the icon
+for a new button.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         See the Javadoc information for org.eclipse.ui.cheatsheets.AbstractItemExtensionElement for API details.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         There is no supplied implementation at this time.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2004, 2006 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

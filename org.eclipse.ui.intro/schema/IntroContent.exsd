@@ -1,0 +1,874 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="Intro Content File XML Format" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="Intro Content File XML Format" id="." name="Intro Content File XML Format"/>
+      </appinfo>
+      <documentation>
+         This document describes the intro content file structure as a series of DTD fragments.
+      </documentation>
+   </annotation>
+
+   <element name="introContent">
+      <annotation>
+         <documentation>
+            The introContent element defines the body of the intro content file.  The content file is made up of pages, shared groups that can be included in multiple pages, extensions to anchor points defined in other configurations, or replacements of existing elements.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice>
+            <choice minOccurs="1" maxOccurs="unbounded">
+               <element ref="page"/>
+               <element ref="group"/>
+            </choice>
+            <choice>
+               <element ref="extensionContent"/>
+               <element ref="replacementContent"/>
+            </choice>
+         </choice>
+      </complexType>
+   </element>
+
+   <element name="page">
+      <annotation>
+         <documentation>
+            &lt;p&gt;
+This element is used to describe a page to be displayed. The intro can display both dynamic and static pages. Content for dynamic pages is generated from the subelements of the page, described below. The style or alt-style will be applied depending on the presentation. The styles can be further enhanced by referencing the id or class-id.
+&lt;/p&gt;
+&lt;p&gt;
+Static pages allow for the reuse of existing HTML documents within one&apos;s introduction, and can be linked to from any static or dynamic page. Static pages are not defined in a page element, they are simply html files that can be linked to by other pages.
+&lt;/p&gt;
+&lt;p&gt;
+The home page, whose id is specified in the presentation element of the intro config extension point, can have a url indicating that it is a static page.  If no url is specified then the home page is assumed to be dynamic.  All other pages described using the page element are dynamic. Also note that when the SWT presentation is used and a static page is to be displayed, an external brower is launched and the current page remains visible.
+&lt;/p&gt;
+&lt;p&gt;
+The subelements used in a dynamic page are as follows: A &lt;b&gt;group&lt;/b&gt; subelement is used to group related content and apply style across the grouped content. A &lt;b&gt;link&lt;/b&gt; subelement defines a link which can be used to link to a static or dynamic page and run an intro action/command.  A link is normally defined at the page level to navigate between main pages versus links within a page. A &lt;b&gt;text&lt;/b&gt; subelement defines textual content at the page level. A &lt;b&gt;head&lt;/b&gt; subelement is only applicable for the Web based presentation and allows for additional html to be added to the HTML &lt;b&gt;head&lt;/b&gt; section. This is useful for adding java scripts or extra style sheets. An &lt;b&gt;img&lt;/b&gt; subelement defines image content for the page level. An &lt;b&gt;include&lt;/b&gt; subelement allows for reuse of any element other than a page. An &lt;b&gt;html&lt;/b&gt; subelement is only applicable for the Web based presentation and allows for the embedding or inclusion of html into the page&apos;s content. Embedding allows for a fully defined html file to be embeded within an HTML &lt;b&gt;object&lt;/b&gt; by referencing the html file. Inclusion allows for including an html snippet directly from an html file. A &lt;b&gt;title&lt;/b&gt; subelement defines the title of the page.  An &lt;b&gt;anchor&lt;/b&gt; subelement defines a point where external contributions can be made by an &amp;lt;extensionContent&amp;gt; element.
+&lt;/p&gt;
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="group"/>
+            <element ref="link"/>
+            <element ref="text"/>
+            <element ref="head"/>
+            <element ref="img"/>
+            <element ref="include"/>
+            <element ref="html"/>
+            <element ref="title"/>
+            <element ref="anchor"/>
+            <element ref="contentProvider"/>
+         </choice>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A unique name that can be used to identify this page.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="url" type="string">
+            <annotation>
+               <documentation>
+                  The optional relative path to an HTML file. When using the Web based presentation, this HTML file will be displayed instead of any content defined for this page.  This attribute is only applicable to the home page, which is identified in the presentation element of the intro config extension point. It is ignored for all other pages.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="style" type="string">
+            <annotation>
+               <documentation>
+                  A relative path to a CSS file which is applied to the page only when using the Web based presentation. The path is relative to the location of this xml content file. &lt;br &gt;
+Since 3.1, styles can also be a comma separated list of styles. These styles will be injected into the HTML HEAD element in the order in which they are listed in the style attribute.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="alt-style" type="string">
+            <annotation>
+               <documentation>
+                  A relative path to a SWT presentation properies file which is applied to the page only when using the SWT based presentation. The path is relative to the location of this xml content file. &lt;br &gt;
+
+Since 3.1, styles can also be a comma separated list of styles. These styles will be used when creating the SWT presentation of the welcome page.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="filteredFrom">
+            <annotation>
+               <documentation>
+                  an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="swt">
+                  </enumeration>
+                  <enumeration value="html">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="content" type="string">
+            <annotation>
+               <documentation>
+                  an optional attribute which can define the location of an introContent.xml file that represents the content of this page. When this attribute is defined, all children and attributes in this page element, except id, are ignored. This is because the content of this page is now assumed to reside in the xml file pointed to by the content file attribute. When resolving to the content of this file, the page with an id that matches the id defined in this page element is chosen.
+This seperation of pages can be used when performance is an issue, as the content of a page is now loaded more lazily.&lt;br &gt;
+
+Since 3.1, if the content of the external file is XHTML 1.0, then the page is rendered as is.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="style-id" type="string">
+            <annotation>
+               <documentation>
+                  A means to classifiy the page into a given category so that a common style may be applied.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="shared-style" type="boolean">
+            <annotation>
+               <documentation>
+                  a boolean flag that controls the addition of the shared style into this page&apos;s list of styles. If &lt;code&gt;true&lt;/code&gt; (the default), the shared style is added to this page&apos;s styles. If &lt;code&gt;false&lt;/code&gt;, the shared style defined in the Intro configuration will not be injected into the styles of this page.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="bgImage" type="string">
+            <annotation>
+               <documentation>
+                  an optional URL of the image to use as a background for this group
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="group">
+      <annotation>
+         <documentation>
+            Used to group related content, content that should have similar style applied, or content that will be included together in other pages.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="group"/>
+            <element ref="link"/>
+            <element ref="text"/>
+            <element ref="img"/>
+            <element ref="include"/>
+            <element ref="html"/>
+            <element ref="anchor"/>
+            <element ref="contentProvider"/>
+         </choice>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  unique identifier of the group
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string">
+            <annotation>
+               <documentation>
+                  a label or heading for this group
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="style-id" type="string">
+            <annotation>
+               <documentation>
+                  A means to classifiy this group into a given category so that a common style may be applied.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="filteredFrom">
+            <annotation>
+               <documentation>
+                  an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="swt">
+                  </enumeration>
+                  <enumeration value="html">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="computed" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  if &lt;code&gt;true&lt;/code&gt;, the children of this group will be provided by the intro configurer at run time. It is advised not to define any children statically in this case.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="bgImage" type="string">
+            <annotation>
+               <documentation>
+                  an optional URL of the image to use as a background for this group
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="expandable" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  specifies whether or not the group can be expanded and collapsed. Defaults to false if not specified. If true, the expanded attribute will be consulted to determine whether or not the group should be expanded by default or not.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="expanded" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  specifies whether the expandable group should be expanded by default or not. Defaults to false (collapsed) if not specified. This only applies to expandable groups (where expandable was set to true). Has no effect otherwise.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="head">
+      <annotation>
+         <documentation>
+            Direct HTML to include in a page&apos;s HEAD content area. It allows for additional html to be added to the HTML HEAD section. This is useful for adding java srcipts or extra styles sheets. If the content contains substitution segments of the form $plugin:plugin_id$ then they will be replaced with the absolute path to the plugin with id plugin_id.
+This markup is only to be used with an HTML based intro part implementation. It is simply ignored in the case of a UI Forms implementation. A page can have more than one head element. An implementation can have one and only one head element (since it is a shared across all pages).
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="src" type="string" use="required">
+            <annotation>
+               <documentation>
+                  relative or absolute URL to a file containing HTML to include directly into the HTML head section. If the content contains substitution segments of the form $plugin:plugin_id$ then they will be replaced with the absolute path to the plugin with id plugin_id.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="encoding" type="string">
+            <annotation>
+               <documentation>
+                  an optional attribute to specify the encoding of the inlined file containing the head snippet. Default is UTF-8. Since 3.0.1
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="title">
+      <annotation>
+         <documentation>
+            a snippet of text that can optionally contain escaped HTML tags. It is only used as a Page Title, and so a given page can have a maximum of one title element.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  unique identifier of this title.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="style-id" type="string">
+            <annotation>
+               <documentation>
+                  A means to classifiy this element into a given category so that a common style may be applied
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="filteredFrom">
+            <annotation>
+               <documentation>
+                  an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="swt">
+                  </enumeration>
+                  <enumeration value="html">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="link">
+      <annotation>
+         <documentation>
+            Can link to a static HTML file, an external web site, or can run an Intro URL action.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="text" minOccurs="0" maxOccurs="1"/>
+            <element ref="img" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="url" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A valid URL to an external web site, a static html file, or an Intro URL that represents an Intro action. All intro URLs have the following form:  http://org.eclipse.ui.intro/&amp;lt;action name&amp;gt;?param1=value1&amp;amp;param2=value2 and will be processed by the intro framework.&lt;br&gt;
+The predefined actions will be described using this format:&lt;br&gt;
+&lt;p style=&quot;margin-left:15px;&quot;&gt;
+&lt;b&gt;action name&lt;/b&gt; - descripton of action&lt;br&gt;
+&lt;i&gt;action parameter1&lt;/i&gt; - description of parameter&lt;br&gt;
+&lt;i&gt;action parameter2 (optional)&lt;/i&gt; - description of parameter&lt;br&gt;
+&lt;i&gt;action parameter3 (optional) = (&quot;true&quot; 
+ &quot;false&quot;) &quot;false&quot;&lt;/i&gt; - description of parameter, choice of either true or false and &quot;false&quot; is the default&lt;br&gt;
+&lt;/p&gt;
+
+&lt;br&gt;
+The following predefined actions are included in the intro framework:
+&lt;p style=&quot;margin-left:15px;&quot;&gt;
+&lt;b&gt;close&lt;/b&gt; - closes the intro part&lt;br&gt;
+no parameters required&lt;br&gt;
+&lt;br&gt;
+
+&lt;b&gt;navigate&lt;/b&gt; - navigate through the intro pages in a given direction or return to the home page&lt;br&gt;
+&lt;i&gt;direction = (&quot;backward&quot; 
+ &quot;forward&quot; 
+ &quot;home&quot;)&lt;/i&gt; - specifies the direction to navigate&lt;br&gt;
+&lt;br&gt;
+
+&lt;b&gt;openBrowser&lt;/b&gt; - open the url in an external browser. Since 3.1, this action relies on the workbench Browser support. This means that any user preferences set for the browser will be honored.&lt;br&gt;
+&lt;i&gt;url&lt;/i&gt; - a valid URL to an external web site or a local HTML file&lt;br&gt;
+&lt;i&gt;pluginId (optional)&lt;/i&gt; - if the url is relative, then it is relative to a plugin. Specify here the id of the plug-in containing the file.&lt;br&gt;
+&lt;br&gt;
+
+&lt;b&gt;openURL&lt;/b&gt; - open the url embedded in the Welcome page. In the case of SWT presentation, the url is displayed in an external browser (similar to the openBrowser action above). since 3.1&lt;br&gt;
+&lt;i&gt;url&lt;/i&gt; - a valid URL to an external web site or to a local HTML file&lt;br&gt;
+&lt;i&gt;pluginId (optional)&lt;/i&gt; - if the url is relative, then this specifies the id of the plug-in containing the file.&lt;br&gt;
+&lt;br&gt;
+
+&lt;b&gt;runAction&lt;/b&gt; - runs the specified action&lt;br&gt;
+&lt;i&gt;class&lt;/i&gt; - the fully qualified class name of the class that implements one of &lt;code&gt;org.eclipse.ui.intro.config.IIntroAction&lt;/code&gt;,
+               &lt;code&gt;org.eclipse.jface.action.IAction&lt;/code&gt;, or &lt;code&gt;org.eclipse.ui.IActionDelegate&lt;/code&gt;&lt;br&gt;
+&lt;i&gt;pluginId&lt;/i&gt; - The id of the plug-in which contains the class.&lt;br&gt;
+&lt;i&gt;standby (optional) = (&quot;true&quot; 
+ &quot;false&quot;
+ &quot;full&quot;
+ &quot;standby&quot;
+ &quot;launchbar&quot;
+ &quot;close&quot;) &quot;false&quot;&lt;/i&gt; - indicate whether to set the intro into fully visible mode (&quot;false&quot; or &quot;full&quot;), into standby mode (&quot;true&quot; or &quot;standby&quot;), into the launchbar (&quot;launchbar&quot;), or close the intro after executing the action&lt;br&gt;
+additional parameters - any additional parameters are passed to actions that implement &lt;code&gt;org.eclipse.ui.intro.config.IIntroAction&lt;/code&gt;&lt;br&gt;
+&lt;br&gt;
+
+&lt;b&gt;execute&lt;/b&gt; - executes the specified command.  See the &lt;code&gt;serialize()&lt;/code&gt; method on &lt;code&gt;org.eclipse.core.command.ParameterizedCommand&lt;/code&gt; for details of the command serialization format. Since 3.2.&lt;br&gt;
+&lt;i&gt;command&lt;/i&gt; - a serialized &lt;code&gt;ParameterizedCommand&lt;/code&gt;&lt;br&gt;
+&lt;i&gt;standby (optional) = (&quot;true&quot; 
+ &quot;false&quot;
+ &quot;full&quot;
+ &quot;standby&quot;
+ &quot;launchbar&quot;
+ &quot;close&quot;) &quot;false&quot;&lt;/i&gt; - indicate whether to set the intro into fully visible mode (&quot;false&quot; or &quot;full&quot;), into standby mode (&quot;true&quot; or &quot;standby&quot;), into the launchbar (&quot;launchbar&quot;), or close the intro after executing the action&lt;br&gt;
+&lt;br&gt;
+
+&lt;b&gt;setStandbyMode&lt;/b&gt; - sets the state of the intro part&lt;br&gt;
+&lt;i&gt;standby = (&quot;true&quot; 
+ &quot;false&quot;
+ &quot;full&quot;
+ &quot;standby&quot;
+ &quot;launchbar&quot;
+ &quot;close&quot;) &quot;false&quot;&lt;/i&gt; - indicate whether to set the intro into fully visible mode (&quot;false&quot; or &quot;full&quot;), into standby mode (&quot;true&quot; or &quot;standby&quot;), into the launchbar (&quot;launchbar&quot;), or close the intro after executing the action&lt;br&gt;
+&lt;br&gt;
+
+&lt;b&gt;showHelp&lt;/b&gt; - Open the help system.&lt;br&gt;
+no parameters required&lt;br&gt;
+&lt;br&gt;
+
+&lt;b&gt;showHelpTopic&lt;/b&gt; - Open a help topic.&lt;br&gt;
+&lt;i&gt;id&lt;/i&gt; - the URL of the help resource. If the URL contains an anchor the sequence %23 should be used in place of the #&apos; character. (See Javadoc for &lt;code&gt;org.eclipse.ui.help.WorkbenchHelp.displayHelpResource)&lt;/code&gt;&lt;br&gt;
+&lt;i&gt;embed (optional) = (&quot;true&quot; 
+ &quot;false&quot;)&lt;/i&gt; &quot;true&quot; - indicates that the help resource needs to be displayed embedded as part of the Welcome pages. Default is false. This flag is simply ignored in the case of the SWT presentation. This is equivalent to openURL() command, but for Help System topics. The embedded URL occupies the full real-estate of the current page. since 3.1&lt;br&gt;
+&lt;i&gt;embedTarget (optional)&lt;/i&gt; - the path to a div in the current Welcome page that will hold the content of the Help topic. If specified, then &lt;i&gt;embed&lt;/i&gt; is true by default and the embedded URL is inserted inside the div with the specified path. The path is relative to the page and so it should not start with the page id. The children of the div are replaced by the content of the URL. Only one div per page can be used as an embed target. This flag is simply ignored in the case of the SWT presentation. It is also unsupported when using XHTML as intro content. since 3.1&lt;br&gt;
+&lt;br&gt;
+
+&lt;b&gt;showMessage&lt;/b&gt; - Displays a message to the user using a standard information dialog.&lt;br&gt;
+&lt;i&gt;message&lt;/i&gt; - the message to show the user&lt;br&gt;
+&lt;br&gt;
+
+&lt;b&gt;showStandby&lt;/b&gt; - Sets the intro part to standby mode and shows the standbyContentPart with the given input&lt;br&gt;
+&lt;i&gt;partId&lt;/i&gt; - the id of the standbyContentPart to show&lt;br&gt;
+&lt;i&gt;input&lt;/i&gt; - the input to set on the standbyContentPart&lt;br&gt;
+&lt;br&gt;
+
+&lt;b&gt;showPage&lt;/b&gt; - show the intro page with the given id&lt;br&gt;
+&lt;i&gt;id&lt;/i&gt; - the id of the intro page to show&lt;br&gt;
+&lt;i&gt;standby (optional) = (&quot;true&quot; 
+ &quot;false&quot;
+ &quot;full&quot;
+ &quot;standby&quot;
+ &quot;launchbar&quot;
+ &quot;close&quot;) &quot;false&quot;&lt;/i&gt; - indicate whether to set the intro into fully visible mode (&quot;false&quot; or &quot;full&quot;), into standby mode (&quot;true&quot; or &quot;standby&quot;), into the launchbar (&quot;launchbar&quot;), or close the intro after executing the action&lt;br&gt;
+&lt;br&gt;
+
+If any of the parameters passed to these actions have special characters (ie: characters that are illegal in a URL), then they should be encoded using UTF-8 url encoding. To receive these parametrs in there decoded state a special parameter, &lt;i&gt;decode = (&quot;true&quot; &quot;false&quot;)&lt;/i&gt;  can be used to force a decode of these parameters when the Intro framework processes them.&lt;br&gt;
+For example, the following Intro url: &lt;br&gt;&lt;i&gt;
+http://org.eclipse.ui.intro/showMessage?message=This+is+a+message&lt;/i&gt;&lt;br&gt;
+will process the message parameter as &quot;This+is+a+message&quot;&lt;br&gt;
+whereas&lt;br&gt;&lt;i&gt;
+http://org.eclipse.ui.intro/showMessage?message=This+is+a+message&amp;amp;amp;decode=true&lt;/i&gt;&lt;br&gt;
+will process the message parameter as &quot;This is a message&quot;.&lt;br&gt;
+
+&lt;br&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  A unique id that can be used to identify this link
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string">
+            <annotation>
+               <documentation>
+                  The text name of this link
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="style-id" type="string">
+            <annotation>
+               <documentation>
+                  A means to classifiy this link into a given category so that a common style may be applied.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="filteredFrom">
+            <annotation>
+               <documentation>
+                  an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="swt">
+                  </enumeration>
+                  <enumeration value="html">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="text">
+      <annotation>
+         <documentation>
+            a snippet of text that can optionally contain escaped HTML tags. It can include b and li tags. It can also contain anchors for urls. 
+If multiple paragraphs are needed, then the text can be divided into multiple sections each begining and ending with the p tag.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  unique identifier of this text.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="style-id" type="string">
+            <annotation>
+               <documentation>
+                  A means to classify this element into a given category so that a common style may be applied
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="filteredFrom">
+            <annotation>
+               <documentation>
+                  an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="swt">
+                  </enumeration>
+                  <enumeration value="html">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="img">
+      <annotation>
+         <documentation>
+            An image that represents intro content and not presentation (as opposed to decoration images defined in styles).
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="src" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the file to load the image from
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  unique identifier of this image
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="alt" type="string">
+            <annotation>
+               <documentation>
+                  the alternative text to use when the image can not be loaded and as tooltip text for the image.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="style-id" type="string">
+            <annotation>
+               <documentation>
+                  A means to classifiy this image into a given category so that a common style may be applied.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="filteredFrom">
+            <annotation>
+               <documentation>
+                  an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="swt">
+                  </enumeration>
+                  <enumeration value="html">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="html">
+      <annotation>
+         <documentation>
+            direct HTML to include in the page either by embedding the entire document, or inlining a snippet of HTML in-place. A fallback image or text must be defined for alternative swt presentation rendering. If the content contains substitution segments of the form $plugin:plugin_id$ then they will be replaced with the absolute path to the plugin with id plugin_id.
+&lt;br&gt;
+Embedding allows for a fully defined html file to be embedded within the dynamic page&apos;s content.  An HTML &lt;b&gt;object&lt;/b&gt; element is created that references the html file. 
+&lt;br&gt;
+Inclusion allows for including an html snippet directly from a file into the dynamic html page.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice>
+            <element ref="img"/>
+            <element ref="text"/>
+         </choice>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  unique identifier of this HTML element
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="src" type="string" use="required">
+            <annotation>
+               <documentation>
+                  relative or absolute URL to a file containing HTML. If the content contains substitution segments of the form $plugin:plugin_id$ then they will be replaced with the absolute path to the plugin with id plugin_id.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="type" use="required">
+            <annotation>
+               <documentation>
+                  if &apos;embed&apos;, a valid (full) HTML document will be embedded using HTML &apos;OBJECT&apos; tag. If &apos;inline&apos;, value of &apos;src&apos; will be treated as a snippet of HTML to emit &apos;in-place&apos;. (if type is not specified, this html object is ignored by the intro configuration).
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="inline">
+                  </enumeration>
+                  <enumeration value="embed">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="style-id" type="string">
+            <annotation>
+               <documentation>
+                  A means to classifiy this HTML element into a given category so that a common style may be applied.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="filteredFrom">
+            <annotation>
+               <documentation>
+                  an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="swt">
+                  </enumeration>
+                  <enumeration value="html">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="encoding" type="string">
+            <annotation>
+               <documentation>
+                  an optional attribute to specify the encoding of the inlined file (in the case where type=inline is specified). If not specified, the default is UTF-8. Since 3.0.1
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="include">
+      <annotation>
+         <documentation>
+            expands an element targeted by the given path and optional configId attributes. Path should uniquely address an element within the specified configuration. It could point to a shared group defined at the configuration level, or any element in a page.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="path" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the path that uniquely represents the target element within the configuration (e.g. page/group1/group2). It may be a group element, or any element that may be contained in a group. You can not include a page.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="configId" type="string">
+            <annotation>
+               <documentation>
+                  identifier of a configuration where the included element is defined. If specified, it is assumed that the element to be included is specified in another configuration, and not the enclosing configuration. In this case, that external config is loaded and the element is resolved from that new config. If not specified, enclosing (parent) configuration of this include is assumed.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="merge-style" type="boolean">
+            <annotation>
+               <documentation>
+                  if &lt;code&gt;true&lt;/code&gt;, style belonging to the page that owns the included element will be added to list of styles of the including page. If &lt;code&gt;false&lt;/code&gt; (the default), the including page is responsible for controlling properties of the included element.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="anchor">
+      <annotation>
+         <documentation>
+            an anchor is the element used to declare extensibility. It is a location in the configurtaion that allows for external contributions. Only anchors are valid target values for the path attribute in an extensionContent
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  unique id to identify this anchor.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="extensionContent">
+      <annotation>
+         <documentation>
+            The content to be added to the target anchor. Only one &lt;code&gt;extensionContent&lt;/code&gt; or &lt;code&gt;replacementContent&lt;/code&gt; is allowed in a given configExtension because if this extension could not be resolved (if the config could not be found, or the target anchor could not be found) then the pages and/or groups in the extension need to be ingnored.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="text"/>
+            <element ref="group"/>
+            <element ref="link"/>
+            <element ref="html"/>
+            <element ref="include"/>
+         </choice>
+         <attribute name="path" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the path that uniquely represents the path to an anchor. (e.g. page/group1/group2/anchorId) within the target configuration to be extended. It can only be an anchor which can be in any page or group, including shared groups at configuration level.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="style" type="string">
+            <annotation>
+               <documentation>
+                  A relative path to a CSS file which is applied to the page only when using the Web based presentation. The path is relative to the location of this xml content file. &lt;br&gt;
+
+Since 3.1, styles can also be a comma separated list of styles. These styles will be injected into the HTML HEAD element in the order in which they are listed in the style attribute.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="alt-style" type="string">
+            <annotation>
+               <documentation>
+                  A relative path to a SWT presentation properies file which is applied to the page only when using the SWT based presentation. The path is relative to the location of this xml content file. &lt;br&gt;
+
+Since 3.1, styles can also be a comma separated list of styles. These styles will be used when creating the SWT presentation of the welcome page.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="content" type="string">
+            <annotation>
+               <documentation>
+                  if content is defined, it is assumed that the extension content is defined in an external XHTML file. In that case the resource pointed to by this content attribute is loaded and the path attribute is now resolved in this external file. since 3.1
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  (since 3.2) a unique identifier of this extension required when used in conjunction with intro configurer.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  (since 3.2) a translatable name of this extension required when used in conjunction with intro configurer
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="replacementContent">
+      <annotation>
+         <documentation>
+            (since 3.3) The content to replace the target element. Only one &lt;code&gt;extensionContent&lt;/code&gt; or &lt;code&gt;replacementContent&lt;/code&gt; is allowed in a given configExtension because if this extension could not be resolved (if the config could not be found, or the target element could not be found) then the pages and/or groups in the extension need to be ignored.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="text"/>
+            <element ref="group"/>
+            <element ref="link"/>
+            <element ref="html"/>
+            <element ref="include"/>
+         </choice>
+         <attribute name="path" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the path that uniquely represents the path to the element to be replaced. (e.g. page/group1/group2/elementId) within the target configuration to be extended. To replace content contributed from an &lt;code&gt;extensionContent&lt;/code&gt;, you may use a path of the form &lt;code&gt;pageId/@extension_id/path_in_extension&lt;/code&gt; and it will be resolved to the specified extension.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="style" type="string">
+            <annotation>
+               <documentation>
+                  A relative path to a CSS file which is applied to the page only when using the Web based presentation. The path is relative to the location of this xml content file. &lt;br&gt;
+
+Since 3.1, styles can also be a comma separated list of styles. These styles will be injected into the HTML HEAD element in the order in which they are listed in the style attribute.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="alt-style" type="string">
+            <annotation>
+               <documentation>
+                  A relative path to a SWT presentation properies file which is applied to the page only when using the SWT based presentation. The path is relative to the location of this xml content file. &lt;br&gt;
+
+Since 3.1, styles can also be a comma separated list of styles. These styles will be used when creating the SWT presentation of the welcome page.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="content" type="string">
+            <annotation>
+               <documentation>
+                  if content is defined, it is assumed that the extension content is defined in an external XHTML file. In that case the resource pointed to by this content attribute is loaded and the path attribute is now resolved in this external file. since 3.1
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="contentProvider">
+      <annotation>
+         <documentation>
+            A proxy for an intro content provider, which allows an intro page to dynamically pull data from various sources (e.g., the web, eclipse, etc) and provide content at runtime based on this dynamic data.  If the IIntroContentProvider class that is specified in the class attribute can not be loaded, then the contents of the text element will be rendered instead. 
+This is a dynamic version of the html intro tag. While the html tag allows for embedding or inlining a static html content into the generated html intro page, the contentProvider tag allows for dynamic creation of that content at runtime. 
+Another difference between the tags is that the html tag is only supported for the HTML presentation, while this contentProvider tag is supported for both the HTML and SWT presentations. Since 3.0.1
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="text" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  unique identifier of this content provider element. It is a required attribute because having a unique id is what prevents the intro framework from reinstantiating this content provider class and recreating its content.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A class that implements the IContentProvider interface
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="pluginId" type="string">
+            <annotation>
+               <documentation>
+                  The id of the plugin that contains the IContentProvider class specified by the class attribute.  This is an optional attribute that should be used if the class doesn&apos;t come from the same plugin that defined the markup.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="hr">
+      <annotation>
+         <documentation>
+            a horizontal rule.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  unique identifier of this hr
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="style-id" type="string">
+            <annotation>
+               <documentation>
+                  A means to classify this element into a given category so that a common style may be applied
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="filteredFrom">
+            <annotation>
+               <documentation>
+                  an optional attribute that allows for filtering a given element out of a specific implementation. For example, if a group has filteredFrom = swt, it means that this group will not appear as content in the swt implementation.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="swt">
+                  </enumeration>
+                  <enumeration value="html">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
+
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2004, 2006 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

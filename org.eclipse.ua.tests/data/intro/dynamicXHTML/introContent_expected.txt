@@ -1,0 +1,130 @@
+Intro Model Content:
+======================
+
+Model has valid config = true
+Presentation type = 2
+Home page id = root
+Number of pages (not including Root Page) = 8
+Number of shared groups = 0
+Number of unresolved extensions = 0
+
+HOME PAGE: 
+--------------
+	is dynamic= true
+	id = root
+	title = null
+	style = null
+	alt-style = null
+	url = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 0
+
+
+PAGE id = static
+----------
+	title = null
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 0
+
+
+PAGE id = filter
+----------
+	title = null
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 0
+
+
+PAGE id = include
+----------
+	title = null
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 0
+
+
+PAGE id = include2
+----------
+	title = null
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 0
+
+
+PAGE id = anchor
+----------
+	title = null
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 0
+
+
+PAGE id = anchor2
+----------
+	title = null
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 0
+
+
+PAGE id = anchor2
+----------
+	title = null
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 0
+
+
+PAGE id = anchor2
+----------
+	title = null
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 0
+
+
+Model Flag Tests: 
+----------------
+		First page children are: 
+			Groups: 0
+			Links: 0
+			Texts: 0
+			HTMLs: 0
+			Images: 0
+			Includes: 0
+			Page Titles: 0
+			Page Heads: 0
+			Model Elements: 0
+			Containers: 0
+			All Pages: 0
+			Anchors: 0
+			Content providers: 0
+			Elements with Text child(AbstractTextElemets): 0
+			Groups and Links: 0

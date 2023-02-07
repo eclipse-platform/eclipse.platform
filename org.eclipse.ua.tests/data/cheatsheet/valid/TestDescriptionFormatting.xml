@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Testing Infopop and Help Links">
+
+<intro 
+	href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm">
+	<description>
+This cheat sheet will test infopop and help link.
+Let's get started!
+	</description>
+</intro>
+
+<item title="Item with simple text">
+<description>
+Some simple text to test the decription formating.
+</description>
+</item>
+
+<item title="Item with a line break"><description>
+Line one
+<br/>
+Line two with a special &lt; char in the middle.
+</description></item>
+
+<item title="Item with all the special charaters"><description>
+&lt; - less than
+<br/>
+<b>Special characters</b><br/>
+less than:   &lt;
+<br/>
+greater than: &gt;
+<br/>
+ampersand:   &amp;
+<br/>
+apostrophe:  &apos;
+<br/>
+quote:       &quot;
+<br/>
+</description></item>
+
+<item title="Item with one less than"><description><b>&lt;</b></description></item>
+<item title="Item with one greater than"><description>&gt;</description></item>
+<item title="Item with one bold less than"><description><b>&lt;</b></description></item>
+<item title="Item with one bold greater than"><description><b>&gt;</b></description></item>
+<item title="Item with one less than before a break"><description>&lt;<br/></description></item>
+<item title="Item with one less than after a break"><description><br/>&lt;</description></item>
+<item title="Item with one less than between breaks"><description><br/>&lt;<br/></description></item>
+<item title="Item with one greater than before a break"><description>&gt;<br/></description></item>
+<item title="Item with one greater than after a break"><description><br/>&gt;</description></item>
+<item title="Item with one greater than between breaks"><description><br/>&gt;<br/></description></item>
+
+
+</cheatsheet>

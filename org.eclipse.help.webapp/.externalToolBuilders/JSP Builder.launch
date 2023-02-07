@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launchConfiguration type="org.eclipse.ant.AntBuilderLaunchConfigurationType">
+<booleanAttribute key="org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND" value="false"/>
+<booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
+<booleanAttribute key="org.eclipse.ant.ui.DEFAULT_VM_INSTALL" value="false"/>
+<stringAttribute key="org.eclipse.ant.ui.ATTR_ANT_AFTER_CLEAN_TARGETS" value="build,"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_RUN_BUILD_KINDS" value="full,incremental,auto,"/>
+<booleanAttribute key="org.eclipse.ant.ui.ATTR_TARGETS_UPDATED" value="true"/>
+<booleanAttribute key="org.eclipse.ant.uiSET_INPUTHANDLER" value="false"/>
+<booleanAttribute key="org.eclipse.ui.externaltools.ATTR_TRIGGERS_CONFIGURED" value="true"/>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.ant.ui.AntClasspathProvider"/>
+<booleanAttribute key="org.eclipse.ui.externaltools.ATTR_BUILDER_ENABLED" value="true"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_BUILD_SCOPE" value="${working_set:&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#13;&#10;&lt;launchConfigurationWorkingSet editPageId=&quot;org.eclipse.ui.resourceWorkingSetPage&quot; factoryID=&quot;org.eclipse.ui.internal.WorkingSetFactory&quot; label=&quot;workingSet&quot; name=&quot;workingSet&quot;&gt;&#13;&#10;&lt;item factoryID=&quot;org.eclipse.ui.internal.model.ResourceFactory&quot; path=&quot;/org.eclipse.help.webapp/index.jsp&quot; type=&quot;1&quot;/&gt;&#13;&#10;&lt;item factoryID=&quot;org.eclipse.ui.internal.model.ResourceFactory&quot; path=&quot;/org.eclipse.help.webapp/basic&quot; type=&quot;2&quot;/&gt;&#13;&#10;&lt;item factoryID=&quot;org.eclipse.ui.internal.model.ResourceFactory&quot; path=&quot;/org.eclipse.help.webapp/advanced&quot; type=&quot;2&quot;/&gt;&#13;&#10;&lt;item factoryID=&quot;org.eclipse.ui.internal.model.ResourceFactory&quot; path=&quot;/org.eclipse.help.webapp/buildJSPs.xml&quot; type=&quot;1&quot;/&gt;&#13;&#10;&lt;item factoryID=&quot;org.eclipse.ui.internal.model.ResourceFactory&quot; path=&quot;/org.eclipse.help.webapp/META-INF&quot; type=&quot;2&quot;/&gt;&#13;&#10;&lt;item factoryID=&quot;org.eclipse.ui.internal.model.ResourceFactory&quot; path=&quot;/org.eclipse.help.webapp/src&quot; type=&quot;2&quot;/&gt;&#13;&#10;&lt;item factoryID=&quot;org.eclipse.ui.internal.model.ResourceFactory&quot; path=&quot;/org.eclipse.help.webapp/plugin.xml&quot; type=&quot;1&quot;/&gt;&#13;&#10;&lt;/launchConfigurationWorkingSet&gt;}"/>
+<stringAttribute key="org.eclipse.ant.ui.ATTR_ANT_MANUAL_TARGETS" value="build,"/>
+<stringAttribute key="org.eclipse.ant.ui.ATTR_ANT_AUTO_TARGETS" value="build,"/>
+<mapAttribute key="org.eclipse.ui.externaltools.ATTR_ANT_PROPERTIES">
+<mapEntry key="eclipse.running" value="true"/>
+<mapEntry key="eclipse.pdebuild.scripts" value="/C:/Users/eclipse/Desktop/curtis/eclipse/plugins/org.eclipse.pde.build_3.2.100.v20070206/scripts/"/>
+<mapEntry key="workspace_loc" value="${workspace_loc}"/>
+<mapEntry key="eclipse.home" value="C:\Users\eclipse\Desktop\curtis\eclipse"/>
+<mapEntry key="eclipse.pdebuild.templates" value="/C:/Users/eclipse/Desktop/curtis/eclipse/plugins/org.eclipse.pde.build_3.2.100.v20070206/templates/"/>
+<mapEntry key="target.folder" value="${build_project}/bin"/>
+<mapEntry key="eclipse.pdebuild.home" value="/C:/Users/eclipse/Desktop/curtis/eclipse/plugins/org.eclipse.pde.build_3.2.100.v20070206/./"/>
+<mapEntry key="target_home" value="${target_home}"/>
+</mapAttribute>
+<listAttribute key="org.eclipse.jdt.launching.CLASSPATH">
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#13;&#10;&lt;runtimeClasspathEntry containerPath=&quot;org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.4&quot; path=&quot;1&quot; type=&quot;4&quot;/&gt;&#13;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#13;&#10;&lt;runtimeClasspathEntry id=&quot;org.eclipse.ant.ui.classpathentry.antHome&quot;&gt;&#13;&#10;&lt;memento default=&quot;true&quot;/&gt;&#13;&#10;&lt;/runtimeClasspathEntry&gt;&#13;&#10;"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.eclipse.help.webapp"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/org.eclipse.help.webapp/buildJSPs.xml"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/org.eclipse.help.webapp/buildJSPs.xml}"/>
+</launchConfiguration>

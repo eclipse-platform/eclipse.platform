@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cheatsheet
+      title="Test cheatsheet without cheatsheet element">
+   <item
+         title="Introduction"
+         description="Simple test"
+         Href="null"
+         contextId="null">
+      <nullAction/>
+      <nullList/>
+      <nullPerformWhen/>
+      <nullList/>
+   </item>
+   <list>
+      <item
+            title="Just a simple test"
+            description="<form><p>
+Did it work? Of course <b>not</b>, it is suppose to cause a parsing .
+		</p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+   </list>
+</cheatsheet>

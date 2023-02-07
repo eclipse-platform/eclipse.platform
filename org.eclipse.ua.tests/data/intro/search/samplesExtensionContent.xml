@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+     Copyright (c) 2010 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<introContent>
+  <!-- Extension to the SDK Samples Page. -->
+  <extensionContent id="org.eclipse.ua.tests.search" name="UA contribution from samples" alt-style="css/swt.properties" style="css/samples.css" path="samples/@">
+    <group label="UA Search Test with searchable word ifirifjrnfj" id="searchword" style-id="content-group">
+       <text style-id="group-description">Description with searchable word nenfhhdhhed</text>
+       <link label="Label containing searchable word hydefefed" url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.pde.ui&amp;class=org.eclipse.pde.internal.ui.samples.ShowSampleAction&amp;id=org.eclipse.sdk.samples.javaeditor" id="java-editor" style-id="content-link">
+          <text>Test containing searchable word hfuejfujduj</text>
+       </link>
+        <link label="Link to anchor three of four" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.eclipse.ua.tests/data/help/manual/anchors.html%23three" id="anchorlink" style-id="content-link">
+          <text>A link to a specific anchor within a help page</text>
+       </link>
+        <link label="Link to eclipse.org" url="http://org.eclipse.ui.intro/showHelpTopic?id=http://www.eclipse.org" id="anchorlink" style-id="content-link">
+          <text>External Link</text>
+       </link>
+    </group>
+  </extensionContent>
+</introContent>

@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.help.base" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.help.base" id="searchParticipant" name="Help Search Participant"/>
+      </appInfo>
+      <documentation>
+         This extension point should be used to add document content to the search index. There are two cases were you would want to add a search participant:
+&lt;ol&gt;
+&lt;li&gt;
+To index documents registered with the help system&apos;s TOC that are not of the HTML format (e.g. XML). In this case, the participant must declare file extensions it can handle. It will be called to index each matching document. In this case, the participant has the plug-in scope.
+&lt;/li&gt;
+&lt;li&gt;
+To index documents outside of the help system&apos;s TOC. In this case, the participant will be given a chance to index all the documents it knows about at once. In addition, the participant will be delegated the task of opening the search result because the help system will not know how to open the documents outside the TOC. In this case, the participant has global scope.
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;
+Search participants are associated with the plug-in the extension appears in. In order to reuse the participant in other plug-ins, &lt;code&gt;binding&lt;/code&gt; should be used to reference them. This strategy prevents a plug-in from imposing its participant on the entire product for the file extensions it was registered with. By adding an explicit reference, the plug-in declares that it allows the referenced search participant to handle indexing of documents with those extensions. For documents that are not part of the TOC, there is no such danger. For this reason, they are global and &lt;code&gt;binding&lt;/code&gt; should not be used.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="searchParticipant"/>
+            <element ref="binding"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="searchParticipant">
+      <annotation>
+         <appInfo>
+            <meta.element labelAttribute="id" icon="icon"/>
+         </appInfo>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier of this search participant
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional translatable name that will be used to represent the participant as a category of documents that can be included in the search. The name is not required when the participant is used for documents in the TOC (i.e. when &lt;code&gt;extensions&lt;/code&gt; attribute is set).
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  an optional icon to be used to render search hits from the documents indexed by this participant. The icon will be used for the documents outside of the help&apos;s TOC to indicate that opening the search hit may result in an action different from showing the regular help document. Consequently, icon is not required when the participant is used for documents in the TOC (i.e. when &lt;code&gt;extensions&lt;/code&gt; attribute is set).
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="participant" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The implementation class for the help search participant.  This class must implement the &lt;samp&gt;org.eclipse.help.search.SearchParticipant&lt;/samp&gt; interface.  This attribute may be omitted, and the nested &lt;samp&gt;participant&lt;/samp&gt; element may be provided instead.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.search.SearchParticipant:"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="extensions" type="string">
+            <annotation>
+               <documentation>
+                  an optional field containing the list of file types handled by the search participant. This is a string containing comma separate file extensions (e.g. &quot;abc, xyz&quot;). This attribute should be used when files are made explicitly known to the help system in the &lt;code&gt;org.eclipse.help.toc&lt;/code&gt; extension point. The absence of this attribute is an indication that the participant will index all the documents it is responsible for by itself. 
+&lt;p&gt;Note also that participants that are registered for known documents have plug-in scope. If you want a participant to apply to documents in another plug-in, you must use the &lt;code&gt;binding&lt;/code&gt; element to extend the scope. In contrast, participants that do not specify this attribute have global scope.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="headless" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  specifies whether or not this search participant should be used when running the help system outside an eclipse workbench, i.e. it is running in either standalone or infocenter mode. The default value is &lt;code&gt;false&lt;/code&gt;.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="binding">
+      <complexType>
+         <attribute name="participantId" type="string">
+            <annotation>
+               <documentation>
+                  a reference to the search participant declared elsewhere using &lt;code&gt;searchParticipant&lt;/code&gt; element. Binding can be used to reuse search participants in plug-ins without violating the top-down policy. Binding is only needed for indexing documents that are part of the TOC. Otherwise, participant has global scope.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.help.base.searchParticipant/searchParticipant/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         The supplied search participant class must extend the &lt;samp&gt;org.eclipse.help.search.SearchParticipant&lt;/samp&gt; abstract class.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.5
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is a sample usage of the extension point:
+
+&lt;p&gt;
+&lt;pre&gt;
+  &lt;extension point=&quot;org.eclipse.help.base.searchParticipant&quot;&gt;
+   &lt;searchParticipant id=&quot;org.eclipse.myGlobalParticipant&quot;
+     name=&quot;Global Participant&quot;
+     icon=&quot;icons/mydoc.gif&quot;
+     participant=&quot;org.eclipse.myPlugin.myPackage.MyGlobalParticipant&quot;
+     headless=&quot;true&quot;/&gt;
+   &lt;searchParticipant id=&quot;org.eclipse.myXYZParticipant&quot;
+     extensions=&quot;xyz&quot;
+     participant=&quot;org.eclipse.myPlugin.myPackage.MyXYZParticipant&quot;/&gt;
+  &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2010, 2012 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

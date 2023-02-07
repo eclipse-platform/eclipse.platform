@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+    Copyright (c) 2005, 2010 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+     <extension-point id="searchEngine" name="%searchEngine" schema="schema/searchEngine.exsd"/>
+
+<!-- Default Help UI  -->
+   <extension
+         point="org.eclipse.ui.helpSupport">
+      <config
+            class="org.eclipse.help.ui.internal.DefaultHelpUI">
+      </config>
+   </extension>
+<!-- Preference pages -->
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="%help_preferences_page_name"
+            class="org.eclipse.help.ui.internal.preferences.HelpPreferencePage"
+            id="org.eclipse.help.ui.browsersPreferencePage">
+            <keywordReference id="org.eclipse.help.ui.browsersPreferencePage"/>
+      </page>
+      <page
+            name="%remote_help_preferences_page_name"
+            category="org.eclipse.help.ui.browsersPreferencePage"
+            class="org.eclipse.help.ui.internal.preferences.HelpContentPreferencePage"
+            id="org.eclipse.help.ui.contentPreferencePage">
+            <keywordReference id="org.eclipse.help.ui.contentPreferencePage"/>
+      </page>
+   </extension>
+   <extension
+   		point="org.eclipse.ui.keywords">
+      <keyword
+            label="%preferenceKeywords.browsersPreferencePage"
+            id="org.eclipse.help.ui.browsersPreferencePage"/>
+      <keyword
+            label="%preferenceKeywords.contentPreferencePage"
+            id="org.eclipse.help.ui.contentPreferencePage"/>
+   </extension>
+<!-- Web Browsers -->
+   <extension
+         point="org.eclipse.help.base.browser">
+      <browser
+            factoryclass="org.eclipse.help.ui.internal.browser.embedded.EmbeddedBrowserFactory"
+            name="%embedded_browser"
+            id="org.eclipse.help.ui.embeddedbrowser">
+      </browser>
+   </extension>
+   <extension
+         point="org.eclipse.help.base.browser">
+      <browser
+            factoryclass="org.eclipse.help.ui.internal.browser.SystemBrowserFactory"
+            name="%system_browser"
+            id="org.eclipse.help.ui.systembrowser">
+      </browser>
+   </extension>
+<!-- Help view (new since 3.1) -->
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="%HelpViewCategory"
+            id="org.eclipse.help.ui">
+      </category>
+      <view
+            allowMultiple="false"
+            icon="$nl$/icons/view16/help_view.png"
+            class="org.eclipse.help.ui.internal.views.HelpView"
+            category="org.eclipse.help.ui"
+            name="%HelpViewName"
+            id="org.eclipse.help.ui.HelpView"/>
+       <stickyView
+            closeable="true"
+            moveable="true"
+            location="RIGHT"
+            id="org.eclipse.help.ui.HelpView"/>            
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertiesView">
+      <excludeSources
+            id="org.eclipse.help.ui.HelpView">
+      </excludeSources>
+   </extension>
+   <extension
+         point="org.eclipse.help.ui.searchEngine">
+      <engineType
+            scopeFactory="org.eclipse.help.ui.internal.search.LocalSearchScopeFactory"
+            label="%LocalHelp.label"
+            class="org.eclipse.help.internal.search.federated.LocalHelp"
+            icon="$nl$/icons/obj16/slocalhelp_obj.png"
+            pageClass="org.eclipse.help.ui.internal.search.LocalHelpPage"
+            id="org.eclipse.help.ui.localSearch">
+         <description>
+            %LocalHelp.desc
+         </description>
+      </engineType>
+      <engineType
+            scopeFactory="org.eclipse.help.ui.internal.search.InfoCenterSearchScopeFactory"
+            label="%InfoCenter.label"
+            class="org.eclipse.help.internal.search.InfoCenter"
+            icon="$nl$/icons/obj16/sinfocenter_obj.png"
+            pageClass="org.eclipse.help.ui.internal.search.InfoCenterPage"
+            id="org.eclipse.help.ui.infoCenter">
+         <description>
+            %InfoCenter.desc
+         </description>
+      </engineType>
+      <engineType
+            scopeFactory="org.eclipse.help.ui.internal.search.WebSearchScopeFactory"
+            label="%WebSearch.label"
+            class="org.eclipse.help.internal.search.WebSearch"
+            icon="$nl$/icons/obj16/sweb_obj.png"
+            id="org.eclipse.help.ui.web"
+            pageClass="org.eclipse.help.ui.internal.search.WebSearchPage">
+         <description>
+            %WebSearch.desc
+         </description>
+      </engineType>
+      <engine
+            enabled="true"
+            engineTypeId="org.eclipse.help.ui.localSearch"
+            id="org.eclipse.help.ui.localSearch"
+            label="%LocalHelp.label">
+      </engine>
+    </extension>
+    <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.ui.category.help"
+            defaultHandler="org.eclipse.help.ui.internal.CloseHelpTrayHandler"
+            description="%command.closeTray.description"
+            id="org.eclipse.help.ui.closeTray"
+            name="%command.closeTray.name">
+      </command>
+      <command
+            categoryId="org.eclipse.ui.category.help"
+            defaultHandler="org.eclipse.help.ui.internal.handlers.ShowIndexHandler"
+            description="%command.index.description"
+            id="org.eclipse.help.ui.indexcommand"
+            name="%command.index.name">
+      </command>
+      <command
+            categoryId="org.eclipse.ui.category.help"
+            defaultHandler="org.eclipse.help.ui.internal.views.IgnoreMissingPlaceholderHandler"
+            description="%command.ignoreMissingPlaceholders.description"
+            id="org.eclipse.help.ui.ignoreMissingPlaceholders"
+            name="%command.ignoreMissingPlaceholders.name">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="org.eclipse.help.ui.indexcommand"
+            icon="icons/etool16/index_co.png">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+           categoryId="org.eclipse.ui.category.window"
+           defaultHandler="org.eclipse.help.ui.internal.handlers.OpenBundleResourceHandler"
+           description="%command.openBundleResource.description"
+           id="org.eclipse.ui.browser.openBundleResource"
+           name="%command.openBundleResource.name">
+        <commandParameter
+               id="plugin"
+               name="%commandParameter.openBundleResource.plugin.name"
+               optional="true"/>
+        <commandParameter
+               id="path"
+               name="%commandParameter.openBundleResource.path.name"
+               optional="true"/>
+      </command>
+</extension>
+    
+<!--
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="%actionSet.description"
+            id="org.eclipse.help.ui.actions"
+            label="%actionSet.label"
+            visible="true">
+         <action
+               class="org.eclipse.help.ui.internal.SearchAction"
+               icon="$nl$/icons/etool16/search_menu.gif"
+               id="org.eclipse.help.ui.search"
+               label="%searchAction.label"
+               style="push"
+               toolbarPath="org.eclipse.ui.workbench.navigate"
+               tooltip="%searchAction.tooltip"/>
+         <action
+               class="org.eclipse.help.ui.internal.DynamicHelpAction"
+               icon="$nl$/icons/etool16/help.gif"
+               id="org.eclipse.help.ui.dynamicHelp"
+               label="%searchAction.label"
+               style="push"
+               toolbarPath="org.eclipse.ui.workbench.navigate"
+               tooltip="%dynamicHelpAction.tooltip"/>
+      </actionSet>
+   </extension>
+-->
+</plugin>

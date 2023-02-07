@@ -1,0 +1,17 @@
+#swt .content-link img {
+	background-image : url(graphics/obj_48/samplered_obj.gif);
+}
+
+#swt .content-link:hover img {
+	background-image : url(graphics/obj_48/sampleredhov_obj.gif);
+}
+
+#workbench .content-link img {
+	background-image : url(graphics/obj_48/samplepurp_obj.gif);
+}
+
+#workbench .content-link:hover img {
+	background-image : url(graphics/obj_48/samplepurphov_obj.gif);
+}
+
+

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2010 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<criteriaDefinition>
+   <criterion id="version" name="Version">
+      <criterion-value id="1.0" name ="1.0.0"/>
+      <criterion-value id="3.0" name ="3.0.0"/>
+      <criterion-value id="4.0" name = "4.0.0"/>
+      <criterion-value id="5.0"/>
+      <criterion-value id=""/>
+      <criterion-value id="" name ="aaa"/>
+      <criterion-value name =""/>
+      <criterion-value name ="aaa"/>
+   </criterion>
+   <criterion id="platform" name="Platform">
+      <criterion-value id="AIX" name ="AIX"/>
+      <criterion-value id="Linux" name ="LINUX"/>
+   </criterion>
+   <criterion id="product" name="Product">
+      <criterion-value id="DB2" name ="DB2"/>
+      <criterion-value id="WAS" name ="WAS"/>
+   </criterion>
+   <criterion id="no criterion value" name ="no criterion value"/>
+   <criterion id="no name">
+      <criterion-value id="bb" name ="bb"/>
+   </criterion>
+   <criterion name="no id"/>
+</criteriaDefinition>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:element name="searchHits">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element ref="hit" minOccurs="0" maxOccurs="unbounded" />   <!-- hits result could be zero -->
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="hit" abstract="false" nillable="false">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element name="category" minOccurs="1" maxOccurs="1">  <!-- at least and at most one category element -->
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="xs:string">
+								<xs:attribute name="href" type="xs:string" use="required" />
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="summary" type="xs:string" minOccurs="1" maxOccurs="1" />
+			</xs:sequence>
+			<xs:attribute name="href" type="xs:string" use="required" /> <!-- attribute for hit -->
+			<xs:attribute name="label" type="xs:string" use="required" /> <!-- attribute for hit -->
+			<xs:attribute name="isPotentialHit" type="xs:boolean" />  <!-- optional attribute for hit -->
+			<xs:attribute name="score" type="xs:double" use="required" /> <!-- attribute for hit -->
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<!-- ============================================================================= -->
+<!-- Define topics for the main guide                                              -->
+<!-- ============================================================================= -->
+<toc label="Guide">
+	<topic label="Welcome to Eclipse" href="guide/int.htm">
+		<topic label="Who needs a platform?" href="guide/int_who.htm" />
+		<topic label="The holy grail" href="guide/int_goal.htm" />
+		<topic label="What is Eclipse?" href="guide/int_eclipse.htm" />
+		<topic label="Go to eclipse.org" href="http://www.eclipse.org" />
+	</topic>
+
+	<topic label="Platform architecture" href="guide/arch.htm">
+		<topic label="Platform SDK roadmap" href="guide/arch_struct.htm" />
+	</topic>
+
+	<topic label="Simple plug-in example" href="guide/firstplugin.htm">
+		<topic label="A minimal plug-in" href="guide/firstplugin_minimal.htm" />
+		<topic label="Creating the plug-in project" href="guide/firstplugin_create.htm" />
+		<topic label="The Hello World view" href="guide/firstplugin_view.htm" />
+		<topic label="The Hello World manifests" href="guide/firstplugin_manifest.htm" />
+		<topic label="Running the plug-in" href="guide/firstplugin_run.htm" />
+		<topic label="Beyond the basics" href="guide/firstplugin_btb.htm" />
+	</topic>
+
+	<topic label="Runtime overview"  href="guide/runtime.htm">
+		<topic label="The runtime plug-in model" href="guide/runtime_model.htm">
+			<topic label="Plug-ins and bundles" href="guide/runtime_model_bundles.htm"/>
+			<topic label="Extension points and the registry" href="guide/runtime_registry.htm"/>
+		</topic>
+		<topic label="Runtime Components" href="guide/runtime_components.htm"/>
+		<topic label="Runtime preferences" href="guide/runtime_preferences.htm"/>
+		<topic label="Content types" href="guide/runtime_content.htm">
+			<topic label="Using content types" href="guide/runtime_content_using.htm"/>
+			<topic label="Contributing content types" href="guide/runtime_content_contributing.htm"/>		
+		</topic>
+		<topic label="Concurrency infrastructure" href="guide/runtime_jobs.htm">
+			<topic label="Reporting progress" href="guide/runtime_jobs_progress.htm"/>
+			<topic label="Job scheduling" href="guide/runtime_jobs_scheduling.htm"/>
+			<topic label="Scheduling rules" href="guide/runtime_jobs_rules.htm"/>
+			<topic label="Locks" href="guide/runtime_jobs_locks.htm"/>
+		</topic>
+	</topic>
+
+	<topic label="Plugging into the workbench"  href="guide/workbench.htm">
+		<topic label="Workbench under the covers" href="guide/workbench_structure.htm" />
+		<topic label="Basic workbench extension points" href="guide/workbench_basicext.htm" >
+			<topic label="org.eclipse.ui.views" href="guide/workbench_basicext_views.htm" />
+			<topic label="org.eclipse.ui.viewActions" href="guide/workbench_basicext_viewActions.htm" />
+			<topic label="org.eclipse.ui.editors" href="guide/workbench_basicext_editors.htm" />
+			<topic label="org.eclipse.ui.editorActions" href="guide/workbench_basicext_editorActions.htm" />
+			<topic label="org.eclipse.ui.popupMenus" href="guide/workbench_basicext_popupMenus.htm" />
+			<topic label="org.eclipse.ui.actionSets" href="guide/workbench_basicext_actionSets.htm" />
+			<topic label="org.eclipse.ui.menus" href="guide/workbench_basicext_trim.htm" />
+		</topic>
+		<topic label="The plug-in class" href="guide/workbench_plugin.htm" />
+		<topic label="Preference pages" href="guide/preferences_prefs.htm">
+			<topic label="Contributing a preference page" href="guide/preferences_prefs_contribute.htm" />
+			<topic label="Implementing a preference page" href="guide/preferences_prefs_implement.htm" />
+			<topic label="Field editors" href="guide/preferences_prefs_fieldeditors.htm" />
+		</topic>
+	</topic>
+
+	<topic label="Dialogs and wizards"  href="guide/dialogs.htm">
+		<topic label="Standard dialogs" href="guide/dialogs_standard.htm" />
+		<topic label="Application dialogs" href="guide/dialogs_applications.htm" />
+		<topic label="Dialog settings" href="guide/dialogs_settings.htm" />
+		<topic label="Wizards" href="guide/dialogs_wizards.htm" />
+		<topic label="Workbench wizard extension points" href="guide/dialogs_wizards_extensions.htm" >
+			<topic label="org.eclipse.ui.newWizards" href="guide/dialogs_wizards_newWizards.htm" />
+			<topic label="org.eclipse.ui.importWizards" href="guide/dialogs_wizards_importWizards.htm" />
+			<topic label="org.eclipse.ui.exportWizards" href="guide/dialogs_wizards_exportWizards.htm" />
+		</topic>
+		<topic label="Wizard dialogs" href="guide/dialogs_wizards_wizarddialogs.htm" />
+		<topic label="Multi-page wizards" href="guide/dialogs_wizards_multipage.htm" />
+	</topic>
+	
+	<topic label="JFace UI framework" href="guide/jface.htm">
+		<topic label="Viewers" href="guide/jface_viewers.htm" />
+		<topic label="Actions and contributions" href="guide/jface_actions.htm" />
+		<topic label="User interface resources" href="guide/jface_resources.htm" />
+		<topic label="Long-running operations" href="guide/jface_operations.htm" />
+		<topic label="Field assist" href="guide/jface_fieldassist.htm" />
+	</topic>
+
+	<topic label="Standard Widget Toolkit" href="guide/swt.htm">
+		<topic label="Widgets" href="guide/swt_widgets.htm" >
+			<topic label="Controls" href="guide/swt_widgets_controls.htm" />
+			<topic label="Events" href="guide/swt_widgets_events.htm" />
+			<topic label="Custom widgets" href="guide/swt_widgets_custom.htm" />
+		</topic>
+		<topic label="Layouts" href="guide/swt_layouts.htm" >
+			<topic label="Custom Layouts" href="guide/swt_layouts_custom.htm" />
+		</topic>
+		<topic label="Threading issues " href="guide/swt_threading.htm" />
+		<topic label="Error handling" href="guide/swt_error.htm" />
+		<topic label="Graphics" href="guide/swt_graphics.htm" />
+		<topic label="Examples" href="guide/swt_examples.htm" />
+	</topic>
+	
+	<topic label="UI Forms" href="guide/forms.htm">
+       <topic label="Controls" href="guide/forms_controls.htm">
+ 		   <topic label="Form" href="guide/forms_controls_form.htm"/>
+		   <topic label="Hyperlink" href="guide/forms_controls_link.htm"/>
+		   <topic label="Section" href="guide/forms_controls_section.htm"/>
+		   <topic label="FormText" href="guide/forms_controls_text.htm">
+   		      <topic label="XML Markup" href="guide/forms_controls_text_markup.htm"/>
+   		   </topic>
+	   </topic>
+	   <topic label="Layouts" href="guide/forms_layouts.htm">
+	      <topic label="TableWrapLayout" href="guide/forms_layouts_table.htm"/>
+	      <topic label="ColumnLayout" href="guide/forms_layouts_column.htm"/>
+	   </topic>
+	   <topic label="Advanced Topics">
+	      <topic label="Color and font management" href="guide/forms_colors.htm"/>
+	      <topic label="Managed forms" href="guide/forms_managed.htm"/>
+	      <topic label="Master/Details block" href="guide/forms_master_details.htm"/>
+	   </topic>
+	   <topic label="Multi-page form editors" href="guide/forms_editors.htm"/>
+	</topic>
+	
+	<topic label="Resources overview"  href="guide/resInt.htm">
+		<topic label="Resources and the workspace" href="guide/resInt_workspace.htm" />
+		<topic label="Resources and the file system" href="guide/resInt_filesystem.htm" />
+		<topic label="Resource properties" href="guide/resInt_properties.htm" />
+		<topic label="Project-scoped preferences" href="guide/resInt_preferences.htm" />
+		<topic label="File encoding and content types" href="guide/resInt_content.htm" />
+		<topic label="Linked resources" href="guide/resInt_linked.htm" />
+		<topic label="Resource markers" href="guide/resAdv_markers.htm" />
+		<topic label="Modifying the workspace" href="guide/resAdv_modify.htm" >
+			<topic label="Batching resource changes" href="guide/resAdv_batching.htm" />
+			<topic label="Tracking resource changes" href="guide/resAdv_events.htm" />
+			<topic label="Concurrency and the workspace" href="guide/resAdv_concurrency.htm" />
+		</topic>
+	</topic>
+
+	<topic label="Advanced resource concepts"  href="guide/resAdv.htm">
+		<topic label="Project natures" href="guide/resAdv_natures.htm" />
+		<topic label="Incremental project builders" href="guide/resAdv_builders.htm" />
+		<topic label="Derived resources" href="guide/resAdv_derived.htm" />
+		<topic label="Workspace save participation" href="guide/resAdv_saving.htm" />
+		<topic label="Resource modification hooks" href="guide/resAdv_hooks.htm" />
+		<topic label="Refresh providers" href="guide/resAdv_refresh.htm" />
+		<topic label="Alternate file systems" href="guide/resAdv_efs_intro.htm" >
+			<topic label="Using the file system API" href="guide/resAdv_efs_api.htm" />
+			<topic label="Working with resources in other file systems" href="guide/resAdv_efs_resources.htm" />
+			<topic label="File system providers" href="guide/resAdv_efs_providers.htm" />
+		</topic>
+	</topic>
+
+	<topic label="Advanced workbench concepts" href="guide/wrkAdv.htm">
+		<topic label="Workbench menu contributions" href="guide/workbench_menus.htm" />
+		<topic label="Menu and toolbar paths" href="guide/workbench_menupaths.htm" />
+		<topic label="Action set part associations" href="guide/workbench_basicext_actionSetPartAssociations.htm" />
+		<topic label="Boolean expressions and action filters" href="guide/workbench_actionfilters.htm" />
+		<topic label="Retargetable actions" href="guide/wrkAdv_retarget.htm" >
+			<topic label="Setting a global action handler" href="guide/wrkAdv_retarget_setting.htm" />
+			<topic label="Contributing new retargetable actions" href="guide/wrkAdv_retarget_contribute.htm" >
+				<topic label="Retargetable editor actions" href="guide/wrkAdv_retarget_contribute_editors.htm" />
+				<topic label="Retargetable action set actions" href="guide/wrkAdv_retarget_contribute_actionsets.htm" />
+			</topic>
+		</topic>
+		<topic label="Undoable operations" href="guide/wrkAdv_undo.htm" />
+		<topic label="Perspectives" href="guide/workbench_perspectives.htm" >
+			<topic label="org.eclipse.ui.perspectives" href="guide/workbench_advext_perspectives.htm" />
+			<topic label="org.eclipse.ui.perspectiveExtensions" href="guide/workbench_advext_perspectiveExtension.htm" />
+		</topic>
+		<topic label="Decorators" href="guide/workbench_advext_decorators.htm" />
+		<topic label="Workbench key bindings" href="guide/wrkAdv_keyBindings.htm" >
+			<topic label="Commands" href="guide/wrkAdv_keyBindings_actionDef.htm" />
+			<topic label="Bindings" href="guide/wrkAdv_keyBindings_accelSet.htm" />
+			<topic label="Schemes" href="guide/wrkAdv_keyBindings_accelConfig.htm" />
+			<topic label="Contexts and key bindings" href="guide/wrkAdv_keyBindings_contexts.htm" />
+		</topic>
+		<topic label="Element factories" href="guide/workbench_advext_elementFactories.htm" />
+		<topic label="Accessible user interfaces" href="guide/wrkAdv_accessibility.htm" />
+		<topic label="Honoring single click support" href="guide/wrkAdv_singleclick.htm" />
+		<topic label="Markers in the IDE" href="guide/ide_marker_support.htm" />
+		<topic label="Working sets" href="guide/wrkAdv_workingsets.htm" />
+		<topic label="Filtering large user interfaces" href="guide/workbench_scalability.htm" >
+			<topic label="Activities" href="guide/workbench_advext_activities.htm" />
+			<topic label="Contexts" href="guide/workbench_advext_contexts.htm" />
+		</topic>
+		<topic label="Workbench concurrency support" href="guide/workbench_jobs.htm" />
+		<topic label="Workbench resource support" href="guide/workbench_resources.htm" >
+			<topic label="Contributing a property page" href="guide/preferences_prop_contribute.htm" />
+			<topic label="Implementing a property page" href="guide/preferences_prop_implement.htm" />
+			<topic label="Marker help and resolution" href="guide/wrkAdv_markers.htm" >
+				<topic label="Contributing marker help" href="guide/wrkAdv_markerhelp.htm" />
+				<topic label="Contributing marker resolution" href="guide/wrkAdv_markerresolution.htm" />
+			</topic>
+			<topic label="Contributing resource filters" href="guide/workbench_advext_resourceFilters.htm" />
+			<topic label="Text file encoding" href="guide/wrkAdv_encoding.htm" />	
+		</topic>
+	</topic>
+	
+	<topic label="Editors" href="guide/editors.htm">
+		<topic label="Workbench editors" href="guide/editors_workbench.htm" />
+		<topic label="Text editors and platform text" href="guide/editors_jface.htm" />
+		<topic label="Documents and partitions" href="guide/editors_documents.htm" />
+		<topic label="Source viewers and annotations" href="guide/editors_annotations.htm" />
+		<topic label="Configuring a source viewer" href="guide/editors_sourceviewers.htm" />
+		<topic label="Text and ruler hover" href="guide/editors_hover.htm" />
+		<topic label="Syntax coloring" href="guide/editors_highlighting.htm" />
+		<topic label="Content assist" href="guide/editors_contentassist.htm" />
+		<topic label="Registering editor actions" href="guide/editors_actions.htm" />
+		<topic label="Other text editor responsibilities" href="guide/editors_utilities.htm" />
+		<topic label="Content outliners" href="guide/editors_workbench_outliner.htm" />
+	</topic>
+	
+	<topic label="Search support" href="guide/search.htm">
+		<topic label="Contributing a search page" href="guide/search_page.htm" />
+		<topic label="Contributing a search result page" href="guide/search_result.htm" />
+	</topic>
+	
+	<topic label="Compare support" href="guide/compare.htm">
+		<topic label="Merging multiple streams" href="guide/compare_streammerger.htm" />
+		<topic label="Implementing a content viewer" href="guide/compare_contentviewer.htm" />
+		<topic label="Implementing a structure viewer" href="guide/compare_structureviewer.htm" />
+		<topic label="Advanced compare techniques" href="guide/compare_beyond.htm" />
+	</topic>
+	
+	<topic label="Team support" href="guide/team.htm">
+		<topic label="Repository providers" href="guide/team_provider_repository.htm" />
+		<topic label="Resource management" href="guide/team_resources.htm" />
+		<topic label="Synchronization Support" href="guide/team_synchronize.htm" >
+			<topic label="Local History Synchronization Example" href="guide/team_synchronize_localhistory_example.htm" />
+			<topic label="Beyond the basics" href="guide/team_synchronize_beyond_basics.htm" />
+		</topic>
+	    <topic label="Support for Logical Model Integration" href="guide/team_model.htm" >
+			<topic label="Repository Roadmap for Logical Model Integration" href="guide/team_model_repo.htm" />
+			<topic label="Model Roadmap for Logical Model Integration" href="guide/team_model_model.htm" />
+		</topic>
+		<topic label="Rich Team Integration" href="guide/team_howto.htm" >
+			<topic label="Adding team actions" href="guide/team_ui_actions.htm" />
+			<topic label="Team decorators" href="guide/team_ui_decorators.htm" />
+			<topic label="Adding preferences and properties" href="guide/team_ui_prefs.htm" />
+			<topic label="Project sets" href="guide/team_resources_projects.htm" />
+			<topic label="Team and linked resources" href="guide/team_resources_linked.htm" />
+			<topic label="Team private resources" href="guide/team_resources_private.htm" />
+			<topic label="File types" href="guide/team_resources_filetypes.htm" /><topic
+				label="Adding History support" href="guide/team_ui_history.htm">
+</topic>
+		</topic>
+	</topic>
+	
+	<topic label="Program debug and launch support" href="guide/debug.htm">
+		<topic label="Launching a program" href="guide/debug_launch.htm" >
+			<topic label="Adding launchers to the platform" href="guide/debug_launch_adding.htm" >
+				<topic label="Obtaining a program's source code" href="guide/debug_launch_sourcelocators.htm" />
+				<topic label="Comparing launch configurations" href="guide/debug_launch_comparators.htm" />
+				<topic label="Process factories" href="guide/debug_launch_processfactories.htm" />
+				<topic label="Launching Java applications" href="guide/debug_launch_java.htm" />		
+			</topic>
+			<topic label="Handling errors from a launched program" href="guide/debug_launch_status.htm" />		
+			<topic label="Launch configuration dialog" href="guide/debug_launch_ui.htm" />
+			<topic label="Launch configuration type images" href="guide/debug_launch_uiimages.htm" />
+			<topic label="Launch shortcuts" href="guide/debug_launch_uishortcuts.htm" />
+		</topic>
+		<topic label="Debugging a program" href="guide/debug_debug.htm" >
+			<topic label="Platform debug model" href="guide/debug_model.htm" />
+			<topic label="Breakpoints" href="guide/debug_breakpoints.htm" />
+			<topic label="Expressions" href="guide/debug_expressions.htm" />
+			<topic label="Debug model presentation" href="guide/debug_presentation.htm" />
+			<topic label="Debug UI utility classes" href="guide/debug_ui.htm" />
+		</topic>
+	</topic>
+	
+	<topic label="Platform Ant support" href="guide/ant.htm">
+		<topic label="Running Ant buildfiles programmatically" href="guide/ant_running_buildfiles_programmatically.htm" />
+		<topic label="Ant tasks provided by the platform" href="guide/ant_eclipse_tasks.htm" />
+		<topic label="Contributing tasks and types" href="guide/ant_contributing_task.htm" />
+		<topic label="Developing Ant tasks and types within Eclipse" href="guide/ant_developing.htm" />
+		<topic label="Expanding the Ant classpath" href="guide/ant_expanding_classpath.htm" />
+	</topic>
+	
+	<topic label="User assistance support" href="guide/ua.htm">
+		<topic label="Welcome" href="guide/ua_intro.htm" >
+			<topic label="Universal intro" href="guide/ua_intro_universal.htm" >
+				<topic label="Contributing to universal intro" href="guide/ua_intro_universal_contributing.htm" />
+				<topic label="Adding the preference page" href="guide/ua_intro_universal_preference.htm" />
+				<topic label="Extending the universal intro" href="guide/ua_intro_universal_extending.htm" />
+				<topic label="Configuring product defaults" href="guide/ua_intro_universal_defaults.htm" />
+				<topic label="Managing links" href="guide/ua_intro_universal_links.htm" />
+			</topic>
+			<topic label="Defining an intro part" href="guide/ua_intro_defining.htm" />
+			<topic label="Contributing a HelloWorld intro Part" href="guide/ua_intro_hello_world.htm" />
+			<topic label="Using the CustomizableIntroPart" href="guide/ua_intro_cust_intro_part.htm" >
+				<topic label="Defining an intro config" href="guide/ua_intro_defining_config.htm" />
+				<topic label="Defining intro content" href="guide/ua_intro_define_content.htm" />
+				<topic label="Using XHTML as intro content" href="guide/ua_intro_xhtml.htm" />
+				<topic label="Displaying static HTML content in the CustomizableIntroPart" href="guide/ua_intro_cust_static.htm" />
+				<topic label="Extending an intro config" href="guide/ua_intro_extending.htm" >
+					<topic label="Extending the content of an intro config" href="guide/ua_intro_extending_content.htm" />
+					<topic label="Defining intro themes" href="guide/ua_intro_ext_theme.htm" />
+					<topic label="Contributing a standby content part" href="guide/ua_intro_ext_standbypart.htm" />
+					<topic label="Defining a custom IntroURL action" href="guide/ua_intro_ext_custom_url.htm" />
+				</topic>
+			</topic>
+		</topic>
+		<topic label="Help" href="guide/ua_help.htm">
+			<topic label="Configuration/setup" href="guide/ua_help_setup.htm" >
+				<topic label="Rich Client Platform (RCP) help" href="guide/ua_help_setup_rcp.htm"/>
+				<topic label="Standalone help" href="guide/ua_help_setup_standalone.htm"/>
+				<topic label="Infocenter" href="guide/ua_help_setup_infocenter.htm"/>
+				<topic label="Product customization" href="guide/ua_help_setup_preferences.htm"/>
+				<topic label="Pre-indexing documentation" href="guide/ua_help_setup_preindex.htm"/>
+			</topic>
+			<topic label="Help content" href="guide/ua_help_content.htm" >
+				<topic label="Table of contents (toc) files" href="guide/ua_help_content_toc.htm" />
+				<topic label="Help server and file locations" href="guide/ua_help_content_files.htm" />
+				<topic label="Completing the plug-in manifest" href="guide/ua_help_content_manifest.htm" />
+				<topic label="Building nested documentation structures" href="guide/ua_help_content_nested.htm" />
+				<topic label="Contributing XHTML help documents" href="guide/ua_help_content_xhtml.htm" />
+				<topic label="Active help" href="guide/ua_help_content_active.htm" >
+					<topic label="Writing the help action" href="guide/ua_help_content_active_action.htm" />
+					<topic label="Invoking the action from HTML" href="guide/ua_help_content_active_invoke.htm" />
+					<topic label="Tips for debugging active help" href="guide/ua_help_content_active_debug.htm" />
+				</topic>
+				<topic label="Embedding commands in help" href="guide/ua_help_content_command.htm" >
+					<topic label="Authoring a command link" href="guide/ua_help_content_command_authoring.htm" />
+				</topic>
+			</topic>
+			<topic label="Context-sensitive help" href="guide/ua_help_context.htm" >
+				<topic label="Declaring a context id" href="guide/ua_help_context_id.htm" />
+				<topic label="Describing and packaging context-sensitive help" href="guide/ua_help_context_xml.htm" />
+				<topic label="Dynamic context help" href="guide/ua_help_context_dynamic.htm"/>
+				<topic label="Infopops" href="guide/ua_help_context_infopops.htm"/>
+			</topic>
+			<topic label="Help search" href="guide/ua_help_search.htm">
+			   <topic label="Plugging in search engines" href="guide/ua_help_search_types.htm"/>		
+			</topic>
+		</topic>
+		<topic label="Cheat sheets" href="guide/ua_cheatsheet.htm" >
+			<topic label="Simple cheat sheets" href="guide/ua_cheatsheet_simple.htm" />		    
+			<topic label="Cheat sheet content file XML format" href="reference/extension-points/cheatSheetContentFileSpec.html" />
+			<topic label="Composite cheat sheets" href="guide/ua_cheatsheet_composite.htm" />		    
+			<topic label="Composite cheat sheet content file XML format" href="guide/ua_cheatsheet_composite_content.htm" />			
+			<topic label="Cheat sheet authoring guidelines" href="guide/ua_cheatsheet_guidelines.htm" />
+		</topic>
+		<topic label="Dynamic content" href="guide/ua_dynamic.htm">
+			<topic label="Filters" href="guide/ua_dynamic_filters.htm" />
+			<topic label="Includes" href="guide/ua_dynamic_includes.htm" />
+			<topic label="Anchors" href="guide/ua_dynamic_anchors.htm" />
+		</topic>
+	</topic>
+
+	<topic label="Packaging and delivering Eclipse based products" href="guide/product.htm">
+		<topic label="Defining a Product" href="guide/product_def.htm" >
+			<topic label="The products extension point" href="guide/product_def_extpt.htm" />
+			<topic label="Customizing a product" href="guide/product_configproduct.htm" />
+			<topic label="Products as primary features" href="guide/product_def_primary.htm" />
+			<topic label="Customizing a primary feature" href="guide/product_configfeature.htm" />
+		</topic>
+		<topic label="Features" href="guide/product_def_feature.htm" />
+		<topic label="Plug-ins and fragments" href="guide/product_def_plugins.htm" />
+		<topic label="Locale specific files" href="guide/product_def_nl.htm" />
+		<topic label="Product installation guidelines" href="guide/product_config_install.htm" />
+		<topic label="Product extensions" href="guide/product_extension.htm" />
+		<topic label="Updating a product or extension" href="guide/product_update.htm" />
+		<topic label="Deploying eclipse based application with Java Web Start" href="guide/java_web_start.htm"/>
+	</topic>
+	
+	<topic label="Building a Rich Client Platform application" href="guide/rcp.htm">
+		<topic label="The browser example" href="guide/rcp_browser.htm" />
+		<topic label="Defining a rich client application" href="guide/rcp_define.htm" />
+		<topic label="Customizing the workbench" href="guide/rcp_advisor.htm" />
+		<topic label="Making UI contributions" href="guide/rcp_extensions.htm" >
+			<topic label="Adding the perspective" href="guide/rcp_perspective.htm" />
+			<topic label="Adding views" href="guide/rcp_view.htm" />
+			<topic label="Defining the actions" href="guide/rcp_actions.htm" />
+		</topic>
+	</topic>			
+	
+
+</toc>

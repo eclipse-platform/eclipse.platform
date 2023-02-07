@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Describing and packaging context-sensitive help content</title>
+</head>
+<body>
+
+<h2>Describing and packaging context-sensitive help content</h2>
+
+<p>
+Context-sensitive help is described by associating the context id declared in
+the UI code with a description and list of links to related topics or commands
+in the online help. These associations are made inside an XML file located
+within the plug-in that contains the topics in question. You can create any number
+of XML files containing context help associations for each plug-in. The
+description and links for each context id is made inside
+<strong>&lt;context&gt;</strong> elements in the XML file. Each context element
+can have an optional <strong>&lt;description&gt;</strong> element which is used
+to describe the UI object and any number of <strong>&lt;topic&gt;</strong>
+elements which link to the on-line documentation, as well as command links
+to perform any operation for the user, e.g. open a cheat sheet.
+</p>
+
+<p>
+Since 3.1, context elements can optionally override the default title used to 
+present the context help information in the Help view.
+</p>
+
+<pre>&lt;contexts&gt;
+	&lt;context id=&quot;panic_button&quot; title=&quot;Panic Button Title&quot;&gt;
+		&lt;description&gt;This is the panic button.&lt;/description&gt;
+		&lt;command serialization=&quot;org.eclipse.ui.cheatsheets.openCheatSheet(cheatSheetId=org.eclipse.panic.button.cheatsheet)quot; label=&quot;Pushing the panic button&quot;/&gt;
+		&lt;topic href=&quot;reference/panic_button.htm&quot; label=&quot;Panic Button Reference&quot;/&gt;
+	&lt;/context&gt;
+	...
+&lt;/contexts&gt;
+</pre>
+
+<p>
+Once the contexts have been described in the XML file (or files), you are ready
+to refer to the context files in your plug-in manifest. Note that the context id
+is not qualified. 
+</p>
+
+<p>A plug-in containing context files contributes them using the <b><a href="../reference/extension-points/org_eclipse_help_contexts.html">org.eclipse.help.contexts</a></b>
+extension point.&nbsp;&nbsp;
+</p>
+
+<pre>   &lt;extension point=&quot;org.eclipse.help.contexts&quot;&gt;
+      &lt;contexts file=&quot;myContextHelp.xml&quot;  /&gt;
+   &lt;/extension&gt;
+</pre>
+
+<p>You can reference context files from other plug-ins by including the <b>plugin</b>
+attribute.&nbsp; This allows you to group all of your documentation, including
+content-sensitive help, in one plug-in, and refer to it from the UI code plug-in or some other
+related plug-in.</p>
+
+<pre>   &lt;extension point=&quot;org.eclipse.help.contexts&quot;&gt;
+      &lt;contexts file=&quot;myContextHelp.xml&quot; <b>plugin</b>=&quot;com.example.helpExample&quot;  /&gt;
+   &lt;/extension&gt;</pre>
+   
+<p>When a context id is declared in an extension point the Eclipse help system will create a fully qualified
+context id of the form <code>&lt;plug-in name&gt;.&lt;context id&gt;</code> and use this when matching against the context
+ids used in the Java source. &lt;plug-in name&gt; is the value of the "plugin" attribute, or if not specified the
+name of the plug-in in which the org.eclipse.help.contexts extension is declared.
+
+<h4>
+Context-sensitive help from multiple plug-ins</h4>
+
+
+<p>Another level of flexibility is the ability to contribute context-sensitive 
+help for the
+same context id from different plug-ins.&nbsp; This is useful, for example, if
+there are different sets of documentation plug-ins that may or may not be
+installed in a user's configuration.&nbsp; This allows each documentation
+plug-in to declare its contexts independently.&nbsp; The end user will see the
+merged context-sensitive help content for all plug-ins that contributed contexts for the
+widget's id.</p>
+
+<p>Note that the plugin attribute must be used in the extensions if multiple plugins will 
+contribute to the same context.&nbsp; When multiple plug-ins contribute 
+context-sensitive help for
+the same context ID, the content defined in the plug-in that declared the
+context (the UI plug-in) is shown first.&nbsp; Additional descriptions and links
+are appended in no guaranteed order.</p>
+
+<h4>Dynamic content</h4>
+
+<p>
+Dynamic content is available for the context help in the form of
+<a href="ua_dynamic_filters.htm">filters</a> on context help topic links. For
+example, you may want a topic link to show up in the context help only when running
+on a specific operating system.
+</p>
+
+<h4>
+Adding Context Help to your Java Code</h4>
+
+<p>
+See <a href="ua_help_context_id.htm">declaring a context Id</a> for more 
+information.</p>
+
+</body>
+</html>

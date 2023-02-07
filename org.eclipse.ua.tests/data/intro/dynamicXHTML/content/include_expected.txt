@@ -1,0 +1,20 @@
+<!--
+   The include test page. This page includes a line from include2.xhtml.
+--><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<title>include.xhtml</title>
+</head>
+
+<body>
+<h2>include.xhtml</h2>
+<p>
+This page contains include examples. Below there should be one line of text that is included from
+another file, include2.xhtml:
+</p>
+<ul id="my.include.id">
+<li>This text comes from include2.xhtml and can be included by other documents.</li>
+</ul>
+</body>
+</html>

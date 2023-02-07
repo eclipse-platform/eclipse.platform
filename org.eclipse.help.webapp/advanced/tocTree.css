@@ -1,0 +1,114 @@
+/*******************************************************************************
+ * Copyright (c) 2006 IBM Corporation and others.
+ *
+ * This program and the accompanying materials 
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * 
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+ 
+ BODY {
+	font: <%=prefs.getViewFont()%>;
+	font-size: .875rem;
+	margin-top:2px;
+	margin-<%=isRTL?"right":"left"%>:5px;
+	padding:0;
+	border:0;
+	<%=prefs.getViewBackgroundStyle()%>
+}
+
+#root {
+	margin-top:0px;
+	margin-<%=isRTL?"right":"left"%>:0px;
+}
+
+DIV.root {
+    font-weight:bold;
+}
+
+DIV.visible, DIV.unopened { 
+	border-width:0; 
+	margin-<%=isRTL?"right":"left"%>:1.5em; 
+	font-weight:normal;
+}
+
+DIV.group { 
+	border-width:0; 
+	margin-<%=isRTL?"right":"left"%>:0; 
+}
+  
+DIV.hidden {
+	display:none; 
+}
+
+DIV.visible, DIV.root {  
+    margin-top:1px; 
+}
+
+SPAN.item{
+    white-space: nowrap;
+}
+
+IMG {
+	border:0px;
+	margin:0px;
+	padding:0px;
+	margin-<%=isRTL?"left":"right"%>:4px;
+}
+
+IMG.expander, IMG.h {
+    margin-top:4px;
+    margin-bottom:2px;
+}
+
+A {
+	text-decoration:none; 
+	color:WindowText;
+	padding-<%=isRTL?"left":"right"%>:2px;
+	/* this works in ie5.5, but not in ie5.0  */
+	white-space: nowrap;
+}
+
+.showall {
+    text-decoration:underline; 
+    color:#0066FF; 
+	cursor:pointer;
+}
+
+A:hover{
+	text-decoration:underline; 
+}
+
+A.active{ 
+	color:HighlightText;
+	background:Highlight;
+	width:100%;
+}
+
+A.active:hover{
+	text-decoration:underline; 
+}
+
+A.nolink {
+	text-decoration:none; 
+}
+
+A.nolink:link, A.nolink:visited {
+	color:WindowText;
+}
+
+A.nolink:hover {
+	text-decoration:none; 
+}
+
+.h {
+	visibility:hidden;
+}
+
+<%@ include file="darkTheme.css"%>
+ 

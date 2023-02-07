@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGIN__ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Help content</title>
+</head>
+<body>
+
+<h2>Help content</h2>
+
+<p><b>Building a help plug-in</b></p>
+
+<P >
+In this example, we assume that a documentation author has already supplied you with the raw documentation in the form of HTML files. The granularity
+and structure of these files is completely up to the documentation team. Once the documentation is delivered, setting up the plug-in and topics can be done independently.</P>
+
+<P >
+We start by assuming that the documentation has already been provided in the following tree.</P>
+<pre>
+   html/
+      concepts/
+         concept1.html
+         concept1_1.html
+         concept1_2.html
+      tasks/
+         task1.html
+         task2.html
+         task3_1.html
+         task3_2.html
+      ref/
+         ref1.html
+         ref2.html
+</pre>
+<P >
+We will assume that the plug-in name is <b>com.example.helpexample</b>.</P>
+<P >
+The first step is to create a plug-in directory, <b>com.example.helpexample</b> underneath the platform
+<b>plugins</b> directory. The <b>doc\</b>
+sub tree shown above should be copied into the directory. </P>
+<P >
+Documentation plug-ins need a manifest just like code plug-ins. The following markup defines the documentation plug-in.</P>
+
+<pre>
+   &lt;?xml version=&quot;1.0&quot; ?&gt;
+   &lt;plugin name=&quot;Online Help Sample&quot;
+      id=&quot;com.example.helpexample&quot;
+      version=&quot;1.0&quot;
+      provider-name=&quot;MyExample&quot; /&gt;
+</pre>
+
+</body>
+</html>

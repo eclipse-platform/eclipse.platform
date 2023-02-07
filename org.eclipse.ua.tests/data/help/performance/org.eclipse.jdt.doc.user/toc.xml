@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<!-- ============================================================================= -->
+<!-- Define the top level topics                                                   -->
+<!-- ============================================================================= -->
+
+<toc label="Java Development User Guide">
+	<topic label="Getting Started">
+		<link toc="topics_GettingStarted.xml" />
+	</topic>
+	<anchor id="jdt_getstart" />
+	<topic label="Concepts">
+		<link toc="topics_Concepts.xml" />
+	</topic>
+	<anchor id="jdt_concepts" />
+	<topic label="Tasks">
+		<link toc="topics_Tasks.xml" />
+	</topic>
+	<topic label="Reference">
+		<link toc="topics_Reference.xml" />
+	</topic>
+	<anchor id="jdt_reference" />
+	
+	<topic label="Tips and tricks" href="tips/jdt_tips.html"/>
+	<topic label="What's new" href="whatsNew/jdt_whatsnew.html"/>
+	<topic label="Legal" href="notices.html"/>
+</toc>

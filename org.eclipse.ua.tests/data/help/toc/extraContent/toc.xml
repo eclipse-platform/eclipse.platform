@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<!--
+A TOC with some extra elements and attributes scattered throughout. It should
+be able to tolerate this.
+-->
+<toc label="extraContent1" unknownAttribute="value" link_to="data/help/toc/root.xml#content">
+	<topic label="extraContent1">
+		<topic label="Getting started" unknownAttribute2="value2">
+			<link toc="data/help/toc/extraContent/simple_toc.xml" />
+		</topic>
+		<blah value="true"/>
+		<topic label="Concepts">
+			<link toc="data/help/toc/extraContent/simple_toc.xml" />
+		</topic>
+		<test>
+		<topic label="Tasks">
+			<aergaer/>
+			<test2 attr="true">
+			<gaergr/>
+			<link toc="data/help/toc/extraContent/simple_toc.xml" />
+			</test2>
+		</topic>
+		</test>
+		<topic label="Reference">
+			<link toc="data/help/toc/extraContent/simple_toc.xml" />
+		</topic>
+		<topic label="Tips and tricks" href="data/help/toc/extraContent/simple_page.html"/>
+		<topic label="What's new" href="data/help/toc/extraContent/simple_page.html"/>
+		<topic label="Documentation Images" href="data/help/toc/extraContent/simple_page.html"/>
+		<topic label="Legal" aegraerg="aerger" href="data/help/toc/extraContent/simple_page.html"/>
+	</topic>
+</toc>
