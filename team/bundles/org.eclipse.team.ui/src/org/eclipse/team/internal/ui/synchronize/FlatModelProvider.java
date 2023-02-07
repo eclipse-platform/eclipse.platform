@@ -25,7 +25,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent;
 import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.core.synchronize.SyncInfoSet;
@@ -61,7 +61,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 
 	private static final String P_LAST_RESOURCESORT = TeamUIPlugin.ID + ".P_LAST_RESOURCE_SORT"; //$NON-NLS-1$
 
-	private int sortCriteria = FlatSorter.PATH;
+	private int sortCriteria = FlatComparator.PATH;
 
 	/* *****************************************************************************
 	 * Model element for the resources in this layout. They are displayed with filename and path
@@ -82,7 +82,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 	 * Sorter that sorts flat path elements using the criteria specified
 	 * when the sorter is created
 	 */
-	public class FlatSorter extends ViewerSorter {
+	public class FlatComparator extends ViewerComparator {
 
 		private int resourceCriteria;
 
@@ -91,7 +91,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 		public final static int PATH = 2;
 		public final static int PARENT_NAME = 3;
 
-		public FlatSorter(int resourceCriteria) {
+		public FlatComparator(int resourceCriteria) {
 			this.resourceCriteria = resourceCriteria;
 		}
 
@@ -107,7 +107,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 		}
 
 		protected int compareNames(String s1, String s2) {
-			return collator.compare(s1, s2);
+			return getComparator().compare(s1, s2);
 		}
 
 		@Override
@@ -188,9 +188,9 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 			// Ensure that the sort criteria of the provider is properly initialized
 			FlatModelProvider.this.initialize(configuration);
 
-			sortByResource.add( new ToggleSortOrderAction(TeamUIMessages.FlatModelProvider_8, FlatSorter.PATH));
-			sortByResource.add(new ToggleSortOrderAction(TeamUIMessages.FlatModelProvider_7, FlatSorter.NAME));
-			sortByResource.add(new ToggleSortOrderAction(TeamUIMessages.FlatModelProvider_9, FlatSorter.PARENT_NAME));
+			sortByResource.add( new ToggleSortOrderAction(TeamUIMessages.FlatModelProvider_8, FlatComparator.PATH));
+			sortByResource.add(new ToggleSortOrderAction(TeamUIMessages.FlatModelProvider_7, FlatComparator.NAME));
+			sortByResource.add(new ToggleSortOrderAction(TeamUIMessages.FlatModelProvider_9, FlatComparator.PARENT_NAME));
 		}
 
 		@Override
@@ -221,12 +221,12 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 			// ignore and use the defaults.
 		}
 		switch (sortCriteria) {
-		case FlatSorter.PATH:
-		case FlatSorter.NAME:
-		case FlatSorter.PARENT_NAME:
+		case FlatComparator.PATH:
+		case FlatComparator.NAME:
+		case FlatComparator.PARENT_NAME:
 			break;
 		default:
-			sortCriteria = FlatSorter.PATH;
+			sortCriteria = FlatComparator.PATH;
 			break;
 		}
 	}
@@ -237,8 +237,8 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 	}
 
 	@Override
-	public ViewerSorter getViewerSorter() {
-		return new FlatSorter(sortCriteria);
+	public ViewerComparator getViewerComparator() {
+		return new FlatComparator(sortCriteria);
 	}
 
 	@Override

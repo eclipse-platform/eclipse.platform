@@ -16,7 +16,7 @@ package org.eclipse.team.internal.ui.synchronize;
 import java.util.Date;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.team.internal.core.subscribers.ActiveChangeSet;
 import org.eclipse.team.internal.core.subscribers.ChangeSet;
 import org.eclipse.team.internal.core.subscribers.CheckedInChangeSet;
@@ -27,7 +27,7 @@ import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
  *
  * @since 3.0
  */
-public class ChangeSetModelSorter extends ViewerSorter {
+public class ChangeSetModelComparator extends ViewerComparator {
 
 	private int commentCriteria;
 	private ChangeSetModelProvider provider;
@@ -37,7 +37,7 @@ public class ChangeSetModelSorter extends ViewerSorter {
 	public final static int COMMENT = 2;
 	public final static int USER = 3;
 
-	public ChangeSetModelSorter(ChangeSetModelProvider provider, int commentCriteria) {
+	public ChangeSetModelComparator(ChangeSetModelProvider provider, int commentCriteria) {
 		this.provider = provider;
 		this.commentCriteria = commentCriteria;
 	}
@@ -105,7 +105,7 @@ public class ChangeSetModelSorter extends ViewerSorter {
 		}
 
 		if (o1 instanceof ISynchronizeModelElement && o2 instanceof ISynchronizeModelElement) {
-			ViewerSorter embeddedSorter = provider.getEmbeddedSorter();
+			ViewerComparator embeddedSorter = provider.getEmbeddedComparator();
 			if (embeddedSorter != null) {
 				return embeddedSorter.compare(viewer, o1, o2);
 			} else {

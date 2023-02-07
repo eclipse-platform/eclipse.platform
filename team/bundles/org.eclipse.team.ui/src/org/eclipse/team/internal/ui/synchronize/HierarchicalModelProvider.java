@@ -21,7 +21,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent;
 import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.core.synchronize.SyncInfoSet;
@@ -94,9 +94,8 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 		return hierarchicalDescriptor;
 	}
 
-	@Override
-	public ViewerSorter getViewerSorter() {
-		return new SynchronizeModelElementSorter();
+	public ViewerComparator getViewerComparator() {
+		return new SynchronizeModelElementComparator();
 	}
 
 	protected SyncInfoTree getSyncInfoTree() {

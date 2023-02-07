@@ -16,7 +16,7 @@ package org.eclipse.team.internal.ui.synchronize;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.StructuredViewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.team.core.synchronize.SyncInfoSet;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
@@ -76,10 +76,10 @@ public interface ISynchronizeModelProvider {
 	public abstract ISynchronizeModelElement getModelRoot();
 
 	/**
-	 * Returns the sorter for this model.
-	 * @return the sorter for this model.
+	 * Returns the comparator for this model.
+	 * @return the comparator for this model.
 	 */
-	public abstract ViewerSorter getViewerSorter();
+	public abstract ViewerComparator getViewerComparator();
 
 	/**
 	 * Allows the provider to save state. Is usually called before provider is disposed and it
