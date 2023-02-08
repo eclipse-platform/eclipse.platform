@@ -15,13 +15,27 @@
 package org.eclipse.core.tests.internal.builders;
 
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+
 import org.eclipse.core.internal.events.ResourceDelta;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
 
@@ -222,8 +236,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		if (rule == null) {
 			return rules;
 		}
-		if (rule instanceof MultiRule) {
-			rules.addAll(Arrays.asList(((MultiRule) rule).getChildren()));
+		if (rule instanceof MultiRule mRule) {
+			rules.addAll(Arrays.asList(mRule.getChildren()));
 		} else {
 			rules.add(rule);
 		}

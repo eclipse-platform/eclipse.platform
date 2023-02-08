@@ -14,11 +14,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.filesystem.wrapper;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
-import org.eclipse.core.filesystem.*;
+
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.provider.FileStore;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A simple file system implementation that acts as a wrapper around the
@@ -79,10 +86,10 @@ public class WrapperFileStore extends FileStore {
 		if (obj == this) {
 			return true;
 		}
-		if (!(obj instanceof WrapperFileStore)) {
+		if (!(obj instanceof WrapperFileStore wrapper)) {
 			return false;
 		}
-		return baseStore.equals(((WrapperFileStore) obj).baseStore);
+		return baseStore.equals(wrapper.baseStore);
 	}
 
 	@Override
@@ -138,10 +145,10 @@ public class WrapperFileStore extends FileStore {
 
 	@Override
 	public boolean isParentOf(IFileStore other) {
-		if (!(other instanceof WrapperFileStore)) {
+		if (!(other instanceof WrapperFileStore wrapper)) {
 			return false;
 		}
-		IFileStore otherBaseStore = ((WrapperFileStore) other).baseStore;
+		IFileStore otherBaseStore = wrapper.baseStore;
 		return baseStore.isParentOf(otherBaseStore);
 	}
 
@@ -153,8 +160,8 @@ public class WrapperFileStore extends FileStore {
 
 	@Override
 	public void move(IFileStore destination, int options, IProgressMonitor monitor) throws CoreException {
-		if (destination instanceof WrapperFileStore) {
-			destination = ((WrapperFileStore) destination).baseStore;
+		if (destination instanceof WrapperFileStore wrapper) {
+			destination = wrapper.baseStore;
 		}
 		baseStore.move(destination, options, monitor);
 	}

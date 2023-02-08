@@ -14,9 +14,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import java.util.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
+
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.junit.Assert;
 
 /**
@@ -135,9 +144,10 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 	 */
 	public void addExpectedDeletion(IResource resource) {
 		addExpectedChange(resource, IResourceDelta.REMOVED, 0);
-		if (resource instanceof IContainer) {
+		if (resource instanceof IContainer container) {
 			try {
-				IResource[] children = ((IContainer) resource).members(IContainer.INCLUDE_PHANTOMS | IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS | IContainer.INCLUDE_HIDDEN);
+				IResource[] children = container.members(IContainer.INCLUDE_PHANTOMS
+						| IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS | IContainer.INCLUDE_HIDDEN);
 				for (IResource element : children) {
 					addExpectedDeletion(element);
 				}

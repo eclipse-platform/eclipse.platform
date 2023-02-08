@@ -16,7 +16,9 @@ package org.eclipse.core.tests.resources.usecase;
 import org.eclipse.core.internal.resources.ResourceStatus;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 
 /**
  * A class to help testing use cases that access the workspace concurrently but in
@@ -97,8 +99,8 @@ public abstract class ConcurrentOperation implements Runnable, IWorkspaceRunnabl
 	}
 
 	protected void logException(Exception e) {
-		if (e instanceof CoreException) {
-			status.add(((CoreException) e).getStatus());
+		if (e instanceof CoreException ce) {
+			status.add(ce.getStatus());
 		} else {
 			status.add(new ResourceStatus(0, null, null, e));
 		}

@@ -14,8 +14,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Map;
+
 import org.eclipse.core.internal.resources.ResourceInfo;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -48,8 +53,8 @@ public class ResourceInfoTest extends ResourceTest {
 			assertTrue(message, actual.containsKey(key));
 			Object expectedValue = entry.getValue();
 			Object actualValue = actual.get(key);
-			if (expectedValue instanceof byte[] && actualValue instanceof byte[]) {
-				assertEquals(message, (byte[]) expectedValue, (byte[]) actualValue);
+			if (expectedValue instanceof byte[] expectedB && actualValue instanceof byte[] actualB) {
+				assertEquals(message, expectedB, actualB);
 			} else {
 				assertEquals(message, expectedValue, actualValue);
 			}
