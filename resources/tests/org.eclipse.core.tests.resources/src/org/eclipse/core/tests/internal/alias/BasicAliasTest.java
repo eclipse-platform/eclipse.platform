@@ -21,7 +21,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -332,7 +331,7 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	private void assertComparedDistinct(List<String> urisStrings) {
-		List<BatFSURI> batfsList = urisStrings.stream().map(BatFSURI::new).collect(Collectors.toList());
+		List<BatFSURI> batfsList = urisStrings.stream().map(BatFSURI::new).toList();
 		for (BatFSURI bu1 : batfsList) {
 			for (BatFSURI bu2 : batfsList) {
 				if (!bu1.equals(bu2)) {
@@ -398,9 +397,9 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	private void assertPreOrdered(List<String> urisStrings) {
-		List<BatFSURI> batfsList = urisStrings.stream().map(BatFSURI::new).collect(Collectors.toList());
+		List<BatFSURI> batfsList = urisStrings.stream().map(BatFSURI::new).toList();
 		// stable sort:
-		List<BatFSURI> sorted = batfsList.stream().sorted(IFileStore::compareTo).collect(Collectors.toList());
+		List<BatFSURI> sorted = batfsList.stream().sorted(IFileStore::compareTo).toList();
 		// proof sort order did not change
 		assertEquals("1.0", batfsList, sorted);
 	}
