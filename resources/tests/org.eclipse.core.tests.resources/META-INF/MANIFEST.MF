@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse Core Tests Resources
 Bundle-SymbolicName: org.eclipse.core.tests.resources; singleton:=true
-Bundle-Version: 3.10.2100.qualifier
+Bundle-Version: 3.11.0.qualifier
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.core.tests.filesystem,
  org.eclipse.core.tests.internal.alias,
@@ -35,6 +35,6 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.pde.junit.runtime;bundle-version="3.5.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Eclipse-BundleShape: dir
 Automatic-Module-Name: org.eclipse.core.tests.resources
