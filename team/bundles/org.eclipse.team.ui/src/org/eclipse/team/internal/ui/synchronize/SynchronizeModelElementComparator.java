@@ -16,16 +16,16 @@ package org.eclipse.team.internal.ui.synchronize;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.team.internal.ui.Utils;
-import org.eclipse.ui.views.navigator.ResourceSorter;
+import org.eclipse.ui.views.navigator.ResourceComparator;
 
 /**
  * This class sorts <code>SyncInfoModelElement</code> instances.
  * It is not thread safe so it should not be reused between views.
  */
-public class SynchronizeModelElementSorter extends ResourceSorter {
+public class SynchronizeModelElementComparator extends ResourceComparator {
 
-	public SynchronizeModelElementSorter() {
-		super(ResourceSorter.NAME);
+	public SynchronizeModelElementComparator() {
+		super(ResourceComparator.NAME);
 	}
 
 	@Override

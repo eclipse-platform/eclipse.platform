@@ -17,14 +17,14 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.team.internal.ui.IPreferenceIds;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
-import org.eclipse.ui.views.navigator.ResourceSorter;
+import org.eclipse.ui.views.navigator.ResourceComparator;
 
 /**
  * Sorter for use by Common Navigator
  */
-public class ResourceModelSorter extends ResourceSorter {
+public class ResourceModelComparator extends ResourceComparator {
 
-	public ResourceModelSorter() {
+	public ResourceModelComparator() {
 		super(NAME);
 	}
 
@@ -33,7 +33,7 @@ public class ResourceModelSorter extends ResourceSorter {
 		if (getLayout().equals(IPreferenceIds.COMPRESSED_LAYOUT)
 				&& r1 instanceof IFolder
 				&& r2 instanceof IFolder) {
-			return collator.compare(r1.getProjectRelativePath().toString(), r2.getProjectRelativePath().toString());
+			return getComparator().compare(r1.getProjectRelativePath().toString(), r2.getProjectRelativePath().toString());
 		}
 		return super.compareNames(r1, r2);
 	}

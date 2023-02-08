@@ -27,7 +27,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent;
 import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.core.synchronize.SyncInfoSet;
@@ -111,12 +111,12 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 	}
 
 	@Override
-	public ViewerSorter getViewerSorter() {
-		return new SynchronizeModelElementSorter() {
+	public ViewerComparator getViewerComparator() {
+		return new SynchronizeModelElementComparator() {
 			@Override
 			protected int compareNames(IResource resource1, IResource resource2) {
 				if (resource1.getType() == IResource.FOLDER && resource2.getType() == IResource.FOLDER) {
-					return collator.compare(resource1.getProjectRelativePath().toString(), resource2.getProjectRelativePath().toString());
+					return getComparator().compare(resource1.getProjectRelativePath().toString(), resource2.getProjectRelativePath().toString());
 				}
 				return super.compareNames(resource1, resource2);
 			}
