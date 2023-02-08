@@ -16,8 +16,14 @@ package org.eclipse.core.tests.internal.mapping;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.resources.mapping.*;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.mapping.IResourceChangeDescriptionFactory;
+import org.eclipse.core.resources.mapping.ModelStatus;
+import org.eclipse.core.resources.mapping.ResourceChangeValidator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -76,8 +82,7 @@ public class ChangeValidationTest extends ResourceTest {
 	 * came from our test model provider
 	 */
 	private String getModelMessage(IStatus status) {
-		if (status instanceof ModelStatus) {
-			ModelStatus ms = (ModelStatus) status;
+		if (status instanceof ModelStatus ms) {
 			String id = ms.getModelProviderId();
 			if (id.equals(TestModelProvider.ID)) {
 				return status.getMessage();

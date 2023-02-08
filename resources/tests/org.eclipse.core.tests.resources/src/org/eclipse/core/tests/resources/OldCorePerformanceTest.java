@@ -13,9 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import junit.framework.TestResult;
 import org.eclipse.core.tests.harness.LoggingPerformanceTestResult;
 import org.eclipse.core.tests.harness.PerformanceTestResult;
+
+import junit.framework.TestResult;
 
 /**
  * This class used to be the common superclass for all performance tests for
@@ -96,8 +97,8 @@ public abstract class OldCorePerformanceTest extends ResourceTest {
 	 */
 	public void run(PerformanceTestResult test) {
 		result = test;
-		if (test instanceof LoggingPerformanceTestResult) {
-			logger = (LoggingPerformanceTestResult) test;
+		if (test instanceof LoggingPerformanceTestResult loggingResult) {
+			logger = loggingResult;
 		}
 		super.run(test);
 	}

@@ -14,17 +14,36 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.LinkDescription;
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.ProjectDescription;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.FileUtil;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourceAttributes;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 
@@ -337,8 +356,8 @@ public class LinkedResourceTest extends ResourceTest {
 				IResource destination = (IResource) args[1];
 				boolean isDeep = ((Boolean) args[2]).booleanValue();
 				IProgressMonitor monitor = (IProgressMonitor) args[3];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				try {
 					source.createLink(localFile, IResource.NONE, null);
@@ -346,8 +365,8 @@ public class LinkedResourceTest extends ResourceTest {
 				} catch (OperationCanceledException e) {
 					return CANCELED;
 				}
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}
@@ -445,8 +464,8 @@ public class LinkedResourceTest extends ResourceTest {
 				IResource destination = (IResource) args[1];
 				boolean isDeep = ((Boolean) args[2]).booleanValue();
 				IProgressMonitor monitor = (IProgressMonitor) args[3];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				try {
 					source.createLink(localFolder, IResource.NONE, null);
@@ -454,8 +473,8 @@ public class LinkedResourceTest extends ResourceTest {
 				} catch (OperationCanceledException e) {
 					return CANCELED;
 				}
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}
@@ -1237,16 +1256,16 @@ public class LinkedResourceTest extends ResourceTest {
 				IFile file = (IFile) args[0];
 				IPath location = (IPath) args[1];
 				IProgressMonitor monitor = (IProgressMonitor) args[2];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				try {
 					file.createLink(location, IResource.NONE, monitor);
 				} catch (OperationCanceledException e) {
 					return CANCELED;
 				}
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}
@@ -1337,16 +1356,16 @@ public class LinkedResourceTest extends ResourceTest {
 				IFolder folder = (IFolder) args[0];
 				IPath location = (IPath) args[1];
 				IProgressMonitor monitor = (IProgressMonitor) args[2];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				try {
 					folder.createLink(location, IResource.NONE, monitor);
 				} catch (OperationCanceledException e) {
 					return CANCELED;
 				}
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}
@@ -1513,8 +1532,8 @@ public class LinkedResourceTest extends ResourceTest {
 				IResource destination = (IResource) args[1];
 				boolean isDeep = ((Boolean) args[2]).booleanValue();
 				IProgressMonitor monitor = (IProgressMonitor) args[3];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				try {
 					source.createLink(localFile, IResource.NONE, null);
@@ -1522,8 +1541,8 @@ public class LinkedResourceTest extends ResourceTest {
 				} catch (OperationCanceledException e) {
 					return CANCELED;
 				}
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}
@@ -1620,8 +1639,8 @@ public class LinkedResourceTest extends ResourceTest {
 				IFolder source = (IFolder) args[0];
 				IResource destination = (IResource) args[1];
 				IProgressMonitor monitor = (IProgressMonitor) args[2];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				try {
 					source.createLink(localFolder, IResource.NONE, null);
@@ -1629,8 +1648,8 @@ public class LinkedResourceTest extends ResourceTest {
 				} catch (OperationCanceledException e) {
 					return CANCELED;
 				}
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}

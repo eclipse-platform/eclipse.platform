@@ -15,10 +15,25 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 
 public class IFileTest extends ResourceTest {
@@ -53,8 +68,8 @@ public class IFileTest extends ResourceTest {
 		if (container instanceof IFolder) {
 			return true;
 		}
-		if (container instanceof IProject) {
-			return ((IProject) container).isOpen();
+		if (container instanceof IProject project) {
+			return project.isOpen();
 		}
 		fail("Should not get here in FileTest.existsAndOpen");
 		return false;
@@ -403,12 +418,12 @@ public class IFileTest extends ResourceTest {
 				InputStream stream = (InputStream) args[1];
 				boolean force = ((Boolean) args[2]).booleanValue();
 				IProgressMonitor monitor = (IProgressMonitor) args[3];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				file.create(stream, force, monitor);
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}
@@ -1053,12 +1068,12 @@ public class IFileTest extends ResourceTest {
 				InputStream stream = (InputStream) args[1];
 				boolean force = ((Boolean) args[2]).booleanValue();
 				IProgressMonitor monitor = (IProgressMonitor) args[3];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				file.setContents(stream, force, false, monitor);
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}
