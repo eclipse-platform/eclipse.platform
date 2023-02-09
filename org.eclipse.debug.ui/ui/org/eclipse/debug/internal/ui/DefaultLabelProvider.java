@@ -312,11 +312,11 @@ public class DefaultLabelProvider implements ILabelProvider {
 	 * Used to render launch history items in the re-launch drop downs
 	 */
 	protected String getLaunchText(ILaunch launch) {
-		if (launch.getLaunchConfiguration() == null || (!launch.getLaunchConfiguration().exists() && !launch.getLaunchConfiguration().isWorkingCopy())) {
+		ILaunchConfiguration config = launch.getLaunchConfiguration();
+		if (config == null || (!config.exists() && !config.isWorkingCopy())) {
 			return DebugUIMessages.DefaultLabelProvider__unknown__1;
 		}
 		// new launch configuration
-		ILaunchConfiguration config = launch.getLaunchConfiguration();
 		StringBuilder buff= new StringBuilder(config.getName());
 		buff.append(" ["); //$NON-NLS-1$
 		try {
