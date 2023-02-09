@@ -63,7 +63,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * <li>For example in a Bundle/Plugin Activator:
  *
  * <pre>
- * ServiceTracker&lt;IWorkspace, IWorkspace&gt; workspaceTracker = new ServiceTracker&gt;&lt;(bundleContext, IWorkspace.class,
+ * ServiceTracker&lt;IWorkspace, IWorkspace&gt; workspaceTracker = new ServiceTracker&lt;&gt;(bundleContext, IWorkspace.class,
  * 		null);
  * workspaceTracker.open();
  * IWorkspace workspace = workspaceTracker.getService();
