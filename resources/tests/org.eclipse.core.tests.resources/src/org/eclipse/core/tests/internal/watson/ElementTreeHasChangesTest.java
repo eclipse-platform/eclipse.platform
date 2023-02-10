@@ -135,8 +135,8 @@ public class ElementTreeHasChangesTest implements IPathConstants {
 	private static void incrementCharsetGenerationCount(ElementTree tree) {
 		Object treeData = tree.getTreeData();
 		ResourceInfo resourceInfo;
-		if (treeData instanceof ResourceInfo) {
-			resourceInfo = (ResourceInfo) treeData;
+		if (treeData instanceof ResourceInfo ri) {
+			resourceInfo = ri;
 		} else {
 			resourceInfo = new ResourceInfo();
 			tree.setTreeData(resourceInfo);

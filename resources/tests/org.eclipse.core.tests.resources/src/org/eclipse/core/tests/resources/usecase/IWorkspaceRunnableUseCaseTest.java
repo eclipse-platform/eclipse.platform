@@ -13,8 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
@@ -22,11 +28,11 @@ public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
 	protected IWorkspaceRunnable createRunnable(final IProject project, final IWorkspaceRunnable nestedOperation, final boolean triggerBuild, final Exception exceptionToThrow) {
 		return monitor -> {
 			if (exceptionToThrow != null) {
-				if (exceptionToThrow instanceof CoreException) {
-					throw (CoreException) exceptionToThrow;
+				if (exceptionToThrow instanceof CoreException ce) {
+					throw ce;
 				}
-				if (exceptionToThrow instanceof RuntimeException) {
-					throw (RuntimeException) exceptionToThrow;
+				if (exceptionToThrow instanceof RuntimeException re) {
+					throw re;
 				}
 				throw new IllegalArgumentException(exceptionToThrow);
 			}

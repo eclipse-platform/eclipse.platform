@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2018 IBM Corporation and others.
+ *  Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -17,17 +17,27 @@ import java.io.File;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
-import org.eclipse.core.filesystem.*;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.provider.FileSystem;
 import org.eclipse.core.internal.filesystem.Messages;
 import org.eclipse.core.internal.filesystem.NullFileSystem;
 import org.eclipse.core.internal.filesystem.local.LocalFile;
 import org.eclipse.core.internal.filesystem.local.LocalFileSystem;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.internal.localstore.LocalStoreTest;
 import org.eclipse.osgi.util.NLS;
 
@@ -713,23 +723,23 @@ public class FileStoreTest extends LocalStoreTest {
 				"/a/e/../c", //
 				"/a/d", //
 				"/aa", //
-				"/b").stream().map(s -> prefix + s).collect(Collectors.toList());
+				"/b").stream().map(s -> prefix + s).toList();
 		List<String> pathsTrimmed = paths.stream().map(s -> s //
 				.replaceAll("/$", "") // remove trailing slashes
 				.replaceAll("/[^/]+/\\.\\./", "/") // collapse /a/../ to /
 				.replaceAll("/\\./", "/") // collapse /./ to /
-		).collect(Collectors.toList());
+		).toList();
 		paths = new ArrayList<>(paths); // to get a mutable copy for shuffling
 		Collections.shuffle(paths);
 		// Test with new Path(string).getStore()
 		Stream<IFileStore> pathStores = paths.stream().map(Path::new).map(lfs::getStore);
 		List<String> sortedPathStores = pathStores.sorted(IFileStore::compareTo).map(IFileStore::toURI)
-				.map(URI::getPath).collect(Collectors.toList());
+				.map(URI::getPath).toList();
 		assertEquals("1.0 ", pathsTrimmed, sortedPathStores);
 		// Test with new LocalFile(new File(string)))
 		Stream<IFileStore> localFileStores = paths.stream().map(File::new).map(LocalFile::new);
 		List<String> sortedLocalFileStores = localFileStores.sorted(IFileStore::compareTo).map(IFileStore::toURI)
-				.map(URI::getPath).collect(Collectors.toList());
+				.map(URI::getPath).toList();
 		assertEquals("2.0 ", pathsTrimmed, sortedLocalFileStores);
 	}
 }

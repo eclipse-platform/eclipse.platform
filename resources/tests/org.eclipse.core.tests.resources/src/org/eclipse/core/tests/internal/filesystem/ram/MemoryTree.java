@@ -13,8 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.filesystem.ram;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
@@ -281,8 +286,8 @@ public class MemoryTree {
 		if (node instanceof DirNode) {
 			Policy.error("Could not create file: " + path);
 		}
-		if (node instanceof FileNode) {
-			return ((FileNode) node).openOutputStream(options);
+		if (node instanceof FileNode fNode) {
+			return fNode.openOutputStream(options);
 		}
 		//if the parent exists we can create the file
 		Node parent = findNode(path.removeLastSegments(1));

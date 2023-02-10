@@ -18,12 +18,43 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceProxyVisitor;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 
@@ -790,12 +821,12 @@ public class IResourceTest extends ResourceTest {
 				IPath destination = (IPath) args[1];
 				Boolean force = (Boolean) args[2];
 				IProgressMonitor monitor = (IProgressMonitor) args[3];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				resource.copy(destination, force.booleanValue(), monitor);
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}
@@ -862,16 +893,16 @@ public class IResourceTest extends ResourceTest {
 				Boolean force = (Boolean) args[0];
 				IProgressMonitor monitor = (IProgressMonitor) args[1];
 				IResource resource = (IResource) args[2];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				try {
 					resource.delete(force.booleanValue(), monitor);
 				} catch (OperationCanceledException e) {
 					return CANCELED;
 				}
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}
@@ -1930,12 +1961,12 @@ public class IResourceTest extends ResourceTest {
 				IPath destination = (IPath) args[1];
 				Boolean force = (Boolean) args[2];
 				IProgressMonitor monitor = (IProgressMonitor) args[3];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				resource.move(destination, force.booleanValue(), monitor);
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}

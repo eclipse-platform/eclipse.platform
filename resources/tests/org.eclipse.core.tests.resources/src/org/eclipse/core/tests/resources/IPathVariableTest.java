@@ -14,14 +14,29 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.filesystem.URIUtil;
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.ProjectInfo;
 import org.eclipse.core.internal.utils.FileUtil;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IPathVariableChangeEvent;
+import org.eclipse.core.resources.IPathVariableChangeListener;
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * Tests path variables.
@@ -70,10 +85,9 @@ public class IPathVariableTest extends ResourceTest {
 
 			@Override
 			public boolean equals(Object obj) {
-				if (obj == null || !(obj instanceof Event)) {
+				if (obj == null || !(obj instanceof Event that)) {
 					return false;
 				}
-				Event that = (Event) obj;
 				if (this.type != that.type || !this.name.equals(that.name)) {
 					return false;
 				}

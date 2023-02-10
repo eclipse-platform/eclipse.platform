@@ -21,13 +21,28 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.eclipse.core.filesystem.*;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.internal.filesystem.NullFileStore;
 import org.eclipse.core.internal.filesystem.NullFileSystem;
-import org.eclipse.core.internal.resources.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.resources.AliasManager;
+import org.eclipse.core.internal.resources.Folder;
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -121,10 +136,10 @@ public class BasicAliasTest extends ResourceTest {
 	 * alphabetical order.
 	 */
 	private IResource[] getSortedChildren(IResource resource) throws CoreException {
-		if (!(resource instanceof IContainer)) {
+		if (!(resource instanceof IContainer container)) {
 			return new IResource[0];
 		}
-		IResource[] children = ((IContainer) resource).members();
+		IResource[] children = container.members();
 		Arrays.sort(children, (arg0, arg1) -> arg0.getFullPath().toString().compareTo(arg1.getFullPath().toString()));
 		return children;
 	}
@@ -316,7 +331,7 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	private void assertComparedDistinct(List<String> urisStrings) {
-		List<BatFSURI> batfsList = urisStrings.stream().map(BatFSURI::new).collect(Collectors.toList());
+		List<BatFSURI> batfsList = urisStrings.stream().map(BatFSURI::new).toList();
 		for (BatFSURI bu1 : batfsList) {
 			for (BatFSURI bu2 : batfsList) {
 				if (!bu1.equals(bu2)) {
@@ -382,9 +397,9 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	private void assertPreOrdered(List<String> urisStrings) {
-		List<BatFSURI> batfsList = urisStrings.stream().map(BatFSURI::new).collect(Collectors.toList());
+		List<BatFSURI> batfsList = urisStrings.stream().map(BatFSURI::new).toList();
 		// stable sort:
-		List<BatFSURI> sorted = batfsList.stream().sorted(IFileStore::compareTo).collect(Collectors.toList());
+		List<BatFSURI> sorted = batfsList.stream().sorted(IFileStore::compareTo).toList();
 		// proof sort order did not change
 		assertEquals("1.0", batfsList, sorted);
 	}
