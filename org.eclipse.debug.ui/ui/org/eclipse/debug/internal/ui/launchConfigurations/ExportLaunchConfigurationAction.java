@@ -47,7 +47,7 @@ public class ExportLaunchConfigurationAction extends AbstractLaunchConfiguration
 			wizard = new ExportLaunchConfigurationsWizard(selection);
 		}
 		wizard.init(PlatformUI.getWorkbench(), null);
-		WizardDialog dialog = new WizardDialog(DebugUIPlugin.getShell(), wizard);
+		WizardDialog dialog = new WizardDialog(getShell(), wizard);
 		dialog.open();
 	}
 
