@@ -43,6 +43,8 @@ jobs:
         -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss.SSS
         -DtrimStackTrace=false
         -Dmaven.compiler.failOnWarning=true
+        -Dorg.slf4j.simpleLogger.showThreadName=true
+        -Dorg.slf4j.simpleLogger.log.org.eclipse.aether=trace
         -T1C
         clean verify
     - name: Upload Test Results
