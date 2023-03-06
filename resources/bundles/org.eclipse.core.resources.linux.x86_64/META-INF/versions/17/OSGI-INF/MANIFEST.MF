@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Import-Package: jdk.incubator.foreign
+Require-Capability: (&(osgi.ee=JavaSE)(version=17))
