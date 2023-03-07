@@ -37,12 +37,12 @@ public class BenchFileStore extends ResourceTest {
 		}
 	}
 
-	private static final int LOOP_SIZE = 5000;
+	private static final int LOOP_SIZE = 50000;
 
-	private static final int REPEATS = 30;
+	private static final int REPEATS = 300;
 	protected IFileStore existingStore;
 
-	protected IFileStore nonexistingStore;
+	// protected IFileStore nonexistingStore;
 
 	protected void createStores() throws CoreException {
 		existingStore = EFS.getFileSystem(EFS.SCHEME_FILE).getStore(getRandomLocation());
@@ -51,7 +51,8 @@ public class BenchFileStore extends ResourceTest {
 		} catch (IOException e) {
 			fail("BenchFileStore.createStores", e);
 		}
-		nonexistingStore = EFS.getFileSystem(EFS.SCHEME_FILE).getStore(getRandomLocation());
+		// nonexistingStore =
+		// EFS.getFileSystem(EFS.SCHEME_FILE).getStore(getRandomLocation());
 	}
 
 	protected void deleteStores() throws CoreException {
@@ -63,7 +64,7 @@ public class BenchFileStore extends ResourceTest {
 			@Override
 			protected void test() {
 				existingStore.fetchInfo().exists();
-				nonexistingStore.fetchInfo().exists();
+				// nonexistingStore.fetchInfo().exists();
 			}
 		}.run(this, REPEATS, LOOP_SIZE);
 	}
@@ -73,7 +74,7 @@ public class BenchFileStore extends ResourceTest {
 			@Override
 			protected void test() {
 				existingStore.fetchInfo().getAttribute(EFS.ATTRIBUTE_READ_ONLY);
-				nonexistingStore.fetchInfo().getAttribute(EFS.ATTRIBUTE_READ_ONLY);
+				// nonexistingStore.fetchInfo().getAttribute(EFS.ATTRIBUTE_READ_ONLY);
 			}
 		};
 		storeTestRunner.setRegressionReason("Performance slowed down because new functionality was added in Windows filessytem natives (see Bug 318170).");
@@ -85,7 +86,7 @@ public class BenchFileStore extends ResourceTest {
 			@Override
 			protected void test() {
 				existingStore.fetchInfo().getLastModified();
-				nonexistingStore.fetchInfo().getLastModified();
+				// nonexistingStore.fetchInfo().getLastModified();
 			}
 		};
 		runner.setFingerprintName("Get file last modified time");
