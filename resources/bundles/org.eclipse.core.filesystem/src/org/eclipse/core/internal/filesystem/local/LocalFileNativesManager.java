@@ -34,18 +34,35 @@ import org.eclipse.core.internal.filesystem.local.unix.UnixFileNatives;
  * The BenchFileStore test runs 3.1 times faster on Linux with the native code than without it.
  */
 public class LocalFileNativesManager {
+	public static final boolean PROPERTY_USE_NATIVE_DEFAULT = true;
+	public static final String PROPERTY_USE_NATIVES = "eclipse.filesystem.useNatives"; //$NON-NLS-1$
 	private static NativeHandler HANDLER;
-	private static boolean USING_NATIVES;
 
 	static {
-		boolean nativesAllowed = Boolean.parseBoolean(System.getProperty("eclipse.filesystem.useNatives", "true")); //$NON-NLS-1$ //$NON-NLS-2$
-		if (nativesAllowed && UnixFileNatives.isUsingNatives()) {
+		reset();
+	}
+
+	/**
+	 * reset the usage of native to the system default
+	 */
+	public static void reset() {
+		setUsingNative(Boolean.parseBoolean(System.getProperty(PROPERTY_USE_NATIVES, String.valueOf(PROPERTY_USE_NATIVE_DEFAULT))));
+	}
+
+	/**
+	 * Try to set the usage of natives to the provided value
+	 * @return <code>true</code> if natives are used as result of this call <code>false</code> otherwhise
+	 */
+	public static boolean setUsingNative(boolean useNatives) {
+		boolean nativesAreUsed;
+		if (useNatives && UnixFileNatives.isUsingNatives()) {
 			HANDLER = new UnixFileHandler();
-			USING_NATIVES = true;
-		} else if (nativesAllowed && LocalFileNatives.isUsingNatives()) {
+			nativesAreUsed = true;
+		} else if (useNatives && LocalFileNatives.isUsingNatives()) {
 			HANDLER = new LocalFileHandler();
-			USING_NATIVES = true;
+			nativesAreUsed = true;
 		} else {
+			nativesAreUsed = false;
 			Set<String> views = FileSystems.getDefault().supportedFileAttributeViews();
 			if (views.contains("posix")) { //$NON-NLS-1$
 				HANDLER = new PosixHandler();
@@ -55,6 +72,7 @@ public class LocalFileNativesManager {
 				HANDLER = new DefaultHandler();
 			}
 		}
+		return nativesAreUsed;
 	}
 
 	public static int getSupportedAttributes() {
@@ -69,7 +87,4 @@ public class LocalFileNativesManager {
 		return HANDLER.putFileInfo(fileName, info, options);
 	}
 
-	public static boolean isUsingNatives() {
-		return USING_NATIVES;
-	}
 }
