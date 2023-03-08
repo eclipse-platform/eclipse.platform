@@ -104,7 +104,8 @@ public interface IContentTypeSettings {
 	 * @param fileSpec the file specification
 	 * @param type the type of the file specification. One of
 	 * <code>FILE_NAME_SPEC</code>,
-	 * <code>FILE_EXTENSION_SPEC</code>.
+	 * <code>FILE_EXTENSION_SPEC</code>,
+	 * <code>FILE_PATTERN_SPEC</code>.
 	 * @throws IllegalArgumentException if the type bit mask is
 	 * incorrect
 	 * @throws CoreException if this method fails. Reasons include:
@@ -113,6 +114,7 @@ public interface IContentTypeSettings {
 	 * </ul>
 	 * @see #FILE_NAME_SPEC
 	 * @see #FILE_EXTENSION_SPEC
+	 * @see #FILE_PATTERN_SPEC
 	 */
 	void removeFileSpec(String fileSpec, int type) throws CoreException;
 

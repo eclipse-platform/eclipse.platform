@@ -970,8 +970,14 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		assertNull("File pattern unknown at that point", single);
 
 		textContentType.addFileSpec("*Text*", IContentType.FILE_PATTERN_SPEC);
+		try {
+			single = finder.findContentTypeFor(getInputStream("Just a test"), "someText.unknown");
+			assertEquals("Text content should now match *Text* files", textContentType, single);
+		} finally {
+			textContentType.removeFileSpec("*Text*", IContentType.FILE_PATTERN_SPEC);
+		}
 		single = finder.findContentTypeFor(getInputStream("Just a test"), "someText.unknown");
-		assertEquals("Text content should now match *Text* files", textContentType, single);
+		assertNull("File pattern unknown at that point", single);
 	}
 
 	@Test

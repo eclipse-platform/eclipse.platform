@@ -277,12 +277,22 @@ public final class ContentTypeCatalog {
 	}
 
 	synchronized void dissociate(ContentType contentType, String text, int type) {
-		Map<String, Set<ContentType>> fileSpecMap = ((type & IContentType.FILE_NAME_SPEC) != 0) ? fileNames : fileExtensions;
-		String mappingKey = FileSpec.getMappingKeyFor(text);
-		Set<ContentType> existing = fileSpecMap.get(mappingKey);
-		if (existing == null)
-			return;
-		existing.remove(contentType);
+		Map<String, Set<ContentType>> fileSpecMap = null;
+		if ((type & IContentType.FILE_NAME_SPEC) != 0) {
+			fileSpecMap = fileNames;
+		} else if ((type & IContentType.FILE_EXTENSION_SPEC) != 0) {
+			fileSpecMap = fileExtensions;
+		}
+		if (fileSpecMap != null) {
+			String mappingKey = FileSpec.getMappingKeyFor(text);
+			Set<ContentType> existing = fileSpecMap.get(mappingKey);
+			if (existing == null)
+				return;
+			existing.remove(contentType);
+		} else if ((type & IContentType.FILE_PATTERN_SPEC) != 0) {
+			Pattern pattern = compiledRegexps.get(text);
+			fileRegexps.get(pattern).remove(contentType);
+		}
 	}
 
 	/**
