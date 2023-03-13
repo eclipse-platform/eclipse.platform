@@ -54,7 +54,7 @@ public class ExtraFilters implements IFilter {
 				Platform.getLog(getClass()).error("Create extension failed:[" //$NON-NLS-1$
 						+ CONTENTFILTER_XP_NAME + "].", e); //$NON-NLS-1$
 			}
-			if (obj instanceof IFilter) {
+			if (obj instanceof IFilter iFilter) {
 
 				int priority = 0;
 				String priStr = element.getAttribute("priority"); //$NON-NLS-1$
@@ -64,7 +64,7 @@ public class ExtraFilters implements IFilter {
 					} catch (NumberFormatException e) {
 					}
 				}
-				PrioritizedFilter filter = new PrioritizedFilter((IFilter)obj, priority);
+				PrioritizedFilter filter = new PrioritizedFilter(iFilter, priority);
 				filters.add(filter);
 			}
 		}

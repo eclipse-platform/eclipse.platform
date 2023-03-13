@@ -52,8 +52,8 @@ public class ButtonData extends RequestData {
 					Platform.getLog(getClass()).error("Create extension failed:[" //$NON-NLS-1$
 							+ BUTTON_EXTENSION_POINT + "].", e); //$NON-NLS-1$
 				}
-				if (obj instanceof AbstractButton) {
-					allButtons.add((AbstractButton) obj);
+				if (obj instanceof AbstractButton button) {
+					allButtons.add(button);
 				}
 			}
 			allButtons.sort(null);

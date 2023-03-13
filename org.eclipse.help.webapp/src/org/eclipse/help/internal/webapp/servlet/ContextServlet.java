@@ -80,8 +80,8 @@ public class ContextServlet extends HttpServlet {
 		StringBuilder buff = new StringBuilder();
 		buff.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"); //$NON-NLS-1$
 		buff.append('<' + Context.NAME );
-		if (context instanceof IContext2) {
-			String title = ((IContext2)context).getTitle();
+		if (context instanceof IContext2 context2) {
+			String title = context2.getTitle();
 			if (title != null && title.length() > 0) {
 				buff.append(" title=\"" + title + "\""); //$NON-NLS-1$ //$NON-NLS-2$
 			}

@@ -303,14 +303,14 @@ public class TocData extends ActivitiesData {
 	 * @return List of ITopic
 	 */
 	private List<ITopic> getEnabledSubtopicList(Object element) {
-		if (element instanceof IToc && !isEnabled((IToc) element))
+		if (element instanceof IToc toc && !isEnabled(toc))
 			return Collections.emptyList();
 		List<ITopic> children;
-		if (element instanceof IToc) {
-			children = Arrays.asList(((IToc)element).getTopics());
+		if (element instanceof IToc toc) {
+			children = Arrays.asList((toc).getTopics());
 		}
-		else if (element instanceof ITopic) {
-			children = Arrays.asList(((ITopic)element).getSubtopics());
+		else if (element instanceof ITopic topic) {
+			children = Arrays.asList((topic).getSubtopics());
 		}
 		else {
 			// unknown element type
@@ -319,13 +319,13 @@ public class TocData extends ActivitiesData {
 		List<ITopic> childTopics = new ArrayList<>(children.size());
 		for (ITopic iTopic : children) {
 			Object c = iTopic;
-			if ((c instanceof ITopic)) {
+			if (c instanceof ITopic cTopic) {
 				// add topic only if it will not end up being an empty
 				// container
-				if (((((ITopic) c).getHref() != null && ((ITopic) c)
-						.getHref().length() > 0) || !getEnabledSubtopicList(c).isEmpty()) &&
-						!UAContentFilter.isFiltered(c, HelpEvaluationContext.getContext())) {
-					childTopics.add((ITopic) c);
+				if (((cTopic.getHref() != null && cTopic.getHref().length() > 0)
+						|| !getEnabledSubtopicList(c).isEmpty())
+						&& !UAContentFilter.isFiltered(c, HelpEvaluationContext.getContext())) {
+					childTopics.add(cTopic);
 				}
 			} else {
 				// it is a Toc, Anchor or Link,

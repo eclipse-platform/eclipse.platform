@@ -188,8 +188,8 @@ public class LayoutData extends RequestData {
 				Platform.getLog(getClass()).error("Create extension failed:[" //$NON-NLS-1$
 						+ VIEW_EXTENSION_POINT + "].", e); //$NON-NLS-1$
 			}
-			if (obj instanceof AbstractView) {
-				viewList.add((AbstractView) obj);
+			if (obj instanceof AbstractView view) {
+				viewList.add(view);
 			}
 		}
 

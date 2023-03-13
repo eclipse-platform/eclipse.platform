@@ -46,8 +46,8 @@ public class XMLGenerator {
 	 * Constructor.
 	 */
 	public XMLGenerator(Writer writer) {
-		if (writer instanceof PrintWriter)
-			this.out = (PrintWriter) writer;
+		if (writer instanceof PrintWriter printWriter)
+			this.out = printWriter;
 		else
 			this.out = new PrintWriter(writer);
 	}

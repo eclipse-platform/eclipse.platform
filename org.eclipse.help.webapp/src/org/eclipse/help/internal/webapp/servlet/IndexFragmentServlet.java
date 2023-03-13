@@ -292,7 +292,7 @@ public class IndexFragmentServlet extends HttpServlet {
 			}
 
 			int seeCount = 0;
-			IIndexSee[] sees = entry instanceof IIndexEntry2 ? ((IIndexEntry2)entry).getSees() : new IIndexSee[0];
+			IIndexSee[] sees = entry instanceof IIndexEntry2 entry2 ? entry2.getSees() : new IIndexSee[0];
 			for (IIndexSee see : sees) {
 				if (ScopeUtils.showInTree(see, scope)) {
 					seeCount++;
@@ -334,8 +334,8 @@ public class IndexFragmentServlet extends HttpServlet {
 				ITopic[] topics = ScopeUtils.inScopeTopics(entry.getTopics(), scope);
 				IIndexEntry[] subentries = ScopeUtils.inScopeEntries(entry.getSubentries(), scope);
 				IIndexSee[] sees;
-				if (entry instanceof IIndexEntry2) {
-					sees = ((IIndexEntry2)entry).getSees();
+				if (entry instanceof IIndexEntry2 entry2) {
+					sees = entry2.getSees();
 				} else {
 					sees = new IIndexSee[0];
 				}

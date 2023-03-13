@@ -125,8 +125,7 @@ public class ToolbarData extends RequestData {
 				Platform.getLog(getClass()).error("Create extension failed:[" //$NON-NLS-1$
 						+ BUTTON_EXTENSION_POINT + "].", e); //$NON-NLS-1$
 			}
-			if (obj instanceof AbstractButton) {
-				AbstractButton button = (AbstractButton) obj;
+			if (obj instanceof AbstractButton button) {
 				String toolbarName = request.getParameter("view"); //$NON-NLS-1$
 				if (toolbarName == null)
 				{

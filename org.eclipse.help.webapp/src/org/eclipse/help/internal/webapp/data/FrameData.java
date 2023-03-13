@@ -54,8 +54,8 @@ public class FrameData extends RequestData {
 					Platform.getLog(getClass()).error("Create extension failed:[" //$NON-NLS-1$
 							+ FRAME_EXTENSION_POINT + "].", e); //$NON-NLS-1$
 				}
-				if (obj instanceof AbstractFrame) {
-					allFrames.add((AbstractFrame) obj);
+				if (obj instanceof AbstractFrame frame) {
+					allFrames.add(frame);
 				}
 			}
 			allFrames.sort(null);

@@ -98,8 +98,8 @@ public class EnabledTopicUtils {
 				return true;
 			}
 		}
-		if (entry instanceof IIndexEntry2) {
-			IIndexSee[] sees = ((IIndexEntry2)entry).getSees();
+		if (entry instanceof IIndexEntry2 indexEntry) {
+			IIndexSee[] sees = indexEntry.getSees();
 			for (IIndexSee see : sees) {
 				if (isEnabled(see)) {
 					return true;

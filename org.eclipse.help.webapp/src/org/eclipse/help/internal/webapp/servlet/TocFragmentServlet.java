@@ -246,8 +246,8 @@ public class TocFragmentServlet extends HttpServlet {
 		}
 
 		private String createTocImageTag(IToc toc) {
-			if (toc instanceof Toc) {
-				String icon = ((Toc) toc).getIcon();
+			if (toc instanceof Toc toc1) {
+				String icon = toc1.getIcon();
 
 				if (IconFinder.isIconDefined(icon)) {
 					String openIcon = IconFinder.getImagePathFromId(icon, IconFinder.TYPEICON_OPEN);
@@ -267,8 +267,8 @@ public class TocFragmentServlet extends HttpServlet {
 		}
 
 		private String createTopicImageTags(ITopic topic, boolean isLeaf) {
-			if (topic instanceof Topic) {
-				String icon = ((Topic) topic).getIcon();
+			if (topic instanceof Topic topic1) {
+				String icon = topic1.getIcon();
 				String altText = IconFinder.getIconAltFromId(icon);
 
 				if (IconFinder.isIconDefined(icon)) {
