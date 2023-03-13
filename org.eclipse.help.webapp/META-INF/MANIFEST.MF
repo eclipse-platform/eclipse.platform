@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %help_webapp_plugin_name
 Bundle-SymbolicName: org.eclipse.help.webapp;singleton:=true
-Bundle-Version: 3.10.1000.qualifier
+Bundle-Version: 3.11.0.qualifier
 Bundle-Activator: org.eclipse.help.internal.webapp.HelpWebappPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -17,7 +17,7 @@ Export-Package: org.eclipse.help.internal.webapp;x-friends:="org.eclipse.ua.test
  org.eclipse.help.internal.webapp.servlet;x-friends:="org.eclipse.ua.tests,org.eclipse.ua.tests.doc",
  org.eclipse.help.internal.webapp.utils;x-friends:="org.eclipse.ua.tests",
  org.eclipse.help.webapp
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: javax.servlet;version="3.1.0",
  javax.servlet.http;version="3.1.0"
 Bundle-ActivationPolicy: lazy
