@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse Core Tests Harness
 Bundle-SymbolicName: org.eclipse.core.tests.harness;singleton:=true
-Bundle-Version: 3.14.0.qualifier
+Bundle-Version: 3.15.0.qualifier
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.core.tests.harness;version="2.0",
  org.eclipse.core.tests.session;version="2.0"
@@ -13,7 +13,7 @@ Require-Bundle: org.junit,
  org.eclipse.jdt.junit4.runtime,
  org.eclipse.pde.junit.runtime
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: javax.xml.parsers,
  org.apiguardian.api,
  org.junit.jupiter.api,

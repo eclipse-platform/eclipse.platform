@@ -4,8 +4,8 @@ Bundle-Name: %fragmentName
 Bundle-Vendor: %providerName
 Bundle-Localization: fragment
 Bundle-SymbolicName: org.eclipse.core.net.win32.x86_64;singleton:=true
-Bundle-Version: 1.1.700.qualifier
+Bundle-Version: 1.2.0.qualifier
 Fragment-Host: org.eclipse.core.net;bundle-version="1.1.0"
 Eclipse-PlatformFilter: (& (osgi.os=win32) (osgi.arch=x86_64))
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.core.net.win32.x86_64

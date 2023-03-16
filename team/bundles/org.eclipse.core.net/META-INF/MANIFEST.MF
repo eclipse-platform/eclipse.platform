@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %PLUGIN_NAME
 Bundle-SymbolicName: org.eclipse.core.net;singleton:=true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.eclipse.core.internal.net.Activator
 Bundle-Vendor: %PLUGIN_PROVIDER
 Bundle-Localization: plugin
@@ -14,5 +14,5 @@ Require-Bundle: org.eclipse.equinox.security;bundle-version="[1.0.0,2.0.0)",
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.core.internal.net;x-friends:="org.eclipse.ui.net",
  org.eclipse.core.net.proxy
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.core.net

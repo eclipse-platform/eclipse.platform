@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-Version: 3.26.100.qualifier
+Bundle-Version: 3.27.0.qualifier
 Bundle-SymbolicName: org.eclipse.core.runtime; singleton:=true
 Bundle-Vendor: %providerName
 Bundle-Activator: org.eclipse.core.internal.runtime.PlatformActivator
@@ -17,6 +17,6 @@ Require-Bundle: org.eclipse.osgi;bundle-version="[3.17.0,4.0.0)";visibility:=ree
  org.eclipse.core.contenttype;bundle-version="[3.8.0,4.0.0)";visibility:=reexport,
  org.eclipse.equinox.app;bundle-version="1.6.0";visibility:=reexport
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 DynamicImport-Package: org.eclipse.core.internal.runtime.auth
 Automatic-Module-Name: org.eclipse.core.runtime
