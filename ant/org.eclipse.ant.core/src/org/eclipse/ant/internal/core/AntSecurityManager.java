@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.Status;
  * exit/halt or if the restricted thread attempts to set a System property. Otherwise this manager just delegates to the pre-existing manager passed
  * in the constructor or mimics the default security manager behavior
  */
+@SuppressWarnings("removal") // SecurityManager
 public class AntSecurityManager extends SecurityManager {
 
 	private SecurityManager fSecurityManager = null;

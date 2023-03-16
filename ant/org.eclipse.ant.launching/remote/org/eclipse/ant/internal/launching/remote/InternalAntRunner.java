@@ -343,7 +343,7 @@ public class InternalAntRunner {
 	/*
 	 * Note that the list passed to this method must support List#remove(Object)
 	 */
-	@SuppressWarnings("unused")
+	@SuppressWarnings("removal") // SecurityManager
 	private void run(List<String> argList) {
 		setCurrentProject(new Project());
 		if (isVersionCompatible("1.6.3")) { //$NON-NLS-1$
@@ -453,7 +453,7 @@ public class InternalAntRunner {
 				logMessage(null, RemoteAntMessages.getString("InternalAntRunner.SecurityManagerError"), Project.MSG_WARN); //$NON-NLS-1$
 			}
 			if (targets == null) {
-				targets = new Vector<String>(1);
+				targets = new Vector<>(1);
 			}
 			if (targets.isEmpty() && getCurrentProject().getDefaultTarget() != null) {
 				targets.add(getCurrentProject().getDefaultTarget());

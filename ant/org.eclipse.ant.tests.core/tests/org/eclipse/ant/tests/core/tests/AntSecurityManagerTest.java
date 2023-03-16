@@ -8,10 +8,11 @@ import org.junit.Test;
 
 public class AntSecurityManagerTest extends AbstractAntTest {
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "removal" }) // SecurityManager
 	@Test
 	public void test_getInCheck() {
-		AntSecurityManager securityManager = new AntSecurityManager(System.getSecurityManager(), Thread.currentThread());
+		AntSecurityManager securityManager = new AntSecurityManager(System.getSecurityManager(),
+				Thread.currentThread());
 		assertFalse(securityManager.getInCheck());
 	}
 

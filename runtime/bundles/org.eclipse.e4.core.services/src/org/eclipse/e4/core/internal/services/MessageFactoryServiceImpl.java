@@ -43,6 +43,7 @@ import org.osgi.service.log.Logger;
 import org.osgi.service.log.LoggerFactory;
 
 @Component
+@SuppressWarnings("removal") // AccessController
 public class MessageFactoryServiceImpl implements IMessageFactoryService {
 
 	private LoggerFactory factory;
@@ -57,6 +58,7 @@ public class MessageFactoryServiceImpl implements IMessageFactoryService {
 
 	private int CLEANUPCOUNT = 0;
 
+	@SuppressWarnings("removal")
 	@Override
 	public <M> M getMessageInstance(final Locale locale, final Class<M> messages,
 			final ResourceBundleProvider provider) {

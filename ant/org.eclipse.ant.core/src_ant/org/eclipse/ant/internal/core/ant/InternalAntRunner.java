@@ -80,6 +80,7 @@ import org.osgi.framework.Version;
  * Eclipse application entry point into Ant. Derived from the original Ant Main class to ensure that the functionality is equivalent when running in
  * the platform.
  */
+@SuppressWarnings("removal") // SecurityManager
 public class InternalAntRunner {
 
 	private IProgressMonitor monitor;
