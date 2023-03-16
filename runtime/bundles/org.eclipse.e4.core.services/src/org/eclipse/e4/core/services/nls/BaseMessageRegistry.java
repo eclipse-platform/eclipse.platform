@@ -67,6 +67,7 @@ import org.osgi.service.log.LoggerFactory;
  *            the message class type
  * @since 2.0
  */
+@SuppressWarnings("removal") // SecurityManager
 public class BaseMessageRegistry<M> {
 
 	private M messages;

@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 Dirk Fauth and others.
  *
+ * Copyright (c) 2012, 2018 Dirk Fauth and others.
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 /**
  * Helper class for retrieving {@link ResourceBundle}s out of OSGi {@link Bundle}s.
  */
+@SuppressWarnings("removal") // AccessController
 public class ResourceBundleHelper {
 
 	/**
