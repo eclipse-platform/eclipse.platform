@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %help_plugin_name
 Bundle-SymbolicName: org.eclipse.help; singleton:=true
-Bundle-Version: 3.9.100.qualifier
+Bundle-Version: 3.10.0.qualifier
 Bundle-Activator: org.eclipse.help.internal.HelpPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -66,6 +66,6 @@ Import-Package: javax.xml.parsers,
  org.w3c.dom,
  org.xml.sax,
  org.xml.sax.helpers
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.eclipse.help

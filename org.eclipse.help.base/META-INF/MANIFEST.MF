@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %help_base_plugin_name
 Bundle-SymbolicName: org.eclipse.help.base; singleton:=true
-Bundle-Version: 4.3.1100.qualifier
+Bundle-Version: 4.4.0.qualifier
 Bundle-Activator: org.eclipse.help.internal.base.HelpBasePlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -47,6 +47,6 @@ Require-Bundle: org.eclipse.ant.core;bundle-version="[3.2.200,4.0.0)";resolution
  org.apache.lucene.core;bundle-version="[9.4.2,10.0.0)",
  org.apache.lucene.analysis-smartcn;bundle-version="[9.4.2,10.0.0)"
 Import-Package: org.eclipse.equinox.http.jetty;resolution:=optional
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.eclipse.help.base
