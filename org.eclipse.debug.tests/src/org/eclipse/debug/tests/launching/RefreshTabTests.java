@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2013 IBM Corporation and others.
+ *  Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -32,6 +32,7 @@ import org.eclipse.debug.tests.TestsPlugin;
 import org.eclipse.debug.ui.RefreshTab;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -54,14 +55,14 @@ public class RefreshTabTests extends AbstractLaunchTest {
 		assertNotNull("The active workbench page should not be null", page); //$NON-NLS-1$
 		IViewPart part;
 		try {
-			part = page.showView("org.eclipse.ui.views.ResourceNavigator"); //$NON-NLS-1$
+			part = page.showView(IPageLayout.ID_PROJECT_EXPLORER);
 			IWorkbenchPartSite site = part.getSite();
-			assertNotNull("The part site for org.eclipse.ui.views.ResourceNavigator should not be null ", site); //$NON-NLS-1$
+			assertNotNull("The part site for Project Explorere should not be null ", site); //$NON-NLS-1$
 			ISelectionProvider provider = site.getSelectionProvider();
-			assertNotNull("the selection provider should not be null for org.eclipse.ui.views.ResourceNavigator", provider); //$NON-NLS-1$
+			assertNotNull("the selection provider should not be null for Project Explorer view", provider); //$NON-NLS-1$
 			provider.setSelection(new StructuredSelection(resource));
 		} catch (PartInitException e) {
-			assertNotNull("Failed to open navigator view", null); //$NON-NLS-1$
+			assertNotNull("Failed to open project explorer view", null); //$NON-NLS-1$
 		}
 	}
 
