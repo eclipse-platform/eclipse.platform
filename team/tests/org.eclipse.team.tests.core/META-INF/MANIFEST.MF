@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.team.tests.core; singleton:=true
-Bundle-Version: 3.9.200.qualifier
+Bundle-Version: 3.10.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.team.tests.core,
@@ -29,5 +29,5 @@ Require-Bundle: org.eclipse.ui.ide;resolution:=optional,
  org.eclipse.compare.tests
 Bundle-ActivationPolicy: lazy
 Eclipse-BundleShape: dir
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.team.tests.core

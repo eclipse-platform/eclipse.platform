@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.compare.examples.xml; singleton:=true
-Bundle-Version: 3.5.100.qualifier
+Bundle-Version: 3.6.0.qualifier
 Bundle-Activator: org.eclipse.compare.examples.xml.XMLPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -15,5 +15,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface.text,
  org.junit
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.compare.examples.xml

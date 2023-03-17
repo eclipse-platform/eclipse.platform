@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.compare.tests;singleton:=true
-Bundle-Version: 3.7.200.qualifier
+Bundle-Version: 3.8.0.qualifier
 Require-Bundle: org.junit,
  org.eclipse.compare,
  org.eclipse.jface.text,
@@ -18,7 +18,7 @@ Require-Bundle: org.junit,
 Bundle-Activator: org.eclipse.compare.tests.CompareTestPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-Localization: plugin
 Export-Package: org.eclipse.compare.tests,
  org.eclipse.compare.tests.performance

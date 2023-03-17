@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.core.contenttype.tests;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.4.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: 
@@ -11,6 +11,6 @@ Require-Bundle:
  org.eclipse.core.contenttype;bundle-version="3.6",
  org.eclipse.core.runtime;bundle-version="[3.3.100,4.0.0)",
  org.junit;bundle-version="4.7"
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.eclipse.core.contenttype.tests

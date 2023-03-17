@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.core.contenttype; singleton:=true
-Bundle-Version: 3.8.200.qualifier
+Bundle-Version: 3.9.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.equinox.preferences;bundle-version="[3.2.0,4.0.0)",
@@ -19,6 +19,6 @@ Import-Package: javax.xml.parsers,
  org.xml.sax,
  org.xml.sax.ext,
  org.xml.sax.helpers
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.core.contenttype
 Service-Component: OSGI-INF/contenttypemanager.xml
