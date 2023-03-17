@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.debug.examples.core;singleton:=true
-Bundle-Version: 1.5.0.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-Activator: org.eclipse.debug.examples.core.pda.DebugCorePlugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
@@ -19,7 +19,7 @@ Export-Package: org.eclipse.debug.examples.ant.tasks;x-friends:="org.eclipse.deb
  org.eclipse.debug.examples.core.pda.protocol;x-friends:="org.eclipse.debug.examples.ui",
  org.eclipse.debug.examples.core.pda.sourcelookup;x-friends:="org.eclipse.debug.examples.ui",
  org.eclipse.debug.examples.pdavm;x-friends:="org.eclipse.debug.examples.ui"
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %Bundle-Vendor
 Automatic-Module-Name: org.eclipse.debug.examples.core

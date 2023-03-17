@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.debug.ui; singleton:=true
-Bundle-Version: 3.17.200.qualifier
+Bundle-Version: 3.18.0.qualifier
 Bundle-Activator: org.eclipse.debug.internal.ui.DebugUIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -94,5 +94,5 @@ Require-Bundle: org.eclipse.core.variables;bundle-version="[3.2.800,4.0.0)",
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Import-Package: org.eclipse.ui.forms.widgets
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.debug.ui
