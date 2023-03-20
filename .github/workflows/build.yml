@@ -33,7 +33,6 @@ jobs:
         mvn
         --batch-mode
         --global-toolchains ${{ github.workspace }}/.github/toolchains.xml
-        -Pbuild-individual-bundles
         -Pbree-libs
         -Papi-check
         -Dmaven.test.failure.ignore=true
@@ -43,7 +42,6 @@ jobs:
         -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss.SSS
         -DtrimStackTrace=false
         -Dmaven.compiler.failOnWarning=true
-        -T1C
         clean verify
     - name: Upload Test Results
       uses: actions/upload-artifact@v3
