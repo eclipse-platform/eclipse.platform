@@ -235,7 +235,14 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 					if (category != null && !categories.contains(category)) {
 						categories.add(category);
 					}
-					populateMenuItem(mode, ext, menu, accelerator++);
+					ILaunchConfiguration[] configurations = ext.getLaunchConfigurations(ss);
+					if (configurations == null) {
+						populateMenuItem(mode, ext, menu, null, accelerator++);
+					} else if (configurations.length > 0) {
+						for (ILaunchConfiguration configuration : configurations) {
+							populateMenuItem(mode, ext, menu, configuration, -1);
+						}
+					}
 				}
 			}
 		}
@@ -285,29 +292,38 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 
 	/**
 	 * Add the shortcut to the context menu's launch sub-menu.
-	 * @param mode the id of the mode
-	 * @param ext the extension to get label and help info from
-	 * @param menu the menu to add to
-	 * @param accelerator the accelerator to use with the new menu item
+	 *
+	 * @param mode          the id of the mode
+	 * @param ext           the extension to get label and help info from
+	 * @param menu          the menu to add to
+	 * @param configuration
+	 * @param accelerator   the accelerator to use with the new menu item
 	 */
-	private void populateMenuItem(String mode, LaunchShortcutExtension ext, Menu menu, int accelerator) {
-		LaunchShortcutAction action = new LaunchShortcutAction(mode, ext);
-		action.setActionDefinitionId(ext.getId() + "." + mode); //$NON-NLS-1$
+	private void populateMenuItem(String mode, LaunchShortcutExtension ext, Menu menu,
+			ILaunchConfiguration configuration, int accelerator) {
+		LaunchShortcutAction action;
+		if (configuration != null) {
+			action = new LaunchShortcutAction(mode, ext, configuration);
+			action.setText(configuration.getName());
+		} else {
+			action = new LaunchShortcutAction(mode, ext);
+			action.setActionDefinitionId(ext.getId() + "." + mode); //$NON-NLS-1$
+			StringBuilder label = new StringBuilder();
+			if (accelerator >= 0 && accelerator < 10) {
+				// add the numerical accelerator
+				label.append('&');
+				label.append(accelerator);
+				label.append(' ');
+			}
+			String contextLabel = ext.getContextLabel(mode);
+			// replace default action label with context label if specified.
+			label.append((contextLabel != null) ? contextLabel : action.getText());
+			action.setText(label.toString());
+		}
 		String helpContextId = ext.getHelpContextId();
 		if (helpContextId != null) {
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(action, helpContextId);
 		}
-		StringBuilder label= new StringBuilder();
-		if (accelerator >= 0 && accelerator < 10) {
-			//add the numerical accelerator
-			label.append('&');
-			label.append(accelerator);
-			label.append(' ');
-		}
-		String contextLabel= ext.getContextLabel(mode);
-		// replace default action label with context label if specified.
-		label.append((contextLabel != null) ? contextLabel : action.getText());
-		action.setText(label.toString());
 		ActionContributionItem item= new ActionContributionItem(action);
 		item.fill(menu, -1);
 	}

@@ -48,6 +48,7 @@ public class LaunchShortcutAction extends Action {
 
 	private String fMode;
 	private LaunchShortcutExtension fShortcut;
+	private ILaunchConfiguration configuration;
 
 
 	/**
@@ -63,6 +64,14 @@ public class LaunchShortcutAction extends Action {
 		updateEnablement();
 	}
 
+	public LaunchShortcutAction(String mode, LaunchShortcutExtension shortcut, ILaunchConfiguration configuration) {
+		super(configuration.getName(), shortcut.getImageDescriptor());
+		fShortcut = shortcut;
+		fMode = mode;
+		this.configuration = configuration;
+		updateEnablement();
+	}
+
 	/**
 	 * Runs with either the active editor or workbench selection.
 	 *
@@ -74,6 +83,10 @@ public class LaunchShortcutAction extends Action {
 	}
 
 	private void runInternal(boolean isShift) {
+		if (configuration != null) {
+			DebugUITools.launch(configuration, fMode);
+			return;
+		}
 		IStructuredSelection ss = SelectedResourceManager.getDefault().getCurrentSelection();
 		Object o = ss.getFirstElement();
 		// store if Shift was pressed to toggle terminate before launch
