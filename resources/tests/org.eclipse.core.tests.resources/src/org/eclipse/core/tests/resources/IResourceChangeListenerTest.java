@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.*;
@@ -42,6 +43,8 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		}
 	}
 
+	private static final Runnable NOOP_RUNNABLE = () -> {
+	};
 	protected static final String VERIFIER_NAME = "TestListener";
 	IFile file1; //below folder1
 	IFile file2; //below folder1
@@ -58,7 +61,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	IFile project2MetaData;
 	ResourceDeltaVerifier verifier;
 
-	public void _testBenchMark_1GBYQEZ() {
+	public void testBenchMark_1GBYQEZ() {
 		// start with a clean workspace
 		getWorkspace().removeResourceChangeListener(verifier);
 		try {
@@ -66,9 +69,10 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		} catch (CoreException e) {
 			fail("0.0", e);
 		}
+		final AtomicReference<Runnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// create the listener
 		IResourceChangeListener listener = new IResourceChangeListener() {
-			public int fCounter;
+			private int fCounter;
 
 			@Override
 			public void resourceChanged(IResourceChangeEvent event) {
@@ -87,7 +91,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 					}
 					System.out.println("End");
 				} catch (CoreException e) {
-					fail("1.0", e);
+					listenerInMainThreadCallback.set(() -> fail("1.0", e));
 				}
 			}
 		};
@@ -124,6 +128,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		}
 		// un-register our listener
 		getWorkspace().removeResourceChangeListener(listener);
+		listenerInMainThreadCallback.get().run();
 	}
 
 	/**
@@ -253,6 +258,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	 * events. Ensure that you are able to modify the workspace tree.
 	 */
 	public void test_1GDK9OG() {
+		final AtomicReference<Runnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// create the resource change listener
 		IResourceChangeListener listener = event -> {
 			try {
@@ -272,7 +278,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 				};
 				getWorkspace().run(body, getMonitor());
 			} catch (CoreException e) {
-				fail("1.0", e);
+				listenerInMainThreadCallback.set(() -> fail("1.0", e));
 			}
 		};
 		// register the listener with the workspace.
@@ -304,6 +310,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			// cleanup: ensure that the listener is removed
 			getWorkspace().removeResourceChangeListener(listener);
 		}
+		listenerInMainThreadCallback.get().run();
 	}
 
 	public void testAddAndRemoveFile() {
@@ -399,9 +406,9 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	 * Ensure that you are NOT able to modify the workspace tree.
 	 */
 	public void testBug45996() {
+		final AtomicReference<Runnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// create the resource change listener
 		IResourceChangeListener listener = event -> {
-			boolean failed = false;
 			try {
 				IWorkspaceRunnable body = monitor -> {
 					// modify the tree.
@@ -419,10 +426,9 @@ public class IResourceChangeListenerTest extends ResourceTest {
 				};
 				getWorkspace().run(body, getMonitor());
 			} catch (CoreException e) {
-				//should fail
-				failed = true;
+				return;
 			}
-			assertTrue("1.0", failed);
+			listenerInMainThreadCallback.set(() -> fail("1.0"));
 		};
 		// register the listener with the workspace.
 		getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
@@ -446,6 +452,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			// cleanup: ensure that the listener is removed
 			getWorkspace().removeResourceChangeListener(listener);
 		}
+		listenerInMainThreadCallback.get().run();
 	}
 
 	public void testBuildKind() {
@@ -680,6 +687,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	}
 
 	public void testDeleteInPostBuildListener() {
+		final AtomicReference<Runnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// create the resource change listener
 		IResourceChangeListener listener = event -> {
 			try {
@@ -695,7 +703,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 					return true;
 				});
 			} catch (CoreException e) {
-				fail("1.0", e);
+				listenerInMainThreadCallback.set(() -> fail("1.0", e));
 			}
 		};
 		// register the listener with the workspace.
@@ -711,6 +719,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			// cleanup: ensure that the listener is removed
 			getWorkspace().removeResourceChangeListener(listener);
 		}
+		listenerInMainThreadCallback.get().run();
 	}
 
 	/**
@@ -741,6 +750,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	}
 
 	public void testDeleteProject() throws CoreException {
+		final AtomicReference<Runnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		//test that marker deltas are fired when projects are deleted
 		verifier.reset();
 		final IMarker marker = project1.createMarker(IMarker.TASK);
@@ -751,12 +761,14 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			public void resourceChanged(IResourceChangeEvent event) {
 				done = true;
 				IMarkerDelta[] deltas = event.findMarkerDeltas(IMarker.TASK, false);
-				assertEquals("1.0", 1, deltas.length);
-				assertEquals("1.1", marker.getId(), deltas[0].getId());
-				assertEquals("1.2", IResourceDelta.REMOVED, deltas[0].getKind());
-				synchronized (this) {
-					notifyAll();
-				}
+				listenerInMainThreadCallback.set(() -> {
+					assertEquals("1.0", 1, deltas.length);
+					assertEquals("1.1", marker.getId(), deltas[0].getId());
+					assertEquals("1.2", IResourceDelta.REMOVED, deltas[0].getKind());
+					synchronized (this) {
+						notifyAll();
+					}
+				});
 			}
 		}
 		Listener1 listener = new Listener1();
@@ -776,6 +788,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
+		listenerInMainThreadCallback.get().run();
 	}
 
 	public void testDeleteFolderDuringRefresh() throws CoreException {
@@ -793,6 +806,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		final IFolder f = project1.getFolder(getUniqueString());
 		f.create(true, true, getMonitor());
 
+		final AtomicReference<Runnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// the listener checks if an attempt to modify the tree succeeds if made in a job
 		// that belongs to FAMILY_MANUAL_REFRESH
 		class Listener1 implements IResourceChangeListener {
@@ -812,7 +826,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 							f.delete(true, getMonitor());
 							wasPerformed = true;
 						} catch (Exception e) {
-							fail("3.0", e);
+							listenerInMainThreadCallback.set(() -> fail("3.0", e));
 						}
 						return Status.OK_STATUS;
 					}
@@ -839,6 +853,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener1);
 		}
+		listenerInMainThreadCallback.get().run();
 	}
 
 	public void testRefreshOtherProjectDuringRefresh() throws Exception {
@@ -853,6 +868,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertTrue("1.0", p.isOpen());
 		assertTrue("2.0", project1.isOpen());
 
+		final AtomicReference<Runnable> listener1InMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// the listener checks if an attempt to modify the tree succeeds if made in a job
 		// that belongs to FAMILY_MANUAL_REFRESH
 		class Listener1 implements IResourceChangeListener {
@@ -874,7 +890,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 							}
 							wasPerformed = true;
 						} catch (Exception e) {
-							fail("3.0", e);
+							listener1InMainThreadCallback.set(() -> fail("3.0", e));
 						}
 						return Status.OK_STATUS;
 					}
@@ -884,6 +900,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 
 		Listener1 listener1 = new Listener1();
 
+		final AtomicReference<Runnable> listener2InMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// the listener checks if an attempt to modify the tree in the refresh thread fails
 		class Listener2 implements IResourceChangeListener {
 			@Override
@@ -891,8 +908,8 @@ public class IResourceChangeListenerTest extends ResourceTest {
 				try {
 					if (event.getResource() != p) {
 						p.refreshLocal(IResource.DEPTH_INFINITE, null);
+						listener2InMainThreadCallback.set(() -> fail("4.0"));
 					}
-					fail("4.0");
 				} catch (Exception e) {
 					// should fail
 				}
@@ -910,6 +927,8 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, null);
 
+			listener1InMainThreadCallback.get().run();
+			listener2InMainThreadCallback.get().run();
 			assertTrue("5.0", listener1.wasPerformed);
 		} catch (InterruptedException e) {
 			fail("6.0", e);
@@ -1312,24 +1331,18 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	}
 
 	public void testMulti() {
-		class Listener1 implements IResourceChangeListener {
-			public boolean done = false;
+		class Listener implements IResourceChangeListener {
+			public volatile boolean done = false;
+			public volatile int eventType = -1;
 
 			@Override
 			public void resourceChanged(IResourceChangeEvent event) {
-				assertEquals("1.0", IResourceChangeEvent.POST_CHANGE, event.getType());
+				eventType = event.getType();
 				done = true;
 			}
 		}
-		class Listener2 extends Listener1 implements IResourceChangeListener {
-			@Override
-			public void resourceChanged(IResourceChangeEvent event) {
-				assertEquals("2.0", IResourceChangeEvent.POST_BUILD, event.getType());
-				done = true;
-			}
-		}
-		Listener1 listener1 = new Listener1();
-		Listener2 listener2 = new Listener2();
+		Listener listener1 = new Listener();
+		Listener listener2 = new Listener();
 		getWorkspace().addResourceChangeListener(listener1, IResourceChangeEvent.POST_CHANGE);
 		getWorkspace().addResourceChangeListener(listener2, IResourceChangeEvent.POST_BUILD);
 		try {
@@ -1340,13 +1353,17 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			}
 			int i = 0;
 			while (!(listener1.done && listener2.done)) {
-				//timeout if the listeners are never called
-				assertTrue("3.0", ++i < 600);
+				// timeout if the listeners are never called
+				assertTrue("Listeners were never called", ++i < 600);
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e1) {
 				}
 			}
+			assertEquals("Improper change event processed by first listener", IResourceChangeEvent.POST_CHANGE,
+					listener1.eventType);
+			assertEquals("Improper change event processed by second listener", IResourceChangeEvent.POST_BUILD,
+					listener2.eventType);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener1);
 			getWorkspace().removeResourceChangeListener(listener2);
@@ -1354,6 +1371,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	}
 
 	public void testAutoPublishService() {
+		final AtomicReference<Runnable> logListenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		class Loggy implements LogListener {
 			public boolean done = false;
 			@Override
@@ -1362,38 +1380,26 @@ public class IResourceChangeListenerTest extends ResourceTest {
 				LogLevel level = entry.getLogLevel();
 				if (level == LogLevel.WARN && message.startsWith("event.mask of IResourceChangeListener")) {
 					done = true;
-					assertEquals(
-						"event.mask of IResourceChangeListener service: expected Integer but was class java.lang.String (from class org.eclipse.core.tests.resources.IResourceChangeListenerTest$1Listener3): Not an integer",
-						message);
+					logListenerInMainThreadCallback.set(() -> assertEquals(
+							"event.mask of IResourceChangeListener service: expected Integer but was class java.lang.String (from class org.eclipse.core.tests.resources.IResourceChangeListenerTest$2Listener): Not an integer",
+							message));
 				}
 			}
 		}
-		class Listener1 implements IResourceChangeListener {
-			public boolean done = false;
+		class Listener implements IResourceChangeListener {
+			public volatile boolean done = false;
+			public volatile int eventType = -1;
+
 			@Override
 			public void resourceChanged(IResourceChangeEvent event) {
-				assertEquals("1.0", IResourceChangeEvent.POST_CHANGE, event.getType());
-				done = event.getType() == IResourceChangeEvent.POST_CHANGE;
-			}
-		}
-		class Listener2 extends Listener1 implements IResourceChangeListener {
-			@Override
-			public void resourceChanged(IResourceChangeEvent event) {
-				assertEquals("2.0", IResourceChangeEvent.POST_BUILD, event.getType());
-				done = true;
-			}
-		}
-		class Listener3 extends Listener1 implements IResourceChangeListener {
-			@Override
-			public void resourceChanged(IResourceChangeEvent event) {
-				assertEquals("3.0", IResourceChangeEvent.POST_CHANGE, event.getType());
+				eventType = event.getType();
 				done = true;
 			}
 		}
 		Loggy loggy = new Loggy();
-		Listener1 listener1 = new Listener1();
-		Listener2 listener2 = new Listener2();
-		Listener3 listener3 = new Listener3();
+		Listener listener1 = new Listener();
+		Listener listener2 = new Listener();
+		Listener listener3 = new Listener();
 		Bundle bundle = FrameworkUtil.getBundle(getWorkspace().getClass());
 		BundleContext context = bundle.getBundleContext();
 		ServiceReference<LogReaderService> logReaderService = context.getServiceReference(LogReaderService.class);
@@ -1437,6 +1443,13 @@ public class IResourceChangeListenerTest extends ResourceTest {
 				reg3.unregister();
 			}
 		}
+		assertEquals("Improper change event processed by first listener", IResourceChangeEvent.POST_CHANGE,
+				listener1.eventType);
+		assertEquals("Improper change event processed by second listener", IResourceChangeEvent.POST_BUILD,
+				listener2.eventType);
+		assertEquals("Improper change event processed by third listener", IResourceChangeEvent.POST_CHANGE,
+				listener3.eventType);
+		logListenerInMainThreadCallback.get().run();
 	}
 
 	public boolean waitUntil(BooleanSupplier condition) {
