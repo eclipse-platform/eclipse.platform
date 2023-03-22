@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2015 IBM Corporation and others.
+ * Copyright (c) 2006, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -17,6 +17,7 @@ package org.eclipse.core.tests.resources.regression;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.junit.Test;
 
 /**
@@ -27,7 +28,7 @@ import org.junit.Test;
  * malformed state.  The fix was to synchronize the routine that collapses
  * unused trees in ElementTree.
  */
-public class Bug_134364 {
+public class Bug_134364 extends ResourceTest {
 	/**
 	 * Creates a project with a builder attached
 	 */
