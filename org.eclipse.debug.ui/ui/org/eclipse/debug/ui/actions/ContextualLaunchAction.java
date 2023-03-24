@@ -236,7 +236,7 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 						categories.add(category);
 					}
 					ILaunchConfiguration[] configurations = ext.getLaunchConfigurations(ss);
-					if (configurations == null) {
+					if (configurations == null || configurations.length == 0) {
 						populateMenuItem(mode, ext, menu, null, accelerator++);
 					} else if (configurations.length > 0) {
 						for (ILaunchConfiguration configuration : configurations) {
