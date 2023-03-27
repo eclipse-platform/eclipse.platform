@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -910,10 +910,13 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		}
 		project.internalSetDescription(description, false);
 		if (failure != null) {
-			// write the project tree ...
-			writeTree(project, IResource.DEPTH_INFINITE);
-			// ... and close the project
-			project.internalClose(monitor);
+			try {
+				// write the project tree ...
+				writeTree(project, IResource.DEPTH_INFINITE);
+			} finally {
+				// ... and close the project
+				project.internalClose(monitor);
+			}
 			throw failure;
 		}
 		if (Policy.DEBUG_RESTORE_METAINFO)
