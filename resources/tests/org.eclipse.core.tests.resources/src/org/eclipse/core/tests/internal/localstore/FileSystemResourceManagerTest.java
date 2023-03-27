@@ -298,6 +298,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		/* test the overwrite parameter (false) */
 		ensureDoesNotExistInFileSystem(file); // FIXME Race Condition with asynchronous workplace refresh see Bug 571133
 		InputStream another3 = getContents(anotherContent);
+		waitForRefresh(); // wait for refresh to ensure that file is not present in workspace
 		assertThrows("Should fail writing non existing file", CoreException.class,
 				() -> write(file, another3, false, null));
 
@@ -305,8 +306,25 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		ensureDoesNotExistInWorkspace(project);
 	}
 
+	// See https://github.com/eclipse-platform/eclipse.platform/issues/103
 	@Test
-	public void testWriteFile2() {
+	public void testWriteDeletedFile() throws CoreException {
+		/* initialize common objects */
+		IProject project = projects[0];
+		IFile file = project.getFile("testWriteFile");
+		ensureExistsInWorkspace(file, true);
+		String content = "original";
+
+		/* write file for the first time */
+		write(file, getContents(content), true, null);
+
+		file.delete(true, null);
+		assertThrows("Should fail writing file that is already deleted", CoreException.class,
+				() -> write(file, getContents(content), false, null));
+	}
+
+	@Test
+	public void testWriteFileNotInWorkspace() {
 		// Bug 571133
 		IProject project = projects[0];
 		IFile file = project.getFile("testWriteFile2");
@@ -316,7 +334,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		/* common contents */
 		String anotherContent = "and this string should not... well, you know...";
 		InputStream another = getContents(anotherContent);
-		assertThrows(IllegalStateException.class, () -> write(file, another, false, null));
+		assertThrows(CoreException.class, () -> write(file, another, false, null));
 
 		/* remove trash */
 		ensureDoesNotExistInWorkspace(project);
@@ -417,7 +435,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		try {
 			IWorkspace workspace = getWorkspace();
 			assertNotNull("workspace cannot be null", workspace);
-			workspace.run(new WriteFileContents(file, contents, force, getLocalManager()), null);
+			workspace.run(new WriteFileContents(file, contents, force, getLocalManager()), monitor);
 		} catch (Throwable t) {
 			// Bug 541493: we see unlikely stack traces reported by JUnit here, log the
 			// exceptions in case JUnit filters stack frames

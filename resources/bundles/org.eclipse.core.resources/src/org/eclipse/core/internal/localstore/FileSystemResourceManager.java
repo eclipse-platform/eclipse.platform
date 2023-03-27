@@ -1157,12 +1157,19 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	public void write(IFile target, InputStream content, IFileInfo fileInfo, int updateFlags, boolean append, IProgressMonitor monitor) throws CoreException {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 4);
 		try {
+			Resource targetResource = (Resource) target;
 			IFileStore store = getStore(target);
 			if (fileInfo.getAttribute(EFS.ATTRIBUTE_READ_ONLY)) {
 				String message = NLS.bind(Messages.localstore_couldNotWriteReadOnly, target.getFullPath());
 				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, target.getFullPath(), message, null);
 			}
 			long lastModified = fileInfo.getLastModified();
+			ResourceInfo immutableTargetResourceInfo = targetResource.getResourceInfo(true, false);
+			if (immutableTargetResourceInfo == null) {
+				// If the resource info is null, the resource does not exist in the workspace.
+				// This violates the method contract, so throw an according exception.
+				targetResource.checkExists(targetResource.getFlags(immutableTargetResourceInfo), true);
+			}
 			if (BitMask.isSet(updateFlags, IResource.FORCE)) {
 				if (append && !target.isLocal(IResource.DEPTH_ZERO) && !fileInfo.exists()) {
 					// force=true, local=false, existsInFileSystem=false
@@ -1171,12 +1178,8 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 				}
 			} else {
 				if (target.isLocal(IResource.DEPTH_ZERO)) {
-					ResourceInfo info = ((Resource) target).getResourceInfo(true, false);
-					if (info == null) {
-						throw new IllegalStateException("No ResourceInfo for: " + target); //$NON-NLS-1$
-					}
 					// test if timestamp is the same since last synchronization
-					if (lastModified != info.getLocalSyncInfo()) {
+					if (lastModified != immutableTargetResourceInfo.getLocalSyncInfo()) {
 						asyncRefresh(target);
 						String message = NLS.bind(Messages.localstore_resourceIsOutOfSync, target.getFullPath());
 						throw new ResourceException(IResourceStatus.OUT_OF_SYNC_LOCAL, target.getFullPath(), message, null);
@@ -1235,15 +1238,17 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			}
 			// get the new last modified time and stash in the info
 			lastModified = store.fetchInfo().getLastModified();
-			ResourceInfo info = ((Resource) target).getResourceInfo(false, true);
-			if (info == null) {
-				// happens see Bug 571133
-				throw new IllegalStateException("No ResourceInfo for: " + target); //$NON-NLS-1$
+			ResourceInfo mutableTargetResourceInfo = targetResource.getResourceInfo(false, true);
+			if (mutableTargetResourceInfo == null) {
+				// If the resource info is null, the resource must have been concurrently
+				// removed from the workspace. This violates the method contract, so throw an
+				// according exception.
+				targetResource.checkExists(targetResource.getFlags(mutableTargetResourceInfo), true);
 			}
-			updateLocalSync(info, lastModified);
-			info.incrementContentId();
-			info.clear(M_CONTENT_CACHE);
-			workspace.updateModificationStamp(info);
+			updateLocalSync(mutableTargetResourceInfo, lastModified);
+			mutableTargetResourceInfo.incrementContentId();
+			mutableTargetResourceInfo.clear(M_CONTENT_CACHE);
+			workspace.updateModificationStamp(mutableTargetResourceInfo);
 		} finally {
 			FileUtil.safeClose(content);
 		}
