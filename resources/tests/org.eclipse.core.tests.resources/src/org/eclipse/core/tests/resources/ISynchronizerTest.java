@@ -496,7 +496,9 @@ public class ISynchronizerTest extends ResourceTest {
 		}
 
 		// write out the data
-		File file = Platform.getLocation().append(".testsyncinfo").toFile();
+		IPath syncInfoPath = Platform.getLocation().append(".testsyncinfo");
+		File file = syncInfoPath.toFile();
+		deleteOnTearDown(syncInfoPath);
 		OutputStream fileOutput = null;
 		DataOutputStream o1 = null;
 		try {

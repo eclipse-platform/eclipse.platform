@@ -568,7 +568,6 @@ public class IResourceTest extends ResourceTest {
 			getWorkspace().removeResourceChangeListener(verifier);
 		}
 		getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
 		interestingPaths = null;
 		interestingResources = null;
 		setAutoBuild(storedAutoBuildValue);
@@ -1023,6 +1022,10 @@ public class IResourceTest extends ResourceTest {
 					fussy.prepare();
 				}
 				try {
+					if (resource.exists()) {
+						deleteOnTearDown(resource.getLocation()); // Ensure that resource contents are removed from file
+																	// system
+					}
 					resource.delete(force.booleanValue(), monitor);
 				} catch (OperationCanceledException e) {
 					return CANCELED;
@@ -1356,7 +1359,7 @@ public class IResourceTest extends ResourceTest {
 
 		/* remove trash */
 		try {
-			project.delete(true, getMonitor());
+			project.delete(true, true, getMonitor());
 		} catch (CoreException e) {
 			fail("7.0", e);
 		}
@@ -1564,7 +1567,7 @@ public class IResourceTest extends ResourceTest {
 	public void testGetModificationStamp() {
 		// cleanup auto-created resources
 		try {
-			getWorkspace().getRoot().delete(true, getMonitor());
+			getWorkspace().getRoot().delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
 		} catch (CoreException e) {
 			fail("0.0", e);
 		}
@@ -2293,7 +2296,7 @@ public class IResourceTest extends ResourceTest {
 
 		/* remove trash */
 		try {
-			project.delete(true, getMonitor());
+			project.delete(true, true, getMonitor());
 		} catch (CoreException e) {
 			fail("3.0", e);
 		}

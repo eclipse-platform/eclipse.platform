@@ -57,7 +57,6 @@ public class PR_1GEAB3C_Test extends ResourceTest {
 	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
 		getWorkspace().removeResourceChangeListener(verifier);
 	}
 

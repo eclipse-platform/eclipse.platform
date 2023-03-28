@@ -57,8 +57,6 @@ public class ScopeTests extends TeamTest {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		this.manager.dispose();
-		project1.delete(true, null);
-		project2.delete(true, null);
 		IWorkingSetManager manager = PlatformUI.getWorkbench().getWorkingSetManager();
 		manager.removeWorkingSet(workingSet);
 	}

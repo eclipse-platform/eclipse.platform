@@ -50,11 +50,6 @@ public class ProjectSnapshotTest extends ResourceTest {
 		ensureExistsInWorkspace(projects, true);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	private void populateProject(IProject project) {
 		// add files and folders to project
 		IFile file = project.getFile("file");

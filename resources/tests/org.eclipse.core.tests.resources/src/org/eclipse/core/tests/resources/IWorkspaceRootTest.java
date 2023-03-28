@@ -26,13 +26,6 @@ import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
 
 public class IWorkspaceRootTest extends ResourceTest {
 
-	@Override
-	protected void tearDown() throws Exception {
-		IProject[] projects = getWorkspace().getRoot().getProjects();
-		getWorkspace().delete(projects, true, null);
-		super.tearDown();
-	}
-
 	/**
 	 * Tests findFilesForLocation when non-canonical paths are used (bug 155101).
 	 */

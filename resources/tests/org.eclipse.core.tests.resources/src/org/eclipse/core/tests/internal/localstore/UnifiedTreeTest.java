@@ -255,7 +255,9 @@ public class UnifiedTreeTest extends LocalStoreTest {
 		File file = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile(), "link");
 		file.mkdir();
 
-		link.createLink(EFS.getLocalFileSystem().fromLocalFile(file).toURI(), IResource.NONE, null);
+		IFileStore fileStore = EFS.getLocalFileSystem().fromLocalFile(file);
+		link.createLink(fileStore.toURI(), IResource.NONE, null);
+		deleteOnTearDown(fileStore);
 
 		IFile rf = link.getFile("fileTest342968.txt");
 		rf.create(new ByteArrayInputStream("test342968".getBytes()), false, null);

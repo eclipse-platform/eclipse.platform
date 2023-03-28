@@ -18,15 +18,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 public class PR_1GHOM0N_Test extends ResourceTest {
-	/**
-	 * Tears down the fixture, for example, close a network connection.
-	 * This method is called after a test is executed.
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
-	}
 
 	/*
 	 * Ensure that we get ADDED and OPEN in the delta when we create and open

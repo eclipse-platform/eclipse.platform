@@ -127,15 +127,6 @@ public class BenchWorkspace extends ResourceTest {
 		}
 	}
 
-	/**
-	 * @see TestCase#tearDown()
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		project.delete(true, true, null);
-	}
-
 	public void testCountResources() {
 		final Workspace workspace = (Workspace) getWorkspace();
 		final IWorkspaceRoot root = workspace.getRoot();

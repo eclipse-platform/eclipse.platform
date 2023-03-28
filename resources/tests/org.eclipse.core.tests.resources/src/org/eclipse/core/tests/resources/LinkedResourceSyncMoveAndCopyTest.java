@@ -53,11 +53,6 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		doCleanup();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	public void internalMovedAndCopyTest(IResource resource, int copyMoveFlag, boolean copyMoveSucceeds) {
 		//		try {
 		//			resource.copy(otherExistingProject.getFullPath().append(resource.getProjectRelativePath()), copyMoveFlag, getMonitor());

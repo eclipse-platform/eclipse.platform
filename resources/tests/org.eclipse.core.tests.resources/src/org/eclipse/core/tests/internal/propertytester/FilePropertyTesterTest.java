@@ -43,12 +43,6 @@ public class FilePropertyTesterTest extends ResourceTest {
 		tester = new FilePropertyTester();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		project.delete(true, monitor);
-		super.tearDown();
-	}
-
 	public void testNonExistingTextFile() throws Throwable {
 		String expected = "org.eclipse.core.runtime.text";
 		IFile target = project.getFile("tmp.txt");

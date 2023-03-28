@@ -105,14 +105,6 @@ public class MoveTest extends LocalStoreTest {
 		} catch (CoreException e) {
 			fail("5.3", e);
 		}
-
-		// remove garbage
-		try {
-			source.delete(true, true, getMonitor());
-			destination.delete(true, true, getMonitor());
-		} catch (CoreException e) {
-			fail("20.0", e);
-		}
 	}
 
 	/**
@@ -237,14 +229,6 @@ public class MoveTest extends LocalStoreTest {
 			}
 		} catch (CoreException e) {
 			fail("5.3", e);
-		}
-
-		// remove garbage
-		try {
-			source.delete(true, true, getMonitor());
-			destination.delete(true, true, getMonitor());
-		} catch (CoreException e) {
-			fail("6.0", e);
 		}
 	}
 

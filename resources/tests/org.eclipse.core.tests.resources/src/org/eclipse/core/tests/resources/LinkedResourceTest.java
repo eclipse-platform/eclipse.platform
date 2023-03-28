@@ -89,7 +89,7 @@ public class LinkedResourceTest extends ResourceTest {
 	protected void doCleanup() throws Exception {
 		ensureExistsInWorkspace(new IResource[] {existingProject, otherExistingProject, closedProject, existingFolderInExistingProject, existingFolderInExistingFolder, existingFileInExistingProject}, true);
 		closedProject.close(getMonitor());
-		ensureDoesNotExistInWorkspace(new IResource[] {nonExistingProject, nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolderInNonExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder});
+		ensureDoesNotExistInWorkspace(new IResource[] { nonExistingProject, nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolderInNonExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder });
 		ensureDoesNotExistInFileSystem(resolve(nonExistingLocation).toFile());
 		resolve(localFolder).toFile().mkdirs();
 		createFileInFileSystem(resolve(localFile), getRandomContents());
@@ -145,7 +145,9 @@ public class LinkedResourceTest extends ResourceTest {
 			IProjectDescription desc = getWorkspace().newProjectDescription(existingProjectInSubDirectory.getName());
 			File dir = existingProject.getLocation().toFile();
 			dir = dir.getParentFile();
-			dir = new File(dir + File.separator + "sub" + File.separator + "dir" + File.separator + "more" + File.separator + "proj");
+			dir = new File(dir + File.separator + "sub");
+			deleteOnTearDown(Path.fromOSString(dir.getAbsolutePath()));
+			dir = new File(dir + File.separator + "dir" + File.separator + "more" + File.separator + "proj");
 			dir.mkdirs();
 			desc.setLocation(Path.fromOSString(dir.getAbsolutePath()));
 			existingProjectInSubDirectory.create(desc, getMonitor());

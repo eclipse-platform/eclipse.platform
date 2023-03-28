@@ -41,11 +41,6 @@ public class VirtualFolderTest extends ResourceTest {
 		doCleanup();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	/**
 	 * Tests creating a virtual folder
 	 */

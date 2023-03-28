@@ -60,7 +60,6 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		getWorkspace().getRoot().delete(true, null);
 		TestBuilder builder = DeltaVerifierBuilder.getInstance();
 		if (builder != null) {
 			builder.reset();

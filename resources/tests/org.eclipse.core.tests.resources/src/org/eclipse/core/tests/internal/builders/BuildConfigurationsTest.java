@@ -55,15 +55,6 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		setupProject(project1);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-
-		// Delete resources
-		project0.delete(true, null);
-		project1.delete(true, null);
-	}
-
 	/**
 	 * Helper method to configure a project with a build command and several buildConfigs.
 	 */

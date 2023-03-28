@@ -45,15 +45,6 @@ public class Bug_530868 extends ResourceTest {
 
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		try {
-			testProject.delete(true, getMonitor());
-		} finally {
-			super.tearDown();
-		}
-	}
-
 	/**
 	 * Create a file several times and check that we see different modification
 	 * timestamps.
