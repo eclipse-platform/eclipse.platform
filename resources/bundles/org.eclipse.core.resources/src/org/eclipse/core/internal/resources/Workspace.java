@@ -1134,12 +1134,14 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			newInfo.setFileStoreRoot(null);
 		}
 
-		// update filters in project descriptions
-		if (source.getProject().exists() && source instanceof Container && ((Container) source).hasFilters()) {
+		// Update folder filters in project descriptions - copy filters for any container except project.
+		// Filters that are set on project itself are copied automatically.
+		if (!movingProject && source instanceof Container && source.getProject().exists()
+				&& ((Container) source).hasFilters()) {
 			Project sourceProject = (Project) source.getProject();
 			LinkedList<FilterDescription> originalDescriptions = sourceProject.internalGetDescription().getFilter(source.getProjectRelativePath());
 			LinkedList<FilterDescription> filterDescriptions = FilterDescription.copy(originalDescriptions, destinationResource);
-			if (moveResources && !movingProject) {
+			if (moveResources) {
 				if (((Project) source.getProject()).internalGetDescription().setFilters(source.getProjectRelativePath(), null))
 					((Project) source.getProject()).writeDescription(updateFlags);
 			}

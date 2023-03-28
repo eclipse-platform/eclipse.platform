@@ -29,6 +29,7 @@ import java.util.Vector;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.resources.FileInfoMatcherDescription;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -39,6 +40,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceFilterDescription;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceDescription;
@@ -46,16 +48,20 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
+import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 
 public class IResourceTest extends ResourceTest {
@@ -887,6 +893,108 @@ public class IResourceTest extends ResourceTest {
 				return true;
 			}
 		}.performTest(inputs);
+	}
+
+	/**
+	 * copy a project to external location which has resource filters.
+	 */
+	public void testCopyProjectWithResFilterToExternLocation() throws CoreException {
+		IProject sourceProj = createProject(true);
+
+		// prepare destination project description.
+		IProject destProj = getWorkspace().getRoot().getProject("testCopyProject" + 2);
+		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, new Path(FileSystemHelper
+				.getRandomLocation(FileSystemHelper.getTempDir()).append(destProj.getName()).toOSString()));
+
+		LogListener logListener = copyProject(sourceProj, desc);
+
+		// assert there are no errors in error log.
+		logListener.assertNoLoggedErrors();
+		// assert there is no duplicate folder in the workspace.
+		IPath destProjLocInWs = getWorkspace().getRoot().getLocation().append(destProj.getName());
+		assertFalse("Project folder should not exist in workspace when copied to external location",
+				destProjLocInWs.toFile().exists());
+	}
+
+	/**
+	 * copy a project to external location.
+	 */
+	public void testCopyProjectWithoutResFilterToExternLocation() throws CoreException {
+		IProject sourceProj = createProject(false);
+
+		// prepare destination project description.
+		IProject destProj = getWorkspace().getRoot().getProject("testCopyProject" + 2);
+		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, new Path(FileSystemHelper
+				.getRandomLocation(FileSystemHelper.getTempDir()).append(destProj.getName()).toOSString()));
+
+		LogListener logListener = copyProject(sourceProj, desc);
+
+		// assert there are no errors in error log.
+		logListener.assertNoLoggedErrors();
+		// assert there is no duplicate folder in the workspace.
+		IPath destProjLocInWs = getWorkspace().getRoot().getLocation().append(destProj.getName());
+		assertFalse("Project folder should not exist in workspace when copied to external location",
+				destProjLocInWs.toFile().exists());
+		assertTrue("Project folder should exist in external location", destProj.getLocation().toFile().exists());
+	}
+
+	/**
+	 * copy a project within the workspace(i.e default location) which has a
+	 * resource filter.
+	 */
+	public void testCopyProjectWithResFilterWithinWorkspace() throws CoreException {
+		IProject sourceProj = createProject(true);
+
+		// prepare destination project description.
+		IProject destProj = getWorkspace().getRoot().getProject("testCopyProject" + 2);
+		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, null);
+
+		LogListener logListener = copyProject(sourceProj, desc);
+
+		// assert there are no errors in error log.
+		logListener.assertNoLoggedErrors();
+		// assert there is no duplicate folder in the workspace.
+		IPath destProjLocInWs = getWorkspace().getRoot().getLocation().append(destProj.getName());
+		assertTrue("Project folder should exist in workspace when copied with default location",
+				destProjLocInWs.toFile().exists());
+	}
+
+	private LogListener copyProject(IProject sourceProj, IProjectDescription desc) throws CoreException {
+		LogListener logListener = null;
+		try {
+			logListener = new LogListener();
+			Platform.addLogListener(logListener);
+			sourceProj.copy(desc, IResource.NONE, getMonitor());
+		} finally {
+			Platform.removeLogListener(logListener);
+		}
+		return logListener;
+	}
+
+	private IProjectDescription prepareDestProjDesc(IProject sourceProj, IProject destProj, Path destLocation)
+			throws CoreException {
+		ensureDoesNotExistInWorkspace(destProj);
+		IProjectDescription desc = sourceProj.getDescription();
+		desc.setName(destProj.getName());
+		desc.setLocation(destLocation);
+		return desc;
+	}
+
+	private IProject createProject(boolean applyResFilter) throws CoreException {
+		IProject sourceProj = getWorkspace().getRoot().getProject("testCopyProject" + 1);
+		// create source project and apply resource filter.
+		sourceProj.create(getMonitor());
+		sourceProj.open(getMonitor());
+		// create a new filter.
+		if (applyResFilter) {
+			String MULTI_FILT_ID = "org.eclipse.ui.ide.multiFilter";
+			String FILT_ARG = "1.0-length-equals-false-false-10485760";
+			FileInfoMatcherDescription filterDesc = new FileInfoMatcherDescription(MULTI_FILT_ID, FILT_ARG);
+			int EXCL_FILE_GT = IResourceFilterDescription.EXCLUDE_ALL + IResourceFilterDescription.FILES
+					+ IResourceFilterDescription.INHERITABLE;
+			sourceProj.createFilter(EXCL_FILE_GT, filterDesc, IResource.BACKGROUND_REFRESH, getMonitor());
+		}
+		return sourceProj;
 	}
 
 	/**
@@ -2520,5 +2628,26 @@ public class IResourceTest extends ResourceTest {
 
 		List<IResource> expectedOrder = Arrays.asList(project, project.getFile(".project"),  settings, prefs, a, a1, a2, b, b2, b1);
 		assertEquals("1.0", expectedOrder.toString(), actualOrder.toString());
+	}
+
+	private static class LogListener implements ILogListener {
+		private final List<IStatus> errors = new ArrayList<>();
+
+		@Override
+		public void logging(IStatus status, String plugin) {
+			if (status.getSeverity() == IStatus.ERROR) {
+				errors.add(status);
+			}
+		}
+
+		void assertNoLoggedErrors() {
+			if (!errors.isEmpty()) {
+				StringBuilder failMessage = new StringBuilder();
+				for (IStatus error : errors) {
+					failMessage.append(error.toString());
+				}
+				fail(failMessage.toString());
+			}
+		}
 	}
 }
