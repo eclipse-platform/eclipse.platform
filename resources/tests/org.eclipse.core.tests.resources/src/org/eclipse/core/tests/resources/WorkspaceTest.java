@@ -30,20 +30,6 @@ import org.eclipse.core.tests.harness.FussyProgressMonitor;
  */
 public class WorkspaceTest extends ResourceTest {
 	/**
-	 * All of the WorkspaceTests build on each other. This test must
-	 * be run last of all to clean up from all previous tests in this class.
-	 */
-	public void doCleanup() throws Exception {
-		IPath location = getWorkspace().getRoot().getLocation().append("testProject");
-		deleteOnTearDown(location);
-		IPath location2 = getWorkspace().getRoot().getLocation().append("testProject2");
-		deleteOnTearDown(location2);
-		cleanup();
-		assertTrue(location.toOSString() + " has not been deleted", !location.toFile().exists());
-		assertTrue(location2.toOSString() + " has not been deleted", !location2.toFile().exists());
-	}
-
-	/**
 	 * Returns a collection of string paths describing the standard
 	 * resource hierarchy for this test.  In the string forms, folders are
 	 * represented as having trailing separators ('/').  All other resources
@@ -53,12 +39,6 @@ public class WorkspaceTest extends ResourceTest {
 	@Override
 	public String[] defineHierarchy() {
 		return new String[] {"/", "/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1", "/2/2", "/2/3", "/3/", "/3/1", "/3/2", "/3/3", "/4/", "/5"};
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		doCleanup();
 	}
 
 	protected IProject getTestProject() {
@@ -287,7 +267,7 @@ public class WorkspaceTest extends ResourceTest {
 		monitor.assertUsedUp();
 		assertTrue(!target.isOpen());
 		monitor.prepare();
-		target.delete(true, monitor);
+		target.delete(true, true, monitor);
 		monitor.assertUsedUp();
 		assertTrue(!target.exists());
 	}
@@ -374,7 +354,7 @@ public class WorkspaceTest extends ResourceTest {
 		assertTrue(target.getReferencingProjects().length == 1);
 
 		monitor.prepare();
-		target.delete(true, monitor);
+		target.delete(true, true, monitor);
 		monitor.assertUsedUp();
 		assertTrue(!target.exists());
 	}
@@ -382,25 +362,16 @@ public class WorkspaceTest extends ResourceTest {
 	public void testDanglingReferences() throws Throwable {
 		IProject p1 = null;
 		IProject p2 = null;
-		try {
-			p2 = getWorkspace().getRoot().getProject("p2");
-			p2.create(new NullProgressMonitor());
-			p1 = getWorkspace().getRoot().getProject("p1");
-			IProjectDescription description = getWorkspace().newProjectDescription("p1");
-			description.setReferencedProjects(new IProject[] { p2 });
-			p1.create(description, new NullProgressMonitor());
-			p1.open(new NullProgressMonitor());
-			assertFalse(getWorkspace().getDanglingReferences().containsKey(p1));
-			p2.delete(true, new NullProgressMonitor());
-			assertArrayEquals(new IProject[] { p2 }, getWorkspace().getDanglingReferences().get(p1));
-		} finally {
-			if (p1 != null && p1.exists()) {
-				p1.delete(true, new NullProgressMonitor());
-			}
-			if (p2 != null && p2.exists()) {
-				p2.delete(true, new NullProgressMonitor());
-			}
-		}
+		p2 = getWorkspace().getRoot().getProject("p2");
+		p2.create(new NullProgressMonitor());
+		p1 = getWorkspace().getRoot().getProject("p1");
+		IProjectDescription description = getWorkspace().newProjectDescription("p1");
+		description.setReferencedProjects(new IProject[] { p2 });
+		p1.create(description, new NullProgressMonitor());
+		p1.open(new NullProgressMonitor());
+		assertFalse(getWorkspace().getDanglingReferences().containsKey(p1));
+		p2.delete(true, true, new NullProgressMonitor());
+		assertArrayEquals(new IProject[] { p2 }, getWorkspace().getDanglingReferences().get(p1));
 	}
 
 	public void testSetContents() throws Throwable {

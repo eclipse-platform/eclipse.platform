@@ -35,7 +35,7 @@ public class HistoryStorePerformanceTest extends ResourceTest {
 	protected void tearDown() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		project.clearHistory(getMonitor());
-		project.delete(true, true, getMonitor());
+		super.tearDown();
 	}
 
 	public void testPerformance() {

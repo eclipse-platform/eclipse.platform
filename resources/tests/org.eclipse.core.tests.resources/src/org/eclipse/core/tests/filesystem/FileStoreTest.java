@@ -50,6 +50,7 @@ public class FileStoreTest extends LocalStoreTest {
 			store.delete(EFS.NONE, null);
 		}
 		store.mkdir(EFS.NONE, null);
+		deleteOnTearDown(store);
 		IFileInfo info = store.fetchInfo();
 		assertTrue("createDir.1", info.exists());
 		assertTrue("createDir.1", info.isDirectory());
@@ -89,6 +90,7 @@ public class FileStoreTest extends LocalStoreTest {
 	private IFileStore getDirFileStore(String path) throws CoreException {
 		IFileStore store = EFS.getFileSystem(EFS.SCHEME_FILE).getStore(new Path(path));
 		store.mkdir(EFS.NONE, null);
+		deleteOnTearDown(store);
 		return store;
 	}
 
@@ -169,15 +171,13 @@ public class FileStoreTest extends LocalStoreTest {
 		target.copy(destination, EFS.NONE, null);
 		assertTrue("6.2", verifyTree(getTree(destination)));
 		destination.delete(EFS.NONE, null);
-
-		/* remove trash */
-		target.delete(EFS.NONE, null);
 	}
 
 	public void testCopyDirectory() throws Throwable {
 		/* build scenario */
 		IFileStore temp = EFS.getFileSystem(EFS.SCHEME_FILE)
 				.getStore(getWorkspace().getRoot().getLocation().append("temp"));
+		deleteOnTearDown(temp);
 		temp.mkdir(EFS.NONE, null);
 		assertTrue("1.1", temp.fetchInfo().isDirectory());
 		// create tree
@@ -189,10 +189,6 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore copyOfTarget = temp.getChild("copy of target");
 		target.copy(copyOfTarget, EFS.NONE, null);
 		assertTrue("2.1", verifyTree(getTree(copyOfTarget)));
-
-		/* remove trash */
-		target.delete(EFS.NONE, null);
-		copyOfTarget.delete(EFS.NONE, null);
 	}
 
 	public void testCopyDirectoryParentMissing() throws Throwable {
@@ -246,9 +242,6 @@ public class FileStoreTest extends LocalStoreTest {
 			String message = NLS.bind(Messages.couldNotMove, fileWithSmallName.toString());
 			assertEquals(message, e.getMessage());
 		}
-
-		/* take out the trash */
-		temp.delete(EFS.NONE, null);
 	}
 
 	public void testCopyFile() throws Throwable {
@@ -300,9 +293,6 @@ public class FileStoreTest extends LocalStoreTest {
 		bigFile.copy(destination, EFS.NONE, monitor);
 		assertTrue("7.3", compareContent(getContents(sb.toString()), destination.openInputStream(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
-
-		/* take out the trash */
-		temp.delete(EFS.NONE, null);
 	}
 
 	/**
@@ -367,36 +357,27 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("6.2", ok);
 		assertTrue("6.3", destination.fetchInfo().isDirectory());
 		destination.delete(EFS.NONE, null);
-
-		/* remove trash */
-		target.delete(EFS.NONE, null);
 	}
 
 	public void testGetLength() throws Exception {
 		// evaluate test environment
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
 		IFileStore temp = createDir(root.toString(), true);
-		try {
-			// create common objects
-			IFileStore target = temp.getChild("target");
+		// create common objects
+		IFileStore target = temp.getChild("target");
 
-			// test non-existent file
-			assertEquals("1.0", EFS.NONE, target.fetchInfo().getLength());
+		// test non-existent file
+		assertEquals("1.0", EFS.NONE, target.fetchInfo().getLength());
 
-			// create empty file
-			target.openOutputStream(EFS.NONE, null).close();
-			assertEquals("1.0", 0, target.fetchInfo().getLength());
+		// create empty file
+		target.openOutputStream(EFS.NONE, null).close();
+		assertEquals("1.0", 0, target.fetchInfo().getLength());
 
-			try ( // add a byte
-					OutputStream out = target.openOutputStream(EFS.NONE, null)) {
-				out.write(5);
-			}
-			assertEquals("1.0", 1, target.fetchInfo().getLength());
-		} finally {
-			/* remove trash */
-			temp.delete(EFS.NONE, null);
+		try ( // add a byte
+				OutputStream out = target.openOutputStream(EFS.NONE, null)) {
+			out.write(5);
 		}
-
+		assertEquals("1.0", 1, target.fetchInfo().getLength());
 	}
 
 	public void testGetStat() throws CoreException {
@@ -416,9 +397,6 @@ public class FileStoreTest extends LocalStoreTest {
 		createDir(target, true);
 		stat = target.fetchInfo().getLastModified();
 		assertTrue("2.0", EFS.NONE != stat);
-
-		/* remove trash */
-		temp.delete(EFS.NONE, null);
 	}
 
 	public void testMove() throws Throwable {
@@ -477,10 +455,6 @@ public class FileStoreTest extends LocalStoreTest {
 		destination.move(tree, EFS.NONE, null);
 		assertTrue("6.3", verifyTree(getTree(tree)));
 		assertTrue("6.4", !destination.fetchInfo().exists());
-
-		/* remove trash */
-		target.delete(EFS.NONE, null);
-		tree.delete(EFS.NONE, null);
 	}
 
 	public void testMoveAcrossVolumes() throws Throwable {
@@ -524,10 +498,6 @@ public class FileStoreTest extends LocalStoreTest {
 		destination.move(tree, EFS.NONE, null);
 		assertTrue("9.3", verifyTree(getTree(tree)));
 		assertTrue("9.4", !destination.fetchInfo().exists());
-
-		/* remove trash */
-		target.delete(EFS.NONE, null);
-		tree.delete(EFS.NONE, null);
 	}
 
 	public void testMoveDirectoryParentMissing() throws Throwable {

@@ -254,6 +254,8 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		IFileSystem system = getBogusFileSystem();
 		IFileStore store = system.getStore(Path.ROOT.append(name));
 		try {
+			deleteOnTearDown(
+					Path.fromOSString(system.getStore(Path.ROOT).toLocalFile(EFS.NONE, getMonitor()).getPath()));
 			store.mkdir(EFS.NONE, getMonitor());
 		} catch (CoreException e) {
 			fail("createFolderStore", e);

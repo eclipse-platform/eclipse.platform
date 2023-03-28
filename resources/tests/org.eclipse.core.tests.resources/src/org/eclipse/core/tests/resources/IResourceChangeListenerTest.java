@@ -103,6 +103,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
 			IPath root = getWorkspace().getRoot().getLocation();
 			IPath contents = root.append("temp/testing");
+			deleteOnTearDown(root.append("temp"));
 			description.setLocation(contents);
 			project.create(description, getMonitor());
 			project.open(getMonitor());
@@ -250,7 +251,6 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	protected void tearDown() throws Exception {
 		getWorkspace().removeResourceChangeListener(verifier);
 		super.tearDown();
-		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
 	}
 
 	/*

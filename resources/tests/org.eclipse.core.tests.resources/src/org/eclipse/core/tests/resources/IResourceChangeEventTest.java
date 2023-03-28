@@ -68,16 +68,6 @@ public class IResourceChangeEventTest extends ResourceTest {
 	}
 
 	/**
-	 * Tears down the fixture, for example, close a network connection.
-	 * This method is called after a test is executed.
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
-	}
-
-	/**
 	 * Tests the IResourceChangeEvent#findMarkerDeltas method.
 	 */
 	public void testFindMarkerDeltas() {

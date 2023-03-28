@@ -42,12 +42,6 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		defaultVariant = new BuildConfiguration(project, IBuildConfiguration.DEFAULT_CONFIG_NAME);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		project.delete(true, null);
-	}
-
 	public void testBasics() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		String[] configs = new String[] {variantId0, variantId1};

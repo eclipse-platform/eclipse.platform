@@ -70,7 +70,6 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 	@Override
 	protected void tearDown() throws Exception {
 		Job.getJobManager().removeJobChangeListener(jobChangeListener);
-		project.delete(true, null);
 		super.tearDown();
 	}
 

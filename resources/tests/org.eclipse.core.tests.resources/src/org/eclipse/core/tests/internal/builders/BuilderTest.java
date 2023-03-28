@@ -50,7 +50,6 @@ public class BuilderTest extends AbstractBuilderTest {
 	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		getWorkspace().getRoot().delete(true, null);
 		TestBuilder builder = SortBuilder.getInstance();
 		if (builder != null) {
 			builder.reset();

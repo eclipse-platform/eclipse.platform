@@ -58,9 +58,6 @@ public class ProjectDynamicReferencesTest extends ResourceTest {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		DynamicReferenceProvider.clear();
-		project0.delete(true, null);
-		project1.delete(true, null);
-		project2.delete(true, null);
 	}
 
 	public void testReferencedProjects() throws CoreException {

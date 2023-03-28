@@ -259,6 +259,7 @@ public class Bug_032076 extends ResourceTest {
 			}
 
 			try {
+				deleteOnTearDown(sourceProject.getLocation()); // Ensure project location is moved after test
 				sourceProject.move(destinationProject.getFullPath(), IResource.FORCE, getMonitor());
 				fail("2.0");
 			} catch (CoreException ce) {
@@ -294,13 +295,6 @@ public class Bug_032076 extends ResourceTest {
 				}
 			} catch (IOException e) {
 				fail("6.0", e);
-			} finally {
-				if (sourceProject != null) {
-					ensureDoesNotExistInFileSystem(sourceProject);
-				}
-				if (destinationProject != null) {
-					ensureDoesNotExistInFileSystem(destinationProject);
-				}
 			}
 		}
 	}

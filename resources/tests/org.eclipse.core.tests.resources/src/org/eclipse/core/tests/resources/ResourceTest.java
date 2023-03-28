@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -399,7 +401,7 @@ public abstract class ResourceTest extends CoreTest {
 		final IFileStore[] toDelete = storesToDelete.toArray(new IFileStore[0]);
 		storesToDelete.clear();
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
-			getWorkspace().getRoot().delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+			getWorkspace().getRoot().delete(true, true, getMonitor());
 			//clear stores in workspace runnable to avoid interaction with resource jobs
 			for (IFileStore element : toDelete) {
 				clear(element);
@@ -408,6 +410,16 @@ public abstract class ResourceTest extends CoreTest {
 		getWorkspace().save(true, null);
 		//don't leak builder jobs, since they may affect subsequent tests
 		waitForBuild();
+		assertWorkspaceFolderEmpty();
+	}
+
+	private void assertWorkspaceFolderEmpty() {
+		final String metadataDirectoryName = ".metadata";
+		File workspaceLocation = getWorkspace().getRoot().getLocation().toFile();
+		File[] remainingFilesInWorkspace = workspaceLocation
+				.listFiles(file -> !file.getName().equals(metadataDirectoryName));
+		assertArrayEquals("There are unexpected contents in the workspace folder", new File[0],
+				remainingFilesInWorkspace);
 	}
 
 	protected void clear(IFileStore store) {
@@ -565,7 +577,7 @@ public abstract class ResourceTest extends CoreTest {
 	public void ensureDoesNotExistInWorkspace(IResource resource) {
 		try {
 			if (resource.exists()) {
-				resource.delete(true, null);
+				resource.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
 			}
 		} catch (CoreException e) {
 			fail("#ensureDoesNotExistInWorkspace(IResource): " + resource.getFullPath(), e);
@@ -852,15 +864,23 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	protected IFileStore getTempStore() {
 		IFileStore store = EFS.getLocalFileSystem().getStore(FileSystemHelper.getRandomLocation(getTempDir()));
-		storesToDelete.add(store);
+		deleteOnTearDown(store);
 		return store;
 	}
 
 	/**
-	 * Ensures that the file system location associated with the corresponding path is deleted during test tear down.
+	 * Ensures that the file system location associated with the corresponding path
+	 * is deleted during test tear down.
 	 */
 	protected void deleteOnTearDown(IPath path) {
 		storesToDelete.add(EFS.getLocalFileSystem().getStore(path));
+	}
+
+	/**
+	 * Ensures that the given store is deleted during test tear down.
+	 */
+	protected void deleteOnTearDown(IFileStore store) {
+		storesToDelete.add(store);
 
 	}
 

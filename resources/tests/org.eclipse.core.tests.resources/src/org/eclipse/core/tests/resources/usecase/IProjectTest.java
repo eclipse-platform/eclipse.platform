@@ -233,7 +233,7 @@ public class IProjectTest extends IResourceTest {
 
 		// Delete the project
 		try {
-			proj.delete(false, monitor);
+			proj.delete(true, true, monitor);
 		} catch (CoreException e) {
 			fail("20.0", e);
 		}

@@ -169,13 +169,9 @@ public abstract class LocalStoreTest extends ResourceTest {
 				projects[i] = getWorkspace().getRoot().getProject(projectNames[i]);
 				projects[i].create(null);
 				projects[i].open(null);
+				deleteOnTearDown(projects[i].getLocation());
 			}
 		}, null);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
 	}
 
 	/**

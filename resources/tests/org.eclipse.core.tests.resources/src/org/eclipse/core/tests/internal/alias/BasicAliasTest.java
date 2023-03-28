@@ -316,6 +316,7 @@ public class BasicAliasTest extends ResourceTest {
 	private void replaceProject(IProject project, URI newLocation) throws CoreException {
 		IProjectDescription projectDesc = project.getDescription();
 		projectDesc.setLocationURI(newLocation);
+		deleteOnTearDown(project.getLocation()); // Ensure that project contents are removed from file system
 		project.move(projectDesc, IResource.REPLACE, null);
 	}
 

@@ -102,15 +102,6 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 		ensureExistsInWorkspace(resources, true);
 	}
 
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		getWorkspace().getRoot().delete(true, getMonitor());
-	}
-
 	/**
 	 * In this test, only project1 has a builder, but it is interested in deltas from the other projects.
 	 * We vary the set of projects that are changed, and the set of projects we request deltas for.

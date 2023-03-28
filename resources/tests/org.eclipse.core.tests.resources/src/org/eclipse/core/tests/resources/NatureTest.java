@@ -74,9 +74,8 @@ public class NatureTest extends ResourceTest {
 		project.delete(true, null);
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).putInt(ResourcesPlugin.PREF_MISSING_NATURE_MARKER_SEVERITY, PreferenceInitializer.PREF_MISSING_NATURE_MARKER_SEVERITY_DEFAULT);
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).flush();
-		super.tearDown();
 		getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
+		super.tearDown();
 	}
 
 	@Override

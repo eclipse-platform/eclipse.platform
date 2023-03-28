@@ -731,12 +731,6 @@ public class IPathVariableTest extends ResourceTest {
 		}
 	}
 
-	@Override
-	protected void cleanup() throws CoreException {
-		project.delete(true, getMonitor());
-		super.cleanup();
-	}
-
 	/**
 	 * Regression for Bug 308975 - Can't recover from 'invalid' path variable
 	 */
