@@ -1135,7 +1135,11 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 		}
 
 		// update filters in project descriptions
-		if (source.getProject().exists() && source instanceof Container && ((Container) source).hasFilters()) {
+		// copy filters for any container except project. In case of project copy/move
+		// description file is completely copied/moved. Otherwise it creates the issue
+		// #381
+		if (source.getProject().exists() && source instanceof Container && ((Container) source).hasFilters()
+				&& !movingProject) {
 			Project sourceProject = (Project) source.getProject();
 			LinkedList<FilterDescription> originalDescriptions = sourceProject.internalGetDescription().getFilter(source.getProjectRelativePath());
 			LinkedList<FilterDescription> filterDescriptions = FilterDescription.copy(originalDescriptions, destinationResource);
