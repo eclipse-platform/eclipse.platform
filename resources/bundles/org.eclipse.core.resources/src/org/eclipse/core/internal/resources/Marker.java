@@ -60,7 +60,7 @@ public class Marker extends PlatformObject implements IMarker {
 	private void checkInfo(MarkerInfo info) throws CoreException {
 		if (info == null) {
 			String message = NLS.bind(Messages.resources_markerNotFound, Long.toString(id));
-			throw new ResourceException(new ResourceStatus(IResourceStatus.MARKER_NOT_FOUND, resource.getFullPath(), message));
+			throw new ResourceException(new ResourceStatus(IResourceStatus.MARKER_NOT_FOUND, resource.getFullPath(), message, new IllegalStateException()));
 		}
 	}
 
