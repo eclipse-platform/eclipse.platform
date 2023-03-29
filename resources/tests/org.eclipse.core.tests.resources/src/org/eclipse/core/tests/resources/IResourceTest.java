@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2022 IBM Corporation and others.
+ *  Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -108,6 +108,8 @@ public class IResourceTest extends ResourceTest {
 
 	/* the delta verifier */
 	ResourceDeltaVerifier verifier;
+
+	private boolean storedAutoBuildValue;
 
 	/**
 	 * Get all files and directories in given directory recursive.
@@ -396,9 +398,7 @@ public class IResourceTest extends ResourceTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		IWorkspaceDescription description = getWorkspace().getDescription();
-		description.setAutoBuilding(false);
-		getWorkspace().setDescription(description);
+		storedAutoBuildValue = setAutoBuild(false);
 
 		try {
 			// open project
@@ -565,7 +565,25 @@ public class IResourceTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
 		interestingPaths = null;
 		interestingResources = null;
+		setAutoBuild(storedAutoBuildValue);
 		super.tearDown();
+	}
+
+	private boolean setAutoBuild(boolean enabled) throws CoreException {
+		IWorkspaceDescription description = getWorkspace().getDescription();
+		boolean wasAutoBuildEnabled = description.isAutoBuilding();
+		if (wasAutoBuildEnabled == enabled) {
+			return wasAutoBuildEnabled;
+		}
+		if (wasAutoBuildEnabled) {
+			waitForBuild();
+		}
+		description.setAutoBuilding(enabled);
+		getWorkspace().setDescription(description);
+		if (enabled) {
+			waitForBuild();
+		}
+		return wasAutoBuildEnabled;
 	}
 
 	/**
