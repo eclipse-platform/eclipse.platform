@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2022 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -42,6 +42,10 @@ package org.eclipse.e4.core.contexts;
  * the class name, so the value stored for the class {@link java.lang.String} can be retrieved
  * using the key value of "java.lang.String".
  * </p>
+ * <p>
+ * A context should be disposed with {@link #dispose()} when no longer needed.
+ * </p>
+ *
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
  * @since 1.3
@@ -254,13 +258,17 @@ public interface IEclipseContext {
 	void processWaiting();
 
 	/**
-	 * Creates a new context using this context as a parent.
+	 * Creates a new context using this context as a parent. A child should be
+	 * disposed with {@link #dispose()} when no longer needed.
+	 *
 	 * @return a new child context
 	 */
 	IEclipseContext createChild();
 
 	/**
-	 * Creates a new named context using this context as a parent.
+	 * Creates a new named context using this context as a parent. A child should be
+	 * disposed with {@link #dispose()} when no longer needed.
+	 *
 	 * @param name the name to identify this context
 	 * @return a new child context
 	 */
