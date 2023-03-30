@@ -24,32 +24,24 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  */
 public class TestSave extends WorkspaceSerializationTest {
 
-	public void test1() {
+	public void test() throws CoreException {
 		/* create some resource handles */
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
-		try {
-			project.create(getMonitor());
-			project.open(getMonitor());
+		project.create(getMonitor());
+		project.open(getMonitor());
 
-			workspace.save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
-	}
-
-	public void test2() {
+		workspace.save(true, getMonitor());
+		
+		
+		//verify being properly saved in the workspace
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		assertTrue("1.0", root.exists());
-		try {
-			IResource[] children = root.members();
-			assertEquals("1.2", 1, children.length);
-			IProject project = (IProject) children[0];
-			assertTrue("1.3", project.exists());
-			assertTrue("1.4", project.isOpen());
-			assertEquals("1.5", PROJECT, project.getName());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		IResource[] children = root.members();
+		assertEquals("1.2", 1, children.length);
+		IProject project2 = (IProject) children[0];
+		assertTrue("1.3", project2.exists());
+		assertTrue("1.4", project2.isOpen());
+		assertEquals("1.5", PROJECT, project2.getName());
 	}
 
 	public static Test suite() {
