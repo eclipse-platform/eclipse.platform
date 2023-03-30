@@ -15,7 +15,6 @@
 package org.eclipse.core.tests.internal.builders;
 
 import java.util.Map;
-import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -24,9 +23,6 @@ import org.eclipse.core.tests.resources.ResourceTest;
  * This class does not define any tests, just convenience methods for other builder tests.
  */
 public abstract class AbstractBuilderTest extends ResourceTest {
-
-	private boolean autoBuilding;
-	private int simultaneousBuilds;
 
 	public AbstractBuilderTest(String name) {
 		super(name);
@@ -69,69 +65,4 @@ public abstract class AbstractBuilderTest extends ResourceTest {
 		file.setContents(getRandomContents(), true, true, getMonitor());
 	}
 
-	/**
-	 * Sets the workspace autobuilding to the desired value.
-	 */
-	protected void setAutoBuilding(boolean value) throws CoreException {
-		changeAutoBuilding(value);
-		if (!value) {
-			((Workspace) getWorkspace()).getBuildManager().waitForAutoBuild();
-		}
-	}
-
-	private void changeAutoBuilding(boolean value) throws CoreException {
-		IWorkspace workspace = getWorkspace();
-		if (workspace.isAutoBuilding() == value) {
-			return;
-		}
-		IWorkspaceDescription desc = workspace.getDescription();
-		desc.setAutoBuilding(value);
-		workspace.setDescription(desc);
-	}
-
-	/**
-	 * Sets the workspace build order to just contain the given project.
-	 */
-	protected void setBuildOrder(IProject project) throws CoreException {
-		IWorkspace workspace = getWorkspace();
-		IWorkspaceDescription desc = workspace.getDescription();
-		desc.setBuildOrder(new String[] {project.getName()});
-		workspace.setDescription(desc);
-	}
-
-	/**
-	 * Sets the workspace build order to contain the two given projects
-	 */
-	protected void setBuildOrder(IProject project1, IProject project2) throws CoreException {
-		IWorkspace workspace = getWorkspace();
-		IWorkspaceDescription desc = workspace.getDescription();
-		desc.setBuildOrder(new String[] {project1.getName(), project2.getName()});
-		workspace.setDescription(desc);
-	}
-
-	/**
-	 * Saves the current auto-build flag value so it can be restored later.
-	 */
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		autoBuilding = getWorkspace().isAutoBuilding();
-		simultaneousBuilds = getWorkspace().getDescription().getMaxConcurrentBuilds();
-	}
-
-	/**
-	 * Restores the auto-build flag to its original value.
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		//revert to default build order
-		IWorkspace workspace = getWorkspace();
-		IWorkspaceDescription desc = workspace.getDescription();
-		desc.setBuildOrder(null);
-		desc.setMaxConcurrentBuilds(simultaneousBuilds);
-		workspace.setDescription(desc);
-		waitForBuild();
-		setAutoBuilding(autoBuilding);
-		super.tearDown();
-	}
 }

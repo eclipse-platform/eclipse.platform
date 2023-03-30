@@ -187,23 +187,6 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	}
 
 	/**
-	 * Sets the workspace autobuilding to the desired value.
-	 */
-	protected void setAutoBuilding(boolean value) {
-		IWorkspace workspace = getWorkspace();
-		if (workspace.isAutoBuilding() == value) {
-			return;
-		}
-		IWorkspaceDescription desc = workspace.getDescription();
-		desc.setAutoBuilding(value);
-		try {
-			workspace.setDescription(desc);
-		} catch (CoreException e) {
-			fail("failed to set workspace description", e);
-		}
-	}
-
-	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
@@ -511,7 +494,6 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			workspace.removeResourceChangeListener(preBuild);
 			workspace.removeResourceChangeListener(postBuild);
 			workspace.removeResourceChangeListener(postChange);
-			setAutoBuilding(true);
 		}
 	}
 
@@ -537,8 +519,6 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		final IWorkspace workspace = getWorkspace();
 		try {
 			setAutoBuilding(false);
-			// make sure the events do not get fired from autobuild:
-			((Workspace) getWorkspace()).getBuildManager().waitForAutoBuild();
 
 			workspace.addResourceChangeListener(preBuild, IResourceChangeEvent.PRE_BUILD);
 			workspace.addResourceChangeListener(postBuild, IResourceChangeEvent.POST_BUILD);
@@ -554,7 +534,6 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			assertEquals("Should see workspace root on PRE_BUILD event", workspace, preBuild.source);
 			assertEquals("Should see workspace root on POST_BUILD event", workspace, postBuild.source);
 		} finally {
-			setAutoBuilding(true);
 			workspace.removeResourceChangeListener(preBuild);
 			workspace.removeResourceChangeListener(postBuild);
 		}

@@ -34,16 +34,9 @@ public class TestBug6995 extends WorkspaceSessionTest {
 	/**
 	 * Create a project and configure a builder for it.
 	 */
-	public void test1() {
-		//turn off autobuild
+	public void test1() throws CoreException {
 		IWorkspace workspace = getWorkspace();
-		try {
-			IWorkspaceDescription desc = workspace.getDescription();
-			desc.setAutoBuilding(false);
-			workspace.setDescription(desc);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		setAutoBuilding(false);
 
 		//create a project and configure builder
 		IProject project = workspace.getRoot().getProject("Project");

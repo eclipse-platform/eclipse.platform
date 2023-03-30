@@ -90,8 +90,6 @@ public class HistoryStoreTest extends ResourceTest {
 		}
 	}
 
-	private IWorkspaceDescription original;
-
 	public static void assertEquals(String tag, IFileState expected, IFileState actual) {
 		assertEquals(tag + " path differs", expected.getFullPath(), actual.getFullPath());
 		assertEquals(tag + " timestamp differs", expected.getModificationTime(), actual.getModificationTime());
@@ -140,14 +138,7 @@ public class HistoryStoreTest extends ResourceTest {
 	}
 
 	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		original = getWorkspace().getDescription();
-	}
-
-	@Override
 	protected void tearDown() throws Exception {
-		getWorkspace().setDescription(original);
 		super.tearDown();
 		wipeHistoryStore(getMonitor());
 	}

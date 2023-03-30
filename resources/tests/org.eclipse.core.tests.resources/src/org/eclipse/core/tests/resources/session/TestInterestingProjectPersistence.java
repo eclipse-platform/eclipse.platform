@@ -41,19 +41,6 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 	private IFile file3;
 	private IFile file4;
 
-	/**
-	 * Sets the workspace autobuilding to the desired value.
-	 */
-	protected void setAutoBuilding(boolean value) throws CoreException {
-		IWorkspace workspace = getWorkspace();
-		if (workspace.isAutoBuilding() == value) {
-			return;
-		}
-		IWorkspaceDescription desc = workspace.getDescription();
-		desc.setAutoBuilding(value);
-		workspace.setDescription(desc);
-	}
-
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -75,11 +62,7 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		IResource[] resources = {project1, project2, project3, project4, file1, file2, file3, file4};
 		ensureExistsInWorkspace(resources, true);
 		try {
-			//turn off autobuild
-			IWorkspace workspace = getWorkspace();
-			IWorkspaceDescription desc = workspace.getDescription();
-			desc.setAutoBuilding(false);
-			workspace.setDescription(desc);
+			setAutoBuilding(false);
 
 			//create a project and configure builder
 			IProjectDescription description = project1.getDescription();

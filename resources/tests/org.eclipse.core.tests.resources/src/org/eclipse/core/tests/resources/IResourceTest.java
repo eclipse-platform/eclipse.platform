@@ -43,7 +43,6 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceFilterDescription;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -114,8 +113,6 @@ public class IResourceTest extends ResourceTest {
 
 	/* the delta verifier */
 	ResourceDeltaVerifier verifier;
-
-	private boolean storedAutoBuildValue;
 
 	/**
 	 * Get all files and directories in given directory recursive.
@@ -404,7 +401,7 @@ public class IResourceTest extends ResourceTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		storedAutoBuildValue = setAutoBuild(false);
+		setAutoBuilding(false);
 
 		try {
 			// open project
@@ -570,25 +567,7 @@ public class IResourceTest extends ResourceTest {
 		getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
 		interestingPaths = null;
 		interestingResources = null;
-		setAutoBuild(storedAutoBuildValue);
 		super.tearDown();
-	}
-
-	private boolean setAutoBuild(boolean enabled) throws CoreException {
-		IWorkspaceDescription description = getWorkspace().getDescription();
-		boolean wasAutoBuildEnabled = description.isAutoBuilding();
-		if (wasAutoBuildEnabled == enabled) {
-			return wasAutoBuildEnabled;
-		}
-		if (wasAutoBuildEnabled) {
-			waitForBuild();
-		}
-		description.setAutoBuilding(enabled);
-		getWorkspace().setDescription(description);
-		if (enabled) {
-			waitForBuild();
-		}
-		return wasAutoBuildEnabled;
 	}
 
 	/**

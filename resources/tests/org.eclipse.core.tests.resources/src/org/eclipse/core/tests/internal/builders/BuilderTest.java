@@ -412,7 +412,6 @@ public class BuilderTest extends AbstractBuilderTest {
 			notified[0] = false;
 			//now turn on autobuild and see if the listener is notified again
 			setAutoBuilding(true);
-			waitForBuild();
 			assertTrue("1.0", !notified[0]);
 		} catch (CoreException e) {
 			fail("2.99", e);
@@ -739,6 +738,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		} catch (CoreException e) {
 			fail("3.99", e);
 		}
+		waitForEncodingRelatedJobs();
 		waitForBuild();
 		SortBuilder builder = SortBuilder.getInstance();
 		assertEquals("4.0", proj2, builder.getProject());
@@ -864,7 +864,6 @@ public class BuilderTest extends AbstractBuilderTest {
 		//Cause a build by enabling autobuild
 		try {
 			setAutoBuilding(true);
-			waitForBuild();
 			verifier = SortBuilder.getInstance();
 			verifier.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 			verifier.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);

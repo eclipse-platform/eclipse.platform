@@ -56,11 +56,7 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 			//give unsorted files some initial content
 			unsortedFile1.setContents(new ByteArrayInputStream(new byte[] {1, 4, 3}), true, true, null);
 
-			//turn off autobuild
-			IWorkspace workspace = getWorkspace();
-			IWorkspaceDescription desc = workspace.getDescription();
-			desc.setAutoBuilding(false);
-			workspace.setDescription(desc);
+			setAutoBuilding(false);
 
 			//configure builder for project1
 			IProjectDescription description = project1.getDescription();
@@ -68,7 +64,7 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 			project1.setDescription(description, getMonitor());
 
 			//initial build -- created sortedFile1
-			workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+			getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
 
 			getWorkspace().save(true, getMonitor());
 		} catch (CoreException e) {

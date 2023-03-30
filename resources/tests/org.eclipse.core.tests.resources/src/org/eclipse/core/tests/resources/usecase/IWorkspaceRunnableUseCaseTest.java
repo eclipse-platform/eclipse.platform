@@ -49,9 +49,7 @@ public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
 		IWorkspaceDescription original = getWorkspace().getDescription();
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		try {
-			IWorkspaceDescription description = getWorkspace().getDescription();
-			description.setAutoBuilding(true);
-			getWorkspace().setDescription(description);
+			setAutoBuilding(true);
 			IProjectDescription prjDescription = getWorkspace().newProjectDescription("MyProject");
 			ICommand command = prjDescription.newCommand();
 			command.setBuilderName(SignaledBuilder.BUILDER_ID);

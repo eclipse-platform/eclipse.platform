@@ -36,10 +36,8 @@ public class BuilderCycleTest extends AbstractBuilderTest {
 		ensureExistsInWorkspace(new IResource[] {project, before1, before2, after1, after2}, true);
 
 		try {
-			IWorkspaceDescription description = getWorkspace().getDescription();
-			description.setBuildOrder(new String[] {before1.getName(), before2.getName(), project.getName(), after1.getName(), after2.getName()});
-			description.setAutoBuilding(false);
-			getWorkspace().setDescription(description);
+			setBuildOrder(before1, before2, project, after1, after2);
+			setAutoBuilding(false);
 		} catch (CoreException e) {
 			fail("1.0", e);
 		}

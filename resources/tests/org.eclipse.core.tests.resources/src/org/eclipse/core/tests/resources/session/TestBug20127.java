@@ -36,10 +36,7 @@ public class TestBug20127 extends WorkspaceSerializationTest {
 		IProject project = workspace.getRoot().getProject("Project1");
 		ensureExistsInWorkspace(project, true);
 		try {
-			//turn off autobuild
-			IWorkspaceDescription desc = workspace.getDescription();
-			desc.setAutoBuilding(false);
-			workspace.setDescription(desc);
+			setAutoBuilding(false);
 
 			//create a project and configure builder
 			IProjectDescription description = project.getDescription();
