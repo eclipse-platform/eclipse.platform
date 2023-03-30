@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-
+import java.util.stream.Stream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -55,6 +55,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IPath;
@@ -129,6 +130,23 @@ public abstract class ResourceTest extends CoreTest {
 
 	public static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
+	}
+
+	private IWorkspaceDescription storedWorkspaceDescription;
+
+	private final void storeWorkspaceDescription() {
+		this.storedWorkspaceDescription = getWorkspace().getDescription();
+	}
+
+	private final void restoreWorkspaceDescription() {
+		if (storedWorkspaceDescription != null) {
+			try {
+				getWorkspace().setDescription(storedWorkspaceDescription);
+			} catch (CoreException e) {
+				fail("Failed restoring workspace description", e);
+			}
+		}
+		storedWorkspaceDescription = null;
 	}
 
 	/**
@@ -1055,6 +1073,7 @@ public abstract class ResourceTest extends CoreTest {
 		assertNotNull("Workspace was not setup", getWorkspace());
 		loggedErrors.clear();
 		Platform.addLogListener(errorLogListener);
+		storeWorkspaceDescription();
 	}
 
 	@Override
@@ -1063,6 +1082,7 @@ public abstract class ResourceTest extends CoreTest {
 		TestUtil.log(IStatus.INFO, getName(), "tearDown");
 		// Ensure everything is in a clean state for next one.
 		// Session tests should overwrite it.
+		restoreWorkspaceDescription();
 		cleanup();
 		super.tearDown();
 		FreezeMonitor.done();
@@ -1083,6 +1103,30 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
+	 * Enables or disables workspace autobuild. Waits for the build to be finished,
+	 * even if the autobuild value did not change and a previous build is still running.
+	 */
+	protected void setAutoBuilding(boolean enabled) throws CoreException {
+		IWorkspace workspace = getWorkspace();
+		if (workspace.isAutoBuilding() != enabled) {
+			IWorkspaceDescription description = workspace.getDescription();
+			description.setAutoBuilding(enabled);
+			workspace.setDescription(description);
+		}
+		waitForBuild();
+	}
+
+	/**
+	 * Sets the workspace build order to just contain the given projects.
+	 */
+	protected void setBuildOrder(IProject... projects) throws CoreException {
+		IWorkspace workspace = getWorkspace();
+		IWorkspaceDescription desc = workspace.getDescription();
+		desc.setBuildOrder(Stream.of(projects).map(IProject::getName).toArray(String[]::new));
+		workspace.setDescription(desc);
+	}
+
+	/**
 	 * Blocks the calling thread until autobuild completes.
 	 */
 	protected void waitForBuild() {
@@ -1090,7 +1134,7 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Blocks the calling thread until autobuild completes.
+	 * Blocks the calling thread until refresh job completes.
 	 */
 	protected void waitForRefresh() {
 		try {

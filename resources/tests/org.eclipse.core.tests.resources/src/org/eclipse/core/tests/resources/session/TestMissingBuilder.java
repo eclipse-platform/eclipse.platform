@@ -52,19 +52,6 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 	}
 
 	/**
-	 * Sets the workspace autobuilding to the desired value.
-	 */
-	protected void setAutoBuilding(boolean value) throws CoreException {
-		IWorkspace workspace = getWorkspace();
-		if (workspace.isAutoBuilding() == value) {
-			return;
-		}
-		IWorkspaceDescription desc = workspace.getDescription();
-		desc.setAutoBuilding(value);
-		workspace.setDescription(desc);
-	}
-
-	/**
 	 * Setup.  Create a project that has a disabled builder due to
 	 * missing nature prerequisite.
 	 */
