@@ -17,13 +17,13 @@ import java.io.*;
 import junit.framework.Test;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
  * Tests for bug 266907
  */
-public class Bug_266907 extends WorkspaceSessionTest {
+public class Bug_266907 extends ResourceTest {
 
 	private static final String PROJECT_NAME = "Project";
 	private static final String FILE_NAME = "File";

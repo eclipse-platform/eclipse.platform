@@ -13,16 +13,17 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Test for bug 426263
  */
-public class TestBug426263 extends WorkspaceSessionTest {
+public class TestBug426263 extends ResourceTest {
 	public static Test suite() {
 		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug426263.class);
 	}

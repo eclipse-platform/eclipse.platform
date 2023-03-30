@@ -13,16 +13,20 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
-import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.SessionTestSuite;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
-public class Test1GALH44 extends WorkspaceSessionTest {
+import junit.framework.Test;
+
+public class Test1GALH44 extends ResourceTest {
 
 	public Test1GALH44(String name) {
 		super(name);

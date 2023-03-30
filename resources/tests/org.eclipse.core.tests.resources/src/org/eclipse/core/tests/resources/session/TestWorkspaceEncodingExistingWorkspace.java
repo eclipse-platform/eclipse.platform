@@ -17,17 +17,19 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import junit.framework.Test;
+
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests that explicit workspace encoding not set if there are projects defined
  */
-public class TestWorkspaceEncodingExistingWorkspace extends WorkspaceSessionTest {
+public class TestWorkspaceEncodingExistingWorkspace extends ResourceTest {
 
 	public static Test suite() {
 		WorkspaceSessionTestSuite suite = new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS,

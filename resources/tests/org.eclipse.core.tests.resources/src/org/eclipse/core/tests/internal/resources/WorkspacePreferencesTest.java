@@ -14,24 +14,29 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
-import java.util.*;
-import junit.framework.ComparisonFailure;
-import junit.framework.Test;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.resources.WorkspacePreferences;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
-public class WorkspacePreferencesTest extends WorkspaceSessionTest {
+import junit.framework.ComparisonFailure;
+import junit.framework.Test;
+
+public class WorkspacePreferencesTest extends ResourceTest {
 	private IWorkspace workspace;
 	private Preferences preferences;
 
-	/**
-	 * @see TestCase#setUp()
-	 */
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -40,9 +45,6 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		workspace.setDescription(Workspace.defaultWorkspaceDescription());
 	}
 
-	/**
-	 * @see TestCase#tearDown()
-	 */
 	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();

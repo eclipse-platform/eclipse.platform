@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.tests.resources.ContentDescriptionManagerTest;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -33,7 +33,7 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  * @since 3.2
  *
  */
-public class TestBug93473 extends WorkspaceSessionTest {
+public class TestBug93473 extends ResourceTest {
 
 	public static Test suite() {
 		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug93473.class);

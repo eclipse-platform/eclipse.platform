@@ -16,21 +16,31 @@ package org.eclipse.core.tests.resources.session;
 
 import java.util.ArrayList;
 import java.util.Map;
-import junit.framework.Test;
-import org.eclipse.core.resources.*;
+
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * When a builder is run, it reports what projects it is interested in obtaining
  * deltas for the next time it is run.  This class tests that this list of "interesting"
  * projects is correctly saved between sessions.
  */
-public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
+public class TestInterestingProjectPersistence extends ResourceTest {
 	//various resource handles
 	private IProject project1;
 	private IProject project2;

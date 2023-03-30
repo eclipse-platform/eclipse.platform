@@ -13,18 +13,21 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
-import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Test for bug 316182
  */
-public class TestBug316182 extends WorkspaceSessionTest {
+public class TestBug316182 extends ResourceTest {
 	public static Exception CAUGHT_EXCEPTION = null;
 
 	public void test01_prepareWorkspace() throws CoreException {

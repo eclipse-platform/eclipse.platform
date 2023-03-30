@@ -16,14 +16,14 @@ package org.eclipse.core.tests.resources.usecase;
 import junit.framework.Test;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
  * Runs all the snapshot usecase tests as a single session test.
  * Each test method will run a different snapshot test.
  */
-public class SnapshotTest extends WorkspaceSessionTest {
+public class SnapshotTest extends ResourceTest {
 
 	/** activities */
 	static final String COMMENT_1 = "COMMENT ONE";

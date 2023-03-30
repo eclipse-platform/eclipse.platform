@@ -13,11 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
-import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * This class is a simple example of how session tests operate.  Each method
@@ -25,7 +29,7 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  * runtime instance of the workspace.  Contents on disk are automatically
  * cleaned up after the last test method is run.
  */
-public class SampleSessionTest extends WorkspaceSessionTest {
+public class SampleSessionTest extends ResourceTest {
 
 	public void test1() throws Exception {
 		//create a project, save workspace

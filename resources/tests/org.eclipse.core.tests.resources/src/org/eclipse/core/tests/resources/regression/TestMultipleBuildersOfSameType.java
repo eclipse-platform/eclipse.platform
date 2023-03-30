@@ -16,21 +16,32 @@ package org.eclipse.core.tests.resources.regression;
 
 import java.io.ByteArrayInputStream;
 import java.util.Map;
-import junit.framework.Test;
-import org.eclipse.core.resources.*;
+
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests that multiple builders of the same type can be installed on a single
  * project, and that their deltas are correctly serialized and associated with
  * the correct builder in the next session.
  */
-public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
+public class TestMultipleBuildersOfSameType extends ResourceTest {
 	//various resource handles
 	private IProject project1;
 	private IFolder sorted1, unsorted1;

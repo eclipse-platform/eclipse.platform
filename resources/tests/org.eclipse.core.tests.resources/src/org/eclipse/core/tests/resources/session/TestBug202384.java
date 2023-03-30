@@ -22,7 +22,7 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 /**
  * Test for bug 202384
  */
-public class TestBug202384 extends WorkspaceSessionTest {
+public class TestBug202384 extends ResourceTest {
 
 	public void testInitializeWorkspace() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();

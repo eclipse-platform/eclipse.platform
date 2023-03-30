@@ -13,21 +13,26 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
-import java.io.*;
-import junit.framework.Test;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.Setup;
 import org.eclipse.core.tests.session.SetupManager.SetupException;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
+import junit.framework.Test;
+
 /**
  * Tests that encoding is set according to plugin customization
  */
-public class TestWorkspaceEncodingWithPluginCustomization extends WorkspaceSessionTest {
+public class TestWorkspaceEncodingWithPluginCustomization extends ResourceTest {
 
 	private static final String CHARSET = "UTF-16";
 	private static final String FILE_NAME = FileSystemHelper.getTempDir().append("plugin_customization_encoding.ini").toOSString();

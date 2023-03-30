@@ -15,21 +15,29 @@
 package org.eclipse.core.tests.resources.session;
 
 import java.util.Map;
-import junit.framework.Test;
-import org.eclipse.core.resources.*;
+
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests the fix for bug 6995.  In this bug, a snapshot immediately after startup and
  * before doing any builds was losing the old built tree.  A subsequent build would
  * revert to a full build.
  */
-public class TestBug6995 extends WorkspaceSessionTest {
+public class TestBug6995 extends ResourceTest {
 
 	/**
 	 * Create a project and configure a builder for it.

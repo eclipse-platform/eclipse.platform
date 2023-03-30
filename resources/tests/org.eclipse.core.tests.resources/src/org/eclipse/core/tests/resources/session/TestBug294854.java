@@ -13,20 +13,23 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import org.eclipse.core.internal.resources.TestingSupport;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.SessionTestSuite;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * Test for bug 294854
  */
-public class TestBug294854 extends WorkspaceSessionTest {
+public class TestBug294854 extends ResourceTest {
 	private static final String PROJECT_OLD_NAME = "project_old_name";
 	private static final String PROJECT_NEW_NAME = "project_new_name";
 

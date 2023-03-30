@@ -13,19 +13,23 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests regression of bug 30015.  Due to this bug, it was impossible to restore
  * a project whose location was relative to a workspace path variable.
  */
-public class TestBug30015 extends WorkspaceSessionTest {
+public class TestBug30015 extends ResourceTest {
 	protected static final String PROJECT_NAME = "Project";
 	protected static final String VAR_NAME = "ProjectLocatio";
 	protected IPath varValue;

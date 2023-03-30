@@ -16,14 +16,14 @@ package org.eclipse.core.tests.resources.session;
 import junit.framework.Test;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
  * This class tests persistence of project description build configurations
  * and project description dynamic state across workbench sessions.
  */
-public class ProjectDescriptionDynamicTest extends WorkspaceSessionTest {
+public class ProjectDescriptionDynamicTest extends ResourceTest {
 
 	IProject proj;
 	String[] configNames;

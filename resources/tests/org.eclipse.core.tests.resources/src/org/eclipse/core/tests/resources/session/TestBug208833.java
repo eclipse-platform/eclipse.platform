@@ -14,18 +14,22 @@
 package org.eclipse.core.tests.resources.session;
 
 import java.io.File;
-import junit.framework.Test;
-import org.eclipse.core.resources.*;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests regression of bug 208833 - project resource tree is deleted when Eclipse fails to access its metainfo
  * during startup. It results in empty resource tree when the project's metadata is accessible again and the project is open.
  */
-public class TestBug208833 extends WorkspaceSessionTest {
+public class TestBug208833 extends ResourceTest {
 	/**
 	 * Setup.  Creates a project with a file.
 	 */

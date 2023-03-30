@@ -14,9 +14,9 @@
 package org.eclipse.core.tests.resources.session;
 
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 
-public class WorkspaceSerializationTest extends WorkspaceSessionTest {
+public class WorkspaceSerializationTest extends ResourceTest {
 	protected static final String PROJECT = "CrashProject";
 	protected static final String FOLDER = "CrashFolder";
 	protected static final String FILE = "CrashFile";

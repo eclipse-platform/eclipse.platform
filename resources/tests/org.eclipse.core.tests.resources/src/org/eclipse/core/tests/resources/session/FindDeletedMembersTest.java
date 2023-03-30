@@ -20,14 +20,14 @@ import junit.framework.Test;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
  * Copies the tests from HistoryStoreTest#testFindDeleted, phrased
  * as a session test.
  */
-public class FindDeletedMembersTest extends WorkspaceSessionTest {
+public class FindDeletedMembersTest extends ResourceTest {
 	//common objects
 	protected IWorkspaceRoot root;
 	protected IProject project;

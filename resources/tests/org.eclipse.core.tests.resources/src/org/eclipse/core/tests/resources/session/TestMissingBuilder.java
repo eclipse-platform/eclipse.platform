@@ -21,13 +21,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SnowBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
  * Tests persistence cases for builders that are missing or disabled.
  */
-public class TestMissingBuilder extends WorkspaceSessionTest {
+public class TestMissingBuilder extends ResourceTest {
 	/**
 	 * Returns true if this project's build spec has the given builder,
 	 * and false otherwise.

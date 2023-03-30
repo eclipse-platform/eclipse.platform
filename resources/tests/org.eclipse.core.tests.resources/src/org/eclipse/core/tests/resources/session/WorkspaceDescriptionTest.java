@@ -13,18 +13,21 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
-import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Ensures that the workspace description is correctly persisted across
  * sessions.
  */
-public class WorkspaceDescriptionTest extends WorkspaceSessionTest {
+public class WorkspaceDescriptionTest extends ResourceTest {
 	private static final String[] BUILD_ORDER = new String[] {"Foo"};
 	private static final boolean APPLY_POLICY = false;
 	private static final int STATE_LONGEVITY = 123456;

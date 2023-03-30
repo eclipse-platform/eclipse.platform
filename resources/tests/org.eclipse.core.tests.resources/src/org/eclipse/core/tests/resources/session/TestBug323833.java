@@ -15,20 +15,24 @@
 package org.eclipse.core.tests.resources.session;
 
 import java.io.File;
-import junit.framework.Test;
-import org.eclipse.core.filesystem.*;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.filesystem.FileCache;
 import org.eclipse.core.internal.filesystem.local.LocalFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Test for bug 323833
  */
-public class TestBug323833 extends WorkspaceSessionTest {
+public class TestBug323833 extends ResourceTest {
 	public void test1() {
 		if (!Platform.getOS().equals(Platform.OS_MACOSX)) {
 			return;

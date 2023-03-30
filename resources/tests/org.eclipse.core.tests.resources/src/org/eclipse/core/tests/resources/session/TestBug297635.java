@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.harness.BundleTestingHelper;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.content.ContentTypeTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 import org.osgi.framework.*;
@@ -33,7 +33,7 @@ import org.osgi.framework.*;
 /**
  * Tests regression of bug 297635
  */
-public class TestBug297635 extends WorkspaceSessionTest implements ISaveParticipant {
+public class TestBug297635 extends ResourceTest implements ISaveParticipant {
 
 	private static final String BUNDLE01_ID = "org.eclipse.bundle01";
 

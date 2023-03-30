@@ -15,12 +15,12 @@ package org.eclipse.core.tests.resources.saveparticipant;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
  * Runs all the SaveManager tests as a single session test.
  */
-public class SaveManagerTest extends WorkspaceSessionTest {
+public class SaveManagerTest extends ResourceTest {
 
 	/** project names */
 	static final String PROJECT_1 = "MyProject";

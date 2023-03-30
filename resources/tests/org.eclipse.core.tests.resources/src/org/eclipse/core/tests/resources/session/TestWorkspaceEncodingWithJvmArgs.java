@@ -13,19 +13,20 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.Setup;
 import org.eclipse.core.tests.session.SetupManager.SetupException;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
+import junit.framework.Test;
+
 /**
  * Tests that encoding is set according to jvm arguments
  */
-public class TestWorkspaceEncodingWithJvmArgs extends WorkspaceSessionTest {
+public class TestWorkspaceEncodingWithJvmArgs extends ResourceTest {
 
 	private static final String CHARSET = "UTF-16";
 

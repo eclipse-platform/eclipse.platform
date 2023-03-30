@@ -13,18 +13,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests that encoding is set to UTF-8 in an empty workspace and only if no
  * preference set already
  */
-public class TestWorkspaceEncodingNewWorkspace extends WorkspaceSessionTest {
+public class TestWorkspaceEncodingNewWorkspace extends ResourceTest {
 
 	private static final String CHARSET = "UTF-16";
 
