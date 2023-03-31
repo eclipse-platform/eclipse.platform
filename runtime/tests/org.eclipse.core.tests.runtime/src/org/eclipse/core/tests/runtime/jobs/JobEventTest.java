@@ -397,71 +397,76 @@ public class JobEventTest {
 	@Test
 	public void testDeadlockRecovery() throws Exception {
 		Object deadlock = new Object();
-		CountDownLatch testDoneSignal1 = new CountDownLatch(1);
-		CountDownLatch testDoneSignal2 = new CountDownLatch(1);
+		CountDownLatch threadHavingLockSignal = new CountDownLatch(1);
+		CountDownLatch listenerExecutingDoneMethodSignal = new CountDownLatch(1);
 		Collection<String> errors = new ConcurrentLinkedQueue<>();
-		int TIMEOUT = 500;
-		Job job = new Job("testDeadlockRecovery: INTENTIONAL LOGS TIMEOUTEXCEPTION!") {
 
+		Job jobWithListener = new Job("testDeadlockRecovery: INTENTIONAL LOGS TIMEOUTEXCEPTION!") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				return Status.OK_STATUS;
 			}
-
 		};
 		IJobChangeListener jobListener = new JobChangeAdapter() {
-
 			@Override
 			public void done(IJobChangeEvent event) {
-				testDoneSignal1.countDown();
+				listenerExecutingDoneMethodSignal.countDown();
 				try {
-					// wait for a bad moment
-					testDoneSignal2.await();
+					// wait for threadDeadlockingWithJobListener having lock on deadlock
+					threadHavingLockSignal.await();
 				} catch (InterruptedException e) {
+					errors.add(
+							"unexpected interruption in job listener while waiting for job-scheduling thread to induce deadlock");
 				}
 				synchronized (deadlock) {
-					// can not enter while lock is hold
+					// can not enter/proceed while lock is hold by addJobChangeListener
 				}
 			}
 		};
+		jobWithListener.addJobChangeListener(jobListener);
+		Thread threadDeadlockingWithJobListener = new Thread("deadlock") {
+			@Override
+			public void run() {
+				try {
+					listenerExecutingDoneMethodSignal.await();
+				} catch (InterruptedException e) {
+					errors.add(
+							"unexpected interruption in deadlocking thread while waiting for job listener to execute done method");
+				}
+				synchronized (deadlock) {
+					threadHavingLockSignal.countDown();
+					jobWithListener.schedule(); // NOK - deadlock
+				}
+				// job.schedule(); // would be OK
+			}
+		};
 
-		job.addJobChangeListener(jobListener);
+		TimerTask terminationEnsuringErrorOnTimeout = new TimerTask() {
+			@Override
+			public void run() {
+				System.out.println(TestBarrier2.getThreadDump());
+				errors.add("timeout (probably deadlock)");
+			}
+		};
+
+		int TIMEOUT = 250;
 		Timer timeout = new Timer();
 		try {
 			testNoTimeoutOccured(); // before changing timeout
-			JobListeners.setJobListenerTimeout(TIMEOUT / 2);
-			job.schedule();
-			timeout.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					System.out.println(TestBarrier2.getThreadDump());
-					errors.add("timeout (probably deadlock)");
-				}
-			}, TIMEOUT);
-			Thread thread = new Thread("deadlock") {
-				@Override
-				public void run() {
-					try {
-						// wait for a bad moment
-						testDoneSignal1.await();
-					} catch (InterruptedException e) {
-					}
-					synchronized (deadlock) {
-						testDoneSignal2.countDown();
-						job.schedule(); // NOK - deadlock
-					}
-					// job.schedule(); // would be OK
-				}
-			};
-			thread.start();
-			thread.join(TIMEOUT * 2);
+			JobListeners.setJobListenerTimeout(TIMEOUT);
+
+			jobWithListener.schedule();
+			threadDeadlockingWithJobListener.start();
+			timeout.schedule(terminationEnsuringErrorOnTimeout, TIMEOUT * 20);
+
+			threadDeadlockingWithJobListener.join(TIMEOUT * 2);
 			errors.forEach(e -> {
 				throw new AssertionError(e);
 			});
 			assertEquals(0, JobListeners.getJobListenerTimeout());
 		} finally {
 			JobListeners.resetJobListenerTimeout();
-			job.removeJobChangeListener(jobListener);
+			jobWithListener.removeJobChangeListener(jobListener);
 			timeout.cancel();
 		}
 	}
