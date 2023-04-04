@@ -1202,7 +1202,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		final int[] familyJobsCount = new int[] {-1};
 		final TestBarrier2 barrier = new TestBarrier2();
 		final Job waiting = new FamilyTestJob("waiting job", 1000000, 10, TestJobFamily.TYPE_ONE);
-		final Job running = new FamilyTestJob("running job", 2, 1, TestJobFamily.TYPE_ONE);
+		final Job running = new FamilyTestJob("running job", 2, 100, TestJobFamily.TYPE_ONE);
 		final IJobChangeListener listener = new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -1292,7 +1292,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		final int[] familyJobsCount = new int[] {-1};
 		final TestBarrier2 barrier = new TestBarrier2();
 		final Job waiting = new FamilyTestJob("waiting job", 1000000, 10, TestJobFamily.TYPE_ONE);
-		final Job running = new FamilyTestJob("running job", 2, 1, TestJobFamily.TYPE_ONE);
+		final Job running = new FamilyTestJob("running job", 2, 100, TestJobFamily.TYPE_ONE);
 		final IJobChangeListener listener = new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -1381,8 +1381,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	public void testJobFamilyJoinWhenSuspended_3() throws InterruptedException {
 		final Object family = new TestJobFamily(TestJobFamily.TYPE_ONE);
 		final TestBarrier2 barrier = new TestBarrier2();
-		final Job waiting = new FamilyTestJob("waiting job", 4, 1, TestJobFamily.TYPE_ONE);
-		final Job running = new FamilyTestJob("running job", 2, 1, TestJobFamily.TYPE_ONE);
+		final Job waiting = new FamilyTestJob("waiting job", 4, 100, TestJobFamily.TYPE_ONE);
+		final Job running = new FamilyTestJob("running job", 2, 100, TestJobFamily.TYPE_ONE);
 		final IJobChangeListener listener = new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -1717,7 +1717,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	public void testOrder() {
 		//ensure jobs are run in order from lowest to highest sleep time.
 		final Queue<Job> done = new ConcurrentLinkedQueue<>();
-		int[] sleepTimes = new int[] { 5, 100, 200, 300 };
+		int[] sleepTimes = new int[] { 5, 200, 400, 600 };
 		Job[] jobs = new Job[sleepTimes.length];
 		for (int i = 0; i < sleepTimes.length; i++) {
 			jobs[i] = new Job("testOrder(" + i + ")") {
@@ -1878,7 +1878,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	}
 
 	public void testSleep() {
-		TestJob job = new TestJob("ParentJob", 10, 10);
+		TestJob job = new TestJob("ParentJob", 10, 50);
 		//sleeping a job that isn't scheduled should have no effect
 		assertEquals("1.0", Job.NONE, job.getState());
 		assertTrue("1.1", job.sleep());
