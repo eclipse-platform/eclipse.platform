@@ -1052,7 +1052,6 @@ public class IFileTest extends ResourceTest {
 		new TestPerformer("IFileTest.testSetContents1") {
 			@Override
 			public void cleanUp(Object[] args, int count) {
-				waitForRefresh();
 				IFile file = (IFile) args[0];
 				refreshFile(file);
 			}
