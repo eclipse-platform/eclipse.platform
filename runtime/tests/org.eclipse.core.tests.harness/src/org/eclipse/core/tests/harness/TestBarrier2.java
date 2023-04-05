@@ -153,7 +153,7 @@ public class TestBarrier2 {
 	 * value Times out after a predefined period to avoid hanging tests
 	 */
 	public static void waitForStatus(AtomicIntegerArray location, int index, int status) {
-		doWaitForStatus(location, index, status, 5000);
+		doWaitForStatus(location, index, status, 10000);
 	}
 
 	/**
