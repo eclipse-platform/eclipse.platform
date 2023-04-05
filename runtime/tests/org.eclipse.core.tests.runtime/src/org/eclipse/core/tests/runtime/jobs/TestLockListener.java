@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import java.util.function.Function;
 import org.eclipse.core.runtime.jobs.LockListener;
 import org.junit.Assert;
 
@@ -21,7 +22,21 @@ import org.junit.Assert;
  * A lock listener used for testing that ensures wait/release calls are correctly paired.
  */
 public class TestLockListener extends LockListener {
+	private boolean hasBeenWaiting;
 	private boolean waiting;
+	private final Runnable executeWhenAboutToWait;
+
+	public TestLockListener() {
+		this(Function::identity);
+	}
+
+	/**
+	 * Instantiates a lock listener that runs the given runnable when
+	 * {@link #aboutToWait} is called on this listener.
+	 */
+	public TestLockListener(Runnable executeWhenAboutToWait) {
+		this.executeWhenAboutToWait = executeWhenAboutToWait;
+	}
 
 	@Override
 	public synchronized void aboutToRelease() {
@@ -30,12 +45,30 @@ public class TestLockListener extends LockListener {
 
 	@Override
 	public synchronized boolean aboutToWait(Thread lockOwner) {
+		hasBeenWaiting = true;
 		waiting = true;
+		executeWhenAboutToWait.run();
 		return false;
 	}
 
+	/**
+	 * Asserts that {@link #aboutToWait(Thread)} and {@link #aboutToRelease()} have
+	 * been called in pairs or not at all.
+	 *
+	 * @param message The assertion message
+	 */
 	public synchronized void assertNotWaiting(String message) {
 		Assert.assertTrue(message, !waiting);
+	}
+
+	/**
+	 * Asserts that {@link #aboutToWait} has been called on this listener at least
+	 * once.
+	 *
+	 * @param message The assertion message
+	 */
+	public synchronized void assertHasBeenWaiting(String message) {
+		Assert.assertTrue(message, hasBeenWaiting);
 	}
 
 }

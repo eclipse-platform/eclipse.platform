@@ -26,6 +26,7 @@ public class TestJob extends Job {
 	private int ticks;
 	private long tickLength;
 	private int runCount = 0;
+	private volatile boolean terminateOnNextTick = false;
 
 	/**
 	 * A job that runs for one second in 100 millisecond increments.
@@ -61,7 +62,7 @@ public class TestJob extends Job {
 		//must have positive work
 		monitor.beginTask(getName(), ticks <= 0 ? 1 : ticks);
 		try {
-			for (int i = 0; i < ticks; i++) {
+			for (int i = 0; i < ticks && !terminateOnNextTick; i++) {
 				monitor.subTask("Tick: " + i);
 				if (monitor.isCanceled()) {
 					return Status.CANCEL_STATUS;
@@ -85,4 +86,12 @@ public class TestJob extends Job {
 	private synchronized void setRunCount(int count) {
 		runCount = count;
 	}
+
+	/**
+	 * Terminates this test job when executing the next tick with status OK.
+	 */
+	public void terminate() {
+		terminateOnNextTick = true;
+	}
+
 }

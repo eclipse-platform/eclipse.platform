@@ -1054,17 +1054,19 @@ public class JobTest extends AbstractJobTest {
 	 * See bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=195839.
 	 */
 	public void testJoinLockListener() {
-		Job testJob = new TestJob("testJoinLockListener", 5, 500);
-		TestLockListener lockListener = new TestLockListener();
+		TestJob longRunningTestJob = new TestJob("testJoinLockListener", 100000, 10);
+		longRunningTestJob.schedule();
+		TestLockListener lockListener = new TestLockListener(() -> longRunningTestJob.terminate());
 		try {
 			Job.getJobManager().setLockListener(lockListener);
-			testJob.join();
+			longRunningTestJob.join();
 		} catch (OperationCanceledException | InterruptedException e) {
-			fail("4.99", e);
+			fail("Exception occurred when joining job", e);
 		} finally {
 			Job.getJobManager().setLockListener(null);
 		}
-		lockListener.assertNotWaiting("1.0");
+		lockListener.assertHasBeenWaiting("JobManager has not been waiting for lock");
+		lockListener.assertNotWaiting("JobManager has not finished waiting for lock");
 	}
 
 	/**
