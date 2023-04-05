@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.stream.Stream;
 import junit.framework.AssertionFailedError;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
@@ -1040,21 +1041,22 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	public void testJobFamilyJoinLockListener() {
 		final TestJobFamily family = new TestJobFamily(TestJobFamily.TYPE_ONE);
 		int count = 5;
-		Job[] jobs = new Job[count];
+		TestJob[] jobs = new TestJob[count];
 		for (int i = 0; i < jobs.length; i++) {
-			jobs[i] = new FamilyTestJob("TestJobFamilyJoinLockListener" + i, 5, 5, family.getType());
+			jobs[i] = new FamilyTestJob("TestJobFamilyJoinLockListener" + i, 100000, 10, family.getType());
 			jobs[i].schedule();
 		}
-		TestLockListener lockListener = new TestLockListener();
+		TestLockListener lockListener = new TestLockListener(() -> Stream.of(jobs).forEach(TestJob::terminate));
 		try {
 			manager.setLockListener(lockListener);
 			manager.join(family, new FussyProgressMonitor());
 		} catch (OperationCanceledException | InterruptedException e) {
-			fail("4.99", e);
+			fail("Exception occurred when joining on JobManager", e);
 		} finally {
 			manager.setLockListener(null);
 		}
-		lockListener.assertNotWaiting("1.0");
+		lockListener.assertHasBeenWaiting("JobManager has not been waiting for lock");
+		lockListener.assertNotWaiting("JobManager has not finished waiting for lock");
 	}
 
 	public void testJobFamilyJoinNothing() {
