@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.concurrent.atomic.*;
 import org.eclipse.core.internal.jobs.*;
 import org.eclipse.core.runtime.*;
@@ -901,41 +900,31 @@ public class JobTest extends AbstractJobTest {
 		final long timeout = 1000;
 		final long duration[] = {-1};
 		// Create a thread that will join the test job
-		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
-		status.set(0, TestBarrier2.STATUS_WAIT_FOR_START);
+		TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
 		Thread t = new Thread(() -> {
-			status.set(0, TestBarrier2.STATUS_START);
 			try {
 				long start = now();
 				longJob.join(timeout, null);
 				duration[0] = now() - start;
 			} catch (InterruptedException e1) {
-				Assert.fail("0.88");
+				Assert.fail("Unexpected interrupt occurred while joining job");
 			} catch (OperationCanceledException e2) {
-				Assert.fail("0.99");
+				Assert.fail("Join was unexpectedly canceled");
 			}
-			status.set(0, TestBarrier2.STATUS_DONE);
+			barrier.setStatus(TestBarrier2.STATUS_DONE);
 		});
 		t.start();
-		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_START);
-		assertEquals("1.0", TestBarrier2.STATUS_START, status.get(0));
-		int i = 0;
-		long n0 = System.nanoTime();
-		for (; i < 999999; i++) {
-			if (status.get(0) == TestBarrier2.STATUS_DONE) {
-				// Verify that the join call is blocked for at least for the duration of given timeout
-				assertTrue("2.0 duration: " + Arrays.toString(duration) + " timeout: " + timeout, duration[0] >= timeout);
-				break;
-			}
-			sleep(1);
-		}
-		long n1 = System.nanoTime();
-		// Verify that the join call is finished with in reasonable time of 1100 ms (given timeout + 100ms)
-		long took = (n1 - n0) / 1_000_000;
-		assertTrue("3.0 took:" + took, took < timeout + 100);
-		assertTrue("3.1 took:" + took, took >= timeout - 100);
-		// Verify that the join call is still running
-		assertEquals("4.0", Job.RUNNING, longJob.getState());
+
+		barrier.waitForStatus(TestBarrier2.STATUS_DONE);
+		// Verify that thread is done
+		assertNotEquals("Waiting for join to time out failed", -1, duration[0]);
+		assertEquals("Long running job should still be running after join timed out", Job.RUNNING, longJob.getState());
+		// Verify that join call is blocked for at least the duration of given timeout
+		String durationAndTimoutMessage = "duration: " + duration[0] + " timeout: " + timeout;
+		assertTrue("Join did not run into timeout; " + durationAndTimoutMessage, duration[0] >= timeout);
+		assertTrue("Join took significantly longer than timeout; " + durationAndTimoutMessage,
+				duration[0] <= 1.5 * timeout);
+
 		// Finally cancel the job
 		longJob.cancel();
 		waitForCompletion(longJob);
@@ -1002,18 +991,21 @@ public class JobTest extends AbstractJobTest {
 	}
 
 	public void testJoinInterruptNonUIThread() throws InterruptedException {
+		final int SCHEDULED_MARKER = 1;
+		TestBarrier2 barrier = new TestBarrier2();
 		final Job job = new TestJob("job", 50000, 100);
 		Thread t = new Thread(() -> {
 			job.schedule();
 			try {
+				barrier.setStatus(SCHEDULED_MARKER);
 				job.join();
 			} catch (InterruptedException e) {
 				job.cancel();
 			}
 		});
 		t.start();
-		// make sure the job is running before we interrupt the thread
-		waitForState(job, Job.RUNNING);
+		// make sure the job is scheduled, so thread interrupt is handled by job.join
+		barrier.waitForStatus(SCHEDULED_MARKER);
 		t.interrupt();
 		job.join();
 		assertEquals("Thread not interrupted", Status.CANCEL_STATUS, job.getResult());
