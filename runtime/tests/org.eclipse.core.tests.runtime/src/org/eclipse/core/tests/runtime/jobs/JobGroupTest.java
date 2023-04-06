@@ -14,6 +14,8 @@
 
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.junit.Assert.assertNotEquals;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicIntegerArray;
@@ -488,8 +490,7 @@ public class JobGroupTest extends AbstractJobTest {
 	}
 
 	public void testJoinWithTimeout() {
-		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
-		status.set(0, TestBarrier2.STATUS_WAIT_FOR_START);
+		TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
 		final int NUM_JOBS = 20;
 		Job[] jobs = new Job[NUM_JOBS];
 		// Create two different job groups. The join operation is performed and tested on the
@@ -515,31 +516,28 @@ public class JobGroupTest extends AbstractJobTest {
 		final long duration[] = {-1};
 
 		Thread t = new Thread(() -> {
-			status.set(0, TestBarrier2.STATUS_START);
 			try {
 				long start = now();
 				firstJobGroup.join(timeout, null);
 				duration[0] = now() - start;
-			} catch (OperationCanceledException | InterruptedException e) {
-				// ignore
+			} catch (InterruptedException e1) {
+				fail("Unexpected interrupt occurred while joining job group");
+			} catch (OperationCanceledException e2) {
+				fail("Join was unexpectedly canceled");
 			}
-			status.set(0, TestBarrier2.STATUS_DONE);
+			barrier.setStatus(TestBarrier2.STATUS_DONE);
 		});
-
 		// Start the thread that will join the first job group and be blocked until the join call is returned.
 		t.start();
-		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_START);
-		int i = 0;
-		for (; i < 11; i++) {
-			if (status.get(0) == TestBarrier2.STATUS_DONE) {
-				// Verify that the join call is blocked for at least for the duration of given timeout.
-				assertTrue("1.0 duration: " + Arrays.toString(duration) + " timeout: " + timeout, duration[0] >= timeout);
-				break;
-			}
-			sleep(100);
-		}
-		// Verify that the join call is returned is finished with in reasonable time of 1100 ms (given timeout + 100ms).
-		assertTrue("2.0", i < 11);
+
+		barrier.waitForStatus(TestBarrier2.STATUS_DONE);
+		// Verify that thread is done
+		assertNotEquals("Waiting for join to time out failed", -1, duration[0]);
+		assertEquals("Group with long running jobs should still be active after join timed out", JobGroup.ACTIVE,
+				firstJobGroup.getState());
+		// Verify that join call is blocked for at least the duration of given timeout
+		String durationAndTimoutMessage = "duration: " + duration[0] + " timeout: " + timeout;
+		assertTrue("Join did not run into timeout; " + durationAndTimoutMessage, duration[0] >= timeout);
 
 		// Cancel both job groups.
 		firstJobGroup.cancel();
@@ -549,7 +547,7 @@ public class JobGroupTest extends AbstractJobTest {
 
 		// Verify that all the jobs are now in the NONE state.
 		for (int j = 0; j < NUM_JOBS; j++) {
-			assertState("3." + j, jobs[j], Job.NONE);
+			assertState("Job " + j, jobs[j], Job.NONE);
 		}
 	}
 
