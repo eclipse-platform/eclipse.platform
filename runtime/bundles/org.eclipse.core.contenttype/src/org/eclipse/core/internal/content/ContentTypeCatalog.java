@@ -41,16 +41,30 @@ public final class ContentTypeCatalog {
 	private ContentTypeManager manager;
 
 	/**
-	 * A sorting policy where the more generic content type wins. Lexicographical comparison is done
-	 * as a last resort when all other criteria fail.
+	 * Return true if type1 is an ancestor of type2 or if type2 is an ancestor of
+	 * type1
+	 *
+	 * @param type1
+	 * @param type2
+	 * @return true type1 is ancestor or type2, or vice versa. false otherwise
+	 */
+	private static boolean isAncestor(ContentType type1, ContentType type2) {
+		return type1.isKindOf(type2) || type2.isKindOf(type1);
+	}
+
+	/**
+	 * A sorting policy where the more generic content type wins. Lexicographical
+	 * comparison is done as a last resort when all other criteria fail.
 	 */
 	private final Comparator<IContentType> policyConstantGeneralIsBetter = (IContentType o1, IContentType o2) -> {
 		ContentType type1 = (ContentType) o1;
 		ContentType type2 = (ContentType) o2;
-		// first criteria: depth - the lower, the better
-		int depthCriteria = type1.getDepth() - type2.getDepth();
-		if (depthCriteria != 0)
-			return depthCriteria;
+		if (isAncestor(type1, type2)) {
+			// first criteria: depth - the lower, the better
+			int depthCriteria = type1.getDepth() - type2.getDepth();
+			if (depthCriteria != 0)
+				return depthCriteria;
+		}
 		// second criteria: priority - the higher, the better
 		int priorityCriteria = type1.getPriority() - type2.getPriority();
 		if (priorityCriteria != 0)
@@ -66,10 +80,12 @@ public final class ContentTypeCatalog {
 	private Comparator<IContentType> policyConstantSpecificIsBetter = (IContentType o1, IContentType o2) -> {
 		ContentType type1 = (ContentType) o1;
 		ContentType type2 = (ContentType) o2;
-		// first criteria: depth - the higher, the better
-		int depthCriteria = type1.getDepth() - type2.getDepth();
-		if (depthCriteria != 0)
-			return -depthCriteria;
+		if (isAncestor(type1, type2)) {
+			// first criteria: depth - the higher, the better
+			int depthCriteria = type1.getDepth() - type2.getDepth();
+			if (depthCriteria != 0)
+				return -depthCriteria;
+		}
 		// second criteria: priority - the higher, the better
 		int priorityCriteria = type1.getPriority() - type2.getPriority();
 		if (priorityCriteria != 0)
@@ -84,10 +100,12 @@ public final class ContentTypeCatalog {
 	private Comparator<IContentType> policyGeneralIsBetter = (IContentType o1, IContentType o2) -> {
 		ContentType type1 = (ContentType) o1;
 		ContentType type2 = (ContentType) o2;
-		// first criteria: depth - the lower, the better
-		int depthCriteria = type1.getDepth() - type2.getDepth();
-		if (depthCriteria != 0)
-			return depthCriteria;
+		if (isAncestor(type1, type2)) {
+			// first criteria: depth - the lower, the better
+			int depthCriteria = type1.getDepth() - type2.getDepth();
+			if (depthCriteria != 0)
+				return depthCriteria;
+		}
 		// second criteria: priority - the higher, the better
 		int priorityCriteria = type1.getPriority() - type2.getPriority();
 		if (priorityCriteria != 0)
@@ -109,10 +127,12 @@ public final class ContentTypeCatalog {
 	private Comparator<IContentType> policySpecificIsBetter = (IContentType o1, IContentType o2) -> {
 		ContentType type1 = (ContentType) o1;
 		ContentType type2 = (ContentType) o2;
-		// first criteria: depth - the higher, the better
-		int depthCriteria = type1.getDepth() - type2.getDepth();
-		if (depthCriteria != 0)
-			return -depthCriteria;
+		if (isAncestor(type1, type2)) {
+			// first criteria: depth - the higher, the better
+			int depthCriteria = type1.getDepth() - type2.getDepth();
+			if (depthCriteria != 0)
+				return -depthCriteria;
+		}
 		// second criteria: priority - the higher, the better
 		int priorityCriteria = type1.getPriority() - type2.getPriority();
 		if (priorityCriteria != 0)

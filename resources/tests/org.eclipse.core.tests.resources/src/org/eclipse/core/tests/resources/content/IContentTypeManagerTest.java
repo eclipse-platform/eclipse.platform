@@ -895,12 +895,32 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		IContentType conflict2sub = manager.getContentType(PI_RESOURCES_TESTS + ".sub_conflict2");
 		assertNotNull("2.0", conflict2base);
 		assertNotNull("2.1", conflict2sub);
-		// when submitting contents, for related types, descendant comes first
 
+		// when submitting contents, for related types with indeterminate match, general
+		// comes first
 		IContentType[] selectedConflict2 = manager.findContentTypesFor(getRandomContents(), "test.conflict2");
 		assertEquals("2.2", 2, selectedConflict2.length);
 		assertEquals("2.3", selectedConflict2[0], conflict2base);
 		assertEquals("2.4", selectedConflict2[1], conflict2sub);
+
+		IContentType conflict2abase = manager.getContentType(PI_RESOURCES_TESTS + ".base_conflict2a");
+		IContentType conflict2asub = manager.getContentType(PI_RESOURCES_TESTS + ".sub_conflict2a");
+		assertNotNull("2.5", conflict2abase);
+		assertNotNull("2.6", conflict2asub);
+
+		// when submitting contents, for related types with valid match, specific
+		// comes first
+		IContentType[] selectedConflict2a = manager
+				.findContentTypesFor(getInputStream("conflict2a", StandardCharsets.UTF_8), "test.conflict2a");
+		assertEquals("2.7", 2, selectedConflict2a.length);
+		assertEquals("2.8", selectedConflict2a[0], conflict2asub);
+		assertEquals("2.9", selectedConflict2a[1], conflict2abase);
+
+		// when not submitting contents, for related types, most general type prevails
+		selectedConflict2a = manager.findContentTypesFor("test.conflict2a");
+		assertEquals("2.10", 2, selectedConflict2a.length);
+		assertEquals("2.11", selectedConflict2a[0], conflict2abase);
+		assertEquals("2.12", selectedConflict2a[1], conflict2asub);
 
 		IContentType conflict3base = manager.getContentType(PI_RESOURCES_TESTS + ".base_conflict3");
 		IContentType conflict3sub = manager.getContentType(PI_RESOURCES_TESTS + ".sub_conflict3");
@@ -910,13 +930,44 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		assertNotNull("3.0.3", conflict3unrelated);
 
 		// Two unrelated types (sub_conflict3 and unrelated conflict3) are in conflict.
-		// Order will be based on depth (more general first since they don't have
-		// describers)
+		// Order will be arbitrary (lexicographically).
 
 		IContentType[] selectedConflict3 = manager.findContentTypesFor(getRandomContents(), "test.conflict3");
 		assertEquals("4.0", 2, selectedConflict3.length);
-		assertEquals("4.1", selectedConflict3[0], conflict3unrelated);
-		assertEquals("4.2", selectedConflict3[1], conflict3sub);
+		assertEquals("4.1", selectedConflict3[0], conflict3sub);
+		assertEquals("4.2", selectedConflict3[1], conflict3unrelated);
+
+		IContentType conflict4base = manager.getContentType(PI_RESOURCES_TESTS + ".base_conflict4");
+		IContentType conflict4sub = manager.getContentType(PI_RESOURCES_TESTS + ".sub_conflict4");
+		IContentType conflict4unrelated_lowPriority = manager.getContentType(PI_RESOURCES_TESTS + ".unrelated_conflict4");
+		assertNotNull("5.0.1", conflict4base);
+		assertNotNull("5.0.2", conflict4sub);
+		assertNotNull("5.0.4", conflict4unrelated_lowPriority);
+
+		// Two unrelated types (sub_conflict4 and unrelated conflict4) are in conflict,
+		// but with different priorities
+		// Order will be based on priority
+
+		IContentType[] selectedConflict4 = manager.findContentTypesFor(getRandomContents(), "test.conflict4");
+		assertEquals("6.0", 2, selectedConflict4.length);
+		assertEquals("6.1", selectedConflict4[0], conflict4sub);
+		assertEquals("6.2", selectedConflict4[1], conflict4unrelated_lowPriority);
+
+		IContentType conflict5base = manager.getContentType(PI_RESOURCES_TESTS + ".base_conflict5");
+		IContentType conflict5sub_lowPriority = manager.getContentType(PI_RESOURCES_TESTS + ".sub_conflict5");
+		IContentType conflict5unrelated = manager.getContentType(PI_RESOURCES_TESTS + ".unrelated_conflict5");
+		assertNotNull("6.0.1", conflict5base);
+		assertNotNull("6.0.2", conflict5sub_lowPriority);
+		assertNotNull("6.0.5", conflict5unrelated);
+
+		// Two unrelated types (sub_conflict5 and unrelated conflict5) are in conflict,
+		// but with different priorities
+		// Order will be based on priority
+
+		IContentType[] selectedConflict5 = manager.findContentTypesFor(getRandomContents(), "test.conflict5");
+		assertEquals("7.0", 2, selectedConflict5.length);
+		assertEquals("7.1", selectedConflict5[0], conflict5unrelated);
+		assertEquals("7.2", selectedConflict5[1], conflict5sub_lowPriority);
 	}
 
 	@Test
