@@ -306,10 +306,25 @@
             file-extensions="conflict2"
             name="Specialized Conflict 2"
             id="sub_conflict2"/>
-      <!-- 
-      	Two unrelated types (sub_conflict3 and unrelated conflict3) are in conflict. 
-      	Order will be arbitrary.
-      	-->
+      <!--
+        A base type and a sub-type (that restates file-spec) are in conflict.
+        Specialized type should be picked if both have describers returning valid
+      -->
+      <content-type
+            file-extensions="conflict2a"
+            name="Conflict 2a"
+            id="base_conflict2a"
+            describer="org.eclipse.core.tests.resources.content.Conflict2aContentDescriber"/>
+      <content-type
+            base-type="base_conflict2a"
+            file-extensions="conflict2a"
+            name="Specialized Conflict 2a"
+            id="sub_conflict2a"
+            describer="org.eclipse.core.tests.resources.content.Conflict2aContentDescriber"/>
+      <!--
+        Two unrelated types (sub_conflict3 and unrelated conflict3) with same priority are in conflict.
+        Order will be arbitrary.
+      -->
       <content-type            		
             id="base_conflict3"                  
             file-extensions="base_conflict3"
@@ -323,6 +338,42 @@
             id="unrelated_conflict3"      
             file-extensions="conflict3"
             name="Unrelated Conflict 3"/>                                              
+      <!--
+        Two unrelated types (sub_conflict4 and unrelated conflict4) with with deeper having higher priority.
+        Order will be by priority.
+      -->
+      <content-type
+            id="base_conflict4"
+            file-extensions="base_conflict4"
+            name="Conflict 4"/>
+      <content-type
+            id="sub_conflict4"
+            base-type="base_conflict4"
+            file-extensions="conflict4"
+            name="Deeper Conflict 4"/>
+      <content-type
+            id="unrelated_conflict4"
+            file-extensions="conflict4"
+            priority="low"
+            name="Unrelated Conflict 4"/>
+      <!--
+        Two unrelated types (sub_conflict5 and unrelated conflict5) with with deeper having lower priority.
+        Order will be by priority.
+      -->
+      <content-type
+            id="base_conflict5"
+            file-extensions="base_conflict5"
+            name="Conflict 5"/>
+      <content-type
+            id="sub_conflict5"
+            base-type="base_conflict5"
+            file-extensions="conflict5"
+            priority="low"
+            name="Deeper Conflict 5"/>
+      <content-type
+            id="unrelated_conflict5"
+            file-extensions="conflict5"
+            name="Unrelated Conflict 5"/>
       <!-- end of conflict-related content types -->
 	  <content-type
             file-extensions="tzt"
