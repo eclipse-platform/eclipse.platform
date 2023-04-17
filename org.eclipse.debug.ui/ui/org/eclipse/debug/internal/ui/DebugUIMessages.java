@@ -301,6 +301,8 @@ public class DebugUIMessages extends NLS {
 	//
 	public static String ExpressionManagerContentProvider_1;
 
+	public static String LaunchShortcutAction_combineLaunchShortcutName;
+
 	static {
 		// load message values from bundle file
 		NLS.initializeMessages(BUNDLE_NAME, DebugUIMessages.class);

@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.internal.ui.DebugUIMessages;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.actions.LaunchConfigurationAction;
 import org.eclipse.debug.internal.ui.actions.LaunchShortcutAction;
@@ -40,6 +41,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
@@ -304,7 +306,11 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 		LaunchShortcutAction action;
 		if (configuration != null) {
 			action = new LaunchShortcutAction(mode, ext, configuration);
-			action.setText(configuration.getName());
+			try {
+				action.setText(NLS.bind(DebugUIMessages.LaunchShortcutAction_combineLaunchShortcutName, configuration.getName(), configuration.getType().getName()));
+			} catch (CoreException ex) {
+				action.setText(configuration.getName());
+			}
 		} else {
 			action = new LaunchShortcutAction(mode, ext);
 			action.setActionDefinitionId(ext.getId() + "." + mode); //$NON-NLS-1$
