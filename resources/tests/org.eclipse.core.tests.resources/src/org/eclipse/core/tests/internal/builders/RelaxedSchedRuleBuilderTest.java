@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import java.io.ByteArrayInputStream;
+import java.lang.Thread.State;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -252,6 +253,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 * @throws Exception
 	 */
 	public void testBuilderDeltaUsingRelaxedRuleBug343256() throws Exception {
+		final int timeout = 10000;
 		String name = "testBuildDeltaUsingRelaxedRuleBug343256";
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(name);
@@ -271,6 +273,35 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 
 		final TestBarrier2 tb = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
+		AtomicReference<Throwable> error = new AtomicReference<>();
+
+		Job workspaceChangingJob = new Job("Workspace Changing Job") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				tb.setStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
+				ensureExistsInWorkspace(foo, new ByteArrayInputStream(new byte[0]));
+				return Status.OK_STATUS;
+			}
+		};
+
+		Job buildTriggeringJob = new Job("Build Triggering Job") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				try {
+					getWorkspace().build(new IBuildConfiguration[] { project.getActiveBuildConfig() },
+							IncrementalProjectBuilder.INCREMENTAL_BUILD, true, monitor);
+				} catch (CoreException e) {
+					IStatus status = e.getStatus();
+					IStatus[] children = status.getChildren();
+					if (children.length > 0) {
+						error.set(children[0].getException());
+					} else {
+						error.set(e);
+					}
+				}
+				return Status.OK_STATUS;
+			}
+		};
 
 		// Create a builder set a null scheduling rule
 		EmptyDeltaBuilder builder = EmptyDeltaBuilder.getInstance();
@@ -290,16 +321,27 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 					called = true;
 					return project;
 				}
-				// REMOVE
 				tb.setStatus(TestBarrier2.STATUS_START);
 				tb.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
-				try {
-					// Give the resource modification time be queued
-					Thread.sleep(20);
-				} catch (InterruptedException e) {
-					fail();
-				}
+				// Wait for workspace changing job acquiring lock to ensure that it performs
+				// workspace change after getRule released workspace lock and before build
+				// re-acquired it
+				boolean workspaceChangingJobAcquiringLock = waitForThreadStateWaiting(workspaceChangingJob.getThread());
+				assertTrue("timed out waiting for workspace changing job to wait for workspace lock",
+						workspaceChangingJobAcquiringLock);
 				return project;
+			}
+
+			private boolean waitForThreadStateWaiting(Thread threadToWaitFor) {
+				long startWaitingTime = System.currentTimeMillis();
+				while (!(threadToWaitFor.getState() == State.TIMED_WAITING
+						|| threadToWaitFor.getState() == State.WAITING)) {
+					long elapsedWaitingTime = System.currentTimeMillis() - startWaitingTime;
+					if (elapsedWaitingTime > timeout) {
+						return false;
+					}
+				}
+				return true;
 			}
 
 			@Override
@@ -308,62 +350,28 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 				assertTrue(Job.getJobManager().currentRule().equals(project));
 				// assert that the delta contains the file foo
 				IResourceDelta delta = getDelta(project);
-				assertNotNull("1.1", delta);
-				assertEquals("1.2: " + ((ResourceDelta) delta).toDeepDebugString(), 1,
+				assertNotNull("no workspace change occurred between getRule and build", delta);
+				assertEquals("unexpected number of changes occurred: " + ((ResourceDelta) delta).toDeepDebugString(), 1,
 						delta.getAffectedChildren().length);
-				assertEquals("1.3.", foo, delta.getAffectedChildren()[0].getResource());
+				assertEquals("unexpected resource was changed", foo, delta.getAffectedChildren()[0].getResource());
 				tb.setStatus(TestBarrier2.STATUS_DONE);
 				return super.build(kind, args, monitor);
 			}
 		});
 
-		AtomicReference<Throwable> error1 = new AtomicReference<>();
-		// Run the incremental build
-		Job j1 = new Job("IProject.build(1)") {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					getWorkspace().build(new IBuildConfiguration[] {project.getActiveBuildConfig()}, IncrementalProjectBuilder.INCREMENTAL_BUILD, true, monitor);
-				} catch (CoreException e) {
-					IStatus status = e.getStatus();
-					IStatus[] children = status.getChildren();
-					if (children.length > 0) {
-						error1.set(children[0].getException());
-					} else {
-						error1.set(e);
-					}
-					throw new AssertionError("build failed", e);
-				}
-				return Status.OK_STATUS;
-			}
-		};
-		Job.getJobManager().wakeUp(null);
-		j1.schedule();
-		// now j1 runs, builds, calls BuilderRuleCallback, that waits for
-		// TestBarrier2.STATUS_WAIT_FOR_RUN, but that will enter only with job2
-
-		Job.getJobManager().wakeUp(null);
-
+		// buildTriggeringJob runs, builds, calls BuilderRuleCallback, that waits
+		// for workspaceChangingJob to wait for the workspace lock, such that it
+		// performs a workspace change between getRule and build
+		buildTriggeringJob.schedule();
 		// Wait for the build to transition to getRule
 		tb.waitForStatus(TestBarrier2.STATUS_START);
 		// Modify a file in the project
-		AtomicReference<Throwable> error2 = new AtomicReference<>();
-		Job j2 = new Job("IProject.build(2)") {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				tb.setStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
-				ensureExistsInWorkspace(foo, new ByteArrayInputStream(new byte[0]));
-				return Status.OK_STATUS;
-			}
-		};
-		j2.schedule();
-		j2.join();
-		if (error2.get() != null) {
-			fail("Error observed", error2.get());
-		}
-		j1.join();
-		if (error1.get() != null) {
-			fail("Error observed", error1.get());
+		workspaceChangingJob.schedule();
+
+		workspaceChangingJob.join(timeout, null);
+		buildTriggeringJob.join(timeout, null);
+		if (error.get() != null) {
+			fail("Error observed", error.get());
 		}
 		tb.waitForStatus(TestBarrier2.STATUS_DONE);
 		assertNoErrorsLogged();
