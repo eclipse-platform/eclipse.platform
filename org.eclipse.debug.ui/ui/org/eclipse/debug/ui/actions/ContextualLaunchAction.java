@@ -241,8 +241,11 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 					if (configurations == null || configurations.length == 0) {
 						populateMenuItem(mode, ext, menu, null, accelerator++);
 					} else if (configurations.length > 0) {
-						for (ILaunchConfiguration configuration : configurations) {
-							populateMenuItem(mode, ext, menu, configuration, -1);
+						// first with mnemonic accelerator
+						populateMenuItem(mode, ext, menu, configurations[0], accelerator++);
+						// next ones without mnemonic accelerator
+						for (int i = 1; i < configurations.length; i++) {
+							populateMenuItem(mode, ext, menu, configurations[i], -1);
 						}
 					}
 				}
@@ -304,28 +307,29 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 	private void populateMenuItem(String mode, LaunchShortcutExtension ext, Menu menu,
 			ILaunchConfiguration configuration, int accelerator) {
 		LaunchShortcutAction action;
+		StringBuilder label = new StringBuilder();
+		if (accelerator >= 0 && accelerator < 10) {
+			// add the numerical accelerator
+			label.append('&');
+			label.append(accelerator);
+			label.append(' ');
+		}
 		if (configuration != null) {
 			action = new LaunchShortcutAction(mode, ext, configuration);
 			try {
-				action.setText(NLS.bind(DebugUIMessages.LaunchShortcutAction_combineLaunchShortcutName, configuration.getName(), configuration.getType().getName()));
+				label.append(NLS.bind(DebugUIMessages.LaunchShortcutAction_combineLaunchShortcutName, configuration.getName(), configuration.getType().getName()));
 			} catch (CoreException ex) {
-				action.setText(configuration.getName());
+				label.append(configuration.getName());
 			}
 		} else {
 			action = new LaunchShortcutAction(mode, ext);
 			action.setActionDefinitionId(ext.getId() + "." + mode); //$NON-NLS-1$
-			StringBuilder label = new StringBuilder();
-			if (accelerator >= 0 && accelerator < 10) {
-				// add the numerical accelerator
-				label.append('&');
-				label.append(accelerator);
-				label.append(' ');
-			}
+
 			String contextLabel = ext.getContextLabel(mode);
 			// replace default action label with context label if specified.
 			label.append((contextLabel != null) ? contextLabel : action.getText());
-			action.setText(label.toString());
 		}
+		action.setText(label.toString());
 		String helpContextId = ext.getHelpContextId();
 		if (helpContextId != null) {
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(action, helpContextId);
