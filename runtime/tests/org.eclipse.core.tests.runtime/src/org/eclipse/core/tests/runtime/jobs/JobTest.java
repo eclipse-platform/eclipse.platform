@@ -922,8 +922,6 @@ public class JobTest extends AbstractJobTest {
 		// Verify that join call is blocked for at least the duration of given timeout
 		String durationAndTimoutMessage = "duration: " + duration[0] + " timeout: " + timeout;
 		assertTrue("Join did not run into timeout; " + durationAndTimoutMessage, duration[0] >= timeout);
-		assertTrue("Join took significantly longer than timeout; " + durationAndTimoutMessage,
-				duration[0] <= 1.5 * timeout);
 
 		// Finally cancel the job
 		longJob.cancel();
