@@ -98,6 +98,7 @@ public class JobTest extends AbstractJobTest {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		Job.getJobManager().setProgressProvider(null);
+		Job.getJobManager().setLockListener(null);
 		shortJob.cancel();
 		waitForState(shortJob, Job.NONE);
 		longJob.cancel();
@@ -989,24 +990,29 @@ public class JobTest extends AbstractJobTest {
 	}
 
 	public void testJoinInterruptNonUIThread() throws InterruptedException {
-		final int SCHEDULED_MARKER = 1;
 		TestBarrier2 barrier = new TestBarrier2();
-		final Job job = new TestJob("job", 50000, 100);
+		Job.getJobManager().setLockListener(new LockListener() {
+			@Override
+			public boolean aboutToWait(Thread lockOwner) {
+				barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
+				return super.aboutToWait(lockOwner);
+			}
+		});
+		final TestJob job = new TestJob("job", 50000, 100);
 		Thread t = new Thread(() -> {
 			job.schedule();
 			try {
-				barrier.setStatus(SCHEDULED_MARKER);
 				job.join();
 			} catch (InterruptedException e) {
-				job.cancel();
+				job.terminate();
 			}
 		});
 		t.start();
-		// make sure the job is scheduled, so thread interrupt is handled by job.join
-		barrier.waitForStatus(SCHEDULED_MARKER);
+		// make sure the join is blocked, so it processes thread interrupt
+		barrier.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
 		t.interrupt();
 		job.join();
-		assertEquals("Thread not interrupted", Status.CANCEL_STATUS, job.getResult());
+		assertEquals("Thread not interrupted", Status.OK_STATUS, job.getResult());
 	}
 
 	public void testJoinInterruptUIThread() throws InterruptedException {
