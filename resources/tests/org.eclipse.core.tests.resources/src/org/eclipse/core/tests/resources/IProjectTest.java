@@ -1372,6 +1372,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file, true);
+		waitForRefresh();
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1623,6 +1624,7 @@ public class IProjectTest extends ResourceTest {
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
 		ensureExistsInWorkspace(project, true);
+		waitForRefresh();
 		ensureExistsInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
@@ -1923,6 +1925,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file, true);
+		waitForRefresh();
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
