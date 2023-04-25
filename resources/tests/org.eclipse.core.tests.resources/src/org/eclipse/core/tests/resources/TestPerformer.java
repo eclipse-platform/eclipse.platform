@@ -26,6 +26,8 @@ import org.junit.Assert;
 public abstract class TestPerformer {
 	private int count = 0;
 
+	private String reasonForExpectedFail = null;
+
 	/**
 	 * TestPerformer constructor comment.
 	 */
@@ -67,11 +69,13 @@ public abstract class TestPerformer {
 			if (nth == inputs.length - 1) {
 				// breakpoint goes here, may be conditional on name and count, e.g.:
 				// name.equals("IResourceTest.testMove") && count==2886
+				reasonForExpectedFail = null;
 				if (shouldFail(args, count)) {
 					try {
 						invokeMethod(args, count);
 						Assert.fail(getFailMessagePrefixForCurrentInvocation(args)
-								+ "invocation should fail but did not");
+								+ "invocation did not fail although it should"
+								+ (reasonForExpectedFail != null ? ": " + reasonForExpectedFail : ""));
 					} catch (Exception ex) {
 					}
 				} else {
@@ -107,6 +111,22 @@ public abstract class TestPerformer {
 				performTestRecursiveLoop(inputs, args, nth + 1);
 			}
 		}
+	}
+
+	/**
+	 * Sets a message describing the reason for the next iteration to fail to be
+	 * logged if the test does unexpectedly succeed. Setting the message is
+	 * optional. A reasonable place to set it is inside the
+	 * {@link #shouldFail(Object[], int)} method. If no message is specified by
+	 * calling this method, a generic failure message will be logged. The message is
+	 * restored after each executed test iteration.
+	 *
+	 * @param reasonForFailing
+	 *            a description for the reason of a fail expected from the next test
+	 *            iteration
+	 */
+	protected void setReasonForExpectedFail(String reasonForFailing) {
+		this.reasonForExpectedFail = reasonForFailing;
 	}
 
 	private String getFailMessagePrefixForCurrentInvocation(Object[] currentArgs) {

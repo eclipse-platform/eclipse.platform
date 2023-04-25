@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-
+import java.util.function.Consumer;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.FileInfoMatcherDescription;
@@ -65,7 +65,7 @@ import org.eclipse.core.tests.harness.FussyProgressMonitor;
 
 public class IResourceTest extends ResourceTest {
 	protected static final Boolean[] FALSE_AND_TRUE = { Boolean.FALSE, Boolean.TRUE };
-	protected static IPath[] interestingPaths;
+	protected static final IPath[] interestingPaths = getInterestingPaths();
 	protected static IResource[] interestingResources;
 	protected static Set<IResource> nonExistingResources = new HashSet<>();
 	protected static final IProgressMonitor[] PROGRESS_MONITORS = { new FussyProgressMonitor(),
@@ -229,9 +229,21 @@ public class IResourceTest extends ResourceTest {
 
 		//file system only
 		unsynchronized = buildResources(root, new String[] {"1/1/2/2/1"});
+		ensureDoesNotExistInWorkspace(unsynchronized);
 		ensureExistsInFileSystem(unsynchronized);
 		unsynchronizedResources.add(unsynchronized[0]);
 		return result;
+	}
+
+	private static IPath[] getInterestingPaths() {
+		String[] interestingPathnames = { "1/", "1/1/", "1/1/1/", "1/1/1/1", "1/1/2/1/", "1/1/2/2/", "1/1/2/3/",
+				"1/2/", "1/2/1", "1/2/2", "1/2/3/", "1/2/3/1", "1/2/3/2", "1/2/3/3", "1/2/3/4", "2", "2/1", "2/2",
+				"2/3", "2/4", "2/1/", "2/2/", "2/3/", "2/4/", ".." };
+		IPath[] paths = new IPath[interestingPathnames.length];
+		for (int i = 0; i < interestingPathnames.length; i++) {
+			paths[i] = new Path(interestingPathnames[i]);
+		}
+		return paths;
 	}
 
 	/**
@@ -402,14 +414,12 @@ public class IResourceTest extends ResourceTest {
 	protected void setUp() throws Exception {
 		super.setUp();
 		setAutoBuilding(false);
+		initializeProjects();
+	}
 
+	private void initializeProjects() {
+		nonExistingResources.clear();
 		try {
-			// open project
-			IProject openProject = getWorkspace().getRoot().getProject("openProject");
-			openProject.create(null);
-			openProject.open(null);
-			IResource[] resourcesInOpenProject = buildSampleResources(openProject);
-
 			// closed project
 			IProject closedProject = getWorkspace().getRoot().getProject("ClosedProject");
 			closedProject.create(null);
@@ -417,7 +427,13 @@ public class IResourceTest extends ResourceTest {
 			IResource[] resourcesInClosedProject = buildSampleResources(closedProject);
 			closedProject.close(null);
 
-			// non-existant project
+			// open project
+			IProject openProject = getWorkspace().getRoot().getProject("openProject");
+			openProject.create(null);
+			openProject.open(null);
+			IResource[] resourcesInOpenProject = buildSampleResources(openProject);
+
+			// non-existent project
 			IProject nonExistingProject = getWorkspace().getRoot().getProject("nonExistingProject");
 			nonExistingProject.create(null);
 			nonExistingProject.open(null);
@@ -440,17 +456,35 @@ public class IResourceTest extends ResourceTest {
 
 			interestingResources = new IResource[resources.size()];
 			resources.toArray(interestingResources);
+		} catch (Exception e) {
+			fail("failed creating test projects", e);
+		}
+	}
 
-			String[] interestingPathnames = { "1/", "1/1/", "1/1/1/", "1/1/1/1", "1/1/2/1/", "1/1/2/2/", "1/1/2/3/",
-					"1/2/", "1/2/1", "1/2/2", "1/2/3/", "1/2/3/1", "1/2/3/2", "1/2/3/3", "1/2/3/4", "2", "2/1", "2/2",
-					"2/3", "2/4", "2/1/", "2/2/", "2/3/", "2/4/", ".." };
-			interestingPaths = new IPath[interestingPathnames.length];
-			for (int i = 0; i < interestingPathnames.length; i++) {
-				interestingPaths[i] = new Path(interestingPathnames[i]);
+	private abstract class ProjectsReinitializingTestPerformer extends TestPerformer {
+		private boolean reinitializeOnCleanup = false;
+
+		public ProjectsReinitializingTestPerformer(String name) {
+			super(name);
+		}
+
+		protected void reinitializeProjectsAfterTestIteration() {
+			reinitializeOnCleanup = true;
+		}
+
+		@Override
+		public void cleanUp(Object[] args, int countArg) {
+			// Reinitialize projects if necessary
+			if (reinitializeOnCleanup) {
+				try {
+					IResourceTest.this.cleanup();
+				} catch (CoreException e) {
+					fail("unexpected exception occurred during cleanup between test iterations", e);
+				}
+				IResourceTest.this.initializeProjects();
+				reinitializeOnCleanup = false;
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw ex;
+			super.cleanUp(args, countArg);
 		}
 	}
 
@@ -565,8 +599,9 @@ public class IResourceTest extends ResourceTest {
 			getWorkspace().removeResourceChangeListener(verifier);
 		}
 		getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		interestingPaths = null;
 		interestingResources = null;
+		nonExistingResources.clear();
+		unsynchronizedResources.clear();
 		super.tearDown();
 	}
 
@@ -810,12 +845,7 @@ public class IResourceTest extends ResourceTest {
 		}
 
 		Object[][] inputs = new Object[][] {interestingResources, interestingPaths, TRUE_AND_FALSE, PROGRESS_MONITORS};
-		new TestPerformer("IResourceTest.testCopy") {
-
-			@Override
-			public Object[] interestingOldState(Object[] args) {
-				return null;
-			}
+		new ProjectsReinitializingTestPerformer("IResourceTest.testCopy") {
 
 			@Override
 			public Object invokeMethod(Object[] args, int count) throws Exception {
@@ -837,16 +867,18 @@ public class IResourceTest extends ResourceTest {
 			public boolean shouldFail(Object[] args, int count) {
 				IResource resource = (IResource) args[0];
 				IPath destination = (IPath) args[1];
-				//Boolean force = (Boolean) args[2];
-				if (!resource.isAccessible()) {
+				boolean forceUpdate = (boolean) args[2];
+				IProgressMonitor monitor = (IProgressMonitor) args[3];
+				if (shouldMoveOrCopyFail(resource, destination, forceUpdate, monitor, this::setReasonForExpectedFail)) {
 					return true;
 				}
-				if (isProject(resource) && destination.segmentCount() > 1 && !getWorkspace().validatePath(destination.toString(), IResource.FOLDER).isOK()) {
+				if (!forceUpdate && !isProject(resource) && hasUnsynchronizedContents(resource)) {
+					// Reinitialize affected out-of-sync resources
+					reinitializeProjectsAfterTestIteration();
+					setReasonForExpectedFail("source has unsynchronized contents and move is not enforced");
 					return true;
 				}
-				java.io.File destinationParent = destination.isAbsolute() ? destination.removeLastSegments(1).toFile() : resource.getLocation().removeLastSegments(1).append(destination.removeLastSegments(1)).toFile();
-				java.io.File destinationFile = destination.isAbsolute() ? destination.toFile() : resource.getLocation().removeLastSegments(1).append(destination).removeTrailingSeparator().toFile();
-				return !destinationParent.exists() || !destinationParent.isDirectory() || destinationFile.exists() || destinationFile.toString().startsWith(resource.getLocation().toFile().toString());
+				return false;
 			}
 
 			@Override
@@ -868,9 +900,90 @@ public class IResourceTest extends ResourceTest {
 				if (copy.findMarkers(IMarker.TASK, true, IResource.DEPTH_INFINITE).length > 0) {
 					return false;
 				}
+				// Restore workspace when copy was successful
+				reinitializeProjectsAfterTestIteration();
 				return true;
 			}
 		}.performTest(inputs);
+	}
+
+	private boolean shouldMoveOrCopyFail(IResource source, IPath destination, boolean forceUpdate,
+			IProgressMonitor monitor, Consumer<String> expectedFailMessageReceiver) {
+		if (monitor instanceof CancelingProgressMonitor) {
+			expectedFailMessageReceiver.accept("canceling progress monitor is used");
+			return true;
+		}
+		if (!source.isAccessible()) {
+			expectedFailMessageReceiver.accept("source is not accessible");
+			return true;
+		}
+		File destinationParent = destination.isAbsolute() ? destination.removeLastSegments(1).toFile()
+				: source.getLocation().removeLastSegments(1).append(destination.removeLastSegments(1)).toFile();
+		File destinationFile = destination.isAbsolute() ? destination.toFile()
+				: source.getLocation().removeLastSegments(1).append(destination).removeTrailingSeparator().toFile();
+		if (!destinationParent.exists()) {
+			expectedFailMessageReceiver.accept("parent of destination does not exist");
+			return true;
+		}
+		if (!destinationParent.isDirectory()) {
+			expectedFailMessageReceiver.accept("parent of destination is not a directory");
+			return true;
+		}
+		if (destinationFile.exists()) {
+			expectedFailMessageReceiver.accept("destination already exists");
+			return true;
+		}
+		if(destinationFile.toString().startsWith(source.getLocation().toFile().toString())) {
+			expectedFailMessageReceiver.accept("destination is child of source");
+			return true;
+		}
+		return false;
+
+	}
+
+	private boolean hasUnsynchronizedContents(IResource resource) {
+		final boolean[] hasUnsynchronizedResources = new boolean[] { false };
+		try {
+			resource.accept(new IResourceVisitor() {
+				@Override
+				public boolean visit(IResource toVisit) throws CoreException {
+					File target = toVisit.getLocation().toFile();
+					if (target.exists() != toVisit.exists()) {
+						hasUnsynchronizedResources[0] = true;
+						return false;
+					}
+					if (target.isFile() != (toVisit.getType() == IResource.FILE)) {
+						hasUnsynchronizedResources[0] = true;
+						return false;
+					}
+					if (unsynchronizedResources.contains(toVisit)) {
+						hasUnsynchronizedResources[0] = true;
+						return false;
+					}
+					if (target.isFile()) {
+						return false;
+					}
+					// Process children that only exist in file system but not in workspace
+					String[] list = target.list();
+					if (list == null) {
+						return true;
+					}
+					IContainer container = (IContainer) toVisit;
+					for (String element : list) {
+						File file = new File(target, element);
+						IResource child = file.isFile() ? (IResource) container.getFile(new Path(element))
+								: container.getFolder(new Path(element));
+						if (!child.exists()) {
+							visit(child);
+						}
+					}
+					return true;
+				}
+			});
+		} catch (Exception e) {
+			fail("an unexpected error occurred when checking for unsychronized resource contents", e);
+		}
+		return hasUnsynchronizedResources[0];
 	}
 
 	/**
@@ -983,7 +1096,7 @@ public class IResourceTest extends ResourceTest {
 		IProgressMonitor[] monitors = new IProgressMonitor[] {new FussyProgressMonitor(), null};
 		Object[][] inputs = { FALSE_AND_TRUE, monitors, interestingResources };
 		final String CANCELED = "canceled";
-		new TestPerformer("IResourceTest.testDelete") {
+		new ProjectsReinitializingTestPerformer("IResourceTest.testDelete") {
 
 			@Override
 			public Object[] interestingOldState(Object[] args) throws Exception {
@@ -1044,47 +1157,13 @@ public class IResourceTest extends ResourceTest {
 					}
 					return false;
 				}
-				final boolean[] hasUnsynchronizedResources = new boolean[] {false};
-				try {
-					resource.accept(new IResourceVisitor() {
-						@Override
-						public boolean visit(IResource toVisit) throws CoreException {
-							File target = toVisit.getLocation().toFile();
-							if (target.exists() != toVisit.exists()) {
-								hasUnsynchronizedResources[0] = true;
-								return false;
-							}
-							if (target.isFile() != (toVisit.getType() == IResource.FILE)) {
-								hasUnsynchronizedResources[0] = true;
-								return false;
-							}
-							if (unsynchronizedResources.contains(toVisit)) {
-								hasUnsynchronizedResources[0] = true;
-								return false;
-							}
-							if (target.isFile()) {
-								return false;
-							}
-							String[] list = target.list();
-							if (list == null) {
-								return true;
-							}
-							IContainer container = (IContainer) toVisit;
-							for (String element : list) {
-								File file = new File(target, element);
-								IResource child = file.isFile() ? (IResource) container.getFile(new Path(element)) : container.getFolder(new Path(element));
-								if (!child.exists()) {
-									visit(child);
-								}
-							}
-							return true;
-						}
-					});
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					throw new RuntimeException("there is a problem in the testing method 'shouldFail'");
+				if (hasUnsynchronizedContents(resource)) {
+					// Reinitialize affected out-of-sync resources
+					reinitializeProjectsAfterTestIteration();
+					setReasonForExpectedFail("source has unsynchronized contents");
+					return true;
 				}
-				return hasUnsynchronizedResources[0];
+				return false;
 			}
 
 			@Override
@@ -1100,7 +1179,8 @@ public class IResourceTest extends ResourceTest {
 				// the file system
 				//oldState[2] : all resources that should have been deleted
 				// from the workspace
-				if (resource.getType() != IResource.PROJECT && ((Boolean) oldState[0]).booleanValue()) {
+				boolean wasResourceAccessible = ((Boolean) oldState[0]).booleanValue();
+				if (resource.getType() != IResource.PROJECT && wasResourceAccessible) {
 					// check the parent's members, deleted resource should not
 					// be a member
 					IResource[] children = ((IContainer) getWorkspace().getRoot().findMember(resource.getFullPath().removeLastSegments(1))).members();
@@ -1110,13 +1190,13 @@ public class IResourceTest extends ResourceTest {
 						}
 					}
 				}
-				if (!getAllFilesForResource(resource, force.booleanValue()).isEmpty()) {
+				if (wasResourceAccessible && !getAllFilesForResource(resource, force.booleanValue()).isEmpty()) {
 					return false;
 				}
 				@SuppressWarnings("unchecked")
 				Set<File> oldFiles = (Set<File>) oldState[1];
 				for (File oldFile : oldFiles) {
-					if (oldFile.exists()) {
+					if (oldFile.exists() == wasResourceAccessible) {
 						return false;
 					}
 				}
@@ -1127,6 +1207,8 @@ public class IResourceTest extends ResourceTest {
 						return false;
 					}
 				}
+				// Restore workspace when delete was successful
+				reinitializeProjectsAfterTestIteration();
 				return true;
 			}
 		}.performTest(inputs);
@@ -2056,7 +2138,7 @@ public class IResourceTest extends ResourceTest {
 	 */
 	public void testMove() {
 		Object[][] inputs = { interestingResources, interestingPaths, TRUE_AND_FALSE, PROGRESS_MONITORS };
-		new TestPerformer("IResourceTest.testMove") {
+		new ProjectsReinitializingTestPerformer("IResourceTest.testMove") {
 
 			@Override
 			public Object[] interestingOldState(Object[] args) {
@@ -2083,23 +2165,24 @@ public class IResourceTest extends ResourceTest {
 			public boolean shouldFail(Object[] args, int count) {
 				IResource resource = (IResource) args[0];
 				IPath destination = (IPath) args[1];
-				//			Boolean force = (Boolean) args[2];
-				if (!resource.isAccessible()) {
+				boolean forceUpdate = (boolean) args[2];
+				IProgressMonitor monitor = (IProgressMonitor) args[3];
+				if (shouldMoveOrCopyFail(resource, destination, forceUpdate, monitor, this::setReasonForExpectedFail)) {
 					return true;
 				}
-				if (isProject(resource)) {
-					if (destination.isAbsolute() ? destination.segmentCount() != 2 : destination.segmentCount() != 1) {
-						return true;
-					}
-					return !getWorkspace().validateName(destination.segment(0), IResource.PROJECT).isOK();
+				if (!forceUpdate && hasUnsynchronizedContents(resource)) {
+					// Reinitialize affected out-of-sync resources
+					reinitializeProjectsAfterTestIteration();
+					setReasonForExpectedFail("source has unsynchronized contents and move is not enforced");
+					return true;
 				}
-				File destinationParent = destination.isAbsolute() ? destination.removeLastSegments(1).toFile() : resource.getLocation().removeLastSegments(1).append(destination.removeLastSegments(1)).toFile();
-				File destinationFile = destination.isAbsolute() ? destination.toFile() : resource.getLocation().removeLastSegments(1).append(destination).removeTrailingSeparator().toFile();
-				return !destinationParent.exists() || !destinationParent.isDirectory() || destinationFile.exists() || destinationFile.toString().startsWith(resource.getLocation().toFile().toString());
+				return false;
 			}
 
 			@Override
 			public boolean wasSuccess(Object[] args, Object result, Object[] oldState) {
+				// Restore workspace when move was successful
+				reinitializeProjectsAfterTestIteration();
 				return true;
 			}
 		}.performTest(inputs);
