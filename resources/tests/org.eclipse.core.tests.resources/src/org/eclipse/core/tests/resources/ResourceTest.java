@@ -1068,6 +1068,8 @@ public abstract class ResourceTest extends CoreTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		// Wait for any pending refresh operation, in particular from startup
+		waitForRefresh();
 		TestUtil.log(IStatus.INFO, getName(), "setUp");
 		FreezeMonitor.expectCompletionInAMinute();
 		assertNotNull("Workspace was not setup", getWorkspace());
