@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import java.util.Arrays;
 import java.util.Random;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.junit.Assert;
@@ -52,7 +53,6 @@ public abstract class TestPerformer {
 				scramble(input);
 			}
 		}
-		//	System.out.println("\nTesting " + permutations + " permutations of " + name);
 		performTestRecursiveLoop(inputs, new Object[inputs.length], 0);
 	}
 
@@ -70,15 +70,8 @@ public abstract class TestPerformer {
 				if (shouldFail(args, count)) {
 					try {
 						invokeMethod(args, count);
-						StringBuilder buffer = new StringBuilder();
-						buffer.append("invocation " + count + " should fail, but it doesn't [");
-						for (Object arg : args) {
-							buffer.append(arg);
-							buffer.append(',');
-						}
-						buffer.deleteCharAt(buffer.length() - 1);
-						buffer.append(']');
-						Assert.fail(buffer.toString());
+						Assert.fail(getFailMessagePrefixForCurrentInvocation(args)
+								+ "invocation should fail but did not");
 					} catch (Exception ex) {
 					}
 				} else {
@@ -92,9 +85,12 @@ public abstract class TestPerformer {
 					try {
 						result = invokeMethod(args, count);
 					} catch (FussyProgressMonitor.FussyProgressAssertionFailed fussyEx) {
-						throw new AssertionError("invocation " + count + ": " + fussyEx.getMessage(), fussyEx);
+						throw new AssertionError(getFailMessagePrefixForCurrentInvocation(args)
+								+ "invocation should succeed but fuzzy progress assertion failed: " + fussyEx.getMessage(),
+								fussyEx);
 					} catch (Exception ex) {
-						throw new AssertionError("invocation " + count + " failed with " + ex, ex);
+						throw new AssertionError(getFailMessagePrefixForCurrentInvocation(args)
+								+ "invocation should succeed but unexpected exception occurred: " + ex, ex);
 					}
 					boolean success = false;
 					try {
@@ -102,7 +98,8 @@ public abstract class TestPerformer {
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
-					Assert.assertTrue("invocation " + count + " did not produce desired result", success);
+					Assert.assertTrue(getFailMessagePrefixForCurrentInvocation(args)
+							+ "invocation should succeed but did not produce desired result", success);
 				}
 				cleanUp(args, count);
 				count++;
@@ -110,6 +107,11 @@ public abstract class TestPerformer {
 				performTestRecursiveLoop(inputs, args, nth + 1);
 			}
 		}
+	}
+
+	private String getFailMessagePrefixForCurrentInvocation(Object[] currentArgs) {
+		return "failure in invocation " + count + " with inputs " + Arrays.toString(currentArgs)
+				+ System.lineSeparator();
 	}
 
 	/**
