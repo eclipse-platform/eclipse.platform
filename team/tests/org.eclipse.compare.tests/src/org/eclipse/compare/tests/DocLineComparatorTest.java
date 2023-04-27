@@ -14,6 +14,7 @@
 package org.eclipse.compare.tests;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.internal.DocLineComparator;
@@ -86,16 +87,16 @@ public class DocLineComparatorTest {
 			}
 		};
 
-		IRangeComparator comp1 = new DocLineComparator(doc1, null, false, new ICompareFilter[] { filter }, 'L');
-		IRangeComparator comp2 = new DocLineComparator(doc2, null, false, new ICompareFilter[] { filter }, 'R');
+		IRangeComparator comp1 = new DocLineComparator(doc1, null, false, new ICompareFilter[] { filter }, 'L', Optional.empty());
+		IRangeComparator comp2 = new DocLineComparator(doc2, null, false, new ICompareFilter[] { filter }, 'R', Optional.empty());
 		Assert.assertTrue(comp1.rangesEqual(0, comp2, 0));
 
-		IRangeComparator comp3 = new DocLineComparator(doc1, null, true, new ICompareFilter[] { filter }, 'L');
-		IRangeComparator comp4 = new DocLineComparator(doc3, null, true, new ICompareFilter[] { filter }, 'R');
+		IRangeComparator comp3 = new DocLineComparator(doc1, null, true, new ICompareFilter[] { filter }, 'L', Optional.empty());
+		IRangeComparator comp4 = new DocLineComparator(doc3, null, true, new ICompareFilter[] { filter }, 'R', Optional.empty());
 		Assert.assertTrue(comp3.rangesEqual(0, comp4, 0));
 
-		IRangeComparator comp5 = new DocLineComparator(doc1, null, false, new ICompareFilter[] { filter }, 'L');
-		IRangeComparator comp6 = new DocLineComparator(doc3, null, false, new ICompareFilter[] { filter }, 'R');
+		IRangeComparator comp5 = new DocLineComparator(doc1, null, false, new ICompareFilter[] { filter }, 'L', Optional.empty());
+		IRangeComparator comp6 = new DocLineComparator(doc3, null, false, new ICompareFilter[] { filter }, 'R', Optional.empty());
 		Assert.assertFalse(comp5.rangesEqual(0, comp6, 0));
 	}
 
@@ -177,15 +178,15 @@ public class DocLineComparatorTest {
 		};
 
 		IRangeComparator comp1 = new DocLineComparator(doc1, null, false,
-				new ICompareFilter[] { filter1, filter2, filter3 }, 'L');
+				new ICompareFilter[] { filter1, filter2, filter3 }, 'L', Optional.empty());
 		IRangeComparator comp2 = new DocLineComparator(doc2, null, false,
-				new ICompareFilter[] { filter1, filter2, filter3 }, 'R');
+				new ICompareFilter[] { filter1, filter2, filter3 }, 'R', Optional.empty());
 		Assert.assertTrue(comp1.rangesEqual(0, comp2, 0));
 
 		IRangeComparator comp3 = new DocLineComparator(doc1, null, false, new ICompareFilter[] { filter2, filter3 },
-				'L');
+				'L', Optional.empty());
 		IRangeComparator comp4 = new DocLineComparator(doc2, null, false, new ICompareFilter[] { filter2, filter3 },
-				'R');
+				'R', Optional.empty());
 		Assert.assertFalse(comp3.rangesEqual(0, comp4, 0));
 	}
 
@@ -258,13 +259,75 @@ public class DocLineComparatorTest {
 		for (int i = 0; i < docs.length; i++)
 			for (int j = i + 1; j < docs.length; j++)
 				for (ICompareFilter[] filter : filters) {
-					l = new DocLineComparator(docs[i], null, false, filter, 'L');
-					r = new DocLineComparator(docs[j], null, false, filter, 'R');
+					l = new DocLineComparator(docs[i], null, false, filter, 'L', Optional.empty());
+					r = new DocLineComparator(docs[j], null, false, filter, 'R', Optional.empty());
 					Assert.assertFalse(l.rangesEqual(0, r, 0));
-					l = new DocLineComparator(docs[i], null, true, filter, 'L');
-					r = new DocLineComparator(docs[j], null, true, filter, 'R');
+					l = new DocLineComparator(docs[i], null, true, filter, 'L', Optional.empty());
+					r = new DocLineComparator(docs[j], null, true, filter, 'R', Optional.empty());
 					Assert.assertTrue(l.rangesEqual(0, r, 0));
 				}
+	}
+
+	@Test
+	public void noWhitespaceContributorSupplied_whitespaceInStringLiteralIgnored() {
+		DocLineComparator left = new DocLineComparator(new Document("str = \"Hello World\""), null, true, null, 'L', Optional.empty());
+		DocLineComparator right = new DocLineComparator(new Document("str = \"HelloWorld\""), null, true, null, 'R', Optional.empty());
+		Assert.assertTrue("whitespace in left document between 'Hello' and 'World' not ignored",left.rangesEqual(0, right, 0));
+		Assert.assertTrue("whitespace in left document between 'Hello' and 'World' not ignored",right.rangesEqual(0, left, 0));
+	}
+
+	@Test
+	public void simpleWhitespaceContributorSupplied_whitespaceInStringLiteralNotIgnored() {
+		assertRangesEqualWithSimpleIgnoreWhitespaceContrbutor(//
+				"DocLineComparator#rangesEqual returns unexpectedly false for two identical documents", //
+				"str = \"HelloWorld\"", //
+				"str = \"HelloWorld\"");
+
+		assertRangesEqualWithSimpleIgnoreWhitespaceContrbutor(//
+				"whitespaces in left document outside the string literal not ignored", //
+				"str =     \"HelloWorld\"   ", //
+				"str = \"HelloWorld\"");
+
+		assertRangesNotEqualWithSimpleIngoreWhitespaceContributor(//
+				"whitespace in the middle of a literal unexpectedly ignored", //
+				"str = \"Hello World\"", //
+				"str = \"HelloWorld\"");
+
+		assertRangesNotEqualWithSimpleIngoreWhitespaceContributor(//
+				"whitespaces in the beginning and end of a literal unexpectedly ignored", //
+				"str = \" HelloWorld \"", //
+				"str = \"HelloWorld\"");
+
+		assertRangesNotEqualWithSimpleIngoreWhitespaceContributor(//
+				"whitespace in the end of a literal unexpectedly ignored", //
+				"str =         \" HelloWorld \"     ", //
+				"str = \"HelloWorld \"");
+	}
+
+	private void assertRangesNotEqualWithSimpleIngoreWhitespaceContributor(String message, String leftSource,
+			String rightSource) {
+		Document leftDocument = new Document(leftSource);
+		DocLineComparator left = new DocLineComparator(leftDocument, null, true, null, 'L',
+				Optional.of(new SimpleIgnoreWhitespaceContributor(leftDocument)));
+
+		Document rightDocument = new Document(rightSource);
+		DocLineComparator right = new DocLineComparator(rightDocument, null, true, null, 'R',
+				Optional.of(new SimpleIgnoreWhitespaceContributor(rightDocument)));
+		Assert.assertFalse(message, left.rangesEqual(0, right, 0));
+		Assert.assertFalse(message, right.rangesEqual(0, left, 0));
+	}
+
+	private void assertRangesEqualWithSimpleIgnoreWhitespaceContrbutor(String message, String leftSource,
+			String rightSource) {
+		Document leftDocument = new Document(leftSource);
+		DocLineComparator left = new DocLineComparator(leftDocument, null, true, null, 'L',
+				Optional.of(new SimpleIgnoreWhitespaceContributor(leftDocument)));
+
+		Document rightDocument = new Document(rightSource);
+		DocLineComparator right = new DocLineComparator(rightDocument, null, true, null, 'R',
+				Optional.of(new SimpleIgnoreWhitespaceContributor(rightDocument)));
+		Assert.assertTrue(message, left.rangesEqual(0, right, 0));
+		Assert.assertTrue(message, right.rangesEqual(0, left, 0));
 	}
 
 	@Test

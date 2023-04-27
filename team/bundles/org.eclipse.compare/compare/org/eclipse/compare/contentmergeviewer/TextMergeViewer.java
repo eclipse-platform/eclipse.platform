@@ -1528,6 +1528,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			public ITokenComparator createTokenComparator(String line) {
 				return TextMergeViewer.this.createTokenComparator(line);
 			}
+
+			@Override
+			public Optional<IIgnoreWhitespaceContributor> createIgnoreWhitespaceContributor(IDocument document) {
+				return TextMergeViewer.this.createIgnoreWhitespaceContributor(document);
+			}
+
 			@Override
 			public CompareConfiguration getCompareConfiguration() {
 				return TextMergeViewer.this.getCompareConfiguration();
@@ -1863,6 +1869,22 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	 */
 	protected ITokenComparator createTokenComparator(String line) {
 		return new TokenComparator(line);
+	}
+
+	/**
+	 * Creates an <code>IIgnoreWhitespaceContributor</code> which allows to hook
+	 * into the ignore whitespace logic in the compare viewer. Tool specific
+	 * implementations can overrule which whitespaces can be ignored and which not
+	 * (e.g. whitespaces in literals).
+	 *
+	 * @param document
+	 * @return a IIgnoreWhitespaceContributor which allows to overrule the platform
+	 *         based whitespace ignore logic in the compare view. Default
+	 *         implementation doesn't supply a contributor.
+	 * @since 3.9
+	 */
+	protected Optional<IIgnoreWhitespaceContributor> createIgnoreWhitespaceContributor(IDocument document) {
+		return Optional.empty();
 	}
 
 	/**
