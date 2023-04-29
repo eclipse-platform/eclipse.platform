@@ -8,6 +8,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.eclipse.e4.core.di.extensions;version="0.16.0"
 Bundle-Localization: fragment
-Import-Package: javax.inject;version="1.0.0",
- org.osgi.framework;version="1.8.0";resolution:=optional
+Import-Package: javax.inject;version="1.0.0"
 Automatic-Module-Name: org.eclipse.e4.core.di.extensions
