@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.0.0",
  org.eclipse.tips.core;bundle-version="0.1.0",
  org.eclipse.tips.ui;bundle-version="0.1.0",
  org.eclipse.tips.json
-Import-Package: javax.annotation,
+Import-Package: javax.annotation;version="[1.3.0,2.0.0)",
  org.osgi.service.event;version="[1.4.0,2.0.0)"
 Export-Package: org.eclipse.tips.ide.internal;x-internal:=true
 Bundle-Vendor: %Bundle-Vendor
