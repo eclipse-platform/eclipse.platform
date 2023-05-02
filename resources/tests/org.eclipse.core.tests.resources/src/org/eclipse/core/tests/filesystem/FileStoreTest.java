@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
-
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -89,8 +88,10 @@ public class FileStoreTest extends LocalStoreTest {
 
 	private IFileStore getDirFileStore(String path) throws CoreException {
 		IFileStore store = EFS.getFileSystem(EFS.SCHEME_FILE).getStore(new Path(path));
-		store.mkdir(EFS.NONE, null);
-		deleteOnTearDown(store);
+		if (!store.toLocalFile(EFS.NONE, getMonitor()).exists()) {
+			store.mkdir(EFS.NONE, null);
+			deleteOnTearDown(store);
+		}
 		return store;
 	}
 
@@ -134,25 +135,32 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore tempSrc = tempDirectories[0];
 		/* get the destination folder */
 		IFileStore tempDest = tempDirectories[1];
+
 		// create tree
-		IFileStore target = tempSrc.getChild("target");
+		String subfolderName = "target_" + System.currentTimeMillis();
+
+		IFileStore target = tempSrc.getChild(subfolderName);
 		createDir(target, true);
 		createTree(getTree(target));
 
 		/* c:\temp\target -> d:\temp\target */
-		IFileStore destination = tempDest.getChild("target");
+		IFileStore destination = tempDest.getChild(subfolderName);
+		deleteOnTearDown(destination);
 		target.copy(destination, EFS.NONE, null);
 		assertTrue("3.1", verifyTree(getTree(destination)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\copy of target */
-		destination = tempDest.getChild("copy of target");
+		String copyOfSubfolderName = "copy of " + subfolderName;
+		destination = tempDest.getChild(copyOfSubfolderName);
+		deleteOnTearDown(destination);
 		target.copy(destination, EFS.NONE, null);
 		assertTrue("4.1", verifyTree(getTree(destination)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a file) */
-		destination = tempDest.getChild("target");
+		destination = tempDest.getChild(subfolderName);
+		deleteOnTearDown(destination);
 		String anotherContent = "nothing..................gnihton";
 		createFile(destination, anotherContent);
 		assertTrue("5.1", !destination.fetchInfo().isDirectory());
@@ -166,7 +174,7 @@ public class FileStoreTest extends LocalStoreTest {
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a folder */
-		destination = tempDest.getChild("target");
+		destination = tempDest.getChild(subfolderName);
 		createDir(destination, true);
 		target.copy(destination, EFS.NONE, null);
 		assertTrue("6.2", verifyTree(getTree(destination)));
@@ -314,26 +322,33 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore tempDest = tempDirectories[1];
 		// create target
 		String content = "this is just a simple content \n to a simple file \n to test a 'simple' copy";
-		IFileStore target = tempSrc.getChild("target");
+		String subfolderName = "target_" + System.currentTimeMillis();
+
+		IFileStore target = tempSrc.getChild(subfolderName);
 		target.delete(EFS.NONE, null);
 		createFile(target, content);
+		deleteOnTearDown(target);
 		assertTrue("1.3", target.fetchInfo().exists());
 		assertTrue("1.4", compareContent(getContents(content), target.openInputStream(EFS.NONE, null)));
 
 		/* c:\temp\target -> d:\temp\target */
-		IFileStore destination = tempDest.getChild("target");
+		IFileStore destination = tempDest.getChild(subfolderName);
+		deleteOnTearDown(destination);
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
 		assertTrue("3.1", compareContent(getContents(content), destination.openInputStream(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\copy of target */
-		destination = tempDest.getChild("copy of target");
+		String copyOfSubfoldername = "copy of " + subfolderName;
+		destination = tempDest.getChild(copyOfSubfoldername);
+		deleteOnTearDown(destination);
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
 		assertTrue("4.1", compareContent(getContents(content), destination.openInputStream(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a file */
-		destination = tempDest.getChild("target");
+		destination = tempDest.getChild(subfolderName);
+		deleteOnTearDown(destination);
 		String anotherContent = "nothing..................gnihton";
 		createFile(destination, anotherContent);
 		assertTrue("5.1", !destination.fetchInfo().isDirectory());
@@ -342,7 +357,7 @@ public class FileStoreTest extends LocalStoreTest {
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a folder */
-		destination = tempDest.getChild("target");
+		destination = tempDest.getChild(subfolderName);
 		createDir(destination, true);
 		assertTrue("6.1", destination.fetchInfo().isDirectory());
 		boolean ok = false;
@@ -472,7 +487,10 @@ public class FileStoreTest extends LocalStoreTest {
 		/* get the destination folder */
 		IFileStore tempDest = tempDirectories[1];
 		// create target file
-		IFileStore target = tempSrc.getChild("target");
+		String subfolderName = "target_" + System.currentTimeMillis();
+
+		IFileStore target = tempSrc.getChild(subfolderName);
+		deleteOnTearDown(target);
 		String content = "just a content.....tnetnoc a tsuj";
 		createFile(target, content);
 		assertTrue("1.3", target.fetchInfo().exists());
@@ -482,7 +500,8 @@ public class FileStoreTest extends LocalStoreTest {
 		createTree(getTree(tree));
 
 		/* move file across volumes */
-		IFileStore destination = tempDest.getChild("target");
+		IFileStore destination = tempDest.getChild(subfolderName);
+		deleteOnTearDown(destination);
 		target.move(destination, EFS.NONE, null);
 		assertTrue("5.1", !destination.fetchInfo().isDirectory());
 		assertTrue("5.2", !target.fetchInfo().exists());
@@ -491,7 +510,8 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("5.4", !destination.fetchInfo().exists());
 
 		/* move folder across volumes */
-		destination = tempDest.getChild("target");
+		destination = tempDest.getChild(subfolderName);
+		deleteOnTearDown(destination);
 		tree.move(destination, EFS.NONE, null);
 		assertTrue("9.1", verifyTree(getTree(destination)));
 		assertTrue("9.2", !tree.fetchInfo().exists());
