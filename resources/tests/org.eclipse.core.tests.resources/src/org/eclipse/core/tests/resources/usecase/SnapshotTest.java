@@ -14,7 +14,6 @@
 package org.eclipse.core.tests.resources.usecase;
 
 import junit.framework.Test;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
@@ -40,7 +39,7 @@ public class SnapshotTest extends WorkspaceSessionTest {
 	private boolean skipTest() {
 		//skip on Mac due to unknown failure (bug 127752)
 		//TODO re-enable after M5 build
-		return Platform.getOS().equals(Platform.OS_MACOSX);
+		return isMacOSX();
 	}
 
 	public void test1() {

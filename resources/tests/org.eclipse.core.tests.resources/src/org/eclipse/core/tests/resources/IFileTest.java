@@ -19,7 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -35,7 +34,11 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
 public class IFileTest extends ResourceTest {
 	//name of files according to sync category
 	public static final String DOES_NOT_EXIST = "DoesNotExistFile";
@@ -262,6 +265,7 @@ public class IFileTest extends ResourceTest {
 		super.tearDown();
 	}
 
+	@Test
 	public void testAppendContents() {
 		IFile target = projects[0].getFile("file1");
 		try {
@@ -285,6 +289,7 @@ public class IFileTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testAppendContents2() {
 		IFile file = projects[0].getFile("file1");
 		ensureDoesNotExistInWorkspace(file);
@@ -397,6 +402,7 @@ public class IFileTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     void create(InputStream, boolean, IProgressMonitor)
 	 */
+	@Test
 	public void testCreate() {
 		Object[][] inputs = new Object[][] {interestingFiles(), interestingStreams(), TRUE_AND_FALSE, PROGRESS_MONITORS};
 		new TestPerformer("IFileTest.testCreate") {
@@ -457,6 +463,7 @@ public class IFileTest extends ResourceTest {
 		}.performTest(inputs);
 	}
 
+	@Test
 	public void testCreateDerived() {
 		IFile derived = projects[0].getFile("derived.txt");
 		ensureExistsInWorkspace(projects[0], true);
@@ -485,6 +492,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("2.1", !derived.isTeamPrivateMember());
 	}
 
+	@Test
 	public void testDeltaOnCreateDerived() {
 		IFile derived = projects[0].getFile("derived.txt");
 		ensureExistsInWorkspace(projects[0], true);
@@ -505,6 +513,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("2.0", verifier.isDeltaValid());
 	}
 
+	@Test
 	public void testCreateDerivedTeamPrivate() {
 		IFile teamPrivate = projects[0].getFile("teamPrivateDerived.txt");
 		ensureExistsInWorkspace(projects[0], true);
@@ -533,6 +542,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("2.1", !teamPrivate.isDerived());
 	}
 
+	@Test
 	public void testCreateTeamPrivate() {
 		IFile teamPrivate = projects[0].getFile("teamPrivate.txt");
 		ensureExistsInWorkspace(projects[0], true);
@@ -562,6 +572,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("2.1", !teamPrivate.isDerived());
 	}
 
+	@Test
 	public void testFileCreation() {
 		IFile target = projects[0].getFile("file1");
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
@@ -721,6 +732,7 @@ public class IFileTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testFileCreation_Bug107188() {
 		//create from stream that is canceled
 		IFile target = projects[0].getFile("file1");
@@ -747,6 +759,7 @@ public class IFileTest extends ResourceTest {
 		assertDoesNotExistInFileSystem("4.0", target);
 	}
 
+	@Test
 	public void testFileDeletion() throws Throwable {
 		IFile target = projects[0].getFile("file1");
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
@@ -759,6 +772,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("1.1", !target.exists());
 	}
 
+	@Test
 	public void testFileEmptyDeletion() throws Throwable {
 		IFile target = projects[0].getFile("file1");
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
@@ -771,6 +785,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("1.1", !target.exists());
 	}
 
+	@Test
 	public void testFileInFolderCreation() {
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		IFolder folder = projects[0].getFolder("folder1");
@@ -792,6 +807,7 @@ public class IFileTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testFileInFolderCreation1() throws Throwable {
 		IFolder folder = projects[0].getFolder("folder1");
 		folder.create(false, true, null);
@@ -803,6 +819,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("1.0", target.exists());
 	}
 
+	@Test
 	public void testFileInFolderCreation2() {
 
 		IFolder folder = projects[0].getFolder("folder1");
@@ -825,6 +842,7 @@ public class IFileTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testFileMove() throws Throwable {
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		IFile target = projects[0].getFile("file1");
@@ -840,6 +858,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("1.1", !target.exists());
 	}
 
+	@Test
 	public void testFileOverFolder() throws Throwable {
 		IFolder existing = projects[0].getFolder("ExistingFolder");
 		IFile target = projects[0].getFile("ExistingFolder");
@@ -851,7 +870,6 @@ public class IFileTest extends ResourceTest {
 			fail("Should not be able to create file over folder");
 		} catch (CoreException e) {
 			assertTrue("1.1", existing.exists());
-			return;
 		}
 	}
 
@@ -859,6 +877,7 @@ public class IFileTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     InputStream getContents()
 	 */
+	@Test
 	public void testGetContents() {
 		Object[][] inputs = new Object[][] {interestingFiles()};
 		new TestPerformer("IFileTest.testGetContents") {
@@ -907,6 +926,7 @@ public class IFileTest extends ResourceTest {
 		}.performTest(inputs);
 	}
 
+	@Test
 	public void testGetContents2() throws IOException {
 		IFile target = projects[0].getFile("file1");
 		String testString = getRandomString();
@@ -982,6 +1002,7 @@ public class IFileTest extends ResourceTest {
 	/**
 	 * Tests creation and manipulation of file names that are reserved on some platforms.
 	 */
+	@Test
 	public void testInvalidFileNames() {
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		IProject project = projects[0];
@@ -1046,6 +1067,7 @@ public class IFileTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     void setContents(InputStream, boolean, IProgressMonitor)
 	 */
+	@Test
 	public void testSetContents1() {
 		Object[][] inputs = new Object[][] {interestingFiles(), interestingStreams(), TRUE_AND_FALSE, PROGRESS_MONITORS};
 		new TestPerformer("IFileTest.testSetContents1") {
@@ -1101,6 +1123,7 @@ public class IFileTest extends ResourceTest {
 		}.performTest(inputs);
 	}
 
+	@Test
 	public void testSetContents2() {
 		IFile target = projects[0].getFile("file1");
 		try {
@@ -1133,6 +1156,7 @@ public class IFileTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testSetGetFolderPersistentProperty() throws Throwable {
 		IResource target = getWorkspace().getRoot().getFile(new Path("/Project/File.txt"));
 		String value = "this is a test property value";

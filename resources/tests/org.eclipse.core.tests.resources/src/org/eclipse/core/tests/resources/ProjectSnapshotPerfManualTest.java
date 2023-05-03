@@ -19,6 +19,10 @@ import java.net.URI;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
+import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Measure speed of a project "Import with Snapshot" operation compared
@@ -29,6 +33,7 @@ import org.eclipse.core.tests.harness.PerformanceTestRunner;
  * to be available on a slow file system (bigSiteLocation). Modify
  * bigSiteLocation to suit your needs, then run-as &gt; JUnit Plug-in Test.
  */
+@RunWith(JUnit4.class)
 public class ProjectSnapshotPerfManualTest extends ResourceTest {
 	/** big site default volume (windows) */
 	public static final String bigSiteDevice = "c:";
@@ -71,11 +76,10 @@ public class ProjectSnapshotPerfManualTest extends ResourceTest {
 	 * the snapshot and compare the times for opening with and without the
 	 * snapshot.
 	 */
+	@Test
 	public void testSnapshotImportPerformance() throws Exception {
 		// test if the test can be done in this machine
-		if (!bigSiteLocation.toFile().isDirectory()) {
-			return;
-		}
+		Assume.assumeTrue(bigSiteLocation.toFile().isDirectory());
 
 		// create common objects
 		final IProject project = getWorkspace().getRoot().getProject("MyTestProject");
