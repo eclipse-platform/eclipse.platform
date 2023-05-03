@@ -55,6 +55,8 @@
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
+            editorOnboardingImage="icons/full/onboarding_debug_persp.png"
+            editorOnboardingText="%DebugPerspective.onboarding"
             targetID="org.eclipse.debug.ui.DebugPerspective">
          <actionSet
                id="org.eclipse.ui.NavigateActionSet">
@@ -68,6 +70,21 @@
       <showInPart
             id="org.eclipse.ui.navigator.ProjectExplorer">
       </showInPart>
+      <editorOnboardingCommand
+            id="org.eclipse.ui.window.quickAccess">
+      </editorOnboardingCommand>
+      <editorOnboardingCommand
+            id="org.eclipse.debug.ui.commands.StepInto">
+      </editorOnboardingCommand>
+      <editorOnboardingCommand
+            id="org.eclipse.debug.ui.commands.StepOver">
+      </editorOnboardingCommand>
+      <editorOnboardingCommand
+            id="org.eclipse.debug.ui.commands.StepReturn">
+      </editorOnboardingCommand>
+      <editorOnboardingCommand
+            id="org.eclipse.debug.ui.commands.Resume">
+      </editorOnboardingCommand>
       </perspectiveExtension>
    </extension>
    <extension
