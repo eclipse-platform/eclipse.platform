@@ -17,28 +17,29 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.ResourceTest;
+import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
 public class IFolderTest extends ResourceTest {
 	/**
 	 * Bug requests that if a failed folder creation occurs on Linux that we check
 	 * the immediate parent to see if it is read-only so we can return a better
 	 * error code and message to the user.
 	 */
+	@Test
 	public void testBug25662() {
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		if (!isReadOnlySupported()) {
-			return;
-		}
+		Assume.assumeTrue(isReadOnlySupported());
 
 		// Only run this test on Linux for now since Windows lets you create
 		// a file within a read-only folder.
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			return;
-		}
+		Assume.assumeTrue(isLinux());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder parentFolder = project.getFolder("parentFolder");
@@ -62,6 +63,7 @@ public class IFolderTest extends ResourceTest {
 	/**
 	 * Bug 11510 [resources] Non-local folders do not become local when directory is created.
 	 */
+	@Test
 	public void testBug11510() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("TestProject");
@@ -111,6 +113,7 @@ public class IFolderTest extends ResourceTest {
 	/**
 	 * Bug 514831: "shallow" mkdir fails if the directory already exists
 	 */
+	@Test
 	public void testBug514831() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("TestProject");

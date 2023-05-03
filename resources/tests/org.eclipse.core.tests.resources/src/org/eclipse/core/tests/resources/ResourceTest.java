@@ -52,10 +52,10 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IPath;
@@ -69,6 +69,8 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.harness.FileSystemHelper;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Superclass for tests that use the Eclipse Platform workspace.
@@ -168,6 +170,26 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
+	 * Returns whether the current platform is linux.
+	 *
+	 * @return <code>true</code> if this platform is linux, and <code>false</code>
+	 *         otherwise.
+	 */
+	protected static boolean isLinux() {
+		return Platform.getOS().equals(Platform.OS_LINUX);
+	}
+
+	/**
+	 * Returns whether the current platform is mac OSX.
+	 *
+	 * @return <code>true</code> if this platform is mac OSX, and <code>false</code>
+	 *         otherwise.
+	 */
+	protected static boolean isMacOSX() {
+		return Platform.getOS().equals(Platform.OS_MACOSX);
+	}
+
+	/**
 	 * Convenience method to copy contents from one stream to another.
 	 */
 	public static void transferStreams(InputStream source, OutputStream destination, String path) {
@@ -198,6 +220,30 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	public ResourceTest(String name) {
 		super(name);
+	}
+
+	/**
+	 * Bridge method to be able to run subclasses with JUnit4 as well as with
+	 * JUnit3.
+	 *
+	 * @throws Exception
+	 *             comes from {@link #setUp()}
+	 */
+	@Before
+	public final void before() throws Exception {
+		setUp();
+	}
+
+	/**
+	 * Bridge method to be able to run subclasses with JUnit4 as well as with
+	 * JUnit3.
+	 *
+	 * @throws Exception
+	 *             comes from {@link #tearDown()}
+	 */
+	@After
+	public final void after() throws Exception {
+		tearDown();
 	}
 
 	/**

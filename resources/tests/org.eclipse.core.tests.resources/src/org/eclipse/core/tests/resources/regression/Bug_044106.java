@@ -15,9 +15,11 @@ package org.eclipse.core.tests.resources.regression;
 
 import java.io.IOException;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -89,7 +91,7 @@ public class Bug_044106 extends ResourceTest {
 	 * @param deleteFlags The flags to use on the resource deletion call
 	 */
 	public void doTestDeleteLinkedFolder(IFolder linkedFolder, boolean deleteParent, int deleteFlags) {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
+		if (!isLinux()) {
 			return;
 		}
 		IFileStore linkDestLocation = getTempStore();
@@ -137,14 +139,14 @@ public class Bug_044106 extends ResourceTest {
 	}
 
 	public void testDeleteLinkedFile() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
+		if (!isLinux()) {
 			return;
 		}
 		doTestDeleteLinkedFile(IResource.NONE);
 	}
 
 	public void testDeleteLinkedFolder() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
+		if (!isLinux()) {
 			return;
 		}
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
@@ -153,7 +155,7 @@ public class Bug_044106 extends ResourceTest {
 	}
 
 	public void testDeleteLinkedResourceInProject() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
+		if (!isLinux()) {
 			return;
 		}
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
@@ -162,14 +164,14 @@ public class Bug_044106 extends ResourceTest {
 	}
 
 	public void testDeleteLinkedFileKeepHistory() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
+		if (!isLinux()) {
 			return;
 		}
 		doTestDeleteLinkedFile(IResource.KEEP_HISTORY);
 	}
 
 	public void testDeleteLinkedFolderParentKeepHistory() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
+		if (!isLinux()) {
 			return;
 		}
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
@@ -179,7 +181,7 @@ public class Bug_044106 extends ResourceTest {
 	}
 
 	public void testDeleteLinkedFolderKeepHistory() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
+		if (!isLinux()) {
 			return;
 		}
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
@@ -188,7 +190,7 @@ public class Bug_044106 extends ResourceTest {
 	}
 
 	public void testDeleteLinkedResourceInProjectKeepHistory() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
+		if (!isLinux()) {
 			return;
 		}
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());

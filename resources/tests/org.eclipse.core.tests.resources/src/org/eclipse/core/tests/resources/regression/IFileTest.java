@@ -15,9 +15,13 @@ package org.eclipse.core.tests.resources.regression;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.ResourceTest;
+import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
 public class IFileTest extends ResourceTest {
 	private final boolean DISABLED = true;
 
@@ -26,25 +30,20 @@ public class IFileTest extends ResourceTest {
 	 * you try to create a file in a read-only folder on Linux should be
 	 * ERROR_WRITE.
 	 */
+	@Test
 	public void testBug25658() {
 
 		// This test is no longer valid since the error code is dependent on whether
 		// or not the parent folder is marked as read-only. We need to write a different
 		// test to make the file.create fail.
-		if (DISABLED ) {
-			return;
-		}
+		Assume.assumeFalse(DISABLED);
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		if (!isReadOnlySupported()) {
-			return;
-		}
+		Assume.assumeTrue(isReadOnlySupported());
 
 		// Don't test this on Windows
-		if (isWindows()) {
-			return;
-		}
+		Assume.assumeFalse(isWindows());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -70,19 +69,16 @@ public class IFileTest extends ResourceTest {
 	 * parent to see if it is read-only so we can return a better error code and message
 	 * to the user.
 	 */
+	@Test
 	public void testBug25662() {
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		if (!isReadOnlySupported()) {
-			return;
-		}
+		Assume.assumeTrue(isReadOnlySupported());
 
 		// Only run this test on Linux for now since Windows lets you create
 		// a file within a read-only folder.
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			return;
-		}
+		Assume.assumeTrue(isLinux());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -106,6 +102,7 @@ public class IFileTest extends ResourceTest {
 	/**
 	 * Tests setting local timestamp of project description file
 	 */
+	@Test
 	public void testBug43936() {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);

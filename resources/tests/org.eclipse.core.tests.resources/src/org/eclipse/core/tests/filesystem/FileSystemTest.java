@@ -16,11 +16,15 @@ package org.eclipse.core.tests.filesystem;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryTree;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Abstract superclass for all generic file system tests.
@@ -34,6 +38,30 @@ public abstract class FileSystemTest extends CoreTest {
 
 	public FileSystemTest(String name) {
 		super(name);
+	}
+
+	/**
+	 * Bridge method to be able to run subclasses with JUnit4 as well as with
+	 * JUnit3.
+	 *
+	 * @throws Exception
+	 *             comes from {@link #setUp()}
+	 */
+	@Before
+	public final void before() throws Exception {
+		setUp();
+	}
+
+	/**
+	 * Bridge method to be able to run subclasses with JUnit4 as well as with
+	 * JUnit3.
+	 *
+	 * @throws Exception
+	 *             comes from {@link #tearDown()}
+	 */
+	@After
+	public final void after() throws Exception {
+		tearDown();
 	}
 
 	protected void ensureDoesNotExist(IFileStore store) {

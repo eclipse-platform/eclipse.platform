@@ -39,10 +39,15 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.internal.localstore.LocalStoreTest;
 import org.eclipse.osgi.util.NLS;
+import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Basic tests for the IFileStore API
  */
+@RunWith(JUnit4.class)
 public class FileStoreTest extends LocalStoreTest {
 	private IFileStore createDir(IFileStore store, boolean clear) throws CoreException {
 		if (clear && store.fetchInfo().exists()) {
@@ -64,6 +69,7 @@ public class FileStoreTest extends LocalStoreTest {
 	 * Tests behavior of IFileStore#fetchInfo when underlying file system throws
 	 * exceptions.
 	 */
+	@Test
 	public void testBrokenFetchInfo() {
 		IFileStore broken = null;
 		try {
@@ -121,14 +127,14 @@ public class FileStoreTest extends LocalStoreTest {
 	/**
 	 * Basically this is a test for the Windows Platform.
 	 */
+
+	@Test
 	public void testCopyAcrossVolumes() throws Throwable {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		if (tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
-				|| tempDirectories[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
+				|| tempDirectories[1] == null);
 
 		/* build scenario */
 		// create source root folder
@@ -181,6 +187,7 @@ public class FileStoreTest extends LocalStoreTest {
 		destination.delete(EFS.NONE, null);
 	}
 
+	@Test
 	public void testCopyDirectory() throws Throwable {
 		/* build scenario */
 		IFileStore temp = EFS.getFileSystem(EFS.SCHEME_FILE)
@@ -199,6 +206,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("2.1", verifyTree(getTree(copyOfTarget)));
 	}
 
+	@Test
 	public void testCopyDirectoryParentMissing() throws Throwable {
 		IFileStore parent = getTempStore();
 		IFileStore child = parent.getChild("child");
@@ -215,13 +223,12 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("1.1", !child.fetchInfo().exists());
 	}
 
+	@Test
 	public void testCaseInsensitive() throws Throwable {
 		IFileStore temp = createDir(getWorkspace().getRoot().getLocation().append("temp").toString(), true);
 		boolean isCaseSensitive = temp.getFileSystem().isCaseSensitive();
-		if (isCaseSensitive) {
-			System.out.println("Skipping copy test on caseSensitive System");
-			return;
-		}
+		Assume.assumeFalse("Skipping copy test on caseSensitive System", isCaseSensitive);
+
 		// create a file
 		String content = "this is just a simple content \n to a simple file \n to test a 'simple' copy";
 		IFileStore fileWithSmallName = temp.getChild("filename");
@@ -252,6 +259,7 @@ public class FileStoreTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testCopyFile() throws Throwable {
 		/* build scenario */
 		IFileStore temp = createDir(getWorkspace().getRoot().getLocation().append("temp").toString(), true);
@@ -306,14 +314,13 @@ public class FileStoreTest extends LocalStoreTest {
 	/**
 	 * Basically this is a test for the Windows Platform.
 	 */
+	@Test
 	public void testCopyFileAcrossVolumes() throws Throwable {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		if (tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
-				|| tempDirectories[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
+				|| tempDirectories[1] == null);
 
 		/* build scenario */
 		/* get the source folder */
@@ -374,6 +381,7 @@ public class FileStoreTest extends LocalStoreTest {
 		destination.delete(EFS.NONE, null);
 	}
 
+	@Test
 	public void testGetLength() throws Exception {
 		// evaluate test environment
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
@@ -395,6 +403,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertEquals("1.0", 1, target.fetchInfo().getLength());
 	}
 
+	@Test
 	public void testGetStat() throws CoreException {
 		/* evaluate test environment */
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
@@ -414,6 +423,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("2.0", EFS.NONE != stat);
 	}
 
+	@Test
 	public void testMove() throws Throwable {
 		/* build scenario */
 		IFileStore tempC = createDir(getWorkspace().getRoot().getLocation().append("temp").toString(), true);
@@ -472,14 +482,13 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("6.4", !destination.fetchInfo().exists());
 	}
 
+	@Test
 	public void testMoveAcrossVolumes() throws Throwable {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		if (tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
-				|| tempDirectories[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
+				|| tempDirectories[1] == null);
 
 		/* build scenario */
 		/* get the source folder */
@@ -520,6 +529,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("9.4", !destination.fetchInfo().exists());
 	}
 
+	@Test
 	public void testMoveDirectoryParentMissing() throws Throwable {
 		IFileStore parent = getTempStore();
 		IFileStore child = parent.getChild("child");
@@ -540,6 +550,7 @@ public class FileStoreTest extends LocalStoreTest {
 	 * Tests public API method
 	 * {@link IFileStore#putInfo(IFileInfo, int, IProgressMonitor)}.
 	 */
+	@Test
 	public void testPutInfo() {
 		IFileStore nonExisting = getTempStore();
 
@@ -562,10 +573,12 @@ public class FileStoreTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testReadOnly() throws CoreException {
 		testAttribute(EFS.ATTRIBUTE_READ_ONLY);
 	}
 
+	@Test
 	public void testPermissionsEnabled() {
 		String os = Platform.getOS();
 		if (Platform.OS_LINUX.equals(os) || Platform.OS_MACOSX.equals(os)) {
@@ -591,6 +604,7 @@ public class FileStoreTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testPermissions() throws CoreException {
 		testAttribute(EFS.ATTRIBUTE_OWNER_READ);
 		testAttribute(EFS.ATTRIBUTE_OWNER_WRITE);
@@ -604,9 +618,7 @@ public class FileStoreTest extends LocalStoreTest {
 	}
 
 	private void testAttribute(int attribute) throws CoreException {
-		if (!isAttributeSupported(attribute)) {
-			return;
-		}
+		Assume.assumeTrue(isAttributeSupported(attribute));
 
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
 		IFileStore targetFolder = createDir(root.toString(), true);
@@ -634,6 +646,7 @@ public class FileStoreTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testGetFileStore() throws Exception {
 		// create files
 		File file = getTempDir().append("test.txt").toFile();
@@ -675,6 +688,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("11.0", info.exists());
 	}
 
+	@Test
 	public void testSortOrder() {
 		IFileSystem nullfs = NullFileSystem.getInstance();
 		if (nullfs == null) {
@@ -701,6 +715,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertEquals("4.1", 1, nabc.compareTo(null));
 	}
 
+	@Test
 	public void testSortOrderPaths() {
 		IFileSystem lfs = LocalFileSystem.getInstance();
 		boolean isWindows = java.io.File.separatorChar == '\\';
