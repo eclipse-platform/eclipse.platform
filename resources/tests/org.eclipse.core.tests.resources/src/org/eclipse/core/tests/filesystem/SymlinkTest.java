@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
+import org.junit.Assume;
 
 public class SymlinkTest extends FileSystemTest {
 	/**
@@ -37,7 +38,7 @@ public class SymlinkTest extends FileSystemTest {
 	 */
 	private static final boolean SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES = Platform.OS_WIN32
 			.equals(Platform.getOS()) ? true : false;
-	private static String specialCharName = "äöüß ÄÖÜ àÀâÂ µ²³úá"; //$NON-NLS-1$
+	private static String specialCharName = "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½"; //$NON-NLS-1$
 
 	protected IFileStore aDir, aFile; //actual Dir, File
 	protected IFileInfo iDir, iFile, ilDir, ilFile, illDir, illFile;
@@ -107,9 +108,8 @@ public class SymlinkTest extends FileSystemTest {
 
 	public void testBrokenSymlinkAttributes() {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		long testStartTime = System.currentTimeMillis();
 		makeLinkStructure();
 		//break links by removing actual dir and file
@@ -155,9 +155,8 @@ public class SymlinkTest extends FileSystemTest {
 	// Moving a broken symlink is possible.
 	public void testBrokenSymlinkMove() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		makeLinkStructure();
 		ensureDoesNotExist(aFile);
 		ensureDoesNotExist(aDir);
@@ -201,9 +200,8 @@ public class SymlinkTest extends FileSystemTest {
 	// Removing a broken symlink is possible.
 	public void testBrokenSymlinkRemove() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		makeLinkStructure();
 		ensureDoesNotExist(aFile);
 		ensureDoesNotExist(aDir);
@@ -221,9 +219,8 @@ public class SymlinkTest extends FileSystemTest {
 
 	public void testRecursiveSymlink() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		mkLink(baseStore, "l1", "l2", false);
 		mkLink(baseStore, "l2", "l1", false);
 		IFileStore l1 = baseStore.getChild("l1");
@@ -272,9 +269,8 @@ public class SymlinkTest extends FileSystemTest {
 
 	public void testSymlinkAttributes() {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		makeLinkStructure();
 		assertFalse(iFile.getAttribute(EFS.ATTRIBUTE_SYMLINK));
 		assertFalse(iDir.getAttribute(EFS.ATTRIBUTE_SYMLINK));
@@ -313,9 +309,8 @@ public class SymlinkTest extends FileSystemTest {
 	// Reading from a directory pointed to by a link is possible.
 	public void testSymlinkDirRead() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		makeLinkStructure();
 		IFileStore childDir = aDir.getChild("subDir");
 		ensureExists(childDir, true);
@@ -331,9 +326,8 @@ public class SymlinkTest extends FileSystemTest {
 	// Writing to symlinked dir.
 	public void testSymlinkDirWrite() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		makeLinkStructure();
 		IFileStore childFile = llDir.getChild("subFile");
 		ensureExists(childFile, false);
@@ -370,9 +364,8 @@ public class SymlinkTest extends FileSystemTest {
 	 */
 	public void _testSymlinkExtendedChars() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		IFileStore childDir = baseStore.getChild(specialCharName);
 		ensureExists(childDir, true);
 		IFileStore childFile = baseStore.getChild("ff" + specialCharName);
@@ -399,13 +392,11 @@ public class SymlinkTest extends FileSystemTest {
 
 	public void testSymlinkPutLastModified() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
-		if (Platform.OS_MACOSX.equals(Platform.getOS())) {
-			// flag EFS.SET_LAST_MODIFIED is set by java.io and it fails on Mac OS
-			return;
-		}
+		assumeCanCreateSymLinks();
+
+		// flag EFS.SET_LAST_MODIFIED is set by java.io and it fails on Mac OS
+		Assume.assumeFalse(Platform.OS_MACOSX.equals(Platform.getOS()));
+
 		//check that putInfo() "writes through" the symlink
 		makeLinkStructure();
 		long oldTime = iFile.getLastModified();
@@ -434,9 +425,8 @@ public class SymlinkTest extends FileSystemTest {
 
 	public void testSymlinkPutReadOnly() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		//check that putInfo() "writes through" the symlink
 		makeLinkStructure();
 		illFile.setAttribute(EFS.ATTRIBUTE_READ_ONLY, true);
@@ -469,16 +459,12 @@ public class SymlinkTest extends FileSystemTest {
 	}
 
 	public void testSymlinkPutExecutable() throws Exception {
-		if (!isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE)) {
-			return;
-		}
+		Assume.assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE));
+
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks())
-		 {
-			return;
 		// ATTRIBUTE_EXECUTABLE is not supported on Windows, so
 		// SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES is false in this context.
-		}
+		assumeCanCreateSymLinks();
 
 		//check that putInfo() "writes through" the symlink
 		makeLinkStructure();
@@ -502,16 +488,12 @@ public class SymlinkTest extends FileSystemTest {
 	}
 
 	public void testSymlinkPutHidden() throws Exception {
-		if (!isAttributeSupported(EFS.ATTRIBUTE_HIDDEN)) {
-			return;
-		}
+		Assume.assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_HIDDEN));
+
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks())
-		 {
-			return;
 		// ATTRIBUTE_HIDDEN is supported only on Windows, so
 		// SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES is true in this context.
-		}
+		assumeCanCreateSymLinks();
 
 		// Check that putInfo() applies the attribute to the symlink itself.
 		makeLinkStructure();
@@ -542,9 +524,8 @@ public class SymlinkTest extends FileSystemTest {
 	// Symlinks being broken due to remove are set to non-existent.
 	public void testSymlinkRemove() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		makeLinkStructure();
 		lFile.delete(EFS.NONE, getMonitor());
 		illFile = lFile.fetchInfo();

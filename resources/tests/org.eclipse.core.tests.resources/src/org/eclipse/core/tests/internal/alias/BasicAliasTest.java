@@ -21,30 +21,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
-
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.filesystem.IFileSystem;
+import org.eclipse.core.filesystem.*;
 import org.eclipse.core.internal.filesystem.NullFileStore;
 import org.eclipse.core.internal.filesystem.NullFileSystem;
-import org.eclipse.core.internal.resources.AliasManager;
-import org.eclipse.core.internal.resources.Folder;
-import org.eclipse.core.internal.resources.Project;
-import org.eclipse.core.internal.resources.Resource;
-import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
 import org.eclipse.core.tests.resources.ResourceTest;
+import org.junit.Assume;
 
 /**
  * Tests basic API methods in the face of aliased resources, and ensures that
@@ -257,15 +242,11 @@ public class BasicAliasTest extends ResourceTest {
 	 * used in the locations map of AliasManager.
 	 */
 	public void testBug198571() {
-		if (!isWindows()) {
-			return;
-		}
+		Assume.assumeTrue(isWindows());
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
-		if (devices[0] == null || devices[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(devices[0] == null || devices[1] == null);
 
 		String location = getUniqueString();
 		IProject testProject1 = getWorkspace().getRoot().getProject(location + "1");

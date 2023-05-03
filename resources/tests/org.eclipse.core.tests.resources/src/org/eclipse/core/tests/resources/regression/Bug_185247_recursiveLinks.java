@@ -168,13 +168,11 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 	}
 
 	private void runTest(CreateTestProjectStructure createSymlinks) throws MalformedURLException, Exception {
-		if (!canCreateSymLinks()) {
-			/*
-			 * we don't run this test case on platforms that have no symlinks, since we want
-			 * to test recursive symlinks
-			 */
-			return;
-		}
+		/*
+		 * we don't run this test case on platforms that have no symlinks, since we want
+		 * to test recursive symlinks
+		 */
+		assumeCanCreateSymLinks();
 
 		String projectName = getName();
 		IPath testRoot = getRandomLocation();
@@ -196,7 +194,8 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 	}
 
 	void createSymlink(File directory, String linkName, String linkTarget) {
-		assertTrue("symlinks not supported by platform", canCreateSymLinks());
+		assumeCanCreateSymLinks();
+
 		boolean isDir = true;
 		createSymLink(directory, linkName, linkTarget, isDir);
 	}

@@ -19,6 +19,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.resources.ResourceTest;
+import org.junit.Assume;
 
 //
 public class RefreshLocalPerformanceTest extends ResourceTest {
@@ -73,9 +74,7 @@ public class RefreshLocalPerformanceTest extends ResourceTest {
 	 */
 	public void testLocalRefreshPerformance() throws Exception {
 		// test if the test can be done in this machine
-		if (!bigSiteLocation.toFile().isDirectory()) {
-			return;
-		}
+		Assume.assumeTrue(bigSiteLocation.toFile().isDirectory());
 
 		// create common objects
 		int n = 10;

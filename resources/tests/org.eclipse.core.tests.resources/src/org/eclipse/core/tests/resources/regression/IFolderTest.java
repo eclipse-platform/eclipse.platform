@@ -19,6 +19,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.ResourceTest;
+import org.junit.Assume;
 
 public class IFolderTest extends ResourceTest {
 	/**
@@ -30,15 +31,11 @@ public class IFolderTest extends ResourceTest {
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		if (!isReadOnlySupported()) {
-			return;
-		}
+		Assume.assumeTrue(isReadOnlySupported());
 
 		// Only run this test on Linux for now since Windows lets you create
 		// a file within a read-only folder.
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			return;
-		}
+		Assume.assumeTrue(Platform.getOS().equals(Platform.OS_LINUX));
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder parentFolder = project.getFolder("parentFolder");

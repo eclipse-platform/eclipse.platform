@@ -51,9 +51,8 @@ public class Bug_233939 extends ResourceTest {
 
 	public void testBug() {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		String fileName = "file.txt";
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -88,9 +87,8 @@ public class Bug_233939 extends ResourceTest {
 
 	public void testMultipleLinksToFolder() {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		// create a folder: getTempStore() will be cleaned up in tearDown()
 		IFileStore tempStore = getTempStore();
 		createFileInFileSystem(tempStore.getChild("foo.txt"));

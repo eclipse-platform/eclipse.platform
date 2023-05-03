@@ -17,29 +17,19 @@ import java.io.File;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
-
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileInfo;
-import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.filesystem.IFileSystem;
+import org.eclipse.core.filesystem.*;
 import org.eclipse.core.filesystem.provider.FileSystem;
 import org.eclipse.core.internal.filesystem.Messages;
 import org.eclipse.core.internal.filesystem.NullFileSystem;
 import org.eclipse.core.internal.filesystem.local.LocalFile;
 import org.eclipse.core.internal.filesystem.local.LocalFileSystem;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.*;
 import org.eclipse.core.tests.internal.localstore.LocalStoreTest;
 import org.eclipse.osgi.util.NLS;
+import org.junit.Assume;
 
 /**
  * Basic tests for the IFileStore API
@@ -124,10 +114,8 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		if (tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
-				|| tempDirectories[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
+				|| tempDirectories[1] == null);
 
 		/* build scenario */
 		// create source root folder
@@ -210,10 +198,8 @@ public class FileStoreTest extends LocalStoreTest {
 	public void testCaseInsensitive() throws Throwable {
 		IFileStore temp = createDir(getWorkspace().getRoot().getLocation().append("temp").toString(), true);
 		boolean isCaseSensitive = temp.getFileSystem().isCaseSensitive();
-		if (isCaseSensitive) {
-			System.out.println("Skipping copy test on caseSensitive System");
-			return;
-		}
+		Assume.assumeFalse("Skipping copy test on caseSensitive System", isCaseSensitive);
+
 		// create a file
 		String content = "this is just a simple content \n to a simple file \n to test a 'simple' copy";
 		IFileStore fileWithSmallName = temp.getChild("filename");
@@ -302,10 +288,8 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		if (tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
-				|| tempDirectories[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
+				|| tempDirectories[1] == null);
 
 		/* build scenario */
 		/* get the source folder */
@@ -461,10 +445,8 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		if (tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
-				|| tempDirectories[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
+				|| tempDirectories[1] == null);
 
 		/* build scenario */
 		/* get the source folder */
@@ -584,9 +566,7 @@ public class FileStoreTest extends LocalStoreTest {
 	}
 
 	private void testAttribute(int attribute) throws CoreException {
-		if (!isAttributeSupported(attribute)) {
-			return;
-		}
+		Assume.assumeTrue(isAttributeSupported(attribute));
 
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
 		IFileStore targetFolder = createDir(root.toString(), true);

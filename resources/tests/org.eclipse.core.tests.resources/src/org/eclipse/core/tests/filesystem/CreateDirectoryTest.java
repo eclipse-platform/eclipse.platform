@@ -18,6 +18,7 @@ import java.net.URI;
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
+import org.junit.Assume;
 
 /**
  * Black box testing of mkdir method.
@@ -146,13 +147,10 @@ public class CreateDirectoryTest extends FileSystemTest {
 	}
 
 	public void testParentDeviceNotExistsInLocalFile() {
-		if (!Platform.getOS().equals(Platform.OS_WIN32)) {
-			return;
-		}
+		Assume.assumeTrue(Platform.getOS().equals(Platform.OS_WIN32));
+
 		String device = findNonExistingDevice();
-		if (device == null) {
-			return;
-		}
+		Assume.assumeNotNull(device);
 
 		try {
 			IFileStore localFileTopDir = EFS.getStore(URI.create("file:/" + device + ":" + getUniqueString()));

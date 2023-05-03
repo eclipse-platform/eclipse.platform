@@ -16,6 +16,7 @@ package org.eclipse.core.tests.internal.localstore;
 import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
+import org.junit.Assume;
 
 /**
  * Tests the move operation.
@@ -31,15 +32,11 @@ public class MoveTest extends LocalStoreTest {
 	 * This test has Windows as the target OS. Drives C: and D: should be available.
 	 */
 	public void testMoveFileAcrossVolumes() {
-		if (!isWindows()) {
-			return;
-		}
+		Assume.assumeTrue(isWindows());
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
-		if (devices[0] == null || devices[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(devices[0] == null || devices[1] == null);
 
 		// create common objects
 		String location = getUniqueString();
@@ -155,15 +152,11 @@ public class MoveTest extends LocalStoreTest {
 	 * This test has Windows as the target OS. Drives C: and D: should be available.
 	 */
 	public void testMoveFolderAcrossVolumes() {
-		if (!isWindows()) {
-			return;
-		}
+		Assume.assumeTrue(isWindows());
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
-		if (devices[0] == null || devices[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(devices[0] == null || devices[1] == null);
 
 		// create common objects
 		String location = getUniqueString();

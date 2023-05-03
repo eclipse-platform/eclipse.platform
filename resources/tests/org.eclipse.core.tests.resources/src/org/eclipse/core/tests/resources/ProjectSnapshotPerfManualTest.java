@@ -19,6 +19,7 @@ import java.net.URI;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
+import org.junit.Assume;
 
 /**
  * Measure speed of a project "Import with Snapshot" operation compared
@@ -73,9 +74,7 @@ public class ProjectSnapshotPerfManualTest extends ResourceTest {
 	 */
 	public void testSnapshotImportPerformance() throws Exception {
 		// test if the test can be done in this machine
-		if (!bigSiteLocation.toFile().isDirectory()) {
-			return;
-		}
+		Assume.assumeTrue(bigSiteLocation.toFile().isDirectory());
 
 		// create common objects
 		final IProject project = getWorkspace().getRoot().getProject("MyTestProject");

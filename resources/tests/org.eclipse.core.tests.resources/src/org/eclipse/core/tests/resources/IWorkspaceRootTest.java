@@ -23,6 +23,7 @@ import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
+import org.junit.Assume;
 
 public class IWorkspaceRootTest extends ResourceTest {
 
@@ -31,9 +32,8 @@ public class IWorkspaceRootTest extends ResourceTest {
 	 */
 	public void testFindFilesNonCanonicalPath() {
 		// this test is for windows only
-		if (!isWindows()) {
-			return;
-		}
+		Assume.assumeTrue(isWindows());
+
 		IProject project = getWorkspace().getRoot().getProject("testFindFilesNonCanonicalPath");
 		ensureExistsInWorkspace(project, true);
 

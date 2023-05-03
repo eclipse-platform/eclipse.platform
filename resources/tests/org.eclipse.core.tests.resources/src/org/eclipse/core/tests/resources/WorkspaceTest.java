@@ -314,9 +314,8 @@ public class WorkspaceTest extends ResourceTest {
 
 	public void testWorkingLocationDeletion_bug433061() throws Throwable {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		IProject project = getTestProject();
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		IPath workingLocation = project.getWorkingLocation("org.eclipse.core.tests.resources");

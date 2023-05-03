@@ -26,6 +26,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
+import org.junit.Assume;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -33,9 +34,8 @@ public class IProjectTest extends ResourceTest {
 	private final FussyProgressMonitor monitor = new FussyProgressMonitor();
 
 	public void ensureExistsInWorkspace(final IProject project, final IProjectDescription description) {
-		if (project == null) {
-			return;
-		}
+		Assume.assumeNotNull(project);
+
 		IWorkspaceRunnable body = mon -> {
 			project.create(description, mon);
 			project.open(mon);

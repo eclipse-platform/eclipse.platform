@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
+import org.junit.Assume;
 
 public class IFolderTest extends ResourceTest {
 	@Override
@@ -361,9 +362,8 @@ public class IFolderTest extends ResourceTest {
 	public void testReadOnlyFolderCopy() throws Exception {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		if (!isReadOnlySupported()) {
-			return;
-		}
+		Assume.assumeTrue(isReadOnlySupported());
+
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder source = project.getFolder("Folder1");
 		ensureExistsInWorkspace(source, true);

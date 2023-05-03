@@ -17,6 +17,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.ResourceTest;
+import org.junit.Assume;
 
 public class IFileTest extends ResourceTest {
 	private final boolean DISABLED = true;
@@ -31,20 +32,14 @@ public class IFileTest extends ResourceTest {
 		// This test is no longer valid since the error code is dependent on whether
 		// or not the parent folder is marked as read-only. We need to write a different
 		// test to make the file.create fail.
-		if (DISABLED ) {
-			return;
-		}
+		Assume.assumeFalse(DISABLED);
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		if (!isReadOnlySupported()) {
-			return;
-		}
+		Assume.assumeTrue(isReadOnlySupported());
 
 		// Don't test this on Windows
-		if (isWindows()) {
-			return;
-		}
+		Assume.assumeFalse(isWindows());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -74,15 +69,11 @@ public class IFileTest extends ResourceTest {
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		if (!isReadOnlySupported()) {
-			return;
-		}
+		Assume.assumeTrue(isReadOnlySupported());
 
 		// Only run this test on Linux for now since Windows lets you create
 		// a file within a read-only folder.
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			return;
-		}
+		Assume.assumeTrue(Platform.getOS().equals(Platform.OS_LINUX));
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");

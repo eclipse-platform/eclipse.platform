@@ -21,6 +21,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
 import org.eclipse.core.tests.resources.ResourceTest;
+import org.junit.Assume;
 
 public class IResourceTest extends ResourceTest {
 
@@ -89,9 +90,8 @@ public class IResourceTest extends ResourceTest {
 
 	public void testBug28790() {
 		// only activate this test on platforms that support it
-		if (!isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE)) {
-			return;
-		}
+		Assume.assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE));
+
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile file = project.getFile("a.txt");
 		ensureExistsInWorkspace(file, getRandomString());
@@ -217,9 +217,8 @@ public class IResourceTest extends ResourceTest {
 
 	public void testBug111821() {
 		//this test only makes sense on Windows
-		if (!isWindows()) {
-			return;
-		}
+		Assume.assumeTrue(isWindows());
+
 		IProject project = getWorkspace().getRoot().getProject("testBug111821");
 		IFolder folder = project.getFolder(new Path(null, "c:"));
 		ensureExistsInWorkspace(project, true);
@@ -281,11 +280,8 @@ public class IResourceTest extends ResourceTest {
 	 */
 	public void testCreate_1FW87XF() {
 		// FIXME: remove when fix this PR
-		String os = Platform.getOS();
-		if (!os.equals(Platform.OS_LINUX)) {
-			debug("Skipping testCreate_1FW87XF because it is still not supported by the platform.");
-			return;
-		}
+		Assume.assumeTrue("Skipping testCreate_1FW87XF because it is still not supported by the platform.",
+				Platform.getOS().equals(Platform.OS_LINUX));
 
 		// test if the file system is case sensitive
 		boolean caseSensitive = new java.io.File("abc").compareTo(new java.io.File("ABC")) != 0;

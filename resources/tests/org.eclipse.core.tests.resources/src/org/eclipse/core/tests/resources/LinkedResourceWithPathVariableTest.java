@@ -25,6 +25,7 @@ import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.tests.harness.FileSystemHelper;
+import org.junit.Assume;
 
 /**
  * This class extends <code>LinkedResourceTest</code> in order to use
@@ -812,9 +813,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		}
 
 		// Don't run this test if we cannot set a file read-only
-		if ((projStore.getFileSystem().attributes() & EFS.ATTRIBUTE_READ_ONLY) == 0) {
-			return;
-		}
+		Assume.assumeFalse((projStore.getFileSystem().attributes() & EFS.ATTRIBUTE_READ_ONLY) == 0);
 
 		try {
 			// Create a linked resource with a non-existing path variable

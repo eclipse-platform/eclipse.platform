@@ -20,6 +20,7 @@ import java.io.IOException;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Assume;
 
 /**
  *
@@ -56,9 +57,8 @@ public class ResourceAttributeTest extends ResourceTest {
 
 	public void testAttributeArchive() {
 		// only activate this test on platforms that support it
-		if (!isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE)) {
-			return;
-		}
+		Assume.assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE));
+
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
 		ensureExistsInWorkspace(file, getRandomContents());
@@ -91,9 +91,8 @@ public class ResourceAttributeTest extends ResourceTest {
 
 	public void testAttributeExecutable() {
 		// only activate this test on platforms that support it
-		if (!isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE)) {
-			return;
-		}
+		Assume.assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE));
+
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
 		ensureExistsInWorkspace(file, getRandomContents());
@@ -127,9 +126,8 @@ public class ResourceAttributeTest extends ResourceTest {
 
 	public void testAttributeHidden() {
 		// only activate this test on platforms that support it
-		if (!isAttributeSupported(EFS.ATTRIBUTE_HIDDEN)) {
-			return;
-		}
+		Assume.assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_HIDDEN));
+
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
 		ensureExistsInWorkspace(file, getRandomContents());
@@ -162,9 +160,8 @@ public class ResourceAttributeTest extends ResourceTest {
 
 	public void testAttributeReadOnly() {
 		// only activate this test on platforms that support it
-		if (!isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY)) {
-			return;
-		}
+		Assume.assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY));
+
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
 		ensureExistsInWorkspace(file, getRandomContents());
@@ -236,9 +233,8 @@ public class ResourceAttributeTest extends ResourceTest {
 	 */
 	public void _testRefreshExecutableOnFolder() {
 		// only test on platforms that implement the executable bit
-		if ((EFS.getLocalFileSystem().attributes() & EFS.ATTRIBUTE_EXECUTABLE) == 0) {
-			return;
-		}
+		Assume.assumeFalse((EFS.getLocalFileSystem().attributes() & EFS.ATTRIBUTE_EXECUTABLE) == 0);
+
 		IProject project = getWorkspace().getRoot().getProject("testRefreshExecutableOnFolder");
 		IFolder folder = project.getFolder("folder");
 		IFile file = folder.getFile("file");
@@ -275,9 +271,8 @@ public class ResourceAttributeTest extends ResourceTest {
 
 	public void testAttributeSymlink() {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile link = project.getFile("link");
 		ensureExistsInWorkspace(link, getRandomContents());
