@@ -135,6 +135,26 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
+	 * Returns whether the current platform is linux.
+	 *
+	 * @return <code>true</code> if this platform is linux, and <code>false</code>
+	 *         otherwise.
+	 */
+	protected static boolean isLinux() {
+		return Platform.getOS().equals(Platform.OS_LINUX);
+	}
+
+	/**
+	 * Returns whether the current platform is mac OSX.
+	 *
+	 * @return <code>true</code> if this platform is mac OSX, and <code>false</code>
+	 *         otherwise.
+	 */
+	protected static boolean isMacOSX() {
+		return Platform.getOS().equals(Platform.OS_MACOSX);
+	}
+
+	/**
 	 * Convenience method to copy contents from one stream to another.
 	 */
 	public static void transferStreams(InputStream source, OutputStream destination, String path) {
