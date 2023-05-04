@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.ICompareFilter;
+import org.eclipse.compare.contentmergeviewer.IIgnoreWhitespaceContributor;
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
 import org.eclipse.compare.internal.CompareContentViewerSwitchingPane;
 import org.eclipse.compare.internal.CompareMessages;
@@ -88,6 +90,8 @@ public class DocumentMerger {
 		CompareConfiguration getCompareConfiguration();
 
 		ITokenComparator createTokenComparator(String s);
+
+		Optional<IIgnoreWhitespaceContributor> createIgnoreWhitespaceContributor(IDocument document);
 
 		boolean isHunkOnLeft();
 
@@ -378,15 +382,15 @@ public class DocumentMerger {
 
 		DocLineComparator sright = new DocLineComparator(rDoc,
 				toRegion(rRegion), ignoreWhiteSpace, compareFilters,
-				MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
+				MergeViewerContentProvider.RIGHT_CONTRIBUTOR, createIgnoreWhitespaceContributor(rDoc));
 		DocLineComparator sleft = new DocLineComparator(lDoc,
 				toRegion(lRegion), ignoreWhiteSpace, compareFilters,
-				MergeViewerContentProvider.LEFT_CONTRIBUTOR);
+				MergeViewerContentProvider.LEFT_CONTRIBUTOR, createIgnoreWhitespaceContributor(lDoc));
 		DocLineComparator sancestor = null;
 		if (aDoc != null) {
 			sancestor = new DocLineComparator(aDoc, toRegion(aRegion),
 					ignoreWhiteSpace, compareFilters,
-					MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR);
+					MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, createIgnoreWhitespaceContributor(aDoc));
 			/*if (isPatchHunk()) {
 				if (isHunkOnLeft()) {
 					sright= new DocLineComparator(aDoc, toRegion(aRegion), ignoreWhiteSpace);
@@ -551,11 +555,14 @@ public class DocumentMerger {
 		boolean ignoreWhiteSpace= isIgnoreWhitespace();
 		ICompareFilter[] compareFilters = getCompareFilters();
 
-		DocLineComparator sright= new DocLineComparator(rDoc, toRegion(rRegion), ignoreWhiteSpace, compareFilters, MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
-		DocLineComparator sleft= new DocLineComparator(lDoc, toRegion(lRegion), ignoreWhiteSpace, compareFilters, MergeViewerContentProvider.LEFT_CONTRIBUTOR);
+		DocLineComparator sright = new DocLineComparator(rDoc, toRegion(rRegion), ignoreWhiteSpace, compareFilters,
+				MergeViewerContentProvider.RIGHT_CONTRIBUTOR, createIgnoreWhitespaceContributor(rDoc));
+		DocLineComparator sleft = new DocLineComparator(lDoc, toRegion(lRegion), ignoreWhiteSpace, compareFilters,
+				MergeViewerContentProvider.LEFT_CONTRIBUTOR, createIgnoreWhitespaceContributor(lDoc));
 		DocLineComparator sancestor= null;
 		if (aDoc != null)
-			sancestor= new DocLineComparator(aDoc, toRegion(aRegion), ignoreWhiteSpace, compareFilters, MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR);
+			sancestor = new DocLineComparator(aDoc, toRegion(aRegion), ignoreWhiteSpace, compareFilters,
+					MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, createIgnoreWhitespaceContributor(aDoc));
 
 		final Object[] result= new Object[1];
 		final DocLineComparator sa= sancestor, sl= sleft, sr= sright;
@@ -896,6 +903,10 @@ public class DocumentMerger {
 
 	private ITokenComparator createTokenComparator(String s) {
 		return fInput.createTokenComparator(s);
+	}
+
+	private Optional<IIgnoreWhitespaceContributor> createIgnoreWhitespaceContributor(IDocument document) {
+		return fInput.createIgnoreWhitespaceContributor(document);
 	}
 
 	private static int maxWork(IRangeComparator a, IRangeComparator l, IRangeComparator r) {

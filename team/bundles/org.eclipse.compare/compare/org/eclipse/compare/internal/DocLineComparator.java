@@ -13,7 +13,11 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import org.eclipse.compare.ICompareFilter;
+import org.eclipse.compare.contentmergeviewer.IIgnoreWhitespaceContributor;
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
 import org.eclipse.compare.rangedifferencer.IRangeComparator;
 import org.eclipse.core.internal.expressions.util.LRUCache;
@@ -39,6 +43,7 @@ public class DocLineComparator implements ITokenComparator {
 	private boolean fIgnoreWhiteSpace;
 	private ICompareFilter[] fCompareFilters;
 	private char fContributor;
+	private final Optional<IIgnoreWhitespaceContributor> fIgnoreWhitespaceContributor;
 	private LRUCache fCompareFilterCache;
 
 	/**
@@ -52,35 +57,35 @@ public class DocLineComparator implements ITokenComparator {
 	 */
 	public DocLineComparator(IDocument document, IRegion region,
 			boolean ignoreWhiteSpace) {
-		this(document, region, ignoreWhiteSpace, null, '?');
+		this(document, region, ignoreWhiteSpace, null, '?', Optional.empty());
 	}
 
 	/**
 	 * Creates a <code>DocLineComparator</code> for the given document range.
 	 * ignoreWhiteSpace controls whether comparing lines (in method
-	 * <code>rangesEqual</code>) should ignore whitespace. Compare filters may be used
-	 * to affect the detection of line differences.
+	 * <code>rangesEqual</code>) should ignore whitespace. Compare filters may be
+	 * used to affect the detection of line differences.
 	 *
-	 * @param document
-	 *            the document from which the lines are taken
-	 * @param region
-	 *            if non-<code>null</code> only lines within this range are
-	 *            taken
-	 * @param ignoreWhiteSpace
-	 *            if <code>true</code> white space is ignored when comparing
-	 *            lines
-	 * @param compareFilters
-	 *            the active compare filters for the compare
-	 * @param contributor
-	 *            contributor of document
+	 * @param document                    the document from which the lines are
+	 *                                    taken
+	 * @param region                      if non-<code>null</code> only lines within
+	 *                                    this range are taken
+	 * @param ignoreWhiteSpace            if <code>true</code> white space is
+	 *                                    ignored when comparing lines
+	 * @param compareFilters              the active compare filters for the compare
+	 * @param contributor                 contributor of document
+	 * @param ignoreWhitespaceContributor contributor for ignore whitespace logic,
+	 *                                    empty optional allowed, but
+	 *                                    <code>null</code> is not allowed
 	 */
 	public DocLineComparator(IDocument document, IRegion region,
 			boolean ignoreWhiteSpace, ICompareFilter[] compareFilters,
-			char contributor) {
+			char contributor, Optional<IIgnoreWhitespaceContributor> ignoreWhitespaceContributor) {
 		fDocument = document;
 		fIgnoreWhiteSpace = ignoreWhiteSpace;
 		fCompareFilters = compareFilters;
 		fContributor = contributor;
+		fIgnoreWhitespaceContributor = Objects.requireNonNull(ignoreWhitespaceContributor);
 
 		boolean cacheFilteredLines = false;
 		if (compareFilters != null && compareFilters.length > 0) {
@@ -171,7 +176,7 @@ public class DocLineComparator implements ITokenComparator {
 
 			if (fIgnoreWhiteSpace) {
 				String[] linesToCompare = extract(thisIndex, otherIndex, other, false);
-				return compare(linesToCompare[0], linesToCompare[1]);
+				return compareIgnoreWhitespace(linesToCompare[0], linesToCompare[1], thisIndex, otherIndex, other);
 			}
 
 			int tlen= getTokenLength(thisIndex);
@@ -272,28 +277,30 @@ public class DocLineComparator implements ITokenComparator {
 		return ""; //$NON-NLS-1$
 	}
 
-	private boolean compare(String s1, String s2) {
-		int l1= s1.length();
-		int l2= s2.length();
-		int c1= 0, c2= 0;
-		int i1= 0, i2= 0;
-
+	private boolean compareIgnoreWhitespace(String s1, String s2, int thisLineIndex, int otherLineIndex,
+			DocLineComparator other) {
+		int l1 = s1.length();
+		int l2 = s2.length();
+		int c1 = 0, c2 = 0;
+		int i1 = 0, i2 = 0;
 		while (c1 != -1) {
 
-			c1= -1;
+			c1 = -1;
 			while (i1 < l1) {
-				char c= s1.charAt(i1++);
-				if (! Character.isWhitespace(c)) {
-					c1= c;
+				int lineOffset = i1;
+				char c = s1.charAt(i1++);
+				if (!isSignificantWhitespace(s1, lineOffset, c, thisLineIndex, this)) {
+					c1 = c;
 					break;
 				}
 			}
 
-			c2= -1;
+			c2 = -1;
 			while (i2 < l2) {
-				char c= s2.charAt(i2++);
-				if (! Character.isWhitespace(c)) {
-					c2= c;
+				int lineOffset = i2;
+				char c = s2.charAt(i2++);
+				if (!isSignificantWhitespace(s2, lineOffset, c, otherLineIndex, other)) {
+					c2 = c;
 					break;
 				}
 			}
@@ -302,6 +309,16 @@ public class DocLineComparator implements ITokenComparator {
 				return false;
 		}
 		return true;
+	}
+
+	private static boolean isSignificantWhitespace(String line, int columnNumber, char character, int lineNumber,
+			DocLineComparator comparator) {
+		boolean isWhitespace = Character.isWhitespace(character);
+		if (isWhitespace && comparator.fIgnoreWhitespaceContributor.isPresent()
+				&& !comparator.fIgnoreWhitespaceContributor.get().isIgnoredWhitespace(lineNumber, columnNumber)) {
+			isWhitespace = false; // whitespace should be included and not ignored
+		}
+		return isWhitespace;
 	}
 }
 
