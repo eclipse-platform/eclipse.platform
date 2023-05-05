@@ -19,6 +19,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobGroup;
+import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TimerBuilder.RuleType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -237,12 +238,14 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 
 	@Test
 	public void testWorkspaceParrallelBuildCurrentProject() throws CoreException, OperationCanceledException, InterruptedException {
+		TestBarrier2 waitForRunningJobBarrier = new TestBarrier2();
 		setTimerBuilderSchedulingRuleForAllProjects(RuleType.CURRENT_PROJECT, getMonitor());
 		long duration = System.currentTimeMillis();
 		Job job = new Job("Workspace Build") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
+					waitForRunningJobBarrier.setStatus(TestBarrier2.STATUS_RUNNING);
 					getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
 					return Status.OK_STATUS;
 				} catch (CoreException e) {
@@ -250,8 +253,10 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 				}
 			}
 		};
+
 		job.schedule();
-		Assert.assertTrue("Timeout, most likely a deadlock", job.join(5000, getMonitor()));
+		waitForRunningJobBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
+		Assert.assertTrue("Timeout, most likely a deadlock", job.join(20000, getMonitor()));
 		duration = System.currentTimeMillis() - duration;
 		assertEquals(getWorkspace().getRoot().getProjects().length, TimerBuilder.getTotalBuilds());
 		assertTrue(TimerBuilder.getMaxSimultaneousBuilds() > 1);

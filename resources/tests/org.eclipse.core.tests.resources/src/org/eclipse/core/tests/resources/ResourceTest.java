@@ -416,6 +416,8 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	protected void cleanup() throws CoreException {
+		// Wait for any build job that may still be executed
+		waitForBuild();
 		final IFileStore[] toDelete = storesToDelete.toArray(new IFileStore[0]);
 		storesToDelete.clear();
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
@@ -426,7 +428,7 @@ public abstract class ResourceTest extends CoreTest {
 			}
 		}, null);
 		getWorkspace().save(true, null);
-		//don't leak builder jobs, since they may affect subsequent tests
+		// don't leak builder jobs, since they may affect subsequent tests
 		waitForBuild();
 		assertWorkspaceFolderEmpty();
 	}
