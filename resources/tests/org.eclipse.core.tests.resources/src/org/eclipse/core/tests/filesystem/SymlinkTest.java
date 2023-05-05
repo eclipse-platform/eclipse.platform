@@ -38,7 +38,7 @@ public class SymlinkTest extends FileSystemTest {
 	 */
 	private static final boolean SYMLINKS_ARE_FIRST_CLASS_FILES_OR_DIRECTORIES = Platform.OS_WIN32
 			.equals(Platform.getOS()) ? true : false;
-	private static String specialCharName = "���� ��� ���� �����"; //$NON-NLS-1$
+	private static String specialCharName = "äöüß ÄÖÜ àÀâÂ µ²³úá"; //$NON-NLS-1$
 
 	protected IFileStore aDir, aFile; //actual Dir, File
 	protected IFileInfo iDir, iFile, ilDir, ilFile, illDir, illFile;
