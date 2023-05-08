@@ -730,8 +730,8 @@ public class AsyncTableRenderingViewer extends AsyncVirtualContentTableViewer {
 				fCellEditorListener = new CellEditorListener(row, col, editor);
 				editor.addListener(fCellEditorListener);
 
-				// move cursor below editor control
-				fTableCursor.moveBelow(control);
+				// Set cursor visibility to false
+				fTableCursor.setVisible(false);
 			}
 		}
 	}
@@ -739,7 +739,7 @@ public class AsyncTableRenderingViewer extends AsyncVirtualContentTableViewer {
 	private void deactivateEditor(CellEditor editor)
 	{
 		removeListeners(editor.getControl());
-		fTableCursor.moveAbove(editor.getControl());
+		fTableCursor.setVisible(true);
 		fTableCursor.setFocus();
 	}
 
