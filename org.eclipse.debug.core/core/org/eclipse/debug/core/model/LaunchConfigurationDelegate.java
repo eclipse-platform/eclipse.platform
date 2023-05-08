@@ -380,9 +380,18 @@ public abstract class LaunchConfigurationDelegate implements ILaunchConfiguratio
 	 * @throws CoreException if any exceptions occur while accessing marker attributes
 	 */
 	protected boolean isLaunchProblem(IMarker problemMarker) throws CoreException {
-		Integer severity = (Integer)problemMarker.getAttribute(IMarker.SEVERITY);
-		if (severity != null) {
-			return severity.intValue() >= IMarker.SEVERITY_ERROR;
+		try {
+			Integer severity = (Integer) problemMarker.getAttribute(IMarker.SEVERITY);
+			if (severity != null) {
+				return severity.intValue() >= IMarker.SEVERITY_ERROR;
+			}
+		} catch (IllegalStateException e) {
+			// Ignore if the marker no longer exists, see:
+			// https://github.com/eclipse-platform/eclipse.platform.debug/issues/136
+			if (problemMarker.exists()) {
+				IStatus status = new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(), DebugCoreMessages.ErrorAccessingProblemMarker, e);
+				throw new CoreException(status);
+			}
 		}
 
 		return false;

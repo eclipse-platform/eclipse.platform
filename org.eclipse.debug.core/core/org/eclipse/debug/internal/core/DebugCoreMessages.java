@@ -125,6 +125,7 @@ public class DebugCoreMessages extends NLS {
 	public static String RefreshUtil_1;
 	public static String StepFilter_0;
 	public static String StepFilter_1;
+	public static String ErrorAccessingProblemMarker;
 
 	static {
 		// load message values from bundle file
