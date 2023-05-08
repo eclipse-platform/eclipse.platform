@@ -17,8 +17,8 @@ import java.io.IOException;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.ResourceTest;
+import org.junit.Assume;
 
 /**
  * Tests regression of bug 44106. In this case deleting a file which was a
@@ -89,9 +89,7 @@ public class Bug_044106 extends ResourceTest {
 	 * @param deleteFlags The flags to use on the resource deletion call
 	 */
 	public void doTestDeleteLinkedFolder(IFolder linkedFolder, boolean deleteParent, int deleteFlags) {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			return;
-		}
+		Assume.assumeTrue(isLinux());
 		IFileStore linkDestLocation = getTempStore();
 		IFileStore linkDestFile = linkDestLocation.getChild(getUniqueString());
 		createFileInFileSystem(linkDestFile);
@@ -137,41 +135,33 @@ public class Bug_044106 extends ResourceTest {
 	}
 
 	public void testDeleteLinkedFile() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			return;
-		}
+		Assume.assumeTrue(isLinux());
+
 		doTestDeleteLinkedFile(IResource.NONE);
 	}
 
 	public void testDeleteLinkedFolder() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			return;
-		}
+		Assume.assumeTrue(isLinux());
+
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, false, IResource.NONE);
 	}
 
 	public void testDeleteLinkedResourceInProject() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			return;
-		}
+		Assume.assumeTrue(isLinux());
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.NONE);
 	}
 
 	public void testDeleteLinkedFileKeepHistory() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			return;
-		}
+		Assume.assumeTrue(isLinux());
 		doTestDeleteLinkedFile(IResource.KEEP_HISTORY);
 	}
 
 	public void testDeleteLinkedFolderParentKeepHistory() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			return;
-		}
+		Assume.assumeTrue(isLinux());
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
 		IFolder parent = project.getFolder("parent");
 		IFolder linkedFolder = parent.getFolder("linkedFolder");
@@ -179,18 +169,14 @@ public class Bug_044106 extends ResourceTest {
 	}
 
 	public void testDeleteLinkedFolderKeepHistory() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			return;
-		}
+		Assume.assumeTrue(isLinux());
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, false, IResource.KEEP_HISTORY);
 	}
 
 	public void testDeleteLinkedResourceInProjectKeepHistory() {
-		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			return;
-		}
+		Assume.assumeTrue(isLinux());
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.KEEP_HISTORY);

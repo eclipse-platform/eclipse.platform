@@ -15,8 +15,10 @@ package org.eclipse.core.tests.resources.regression;
 
 import java.io.*;
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.resources.ResourceTest;
+import org.junit.Assume;
 
 /**
  * A parent container (projects and folders) would become out-of-sync if any of
@@ -131,7 +133,7 @@ public class Bug_026294 extends ResourceTest {
 	 * Works only for Linux with natives.
 	 */
 	public void testDeleteOpenProjectLinux() {
-		if (!(Platform.getOS().equals(Platform.OS_LINUX) && isReadOnlySupported())) {
+		if (!(isLinux() && isReadOnlySupported())) {
 			return;
 		}
 
@@ -279,9 +281,7 @@ public class Bug_026294 extends ResourceTest {
 	 * TODO: enable this test once bug 48321 is fixed.
 	 */
 	public void testDeleteClosedProjectLinux() {
-		if (!(Platform.getOS().equals(Platform.OS_LINUX))) {
-			return;
-		}
+		Assume.assumeTrue(isLinux());
 
 		IProject project = null;
 		File projectRoot = null;
@@ -416,9 +416,7 @@ public class Bug_026294 extends ResourceTest {
 	 * Works only for Linux with natives.
 	 */
 	public void testDeleteFolderLinux() {
-		if (!(Platform.getOS().equals(Platform.OS_LINUX))) {
-			return;
-		}
+		Assume.assumeTrue(isLinux());
 
 		IProject project = null;
 		File projectRoot = null;

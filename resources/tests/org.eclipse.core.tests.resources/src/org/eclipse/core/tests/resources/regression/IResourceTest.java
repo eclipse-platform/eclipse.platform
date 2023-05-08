@@ -281,7 +281,7 @@ public class IResourceTest extends ResourceTest {
 	public void testCreate_1FW87XF() {
 		// FIXME: remove when fix this PR
 		Assume.assumeTrue("Skipping testCreate_1FW87XF because it is still not supported by the platform.",
-				Platform.getOS().equals(Platform.OS_LINUX));
+				isLinux());
 
 		// test if the file system is case sensitive
 		boolean caseSensitive = new java.io.File("abc").compareTo(new java.io.File("ABC")) != 0;
