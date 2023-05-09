@@ -18,7 +18,6 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.resources.ResourceTest;
-import org.junit.Assume;
 
 /**
  * A parent container (projects and folders) would become out-of-sync if any of
@@ -281,7 +280,9 @@ public class Bug_026294 extends ResourceTest {
 	 * TODO: enable this test once bug 48321 is fixed.
 	 */
 	public void testDeleteClosedProjectLinux() {
-		Assume.assumeTrue(isLinux());
+		if (!isLinux()) {
+			return;
+		}
 
 		IProject project = null;
 		File projectRoot = null;
@@ -416,7 +417,9 @@ public class Bug_026294 extends ResourceTest {
 	 * Works only for Linux with natives.
 	 */
 	public void testDeleteFolderLinux() {
-		Assume.assumeTrue(isLinux());
+		if (!isLinux()) {
+			return;
+		}
 
 		IProject project = null;
 		File projectRoot = null;
