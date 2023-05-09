@@ -35,10 +35,6 @@ org.osgi.framework.bootdelegation=*
 
    <plugins>
       <plugin id="com.ibm.icu"/>
-      <plugin id="jakarta.servlet-api"/>
-      <plugin id="javax.el-api"/>
-      <plugin id="javax.servlet.jsp-api"/>
-      <plugin id="javax.xml"/>
       <plugin id="org.apache.felix.scr"/>
       <plugin id="org.apache.jasper.glassfish"/>
       <plugin id="org.apache.lucene.analysis-common"/>
