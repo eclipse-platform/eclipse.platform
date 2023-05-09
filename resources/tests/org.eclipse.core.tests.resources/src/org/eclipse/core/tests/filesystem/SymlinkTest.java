@@ -28,7 +28,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
 public class SymlinkTest extends FileSystemTest {
 	/**
 	 * Symbolic links on Windows behave differently compared to Unix-based systems. Symbolic links
@@ -106,6 +110,7 @@ public class SymlinkTest extends FileSystemTest {
 		baseStore.delete(EFS.NONE, null);
 	}
 
+	@Test
 	public void testBrokenSymlinkAttributes() {
 		// Only activate this test if testing of symbolic links is possible.
 		assumeCanCreateSymLinks();
@@ -153,6 +158,7 @@ public class SymlinkTest extends FileSystemTest {
 	}
 
 	// Moving a broken symlink is possible.
+	@Test
 	public void testBrokenSymlinkMove() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
 		assumeCanCreateSymLinks();
@@ -198,6 +204,7 @@ public class SymlinkTest extends FileSystemTest {
 	}
 
 	// Removing a broken symlink is possible.
+	@Test
 	public void testBrokenSymlinkRemove() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
 		assumeCanCreateSymLinks();
@@ -217,6 +224,7 @@ public class SymlinkTest extends FileSystemTest {
 		assertEquals(infos.length, 0);
 	}
 
+	@Test
 	public void testRecursiveSymlink() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
 		assumeCanCreateSymLinks();
@@ -267,6 +275,7 @@ public class SymlinkTest extends FileSystemTest {
 		assertEquals(infos.length, 1);
 	}
 
+	@Test
 	public void testSymlinkAttributes() {
 		// Only activate this test if testing of symbolic links is possible.
 		assumeCanCreateSymLinks();
@@ -307,6 +316,7 @@ public class SymlinkTest extends FileSystemTest {
 	}
 
 	// Reading from a directory pointed to by a link is possible.
+	@Test
 	public void testSymlinkDirRead() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
 		assumeCanCreateSymLinks();
@@ -324,6 +334,7 @@ public class SymlinkTest extends FileSystemTest {
 	}
 
 	// Writing to symlinked dir.
+	@Test
 	public void testSymlinkDirWrite() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
 		assumeCanCreateSymLinks();
@@ -355,6 +366,7 @@ public class SymlinkTest extends FileSystemTest {
 		assertTrue(exceptionThrown);
 	}
 
+	@Test
 	public void testSymlinkEnabled() {
 		assertTrue(haveSymlinks());
 	}
@@ -390,6 +402,7 @@ public class SymlinkTest extends FileSystemTest {
 		}
 	}
 
+	@Test
 	public void testSymlinkPutLastModified() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
 		assumeCanCreateSymLinks();
@@ -423,6 +436,7 @@ public class SymlinkTest extends FileSystemTest {
 		assertEquals(illDir.getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET), "lDir");
 	}
 
+	@Test
 	public void testSymlinkPutReadOnly() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
 		assumeCanCreateSymLinks();
@@ -458,6 +472,7 @@ public class SymlinkTest extends FileSystemTest {
 		assertEquals(illDir.getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET), "lDir");
 	}
 
+	@Test
 	public void testSymlinkPutExecutable() throws Exception {
 		Assume.assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE));
 
@@ -487,6 +502,7 @@ public class SymlinkTest extends FileSystemTest {
 		assertEquals(illDir.getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET), "lDir");
 	}
 
+	@Test
 	public void testSymlinkPutHidden() throws Exception {
 		Assume.assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_HIDDEN));
 
@@ -522,6 +538,7 @@ public class SymlinkTest extends FileSystemTest {
 
 	// Removing a symlink keeps the link target intact.
 	// Symlinks being broken due to remove are set to non-existent.
+	@Test
 	public void testSymlinkRemove() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
 		assumeCanCreateSymLinks();

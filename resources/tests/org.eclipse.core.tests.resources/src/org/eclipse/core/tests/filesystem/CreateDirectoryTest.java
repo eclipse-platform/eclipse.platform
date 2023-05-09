@@ -19,10 +19,14 @@ import org.eclipse.core.filesystem.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Black box testing of mkdir method.
  */
+@RunWith(JUnit4.class)
 public class CreateDirectoryTest extends FileSystemTest {
 	protected IFileStore topDir, subDir, file, subFile;
 
@@ -45,6 +49,7 @@ public class CreateDirectoryTest extends FileSystemTest {
 		ensureDoesNotExist(file);
 	}
 
+	@Test
 	public void testParentExistsDeep() {
 		try {
 			topDir.mkdir(EFS.NONE, getMonitor());
@@ -56,6 +61,7 @@ public class CreateDirectoryTest extends FileSystemTest {
 		assertTrue("1.2", info.isDirectory());
 	}
 
+	@Test
 	public void testParentExistsShallow() {
 		try {
 			topDir.mkdir(EFS.SHALLOW, getMonitor());
@@ -67,6 +73,7 @@ public class CreateDirectoryTest extends FileSystemTest {
 		assertTrue("2.2", info.isDirectory());
 	}
 
+	@Test
 	public void testParentFileDeep() {
 		ensureExists(file, false);
 		try {
@@ -80,6 +87,7 @@ public class CreateDirectoryTest extends FileSystemTest {
 		assertTrue("2.2", !info.isDirectory());
 	}
 
+	@Test
 	public void testParentFileShallow() {
 		ensureExists(file, false);
 		try {
@@ -93,6 +101,7 @@ public class CreateDirectoryTest extends FileSystemTest {
 		assertTrue("2.2", !info.isDirectory());
 	}
 
+	@Test
 	public void testParentNotExistsDeep() {
 		try {
 			subDir.mkdir(EFS.NONE, getMonitor());
@@ -107,6 +116,7 @@ public class CreateDirectoryTest extends FileSystemTest {
 		assertTrue("1.4", info.isDirectory());
 	}
 
+	@Test
 	public void testParentNotExistsShallow() {
 		try {
 			subDir.mkdir(EFS.SHALLOW, getMonitor());
@@ -122,6 +132,7 @@ public class CreateDirectoryTest extends FileSystemTest {
 		assertTrue("1.4", !info.isDirectory());
 	}
 
+	@Test
 	public void testParentNotExistsShallowInLocalFile() {
 		try {
 			IFileStore localFileTopDir = localFileBaseStore.getChild("topDir");
@@ -133,6 +144,7 @@ public class CreateDirectoryTest extends FileSystemTest {
 		}
 	}
 
+	@Test
 	public void testTargetIsFileInLocalFile() {
 		try {
 			ensureExists(localFileBaseStore, true);
@@ -146,6 +158,7 @@ public class CreateDirectoryTest extends FileSystemTest {
 		}
 	}
 
+	@Test
 	public void testParentDeviceNotExistsInLocalFile() {
 		Assume.assumeTrue(Platform.getOS().equals(Platform.OS_WIN32));
 

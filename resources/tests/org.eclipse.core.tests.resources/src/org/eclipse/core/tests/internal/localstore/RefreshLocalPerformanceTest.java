@@ -20,8 +20,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-//
+@RunWith(JUnit4.class)
 public class RefreshLocalPerformanceTest extends ResourceTest {
 	/** big site default volume (windows) */
 	public static final String bigSiteDevice = "d:";
@@ -72,6 +75,7 @@ public class RefreshLocalPerformanceTest extends ResourceTest {
 	/**
 	 * Defines only a default mapping to a project and refreshes locally.
 	 */
+	@Test
 	public void testLocalRefreshPerformance() throws Exception {
 		// test if the test can be done in this machine
 		Assume.assumeTrue(bigSiteLocation.toFile().isDirectory());
