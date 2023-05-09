@@ -17,7 +17,6 @@ import junit.framework.Test;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-import org.junit.Assume;
 
 /**
  * Runs all the snapshot usecase tests as a single session test.
@@ -44,8 +43,9 @@ public class SnapshotTest extends WorkspaceSessionTest {
 	}
 
 	public void test1() {
-		Assume.assumeFalse(skipTest());
-
+		if (skipTest()) {
+			return;
+		}
 		Snapshot1Test test = new Snapshot1Test();
 		test.testCreateMyProject();
 		test.testCreateProject2();
@@ -53,7 +53,9 @@ public class SnapshotTest extends WorkspaceSessionTest {
 	}
 
 	public void test2() {
-		Assume.assumeFalse(skipTest());
+		if (skipTest()) {
+			return;
+		}
 		Snapshot2Test test = new Snapshot2Test();
 		test.testVerifyPreviousSession();
 		test.testChangeMyProject();
@@ -62,14 +64,18 @@ public class SnapshotTest extends WorkspaceSessionTest {
 	}
 
 	public void test3() {
-		Assume.assumeFalse(skipTest());
+		if (skipTest()) {
+			return;
+		}
 		Snapshot3Test test = new Snapshot3Test();
 		test.testVerifyPreviousSession();
 		test.testSaveWorkspace();
 	}
 
 	public void test4() {
-		Assume.assumeFalse(skipTest());
+		if (skipTest()) {
+			return;
+		}
 		Snapshot4Test test = new Snapshot4Test();
 		test.testVerifyPreviousSession();
 		test.testChangeMyProject();
@@ -77,7 +83,9 @@ public class SnapshotTest extends WorkspaceSessionTest {
 	}
 
 	public void test5() {
-		Assume.assumeFalse(skipTest());
+		if (skipTest()) {
+			return;
+		}
 		Snapshot5Test test = new Snapshot5Test();
 		test.testVerifyPreviousSession();
 		test.cleanUp();

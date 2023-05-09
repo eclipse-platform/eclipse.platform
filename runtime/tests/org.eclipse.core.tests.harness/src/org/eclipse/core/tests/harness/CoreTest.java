@@ -279,7 +279,7 @@ public class CoreTest extends TestCase {
 	 *
 	 * @return <code>true</code> if symbolic links can be created by a test
 	 */
-	private boolean canCreateSymLinks() {
+	protected boolean canCreateSymLinks() {
 		if (canCreateSymLinks == null) {
 			if (Platform.getOS().equals(Platform.OS_WIN32)) {
 				// Creation of a symbolic link on Windows requires administrator privileges,

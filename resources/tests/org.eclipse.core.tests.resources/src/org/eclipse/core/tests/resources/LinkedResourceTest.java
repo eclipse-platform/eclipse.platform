@@ -14,20 +14,38 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.LinkDescription;
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.ProjectDescription;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.FileUtil;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourceAttributes;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
-import org.junit.Assume;
 
 /**
  * Tests the following API methods:
@@ -1006,8 +1024,9 @@ public class LinkedResourceTest extends ResourceTest {
 	 */
 	public void testFindFilesForLocationCaseVariant() {
 		//this test only applies to file systems with a device in the path
-		Assume.assumeTrue(isWindows());
-
+		if (!isWindows()) {
+			return;
+		}
 		IFolder link = nonExistingFolderInExistingProject;
 		IPath localLocation = resolve(localFolder);
 		IPath upperCase = localLocation.setDevice(localLocation.getDevice().toUpperCase());
@@ -1438,8 +1457,9 @@ public class LinkedResourceTest extends ResourceTest {
 	 */
 	public void testLocationWithColon() {
 		//windows does not allow a location with colon in the name
-		Assume.assumeFalse(isWindows());
-
+		if (isWindows()) {
+			return;
+		}
 		IFolder folder = nonExistingFolderInExistingProject;
 		try {
 			//Note that on *nix, "c:/temp" is a relative path with two segments
@@ -2053,8 +2073,9 @@ public class LinkedResourceTest extends ResourceTest {
 
 	public void testLinkedFolderWithSymlink_Bug338010() {
 		// Only activate this test if testing of symbolic links is possible.
-		assumeCanCreateSymLinks();
-
+		if (!canCreateSymLinks()) {
+			return;
+		}
 		IPath baseLocation = getRandomLocation();
 		IPath resolvedBaseLocation = resolve(baseLocation);
 		deleteOnTearDown(resolvedBaseLocation);
@@ -2082,8 +2103,9 @@ public class LinkedResourceTest extends ResourceTest {
 	 */
 	public void testDeleteLinkTarget_Bug507084() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
-		assumeCanCreateSymLinks();
-
+		if (!canCreateSymLinks()) {
+			return;
+		}
 		IPath baseLocation = getRandomLocation();
 		IPath resolvedBaseLocation = resolve(baseLocation);
 		deleteOnTearDown(resolvedBaseLocation);

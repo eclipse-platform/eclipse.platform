@@ -23,7 +23,6 @@ import org.eclipse.core.internal.resources.TestingSupport;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
-import org.junit.Assume;
 import org.osgi.framework.*;
 
 public class IWorkspaceTest extends ResourceTest {
@@ -777,8 +776,9 @@ public class IWorkspaceTest extends ResourceTest {
 	public void testValidateEdit() {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		Assume.assumeTrue(isReadOnlySupported());
-
+		if (!isReadOnlySupported()) {
+			return;
+		}
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile file = project.getFile("myfile.txt");
 		ensureExistsInWorkspace(new IResource[] {project, file}, true);
