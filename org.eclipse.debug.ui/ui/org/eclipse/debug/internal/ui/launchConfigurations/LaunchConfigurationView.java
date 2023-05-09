@@ -440,7 +440,7 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 		if (getViewer() instanceof StructuredViewer) {
 			((StructuredViewer)getViewer()).addDoubleClickListener(this);
 		}
-		fFilteredNotice = SWTFactory.createLabel(parent, IInternalDebugCoreConstants.EMPTY_STRING, 1);
+		fFilteredNotice = SWTFactory.createLabel(parent, IInternalDebugCoreConstants.EMPTY_STRING, 1, true);
 		fFilteredNotice.setBackground(parent.getBackground());
 	}
 
