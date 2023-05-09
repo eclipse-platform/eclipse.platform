@@ -237,15 +237,11 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 					if (category != null && !categories.contains(category)) {
 						categories.add(category);
 					}
+					populateMenuItem(mode, ext, menu, null, accelerator++, null);
 					ILaunchConfiguration[] configurations = ext.getLaunchConfigurations(ss);
-					if (configurations == null || configurations.length == 0) {
-						populateMenuItem(mode, ext, menu, null, accelerator++);
-					} else if (configurations.length > 0) {
-						// first with mnemonic accelerator
-						populateMenuItem(mode, ext, menu, configurations[0], accelerator++);
-						// next ones without mnemonic accelerator
-						for (int i = 1; i < configurations.length; i++) {
-							populateMenuItem(mode, ext, menu, configurations[i], -1);
+					if (configurations != null) {
+						for (ILaunchConfiguration configuration : configurations) {
+							populateMenuItem(mode, ext, menu, configuration, accelerator++, "   "); //$NON-NLS-1$
 						}
 					}
 				}
@@ -302,10 +298,11 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 	 * @param ext           the extension to get label and help info from
 	 * @param menu          the menu to add to
 	 * @param configuration
-	 * @param accelerator   the accelerator to use with the new menu item
+	 * @param accelerator   the accelerator to use with the new menu item, <code>-1</code> to skip
+	 * @param indent an optional string to add as indentation before the label
 	 */
 	private void populateMenuItem(String mode, LaunchShortcutExtension ext, Menu menu,
-			ILaunchConfiguration configuration, int accelerator) {
+			ILaunchConfiguration configuration, int accelerator, String indent) {
 		LaunchShortcutAction action;
 		StringBuilder label = new StringBuilder();
 		if (accelerator >= 0 && accelerator < 10) {
@@ -313,6 +310,9 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 			label.append('&');
 			label.append(accelerator);
 			label.append(' ');
+		}
+		if (indent != null) {
+			label.append(indent);
 		}
 		if (configuration != null) {
 			action = new LaunchShortcutAction(mode, ext, configuration);
