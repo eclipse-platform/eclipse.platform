@@ -26,7 +26,7 @@ public final class Tags {
   /**
    * contains all tags for which whitespaces have to be inserted for proper tokenization
    */
-  public static final Set<String> WS_ELEMS = Collections.synchronizedSet(new HashSet<String>());
+  public static final Set<String> WS_ELEMS = Collections.synchronizedSet(new HashSet<>());
 
   static{
     WS_ELEMS.add("<hr"); //$NON-NLS-1$

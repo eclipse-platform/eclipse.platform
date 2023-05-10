@@ -27,7 +27,7 @@ public class SearchQuery implements ISearchQuery {
 	String locale;
 	String searchWord;
 	public SearchQuery() {
-		this("", false, new ArrayList<String>(), Platform.getNL()); //$NON-NLS-1$
+		this("", false, new ArrayList<>(), Platform.getNL()); //$NON-NLS-1$
 	}
 	public SearchQuery(String searchWord, boolean fieldSearch,
 			Collection<String> fieldNames, String locale) {
