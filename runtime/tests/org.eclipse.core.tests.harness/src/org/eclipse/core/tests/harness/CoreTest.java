@@ -34,7 +34,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.junit.After;
 import org.junit.Assume;
+import org.junit.Before;
 
 /**
  * @since 3.1
@@ -56,6 +58,15 @@ public class CoreTest extends TestCase {
 		}
 	}
 
+	@Before
+	public void before() throws Exception {
+		setUp();
+	}
+
+	@After
+	public void after() throws Exception {
+		tearDown();
+	}
 	/**
 	 * Fails the test due to the given throwable.
 	 */
