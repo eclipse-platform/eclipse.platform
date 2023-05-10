@@ -33,7 +33,7 @@ public class EclipseContextOSGi extends EclipseContext implements ServiceListene
 
 	final private BundleContext bundleContext;
 
-	private Map<String, ServiceReference<?>> refs = Collections.synchronizedMap(new HashMap<String, ServiceReference<?>>());
+	private Map<String, ServiceReference<?>> refs = Collections.synchronizedMap(new HashMap<>());
 
 	public EclipseContextOSGi(BundleContext bundleContext) {
 		super(null);

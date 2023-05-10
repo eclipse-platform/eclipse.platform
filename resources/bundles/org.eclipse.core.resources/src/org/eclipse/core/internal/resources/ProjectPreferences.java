@@ -49,7 +49,7 @@ public class ProjectPreferences extends EclipsePreferences {
 	/**
 	 * Cache which nodes have been loaded from disk
 	 */
-	protected static Set<String> loadedNodes = Collections.synchronizedSet(new HashSet<String>());
+	protected static Set<String> loadedNodes = Collections.synchronizedSet(new HashSet<>());
 	private IFile file;
 	private boolean initialized = false;
 	/**

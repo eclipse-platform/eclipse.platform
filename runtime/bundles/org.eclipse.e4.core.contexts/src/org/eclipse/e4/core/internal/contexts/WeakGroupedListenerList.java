@@ -35,7 +35,7 @@ public class WeakGroupedListenerList {
 	public synchronized void add(String groupName, Computation computation) {
 		Objects.requireNonNull(computation);
 		listeners.computeIfAbsent(groupName,
-						k -> Collections.newSetFromMap(new WeakHashMap<Computation, Boolean>()))
+						k -> Collections.newSetFromMap(new WeakHashMap<>()))
 				.add(computation);
 	}
 

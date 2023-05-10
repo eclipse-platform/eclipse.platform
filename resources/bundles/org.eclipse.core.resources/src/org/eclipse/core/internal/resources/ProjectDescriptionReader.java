@@ -885,7 +885,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			// popped off the stack, massaged into the right format
 			// and added to the project description when we hit the
 			// end element for PROJECTS.
-			objectStack.push(new ArrayList<String>());
+			objectStack.push(new ArrayList<>());
 			return;
 		}
 		if (elementName.equals(BUILD_SPEC)) {
@@ -894,30 +894,30 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			// for this build spec.  This array list will be popped off the stack,
 			// massaged into the right format and added to the project's build
 			// spec when we hit the end element for BUILD_SPEC.
-			objectStack.push(new ArrayList<ICommand>());
+			objectStack.push(new ArrayList<>());
 			return;
 		}
 		if (elementName.equals(NATURES)) {
 			state = S_NATURES;
 			// Push an array list to hold all the nature names.
-			objectStack.push(new ArrayList<String>());
+			objectStack.push(new ArrayList<>());
 			return;
 		}
 		if (elementName.equals(LINKED_RESOURCES)) {
 			// Push a HashMap to collect all the links.
-			objectStack.push(new HashMap<IPath, LinkDescription>());
+			objectStack.push(new HashMap<>());
 			state = S_LINKED_RESOURCES;
 			return;
 		}
 		if (elementName.equals(FILTERED_RESOURCES)) {
 			// Push a HashMap to collect all the filters.
-			objectStack.push(new HashMap<IPath, LinkedList<FilterDescription>>());
+			objectStack.push(new HashMap<>());
 			state = S_FILTERED_RESOURCES;
 			return;
 		}
 		if (elementName.equals(VARIABLE_LIST)) {
 			// Push a HashMap to collect all the variables.
-			objectStack.push(new HashMap<String, VariableDescription>());
+			objectStack.push(new HashMap<>());
 			state = S_VARIABLE_LIST;
 			return;
 		}
@@ -1015,7 +1015,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 					state = S_BUILD_COMMAND_ARGUMENTS;
 					// Push a HashMap to hold all the key/value pairs which
 					// will become the argument list.
-					objectStack.push(new HashMap<String, String>());
+					objectStack.push(new HashMap<>());
 				}
 				break;
 			case S_BUILD_COMMAND_ARGUMENTS :
@@ -1091,7 +1091,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 					state = S_MATCHER_ID;
 				} else if (elementName.equals(ARGUMENTS)) {
 					state = S_MATCHER_ARGUMENTS;
-					objectStack.push(new ArrayList<FileInfoMatcherDescription>());
+					objectStack.push(new ArrayList<>());
 				}
 				break;
 			case S_MATCHER_ARGUMENTS :

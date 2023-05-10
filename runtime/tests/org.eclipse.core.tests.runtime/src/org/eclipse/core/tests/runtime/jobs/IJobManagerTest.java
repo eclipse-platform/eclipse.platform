@@ -30,7 +30,7 @@ import org.eclipse.core.tests.harness.*;
 @SuppressWarnings("restriction")
 public class IJobManagerTest extends AbstractJobManagerTest {
 	class TestJobListener extends JobChangeAdapter {
-		private Set<Job> scheduled = Collections.synchronizedSet(new HashSet<Job>());
+		private Set<Job> scheduled = Collections.synchronizedSet(new HashSet<>());
 
 		public void cancelAllJobs() {
 			Job[] jobs = scheduled.toArray(new Job[0]);
