@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ImageDescriptorRegistry {
 
-	private Map<ImageDescriptor, Image> fRegistry = Collections.synchronizedMap(new HashMap<ImageDescriptor, Image>(10));
+	private Map<ImageDescriptor, Image> fRegistry = Collections.synchronizedMap(new HashMap<>(10));
 	private Display fDisplay;
 
 	/**
