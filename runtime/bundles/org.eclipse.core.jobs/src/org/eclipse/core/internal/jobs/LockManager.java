@@ -49,19 +49,16 @@ public class LockManager {
 		/**
 		 * Re-acquires a suspended lock and reverts to the correct lock depth.
 		 */
-		public void resume() {
-			//spin until the lock is successfully acquired
-			//NOTE: spinning here allows the UI thread to service pending syncExecs
-			//if the UI thread is waiting to acquire a lock.
-			while (true) {
-				try {
-					if (lock.acquire(Long.MAX_VALUE))
-						break;
-				} catch (InterruptedException e) {
-					//ignore and loop
+		public boolean resume() {
+			try {
+				if (lock.acquire(Integer.MAX_VALUE, false)) {
+					lock.setDepth(depth);
+					return true;
 				}
+			} catch (InterruptedException e) {
+				// ignore and retry
 			}
-			lock.setDepth(depth);
+			return false;
 		}
 	}
 
@@ -303,17 +300,26 @@ public class LockManager {
 	 * Resumes all the locks that were suspended while this thread was waiting to acquire another lock.
 	 */
 	void resumeSuspendedLocks(Thread owner) {
-		LockState[] toResume;
-		synchronized (suspendedLocks) {
-			Deque<LockState[]> prevLocks = suspendedLocks.get(owner);
-			if (prevLocks == null)
-				return;
-			toResume = prevLocks.pop();
-			if (prevLocks.isEmpty())
-				suspendedLocks.remove(owner);
+		// spin until the locks are successfully acquired
+		// NOTE: spinning here allows the UI thread to service pending syncExecs
+		// if the UI thread is waiting to acquire a lock.
+		while (true) {
+			LockState[] toResume;
+			synchronized (suspendedLocks) {
+				Deque<LockState[]> prevLocks = suspendedLocks.get(owner);
+				if (prevLocks == null)
+					return;
+				toResume = prevLocks.pop();
+				if (prevLocks.isEmpty())
+					suspendedLocks.remove(owner);
+			}
+			for (LockState element : toResume) {
+				if (!element.resume()) {
+					// Try again if acquiring a lock failed
+					continue;
+				}
+			}
 		}
-		for (LockState element : toResume)
-			element.resume();
 	}
 
 	public void setLockListener(LockListener listener) {

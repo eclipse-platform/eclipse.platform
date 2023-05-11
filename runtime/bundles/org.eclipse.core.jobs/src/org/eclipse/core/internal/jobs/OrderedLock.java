@@ -97,6 +97,21 @@ public class OrderedLock implements ILock, ISchedulingRule {
 
 	@Override
 	public boolean acquire(long delay) throws InterruptedException {
+		return acquire(delay, true);
+	}
+
+	/**
+	 * Acquires a lock as defined by {@link #acquire(long)} but only resumes
+	 * suspended locks if {@code resumeSuspendedLocks} is {@code true}.
+	 *
+	 * @param delay                the number of milliseconds to delay
+	 * @param resumeSuspendedLocks whether locks that were suspended because a lock
+	 *                             could not be acquired shall be re-acquired or not
+	 * @return {@code true} if the lock was successfully acquired, and {@code false}
+	 *         otherwise.
+	 * @exception InterruptedException if the thread was interrupted
+	 */
+	boolean acquire(long delay, boolean resumeSuspendedLocks) throws InterruptedException {
 		if (Thread.interrupted())
 			throw new InterruptedException();
 
@@ -108,7 +123,9 @@ public class OrderedLock implements ILock, ISchedulingRule {
 		if (DEBUG)
 			System.out.println("[" + Thread.currentThread() + "] Operation waiting to be executed... " + this); //$NON-NLS-1$ //$NON-NLS-2$
 		boolean success = doAcquire(semaphore, delay);
-		manager.resumeSuspendedLocks(Thread.currentThread());
+		if (resumeSuspendedLocks) {
+			manager.resumeSuspendedLocks(Thread.currentThread());
+		}
 		if (DEBUG)
 			System.out.println("[" + Thread.currentThread() + //$NON-NLS-1$
 					(success ? "] Operation started... " : "] Operation timed out... ") + this); //$NON-NLS-1$ //$NON-NLS-2$ //}

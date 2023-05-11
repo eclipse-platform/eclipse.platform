@@ -14,28 +14,28 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeFalse;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
-import org.eclipse.core.internal.jobs.*;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.internal.jobs.DeadlockDetector;
+import org.eclipse.core.internal.jobs.LockManager;
+import org.eclipse.core.internal.jobs.OrderedLock;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.LockListener;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.runtime.jobs.LockAcquiringRunnable.RandomOrder;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
  * Tests implementation of ILock objects
  */
-@RunWith(JUnit4.class)
 @SuppressWarnings("restriction")
 public class OrderedLockTest {
 	@Rule
@@ -52,9 +52,6 @@ public class OrderedLockTest {
 
 	@Test
 	public void testComplex() {
-		// FIXME Disabled on Windows due to #477; must be re-enabled when merging fix
-		// for the issue
-		assumeFalse(Platform.getOS().equals(Platform.OS_WIN32));
 		DeadlockDetector.runSilent(() -> {
 			ArrayList<LockAcquiringRunnable> allRunnables = new ArrayList<>();
 			LockManager manager = new LockManager();
@@ -65,6 +62,36 @@ public class OrderedLockTest {
 			createRunnables(new ILock[] { lock3, lock2, lock1 }, 5, allRunnables);
 			createRunnables(new ILock[] { lock1, lock3, lock2 }, 5, allRunnables);
 			createRunnables(new ILock[] { lock2, lock3, lock1 }, 5, allRunnables);
+			execute(allRunnables);
+			// the underlying array has to be empty
+			assertTrue("Locks not removed from graph.", manager.isEmpty());
+		});
+	}
+
+	@Test
+	public void testManyLocksAndThreads() {
+		int numberOfLocks = 10;
+		int numberOfThreads = 10;
+		DeadlockDetector.runSilent(() -> {
+			ArrayList<LockAcquiringRunnable> allRunnables = new ArrayList<>();
+			LockManager manager = new LockManager();
+			manager.setLockListener(new LockListener() {
+				@Override
+				public boolean aboutToWait(Thread lockOwner) {
+					// Yield upon waiting for a lock to give other threads the chance for
+					// conflicting lock acquisitions
+					Thread.yield();
+					return false;
+				}
+			});
+			List<OrderedLock> locks = new ArrayList<>();
+			for (int i = 0; i < numberOfLocks; i++) {
+				locks.add(manager.newLock());
+			}
+			for (int i = 0; i < numberOfThreads / 5; i++) {
+				Collections.shuffle(locks);
+				createRunnables(locks.toArray(OrderedLock[]::new), 5, allRunnables);
+			}
 			execute(allRunnables);
 			// the underlying array has to be empty
 			assertTrue("Locks not removed from graph.", manager.isEmpty());
