@@ -1025,23 +1025,19 @@ public class JobTest extends AbstractJobTest {
 				job.cancel();
 			}
 		});
-		try {
-			Job.getJobManager().setLockListener(new LockListener() {
-				@Override
-				public boolean canBlock() {
-					// pretend to be the UI thread
-					return false;
-				}
-			});
-			t.start();
-			// make sure the job is running before we interrupt the thread
-			waitForState(job, Job.RUNNING);
-			t.interrupt();
-			job.join();
-			assertEquals("Thread interrupted", Status.OK_STATUS, job.getResult());
-		} finally {
-			Job.getJobManager().setLockListener(null);
-		}
+		Job.getJobManager().setLockListener(new LockListener() {
+			@Override
+			public boolean canBlock() {
+				// pretend to be the UI thread
+				return false;
+			}
+		});
+		t.start();
+		// make sure the job is running before we interrupt the thread
+		waitForState(job, Job.RUNNING);
+		t.interrupt();
+		job.join();
+		assertEquals("Thread interrupted", Status.OK_STATUS, job.getResult());
 	}
 
 	/**
@@ -1053,13 +1049,11 @@ public class JobTest extends AbstractJobTest {
 		TestJob longRunningTestJob = new TestJob("testJoinLockListener", 100000, 10);
 		longRunningTestJob.schedule();
 		TestLockListener lockListener = new TestLockListener(() -> longRunningTestJob.terminate());
+		Job.getJobManager().setLockListener(lockListener);
 		try {
-			Job.getJobManager().setLockListener(lockListener);
 			longRunningTestJob.join();
 		} catch (OperationCanceledException | InterruptedException e) {
 			fail("Exception occurred when joining job", e);
-		} finally {
-			Job.getJobManager().setLockListener(null);
 		}
 		lockListener.assertHasBeenWaiting("JobManager has not been waiting for lock");
 		lockListener.assertNotWaiting("JobManager has not finished waiting for lock");
