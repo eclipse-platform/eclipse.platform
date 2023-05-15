@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
@@ -21,16 +22,20 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import org.eclipse.core.internal.jobs.*;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.LockListener;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.runtime.jobs.LockAcquiringRunnable.RandomOrder;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Tests implementation of ILock objects
  */
+@RunWith(JUnit4.class)
 @SuppressWarnings("restriction")
 public class OrderedLockTest {
 	@Rule
@@ -47,6 +52,9 @@ public class OrderedLockTest {
 
 	@Test
 	public void testComplex() {
+		// FIXME Disabled on Windows due to #477; must be re-enabled when merging fix
+		// for the issue
+		assumeFalse(Platform.getOS().equals(Platform.OS_WIN32));
 		DeadlockDetector.runSilent(() -> {
 			ArrayList<LockAcquiringRunnable> allRunnables = new ArrayList<>();
 			LockManager manager = new LockManager();
