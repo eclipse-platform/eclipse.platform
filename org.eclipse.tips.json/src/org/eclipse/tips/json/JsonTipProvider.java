@@ -41,6 +41,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 
 /**
  * A special TipProvider that gets instantiated from a JSon file.
@@ -110,7 +111,9 @@ public abstract class JsonTipProvider extends TipProvider {
 		// Json MUST be encoded as UTF-8, unless in a closed system.
 		try (InputStream stream = fJsonUrl.openStream();
 				InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
-			Object result = JsonParser.parseReader(reader);
+			JsonReader jreader = new JsonReader(reader);
+			jreader.setLenient(true);
+			Object result = JsonParser.parseReader(jreader);
 			if (result instanceof JsonObject) {
 				return (JsonObject) result;
 			} else {
