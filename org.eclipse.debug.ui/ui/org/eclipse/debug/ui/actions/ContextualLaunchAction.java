@@ -201,8 +201,10 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 		}
 		List<Object> selection = ss.toList();
 		Object o = ss.getFirstElement();
-		if(o instanceof IEditorPart) {
-			selection.set(0, ((IEditorPart)o).getEditorInput());
+		IEditorPart editor = null;
+		if(o instanceof IEditorPart editorPart) {
+			editor = editorPart;
+			selection.set(0, editorPart.getEditorInput());
 		}
 		IEvaluationContext context = DebugUIPlugin.createEvaluationContext(selection);
 		context.setAllowPluginActivation(true);
@@ -238,7 +240,9 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 						categories.add(category);
 					}
 					populateMenuItem(mode, ext, menu, null, accelerator++, null);
-					ILaunchConfiguration[] configurations = ext.getLaunchConfigurations(ss);
+					ILaunchConfiguration[] configurations = editor != null ?
+						ext.getLaunchConfigurations(editor) :
+						ext.getLaunchConfigurations(ss);
 					if (configurations != null) {
 						for (ILaunchConfiguration configuration : configurations) {
 							populateMenuItem(mode, ext, menu, configuration, accelerator++, "   "); //$NON-NLS-1$
