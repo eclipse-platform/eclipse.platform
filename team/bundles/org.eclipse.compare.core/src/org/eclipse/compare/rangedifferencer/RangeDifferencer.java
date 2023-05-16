@@ -113,12 +113,12 @@ public final class RangeDifferencer {
 	 * of all those possibilities should lead to better results if the input is for
 	 * instance structured text (with different indentation levels).
 	 *
-	 * @param diff    if not <code>null</code> used to report progress
+	 * @param diff    longest-common-subsequence-based range differences
 	 * @param factory factory to instantiate new {@link RangeDifference}s
 	 * @param left    the left range comparator
 	 * @param right   the right range comparator
-	 * @return an array of range differences, or an empty array if no differences
-	 *         were found
+	 * @return an array of balanced range differences, or an empty array if no
+	 *         differences were found
 	 */
 	private static RangeDifference[] balanceDifferences(RangeDifference[] diffs, AbstractRangeDifferenceFactory factory, IRangeComparator left,
 			IRangeComparator right) {
@@ -152,6 +152,7 @@ public final class RangeDifferencer {
 					optimized = factory.createRangeDifference(diff.kind(), diff.rightStart - moved, diff.rightLength, diff.leftStart - moved, diff.leftLength);
 				}
 			}
+			previousEnd = Math.max(optimized.rightEnd(), optimized.leftEnd());
 			result.add(optimized);
 		}
 		return result.toArray(new RangeDifference[0]);
