@@ -21,11 +21,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -48,6 +48,8 @@ public class LinkTest {
 		IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench().getHelpSystem();
 		ISearchQuery query = new SearchQuery("*", false, Collections.emptyList(), Platform.getNL());
 		final Set<URI> indexedPagesURIs = new HashSet<>();
+
+		Set<Exception> hrefErrors = Collections.synchronizedSet(new LinkedHashSet<>());
 		ISearchHitCollector collector = new ISearchHitCollector() {
 			@Override
 			public void addQTCException(QueryTooComplexException exception) throws QueryTooComplexException {
@@ -59,14 +61,21 @@ public class LinkTest {
 				hits.stream().map(SearchHit::getHref).map(href -> {
 					try {
 						return helpSystem.resolve(href, false).toURI();
-					} catch (URISyntaxException e) {
-						e.printStackTrace();
+					} catch (Exception e) {
+						hrefErrors
+								.add(new IllegalStateException("Error resolving '" + href + "': " + e.getMessage(), e));
 						return null;
 					}
-				}).sorted().peek(System.err::println).forEach(indexedPagesURIs::add);
+				}).filter(Objects::nonNull).sorted().peek(System.err::println).forEach(indexedPagesURIs::add);
 			}
 		};
 		BaseHelpSystem.getSearchManager().search(query, collector, new NullProgressMonitor());
+
+		if (!hrefErrors.isEmpty()) {
+			Exception first = hrefErrors.iterator().next();
+			throw new AssertionError(first.getMessage(), first);
+		}
+
 		Set<String> linkFailures = Collections.synchronizedSet(new TreeSet<>());
 		Set<Exception> ex = Collections.synchronizedSet(new LinkedHashSet<>());
 		Set<URI> allKnownPageURIs = new TreeSet<>(indexedPagesURIs);
