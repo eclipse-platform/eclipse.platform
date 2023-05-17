@@ -97,64 +97,7 @@ public final class RangeDifferencer {
 	 * @since org.eclipse.compare.core 3.5
 	 */
 	public static RangeDifference[] findDifferences(AbstractRangeDifferenceFactory factory, IProgressMonitor pm, IRangeComparator left, IRangeComparator right) {
-		return balanceDifferences(RangeComparatorLCS.findDifferences(factory, pm, left, right), factory, left, right);
-	}
-
-	/**
-	 * Balance differences. The LCS computation tries to produce identical parts in
-	 * the comparison as large as possible. That is not necessarily what humans
-	 * expect.
-	 * <p>
-	 * Imagine the ranges ...ABCDABEF... where LCS has led to marking CDAB as
-	 * difference (because it tries to maximize the sequence before that change).
-	 * E.g. AB[CDAB]EF is the marked change. If the other side is an _empty_ change,
-	 * then humans typically prefer BCDA as change, e.g. A[BCDA]BEF. In fact,
-	 * anything from [ABCD]ABEF to AB[CDAB]EF is possible, and choosing the median
-	 * of all those possibilities should lead to better results if the input is for
-	 * instance structured text (with different indentation levels).
-	 *
-	 * @param diff    if not <code>null</code> used to report progress
-	 * @param factory factory to instantiate new {@link RangeDifference}s
-	 * @param left    the left range comparator
-	 * @param right   the right range comparator
-	 * @return an array of range differences, or an empty array if no differences
-	 *         were found
-	 */
-	private static RangeDifference[] balanceDifferences(RangeDifference[] diffs, AbstractRangeDifferenceFactory factory, IRangeComparator left,
-			IRangeComparator right) {
-		ArrayList<RangeDifference> result = new ArrayList<>();
-		int previousEnd = 0;
-		for (RangeDifference diff : diffs) {
-			RangeDifference optimized = diff;
-			if (diff.rightLength() == 0) {
-				int identical = 0;
-				while (identical < diff.leftStart // don't underflow
-						&& identical < diff.leftLength // cannot move more than diff size
-						&& diff.leftStart - identical > previousEnd  // don't overlap with previous change
-						&& left.rangesEqual(diff.leftStart - identical - 1, left, diff.leftStart - identical - 1 + diff.leftLength)) {
-					identical++;
-				}
-				if (identical > 0) {
-					int moved = (identical + 1) /2;
-					optimized = factory.createRangeDifference(diff.kind(), diff.rightStart - moved, diff.rightLength, diff.leftStart - moved, diff.leftLength);
-				}
-			}
-			else if (diff.leftLength() == 0) {
-				int identical = 0;
-				while (identical < diff.rightStart // don't underflow
-						&& identical < diff.rightLength // cannot move more than diff size
-						&& diff.rightStart - identical > previousEnd  // don't overlap with previous change
-						&& right.rangesEqual(diff.rightStart - identical - 1, right, diff.rightStart - identical - 1 + diff.rightLength)) {
-					identical++;
-				}
-				if (identical > 0) {
-					int moved = (identical + 1) /2;
-					optimized = factory.createRangeDifference(diff.kind(), diff.rightStart - moved, diff.rightLength, diff.leftStart - moved, diff.leftLength);
-				}
-			}
-			result.add(optimized);
-		}
-		return result.toArray(new RangeDifference[0]);
+		return RangeComparatorLCS.findDifferences(factory, pm, left, right);
 	}
 
 	/**
