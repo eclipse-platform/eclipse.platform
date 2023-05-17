@@ -3,6 +3,9 @@ on:
   milestone:
     types: [created]
 
+permissions:
+  contents: read
+
 jobs:
   update:
     if: contains(github.event.milestone.description, 'Release')
