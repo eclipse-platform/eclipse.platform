@@ -105,7 +105,7 @@ public class CompareEditor extends EditorPart
 	private Control initializingPage;
 	private Control emptyPage;
 
-	private int state = UNINITIALIZED;
+	private volatile int state = UNINITIALIZED;
 	private HashSet<Saveable> knownSaveables;
 
 	private final EditorCompareContainer fContainer = new EditorCompareContainer();

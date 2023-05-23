@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2012 IBM Corporation and others.
+ * Copyright (c) 2003, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -23,11 +23,11 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  */
 class Deadlock {
 	//all the threads which are involved in the deadlock
-	private Thread[] threads;
+	private final Thread[] threads;
 	//the thread whose locks will be suspended to resolve deadlock
-	private Thread candidate;
+	private final Thread candidate;
 	//the locks that will be suspended
-	private ISchedulingRule[] locks;
+	private final ISchedulingRule[] locks;
 
 	public Deadlock(Thread[] threads, ISchedulingRule[] locks, Thread candidate) {
 		this.threads = threads;
