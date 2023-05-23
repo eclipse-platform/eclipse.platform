@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2012 IBM Corporation and others.
+ * Copyright (c) 2003, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -31,7 +31,7 @@ import java.util.Arrays;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class MultiRule implements ISchedulingRule {
-	private ISchedulingRule[] rules;
+	private final ISchedulingRule[] rules;
 
 	/**
 	 * Returns a scheduling rule that encompasses all provided rules.  The resulting
@@ -78,12 +78,7 @@ public class MultiRule implements ISchedulingRule {
 			return rule1;
 		if (rule2.contains(rule1))
 			return rule2;
-		MultiRule result = new MultiRule();
-		result.rules = new ISchedulingRule[] {rule1, rule2};
-		//make sure we don't end up with nested multi-rules
-		if (rule1 instanceof MultiRule || rule2 instanceof MultiRule)
-			result.rules = flatten(result.rules);
-		return result;
+		return new MultiRule(rule1, rule2 );
 	}
 
 	/*
@@ -108,16 +103,8 @@ public class MultiRule implements ISchedulingRule {
 	 *
 	 * @param nestedRules the nested rules for this compound rule.
 	 */
-	public MultiRule(ISchedulingRule[] nestedRules) {
+	public MultiRule(ISchedulingRule ... nestedRules) {
 		this.rules = flatten(nestedRules);
-	}
-
-	/**
-	 * Creates a new scheduling rule with no nested rules. For
-	 * internal use only.
-	 */
-	private MultiRule() {
-		//to be invoked only by factory methods
 	}
 
 	/**
