@@ -385,7 +385,7 @@ public abstract class LaunchConfigurationDelegate implements ILaunchConfiguratio
 			if (severity != null) {
 				return severity.intValue() >= IMarker.SEVERITY_ERROR;
 			}
-		} catch (IllegalStateException e) {
+		} catch (CoreException e) {
 			// Ignore if the marker no longer exists, see:
 			// https://github.com/eclipse-platform/eclipse.platform.debug/issues/136
 			if (problemMarker.exists()) {
