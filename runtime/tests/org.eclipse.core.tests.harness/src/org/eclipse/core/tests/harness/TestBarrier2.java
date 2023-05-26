@@ -144,13 +144,17 @@ public class TestBarrier2 {
 		}
 	}
 
+	/**
+	 * Blocks the current thread until the first variable is set to the given value.
+	 * Times out after a predefined period of 10sec to avoid hanging tests
+	 */
 	public static void waitForStatus(AtomicIntegerArray location, int status) {
-		doWaitForStatus(location, 0, status, 1000);
+		doWaitForStatus(location, 0, status, 10000);
 	}
 
 	/**
-	 * Blocks the current thread until the given variable is set to the given
-	 * value Times out after a predefined period to avoid hanging tests
+	 * Blocks the current thread until the given variable is set to the given value.
+	 * Times out after a predefined period of 10sec to avoid hanging tests
 	 */
 	public static void waitForStatus(AtomicIntegerArray location, int index, int status) {
 		doWaitForStatus(location, index, status, 10000);
