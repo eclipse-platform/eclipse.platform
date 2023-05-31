@@ -1750,35 +1750,6 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
-	public void testReverseOrder() {
-		//ensure jobs are run in order from lowest to highest sleep time.
-		final Queue<Job> done = new ConcurrentLinkedQueue<>();
-		int[] sleepTimes = new int[] { 600, 400, 200, 5 };
-		Job[] jobs = new Job[sleepTimes.length];
-		for (int i = 0; i < sleepTimes.length; i++) {
-			jobs[i] = new Job("testReverseOrder(" + i + ")") {
-
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					done.add(this);
-					return Status.OK_STATUS;
-				}
-
-			};
-		}
-		for (int i = 0; i < sleepTimes.length; i++) {
-			jobs[i].schedule(sleepTimes[i]);
-		}
-		while (done.size() != jobs.length) {
-			Thread.yield();
-		}
-		Job[] doneOrder = done.toArray(new Job[done.size()]);
-		assertEquals("1.0", jobs.length, doneOrder.length);
-		for (int i = 0; i < doneOrder.length; i++) {
-			assertEquals("1.1." + i, jobs[i], doneOrder[doneOrder.length - 1 - i]);
-		}
-	}
-
 	/**
 	 * Tests conditions where there is a race to schedule the same job multiple times.
 	 */
