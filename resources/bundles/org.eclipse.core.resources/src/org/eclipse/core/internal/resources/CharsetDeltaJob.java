@@ -216,7 +216,11 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 	 */
 	public void setDisabled(boolean disabled) {
 		// using a thread local because this can be called by multiple threads concurrently
-		this.disabled.set(disabled ? Boolean.TRUE : null);
+		if (disabled) {
+			this.disabled.set(Boolean.TRUE);
+		} else {
+			this.disabled.remove();
+		}
 	}
 
 	public void shutdown() {
