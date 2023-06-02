@@ -585,10 +585,13 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 		final GraphProcessor<IBuildConfiguration> graphProcessor = new GraphProcessor<>(configs, IBuildConfiguration.class, (config, graphCrawler) -> {
 			IBuildContext context = new BuildContext(config, requestedConfigs, graphCrawler.getSequentialOrder()); // TODO consider passing Digraph to BuildConfig?
 			try {
-				workspace.prepareOperation(null, monitor);
-				workspace.beginOperation(false);
-				basicBuild(config, trigger, context, status, Policy.subMonitorFor(monitor, projectWork));
-				workspace.endOperation(null, false);
+				try {
+					workspace.prepareOperation(null, monitor);
+					workspace.beginOperation(false);
+					basicBuild(config, trigger, context, status, Policy.subMonitorFor(monitor, projectWork));
+				} finally {
+					workspace.endOperation(null, false);
+				}
 				builtProjects.add(config.getProject());
 			} catch (CoreException ex) {
 				status.add(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, ex.getMessage(), ex));
