@@ -696,7 +696,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 		if (selection.length() > 0 && !mostRecentList.contains(selection)) {
 			mostRecentList.add(0, selection);
 		}
-		for (int i = 0; i < MOST_RECENT_LENGTH & i < mostRecentList.size(); i++) {
+		for (int i = 0; i < MOST_RECENT_LENGTH && i < mostRecentList.size(); i++) {
 			String name = mostRecentList.get(i);
 			if (name.length() > 0) {
 				settings.put(key + i, name);
