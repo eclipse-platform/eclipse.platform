@@ -13,13 +13,17 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
+import java.util.Set;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.resources.ResourceTest;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ContentDescriptionPerformanceTest extends ResourceTest {
 
 	private final static String DEFAULT_DESCRIPTION_FILE_NAME = "default.xml";
@@ -27,6 +31,7 @@ public class ContentDescriptionPerformanceTest extends ResourceTest {
 	private final static String NON_DEFAULT_DESCRIPTION_FILE_NAME = "specific.xml";
 	private final static int SUBDIRS = 200;
 	private final static int TOTAL_FILES = 5000;
+	private final static Set<String> IGNORED_FILES = Set.of(".project", "org.eclipse.core.resources.prefs");
 	private final static String VALID_XML_CONTENTS = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><some-uncommon-root-element/>";
 	private final static String VALID_XML_CONTENTS_WITH_NON_DEFAULT_ENCODING = "<?xml version=\"1.0\" encoding=\"US-ASCII\"?><some-uncommon-root-element/>";
 
@@ -75,7 +80,7 @@ public class ContentDescriptionPerformanceTest extends ResourceTest {
 			protected void test() {
 				try {
 					project.accept(resource -> {
-						if (resource.getType() == IResource.FILE && !resource.getName().equals(".project")) {
+						if (resource.getType() == IResource.FILE && !IGNORED_FILES.contains(resource.getName())) {
 							assertHasExpectedDescription(resource.getName(), ((IFile) resource).getContentDescription());
 						}
 						return true;
@@ -104,7 +109,7 @@ public class ContentDescriptionPerformanceTest extends ResourceTest {
 		// do not call super.tearDown() because we want to keep the test data accross test cases
 	}
 
-	public void test1CreateWorkspace() throws CoreException {
+	public void test1SetUp() throws CoreException {
 		createFiles();
 	}
 
@@ -116,7 +121,7 @@ public class ContentDescriptionPerformanceTest extends ResourceTest {
 		doTestContentDescription();
 	}
 
-	public void test4CleanUp() throws CoreException {
-		cleanup();
+	public void test4TearDown() throws Exception {
+		super.tearDown();
 	}
 }
