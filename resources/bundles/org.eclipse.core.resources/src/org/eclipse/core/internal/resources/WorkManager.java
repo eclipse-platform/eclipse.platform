@@ -90,7 +90,7 @@ public class WorkManager implements IManager {
 	private int preparedOperations = 0;
 	private Workspace workspace;
 
-	public WorkManager(Workspace workspace) {
+	WorkManager(Workspace workspace) {
 		this.workspace = workspace;
 		this.jobManager = Job.getJobManager();
 		this.lock = jobManager.newLock();
@@ -114,7 +114,7 @@ public class WorkManager implements IManager {
 	 * An operation calls this method and it only returns when the operation is
 	 * free to run.
 	 */
-	public void checkIn(ISchedulingRule rule, IProgressMonitor monitor) throws CoreException {
+	void checkIn(ISchedulingRule rule, IProgressMonitor monitor) throws CoreException {
 		boolean success = false;
 		try {
 			if (workspace.isTreeLocked()) {
@@ -127,8 +127,12 @@ public class WorkManager implements IManager {
 			success = true;
 		} finally {
 			//remember if we failed to check in, so we can avoid check out
-			if (!success)
+			if (!success) {
 				checkInFailed.set(Boolean.TRUE);
+			} else {
+				// should be empty anyway, but do not rely on it:
+				checkInFailed.remove();
+			}
 		}
 	}
 
@@ -140,10 +144,10 @@ public class WorkManager implements IManager {
 	 * calls to this method will indicate no failure (unless a new failure has occurred).
 	 * @return <code>true</code> if the checkIn failed, and <code>false</code> otherwise.
 	 */
-	public boolean checkInFailed(ISchedulingRule rule) {
+	boolean checkInFailed(ISchedulingRule rule) {
 		if (checkInFailed.get() != null) {
 			//clear the failure flag for this thread
-			checkInFailed.set(null);
+			checkInFailed.remove();
 			//must still end the rule even in the case of failure
 			if (!workspace.isTreeLocked())
 				jobManager.endRule(rule);
@@ -155,7 +159,7 @@ public class WorkManager implements IManager {
 	/**
 	 * Inform that an operation has finished.
 	 */
-	public synchronized void checkOut(ISchedulingRule rule) {
+	synchronized void checkOut(ISchedulingRule rule) {
 		decrementPreparedOperations();
 		rebalanceNestedOperations();
 		//reset state if this is the end of a top level operation
@@ -200,7 +204,7 @@ public class WorkManager implements IManager {
 	/**
 	 * Returns the scheduling rule used during resource change notifications.
 	 */
-	public ISchedulingRule getNotifyRule() {
+	ISchedulingRule getNotifyRule() {
 		return notifyRule;
 	}
 
@@ -209,7 +213,7 @@ public class WorkManager implements IManager {
 	 * operation. Should NOT be called from outside a
 	 * prepareOperation/endOperation block.
 	 */
-	public synchronized int getPreparedOperationDepth() {
+	synchronized int getPreparedOperationDepth() {
 		return preparedOperations;
 	}
 
@@ -245,7 +249,7 @@ public class WorkManager implements IManager {
 	 * Returns true if the workspace lock has already been acquired by this
 	 * thread, and false otherwise.
 	 */
-	public boolean isLockAlreadyAcquired() {
+	boolean isLockAlreadyAcquired() {
 		boolean result = false;
 		try {
 			boolean success = lock.acquire(0L);
@@ -266,7 +270,7 @@ public class WorkManager implements IManager {
 	 * operation. Should NOT be called from outside a
 	 * prepareOperation/endOperation block.
 	 */
-	public void operationCanceled() {
+	void operationCanceled() {
 		operationCanceled = true;
 	}
 
@@ -276,7 +280,7 @@ public class WorkManager implements IManager {
 	 * can only be safely called from inside a workspace operation. Should NOT
 	 * be called from outside a prepareOperation/endOperation block.
 	 */
-	public void rebalanceNestedOperations() {
+	void rebalanceNestedOperations() {
 		nestedOperations = preparedOperations;
 	}
 
@@ -284,7 +288,7 @@ public class WorkManager implements IManager {
 	 * Indicates if the operation that has just completed may potentially
 	 * require a build.
 	 */
-	public synchronized void setBuild(boolean hasChanges) {
+	synchronized void setBuild(boolean hasChanges) {
 		if (hasChanges && Policy.DEBUG_BUILD_NEEDED) {
 			Policy.debug("Set build hasChanges: " + hasChanges + " hasBuildChanges: " + hasBuildChanges); //$NON-NLS-1$ //$NON-NLS-2$
 			if (!hasBuildChanges && Policy.DEBUG_BUILD_NEEDED_STACK) {
@@ -299,7 +303,7 @@ public class WorkManager implements IManager {
 	 * This method can only be safely called from inside a workspace operation.
 	 * Should NOT be called from outside a prepareOperation/endOperation block.
 	 */
-	public boolean shouldBuild() {
+	boolean shouldBuild() {
 		if (hasBuildChanges) {
 			if (operationCanceled)
 				return Policy.buildOnCancel;
