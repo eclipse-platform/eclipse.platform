@@ -135,7 +135,7 @@ public abstract class ChangeTracker {
 		final List<IResource> result = new ArrayList<>();
 		try {
 			projectDelta.accept(delta -> {
-				if (isResourceOfInterest(delta.getResource()) & isChangeOfInterest(delta)) {
+				if (isResourceOfInterest(delta.getResource()) && isChangeOfInterest(delta)) {
 					result.add(delta.getResource());
 				}
 				return true;
