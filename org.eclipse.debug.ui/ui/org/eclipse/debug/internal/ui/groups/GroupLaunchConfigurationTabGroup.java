@@ -349,9 +349,6 @@ public class GroupLaunchConfigurationTabGroup extends AbstractLaunchConfiguratio
 					}
 					if (dialog.open() == Window.OK) {
 						ILaunchConfiguration[] confs = dialog.getSelectedLaunchConfigurations();
-						if (confs.length < 0) {
-							return;
-						}
 						assert confs.length == 1 : "invocation of the dialog for editing an entry sholdn't allow OK to be hit if the user chooses multiple launch configs in the dialog"; //$NON-NLS-1$
 						applyFromDialog(el, dialog, confs[0]);
 						treeViewer.refresh(true);
