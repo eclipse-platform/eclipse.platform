@@ -116,9 +116,9 @@ public class DoNothingMainTab extends AbstractLaunchConfigurationTab implements 
 			if (!fButton.isDisposed()) {
 				fButton.getDisplay().syncExec(() -> {
 					boolean sel = fButton.getSelection();
-					if (!sel & modes.containsAll(getModes())) {
+					if (!sel && modes.containsAll(getModes())) {
 						fButton.setSelection(true);
-					} else if (sel & !modes.containsAll(getModes())) {
+					} else if (sel && !modes.containsAll(getModes())) {
 						fButton.setSelection(false);
 					}
 				});

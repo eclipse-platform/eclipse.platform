@@ -57,7 +57,8 @@ public class LaunchConfigurationEditDialog extends LaunchConfigurationDialog {
 	@Override
 	public void updateButtons() {
 		getTabViewer().refresh();
-		getButton(ID_LAUNCH_BUTTON).setEnabled(getTabViewer().canLaunch() & getTabViewer().canLaunchWithModes() & !getTabViewer().hasDuplicateDelegates());
+		getButton(ID_LAUNCH_BUTTON).setEnabled(getTabViewer().canLaunch() && getTabViewer().canLaunchWithModes()
+				&& !getTabViewer().hasDuplicateDelegates());
 	}
 
 	@Override

@@ -573,7 +573,8 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 				IStructuredSelection selection = (IStructuredSelection)fLaunchConfigurationView.getViewer().getSelection();
 				Object target = selection.getFirstElement();
 				if (target instanceof ILaunchConfiguration) {
-					if (fTabViewer.canLaunch() & fTabViewer.canLaunchWithModes() & !fTabViewer.hasDuplicateDelegates()) {
+					if (fTabViewer.canLaunch() && fTabViewer.canLaunchWithModes()
+							&& !fTabViewer.hasDuplicateDelegates()) {
 						setShift(isShift);
 						handleLaunchPressed();
 					}
@@ -1258,7 +1259,7 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 			//is not expanded do a remove...either way for the else we query the list
 			for (TreeItem item : items) {
 				type = ((ILaunchConfigurationType) item.getData()).getIdentifier();
-				if (!list.contains(type) & item.getExpanded()) {
+				if (!list.contains(type) && item.getExpanded()) {
 					list.add(type);
 				} else if (!item.getExpanded()) {
 					list.remove(type);
@@ -1625,7 +1626,8 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 			getUnlinkPrototypeAction().setEnabled(getUnlinkPrototypeAction().isEnabled());
 			getResetWithPrototypeValuesAction().setEnabled(getResetWithPrototypeValuesAction().isEnabled());
 			fTabViewer.refresh();
-			getButton(ID_LAUNCH_BUTTON).setEnabled(fTabViewer.canLaunch() & fTabViewer.canLaunchWithModes() & !fTabViewer.hasDuplicateDelegates());
+			getButton(ID_LAUNCH_BUTTON).setEnabled(
+					fTabViewer.canLaunch() && fTabViewer.canLaunchWithModes() && !fTabViewer.hasDuplicateDelegates());
 		} else {
 			fTabViewer.refresh();
 		}

@@ -123,7 +123,7 @@ public class MidiLaunch extends Launch implements ISuspendResume {
 	@Override
 	public boolean isSuspended() {
 		if (fSequencer != null) {
-			return fSequencer.isOpen() & !fSequencer.isRunning();
+			return fSequencer.isOpen() && !fSequencer.isRunning();
 		}
 		return false;
 	}
