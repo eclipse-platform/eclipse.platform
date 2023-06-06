@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -356,25 +356,15 @@ public class FileSystemOperations {
 			synchronizer.flush(localFile, IResource.DEPTH_ZERO);
 		} else {
 			// Otherwise, upload the contents
-			try {
-				//Copy from the local file to the remote file:
-				InputStream in = null;
-				FileOutputStream out = null;
-				try {
-					if(! diskFile.getParentFile().exists()) {
-						diskFile.getParentFile().mkdirs();
-					}
-					in = localFile.getContents();
-					out = new FileOutputStream(diskFile);
+			try (InputStream in = localFile.getContents()) {
+				if (!diskFile.getParentFile().exists()) {
+					diskFile.getParentFile().mkdirs();
+				}
+				try (FileOutputStream out = new FileOutputStream(diskFile)) {
 					//Copy the contents of the local file to the remote file:
 					StreamUtil.pipe(in, out, diskFile.length(), progress, diskFile.getName());
 					// Mark the file as read-only to require another checkout
 					localFile.setReadOnly(true);
-				} finally {
-					if (in != null)
-						in.close();
-					if (out != null)
-						out.close();
 				}
 				// Update the synchronizer base bytes
 				remote = getResourceVariant(localFile);

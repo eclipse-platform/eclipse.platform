@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2022 IBM Corporation and others.
+ * Copyright (c) 2000, 2023 IBM Corporation and others.
  * Portions Copyright  2000-2005 The Apache Software Foundation
  *
  * This program and the accompanying materials are made
@@ -1288,8 +1288,7 @@ public class InternalAntRunner {
 		for (String filename : propertyFiles) {
 			File file = getFileRelativeToBaseDir(filename);
 			Properties props = new Properties();
-			try {
-				FileInputStream fis = new FileInputStream(file);
+			try (FileInputStream fis = new FileInputStream(file)) {
 				props.load(fis);
 			}
 			catch (IOException e) {
