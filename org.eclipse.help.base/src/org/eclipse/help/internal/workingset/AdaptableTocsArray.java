@@ -89,8 +89,7 @@ public class AdaptableTocsArray implements IAdaptable {
 		}
 
 		AdaptableTocsArray res = (AdaptableTocsArray) object;
-		return (Arrays.equals(asArray(), res.asArray()));
-
+		return Arrays.equals(asArray(), res.asArray());
 	}
 
 	/**
@@ -102,7 +101,7 @@ public class AdaptableTocsArray implements IAdaptable {
 	public int hashCode() {
 		if (element == null)
 			return -1;
-		return element.hashCode();
+		return Arrays.hashCode(element);
 	}
 }
 
