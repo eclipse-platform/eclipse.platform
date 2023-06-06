@@ -131,8 +131,7 @@ public class PessimisticFilesystemProviderPlugin extends AbstractUIPlugin {
 	public void fireResourcesChanged(IResource[] resources) {
 		if (resources == null || resources.length == 0 || fListeners.isEmpty())
 			return;
-		for (Object element : fListeners) {
-			IResourceStateListener listener= (IResourceStateListener) element;
+		for (IResourceStateListener listener : fListeners) {
 			listener.stateChanged(resources);
 		}
 	}

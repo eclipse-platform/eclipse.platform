@@ -172,8 +172,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 				}
 			}
 		}
-		for (Object element : resourcesToShow) {
-			IResource resource = (IResource) element;
+		for (IResource resource : resourcesToShow) {
 			result.add(createModelObject(parent, resource));
 		}
 

@@ -110,8 +110,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 	@Override
 	public void dispose() {
 		if (createdImages != null) {
-			for (Object element : createdImages) {
-				Image image = (Image) element;
+			for (Image image : createdImages) {
 				image.dispose();
 			}
 		}

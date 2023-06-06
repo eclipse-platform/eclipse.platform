@@ -192,8 +192,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	public void dispose() {
 		super.dispose();
 		if (openWithActions != null) openWithActions.dispose();
-		for (Object element : handlers.values()) {
-			IHandler handler = (IHandler) element;
+		for (IHandler handler : handlers.values()) {
 			if (handler instanceof MergeActionHandler) {
 				MergeActionHandler mah = (MergeActionHandler) handler;
 				mah.dispose();

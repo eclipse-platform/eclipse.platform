@@ -108,9 +108,9 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 		//iterate over the path and find matching child delta
 		ResourceDelta current = this;
 		segments: for (int i = 0; i < segmentCount; i++) {
-			for (IResourceDelta element : current.children) {
+			for (ResourceDelta element : current.children) {
 				if (element.getFullPath().lastSegment().equals(path.segment(i))) {
-					current = (ResourceDelta) element;
+					current = element;
 					continue segments;
 				}
 			}

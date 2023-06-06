@@ -193,8 +193,8 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 		for (SyncInfo info : infos) {
 			set.add(info.getLocal().getProject());
 		}
-		for (Object element : set) {
-			addResource((IResource)element);
+		for (IProject element : set) {
+			addResource(element);
 		}
 	}
 

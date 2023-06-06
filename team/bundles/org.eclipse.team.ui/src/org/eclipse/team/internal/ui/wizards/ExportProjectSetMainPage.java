@@ -255,8 +255,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 
 		// filter out unexportable projects
 		List passedInExportableProjects = new ArrayList();
-		for (Object element : passedInSelectedProjects) {
-			IProject project = (IProject) element;
+		for (IProject project : passedInSelectedProjects) {
 			if (isProjectExportable(project))
 				passedInExportableProjects.add(project);
 		}
@@ -678,8 +677,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			// check if there is at least one exportable project selected
 			if (complete || !pageShown) {
 				complete = false;
-				for (Object element : selectedProjects) {
-					IProject selectedProject = (IProject) element;
+				for (IProject selectedProject : selectedProjects) {
 					if (isProjectExportable(selectedProject)) {
 						complete = true;
 					} else {
