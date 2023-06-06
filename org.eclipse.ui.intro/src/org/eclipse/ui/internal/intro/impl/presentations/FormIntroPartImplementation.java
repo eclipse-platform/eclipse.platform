@@ -186,9 +186,10 @@ public class FormIntroPartImplementation extends
 		// if the cached page is a URL ignore it. We do not want to launch a
 		// browser on startup.
 		String cachedPage = getCachedCurrentPage();
-		if (cachedPage != null & !History.isURL(cachedPage))
+		if (cachedPage != null && !History.isURL(cachedPage)) {
 			// this will create the page in the page form.
 			model.setCurrentPageId(cachedPage);
+		}
 
 		AbstractIntroPage pageToShow = getModel().getCurrentPage();
 		// load style manager here to test for navigation.
