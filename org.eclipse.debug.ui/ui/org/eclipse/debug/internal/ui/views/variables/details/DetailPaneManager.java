@@ -364,11 +364,9 @@ public class DetailPaneManager {
 		if (fKnownFactories == null) {
 			initializeDetailFactories();
 		}
-		for (IDetailPaneFactory currentFactory : fKnownFactories) {
-			if (currentFactory instanceof DetailPaneFactoryExtension){
-				if (((DetailPaneFactoryExtension)currentFactory).isEnabled(selection)){
-					factoriesForSelection.add(currentFactory);
-				}
+		for (DetailPaneFactoryExtension currentFactory : fKnownFactories) {
+			if (currentFactory.isEnabled(selection)) {
+				factoriesForSelection.add(currentFactory);
 			}
 		}
 		return factoriesForSelection;
@@ -444,9 +442,8 @@ public class DetailPaneManager {
 			fKnownFactories = new ArrayList<>();
 			IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(DebugUIPlugin.getUniqueIdentifier(), IDebugUIConstants.EXTENSION_POINT_DETAIL_FACTORIES);
 			IConfigurationElement[] infos = extensionPoint.getConfigurationElements();
-			DetailPaneFactoryExtension delegate = null;
 			for (IConfigurationElement info : infos) {
-				delegate = new DetailPaneFactoryExtension(info);
+				DetailPaneFactoryExtension delegate = new DetailPaneFactoryExtension(info);
 				fKnownFactories.add(delegate);
 			}
 		}
