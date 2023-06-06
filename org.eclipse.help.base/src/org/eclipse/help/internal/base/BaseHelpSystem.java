@@ -74,11 +74,9 @@ public final class BaseHelpSystem {
 	 * help system's search capability.
 	 */
 	public static SearchManager getSearchManager() {
-		if (getInstance().searchManager == null) {
-			synchronized (BaseHelpSystem.class) {
-				if (getInstance().searchManager == null) {
-					getInstance().searchManager = new SearchManager();
-				}
+		synchronized (BaseHelpSystem.class) {
+			if (getInstance().searchManager == null) {
+				getInstance().searchManager = new SearchManager();
 			}
 		}
 		return getInstance().searchManager;

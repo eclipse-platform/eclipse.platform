@@ -71,11 +71,9 @@ public class HelpPlugin extends Plugin {
 	 * @return instance of TocManager
 	 */
 	public static TocManager getTocManager() {
-		if (getDefault().tocManager == null) {
-			synchronized (tocManagerCreateLock) {
-				if (getDefault().tocManager == null) {
-					getDefault().tocManager = new TocManager();
-				}
+		synchronized (tocManagerCreateLock) {
+			if (getDefault().tocManager == null) {
+				getDefault().tocManager = new TocManager();
 			}
 		}
 		return getDefault().tocManager;
