@@ -142,8 +142,7 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 	public void fillActionBars(IActionBars actionBars, String group) {
 		super.fillActionBars(actionBars);
 		IToolBarManager toolBar = actionBars.getToolBarManager();
-		for (Object action2 : actions) {
-			DirectionFilterAction action = (DirectionFilterAction) action2;
+		for (DirectionFilterAction action : actions) {
 			if(group != null) {
 				toolBar.appendToGroup(group, action);
 			} else {
@@ -153,22 +152,19 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 	}
 
 	public void fillToolBar(String groupId, IToolBarManager toolBar) {
-		for (Object action2 : actions) {
-			DirectionFilterAction action = (DirectionFilterAction) action2;
+		for (DirectionFilterAction action : actions) {
 				toolBar.appendToGroup(groupId, action);
 		}
 	}
 
 	public void fillMenu(IContributionManager manager) {
-		for (Object action2 : actions) {
-			DirectionFilterAction action = (DirectionFilterAction) action2;
+		for (DirectionFilterAction action : actions) {
 				manager.add(action);
 		}
 	}
 
 	private void checkMode(int mode) {
-		for (Object action2 : actions) {
-			DirectionFilterAction action = (DirectionFilterAction)action2;
+		for (DirectionFilterAction action : actions) {
 			if(action.getModeId() == mode) {
 				action.setChecked(true);
 			} else {

@@ -219,8 +219,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 					}
 				}
 			}
-			for (Object element : toRemove) {
-				ActiveChangeSet set = (ActiveChangeSet) element;
+			for (ChangeSet set : toRemove) {
 				remove(set);
 			}
 		}

@@ -79,8 +79,7 @@ public class CompoundResourceTraversal {
 	public boolean isCovered(IResource resource, int depth) {
 		IPath fullPath = resource.getFullPath();
 		// Regardless of the depth, look for a deep folder that covers the resource
-		for (Object element : deepFolders) {
-			IResource deepFolder = (IResource) element;
+		for (IResource deepFolder : deepFolders) {
 			if (deepFolder.getFullPath().isPrefixOf(fullPath)) {
 				return true;
 			}

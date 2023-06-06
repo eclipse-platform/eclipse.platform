@@ -107,8 +107,7 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 			Map<IContainer, Set<IResource>> byParent = sortByParent(toAdd);
 
 			monitor1.beginTask("Adding to control", 1000);
-			for (Object element : byParent.keySet()) {
-				IContainer parent= (IContainer) element;
+			for (IContainer parent : byParent.keySet()) {
 				Set<IResource> controlledResources = fControlledResources.get(parent);
 				if (controlledResources == null) {
 					controlledResources = new HashSet<>(1);
@@ -150,8 +149,7 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 			Map<IContainer, Set<IResource>> byParent = sortByParent(toRemove);
 
 			monitor1.beginTask("Removing from control", 1000);
-			for (Object element : byParent.keySet()) {
-				IContainer parent= (IContainer) element;
+			for (IContainer parent : byParent.keySet()) {
 				Set<IResource> controlledResources = fControlledResources.get(parent);
 				if (controlledResources == null) {
 					deleteControlFile(parent, monitor1);

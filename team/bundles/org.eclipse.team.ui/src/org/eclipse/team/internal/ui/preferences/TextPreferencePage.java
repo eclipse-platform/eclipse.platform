@@ -239,9 +239,7 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		final ArrayList<String> namesList= new ArrayList<>();
 		final ArrayList<Integer> namesModesList= new ArrayList<>();
 
-		for (Object element : fItems) {
-			final FileTypeTable.Item item= (FileTypeTable.Item) element;
-
+		for (FileTypeTable.Item item : fItems) {
 			if (item instanceof FileTypeTable.Extension) {
 				extensionsList.add(item.name);
 				extensionsModesList.add(Integer.valueOf(item.mode));

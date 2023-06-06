@@ -233,8 +233,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 	 * @param resources the resources to be removed
 	 */
 	protected void remove(IResource[] resources) {
-		for (Object element : activeSets.values()) {
-			SyncInfoSet set = (SyncInfoSet) element;
+		for (SyncInfoSet set : activeSets.values()) {
 			set.removeAll(resources);
 		}
 		rootSet.removeAll(resources);
@@ -411,8 +410,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 	}
 
 	private ChangeSet getChangeSet(IDiffTree tree) {
-		for (Object element : activeSets.keySet()) {
-			ChangeSet changeSet = (ChangeSet) element;
+		for (ChangeSet changeSet : activeSets.keySet()) {
 			if (((DiffChangeSet)changeSet).getDiffTree() == tree) {
 				return changeSet;
 			}

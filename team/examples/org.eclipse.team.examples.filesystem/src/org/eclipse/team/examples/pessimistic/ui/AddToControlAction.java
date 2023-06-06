@@ -52,8 +52,7 @@ public class AddToControlAction extends PessimisticProviderAction {
 		if (!resourceSet.isEmpty()) {
 			final Map<IProject, Set<IResource>> byProject = sortByProject(resourceSet);
 			IRunnableWithProgress runnable= monitor -> {
-				for (Object element : byProject.keySet()) {
-					IProject project= (IProject) element;
+				for (IProject project : byProject.keySet()) {
 					PessimisticFilesystemProvider provider= getProvider(project);
 					if (provider != null) {
 						Set<IResource> set = byProject.get(project);

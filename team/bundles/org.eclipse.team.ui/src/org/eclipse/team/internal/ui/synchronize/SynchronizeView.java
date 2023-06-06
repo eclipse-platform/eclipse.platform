@@ -682,7 +682,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	@Override
 	public Saveable[] getSaveables() {
 		Set<Saveable> result = new HashSet<>();
-		for (Object element : fPartToParticipant.keySet()) {
+		for (IWorkbenchPart element : fPartToParticipant.keySet()) {
 			SynchronizeViewWorkbenchPart part = (SynchronizeViewWorkbenchPart) element;
 			Saveable saveable = getSaveable(part.getParticipant());
 			if (saveable != null) {

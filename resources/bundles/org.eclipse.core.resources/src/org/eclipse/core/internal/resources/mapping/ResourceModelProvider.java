@@ -62,7 +62,7 @@ public final class ResourceModelProvider extends ModelProvider {
 		}
 		ResourceMapping[] mappings = new ResourceMapping[result.size()];
 		int i = 0;
-		for (Object element : result) {
+		for (IAdaptable element : result) {
 			if (element instanceof IResource) {
 				mappings[i++] = new SimpleResourceMapping((IResource) element);
 			} else {
