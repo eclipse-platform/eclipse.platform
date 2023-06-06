@@ -64,7 +64,7 @@ public class UnsignedIntegerRendering extends AbstractIntegerRendering {
 		}
 		}
 
-		ret = Long.valueOf(result).toString();
+		ret = Long.toString(result);
 
 		return ret;
 	}

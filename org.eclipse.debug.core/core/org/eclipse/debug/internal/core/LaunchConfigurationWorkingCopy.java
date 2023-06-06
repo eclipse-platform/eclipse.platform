@@ -672,7 +672,7 @@ public class LaunchConfigurationWorkingCopy extends LaunchConfiguration implemen
 			for (IResource resource : resources) {
 				if(resource != null) {
 					paths.add(resource.getFullPath().toPortableString());
-					types.add(Integer.valueOf(resource.getType()).toString());
+					types.add(Integer.toString(resource.getType()));
 				}
 			}
 		}

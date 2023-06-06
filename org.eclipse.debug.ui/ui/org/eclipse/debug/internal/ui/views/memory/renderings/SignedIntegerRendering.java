@@ -68,7 +68,7 @@ public class SignedIntegerRendering extends AbstractIntegerRendering {
 		}
 		}
 
-		ret = Long.valueOf(result).toString();
+		ret = Long.toString(result);
 
 		return ret;
 	}
