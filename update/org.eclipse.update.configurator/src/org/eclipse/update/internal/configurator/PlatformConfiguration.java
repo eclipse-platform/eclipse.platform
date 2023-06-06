@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -807,7 +807,9 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 			Properties props = new Properties();
 			String externalForm = Utils.makeRelative(config.getInstallURL(), sharedConfigLocation.getURL()).toExternalForm();
 			props.put("osgi.sharedConfiguration.area", externalForm); //$NON-NLS-1$
-			props.store(new FileOutputStream(configIni), "Linked configuration"); //$NON-NLS-1$
+			try (FileOutputStream out = new FileOutputStream(configIni)) {
+				props.store(out, "Linked configuration"); //$NON-NLS-1$
+			}
 
 			config = new Configuration(new Date());
 			config.setURL(new URL(newConfigLocation.getURL(), CONFIG_NAME));

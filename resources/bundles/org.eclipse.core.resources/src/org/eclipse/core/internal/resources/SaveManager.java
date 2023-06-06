@@ -1101,22 +1101,15 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		monitor = Policy.monitorFor(monitor);
 		String message;
 		IPath snapshotPath = null;
-		try {
-			monitor.beginTask("", Policy.totalWork); //$NON-NLS-1$
-			InputStream snapIn = new FileInputStream(snapshotFile);
-			ZipInputStream zip = new ZipInputStream(snapIn);
+		monitor.beginTask("", Policy.totalWork); //$NON-NLS-1$
+		try (ZipInputStream zip = new ZipInputStream(new FileInputStream(snapshotFile))) {
 			ZipEntry treeEntry = zip.getNextEntry();
 			if (treeEntry == null || !treeEntry.getName().equals("resource-index.tree")) { //$NON-NLS-1$
-				zip.close();
 				return false;
 			}
-			try (
-				DataInputStream input = new DataInputStream(zip);
-			) {
+			try (DataInputStream input = new DataInputStream(zip)) {
 				WorkspaceTreeReader reader = WorkspaceTreeReader.getReader(workspace, input.readInt(), true);
 				reader.readTree(project, input, Policy.subMonitorFor(monitor, Policy.totalWork));
-			} finally {
-				zip.close();
 			}
 		} catch (IOException e) {
 			snapshotPath = new Path(snapshotFile.getPath());
