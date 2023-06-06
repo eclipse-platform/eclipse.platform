@@ -107,7 +107,7 @@ public class IniFileReader {
 		
 		// Determine the properties file location
 		URL propertiesURL = null;
-		if (propertiesFilename != null & propertiesFilename.length() > 0) {
+		if (propertiesFilename != null && !propertiesFilename.isEmpty()) {
 			propertiesURL = FileLocator.find(bundle, new Path(NLS_TAG).append(propertiesFilename), null);
 		}
 
