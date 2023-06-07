@@ -42,7 +42,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class CopyTableRenderingToClipboardAction extends Action
 {
-	private final String COLUMN_SEPERATOR = "  "; //$NON-NLS-1$
+	private static final String COLUMN_SEPERATOR = "  "; //$NON-NLS-1$
 
 	protected AbstractBaseTableRendering fRendering;
 	protected StructuredViewer fViewer;

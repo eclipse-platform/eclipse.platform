@@ -71,7 +71,7 @@ public class SaveScopeResourcesHandler implements IStatusHandler {
 	 */
 	class ScopedResourcesSelectionDialog extends AbstractDebugCheckboxSelectionDialog {
 
-		private final String SETTINGS_ID = IDebugUIConstants.PLUGIN_ID + ".SCOPED_SAVE_SELECTION_DIALOG"; //$NON-NLS-1$
+		private static final String SETTINGS_ID = IDebugUIConstants.PLUGIN_ID + ".SCOPED_SAVE_SELECTION_DIALOG"; //$NON-NLS-1$
 		Button fSavePref;
 		Object fInput;
 		IStructuredContentProvider fContentProvider;

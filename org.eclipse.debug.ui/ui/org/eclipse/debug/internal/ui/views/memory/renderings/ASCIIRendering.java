@@ -30,7 +30,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
  */
 public class ASCIIRendering extends AbstractAsyncTextRendering{
 
-	private final int numCharsPerByte = 1;
+	private static final int numCharsPerByte = 1;
 
 
 	public ASCIIRendering(String renderingId)

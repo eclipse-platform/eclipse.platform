@@ -85,7 +85,7 @@ import org.osgi.framework.FrameworkUtil;
  */
 class CommonTabLite extends AbstractLaunchConfigurationTab {
 
-	private final String SETTINGS_ID = IDebugUIConstants.PLUGIN_ID + ".SHARED_LAUNCH_CONFIGURATON_DIALOG"; //$NON-NLS-1$
+	private static final String SETTINGS_ID = IDebugUIConstants.PLUGIN_ID + ".SHARED_LAUNCH_CONFIGURATON_DIALOG"; //$NON-NLS-1$
 
 	/**
 	 * This attribute exists solely for the purpose of making sure that invalid shared locations
