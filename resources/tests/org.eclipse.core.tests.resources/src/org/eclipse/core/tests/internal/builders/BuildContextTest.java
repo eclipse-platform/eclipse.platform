@@ -27,8 +27,8 @@ public class BuildContextTest extends AbstractBuilderTest {
 	private IProject project0;
 	private IProject project1;
 	private IProject project2;
-	private final String variant0 = "Variant0";
-	private final String variant1 = "Variant1";
+	private static final String variant0 = "Variant0";
+	private static final String variant1 = "Variant1";
 
 	public BuildContextTest(String name) {
 		super(name);

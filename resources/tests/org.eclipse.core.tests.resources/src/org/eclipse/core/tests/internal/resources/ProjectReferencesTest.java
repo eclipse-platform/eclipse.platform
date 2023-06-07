@@ -34,9 +34,9 @@ public class ProjectReferencesTest extends ResourceTest {
 	private IBuildConfiguration project2v0;
 	private IBuildConfiguration project3v0;
 	private IBuildConfiguration project3v1;
-	private final String bc0 = "Variant0";
-	private final String bc1 = "Variant1";
-	private final String nonExistentBC = "foo";
+	private static final String bc0 = "Variant0";
+	private static final String bc1 = "Variant1";
+	private static final String nonExistentBC = "foo";
 
 	@Override
 	public void setUp() throws Exception {
