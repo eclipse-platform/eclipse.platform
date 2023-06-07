@@ -68,9 +68,6 @@ public class PDAEvent {
 		else if (PDAVMSuspendedEvent.isEventMessage(message)) {
 			return new PDAVMSuspendedEvent(message);
 		}
-		else if (PDAExitedEvent.isEventMessage(message)) {
-			return new PDAExitedEvent(message);
-		}
 		else {
 			return new PDAEvent(message);
 		}
