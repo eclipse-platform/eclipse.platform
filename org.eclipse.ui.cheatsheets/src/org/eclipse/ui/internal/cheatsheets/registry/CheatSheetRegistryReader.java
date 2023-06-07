@@ -177,7 +177,7 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 	protected CheatSheetCollectionElement cheatsheets;
 	private ArrayList<Category> deferCategories = null;
 	private ArrayList<CheatSheetElement> deferCheatSheets = null;
-	private final String csItemExtension = "cheatSheetItemExtension"; //$NON-NLS-1$
+	private static final String csItemExtension = "cheatSheetItemExtension"; //$NON-NLS-1$
 	protected Map<String, TaskExplorerNode> taskExplorers = new HashMap<>();
 	protected Map<String, TaskEditorNode> taskEditors = new HashMap<>();
 	private Map<String, Object> nestedCategoryIds = new HashMap<>();

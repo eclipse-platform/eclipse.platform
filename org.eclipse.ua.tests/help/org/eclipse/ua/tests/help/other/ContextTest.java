@@ -44,17 +44,17 @@ public class ContextTest {
 	private static final String FILTER_OUT = "<filter name = \"plugin\" value = \"org.eclipse.ua.invalid\"/>";
 	private static final String TOPIC_END = "</topic>";
 	private static final String TOPIC_HEAD_ECLIPSE = "<topic href=\"http://www.eclipse.org\" label=\"enabled\">";
-	private final String TOPIC_OLD_FILTER_DISABLED = "<topic filter=\"plugin=org.eclipse.ua.invalid\" href=\"www.eclipse.org\""
+	private static final String TOPIC_OLD_FILTER_DISABLED = "<topic filter=\"plugin=org.eclipse.ua.invalid\" href=\"www.eclipse.org\""
 		+ " label=\"Transformations and transformation configurations\"/>";
 	private static final String CONTEXT_DESCRIPTION = "<description>Context Description</description>";
 	private static final String EMPTY_DESCRIPTION = "<description></description>";
 	private static final String CONTEXT_HEAD = "<context id=\"viewer\" title=\"Sample View\">";
 	private static final String CONTEXT_HEAD_WITH_ATTRIBUTE = "<context id=\"viewer\" title=\"Sample View\" att=\"abc\">";
-	private final String TOPIC_ECLIPSE = "<topic href=\"http://www.eclipse.org\" label=\"eclipse\"/>";
-	private final String TOPIC_WITH_ENABLEMENT = TOPIC_HEAD_ECLIPSE + ENABLEMENT_CHEATSHEETS + TOPIC_END;
-	private final String TOPIC_DISABLED = TOPIC_HEAD_ECLIPSE + ENABLEMENT_INVALID + TOPIC_END;
-	private final String TOPIC_FILTER_OUT = TOPIC_HEAD_ECLIPSE + FILTER_OUT + TOPIC_END;
-	private final String END_CONTEXT = "</context>";
+	private static final String TOPIC_ECLIPSE = "<topic href=\"http://www.eclipse.org\" label=\"eclipse\"/>";
+	private static final String TOPIC_WITH_ENABLEMENT = TOPIC_HEAD_ECLIPSE + ENABLEMENT_CHEATSHEETS + TOPIC_END;
+	private static final String TOPIC_DISABLED = TOPIC_HEAD_ECLIPSE + ENABLEMENT_INVALID + TOPIC_END;
+	private static final String TOPIC_FILTER_OUT = TOPIC_HEAD_ECLIPSE + FILTER_OUT + TOPIC_END;
+	private static final String END_CONTEXT = "</context>";
 
 	@Before
 	public void setUp() throws Exception {

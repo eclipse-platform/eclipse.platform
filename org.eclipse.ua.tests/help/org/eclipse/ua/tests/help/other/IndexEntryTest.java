@@ -51,23 +51,23 @@ public class IndexEntryTest {
 	private static final String NEGATED_FILTER_OUT = "<filter name = \"plugin\" value = \"!org.eclipse.ua.invalid\"/>";
 	private static final String ENTRY_END = "</entry>";
 	private static final String ENTRY_HEAD_ECLIPSE = "<entry keyword=\"eclipse\">";
-	private final String ENTRY_ECLIPSE = "<entry keyword=\"eclipse\"/>";
-	private final String ENTRY_BUGZILLA = "<entry keyword=\"bugzilla\"/>";
-	private final String TOPIC_BUGZILLA = "<topic href=\"https://bugs.eclipse.org/bugs/\" label=\"bugzilla\"/>";
-	private final String SEE_ALSO_SDK = "<see keyword=\"sdk\"/>";
+	private static final String ENTRY_ECLIPSE = "<entry keyword=\"eclipse\"/>";
+	private static final String ENTRY_BUGZILLA = "<entry keyword=\"bugzilla\"/>";
+	private static final String TOPIC_BUGZILLA = "<topic href=\"https://bugs.eclipse.org/bugs/\" label=\"bugzilla\"/>";
+	private static final String SEE_ALSO_SDK = "<see keyword=\"sdk\"/>";
 
 	private final String ENTRY_WITH_ENABLEMENT = ENTRY_HEAD_ECLIPSE + ENABLEMENT_CHEATSHEETS + ENTRY_END;
 	private final String ENTRY_NOT_ENABLED = ENTRY_HEAD_ECLIPSE + ENABLEMENT_INVALID + ENTRY_END;
 	private final String ENTRY_FILTER_IN = ENTRY_HEAD_ECLIPSE + FILTER_IN + ENTRY_END;
 	private final String ENTRY_FILTER_OUT = ENTRY_HEAD_ECLIPSE + FILTER_OUT + ENTRY_END;
 	private final String ENTRY_FILTER_MIXED = ENTRY_HEAD_ECLIPSE + FILTER_IN + FILTER_OUT + ENTRY_END;
-	private final String ENTRY_OLD_FILTER = "<entry filter=\"plugin=org.eclipse.ua.tests\" "
+	private static final String ENTRY_OLD_FILTER = "<entry filter=\"plugin=org.eclipse.ua.tests\" "
 		+ " keyword=\"Transformations and transformation configurations\"/>";
-	private final String ENTRY_OLD_FILTER_DISABLED = "<entry filter=\"plugin=org.eclipse.ua.invalid\" "
+	private static final String ENTRY_OLD_FILTER_DISABLED = "<entry filter=\"plugin=org.eclipse.ua.invalid\" "
 		+ " keyword=\"Transformations and transformation configurations\"/>";
-	private final String ENTRY_OLD_FILTER_IN__NEGATED = "<entry filter=\"plugin!=org.eclipse.ua.tests\" "
+	private static final String ENTRY_OLD_FILTER_IN__NEGATED = "<entry filter=\"plugin!=org.eclipse.ua.tests\" "
 		+ " keyword=\"Transformations and transformation configurations\"/>";
-	private final String ENTRY_OLD_FILTER_OUT_NEGATED = "<entry filter=\"plugin!=org.eclipse.ua.invalid\" "
+	private static final String ENTRY_OLD_FILTER_OUT_NEGATED = "<entry filter=\"plugin!=org.eclipse.ua.invalid\" "
 		+ " keyword=\"Transformations and transformation configurations\"/>";
 	private final String ENTRY_WITH_CHILD = ENTRY_HEAD_ECLIPSE + ENTRY_BUGZILLA + ENTRY_END;
 	private final String ENTRY_WITH_TOPIC = ENTRY_HEAD_ECLIPSE + TOPIC_BUGZILLA + ENTRY_END;

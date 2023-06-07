@@ -37,11 +37,11 @@ public class InjectionFilter implements IFilter {
 	private static final String disabledBook3 = "\n<script type=\"text/javascript\" src=\""; //$NON-NLS-1$
 	private static final String disabledBook4 = "livehelp.js\"> </script>"; //$NON-NLS-1$
 
-	private final String TOPIC_CSS = "topic_css"; //$NON-NLS-1$
-	private final String NAV_CSS   = "nav_css"; //$NON-NLS-1$
-	private final String NARROW_CSS = "narrow_css"; //$NON-NLS-1$
-	private final String DISABLED_CSS = "disabled_css"; //$NON-NLS-1$
-	private final String REMOTE_CSS = "remote_css"; //$NON-NLS-1$
+	private static final String TOPIC_CSS = "topic_css"; //$NON-NLS-1$
+	private static final String NAV_CSS   = "nav_css"; //$NON-NLS-1$
+	private static final String NARROW_CSS = "narrow_css"; //$NON-NLS-1$
+	private static final String DISABLED_CSS = "disabled_css"; //$NON-NLS-1$
+	private static final String REMOTE_CSS = "remote_css"; //$NON-NLS-1$
 	private boolean isRemote;
 
 	public InjectionFilter( boolean isRemote ) {

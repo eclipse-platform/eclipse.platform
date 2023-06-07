@@ -48,21 +48,21 @@ public class TopicTest {
 	private static final String NEGATED_FILTER_OUT = "<filter name = \"plugin\" value = \"!org.eclipse.ua.invalid\"/>";
 	private static final String TOPIC_END = "</topic>";
 	private static final String TOPIC_HEAD_ECLIPSE = "<topic href=\"http://www.eclipse.org\" label=\"eclipse\">";
-	private final String TOPIC_ECLIPSE = "<topic href=\"http://www.eclipse.org\" label=\"eclipse\"/>";
-	private final String TOPIC_BUGZILLA = "<topic href=\"https://bugs.eclipse.org/bugs/\" label=\"bugzilla\"/>";
+	private static final String TOPIC_ECLIPSE = "<topic href=\"http://www.eclipse.org\" label=\"eclipse\"/>";
+	private static final String TOPIC_BUGZILLA = "<topic href=\"https://bugs.eclipse.org/bugs/\" label=\"bugzilla\"/>";
 
 	private final String TOPIC_WITH_ENABLEMENT = TOPIC_HEAD_ECLIPSE + ENABLEMENT_CHEATSHEETS + TOPIC_END;
 	private final String TOPIC_NOT_ENABLED = TOPIC_HEAD_ECLIPSE + ENABLEMENT_INVALID + TOPIC_END;
 	private final String TOPIC_FILTER_IN = TOPIC_HEAD_ECLIPSE + FILTER_IN + TOPIC_END;
 	private final String TOPIC_FILTER_OUT = TOPIC_HEAD_ECLIPSE + FILTER_OUT + TOPIC_END;
 	private final String TOPIC_FILTER_MIXED = TOPIC_HEAD_ECLIPSE + FILTER_IN + FILTER_OUT + TOPIC_END;
-	private final String TOPIC_OLD_FILTER = "<topic filter=\"plugin=org.eclipse.ua.tests\" href=\"www.eclipse.org\""
+	private static final String TOPIC_OLD_FILTER = "<topic filter=\"plugin=org.eclipse.ua.tests\" href=\"www.eclipse.org\""
 		+ " label=\"Transformations and transformation configurations\"/>";
-	private final String TOPIC_OLD_FILTER_DISABLED = "<topic filter=\"plugin=org.eclipse.ua.invalid\" href=\"www.eclipse.org\""
+	private static final String TOPIC_OLD_FILTER_DISABLED = "<topic filter=\"plugin=org.eclipse.ua.invalid\" href=\"www.eclipse.org\""
 		+ " label=\"Transformations and transformation configurations\"/>";
-	private final String TOPIC_OLD_FILTER_IN__NEGATED = "<topic filter=\"plugin!=org.eclipse.ua.tests\" href=\"www.eclipse.org\""
+	private static final String TOPIC_OLD_FILTER_IN__NEGATED = "<topic filter=\"plugin!=org.eclipse.ua.tests\" href=\"www.eclipse.org\""
 		+ " label=\"Transformations and transformation configurations\"/>";
-	private final String TOPIC_OLD_FILTER_OUT_NEGATED = "<topic filter=\"plugin!=org.eclipse.ua.invalid\" href=\"www.eclipse.org\""
+	private static final String TOPIC_OLD_FILTER_OUT_NEGATED = "<topic filter=\"plugin!=org.eclipse.ua.invalid\" href=\"www.eclipse.org\""
 		+ " label=\"Transformations and transformation configurations\"/>";
 	private final String TOPIC_WITH_CHILD = TOPIC_HEAD_ECLIPSE + TOPIC_BUGZILLA + TOPIC_END;
 

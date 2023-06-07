@@ -92,7 +92,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class EclipseRSSViewer implements IIntroContentProvider {
 
-	private final int SOCKET_TIMEOUT = 6000; //milliseconds
+	private static final int SOCKET_TIMEOUT = 6000; //milliseconds
 
 	private static final String INTRO_SHOW_IN_BROWSER = "http://org.eclipse.ui.intro/openBrowser?url="; //$NON-NLS-1$
 

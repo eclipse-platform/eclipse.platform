@@ -35,10 +35,10 @@ public class ContextMergeTest {
 	private static final String TOPIC_HEAD_ECLIPSE = "<topic href=\"http://www.eclipse.org\" label=\"enabled\">";
 	private static final String CONTEXT_DESCRIPTION = "<description>Context Description</description>";
 	private static final String CONTEXT_HEAD = "<context id=\"viewer\" title=\"Sample View\">";
-	private final String TOPIC_ECLIPSE = "<topic href=\"http://www.eclipse.org\" label=\"eclipse\"/>";
-	private final String TOPIC_BUGZILLA = "<topic href=\"http://www.eclipse.org/bugzilla\" label=\"bugzilla\"/>";
+	private static final String TOPIC_ECLIPSE = "<topic href=\"http://www.eclipse.org\" label=\"eclipse\"/>";
+	private static final String TOPIC_BUGZILLA = "<topic href=\"http://www.eclipse.org/bugzilla\" label=\"bugzilla\"/>";
 	private final String TOPIC_WITH_ENABLEMENT = TOPIC_HEAD_ECLIPSE + ENABLEMENT_CHEATSHEETS + TOPIC_END;
-	private final String END_CONTEXT = "</context>";
+	private static final String END_CONTEXT = "</context>";
 
 	private Context createContext(final String contextSource) {
 		Context context;

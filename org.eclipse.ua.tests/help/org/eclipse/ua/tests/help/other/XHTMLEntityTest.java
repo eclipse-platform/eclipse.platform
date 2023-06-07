@@ -29,11 +29,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 public class XHTMLEntityTest {
-	private final String XHTML1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
+	private static final String XHTML1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
 	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
 	"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n" +
 	"<head></head><body>";
-	private final String XHTML2 = "</body></html>";
+	private static final String XHTML2 = "</body></html>";
 
 	public void checkResolution(String text, int expected) throws Exception {
 		DocumentBuilder documentBuilder;

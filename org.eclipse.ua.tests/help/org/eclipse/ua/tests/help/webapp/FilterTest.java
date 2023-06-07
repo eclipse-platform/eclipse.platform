@@ -33,23 +33,23 @@ import org.junit.Test;
  */
 
 public class FilterTest {
-	private final String HTML40 =  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">";
-	private final String HEAD1 =  "<HEAD>";
-	private final String HEAD2 = "</HEAD>";
-	private final String HEADLC1 =  "<head>";
-	private final String HEADLC2 = "</head>";
-	private final String CONTENT_TYPE_ISO_8859_1 =    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">";
-	private final String CONTENT_TYPE_ISO_8859_1_UC = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\" />";
-	private final String CONTENT_TYPE_UTF8 = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
-	private final String CONTENT_TYPE_UTF8UC = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">";
-	private final String BODY1 = "<BODY>";
-	private final String BODY2 = "</BODY></html>";
-	private final String BODYLC1 = "<body>";
-	private final String BODYLC2 = "</body></html>";
-	private final String CSS1 = "<LINK REL=\"STYLESHEET\" HREF=\"book1.css\" TYPE=\"text/css\">";
-	private final String CSS2 = "<LINK REL=\"STYLESHEET\" HREF=\"book1.css\" TYPE=\"text/css\">";
-	private final String CONTENT1 = "<p>Content1</p>";
-	private final String CONTENT2 = "<p>Content2</p>";
+	private static final String HTML40 =  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">";
+	private static final String HEAD1 =  "<HEAD>";
+	private static final String HEAD2 = "</HEAD>";
+	private static final String HEADLC1 =  "<head>";
+	private static final String HEADLC2 = "</head>";
+	private static final String CONTENT_TYPE_ISO_8859_1 =    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">";
+	private static final String CONTENT_TYPE_ISO_8859_1_UC = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\" />";
+	private static final String CONTENT_TYPE_UTF8 = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
+	private static final String CONTENT_TYPE_UTF8UC = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">";
+	private static final String BODY1 = "<BODY>";
+	private static final String BODY2 = "</BODY></html>";
+	private static final String BODYLC1 = "<body>";
+	private static final String BODYLC2 = "</body></html>";
+	private static final String CSS1 = "<LINK REL=\"STYLESHEET\" HREF=\"book1.css\" TYPE=\"text/css\">";
+	private static final String CSS2 = "<LINK REL=\"STYLESHEET\" HREF=\"book1.css\" TYPE=\"text/css\">";
+	private static final String CONTENT1 = "<p>Content1</p>";
+	private static final String CONTENT2 = "<p>Content2</p>";
 	private String CHINESE_CONTENT = "<p>" + (char)24320 + (char)21457 + (char)29932 + "</p>";
 	private String CHINESE_ENTITY_CONTENT = "<p>&#24320;&#21457;&#29932;</p>";
 
