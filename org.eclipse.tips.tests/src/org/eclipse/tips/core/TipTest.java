@@ -104,8 +104,8 @@ public class TipTest {
 	public void testEqualsObject() {
 		TestTip testTip = new TestTip(fProvider.getID(), HTML, SUBJECT_TIP);
 		TestTip testTipx = new TestTip(fProvider.getID(), HTML, SUBJECT_TIP);
-		assertNotNull(testTip);
-		assertEquals(testTip, testTip.equals(testTip));
+		assertFalse(testTip.equals(fTip));
+		assertTrue(testTip.equals(testTipx));
 		assertNotEquals(fTip, testTip);
 		assertEquals(testTipx, testTip);
 
