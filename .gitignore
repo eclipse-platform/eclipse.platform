@@ -13,3 +13,4 @@ Snap.*
 /*/target/
 .DS_Store
 /target/
+.polyglot.*
