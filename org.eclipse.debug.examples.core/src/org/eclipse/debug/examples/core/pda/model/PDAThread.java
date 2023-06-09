@@ -64,7 +64,7 @@ public class PDAThread extends PDADebugElement implements IThread, IPDAEventList
 	/**
 	 * Whether this thread is stepping
 	 */
-	private boolean fStepping = false;
+	private volatile boolean fStepping = false;
 
 	/**
 	 * Whether this thread is suspended
