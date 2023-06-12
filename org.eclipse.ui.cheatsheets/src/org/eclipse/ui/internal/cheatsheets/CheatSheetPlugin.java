@@ -268,17 +268,10 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 	 */
 	public XMLMemento readMemento(String filename) {
 		XMLMemento memento;
-		InputStreamReader reader = null;
-
-		try {
-			// Read the cheatsheet state file.
-			final File stateFile = getCheatSheetStateFile(filename);
-
-			FileInputStream input = new FileInputStream(stateFile);
-			reader = new InputStreamReader(input, StandardCharsets.UTF_8);
+		// Read the cheatsheet state file.
+		final File stateFile = getCheatSheetStateFile(filename);
+		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(stateFile), StandardCharsets.UTF_8)) {
 			memento = XMLMemento.createReadRoot(reader);
-
-
 		} catch (FileNotFoundException e) {
 			memento = null;
 			// Do nothing, the file will not exist the first time the workbench in used.
@@ -286,15 +279,6 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 			String message = Messages.ERROR_READING_STATE_FILE;
 			CheatSheetPlugin.getPlugin().getLog().error(message, e);
 			memento = null;
-		} finally {
-			try {
-				if (reader != null)
-					reader.close();
-			} catch (IOException e) {
-				// Not much to do, just catch the exception and keep going.
-				String message = Messages.ERROR_READING_STATE_FILE;
-				CheatSheetPlugin.getPlugin().getLog().error(message, e);
-			}
 		}
 		return memento;
 	}
@@ -337,10 +321,8 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 	public IStatus saveMemento(XMLMemento memento, String filename) {
 		// Save the IMemento to a file.
 		File stateFile = getCheatSheetStateFile(filename);
-		OutputStreamWriter writer = null;
-		try {
-			FileOutputStream stream = new FileOutputStream(stateFile);
-			writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8);
+		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(stateFile),
+				StandardCharsets.UTF_8)) {
 			memento.save(writer);
 			return Status.OK_STATUS;
 		} catch (IOException e) {
@@ -348,14 +330,6 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 			String message = Messages.ERROR_WRITING_STATE_FILE;
 			IStatus status = new Status(IStatus.ERROR, ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID, IStatus.OK, message, e);
 			return status;
-		} finally {
-			try {
-				if (writer != null)
-					writer.close();
-			} catch (IOException e) {
-				String message = Messages.ERROR_WRITING_STATE_FILE;
-				CheatSheetPlugin.getPlugin().getLog().error(message, e);
-			}
 		}
 	}
 

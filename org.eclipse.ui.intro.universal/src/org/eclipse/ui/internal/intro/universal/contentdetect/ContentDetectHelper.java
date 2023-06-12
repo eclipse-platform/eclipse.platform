@@ -105,29 +105,15 @@ public class ContentDetectHelper {
 
 	private XMLMemento getReadMemento(String filename) {
 		XMLMemento memento;
-		InputStreamReader reader = null;
-
-		try {
-			final File stateFile = getStateFile(filename);
-
-			FileInputStream input = new FileInputStream(stateFile);
-			reader = new InputStreamReader(input, StandardCharsets.UTF_8);
+		final File stateFile = getStateFile(filename);
+		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(stateFile), StandardCharsets.UTF_8)){
 			memento = XMLMemento.createReadRoot(reader);
-
-
 		} catch (FileNotFoundException e) {
 			memento = null;
 			// Do nothing, the file will not exist the first time the workbench in used.
 		} catch (Exception e) {
 			// TODO should we log an error?
 			memento = null;
-		} finally {
-			try {
-				if (reader != null)
-					reader.close();
-			} catch (IOException e) {
-				// TODO should we log an error?
-			}
 		}
 		return memento;
 	}
@@ -135,19 +121,10 @@ public class ContentDetectHelper {
 	private void saveMemento(XMLMemento memento, String filename) {
 		// Save the IMemento to a file.
 		File stateFile = getStateFile(filename);
-		OutputStreamWriter writer = null;
-		try {
-			FileOutputStream stream = new FileOutputStream(stateFile);
-			writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8);
+		try (OutputStreamWriter writer = new OutputStreamWriter( new FileOutputStream(stateFile), StandardCharsets.UTF_8)){
 			memento.save(writer);
 		} catch (IOException e) {
 			stateFile.delete();
-		} finally {
-			try {
-				if (writer != null)
-					writer.close();
-			} catch (IOException e) {
-			}
 		}
 	}
 

@@ -15,12 +15,12 @@ package org.eclipse.ui.internal.intro.impl.html;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Platform;
@@ -1143,19 +1143,13 @@ public class IntroHTMLGenerator {
 	private StringBuilder readFromFile(String src, String charsetName) {
 		if (src == null)
 			return null;
-		InputStream stream = null;
 		StringBuilder content = new StringBuilder();
-		BufferedReader reader = null;
-		try {
-			URL url = new URL(src);
-			stream = url.openStream();
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(src).openStream(),
+				(charsetName == null) ? Charset.defaultCharset().name() : charsetName))) {
+
 			// TODO: Do we need to worry about the encoding here? e.g.:
 			// reader = new BufferedReader(new InputStreamReader(stream,
 			// ResourcesPlugin.getEncoding()));
-			if (charsetName == null)
-				reader = new BufferedReader(new InputStreamReader(stream));
-			else
-				reader = new BufferedReader(new InputStreamReader(stream, charsetName));
 			while (true) {
 				int character = reader.read();
 				if (character == -1) // EOF
@@ -1182,16 +1176,6 @@ public class IntroHTMLGenerator {
 			}
 		} catch (Exception exception) {
 			Log.error("Error reading from file", exception); //$NON-NLS-1$
-		} finally {
-			try {
-				if (reader != null)
-					reader.close();
-				if (stream != null)
-					stream.close();
-			} catch (IOException e) {
-				Log.error("Error closing input stream", e); //$NON-NLS-1$
-				return null;
-			}
 		}
 		return content;
 	}
