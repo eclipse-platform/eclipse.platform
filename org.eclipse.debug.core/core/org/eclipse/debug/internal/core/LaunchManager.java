@@ -1358,9 +1358,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 		if (info == null) {
 			IFileStore store = config.getFileStore();
 			if (config.exists()) {
-				BufferedInputStream stream = null;
-				try {
-					stream = new BufferedInputStream(store.openInputStream(EFS.NONE, null));
+				try (BufferedInputStream stream = new BufferedInputStream(store.openInputStream(EFS.NONE, null))) {
 					info = createInfoFromXML(stream, isPrototype(store));
 					synchronized (this) {
 						fLaunchConfigurations.put(config, info);
@@ -1373,14 +1371,6 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 					throwException(config, e);
 				} catch (IOException e) {
 					throwException(config, e);
-				} finally {
-					if (stream != null) {
-						try {
-							stream.close();
-						} catch (IOException e) {
-							throwException(config, e);
-						}
-					}
 				}
 
 			} else if (store != null){

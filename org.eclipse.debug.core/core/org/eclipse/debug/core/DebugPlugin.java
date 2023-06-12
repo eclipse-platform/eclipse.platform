@@ -1312,12 +1312,12 @@ public class DebugPlugin extends Plugin {
 	 */
 	public static Element parseDocument(String document) throws CoreException {
 		Element root = null;
-		InputStream stream = null;
 		try{
 			DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			parser.setErrorHandler(new DefaultHandler());
-			stream = new ByteArrayInputStream(document.getBytes(StandardCharsets.UTF_8));
-			root = parser.parse(stream).getDocumentElement();
+			try (InputStream stream = new ByteArrayInputStream(document.getBytes(StandardCharsets.UTF_8))) {
+				root = parser.parse(stream).getDocumentElement();
+			}
 		} catch (ParserConfigurationException e) {
 			abort("Unable to parse XML document.", e);  //$NON-NLS-1$
 		} catch (FactoryConfigurationError e) {
@@ -1326,14 +1326,6 @@ public class DebugPlugin extends Plugin {
 			abort("Unable to parse XML document.", e);  //$NON-NLS-1$
 		} catch (IOException e) {
 			abort("Unable to parse XML document.", e);  //$NON-NLS-1$
-		} finally {
-			try{
-				if (stream != null) {
-					stream.close();
-				}
-			} catch(IOException e) {
-				abort("Unable to parse XML document.", e);  //$NON-NLS-1$
-			}
 		}
 		return root;
 	}

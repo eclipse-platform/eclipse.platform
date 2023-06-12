@@ -347,27 +347,30 @@ public class LaunchConfigurationWorkingCopy extends LaunchConfiguration implemen
 						)
 					);
 				}
-				ByteArrayInputStream stream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
-				SubMonitor smonitor = null;
-				if (!file.exists()) {
-					added = true;
-					//create file input stream: work one unit in a sub monitor
-					smonitor = lmonitor.newChild(1);
-					smonitor.setTaskName(MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy_2, new Object[] { getName() }));
-					file.create(stream, false, smonitor);
-				} else {
-					// validate edit
-					if (file.isReadOnly()) {
-						IStatus status = ResourcesPlugin.getWorkspace().validateEdit(new IFile[] {file}, null);
-						if (!status.isOK()) {
-							lmonitor.done();
-							throw new CoreException(status);
+				try (ByteArrayInputStream stream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
+					SubMonitor smonitor = null;
+					if (!file.exists()) {
+						added = true;
+						//create file input stream: work one unit in a sub monitor
+						smonitor = lmonitor.newChild(1);
+						smonitor.setTaskName(MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy_2, new Object[] { getName() }));
+						file.create(stream, false, smonitor);
+					} else {
+						// validate edit
+						if (file.isReadOnly()) {
+							IStatus status = ResourcesPlugin.getWorkspace().validateEdit(new IFile[] {file}, null);
+							if (!status.isOK()) {
+								lmonitor.done();
+								throw new CoreException(status);
+							}
 						}
+						//set the contents of the file: work 1 unit in a sub monitor
+						smonitor = lmonitor.newChild(1);
+						smonitor.setTaskName(MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy_3, new Object[] { getName() }));
+						file.setContents(stream, true, false, smonitor);
 					}
-					//set the contents of the file: work 1 unit in a sub monitor
-					smonitor = lmonitor.newChild(1);
-					smonitor.setTaskName(MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy_3, new Object[] { getName() }));
-					file.setContents(stream, true, false, smonitor);
+				} catch (IOException closeException) {
+					// ignored
 				}
 			}
 			// notify of add/change for both local and shared configurations - see bug 288368
