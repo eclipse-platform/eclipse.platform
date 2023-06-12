@@ -158,6 +158,6 @@ public class BucketTree {
 
 	private char[] translateSegment(String segment) {
 		// String.hashCode algorithm is API
-		return HEX_STRINGS[Math.abs(segment.hashCode()) % SEGMENT_QUOTA];
+		return HEX_STRINGS[Math.abs(Math.abs(segment.hashCode()) % SEGMENT_QUOTA)];
 	}
 }
