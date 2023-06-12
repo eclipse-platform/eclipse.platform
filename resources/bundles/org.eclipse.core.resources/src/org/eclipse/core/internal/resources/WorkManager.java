@@ -249,7 +249,7 @@ public class WorkManager implements IManager {
 	 * Returns true if the workspace lock has already been acquired by this
 	 * thread, and false otherwise.
 	 */
-	boolean isLockAlreadyAcquired() {
+	public boolean isLockAlreadyAcquired() {
 		boolean result = false;
 		try {
 			boolean success = lock.acquire(0L);
