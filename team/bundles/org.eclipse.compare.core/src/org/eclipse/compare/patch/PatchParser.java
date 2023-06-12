@@ -18,9 +18,7 @@ import java.io.IOException;
 
 import org.eclipse.compare.internal.core.CompareSettings;
 import org.eclipse.compare.internal.core.patch.PatchReader;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 
 /**
  * Helper class for parsing patches.
@@ -41,20 +39,13 @@ public class PatchParser {
 	 */
 	public static IFilePatch2[] parsePatch(ReaderCreator content)
 			throws CoreException {
-		BufferedReader reader = new BufferedReader(content.createReader());
-		try {
+		try (BufferedReader reader = new BufferedReader(content.createReader())) {
 			PatchReader patchReader = new PatchReader();
 			patchReader.parse(reader);
 			return patchReader.getAdjustedDiffs();
 		} catch (IOException e) {
 			throw new CoreException(new Status(IStatus.ERROR,
 					CompareSettings.PLUGIN_ID, 0, e.getMessage(), e));
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) {
-				// ignored
-			}
 		}
 	}
 }

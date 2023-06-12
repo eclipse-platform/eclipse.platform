@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -774,36 +773,6 @@ public class Utils {
 			}
 		}
 		job.schedule();
-	}
-
-	public static byte[] readBytes(InputStream in) {
-		ByteArrayOutputStream bos= new ByteArrayOutputStream();
-		try {
-			while (true) {
-				int c= in.read();
-				if (c == -1)
-					break;
-				bos.write(c);
-			}
-
-		} catch (IOException ex) {
-			return null;
-
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException x) {
-					// silently ignored
-				}
-			}
-			try {
-				bos.close();
-			} catch (IOException x) {
-				// silently ignored
-			}
-		}
-		return bos.toByteArray();
 	}
 
 	public static boolean equalObject(Object o1, Object o2) {

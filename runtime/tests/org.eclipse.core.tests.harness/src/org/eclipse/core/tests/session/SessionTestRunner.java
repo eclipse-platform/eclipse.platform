@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -179,58 +178,35 @@ public class SessionTestRunner {
 
 		@Override
 		public void run() {
-			Socket connection = null;
-			try {
-				// someone asked us to stop before we could do anything
+			// someone asked us to stop before we could do anything
+			if (!shouldRun()) {
+				return;
+			}
+			try (Socket s = serverSocket.accept();
+					BufferedReader messageReader = new BufferedReader(
+							new InputStreamReader(s.getInputStream(), "UTF-8"))) {
+				// main loop
+				while (true) {
+					synchronized (this) {
+						processAvailableMessages(messageReader);
+						if (!shouldRun()) {
+							return;
+						}
+						this.wait(150);
+					}
+				}
+			} catch (InterruptedException e) {
+				// not expected
+			} catch (IOException e) {
 				if (!shouldRun()) {
+					// we have been finished without ever getting any connections
+					// no need to throw exception
 					return;
 				}
-				try {
-					connection = serverSocket.accept();
-				} catch (SocketException se) {
-					if (!shouldRun()) {
-						// we have been finished without ever getting any connections
-						// no need to throw exception
-						return;
-					}
-					// something else stopped us
-					throw se;
-				}
-				BufferedReader messageReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-				try {
-					// main loop
-					while (true) {
-						synchronized (this) {
-							processAvailableMessages(messageReader);
-							if (!shouldRun()) {
-								return;
-							}
-							this.wait(150);
-						}
-					}
-				} catch (InterruptedException e) {
-					// not expected
-				}
-			} catch (IOException e) {
 				CoreTest.log(CoreTest.PI_HARNESS, e);
 			} finally {
 				// remember we are already finished
 				markAsFinished();
-				// cleanup
-				try {
-					if (connection != null && !connection.isClosed()) {
-						connection.close();
-					}
-				} catch (IOException e) {
-					CoreTest.log(CoreTest.PI_HARNESS, e);
-				}
-				try {
-					if (serverSocket != null && !serverSocket.isClosed()) {
-						serverSocket.close();
-					}
-				} catch (IOException e) {
-					CoreTest.log(CoreTest.PI_HARNESS, e);
-				}
 			}
 		}
 

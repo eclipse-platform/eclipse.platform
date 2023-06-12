@@ -95,21 +95,17 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 			} else {
 				IResource resource = getResource();
 				if (resource instanceof IFile) {
-					ByteArrayInputStream is = new ByteArrayInputStream(getContent());
-					try {
+					try (ByteArrayInputStream is = new ByteArrayInputStream(getContent())) {
 						IFile file = (IFile) resource;
 						if (file.exists())
 							file.setContents(is, false, true, monitor);
 						else
 							file.create(is, false, monitor);
 						fDirty = false;
+					} catch (IOException closeException) {
+						// ignored
 					} finally {
 						fireContentChanged();
-						if (is != null)
-							try {
-								is.close();
-							} catch (IOException ex) {
-							}
 					}
 				}
 				updateTimestamp();

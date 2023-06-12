@@ -28,22 +28,14 @@ public class LineReader {
 	 */
 	public static List<String> load(ReaderCreator content, boolean create) {
 		List<String> lines = null;
-		BufferedReader bufferedReader = null;
 		if (!create && content != null && content.canCreateReader()) {
 			// read current contents
-			try {
-				bufferedReader = new BufferedReader(content.createReader());
+			try (BufferedReader bufferedReader = new BufferedReader(content.createReader())) {
 				lines = readLines(bufferedReader);
 			} catch (CoreException ex) {
 				Platform.getLog(LineReader.class).error(Messages.Activator_1, ex);
-			} finally {
-				if (bufferedReader != null) {
-					try {
-						bufferedReader.close();
-					} catch (IOException ex) {
-						// silently ignored
-					}
-				}
+			} catch (IOException closeException) {
+				// silently ignored
 			}
 		}
 

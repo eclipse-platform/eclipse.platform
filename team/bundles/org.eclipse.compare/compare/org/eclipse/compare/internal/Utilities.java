@@ -15,7 +15,6 @@
 package org.eclipse.compare.internal;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -240,31 +239,6 @@ public class Utilities {
 	public static IFile[] getFiles(ISelection selection) {
 		ArrayList<IResource> tmp= internalGetResources(selection, IFile.class);
 		return tmp.toArray(new IFile[tmp.size()]);
-	}
-
-	public static byte[] readBytes(InputStream in) {
-		ByteArrayOutputStream bos= new ByteArrayOutputStream();
-		try {
-			while (true) {
-				int c= in.read();
-				if (c == -1)
-					break;
-				bos.write(c);
-			}
-
-		} catch (IOException ex) {
-			return null;
-
-		} finally {
-			Utilities.close(in);
-			try {
-				bos.close();
-			} catch (IOException x) {
-				// silently ignored
-			}
-		}
-
-		return bos.toByteArray();
 	}
 
 	public static IPath getIconPath(Display display) {
@@ -633,30 +607,20 @@ public class Utilities {
 	public static String readString(InputStream is, String encoding, int length, IProgressMonitor monitor) throws IOException {
 		SubMonitor progress = SubMonitor.convert(monitor);
 		progress.setWorkRemaining(length);
-		if (is == null)
+		if (is == null) {
 			return null;
-		BufferedReader reader= null;
-		try {
+		}
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding))) {
 			StringBuilder buffer= new StringBuilder();
 			char[] part= new char[2048];
 			int read= 0;
-			reader= new BufferedReader(new InputStreamReader(is, encoding));
 			while ((read= reader.read(part)) != -1) {
 				buffer.append(part, 0, read);
 				progress.worked(2048);
 				if (progress.isCanceled())
 					throw new OperationCanceledException();
 			}
-
 			return buffer.toString();
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException ex) {
-					// silently ignored
-				}
-			}
 		}
 	}
 

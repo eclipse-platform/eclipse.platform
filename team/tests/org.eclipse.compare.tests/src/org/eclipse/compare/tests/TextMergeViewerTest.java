@@ -115,12 +115,11 @@ public class TextMergeViewerTest  {
 			if (other instanceof IStreamContentAccessor && child instanceof IEditableContent) {
 				IEditableContent dst= (IEditableContent) child;
 
-				try {
-					InputStream is= ((IStreamContentAccessor)other).getContents();
-					byte[] bytes= Utilities.readBytes(is);
+				try (InputStream is= ((IStreamContentAccessor)other).getContents()) {
+					byte[] bytes= is.readAllBytes();
 					if (bytes != null)
 						dst.setContent(bytes);
-				} catch (CoreException ex) {
+				} catch (CoreException | IOException ex) {
 					throw new WrappedException(ex);
 				}
 			}

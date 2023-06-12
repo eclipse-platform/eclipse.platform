@@ -578,11 +578,9 @@ protected Control createContents(Composite parent){
 					// but the JSch API does not provided such a method.
 					// In the version 0.1.45, JSch will support such a method,
 					// and the following code should be replaced with it at that time.
-					java.io.FileInputStream fis=null;
-					try{
-						java.io.File f=new java.io.File(pkeyab+".pub"); //$NON-NLS-1$
-						int i=0;
-						fis=new java.io.FileInputStream(f);
+					java.io.File f = new java.io.File(pkeyab + ".pub"); //$NON-NLS-1$
+					int i = 0;
+					try (java.io.FileInputStream fis = new java.io.FileInputStream(f)) {
 						byte[] buf=new byte[(int)f.length()];
 						while(i<buf.length){
 							int j=fis.read(buf, i, buf.length-i);
@@ -603,10 +601,6 @@ protected Control createContents(Composite parent){
 					}
 					catch(IOException ioe){
 						// ignore if public-key does not exist.
-					}
-					finally{
-						if(fis!=null)
-							fis.close();
 					}
 
 					ByteArrayOutputStream out=new ByteArrayOutputStream();
