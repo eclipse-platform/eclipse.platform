@@ -190,11 +190,15 @@ public class BuildFileCreator {
 
 				// write build file
 				String xml = ExportUtil.toString(instance.doc);
-				InputStream is = new ByteArrayInputStream(xml.getBytes("UTF-8")); //$NON-NLS-1$
-				if (file.exists()) {
-					file.setContents(is, true, true, null);
-				} else {
-					file.create(is, true, null);
+				try (InputStream is = new ByteArrayInputStream(xml.getBytes("UTF-8"))) { //$NON-NLS-1$
+					if (file.exists()) {
+						file.setContents(is, true, true, null);
+					} else {
+						file.create(is, true, null);
+					}
+				}
+				catch (IOException closException) {
+					// ignored
 				}
 				if (localmonitor.isCanceled()) {
 					return;

@@ -14,10 +14,10 @@
 package org.eclipse.compare;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.compare.internal.ContentChangeNotifier;
-import org.eclipse.compare.internal.Utilities;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -82,11 +82,10 @@ public abstract class BufferedContent implements IContentChangeNotifier, IStream
 	 */
 	public byte[] getContent() {
 		if (fContent == null) {
-			try {
-				InputStream is= createStream();
-				fContent= Utilities.readBytes(is);
-			} catch(CoreException ex) {
-				// NeedWork
+			try (InputStream is = createStream()) {
+				fContent = is.readAllBytes();
+			} catch (IOException | CoreException ex) {
+				return null;
 			}
 		}
 		return fContent;

@@ -214,22 +214,14 @@ public class ProjectSetImporter {
 	}
 
 	private static XMLMemento filenameToXMLMemento(String filename) throws InvocationTargetException {
-		InputStreamReader reader = null;
-		try {
-			reader = new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8);
+		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8)){
 			return XMLMemento.createReadRoot(reader);
 		} catch (FileNotFoundException e) {
 			throw new InvocationTargetException(e);
 		} catch (WorkbenchException e) {
 			throw new InvocationTargetException(e);
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					throw new InvocationTargetException(e);
-				}
-			}
+		} catch (IOException e) {
+			throw new InvocationTargetException(e);
 		}
 	}
 

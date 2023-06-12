@@ -236,14 +236,7 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 	Set<IResource> readControlFile(IFile controlFile) {
 		Set<IResource> controlledResources = new HashSet<>(1);
 		if (controlFile.exists()) {
-			InputStream in= null;
-			try {
-				try {
-					in= controlFile.getContents(true);
-				} catch (CoreException e) {
-					PessimisticFilesystemProviderPlugin.getInstance().logError(e, "Could not open stream on control file: " + controlFile);
-				}
-				DataInputStream dIn= new DataInputStream(in);
+			try (InputStream in = controlFile.getContents(true); DataInputStream dIn = new DataInputStream(in)) {
 				int count= 0;
 				try {
 					count= dIn.readInt();
@@ -268,21 +261,17 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 						}
 					}
 				}
-			} finally {
-				if (in != null) {
-					try {
-						in.close();
-					} catch (IOException e) {
-						PessimisticFilesystemProviderPlugin.getInstance().logError(e, "Problems closing input stream on control file: " + controlFile);
-					}
-				}
+			} catch (IOException | CoreException e) {
+				PessimisticFilesystemProviderPlugin.getInstance().logError(e,
+						"Could not read control file: " + controlFile);
 			}
 		}
 		return controlledResources;
 	}
 
 	/*
-	 * Writes the currently controled resources to the control file for the container.
+	 * Writes the currently controlled resources to the control file for the
+	 * container.
 	 */
 	private void writeControlFile(IContainer container, IProgressMonitor monitor) throws CoreException {
 		IFile controlFile= getControlFile(container, monitor);

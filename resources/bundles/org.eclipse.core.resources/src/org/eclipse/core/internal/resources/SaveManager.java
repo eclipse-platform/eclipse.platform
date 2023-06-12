@@ -1333,43 +1333,19 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	public void saveRefreshSnapshot(Project project, URI snapshotLocation, IProgressMonitor monitor) throws CoreException {
 		IFileStore store = EFS.getStore(snapshotLocation);
 		IPath snapshotPath = new Path(snapshotLocation.getPath());
-		java.io.File tmpTree = null;
-		try {
-			tmpTree = java.io.File.createTempFile("tmp", ".tree"); //$NON-NLS-1$//$NON-NLS-2$
-		} catch (IOException e) {
-			throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, snapshotPath, Messages.resources_copyProblem, e);
-		}
-		ZipOutputStream out = null;
-		try {
-			FileOutputStream fis = new FileOutputStream(tmpTree);
-			try (
-				DataOutputStream output = new DataOutputStream(fis);
-			) {
+		try (ByteArrayOutputStream tmp = new ByteArrayOutputStream()) {
+			try (DataOutputStream output = new DataOutputStream(tmp)) {
 				output.writeInt(ICoreConstants.WORKSPACE_TREE_VERSION_2);
 				writeTree(project, output, monitor);
 			}
-			OutputStream snapOut = store.openOutputStream(EFS.NONE, monitor);
-			out = new ZipOutputStream(snapOut);
-			out.setLevel(Deflater.BEST_COMPRESSION);
-			ZipEntry e = new ZipEntry("resource-index.tree"); //$NON-NLS-1$
-			out.putNextEntry(e);
-			int read = 0;
-			byte[] buffer = new byte[4096];
-			try (
-				InputStream in = new FileInputStream(tmpTree);
-			) {
-				while ((read = in.read(buffer)) >= 0) {
-					out.write(buffer, 0, read);
-				}
-				out.closeEntry();
+			try (ZipOutputStream out = new ZipOutputStream(store.openOutputStream(EFS.NONE, monitor))) {
+				out.setLevel(Deflater.BEST_COMPRESSION);
+				ZipEntry e = new ZipEntry("resource-index.tree"); //$NON-NLS-1$
+				out.putNextEntry(e);
+				tmp.writeTo(out);
 			}
-			out.close();
 		} catch (IOException e) {
 			throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, snapshotPath, Messages.resources_copyProblem, e);
-		} finally {
-			FileUtil.safeClose(out);
-			if (tmpTree != null)
-				tmpTree.delete();
 		}
 	}
 
