@@ -450,9 +450,9 @@ public class QuicklinksViewer implements IIntroContentProvider {
 		}
 		try {
 			File tempFile = File.createTempFile("qlink", "png"); //$NON-NLS-1$ //$NON-NLS-2$
-			FileOutputStream fos = new FileOutputStream(tempFile);
-			fos.write(output.toByteArray());
-			fos.close();
+			try (FileOutputStream fos = new FileOutputStream(tempFile)){
+				fos.write(output.toByteArray());
+			}
 			tempFile.deleteOnExit();
 			return tempFile.toURI().toString();
 		} catch (IOException e) {
