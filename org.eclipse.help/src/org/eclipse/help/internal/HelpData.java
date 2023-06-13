@@ -173,9 +173,8 @@ public class HelpData {
 		hiddenIndexes = new HashSet<>();
 		sortMode = "true"; //$NON-NLS-1$
 		if (url != null) {
-			try {
+			try (InputStream in = url.openStream()) {
 				SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-				InputStream in = url.openStream();
 				parser.parse(in, new Handler());
 			}
 			catch (Throwable t) {
