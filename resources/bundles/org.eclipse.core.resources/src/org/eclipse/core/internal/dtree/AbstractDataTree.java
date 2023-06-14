@@ -30,7 +30,7 @@ public abstract class AbstractDataTree {
 	/**
 	 * Whether modifications to the given source tree are allowed
 	 */
-	private boolean immutable = false;
+	private volatile boolean immutable;
 
 	/**
 	 * Singleton indicating no children
