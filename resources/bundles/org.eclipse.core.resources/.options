@@ -82,3 +82,10 @@ org.eclipse.core.resources/contenttype/cache=false
 
 # Prints debug information about resource change event notifications
 org.eclipse.core.resources/notifications=false
+
+# Reports calls to AbstractDataTree.immutable()
+org.eclipse.core.resources/tree/immutable=false
+
+# Prints stack trace for calls to AbstractDataTree.immutable()
+# Requires org.eclipse.core.resources/tree/immutable=true
+org.eclipse.core.resources/tree/immutablestack=false

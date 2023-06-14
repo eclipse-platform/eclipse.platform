@@ -14,8 +14,10 @@
 package org.eclipse.core.internal.dtree;
 
 import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -165,8 +167,13 @@ public abstract class AbstractDataTree {
 	 * Handles the case where an attempt was made to modify the tree when it was in
 	 * an immutable state. Throws an unchecked exception.
 	 */
-	static void handleImmutableTree() {
-		throw new RuntimeException(Messages.dtree_immutable);
+	void handleImmutableTree() {
+		String message = NLS.bind(Messages.dtree_immutable, this + " #" + System.identityHashCode(this)); //$NON-NLS-1$
+		RuntimeException exception = new RuntimeException(message);
+		if (Policy.DEBUG_TREE_IMMUTABLE) {
+			Policy.debug(exception);
+		}
+		throw exception;
 	}
 
 	/**
@@ -183,6 +190,27 @@ public abstract class AbstractDataTree {
 	 */
 	public void immutable() {
 		immutable = true;
+		if (Policy.DEBUG_TREE_IMMUTABLE) {
+			traceImmutable();
+		}
+	}
+
+	private void traceImmutable() {
+		String message = "immutable() called for " + this + " #" + System.identityHashCode(this); //$NON-NLS-1$ //$NON-NLS-2$
+		message += " (rule: " + Job.getJobManager().currentRule() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+		if (Policy.DEBUG_TREE_IMMUTABLE_STACK) {
+			Job currentJob = Job.getJobManager().currentJob();
+			if (currentJob == null) {
+				Policy.debug(new RuntimeException(message + " (not from a job)")); //$NON-NLS-1$
+			} else if (currentJob.getClass().getSimpleName().contains("AutoBuildJob")) { //$NON-NLS-1$
+				// don't need to pollute the log with autobuild stack
+				Policy.debug(message);
+			} else {
+				Policy.debug(new RuntimeException(message));
+			}
+		} else {
+			Policy.debug(message);
+		}
 	}
 
 	/**
@@ -240,13 +268,6 @@ public abstract class AbstractDataTree {
 	 *	receiver is immutable
 	 */
 	public abstract void setData(IPath key, Object data);
-
-	/**
-	 * Sets the immutable field.
-	 */
-	void setImmutable(boolean bool) {
-		immutable = bool;
-	}
 
 	/**
 	 * Sets the root node of the tree.

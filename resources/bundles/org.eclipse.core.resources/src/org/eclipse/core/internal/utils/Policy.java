@@ -42,6 +42,9 @@ public class Policy {
 			DEBUG_BUILD_NEEDED_STACK = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/needbuildstack", false); //$NON-NLS-1$
 			DEBUG_BUILD_STACK = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/stacktrace", false); //$NON-NLS-1$
 
+			Policy.DEBUG_TREE_IMMUTABLE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/tree/immutable", false); //$NON-NLS-1$
+			Policy.DEBUG_TREE_IMMUTABLE_STACK = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/tree/immutablestack", false); //$NON-NLS-1$
+			
 			DEBUG_CONTENT_TYPE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/contenttype", false); //$NON-NLS-1$
 			DEBUG_CONTENT_TYPE_CACHE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/contenttype/cache", false); //$NON-NLS-1$
 			DEBUG_HISTORY = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/history", false); //$NON-NLS-1$
@@ -56,7 +59,6 @@ public class Policy {
 			DEBUG_RESTORE_SNAPSHOTS = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/snapshots", false); //$NON-NLS-1$
 			DEBUG_RESTORE_SYNCINFO = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/syncinfo", false); //$NON-NLS-1$
 			DEBUG_RESTORE_TREE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/tree", false); //$NON-NLS-1$
-
 			DEBUG_SAVE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save", false); //$NON-NLS-1$
 			DEBUG_SAVE_MARKERS = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/markers", false); //$NON-NLS-1$
 			DEBUG_SAVE_MASTERTABLE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/mastertable", false); //$NON-NLS-1$
@@ -84,6 +86,9 @@ public class Policy {
 	public static boolean DEBUG_BUILD_NEEDED_DELTA = false;
 	public static boolean DEBUG_BUILD_NEEDED_STACK = false;
 	public static boolean DEBUG_BUILD_STACK = false;
+
+	public static boolean DEBUG_TREE_IMMUTABLE_STACK = false;
+	public static boolean DEBUG_TREE_IMMUTABLE = false;
 
 	public static boolean DEBUG_CONTENT_TYPE = false;
 	public static boolean DEBUG_CONTENT_TYPE_CACHE = false;
