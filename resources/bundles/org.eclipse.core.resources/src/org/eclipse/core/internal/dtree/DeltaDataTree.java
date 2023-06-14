@@ -1004,9 +1004,9 @@ public class DeltaDataTree extends AbstractDataTree {
 		}
 
 		return this.getClass().getSimpleName() + ' ' + getRootData() //
-				+ "->" + (parent == null ? null : parent.getRootData()) // $NON-NLS-1$ //$NON-NLS-1$
-				+ "->...depth " + depth + "..." //$NON-NLS-1$ //$NON-NLS-2$
-				+ "->" + (parent == null ? null : root.getRootData()) // $NON-NLS-1$ //$NON-NLS-1$
-				+ " rootNode=" + rootNode.toShortString(); //$NON-NLS-1$
+				+ "-> " + (parent == null ? null : parent.getRootData()) // $NON-NLS-1$ //$NON-NLS-1$
+				+ "-> depth " + depth //$NON-NLS-1$
+				+ "-> " + (parent == null ? null : root.getRootData()) // $NON-NLS-1$ //$NON-NLS-1$
+				+ " / rootNode=" + rootNode.toShortString(); //$NON-NLS-1$
 	}
 }
