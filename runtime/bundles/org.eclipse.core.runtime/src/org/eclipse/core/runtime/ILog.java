@@ -14,7 +14,9 @@
  *******************************************************************************/
 package org.eclipse.core.runtime;
 
+import org.eclipse.core.internal.runtime.InternalPlatform;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * A log to which status events can be written.  Logs appear on individual
@@ -131,5 +133,46 @@ public interface ILog {
 	 */
 	default void error(String message, Throwable throwable) {
 		log(new Status(IStatus.ERROR, getBundle().getSymbolicName(), message, throwable));
+	}
+
+	/**
+	 * Returns the log for the given bundle. If no such log exists, one is created.
+	 *
+	 * @param bundle the bundle whose log is returned
+	 * @return the log for the given bundle
+	 * @since 3.28
+	 */
+	public static ILog of(Bundle bundle) {
+		return InternalPlatform.getDefault().getLog(bundle);
+	}
+
+	/**
+	 * Returns the log for the bundle of the given class. If no such log exists, one
+	 * is created.
+	 *
+	 * @param clazz the class in a bundle whose log is returned
+	 * @return the log for the bundle to which the clazz belongs
+	 *
+	 * @since 3.28
+	 */
+	public static ILog of(Class<?> clazz) {
+		Bundle bundle = FrameworkUtil.getBundle(clazz);
+		return InternalPlatform.getDefault().getLog(bundle);
+	}
+
+	/**
+	 * Returns the log for the bundle of the calling class. If no such log exists,
+	 * one is created.
+	 *
+	 * @return the log for the bundle to which the caller belongs
+	 *
+	 * @since 3.28
+	 */
+	public static ILog get() {
+		try {
+			return of(InternalPlatform.STACK_WALKER.getCallerClass());
+		} catch (IllegalCallerException e) {
+			return of(ILog.class);
+		}
 	}
 }
