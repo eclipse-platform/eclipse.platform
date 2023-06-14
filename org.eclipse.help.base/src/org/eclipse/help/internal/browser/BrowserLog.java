@@ -18,10 +18,9 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import org.eclipse.help.internal.base.HelpBasePlugin;
 
 /**
@@ -30,7 +29,8 @@ import org.eclipse.help.internal.base.HelpBasePlugin;
 public class BrowserLog {
 	private String logFileName;
 	private boolean newSession;
-	DateFormat formatter = new SimpleDateFormat("MMM dd, yyyy kk:mm:ss.SS"); //$NON-NLS-1$
+	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy kk:mm:ss.SS") //$NON-NLS-1$
+			.withZone(ZoneId.systemDefault());
 	String LN = System.lineSeparator();
 
 	private static class LogHolder {
@@ -69,10 +69,10 @@ public class BrowserLog {
 				new OutputStreamWriter(new FileOutputStream(logFileName, true), StandardCharsets.UTF_8))) {
 			if (newSession) {
 				newSession = false;
-				outWriter.write(LN + formatter.format(new Date())
+				outWriter.write(LN + formatter.format(Instant.now())
 						+ " NEW SESSION" + LN); //$NON-NLS-1$
 			}
-			outWriter.write(formatter.format(new Date()) + " " + message + LN); //$NON-NLS-1$
+			outWriter.write(formatter.format(Instant.now()) + " " + message + LN); //$NON-NLS-1$
 			outWriter.flush();
 			outWriter.close();
 		} catch (Exception e) {
