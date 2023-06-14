@@ -912,7 +912,7 @@ public abstract class AbstractTableRendering extends AbstractBaseTableRendering 
 				try {
 					topVisibleAddress = ((IMemoryBlockExtension)getMemoryBlock()).getBigBaseAddress();
 				} catch (DebugException e1) {
-					topVisibleAddress = new BigInteger("0"); //$NON-NLS-1$
+					topVisibleAddress = BigInteger.ZERO;
 				}
 			}
 			else
@@ -933,10 +933,10 @@ public abstract class AbstractTableRendering extends AbstractBaseTableRendering 
 					selectedAddress = ((IMemoryBlockExtension) getMemoryBlock())
 							.getBigBaseAddress();
 				} catch (DebugException e1) {
-					selectedAddress = new BigInteger("0"); //$NON-NLS-1$
+					selectedAddress = BigInteger.ZERO;
 				}
 				if (selectedAddress == null) {
-					selectedAddress = new BigInteger("0"); //$NON-NLS-1$
+					selectedAddress = BigInteger.ZERO;
 				}
 
 			} else {
@@ -2253,7 +2253,7 @@ public abstract class AbstractTableRendering extends AbstractBaseTableRendering 
 	private BigInteger getTopVisibleAddress() {
 
 		if (fTableViewer == null) {
-			return BigInteger.valueOf(0);
+			return BigInteger.ZERO;
 		}
 
 		Table table = fTableViewer.getTable();
@@ -2278,7 +2278,7 @@ public abstract class AbstractTableRendering extends AbstractBaseTableRendering 
 			BigInteger bigInt = new BigInteger(calculatedAddress, 16);
 			return bigInt;
 		}
-		return BigInteger.valueOf(0);
+		return BigInteger.ZERO;
 	}
 
 	private int findAddressIndex(BigInteger address)
@@ -2719,7 +2719,7 @@ public abstract class AbstractTableRendering extends AbstractBaseTableRendering 
 
 			// if there are only 3 lines left at the top, refresh
 			BigInteger numTopLine = topVisibleAddress.subtract(startAddress).divide(BigInteger.valueOf(addressableUnit));
-			if (numTopLine.compareTo(BigInteger.valueOf(getBufferThreshold(BUFFER_START))) <= 0 && (startAddress.compareTo(BigInteger.valueOf(0)) != 0))
+			if (numTopLine.compareTo(BigInteger.valueOf(getBufferThreshold(BUFFER_START))) <= 0 && (startAddress.compareTo(BigInteger.ZERO) != 0))
 			{
 				if (!isAtTopLimit() && getBufferThreshold(BUFFER_START) > 0) {
 					return true;

@@ -145,7 +145,7 @@ public class SampleEngine {
 
 		while (enumeration.hasMoreElements()) {
 			BigInteger key = enumeration.nextElement();
-			if (key.remainder(BigInteger.valueOf(randomChange)).equals(BigInteger.valueOf(0))) {
+			if (key.remainder(BigInteger.valueOf(randomChange)).equals(BigInteger.ZERO)) {
 				byte[] x = new byte[getAddressableSize()];
 				random.nextBytes(x);
 

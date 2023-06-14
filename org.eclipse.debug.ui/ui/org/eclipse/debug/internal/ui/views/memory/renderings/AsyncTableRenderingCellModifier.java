@@ -269,9 +269,8 @@ public class AsyncTableRenderingCellModifier implements ICellModifier {
 			memoryAddr = BigInteger.valueOf(memory.getStartAddress());
 		}
 
-		if (memoryAddr == null)
-		 {
-			memoryAddr = new BigInteger("0"); //$NON-NLS-1$
+		if (memoryAddr == null) {
+			memoryAddr = BigInteger.ZERO;
 		}
 
 		return lineAddress.subtract(memoryAddr).add(BigInteger.valueOf(lineOffset));

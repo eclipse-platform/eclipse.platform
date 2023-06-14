@@ -99,7 +99,7 @@ public class TableRenderingContentInput extends PlatformObject {
 			try {
 				updateContentBaseAddress();
 			} catch (DebugException e) {
-				fMemoryBlockBaseAddress = new BigInteger("0"); //$NON-NLS-1$
+				fMemoryBlockBaseAddress = BigInteger.ZERO;
 			}
 		}
 
@@ -133,11 +133,11 @@ public class TableRenderingContentInput extends PlatformObject {
 				}
 			} catch (DebugException e) {
 				// default to 0 if we have trouble getting the start address
-				fStartAddress =  BigInteger.valueOf(0);
+				fStartAddress =  BigInteger.ZERO;
 			}
 
 			if (fStartAddress == null) {
-				fStartAddress =  BigInteger.valueOf(0);
+				fStartAddress =  BigInteger.ZERO;
 			}
 		}
 		return fStartAddress;

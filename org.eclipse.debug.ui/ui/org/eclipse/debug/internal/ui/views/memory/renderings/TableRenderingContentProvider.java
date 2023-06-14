@@ -193,9 +193,8 @@ public class TableRenderingContentProvider extends BasicDebugViewContentProvider
 
 		// calculate top buffered address
 		BigInteger loadAddress = fInput.getLoadAddress();
-		if (loadAddress == null)
-		{
-			loadAddress = new BigInteger("0"); //$NON-NLS-1$
+		if (loadAddress == null) {
+			loadAddress = BigInteger.ZERO;
 		}
 
 		BigInteger mbStart = fInput.getStartAddress();

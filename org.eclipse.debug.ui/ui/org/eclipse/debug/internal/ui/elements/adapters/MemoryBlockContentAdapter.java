@@ -128,7 +128,7 @@ public class MemoryBlockContentAdapter extends AsynchronousContentAdapter {
 			// calculate top buffered address
 			BigInteger loadAddress = descriptor.getLoadAddress();
 			if (loadAddress == null) {
-				loadAddress = new BigInteger("0"); //$NON-NLS-1$
+				loadAddress = BigInteger.ZERO;
 			}
 
 			BigInteger mbStart = descriptor.getStartAddress();

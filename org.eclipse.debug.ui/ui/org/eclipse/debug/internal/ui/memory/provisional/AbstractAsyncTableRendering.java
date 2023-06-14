@@ -872,7 +872,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 				try {
 					topVisibleAddress = ((IMemoryBlockExtension) getMemoryBlock()).getBigBaseAddress();
 				} catch (DebugException e1) {
-					topVisibleAddress = new BigInteger("0"); //$NON-NLS-1$
+					topVisibleAddress = BigInteger.ZERO;
 				}
 			} else {
 				topVisibleAddress = BigInteger.valueOf(getMemoryBlock().getStartAddress());
@@ -1552,7 +1552,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 	private BigInteger getTopVisibleAddress() {
 
 		if (fTableViewer == null) {
-			return BigInteger.valueOf(0);
+			return BigInteger.ZERO;
 		}
 
 		Table table = fTableViewer.getTable();

@@ -80,7 +80,7 @@ public class RenderingsUtil {
 			array = fillArray(array, 8, endianess);
 		}
 
-		BigInteger value = new BigInteger("0"); //$NON-NLS-1$
+		BigInteger value = BigInteger.ZERO;
 		if (endianess == RenderingsUtil.LITTLE_ENDIAN)
 		{
 			for (int i = 0; i < 8; i += addressableSize) {
@@ -203,7 +203,7 @@ public class RenderingsUtil {
 			array = fillArray(array, 16, endianess);
 		}
 
-		BigInteger value = new BigInteger("0"); //$NON-NLS-1$
+		BigInteger value = BigInteger.ZERO;
 		if (endianess == RenderingsUtil.LITTLE_ENDIAN)
 		{
 			for (int i = 0; i < 16; i += addressableSize) {
@@ -239,7 +239,7 @@ public class RenderingsUtil {
 			array = fillArray(array, arraySize, endianess);
 		}
 
-		BigInteger value = new BigInteger("0"); //$NON-NLS-1$
+		BigInteger value = BigInteger.ZERO;
 		if (endianess == RenderingsUtil.LITTLE_ENDIAN)
 		{
 			for (int i = 0; i < arraySize; i += addressableSize) {
@@ -546,7 +546,9 @@ public class RenderingsUtil {
 	{
 		char charArray[] = new char[2];
 		int val = aByte;
-		if (val<0) val += 256;
+		if (val<0) {
+			val += 256;
+		}
 		charArray[0] = Character.forDigit(val/16, 16);
 		charArray[1] = Character.forDigit(val%16, 16);
 
@@ -563,8 +565,9 @@ public class RenderingsUtil {
 	 */
 	public static byte[] convertHexStringToByteArray(String str, int numBytes, int numCharsPerByte) throws NumberFormatException
 	{
-		if (str.length() == 0)
+		if (str.length() == 0) {
 			return null;
+		}
 
 		StringBuilder buf = new StringBuilder(str);
 

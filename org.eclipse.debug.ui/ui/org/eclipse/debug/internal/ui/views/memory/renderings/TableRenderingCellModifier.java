@@ -228,9 +228,8 @@ public class TableRenderingCellModifier implements ICellModifier {
 			memoryAddr = BigInteger.valueOf(memory.getStartAddress());
 		}
 
-		if (memoryAddr == null)
-		 {
-			memoryAddr = new BigInteger("0"); //$NON-NLS-1$
+		if (memoryAddr == null) {
+			memoryAddr = BigInteger.ZERO;
 		}
 
 		return lineAddr.subtract(memoryAddr).add(BigInteger.valueOf(lineOffset));

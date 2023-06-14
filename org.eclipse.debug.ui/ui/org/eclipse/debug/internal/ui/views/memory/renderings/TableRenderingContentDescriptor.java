@@ -74,7 +74,7 @@ public class TableRenderingContentDescriptor{
 			try {
 				updateContentBaseAddress();
 			} catch (DebugException e) {
-				fMemoryBlockBaseAddress = new BigInteger("0"); //$NON-NLS-1$
+				fMemoryBlockBaseAddress = BigInteger.ZERO;
 			}
 		}
 
@@ -83,10 +83,11 @@ public class TableRenderingContentDescriptor{
 
 	public void updateContentBaseAddress() throws DebugException {
 		IMemoryBlock memoryBlock = fRendering.getMemoryBlock();
-		if (memoryBlock instanceof IMemoryBlockExtension)
+		if (memoryBlock instanceof IMemoryBlockExtension) {
 			fMemoryBlockBaseAddress = ((IMemoryBlockExtension)memoryBlock).getBigBaseAddress();
-		else
+		} else {
 			fMemoryBlockBaseAddress = BigInteger.valueOf(memoryBlock.getStartAddress());
+		}
 	}
 
 	/**
@@ -101,16 +102,18 @@ public class TableRenderingContentDescriptor{
 				if(memoryBlock instanceof IMemoryBlockExtension)
 				{
 					BigInteger startAddress = ((IMemoryBlockExtension)memoryBlock).getMemoryBlockStartAddress();
-					if (startAddress != null)
+					if (startAddress != null) {
 						fStartAddress =  startAddress;
+					}
 				}
 			} catch (DebugException e) {
 				// default to 0 if we have trouble getting the start address
-				fStartAddress =  BigInteger.valueOf(0);
+				fStartAddress =  BigInteger.ZERO;
 			}
 
-			if (fStartAddress == null)
-				fStartAddress =  BigInteger.valueOf(0);
+			if (fStartAddress == null) {
+				fStartAddress =  BigInteger.ZERO;
+			}
 		}
 		return fStartAddress;
 	}
@@ -128,8 +131,9 @@ public class TableRenderingContentDescriptor{
 				BigInteger endAddress;
 				try {
 					endAddress = ((IMemoryBlockExtension)memoryBlock).getMemoryBlockEndAddress();
-					if (endAddress != null)
+					if (endAddress != null) {
 						fEndAddress = endAddress;
+					}
 				} catch (DebugException e) {
 					fEndAddress = null;
 				}
@@ -150,8 +154,9 @@ public class TableRenderingContentDescriptor{
 				}
 			}
 
-			if (fEndAddress == null)
+			if (fEndAddress == null) {
 				fEndAddress = BigInteger.valueOf(Integer.MAX_VALUE);
+			}
 		}
 		return fEndAddress;
 	}
