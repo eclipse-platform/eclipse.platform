@@ -922,7 +922,7 @@ public final class Platform {
 	 * @since 3.0
 	 */
 	public static ILog getLog(Bundle bundle) {
-		return InternalPlatform.getDefault().getLog(bundle);
+		return ILog.of(bundle);
 	}
 
 	/**
@@ -935,8 +935,7 @@ public final class Platform {
 	 * @since 3.16
 	 */
 	public static ILog getLog(Class<?> clazz) {
-		Bundle bundle = FrameworkUtil.getBundle(clazz);
-		return InternalPlatform.getDefault().getLog(bundle);
+		return ILog.of(clazz);
 	}
 
 	/**
