@@ -4,23 +4,14 @@ Bundle-Name: User Assistance Test
 Bundle-SymbolicName: org.eclipse.ua.tests;singleton:=true
 Bundle-Version: 3.6.100.qualifier
 Require-Bundle: org.junit,
- org.eclipse.core.resources,
- org.eclipse.core.runtime,
- org.eclipse.help,
- org.eclipse.help.base,
  org.eclipse.help.ui,
  org.eclipse.help.webapp,
  org.eclipse.test.performance,
- org.eclipse.ui,
  org.eclipse.ui.cheatsheets,
  org.eclipse.ui.intro,
  org.eclipse.ui.intro.universal,
  org.eclipse.ui.forms,
- org.eclipse.ui.browser;bundle-version="3.2.300",
- org.eclipse.equinox.jsp.jasper;bundle-version="1.0.200",
  org.eclipse.equinox.jsp.jasper.registry;bundle-version="1.0.100",
- org.apache.lucene.analysis-common;bundle-version="9.4.2",
- org.apache.lucene.analysis-smartcn;bundle-version="9.4.2",
  org.apache.lucene.core;bundle-version="9.4.2",
  org.eclipse.equinox.http.registry;bundle-version="1.3.100"
 Bundle-ActivationPolicy: lazy
