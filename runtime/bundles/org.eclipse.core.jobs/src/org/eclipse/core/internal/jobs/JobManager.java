@@ -224,8 +224,9 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * Returns the job manager singleton. For internal use only.
 	 */
 	static synchronized JobManager getInstance() {
-		if (instance == null)
-			new JobManager();
+		if (instance == null) {
+			instance = new JobManager();
+		}
 		return instance;
 	}
 
@@ -280,7 +281,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * For this reason, this method should be considered near-API and should not
 	 * be changed if at all possible.
 	 */
-	public static void shutdown() {
+	public synchronized static void shutdown() {
 		if (instance != null) {
 			instance.doShutdown();
 			instance = null;
@@ -289,7 +290,6 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 
 	private JobManager() {
 		currentTimeInMs = new AtomicLong(lifeTimeInMs());
-		instance = this;
 		synchronized (lock) {
 			waiting = new JobQueue(false);
 			waitingThreadJobs = new JobQueue(false, false);
