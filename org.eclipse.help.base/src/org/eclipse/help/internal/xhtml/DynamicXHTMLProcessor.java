@@ -17,6 +17,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
@@ -41,7 +42,9 @@ public class DynamicXHTMLProcessor {
 
 	private static IContentDescriber xhtmlDescriber;
 	private static XMLProcessor xmlProcessor;
+	private static String xmlProcessorLocale;
 	private static XMLProcessor xmlProcessorNoFilter;
+	private static String xmlProcessorNoFilterLocale;
 
 	/*
 	 * Performs any needed processing. Does nothing if not XHTML.
@@ -57,28 +60,38 @@ public class DynamicXHTMLProcessor {
 		if (isXHTML) {
 			String charset = HTMLDocParser.getCharsetFromHTML(new ByteArrayInputStream(buffer));
 			if (filter) {
-				if (xmlProcessor == null) {
-					DocumentReader reader = new DocumentReader();
-					xmlProcessor = new XMLProcessor(new ProcessorHandler[] {
-							new IncludeHandler(reader, locale),
-							new ExtensionHandler(reader, locale),
-							new XHTMLCharsetHandler(),
-							new FilterHandler(HelpEvaluationContext.getContext())
-					});
-				}
-				return xmlProcessor.process(buf, href, charset);
+				return getXmlProcessor(locale).process(buf, href, charset);
 			}
-			if (xmlProcessorNoFilter == null) {
-				DocumentReader reader = new DocumentReader();
-				xmlProcessorNoFilter = new XMLProcessor(new ProcessorHandler[] {
-						new IncludeHandler(reader, locale),
-						new ExtensionHandler(reader, locale),
-						new XHTMLCharsetHandler()
-				});
-			}
-			return xmlProcessorNoFilter.process(buf, href, charset);
+			return getXmlProcessorNoFilter(locale).process(buf, href, charset);
 		}
 		return buf;
+	}
+
+	private static synchronized XMLProcessor getXmlProcessorNoFilter(String locale) {
+		if (!Objects.equals(xmlProcessorNoFilterLocale, locale)) {
+			xmlProcessorNoFilterLocale = locale;
+			xmlProcessorNoFilter = null;
+		}
+		if (xmlProcessorNoFilter == null) {
+			DocumentReader reader = new DocumentReader();
+			xmlProcessorNoFilter = new XMLProcessor(new ProcessorHandler[] { new IncludeHandler(reader, locale),
+					new ExtensionHandler(reader, locale), new XHTMLCharsetHandler() });
+		}
+		return xmlProcessorNoFilter;
+	}
+
+	private static synchronized XMLProcessor getXmlProcessor(String locale) {
+		if (!Objects.equals(xmlProcessorLocale, locale)) {
+			xmlProcessorLocale = locale;
+			xmlProcessor = null;
+		}
+		if (xmlProcessor == null) {
+			DocumentReader reader = new DocumentReader();
+			xmlProcessor = new XMLProcessor(
+					new ProcessorHandler[] { new IncludeHandler(reader, locale), new ExtensionHandler(reader, locale),
+							new XHTMLCharsetHandler(), new FilterHandler(HelpEvaluationContext.getContext()) });
+		}
+		return xmlProcessor;
 	}
 
 	/*
