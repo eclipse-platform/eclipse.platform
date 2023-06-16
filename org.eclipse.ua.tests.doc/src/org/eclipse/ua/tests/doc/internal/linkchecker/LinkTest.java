@@ -78,7 +78,7 @@ public class LinkTest {
 
 		Set<String> linkFailures = Collections.synchronizedSet(new TreeSet<>());
 		Set<Exception> ex = Collections.synchronizedSet(new LinkedHashSet<>());
-		Set<URI> allKnownPageURIs = new TreeSet<>(indexedPagesURIs);
+		Set<URI> allKnownPageURIs = Collections.synchronizedSet(new TreeSet<>(indexedPagesURIs));
 		indexedPagesURIs.parallelStream().forEach(t -> {
 			String path = t.getPath();
 			if (path.lastIndexOf('/') > 0) {
