@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 /**
  * Object representing a frame in the stack command results.
@@ -37,7 +36,7 @@ public class PDAFrameData {
 	PDAFrameData(String frameString) {
 		StringTokenizer st = new StringTokenizer(frameString, "|"); //$NON-NLS-1$
 
-		fFilePath = new Path(st.nextToken());
+		fFilePath = IPath.fromOSString(st.nextToken());
 		fPC = Integer.parseInt(st.nextToken());
 		fFunction = st.nextToken();
 

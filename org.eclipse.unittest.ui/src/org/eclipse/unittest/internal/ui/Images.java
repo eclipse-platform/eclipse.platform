@@ -20,7 +20,6 @@ import org.eclipse.swt.graphics.Image;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -30,7 +29,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  */
 public class Images {
 
-	private static final IPath ICONS_PATH = new Path("$nl$/icons/full"); //$NON-NLS-1$
+	private static final IPath ICONS_PATH = IPath.fromOSString("$nl$/icons/full"); //$NON-NLS-1$
 
 	/**
 	 * Create an {@link ImageDescriptor} from a given path

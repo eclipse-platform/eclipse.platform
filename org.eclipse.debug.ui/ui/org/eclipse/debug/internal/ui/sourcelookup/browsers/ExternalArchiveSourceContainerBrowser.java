@@ -14,7 +14,6 @@
 package org.eclipse.debug.internal.ui.sourcelookup.browsers;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourceLookupDirector;
 import org.eclipse.debug.core.sourcelookup.containers.ExternalArchiveSourceContainer;
@@ -52,7 +51,7 @@ public class ExternalArchiveSourceContainerBrowser extends AbstractSourceContain
 		int nChosen= fileNames.length;
 		if (nChosen > 0) {
 			rootDir = dialog.getFilterPath();
-			IPath filterPath= new Path(rootDir);
+			IPath filterPath = IPath.fromOSString(rootDir);
 			ISourceContainer[] containers= new ISourceContainer[nChosen];
 			for (int i= 0; i < nChosen; i++) {
 				IPath path= filterPath.append(fileNames[i]).makeAbsolute();

@@ -26,7 +26,7 @@ import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugPlugin;
@@ -87,7 +87,7 @@ public class ArgumentParsingTests extends AbstractDebugTest {
 		File classPathFile = URIUtil.toFile(URIUtil.toURI(classPathUrl));
 
 		String[] execArgs= new String[arguments.length + 4];
-		execArgs[0] = new Path(System.getProperty("java.home")).append("bin/java").toOSString(); //$NON-NLS-1$ //$NON-NLS-2$
+		execArgs[0] = IPath.fromOSString(System.getProperty("java.home")).append("bin/java").toOSString(); //$NON-NLS-1$ //$NON-NLS-2$
 		execArgs[1] = "-cp"; //$NON-NLS-1$
 		execArgs[2]= classPathFile.getAbsolutePath();
 		execArgs[3]= ArgumentsPrinter.class.getName();

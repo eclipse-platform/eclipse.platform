@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -278,7 +277,7 @@ public class ExportLaunchConfigurationsWizardPage extends WizardPage {
 				dd.setText(WizardMessages.ExportLaunchConfigurationsWizard_0);
 				String file = dd.open();
 				if(file != null) {
-					IPath path = new Path(file);
+					IPath path = IPath.fromOSString(file);
 					if (path != null) {
 						fFilePath.setText(path.toString());
 						setPageComplete(isComplete());
@@ -339,7 +338,7 @@ public class ExportLaunchConfigurationsWizardPage extends WizardPage {
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				IProgressMonitor progressMonitor = monitor != null ? monitor : new NullProgressMonitor();
-				IPath destpath = new Path(dpath);
+				IPath destpath = IPath.fromOSString(dpath);
 				File destfolder = destpath.toFile();
 				if(!destfolder.exists()) {
 					destfolder.mkdirs();

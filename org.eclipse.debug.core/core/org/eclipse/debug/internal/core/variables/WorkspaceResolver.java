@@ -22,8 +22,8 @@ import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.IDynamicVariable;
 import org.eclipse.core.variables.IDynamicVariableResolver;
@@ -45,7 +45,7 @@ public final class WorkspaceResolver implements IDynamicVariableResolver {
 		if (argument == null) {
 			resource = root;
 		} else {
-			resource = root.findMember(new Path(argument));
+			resource = root.findMember(IPath.fromOSString(argument));
 		}
 
 		if (resource != null && resource.exists()) {

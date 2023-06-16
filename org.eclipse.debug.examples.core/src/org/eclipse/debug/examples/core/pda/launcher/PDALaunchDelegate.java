@@ -25,9 +25,9 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -68,7 +68,7 @@ public class PDALaunchDelegate extends LaunchConfigurationDelegate {
 		commandList.add(javaVMExec);
 
 		commandList.add("-cp"); //$NON-NLS-1$
-		commandList.add(File.pathSeparator + DebugCorePlugin.getFileInPlugin(new Path("bin"))); //$NON-NLS-1$
+		commandList.add(File.pathSeparator + DebugCorePlugin.getFileInPlugin(IPath.fromOSString("bin"))); //$NON-NLS-1$
 
 		commandList.add("org.eclipse.debug.examples.pdavm.PDAVirtualMachine"); //$NON-NLS-1$
 
@@ -78,7 +78,7 @@ public class PDALaunchDelegate extends LaunchConfigurationDelegate {
 			abort("Perl program unspecified.", null); //$NON-NLS-1$
 		}
 
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(program));
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(IPath.fromOSString(program));
 		if (!file.exists()) {
 			abort(MessageFormat.format("Perl program {0} does not exist.", new Object[] { file.getFullPath().toString() }), null); //$NON-NLS-1$
 		}

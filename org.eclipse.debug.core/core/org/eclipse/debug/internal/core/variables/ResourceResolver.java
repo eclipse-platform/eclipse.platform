@@ -24,7 +24,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.IDynamicVariable;
 import org.eclipse.core.variables.IDynamicVariableResolver;
@@ -46,7 +45,7 @@ public class ResourceResolver implements IDynamicVariableResolver {
 		if (argument == null) {
 			resource = getSelectedResource(variable);
 		} else {
-			resource = getWorkspaceRoot().findMember(new Path(argument));
+			resource = getWorkspaceRoot().findMember(IPath.fromOSString(argument));
 		}
 		if (resource != null && resource.exists()) {
 			resource = translateSelectedResource(resource);
@@ -125,7 +124,7 @@ public class ResourceResolver implements IDynamicVariableResolver {
 		IStringVariableManager manager = VariablesPlugin.getDefault().getStringVariableManager();
 		try {
 			String pathString = manager.performStringSubstitution("${selected_resource_path}"); //$NON-NLS-1$
-			return ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(pathString));
+			return ResourcesPlugin.getWorkspace().getRoot().findMember(IPath.fromOSString(pathString));
 		} catch (CoreException e) {
 			// unable to resolve a selection
 		}

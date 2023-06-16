@@ -29,7 +29,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 
 /**
@@ -94,7 +93,7 @@ public abstract class ContainerSourceContainer extends CompositeSourceContainer 
 		// To prevent the interruption of the search procedure we check
 		// if the path is valid before passing it to "getFile".
 		if ( validateFile(name) ) {
-			IFile file = fContainer.getFile(new Path(name));
+			IFile file = fContainer.getFile(IPath.fromOSString(name));
 			if (file.exists()) {
 				sources.add(file);
 			} else {
@@ -105,7 +104,7 @@ public abstract class ContainerSourceContainer extends CompositeSourceContainer 
 				// bug 295828 root file may be null for an invalid linked resource
 				if (fRootFile != null) {
 					// See bug 98090 - we need to handle relative path names
-					IFileStore target = fRootFile.getFileStore(new Path(name));
+					IFileStore target = fRootFile.getFileStore(IPath.fromOSString(name));
 					if (target.fetchInfo().exists()) {
 						// We no longer have to account for bug 95832, and URIs take care
 						// of canonical paths (fix to bug 95679 was removed).

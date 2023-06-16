@@ -27,7 +27,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -89,7 +88,7 @@ public class BuilderCoreUtils {
 		ILaunchConfiguration configuration = null;
 		if (configHandle.startsWith(PROJECT_TAG)) {
 			version[0] = VERSION_3_0_final;
-			IPath path = new Path(configHandle);
+			IPath path = IPath.fromOSString(configHandle);
 			IFile file = project.getFile(path.removeFirstSegments(1));
 			if (file.exists()) {
 				configuration = manager.getLaunchConfiguration(file);
@@ -97,7 +96,7 @@ public class BuilderCoreUtils {
 		} else {
 			// Try treating the handle as a file name.
 			// This is the format used in 3.0 RC1.
-			IPath path = new Path(BUILDER_FOLDER_NAME).append(configHandle);
+			IPath path = IPath.fromOSString(BUILDER_FOLDER_NAME).append(configHandle);
 			IFile file = project.getFile(path);
 			if (file.exists()) {
 				version[0] = VERSION_3_0_interim;

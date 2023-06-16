@@ -14,7 +14,7 @@
 package org.eclipse.debug.internal.core.sourcelookup.containers;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.AbstractSourceContainerTypeDelegate;
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
@@ -42,7 +42,7 @@ public class DirectorySourceContainerType extends AbstractSourceContainerTypeDel
 				}
 				String nest = element.getAttribute("nest"); //$NON-NLS-1$
 				boolean nested = "true".equals(nest); //$NON-NLS-1$
-				return new DirectorySourceContainer(new Path(string), nested);
+				return new DirectorySourceContainer(IPath.fromOSString(string), nested);
 			}
 			abort(SourceLookupMessages.DirectorySourceContainerType_11, null);
 		}

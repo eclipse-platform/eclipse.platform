@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.AbstractSourceContainerTypeDelegate;
 import org.eclipse.debug.core.sourcelookup.containers.FolderSourceContainer;
@@ -61,7 +61,7 @@ public class FolderSourceContainerType extends AbstractSourceContainerTypeDelega
 				String nest = element.getAttribute("nest"); //$NON-NLS-1$
 				boolean nested = "true".equals(nest); //$NON-NLS-1$
 				IWorkspace workspace = ResourcesPlugin.getWorkspace();
-				IFolder folder = workspace.getRoot().getFolder(new Path(string));
+				IFolder folder = workspace.getRoot().getFolder(IPath.fromOSString(string));
 				return new FolderSourceContainer(folder, nested);
 			}
 			abort(SourceLookupMessages.FolderSourceContainerType_11, null);

@@ -45,7 +45,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
@@ -221,7 +220,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 	 * @since 3.5
 	 */
 	protected static String getSimpleName(String fileName) {
-		IPath path = new Path(fileName);
+		IPath path = IPath.fromOSString(fileName);
 		if(ILaunchConfiguration.LAUNCH_CONFIGURATION_FILE_EXTENSION.equals(path.getFileExtension())) {
 			return path.removeFileExtension().toString();
 		} else if (ILaunchConfiguration.LAUNCH_CONFIGURATION_PROTOTYPE_FILE_EXTENSION.equals(path.getFileExtension())) {
@@ -263,7 +262,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 
 
 			boolean local = Boolean.parseBoolean(localString);
-			IPath iPath = new Path(path);
+			IPath iPath = IPath.fromOSString(path);
 			String name = getSimpleName(iPath.lastSegment());
 			IContainer container = null;
 			if (!local) {
@@ -454,7 +453,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 	public IFile getFile() {
 		IContainer container = getContainer();
 		if (container != null) {
-			return container.getFile(new Path(getFileName()));
+			return container.getFile(IPath.fromOSString(getFileName()));
 		}
 		return null;
 	}
@@ -504,7 +503,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 			if (store != null) {
 				File localFile = store.toLocalFile(EFS.NONE, null);
 				if (localFile != null) {
-					return new Path(localFile.getAbsolutePath());
+					return IPath.fromOSString(localFile.getAbsolutePath());
 				}
 			}
 		} catch (CoreException e) {
@@ -554,7 +553,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 			} catch (NumberFormatException e) {
 				throw new CoreException(newStatus(DebugCoreMessages.LaunchConfiguration_0, DebugPlugin.ERROR, e));
 			}
-			IPath path = Path.fromPortableString(pathStr);
+			IPath path = IPath.fromPortableString(pathStr);
 			IResource res = null;
 			switch (type) {
 				case IResource.FILE:
@@ -562,7 +561,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 					break;
 				case IResource.PROJECT:
 					pathStr = path.makeRelative().toPortableString();
-					if(Path.ROOT.isValidSegment(pathStr)) {
+					if (IPath.ROOT.isValidSegment(pathStr)) {
 						res = root.getProject(pathStr);
 					}
 					break;
@@ -592,7 +591,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 		String lineDelimeter = getLineSeparator();
 		boolean local = true;
 		if (file == null) {
-			relativePath = new Path(getName());
+			relativePath = IPath.fromOSString(getName());
 		} else {
 			local = false;
 			relativePath = file.getFullPath();

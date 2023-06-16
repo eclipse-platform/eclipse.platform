@@ -35,7 +35,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.VariablesPlugin;
@@ -621,7 +620,7 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	 * @return the container for the specified path or null if one cannot be determined
 	 */
 	private IContainer getContainer(String path) {
-		Path containerPath = new Path(path);
+		IPath containerPath = IPath.fromOSString(path);
 		return (IContainer) getWorkspaceRoot().findMember(containerPath);
 	}
 

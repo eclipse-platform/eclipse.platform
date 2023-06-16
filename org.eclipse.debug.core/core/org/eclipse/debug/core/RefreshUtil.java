@@ -24,10 +24,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.variables.IStringVariableManager;
@@ -159,7 +159,7 @@ public class RefreshUtil {
 		if (memento.startsWith("${resource:")) { //$NON-NLS-1$
 			// This is an old format that is replaced with 'working_set'
 			String pathString = memento.substring(11, memento.length() - 1);
-			Path path = new Path(pathString);
+			IPath path = IPath.fromOSString(pathString);
 			IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
 			if (resource == null) {
 				throw new CoreException(new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(), IStatus.ERROR, MessageFormat.format(DebugCoreMessages.RefreshUtil_1, pathString), null));
@@ -176,7 +176,7 @@ public class RefreshUtil {
 			IResource resource = null;
 			try {
 				String pathString = manager.performStringSubstitution("${selected_resource_path}"); //$NON-NLS-1$
-				resource = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(pathString));
+				resource = ResourcesPlugin.getWorkspace().getRoot().findMember(IPath.fromOSString(pathString));
 			} catch (CoreException e) {
 				// unable to resolve a resource
 			}

@@ -26,7 +26,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.IStringVariableManager;
@@ -80,7 +79,7 @@ public class ExternalToolsCoreUtil {
 			} else {
 				File file = new File(expandedLocation);
 				if (file.isFile()) {
-					return new Path(expandedLocation);
+					return IPath.fromOSString(expandedLocation);
 				}
 
 				String msg = NLS.bind(ExternalToolsProgramMessages.ExternalToolsUtil_invalidLocation__0_, new Object[] { configuration.getName()});
@@ -125,7 +124,7 @@ public class ExternalToolsCoreUtil {
 			if (expandedLocation.length() > 0) {
 				File path = new File(expandedLocation);
 				if (path.isDirectory()) {
-					return new Path(expandedLocation);
+					return IPath.fromOSString(expandedLocation);
 				}
 				String msg = NLS.bind(ExternalToolsProgramMessages.ExternalToolsUtil_invalidDirectory__0_, new Object[] { expandedLocation, configuration.getName()});
 				abort(msg, null, 0);
@@ -240,7 +239,7 @@ public class ExternalToolsCoreUtil {
 			IStringVariableManager manager = VariablesPlugin.getDefault().getStringVariableManager();
 			try {
 				String pathString = manager.performStringSubstitution("${selected_resource_path}"); //$NON-NLS-1$
-				IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(pathString));
+				IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(IPath.fromOSString(pathString));
 				if (res != null && res.getProject() != null) {
 					return new IProject[]{res.getProject()};
 				}

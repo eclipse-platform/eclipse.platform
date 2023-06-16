@@ -43,10 +43,10 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -181,7 +181,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		if (file != null && configuration != null) {
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IWorkspaceRoot root = workspace.getRoot();
-			Path path = new Path(file);
+			IPath path = IPath.fromOSString(file);
 			IFile ifile = root.getFileForLocation(path);
 			String message = null;
 
@@ -1005,7 +1005,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		@Override
 		public void linkActivated() {
 			IEditorInput input;
-			Path path = new Path(fFilePath);
+			IPath path = IPath.fromOSString(fFilePath);
 			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 			IFile ifile = root.getFileForLocation(path);
 			if (ifile == null) { // The file is not in the workspace

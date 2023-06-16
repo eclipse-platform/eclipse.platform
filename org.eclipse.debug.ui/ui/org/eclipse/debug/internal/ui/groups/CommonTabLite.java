@@ -29,7 +29,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
@@ -259,7 +258,7 @@ class CommonTabLite extends AbstractLaunchConfigurationTab {
 	 * @return the container for the specified path or null if one cannot be determined
 	 */
 	private IContainer getContainer(String path) {
-		Path containerPath = new Path(path);
+		IPath containerPath = IPath.fromOSString(path);
 		return (IContainer) getWorkspaceRoot().findMember(containerPath);
 	}
 

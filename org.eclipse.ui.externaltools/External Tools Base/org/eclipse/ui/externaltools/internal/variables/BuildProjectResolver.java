@@ -18,8 +18,8 @@ import org.eclipse.core.externaltools.internal.model.ExternalToolBuilder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.IDynamicVariable;
 import org.eclipse.core.variables.IDynamicVariableResolver;
@@ -33,7 +33,7 @@ public class BuildProjectResolver implements IDynamicVariableResolver {
 	public String resolveValue(IDynamicVariable variable, String argument) throws CoreException {
 		IResource resource= ExternalToolBuilder.getBuildProject();
 		if (argument != null && resource != null) {
-			resource = ((IProject)resource).findMember(new Path(argument));
+			resource = ((IProject) resource).findMember(IPath.fromOSString(argument));
 		}
 		if (resource != null && resource.exists()) {
 			return resource.getLocation().toOSString();

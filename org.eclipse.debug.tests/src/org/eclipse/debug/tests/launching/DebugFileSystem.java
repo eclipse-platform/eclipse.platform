@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.provider.FileSystem;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * A simple in memory file system to test launch configurations in EFS
@@ -46,7 +46,7 @@ public class DebugFileSystem extends FileSystem {
 		system = this;
 		// create root of the file system
 		try {
-			setContents(new URI("debug", Path.ROOT.toString(), null), DIRECTORY_BYTES); //$NON-NLS-1$
+			setContents(new URI("debug", IPath.ROOT.toString(), null), DIRECTORY_BYTES); //$NON-NLS-1$
 		} catch (URISyntaxException e) {}
 	}
 

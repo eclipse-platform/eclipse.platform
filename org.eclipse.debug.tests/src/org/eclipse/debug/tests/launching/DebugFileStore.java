@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 
 /**
@@ -65,7 +64,7 @@ public class DebugFileStore extends FileStore {
 		List<String> children = new ArrayList<>();
 		IPath me = getPath();
 		for (URI id : uris) {
-			Path path = new Path(id.getPath());
+			IPath path = IPath.fromOSString(id.getPath());
 			if (path.segmentCount() > 0) {
 				if (path.removeLastSegments(1).equals(me)) {
 					children.add(path.lastSegment());
@@ -115,7 +114,7 @@ public class DebugFileStore extends FileStore {
 
 	private IPath getPath() {
 		URI me = toURI();
-		IPath path = new Path(me.getPath());
+		IPath path = IPath.fromOSString(me.getPath());
 		return path;
 	}
 

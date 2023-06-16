@@ -23,7 +23,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -185,7 +185,7 @@ public class DebugUIPlugin extends AbstractUIPlugin {
 		Bundle bundle = Platform.getBundle(PLUGIN_ID);
 		URL url = null;
 		if (bundle != null) {
-			url = FileLocator.find(bundle, new Path(path), null);
+			url = FileLocator.find(bundle, IPath.fromOSString(path), null);
 			if (url != null) {
 				desc = ImageDescriptor.createFromURL(url);
 			}

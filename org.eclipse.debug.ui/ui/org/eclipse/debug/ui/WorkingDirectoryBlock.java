@@ -27,7 +27,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -237,7 +236,7 @@ public abstract class WorkingDirectoryBlock extends AbstractLaunchConfigurationT
 				IStringVariableManager manager = VariablesPlugin.getDefault().getStringVariableManager();
 				try {
 					path = manager.performStringSubstitution(path, false);
-					IPath uriPath = new Path(path).makeAbsolute();
+					IPath uriPath = IPath.fromOSString(path).makeAbsolute();
 					IContainer[] containers = root.findContainersForLocationURI(URIUtil.toURI(uriPath));
 					if (containers.length > 0) {
 						res = containers[0];

@@ -17,7 +17,6 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.variables.IDynamicVariable;
 import org.eclipse.core.variables.IDynamicVariableResolver;
@@ -41,7 +40,7 @@ public class SystemVariableResolver implements IDynamicVariableResolver {
 			return Platform.getOSArch();
 		} else if ("ECLIPSE_HOME".equals(argument)) { //$NON-NLS-1$
 			URL installURL = Platform.getInstallLocation().getURL();
-			IPath ppath = new Path(installURL.getFile()).removeTrailingSeparator();
+			IPath ppath = IPath.fromOSString(installURL.getFile()).removeTrailingSeparator();
 			return getCorrectPath(ppath.toOSString());
 		} else if ("NL".equals(argument)) { //$NON-NLS-1$
 			return Platform.getNL();

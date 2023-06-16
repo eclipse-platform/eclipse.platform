@@ -18,7 +18,6 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.variables.IDynamicVariable;
 import org.eclipse.core.variables.IDynamicVariableResolver;
@@ -42,7 +41,7 @@ public class EclipseHomeVariableResolver implements IDynamicVariableResolver {
 				// how other variables, like ${workspace_loc} resolve. See
 				// ResourceResolver.translateToValue(). [bugzilla 263535]
 				String file = url.getFile();
-				IPath path = Path.fromOSString(file);
+				IPath path = IPath.fromOSString(file);
 				String osstr = path.toOSString();
 				if (osstr.length() != 0) {
 					return osstr;

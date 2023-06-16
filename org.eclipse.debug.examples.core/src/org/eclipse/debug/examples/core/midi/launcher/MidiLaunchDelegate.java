@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -82,7 +81,7 @@ public class MidiLaunchDelegate extends LaunchConfigurationDelegate {
 			abort("MIDI file not specified.", null); //$NON-NLS-1$
 		}
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IFile file = root.getFile(new Path(fileName));
+		IFile file = root.getFile(IPath.fromOSString(fileName));
 		if (!file.exists()) {
 			abort("MIDI file does not exist.", null); //$NON-NLS-1$
 		}

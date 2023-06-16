@@ -19,8 +19,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
@@ -43,7 +43,7 @@ public class PDASourcePathComputerDelegate implements ISourcePathComputerDelegat
 		String path = configuration.getAttribute(DebugCorePlugin.ATTR_PDA_PROGRAM, (String)null);
 		ISourceContainer sourceContainer = null;
 		if (path != null) {
-			IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(path));
+			IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(IPath.fromOSString(path));
 			if (resource != null) {
 				//#ifdef ex4
 //#				// TODO: Exercise 4 - seed the source lookup path

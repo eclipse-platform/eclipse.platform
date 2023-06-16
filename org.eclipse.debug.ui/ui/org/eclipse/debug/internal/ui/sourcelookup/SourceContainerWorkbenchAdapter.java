@@ -16,7 +16,6 @@ package org.eclipse.debug.internal.ui.sourcelookup;
 import java.io.File;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.sourcelookup.containers.ArchiveSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.ExternalArchiveSourceContainer;
@@ -44,7 +43,7 @@ public class SourceContainerWorkbenchAdapter implements IWorkbenchAdapter {
 		if (o instanceof DirectorySourceContainer) {
 			DirectorySourceContainer container = (DirectorySourceContainer) o;
 			File file = container.getDirectory();
-			IPath path = new Path(file.getAbsolutePath());
+			IPath path = IPath.fromOSString(file.getAbsolutePath());
 			return SourceElementWorkbenchAdapter.getQualifiedName(path);
 		}
 		if (o instanceof FolderSourceContainer) {
@@ -57,7 +56,7 @@ public class SourceContainerWorkbenchAdapter implements IWorkbenchAdapter {
 		}
 		if (o instanceof ExternalArchiveSourceContainer) {
 			ExternalArchiveSourceContainer container = (ExternalArchiveSourceContainer)o;
-			IPath path = new Path(container.getName());
+			IPath path = IPath.fromOSString(container.getName());
 			return SourceElementWorkbenchAdapter.getQualifiedName(path);
 		}
 		return IInternalDebugCoreConstants.EMPTY_STRING;

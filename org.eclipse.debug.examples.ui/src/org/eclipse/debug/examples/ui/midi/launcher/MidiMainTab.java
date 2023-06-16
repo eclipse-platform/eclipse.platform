@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.examples.core.midi.launcher.MidiLaunchDelegate;
@@ -183,7 +182,7 @@ public class MidiMainTab extends AbstractLaunchConfigurationTab {
 		}
 		IResource[] resources = null;
 		if (file!= null) {
-			IPath path = new Path(file);
+			IPath path = IPath.fromOSString(file);
 			IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
 			if (res != null) {
 				resources = new IResource[]{res};
@@ -215,7 +214,7 @@ public class MidiMainTab extends AbstractLaunchConfigurationTab {
 		setMessage(null);
 		String text = fFileText.getText();
 		if (text.length() > 0) {
-			IPath path = new Path(text);
+			IPath path = IPath.fromOSString(text);
 			if (ResourcesPlugin.getWorkspace().getRoot().findMember(path) == null) {
 				setErrorMessage("File does not exist"); //$NON-NLS-1$
 				return false;

@@ -38,9 +38,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
@@ -1362,7 +1362,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 		if (iconPath != null) {
 			Bundle bundle = Platform.getBundle(element.getContributor().getName());
 			return ImageDescriptor.createFromURLSupplier(true, () -> {
-				URL iconURL = FileLocator.find(bundle, new Path(iconPath), null);
+				URL iconURL = FileLocator.find(bundle, IPath.fromOSString(iconPath), null);
 				if (iconURL != null) {
 					return iconURL;
 				} else { // try to search as a URL in case it is absolute path
@@ -1390,7 +1390,8 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	public static ImageDescriptor getImageDescriptor(String bundleName, String path) {
 		if (path != null) {
 			Bundle bundle = Platform.getBundle(bundleName);
-			return ImageDescriptor.createFromURLSupplier(true, () -> FileLocator.find(bundle, new Path(path), null));
+			return ImageDescriptor.createFromURLSupplier(true,
+					() -> FileLocator.find(bundle, IPath.fromOSString(path), null));
 		}
 		return null;
 	}

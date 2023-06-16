@@ -23,7 +23,7 @@ package org.eclipse.debug.internal.ui;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.internal.core.IConfigurationElementConstants;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -296,7 +296,8 @@ public class DebugPluginImages {
 			imageRegistry.put(key, ImageDescriptor.getMissingImageDescriptor());
 		} else {
 			imageRegistry.put(key,
-					ImageDescriptor.createFromURLSupplier(true, () -> FileLocator.find(bundle, new Path(path), null)));
+					ImageDescriptor.createFromURLSupplier(true,
+							() -> FileLocator.find(bundle, IPath.fromOSString(path), null)));
 		}
 	}
 

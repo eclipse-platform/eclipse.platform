@@ -16,7 +16,7 @@ package org.eclipse.debug.internal.core.sourcelookup.containers;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.AbstractSourceContainerTypeDelegate;
 import org.eclipse.debug.core.sourcelookup.containers.ArchiveSourceContainer;
@@ -44,7 +44,7 @@ public class ArchiveSourceContainerType extends AbstractSourceContainerTypeDeleg
 				}
 				String detect = element.getAttribute("detectRoot"); //$NON-NLS-1$
 				boolean auto = "true".equals(detect); //$NON-NLS-1$
-				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(string));
+				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(IPath.fromOSString(string));
 				return new ArchiveSourceContainer(file, auto);
 			}
 			abort(SourceLookupMessages.ExternalArchiveSourceContainerType_11, null);

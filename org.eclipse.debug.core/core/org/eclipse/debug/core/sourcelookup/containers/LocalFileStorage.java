@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
@@ -66,7 +65,7 @@ public class LocalFileStorage extends PlatformObject implements IStorage {
 	@Override
 	public IPath getFullPath() {
 		try {
-			return new Path(getFile().getCanonicalPath());
+			return IPath.fromOSString(getFile().getCanonicalPath());
 		} catch (IOException e) {
 			DebugPlugin.log(e);
 			return null;

@@ -15,7 +15,7 @@ package org.eclipse.debug.internal.ui.quickaccess;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchMode;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
@@ -57,7 +57,8 @@ public class LaunchQuickAccessElement extends QuickAccessElement {
 			REGISTRY.put(key, ImageDescriptor.getMissingImageDescriptor());
 		} else {
 			REGISTRY.put(key,
-					ImageDescriptor.createFromURLSupplier(true, () -> FileLocator.find(bundle, new Path(path), null)));
+					ImageDescriptor.createFromURLSupplier(true,
+							() -> FileLocator.find(bundle, IPath.fromOSString(path), null)));
 		}
 	}
 

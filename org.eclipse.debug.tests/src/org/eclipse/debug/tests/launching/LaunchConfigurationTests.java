@@ -54,7 +54,6 @@ import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -1131,7 +1130,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 		// create folder in EFS
 		IFolder folder = getProject().getFolder("efs"); //$NON-NLS-1$
-		folder.createLink(new URI("debug", Path.ROOT.toString(), null), 0, null); //$NON-NLS-1$
+		folder.createLink(new URI("debug", IPath.ROOT.toString(), null), 0, null); //$NON-NLS-1$
 
 		// create configuration
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(folder, "efsConfig"); //$NON-NLS-1$
@@ -1166,7 +1165,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 		// create folder in EFS
 		IFolder folder = getProject().getFolder("efs2"); //$NON-NLS-1$
-		folder.createLink(new URI("debug", Path.ROOT.toString(), null), 0, null); //$NON-NLS-1$
+		folder.createLink(new URI("debug", IPath.ROOT.toString(), null), 0, null); //$NON-NLS-1$
 
 		// create configuration
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(folder, "efsConfig"); //$NON-NLS-1$
@@ -1205,7 +1204,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 		// create folder in EFS
 		IFolder folder = project.getFolder("efs2"); //$NON-NLS-1$
-		folder.createLink(new URI("debug", Path.ROOT.toString(), null), 0, null); //$NON-NLS-1$
+		folder.createLink(new URI("debug", IPath.ROOT.toString(), null), 0, null); //$NON-NLS-1$
 
 		// create configuration
 		ILaunchConfigurationWorkingCopy wc = newConfiguration(folder, "efsConfig"); //$NON-NLS-1$
@@ -1229,7 +1228,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		// get the new handle
 		project = ResourcesPlugin.getWorkspace().getRoot().getProject("SFEemaneR"); //$NON-NLS-1$
 		assertTrue("Project should exist", project.exists()); //$NON-NLS-1$
-		IFile file = project.getFile(new Path("efs2/efsConfig.launch")); //$NON-NLS-1$
+		IFile file = project.getFile(IPath.fromOSString("efs2/efsConfig.launch")); //$NON-NLS-1$
 		assertTrue("launch config file should exist", file.exists()); //$NON-NLS-1$
 		handle = getLaunchManager().getLaunchConfiguration(file);
 		assertTrue("launch config should exist", handle.exists()); //$NON-NLS-1$
@@ -1261,7 +1260,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		ILaunchConfiguration handle = wc.doSave();
 		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
 
-		File dir = TestsPlugin.getFileInPlugin(new Path("test-import")); //$NON-NLS-1$
+		File dir = TestsPlugin.getFileInPlugin(IPath.fromOSString("test-import")); //$NON-NLS-1$
 		assertTrue("Import directory does not exist", dir.exists()); //$NON-NLS-1$
 		LaunchManager manager = (LaunchManager) getLaunchManager();
 
@@ -1560,7 +1559,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	@Test
 	public void testIllegalFileSepCharName() {
 		try {
-			newConfiguration(null, new Path("some").append("nested").append("config").toOSString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			newConfiguration(null, IPath.fromOSString("some").append("nested").append("config").toOSString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		} catch (CoreException e) {
 			// i.e. expected code path
 			return;
@@ -1578,7 +1577,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	@Test
 	public void testLegalFileSepCharName() {
 		try {
-			newConfiguration(getProject(), new Path("some").append("nested").append("config").toOSString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			newConfiguration(getProject(), IPath.fromOSString("some").append("nested").append("config").toOSString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		} catch (CoreException e) {
 			assertTrue("Should *not* be an illegal argument - can nest shared cofigurations", false); //$NON-NLS-1$
 		}

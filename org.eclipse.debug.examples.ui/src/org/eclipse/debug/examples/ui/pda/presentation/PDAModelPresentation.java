@@ -17,7 +17,6 @@ package org.eclipse.debug.examples.ui.pda.presentation;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
@@ -87,7 +86,7 @@ public class PDAModelPresentation extends LabelProvider implements IDebugModelPr
 		try {
 			String pgmPath = target.getLaunch().getLaunchConfiguration().getAttribute(DebugCorePlugin.ATTR_PDA_PROGRAM, (String)null);
 			if (pgmPath != null) {
-				IPath path = new Path(pgmPath);
+				IPath path = IPath.fromOSString(pgmPath);
 				String label = ""; //$NON-NLS-1$
 				if (target.isTerminated()) {
 					label = "<terminated>"; //$NON-NLS-1$

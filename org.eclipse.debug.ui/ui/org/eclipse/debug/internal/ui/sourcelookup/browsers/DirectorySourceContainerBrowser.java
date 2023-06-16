@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.sourcelookup.browsers;
 
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourceLookupDirector;
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
@@ -35,7 +35,8 @@ public class DirectorySourceContainerBrowser extends AbstractSourceContainerBrow
 		if (dialog.open() == Window.OK) {
 			String directory = dialog.getDirectory();
 			if(directory !=null) {
-				containers[0] = new DirectorySourceContainer(new Path(directory), dialog.isSearchSubfolders());
+				containers[0] = new DirectorySourceContainer(IPath.fromOSString(directory),
+						dialog.isSearchSubfolders());
 				return containers;
 			}
 		}
@@ -56,7 +57,8 @@ public class DirectorySourceContainerBrowser extends AbstractSourceContainerBrow
 				String directory = dialog.getDirectory();
 				if(directory !=null) {
 					containers[0].dispose();
-					return new ISourceContainer[]{ new DirectorySourceContainer(new Path(directory), dialog.isSearchSubfolders())};
+					return new ISourceContainer[] {
+							new DirectorySourceContainer(IPath.fromOSString(directory), dialog.isSearchSubfolders()) };
 				}
 			}
 		}

@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
@@ -110,7 +109,7 @@ public class ImportLaunchConfigurationsWizardPage extends WizardResourceImportPa
 			DebugFileSystemElement newelement = null;
 			for (File child : allchildren) {
 				if(child.isFile()) {
-					Path childpath = new Path(child.getAbsolutePath());
+					IPath childpath = IPath.fromOSString(child.getAbsolutePath());
 					String extension = childpath.getFileExtension();
 					if (extension != null && (extension.equals(ILaunchConfiguration.LAUNCH_CONFIGURATION_FILE_EXTENSION) || extension.equals(ILaunchConfiguration.LAUNCH_CONFIGURATION_PROTOTYPE_FILE_EXTENSION))) {
 						newelement = new DebugFileSystemElement(provider.getLabel(child), this, provider.isFolder(child));
@@ -151,7 +150,7 @@ public class ImportLaunchConfigurationsWizardPage extends WizardResourceImportPa
 		String oldpath = settings.get(OLD_PATH);
 		oldpath = (oldpath == null ? IInternalDebugCoreConstants.EMPTY_STRING : oldpath);
 		fFromDirectory.setText((oldpath == null ? IInternalDebugCoreConstants.EMPTY_STRING : oldpath));
-		resetSelection(new Path(oldpath));
+		resetSelection(IPath.fromOSString(oldpath));
 		setControl(comp);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(comp, IDebugHelpContextIds.IMPORT_LAUNCH_CONFIGURATIONS_PAGE);
 		setPageComplete(false);
@@ -173,7 +172,8 @@ public class ImportLaunchConfigurationsWizardPage extends WizardResourceImportPa
 		final List<File> filesToImport = new ArrayList<>();
 		for (Object resource :  getSelectedResources()) {
 			config = (File) ((DebugFileSystemElement) resource).getFileSystemObject();
-			newconfig = new File(new Path(LaunchManager.LOCAL_LAUNCH_CONFIGURATION_CONTAINER_PATH.toOSString()).append(config.getName()).toOSString());
+			newconfig = new File(
+					LaunchManager.LOCAL_LAUNCH_CONFIGURATION_CONTAINER_PATH.append(config.getName()).toOSString());
 			if(newconfig.exists() && !overwrite) {
 				if(nowall) {
 					continue;
@@ -276,7 +276,7 @@ public class ImportLaunchConfigurationsWizardPage extends WizardResourceImportPa
 				dd.setText(WizardMessages.ImportLaunchConfigurationsWizardPage_0);
 				String filename = dd.open();
 				if(filename != null) {
-					IPath path = new Path(filename);
+					IPath path = IPath.fromOSString(filename);
 					if (path != null) {
 						fFromDirectory.setText(path.toString());
 						resetSelection(path);

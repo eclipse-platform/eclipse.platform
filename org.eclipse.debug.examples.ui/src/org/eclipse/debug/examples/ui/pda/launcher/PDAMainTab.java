@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.examples.core.pda.DebugCorePlugin;
@@ -148,7 +147,7 @@ public class PDAMainTab extends AbstractLaunchConfigurationTab {
 		// perform resource mapping for contextual launch
 		IResource[] resources = null;
 		if (program!= null) {
-			IPath path = new Path(program);
+			IPath path = IPath.fromOSString(program);
 			IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
 			if (res != null) {
 				resources = new IResource[]{res};
@@ -173,7 +172,7 @@ public class PDAMainTab extends AbstractLaunchConfigurationTab {
 //#		//	empty, providing the user with feedback.
 		//#else
 		if (text.length() > 0) {
-			IPath path = new Path(text);
+			IPath path = IPath.fromOSString(text);
 			IResource member = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
 			if (member == null) {
 				setErrorMessage("Specified program does not exist"); //$NON-NLS-1$

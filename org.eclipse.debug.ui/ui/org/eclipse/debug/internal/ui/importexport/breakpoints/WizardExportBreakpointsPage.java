@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
@@ -151,7 +150,7 @@ public class WizardExportBreakpointsPage extends WizardPage implements Listener 
 		dialog.setText(ImportExportMessages.WizardExportBreakpoints_0);
 		String file = dialog.open();
 		if(file != null) {
-			IPath path = new Path(file);
+			IPath path = IPath.fromOSString(file);
 			if (path != null) {
 				setErrorMessage(null);
 				if(path.getFileExtension() == null) {
@@ -221,7 +220,7 @@ public class WizardExportBreakpointsPage extends WizardPage implements Listener 
 			setErrorMessage(ImportExportMessages.WizardExportBreakpointsPage_0);
 			return false;
 		}
-		IPath path = new Path(filepath);
+		IPath path = IPath.fromOSString(filepath);
 		if(!path.removeLastSegments(1).toFile().exists()) {
 			setErrorMessage(ImportExportMessages.WizardExportBreakpointsPage_3);
 			return false;
@@ -286,7 +285,7 @@ public class WizardExportBreakpointsPage extends WizardPage implements Listener 
 	 */
 	public boolean finish() {
 		try {
-			IPath path = new Path(fDestinationNameField.getText().trim());
+			IPath path = IPath.fromOSString(fDestinationNameField.getText().trim());
 			if(path.getFileExtension() == null) {
 				path = path.addFileExtension(IImportExportConstants.EXTENSION);
 			}

@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
@@ -412,7 +411,7 @@ public class LaunchConfigurationType extends PlatformObject implements ILaunchCo
 	@Override
 	public ILaunchConfigurationWorkingCopy newInstance(IContainer container, String name) throws CoreException {
 		// validate the configuration name - see bug 275741
-		IPath path = new Path(name);
+		IPath path = IPath.fromOSString(name);
 		if (container == null) {
 			// not allowed to nest in sub directory when local
 			if (path.segmentCount() > 1) {

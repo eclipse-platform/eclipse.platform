@@ -80,7 +80,6 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.SafeRunner;
@@ -2537,7 +2536,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 				break;
 			}
 			lmonitor.subTask(MessageFormat.format(DebugCoreMessages.LaunchManager_28, new Object[] { source.getName() }));
-			IPath location = new Path(LOCAL_LAUNCH_CONFIGURATION_CONTAINER_PATH.toOSString()).append(source.getName());
+			IPath location = IPath.fromOSString(LOCAL_LAUNCH_CONFIGURATION_CONTAINER_PATH.toOSString()).append(source.getName());
 			File target = location.toFile();
 			IPath locationdir = location.removeLastSegments(1);
 			if(!locationdir.toFile().exists()) {
