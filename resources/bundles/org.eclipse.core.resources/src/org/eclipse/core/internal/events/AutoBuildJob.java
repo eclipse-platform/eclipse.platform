@@ -14,14 +14,26 @@
  *******************************************************************************/
 package org.eclipse.core.internal.events;
 
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.ResourceException;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.framework.Bundle;
 
 /**
@@ -29,7 +41,7 @@ import org.osgi.framework.Bundle;
  * notification.  This job is run whenever the workspace changes regardless
  * of whether autobuild is on or off.
  */
-class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
+class AutoBuildJob extends Job implements IEclipsePreferences.IPreferenceChangeListener {
 	private volatile boolean avoidBuild;
 	private volatile boolean buildNeeded;
 	private volatile boolean forceBuild;
@@ -41,7 +53,6 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 	private volatile boolean interrupted;
 	private volatile boolean isAutoBuilding;
 	private volatile long lastBuild = 0L;
-	private Preferences preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
 	private final Bundle systemBundle = Platform.getBundle("org.eclipse.osgi"); //$NON-NLS-1$
 	private Workspace workspace;
 	final Job noBuildJob;
@@ -52,7 +63,7 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 		setPriority(BUILD);
 		isAutoBuilding = workspace.isAutoBuilding();
 		this.workspace = workspace;
-		this.preferences.addPropertyChangeListener(this);
+		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).addPreferenceChangeListener(this);
 		noBuildJob = new AutoBuildOffJob();
 	}
 
@@ -255,14 +266,14 @@ class AutoBuildJob extends Job implements Preferences.IPropertyChangeListener {
 		return interrupted;
 	}
 
-	@Deprecated
 	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		if (!event.getProperty().equals(ResourcesPlugin.PREF_AUTO_BUILDING))
+	public void preferenceChange(PreferenceChangeEvent event) {
+		if (!ResourcesPlugin.PREF_AUTO_BUILDING.equals(event.getKey()))
 			return;
 		// get the new value of auto-build directly from the preferences
 		boolean wasAutoBuilding = isAutoBuilding;
-		isAutoBuilding = preferences.getBoolean(ResourcesPlugin.PREF_AUTO_BUILDING);
+		isAutoBuilding = Platform.getPreferencesService().getBoolean(ResourcesPlugin.PI_RESOURCES,
+				ResourcesPlugin.PREF_AUTO_BUILDING, false, null);
 		if (wasAutoBuilding && !isAutoBuilding) {
 			// stop the current autobuild when autobuild has been turned off
 			interrupt();
