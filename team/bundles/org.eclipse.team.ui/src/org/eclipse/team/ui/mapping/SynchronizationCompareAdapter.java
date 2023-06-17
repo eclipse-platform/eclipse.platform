@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.team.core.diff.IDiff;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
@@ -104,7 +103,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 				parent = adapter.getParent(parent);
 			} while (parent != null);
 			if (!segments.isEmpty()) {
-				IPath path = Path.EMPTY;
+				IPath path = IPath.EMPTY;
 				for (String segment : segments) {
 					path = path.append(segment);
 				}

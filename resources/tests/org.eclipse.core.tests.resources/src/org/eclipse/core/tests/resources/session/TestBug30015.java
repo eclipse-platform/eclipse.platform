@@ -16,7 +16,9 @@ package org.eclipse.core.tests.resources.session;
 import junit.framework.Test;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
@@ -36,7 +38,7 @@ public class TestBug30015 extends WorkspaceSessionTest {
 	 */
 	public void test1() {
 		varValue = Platform.getLocation().removeLastSegments(1);
-		rawLocation = new Path(VAR_NAME).append("ProjectLocation");
+		rawLocation = IPath.fromOSString(VAR_NAME).append("ProjectLocation");
 		//define the variable
 		try {
 			getWorkspace().getPathVariableManager().setValue(VAR_NAME, varValue);
@@ -66,7 +68,7 @@ public class TestBug30015 extends WorkspaceSessionTest {
 	 */
 	public void test2() {
 		varValue = Platform.getLocation().removeLastSegments(1);
-		rawLocation = new Path(VAR_NAME).append("ProjectLocation");
+		rawLocation = IPath.fromOSString(VAR_NAME).append("ProjectLocation");
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_NAME);
 
 		assertEquals("1.0", varValue, getWorkspace().getPathVariableManager().getValue(VAR_NAME));

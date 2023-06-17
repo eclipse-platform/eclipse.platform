@@ -13,7 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Preferences;
 
 /**
  * Tests the Preferences import/export feature.
@@ -58,7 +61,7 @@ public class PreferenceExportTest extends RuntimeTest {
 		final String key2 = "SomeOtherTestKey";
 		final String default1 = "SomeTestValue";
 		final int default2 = 5;
-		IPath exportPath = new Path(System.getProperty("java.io.tmpdir")).append(Long.toString(System.currentTimeMillis()));
+		IPath exportPath = IPath.fromOSString(System.getProperty("java.io.tmpdir")).append(Long.toString(System.currentTimeMillis()));
 		exportPath.toFile().delete();
 		//add a property change listener that asserts key identity
 		Plugin testPlugin = RuntimeTestsPlugin.getPlugin();
@@ -111,7 +114,7 @@ public class PreferenceExportTest extends RuntimeTest {
 	public void testKeyIdentityAfterExport() {
 		final String key = "SomeTestKey";
 		String initialValue = "SomeTestValue";
-		IPath exportPath = new Path(System.getProperty("java.io.tmpdir")).append(Long.toString(System.currentTimeMillis()));
+		IPath exportPath = IPath.fromOSString(System.getProperty("java.io.tmpdir")).append(Long.toString(System.currentTimeMillis()));
 		exportPath.toFile().delete();
 		//add a property change listener that asserts key identity
 		Plugin testPlugin = RuntimeTestsPlugin.getPlugin();

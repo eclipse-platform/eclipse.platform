@@ -14,9 +14,20 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.alias;
 
-import java.io.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -47,7 +58,7 @@ public class SyncAliasTest extends ResourceTest {
 
 			//create project physically nested in top level project
 			IProjectDescription description = getWorkspace().newProjectDescription("nestedProject");
-			description.setLocation(new Path(childProject.getAbsolutePath()));
+			description.setLocation(IPath.fromOSString(childProject.getAbsolutePath()));
 			nestedProject.create(description, monitor);
 			nestedProject.open(monitor);
 

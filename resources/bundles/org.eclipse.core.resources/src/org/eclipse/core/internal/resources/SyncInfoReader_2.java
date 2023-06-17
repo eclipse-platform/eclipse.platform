@@ -15,13 +15,17 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.ObjectMap;
 import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -57,7 +61,7 @@ public class SyncInfoReader_2 extends SyncInfoReader {
 		try {
 			List<QualifiedName> readPartners = new ArrayList<>(5);
 			while (true) {
-				IPath path = new Path(input.readUTF());
+				IPath path = IPath.fromOSString(input.readUTF());
 				readSyncInfo(path, input, readPartners);
 			}
 		} catch (EOFException e) {

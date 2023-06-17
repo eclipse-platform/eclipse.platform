@@ -16,13 +16,33 @@
 package org.eclipse.core.internal.resources;
 
 import java.net.URI;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.events.PathVariableChangeEvent;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IPathVariableChangeEvent;
+import org.eclipse.core.resources.IPathVariableChangeListener;
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -174,7 +194,7 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 	public IPath getValue(String varName) {
 		String key = getKeyForName(varName);
 		String value = preferences.getString(key);
-		return value.length() == 0 ? null : Path.fromPortableString(value);
+		return value.length() == 0 ? null : IPath.fromPortableString(value);
 	}
 
 	/**
@@ -222,7 +242,7 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 		if (schemeSpecificPart == null || schemeSpecificPart.isEmpty()) {
 			return uri;
 		}
-		IPath raw = new Path(schemeSpecificPart);
+		IPath raw = IPath.fromOSString(schemeSpecificPart);
 		IPath resolved = resolvePath(raw);
 		return raw == resolved ? uri : URIUtil.toURI(resolved);
 	}

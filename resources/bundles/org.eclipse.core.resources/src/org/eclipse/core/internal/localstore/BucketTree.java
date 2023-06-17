@@ -14,13 +14,18 @@
  *******************************************************************************/
 package org.eclipse.core.internal.localstore;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import org.eclipse.core.internal.localstore.Bucket.Visitor;
 import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -64,8 +69,8 @@ public class BucketTree {
 	 *                          bucket
 	 */
 	public void accept(Bucket.Visitor visitor, IPath base, int depth) throws CoreException {
-		if (Path.ROOT.equals(base)) {
-			current.load(null, locationFor(Path.ROOT));
+		if (IPath.ROOT.equals(base)) {
+			current.load(null, locationFor(IPath.ROOT));
 			if (current.accept(visitor, base, DEPTH_ZERO) != Visitor.CONTINUE)
 				return;
 			if (depth == DEPTH_ZERO)
@@ -91,7 +96,7 @@ public class BucketTree {
 	}
 
 	public File getVersionFile() {
-		return new File(locationFor(Path.ROOT), current.getVersionFileName());
+		return new File(locationFor(IPath.ROOT), current.getVersionFileName());
 	}
 
 	/**
@@ -120,7 +125,7 @@ public class BucketTree {
 	}
 
 	public void loadBucketFor(IPath path) throws CoreException {
-		current.load(Path.ROOT.equals(path) ? null : path.segment(0), locationFor(path));
+		current.load(IPath.ROOT.equals(path) ? null : path.segment(0), locationFor(path));
 	}
 
 	private File locationFor(IPath resourcePath) {

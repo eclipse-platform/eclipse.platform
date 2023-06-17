@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.junit.Test;
@@ -109,29 +108,29 @@ public class IFileTest extends ResourceTest {
 	 */
 	public void generateInterestingFiles(IContainer container) {
 		//non-existent file
-		IFile file = container.getFile(new Path(DOES_NOT_EXIST));
+		IFile file = container.getFile(IPath.fromOSString(DOES_NOT_EXIST));
 		nonExistingFiles.add(file);
 		allFiles.add(file);
 
 		//exists in file system only
-		file = container.getFile(new Path(LOCAL_ONLY));
+		file = container.getFile(IPath.fromOSString(LOCAL_ONLY));
 		localOnlyFiles.add(file);
 		allFiles.add(file);
 
 		if (existsAndOpen(container)) {
 
 			//existing file
-			file = container.getFile(new Path(EXISTING));
+			file = container.getFile(IPath.fromOSString(EXISTING));
 			existingFiles.add(file);
 			allFiles.add(file);
 
 			//exists in workspace only
-			file = container.getFile(new Path(WORKSPACE_ONLY));
+			file = container.getFile(IPath.fromOSString(WORKSPACE_ONLY));
 			workspaceOnlyFiles.add(file);
 			allFiles.add(file);
 
 			//exists in both but is out of sync
-			file = container.getFile(new Path(OUT_OF_SYNC));
+			file = container.getFile(IPath.fromOSString(OUT_OF_SYNC));
 			outOfSyncFiles.add(file);
 			allFiles.add(file);
 		}
@@ -1029,7 +1028,7 @@ public class IFileTest extends ResourceTest {
 		}
 		for (String name : names) {
 			monitor.prepare();
-			IFile file = project.getFile(Path.fromPortableString(name));
+			IFile file = project.getFile(IPath.fromPortableString(name));
 			assertTrue("1.0 " + name, !file.exists());
 			try {
 				file.create(getRandomContents(), true, monitor);
@@ -1158,7 +1157,7 @@ public class IFileTest extends ResourceTest {
 
 	@Test
 	public void testSetGetFolderPersistentProperty() throws Throwable {
-		IResource target = getWorkspace().getRoot().getFile(new Path("/Project/File.txt"));
+		IResource target = getWorkspace().getRoot().getFile(IPath.fromOSString("/Project/File.txt"));
 		String value = "this is a test property value";
 		QualifiedName name = new QualifiedName("itp-test", "testProperty");
 		// getting/setting persistent properties on non-existent resources should throw an exception

@@ -17,10 +17,22 @@ package org.eclipse.core.internal.resources;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import org.eclipse.core.internal.utils.*;
-import org.eclipse.core.internal.watson.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.internal.utils.Policy;
+import org.eclipse.core.internal.utils.WrappedRuntimeException;
+import org.eclipse.core.internal.watson.ElementTreeIterator;
+import org.eclipse.core.internal.watson.IElementContentVisitor;
+import org.eclipse.core.internal.watson.IPathRequestor;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.runtime.content.IContentTypeManager.ContentTypeChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -128,7 +140,7 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 			@Override
 			public IPath getRoot() {
 				// visit all resources in the workspace
-				return Path.ROOT;
+				return IPath.ROOT;
 			}
 
 			@Override

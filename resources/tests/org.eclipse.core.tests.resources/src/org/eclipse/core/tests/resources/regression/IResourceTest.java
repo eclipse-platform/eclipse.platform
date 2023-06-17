@@ -17,8 +17,27 @@ package org.eclipse.core.tests.resources.regression;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.IResourceProxyVisitor;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ISynchronizer;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourceAttributes;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -254,7 +273,7 @@ public class IResourceTest extends ResourceTest {
 			fail("0.99", e);
 		}
 
-		IPath destinationPath = new Path("copy of file");
+		IPath destinationPath = IPath.fromOSString("copy of file");
 		try {
 			source.copy(destinationPath, true, getMonitor());
 		} catch (CoreException e) {
@@ -506,8 +525,8 @@ public class IResourceTest extends ResourceTest {
 	}
 
 	public void testEquals_1FUOU25() {
-		IResource fileResource = getWorkspace().getRoot().getFile(new Path("a/b/c/d"));
-		IResource folderResource = getWorkspace().getRoot().getFolder(new Path("a/b/c/d"));
+		IResource fileResource = getWorkspace().getRoot().getFile(IPath.fromOSString("a/b/c/d"));
+		IResource folderResource = getWorkspace().getRoot().getFolder(IPath.fromOSString("a/b/c/d"));
 		assertTrue("1FUOU25: ITPCORE:ALL - Bug in Resource.equals()", !fileResource.equals(folderResource));
 	}
 
@@ -555,11 +574,11 @@ public class IResourceTest extends ResourceTest {
 			fail("2.0", e);
 		}
 
-		IPath targetPath = new Path("Folder2/Folder3");
+		IPath targetPath = IPath.fromOSString("Folder2/Folder3");
 		IFolder target = (IFolder) folder1.findMember(targetPath);
 		assertTrue("3.0", folder3.equals(target));
 
-		targetPath = new Path("/Folder2/Folder3");
+		targetPath = IPath.fromOSString("/Folder2/Folder3");
 		target = (IFolder) folder1.findMember(targetPath);
 		assertTrue("4.0", folder3.equals(target));
 

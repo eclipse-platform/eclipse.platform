@@ -18,12 +18,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.internal.events.ResourceChangeListenerList.ListenerEntry;
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.IManager;
+import org.eclipse.core.internal.resources.MarkerSet;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.internal.watson.ElementTree;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 public class NotificationManager implements IManager, ILifecycleListener {
@@ -239,7 +253,7 @@ public class NotificationManager implements IManager, ILifecycleListener {
 			// We don't have a delta or something changed so recompute the whole deal.
 			ElementTree oldTree = postChange ? lastPostChangeTree : lastPostBuildTree;
 			long markerId = postChange ? lastPostChangeId : lastPostBuildId;
-			lastDelta = ResourceDeltaFactory.computeDelta(workspace, oldTree, tree, Path.ROOT, markerId + 1);
+			lastDelta = ResourceDeltaFactory.computeDelta(workspace, oldTree, tree, IPath.ROOT, markerId + 1);
 		}
 		// remember the state of the world when this delta was consistent
 		lastDeltaState = tree;

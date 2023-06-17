@@ -18,7 +18,8 @@ import java.net.URISyntaxException;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.provider.FileSystem;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * 
@@ -32,7 +33,7 @@ public class ZipFileSystem extends FileSystem {
 	@Override
 	public IFileStore getStore(URI uri) {
 		if (SCHEME_ZIP.equals(uri.getScheme())) {
-			IPath path = new Path(uri.getPath());
+			IPath path = IPath.fromOSString(uri.getPath());
 			try {
 				return new ZipFileStore(EFS.getStore(new URI(uri.getQuery())), path);
 			} catch (URISyntaxException e) {

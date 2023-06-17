@@ -26,7 +26,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.mapping.ModelProvider;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.diff.IDiff;
@@ -180,7 +179,7 @@ public class ResourceModelTraversalCalculator {
 				if (path.segmentCount() == 1) {
 					child = ((IWorkspaceRoot)resource).getProject(path.lastSegment());
 				} else {
-					child = ((IContainer)resource).getFolder(new Path(path.lastSegment()));
+					child = ((IContainer)resource).getFolder(IPath.fromOSString(path.lastSegment()));
 				}
 			} else {
 				child = diffTree.getResource(delta);

@@ -17,7 +17,7 @@ package org.eclipse.ant.internal.ui;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -116,7 +116,7 @@ public class AntUIImages {
 		Bundle bundle = Platform.getBundle(AntUIPlugin.getUniqueIdentifier());
 		URL url = null;
 		if (bundle != null) {
-			url = FileLocator.find(bundle, new Path(path), null);
+			url = FileLocator.find(bundle, IPath.fromOSString(path), null);
 			desc = ImageDescriptor.createFromURL(url);
 		}
 		imageRegistry.put(key, desc);

@@ -19,7 +19,9 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +30,16 @@ import org.eclipse.core.internal.localstore.SafeChunkyInputStream;
 import org.eclipse.core.internal.localstore.SafeChunkyOutputStream;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
 
 public class LocalMetaArea implements ICoreConstants {
@@ -272,7 +282,7 @@ public class LocalMetaArea implements ICoreConstants {
 	 * resource with the given path is stored.
 	 */
 	public IPath locationFor(IPath resourcePath) {
-		if (Path.ROOT.equals(resourcePath))
+		if (IPath.ROOT.equals(resourcePath))
 			return metaAreaLocation.append(F_ROOT);
 		return projectMetaLocation.append(resourcePath.segment(0));
 	}
@@ -356,7 +366,7 @@ public class LocalMetaArea implements ICoreConstants {
 					if (location.startsWith(URI_PREFIX))
 						description.setLocationURI(URI.create(location.substring(URI_PREFIX.length())));
 					else
-						description.setLocationURI(URIUtil.toURI(Path.fromOSString(location)));
+						description.setLocationURI(URIUtil.toURI(IPath.fromOSString(location)));
 				}
 			} catch (Exception e) {
 				//don't allow failure to read the location to propagate

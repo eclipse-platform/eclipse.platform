@@ -18,10 +18,14 @@ package org.eclipse.core.internal.resources;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 //
 /**
@@ -67,7 +71,7 @@ public class MarkerSnapshotReader_1 extends MarkerSnapshotReader {
 	 */
 	@Override
 	public void read(DataInputStream input) throws IOException, CoreException {
-		IPath path = new Path(input.readUTF());
+		IPath path = IPath.fromOSString(input.readUTF());
 		int markersSize = input.readInt();
 		MarkerSet markers = new MarkerSet(markersSize);
 		ArrayList<String> readTypes = new ArrayList<>();

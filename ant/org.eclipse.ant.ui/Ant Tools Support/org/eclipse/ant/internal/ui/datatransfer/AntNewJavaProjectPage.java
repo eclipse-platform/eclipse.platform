@@ -41,7 +41,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -278,7 +277,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 		if (result == null) {
 			return;
 		}
-		IPath filterPath = new Path(dialog.getFilterPath());
+		IPath filterPath = IPath.fromOSString(dialog.getFilterPath());
 		String buildFileName = dialog.getFileName();
 		IPath path = filterPath.append(buildFileName).makeAbsolute();
 
@@ -300,7 +299,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 			return false;
 		}
 
-		IPath path = new Path(IAntCoreConstants.EMPTY_STRING);
+		IPath path = IPath.fromOSString(IAntCoreConstants.EMPTY_STRING);
 		if (!path.isValidPath(locationFieldContents)) {
 			setErrorMessage(DataTransferMessages.AntNewJavaProjectPage_16);
 			return false;
@@ -425,7 +424,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 			IFile iBuildFile = project.getFile(buildFile.getName());
 			if (!iBuildFile.exists()) {
 				try {
-					iBuildFile.createLink(new Path(buildFile.getAbsolutePath()), IResource.ALLOW_MISSING_LOCAL, monitor);
+					iBuildFile.createLink(IPath.fromOSString(buildFile.getAbsolutePath()), IResource.ALLOW_MISSING_LOCAL, monitor);
 				}
 				catch (CoreException e) {
 					ErrorDialog.openError(getShell(), DataTransferMessages.AntNewJavaProjectPage_22, null, e.getStatus());

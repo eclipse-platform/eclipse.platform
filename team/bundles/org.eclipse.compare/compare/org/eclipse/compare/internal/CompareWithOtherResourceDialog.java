@@ -29,7 +29,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -601,7 +600,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			FileDialog dialog = new FileDialog(getShell());
 			String path = dialog.open();
 			if (path != null)
-				return (IFile) linkResource(new Path(path));
+				return (IFile) linkResource(IPath.fromOSString(path));
 			return null;
 		}
 
@@ -609,7 +608,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			DirectoryDialog dialog = new DirectoryDialog(getShell());
 			String path = dialog.open();
 			if (path != null)
-				return (IFolder) linkResource(new Path(path));
+				return (IFolder) linkResource(IPath.fromOSString(path));
 			return null;
 		}
 

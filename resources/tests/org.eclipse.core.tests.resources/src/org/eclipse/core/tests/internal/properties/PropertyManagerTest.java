@@ -17,12 +17,22 @@ package org.eclipse.core.tests.internal.properties;
 import static org.junit.Assert.assertNotEquals;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.core.internal.properties.IPropertyManager;
 import org.eclipse.core.internal.properties.PropertyManager2;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.internal.localstore.LocalStoreTest;
 
 public class PropertyManagerTest extends LocalStoreTest {
@@ -399,7 +409,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 			fail("0.5", e);
 		}
 		try {
-			file1a.move(new Path("file2"), true, getMonitor());
+			file1a.move(IPath.fromOSString("file2"), true, getMonitor());
 		} catch (CoreException e) {
 			fail("0.6", e);
 		}
@@ -437,7 +447,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 			fail("0.5", e);
 		}
 		try {
-			folder1a.move(new Path("folder2"), true, getMonitor());
+			folder1a.move(IPath.fromOSString("folder2"), true, getMonitor());
 		} catch (CoreException e) {
 			fail("0.6", e);
 		}
@@ -509,7 +519,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 			fail("0.5", e);
 		}
 		try {
-			project1a.move(new Path("proj2"), true, getMonitor());
+			project1a.move(IPath.fromOSString("proj2"), true, getMonitor());
 		} catch (CoreException e) {
 			fail("0.6", e);
 		}

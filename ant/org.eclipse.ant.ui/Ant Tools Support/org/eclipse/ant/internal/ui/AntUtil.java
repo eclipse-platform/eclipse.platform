@@ -51,7 +51,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
@@ -301,7 +300,7 @@ public final class AntUtil {
 			@Override
 			public IPath getLocation() {
 				if (file == null) {
-					return new Path(buildFile.getAbsolutePath());
+					return IPath.fromOSString(buildFile.getAbsolutePath());
 				}
 				return file.getLocation();
 			}
@@ -316,7 +315,7 @@ public final class AntUtil {
 
 	private static IDocument getDocument(File buildFile) {
 		ITextFileBufferManager manager = FileBuffers.getTextFileBufferManager();
-		IPath location = new Path(buildFile.getAbsolutePath());
+		IPath location = IPath.fromOSString(buildFile.getAbsolutePath());
 		boolean connected = false;
 		try {
 			ITextFileBuffer buffer = manager.getTextFileBuffer(location, LocationKind.NORMALIZE);

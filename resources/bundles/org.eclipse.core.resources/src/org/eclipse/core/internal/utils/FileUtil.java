@@ -16,15 +16,25 @@
  *******************************************************************************/
 package org.eclipse.core.internal.utils;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.ResourceAttributes;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.service.environment.Constants;
 import org.eclipse.osgi.util.NLS;
 
@@ -67,7 +77,7 @@ public class FileUtil {
 			//only create a new path if necessary
 			if (canonicalPath.equals(pathString))
 				return path;
-			return new Path(canonicalPath);
+			return IPath.fromOSString(canonicalPath);
 		} catch (IOException e) {
 			return path;
 		}
@@ -89,7 +99,7 @@ public class FileUtil {
 		IFileSystem fileSystem = EFS.getLocalFileSystem();
 		if (fileSystem.isCaseSensitive())
 			return path;
-		IPath realPath = path.isAbsolute() ? Path.ROOT : Path.EMPTY;
+		IPath realPath = path.isAbsolute() ? IPath.ROOT : IPath.EMPTY;
 		String device = path.getDevice();
 		if (device != null) {
 			realPath = realPath.setDevice(device.toUpperCase());
@@ -198,8 +208,8 @@ public class FileUtil {
 		IPath two = location2;
 		// If we are on a case-insensitive file system then convert to all lower case.
 		if (!Workspace.caseSensitive) {
-			one = new Path(location1.toOSString().toLowerCase());
-			two = new Path(location2.toOSString().toLowerCase());
+			one = IPath.fromOSString(location1.toOSString().toLowerCase());
+			two = IPath.fromOSString(location2.toOSString().toLowerCase());
 		}
 		return one.isPrefixOf(two) || (bothDirections && two.isPrefixOf(one));
 	}
@@ -322,7 +332,7 @@ public class FileUtil {
 		final String scheme = uri.getScheme();
 		// null scheme represents path variable
 		if (scheme == null || EFS.SCHEME_FILE.equals(scheme))
-			return new Path(uri.getSchemeSpecificPart());
+			return IPath.fromOSString(uri.getSchemeSpecificPart());
 		return null;
 	}
 
@@ -343,7 +353,7 @@ public class FileUtil {
 							bytesRead = source.read(buffer);
 						} catch (IOException e) {
 							String msg = NLS.bind(Messages.localstore_failedReadDuringWrite, path);
-							throw new ResourceException(IResourceStatus.FAILED_READ_LOCAL, new Path(path), msg, e);
+							throw new ResourceException(IResourceStatus.FAILED_READ_LOCAL, IPath.fromOSString(path), msg, e);
 						}
 						if (bytesRead == -1) {
 							break;
@@ -356,7 +366,7 @@ public class FileUtil {
 				destination.close();
 			} catch (IOException e) {
 				String msg = NLS.bind(Messages.localstore_couldNotWrite, path);
-				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, new Path(path), msg, e);
+				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, IPath.fromOSString(path), msg, e);
 			}
 		} finally {
 			safeClose(source);

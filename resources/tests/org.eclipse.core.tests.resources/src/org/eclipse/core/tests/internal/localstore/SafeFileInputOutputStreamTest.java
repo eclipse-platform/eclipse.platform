@@ -13,12 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import org.eclipse.core.internal.localstore.SafeFileInputStream;
 import org.eclipse.core.internal.localstore.SafeFileOutputStream;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 public class SafeFileInputOutputStreamTest extends ResourceTest {
@@ -68,7 +69,7 @@ public class SafeFileInputOutputStreamTest extends ResourceTest {
 		assertTrue("1.0", !target.exists());
 
 		// define temp path
-		Path parentLocation = new Path(target.getParentFile().getAbsolutePath());
+		IPath parentLocation = IPath.fromOSString(target.getParentFile().getAbsolutePath());
 		IPath tempLocation = parentLocation.append(target.getName() + ".backup");
 
 		// we did not have a file on the destination, so we should not have a temp file
@@ -124,7 +125,7 @@ public class SafeFileInputOutputStreamTest extends ResourceTest {
 		assertTrue("1.0", !target.exists());
 
 		// define temp path
-		Path parentLocation = new Path(target.getParentFile().getAbsolutePath());
+		IPath parentLocation = IPath.fromOSString(target.getParentFile().getAbsolutePath());
 		IPath tempLocation = parentLocation.append(target.getName() + ".backup");
 
 		// we did not have a file on the destination, so we should not have a temp file

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.eclipse.core.internal.events.NotificationManager;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.internal.resources.CharsetDeltaJob;
@@ -56,7 +55,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
@@ -1306,7 +1304,7 @@ public class CharsetTest extends ResourceTest {
 			assertEquals("1.3", "FOO", project1.getDefaultCharset());
 
 			// move project and ensures charsets settings are preserved
-			project1.move(new Path("Project2"), false, null);
+			project1.move(IPath.fromOSString("Project2"), false, null);
 			project2 = workspace.getRoot().getProject("Project2");
 			folder = project2.getFolder("folder1");
 			file1 = project2.getFile("file1.txt");

@@ -18,7 +18,16 @@ package org.eclipse.core.internal.runtime;
 
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Stream;
@@ -26,23 +35,51 @@ import org.eclipse.core.internal.preferences.exchange.ILegacyPreferences;
 import org.eclipse.core.internal.preferences.exchange.IProductPreferencesService;
 import org.eclipse.core.internal.preferences.legacy.InitLegacyPreferences;
 import org.eclipse.core.internal.preferences.legacy.ProductPreferencesService;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IAdapterManager;
+import org.eclipse.core.runtime.IBundleGroupProvider;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProduct;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.core.runtime.ServiceCaller;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.equinox.internal.app.*;
 import org.eclipse.equinox.internal.app.Activator;
-import org.eclipse.equinox.log.*;
+import org.eclipse.equinox.internal.app.CommandLineArgs;
+import org.eclipse.equinox.internal.app.EclipseAppContainer;
+import org.eclipse.equinox.internal.app.IBranding;
+import org.eclipse.equinox.log.ExtendedLogReaderService;
+import org.eclipse.equinox.log.ExtendedLogService;
+import org.eclipse.equinox.log.Logger;
 import org.eclipse.osgi.container.ModuleContainer;
 import org.eclipse.osgi.framework.log.FrameworkLog;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.service.environment.EnvironmentInfo;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.VersionRange;
 import org.osgi.framework.namespace.HostNamespace;
 import org.osgi.framework.namespace.IdentityNamespace;
-import org.osgi.framework.wiring.*;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.BundleRevisions;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.resource.Namespace;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -94,7 +131,7 @@ public final class InternalPlatform {
 	private static final InternalPlatform singleton = new InternalPlatform();
 
 	private static final String[] WS_LIST = { Platform.WS_COCOA, Platform.WS_GTK, Platform.WS_WIN32, Platform.WS_WPF };
-	private Path cachedInstanceLocation; // Cache the path of the instance location
+	private IPath cachedInstanceLocation; // Cache the path of the instance location
 	private ServiceTracker<Location,Location> configurationLocation = null;
 	private BundleContext context;
 	private FrameworkWiring fwkWiring;
@@ -363,7 +400,7 @@ public final class InternalPlatform {
 			}
 			//	This makes the assumption that the instance location is a file: URL
 			File file = new File(url.getFile());
-			cachedInstanceLocation = new Path(file.toString());
+			cachedInstanceLocation = IPath.fromOSString(file.toString());
 		}
 		return cachedInstanceLocation;
 	}

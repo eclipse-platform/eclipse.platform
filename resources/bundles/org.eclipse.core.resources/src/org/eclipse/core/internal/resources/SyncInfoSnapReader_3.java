@@ -18,7 +18,8 @@ package org.eclipse.core.internal.resources;
 import java.io.DataInputStream;
 import java.io.IOException;
 import org.eclipse.core.internal.utils.ObjectMap;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.QualifiedName;
 
 public class SyncInfoSnapReader_3 extends SyncInfoSnapReader {
 
@@ -58,7 +59,7 @@ public class SyncInfoSnapReader_3 extends SyncInfoSnapReader {
 	 */
 	@Override
 	public void readSyncInfo(DataInputStream input) throws IOException {
-		IPath path = new Path(input.readUTF());
+		IPath path = IPath.fromOSString(input.readUTF());
 		ObjectMap<QualifiedName, Object> map = internalReadSyncInfo(input);
 		// set the table on the resource info
 		ResourceInfo info = workspace.getResourceInfo(path, true, false);

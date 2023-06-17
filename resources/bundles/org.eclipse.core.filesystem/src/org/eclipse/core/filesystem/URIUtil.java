@@ -16,7 +16,9 @@ package org.eclipse.core.filesystem;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * This class provides utility methods for comparing, inspecting, and manipulating
@@ -63,10 +65,10 @@ public class URIUtil {
 		Assert.isNotNull(uri);
 		// Special treatment for LocalFileSystem. For performance only.
 		if (EFS.SCHEME_FILE.equals(uri.getScheme()))
-			return new Path(uri.getSchemeSpecificPart());
+			return IPath.fromOSString(uri.getSchemeSpecificPart());
 		// Relative path
 		if (uri.getScheme() == null)
-			return new Path(uri.getPath());
+			return IPath.fromOSString(uri.getPath());
 		// General case
 		try {
 			IFileStore store = EFS.getStore(uri);
@@ -75,7 +77,7 @@ public class URIUtil {
 			File file = store.toLocalFile(EFS.NONE, null);
 			if (file == null)
 				return null;
-			return new Path(file.getAbsolutePath());
+			return IPath.fromOSString(file.getAbsolutePath());
 		} catch (CoreException e) {
 			// Fall through to return null.
 		}
@@ -94,7 +96,7 @@ public class URIUtil {
 		if (path.isAbsolute())
 			return toURI(path.toFile().getAbsolutePath(), true);
 		//Must use the relativize method to properly construct a relative URI
-		URI base = toURI(Path.ROOT.setDevice(path.getDevice()));
+		URI base = toURI(IPath.ROOT.setDevice(path.getDevice()));
 		return base.relativize(toURI(path.makeAbsolute()));
 	}
 
@@ -108,7 +110,7 @@ public class URIUtil {
 	 * @return The URI representing the provided path string
 	 */
 	public static URI toURI(String pathString) {
-		IPath path = new Path(pathString);
+		IPath path = IPath.fromOSString(pathString);
 		return toURI(path);
 	}
 

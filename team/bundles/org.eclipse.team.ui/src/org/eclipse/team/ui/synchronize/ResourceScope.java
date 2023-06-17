@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.ui.IMemento;
 
@@ -101,7 +100,7 @@ public class ResourceScope extends AbstractSynchronizeScope {
 		if(rootNodes != null) {
 			List<IResource> resources = new ArrayList<>();
 			for (IMemento rootNode : rootNodes) {
-				IPath path = new Path(rootNode.getString(CTX_ROOT_PATH));
+				IPath path = IPath.fromOSString(rootNode.getString(CTX_ROOT_PATH));
 				IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path, true /* include phantoms */);
 				if(resource != null) {
 					resources.add(resource);

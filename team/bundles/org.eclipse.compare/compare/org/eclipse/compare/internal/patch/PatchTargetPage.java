@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -69,7 +68,7 @@ public class PatchTargetPage extends WizardPage {
 	 * @return org.eclipse.core.runtime.IPath
 	 */
 	protected IPath getPathFromText(Text textField) {
-		return (new Path(textField.getText())).makeAbsolute();
+		return (IPath.fromOSString(textField.getText())).makeAbsolute();
 	}
 
 	@Override

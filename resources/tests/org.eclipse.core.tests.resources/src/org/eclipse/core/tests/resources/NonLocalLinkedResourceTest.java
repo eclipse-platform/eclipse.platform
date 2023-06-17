@@ -13,10 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import org.eclipse.core.filesystem.*;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.internal.filesystem.bogus.BogusFileSystem;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryFileSystem;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryTree;
@@ -33,7 +38,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 	 */
 	protected IFileStore createFolderStore(String name) {
 		IFileSystem system = getFileSystem();
-		IFileStore store = system.getStore(Path.ROOT.append(name));
+		IFileStore store = system.getStore(IPath.ROOT.append(name));
 		try {
 			store.mkdir(EFS.NONE, getMonitor());
 		} catch (CoreException e) {
@@ -57,7 +62,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		IFileSystem system = getFileSystem();
 		IFileStore store;
 		do {
-			store = system.getStore(Path.ROOT.append(Integer.toString(nextFolder++)));
+			store = system.getStore(IPath.ROOT.append(Integer.toString(nextFolder++)));
 		} while (store.fetchInfo().exists());
 		return store;
 	}
@@ -244,7 +249,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 
 		//move to linked destination should succeed
 		try {
-			project.move(Path.fromPortableString("movedProject"), IResource.NONE, getMonitor());
+			project.move(IPath.fromPortableString("movedProject"), IResource.NONE, getMonitor());
 		} catch (CoreException e) {
 			fail("1.0", e);
 		}
@@ -252,10 +257,10 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 
 	protected IFileStore createBogusFolderStore(String name) {
 		IFileSystem system = getBogusFileSystem();
-		IFileStore store = system.getStore(Path.ROOT.append(name));
+		IFileStore store = system.getStore(IPath.ROOT.append(name));
 		try {
 			deleteOnTearDown(
-					Path.fromOSString(system.getStore(Path.ROOT).toLocalFile(EFS.NONE, getMonitor()).getPath()));
+					IPath.fromOSString(system.getStore(IPath.ROOT).toLocalFile(EFS.NONE, getMonitor()).getPath()));
 			store.mkdir(EFS.NONE, getMonitor());
 		} catch (CoreException e) {
 			fail("createFolderStore", e);

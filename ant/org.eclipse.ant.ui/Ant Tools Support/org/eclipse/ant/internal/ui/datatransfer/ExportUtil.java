@@ -65,7 +65,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -171,7 +170,7 @@ public class ExportUtil {
 	 * Get Java project for given root.
 	 */
 	public static IJavaProject getJavaProject(String root) {
-		IPath path = new Path(root);
+		IPath path = IPath.fromOSString(root);
 		if (path.segmentCount() == 1) {
 			return getJavaProjectByName(root);
 		}
@@ -700,8 +699,8 @@ public class ExportUtil {
 	 */
 	public static String getRelativePath(String otherLocation, String basePath) {
 
-		IPath location = new Path(otherLocation);
-		IPath base = new Path(basePath);
+		IPath location = IPath.fromOSString(otherLocation);
+		IPath base = IPath.fromOSString(basePath);
 		if ((location.getDevice() != null && !location.getDevice().equalsIgnoreCase(base.getDevice())) || !location.isAbsolute()) {
 			return otherLocation;
 		}
@@ -711,7 +710,7 @@ public class ExportUtil {
 		for (int j = 0; j < baseCount - count; j++) {
 			temp += "../"; //$NON-NLS-1$
 		}
-		String relative = new Path(temp).append(location.removeFirstSegments(count)).toString();
+		String relative = IPath.fromOSString(temp).append(location.removeFirstSegments(count)).toString();
 		if (relative.length() == 0) {
 			relative = "."; //$NON-NLS-1$
 		}

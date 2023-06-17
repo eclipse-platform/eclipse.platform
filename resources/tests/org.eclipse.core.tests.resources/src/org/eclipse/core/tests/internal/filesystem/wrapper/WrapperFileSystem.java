@@ -19,7 +19,9 @@ import java.net.URISyntaxException;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.provider.FileSystem;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -33,7 +35,7 @@ import org.eclipse.core.tests.resources.ResourceTest;
  * </p>
  */
 public class WrapperFileSystem extends FileSystem {
-	protected static final IFileStore NULL_ROOT = EFS.getNullFileSystem().getStore(Path.ROOT);
+	protected static final IFileStore NULL_ROOT = EFS.getNullFileSystem().getStore(IPath.ROOT);
 
 	private static final String SCHEME_WRAPPED = "wrapped";
 

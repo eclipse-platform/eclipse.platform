@@ -18,16 +18,38 @@
  *******************************************************************************/
 package org.eclipse.core.internal.filesystem.local;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
-import java.nio.file.*;
-import org.eclipse.core.filesystem.*;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.filesystem.provider.FileInfo;
 import org.eclipse.core.filesystem.provider.FileStore;
-import org.eclipse.core.internal.filesystem.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.internal.filesystem.FileStoreUtil;
+import org.eclipse.core.internal.filesystem.Messages;
+import org.eclipse.core.internal.filesystem.Policy;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -176,7 +198,7 @@ public class LocalFile extends FileStore {
 
 	@Override
 	public IFileStore getFileStore(IPath path) {
-		return new LocalFile(new Path(file.getPath()).append(path).toFile());
+		return new LocalFile(IPath.fromOSString(file.getPath()).append(path).toFile());
 	}
 
 	@Override

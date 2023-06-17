@@ -16,10 +16,14 @@ package org.eclipse.core.internal.resources;
 
 import java.io.InputStream;
 import java.net.URI;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.provider.FileInfo;
 import org.eclipse.core.filesystem.provider.FileStore;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A file store representing a virtual resource.
@@ -53,7 +57,7 @@ public class VirtualFileStore extends FileStore {
 
 	@Override
 	public IFileStore getChild(String name) {
-		return EFS.getNullFileSystem().getStore(new Path(name).makeAbsolute());
+		return EFS.getNullFileSystem().getStore(IPath.fromOSString(name).makeAbsolute());
 	}
 
 	@Override

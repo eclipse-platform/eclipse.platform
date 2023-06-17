@@ -36,7 +36,7 @@ import org.eclipse.ant.tests.core.testplugin.AntTestChecker;
 import org.eclipse.ant.tests.core.testplugin.ProjectHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.junit.Test;
 
 public class FrameworkTests extends AbstractAntTest {
@@ -296,7 +296,7 @@ public class FrameworkTests extends AbstractAntTest {
 		IAntClasspathEntry resultedEntries[] = prefs.getAntHomeClasspathEntries();
 		int index = resultedEntries[entries.length].getLabel().indexOf("hub"); //$NON-NLS-1$
 		assertNotSame("Missing machine details", index, -1); //$NON-NLS-1$
-		assertFalse("Incorrect classpath entry. This would have been the value before the fix", resultedEntries[entries.length].getLabel().equals(new Path("/home/tom/.eclipse/3.8/configuration/org.eclipse.osgi/bundles/21/2/.cp/lib/remote.jar").toOSString())); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Incorrect classpath entry", resultedEntries[entries.length].getLabel().substring(index).equals(new Path("hub/home/tom/.eclipse/3.8/configuration/org.eclipse.osgi/bundles/21/2/.cp/lib/remote.jar").toOSString())); //$NON-NLS-1$ //$NON-NLS-2$
+		assertFalse("Incorrect classpath entry. This would have been the value before the fix", resultedEntries[entries.length].getLabel().equals(IPath.fromOSString("/home/tom/.eclipse/3.8/configuration/org.eclipse.osgi/bundles/21/2/.cp/lib/remote.jar").toOSString())); //$NON-NLS-1$ //$NON-NLS-2$
+		assertTrue("Incorrect classpath entry", resultedEntries[entries.length].getLabel().substring(index).equals(IPath.fromOSString("hub/home/tom/.eclipse/3.8/configuration/org.eclipse.osgi/bundles/21/2/.cp/lib/remote.jar").toOSString())); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

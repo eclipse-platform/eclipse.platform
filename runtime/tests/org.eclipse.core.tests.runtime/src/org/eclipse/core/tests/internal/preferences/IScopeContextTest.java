@@ -14,9 +14,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.preferences;
 
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.*;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.runtime.RuntimeTest;
 import org.osgi.service.prefs.Preferences;
 
@@ -53,7 +55,7 @@ public class IScopeContextTest extends RuntimeTest {
 		assertEquals("2.1", expected, actual);
 
 		// path
-		qualifier = new Path(Long.toString(System.currentTimeMillis())).append("a").toString();
+		qualifier = IPath.fromOSString(Long.toString(System.currentTimeMillis())).append("a").toString();
 		node = context.getNode(qualifier);
 		assertNotNull("3.0", node);
 		expected = "/instance/" + qualifier;

@@ -16,7 +16,6 @@ package org.eclipse.core.tests.internal.preferences;
 import java.util.Properties;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.osgi.service.prefs.BackingStoreException;
@@ -39,7 +38,7 @@ public class BadTestScope extends EclipsePreferences implements IScopeContext {
 	private BadTestScope(EclipsePreferences parent, String key) {
 		super(parent, key);
 		// cache the segment count
-		IPath path = new Path(absolutePath());
+		IPath path = IPath.fromOSString(absolutePath());
 		segmentCount = path.segmentCount();
 		if (segmentCount < 2) {
 			return;

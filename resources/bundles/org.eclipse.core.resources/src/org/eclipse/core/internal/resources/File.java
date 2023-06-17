@@ -16,12 +16,33 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
-import org.eclipse.core.filesystem.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
-import org.eclipse.core.internal.utils.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.utils.BitMask;
+import org.eclipse.core.internal.utils.FileUtil;
+import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -124,7 +145,7 @@ public class File extends Resource implements IFile {
 							} else {
 								// The file system is not case sensitive and there is already a file
 								// under this location.
-								message = NLS.bind(Messages.resources_existsLocalDifferentCase, new Path(store.toString()).removeLastSegments(1).append(name).toOSString());
+								message = NLS.bind(Messages.resources_existsLocalDifferentCase, IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
 								throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), message, null);
 							}
 						}
@@ -135,7 +156,7 @@ public class File extends Resource implements IFile {
 						if (!Workspace.caseSensitive) {
 							String name = getLocalManager().getLocalName(store);
 							if (name != null && !localInfo.getName().equals(name)) {
-								message = NLS.bind(Messages.resources_existsLocalDifferentCase, new Path(store.toString()).removeLastSegments(1).append(name).toOSString());
+								message = NLS.bind(Messages.resources_existsLocalDifferentCase, IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
 								throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), message, null);
 							}
 						}

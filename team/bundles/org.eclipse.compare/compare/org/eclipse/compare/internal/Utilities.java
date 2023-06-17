@@ -63,7 +63,6 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
@@ -101,7 +100,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
  * Convenience and utility methods.
  */
 public class Utilities {
-	private static final IPath ICONS_PATH= new Path("$nl$/icons/full/"); //$NON-NLS-1$
+	private static final IPath ICONS_PATH= IPath.fromOSString("$nl$/icons/full/"); //$NON-NLS-1$
 
 	public static IWorkbenchPartSite findSite(Control c) {
 		while (c != null && !c.isDisposed()) {

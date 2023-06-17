@@ -19,21 +19,49 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.JarURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
-import org.eclipse.compare.internal.core.patch.*;
+import org.eclipse.compare.internal.core.patch.FileDiffResult;
+import org.eclipse.compare.internal.core.patch.FilePatch2;
+import org.eclipse.compare.internal.core.patch.LineReader;
 import org.eclipse.compare.internal.patch.WorkspacePatcher;
-import org.eclipse.compare.patch.*;
-import org.eclipse.compare.tests.PatchUtils.*;
+import org.eclipse.compare.patch.ApplyPatchOperation;
+import org.eclipse.compare.patch.IFilePatch;
+import org.eclipse.compare.patch.IFilePatchResult;
+import org.eclipse.compare.patch.IHunk;
+import org.eclipse.compare.patch.PatchConfiguration;
+import org.eclipse.compare.tests.PatchUtils.JarEntryStorage;
+import org.eclipse.compare.tests.PatchUtils.PatchTestConfiguration;
+import org.eclipse.compare.tests.PatchUtils.StringStorage;
 import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -220,7 +248,7 @@ public class PatchTest {
 
 	@Test
 	public void testPatchdataSubfolders() throws IOException, CoreException {
-		URL patchdataUrl = new URL(PatchUtils.getBundle().getEntry("/"), new Path(PatchUtils.PATCHDATA).toString());
+		URL patchdataUrl = new URL(PatchUtils.getBundle().getEntry("/"), IPath.fromOSString(PatchUtils.PATCHDATA).toString());
 		patchdataUrl = FileLocator.resolve(patchdataUrl);
 
 		Map<String, PatchTestConfiguration> map = null;
@@ -356,12 +384,12 @@ public class PatchTest {
 
 		Map<String, PatchTestConfiguration> result = new HashMap<>(); // configuration map
 
-		IPath patchdataFolderPath = new Path(patchdataUrl.getPath());
+		IPath patchdataFolderPath = IPath.fromOSString(patchdataUrl.getPath());
 		File patchdataFolderFile = patchdataFolderPath.toFile();
 		assertTrue(patchdataFolderFile.isDirectory());
 		File[] listOfSubfolders = patchdataFolderFile.listFiles((FileFilter) File::isDirectory);
 		for (File subfolder : listOfSubfolders) {
-			Path pcPath = new Path(subfolder.getPath() + "/" + PATCH_CONFIGURATION);
+			IPath pcPath = IPath.fromOSString(subfolder.getPath() + "/" + PATCH_CONFIGURATION);
 			File pcFile = pcPath.toFile();
 
 			if (subfolder.getName().equals("CVS"))

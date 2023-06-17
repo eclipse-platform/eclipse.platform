@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -51,7 +50,7 @@ public class ProjectCreator {
 			createSourceDirectories(destDir, destDirName, sourceDirs, javaProject, monitor);
 
 			// add rt.jar
-			addVariableEntry(javaProject, new Path(JavaRuntime.JRELIB_VARIABLE), new Path(JavaRuntime.JRESRC_VARIABLE), new Path(JavaRuntime.JRESRCROOT_VARIABLE), monitor);
+			addVariableEntry(javaProject, IPath.fromOSString(JavaRuntime.JRELIB_VARIABLE), IPath.fromOSString(JavaRuntime.JRESRC_VARIABLE), IPath.fromOSString(JavaRuntime.JRESRCROOT_VARIABLE), monitor);
 
 			setClasspath(javacTask, javaProject, monitor);
 
@@ -73,9 +72,9 @@ public class ProjectCreator {
 			for (String cp : classpath.list()) {
 				File classpathEntry = new File(cp);
 				if (classpathEntry.isFile()) {
-					addLibrary(javaProject, new Path(classpathEntry.getAbsolutePath()), monitor);
+					addLibrary(javaProject, IPath.fromOSString(classpathEntry.getAbsolutePath()), monitor);
 				} else {
-					addContainer(javaProject, new Path(classpathEntry.getAbsolutePath()), monitor);
+					addContainer(javaProject, IPath.fromOSString(classpathEntry.getAbsolutePath()), monitor);
 				}
 			}
 		}
@@ -143,7 +142,7 @@ public class ProjectCreator {
 		} else {
 			IFolder folder = project.getFolder(srcName);
 			if (!folder.exists()) {
-				folder.createLink(new Path(srcPath), IResource.ALLOW_MISSING_LOCAL, monitor);
+				folder.createLink(IPath.fromOSString(srcPath), IResource.ALLOW_MISSING_LOCAL, monitor);
 			}
 			container = folder;
 		}
@@ -153,7 +152,7 @@ public class ProjectCreator {
 		if (outputName != null) {
 			IFolder outputFolder = project.getFolder(outputName);
 			if (!outputFolder.exists()) {
-				outputFolder.createLink(new Path(outputPath), IResource.ALLOW_MISSING_LOCAL, monitor);
+				outputFolder.createLink(IPath.fromOSString(outputPath), IResource.ALLOW_MISSING_LOCAL, monitor);
 			}
 			output = outputFolder.getFullPath();
 		}

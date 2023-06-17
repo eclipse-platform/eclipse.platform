@@ -14,11 +14,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * This session add some resources to MyProject. All resources
@@ -32,9 +34,9 @@ public class Snapshot2Test extends SnapshotTest {
 		List<String> result = new ArrayList<>();
 		String[] old = Snapshot1Test.defineHierarchy1();
 		result.addAll(Arrays.asList(old));
-		result.add(new Path(PROJECT_1).append("added file").toString());
-		result.add(new Path(PROJECT_1).append("yet another file").toString());
-		result.add(new Path(PROJECT_1).append("a folder").addTrailingSeparator().toString());
+		result.add(IPath.fromOSString(PROJECT_1).append("added file").toString());
+		result.add(IPath.fromOSString(PROJECT_1).append("yet another file").toString());
+		result.add(IPath.fromOSString(PROJECT_1).append("a folder").addTrailingSeparator().toString());
 		return result.toArray(new String[result.size()]);
 	}
 

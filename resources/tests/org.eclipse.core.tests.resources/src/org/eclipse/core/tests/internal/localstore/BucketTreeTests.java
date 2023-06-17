@@ -15,13 +15,24 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
-import java.io.*;
-import java.util.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.eclipse.core.internal.localstore.Bucket;
 import org.eclipse.core.internal.localstore.BucketTree;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 public class BucketTreeTests extends ResourceTest {
@@ -134,7 +145,8 @@ public class BucketTreeTests extends ResourceTest {
 			IFolder folder1 = proj1.getFolder("folder1");
 			IFile file2 = folder1.getFile("file2.txt");
 			ensureExistsInWorkspace(new IResource[] {file1, file2, proj2}, true);
-			IPath[] paths = {Path.ROOT, proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath(), file2.getFullPath(), proj2.getFullPath()};
+			IPath[] paths = { IPath.ROOT, proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath(),
+					file2.getFullPath(), proj2.getFullPath() };
 			for (int i = 0; i < paths.length; i++) {
 				try {
 					tree.loadBucketFor(paths[i]);
@@ -149,9 +161,12 @@ public class BucketTreeTests extends ResourceTest {
 			} catch (CoreException e) {
 				fail("0.2", e);
 			}
-			verify(tree, "1.1", Path.ROOT, BucketTree.DEPTH_ZERO, Arrays.asList(new IPath[] {Path.ROOT}));
-			verify(tree, "1.2", Path.ROOT, BucketTree.DEPTH_ONE, Arrays.asList(new IPath[] {Path.ROOT, proj1.getFullPath(), proj2.getFullPath()}));
-			verify(tree, "1.3", Path.ROOT, BucketTree.DEPTH_INFINITE, Arrays.asList(new IPath[] {Path.ROOT, proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath(), file2.getFullPath(), proj2.getFullPath()}));
+			verify(tree, "1.1", IPath.ROOT, BucketTree.DEPTH_ZERO, Set.of(IPath.ROOT));
+			verify(tree, "1.2", IPath.ROOT, BucketTree.DEPTH_ONE,
+					Set.of(IPath.ROOT, proj1.getFullPath(), proj2.getFullPath()));
+			verify(tree, "1.3", IPath.ROOT, BucketTree.DEPTH_INFINITE, Set.of(IPath.ROOT, proj1.getFullPath(),
+					file1.getFullPath(), folder1.getFullPath(),
+							file2.getFullPath(), proj2.getFullPath()));
 			verify(tree, "2.1", proj1.getFullPath(), BucketTree.DEPTH_ZERO, Arrays.asList(new IPath[] {proj1.getFullPath()}));
 			verify(tree, "2.2", proj1.getFullPath(), BucketTree.DEPTH_ONE, Arrays.asList(new IPath[] {proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath()}));
 			verify(tree, "2.3", proj1.getFullPath(), BucketTree.DEPTH_INFINITE, Arrays.asList(new IPath[] {proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath(), file2.getFullPath()}));

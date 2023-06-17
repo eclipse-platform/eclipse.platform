@@ -17,7 +17,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryFileSystem;
 
 /**
@@ -52,6 +51,6 @@ public class BogusFileSystem extends MemoryFileSystem {
 
 	@Override
 	public IFileStore getStore(URI uri) {
-		return new BogusFileStore(Path.fromPortableString(uri.getSchemeSpecificPart()));
+		return new BogusFileStore(IPath.fromPortableString(uri.getSchemeSpecificPart()));
 	}
 }

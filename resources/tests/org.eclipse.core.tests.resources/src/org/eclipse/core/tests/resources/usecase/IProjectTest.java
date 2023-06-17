@@ -16,8 +16,14 @@ package org.eclipse.core.tests.resources.usecase;
 
 import java.util.Arrays;
 import java.util.Hashtable;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 public class IProjectTest extends IResourceTest {
 	public static String LOCAL_LOCATION_PATH_STRING_0;
@@ -73,7 +79,7 @@ public class IProjectTest extends IResourceTest {
 		// addMapping
 		try {
 			// Project must exist.
-			proj.getDescription().setLocation(new Path(LOCAL_LOCATION_PATH_STRING_0));
+			proj.getDescription().setLocation(IPath.fromOSString(LOCAL_LOCATION_PATH_STRING_0));
 			fail(method + "1");
 		} catch (Exception e) {
 			// expected
@@ -118,14 +124,14 @@ public class IProjectTest extends IResourceTest {
 		assertTrue("1.1", !proj.exists());
 		assertTrue("1.2", proj.getWorkspace().equals(wb));
 		assertTrue("1.4", proj.getType() == IResource.PROJECT);
-		assertTrue("1.5", proj.getFullPath().equals(new Path("/" + PROJECT)));
+		assertTrue("1.5", proj.getFullPath().equals(IPath.fromOSString("/" + PROJECT)));
 		assertTrue("1.6", proj.getName().equals(PROJECT));
 		assertTrue("1.9", !wb.getRoot().exists(proj.getFullPath()));
 		assertTrue("1.11", wb.getRoot().findMember(proj.getFullPath()) == null);
 		assertTrue("1.12", proj.getParent().equals(wb.getRoot()));
 		// Legal question inherited from IResource: returns the receiver.
 		assertTrue("1.13", proj.getProject().equals(proj));
-		assertTrue("1.14", proj.getProjectRelativePath().equals(new Path("")));
+		assertTrue("1.14", proj.getProjectRelativePath().equals(IPath.fromOSString("")));
 
 		// Check that there are no projects.
 		assertTrue("6.1", wb.getRoot().getProjects().length == 0);

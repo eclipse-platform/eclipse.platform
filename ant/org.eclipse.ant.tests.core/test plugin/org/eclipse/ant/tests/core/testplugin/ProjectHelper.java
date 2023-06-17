@@ -28,9 +28,9 @@ import org.eclipse.ui.wizards.datatransfer.*;
  */
 public class ProjectHelper {
 
-	public static final IPath TEST_BUILDFILES_DIR = new Path("testbuildfiles"); //$NON-NLS-1$
-	public static final IPath TEST_RESOURCES_DIR = new Path("testresources"); //$NON-NLS-1$
-	public static final IPath TEST_LIB_DIR = new Path("testlib"); //$NON-NLS-1$
+	public static final IPath TEST_BUILDFILES_DIR = IPath.fromOSString("testbuildfiles"); //$NON-NLS-1$
+	public static final IPath TEST_RESOURCES_DIR = IPath.fromOSString("testresources"); //$NON-NLS-1$
+	public static final IPath TEST_LIB_DIR = IPath.fromOSString("testlib"); //$NON-NLS-1$
 
 	/**
 	 * Creates a IProject.

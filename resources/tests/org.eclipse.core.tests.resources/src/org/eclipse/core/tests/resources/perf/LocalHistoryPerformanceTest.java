@@ -15,9 +15,15 @@ package org.eclipse.core.tests.resources.perf;
 
 import org.eclipse.core.internal.localstore.IHistoryStore;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.internal.localstore.HistoryStoreTest;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -144,7 +150,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 					IHistoryStore store = ((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore();
 					// Remove all the entries from the history store index.  Note that
 					// this does not cause the history store states to be removed.
-					store.remove(Path.ROOT, getMonitor());
+					store.remove(IPath.ROOT, getMonitor());
 					// Now make sure all the states are really removed.
 					store.removeGarbage();
 				} catch (Exception e) {

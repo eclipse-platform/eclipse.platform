@@ -16,9 +16,12 @@ package org.eclipse.core.tests.resources.regression;
 
 import java.io.File;
 import java.io.InputStream;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -60,7 +63,7 @@ public class Bug_303517 extends ResourceTest {
 	 */
 	public void testExists() throws Exception {
 		createHierarchy();
-		IFile f = getWorkspace().getRoot().getFile(new Path(resources[resources.length - 1]));
+		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resources[resources.length - 1]));
 		assertTrue("1.0", f.exists());
 		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
 
@@ -89,7 +92,7 @@ public class Bug_303517 extends ResourceTest {
 	 */
 	public void testGetContents() throws Exception {
 		createHierarchy();
-		IFile f = getWorkspace().getRoot().getFile(new Path(resources[resources.length - 1]));
+		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resources[resources.length - 1]));
 		assertTrue("1.0", f.exists());
 		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
 
@@ -123,7 +126,7 @@ public class Bug_303517 extends ResourceTest {
 	 */
 	public void testGetContentsTrue() throws Exception {
 		createHierarchy();
-		IFile f = getWorkspace().getRoot().getFile(new Path(resources[resources.length - 1]));
+		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resources[resources.length - 1]));
 		assertTrue("1.0", f.exists());
 		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
 
@@ -162,7 +165,7 @@ public class Bug_303517 extends ResourceTest {
 	 */
 	public void testIsSynchronized() throws Exception {
 		createHierarchy();
-		IFile f = getWorkspace().getRoot().getFile(new Path(resources[resources.length - 1]));
+		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resources[resources.length - 1]));
 		assertTrue("1.0", f.exists());
 		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
 
@@ -183,7 +186,7 @@ public class Bug_303517 extends ResourceTest {
 	 */
 	public void testChangeResourceGender() throws Exception {
 		createHierarchy();
-		IResource f = getWorkspace().getRoot().getFile(new Path(resources[resources.length - 1]));
+		IResource f = getWorkspace().getRoot().getFile(IPath.fromOSString(resources[resources.length - 1]));
 		assertTrue("1.0", f.exists());
 		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
 
@@ -206,7 +209,7 @@ public class Bug_303517 extends ResourceTest {
 		assertFalse("1.3", f.exists());
 		assertFalse("1.4", f.isSynchronized(IResource.DEPTH_ONE));
 		// Folder + child are now in-sync
-		f = getWorkspace().getRoot().getFolder(new Path(resources[resources.length - 1]));
+		f = getWorkspace().getRoot().getFolder(IPath.fromOSString(resources[resources.length - 1]));
 		assertTrue("1.5", f.exists());
 		assertTrue("1.6", f.isSynchronized(IResource.DEPTH_INFINITE));
 	}

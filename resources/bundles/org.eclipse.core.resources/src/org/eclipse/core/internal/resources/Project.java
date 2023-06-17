@@ -21,14 +21,47 @@
 package org.eclipse.core.internal.resources;
 
 import java.net.URI;
-import java.util.*;
-import org.eclipse.core.filesystem.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.events.LifecycleEvent;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
-import org.eclipse.core.internal.utils.*;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.internal.utils.FileUtil;
+import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.internal.utils.Policy;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ISaveContext;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.team.IMoveDeleteHook;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.content.IContentTypeMatcher;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
@@ -70,7 +103,7 @@ public class Project extends Container implements IProject {
 			if (localInfo.exists()) {
 				String name = getLocalManager().getLocalName(store);
 				if (name != null && !store.getName().equals(name)) {
-					String msg = NLS.bind(Messages.resources_existsLocalDifferentCase, new Path(store.toString()).removeLastSegments(1).append(name).toOSString());
+					String msg = NLS.bind(Messages.resources_existsLocalDifferentCase, IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
 					throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), msg, null);
 				}
 			}
@@ -430,7 +463,7 @@ public class Project extends Container implements IProject {
 
 	@Override
 	public IPath getProjectRelativePath() {
-		return Path.EMPTY;
+		return IPath.EMPTY;
 	}
 
 	@Override
@@ -643,7 +676,7 @@ public class Project extends Container implements IProject {
 			String message = NLS.bind(Messages.resources_copying, getFullPath());
 			monitor.beginTask(message, Policy.totalWork);
 			String destName = destDesc.getName();
-			IPath destPath = new Path(destName).makeAbsolute();
+			IPath destPath = IPath.fromOSString(destName).makeAbsolute();
 			Project destination = (Project) workspace.getRoot().getProject(destName);
 			final ISchedulingRule rule = workspace.getRuleFactory().copyRule(this, destination);
 			try {
@@ -975,7 +1008,7 @@ public class Project extends Container implements IProject {
 				// The following assert method throws CoreExceptions as stated in the IResource.move API
 				// and assert for programming errors. See checkMoveRequirements for more information.
 				if (!getName().equals(description.getName())) {
-					IPath destPath = Path.ROOT.append(description.getName());
+					IPath destPath = IPath.ROOT.append(description.getName());
 					assertMoveRequirements(destPath, IResource.PROJECT, updateFlags);
 				}
 				checkDescription(destination, description, true);
@@ -1127,7 +1160,7 @@ public class Project extends Container implements IProject {
 	 * Try to set encoding if we open the project for the first time. See bug 479450
 	 */
 	private void writeEncodingAfterOpen(IProgressMonitor monitor) throws CoreException {
-		IPath settings = new Path(EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME).append(ResourcesPlugin.PI_RESOURCES)
+		IPath settings = IPath.fromOSString(EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME).append(ResourcesPlugin.PI_RESOURCES)
 				.addFileExtension(EclipsePreferences.PREFS_FILE_EXTENSION);
 		IFile file = getFile(settings);
 

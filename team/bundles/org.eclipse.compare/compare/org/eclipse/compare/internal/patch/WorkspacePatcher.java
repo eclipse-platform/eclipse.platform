@@ -36,7 +36,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
@@ -149,7 +148,7 @@ public class WorkspacePatcher extends Patcher {
 							pp= path.removeLastSegments(1);
 							pp= pp.append(path.lastSegment() + REJECT_FILE_EXTENSION);
 						} else
-							pp= new Path(path.lastSegment() + REJECT_FILE_EXTENSION);
+							pp= IPath.fromOSString(path.lastSegment() + REJECT_FILE_EXTENSION);
 						file= createPath(file.getProject(), pp);
 						if (file != null) {
 							store(getRejected(failed), file, pm);

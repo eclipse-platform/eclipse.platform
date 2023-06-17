@@ -14,10 +14,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import java.util.*;
-import org.eclipse.core.resources.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 /**
  * A support class for the marker tests.
@@ -34,7 +40,7 @@ public class MarkersChangeListener implements IResourceChangeListener {
 	 * are exactly the added, removed and changed markers given. The arrays may be null.
 	 */
 	public boolean checkChanges(IResource resource, IMarker[] added, IMarker[] removed, IMarker[] changed) {
-		IPath path = resource == null ? Path.ROOT : resource.getFullPath();
+		IPath path = resource == null ? IPath.ROOT : resource.getFullPath();
 		List<IMarkerDelta> v = changes.get(path);
 		if (v == null) {
 			v = new Vector<>();

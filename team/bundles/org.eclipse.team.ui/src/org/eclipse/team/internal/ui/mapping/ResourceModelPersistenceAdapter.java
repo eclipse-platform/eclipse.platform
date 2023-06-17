@@ -23,7 +23,6 @@ import org.eclipse.core.resources.mapping.ModelProvider;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.ui.mapping.SynchronizationCompareAdapter;
@@ -77,7 +76,7 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 			String pathString = child.getString(RESOURCE_PATH);
 			if (pathString == null)
 				continue;
-			IPath path = new Path(pathString);
+			IPath path = IPath.fromOSString(pathString);
 			IResource resource;
 			switch (type) {
 			case IResource.ROOT:

@@ -24,7 +24,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -490,7 +490,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	}
 
 	protected IResource getBreakpointResource(String typeName) throws Exception {
-		IJavaElement element = getJavaProject().findElement(new Path(typeName + ".java")); //$NON-NLS-1$
+		IJavaElement element = getJavaProject().findElement(IPath.fromOSString(typeName + ".java")); //$NON-NLS-1$
 		IResource resource = element.getCorrespondingResource();
 		if (resource == null) {
 			resource = getJavaProject().getProject();

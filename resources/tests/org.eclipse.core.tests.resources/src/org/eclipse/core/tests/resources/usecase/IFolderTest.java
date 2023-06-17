@@ -13,8 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 public class IFolderTest extends IResourceTest {
 
@@ -68,7 +74,7 @@ public class IFolderTest extends IResourceTest {
 		// Construct a project handle.
 		IProject proj = workspace.getRoot().getProject(PROJECT);
 		// Construct a folder handle
-		IPath path = new Path(FOLDER);
+		IPath path = IPath.fromOSString(FOLDER);
 
 		// Inspection methods with meaninful results invoked on a handle for a nonexistent folder
 		// in a nonexistent project.
@@ -77,12 +83,12 @@ public class IFolderTest extends IResourceTest {
 		assertTrue("2.2", folder.getWorkspace().equals(workspace));
 		assertTrue("2.4", folder.getProject().equals(proj));
 		assertTrue("2.5", folder.getType() == IResource.FOLDER);
-		assertTrue("2.6", folder.getFullPath().equals(new Path("/" + PROJECT + "/" + FOLDER)));
+		assertTrue("2.6", folder.getFullPath().equals(IPath.fromOSString("/" + PROJECT + "/" + FOLDER)));
 		assertTrue("2.7", folder.getName().equals(FOLDER));
 		assertTrue("2.8", workspace.getRoot().getFolder(folder.getFullPath()).equals(folder));
 		assertTrue("2.10", proj.getFolder(path).equals(folder));
 		assertTrue("2.11", folder.getParent().equals(proj));
-		assertTrue("2.13", folder.getProjectRelativePath().equals(new Path(FOLDER)));
+		assertTrue("2.13", folder.getProjectRelativePath().equals(IPath.fromOSString(FOLDER)));
 
 		// Create a project without opening it.
 		try {
@@ -103,7 +109,7 @@ public class IFolderTest extends IResourceTest {
 
 		// These tests produce failure because the folder does not exist yet.
 		nonexistentFolderFailureTests(folder, proj, workspace);
-		Path absolutePath = new Path(proj.getLocation().toOSString() + "/" + FOLDER);
+		IPath absolutePath = IPath.fromOSString(proj.getLocation().toOSString() + "/" + FOLDER);
 		assertTrue("5", folder.getLocation().equals(absolutePath));
 
 		// Now create folder.
@@ -165,13 +171,13 @@ public class IFolderTest extends IResourceTest {
 		assertTrue("10.1", nestedFolder.getWorkspace().equals(workspace));
 		assertTrue("10.3", nestedFolder.getProject().equals(proj));
 		assertTrue("10.4", nestedFolder.getType() == IResource.FOLDER);
-		assertTrue("10.5", nestedFolder.getFullPath().equals(new Path("/" + PROJECT + "/" + FOLDER + "/" + FOLDER)));
+		assertTrue("10.5", nestedFolder.getFullPath().equals(IPath.fromOSString("/" + PROJECT + "/" + FOLDER + "/" + FOLDER)));
 		assertTrue("10.6", nestedFolder.getName().equals(FOLDER));
 		assertTrue("10.7", workspace.getRoot().getFolder(nestedFolder.getFullPath()).equals(nestedFolder));
-		IPath projRelativePath = new Path(FOLDER + "/" + FOLDER);
+		IPath projRelativePath = IPath.fromOSString(FOLDER + "/" + FOLDER);
 		assertTrue("10.9", proj.getFolder(projRelativePath).equals(nestedFolder));
 		assertTrue("10.10", nestedFolder.getParent().equals(folder));
-		assertTrue("10.11", nestedFolder.getProjectRelativePath().equals(new Path(FOLDER + "/" + FOLDER)));
+		assertTrue("10.11", nestedFolder.getProjectRelativePath().equals(IPath.fromOSString(FOLDER + "/" + FOLDER)));
 		// Now the parent folder has a kid.
 		assertTrue("10.12", folder.isLocal(IResource.DEPTH_ONE));
 		assertTrue("10.13", folder.isLocal(IResource.DEPTH_INFINITE));

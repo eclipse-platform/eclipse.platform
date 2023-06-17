@@ -24,10 +24,18 @@ import java.util.List;
 import org.eclipse.compare.internal.core.patch.Hunk;
 import org.eclipse.compare.internal.core.patch.LineReader;
 import org.eclipse.compare.internal.patch.Utilities;
-import org.eclipse.compare.patch.*;
+import org.eclipse.compare.patch.ApplyPatchOperation;
+import org.eclipse.compare.patch.IFilePatch;
+import org.eclipse.compare.patch.IFilePatch2;
+import org.eclipse.compare.patch.IFilePatchResult;
+import org.eclipse.compare.patch.IHunk;
+import org.eclipse.compare.patch.PatchBuilder;
+import org.eclipse.compare.patch.PatchConfiguration;
 import org.eclipse.compare.tests.PatchUtils.StringStorage;
 import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -177,7 +185,7 @@ public class PatchBuilderTest {
 
 		IHunk[] hunks = new IHunk[] { hunk1, hunk0 };
 
-		IFilePatch2 filePatch = PatchBuilder.createFilePatch(new Path(""), IFilePatch2.DATE_UNKNOWN, new Path(""),
+		IFilePatch2 filePatch = PatchBuilder.createFilePatch(IPath.fromOSString(""), IFilePatch2.DATE_UNKNOWN, IPath.fromOSString(""),
 				IFilePatch2.DATE_UNKNOWN, hunks);
 
 		assertEquals(2, filePatch.getHunks().length);

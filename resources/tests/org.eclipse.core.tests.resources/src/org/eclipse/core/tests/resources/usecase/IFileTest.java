@@ -13,8 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 public class IFileTest extends IResourceTest {
 
@@ -81,10 +87,10 @@ public class IFileTest extends IResourceTest {
 		}
 
 		// Construct a folder handle without creating the folder.
-		IFolder folder = proj.getFolder(new Path(FOLDER));
+		IFolder folder = proj.getFolder(IPath.fromOSString(FOLDER));
 
 		// Construct a file handle
-		IFile file = folder.getFile(new Path(FILE));
+		IFile file = folder.getFile(IPath.fromOSString(FILE));
 
 		// Inspection methods with meaninful results invoked on a handle for a nonexistent folder.
 		assertTrue("3.1", !file.exists());
@@ -92,17 +98,17 @@ public class IFileTest extends IResourceTest {
 		assertTrue("3.4", file.getProject().equals(proj));
 		assertTrue("3.5", file.getParent().equals(folder));
 		assertTrue("3.5", file.getType() == IResource.FILE);
-		assertTrue("3.6", file.getFullPath().equals(new Path("/" + PROJECT + "/" + FOLDER + "/" + FILE)));
+		assertTrue("3.6", file.getFullPath().equals(IPath.fromOSString("/" + PROJECT + "/" + FOLDER + "/" + FILE)));
 		assertTrue("3.7", file.getName().equals(FILE));
-		assertTrue("3.8", proj.getFolder(new Path(FOLDER)).equals(folder));
+		assertTrue("3.8", proj.getFolder(IPath.fromOSString(FOLDER)).equals(folder));
 		assertTrue("3.9", workspace.getRoot().getFile(file.getFullPath()).equals(file));
-		IPath projRelativePath = new Path(FOLDER + "/" + FILE);
+		IPath projRelativePath = IPath.fromOSString(FOLDER + "/" + FILE);
 		assertTrue("3.11", proj.getFile(projRelativePath).equals(file));
-		assertTrue("3.12", folder.getFile(new Path(FILE)).equals(file));
+		assertTrue("3.12", folder.getFile(IPath.fromOSString(FILE)).equals(file));
 		assertTrue("3.13", !workspace.getRoot().exists(file.getFullPath()));
-		Path absolutePath = new Path(proj.getLocation().toOSString() + "/" + FOLDER + "/" + FILE);
+		IPath absolutePath = IPath.fromOSString(proj.getLocation().toOSString() + "/" + FOLDER + "/" + FILE);
 		assertTrue("3.14", file.getLocation().equals(absolutePath));
-		assertTrue("3.15", file.getProjectRelativePath().equals(new Path(FOLDER + "/" + FILE)));
+		assertTrue("3.15", file.getProjectRelativePath().equals(IPath.fromOSString(FOLDER + "/" + FILE)));
 
 		// Create a folder.
 		try {

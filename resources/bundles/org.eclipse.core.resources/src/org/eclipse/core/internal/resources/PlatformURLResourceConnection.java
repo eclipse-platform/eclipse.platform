@@ -14,13 +14,17 @@
 package org.eclipse.core.internal.resources;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
 import org.eclipse.core.internal.boot.PlatformURLConnection;
 import org.eclipse.core.internal.boot.PlatformURLHandler;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -47,7 +51,7 @@ public class PlatformURLResourceConnection extends PlatformURLConnection {
 	protected URL resolve() throws IOException {
 		String filePath = url.getFile().trim();
 		filePath = URLDecoder.decode(filePath, "UTF-8"); //$NON-NLS-1$
-		IPath spec = new Path(filePath).makeRelative();
+		IPath spec = IPath.fromOSString(filePath).makeRelative();
 		if (!spec.segment(0).equals(RESOURCE))
 			throw new IOException(NLS.bind(Messages.url_badVariant, url));
 		int count = spec.segmentCount();

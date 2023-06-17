@@ -13,8 +13,9 @@
  *******************************************************************************/
 package org.eclipse.update.internal.configurator.branding;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.MessageFormat; // Can't use ICU, possible launch problem?
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -24,11 +25,15 @@ import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.internal.configurator.Messages;
 import org.eclipse.update.internal.configurator.Utils;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 
 /**
  * Reads the information found in an "INI" file. This file must be in a
@@ -99,7 +104,7 @@ public class IniFileReader {
 		// Determine the ini file location
 		URL iniURL = null;
 		IOException ioe = null;
-		iniURL = FileLocator.find(bundle, new Path(NLS_TAG).append(iniFilename), null);
+		iniURL = FileLocator.find(bundle, IPath.fromOSString(NLS_TAG).append(iniFilename), null);
 		if (iniURL == null) {
 			String message = NLS.bind(Messages.IniFileReader_OpenINIError, (new String[] { iniFilename }));
 			return new Status(IStatus.ERROR, PID, 0, message, ioe);
@@ -108,13 +113,13 @@ public class IniFileReader {
 		// Determine the properties file location
 		URL propertiesURL = null;
 		if (propertiesFilename != null && !propertiesFilename.isEmpty()) {
-			propertiesURL = FileLocator.find(bundle, new Path(NLS_TAG).append(propertiesFilename), null);
+			propertiesURL = FileLocator.find(bundle, IPath.fromOSString(NLS_TAG).append(propertiesFilename), null);
 		}
 
 		// Determine the mappings file location
 		URL mappingsURL = null;
 		if (mappingsFilename != null && mappingsFilename.length() > 0) {
-			mappingsURL = FileLocator.find(bundle, new Path(NLS_TAG).append(mappingsFilename), null);
+			mappingsURL = FileLocator.find(bundle, IPath.fromOSString(NLS_TAG).append(mappingsFilename), null);
 		}
 
 		// OK to pass null properties and/or mapping file
@@ -151,7 +156,7 @@ public class IniFileReader {
 		if (fileName != null) {
 			if (bundle == null)
 				return null;
-			url = FileLocator.find(bundle, new Path(fileName), null);
+			url = FileLocator.find(bundle, IPath.fromOSString(fileName), null);
 		}
 		return url;
 	}
@@ -177,7 +182,7 @@ public class IniFileReader {
 		ArrayList<URL> array = new ArrayList<>(10);
 		while (tokens.hasMoreTokens()) {
 			String str = tokens.nextToken().trim();
-			array.add(FileLocator.find(bundle, new Path(str), null));
+			array.add(FileLocator.find(bundle, IPath.fromOSString(str), null));
 		}
 
 		URL[] urls = new URL[array.size()];

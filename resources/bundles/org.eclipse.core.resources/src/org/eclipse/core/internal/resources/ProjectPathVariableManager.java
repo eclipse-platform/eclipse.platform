@@ -18,12 +18,26 @@ package org.eclipse.core.internal.resources;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.ProjectVariableProviderManager.Descriptor;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IPathVariableChangeEvent;
+import org.eclipse.core.resources.IPathVariableChangeListener;
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.osgi.util.NLS;
 
@@ -128,7 +142,7 @@ public class ProjectPathVariableManager implements IPathVariableManager, IManage
 			try {
 				return URI.create(value);
 			} catch (IllegalArgumentException e) {
-				IPath path = Path.fromPortableString(value);
+				IPath path = IPath.fromPortableString(value);
 				return URIUtil.toURI(path);
 			}
 		}
@@ -220,7 +234,7 @@ public class ProjectPathVariableManager implements IPathVariableManager, IManage
 			try {
 				return URI.create(value);
 			} catch (IllegalArgumentException e) {
-				return URIUtil.toURI(Path.fromPortableString(value));
+				return URIUtil.toURI(IPath.fromPortableString(value));
 			}
 		}
 		return null;
@@ -285,7 +299,7 @@ public class ProjectPathVariableManager implements IPathVariableManager, IManage
 		if (schemeSpecificPart == null || schemeSpecificPart.isEmpty()) {
 			return uri;
 		}
-		IPath raw = new Path(schemeSpecificPart);
+		IPath raw = IPath.fromOSString(schemeSpecificPart);
 		if (raw == null || raw.segmentCount() == 0 || raw.isAbsolute() || raw.getDevice() != null)
 			return URIUtil.toURI(raw);
 		URI value = resolveVariable(raw.segment(0));
@@ -294,7 +308,7 @@ public class ProjectPathVariableManager implements IPathVariableManager, IManage
 
 		String path = value.getPath();
 		if (path != null) {
-			IPath p = Path.fromPortableString(path);
+			IPath p = IPath.fromPortableString(path);
 			p = p.append(raw.removeFirstSegments(1));
 			try {
 				value = new URI(value.getScheme(), value.getHost(), p.toPortableString(), value.getFragment());

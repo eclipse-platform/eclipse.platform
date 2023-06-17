@@ -14,15 +14,35 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.provider.FileInfo;
 import org.eclipse.core.internal.localstore.IHistoryStore;
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.FileState;
+import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -106,7 +126,7 @@ public class HistoryStoreTest extends ResourceTest {
 		IHistoryStore store = ((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore();
 		// Remove all the entries from the history store index.  Note that
 		// this does not cause the history store states to be removed.
-		store.remove(Path.ROOT, monitor);
+		store.remove(IPath.ROOT, monitor);
 		// Now make sure all the states are really removed.
 		store.removeGarbage();
 	}
@@ -1407,7 +1427,8 @@ public class HistoryStoreTest extends ResourceTest {
 		for (int i = 0; i < ITERATIONS; i++) {
 			// Create bogus FileState using invalid uuid.
 			try {
-				InputStream in = historyStore.getContents(new FileState(historyStore, Path.ROOT, myLong, new UniversalUniqueIdentifier()));
+				InputStream in = historyStore
+						.getContents(new FileState(historyStore, IPath.ROOT, myLong, new UniversalUniqueIdentifier()));
 				in.close();
 				fail("6." + i + " Edition should be invalid.");
 			} catch (CoreException e) {
@@ -1589,7 +1610,7 @@ public class HistoryStoreTest extends ResourceTest {
 			assertTrue("1.2", compareContent(getContents(contents[0]), states[1].getContents()));
 
 			// Now do the move
-			project.move(new Path("SecondMoveProjectProject"), true, getMonitor());
+			project.move(IPath.fromOSString("SecondMoveProjectProject"), true, getMonitor());
 
 			// Check to make sure the file has been moved
 			IFile file2 = project2.getFile("folder1/file1.txt");

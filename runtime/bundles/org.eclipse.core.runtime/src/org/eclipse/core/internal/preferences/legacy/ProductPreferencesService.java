@@ -20,12 +20,15 @@ import java.net.URL;
 import java.util.Properties;
 import org.eclipse.core.internal.preferences.exchange.IProductPreferencesService;
 import org.eclipse.core.internal.runtime.InternalPlatform;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProduct;
+import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 public class ProductPreferencesService implements IProductPreferencesService {
 
-	private static final IPath NL_DIR = new Path("$nl$"); //$NON-NLS-1$
+	private static final IPath NL_DIR = IPath.fromOSString("$nl$"); //$NON-NLS-1$
 
 	// declared in org.eclipse.ui.branding.IProductConstants
 	public static final String PRODUCT_KEY = "preferenceCustomization"; //$NON-NLS-1$
@@ -78,7 +81,7 @@ public class ProductPreferencesService implements IProductPreferencesService {
 				url = new URL(customizationValue);
 			} catch (MalformedURLException e) {
 				// didn't work so treat it as a filename
-				url = FileLocator.find(customizationBundle, new Path(customizationValue), null);
+				url = FileLocator.find(customizationBundle, IPath.fromOSString(customizationValue), null);
 			}
 		}
 

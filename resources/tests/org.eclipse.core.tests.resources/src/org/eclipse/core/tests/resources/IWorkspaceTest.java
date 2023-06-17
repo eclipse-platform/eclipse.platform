@@ -21,9 +21,26 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.eclipse.core.internal.resources.TestingSupport;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.osgi.framework.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFilterMatcherDescriptor;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IProjectNatureDescriptor;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 public class IWorkspaceTest extends ResourceTest {
 
@@ -943,39 +960,39 @@ public class IWorkspaceTest extends ResourceTest {
 		IProject project = workspace.getRoot().getProject("Project");
 
 		/* normal path */
-		assertTrue("1.1", workspace.validateProjectLocation(project, new Path("/one/two/three/four/")).isOK());
+		assertTrue("1.1", workspace.validateProjectLocation(project, IPath.fromOSString("/one/two/three/four/")).isOK());
 
 		/* invalid characters (windows only) */
 		final boolean WINDOWS = isWindows();
 		if (WINDOWS) {
-			assertFalse("2.1", workspace.validateProjectLocation(project, new Path("d:\\dsa:sf")).isOK());
-			assertFalse("2.2", workspace.validateProjectLocation(project, new Path("/abc/*dsasf")).isOK());
-			assertFalse("2.3", workspace.validateProjectLocation(project, new Path("/abc/?dsasf")).isOK());
-			assertFalse("2.4", workspace.validateProjectLocation(project, new Path("/abc/\"dsasf")).isOK());
-			assertFalse("2.5", workspace.validateProjectLocation(project, new Path("/abc/<dsasf")).isOK());
-			assertFalse("2.6", workspace.validateProjectLocation(project, new Path("/abc/>dsasf")).isOK());
-			assertFalse("2.7", workspace.validateProjectLocation(project, new Path("/abc/|dsasf")).isOK());
-			assertFalse("2.8", workspace.validateProjectLocation(project, new Path("/abc/\"dsasf")).isOK());
+			assertFalse("2.1", workspace.validateProjectLocation(project, IPath.fromOSString("d:\\dsa:sf")).isOK());
+			assertFalse("2.2", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/*dsasf")).isOK());
+			assertFalse("2.3", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/?dsasf")).isOK());
+			assertFalse("2.4", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/\"dsasf")).isOK());
+			assertFalse("2.5", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/<dsasf")).isOK());
+			assertFalse("2.6", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/>dsasf")).isOK());
+			assertFalse("2.7", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/|dsasf")).isOK());
+			assertFalse("2.8", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/\"dsasf")).isOK());
 
 			//trailing dots invalid on Windows
-			assertFalse("3.1", workspace.validateProjectLocation(project, new Path("/abc/.../defghi")).isOK());
-			assertFalse("3.2", workspace.validateProjectLocation(project, new Path("/abc/..../defghi")).isOK());
-			assertFalse("3.3", workspace.validateProjectLocation(project, new Path("/abc/def..../ghi")).isOK());
+			assertFalse("3.1", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/.../defghi")).isOK());
+			assertFalse("3.2", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/..../defghi")).isOK());
+			assertFalse("3.3", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/def..../ghi")).isOK());
 		} else {
-			assertTrue("3.1", workspace.validateProjectLocation(project, new Path("/abc/.../defghi")).isOK());
-			assertTrue("3.2", workspace.validateProjectLocation(project, new Path("/abc/..../defghi")).isOK());
-			assertTrue("3.3", workspace.validateProjectLocation(project, new Path("/abc/def..../ghi")).isOK());
+			assertTrue("3.1", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/.../defghi")).isOK());
+			assertTrue("3.2", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/..../defghi")).isOK());
+			assertTrue("3.3", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/def..../ghi")).isOK());
 		}
 
 		/* dots */
-		assertTrue("3.4", workspace.validateProjectLocation(project, new Path("/abc/....def/ghi")).isOK());
-		assertTrue("3.5", workspace.validateProjectLocation(project, new Path("/abc/def....ghi/jkl")).isOK());
+		assertTrue("3.4", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/....def/ghi")).isOK());
+		assertTrue("3.5", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/def....ghi/jkl")).isOK());
 
 		/* test hiding incorrect characters using .. and device separator : */
-		assertTrue("4.1", workspace.validateProjectLocation(project, new Path("/abc/.?./../def/as")).isOK());
-		assertTrue("4.2", workspace.validateProjectLocation(project, new Path("/abc/;*?\"'/../def/safd")).isOK());
+		assertTrue("4.1", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/.?./../def/as")).isOK());
+		assertTrue("4.2", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/;*?\"'/../def/safd")).isOK());
 		assertFalse("4.3",
-				(workspace.validateProjectLocation(project, new Path("c:/abc;*?\"':/def/asdf/sadf")).isOK()));
+				(workspace.validateProjectLocation(project, IPath.fromOSString("c:/abc;*?\"':/def/asdf/sadf")).isOK()));
 
 		// cannot overlap the platform directory
 		IPath platformLocation = Platform.getLocation();
@@ -999,17 +1016,17 @@ public class IWorkspaceTest extends ResourceTest {
 
 		//cannot be a relative path
 		assertFalse("7.1", workspace.validateProjectLocation(project, new Path("u:", "")).isOK());
-		assertFalse("7.2", workspace.validateProjectLocation(project, new Path("c:")).isOK());
-		assertFalse("7.3", workspace.validateProjectLocation(project, new Path("c:foo")).isOK());
-		assertFalse("7.4", workspace.validateProjectLocation(project, new Path("foo/bar")).isOK());
-		assertFalse("7.5", workspace.validateProjectLocation(project, new Path("c:foo/bar")).isOK());
+		assertFalse("7.2", workspace.validateProjectLocation(project, IPath.fromOSString("c:")).isOK());
+		assertFalse("7.3", workspace.validateProjectLocation(project, IPath.fromOSString("c:foo")).isOK());
+		assertFalse("7.4", workspace.validateProjectLocation(project, IPath.fromOSString("foo/bar")).isOK());
+		assertFalse("7.5", workspace.validateProjectLocation(project, IPath.fromOSString("c:foo/bar")).isOK());
 
 		//may be relative to an existing path variable
 		final String PATH_VAR_NAME = "FOOVAR";
 		final IPath PATH_VAR_VALUE = getRandomLocation();
 		try {
 			try {
-				IPath varPath = new Path(PATH_VAR_NAME);
+				IPath varPath = IPath.fromOSString(PATH_VAR_NAME);
 				workspace.getPathVariableManager().setValue(PATH_VAR_NAME, PATH_VAR_VALUE);
 				assertTrue("8.1", workspace.validateProjectLocation(project, varPath).isOK());
 				assertTrue("8.2", workspace.validateProjectLocation(project, varPath.append("test")).isOK());
@@ -1089,10 +1106,10 @@ public class IWorkspaceTest extends ResourceTest {
 		assertFalse("12.2", (workspace.validateProjectLocation(metadataProject, null)).isOK());
 
 		// FIXME: Should this be valid?
-		assertTrue("23.1", workspace.validateProjectLocation(project, new Path("/asf")).isOK());
-		assertTrue("23.2", workspace.validateProjectLocation(project, new Path("/project/.metadata")).isOK());
+		assertTrue("23.1", workspace.validateProjectLocation(project, IPath.fromOSString("/asf")).isOK());
+		assertTrue("23.2", workspace.validateProjectLocation(project, IPath.fromOSString("/project/.metadata")).isOK());
 		// FIXME: Should this be valid?
-		assertTrue("23.3", workspace.validateProjectLocation(project, new Path("/.metadata/project")).isOK());
+		assertTrue("23.3", workspace.validateProjectLocation(project, IPath.fromOSString("/.metadata/project")).isOK());
 	}
 
 	/**

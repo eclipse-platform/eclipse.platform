@@ -16,13 +16,15 @@ package org.eclipse.compare.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 
 import org.eclipse.compare.internal.core.patch.LineReader;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.junit.Test;
 
 public class LineReaderTest  {
@@ -62,7 +64,7 @@ public class LineReaderTest  {
 	}
 
 	private BufferedReader getReader(String name) {
-		IPath path = new Path("linereaderdata/" + name);
+		IPath path = IPath.fromOSString("linereaderdata/" + name);
 		URL url;
 		try {
 			url = new URL(CompareTestPlugin.getDefault().getBundle().getEntry("/"), path.toString());

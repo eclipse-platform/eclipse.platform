@@ -14,11 +14,14 @@
  *******************************************************************************/
 package org.eclipse.core.internal.watson;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import org.eclipse.core.internal.dtree.DataTreeReader;
 import org.eclipse.core.internal.dtree.IDataFlattener;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IPath;
 
 /** <code>ElementTreeReader</code> is the standard implementation
  * of an element tree serialization reader.
@@ -64,7 +67,7 @@ public class ElementTreeReader {
 			public Object readData(IPath path, DataInput input) throws IOException {
 				//never read the root node of an ElementTree
 				//this node is reserved for the parent backpointer
-				if (!Path.ROOT.equals(path))
+				if (!IPath.ROOT.equals(path))
 					return factory.readElement(path, input);
 				return null;
 			}

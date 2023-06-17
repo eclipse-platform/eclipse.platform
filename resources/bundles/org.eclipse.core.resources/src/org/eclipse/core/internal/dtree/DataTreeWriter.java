@@ -15,7 +15,8 @@ package org.eclipse.core.internal.dtree;
 
 import java.io.DataOutput;
 import java.io.IOException;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * Class for writing a single data tree (no parents) to an output stream.
@@ -158,7 +159,7 @@ public class DataTreeWriter {
 		this.output = output;
 		/* tunnel down relevant path */
 		AbstractDataTreeNode node = tree.getRootNode();
-		IPath currentPath = Path.ROOT;
+		IPath currentPath = IPath.ROOT;
 		String[] segments = path.segments();
 		for (String nextSegment : segments) {
 			/* write this node to the output */

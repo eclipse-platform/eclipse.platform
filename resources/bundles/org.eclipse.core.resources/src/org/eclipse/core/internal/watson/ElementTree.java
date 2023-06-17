@@ -15,12 +15,19 @@
  *******************************************************************************/
 package org.eclipse.core.internal.watson;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.eclipse.core.internal.dtree.*;
+import org.eclipse.core.internal.dtree.AbstractDataTreeNode;
+import org.eclipse.core.internal.dtree.DataTreeLookup;
+import org.eclipse.core.internal.dtree.DataTreeNode;
+import org.eclipse.core.internal.dtree.DeltaDataTree;
+import org.eclipse.core.internal.dtree.ObjectNotFoundException;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.StringPool;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -596,7 +603,7 @@ public class ElementTree {
 			while (toMerge != null) {
 				if (path.isRoot()) {
 					//copy all the children
-					IPath[] children = toMerge.getChildren(Path.ROOT);
+					IPath[] children = toMerge.getChildren(IPath.ROOT);
 					for (IPath element : children) {
 						current.createSubtree(element, toMerge.getSubtree(element));
 					}
@@ -721,7 +728,7 @@ public class ElementTree {
 			buffer.append(elementID.requestPath() + " " + elementContents + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		};
-		new ElementTreeIterator(this, Path.ROOT).iterate(visitor);
+		new ElementTreeIterator(this, IPath.ROOT).iterate(visitor);
 		return buffer.toString();
 	}
 

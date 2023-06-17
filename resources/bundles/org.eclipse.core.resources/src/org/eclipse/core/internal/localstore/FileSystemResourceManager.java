@@ -20,18 +20,61 @@
  *******************************************************************************/
 package org.eclipse.core.internal.localstore;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
-import java.util.*;
-import org.eclipse.core.filesystem.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileTree;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.refresh.RefreshManager;
-import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.internal.resources.File;
-import org.eclipse.core.internal.utils.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.resources.Folder;
+import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.IManager;
+import org.eclipse.core.internal.resources.LinkDescription;
+import org.eclipse.core.internal.resources.ModelObjectWriter;
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.ProjectDescription;
+import org.eclipse.core.internal.resources.ProjectDescriptionReader;
+import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.ResourceException;
+import org.eclipse.core.internal.resources.ResourceInfo;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.internal.resources.WorkspaceDescription;
+import org.eclipse.core.internal.utils.BitMask;
+import org.eclipse.core.internal.utils.FileUtil;
+import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.internal.utils.Policy;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourceAttributes;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.InputSource;
 
@@ -81,7 +124,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 		final ArrayList<IPath> results = new ArrayList<>();
 		if (URIUtil.equals(location, locationURIFor(root, true))) {
 			//there can only be one resource at the workspace root's location
-			results.add(Path.ROOT);
+			results.add(IPath.ROOT);
 			return results;
 		}
 		for (IProject project : root.getProjects(IContainer.INCLUDE_HIDDEN)) {
@@ -99,7 +142,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 				continue;
 			URI relative = testLocation.relativize(location);
 			if (!relative.isAbsolute() && !relative.equals(testLocation)) {
-				IPath suffix = new Path(relative.getPath());
+				IPath suffix = IPath.fromOSString(relative.getPath());
 				results.add(project.getFullPath().append(suffix));
 			}
 			if (usingAnotherScheme) {
@@ -122,7 +165,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 						continue;
 					relative = testLocation.relativize(location);
 					if (!relative.isAbsolute() && !relative.equals(testLocation)) {
-						IPath suffix = new Path(relative.getPath());
+						IPath suffix = IPath.fromOSString(relative.getPath());
 						results.add(project.getFullPath().append(link.getProjectRelativePath()).append(suffix));
 					}
 				}
@@ -165,9 +208,9 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 				}
 			}
 			if (suffix == null)
-				suffix = Path.fromPortableString(fileStore.getName());
+				suffix = IPath.fromPortableString(fileStore.getName());
 			else
-				suffix = Path.fromPortableString(fileStore.getName()).append(suffix);
+				suffix = IPath.fromPortableString(fileStore.getName()).append(suffix);
 			fileStore = fileStore.getParent();
 		}
 	}
@@ -296,7 +339,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 	private IResource resourceForLocation(IPath location, boolean files) {
 		if (workspace.getRoot().getLocation().equals(location)) {
 			if (!files)
-				return resourceFor(Path.ROOT, false);
+				return resourceFor(IPath.ROOT, false);
 			return null;
 		}
 		int resultProjectPathSegments = 0;
@@ -573,7 +616,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 		if (parent == null) {
 			//this is the root, so we know where this must be located
 			//initialize root location
-			info = workspace.getResourceInfo(Path.ROOT, false, true);
+			info = workspace.getResourceInfo(IPath.ROOT, false, true);
 			final IWorkspaceRoot rootResource = workspace.getRoot();
 			setLocation(rootResource, info, URIUtil.toURI(rootResource.getLocation()));
 			return info.getFileStoreRoot();
@@ -1186,7 +1229,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 				FileUtil.transferStreams(content, out, store.toString(), subMonitor.split(1));
 			} catch (IOException e) {
 				String msg = NLS.bind(Messages.localstore_couldNotWrite, store.toString());
-				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, new Path(store.toString()), msg, e);
+				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, IPath.fromOSString(store.toString()), msg, e);
 			}
 			// get the new last modified time and stash in the info
 			lastModified = store.fetchInfo().getLastModified();

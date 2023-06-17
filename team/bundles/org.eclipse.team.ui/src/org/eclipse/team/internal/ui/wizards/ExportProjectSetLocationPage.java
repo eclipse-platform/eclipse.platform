@@ -23,9 +23,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -326,7 +326,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 			}
 			//Assert.isNotNull(wsContainer);
 
-			workspaceFile = wsContainer.getFile(new Path(wsFilenameText.getText()));
+			workspaceFile = wsContainer.getFile(IPath.fromOSString(wsFilenameText.getText()));
 			if (workspaceFile != null) {
 				workspaceText.setText(workspaceFile.getFullPath().toString());
 			}

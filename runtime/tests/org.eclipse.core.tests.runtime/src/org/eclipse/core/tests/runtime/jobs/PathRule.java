@@ -14,7 +14,6 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 /**
@@ -30,7 +29,7 @@ public class PathRule implements ISchedulingRule {
 	}
 
 	public PathRule(String pathString) {
-		this.path = new Path(pathString);
+		this.path = IPath.fromOSString(pathString);
 	}
 
 	@Override

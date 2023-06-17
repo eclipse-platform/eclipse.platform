@@ -16,7 +16,6 @@ package org.eclipse.core.tests.harness;
 import java.io.IOException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 
 /**
@@ -37,7 +36,7 @@ public class FileSystemHelper {
 		} catch (IOException e) {
 			//ignore and use non-canonical path
 		}
-		return new Path(tempPath);
+		return IPath.fromOSString(tempPath);
 	}
 
 	/**

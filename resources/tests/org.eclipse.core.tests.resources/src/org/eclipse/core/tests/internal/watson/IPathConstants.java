@@ -14,7 +14,6 @@
 package org.eclipse.core.tests.internal.watson;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 /**
  * Testing interface containing various paths.
@@ -25,7 +24,7 @@ interface IPathConstants {
 	 * The following paths are used in the tree created by
 	 * ElementTreeTestUtilities.createTestElementTree()
 	 */
-	IPath root = Path.ROOT;
+	IPath root = IPath.ROOT;
 	IPath solution = root.append("solution");
 	IPath project1 = solution.append("project1");
 	IPath project2 = solution.append("project2");

@@ -16,12 +16,18 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
-import java.util.*;
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * This class is used to read markers from disk. This is for version 2. Here
@@ -71,7 +77,7 @@ public class MarkerReader_3 extends MarkerReader {
 		try {
 			List<String> readTypes = new ArrayList<>(5);
 			while (true) {
-				IPath path = new Path(input.readUTF());
+				IPath path = IPath.fromOSString(input.readUTF());
 				int markersSize = input.readInt();
 				MarkerSet markers = new MarkerSet(markersSize);
 				for (int i = 0; i < markersSize; i++)

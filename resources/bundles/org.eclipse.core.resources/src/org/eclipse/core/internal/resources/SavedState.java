@@ -18,8 +18,11 @@ import org.eclipse.core.internal.events.ResourceDelta;
 import org.eclipse.core.internal.events.ResourceDeltaFactory;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.internal.watson.ElementTree;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.ISavedState;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 /**
@@ -80,7 +83,7 @@ public class SavedState implements ISavedState {
 				if (oldTree == null || newTree == null)
 					return;
 				workspace.beginOperation(true);
-				ResourceDelta delta = ResourceDeltaFactory.computeDelta(workspace, oldTree, newTree, Path.ROOT, -1);
+				ResourceDelta delta = ResourceDeltaFactory.computeDelta(workspace, oldTree, newTree, IPath.ROOT, -1);
 				forgetTrees(); // free trees to prevent memory leak
 				workspace.getNotificationManager().broadcastChanges(listener, IResourceChangeEvent.POST_BUILD, delta);
 			} finally {

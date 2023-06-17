@@ -19,8 +19,15 @@
 package org.eclipse.core.internal.resources;
 
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import org.eclipse.core.filesystem.EFS;
@@ -30,8 +37,16 @@ import org.eclipse.core.internal.events.LifecycleEvent;
 import org.eclipse.core.internal.localstore.FileSystemResourceManager;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -519,7 +534,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		if (searchLocation == null)
 			return;
 
-		suffix = Path.EMPTY;
+		suffix = IPath.EMPTY;
 		FindAliasesDoit findAliases = new FindAliasesDoit(resource);
 		/*
 		 * Walk up the location segments for this resource, looking for a
@@ -528,7 +543,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		 */
 		do {
 			locationsMap.matchingResourcesDo(searchLocation, findAliases);
-			suffix = new Path(searchLocation.getName()).append(suffix);
+			suffix = IPath.fromOSString(searchLocation.getName()).append(suffix);
 			searchLocation = searchLocation.getParent();
 		} while (searchLocation != null);
 	}

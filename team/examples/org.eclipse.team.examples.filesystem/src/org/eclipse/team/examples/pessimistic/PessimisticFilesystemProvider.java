@@ -39,8 +39,8 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.team.FileModificationValidator;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.team.core.RepositoryProvider;
 
@@ -220,7 +220,7 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 			}
 			child.delete(true, monitor);
 		}
-		IFile controlFile= container.getFile(new Path(CONTROL_FILE_NAME));
+		IFile controlFile= container.getFile(IPath.fromOSString(CONTROL_FILE_NAME));
 		monitor.beginTask("Creating control file " + controlFile, 2);
 		controlFile.create(new ByteArrayInputStream(new byte[0]), true, monitor);
 		controlFile.setDerived(true);
@@ -247,7 +247,7 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 					try {
 						for(int i= 0; i < count; i++) {
 							String name= dIn.readUTF();
-							IResource resource= getProject().findMember(new Path(name));
+							IResource resource= getProject().findMember(IPath.fromOSString(name));
 							if (resource != null) {
 								controlledResources.add(resource);
 							}

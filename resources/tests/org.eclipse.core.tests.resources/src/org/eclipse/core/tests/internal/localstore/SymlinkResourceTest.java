@@ -17,9 +17,12 @@ package org.eclipse.core.tests.internal.localstore;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -44,10 +47,10 @@ public class SymlinkResourceTest extends LocalStoreTest {
 		folderC.mkdir(EFS.NONE, getMonitor());
 
 		/* create symbolic links */
-		mkLink(folderA, "link", new Path("../b").toOSString(), true);
-		mkLink(folderB, "linkA", new Path("../a").toOSString(), true);
-		mkLink(folderB, "linkC", new Path("../c").toOSString(), true);
-		mkLink(folderC, "link", new Path("../b").toOSString(), true);
+		mkLink(folderA, "link", IPath.fromOSString("../b").toOSString(), true);
+		mkLink(folderB, "linkA", IPath.fromOSString("../a").toOSString(), true);
+		mkLink(folderB, "linkC", IPath.fromOSString("../c").toOSString(), true);
+		mkLink(folderC, "link", IPath.fromOSString("../b").toOSString(), true);
 	}
 
 	protected void createBug358830Structure(IFileStore rootDir) throws CoreException {
@@ -55,7 +58,7 @@ public class SymlinkResourceTest extends LocalStoreTest {
 		folderA.mkdir(EFS.NONE, getMonitor());
 
 		/* create trivial recursive symbolic link */
-		mkLink(folderA, "link", new Path("../").toOSString(), true);
+		mkLink(folderA, "link", IPath.fromOSString("../").toOSString(), true);
 	}
 
 	/**

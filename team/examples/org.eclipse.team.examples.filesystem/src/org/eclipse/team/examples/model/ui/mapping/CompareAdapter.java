@@ -22,7 +22,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.mapping.ModelProvider;
 import org.eclipse.core.resources.mapping.ResourceMapping;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
 import org.eclipse.team.examples.model.ModelObject;
 import org.eclipse.team.examples.model.ModelObjectDefinitionFile;
@@ -113,7 +113,7 @@ public class CompareAdapter extends SynchronizationCompareAdapter {
 	}
 
 	private IResource getResource(String path) {
-		Path resourcePath = new Path(path);
+		IPath resourcePath = IPath.fromOSString(path);
 		if (path.endsWith(ModelObjectDefinitionFile.MODEL_OBJECT_DEFINITION_FILE_EXTENSION)
 				|| path.endsWith(ModelObjectElementFile.MODEL_OBJECT_ELEMENTFILE_EXTENSION))
 			return ResourcesPlugin.getWorkspace().getRoot().getFile(resourcePath);

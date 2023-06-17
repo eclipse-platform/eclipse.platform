@@ -20,8 +20,16 @@ import static org.junit.Assert.assertArrayEquals;
 import java.io.File;
 import java.io.InputStream;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 
 /**
@@ -61,7 +69,7 @@ public class WorkspaceTest extends ResourceTest {
 	}
 
 	public void testFileDeletion() throws Throwable {
-		IPath path = new Path("/testProject/testFileForDelete");
+		IPath path = IPath.fromOSString("/testProject/testFileForDelete");
 		IFile target = getWorkspace().getRoot().getFile(path);
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		target.create(null, true, monitor);
@@ -74,7 +82,7 @@ public class WorkspaceTest extends ResourceTest {
 	}
 
 	public void testFileEmptyDeletion() throws Throwable {
-		IPath path = new Path("/testProject/testFileForDelete2");
+		IPath path = IPath.fromOSString("/testProject/testFileForDelete2");
 		IFile target = getWorkspace().getRoot().getFile(path);
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		target.create(getContents(""), true, monitor);
@@ -87,7 +95,7 @@ public class WorkspaceTest extends ResourceTest {
 	}
 
 	public void testFileInFolderCreation() throws Throwable {
-		IPath path = new Path("/testProject/testFolder/testFile2");
+		IPath path = IPath.fromOSString("/testProject/testFolder/testFile2");
 		IFile target = getWorkspace().getRoot().getFile(path);
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		target.create(getRandomContents(), true, monitor);
@@ -96,12 +104,12 @@ public class WorkspaceTest extends ResourceTest {
 	}
 
 	public void testFileMove() throws Throwable {
-		IPath path = new Path("/testProject/targetFile");
+		IPath path = IPath.fromOSString("/testProject/targetFile");
 		IFile target = getWorkspace().getRoot().getFile(path);
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		target.create(getRandomContents(), true, monitor);
 		monitor.assertUsedUp();
-		IFile destination = getWorkspace().getRoot().getFile(new Path("/testProject/movedFile"));
+		IFile destination = getWorkspace().getRoot().getFile(IPath.fromOSString("/testProject/movedFile"));
 		monitor.prepare();
 		target.move(destination.getFullPath(), true, monitor);
 		monitor.assertUsedUp();
@@ -110,7 +118,7 @@ public class WorkspaceTest extends ResourceTest {
 	}
 
 	public void testFileOverFolder() throws Throwable {
-		IPath path = new Path("/testProject/testFolder");
+		IPath path = IPath.fromOSString("/testProject/testFolder");
 		IFolder existing = getWorkspace().getRoot().getFolder(path);
 		assertTrue(existing.exists());
 		IFile target = getWorkspace().getRoot().getFile(path);
@@ -145,7 +153,7 @@ public class WorkspaceTest extends ResourceTest {
 		// create the resources and set some content in a file that will be moved.
 		ensureExistsInWorkspace(before, true);
 		String content = getRandomString();
-		IFile file = project.getFile(new Path("b/b/z"));
+		IFile file = project.getFile(IPath.fromOSString("b/b/z"));
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		file.setContents(getContents(content), true, false, monitor);
 		monitor.assertUsedUp();
@@ -159,12 +167,12 @@ public class WorkspaceTest extends ResourceTest {
 		//
 		assertDoesNotExistInWorkspace(before);
 		assertExistsInWorkspace(after);
-		file = project.getFile(new Path("a/b/z"));
+		file = project.getFile(IPath.fromOSString("a/b/z"));
 		assertTrue("get not equal set", compareContent(getContents(content), file.getContents(false)));
 	}
 
 	public void testFolderOverFile() throws Throwable {
-		IPath path = new Path("/testProject/testFile");
+		IPath path = IPath.fromOSString("/testProject/testFile");
 		IFile existing = getWorkspace().getRoot().getFile(path);
 		assertTrue(existing.exists());
 		IFolder target = getWorkspace().getRoot().getFolder(path);
@@ -283,13 +291,13 @@ public class WorkspaceTest extends ResourceTest {
 		target.open(monitor);
 		monitor.assertUsedUp();
 		assertTrue(target.isOpen());
-		IPath path = new Path("/testProject/testFolder");
+		IPath path = IPath.fromOSString("/testProject/testFolder");
 		IFolder folderTarget = getWorkspace().getRoot().getFolder(path);
 		monitor = new FussyProgressMonitor();
 		folderTarget.create(true, true, monitor);
 		monitor.assertUsedUp();
 		assertTrue(folderTarget.exists());
-		IPath filePath = new Path("/testProject/testFile");
+		IPath filePath = IPath.fromOSString("/testProject/testFile");
 		IFile fileTarget = getWorkspace().getRoot().getFile(filePath);
 		monitor = new FussyProgressMonitor();
 		fileTarget.create(null, true, monitor);
@@ -375,7 +383,7 @@ public class WorkspaceTest extends ResourceTest {
 	}
 
 	public void testSetContents() throws Throwable {
-		IPath path = new Path("/testProject/testFile");
+		IPath path = IPath.fromOSString("/testProject/testFile");
 		IFile target = getWorkspace().getRoot().getFile(path);
 		String testString = getRandomString();
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
@@ -387,12 +395,12 @@ public class WorkspaceTest extends ResourceTest {
 	}
 
 	public void testSetGetFilePersistentProperty() throws Throwable {
-		IResource target = getWorkspace().getRoot().getFile(new Path("/testProject/testFile"));
+		IResource target = getWorkspace().getRoot().getFile(IPath.fromOSString("/testProject/testFile"));
 		setGetPersistentProperty(target);
 	}
 
 	public void testSetGetFolderPersistentProperty() throws Throwable {
-		IResource target = getWorkspace().getRoot().getFolder(new Path("/testProject/testFolder"));
+		IResource target = getWorkspace().getRoot().getFolder(IPath.fromOSString("/testProject/testFolder"));
 		setGetPersistentProperty(target);
 	}
 
@@ -402,7 +410,7 @@ public class WorkspaceTest extends ResourceTest {
 	}
 
 	public void testSetProperty() throws Throwable {
-		IPath path = new Path("/testProject/testFile");
+		IPath path = IPath.fromOSString("/testProject/testFile");
 		IFile target = getWorkspace().getRoot().getFile(path);
 		String value = "this is a test property value";
 		QualifiedName name = new QualifiedName("itp-test", "testProperty");
@@ -411,12 +419,12 @@ public class WorkspaceTest extends ResourceTest {
 	}
 
 	public void testSimpleMove() throws Throwable {
-		IPath path = new Path("/testProject/simpleFile");
+		IPath path = IPath.fromOSString("/testProject/simpleFile");
 		IFile target = getWorkspace().getRoot().getFile(path);
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		target.create(getRandomContents(), true, monitor);
 		monitor.assertUsedUp();
-		IFile destination = getWorkspace().getRoot().getFile(new Path("/testProject/newSimpleFile"));
+		IFile destination = getWorkspace().getRoot().getFile(IPath.fromOSString("/testProject/newSimpleFile"));
 		monitor.prepare();
 		target.move(destination.getFullPath(), true, monitor);
 		monitor.assertUsedUp();

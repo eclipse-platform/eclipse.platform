@@ -16,14 +16,27 @@
  *******************************************************************************/
 package org.eclipse.core.internal.localstore;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.ref.SoftReference;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.WeakHashMap;
 import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.internal.resources.ResourceStatus;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -199,7 +212,7 @@ public abstract class Bucket {
 		try {
 			for (Iterator<Map.Entry<String, Object>> i = entries.entrySet().iterator(); i.hasNext();) {
 				Map.Entry<String, Object> mapEntry = i.next();
-				IPath path = new Path(mapEntry.getKey());
+				IPath path = IPath.fromOSString(mapEntry.getKey());
 				// check whether the filter applies
 				int matchingSegments = filter.matchingFirstSegments(path);
 				if (!filter.isPrefixOf(path) || path.segmentCount() - matchingSegments > depth)

@@ -21,25 +21,85 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.*;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.stream.Collectors;
-import java.util.zip.*;
+import java.util.zip.Deflater;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.internal.events.*;
-import org.eclipse.core.internal.localstore.*;
-import org.eclipse.core.internal.utils.*;
-import org.eclipse.core.internal.watson.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.events.BuilderPersistentInfo;
+import org.eclipse.core.internal.events.ResourceComparator;
+import org.eclipse.core.internal.events.ResourceStats;
+import org.eclipse.core.internal.localstore.SafeChunkyInputStream;
+import org.eclipse.core.internal.localstore.SafeChunkyOutputStream;
+import org.eclipse.core.internal.localstore.SafeFileInputStream;
+import org.eclipse.core.internal.localstore.SafeFileOutputStream;
+import org.eclipse.core.internal.utils.FileUtil;
+import org.eclipse.core.internal.utils.IStringPoolParticipant;
+import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.internal.utils.Policy;
+import org.eclipse.core.internal.utils.StringPool;
+import org.eclipse.core.internal.utils.WrappedRuntimeException;
+import org.eclipse.core.internal.watson.ElementTree;
+import org.eclipse.core.internal.watson.ElementTreeIterator;
+import org.eclipse.core.internal.watson.ElementTreeWriter;
+import org.eclipse.core.internal.watson.IElementContentVisitor;
+import org.eclipse.core.internal.watson.IElementInfoFlattener;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ISaveContext;
+import org.eclipse.core.resources.ISaveParticipant;
+import org.eclipse.core.resources.ISavedState;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ProgressMonitorWrapper;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
@@ -66,7 +126,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		}
 	}
 
-	protected static final String ROOT_SEQUENCE_NUMBER_KEY = Path.ROOT + LocalMetaArea.F_TREE;
+	protected static final String ROOT_SEQUENCE_NUMBER_KEY = IPath.ROOT + LocalMetaArea.F_TREE;
 	protected static final String CLEAR_DELTA_PREFIX = "clearDelta_"; //$NON-NLS-1$
 	protected static final String DELTA_EXPIRATION_PREFIX = "deltaExpiration_"; //$NON-NLS-1$
 	protected static final int DONE_SAVING = 3;
@@ -233,7 +293,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 				continue;
 			String prefix = key.substring(0, key.length() - LocalMetaArea.F_TREE.length());
 			//always save the root tree entry
-			if (prefix.equals(Path.ROOT.toString()))
+			if (prefix.equals(IPath.ROOT.toString()))
 				continue;
 			IProject project = workspace.getRoot().getProject(prefix);
 			if (!project.exists() || project.isOpen())
@@ -1112,7 +1172,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 				reader.readTree(project, input, Policy.subMonitorFor(monitor, Policy.totalWork));
 			}
 		} catch (IOException e) {
-			snapshotPath = new Path(snapshotFile.getPath());
+			snapshotPath = IPath.fromOSString(snapshotFile.getPath());
 			message = NLS.bind(Messages.resources_readMeta, snapshotPath);
 			throw new ResourceException(IResourceStatus.FAILED_READ_METADATA, snapshotPath, message, e);
 		} finally {
@@ -1332,7 +1392,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 */
 	public void saveRefreshSnapshot(Project project, URI snapshotLocation, IProgressMonitor monitor) throws CoreException {
 		IFileStore store = EFS.getStore(snapshotLocation);
-		IPath snapshotPath = new Path(snapshotLocation.getPath());
+		IPath snapshotPath = IPath.fromOSString(snapshotLocation.getPath());
 		try (ByteArrayOutputStream tmp = new ByteArrayOutputStream()) {
 			try (DataOutputStream output = new DataOutputStream(tmp)) {
 				output.writeInt(ICoreConstants.WORKSPACE_TREE_VERSION_2);
@@ -1368,7 +1428,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			}
 		} catch (Exception e) {
 			String msg = NLS.bind(Messages.resources_writeWorkspaceMeta, treeLocation);
-			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, Path.ROOT, msg, e);
+			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, IPath.ROOT, msg, e);
 		}
 		if (Policy.DEBUG_SAVE_TREE)
 			Policy.debug("Save Workspace Tree: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1458,14 +1518,14 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 				try (DataOutputStream out = new DataOutputStream(safeStream);) {
 					out.writeInt(ICoreConstants.WORKSPACE_TREE_VERSION_2);
 					writeWorkspaceFields(out, subMonitor);
-					writer.writeDelta(tree, lastSnap, Path.ROOT, ElementTreeWriter.D_INFINITE, out,
+					writer.writeDelta(tree, lastSnap, IPath.ROOT, ElementTreeWriter.D_INFINITE, out,
 							ResourceComparator.getSaveComparator());
 					safeStream.succeed();
 					out.close();
 				}
 			} catch (IOException e) {
 				message = NLS.bind(Messages.resources_writeWorkspaceMeta, localFile.getAbsolutePath());
-				throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, Path.ROOT, message, e);
+				throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, IPath.ROOT, message, e);
 			}
 			lastSnap = tree;
 			if (Policy.DEBUG_SAVE_TREE)
@@ -2023,7 +2083,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			/* save the forest! */
 			ElementTreeWriter writer = new ElementTreeWriter(this);
 			ElementTree[] treesToSave = trees.toArray(new ElementTree[trees.size()]);
-			writer.writeDeltaChain(treesToSave, Path.ROOT, ElementTreeWriter.D_INFINITE, output,
+			writer.writeDeltaChain(treesToSave, IPath.ROOT, ElementTreeWriter.D_INFINITE, output,
 					ResourceComparator.getSaveComparator());
 			subMonitor.worked(4);
 

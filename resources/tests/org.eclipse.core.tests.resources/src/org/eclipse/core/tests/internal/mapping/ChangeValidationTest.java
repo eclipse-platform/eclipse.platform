@@ -16,7 +16,6 @@ package org.eclipse.core.tests.internal.mapping;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -24,8 +23,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.IResourceChangeDescriptionFactory;
 import org.eclipse.core.resources.mapping.ModelStatus;
 import org.eclipse.core.resources.mapping.ResourceChangeValidator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -126,8 +125,8 @@ public class ChangeValidationTest extends ResourceTest {
 	}
 
 	public void testFileCopy() {
-		factory.copy(project.findMember("c/x"), new Path("c/x2"));
-		factory.copy(project.findMember("c/b/y"), new Path("c/y"));
+		factory.copy(project.findMember("c/x"), IPath.fromOSString("c/x2"));
+		factory.copy(project.findMember("c/b/y"), IPath.fromOSString("c/y"));
 		IStatus status = validateChange(factory);
 		assertStatusEqual(status, new String[] {ChangeDescription.getMessageFor(ChangeDescription.COPIED, project.findMember("c/x")), ChangeDescription.getMessageFor(ChangeDescription.COPIED, project.findMember("c/b/y"))});
 	}
@@ -161,15 +160,15 @@ public class ChangeValidationTest extends ResourceTest {
 	}
 
 	public void testFileMoves() {
-		factory.move(project.findMember("c/x"), new Path("c/x2"));
-		factory.move(project.findMember("c/b/y"), new Path("c/y"));
+		factory.move(project.findMember("c/x"), IPath.fromOSString("c/x2"));
+		factory.move(project.findMember("c/b/y"), IPath.fromOSString("c/y"));
 		IStatus status = validateChange(factory);
 		assertStatusEqual(status, new String[] {ChangeDescription.getMessageFor(ChangeDescription.MOVED, project.findMember("c/x")), ChangeDescription.getMessageFor(ChangeDescription.MOVED, project.findMember("c/b/y"))});
 	}
 
 	public void testFolderCopy() {
 		final IResource folder = project.findMember("c/b/");
-		factory.copy(folder, new Path("c/d"));
+		factory.copy(folder, IPath.fromOSString("c/d"));
 		IStatus status = validateChange(factory);
 		assertStatusEqual(status, new String[] {ChangeDescription.getMessageFor(ChangeDescription.COPIED, folder),});
 	}
@@ -186,7 +185,7 @@ public class ChangeValidationTest extends ResourceTest {
 
 	public void testFolderMove() {
 		final IResource folder = project.findMember("c/b/");
-		factory.move(folder, new Path("c/d"));
+		factory.move(folder, IPath.fromOSString("c/d"));
 		IStatus status = validateChange(factory);
 		assertStatusEqual(status, new String[] {ChangeDescription.getMessageFor(ChangeDescription.MOVED, folder),});
 	}
@@ -212,7 +211,7 @@ public class ChangeValidationTest extends ResourceTest {
 
 	public void testProjectCopy() {
 		// A project copy
-		factory.copy(project, new Path("MovedProject"));
+		factory.copy(project, IPath.fromOSString("MovedProject"));
 		IStatus status = validateChange(factory);
 		assertStatusEqual(status, new String[] {ChangeDescription.getMessageFor(ChangeDescription.COPIED, project)});
 	}
@@ -244,7 +243,7 @@ public class ChangeValidationTest extends ResourceTest {
 	}
 
 	public void testProjectMove() {
-		factory.move(project, new Path("MovedProject"));
+		factory.move(project, IPath.fromOSString("MovedProject"));
 		IStatus status = validateChange(factory);
 		assertStatusEqual(status, new String[] {ChangeDescription.getMessageFor(ChangeDescription.MOVED, project)});
 	}

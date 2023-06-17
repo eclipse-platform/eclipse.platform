@@ -20,9 +20,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Random;
-import org.eclipse.core.internal.watson.*;
+import org.eclipse.core.internal.watson.ElementTree;
+import org.eclipse.core.internal.watson.ElementTreeWriter;
+import org.eclipse.core.internal.watson.IElementComparator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 /**
  * Framework for running tests on element tree components.
@@ -39,7 +40,7 @@ class TestUtil implements IPathConstants {
 	 * @param actual the actual value of a tree
 	 */
 	static protected void assertEqualTrees(String message, ElementTree expected, ElementTree actual) {
-		assertEqualTrees(message, expected, actual, Path.ROOT, ElementTreeWriter.D_INFINITE);
+		assertEqualTrees(message, expected, actual, IPath.ROOT, ElementTreeWriter.D_INFINITE);
 	}
 
 	/**
@@ -108,7 +109,7 @@ class TestUtil implements IPathConstants {
 	static protected void assertTreeStructure(ElementTree tree) {
 		assertHasPaths(tree, getTreePaths());
 
-		IPath[] children = tree.getChildren(Path.ROOT);
+		IPath[] children = tree.getChildren(IPath.ROOT);
 		assertEquals(1, children.length);
 
 		/* solution children */

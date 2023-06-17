@@ -13,8 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.QualifiedName;
 
 public class IFolderTest extends ResourceTest {
 	@Override
@@ -217,7 +224,7 @@ public class IFolderTest extends ResourceTest {
 
 		// try to create a folder on a project (one segment) path
 		try {
-			target = getWorkspace().getRoot().getFolder(new Path("/Folder3"));
+			target = getWorkspace().getRoot().getFolder(IPath.fromOSString("/Folder3"));
 			fail("6.0");
 		} catch (IllegalArgumentException e) {
 			// expected
@@ -272,7 +279,7 @@ public class IFolderTest extends ResourceTest {
 		// create the resources and set some content in a file that will be moved.
 		ensureExistsInWorkspace(before, true);
 		String content = getRandomString();
-		IFile file = project.getFile(new Path("b/b/z"));
+		IFile file = project.getFile(IPath.fromOSString("b/b/z"));
 		file.setContents(getContents(content), true, false, getMonitor());
 
 		// Be sure the resources exist and then move them.
@@ -282,12 +289,12 @@ public class IFolderTest extends ResourceTest {
 		//
 		assertDoesNotExistInWorkspace("2.0", before);
 		assertExistsInWorkspace(after);
-		file = project.getFile(new Path("a/b/z"));
+		file = project.getFile(IPath.fromOSString("a/b/z"));
 		assertTrue("2.1", compareContent(getContents(content), file.getContents(false)));
 	}
 
 	public void testFolderOverFile() throws Throwable {
-		IPath path = new Path("/Project/File");
+		IPath path = IPath.fromOSString("/Project/File");
 		IFile existing = getWorkspace().getRoot().getFile(path);
 		ensureExistsInWorkspace(existing, true);
 		IFolder target = getWorkspace().getRoot().getFolder(path);
@@ -380,7 +387,7 @@ public class IFolderTest extends ResourceTest {
 	}
 
 	public void testSetGetFolderPersistentProperty() throws Throwable {
-		IResource target = getWorkspace().getRoot().getFolder(new Path("/Project/Folder"));
+		IResource target = getWorkspace().getRoot().getFolder(IPath.fromOSString("/Project/Folder"));
 		String value = "this is a test property value";
 		QualifiedName name = new QualifiedName("itp-test", "testProperty");
 		// getting/setting persistent properties on non-existent resources should throw an exception

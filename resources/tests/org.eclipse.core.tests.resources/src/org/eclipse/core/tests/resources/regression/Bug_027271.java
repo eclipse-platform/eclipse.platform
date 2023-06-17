@@ -15,7 +15,8 @@ package org.eclipse.core.tests.resources.regression;
 
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -61,20 +62,20 @@ public class Bug_027271 extends ResourceTest {
 		Preferences prefs = ResourcesPlugin.getPlugin().getPluginPreferences();
 
 		assertEquals("1.0", 0, pvm.getPathVariableNames().length);
-		prefs.setValue(VARIABLE_PREFIX + "VALID_VAR", new Path("c:/temp").toPortableString());
+		prefs.setValue(VARIABLE_PREFIX + "VALID_VAR", IPath.fromOSString("c:/temp").toPortableString());
 		assertEquals("1.1", 1, pvm.getPathVariableNames().length);
 		assertEquals("1.2", "VALID_VAR", pvm.getPathVariableNames()[0]);
 
 		//sets invalid value (relative path)
-		IPath relativePath = new Path("temp");
+		IPath relativePath = IPath.fromOSString("temp");
 		prefs.setValue(VARIABLE_PREFIX + "INVALID_VAR", relativePath.toPortableString());
 		assertEquals("2.0", 1, pvm.getPathVariableNames().length);
 		assertEquals("2.1", "VALID_VAR", pvm.getPathVariableNames()[0]);
 
 		//sets invalid value (invalid path)
-		IPath invalidPath = new Path("c:\\a\\:\\b");
+		IPath invalidPath = IPath.fromOSString("c:\\a\\:\\b");
 		prefs.setValue(VARIABLE_PREFIX + "ANOTHER_INVALID_VAR", invalidPath.toPortableString());
-		assertTrue("3.0", !Path.EMPTY.isValidPath(invalidPath.toPortableString()));
+		assertTrue("3.0", !IPath.EMPTY.isValidPath(invalidPath.toPortableString()));
 		assertEquals("3.1", 1, pvm.getPathVariableNames().length);
 		assertEquals("3.2", "VALID_VAR", pvm.getPathVariableNames()[0]);
 	}

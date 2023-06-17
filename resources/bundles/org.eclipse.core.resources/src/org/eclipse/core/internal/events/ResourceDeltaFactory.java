@@ -17,12 +17,15 @@ package org.eclipse.core.internal.events;
 import java.util.Map;
 import org.eclipse.core.internal.dtree.DeltaDataTree;
 import org.eclipse.core.internal.dtree.NodeComparison;
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.MarkerSet;
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.ResourceInfo;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.watson.ElementTree;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 /**
  * This class is used for calculating and building resource delta trees for notification
@@ -45,14 +48,14 @@ public class ResourceDeltaFactory {
 		ResourceComparator comparator = markerGeneration >= 0 ? ResourceComparator.getNotificationComparator() : ResourceComparator.getBuildComparator();
 		newTree.immutable();
 		DeltaDataTree delta = null;
-		if (Path.ROOT.equals(root))
+		if (IPath.ROOT.equals(root))
 			delta = newTree.getDataTree().compareWith(oldTree.getDataTree(), comparator);
 		else
 			delta = newTree.getDataTree().compareWith(oldTree.getDataTree(), comparator, root);
 
 		delta = delta.asReverseComparisonTree(comparator);
-		IPath pathInTree = root.isRoot() ? Path.ROOT : root;
-		IPath pathInDelta = Path.ROOT;
+		IPath pathInTree = root.isRoot() ? IPath.ROOT : root;
+		IPath pathInDelta = IPath.ROOT;
 
 		// get the marker deltas for the delta info object....if needed
 		Map<IPath, MarkerSet> allMarkerDeltas = null;
@@ -137,7 +140,7 @@ public class ResourceDeltaFactory {
 		NodeComparison compare = (NodeComparison) delta.getData(pathInDelta);
 		int comparison = compare.getUserComparison();
 		result.setStatus(comparison);
-		if (comparison == IResourceDelta.NO_CHANGE || Path.ROOT.equals(pathInTree)) {
+		if (comparison == IResourceDelta.NO_CHANGE || IPath.ROOT.equals(pathInTree)) {
 			ResourceInfo info = workspace.getResourceInfo(pathInTree, true, false);
 			result.setOldInfo(info);
 			result.setNewInfo(info);

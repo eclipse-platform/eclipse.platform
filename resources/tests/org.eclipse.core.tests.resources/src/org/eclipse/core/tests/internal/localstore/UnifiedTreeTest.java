@@ -14,7 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.Hashtable;
 import org.eclipse.core.filesystem.EFS;
@@ -23,9 +26,16 @@ import org.eclipse.core.internal.localstore.IUnifiedTreeVisitor;
 import org.eclipse.core.internal.localstore.UnifiedTree;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 
 public class UnifiedTreeTest extends LocalStoreTest {
 	protected static int limit = 10;
@@ -54,7 +64,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 		final Workspace workspace = (Workspace) getWorkspace();
 		IWorkspaceRunnable operation = monitor -> {
 			for (int i = 0; i < limit; i++) {
-				IFile child = target.getFile(new Path("wbFile" + i));
+				IFile child = target.getFile(IPath.fromOSString("wbFile" + i));
 				workspace.createResource(child, false);
 				String location = child.getLocation().toOSString();
 				set.put(location, "");
@@ -78,7 +88,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 	protected void createResourcesInWorkspace(IContainer target, Hashtable<String, String> set) throws CoreException {
 		createFiles(target, set);
 		for (int i = 0; i < limit; i++) {
-			IFolder child = target.getFolder(new Path("wbFolder" + i));
+			IFolder child = target.getFolder(IPath.fromOSString("wbFolder" + i));
 			child.create(true, true, null);
 			String location = child.getLocation().toOSString();
 			set.put(location, "");

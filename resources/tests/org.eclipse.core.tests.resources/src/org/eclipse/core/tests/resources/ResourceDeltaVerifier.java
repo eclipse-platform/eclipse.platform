@@ -17,7 +17,6 @@ package org.eclipse.core.tests.resources;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -25,7 +24,6 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.junit.Assert;
 
 /**
@@ -564,16 +562,16 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 		int formerChildStatus = expectedStatus;
 		int latterChildStatus = actualStatus;
 
-		IPath path = new Path("/a/b/c");
-		IPath path2 = new Path("/a/b/d");
+		IPath path = IPath.fromOSString("/a/b/c");
+		IPath path2 = IPath.fromOSString("/a/b/d");
 		IPath expectedFullPath = path;
 		IPath actualFullPath = path2;
 		IPath expectedMovedFromPath = path;
 		IPath actualMovedFromPath = path2;
 		IPath expectedMovedToPath = path;
 		IPath actualMovedToPath = path2;
-		IPath expectedProjectRelativePath = new Path("b/c");
-		IPath actualProjectRelativePath = new Path("b/d");
+		IPath expectedProjectRelativePath = IPath.fromOSString("b/c");
+		IPath actualProjectRelativePath = IPath.fromOSString("b/d");
 
 		comparer.fMessage.append("Checking delta for ");
 		comparer.fMessage.append(path);

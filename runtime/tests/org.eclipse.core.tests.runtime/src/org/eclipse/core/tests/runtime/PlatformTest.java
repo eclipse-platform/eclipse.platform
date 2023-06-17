@@ -15,15 +15,36 @@ package org.eclipse.core.tests.runtime;
 
 import static java.util.Collections.emptyMap;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.*;
-import java.util.jar.*;
-import org.eclipse.core.runtime.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.osgi.framework.log.FrameworkLog;
 import org.junit.Test;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -116,13 +137,13 @@ public class PlatformTest extends RuntimeTest {
 		assertNotNull("1.0", initialLocation);
 
 		//ensure result is same as log service
-		IPath logPath = new Path(logService.getFile().getAbsolutePath());
+		IPath logPath = IPath.fromOSString(logService.getFile().getAbsolutePath());
 		assertEquals("2.0", logPath, initialLocation);
 
 		//changing log service location should change log location
 		File newLocation = File.createTempFile("testGetLogLocation", null);
 		logService.setFile(newLocation, true);
-		assertEquals("3.0", new Path(newLocation.getAbsolutePath()), Platform.getLogFileLocation());
+		assertEquals("3.0", IPath.fromOSString(newLocation.getAbsolutePath()), Platform.getLogFileLocation());
 
 		//when log is non-local, should revert to default location
 		logService.setWriter(new StringWriter(), true);

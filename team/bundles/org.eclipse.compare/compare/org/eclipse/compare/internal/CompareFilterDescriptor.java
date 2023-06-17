@@ -21,7 +21,7 @@ import org.eclipse.compare.ICompareFilter;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
@@ -83,7 +83,7 @@ public class CompareFilterDescriptor {
 			String path = Utilities.getString(fResourceBundle,
 					FILTER_IMAGE_ATTRIBUTE, FILTER_IMAGE_ATTRIBUTE);
 			if (path != null)
-				url = FileLocator.find(bundle, new Path(path), null);
+				url = FileLocator.find(bundle, IPath.fromOSString(path), null);
 		}
 		fImageDescriptor = (url == null) ? null : ImageDescriptor
 				.createFromURL(url);

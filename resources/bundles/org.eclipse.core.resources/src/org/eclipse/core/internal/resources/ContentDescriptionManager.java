@@ -17,19 +17,43 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.events.ILifecycleListener;
 import org.eclipse.core.internal.events.LifecycleEvent;
-import org.eclipse.core.internal.utils.*;
+import org.eclipse.core.internal.utils.Cache;
+import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.internal.watson.ElementTreeIterator;
 import org.eclipse.core.internal.watson.IElementContentVisitor;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.content.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IRegistryChangeEvent;
+import org.eclipse.core.runtime.IRegistryChangeListener;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.runtime.content.IContentTypeManager.ContentTypeChangeEvent;
+import org.eclipse.core.runtime.content.IContentTypeMatcher;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
@@ -111,7 +135,8 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 		 */
 		void flush(IProject project) {
 			if (Policy.DEBUG_CONTENT_TYPE_CACHE)
-				Policy.debug("Scheduling flushing of content type cache for " + (project == null ? Path.ROOT : project.getFullPath())); //$NON-NLS-1$
+				Policy.debug("Scheduling flushing of content type cache for " //$NON-NLS-1$
+						+ (project == null ? IPath.ROOT : project.getFullPath()));
 			synchronized (toFlush) {
 				if (!fullFlush)
 					if (project == null)
@@ -239,7 +264,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 			SubMonitor subMonitor = SubMonitor.convert(monitor);
 			if (toClean.isEmpty()) {
 				// no project was added, must be a global flush
-				clearContentFlags(Path.ROOT, subMonitor.split(1));
+				clearContentFlags(IPath.ROOT, subMonitor.split(1));
 			} else {
 				subMonitor.setWorkRemaining(toClean.size());
 				// flush a project at a time
@@ -442,7 +467,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 			Policy.log(e.getStatus());
 		}
 		if (Policy.DEBUG_CONTENT_TYPE_CACHE)
-			Policy.debug("Invalidated cache for " + (project == null ? Path.ROOT : project.getFullPath())); //$NON-NLS-1$
+			Policy.debug("Invalidated cache for " + (project == null ? IPath.ROOT : project.getFullPath())); //$NON-NLS-1$
 		if (flush) {
 			try {
 				// discard the cache, so it can be used before the flush job starts
