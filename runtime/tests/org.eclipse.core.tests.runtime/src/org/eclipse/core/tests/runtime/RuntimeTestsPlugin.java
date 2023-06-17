@@ -23,9 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -102,7 +101,7 @@ public class RuntimeTestsPlugin extends Plugin {
 		if (base == null)
 			return null;
 		try {
-			String osPath = new Path(FileLocator.toFileURL(base).getPath()).toOSString();
+			String osPath = IPath.fromOSString(FileLocator.toFileURL(base).getPath()).toOSString();
 			File result = new File(osPath);
 			return result.getCanonicalPath().equals(result.getPath()) ? result : null;
 		} catch (IOException e) {

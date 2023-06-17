@@ -14,11 +14,13 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import java.io.InputStream;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.localstore.BlobStore;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 
 //
 public class BlobStoreTest extends LocalStoreTest {
@@ -39,7 +41,7 @@ public class BlobStoreTest extends LocalStoreTest {
 		/* nonexistent location */
 		ok = false;
 		try {
-			new BlobStore(EFS.getLocalFileSystem().getStore(new Path("../this/path/should/not/be/a/folder")), 128);
+			new BlobStore(EFS.getLocalFileSystem().getStore(IPath.fromOSString("../this/path/should/not/be/a/folder")), 128);
 		} catch (RuntimeException e) {
 			ok = true;
 		}

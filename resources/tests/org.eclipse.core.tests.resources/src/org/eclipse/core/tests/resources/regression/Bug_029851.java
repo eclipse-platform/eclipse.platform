@@ -16,7 +16,9 @@ package org.eclipse.core.tests.resources.regression;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -44,7 +46,7 @@ public class Bug_029851 extends ResourceTest {
 	public String[] defineHierarchy() {
 		int depth = 3;
 		int breadth = 3;
-		IPath prefix = new Path("/a/");
+		IPath prefix = IPath.fromOSString("/a/");
 		Collection<String> result = createChildren(breadth, depth, prefix);
 		result.add(prefix.toString());
 		return result.toArray(new String[0]);

@@ -14,10 +14,11 @@
 package org.eclipse.core.internal.filesystem;
 
 import java.net.URI;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.provider.FileSystem;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 /**
  * The null file system.
@@ -54,6 +55,6 @@ public class NullFileSystem extends FileSystem {
 
 	@Override
 	public IFileStore getStore(URI uri) {
-		return new NullFileStore(new Path(uri.getPath()));
+		return new NullFileStore(IPath.fromOSString(uri.getPath()));
 	}
 }

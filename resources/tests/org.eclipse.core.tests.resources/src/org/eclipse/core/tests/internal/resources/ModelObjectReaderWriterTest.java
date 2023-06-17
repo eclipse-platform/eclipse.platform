@@ -15,7 +15,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
@@ -24,16 +28,28 @@ import java.util.Map.Entry;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
-import org.eclipse.core.internal.resources.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.resources.LinkDescription;
+import org.eclipse.core.internal.resources.ModelObjectWriter;
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.ProjectDescription;
+import org.eclipse.core.internal.resources.ProjectDescriptionReader;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.xml.sax.InputSource;
 
 public class ModelObjectReaderWriterTest extends ResourceTest {
-	static final IPath LONG_LOCATION = new Path("/eclipse/dev/i0218/eclipse/pffds/fds//fds///fdsfsdfsd///fdsfdsf/fsdfsdfsd/lugi/dsds/fsd//f/ffdsfdsf/fsdfdsfsd/fds//fdsfdsfdsf/fdsfdsfds/fdsfdsfdsf/fdsfdsfdsds/ns/org.eclipse.help.ui_2.1.0/contexts.xml").setDevice(isWindows() ? "D:" : null);
+	static final IPath LONG_LOCATION = IPath.fromOSString("/eclipse/dev/i0218/eclipse/pffds/fds//fds///fdsfsdfsd///fdsfdsf/fsdfsdfsd/lugi/dsds/fsd//f/ffdsfdsf/fsdfdsfsd/fds//fdsfdsfdsf/fdsfdsfds/fdsfdsfdsf/fdsfdsfdsds/ns/org.eclipse.help.ui_2.1.0/contexts.xml").setDevice(isWindows() ? "D:" : null);
 	static final URI LONG_LOCATION_URI = LONG_LOCATION.toFile().toURI();
-	private static final String PATH_STRING = new Path("/abc/def").setDevice(isWindows() ? "D:" : null).toString();
+	private static final String PATH_STRING = IPath.fromOSString("/abc/def").setDevice(isWindows() ? "D:" : null).toString();
 
 	private HashMap<String, ProjectDescription> buildBaselineDescriptors() {
 		HashMap<String, ProjectDescription> result = new HashMap<>();
@@ -247,7 +263,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 	}
 
 	private LinkDescription createLinkDescription(String path, int type, String location) {
-		return createLinkDescription(new Path(path), type, uriFromPortableString(location));
+		return createLinkDescription(IPath.fromOSString(path), type, uriFromPortableString(location));
 	}
 
 	private String getLongDescription() {
@@ -395,7 +411,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		assertEquals("3.5", new String[0], projDesc.getNatureIds());
 		assertEquals("3.6", new ICommand[0], projDesc.getBuildSpec());
 		LinkDescription link = projDesc.getLinks().values().iterator().next();
-		assertEquals("3.7", new Path("newLink"), link.getProjectRelativePath());
+		assertEquals("3.7", IPath.fromOSString("newLink"), link.getProjectRelativePath());
 		assertEquals("3.8", PATH_STRING, URIUtil.toPath(link.getLocationURI()).toString());
 	}
 
@@ -626,7 +642,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 	public void testProjectDescriptionWithSpaces() throws Throwable {
 
 		IFileStore store = getTempStore();
-		final Path path = new Path("link");
+		IPath path = IPath.fromOSString("link");
 		URI location = store.toURI();
 		URI locationWithSpaces = store.getChild("With some spaces").toURI();
 		/* test write */
@@ -645,7 +661,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 	}
 
 	protected URI uriFromPortableString(String pathString) {
-		return Path.fromPortableString(pathString).toFile().toURI();
+		return IPath.fromPortableString(pathString).toFile().toURI();
 	}
 
 	/**

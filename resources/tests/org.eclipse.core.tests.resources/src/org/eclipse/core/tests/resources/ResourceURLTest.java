@@ -19,8 +19,13 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.eclipse.core.internal.resources.PlatformURLResourceConnection;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * Test suites for {@link org.eclipse.core.internal.resources.PlatformURLResourceConnection}
@@ -45,7 +50,7 @@ public class ResourceURLTest extends ResourceTest {
 
 	private void checkURL(IResource resource) throws Throwable {
 		URL url = getURL(resource);
-		IPath file = new Path(FileLocator.resolve(url).getFile());
+		IPath file = IPath.fromOSString(FileLocator.resolve(url).getFile());
 		IPath metric = resource.getLocation();
 		assertEquals(metric, file);
 	}

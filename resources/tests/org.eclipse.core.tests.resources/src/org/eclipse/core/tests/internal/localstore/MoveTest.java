@@ -13,9 +13,21 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
-import org.eclipse.core.internal.resources.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.resources.File;
+import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.ResourceInfo;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.QualifiedName;
 import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +64,7 @@ public class MoveTest extends LocalStoreTest {
 			source.open(getMonitor());
 
 			IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
-			description.setLocation(new Path(devices[1] + location));
+			description.setLocation(IPath.fromOSString(devices[1] + location));
 			destination.create(description, getMonitor());
 			destination.open(getMonitor());
 		} catch (CoreException e) {
@@ -174,7 +186,7 @@ public class MoveTest extends LocalStoreTest {
 			source.open(getMonitor());
 
 			IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
-			description.setLocation(new Path(devices[1] + location));
+			description.setLocation(IPath.fromOSString(devices[1] + location));
 			destination.create(description, getMonitor());
 			destination.open(getMonitor());
 		} catch (CoreException e) {
@@ -437,7 +449,7 @@ public class MoveTest extends LocalStoreTest {
 		assertTrue("1.4", !destination.exists());
 
 		/* move to relative destination */
-		IPath path = new Path("destination");
+		IPath path = IPath.fromOSString("destination");
 		destination = folder.getFile(path);
 		file.move(path, true, null);
 		assertTrue("2.1", !file.exists());
@@ -481,7 +493,7 @@ public class MoveTest extends LocalStoreTest {
 		assertTrue("4.3", folder.exists());
 		// FIXME: should #move be a best effort operation?
 		// its ok for the root to be moved but ensure the destination child wasn't moved
-		IResource destChild = ((IContainer) destination).getFile(new Path(anotherFile.getName()));
+		IResource destChild = ((IContainer) destination).getFile(IPath.fromOSString(anotherFile.getName()));
 		assertTrue("4.4", !destination.exists());
 		assertTrue("4.5", !destChild.exists());
 		// cleanup and delete the destination

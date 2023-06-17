@@ -13,8 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.QualifiedName;
 
 /**
  * Test the copy operation.
@@ -62,7 +68,7 @@ public class CopyTest extends LocalStoreTest {
 		ensureDoesNotExistInFileSystem(destination);
 
 		/* copy to relative path */
-		IPath path = new Path("copy of file.txt");
+		IPath path = IPath.fromOSString("copy of file.txt");
 		destination = folder.getFile(path);
 		ensureDoesNotExistInFileSystem(destination);
 		try {
@@ -106,11 +112,11 @@ public class CopyTest extends LocalStoreTest {
 			assertTrue("4.2", e.getStatus().getChildren().length == 2);
 		}
 		assertTrue("4.3", destination.exists());
-		assertTrue("4.4", ((IContainer) destination).getFile(new Path(file.getName())).exists());
-		assertTrue("4.5", !((IContainer) destination).getFolder(new Path(subfolder.getName())).exists());
-		assertTrue("4.6", !((IContainer) destination).getFile(new Path(anotherFile.getName())).exists());
+		assertTrue("4.4", ((IContainer) destination).getFile(IPath.fromOSString(file.getName())).exists());
+		assertTrue("4.5", !((IContainer) destination).getFolder(IPath.fromOSString(subfolder.getName())).exists());
+		assertTrue("4.6", !((IContainer) destination).getFile(IPath.fromOSString(anotherFile.getName())).exists());
 		/* assert properties were properly copied */
-		IResource target = ((IContainer) destination).getFile(new Path(file.getName()));
+		IResource target = ((IContainer) destination).getFile(IPath.fromOSString(file.getName()));
 		for (int i = 0; i < numberOfProperties; i++) {
 			String persistentValue = target.getPersistentProperty(propNames[i]);
 			Object sessionValue = target.getSessionProperty(propNames[i]);

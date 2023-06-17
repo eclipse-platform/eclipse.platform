@@ -14,8 +14,12 @@
 package org.eclipse.core.tests.internal.filesystem.bug440110;
 
 import java.net.URI;
-import org.eclipse.core.filesystem.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
+import org.eclipse.core.filesystem.IFileTree;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryFileSystem;
 
 public class Bug440110FileSystem extends MemoryFileSystem {
@@ -48,6 +52,6 @@ public class Bug440110FileSystem extends MemoryFileSystem {
 
 	@Override
 	public IFileStore getStore(URI uri) {
-		return new Bug440110FileStore(Path.fromPortableString(uri.getSchemeSpecificPart()));
+		return new Bug440110FileStore(IPath.fromPortableString(uri.getSchemeSpecificPart()));
 	}
 }

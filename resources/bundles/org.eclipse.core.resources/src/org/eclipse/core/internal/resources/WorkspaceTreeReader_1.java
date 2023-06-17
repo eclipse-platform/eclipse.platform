@@ -16,8 +16,12 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
-import java.util.*;
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import org.eclipse.core.internal.events.BuilderPersistentInfo;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
@@ -25,7 +29,9 @@ import org.eclipse.core.internal.watson.ElementTree;
 import org.eclipse.core.internal.watson.ElementTreeReader;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * Reads version 1 of the workspace tree file format.
@@ -169,7 +175,7 @@ public class WorkspaceTreeReader_1 extends WorkspaceTreeReader {
 			List<BuilderPersistentInfo> buildersToBeLinked = new ArrayList<>(20);
 			readBuildersPersistentInfo(null, input, buildersToBeLinked, Policy.subMonitorFor(monitor, Policy.opWork * 10 / 100));
 
-			ElementTree[] trees = readTrees(Path.ROOT, input, Policy.subMonitorFor(monitor, Policy.opWork * 40 / 100));
+			ElementTree[] trees = readTrees(IPath.ROOT, input, Policy.subMonitorFor(monitor, Policy.opWork * 40 / 100));
 			linkPluginsSavedStateToTrees(pluginsToBeLinked, trees, Policy.subMonitorFor(monitor, Policy.opWork * 10 / 100));
 			linkBuildersToTrees(buildersToBeLinked, trees, pluginsToBeLinked.size(), Policy.subMonitorFor(monitor, Policy.opWork * 10 / 100));
 

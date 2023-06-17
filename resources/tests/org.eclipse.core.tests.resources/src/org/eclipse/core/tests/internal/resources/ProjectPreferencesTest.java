@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.internal.resources.ProjectPreferences;
 import org.eclipse.core.resources.IFile;
@@ -47,7 +46,7 @@ import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -341,7 +340,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		}
 		// move project
 		try {
-			project1.move(new Path(project2.getName()), false, null);
+			project1.move(IPath.fromOSString(project2.getName()), false, null);
 		} catch (CoreException e) {
 			fail("2.0", e);
 		}
@@ -1016,7 +1015,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		String oldProjectValue = projectNode.get(Platform.PREF_LINE_SEPARATOR, null);
 
 		String qualifier = "qualifier";
-		IFile file = project.getFile(new Path(".settings/" + qualifier + ".prefs"));
+		IFile file = project.getFile(IPath.fromOSString(".settings/" + qualifier + ".prefs"));
 		Preferences node = rootNode.node(ProjectScope.SCOPE).node(project.getName()).node(qualifier);
 		String key = "key";
 		try {
@@ -1219,7 +1218,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 	}
 
 	private static IFile getFileInWorkspace(IProject project, String qualifier) {
-		return project.getFile(new Path(DIR_NAME).append(qualifier).addFileExtension(FILE_EXTENSION));
+		return project.getFile(IPath.fromOSString(DIR_NAME).append(qualifier).addFileExtension(FILE_EXTENSION));
 	}
 
 	private static File getFileInFilesystem(IProject project, String qualifier) {

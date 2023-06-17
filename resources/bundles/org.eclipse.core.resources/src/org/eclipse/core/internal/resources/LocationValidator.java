@@ -19,8 +19,19 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -56,7 +67,7 @@ public class LocationValidator {
 			if (schemeSpecificPart == null || schemeSpecificPart.isEmpty()) {
 				message = Messages.links_noPath;
 			} else {
-				IPath pathPart = new Path(schemeSpecificPart);
+				IPath pathPart = IPath.fromOSString(schemeSpecificPart);
 				if (pathPart.segmentCount() > 0)
 					message = NLS.bind(Messages.pathvar_undefined, location.toString(), pathPart.segment(0));
 				else
@@ -83,7 +94,7 @@ public class LocationValidator {
 		}
 		//if the location doesn't have a device, see if the OS will assign one
 		if (location.getDevice() == null)
-			location = new Path(location.toFile().getAbsolutePath());
+			location = IPath.fromOSString(location.toFile().getAbsolutePath());
 		return validateLinkLocationURI(resource, URIUtil.toURI(location));
 	}
 
@@ -291,7 +302,7 @@ public class LocationValidator {
 			String message = Messages.resources_pathNull;
 			return new ResourceStatus(IResourceStatus.INVALID_VALUE, null, message);
 		}
-		return validatePath(Path.fromOSString(path), type, false);
+		return validatePath(IPath.fromOSString(path), type, false);
 	}
 
 	public IStatus validateProjectLocation(IProject context, IPath unresolvedLocation) {
@@ -428,7 +439,7 @@ public class LocationValidator {
 	 */
 	private IStatus validateSegments(URI location) {
 		if (EFS.SCHEME_FILE.equals(location.getScheme())) {
-			IPath pathPart = new Path(location.getSchemeSpecificPart());
+			IPath pathPart = IPath.fromOSString(location.getSchemeSpecificPart());
 			int segmentCount = pathPart.segmentCount();
 			for (int i = 0; i < segmentCount; i++) {
 				IStatus result = validateName(pathPart.segment(i), IResource.PROJECT);

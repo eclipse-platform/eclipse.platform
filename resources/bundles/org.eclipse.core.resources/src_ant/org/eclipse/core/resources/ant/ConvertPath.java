@@ -14,7 +14,9 @@
 package org.eclipse.core.resources.ant;
 
 import java.io.File;
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Path;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -139,7 +141,7 @@ public class ConvertPath extends Task {
 	public void setFileSystemPath(File value) {
 		if (resourcePath != null)
 			throw new BuildException(Policy.bind("exception.cantUseBoth")); //$NON-NLS-1$
-		fileSystemPath = new org.eclipse.core.runtime.Path(value.toString());
+		fileSystemPath = IPath.fromOSString(value.toString());
 	}
 
 	/**
@@ -150,7 +152,7 @@ public class ConvertPath extends Task {
 	public void setResourcePath(String value) {
 		if (fileSystemPath != null)
 			throw new BuildException(Policy.bind("exception.cantUseBoth")); //$NON-NLS-1$
-		resourcePath = new org.eclipse.core.runtime.Path(value);
+		resourcePath = IPath.fromOSString(value);
 	}
 
 	/**

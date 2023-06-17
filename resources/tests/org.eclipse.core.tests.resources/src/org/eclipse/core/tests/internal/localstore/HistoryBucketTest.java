@@ -16,7 +16,8 @@ package org.eclipse.core.tests.internal.localstore;
 import org.eclipse.core.internal.localstore.Bucket.Entry;
 import org.eclipse.core.internal.localstore.HistoryBucket;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 public class HistoryBucketTest extends ResourceTest {
@@ -35,7 +36,7 @@ public class HistoryBucketTest extends ResourceTest {
 			} catch (CoreException e) {
 				fail("1.0", e);
 			}
-			IPath path = new Path("/foo/bar");
+			IPath path = IPath.fromOSString("/foo/bar");
 			UniversalUniqueIdentifier uuid = new UniversalUniqueIdentifier();
 			long lastModified = (long) (Math.random() * Long.MAX_VALUE);
 			index1.addBlob(path, uuid, lastModified);
@@ -64,7 +65,7 @@ public class HistoryBucketTest extends ResourceTest {
 				fail("1.0", e);
 			}
 			assertEquals("1.1", 0, index1.getEntryCount());
-			IPath path = new Path("/foo/bar");
+			IPath path = IPath.fromOSString("/foo/bar");
 			UniversalUniqueIdentifier uuid1 = new UniversalUniqueIdentifier();
 			long lastModified1 = (long) (Math.random() * Long.MAX_VALUE);
 			index1.addBlob(path, uuid1, lastModified1);
@@ -137,7 +138,7 @@ public class HistoryBucketTest extends ResourceTest {
 	 */
 	public void testSort() {
 		HistoryBucket index = new HistoryBucket();
-		IPath path = new Path("/foo");
+		IPath path = IPath.fromOSString("/foo");
 		assertNull("1.0", index.getEntry(path));
 		UniversalUniqueIdentifier uuid1 = new UniversalUniqueIdentifier();
 		long timestamp1 = 10;

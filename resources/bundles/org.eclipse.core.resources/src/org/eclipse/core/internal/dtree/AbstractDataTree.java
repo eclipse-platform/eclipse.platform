@@ -16,7 +16,6 @@ package org.eclipse.core.internal.dtree;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
 
@@ -242,7 +241,7 @@ public abstract class AbstractDataTree {
 	 * Returns the key of the root node.
 	 */
 	public static final IPath rootKey() {
-		return Path.ROOT;
+		return IPath.ROOT;
 	}
 
 	public boolean isRoot(IPath key) {

@@ -40,7 +40,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.IWorkbench;
@@ -292,7 +291,7 @@ public abstract class AbstractAntTest {
 		AntCorePreferences prefs = AntCorePlugin.getPlugin().getPreferences();
 		IAntClasspathEntry[] entries = prefs.getAntHomeClasspathEntries();
 		IAntClasspathEntry antjar = entries[0];
-		IPath antHomePath = new Path(antjar.getEntryURL().getFile());
+		IPath antHomePath = IPath.fromOSString(antjar.getEntryURL().getFile());
 		antHomePath = antHomePath.removeLastSegments(1);
 		return antHomePath.toFile().getAbsolutePath();
 	}

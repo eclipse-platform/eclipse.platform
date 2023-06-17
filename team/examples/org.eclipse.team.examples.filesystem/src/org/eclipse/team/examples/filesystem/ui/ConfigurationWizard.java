@@ -15,13 +15,15 @@ package org.eclipse.team.examples.filesystem.ui;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
-import org.eclipse.team.examples.filesystem.*;
+import org.eclipse.team.examples.filesystem.FileSystemPlugin;
+import org.eclipse.team.examples.filesystem.FileSystemProvider;
+import org.eclipse.team.examples.filesystem.Policy;
 import org.eclipse.team.ui.IConfigurationWizard;
 import org.eclipse.team.ui.IConfigurationWizardExtension;
 import org.eclipse.ui.IWorkbench;
@@ -86,7 +88,7 @@ public class ConfigurationWizard extends Wizard implements IConfigurationWizard,
 				for (IProject project : projects) {
 					RepositoryProvider.map(project, FileSystemPlugin.PROVIDER_ID);
 					FileSystemProvider provider = (FileSystemProvider) RepositoryProvider.getProvider(project);
-					String path = new Path(mainPage.getLocation()).append(project.getName()).toOSString();
+					String path = IPath.fromOSString(mainPage.getLocation()).append(project.getName()).toOSString();
 					provider.setTargetLocation(path);
 				}
 			}

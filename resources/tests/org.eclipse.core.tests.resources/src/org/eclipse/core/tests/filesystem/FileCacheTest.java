@@ -13,12 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryFileStore;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryTree;
 
@@ -90,7 +94,7 @@ public class FileCacheTest extends FileSystemTest {
 
 	public void testCacheFile() {
 		try {
-			IFileStore store = new MemoryFileStore(new Path("testCacheFile"));
+			IFileStore store = new MemoryFileStore(IPath.fromOSString("testCacheFile"));
 			OutputStream out = store.openOutputStream(EFS.NONE, getMonitor());
 			byte[] contents = "test".getBytes();
 			out.write(contents);
@@ -122,7 +126,7 @@ public class FileCacheTest extends FileSystemTest {
 
 	public void testCacheFolder() {
 		try {
-			IFileStore store = new MemoryFileStore(new Path("testCacheFolder"));
+			IFileStore store = new MemoryFileStore(IPath.fromOSString("testCacheFolder"));
 			store.mkdir(EFS.NONE, getMonitor());
 			File cachedFile = store.toLocalFile(EFS.CACHE, getMonitor());
 			assertTrue("1.0", cachedFile.exists());
@@ -137,7 +141,7 @@ public class FileCacheTest extends FileSystemTest {
 	 */
 	public void testNoCacheFlag() {
 		try {
-			IFileStore store = new MemoryFileStore(new Path("testNoCacheFlag"));
+			IFileStore store = new MemoryFileStore(IPath.fromOSString("testNoCacheFlag"));
 			store.mkdir(EFS.NONE, getMonitor());
 			File cachedFile = store.toLocalFile(EFS.NONE, getMonitor());
 			assertNull("1.0", cachedFile);
@@ -151,7 +155,7 @@ public class FileCacheTest extends FileSystemTest {
 	 */
 	public void testNonExisting() {
 		try {
-			IFileStore store = new MemoryFileStore(new Path("testNonExisting"));
+			IFileStore store = new MemoryFileStore(IPath.fromOSString("testNonExisting"));
 			File cachedFile = store.toLocalFile(EFS.CACHE, getMonitor());
 			assertTrue("1.0", !cachedFile.exists());
 		} catch (CoreException e) {

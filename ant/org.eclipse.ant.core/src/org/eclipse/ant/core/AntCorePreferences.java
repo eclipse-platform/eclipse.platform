@@ -43,7 +43,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
@@ -347,7 +346,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 		IAntClasspathEntry[] entries = getDefaultAntHomeEntries();
 		if (entries.length > 0) {
 			URL antjar = entries[entries.length - 1].getEntryURL();
-			IPath antHomePath = new Path(antjar.getFile());
+			IPath antHomePath = IPath.fromOSString(antjar.getFile());
 			// parent directory of the lib directory
 			antHomePath = antHomePath.removeLastSegments(2);
 			return antHomePath.toFile().getAbsolutePath();
@@ -865,7 +864,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 	 */
 	@Deprecated
 	public URL getToolsJarURL() {
-		IPath path = new Path(System.getProperty("java.home")); //$NON-NLS-1$
+		IPath path = IPath.fromOSString(System.getProperty("java.home")); //$NON-NLS-1$
 		IAntClasspathEntry entry = getToolsJarEntry(path);
 		if (entry == null) {
 			IDynamicVariable variable = VariablesPlugin.getDefault().getStringVariableManager().getDynamicVariable("env_var"); //$NON-NLS-1$
@@ -875,7 +874,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 					javaHome = variable.getValue("JAVA_HOME"); //$NON-NLS-1$
 				}
 				if (javaHome != null) {
-					path = new Path(javaHome);
+					path = IPath.fromOSString(javaHome);
 					entry = getToolsJarEntry(path);
 				}
 			}
@@ -897,7 +896,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 	 * @return IAntClasspathEntry tools.jar IAntClasspathEntry or <code>null</code>
 	 */
 	public IAntClasspathEntry getToolsJarEntry() {
-		IPath path = new Path(System.getProperty("java.home")); //$NON-NLS-1$
+		IPath path = IPath.fromOSString(System.getProperty("java.home")); //$NON-NLS-1$
 		IAntClasspathEntry entry = getToolsJarEntry(path);
 		if (entry == null) {
 			IDynamicVariable variable = VariablesPlugin.getDefault().getStringVariableManager().getDynamicVariable("env_var"); //$NON-NLS-1$
@@ -907,7 +906,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 					javaHome = variable.getValue("JAVA_HOME"); //$NON-NLS-1$
 				}
 				if (javaHome != null) {
-					path = new Path(javaHome);
+					path = IPath.fromOSString(javaHome);
 					entry = getToolsJarEntry(path);
 				}
 			}

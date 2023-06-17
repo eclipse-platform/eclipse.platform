@@ -18,7 +18,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.filesystem.FileSystemTest;
 
 /**
@@ -47,7 +46,7 @@ public class FileUtilTest extends FileSystemTest {
 		if (EFS.getLocalFileSystem().isCaseSensitive()) {
 			testPath = realPath;
 		} else {
-			testPath = Path.fromOSString(realPath.toOSString().toLowerCase());
+			testPath = IPath.fromOSString(realPath.toOSString().toLowerCase());
 		}
 		assertEquals(realPath, FileUtil.realPath(testPath));
 	}
@@ -59,7 +58,7 @@ public class FileUtilTest extends FileSystemTest {
 		if (EFS.getLocalFileSystem().isCaseSensitive()) {
 			testPath = realPath;
 		} else {
-			testPath = Path.fromOSString(realPath.toOSString().toLowerCase());
+			testPath = IPath.fromOSString(realPath.toOSString().toLowerCase());
 		}
 		String suffix = "NonexistingDir/NonexistingFile.txt";
 		assertEquals(realPath.append(suffix), FileUtil.realPath(testPath.append(suffix)));
@@ -72,7 +71,7 @@ public class FileUtilTest extends FileSystemTest {
 		if (EFS.getLocalFileSystem().isCaseSensitive()) {
 			testPath = realPath;
 		} else {
-			testPath = Path.fromOSString(realPath.toOSString().toLowerCase());
+			testPath = IPath.fromOSString(realPath.toOSString().toLowerCase());
 		}
 		URI realURI = URIUtil.toURI(realPath);
 		URI testURI = URIUtil.toURI(testPath);

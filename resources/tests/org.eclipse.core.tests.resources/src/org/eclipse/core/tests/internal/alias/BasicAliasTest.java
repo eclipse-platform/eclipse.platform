@@ -41,7 +41,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.junit.Assume;
@@ -94,7 +93,7 @@ public class BasicAliasTest extends ResourceTest {
 		}
 
 		public BatFSURI(URI uri) {
-			super(new Path("/not/used"));
+			super(IPath.fromOSString("/not/used"));
 			this.uri = uri;
 		}
 
@@ -276,11 +275,11 @@ public class BasicAliasTest extends ResourceTest {
 
 		// the projects have the same segments but different id
 		IProjectDescription desc1 = getWorkspace().newProjectDescription(testProject1.getName());
-		IPath location1 = new Path(devices[0] + location);
+		IPath location1 = IPath.fromOSString(devices[0] + location);
 		assertTrue("0.1", !location1.toFile().exists());
 		desc1.setLocation(location1);
 		IProjectDescription desc2 = getWorkspace().newProjectDescription(testProject2.getName());
-		IPath location2 = new Path(devices[1] + location);
+		IPath location2 = IPath.fromOSString(devices[1] + location);
 		assertTrue("0.2", !location2.toFile().exists());
 		desc2.setLocation(location2);
 

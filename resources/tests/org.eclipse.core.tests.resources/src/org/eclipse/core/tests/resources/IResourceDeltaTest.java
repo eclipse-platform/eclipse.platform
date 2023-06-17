@@ -13,9 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * Tests the public API of IResourceDelta
@@ -98,8 +104,8 @@ public class IResourceDeltaTest extends ResourceTest {
 
 			//delta with no children
 			delta = delta.findMember(file1.getProjectRelativePath());
-			assertEquals("3.1", delta, delta.findMember(Path.ROOT));
-			assertNull("3.2", delta.findMember(new Path("foo")));
+			assertEquals("3.1", delta, delta.findMember(IPath.ROOT));
+			assertNull("3.2", delta.findMember(IPath.fromOSString("foo")));
 		};
 		getWorkspace().addResourceChangeListener(listener);
 

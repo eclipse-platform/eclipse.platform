@@ -14,8 +14,14 @@
 package org.eclipse.core.tests.resources.session;
 
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
@@ -58,7 +64,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 			fail("1.99", e);
 		}
 		waitForRefresh();
-		IFile file = project.getFile(new Path(DIR_NAME).append(qualifier).addFileExtension(FILE_EXTENSION));
+		IFile file = project.getFile(IPath.fromOSString(DIR_NAME).append(qualifier).addFileExtension(FILE_EXTENSION));
 		assertTrue("2.0", file.exists());
 		assertTrue("2.1", file.getLocation().toFile().exists());
 	}

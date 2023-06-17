@@ -30,7 +30,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -477,7 +476,7 @@ public class EclipseClasspath {
 			if (i != -1) {
 				variableString = variableString.substring(0, i) + variableString.substring(i + 1);
 			}
-			IPath path = new Path(variableString);
+			IPath path = IPath.fromOSString(variableString);
 			return JavaCore.newVariableEntry(path, null, null);
 		}
 		catch (Exception e) {

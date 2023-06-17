@@ -16,11 +16,19 @@
  *******************************************************************************/
 package org.eclipse.core.internal.watson;
 
-import java.io.*;
-import java.util.*;
-import org.eclipse.core.internal.dtree.*;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
+import org.eclipse.core.internal.dtree.DataTreeWriter;
+import org.eclipse.core.internal.dtree.DeltaDataTree;
+import org.eclipse.core.internal.dtree.IDataFlattener;
 import org.eclipse.core.internal.resources.SaveManager;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IPath;
 
 /** <code>ElementTreeWriter</code> flattens an ElementTree
  * onto a data output stream.
@@ -65,7 +73,7 @@ public class ElementTreeWriter {
 			public void writeData(IPath path, Object data, DataOutput output) throws IOException {
 				// never write the root node of an ElementTree
 				//because it contains the parent backpointer.
-				if (!Path.ROOT.equals(path)) {
+				if (!IPath.ROOT.equals(path)) {
 					flattener.writeElement(path, data, output);
 				}
 			}
@@ -204,7 +212,7 @@ public class ElementTreeWriter {
 		writeNumber(CURRENT_FORMAT, output);
 
 		/* This actually just copies the root node, which is what we want */
-		DeltaDataTree subtree = new DeltaDataTree(tree.getDataTree().copyCompleteSubtree(Path.ROOT));
+		DeltaDataTree subtree = new DeltaDataTree(tree.getDataTree().copyCompleteSubtree(IPath.ROOT));
 
 		dataTreeWriter.writeTree(subtree, path, depth, output);
 	}

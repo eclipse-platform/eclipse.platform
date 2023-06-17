@@ -27,8 +27,8 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.examples.filesystem.FileSystemPlugin;
@@ -129,7 +129,7 @@ public class ModelObjectDefinitionFile extends ModelFile {
 		IStatus status = workspace.validatePath("/" + projectName + "/" + path, IResource.FILE);
 		if (status.isOK()) {
 			IProject project = workspace.getRoot().getProject(projectName);
-			return project.getFile(new Path(path));
+			return project.getFile(IPath.fromOSString(path));
 		}
 		FileSystemPlugin.log(status);
 		return null;

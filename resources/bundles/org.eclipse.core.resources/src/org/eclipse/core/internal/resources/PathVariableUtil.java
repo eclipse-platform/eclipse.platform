@@ -20,10 +20,15 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import org.eclipse.core.filesystem.URIUtil;
-import org.eclipse.core.internal.resources.projectvariables.*;
+import org.eclipse.core.internal.resources.projectvariables.ParentVariableResolver;
+import org.eclipse.core.internal.resources.projectvariables.ProjectLocationVariableResolver;
+import org.eclipse.core.internal.resources.projectvariables.WorkspaceLocationVariableResolver;
+import org.eclipse.core.internal.resources.projectvariables.WorkspaceParentLocationVariableResolver;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 
 public class PathVariableUtil {
 
@@ -176,7 +181,7 @@ public class PathVariableUtil {
 		int valueSegmentCount = value.segmentCount();
 		if (value.isPrefixOf(path)) {
 			// transform "c:/foo/bar" into "FOO/bar"
-			IPath tmp = Path.fromOSString(variableHint);
+			IPath tmp = IPath.fromOSString(variableHint);
 			for (int j = valueSegmentCount; j < originalPath.segmentCount(); j++) {
 				tmp = tmp.append(originalPath.segment(j));
 			}
@@ -189,7 +194,7 @@ public class PathVariableUtil {
 				int matchingFirstSegments = path.matchingFirstSegments(value);
 				if (matchingFirstSegments >= 0) {
 					String originalName = buildParentPathVariable(variableHint, valueSegmentCount - matchingFirstSegments, true);
-					IPath tmp = Path.fromOSString(originalName);
+					IPath tmp = IPath.fromOSString(originalName);
 					for (int j = matchingFirstSegments; j < originalPath.segmentCount(); j++) {
 						tmp = tmp.append(originalPath.segment(j));
 					}
@@ -206,7 +211,7 @@ public class PathVariableUtil {
 
 	static private IPath convertToProperCase(IPath path) {
 		if (Platform.getOS().equals(Platform.OS_WIN32))
-			return Path.fromPortableString(path.toPortableString().toLowerCase());
+			return IPath.fromPortableString(path.toPortableString().toLowerCase());
 		return path;
 	}
 
@@ -247,7 +252,7 @@ public class PathVariableUtil {
 	public static IPath buildVariableMacro(IPath relativeSrcValue) {
 		String variable = relativeSrcValue.segment(0);
 		variable = "${" + variable + "}"; //$NON-NLS-1$//$NON-NLS-2$
-		return Path.fromOSString(variable).append(relativeSrcValue.removeFirstSegments(1));
+		return IPath.fromOSString(variable).append(relativeSrcValue.removeFirstSegments(1));
 	}
 
 	public static String convertFromUserEditableFormatInternal(IPathVariableManager manager, String userFormat, boolean locationFormat) {
@@ -299,7 +304,7 @@ public class PathVariableUtil {
 										// So instead, an intermediate variable "VARFOO" will be created of value
 										// "${VAR}foo", and the string "${PARENT-1-VARFOO}" will be inserted.
 										String intermediateVariable = PathVariableUtil.getValidVariableName(variable + suffix);
-										IPath intermediateValue = Path.fromPortableString(components[j]);
+										IPath intermediateValue = IPath.fromPortableString(components[j]);
 										int intermediateVariableIndex = 1;
 										String originalIntermediateVariableName = intermediateVariable;
 										while (manager.isDefined(intermediateVariable)) {
@@ -374,7 +379,7 @@ public class PathVariableUtil {
 	public static String convertToUserEditableFormatInternal(String value, boolean locationFormat) {
 		StringBuilder buffer = new StringBuilder();
 		if (locationFormat) {
-			IPath path = Path.fromOSString(value);
+			IPath path = IPath.fromOSString(value);
 			if (path.isAbsolute())
 				return path.toOSString();
 			int index = value.indexOf(java.io.File.separator);
@@ -397,7 +402,8 @@ public class PathVariableUtil {
 			String argument = PathVariableUtil.getParentVariableArgument(variable);
 			int count = PathVariableUtil.getParentVariableCount(variable);
 			if (argument != null && count != -1) {
-				buffer.append(generateMacro ? PathVariableUtil.buildVariableMacro(Path.fromOSString(argument)) : Path.fromOSString(argument));
+				buffer.append(generateMacro ? PathVariableUtil.buildVariableMacro(IPath.fromOSString(argument))
+						: IPath.fromOSString(argument));
 				for (int j = 0; j < count; j++) {
 					buffer.append(java.io.File.separator + ".."); //$NON-NLS-1$
 				}

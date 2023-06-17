@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
-
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
@@ -43,7 +42,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 
@@ -147,10 +145,10 @@ public class LinkedResourceTest extends ResourceTest {
 			File dir = existingProject.getLocation().toFile();
 			dir = dir.getParentFile();
 			dir = new File(dir + File.separator + "sub");
-			deleteOnTearDown(Path.fromOSString(dir.getAbsolutePath()));
+			deleteOnTearDown(IPath.fromOSString(dir.getAbsolutePath()));
 			dir = new File(dir + File.separator + "dir" + File.separator + "more" + File.separator + "proj");
 			dir.mkdirs();
-			desc.setLocation(Path.fromOSString(dir.getAbsolutePath()));
+			desc.setLocation(IPath.fromOSString(dir.getAbsolutePath()));
 			existingProjectInSubDirectory.create(desc, getMonitor());
 		}
 		if (!existingProjectInSubDirectory.isOpen()) {
@@ -206,9 +204,9 @@ public class LinkedResourceTest extends ResourceTest {
 
 		//try to create with local path that can never exist
 		if (isWindows()) {
-			location = new Path("b:\\does\\not\\exist");
+			location = IPath.fromOSString("b:\\does\\not\\exist");
 		} else {
-			location = new Path("/dev/null/does/not/exist");
+			location = IPath.fromOSString("/dev/null/does/not/exist");
 		}
 		location = FileUtil.canonicalPath(location);
 		try {
@@ -736,7 +734,7 @@ public class LinkedResourceTest extends ResourceTest {
 	 */
 	public void testCreateLinkCaseVariant() {
 		IFolder link = nonExistingFolderInExistingProject;
-		IFolder variant = link.getParent().getFolder(new Path(link.getName().toUpperCase()));
+		IFolder variant = link.getParent().getFolder(IPath.fromOSString(link.getName().toUpperCase()));
 		ensureExistsInWorkspace(variant, true);
 
 		try {
@@ -1440,7 +1438,7 @@ public class LinkedResourceTest extends ResourceTest {
 	 */
 	public void testValidateEmptyLinkLocation() {
 		IFolder folder = nonExistingFolderInExistingProject;
-		IPath newLocation = new Path("");
+		IPath newLocation = IPath.fromOSString("");
 		URI newLocationURI = URIUtil.toURI(newLocation);
 		try {
 			IStatus linkedResourceStatus = getWorkspace().validateLinkLocation(folder, newLocation);
@@ -1464,7 +1462,7 @@ public class LinkedResourceTest extends ResourceTest {
 		try {
 			//Note that on *nix, "c:/temp" is a relative path with two segments
 			//so this is treated as relative to an undefined path variable called "c:".
-			IPath location = new Path("c:/temp");
+			IPath location = IPath.fromOSString("c:/temp");
 			folder.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
 			assertEquals("1.0", location, folder.getRawLocation());
 		} catch (CoreException e) {

@@ -126,7 +126,7 @@ public interface ISaveParticipant extends EventListener {
 	 *     String saveFileName = "save-" + Integer.toString(saveNumber);
 	 *     File f = plugin.getStateLocation().append(saveFileName).toFile();
 	 *     plugin.writeImportantState(f);
-	 *     context.map(new Path("save"), new Path(saveFileName));
+	 *     context.map(IPath.fromOSString("save"), IPath.fromOSString(saveFileName));
 	 *     context.needSaveNumber();
 	 *     context.needDelta(); // optional
 	 * </pre>
@@ -149,7 +149,7 @@ public interface ISaveParticipant extends EventListener {
 	 *         // activate for very first time
 	 *         plugin.buildState();
 	 *     } else {
-	 *         String saveFileName = ss.lookup(new Path("save"));
+	 *         String saveFileName = ss.lookup(IPath.fromOSString("save"));
 	 *         File f = plugin.getStateLocation().append(saveFileName).toFile();
 	 *         plugin.readImportantState(f);
 	 *         IResourceChangeListener listener = new IResourceChangeListener() {

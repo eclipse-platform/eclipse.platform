@@ -15,18 +15,41 @@ package org.eclipse.core.tools.resources;
 
 import java.util.ArrayList;
 import java.util.Set;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFileState;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.action.*;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorRegistry;
+import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
@@ -182,7 +205,7 @@ public class LocalHistoryBrowserView extends ViewPart {
 		@SuppressWarnings("restriction")
 		public void initialize() {
 			invisibleRoot = new Node(null, "/"); //$NON-NLS-1$
-			Set<IPath> allFiles = store.allFiles(Path.ROOT, IResource.DEPTH_INFINITE, null);
+			Set<IPath> allFiles = store.allFiles(IPath.ROOT, IResource.DEPTH_INFINITE, null);
 			for (IPath path : allFiles) {
 				Node current = invisibleRoot;
 				String[] segments = path.segments();

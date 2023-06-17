@@ -51,7 +51,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.Attributes;
@@ -635,7 +634,8 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			if (oldLocation != null) {
 				parseProblem(NLS.bind(Messages.projRead_badLocation, oldLocation, newLocation));
 			} else {
-				((LinkDescription) objectStack.peek()).setLocationURI(URIUtil.toURI(Path.fromPortableString(newLocation)));
+				((LinkDescription) objectStack.peek())
+						.setLocationURI(URIUtil.toURI(IPath.fromPortableString(newLocation)));
 			}
 			state = S_LINK;
 		}
@@ -668,7 +668,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 
 	private void endLinkPath(String elementName) {
 		if (elementName.equals(NAME)) {
-			IPath newPath = new Path(charBuffer.toString());
+			IPath newPath = IPath.fromOSString(charBuffer.toString());
 			// objectStack has a LinkDescription on it. Set the name
 			// on this LinkDescription.
 			IPath oldPath = ((LinkDescription) objectStack.peek()).getProjectRelativePath();
@@ -731,7 +731,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 
 	private void endFilterPath(String elementName) {
 		if (elementName.equals(NAME)) {
-			IPath newPath = new Path(charBuffer.toString());
+			IPath newPath = IPath.fromOSString(charBuffer.toString());
 			// objectStack has a FilterDescription on it. Set the name
 			// on this FilterDescription.
 			IResource oldResource = ((FilterDescription) objectStack.peek()).getResource();

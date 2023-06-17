@@ -20,8 +20,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.osgi.util.NLS;
 
 public class WorkspaceRoot extends Container implements IWorkspaceRoot {
@@ -39,7 +51,7 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 
 	protected WorkspaceRoot(IPath path, Workspace container) {
 		super(path, container);
-		Assert.isTrue(path.equals(Path.ROOT));
+		Assert.isTrue(path.equals(IPath.ROOT));
 		workspaceLocation = FileUtil.canonicalPath(Platform.getLocation());
 		Assert.isNotNull(workspaceLocation);
 	}
@@ -158,7 +170,7 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 
 	@Override
 	public IPath getProjectRelativePath() {
-		return Path.EMPTY;
+		return IPath.EMPTY;
 	}
 
 	@Override

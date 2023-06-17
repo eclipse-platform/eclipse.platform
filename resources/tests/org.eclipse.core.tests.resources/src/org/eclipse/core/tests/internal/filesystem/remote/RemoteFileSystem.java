@@ -15,7 +15,7 @@ package org.eclipse.core.tests.internal.filesystem.remote;
 
 import java.net.URI;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryFileSystem;
 
 /**
@@ -30,6 +30,6 @@ public class RemoteFileSystem extends MemoryFileSystem {
 
 	@Override
 	public IFileStore getStore(URI uri) {
-		return new RemoteFileStore(uri.getUserInfo(), uri.getHost(), uri.getPort(), new Path(uri.getPath()));
+		return new RemoteFileStore(uri.getUserInfo(), uri.getHost(), uri.getPort(), IPath.fromOSString(uri.getPath()));
 	}
 }

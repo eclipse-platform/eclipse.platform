@@ -15,15 +15,21 @@ package org.eclipse.core.internal.filesystem.memory;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
@@ -59,7 +65,7 @@ public class MemoryTreeSelectionDialog extends SelectionDialog {
 				if (parent != null)
 					toCreate = parent.getChild(nameField.getText());
 				else
-					toCreate = new MemoryFileStore(Path.ROOT.append(nameField.getText()));
+					toCreate = new MemoryFileStore(IPath.ROOT.append(nameField.getText()));
 				if (buttonId == CREATE_FILE_ID) {
 					toCreate.openOutputStream(EFS.NONE, null).close();
 				} else {
@@ -92,7 +98,7 @@ public class MemoryTreeSelectionDialog extends SelectionDialog {
 		tree.getControl().setLayoutData(data);
 		tree.setContentProvider(new WorkbenchContentProvider());
 		tree.setLabelProvider(new WorkbenchLabelProvider());
-		tree.setInput(new MemoryFileStore(Path.ROOT));
+		tree.setInput(new MemoryFileStore(IPath.ROOT));
 
 		createNewElementArea(parent);
 

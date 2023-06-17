@@ -18,7 +18,8 @@ package org.eclipse.core.internal.resources;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * Object for describing the characteristics of linked resources that are stored
@@ -48,7 +49,7 @@ public class LinkDescription implements Comparable<LinkDescription> {
 	private int type;
 
 	public LinkDescription() {
-		this.path = Path.EMPTY;
+		this.path = IPath.EMPTY;
 		this.type = -1;
 	}
 

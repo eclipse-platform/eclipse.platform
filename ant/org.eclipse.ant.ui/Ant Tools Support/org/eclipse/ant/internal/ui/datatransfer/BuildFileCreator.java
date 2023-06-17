@@ -48,7 +48,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
@@ -392,7 +391,7 @@ public class BuildFileCreator {
 				{
 					String currentProjectRoot = ExportUtil.getProjectRoot(currentProject);
 					entry = ExportUtil.getRelativePath(entry, currentProjectRoot);
-					if (!new Path(entry).isAbsolute()) {
+					if (!IPath.fromOSString(entry).isAbsolute()) {
 						prefix = "${" + currentProject.getProject().getName() + ".location}/"; //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}

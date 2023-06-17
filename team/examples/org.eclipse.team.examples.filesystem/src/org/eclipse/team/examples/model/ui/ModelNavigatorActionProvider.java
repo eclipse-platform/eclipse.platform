@@ -16,10 +16,12 @@ package org.eclipse.team.examples.model.ui;
 import java.io.ByteArrayInputStream;
 import java.util.Iterator;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -28,8 +30,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.team.examples.model.*;
-import org.eclipse.ui.navigator.*;
+import org.eclipse.team.examples.model.ModelContainer;
+import org.eclipse.team.examples.model.ModelObject;
+import org.eclipse.team.examples.model.ModelObjectDefinitionFile;
+import org.eclipse.ui.navigator.CommonActionProvider;
+import org.eclipse.ui.navigator.ICommonActionExtensionSite;
+import org.eclipse.ui.navigator.SaveablesProvider;
 
 /**
  * Model action provider for use with the Common Navigator framework. The
@@ -81,7 +87,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 					String name = promptForName();
 					if (name == null)
 						return;
-					IFolder folder = container.getFolder(new Path(name));
+					IFolder folder = container.getFolder(IPath.fromOSString(name));
 					try {
 						folder.create(false, true, null);
 					} catch (CoreException e) {
@@ -109,7 +115,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 						return;
 					if (!name.endsWith(".mod"))
 						name += ".mod";
-					IFile file = container.getFile(new Path(name));
+					IFile file = container.getFile(IPath.fromOSString(name));
 					try {
 						file.create(new ByteArrayInputStream("".getBytes()), false, null);
 					} catch (CoreException e) {
@@ -138,7 +144,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 					if (!path.endsWith(".moe"))
 						path += ".moe";
 					ModelContainer parent = (ModelContainer)modFile.getParent();
-					IFile file = ((IContainer)parent.getResource()).getFile(new Path(path));
+					IFile file = ((IContainer)parent.getResource()).getFile(IPath.fromOSString(path));
 					try {
 						file.create(new ByteArrayInputStream("".getBytes()), false, null);
 						modFile.addMoe(file);

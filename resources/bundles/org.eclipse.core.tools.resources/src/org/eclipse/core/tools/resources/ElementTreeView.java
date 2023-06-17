@@ -14,18 +14,45 @@
 
 package org.eclipse.core.tools.resources;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.eclipse.core.internal.dtree.AbstractDataTreeNode;
 import org.eclipse.core.internal.dtree.DataTreeNode;
-import org.eclipse.core.internal.resources.*;
-import org.eclipse.core.internal.watson.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.IMarkerSetElement;
+import org.eclipse.core.internal.resources.MarkerAttributeMap;
+import org.eclipse.core.internal.resources.MarkerInfo;
+import org.eclipse.core.internal.resources.MarkerSet;
+import org.eclipse.core.internal.resources.ProjectInfo;
+import org.eclipse.core.internal.resources.ResourceInfo;
+import org.eclipse.core.internal.resources.RootInfo;
+import org.eclipse.core.internal.resources.SpySupport;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.internal.watson.ElementTree;
+import org.eclipse.core.internal.watson.ElementTreeIterator;
+import org.eclipse.core.internal.watson.IElementContentVisitor;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.tools.*;
-import org.eclipse.jface.action.*;
+import org.eclipse.core.tools.ClearTextAction;
+import org.eclipse.core.tools.CopyTextSelectionAction;
+import org.eclipse.core.tools.DeepSize;
+import org.eclipse.core.tools.GlobalAction;
+import org.eclipse.core.tools.SelectAllAction;
+import org.eclipse.core.tools.SpyView;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.text.*;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.TextViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -222,7 +249,7 @@ public class ElementTreeView extends SpyView implements IResourceChangeListener 
 				}
 				return true;
 			};
-			new ElementTreeIterator(workspace.getElementTree(), Path.ROOT).iterate(visitor);
+			new ElementTreeIterator(workspace.getElementTree(), IPath.ROOT).iterate(visitor);
 		}
 
 		void reset() {

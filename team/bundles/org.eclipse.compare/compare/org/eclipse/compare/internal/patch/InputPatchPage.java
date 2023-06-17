@@ -39,7 +39,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -142,7 +141,7 @@ public class InputPatchPage extends WizardPage {
 	 * @return org.eclipse.core.runtime.IPath
 	 */
 	protected IPath getPathFromText(Text textField) {
-		return (new Path(textField.getText())).makeAbsolute();
+		return (IPath.fromOSString(textField.getText())).makeAbsolute();
 	}
 
 	/* package */ String getPatchName() {
@@ -629,7 +628,7 @@ public class InputPatchPage extends WizardPage {
 			return;
 
 		patchFilePath= dialog.getFileName();
-		IPath filterPath= new Path(dialog.getFilterPath());
+		IPath filterPath= IPath.fromOSString(dialog.getFilterPath());
 		IPath path= filterPath.append(patchFilePath).makeAbsolute();
 		patchFilePath= path.toOSString();
 		//fDialogSettings.put(IUIConstants.DIALOGSTORE_LASTEXTJAR, filterPath.toOSString());
@@ -757,7 +756,7 @@ public class InputPatchPage extends WizardPage {
 			if (workspaceSetting != null && workspaceSetting.length() > 0) {
 				// See if this resource still exists in the workspace
 				try {
-					IPath path= new Path(workspaceSetting);
+					IPath path= IPath.fromOSString(workspaceSetting);
 					IFile targetFile= ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 					if (fTreeViewer != null && targetFile.exists()){
 						fTreeViewer.expandToLevel(targetFile, 0);

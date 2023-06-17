@@ -17,7 +17,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryFileStore;
 
 /**
@@ -41,7 +40,7 @@ public class RemoteFileStore extends MemoryFileStore {
 	private IPath remotePath;
 
 	public RemoteFileStore(String userInfo, String host, int port, IPath path) {
-		super(Path.ROOT.append(createAuthoritySegment(userInfo, host, port)).append(path));
+		super(IPath.ROOT.append(createAuthoritySegment(userInfo, host, port)).append(path));
 		this.userInfo = userInfo;
 		this.host = host;
 		this.port = port;

@@ -14,11 +14,15 @@
 package org.eclipse.core.resources.ant;
 
 import java.util.Hashtable;
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
 import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * An Ant task which refreshes the Eclipse Platform's view of the local filesystem.
@@ -106,7 +110,7 @@ public class RefreshLocalTask extends Task {
 	 * @param value the root value
 	 */
 	public void setResource(String value) {
-		IPath path = new Path(value);
+		IPath path = IPath.fromOSString(value);
 		resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
 		if (resource == null) {
 			// if it does not exist we guess it is a folder or a project

@@ -17,16 +17,43 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
-import org.eclipse.core.internal.preferences.*;
+import java.util.Properties;
+import java.util.Set;
+import org.eclipse.core.internal.preferences.EclipsePreferences;
+import org.eclipse.core.internal.preferences.ExportedPreferences;
+import org.eclipse.core.internal.preferences.PreferencesService;
+import org.eclipse.core.internal.preferences.SortedProperties;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceRuleFactory;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -158,14 +185,14 @@ public class ProjectPreferences extends EclipsePreferences {
 	 */
 	static IFile getFile(IFolder folder, String qualifier) {
 		Assert.isLegal(folder.getName().equals(DEFAULT_PREFERENCES_DIRNAME));
-		return folder.getFile(new Path(qualifier).addFileExtension(PREFS_FILE_EXTENSION));
+		return folder.getFile(IPath.fromOSString(qualifier).addFileExtension(PREFS_FILE_EXTENSION));
 	}
 
 	/*
 	 * Return the preferences file for the given project and qualifier.
 	 */
 	static IFile getFile(IProject project, String qualifier) {
-		return project.getFile(new Path(DEFAULT_PREFERENCES_DIRNAME).append(qualifier).addFileExtension(PREFS_FILE_EXTENSION));
+		return project.getFile(IPath.fromOSString(DEFAULT_PREFERENCES_DIRNAME).append(qualifier).addFileExtension(PREFS_FILE_EXTENSION));
 	}
 
 	private static Properties loadProperties(IFile file) throws BackingStoreException {

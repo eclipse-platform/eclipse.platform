@@ -48,7 +48,6 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -521,7 +520,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 		}
 		for (IMemento projectMemento : projects) {
 			String pathString = projectMemento.getString(KEY_PATH);
-			if (!ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(pathString)).exists()) {
+			if (!ResourcesPlugin.getWorkspace().getRoot().getFile(IPath.fromOSString(pathString)).exists()) {
 				// If the file no longer exists, don't add it.
 				continue;
 			}
@@ -609,7 +608,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 		IResourceDelta delta = event.getDelta();
 		if (delta != null) {
 			for (AntProjectNode project : getProjects()) {
-				IPath buildFilePath = new Path(project.getBuildFileName());
+				IPath buildFilePath = IPath.fromOSString(project.getBuildFileName());
 				IResourceDelta change = delta.findMember(buildFilePath);
 				if (change != null) {
 					handleChangeDelta(change, project);

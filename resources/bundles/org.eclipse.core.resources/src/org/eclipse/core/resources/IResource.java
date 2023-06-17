@@ -19,7 +19,13 @@ package org.eclipse.core.resources;
 
 import java.net.URI;
 import java.util.Map;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 /**
@@ -1315,7 +1321,7 @@ public interface IResource extends IAdaptable, ISchedulingRule {
 	 *
 	 * @return the absolute path of this resource
 	 * @see #getProjectRelativePath()
-	 * @see Path#ROOT
+	 * @see IPath#ROOT
 	 */
 	IPath getFullPath();
 
@@ -1600,7 +1606,7 @@ public interface IResource extends IAdaptable, ISchedulingRule {
 	 * @return the relative path of this resource with respect to its project
 	 * @see #getFullPath()
 	 * @see #getProject()
-	 * @see Path#EMPTY
+	 * @see IPath#EMPTY
 	 */
 	IPath getProjectRelativePath();
 

@@ -15,7 +15,6 @@ package org.eclipse.core.tests.runtime.perf;
 
 import java.util.HashMap;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.runtime.RuntimeTest;
 
@@ -59,28 +58,28 @@ public class BenchPath extends RuntimeTest {
 			@Override
 			protected void test() {
 				//folders (5)
-				new Path("/");
-				new Path("/Foo");
-				new Path("/Foo/bar");
-				new Path("/Foo/bar/baz");
-				new Path("/Foo/bar/baz/blap");
+				IPath.fromOSString("/");
+				IPath.fromOSString("/Foo");
+				IPath.fromOSString("/Foo/bar");
+				IPath.fromOSString("/Foo/bar/baz");
+				IPath.fromOSString("/Foo/bar/baz/blap");
 
 				//files (15)
-				new Path("/Foo/abc.txt");
-				new Path("/Foo/bar/abc.txt");
-				new Path("/Foo/bar/baz/abc.txt");
-				new Path("/Foo/bar/baz/blap/abc.txt");
-				new Path("/Foo/bar/abc.txt");
-				new Path("/Foo/bar/baz/abc.txt");
-				new Path("/Foo/bar/baz/blap/abc.txt");
-				new Path("/Foo/bar/baz/abc.txt");
-				new Path("/Foo/bar/baz/blap/abc.txt");
-				new Path("/Foo/bar/baz/abc.txt");
-				new Path("/Foo/bar/baz/blap/abc.txt");
-				new Path("/Foo/bar/baz/abc.txt");
-				new Path("/Foo/bar/baz/blap/abc.txt");
-				new Path("/Foo/bar/baz/blap/blam/abc.txt");
-				new Path("/Foo/bar/baz/blap/blam/blip/boop/abc.txt");
+				IPath.fromOSString("/Foo/abc.txt");
+				IPath.fromOSString("/Foo/bar/abc.txt");
+				IPath.fromOSString("/Foo/bar/baz/abc.txt");
+				IPath.fromOSString("/Foo/bar/baz/blap/abc.txt");
+				IPath.fromOSString("/Foo/bar/abc.txt");
+				IPath.fromOSString("/Foo/bar/baz/abc.txt");
+				IPath.fromOSString("/Foo/bar/baz/blap/abc.txt");
+				IPath.fromOSString("/Foo/bar/baz/abc.txt");
+				IPath.fromOSString("/Foo/bar/baz/blap/abc.txt");
+				IPath.fromOSString("/Foo/bar/baz/abc.txt");
+				IPath.fromOSString("/Foo/bar/baz/blap/abc.txt");
+				IPath.fromOSString("/Foo/bar/baz/abc.txt");
+				IPath.fromOSString("/Foo/bar/baz/blap/abc.txt");
+				IPath.fromOSString("/Foo/bar/baz/blap/blam/abc.txt");
+				IPath.fromOSString("/Foo/bar/baz/blap/blam/blip/boop/abc.txt");
 			}
 		}.run(this, 20, REPEAT);
 	}
@@ -123,28 +122,28 @@ public class BenchPath extends RuntimeTest {
 	private IPath[] generateVariousPaths() {
 		IPath[] paths = new IPath[20];
 		int i = 0;
-		paths[i++] = new Path("/");
-		paths[i++] = new Path("/Foo");
-		paths[i++] = new Path("/Foo/bar");
-		paths[i++] = new Path("/Foo/bar/baz");
-		paths[i++] = new Path("/Foo/bar/baz/blap");
+		paths[i++] = IPath.fromOSString("/");
+		paths[i++] = IPath.fromOSString("/Foo");
+		paths[i++] = IPath.fromOSString("/Foo/bar");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/blap");
 
 		//files (15)
-		paths[i++] = new Path("/Foo/abc.txt");
-		paths[i++] = new Path("/Foo/bar/abc.txt");
-		paths[i++] = new Path("/Foo/bar/baz/abc.txt");
-		paths[i++] = new Path("/Foo/bar/baz/blap/abc.txt");
-		paths[i++] = new Path("/Foo/bar/abc.txt");
-		paths[i++] = new Path("/Foo/bar/baz/abc.txt");
-		paths[i++] = new Path("/Foo/bar/baz/blap/abc.txt");
-		paths[i++] = new Path("/Foo/bar/baz/abc.txt");
-		paths[i++] = new Path("/Foo/bar/baz/blap/abc.txt");
-		paths[i++] = new Path("/Foo/bar/baz/abc.txt");
-		paths[i++] = new Path("/Foo/bar/baz/blap/abc.txt");
-		paths[i++] = new Path("/Foo/bar/baz/abc.txt");
-		paths[i++] = new Path("/Foo/bar/baz/blap/abc.txt");
-		paths[i++] = new Path("/Foo/bar/baz/blap/blam/abc.txt");
-		paths[i++] = new Path("/Foo/bar/baz/blap/blam/blip/boop/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/blap/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/blap/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/blap/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/blap/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/blap/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/blap/blam/abc.txt");
+		paths[i++] = IPath.fromOSString("/Foo/bar/baz/blap/blam/blip/boop/abc.txt");
 
 		return paths;
 	}

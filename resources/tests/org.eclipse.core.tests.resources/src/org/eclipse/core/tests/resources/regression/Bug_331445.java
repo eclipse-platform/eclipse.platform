@@ -15,9 +15,13 @@ package org.eclipse.core.tests.resources.regression;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 public class Bug_331445 extends ResourceTest {
@@ -44,13 +48,13 @@ public class Bug_331445 extends ResourceTest {
 		IFolder folder = project.getFolder(getUniqueString());
 
 		try {
-			folder.createLink(new Path(rawLinkFolderLocation), IResource.ALLOW_MISSING_LOCAL, getMonitor());
+			folder.createLink(IPath.fromOSString(rawLinkFolderLocation), IResource.ALLOW_MISSING_LOCAL, getMonitor());
 		} catch (CoreException e) {
 			fail("2.0", e);
 		}
 
 		assertNull("3.0", folder.getLocation());
-		assertEquals("4.0", new Path(rawLinkFolderLocation), folder.getRawLocation());
+		assertEquals("4.0", IPath.fromOSString(rawLinkFolderLocation), folder.getRawLocation());
 		try {
 			assertEquals("5.0", new URI(linkFolderLocation), folder.getLocationURI());
 		} catch (URISyntaxException e) {

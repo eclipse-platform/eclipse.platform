@@ -18,7 +18,6 @@ import java.io.File;
 
 import org.eclipse.ant.internal.ui.model.LocationProvider;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 public class TestLocationProvider extends LocationProvider {
 
@@ -31,6 +30,6 @@ public class TestLocationProvider extends LocationProvider {
 
 	@Override
 	public IPath getLocation() {
-		return new Path(buildFile.getAbsolutePath());
+		return IPath.fromOSString(buildFile.getAbsolutePath());
 	}
 }

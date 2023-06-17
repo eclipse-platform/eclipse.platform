@@ -34,7 +34,6 @@ import org.eclipse.ant.internal.launching.AntLaunchingUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -102,7 +101,7 @@ public class ContributedClasspathEntriesEntry extends AbstractRuntimeClasspathEn
 		for (IAntClasspathEntry userEntry : userEntries) {
 			entry = userEntry;
 			path = entry.getLabel();
-			IPath toolsPath = new Path(path);
+			IPath toolsPath = IPath.fromOSString(path);
 			if (toolsPath.lastSegment().equals("tools.jar")) { //$NON-NLS-1$
 				haveToolsEntry = true;
 				// replace with dynamically resolved tools.jar based on
@@ -128,18 +127,18 @@ public class ContributedClasspathEntriesEntry extends AbstractRuntimeClasspathEn
 		if (tools == null) {
 			if (path != null) {
 				// use the global entry
-				rtes.add(JavaRuntime.newArchiveRuntimeClasspathEntry(new Path(path)));
+				rtes.add(JavaRuntime.newArchiveRuntimeClasspathEntry(IPath.fromOSString(path)));
 			} else {
 				// use the default vm install to try to find a tools.jar
 				IVMInstall install = JavaRuntime.getDefaultVMInstall();
 				if (install != null) {
-					IAntClasspathEntry entry = AntCorePlugin.getPlugin().getPreferences().getToolsJarEntry(new Path(install.getInstallLocation().getAbsolutePath()));
+					IAntClasspathEntry entry = AntCorePlugin.getPlugin().getPreferences().getToolsJarEntry(IPath.fromOSString(install.getInstallLocation().getAbsolutePath()));
 					if (entry != null) {
 						try {
 							URL entryURL = entry.getEntryURL();
 							String pathString = resolveFileFromUrl(entryURL.getFile());
 							if (!pathString.isEmpty()) {
-								rtes.add(JavaRuntime.newArchiveRuntimeClasspathEntry(new Path(pathString)));
+								rtes.add(JavaRuntime.newArchiveRuntimeClasspathEntry(IPath.fromOSString(pathString)));
 							}
 						}
 						catch (MalformedURLException e) {
@@ -178,7 +177,7 @@ public class ContributedClasspathEntriesEntry extends AbstractRuntimeClasspathEn
 					AntLaunching.log(e);
 					continue;
 				}
-				IPath fragmentPath = new Path(urlFileName);
+				IPath fragmentPath = IPath.fromOSString(urlFileName);
 				if (fragmentPath.getFileExtension() != null) { // JAR file
 					fgSWTEntries.add(JavaRuntime.newArchiveRuntimeClasspathEntry(fragmentPath));
 				} else { // folder
@@ -228,9 +227,9 @@ public class ContributedClasspathEntriesEntry extends AbstractRuntimeClasspathEn
 		try {
 			IVMInstall install = JavaRuntime.computeVMInstall(configuration);
 			if (install != null) {
-				IAntClasspathEntry entry = AntCorePlugin.getPlugin().getPreferences().getToolsJarEntry(new Path(install.getInstallLocation().getAbsolutePath()));
+				IAntClasspathEntry entry = AntCorePlugin.getPlugin().getPreferences().getToolsJarEntry(IPath.fromOSString(install.getInstallLocation().getAbsolutePath()));
 				if (entry != null) {
-					return JavaRuntime.newArchiveRuntimeClasspathEntry(new Path(entry.getEntryURL().getPath()));
+					return JavaRuntime.newArchiveRuntimeClasspathEntry(IPath.fromOSString(entry.getEntryURL().getPath()));
 				}
 			}
 		}

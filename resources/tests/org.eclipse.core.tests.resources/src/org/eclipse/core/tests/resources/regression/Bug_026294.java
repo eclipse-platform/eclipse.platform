@@ -13,10 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import java.io.*;
-import org.eclipse.core.resources.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -45,7 +51,7 @@ public class Bug_026294 extends ResourceTest {
 			IFile file1 = folder.getFile("file1.txt");
 			IFile file2 = project.getFile("file2.txt");
 			IFile file3 = folder.getFile("file3.txt");
-			IFile projectFile = project.getFile(new Path(".project"));
+			IFile projectFile = project.getFile(IPath.fromOSString(".project"));
 
 			ensureExistsInWorkspace(new IResource[] {file1, file2, file3}, true);
 			projectRoot = project.getLocation().toFile();
@@ -215,7 +221,7 @@ public class Bug_026294 extends ResourceTest {
 			file1 = folder.getFile("file1.txt");
 			IFile file2 = project.getFile("file2.txt");
 			IFile file3 = folder.getFile("file3.txt");
-			IFile projectFile = project.getFile(new Path(".project"));
+			IFile projectFile = project.getFile(IPath.fromOSString(".project"));
 
 			ensureExistsInWorkspace(new IResource[] {file1, file2, file3}, true);
 
@@ -293,7 +299,7 @@ public class Bug_026294 extends ResourceTest {
 			folder = project.getFolder("a_folder");
 			IFile file1 = folder.getFile("file1.txt");
 			IFile file2 = project.getFile("file2.txt");
-			IFile projectFile = project.getFile(new Path(".project"));
+			IFile projectFile = project.getFile(IPath.fromOSString(".project"));
 
 			ensureExistsInWorkspace(new IResource[] {file1, file2}, true);
 

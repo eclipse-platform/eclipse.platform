@@ -13,17 +13,23 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.saveparticipant;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder;
 import org.eclipse.core.tests.resources.regression.SimpleBuilder;
 import org.eclipse.core.tests.resources.saveparticipant1.SaveParticipant1Plugin;
 import org.eclipse.core.tests.resources.saveparticipant3.SaveParticipant3Plugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * @see SaveManager1Test
@@ -91,7 +97,7 @@ public class SaveManager2Test extends SaveManagerTest {
 
 		// prepare plugin to the save operation
 		plugin1.resetDeltaVerifier();
-		IResource added1 = getWorkspace().getRoot().getFile(new Path(PROJECT_1).append("addedFile"));
+		IResource added1 = getWorkspace().getRoot().getFile(IPath.fromOSString(PROJECT_1).append("addedFile"));
 		plugin1.addExpectedChange(added1, IResourceDelta.ADDED, 0);
 		IStatus status;
 		try {

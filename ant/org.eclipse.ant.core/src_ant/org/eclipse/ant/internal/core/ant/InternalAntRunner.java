@@ -70,7 +70,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.osgi.framework.Bundle;
@@ -859,8 +858,8 @@ public class InternalAntRunner {
 			if (fileName == null) {
 				fileName = "log.xml"; //$NON-NLS-1$
 			}
-			String realPath = new Path(getBuildFileLocation()).toFile().getAbsolutePath();
-			IPath path = new Path(realPath);
+			String realPath = IPath.fromOSString(getBuildFileLocation()).toFile().getAbsolutePath();
+			IPath path = IPath.fromOSString(realPath);
 			path = path.removeLastSegments(1);
 			path = path.addTrailingSeparator();
 			path = path.append(fileName);

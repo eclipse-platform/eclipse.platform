@@ -15,7 +15,7 @@ package org.eclipse.ant.internal.launching.debug.model;
 
 import org.eclipse.ant.internal.launching.AntLaunchingUtil;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IStackFrame;
@@ -84,7 +84,7 @@ public class AntStackFrame extends AntDebugElement implements IStackFrame {
 		if (file != null) {
 			fFilePath = file.getProjectRelativePath().toString();
 		} else {
-			fFilePath = new Path(fullPath).lastSegment();
+			fFilePath = IPath.fromOSString(fullPath).lastSegment();
 		}
 	}
 

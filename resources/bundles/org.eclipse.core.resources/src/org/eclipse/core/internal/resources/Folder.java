@@ -19,8 +19,15 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.osgi.util.NLS;
 
@@ -42,7 +49,7 @@ public class Folder extends Container implements IFolder {
 			if (!Workspace.caseSensitive) {
 				String name = getLocalManager().getLocalName(store);
 				if (name != null && !store.getName().equals(name)) {
-					String msg = NLS.bind(Messages.resources_existsLocalDifferentCase, new Path(store.toString()).removeLastSegments(1).append(name).toOSString());
+					String msg = NLS.bind(Messages.resources_existsLocalDifferentCase, IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
 					throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), msg, null);
 				}
 			}
@@ -101,7 +108,7 @@ public class Folder extends Container implements IFolder {
 					// The file system is not case sensitive and a case variant exists at this
 					// location
 					String msg = NLS.bind(Messages.resources_existsLocalDifferentCase,
-							new Path(store.toString()).removeLastSegments(1).append(name).toOSString());
+							IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
 					throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), msg, null);
 				}
 			}

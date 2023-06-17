@@ -17,7 +17,6 @@ package org.eclipse.core.tests.resources.perf;
 import java.util.ArrayList;
 import org.eclipse.core.internal.watson.ElementTree;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.resources.OldCorePerformanceTest;
 
@@ -36,7 +35,7 @@ public class BenchElementTree extends OldCorePerformanceTest {
 			"StringIndexOutOfBoundsException.java", "System.java", "Thread.java", "ThreadDeath.java", "ThreadGroup.java", "Throwable.java", "UnknownError.java", "UnsatisfiedLinkError.java", //
 			"VerifyError.java", "VirtualMachineError.java", "Void.java"};
 
-	static final IPath solution = Path.ROOT.append("solution");
+	static final IPath solution = IPath.ROOT.append("solution");
 	static final IPath project = solution.append("project");
 	static final IPath folder = project.append("folder");
 	static final IPath[] files = getFilePaths();

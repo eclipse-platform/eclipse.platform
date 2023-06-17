@@ -17,10 +17,16 @@
 package org.eclipse.ui.examples.filesystem;
 
 import java.net.URI;
-import org.eclipse.core.commands.*;
-import org.eclipse.core.filesystem.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -42,7 +48,7 @@ public class CollapseZipHandler extends AbstractHandler {
 				folder.getParent().refreshLocal(IResource.DEPTH_INFINITE, null);
 			} else {
 				//otherwise the zip file must be a linked resource
-				IFile file = folder.getParent().getFile(new Path(folder.getName()));
+				IFile file = folder.getParent().getFile(IPath.fromOSString(folder.getName()));
 				file.createLink(zipURI, IResource.REPLACE, null);
 			}
 		} catch (Exception e) {

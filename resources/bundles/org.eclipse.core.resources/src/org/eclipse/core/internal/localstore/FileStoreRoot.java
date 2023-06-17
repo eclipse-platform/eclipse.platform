@@ -21,8 +21,13 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.ICoreConstants;
 import org.eclipse.core.internal.utils.FileUtil;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * Represents the root of a file system that is connected to the workspace.
@@ -190,7 +195,7 @@ public class FileStoreRoot {
 	private IPath toLocalPath(URI uri) {
 		try {
 			final File localFile = EFS.getStore(uri).toLocalFile(EFS.NONE, null);
-			return localFile == null ? null : new Path(localFile.getAbsolutePath());
+			return localFile == null ? null : IPath.fromOSString(localFile.getAbsolutePath());
 		} catch (CoreException e) {
 			return FileUtil.toPath(uri);
 		}

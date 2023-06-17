@@ -18,9 +18,13 @@ import java.io.File;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.service.datalocation.Location;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -48,7 +52,7 @@ public class FileSystemAccess {
 					try {
 						Location location = tracker.getService();
 						if (location != null) {
-							IPath instancePath = new Path(new File(location.getURL().getFile()).toString());
+							IPath instancePath = IPath.fromOSString(new File(location.getURL().getFile()).toString());
 							return instancePath.append(".metadata/.plugins").append(Policy.PI_FILE_SYSTEM); //$NON-NLS-1$
 						}
 					} finally {
@@ -61,7 +65,7 @@ public class FileSystemAccess {
 			//fall through below and use user home
 		}
 		//just put the cache in the user home directory
-		return Path.fromOSString(System.getProperty("user.home")); //$NON-NLS-1$
+		return IPath.fromOSString(System.getProperty("user.home")); //$NON-NLS-1$
 	}
 
 	public static Enumeration<URL> findEntries(String path, String filePattern, boolean recurse) {

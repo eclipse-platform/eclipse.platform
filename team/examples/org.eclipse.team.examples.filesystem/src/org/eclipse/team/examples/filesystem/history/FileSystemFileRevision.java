@@ -20,7 +20,6 @@ import java.io.InputStream;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.core.history.provider.FileRevision;
 
@@ -59,7 +58,7 @@ public class FileSystemFileRevision extends FileRevision {
 
 			@Override
 			public IPath getFullPath() {
-				return new Path(remoteFile.getAbsolutePath());
+				return IPath.fromOSString(remoteFile.getAbsolutePath());
 			}
 
 			@Override

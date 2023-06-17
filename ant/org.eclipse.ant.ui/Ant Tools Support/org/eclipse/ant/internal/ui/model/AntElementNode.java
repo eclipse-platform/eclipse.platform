@@ -38,7 +38,7 @@ import org.eclipse.ant.internal.ui.IAntUIConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -221,7 +221,7 @@ public class AntElementNode implements IAdaptable, IAntElement {
 			URL fileURL = FileLocator.toFileURL(url);
 			// To be worked in 4.6 via Bug 476266
 			if (IAntCoreConstants.FILE.equals(fileURL.getProtocol())) {
-				fFilePath = new Path((URIUtil.toFile(URIUtil.toURI(fileURL))).getAbsolutePath()).toString();
+				fFilePath = IPath.fromOSString((URIUtil.toFile(URIUtil.toURI(fileURL))).getAbsolutePath()).toString();
 			}
 		}
 		catch (URISyntaxException e) {

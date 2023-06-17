@@ -62,7 +62,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -440,7 +439,7 @@ public abstract class ResourceTest extends CoreTest {
 	public IResource[] buildResources(IContainer root, String[] hierarchy) {
 		IResource[] result = new IResource[hierarchy.length];
 		for (int i = 0; i < hierarchy.length; i++) {
-			IPath path = new Path(hierarchy[i]);
+			IPath path = IPath.fromOSString(hierarchy[i]);
 			IPath fullPath = root.getFullPath().append(path);
 			switch (fullPath.segmentCount()) {
 				case 0 :

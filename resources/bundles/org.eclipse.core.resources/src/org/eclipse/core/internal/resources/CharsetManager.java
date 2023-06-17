@@ -18,11 +18,29 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -138,7 +156,7 @@ public class CharsetManager implements IManager {
 				// if derived changed, move encoding to correct preferences
 				IPath parentPath = parent.getResource().getProjectRelativePath();
 				for (String affectedResource : affectedResources) {
-					IPath affectedPath = new Path(affectedResource);
+					IPath affectedPath = IPath.fromOSString(affectedResource);
 					// if parentPath is an ancestor of affectedPath
 					if (parentPath.isPrefixOf(affectedPath)) {
 						IResource member = currentProject.findMember(affectedPath);
@@ -192,7 +210,7 @@ public class CharsetManager implements IManager {
 				String[] affectedResources = entry.getValue();
 				Preferences projectPrefs = isDerived.booleanValue() ? projectDerivedPrefs : projectRegularPrefs;
 				for (String affectedResource : affectedResources) {
-					IResourceDelta memberDelta = projectDelta.findMember(new Path(affectedResource));
+					IResourceDelta memberDelta = projectDelta.findMember(IPath.fromOSString(affectedResource));
 					// no changes for the given resource
 					if (memberDelta == null)
 						continue;

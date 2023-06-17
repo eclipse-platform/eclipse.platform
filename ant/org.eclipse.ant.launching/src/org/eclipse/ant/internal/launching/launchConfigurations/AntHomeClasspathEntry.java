@@ -24,7 +24,6 @@ import org.eclipse.ant.internal.launching.AntLaunching;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.internal.launching.AbstractRuntimeClasspathEntry;
@@ -71,7 +70,7 @@ public class AntHomeClasspathEntry extends AbstractRuntimeClasspathEntry {
 		if (antHomeLocation == null) {
 			memento.setAttribute("default", "true"); //$NON-NLS-1$//$NON-NLS-2$
 		} else {
-			memento.setAttribute("antHome", new Path(antHomeLocation).toString()); //$NON-NLS-1$
+			memento.setAttribute("antHome", IPath.fromOSString(antHomeLocation).toString()); //$NON-NLS-1$
 		}
 	}
 
@@ -79,7 +78,7 @@ public class AntHomeClasspathEntry extends AbstractRuntimeClasspathEntry {
 	public void initializeFrom(Element memento) throws CoreException {
 		String antHome = memento.getAttribute("antHome"); //$NON-NLS-1$
 		if (antHome != null && (antHome.length() > 0)) {
-			IPath path = new Path(antHome);
+			IPath path = IPath.fromOSString(antHome);
 			antHomeLocation = path.toOSString();
 		} else {
 			antHomeLocation = null;
@@ -100,9 +99,9 @@ public class AntHomeClasspathEntry extends AbstractRuntimeClasspathEntry {
 				libs.add(JavaRuntime.newStringVariableClasspathEntry(entry.getLabel()));
 			}
 		} else {
-			IPath libDir = new Path(antHomeLocation).append("lib"); //$NON-NLS-1$
+			IPath libDir = IPath.fromOSString(antHomeLocation).append("lib"); //$NON-NLS-1$
 			for (String name : resolveAntHome().list()) {
-				IPath path = new Path(name);
+				IPath path = IPath.fromOSString(name);
 				String fileExtension = path.getFileExtension();
 				if ("jar".equalsIgnoreCase(fileExtension)) { //$NON-NLS-1$
 					libs.add(JavaRuntime.newArchiveRuntimeClasspathEntry(libDir.append(path)));
@@ -116,7 +115,7 @@ public class AntHomeClasspathEntry extends AbstractRuntimeClasspathEntry {
 		if (antHomeLocation == null) { // using the default ant home
 			return null;
 		}
-		IPath libDir = new Path(antHomeLocation).append("lib"); //$NON-NLS-1$
+		IPath libDir = IPath.fromOSString(antHomeLocation).append("lib"); //$NON-NLS-1$
 		File lib = libDir.toFile();
 		File parentDir = lib.getParentFile();
 		if (parentDir == null || !parentDir.exists()) {

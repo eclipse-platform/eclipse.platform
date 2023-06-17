@@ -25,7 +25,7 @@ import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.ui.console.FileLink;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -69,7 +69,7 @@ public abstract class AbstractJavacPatternMatcher implements IPatternMatchListen
 		}
 		IFile file = fFileNameToIFile.get(filePath);
 		if (file == null) {
-			IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(new Path(filePath).toFile().toURI());
+			IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(IPath.fromOSString(filePath).toFile().toURI());
 			if (files.length > 0) {
 				file = files[0];
 				fFileNameToIFile.put(filePath, file);

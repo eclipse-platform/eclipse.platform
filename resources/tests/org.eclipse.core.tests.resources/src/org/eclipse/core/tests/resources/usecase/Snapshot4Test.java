@@ -14,10 +14,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
-import java.util.*;
-import org.eclipse.core.resources.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * Change some resources mixing full saves and snapshots.
@@ -28,9 +34,9 @@ public class Snapshot4Test extends SnapshotTest {
 		List<String> result = new ArrayList<>();
 		String[] old = Snapshot3Test.defineHierarchy1();
 		result.addAll(Arrays.asList(old));
-		result.remove(new Path(PROJECT_1).append("added file").toString());
-		result.remove(new Path(PROJECT_1).append("yet another file").toString());
-		result.remove(new Path(PROJECT_1).append("a folder").addTrailingSeparator().toString());
+		result.remove(IPath.fromOSString(PROJECT_1).append("added file").toString());
+		result.remove(IPath.fromOSString(PROJECT_1).append("yet another file").toString());
+		result.remove(IPath.fromOSString(PROJECT_1).append("a folder").addTrailingSeparator().toString());
 		return result.toArray(new String[result.size()]);
 	}
 

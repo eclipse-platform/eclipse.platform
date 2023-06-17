@@ -15,12 +15,20 @@ package org.eclipse.compare.internal.core.patch;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.text.*;
-import java.util.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import org.eclipse.compare.patch.IFilePatch2;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IPath;
 
 public class PatchReader {
 	private static final boolean DEBUG= false;
@@ -605,7 +613,7 @@ public class PatchReader {
 				if (DEBUG) System.out.println("path mismatch: " + path2); //$NON-NLS-1$
 				path= path2;
 			}
-			return new Path(path);
+			return IPath.fromOSString(path);
 		}
 		return null;
 	}

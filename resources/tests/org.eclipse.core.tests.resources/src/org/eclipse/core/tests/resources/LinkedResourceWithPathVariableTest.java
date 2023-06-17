@@ -16,14 +16,29 @@
 
 package org.eclipse.core.tests.resources;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 
 /**
@@ -50,7 +65,8 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		toDelete.add(base);
 		super.setUp();
 		existingProject.getPathVariableManager().setValue(PROJECT_VARIABLE_NAME, base);
-		existingProject.getPathVariableManager().setValue(PROJECT_RELATIVE_VARIABLE_NAME, Path.fromPortableString(PROJECT_RELATIVE_VARIABLE_VALUE));
+		existingProject.getPathVariableManager().setValue(PROJECT_RELATIVE_VARIABLE_NAME,
+				IPath.fromPortableString(PROJECT_RELATIVE_VARIABLE_VALUE));
 	}
 
 	@Override
@@ -122,7 +138,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	public IPath getRandomLocation() {
 		IPathVariableManager pathVars = getWorkspace().getPathVariableManager();
 		//low order bits are current time, high order bits are static counter
-		IPath parent = new Path(VARIABLE_NAME);
+		IPath parent = IPath.fromOSString(VARIABLE_NAME);
 		IPath path = FileSystemHelper.computeRandomLocation(parent);
 		while (pathVars.resolvePath(path).toFile().exists()) {
 			try {
@@ -142,7 +158,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	public IPath getRandomProjectLocation() {
 		IPathVariableManager pathVars = getWorkspace().getPathVariableManager();
 		// low order bits are current time, high order bits are static counter
-		IPath parent = new Path(PROJECT_VARIABLE_NAME);
+		IPath parent = IPath.fromOSString(PROJECT_VARIABLE_NAME);
 		IPath path = FileSystemHelper.computeRandomLocation(parent);
 		while (pathVars.resolvePath(path).toFile().exists()) {
 			try {
@@ -162,7 +178,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	public IPath getRandomRelativeProjectLocation() {
 		IPathVariableManager pathVars = getWorkspace().getPathVariableManager();
 		// low order bits are current time, high order bits are static counter
-		IPath parent = new Path(PROJECT_RELATIVE_VARIABLE_NAME);
+		IPath parent = IPath.fromOSString(PROJECT_RELATIVE_VARIABLE_NAME);
 		IPath path = FileSystemHelper.computeRandomLocation(parent);
 		while (pathVars.resolvePath(path).toFile().exists()) {
 			try {
@@ -461,8 +477,9 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		toDelete.add(targetPath);
 
 		try {
-			existingProjectInSubDirectory.getPathVariableManager().setValue("P_RELATIVE", Path.fromPortableString("${PARENT-3-PROJECT_LOC}"));
-			variableBasedLocation = Path.fromPortableString("P_RELATIVE/outside.txt");
+			existingProjectInSubDirectory.getPathVariableManager().setValue("P_RELATIVE",
+					IPath.fromPortableString("${PARENT-3-PROJECT_LOC}"));
+			variableBasedLocation = IPath.fromPortableString("P_RELATIVE/outside.txt");
 		} catch (CoreException e1) {
 			fail("0.99", e1);
 		}
@@ -970,8 +987,8 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests scenario where links are relative to undefined variables
 	 */
 	public void testUndefinedVariable() {
-		IPath folderLocation = new Path("NOVAR/folder");
-		IPath fileLocation = new Path("NOVAR/abc.txt");
+		IPath folderLocation = IPath.fromOSString("NOVAR/folder");
+		IPath fileLocation = IPath.fromOSString("NOVAR/abc.txt");
 		IFile testFile = existingProject.getFile("UndefinedVar.txt");
 		IFolder testFolder = existingProject.getFolder("UndefinedVarTest");
 

@@ -15,9 +15,12 @@ package org.eclipse.core.tests.internal.localstore;
 
 import java.io.IOException;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 
 public class CaseSensitivityTest extends LocalStoreTest {
 	private final boolean isCaseSensitive = Workspace.caseSensitive;
@@ -136,7 +139,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		// try to rename project 1 to the uppercase name of project 2, should fail
 		try {
-			project1.move(Path.ROOT.append(project2.getName().toUpperCase()), true, null);
+			project1.move(IPath.ROOT.append(project2.getName().toUpperCase()), true, null);
 			assertTrue("3.0", isCaseSensitive);
 		} catch (CoreException e) {
 			if (isCaseSensitive) {
@@ -382,7 +385,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		// try to move the folder from source project to the root, which makes it a project.
 		// should always fails since we aren't allowed to move a folder to be a project.
 		try {
-			folder.move(Path.ROOT.append(folder.getName()), true, null);
+			folder.move(IPath.ROOT.append(folder.getName()), true, null);
 			fail("1.1");
 		} catch (CoreException e) {
 			// expected
@@ -391,7 +394,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		// try to copy the folder from source project to the root, which makes it a project.
 		// should always fail since we aren't allowed to copy a folder to be a project
 		try {
-			folder.copy(Path.ROOT.append(folder.getName()), true, null);
+			folder.copy(IPath.ROOT.append(folder.getName()), true, null);
 			fail("1.2");
 		} catch (CoreException e) {
 			// expected

@@ -14,11 +14,26 @@
  *******************************************************************************/
 package org.eclipse.core.internal.localstore;
 
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.Container;
+import org.eclipse.core.internal.resources.File;
+import org.eclipse.core.internal.resources.Folder;
+import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.ResourceInfo;
+import org.eclipse.core.internal.resources.ResourceStatus;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -279,7 +294,7 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 						return true;
 				}
 			} else {
-				if (node.existsInFileSystem() && !Path.EMPTY.isValidSegment(node.getLocalName())) {
+				if (node.existsInFileSystem() && !IPath.EMPTY.isValidSegment(node.getLocalName())) {
 					String message = NLS.bind(Messages.resources_invalidResourceName, node.getLocalName());
 					errors.merge(new ResourceStatus(IResourceStatus.INVALID_RESOURCE_NAME, message));
 					return false;

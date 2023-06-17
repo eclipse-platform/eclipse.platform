@@ -20,8 +20,17 @@ import java.net.URISyntaxException;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
 import org.junit.Assume;
 import org.junit.Test;
@@ -229,7 +238,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 
 		//existing file with different case
 		if (!isCaseSensitive(existing)) {
-			IPath differentCase = new Path(existingFileLocation.toOSString().toUpperCase());
+			IPath differentCase = IPath.fromOSString(existingFileLocation.toOSString().toUpperCase());
 			result = root.findFilesForLocation(differentCase);
 			assertResources("5.0", existing, result);
 			result = root.findFilesForLocationURI(existing.getLocationURI());
@@ -292,7 +301,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	@Test
 	public void testGetFile() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		IFile file = root.getFile(new Path("//P1/a.txt"));
+		IFile file = root.getFile(IPath.fromOSString("//P1/a.txt"));
 		assertTrue("1.0", !file.getFullPath().isUNC());
 	}
 
@@ -566,7 +575,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	}
 
 	private IFile createFile(IContainer parent, int updateFlags, boolean linked) {
-		IFile file = parent.getFile(new Path(getUniqueString()));
+		IFile file = parent.getFile(IPath.fromOSString(getUniqueString()));
 		try {
 			if (linked) {
 				try {
@@ -589,7 +598,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	}
 
 	private IFolder createFolder(IContainer parent, int updateFlags, boolean linked) {
-		IFolder folder = parent.getFolder(new Path(getUniqueString()));
+		IFolder folder = parent.getFolder(IPath.fromOSString(getUniqueString()));
 		try {
 			if (linked) {
 				IPath path = getTempDir().append(getUniqueString());

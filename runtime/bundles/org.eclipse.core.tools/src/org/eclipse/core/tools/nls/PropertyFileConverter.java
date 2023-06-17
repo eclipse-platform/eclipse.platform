@@ -13,12 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tools.nls;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.ltk.core.refactoring.Change;
 
@@ -184,7 +186,7 @@ public class PropertyFileConverter {
 		String bundleName = propertiesFile.getName();
 		StringBuilder clazz = new StringBuilder();
 		// convert the bundle resource (messages.properties) to the simple name (messages)
-		String simpleBundleName = new Path(bundleName).removeFileExtension().toString();
+		String simpleBundleName = IPath.fromOSString(bundleName).removeFileExtension().toString();
 		appendPreText(clazz, pkgName, simpleBundleName, typeName);
 		StringBuilder bundle = new StringBuilder();
 		int savings = 0;

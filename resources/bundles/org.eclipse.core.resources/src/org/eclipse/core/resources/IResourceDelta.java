@@ -15,7 +15,11 @@ package org.eclipse.core.resources;
 
 import org.eclipse.core.internal.watson.IElementComparator;
 import org.eclipse.core.resources.mapping.IResourceChangeDescriptionFactory;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * A resource delta represents changes in the state of a resource tree
@@ -582,7 +586,7 @@ public interface IResourceDelta extends IAdaptable {
 	 * @return the project-relative path of this resource delta
 	 * @see IResource#getProjectRelativePath()
 	 * @see #getFullPath()
-	 * @see Path#EMPTY
+	 * @see IPath#EMPTY
 	 */
 	IPath getProjectRelativePath();
 

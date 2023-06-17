@@ -26,11 +26,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.framework.log.FrameworkLog;
 import org.eclipse.osgi.framework.log.FrameworkLogEntry;
 import org.eclipse.osgi.service.datalocation.Location;
+import org.eclipse.osgi.service.environment.EnvironmentInfo;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -408,11 +408,11 @@ public class Utils {
 		if (relativeLocation.getProtocol() != null && !relativeLocation.getProtocol().equals(base.getProtocol()))
 			// it is not relative, return as is (avoid creating garbage)
 			return relativeLocation;
-		IPath relativePath = new Path(relativeLocation.getPath());
+		IPath relativePath = IPath.fromOSString(relativeLocation.getPath());
 		if (relativePath.isAbsolute())
 			return relativeLocation;
 		try {
-			IPath absolutePath = new Path(base.getPath()).append(relativeLocation.getPath());
+			IPath absolutePath = IPath.fromOSString(base.getPath()).append(relativeLocation.getPath());
 			// File.toURL() is the best way to create a file: URL
 			return absolutePath.toFile().toURL();
 		} catch (MalformedURLException e) {
@@ -433,10 +433,10 @@ public class Utils {
 			return location;
 		if (!base.getProtocol().equals(location.getProtocol()))
 			return location;
-		IPath locationPath = new Path(location.getPath());
+		IPath locationPath = IPath.fromOSString(location.getPath());
 		if (!locationPath.isAbsolute())
 			return location;
-		IPath relativePath = makeRelative(new Path(base.getPath()), locationPath);
+		IPath relativePath = makeRelative(IPath.fromOSString(base.getPath()), locationPath);
 		try {
 			return new URL(base.getProtocol(), base.getHost(), base.getPort(), relativePath.toString());
 		} catch (MalformedURLException e) {
@@ -460,7 +460,7 @@ public class Utils {
 		String temp = ""; //$NON-NLS-1$
 		for (int j = 0; j < baseCount - count; j++)
 			temp += "../"; //$NON-NLS-1$
-		return new Path(temp).append(location.removeFirstSegments(count));
+		return IPath.fromOSString(temp).append(location.removeFirstSegments(count));
 	}
 
 	/**

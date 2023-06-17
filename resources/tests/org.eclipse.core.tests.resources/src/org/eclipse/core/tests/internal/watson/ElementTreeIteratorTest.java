@@ -18,9 +18,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Stack;
-import org.eclipse.core.internal.watson.*;
+import org.eclipse.core.internal.watson.ElementTree;
+import org.eclipse.core.internal.watson.ElementTreeIterator;
+import org.eclipse.core.internal.watson.IElementContentVisitor;
+import org.eclipse.core.internal.watson.IElementTreeData;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.junit.Test;
 
 /**
@@ -39,7 +41,7 @@ public class ElementTreeIteratorTest {
 				return null;
 			}
 		};
-		IPath sol = Path.ROOT.append("sol");
+		IPath sol = IPath.ROOT.append("sol");
 		tree.createElement(sol, data);
 		for (int p = 0; p < num; p++) {
 			IPath proj = sol.append("proj" + p);
@@ -71,13 +73,13 @@ public class ElementTreeIteratorTest {
 		};
 		Thread reader = new Thread((Runnable) () -> {
 			for (int i = 0; i < 80000; i++) {
-				new ElementTreeIterator(tree, Path.ROOT).iterate(visitor);
+				new ElementTreeIterator(tree, IPath.ROOT).iterate(visitor);
 			}
 		}, "Holmes (reader)");
 		Thread writer = new Thread((Runnable) () -> {
 			for (int i = 0; i < 1000; i++) {
 				modifyTree(tree);
-				recursiveDelete(tree, Path.ROOT);
+				recursiveDelete(tree, IPath.ROOT);
 				setupElementTree(tree, 3);
 			}
 		}, "Doyle (writer)");
@@ -102,11 +104,11 @@ public class ElementTreeIteratorTest {
 			elts.add(requestor.requestPath());
 			return true;
 		};
-		new ElementTreeIterator(tree, Path.ROOT).iterate(elementVisitor);
+		new ElementTreeIterator(tree, IPath.ROOT).iterate(elementVisitor);
 		assertEquals("1", 2 + n + n * n + n * n * n, elts.size());
 
 		elts.clear();
-		IPath innerElement = Path.ROOT.append("sol").append("proj1");
+		IPath innerElement = IPath.ROOT.append("sol").append("proj1");
 		new ElementTreeIterator(tree, innerElement).iterate(elementVisitor);
 		assertEquals("2", 1 + n + n * n, elts.size());
 	}
@@ -137,7 +139,7 @@ public class ElementTreeIteratorTest {
 			}
 		}
 		MyStack toModify = new MyStack();
-		IPath[] children = tree.getChildren(Path.ROOT);
+		IPath[] children = tree.getChildren(IPath.ROOT);
 		toModify.pushAll(children);
 		while (!toModify.isEmpty()) {
 			IPath visit = toModify.pop();

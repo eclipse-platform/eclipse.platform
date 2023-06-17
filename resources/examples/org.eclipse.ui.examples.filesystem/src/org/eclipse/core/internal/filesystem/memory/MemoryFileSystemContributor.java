@@ -17,7 +17,7 @@ package org.eclipse.core.internal.filesystem.memory;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ide.fileSystem.FileSystemContributor;
@@ -60,6 +60,6 @@ public class MemoryFileSystemContributor extends FileSystemContributor {
 			Policy.log(Policy.createStatus(e));
 			e.printStackTrace();
 		}
-		return MemoryFileSystem.toURI(new Path(string));
+		return MemoryFileSystem.toURI(IPath.fromOSString(string));
 	}
 }

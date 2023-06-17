@@ -29,7 +29,6 @@ import org.eclipse.ant.internal.ui.IAntUIConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -419,7 +418,7 @@ public class AntPropertiesBlock {
 		if (result == null) {
 			return;
 		}
-		IPath filterPath = new Path(dialog.getFilterPath());
+		IPath filterPath = IPath.fromOSString(dialog.getFilterPath());
 		for (String fileName : dialog.getFileNames()) {
 			IPath path = filterPath.append(fileName).makeAbsolute();
 			((AntContentProvider) fileTableViewer.getContentProvider()).add(path.toOSString());

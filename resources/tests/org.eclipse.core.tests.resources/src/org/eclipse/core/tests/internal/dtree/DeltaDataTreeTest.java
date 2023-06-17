@@ -20,10 +20,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.core.internal.dtree.*;
+import org.eclipse.core.internal.dtree.AbstractDataTree;
+import org.eclipse.core.internal.dtree.DeltaDataTree;
+import org.eclipse.core.internal.dtree.NodeComparison;
+import org.eclipse.core.internal.dtree.ObjectNotFoundException;
+import org.eclipse.core.internal.dtree.TestHelper;
 import org.eclipse.core.internal.watson.DefaultElementComparator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -83,7 +86,7 @@ public class DeltaDataTreeTest {
 
 		emptyTree = new DeltaDataTree();
 		tree = new DeltaDataTree();
-		rootKey = Path.ROOT;
+		rootKey = IPath.ROOT;
 
 		/* Add two children to root */
 		try {
@@ -116,10 +119,10 @@ public class DeltaDataTreeTest {
 	 */
 	@Test
 	public void testAddAndRemoveOnSameLayer() {
-		IPath elementA = Path.ROOT.append("A");
+		IPath elementA = IPath.ROOT.append("A");
 		DeltaDataTree tree1 = new DeltaDataTree();
 
-		tree1.createChild(Path.ROOT, "A", "Data for A");
+		tree1.createChild(IPath.ROOT, "A", "Data for A");
 
 		tree1.immutable();
 		DeltaDataTree tree2;
@@ -135,8 +138,8 @@ public class DeltaDataTreeTest {
 		tree2.compareWith(tree1, DefaultElementComparator.getComparator());
 		tree1.forwardDeltaWith(tree2, DefaultElementComparator.getComparator());
 		tree2.forwardDeltaWith(tree1, DefaultElementComparator.getComparator());
-		tree1.copyCompleteSubtree(Path.ROOT);
-		tree2.copyCompleteSubtree(Path.ROOT);
+		tree1.copyCompleteSubtree(IPath.ROOT);
+		tree2.copyCompleteSubtree(IPath.ROOT);
 		tree1.reroot();
 		tree2.reroot();
 		tree1.makeComplete();
@@ -147,18 +150,18 @@ public class DeltaDataTreeTest {
 	public void testCompareWithPath() {
 		// setup data:
 		String X = "x";
-		IPath elementX = Path.ROOT.append(X);
+		IPath elementX = IPath.ROOT.append(X);
 		DeltaDataTree treeA;
 		DeltaDataTree treeB;
 		DeltaDataTree treeC;
 		DeltaDataTree treeD;
 		treeA = new DeltaDataTree();
 		String oldData = "A Data for x";
-		treeA.createChild(Path.ROOT, X, oldData);
+		treeA.createChild(IPath.ROOT, X, oldData);
 		treeA.immutable();
 		treeB = treeA.newEmptyDeltaTree();
 		String newData = "B Data for x";
-		treeB.createChild(Path.ROOT, X, newData);
+		treeB.createChild(IPath.ROOT, X, newData);
 		treeB.immutable();
 		treeC = treeB.newEmptyDeltaTree();
 		treeC.immutable();
@@ -183,20 +186,20 @@ public class DeltaDataTreeTest {
 	public void testCompareWithPath2() {
 		// setup data:
 		String X = "x";
-		IPath elementX = Path.ROOT.append(X);
+		IPath elementX = IPath.ROOT.append(X);
 		DeltaDataTree treeD;
 		DeltaDataTree treeC;
 		DeltaDataTree treeB;
 		DeltaDataTree treeA;
 		treeD = new DeltaDataTree();
 		String oldData = "D Data for x";
-		treeD.createChild(Path.ROOT, X, oldData);
+		treeD.createChild(IPath.ROOT, X, oldData);
 		treeD.immutable();
 		treeC = treeD.newEmptyDeltaTree();
 		treeC.immutable();
 		treeB = treeC.newEmptyDeltaTree();
 		String newData = "B Data for x";
-		treeB.createChild(Path.ROOT, X, newData);
+		treeB.createChild(IPath.ROOT, X, newData);
 		treeB.immutable();
 		treeA = treeB.newEmptyDeltaTree();
 		treeA.immutable();
@@ -222,12 +225,12 @@ public class DeltaDataTreeTest {
 	public void testCompareWithPathUnchanged() {
 		// setup data:
 		String X = "x";
-		IPath elementX = Path.ROOT.append(X);
+		IPath elementX = IPath.ROOT.append(X);
 		DeltaDataTree treeA;
 		DeltaDataTree treeB;
 		treeA = new DeltaDataTree();
 		String oldData = "Old Data for x";
-		treeA.createChild(Path.ROOT, X, oldData);
+		treeA.createChild(IPath.ROOT, X, oldData);
 		treeA.immutable();
 		treeB = treeA.newEmptyDeltaTree();
 		treeB.immutable();
@@ -262,20 +265,20 @@ public class DeltaDataTreeTest {
 	public void testAddTwiceAndDelete() {
 		DeltaDataTree tree1 = new DeltaDataTree();
 
-		tree1.createChild(Path.ROOT, "A", "Data for A");
+		tree1.createChild(IPath.ROOT, "A", "Data for A");
 
 		tree1.immutable();
 		tree1 = tree1.newEmptyDeltaTree();
 
-		tree1.createChild(Path.ROOT, "A", "New A Data");
+		tree1.createChild(IPath.ROOT, "A", "New A Data");
 
 		tree1.immutable();
 		tree1 = tree1.newEmptyDeltaTree();
 
-		tree1.deleteChild(Path.ROOT, "A");
+		tree1.deleteChild(IPath.ROOT, "A");
 		tree1.immutable();
 
-		assertEquals(0, tree1.getChildCount(Path.ROOT));
+		assertEquals(0, tree1.getChildCount(IPath.ROOT));
 
 	}
 
@@ -935,11 +938,11 @@ public class DeltaDataTreeTest {
 	 */
 	@Test
 	public void testRegression1FVVP6L() {
-		IPath elementA = Path.ROOT.append("A");
+		IPath elementA = IPath.ROOT.append("A");
 
 		DeltaDataTree tree1 = new DeltaDataTree();
 
-		tree1.createChild(Path.ROOT, "A", "Data for A");
+		tree1.createChild(IPath.ROOT, "A", "Data for A");
 		tree1.createChild(elementA, "B", "Data for B");
 
 		tree1.immutable();
@@ -954,7 +957,7 @@ public class DeltaDataTreeTest {
 		tree1.deleteChild(elementA, "B");
 
 		try {
-			tree1.copyCompleteSubtree(Path.ROOT);
+			tree1.copyCompleteSubtree(IPath.ROOT);
 		} catch (RuntimeException e) {
 			fail("Unexpected error copying tree");
 		}
@@ -966,13 +969,13 @@ public class DeltaDataTreeTest {
 	 */
 	@Test
 	public void testRegression1FVVP6LWithChildren() {
-		IPath elementA = Path.ROOT.append("A");
+		IPath elementA = IPath.ROOT.append("A");
 		IPath elementB = elementA.append("B");
 		IPath elementC = elementB.append("C");
 
 		DeltaDataTree tree1 = new DeltaDataTree();
 
-		tree1.createChild(Path.ROOT, "A", "Data for A");
+		tree1.createChild(IPath.ROOT, "A", "Data for A");
 		tree1.createChild(elementA, "B", "Data for B");
 		tree1.createChild(elementB, "C", "Data for C");
 
@@ -988,7 +991,7 @@ public class DeltaDataTreeTest {
 		assertFalse("Child exists after deletion", tree1.includes(elementC));
 
 		try {
-			tree1.copyCompleteSubtree(Path.ROOT);
+			tree1.copyCompleteSubtree(IPath.ROOT);
 		} catch (RuntimeException e) {
 			fail("Unexpected error copying tree");
 		}

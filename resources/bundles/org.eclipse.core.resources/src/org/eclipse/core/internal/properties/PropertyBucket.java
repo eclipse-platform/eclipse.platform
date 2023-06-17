@@ -14,13 +14,21 @@
  *******************************************************************************/
 package org.eclipse.core.internal.properties;
 
-import java.io.*;
-import java.util.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import org.eclipse.core.internal.localstore.Bucket;
 import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.osgi.util.NLS;
 
 public class PropertyBucket extends Bucket {
@@ -283,7 +291,7 @@ public class PropertyBucket extends Bucket {
 					break;
 				default :
 					//if we get here the properties file is corrupt
-					IPath resourcePath = projectName == null ? Path.ROOT : Path.ROOT.append(projectName);
+					IPath resourcePath = projectName == null ? IPath.ROOT : IPath.ROOT.append(projectName);
 					String msg = NLS.bind(Messages.properties_readProperties, resourcePath.toString());
 					throw new ResourceException(IResourceStatus.FAILED_READ_METADATA, null, msg, null);
 			}

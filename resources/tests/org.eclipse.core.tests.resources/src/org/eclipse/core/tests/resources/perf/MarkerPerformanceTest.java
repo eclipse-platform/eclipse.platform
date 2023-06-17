@@ -13,9 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -85,7 +88,7 @@ public class MarkerPerformanceTest extends ResourceTest {
 			project = getWorkspace().getRoot().getProject("TestProject");
 			project.create(null);
 			project.open(null);
-			file = project.getFile(Path.ROOT.append("file.txt"));
+			file = project.getFile(IPath.ROOT.append("file.txt"));
 			file.create(getRandomContents(), true, null);
 			//create markers
 			for (int i = 0; i < NUM_MARKERS; i++) {

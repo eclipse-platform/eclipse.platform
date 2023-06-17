@@ -19,7 +19,8 @@ import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.internal.filesystem.NullFileSystem;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * Special file system implementation used by TestBug369177.
@@ -57,6 +58,6 @@ public class Bug369177FileSystem extends NullFileSystem {
 	@Override
 	public IFileStore getStore(URI uri) {
 		runTestScenario();
-		return new Bug369177FileStore(new Path(uri.getPath()));
+		return new Bug369177FileStore(IPath.fromOSString(uri.getPath()));
 	}
 }

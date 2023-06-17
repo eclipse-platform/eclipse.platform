@@ -53,7 +53,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.preferences.IScopeContext;
@@ -339,7 +338,7 @@ public class Patcher implements IHunkFilter {
 			pp= path.removeLastSegments(1);
 			pp= pp.append(path.lastSegment() + REJECT_FILE_EXTENSION);
 		} else
-			pp= new Path(path.lastSegment() + REJECT_FILE_EXTENSION);
+			pp= IPath.fromOSString(path.lastSegment() + REJECT_FILE_EXTENSION);
 		return pp;
 	}
 

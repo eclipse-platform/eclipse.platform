@@ -13,13 +13,38 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.preferences;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.internal.preferences.TestHelper;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.*;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IExportedPreferences;
+import org.eclipse.core.runtime.preferences.IPreferenceNodeVisitor;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.runtime.RuntimeTest;
 import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
 import org.osgi.service.prefs.BackingStoreException;
@@ -906,7 +931,7 @@ public class EclipsePreferencesTest extends RuntimeTest {
 	}
 
 	public void testAbsolutePath() {
-		IPath expected = Path.ROOT;
+		IPath expected = IPath.ROOT;
 		Preferences node = Platform.getPreferencesService().getRootNode();
 
 		// root node
@@ -1018,7 +1043,7 @@ public class EclipsePreferencesTest extends RuntimeTest {
 
 		// add a child
 		String name = getUniqueString();
-		IPath parent = new Path(root.absolutePath());
+		IPath parent = IPath.fromOSString(root.absolutePath());
 		IPath child = parent.append(name);
 		Preferences node = root.node(name);
 		assertEquals("1.0", "[A:" + parent + ',' + child + ']', tracer.log.toString());
@@ -1077,7 +1102,7 @@ public class EclipsePreferencesTest extends RuntimeTest {
 		node.put(key, value);
 		Preferences current = node;
 		int count = 0;
-		while (current != null && current instanceof EclipsePreferences && current.parent() != null && new Path(current.absolutePath()).segment(0).equals(TestScope.SCOPE)) {
+		while (current != null && current instanceof EclipsePreferences && current.parent() != null && IPath.fromOSString(current.absolutePath()).segment(0).equals(TestScope.SCOPE)) {
 			assertTrue("1.0." + current.absolutePath(), ((EclipsePreferences) current).isDirty());
 			count++;
 			current = current.parent();
@@ -1390,7 +1415,7 @@ public class EclipsePreferencesTest extends RuntimeTest {
 		File rootFile = new File(prop);
 		File childFile = new File(rootFile, "foo");
 		assertTrue("3.2", childFile.exists());
-		Properties contents = loadProperties(new Path(childFile.getAbsolutePath()));
+		Properties contents = loadProperties(IPath.fromOSString(childFile.getAbsolutePath()));
 		assertEquals("3.3", "value8", contents.getProperty("key8", null));
 
 		// delete the node (which should remove the file)

@@ -17,7 +17,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.team.examples.filesystem.FileSystemPlugin;
 import org.eclipse.team.examples.model.ModelFolder;
@@ -91,7 +91,7 @@ public class ModelWorkbenchAdapter implements IWorkbenchAdapter {
 	 * Creates an image descriptor.
 	 */
 	public static ImageDescriptor createImageDescriptor(String id) {
-		URL url = FileLocator.find(FileSystemPlugin.getPlugin().getBundle(), new Path(ICON_PATH + id), null);
+		URL url = FileLocator.find(FileSystemPlugin.getPlugin().getBundle(), IPath.fromOSString(ICON_PATH + id), null);
 		return ImageDescriptor.createFromURL(url);
 	}
 

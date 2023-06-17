@@ -159,8 +159,9 @@ public class ElementTreeIterator implements IPathRequestor {
 
 	@Override
 	public IPath requestPath() {
-		if (nextFreeSegment == 0)
-			return Path.ROOT;
+		if (nextFreeSegment == 0) {
+			return IPath.ROOT;
+		}
 		int length = nextFreeSegment;
 		for (int i = 0; i < nextFreeSegment; i++) {
 			length += segments[i].length();

@@ -21,9 +21,24 @@ import java.net.URISyntaxException;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.localstore.FileSystemResourceManager;
-import org.eclipse.core.internal.resources.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.resources.File;
+import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.tests.internal.filesystem.bug440110.Bug440110FileSystem;
 import org.junit.Test;
 
@@ -71,28 +86,28 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		/* test normal conditions under default mapping */
 
 		// project/target
-		Path path = new Path("target");
+		IPath path = IPath.fromOSString("target");
 		IFolder folder = projects[0].getFolder(path);
 		IPath location = projects[0].getLocation().append(path);
 		IFolder testFolder = (IFolder) getLocalManager().containerForLocation(location);
 		assertEquals("2.1", folder, testFolder);
 
 		// project/folder/target
-		path = new Path("folder/target");
+		path = IPath.fromOSString("folder/target");
 		folder = projects[0].getFolder(path);
 		location = projects[0].getLocation().append(path);
 		testFolder = (IFolder) getLocalManager().containerForLocation(location);
 		assertEquals("2.2", folder, testFolder);
 
 		// project/folder/folder/target
-		path = new Path("folder/folder/target");
+		path = IPath.fromOSString("folder/folder/target");
 		folder = projects[0].getFolder(path);
 		location = projects[0].getLocation().append(path);
 		testFolder = (IFolder) getLocalManager().containerForLocation(location);
 		assertEquals("2.3", folder, testFolder);
 
 		/* non-existent location */
-		testFolder = (IFolder) getLocalManager().containerForLocation(new Path("../this/path/must/not/exist"));
+		testFolder = (IFolder) getLocalManager().containerForLocation(IPath.fromOSString("../this/path/must/not/exist"));
 		assertNull("3.1", testFolder);
 	}
 
@@ -124,28 +139,28 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		/* test normal conditions under default mapping */
 
 		// project/file
-		Path path = new Path("file");
+		IPath path = IPath.fromOSString("file");
 		IFile file = projects[0].getFile(path);
 		IPath location = projects[0].getLocation().append(path);
 		IFile testFile = getLocalManager().fileForLocation(location);
 		assertEquals("2.1", file, testFile);
 
 		// project/folder/file
-		path = new Path("folder/file");
+		path = IPath.fromOSString("folder/file");
 		file = projects[0].getFile(path);
 		location = projects[0].getLocation().append(path);
 		testFile = getLocalManager().fileForLocation(location);
 		assertEquals("2.2", file, testFile);
 
 		// project/folder/folder/file
-		path = new Path("folder/folder/file");
+		path = IPath.fromOSString("folder/folder/file");
 		file = projects[0].getFile(path);
 		location = projects[0].getLocation().append(path);
 		testFile = getLocalManager().fileForLocation(location);
 		assertEquals("2.3", file, testFile);
 
 		/* non-existent location */
-		testFile = getLocalManager().fileForLocation(new Path("../this/path/must/not/exist"));
+		testFile = getLocalManager().fileForLocation(IPath.fromOSString("../this/path/must/not/exist"));
 		assertNull("7.1", testFile);
 	}
 

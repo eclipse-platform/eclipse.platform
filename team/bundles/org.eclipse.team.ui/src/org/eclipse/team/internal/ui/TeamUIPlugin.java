@@ -26,8 +26,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -334,7 +334,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * @return the image
 	 */
 	public static ImageDescriptor getImageDescriptorFromExtension(IExtension extension, String subdirectoryAndFilename) {
-		URL iconURL = FileLocator.find(Platform.getBundle(extension.getContributor().getName()), new Path(subdirectoryAndFilename), null);
+		URL iconURL = FileLocator.find(Platform.getBundle(extension.getContributor().getName()), IPath.fromOSString(subdirectoryAndFilename), null);
 		if (iconURL != null) {
 			return ImageDescriptor.createFromURL(iconURL);
 		}
@@ -422,7 +422,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	}
 
 	private URL getImageUrl(String relative) {
-		return FileLocator.find(Platform.getBundle(PLUGIN_ID), new Path(ICON_PATH + relative), null);
+		return FileLocator.find(Platform.getBundle(PLUGIN_ID), IPath.fromOSString(ICON_PATH + relative), null);
 	}
 
 	/**

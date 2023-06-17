@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.SWT;
@@ -85,7 +84,7 @@ public class FileSelectionDialog extends ElementTreeSelectionDialog {
 
 		String lastPath = settings.get(LAST_CONTAINER);
 		if (lastPath != null) {
-			IPath path = Path.fromPortableString(lastPath);
+			IPath path = IPath.fromPortableString(lastPath);
 			IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
 			setInitialSelection(resource);
 		}

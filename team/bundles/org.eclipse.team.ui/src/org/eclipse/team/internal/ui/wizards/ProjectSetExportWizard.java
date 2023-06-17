@@ -30,8 +30,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -82,7 +82,7 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException {
 					String filename = locationPage.getFileName();
-					Path path = new Path(filename);
+					IPath path = IPath.fromOSString(filename);
 					if (path.getFileExtension() == null) {
 						filename = filename + ".psf"; //$NON-NLS-1$
 					}

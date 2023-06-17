@@ -53,7 +53,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -216,7 +215,7 @@ public class IResourceTest extends ResourceTest {
 		// specific indices in setUp()
 		IResource[] result = buildResources(root, new String[] {"1/", "1/1/", "1/1/1/", "1/1/1/1", "1/1/2/", "1/1/2/1/", "1/1/2/2/", "1/1/2/3/", "1/2/", "1/2/1", "1/2/2", "1/2/3/", "1/2/3/1", "1/2/3/2", "1/2/3/3", "1/2/3/4", "2", "2"});
 		ensureExistsInWorkspace(result, true);
-		result[result.length - 1] = root.getFolder(new Path("2/"));
+		result[result.length - 1] = root.getFolder(IPath.fromOSString("2/"));
 		nonExistingResources.add(result[result.length - 1]);
 
 		IResource[] deleted = buildResources(root, new String[] {"1/1/2/1/", "1/2/3/1"});
@@ -241,7 +240,7 @@ public class IResourceTest extends ResourceTest {
 				"2/3", "2/4", "2/1/", "2/2/", "2/3/", "2/4/", ".." };
 		IPath[] paths = new IPath[interestingPathnames.length];
 		for (int i = 0; i < interestingPathnames.length; i++) {
-			paths[i] = new Path(interestingPathnames[i]);
+			paths[i] = IPath.fromOSString(interestingPathnames[i]);
 		}
 		return paths;
 	}
@@ -971,8 +970,8 @@ public class IResourceTest extends ResourceTest {
 					IContainer container = (IContainer) toVisit;
 					for (String element : list) {
 						File file = new File(target, element);
-						IResource child = file.isFile() ? (IResource) container.getFile(new Path(element))
-								: container.getFolder(new Path(element));
+						IResource child = file.isFile() ? (IResource) container.getFile(IPath.fromOSString(element))
+								: container.getFolder(IPath.fromOSString(element));
 						if (!child.exists()) {
 							visit(child);
 						}
@@ -994,7 +993,7 @@ public class IResourceTest extends ResourceTest {
 
 		// prepare destination project description.
 		IProject destProj = getWorkspace().getRoot().getProject("testCopyProject" + 2);
-		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, new Path(FileSystemHelper
+		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, IPath.fromOSString(FileSystemHelper
 				.getRandomLocation(FileSystemHelper.getTempDir()).append(destProj.getName()).toOSString()));
 
 		LogListener logListener = copyProject(sourceProj, desc);
@@ -1015,7 +1014,7 @@ public class IResourceTest extends ResourceTest {
 
 		// prepare destination project description.
 		IProject destProj = getWorkspace().getRoot().getProject("testCopyProject" + 2);
-		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, new Path(FileSystemHelper
+		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, IPath.fromOSString(FileSystemHelper
 				.getRandomLocation(FileSystemHelper.getTempDir()).append(destProj.getName()).toOSString()));
 
 		LogListener logListener = copyProject(sourceProj, desc);
@@ -1062,7 +1061,7 @@ public class IResourceTest extends ResourceTest {
 		return logListener;
 	}
 
-	private IProjectDescription prepareDestProjDesc(IProject sourceProj, IProject destProj, Path destLocation)
+	private IProjectDescription prepareDestProjDesc(IProject sourceProj, IProject destProj, IPath destLocation)
 			throws CoreException {
 		ensureDoesNotExistInWorkspace(destProj);
 		IProjectDescription desc = sourceProj.getDescription();
@@ -1852,7 +1851,7 @@ public class IResourceTest extends ResourceTest {
 	 * has changed.
 	 */
 	public void testGetModificationStampAfterReplace() throws Exception {
-		final IFile file = getWorkspace().getRoot().getFile(new Path("/project/f"));
+		final IFile file = getWorkspace().getRoot().getFile(IPath.fromOSString("/project/f"));
 
 		create(file, true);
 		long modificationStamp = file.getModificationStamp();
@@ -1963,8 +1962,8 @@ public class IResourceTest extends ResourceTest {
 			assertEquals("7.3", projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
 
 			project.open(getMonitor());
-			IPath variableFolderLocation = new Path(variableName).append("/VarFolderName");
-			IPath variableFileLocation = new Path(variableName).append("/VarFileName");
+			IPath variableFolderLocation = IPath.fromOSString(variableName).append("/VarFolderName");
+			IPath variableFileLocation = IPath.fromOSString(variableName).append("/VarFileName");
 			ensureDoesNotExistInWorkspace(topFolder);
 			ensureDoesNotExistInWorkspace(topFile);
 			createFileInFileSystem(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(varMan.resolvePath(variableFileLocation)));

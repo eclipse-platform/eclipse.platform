@@ -51,7 +51,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
@@ -122,7 +121,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 		String path = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_JRE_CONTAINER_PATH, new String("")); //$NON-NLS-1$
 		String vmver = null;
 		if (!path.isEmpty()) {
-			IPath jrePath = Path.fromPortableString(path);
+			IPath jrePath = IPath.fromPortableString(path);
 			IVMInstall vm = JavaRuntime.getVMInstall(jrePath);
 			if (vm instanceof AbstractVMInstall) {
 				AbstractVMInstall install = (AbstractVMInstall) vm;
@@ -745,7 +744,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 			try {
 				URL url = FileLocator.toFileURL(fragBundle.getEntry("/")); //$NON-NLS-1$
 				try {
-					IPath path = new Path(URIUtil.toURL(URIUtil.toURI(url)).getPath());
+					IPath path = IPath.fromOSString(URIUtil.toURL(URIUtil.toURI(url)).getPath());
 					path = path.removeTrailingSeparator();
 					fgSWTLibraryLocation = path.toOSString();
 				}

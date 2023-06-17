@@ -39,7 +39,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.configurator.IPlatformConfiguration;
@@ -124,7 +124,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 		// Retrieve install location with respect to given url if possible
 		try {
 			if (url != null && url.getProtocol().equals("file") && url.getPath().endsWith("configuration/org.eclipse.update/platform.xml")) {
-				installLocation = new Path(url.getPath()).removeLastSegments(3).toFile().toURL();
+				installLocation = IPath.fromOSString(url.getPath()).removeLastSegments(3).toFile().toURL();
 			}
 		} catch (Exception e) {
 			//

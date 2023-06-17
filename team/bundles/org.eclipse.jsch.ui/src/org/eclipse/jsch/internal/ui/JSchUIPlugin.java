@@ -19,7 +19,7 @@ import java.util.Hashtable;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -67,7 +67,7 @@ public class JSchUIPlugin extends AbstractUIPlugin{
 	 * Creates an image and places it in the image registry.
 	 */
 	protected void createImageDescriptor(String id){
-		URL url=FileLocator.find(JSchUIPlugin.getPlugin().getBundle(), new Path(
+		URL url=FileLocator.find(JSchUIPlugin.getPlugin().getBundle(), IPath.fromOSString(
 				IUIConstants.ICON_PATH+id), null);
 		ImageDescriptor desc=ImageDescriptor.createFromURL(url);
 		imageDescriptors.put(id, desc);
@@ -81,7 +81,7 @@ public class JSchUIPlugin extends AbstractUIPlugin{
 	 * @return the image
 	 */
 	public static ImageDescriptor getImageDescriptorFromExtension(IExtension extension, String subdirectoryAndFilename) {
-		URL fullPathString = FileLocator.find(Platform.getBundle(extension.getNamespaceIdentifier()), new Path(subdirectoryAndFilename), null);
+		URL fullPathString = FileLocator.find(Platform.getBundle(extension.getNamespaceIdentifier()), IPath.fromOSString(subdirectoryAndFilename), null);
 		return ImageDescriptor.createFromURL(fullPathString);
 	}
 
@@ -118,6 +118,6 @@ public void stop(BundleContext context) throws Exception{
 	}
 
 	public URL getImageUrl(String relative){
-		return FileLocator.find(Platform.getBundle(ID), new Path(IUIConstants.ICON_PATH + relative), null);
+		return FileLocator.find(Platform.getBundle(ID), IPath.fromOSString(IUIConstants.ICON_PATH + relative), null);
 	}
 }

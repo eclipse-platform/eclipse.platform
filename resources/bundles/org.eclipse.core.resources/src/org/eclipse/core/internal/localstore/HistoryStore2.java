@@ -15,14 +15,35 @@
 package org.eclipse.core.internal.localstore;
 
 import java.io.InputStream;
-import java.util.*;
-import org.eclipse.core.filesystem.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.localstore.Bucket.Entry;
 import org.eclipse.core.internal.localstore.HistoryBucket.HistoryEntry;
-import org.eclipse.core.internal.resources.*;
-import org.eclipse.core.internal.utils.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.resources.FileState;
+import org.eclipse.core.internal.resources.ResourceException;
+import org.eclipse.core.internal.resources.ResourceStatus;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.internal.resources.WorkspaceDescription;
+import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.internal.utils.Policy;
+import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
+import org.eclipse.core.resources.IFileState;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 
 public class HistoryStore2 implements IHistoryStore {
 
@@ -176,7 +197,7 @@ public class HistoryStore2 implements IHistoryStore {
 						removeUnreferencedBlobs(100);
 						return monitor.isCanceled() ? STOP : CONTINUE;
 					}
-				}, Path.ROOT, BucketTree.DEPTH_INFINITE);
+				}, IPath.ROOT, BucketTree.DEPTH_INFINITE);
 			}
 			if (Policy.DEBUG_HISTORY) {
 				Policy.debug("Time to apply history store policies: " + (System.currentTimeMillis() - start) + "ms."); //$NON-NLS-1$ //$NON-NLS-2$
@@ -364,7 +385,7 @@ public class HistoryStore2 implements IHistoryStore {
 						tmpBlobsToRemove.remove(((HistoryEntry) fileEntry).getUUID(i));
 					return CONTINUE;
 				}
-			}, Path.ROOT, BucketTree.DEPTH_INFINITE);
+			}, IPath.ROOT, BucketTree.DEPTH_INFINITE);
 			blobStore.deleteBlobs(blobsToRemove);
 			blobsToRemove = new HashSet<>();
 		} catch (Exception e) {

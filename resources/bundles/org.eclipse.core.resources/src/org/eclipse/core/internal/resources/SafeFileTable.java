@@ -15,12 +15,15 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * Represents a table of keys and paths used by a plugin to maintain its
@@ -42,7 +45,7 @@ public class SafeFileTable {
 		String[] keys = set.toArray(new String[set.size()]);
 		IPath[] files = new IPath[keys.length];
 		for (int i = 0; i < keys.length; i++)
-			files[i] = new Path(keys[i]);
+			files[i] = IPath.fromOSString(keys[i]);
 		return files;
 	}
 
@@ -52,7 +55,7 @@ public class SafeFileTable {
 
 	public IPath lookup(IPath file) {
 		String result = table.getProperty(file.toOSString());
-		return result == null ? null : new Path(result);
+		return result == null ? null : IPath.fromOSString(result);
 	}
 
 	public void map(IPath file, IPath aLocation) {

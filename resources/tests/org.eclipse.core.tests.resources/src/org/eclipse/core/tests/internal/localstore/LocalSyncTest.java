@@ -13,10 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.TestingSupport;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 
@@ -87,10 +91,10 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		Project project = (Project) projects[0];
 
 		// create resource handles
-		IResource index = project.getFile(new Path("index.html"));
-		IResource toc = project.getFile(new Path("toc.html"));
-		IResource file = project.getFile(new Path("file"));
-		IResource folder = project.getFolder(new Path("folder"));
+		IResource index = project.getFile(IPath.fromOSString("index.html"));
+		IResource toc = project.getFile(IPath.fromOSString("toc.html"));
+		IResource file = project.getFile(IPath.fromOSString("file"));
+		IResource folder = project.getFolder(IPath.fromOSString("folder"));
 
 		// add resources to the workspace
 		ensureExistsInWorkspace((IFile) index, "");
@@ -134,8 +138,8 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		} catch (InterruptedException e) {
 			fail("3.0", e);
 		}
-		file = project.getFolder(new Path("file"));
-		folder = project.getFile(new Path("folder"));
+		file = project.getFolder(IPath.fromOSString("file"));
+		folder = project.getFile(IPath.fromOSString("folder"));
 		ensureExistsInFileSystem(file);
 		ensureExistsInFileSystem((IFile) folder);
 

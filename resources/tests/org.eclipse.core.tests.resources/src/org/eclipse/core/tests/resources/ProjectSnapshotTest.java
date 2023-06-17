@@ -23,8 +23,15 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.internal.resources.ProjectDescription;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * Tests API for save/load refresh snapshots introduced in 3.6M6 (bug 301563):
@@ -215,7 +222,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 		// perform refresh to ensure new resources in tree
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		// rename the project
-		project.move(Path.ROOT.append("p0"), true, null);
+		project.move(IPath.ROOT.append("p0"), true, null);
 		project = getWorkspace().getRoot().getProject("p0");
 		// add two more files to probably provoke a tree delta chain
 		// In SaveManager.writeTree() line 1885, treesToSave.length must be 1

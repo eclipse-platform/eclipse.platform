@@ -28,7 +28,6 @@ import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.team.core.diff.IDiff;
 import org.eclipse.team.core.diff.IThreeWayDiff;
 import org.eclipse.team.core.mapping.IResourceDiff;
@@ -133,7 +132,7 @@ public final class SynchronizationResourceMappingContext extends
 				if (path.segmentCount() == 1) {
 					child = ((IWorkspaceRoot)container).getProject(path.lastSegment());
 				} else {
-					child = container.getFolder(new Path(path.lastSegment()));
+					child = container.getFolder(IPath.fromOSString(path.lastSegment()));
 				}
 			} else {
 				child = context.getDiffTree().getResource(delta);

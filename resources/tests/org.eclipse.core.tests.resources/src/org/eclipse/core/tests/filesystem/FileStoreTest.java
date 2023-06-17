@@ -35,7 +35,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.internal.localstore.LocalStoreTest;
 import org.eclipse.osgi.util.NLS;
@@ -62,7 +61,7 @@ public class FileStoreTest extends LocalStoreTest {
 	}
 
 	private IFileStore createDir(String string, boolean clear) throws CoreException {
-		return createDir(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(new Path(string)), clear);
+		return createDir(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(IPath.fromOSString(string)), clear);
 	}
 
 	/**
@@ -93,7 +92,7 @@ public class FileStoreTest extends LocalStoreTest {
 	}
 
 	private IFileStore getDirFileStore(String path) throws CoreException {
-		IFileStore store = EFS.getFileSystem(EFS.SCHEME_FILE).getStore(new Path(path));
+		IFileStore store = EFS.getFileSystem(EFS.SCHEME_FILE).getStore(IPath.fromOSString(path));
 		if (!store.toLocalFile(EFS.NONE, getMonitor()).exists()) {
 			store.mkdir(EFS.NONE, null);
 			deleteOnTearDown(store);
@@ -661,7 +660,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("2.0", file.exists());
 
 		// check the parent reference
-		IPath relativePath = new Path("../test.txt");
+		IPath relativePath = IPath.fromOSString("../test.txt");
 
 		IFileStore relativeStore = tempStore.getFileStore(relativePath);
 		assertNotNull("3.0", relativeStore);
@@ -670,7 +669,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("5.0", info.exists());
 
 		// check the parent and self reference
-		relativePath = new Path(".././test.txt");
+		relativePath = IPath.fromOSString(".././test.txt");
 
 		relativeStore = tempStore.getFileStore(relativePath);
 		assertNotNull("6.0", relativeStore);
@@ -679,7 +678,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("8.0", info.exists());
 
 		// check the a path with no parent and self references
-		relativePath = new Path("temp2/test.txt");
+		relativePath = IPath.fromOSString("temp2/test.txt");
 
 		relativeStore = tempStore.getFileStore(relativePath);
 		assertNotNull("9.0", relativeStore);
@@ -695,14 +694,14 @@ public class FileStoreTest extends LocalStoreTest {
 			nullfs = new NullFileSystem();
 			((FileSystem) nullfs).initialize(EFS.SCHEME_NULL);
 		}
-		IFileStore nabc = nullfs.getStore(new Path("/a/b/c"));
-		IFileStore nabd = nullfs.getStore(new Path("/a/b/d"));
+		IFileStore nabc = nullfs.getStore(IPath.fromOSString("/a/b/c"));
+		IFileStore nabd = nullfs.getStore(IPath.fromOSString("/a/b/d"));
 		assertEquals("1.0", -1, nabc.compareTo(nabd));
 		assertEquals("1.1", 0, nabc.compareTo(nabc));
 		assertEquals("1.2", 1, nabd.compareTo(nabc));
 		IFileSystem lfs = LocalFileSystem.getInstance();
-		IFileStore labc = lfs.getStore(new Path("/a/b/c"));
-		IFileStore labd = lfs.getStore(new Path("/a/b/d"));
+		IFileStore labc = lfs.getStore(IPath.fromOSString("/a/b/c"));
+		IFileStore labd = lfs.getStore(IPath.fromOSString("/a/b/d"));
 		assertEquals("2.0", -1, labc.compareTo(labd));
 		assertEquals("2.1", 0, labc.compareTo(labc));
 		assertEquals("2.2", 1, labd.compareTo(labc));
@@ -736,8 +735,8 @@ public class FileStoreTest extends LocalStoreTest {
 		).toList();
 		paths = new ArrayList<>(paths); // to get a mutable copy for shuffling
 		Collections.shuffle(paths);
-		// Test with new Path(string).getStore()
-		Stream<IFileStore> pathStores = paths.stream().map(Path::new).map(lfs::getStore);
+		// Test with IPath.fromOSString(string).getStore()
+		Stream<IFileStore> pathStores = paths.stream().map(IPath::fromOSString).map(lfs::getStore);
 		List<String> sortedPathStores = pathStores.sorted(IFileStore::compareTo).map(IFileStore::toURI)
 				.map(URI::getPath).toList();
 		assertEquals("1.0 ", pathsTrimmed, sortedPathStores);

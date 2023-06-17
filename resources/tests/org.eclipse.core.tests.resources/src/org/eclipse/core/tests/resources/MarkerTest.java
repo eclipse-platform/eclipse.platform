@@ -14,13 +14,41 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
-import java.util.*;
-import org.eclipse.core.internal.resources.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import org.eclipse.core.internal.resources.MarkerManager;
+import org.eclipse.core.internal.resources.MarkerReader;
+import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.ResourceInfo;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.watson.IPathRequestor;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -366,7 +394,7 @@ public class MarkerTest extends ResourceTest {
 	public IResource[] createLargeHierarchy() {
 		ArrayList<String> result = new ArrayList<>();
 		result.add("/");
-		new MarkerTest().addChildren(result, Path.ROOT, 3, 4);
+		new MarkerTest().addChildren(result, IPath.ROOT, 3, 4);
 		String[] names = result.toArray(new String[result.size()]);
 		IResource[] created = buildResources(getWorkspace().getRoot(), names);
 		ensureExistsInWorkspace(created, true);
@@ -498,7 +526,7 @@ public class MarkerTest extends ResourceTest {
 		}
 
 		// try creating a marker on a resource which does't exist
-		IResource testResource = getWorkspace().getRoot().getFile(new Path("non/existant/resource"));
+		IResource testResource = getWorkspace().getRoot().getFile(IPath.fromOSString("non/existant/resource"));
 		assertTrue("3.0", !testResource.exists());
 		try {
 			testResource.createMarker(IMarker.PROBLEM);
@@ -555,7 +583,7 @@ public class MarkerTest extends ResourceTest {
 	public void testCreateMarkerWithAttributesOnAResourceWhichDoesNotExistShouldFail() {
 
 		// try creating a marker on a resource which does't exist
-		IResource testResource = getWorkspace().getRoot().getFile(new Path("non/existant/resource"));
+		IResource testResource = getWorkspace().getRoot().getFile(IPath.fromOSString("non/existant/resource"));
 		assertTrue("Resource should not exist", !testResource.exists());
 		try {
 			testResource.createMarker(IMarker.PROBLEM, Map.of(IMarker.MESSAGE, "My text"));
@@ -1203,7 +1231,7 @@ public class MarkerTest extends ResourceTest {
 				for (IProject project : projects) {
 					IResource[] children = project.members();
 					for (IResource element : children) {
-						IPath destination = new Path(element.getName() + "copy");
+						IPath destination = IPath.fromOSString(element.getName() + "copy");
 						element.copy(destination, true, getMonitor());
 					}
 				}
@@ -1220,7 +1248,7 @@ public class MarkerTest extends ResourceTest {
 			//				if (!resource.getName().endsWith("copy"))
 			//					return false;
 			//				String name = resource.getFullPath().segment(0);
-			//				IPath path = new Path(name.substring(0, name.length() - 4)).makeAbsolute();
+			//				IPath path = IPath.fromOSString(name.substring(0, name.length() - 4)).makeAbsolute();
 			//				path = path.append(resource.getFullPath().removeFirstSegments(1));
 			//				IResource oldResource = ((Workspace) getWorkspace()).newResource(path, resource.getType());
 			//				IMarker marker = (IMarker) table.get(oldResource);
@@ -1545,7 +1573,7 @@ public class MarkerTest extends ResourceTest {
 			// move all resources
 			IProject[] projects = getWorkspace().getRoot().getProjects();
 			for (IProject project : projects) {
-				IPath destination = new Path(project.getName() + "move");
+				IPath destination = IPath.fromOSString(project.getName() + "move");
 				try {
 					project.move(destination, true, getMonitor());
 				} catch (CoreException e) {
@@ -1559,7 +1587,7 @@ public class MarkerTest extends ResourceTest {
 					return true;
 				}
 				String name = resource.getFullPath().segment(0);
-				IPath path = new Path(name.substring(0, name.length() - 4)).makeAbsolute();
+				IPath path = IPath.fromOSString(name.substring(0, name.length() - 4)).makeAbsolute();
 				path = path.append(resource.getFullPath().removeFirstSegments(1));
 				IResource oldResource = ((Workspace) getWorkspace()).newResource(path, resource.getType());
 				IMarker marker = table.get(oldResource);

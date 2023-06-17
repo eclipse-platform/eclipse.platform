@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.sourcelookup.ISourceContainerType;
 import org.eclipse.debug.core.sourcelookup.containers.AbstractSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.LocalFileStorage;
@@ -43,7 +42,7 @@ public class AntSourceContainer extends AbstractSourceContainer {
 		File osFile = new File(path);
 		if (osFile.exists()) {
 			try {
-				IPath canonicalPath = new Path(osFile.getCanonicalPath());
+				IPath canonicalPath = IPath.fromOSString(osFile.getCanonicalPath());
 				IFile[] files = fRoot.findFilesForLocationURI(canonicalPath.makeAbsolute().toFile().toURI());
 				if (files.length > 0) {
 					for (IFile file : files) {

@@ -21,7 +21,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.ICoreConstants;
 import org.eclipse.core.internal.resources.Project;
@@ -35,7 +34,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
 /**
@@ -187,7 +185,7 @@ public class IPathVariableTest extends ResourceTest {
 
 		// add another
 		try {
-			manager.setValue("two", Path.ROOT);
+			manager.setValue("two", IPath.ROOT);
 		} catch (CoreException e) {
 			fail("2.0", e);
 		}
@@ -224,11 +222,11 @@ public class IPathVariableTest extends ResourceTest {
 	 */
 	public void testGetSetValue() {
 		boolean WINDOWS = java.io.File.separatorChar == '\\';
-		IPath pathOne = WINDOWS ? new Path("C:\\testGetSetValue") : new Path("/testGetSetValue");
-		IPath pathTwo = new Path("/blort/backup");
+		IPath pathOne = WINDOWS ? IPath.fromOSString("C:\\testGetSetValue") : IPath.fromOSString("/testGetSetValue");
+		IPath pathTwo = IPath.fromOSString("/blort/backup");
 		//add device if necessary
-		pathTwo = new Path(pathTwo.toFile().getAbsolutePath());
-		IPath pathOneEdit = WINDOWS ? new Path("D:/foobar") : new Path("/foobar");
+		pathTwo = IPath.fromOSString(pathTwo.toFile().getAbsolutePath());
+		IPath pathOneEdit = WINDOWS ? IPath.fromOSString("D:/foobar") : IPath.fromOSString("/foobar");
 
 		// nothing to begin with
 		assertNull("0.0", manager.getValue("one"));
@@ -273,7 +271,7 @@ public class IPathVariableTest extends ResourceTest {
 
 		// set values with bogus names
 		try {
-			manager.setValue("ECLIPSE$HOME", Path.ROOT);
+			manager.setValue("ECLIPSE$HOME", IPath.ROOT);
 			fail("5.0 Accepted invalid variable name in setValue()");
 		} catch (CoreException ce) {
 			// success
@@ -281,7 +279,7 @@ public class IPathVariableTest extends ResourceTest {
 
 		// set value with relative path
 		try {
-			manager.setValue("one", new Path("foo/bar"));
+			manager.setValue("one", IPath.fromOSString("foo/bar"));
 		} catch (CoreException ce) {
 			fail("5.0 Did not Accepted invalid variable value in setValue()");
 		}
@@ -289,9 +287,9 @@ public class IPathVariableTest extends ResourceTest {
 		// set invalid value (with invalid segment)
 		if (WINDOWS) {
 			String invalidPathString = "C:/a/\\::/b";
-			IPath invalidPath = Path.fromPortableString(invalidPathString);
+			IPath invalidPath = IPath.fromPortableString(invalidPathString);
 			assertTrue("6.0", invalidPath.isAbsolute());
-			assertTrue("6.1", !Path.EMPTY.isValidPath(invalidPathString));
+			assertTrue("6.1", !IPath.EMPTY.isValidPath(invalidPathString));
 			assertTrue("6.2", manager.validateValue(invalidPath).isOK());
 			try {
 				manager.setValue("one", invalidPath);
@@ -308,7 +306,7 @@ public class IPathVariableTest extends ResourceTest {
 	public void testIsDefined() {
 		assertTrue("0.0", !manager.isDefined("one"));
 		try {
-			manager.setValue("one", Path.ROOT);
+			manager.setValue("one", IPath.ROOT);
 		} catch (CoreException e) {
 			fail("1.0", e);
 		}
@@ -326,10 +324,10 @@ public class IPathVariableTest extends ResourceTest {
 	 */
 	public void testResolvePathWithMacro() {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
-		IPath pathOne = WINDOWS ? new Path("c:/testGetSetValue/foo") : new Path("/testGetSetValue/foo");
-		IPath pathTwo = WINDOWS ? new Path("c:/tmp/backup") : new Path("/tmp/backup");
+		IPath pathOne = WINDOWS ? IPath.fromOSString("c:/testGetSetValue/foo") : IPath.fromOSString("/testGetSetValue/foo");
+		IPath pathTwo = WINDOWS ? IPath.fromOSString("c:/tmp/backup") : IPath.fromOSString("/tmp/backup");
 		// add device if neccessary
-		pathTwo = new Path(pathTwo.toFile().getAbsolutePath());
+		pathTwo = IPath.fromOSString(pathTwo.toFile().getAbsolutePath());
 
 		try {
 			manager.setValue("one", pathOne);
@@ -343,13 +341,13 @@ public class IPathVariableTest extends ResourceTest {
 		}
 
 		try {
-			manager.setValue("three", Path.fromOSString("${two}/extra"));
+			manager.setValue("three", IPath.fromOSString("${two}/extra"));
 		} catch (CoreException e) {
 			fail("0.3", e);
 		}
 
-		IPath path = new Path("three/bar");
-		IPath expected = new Path("/tmp/backup/extra/bar").setDevice(WINDOWS ? "c:" : null);
+		IPath path = IPath.fromOSString("three/bar");
+		IPath expected = IPath.fromOSString("/tmp/backup/extra/bar").setDevice(WINDOWS ? "c:" : null);
 		IPath actual = manager.resolvePath(path);
 		assertEquals("1.0", expected, actual);
 	}
@@ -357,7 +355,7 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 */
 	public void testProjectLoc() {
-		IPath path = new Path("${PROJECT_LOC}/bar");
+		IPath path = IPath.fromOSString("${PROJECT_LOC}/bar");
 		IPath projectLocation = project.getLocation();
 
 		IPath expected = projectLocation.append("bar");
@@ -368,8 +366,8 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 */
 	public void testEclipseHome() {
-		IPath path = new Path("${ECLIPSE_HOME}/bar");
-		IPath expected = new Path(Platform.getInstallLocation().getURL().getPath()).append("bar");
+		IPath path = IPath.fromOSString("${ECLIPSE_HOME}/bar");
+		IPath expected = IPath.fromOSString(Platform.getInstallLocation().getURL().getPath()).append("bar");
 		IPath actual = manager.resolvePath(path);
 		assertEquals("1.0", expected, actual);
 	}
@@ -377,7 +375,7 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 */
 	public void testWorkspaceLocation() {
-		IPath path = new Path("${WORKSPACE_LOC}/bar");
+		IPath path = IPath.fromOSString("${WORKSPACE_LOC}/bar");
 		IPath expected = project.getWorkspace().getRoot().getLocation().append("bar");
 		IPath actual = manager.resolvePath(path);
 		assertEquals("1.0", expected, actual);
@@ -393,20 +391,20 @@ public class IPathVariableTest extends ResourceTest {
 		IPath expected;
 		/* Does not work on the test machine because ECLIPSE_HOME and WORKSPACE is the same location
 		actual = getVariableRelativePathLocation(project, path);
-		expected = new Path("WORKSPACE_LOC/bar");
+		expected = IPath.fromOSString("WORKSPACE_LOC/bar");
 		assertEquals("1.0", expected, actual);
 		 */
-		path = new Path(Platform.getInstallLocation().getURL().getPath()).append("bar");
-		expected = new Path("ECLIPSE_HOME/bar");
+		path = IPath.fromOSString(Platform.getInstallLocation().getURL().getPath()).append("bar");
+		expected = IPath.fromOSString("ECLIPSE_HOME/bar");
 		actual = getVariableRelativePathLocation(project, path);
 		assertEquals("2.0", expected, actual);
 
 		path = project.getLocation().append("bar");
-		expected = new Path("PROJECT_LOC/bar");
+		expected = IPath.fromOSString("PROJECT_LOC/bar");
 		actual = getVariableRelativePathLocation(project, path);
 		assertEquals("3.0", expected, actual);
 
-		actual = getVariableRelativePathLocation(project, new Path("/nonExistentPath/foo"));
+		actual = getVariableRelativePathLocation(project, IPath.fromOSString("/nonExistentPath/foo"));
 		assertEquals("4.0", null, actual);
 	}
 
@@ -423,10 +421,10 @@ public class IPathVariableTest extends ResourceTest {
 	 */
 	public void testResolvePath() {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
-		IPath pathOne = WINDOWS ? new Path("C:/testGetSetValue/foo") : new Path("/testGetSetValue/foo");
-		IPath pathTwo = new Path("/blort/backup");
+		IPath pathOne = WINDOWS ? IPath.fromOSString("C:/testGetSetValue/foo") : IPath.fromOSString("/testGetSetValue/foo");
+		IPath pathTwo = IPath.fromOSString("/blort/backup");
 		//add device if necessary
-		pathTwo = new Path(pathTwo.toFile().getAbsolutePath());
+		pathTwo = IPath.fromOSString(pathTwo.toFile().getAbsolutePath());
 
 		try {
 			// for WINDOWS - the device id for windows will be changed to upper case
@@ -442,47 +440,47 @@ public class IPathVariableTest extends ResourceTest {
 		}
 
 		// one substitution
-		IPath path = new Path("one/bar");
-		IPath expected = new Path("/testGetSetValue/foo/bar").setDevice(WINDOWS ? "C:" : null);
+		IPath path = IPath.fromOSString("one/bar");
+		IPath expected = IPath.fromOSString("/testGetSetValue/foo/bar").setDevice(WINDOWS ? "C:" : null);
 		IPath actual = manager.resolvePath(path);
 		assertEquals("1.0", expected, actual);
 
 		// another substitution
-		path = new Path("two/myworld");
-		expected = new Path("/blort/backup/myworld");
-		expected = new Path(expected.toFile().getAbsolutePath());
+		path = IPath.fromOSString("two/myworld");
+		expected = IPath.fromOSString("/blort/backup/myworld");
+		expected = IPath.fromOSString(expected.toFile().getAbsolutePath());
 		actual = manager.resolvePath(path);
 		assertEquals("2.0", expected, actual);
 
 		// variable not defined
-		path = new Path("three/nothere");
+		path = IPath.fromOSString("three/nothere");
 		expected = path;
 		actual = manager.resolvePath(path);
 		assertEquals("3.0", expected, actual);
 
 		// device
-		path = new Path("/one").setDevice(WINDOWS ? "C:" : null);
+		path = IPath.fromOSString("/one").setDevice(WINDOWS ? "C:" : null);
 		expected = path;
 		actual = manager.resolvePath(path);
 		assertEquals("4.0", expected, actual);
 
 		// device2
 		if (WINDOWS) {
-			path = new Path("C:two");
+			path = IPath.fromOSString("C:two");
 			expected = path;
 			actual = manager.resolvePath(path);
 			assertEquals("5.0", expected, actual);
 		}
 
 		// absolute
-		path = new Path("/one");
+		path = IPath.fromOSString("/one");
 		expected = path;
 		actual = manager.resolvePath(path);
 		assertEquals("6.0", expected, actual);
 
 		// just resolving, check if the variable stored in the manager is canonicalized
 		if (WINDOWS) {
-			path = new Path("one");
+			path = IPath.fromOSString("one");
 			expected = FileUtil.canonicalPath(pathOne);
 			actual = manager.resolvePath(path);
 			// the path stored in the manager is canonicalized, so the device id of actual will be upper case
@@ -504,10 +502,10 @@ public class IPathVariableTest extends ResourceTest {
 	 */
 	public void testConvertToRelative() {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
-		IPath pathOne = WINDOWS ? new Path("c:/foo/bar") : new Path("/foo/bar");
-		IPath pathTwo = WINDOWS ? new Path("c:/foo/other") : new Path("/foo/other");
-		IPath pathThree = WINDOWS ? new Path("c:/random/other/subpath") : new Path("/random/other/subpath");
-		IPath file = WINDOWS ? new Path("c:/foo/other/file.txt") : new Path("/foo/other/file.txt");
+		IPath pathOne = WINDOWS ? IPath.fromOSString("c:/foo/bar") : IPath.fromOSString("/foo/bar");
+		IPath pathTwo = WINDOWS ? IPath.fromOSString("c:/foo/other") : IPath.fromOSString("/foo/other");
+		IPath pathThree = WINDOWS ? IPath.fromOSString("c:/random/other/subpath") : IPath.fromOSString("/random/other/subpath");
+		IPath file = WINDOWS ? IPath.fromOSString("c:/foo/other/file.txt") : IPath.fromOSString("/foo/other/file.txt");
 
 		try {
 			manager.setValue("ONE", pathOne);
@@ -544,7 +542,7 @@ public class IPathVariableTest extends ResourceTest {
 		} catch (CoreException e) {
 			fail("2.1", e);
 		}
-		expected = new Path("TWO/file.txt");
+		expected = IPath.fromOSString("TWO/file.txt");
 		assertEquals("3.0", expected, actual);
 
 		// force the path to be relative to "ONE"
@@ -553,7 +551,7 @@ public class IPathVariableTest extends ResourceTest {
 		} catch (CoreException e) {
 			fail("3.1", e);
 		}
-		expected = new Path("PARENT-1-ONE/other/file.txt");
+		expected = IPath.fromOSString("PARENT-1-ONE/other/file.txt");
 		assertEquals("4.0", expected, actual);
 
 		// the second time should be re-using "FOO"
@@ -562,7 +560,7 @@ public class IPathVariableTest extends ResourceTest {
 		} catch (CoreException e) {
 			fail("4.3", e);
 		}
-		expected = new Path("PARENT-1-ONE/other/file.txt");
+		expected = IPath.fromOSString("PARENT-1-ONE/other/file.txt");
 		assertEquals("5.0", expected, actual);
 
 		try {
@@ -570,7 +568,7 @@ public class IPathVariableTest extends ResourceTest {
 		} catch (CoreException e) {
 			fail("5.4", e);
 		}
-		expected = new Path("TWO/file.txt");
+		expected = IPath.fromOSString("TWO/file.txt");
 		assertEquals("6.0", expected, actual);
 
 		try {
@@ -578,7 +576,7 @@ public class IPathVariableTest extends ResourceTest {
 		} catch (CoreException e) {
 			fail("6.1", e);
 		}
-		expected = new Path("TWO/file.txt");
+		expected = IPath.fromOSString("TWO/file.txt");
 		assertEquals("7.0", expected, actual);
 
 		try {
@@ -586,7 +584,7 @@ public class IPathVariableTest extends ResourceTest {
 		} catch (CoreException e) {
 			fail("7.1", e);
 		}
-		expected = new Path("TWO/file.txt");
+		expected = IPath.fromOSString("TWO/file.txt");
 		assertEquals("8.0", expected, actual);
 
 		try {
@@ -609,7 +607,7 @@ public class IPathVariableTest extends ResourceTest {
 		} catch (CoreException e) {
 			fail("9.1", e);
 		}
-		expected = new Path("PARENT-1-ONE/other/file.txt");
+		expected = IPath.fromOSString("PARENT-1-ONE/other/file.txt");
 		assertEquals("10.0", expected, actual);
 	}
 
@@ -637,7 +635,7 @@ public class IPathVariableTest extends ResourceTest {
 	 * Regression test for Bug 304195
 	 */
 	public void testEmptyURIResolution() {
-		IPath path = new Path(new String());
+		IPath path = IPath.fromOSString(new String());
 		URI uri = URIUtil.toURI(path);
 		try {
 			manager.resolveURI(uri);
@@ -657,9 +655,9 @@ public class IPathVariableTest extends ResourceTest {
 	public void testListeners() {
 		PathVariableChangeVerifier listener = new PathVariableChangeVerifier();
 		manager.addChangeListener(listener);
-		IPath pathOne = new Path("/blort/foobar");
+		IPath pathOne = IPath.fromOSString("/blort/foobar");
 		//add device if necessary
-		pathOne = new Path(pathOne.toFile().getAbsolutePath());
+		pathOne = IPath.fromOSString(pathOne.toFile().getAbsolutePath());
 		IPath pathOneEdit = pathOne.append("myworld");
 
 		try {
@@ -789,7 +787,7 @@ public class IPathVariableTest extends ResourceTest {
 	 * existing IFile.
 	 */
 	public void testDiscoverLocationOfInvalidFile() {
-		IPath filep = new Path("someFile");
+		IPath filep = IPath.fromOSString("someFile");
 		IPath invalidChild = filep.append("invalidChild");
 
 		// Create filep

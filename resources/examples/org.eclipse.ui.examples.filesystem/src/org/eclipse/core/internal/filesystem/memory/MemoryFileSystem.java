@@ -18,7 +18,6 @@ import java.net.URISyntaxException;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.provider.FileSystem;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 /**
  * A test file system that keeps everything in memory.
@@ -46,7 +45,7 @@ public class MemoryFileSystem extends FileSystem {
 
 	@Override
 	public IFileStore getStore(URI uri) {
-		return new MemoryFileStore(Path.fromPortableString(uri.getSchemeSpecificPart()));
+		return new MemoryFileStore(IPath.fromPortableString(uri.getSchemeSpecificPart()));
 	}
 
 	@Override

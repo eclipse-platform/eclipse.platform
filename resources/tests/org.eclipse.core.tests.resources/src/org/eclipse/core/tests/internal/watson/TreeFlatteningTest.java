@@ -18,12 +18,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import org.eclipse.core.internal.resources.SaveManager;
-import org.eclipse.core.internal.watson.*;
+import org.eclipse.core.internal.watson.ElementTree;
+import org.eclipse.core.internal.watson.ElementTreeReader;
+import org.eclipse.core.internal.watson.ElementTreeWriter;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -243,7 +246,7 @@ public class TreeFlatteningTest extends ElementTreeSerializationTest {
 	public void testWriteRoot() {
 		/* Get an element tree from somewhere. */
 		fTree = TestUtil.createTestElementTree();
-		fSubtreePath = Path.ROOT;
+		fSubtreePath = IPath.ROOT;
 
 		ElementTree newTree = (ElementTree) doPipeTest();
 
