@@ -13,19 +13,25 @@
  *******************************************************************************/
 package org.eclipse.tips.core;
 
+import java.net.URL;
 import java.util.Collections;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.tips.ui.internal.util.ImageUtil;
-import org.eclipse.tips.ui.internal.util.ResourceManager;
 
 public class TestTipProvider extends TipProvider {
 
 	private static TipImage image;
+	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
 
 	@Override
 	public String getDescription() {
@@ -40,7 +46,8 @@ public class TestTipProvider extends TipProvider {
 	@Override
 	public TipImage getImage() {
 		if (image == null) {
-			Image pluginImage = ResourceManager.getPluginImage("org.eclipse.tips.examples", "icons/48/c++.png");
+			URL url = Platform.getBundle("org.eclipse.tips.examples").getEntry("icons/48/c++.png");
+			Image pluginImage = (Image) resourceManager.get(ImageDescriptor.createFromURL(url));
 			String base64 = ImageUtil.decodeFromImage(pluginImage, SWT.IMAGE_PNG);
 			image = new TipImage(base64);
 		}
@@ -55,6 +62,6 @@ public class TestTipProvider extends TipProvider {
 
 	@Override
 	public void dispose() {
-
+		resourceManager.dispose();
 	}
 }

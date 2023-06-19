@@ -28,6 +28,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
@@ -59,7 +62,6 @@ import org.eclipse.tips.core.internal.TipManager;
 import org.eclipse.tips.ui.IBrowserFunctionProvider;
 import org.eclipse.tips.ui.ISwtTip;
 import org.eclipse.tips.ui.internal.util.ImageUtil;
-import org.eclipse.tips.ui.internal.util.ResourceManager;
 
 @SuppressWarnings("restriction")
 public class TipComposite extends Composite implements ProviderSelectionListener {
@@ -90,6 +92,7 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 	private ToolBar ftoolBar;
 	private ToolItem fStartupItem;
 	private Button fNextTipButton;
+	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources(), this);
 
 	/**
 	 * Constructor.
@@ -202,7 +205,7 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 		});
 
 		fMultiActionMenuButton = new Button(fMultiActionComposite, SWT.NONE);
-		fMultiActionMenuButton.setImage(ResourceManager.getPluginImage("org.eclipse.tips.ui", "icons/popup_menu.png")); //$NON-NLS-1$ //$NON-NLS-2$
+		fMultiActionMenuButton.setImage(DefaultTipManager.getImage("icons/popup_menu.png", resourceManager)); //$NON-NLS-1$
 		fMultiActionMenuButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -272,11 +275,11 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 	private Image getStartupItemImage(int startup) {
 		switch (startup) {
 		case 1:
-			return ResourceManager.getPluginImage("org.eclipse.tips.ui", "icons/lightbulb.png"); //$NON-NLS-1$ //$NON-NLS-2$
+			return DefaultTipManager.getImage("icons/lightbulb.png", resourceManager); //$NON-NLS-1$
 		case 2:
-			return ResourceManager.getPluginImage("org.eclipse.tips.ui", "icons/stop.png"); //$NON-NLS-1$ //$NON-NLS-2$
+			return DefaultTipManager.getImage("icons/stop.png", resourceManager); //$NON-NLS-1$
 		default:
-			return ResourceManager.getPluginImage("org.eclipse.tips.ui", "icons/run_exc.png"); //$NON-NLS-1$ //$NON-NLS-2$
+			return DefaultTipManager.getImage("icons/run_exc.png", resourceManager); //$NON-NLS-1$
 		}
 	}
 

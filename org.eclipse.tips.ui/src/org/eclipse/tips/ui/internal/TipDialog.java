@@ -16,6 +16,9 @@ package org.eclipse.tips.ui.internal;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -24,7 +27,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.tips.core.internal.TipManager;
-import org.eclipse.tips.ui.internal.util.ResourceManager;
 
 /**
  * The dialog containing the tips.
@@ -43,12 +45,14 @@ public class TipDialog extends Dialog {
 	private TipComposite fTipComposite;
 	private int fShellStyle;
 	private IDialogSettings fDialogSettings;
+	private ResourceManager resourceManager;
 
 	public TipDialog(Shell parentShell, TipManager tipManager, int shellStyle, IDialogSettings dialogSettings) {
 		super(parentShell);
 		fTipManager = tipManager;
 		fDialogSettings = dialogSettings;
 		fShellStyle = (shellStyle == DEFAULT_STYLE) ? (SWT.RESIZE | SWT.SHELL_TRIM) : shellStyle;
+		resourceManager = new LocalResourceManager(JFaceResources.getResources(), parentShell);
 	}
 
 	@Override
@@ -107,7 +111,7 @@ public class TipDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell pNewShell) {
 		super.configureShell(pNewShell);
-		Image pluginImage = ResourceManager.getPluginImage("org.eclipse.tips.ui", "icons/lightbulb.png"); //$NON-NLS-1$//$NON-NLS-2$
+		Image pluginImage = DefaultTipManager.getImage("icons/lightbulb.png", resourceManager); //$NON-NLS-1$
 		if (pluginImage != null) {
 			pNewShell.setImage(pluginImage);
 		}

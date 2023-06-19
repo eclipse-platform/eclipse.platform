@@ -26,8 +26,6 @@ import org.eclipse.tips.core.Tip;
 import org.eclipse.tips.core.TipProvider;
 import org.eclipse.tips.core.internal.TipManager;
 import org.eclipse.tips.ui.internal.TipDialog;
-import org.eclipse.tips.ui.internal.util.ResourceManager;
-import org.eclipse.tips.ui.internal.util.SWTResourceManager;
 
 /**
  * Class to manage the tip providers and start the tip of the day UI.
@@ -109,13 +107,6 @@ public class SleakTipManager extends TipManager {
 
 	protected synchronized SleakTipManager setNewTips(boolean pNewTips) {
 		return this;
-	}
-
-	@Override
-	public void dispose() {
-		SWTResourceManager.dispose();
-		ResourceManager.dispose();
-		super.dispose();
 	}
 
 	@Override

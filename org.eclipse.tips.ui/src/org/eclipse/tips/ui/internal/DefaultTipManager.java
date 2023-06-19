@@ -15,10 +15,15 @@ package org.eclipse.tips.ui.internal;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.tips.core.ITipManager;
 import org.eclipse.tips.core.internal.LogUtil;
 import org.eclipse.tips.core.internal.TipManager;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * Class to manage the tip providers and start the tip of the day UI.
@@ -95,4 +100,11 @@ public abstract class DefaultTipManager extends TipManager {
 		}
 		return false;
 	}
+
+	static Image getImage(String path, ResourceManager resourceManager) {
+		Bundle bundle = FrameworkUtil.getBundle(DefaultTipManager.class);
+		ImageDescriptor descriptor = ImageDescriptor.createFromURL(bundle.getEntry(path));
+		return (Image) resourceManager.get(descriptor);
+	}
+
 }

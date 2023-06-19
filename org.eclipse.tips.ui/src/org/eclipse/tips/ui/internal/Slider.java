@@ -13,31 +13,43 @@
  *******************************************************************************/
 package org.eclipse.tips.ui.internal;
 
+import static org.eclipse.tips.ui.internal.DefaultTipManager.getImage;
+
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
+import org.eclipse.jface.resource.FontDescriptor;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.tips.core.TipImage;
 import org.eclipse.tips.core.TipProvider;
 import org.eclipse.tips.core.internal.LogUtil;
 import org.eclipse.tips.core.internal.TipManager;
 import org.eclipse.tips.ui.internal.util.ImageUtil;
-import org.eclipse.tips.ui.internal.util.ResourceManager;
-import org.eclipse.tips.ui.internal.util.SWTResourceManager;
 
 @SuppressWarnings("restriction")
 public class Slider extends Composite {
@@ -58,6 +70,7 @@ public class Slider extends Composite {
 	private int fLeftRightButtonWidth;
 	private long fLastResizeEventTime;
 	private boolean fResizeRequestPending;
+	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources(), this);
 
 	/**
 	 * Constructor for the Slider widget.
@@ -75,7 +88,7 @@ public class Slider extends Composite {
 		fLeftButton = new Button(this, SWT.FLAT);
 		fLeftRightButtonWidth = fIconSize / 2 + 8;
 		setLeftRightButtonGridData(fLeftButton, fLeftRightButtonWidth);
-		fLeftButton.setImage(getImage("icons/" + fIconSize + "/aleft.png")); //$NON-NLS-1$ //$NON-NLS-2$
+		fLeftButton.setImage(getImage("icons/" + fIconSize + "/aleft.png", resourceManager)); //$NON-NLS-1$ //$NON-NLS-2$
 		fLeftButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -90,7 +103,7 @@ public class Slider extends Composite {
 
 		fRightButton = new Button(this, SWT.FLAT);
 		setLeftRightButtonGridData(fRightButton, fLeftRightButtonWidth);
-		fRightButton.setImage(getImage("icons/" + fIconSize + "/aright.png")); //$NON-NLS-1$ //$NON-NLS-2$
+		fRightButton.setImage(getImage("icons/" + fIconSize + "/aright.png", resourceManager)); //$NON-NLS-1$ //$NON-NLS-2$
 		fRightButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -154,10 +167,6 @@ public class Slider extends Composite {
 		};
 	}
 
-	private static Image getImage(String icon) {
-		return ResourceManager.getPluginImage("org.eclipse.tips.ui", icon); //$NON-NLS-1$
-	}
-
 	/**
 	 * Loads or reloads the provider list. If you want to update the read count of
 	 * the current button or all buttons then check the {@link #updateButton()} and
@@ -168,8 +177,7 @@ public class Slider extends Composite {
 		if (isDisposed() || fScroller.isDisposed() || fTipManager == null) {
 			return;
 		}
-		Arrays.stream(fScroller.getChildren()).filter(control -> !control.isDisposed())
-				.forEach(Control::dispose);
+		Arrays.stream(fScroller.getChildren()).filter(control -> !control.isDisposed()).forEach(Control::dispose);
 		List<TipProvider> providers = fTipManager.getProviders();
 		int spaceCount = Math.floorDiv(fScroller.getBounds().width, (fIconSize + fSpacing));
 		int providerCount = providers.size();
@@ -296,8 +304,7 @@ public class Slider extends Composite {
 
 	@Override
 	public Point computeSize(int wHint, int hHint, boolean changed) {
-		Point point = new Point(fIconSize * 3, fIconSize + fSpacing + fSpacing);
-		return point;
+		return new Point(fIconSize * 3, fIconSize + fSpacing + fSpacing);
 	}
 
 	protected void scrollRight() {
@@ -377,11 +384,8 @@ public class Slider extends Composite {
 			}
 		}
 		gc.fillRectangle(2, 2, fIconSize, fIconSize);
-		Image overlay = getUnreadOverlay(providerButton, provider);
+		Image overlay = getUnreadOverlay(provider);
 		gc.drawImage(overlay, 2, 2);
-		if (overlay != getProviderImage(provider, selectProviderImage(provider))) {
-			overlay.dispose();
-		}
 	}
 
 	private TipImage selectProviderImage(TipProvider provider) {
@@ -389,67 +393,90 @@ public class Slider extends Composite {
 	}
 
 	private Image getProviderImage(TipProvider provider, TipImage image) {
-		if (!fProviderImageCache.containsKey(provider.getID())) {
+		return fProviderImageCache.computeIfAbsent(provider.getID(), id -> {
 			try {
-				fProviderImageCache.put(provider.getID(),
-						new Image(getDisplay(), ImageUtil.decodeToImage(image.getBase64Image())));
+				return new Image(getDisplay(), ImageUtil.decodeToImage(image.getBase64Image()));
 			} catch (Exception e) {
 				fTipManager.log(LogUtil.error(getClass(), e));
 				return null;
 			}
-		}
-		return fProviderImageCache.get(provider.getID());
+		});
 	}
 
-	private Image getUnreadOverlay(Composite providerButton, TipProvider provider) {
+	private Image getUnreadOverlay(TipProvider provider) {
+		Image providerImage = getProviderImage(provider, selectProviderImage(provider));
 		if (provider.getTips().isEmpty()) {
-			return getProviderImage(provider, selectProviderImage(provider));
+			return providerImage;
 		}
-
 		int tipCount = provider.getTips().size();
-		Point textExtent = getTipCountTextSize(providerButton, tipCount);
-
-		Image image = null;
-		int imageHeight = textExtent.y + 5;
-		if (tipCount > 9) {
-			image = new Image(getDisplay(), textExtent.x + 8, imageHeight);
-		} else {
-			image = new Image(getDisplay(), imageHeight, imageHeight);
-		}
-		ImageData data = image.getImageData();
-		data.transparentPixel = data.getPixel(0, 0);
-		image.dispose();
-		image = new Image(getDisplay(), data);
-		GC gc = new GC(image);
-		gc.setAdvanced(true);
-		if (fTipManager.mustServeReadTips()) {
-			gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
-		} else {
-			gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_RED));
-		}
-		gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		gc.setFont(SWTResourceManager.getBoldFont(gc.getFont()));
-		gc.setAlpha(200);
-		gc.setTextAntialias(SWT.ON);
-		if (tipCount > 9) {
-			gc.fillOval(0, 0, textExtent.x + 8, imageHeight);
-			gc.drawText(tipCount + "", 4, 2, true); //$NON-NLS-1$
-		} else {
-			gc.fillOval(0, 0, imageHeight, imageHeight);
-			gc.drawText(tipCount + "", (imageHeight - textExtent.x + 1) / 2, 2, true); //$NON-NLS-1$
-		}
-		Image result = ResourceManager.decorateImage(getProviderImage(provider, selectProviderImage(provider)), image,
-				SWTResourceManager.TOP_RIGHT);
-		image.dispose();
-		gc.dispose();
-		return result;
+		int backgroundColor = fTipManager.mustServeReadTips() ? SWT.COLOR_DARK_GREEN : SWT.COLOR_RED;
+		ImageDescriptor numberOverlays = new CircleNumberDescriptor(tipCount, backgroundColor);
+		ImageDescriptor overlay = new DecorationOverlayIcon(providerImage, numberOverlays, IDecoration.TOP_RIGHT);
+		return (Image) resourceManager.get(overlay);
 	}
 
-	private Point getTipCountTextSize(Composite providerButton, int tipCount) {
-		GC gc2 = new GC(providerButton);
-		gc2.setAdvanced(true);
-		gc2.setFont(SWTResourceManager.getBoldFont(gc2.getFont()));
-		Point textExtent = gc2.textExtent(tipCount + ""); //$NON-NLS-1$
+	private static final class CircleNumberDescriptor extends ImageDescriptor {
+		private int number;
+		private int backgroundColor;
+
+		CircleNumberDescriptor(int number, int backgroundColor) {
+			this.number = number;
+			this.backgroundColor = backgroundColor;
+		}
+
+		@Override
+		public ImageData getImageData(int zoom) {
+			Display display = Display.getCurrent();
+			Font font = display.getSystemFont();
+			Font boldFont = FontDescriptor.createFrom(font).withStyle(SWT.BOLD).createFont(display);
+
+			String text = Integer.toString(number);
+			Point textExtent = getTextSize(text, boldFont);
+
+			int imageHeight = textExtent.y + 5;
+			int imageWidth = number > 9 ? textExtent.x + 8 : imageHeight;
+
+			PaletteData palette = new PaletteData(new RGB(255, 255, 255));
+			ImageData transparentBackground = new ImageData(imageWidth, imageHeight, 32, palette);
+			transparentBackground.transparentPixel = transparentBackground.getPixel(0, 0);
+
+			Image image = new Image(display, transparentBackground);
+			GC gc = new GC(image);
+			gc.setAdvanced(true);
+
+			gc.setBackground(display.getSystemColor(backgroundColor));
+			gc.setForeground(display.getSystemColor(SWT.COLOR_WHITE));
+			gc.setFont(boldFont);
+			gc.setTextAntialias(SWT.ON);
+			gc.fillOval(0, 0, imageWidth, imageHeight);
+			int textX = number > 9 ? 4 : (imageHeight - textExtent.x + 1) / 2;
+			gc.drawText(text, textX, 2, true);
+			gc.dispose();
+			boldFont.dispose();
+			ImageData data = image.getImageData(zoom);
+			image.dispose();
+			return data;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(number, backgroundColor);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			return (obj instanceof CircleNumberDescriptor other) //
+					&& number == other.number && backgroundColor == other.backgroundColor;
+		}
+	}
+
+	private static Point getTextSize(String text, Font font) {
+		GC gc2 = new GC(font.getDevice());
+		gc2.setFont(font);
+		Point textExtent = gc2.textExtent(text);
 		gc2.dispose();
 		return textExtent;
 	}
