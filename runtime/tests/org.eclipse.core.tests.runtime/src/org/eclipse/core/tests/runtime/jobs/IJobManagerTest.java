@@ -13,16 +13,39 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import java.util.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.stream.Stream;
 import junit.framework.AssertionFailedError;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
-import org.eclipse.core.tests.harness.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.core.runtime.jobs.LockListener;
+import org.eclipse.core.runtime.jobs.MultiRule;
+import org.eclipse.core.tests.harness.FussyProgressMonitor;
+import org.eclipse.core.tests.harness.TestBarrier2;
+import org.eclipse.core.tests.harness.TestJob;
 
 /**
  * Tests the API of the class IJobManager
@@ -1750,33 +1773,17 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
-	public void testReverseOrder() {
-		//ensure jobs are run in order from lowest to highest sleep time.
-		final Queue<Job> done = new ConcurrentLinkedQueue<>();
-		int[] sleepTimes = new int[] { 600, 400, 200, 5 };
-		Job[] jobs = new Job[sleepTimes.length];
-		for (int i = 0; i < sleepTimes.length; i++) {
-			jobs[i] = new Job("testReverseOrder(" + i + ")") {
-
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					done.add(this);
-					return Status.OK_STATUS;
-				}
-
-			};
-		}
-		for (int i = 0; i < sleepTimes.length; i++) {
-			jobs[i].schedule(sleepTimes[i]);
-		}
-		while (done.size() != jobs.length) {
-			Thread.yield();
-		}
-		Job[] doneOrder = done.toArray(new Job[done.size()]);
-		assertEquals("1.0", jobs.length, doneOrder.length);
-		for (int i = 0; i < doneOrder.length; i++) {
-			assertEquals("1.1." + i, jobs[i], doneOrder[doneOrder.length - 1 - i]);
-		}
+	public void testReverseOrder() throws InterruptedException {
+		// ensure that a job does not wait for one that is scheduled with a high delay
+		Job directlyExecutedJob = new TestJob("Directly executed job", 0, 0);
+		Job delayedJob = new TestJob("Delayed job", 0, 0);
+		long delayInSeconds = 20;
+		delayedJob.schedule(delayInSeconds * 1000);
+		directlyExecutedJob.schedule(1);
+		directlyExecutedJob.join(delayInSeconds * 1000 / 2, null);
+		int delayedJobState = delayedJob.getState();
+		delayedJob.cancel();
+		assertThat("delayed job should still be waiting", delayedJobState, is(Job.SLEEPING));
 	}
 
 	/**
