@@ -20,7 +20,7 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
@@ -79,7 +79,7 @@ public class TaskEditorManager {
 			CheatSheetRegistryReader.getInstance().findTaskEditor(editorKind);
 		if (editorInfo != null) {
 			Bundle bundle = Platform.getBundle(editorInfo.getPluginId());
-			URL url = FileLocator.find(bundle, new Path(editorInfo.getIconPath()), null);
+			URL url = FileLocator.find(bundle, IPath.fromOSString(editorInfo.getIconPath()), null);
 			if (url != null) {
 				try {
 					url = FileLocator.resolve(url);

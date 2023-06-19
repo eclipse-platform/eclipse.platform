@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
@@ -32,9 +31,9 @@ public class FindSupport {
 
 	private static String[] buildNLVariants(String nl) {
 		ArrayList<String> result = new ArrayList<>();
-		IPath base = new Path("nl"); //$NON-NLS-1$
+		IPath base = IPath.fromOSString("nl"); //$NON-NLS-1$
 
-		IPath path = new Path(nl.replace('_', '/'));
+		IPath path = IPath.fromOSString(nl.replace('_', '/'));
 		while (path.segmentCount() > 0) {
 			result.add(base.append(path).toString());
 			// for backwards compatibility only, don't replace the slashes
@@ -103,9 +102,9 @@ public class FindSupport {
 			// Watch for the root case.  It will produce a new
 			// URL which is only the root directory (and not the
 			// root of this plugin).
-			result = findInPlugin(b, Path.EMPTY, multiple);
+			result = findInPlugin(b, IPath.EMPTY, multiple);
 			if (result == null || multiple != null)
-				result = findInFragments(b, Path.EMPTY, multiple);
+				result = findInFragments(b, IPath.EMPTY, multiple);
 			return result;
 		}
 
@@ -155,7 +154,7 @@ public class FindSupport {
 			return null;
 
 		URL result = null;
-		IPath base = new Path("os").append(os).append(osArch); //$NON-NLS-1$
+		IPath base = IPath.fromOSString("os").append(os).append(osArch); //$NON-NLS-1$
 		// Keep doing this until all you have left is "os" as a path
 		while (base.segmentCount() != 1) {
 			IPath filePath = base.append(path);
@@ -183,7 +182,7 @@ public class FindSupport {
 		if (ws == null)
 			// use default
 			ws = Platform.getWS();
-		IPath filePath = new Path("ws").append(ws).append(path); //$NON-NLS-1$
+		IPath filePath = IPath.fromOSString("ws").append(ws).append(path); //$NON-NLS-1$
 		// We know that there is only one segment to the ws path
 		// e.g. ws/win32
 		URL result = findInPlugin(b, filePath, multiple);
@@ -212,7 +211,7 @@ public class FindSupport {
 
 		URL result = null;
 		for (int i = 0; i < nlVariants.length; i++) {
-			IPath filePath = new Path(nlVariants[i]).append(path);
+			IPath filePath = IPath.fromOSString(nlVariants[i]).append(path);
 			result = findInPlugin(b, filePath, multiple);
 			if (result != null && multiple == null)
 				return result;

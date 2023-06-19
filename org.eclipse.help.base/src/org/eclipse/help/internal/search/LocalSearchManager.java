@@ -34,10 +34,10 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.IHelpResource;
 import org.eclipse.help.internal.HelpPlugin;
@@ -130,7 +130,7 @@ public class LocalSearchManager {
 			Bundle bundle = Platform.getBundle(bundleId);
 			if (bundle == null)
 				return null;
-			return FileLocator.find(bundle, new Path(relativePath), null);
+			return FileLocator.find(bundle, IPath.fromOSString(relativePath), null);
 		}
 
 		public void clear() {

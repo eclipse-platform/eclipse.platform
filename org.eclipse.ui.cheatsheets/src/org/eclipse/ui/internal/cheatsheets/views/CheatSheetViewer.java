@@ -28,8 +28,8 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.help.ui.internal.views.HelpTray;
@@ -1163,7 +1163,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 				// do nothing
 			}
 		if (bundle != null) {
-			contentURL = FileLocator.find(bundle, new Path(element.getContentFile()), null);
+			contentURL = FileLocator.find(bundle, IPath.fromOSString(element.getContentFile()), null);
 			if (contentURL == null && element.getContentFile() != null) {
 				errorMessage = NLS.bind(Messages.ERROR_OPENING_FILE_IN_PARSER, (new Object[] {element.getContentFile()}));
 			}

@@ -21,7 +21,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.internal.cheatsheets.composite.parser.ITaskParseStrategy;
 import org.eclipse.ui.internal.provisional.cheatsheets.ICompositeCheatSheet;
@@ -194,7 +194,7 @@ public abstract class AbstractTask implements ICompositeCheatSheetTask {
 			String relativePath = path.substring(index + 1);
 			Bundle bundle = Platform.getBundle(bundleName);
 			if (bundle != null) {
-				return FileLocator.find(bundle, new Path(relativePath), null);
+				return FileLocator.find(bundle, IPath.fromOSString(relativePath), null);
 			}
 		}
 		return new URL(model.getContentUrl(), path);

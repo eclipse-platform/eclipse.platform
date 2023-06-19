@@ -22,7 +22,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.help.internal.base.HelpBasePlugin;
 import org.eclipse.help.internal.util.ProductPreferences;
 import org.eclipse.help.internal.webapp.data.CssUtil;
@@ -96,7 +95,7 @@ public class InjectionFilter implements IFilter {
 		if (cssIncludes.isEmpty() && !addDisabled)
 			return out;
 
-		IPath path = new Path(pathInfo);
+		IPath path = IPath.fromOSString(pathInfo);
 		int upLevels = path.segmentCount() - 1;
 		String relativePath = FilterUtils.getRelativePathPrefix(req);
 		StringBuilder script = new StringBuilder();

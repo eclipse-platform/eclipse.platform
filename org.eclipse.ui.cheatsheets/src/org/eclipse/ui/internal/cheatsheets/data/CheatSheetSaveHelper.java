@@ -26,7 +26,6 @@ import javax.xml.parsers.DocumentBuilder;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IMemento;
@@ -155,12 +154,12 @@ public class CheatSheetSaveHelper {
 		}
 	}
 
-	public Path getStateFile(String csID) {
+	public IPath getStateFile(String csID) {
 		return getStateFile(csID, savePath);
 	}
 
-	protected Path getStateFile(String csID, IPath rootPath) {
-		return new Path(rootPath.append(csID + ".xml").toOSString()); //$NON-NLS-1$
+	protected IPath getStateFile(String csID, IPath rootPath) {
+		return IPath.fromOSString(rootPath.append(csID + ".xml").toOSString()); //$NON-NLS-1$
 	}
 
 	// Attempts to read an xml file from the provided url. Returns a Dom

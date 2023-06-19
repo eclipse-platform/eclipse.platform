@@ -20,7 +20,7 @@ import java.io.StringReader;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.help.internal.HelpPlugin;
 import org.osgi.framework.Bundle;
 import org.xml.sax.EntityResolver;
@@ -35,7 +35,7 @@ public class LocalEntityResolver implements EntityResolver {
 		if (index >= 0) {
 			Bundle helpBundle = HelpPlugin.getDefault().getBundle();
 			String dtdPath = "dtds/internal" + systemId.substring(index); //$NON-NLS-1$
-			URL dtdURL = FileLocator.find(helpBundle, new Path(dtdPath), null);
+			URL dtdURL = FileLocator.find(helpBundle, IPath.fromOSString(dtdPath), null);
 			if (dtdURL != null) {
 				InputStream stream = dtdURL.openStream();
 				if (stream != null) {

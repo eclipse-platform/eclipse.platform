@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.intro.config.IntroElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -74,7 +73,7 @@ public class PageData {
 		for (int i=0; i<groups.size(); i++) {
 			GroupData gdata = groups.get(i);
 			if (gdata.contains(extensionId)) {
-				IPath resolvedPath = new Path(id);
+				IPath resolvedPath = IPath.fromOSString(id);
 				resolvedPath = resolvedPath.append(gdata.getPath());
 				resolvedPath = resolvedPath.append(extensionId);
 				return resolvedPath.toString();
@@ -87,7 +86,7 @@ public class PageData {
 		for (int i=0; i<groups.size(); i++) {
 			GroupData gdata = groups.get(i);
 			if (gdata.isDefault()) {
-				IPath resolvedPath = new Path(id).append(gdata.getPath());
+				IPath resolvedPath = IPath.fromOSString(id).append(gdata.getPath());
 				resolvedPath = resolvedPath.append(IUniversalIntroConstants.DEFAULT_ANCHOR);
 				return resolvedPath.toString();
 			}
@@ -104,7 +103,7 @@ public class PageData {
 			return hidden;
 		for (int i=0; i<groups.size(); i++) {
 			GroupData gdata = groups.get(i);
-			IPath path = new Path(gdata.getPath());
+			IPath path = IPath.fromOSString(gdata.getPath());
 			if (path.lastSegment().equals(groupId))
 				return gdata;
 		}

@@ -35,7 +35,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
@@ -213,7 +212,7 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 					doNavigate((String) e.getHref());
 				}
 			});
-			bulletImage = createImage(new Path("icons/arrow.png")); //$NON-NLS-1$
+			bulletImage = createImage(IPath.fromOSString("icons/arrow.png")); //$NON-NLS-1$
 			if (bulletImage != null)
 				formText.setImage(HREF_BULLET, bulletImage);
 			this.parent = parent;

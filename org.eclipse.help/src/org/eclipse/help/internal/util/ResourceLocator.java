@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionDelta;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.IHelpContentProducer;
 import org.eclipse.help.internal.HelpPlugin;
@@ -297,7 +296,7 @@ public class ResourceLocator {
 			Object cached = cache.get(pluginID + '/' + pathPrefix.get(i) + zip);
 			if (cached == null) {
 				try {
-					URL url = FileLocator.find(pluginDesc, new Path(pathPrefix.get(i) + zip), null);
+					URL url = FileLocator.find(pluginDesc, IPath.fromOSString(pathPrefix.get(i) + zip), null);
 					if (url != null) {
 						URL realZipURL = FileLocator.toFileURL(FileLocator.resolve(url));
 						cached = realZipURL.toExternalForm();
@@ -349,7 +348,7 @@ public class ResourceLocator {
 	public static InputStream openFromPlugin(Bundle pluginDesc, String file, String locale) {
 
 		ArrayList<String> pathPrefix = getPathPrefix(locale);
-		URL flatFileURL = find(pluginDesc, new Path(file), pathPrefix);
+		URL flatFileURL = find(pluginDesc, IPath.fromOSString(file), pathPrefix);
 		if (flatFileURL != null)
 			try {
 				return flatFileURL.openStream();
@@ -369,7 +368,7 @@ public class ResourceLocator {
 
 		// try to find the actual file.
 		for (int i = 0; i < pathPrefix.size(); i++) {
-			URL url = FileLocator.find(pluginDesc, new Path(pathPrefix.get(i) + flatFilePath), null);
+			URL url = FileLocator.find(pluginDesc, IPath.fromOSString(pathPrefix.get(i) + flatFilePath), null);
 			if (url != null)
 				return url;
 		}
@@ -472,7 +471,7 @@ public class ResourceLocator {
 		try {
 			ArrayList<String> pathPrefix = ResourceLocator.getPathPrefix(locale);
 			Bundle bundle = Platform.getBundle(pluginId);
-			URL rawURL = ResourceLocator.find(bundle, new Path(file), pathPrefix);
+			URL rawURL = ResourceLocator.find(bundle, IPath.fromOSString(file), pathPrefix);
 			URL resolvedURL = FileLocator.resolve(rawURL);
 			resolvedPath += ", URL = " + resolvedURL.toExternalForm(); //$NON-NLS-1$
 		} catch (Exception e) {

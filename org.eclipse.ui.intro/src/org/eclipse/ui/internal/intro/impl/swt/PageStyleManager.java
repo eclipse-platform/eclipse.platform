@@ -19,7 +19,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -538,7 +538,7 @@ public class PageStyleManager extends SharedStyleManager {
 			}
 		}
 		Bundle bundle = introImage.getBundle();
-		if (FileLocator.find(bundle, new Path(imageLocation), null) == null) {
+		if (FileLocator.find(bundle, IPath.fromOSString(imageLocation), null) == null) {
 			return null;
 		}
 		ImageUtil.registerImage(key, bundle, imageLocation);

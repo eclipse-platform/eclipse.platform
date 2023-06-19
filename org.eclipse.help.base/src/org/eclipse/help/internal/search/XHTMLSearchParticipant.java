@@ -16,7 +16,6 @@ package org.eclipse.help.internal.search;
 import java.io.InputStream;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.xhtml.DynamicXHTMLProcessor;
 import org.eclipse.help.search.SearchParticipantXML;
@@ -73,7 +72,7 @@ public class XHTMLSearchParticipant extends SearchParticipantXML {
 	@Override
 	protected void handleText(String text, IParsedXMLContent data) {
 		String stackPath = getElementStackPath();
-		IPath path = new Path(stackPath);
+		IPath path = IPath.fromOSString(stackPath);
 		if (path.segment(1).equalsIgnoreCase("body") &&  //$NON-NLS-1$
 			!isSkipped(path.segment(path.segmentCount() -1))) {
 			data.addText(text);

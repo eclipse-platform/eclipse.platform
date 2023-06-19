@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Display;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -87,7 +86,7 @@ public final class ImageUtil {
 	public static ImageDescriptor createImageDescriptor(Bundle bundle,
 			String imageName) {
 		try {
-			URL imageUrl = FileLocator.find(bundle, new Path(imageName), null);
+			URL imageUrl = FileLocator.find(bundle, IPath.fromOSString(imageName), null);
 			if (imageUrl != null) {
 				ImageDescriptor desc = ImageDescriptor.createFromURL(imageUrl);
 				return desc;

@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.ITopic;
 import org.eclipse.help.internal.HelpPlugin;
@@ -95,7 +95,7 @@ public class BreadcrumbsFilter implements IFilter {
 	}
 
 	private String getBackpath(String path) {
-		int num = new Path(path).segmentCount();
+		int num = IPath.fromOSString(path).segmentCount();
 		StringBuilder buf = new StringBuilder();
 		for (int i=0;i<num;++i) {
 			if (i > 0) {

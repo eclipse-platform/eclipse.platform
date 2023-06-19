@@ -21,7 +21,6 @@ import java.util.Vector;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.internal.intro.impl.model.loader.IntroContentParser;
 import org.eclipse.ui.internal.intro.impl.model.util.BundleUtil;
 import org.eclipse.ui.internal.intro.impl.model.util.ModelUtil;
@@ -84,7 +83,7 @@ public class IntroExtensionContent extends AbstractIntroElement {
 			// not this xml file, point the base of this page to be relative to
 			// the new xml file location.
 			IPath subBase = ModelUtil.getParentFolderPath(content);
-			String newBase = new Path(base).append(subBase).toString();
+			String newBase = IPath.fromOSString(base).append(subBase).toString();
 			extractFileAndId(bundle);
 			contentFile = BundleUtil.getResolvedResourceLocation(base, contentFile,
 				bundle);
@@ -264,7 +263,7 @@ public class IntroExtensionContent extends AbstractIntroElement {
 	 */
 	private void extractFileAndId(Bundle bundle) {
 		// look for the file
-		IPath resourcePath = new Path(base + content);
+		IPath resourcePath = IPath.fromOSString(base + content);
 		if (FileLocator.find(bundle, resourcePath, null) != null) {
 			// found it, assume it's a file
 			contentFile = content;

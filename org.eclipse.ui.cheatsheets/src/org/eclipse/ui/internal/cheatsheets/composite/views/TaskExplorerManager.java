@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
@@ -90,7 +90,7 @@ private static TaskExplorerManager instance;
 			return null;
 		}
 		Bundle bundle = Platform.getBundle(explorerInfo.getPluginId());
-		URL url = FileLocator.find(bundle, new Path(iconPath), null);
+		URL url = FileLocator.find(bundle, IPath.fromOSString(iconPath), null);
 		try {
 			url = FileLocator.resolve(url);
 			return ImageDescriptor.createFromURL(url);

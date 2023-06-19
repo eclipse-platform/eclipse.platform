@@ -15,6 +15,7 @@ package org.eclipse.ua.tests.util;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +23,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
@@ -35,7 +35,7 @@ public class ResourceFinder {
 	 * Finds the specified file in the given plugin and returns a URL to it.
 	 */
 	public static URL findFile(Bundle plugin, String path) {
-		return FileLocator.find(plugin, new Path(path), null);
+		return FileLocator.find(plugin, IPath.fromOSString(path), null);
 	}
 
 	/*
@@ -45,19 +45,21 @@ public class ResourceFinder {
 	public static URL[] findFiles(Bundle plugin, String folder, String suffix, boolean recursive) {
 		String fullLocation = plugin.getLocation();
 		String location = fullLocation.substring(fullLocation.indexOf('@') + 1);
-		IPath path = new Path(location).append(folder);
+		IPath path = IPath.fromOSString(location).append(folder);
 		File file = path.toFile();
 
 		/*
 		 * If it's a relative path, append it to the install location.
 		 */
 		if (!file.exists()) {
-			path = new Path(Platform.getInstallLocation().getURL().toString().substring("file:".length()) + path);
-			file = path.toFile();
+			URL url = Platform.getInstallLocation().getURL();
+			try {
+				file = new File(url.toURI());
+			} catch (URISyntaxException e) {
+				throw new IllegalStateException(e);
+			}
 		}
-
-		File[] files = path.toFile().listFiles();
-		return findFiles(files, suffix, recursive);
+		return findFiles(file.listFiles(), suffix, recursive);
 	}
 
 	/*

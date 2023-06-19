@@ -19,8 +19,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.util.ResourceLocator;
 import org.osgi.framework.Bundle;
@@ -149,8 +149,8 @@ public abstract class SearchParticipant {
 		Bundle bundle = Platform.getBundle(pluginId);
 		if (bundle == null)
 			return fileName;
-		URL url = ResourceLocator.find(bundle, new Path(fileName), prefix);
-		URL root = FileLocator.find(bundle, new Path(""), null); //$NON-NLS-1$
+		URL url = ResourceLocator.find(bundle, IPath.fromOSString(fileName), prefix);
+		URL root = FileLocator.find(bundle, IPath.EMPTY, null); // $NON-NLS-1$
 		return url.toString().substring(root.toString().length());
 	}
 

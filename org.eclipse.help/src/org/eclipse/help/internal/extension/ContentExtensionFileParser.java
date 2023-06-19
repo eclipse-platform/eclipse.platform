@@ -23,7 +23,7 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.help.IUAElement;
 import org.eclipse.help.internal.UAElement;
 import org.eclipse.help.internal.dynamic.DocumentProcessor;
@@ -51,7 +51,7 @@ public class ContentExtensionFileParser extends DefaultHandler {
 		if (reader == null) {
 			reader = new DocumentReader();
 		}
-		URL url= FileLocator.find(bundle, new Path(path), null);
+		URL url = FileLocator.find(bundle, IPath.fromOSString(path), null);
 		if (url != null) {
 			InputStream in = url.openStream();
 			UAElement extension = reader.read(in);

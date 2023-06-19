@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.internal.cheatsheets.ICheatSheetResource;
@@ -146,7 +145,7 @@ public class CheatSheetCollectionElement extends WorkbenchAdapter implements IPl
 	 */
 	public IPath getPath() {
 		if (parent == null)
-			return new Path(ICheatSheetResource.EMPTY_STRING);
+			return IPath.fromOSString(ICheatSheetResource.EMPTY_STRING);
 
 		return parent.getPath().append(name);
 	}

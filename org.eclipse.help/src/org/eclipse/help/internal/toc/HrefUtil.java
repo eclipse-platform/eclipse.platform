@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.help.internal.toc;
 
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 
 public class HrefUtil {
 	private static final String PLUGINS_ROOT_SLASH = "PLUGINS_ROOT/"; //$NON-NLS-1$
@@ -126,7 +126,7 @@ public class HrefUtil {
 	 */
 	public static String normalizeDirectoryPath(String href) {
 		if (href != null) {
-			return new Path(href).toString();
+			return IPath.fromOSString(href).toString();
 		}
 		return null;
 	}

@@ -30,7 +30,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
@@ -68,7 +67,7 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 	private static final String VERSION_STRING[] = { "0.0", "3.0.0" }; //$NON-NLS-1$ //$NON-NLS-2$
 	private static final String MEMENTO_TAG_CHEATSHEET_HISTORY = "cheatsheetHistory"; //$NON-NLS-1$
 
-	public static final IPath ICONS_PATH = new Path("$nl$/icons/"); //$NON-NLS-1$
+	public static final IPath ICONS_PATH = IPath.fromOSString("$nl$/icons/"); //$NON-NLS-1$
 	public static final String T_OBJ = "obj16/"; //$NON-NLS-1$
 	public static final String T_ELCL = "elcl16/"; //$NON-NLS-1$
 	public static final String T_DLCL = "dlcl16/"; //$NON-NLS-1$

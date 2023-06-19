@@ -21,8 +21,8 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProduct;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -437,8 +437,7 @@ public class EmbeddedBrowser {
 					if (product != null) {
 						Bundle productBundle = product.getDefiningBundle();
 						if (productBundle != null) {
-							imageURL = FileLocator.find(productBundle, new Path(
-									productImageURLs[i]), null);
+							imageURL = FileLocator.find(productBundle, IPath.fromOSString(productImageURLs[i]), null);
 						}
 					}
 				}

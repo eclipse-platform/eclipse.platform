@@ -26,7 +26,6 @@ import java.util.StringTokenizer;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProduct;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.util.ProductPreferences;
 import org.eclipse.help.internal.util.SequenceResolver;
@@ -225,7 +224,7 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 		if (prefix.length() == 0) {
 			return null;
 		}
-		return prefix + Path.SEPARATOR + path;
+		return prefix + IPath.SEPARATOR + path;
 	}
 
 	private String getProductProperty(IProduct product, String variableName) {
@@ -606,7 +605,7 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 	@Override
 	public String resolvePath(String extensionId, String path) {
 		boolean extensionRelativePath = false;
-		IPath ipath = new Path(path);
+		IPath ipath = IPath.fromOSString(path);
 		String pageId = ipath.segment(0);
 		String s2 = ipath.segment(1);
 		// if it's "@extension_id" then target that extension instead
@@ -621,7 +620,7 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 			if (resolvedPath != null) {
 				if (extensionRelativePath) {
 					// not done - use the resolved extension path to complete the source path
-					IPath p2 = new Path(resolvedPath);
+					IPath p2 = IPath.fromOSString(resolvedPath);
 					IPath p1 = ipath.removeFirstSegments(2);
 					// remove the last anchor and append the relative path from the extension
 					resolvedPath = p2.removeLastSegments(1).append(p1).toString();

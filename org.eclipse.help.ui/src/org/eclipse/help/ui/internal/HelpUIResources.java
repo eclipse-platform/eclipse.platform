@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -51,7 +50,7 @@ public class HelpUIResources {
 	 * Returns a string from a property file
 	 */
 	public static URL getImagePath(String name) {
-		IPath path = new Path("$nl$/icons/").append(name); //$NON-NLS-1$
+		IPath path = IPath.fromOSString("$nl$/icons/").append(name); //$NON-NLS-1$
 		return FileLocator.find(HelpUIPlugin.getDefault().getBundle(), path, null);
 	}
 
@@ -78,7 +77,7 @@ public class HelpUIResources {
 		if (desc==null) {
 			Bundle bundle = Platform.getBundle(bundleId);
 			if (bundle==null) return null;
-			URL url = FileLocator.find(bundle, new Path(name), null);
+			URL url = FileLocator.find(bundle, IPath.fromOSString(name), null);
 			desc = ImageDescriptor.createFromURL(url);
 			registry.put(name, desc);
 		}
@@ -91,7 +90,7 @@ public class HelpUIResources {
 		if (desc==null) {
 			Bundle bundle = Platform.getBundle(bundleId);
 			if (bundle == null) return null;
-			URL url = FileLocator.find(bundle, new Path(path), null);
+			URL url = FileLocator.find(bundle, IPath.fromOSString(path), null);
 			desc = ImageDescriptor.createFromURL(url);
 			registry.put(key, desc);
 		}

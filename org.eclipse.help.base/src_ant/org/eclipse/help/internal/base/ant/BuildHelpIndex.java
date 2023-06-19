@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.help.search.HelpIndexBuilder;
 
 /**
@@ -84,7 +83,7 @@ public class BuildHelpIndex extends Task {
 	private File getFile(String fileName) {
 		if (fileName == null)
 			return null;
-		IPath path = new Path(fileName);
+		IPath path = IPath.fromOSString(fileName);
 		if (path.isAbsolute())
 			return new File(fileName);
 		File root = getProject().getBaseDir();

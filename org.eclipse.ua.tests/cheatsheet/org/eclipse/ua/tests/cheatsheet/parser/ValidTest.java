@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.ua.tests.cheatsheet.util.CheatSheetModelSerializer;
 import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheet;
@@ -34,7 +34,7 @@ import org.osgi.framework.FrameworkUtil;
 public class ValidTest {
 
 	private void parseCheatsheet(String file) throws IOException {
-		Path path = new Path("data/cheatsheet/valid/" + file);
+		IPath path = IPath.fromOSString("data/cheatsheet/valid/" + file);
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
 		URL url = FileLocator.find(bundle, path, null);
 		CheatSheetParser parser = new CheatSheetParser();

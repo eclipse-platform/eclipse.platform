@@ -33,8 +33,8 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.NIOFSDirectory;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.search.AnalyzerDescriptor;
 import org.eclipse.help.internal.search.PluginIndex;
@@ -117,7 +117,7 @@ public class PrebuiltIndexCompatibility {
 	 */
 	private void checkReadable(String indexPath) throws IOException,
 			CorruptIndexException {
-		Path path = new Path(indexPath);
+		IPath path = IPath.fromOSString(indexPath);
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
 		URL url = FileLocator.find(bundle, path, null);
 		URL resolved = FileLocator.resolve(url);

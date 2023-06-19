@@ -26,7 +26,6 @@ import java.util.Properties;
 import org.apache.lucene.util.Version;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.base.util.ProxyUtil;
 import org.eclipse.help.internal.util.ResourceLocator;
@@ -78,7 +77,7 @@ public class PluginIndex {
 		ArrayList<String> availablePrefixes = ResourceLocator.getPathPrefix(targetIndex
 				.getLocale());
 		for (String prefix : availablePrefixes) {
-			IPath prefixedPath = new Path(prefix + path);
+			IPath prefixedPath = IPath.fromOSString(prefix + path);
 			// find index at this directory in plugin or fragments
 			URL url = FileLocator.find(bundle, prefixedPath, null);
 			if (url == null) {

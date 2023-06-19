@@ -18,7 +18,6 @@ import java.net.URL;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
@@ -70,7 +69,7 @@ public class SharedStyleManager {
 			try (InputStream is = styleURL.openStream()) {
 				properties.load(is);
 			}
-			context.path = new Path(style).removeLastSegments(1);
+			context.path = IPath.fromOSString(style).removeLastSegments(1);
 			String t = (String)properties.get("theme"); //$NON-NLS-1$
 			if (t!=null && t.trim().equalsIgnoreCase("true")) //$NON-NLS-1$
 				context.inTheme = true;

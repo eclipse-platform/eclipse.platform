@@ -21,7 +21,6 @@ import java.util.Vector;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.internal.intro.impl.model.AbstractIntroPage;
 import org.eclipse.ui.internal.intro.impl.model.IntroExtensionContent;
@@ -159,7 +158,7 @@ public class ModelUtil {
 	 * Returns the parent folder of the given path.
 	 */
 	public static IPath getParentFolderPath(String contentFilePath) {
-		IPath path = new Path(contentFilePath);
+		IPath path = IPath.fromOSString(contentFilePath);
 		path = path.removeLastSegments(1).addTrailingSeparator();
 		return path;
 	}

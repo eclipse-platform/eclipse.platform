@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.help.UAContentFilter;
@@ -649,7 +648,7 @@ public class IntroModelRoot extends AbstractIntroContainer {
 		String extensionId = extensionContent.getId();
 		// if this is a replace, take the mixin style as what is being replaced
 		if (extensionContent.getExtensionType() == IntroExtensionContent.TYPE_REPLACEMENT) {
-			IPath ipath = new Path(extensionContent.getPath());
+			IPath ipath = IPath.fromOSString(extensionContent.getPath());
 			String s2 = ipath.segment(1);
 			if (s2 != null && s2.startsWith("@") && s2.length() > 1) { //$NON-NLS-1$
 				extensionId = s2.substring(1);

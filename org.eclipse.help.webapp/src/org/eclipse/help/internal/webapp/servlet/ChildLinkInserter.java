@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.help.ITopic;
 import org.eclipse.help.base.AbstractHelpScope;
 import org.eclipse.help.internal.HelpPlugin;
@@ -106,7 +106,7 @@ public class ChildLinkInserter {
 	}
 
 	private String getBackpath(String path) {
-		int num = new Path(path).segmentCount() - 1;
+		int num = IPath.fromOSString(path).segmentCount() - 1;
 		StringBuilder buf = new StringBuilder();
 		for (int i=0; i < num; ++i) {
 			if (i > 0) {

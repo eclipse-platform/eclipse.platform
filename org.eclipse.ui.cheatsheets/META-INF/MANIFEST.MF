@@ -21,7 +21,7 @@ Export-Package: org.eclipse.ui.cheatsheets,
  org.eclipse.ui.internal.cheatsheets.views;x-friends:="org.eclipse.ua.tests",
  org.eclipse.ui.internal.provisional.cheatsheets;x-friends:="org.eclipse.ua.tests"
 Require-Bundle: org.eclipse.ui.forms;bundle-version="[3.5.0,4.0.0)",
- org.eclipse.help.ui;bundle-version="[4.0.0,5.0.0)";resolution:=optional
+ org.eclipse.help.ui;bundle-version="[4.6.0,5.0.0)";resolution:=optional
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy

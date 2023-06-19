@@ -20,7 +20,6 @@ import java.net.URL;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
@@ -121,7 +120,7 @@ public class BundleUtil {
 		if (resource == null)
 			return null;
 
-		String fullResource = new Path(base).append(resource).toString();
+		String fullResource = IPath.fromOSString(base).append(resource).toString();
 		String resolvedResource = getResolvedResourceLocation(fullResource,
 			bundle, true);
 
@@ -151,7 +150,7 @@ public class BundleUtil {
 					copyResource = resource.substring(1);
 				copyResource = NL_TAG + copyResource;
 			}
-			IPath resourcePath = new Path(copyResource);
+			IPath resourcePath = IPath.fromOSString(copyResource);
 			localLocation = FileLocator.find(bundle, resourcePath, null);
 			if (localLocation == null) {
 				// localLocation can be null if the passed resource could not
@@ -205,9 +204,7 @@ public class BundleUtil {
 	 */
 	public static URL getResourceAsURL(String resource, String pluginId) {
 		Bundle bundle = Platform.getBundle(pluginId);
-		URL localLocation = FileLocator.find(bundle, new Path(
-			resource), null);
-		return localLocation;
+		return FileLocator.find(bundle, IPath.fromOSString(resource), null);
 	}
 
 

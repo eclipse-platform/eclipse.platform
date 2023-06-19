@@ -28,7 +28,6 @@ import java.util.zip.ZipFile;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.util.ResourceLocator;
 import org.osgi.framework.Bundle;
@@ -54,12 +53,12 @@ public class DocumentFinder {
 			directory = ""; //$NON-NLS-1$
 		}
 		// Find doc.zip file
-		IPath iPath = new Path("$nl$/doc.zip"); //$NON-NLS-1$
+		IPath iPath = IPath.fromOSString("$nl$/doc.zip"); //$NON-NLS-1$
 		Map<String, String> override = new HashMap<>(1);
 		override.put("$nl$", locale); //$NON-NLS-1$
 		URL url = FileLocator.find(pluginDesc, iPath, override);
 		if (url == null) {
-			url = FileLocator.find(pluginDesc, new Path("doc.zip"), null); //$NON-NLS-1$
+			url = FileLocator.find(pluginDesc, IPath.fromOSString("doc.zip"), null); //$NON-NLS-1$
 		}
 		if (url != null) {
 			// collect topics from doc.zip file

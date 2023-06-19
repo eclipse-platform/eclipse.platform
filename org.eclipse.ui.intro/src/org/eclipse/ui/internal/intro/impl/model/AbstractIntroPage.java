@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.UAElement;
 import org.eclipse.help.internal.UAElementFactory;
@@ -151,7 +150,7 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 			// the base of this page to be relative to the new xml file
 			// location.
 			IPath subBase = ModelUtil.getParentFolderPath(content);
-			this.base = new Path(base).append(subBase).toString();
+			this.base = IPath.fromOSString(base).append(subBase).toString();
 			content = BundleUtil.getResolvedResourceLocation(base, content,
 				bundle);
 		}

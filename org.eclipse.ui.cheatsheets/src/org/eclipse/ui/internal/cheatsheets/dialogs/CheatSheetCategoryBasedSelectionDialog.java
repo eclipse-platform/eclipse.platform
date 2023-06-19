@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -367,7 +366,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 			fileDlg.open();
 			String filename = fileDlg.getFileName();
 			if (filename != null) {
-				IPath folderPath = new Path(fileDlg.getFilterPath());
+				IPath folderPath = IPath.fromOSString(fileDlg.getFilterPath());
 				IPath filePath = folderPath.append(filename);
 				selectFileCombo.setText(filePath.toOSString());
 				checkRadioButtons();
@@ -453,7 +452,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 
 		for (String expandedCategoryPath : expandedCategoryPaths) {
 			CheatSheetCollectionElement category = cheatsheetCategories
-					.findChildCollection(new Path(expandedCategoryPath));
+					.findChildCollection(IPath.fromOSString(expandedCategoryPath));
 			if (category != null) // ie.- it still exists
 				categoriesToExpand.add(category);
 		}
@@ -582,7 +581,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 
 	private void setResultFromFile() {
 		// Use the filename without extension as the id of this cheatsheet
-		IPath filePath = new Path(selectFileCombo.getText());
+		IPath filePath = IPath.fromOSString(selectFileCombo.getText());
 		String id = filePath.lastSegment();
 		int extensionIndex = id.indexOf('.');
 		if (extensionIndex > 0) {
@@ -612,7 +611,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 
 	private void setResultFromUrl() {
 		// Use the filename without extension as the id of this cheatsheet
-		IPath filePath = new Path(selectUrlCombo.getText());
+		IPath filePath = IPath.fromOSString(selectUrlCombo.getText());
 		String id = filePath.lastSegment();
 		if (id == null) {
 			id = ""; //$NON-NLS-1$

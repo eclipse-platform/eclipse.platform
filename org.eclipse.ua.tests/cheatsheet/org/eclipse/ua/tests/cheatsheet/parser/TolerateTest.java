@@ -16,8 +16,8 @@ package org.eclipse.ua.tests.cheatsheet.parser;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
 import org.eclipse.ui.internal.cheatsheets.data.ICheatSheet;
 import org.junit.Assert;
@@ -31,7 +31,7 @@ import org.osgi.framework.FrameworkUtil;
 public class TolerateTest {
 
 	private void parseCheatsheet(String file) {
-		Path path = new Path("data/cheatsheet/valid/tolerate/" + file);
+		IPath path = IPath.fromOSString("data/cheatsheet/valid/tolerate/" + file);
 		URL url = FileLocator.find(FrameworkUtil.getBundle(TolerateTest.class), path, null);
 		CheatSheetParser parser = new CheatSheetParser();
 		ICheatSheet sheet = parser.parse(url, FrameworkUtil.getBundle(getClass()).getSymbolicName(),
