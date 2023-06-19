@@ -58,7 +58,6 @@ public class MessageFactoryServiceImpl implements IMessageFactoryService {
 
 	private int CLEANUPCOUNT = 0;
 
-	@SuppressWarnings("removal")
 	@Override
 	public <M> M getMessageInstance(final Locale locale, final Class<M> messages,
 			final ResourceBundleProvider provider) {
