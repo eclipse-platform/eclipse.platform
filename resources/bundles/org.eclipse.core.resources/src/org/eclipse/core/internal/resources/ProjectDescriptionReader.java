@@ -19,20 +19,47 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
-import javax.xml.parsers.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.events.BuildCommand;
 import org.eclipse.core.internal.localstore.SafeFileInputStream;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.FileInfoMatcherDescription;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
-import org.xml.sax.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -219,13 +246,13 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			StringTokenizer tokens = new StringTokenizer(charBuffer.toString(), ","); //$NON-NLS-1$
 			while (tokens.hasMoreTokens()) {
 				String next = tokens.nextToken();
-				if (next.toLowerCase().equals(TRIGGER_AUTO)) {
+				if (next.equalsIgnoreCase(TRIGGER_AUTO)) {
 					command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, true);
-				} else if (next.toLowerCase().equals(TRIGGER_CLEAN)) {
+				} else if (next.equalsIgnoreCase(TRIGGER_CLEAN)) {
 					command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, true);
-				} else if (next.toLowerCase().equals(TRIGGER_FULL)) {
+				} else if (next.equalsIgnoreCase(TRIGGER_FULL)) {
 					command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, true);
-				} else if (next.toLowerCase().equals(TRIGGER_INCREMENTAL)) {
+				} else if (next.equalsIgnoreCase(TRIGGER_INCREMENTAL)) {
 					command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, true);
 				}
 			}
