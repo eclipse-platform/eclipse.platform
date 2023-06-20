@@ -232,11 +232,8 @@ public class PageStyleManager extends SharedStyleManager {
 	}
 
 	private boolean getBooleanProperty(String key, boolean defaultValue) {
-		boolean booleanValue = defaultValue;
 		String value = getProperty(key);
-		if (value != null)
-			booleanValue = value.equalsIgnoreCase("true"); //$NON-NLS-1$
-		return booleanValue;
+		return value == null ? defaultValue : Boolean.parseBoolean(value);
 	}
 
 
@@ -375,9 +372,7 @@ public class PageStyleManager extends SharedStyleManager {
 			key = ".show-link-description"; //$NON-NLS-1$
 			value = getProperty(key);
 		}
-		if (value == null)
-			value = "true"; //$NON-NLS-1$
-		return value.toLowerCase().equals("true"); //$NON-NLS-1$
+		return (value == null) || Boolean.parseBoolean(value);
 	}
 
 	public boolean showHomePageNavigation() {
@@ -387,9 +382,7 @@ public class PageStyleManager extends SharedStyleManager {
 			key = ".show-home-page-navigation"; //$NON-NLS-1$
 			value = getProperty(key);
 		}
-		if (value == null)
-			value = "true"; //$NON-NLS-1$
-		return value.equalsIgnoreCase("true"); //$NON-NLS-1$
+		return (value == null) || Boolean.parseBoolean(value);
 	}
 
 
