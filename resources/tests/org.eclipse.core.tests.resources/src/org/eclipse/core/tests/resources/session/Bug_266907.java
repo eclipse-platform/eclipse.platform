@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -43,6 +44,10 @@ public class Bug_266907 extends WorkspaceSessionTest {
 	}
 
 	public void test1CreateProjectAndDeleteProjectFile() throws Exception {
+		// Ensure that no asynchronous save job restores the .project file after
+		// deleting it by suspending the JobManager for this workspace session
+		Job.getJobManager().suspend();
+
 		final IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(PROJECT_NAME);
 		project.create(getMonitor());
