@@ -38,7 +38,7 @@ public class RemoteAntDebugBuildListener extends RemoteAntBuildListener implemen
 	// sockets to communicate with the remote Ant debug build logger
 	private Socket fRequestSocket;
 	private PrintWriter fRequestWriter;
-	private BufferedReader fResponseReader;
+	private volatile BufferedReader fResponseReader;
 
 	private int fRequestPort = -1;
 	private Thread fReaderThread;
@@ -59,9 +59,15 @@ public class RemoteAntDebugBuildListener extends RemoteAntBuildListener implemen
 			try {
 				String message = null;
 				while (fResponseReader != null) {
+					BufferedReader reader;
 					synchronized (RemoteAntDebugBuildListener.this) {
-						if (fResponseReader != null && (message = fResponseReader.readLine()) != null) {
-							receiveMessage(message);
+						reader = fResponseReader;
+					}
+					if (reader != null && (message = reader.readLine()) != null) {
+						synchronized (RemoteAntDebugBuildListener.this) {
+							if (fResponseReader != null) {
+								receiveMessage(message);
+							}
 						}
 					}
 				}
