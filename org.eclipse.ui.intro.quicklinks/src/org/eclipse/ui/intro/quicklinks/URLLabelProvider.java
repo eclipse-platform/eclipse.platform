@@ -44,7 +44,7 @@ public class URLLabelProvider extends LabelProvider {
 			if (descriptor == null) {
 				return null;
 			}
-			return registry.createImage(descriptor);
+			return registry.create(descriptor);
 		} catch (MalformedURLException e) {
 			return null;
 		}

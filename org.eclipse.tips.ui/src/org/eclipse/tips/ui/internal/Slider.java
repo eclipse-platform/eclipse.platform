@@ -30,8 +30,7 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -89,12 +88,7 @@ public class Slider extends Composite {
 		fLeftRightButtonWidth = fIconSize / 2 + 8;
 		setLeftRightButtonGridData(fLeftButton, fLeftRightButtonWidth);
 		fLeftButton.setImage(getImage("icons/" + fIconSize + "/aleft.png", resourceManager)); //$NON-NLS-1$ //$NON-NLS-2$
-		fLeftButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				scrollLeft();
-			}
-		});
+		fLeftButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> scrollLeft()));
 
 		fScroller = new Composite(this, SWT.DOUBLE_BUFFERED);
 		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
@@ -104,12 +98,7 @@ public class Slider extends Composite {
 		fRightButton = new Button(this, SWT.FLAT);
 		setLeftRightButtonGridData(fRightButton, fLeftRightButtonWidth);
 		fRightButton.setImage(getImage("icons/" + fIconSize + "/aright.png", resourceManager)); //$NON-NLS-1$ //$NON-NLS-2$
-		fRightButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				scrollRight();
-			}
-		});
+		fRightButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> scrollRight()));
 
 		setupDisposeListener();
 		setupProviderListener();
@@ -412,7 +401,7 @@ public class Slider extends Composite {
 		int backgroundColor = fTipManager.mustServeReadTips() ? SWT.COLOR_DARK_GREEN : SWT.COLOR_RED;
 		ImageDescriptor numberOverlays = new CircleNumberDescriptor(tipCount, backgroundColor);
 		ImageDescriptor overlay = new DecorationOverlayIcon(providerImage, numberOverlays, IDecoration.TOP_RIGHT);
-		return (Image) resourceManager.get(overlay);
+		return resourceManager.get(overlay);
 	}
 
 	private static final class CircleNumberDescriptor extends ImageDescriptor {

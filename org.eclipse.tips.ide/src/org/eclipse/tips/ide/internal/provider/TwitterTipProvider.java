@@ -26,7 +26,7 @@ import org.osgi.framework.Bundle;
 public class TwitterTipProvider extends JsonTipProvider {
 
 	public TwitterTipProvider() throws MalformedURLException {
-		URL resource = getClass().getResource("twittertips.json"); // $NON-NLS-1$
+		URL resource = getClass().getResource("twittertips.json"); //$NON-NLS-1$
 		if (resource != null) {
 			setJsonUrl(resource.toString());
 		}
@@ -34,7 +34,7 @@ public class TwitterTipProvider extends JsonTipProvider {
 
 	@Override
 	public synchronized IStatus loadNewTips(IProgressMonitor pMonitor) {
-		Bundle bundle = Platform.getBundle("org.eclipse.jdt.ui"); // $NON-NLS-1$
+		Bundle bundle = Platform.getBundle("org.eclipse.jdt.ui"); //$NON-NLS-1$
 		if (bundle != null) {
 			return super.loadNewTips(pMonitor);
 		}

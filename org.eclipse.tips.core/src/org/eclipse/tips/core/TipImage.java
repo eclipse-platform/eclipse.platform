@@ -13,7 +13,6 @@
  *****************************************************************************/
 package org.eclipse.tips.core;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -40,12 +39,10 @@ public class TipImage {
 	private String fExtension = null;
 	private int fMaxWidth = UNDEFINED;
 	private int fMaxHeight = UNDEFINED;
-	final private URL fURL;
+	private final URL fURL;
 	private double fAspectRatio = THREE_TO_TWO;
 
-	final private String fBase64Image;
-
-	private static final int _4KB = 4096;
+	private final String fBase64Image;
 
 	/**
 	 * Creates a new TipImage with the specified URL which gets read into a base 64
@@ -60,17 +57,14 @@ public class TipImage {
 	public TipImage(URL url) throws IOException {
 		Assert.isNotNull(url);
 		fURL = url;
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		byte[] chunk = new byte[_4KB];
-		int bytesRead;
-		InputStream stream = url.openStream();
-		while ((bytesRead = stream.read(chunk)) > 0) {
-			outputStream.write(chunk, 0, bytesRead);
+		byte[] bytes;
+		try (InputStream in = url.openStream()) {
+			bytes = in.readAllBytes();
 		}
 		fBase64Image = "data:image/" // //$NON-NLS-1$
 				+ getExtension() //
 				+ ";base64," // //$NON-NLS-1$
-				+ Base64.getEncoder().encodeToString(outputStream.toByteArray());
+				+ Base64.getEncoder().encodeToString(bytes);
 	}
 
 	/**

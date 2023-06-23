@@ -14,12 +14,11 @@
 package org.eclipse.tips.ide.internal.provider;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.eclipse.tips.core.IHtmlTip;
 import org.eclipse.tips.core.Tip;
 import org.eclipse.tips.core.TipImage;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 public class Tip3_StartingTips extends Tip implements IHtmlTip {
 
@@ -29,7 +28,7 @@ public class Tip3_StartingTips extends Tip implements IHtmlTip {
 
 	@Override
 	public Date getCreationDate() {
-		return TipsTipProvider.getDateFromYYMMDD("09/01/2019");
+		return TipsTipProvider.getDateFromYYMMDD(9, 1, 2019);
 	}
 
 	@Override
@@ -49,11 +48,8 @@ public class Tip3_StartingTips extends Tip implements IHtmlTip {
 	@Override
 	public TipImage getImage() {
 		if (fImage == null) {
-			try {
-				Bundle bundle = FrameworkUtil.getBundle(getClass());
-				fImage = new TipImage(bundle.getEntry("images/tips/starttip2.png")).setAspectRatio(968, 741, true);
-			} catch (Exception e) {
-			}
+			Optional<TipImage> tipImage = TipsTipProvider.getTipImage("images/tips/starttip2.png"); //$NON-NLS-1$
+			fImage = tipImage.map(i -> i.setAspectRatio(968, 741, true)).orElse(null);
 		}
 		return fImage;
 	}

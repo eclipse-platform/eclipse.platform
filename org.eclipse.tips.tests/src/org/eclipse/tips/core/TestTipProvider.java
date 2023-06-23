@@ -47,7 +47,7 @@ public class TestTipProvider extends TipProvider {
 	public TipImage getImage() {
 		if (image == null) {
 			URL url = Platform.getBundle("org.eclipse.tips.examples").getEntry("icons/48/c++.png");
-			Image pluginImage = (Image) resourceManager.get(ImageDescriptor.createFromURL(url));
+			Image pluginImage = resourceManager.get(ImageDescriptor.createFromURL(url));
 			String base64 = ImageUtil.decodeFromImage(pluginImage, SWT.IMAGE_PNG);
 			image = new TipImage(base64);
 		}

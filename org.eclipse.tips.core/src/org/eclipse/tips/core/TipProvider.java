@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -139,9 +138,7 @@ public abstract class TipProvider {
 		if (list.isEmpty()) {
 			return setCurrentTip(fFinalTip);
 		}
-		if (getManager().mustServeReadTips() && fCurrentTip != null) {
-			fTipIndex++;
-		} else if (fCurrentTip != null && getManager().isRead(fCurrentTip)) {
+		if (fCurrentTip != null && (getManager().mustServeReadTips() || getManager().isRead(fCurrentTip))) {
 			fTipIndex++;
 		}
 		if (fTipIndex >= list.size()) {
@@ -246,11 +243,9 @@ public abstract class TipProvider {
 	 */
 	public synchronized List<Tip> getTips(Predicate<Tip> predicate) {
 		if (predicate != null) {
-			return Collections.unmodifiableList(fTips //
-					.stream() //
-					.filter(tip -> predicate.test(tip)) //
+			return fTips.stream().filter(predicate) //
 					.sorted(Comparator.comparing(Tip::getCreationDate).reversed()) //
-					.collect(Collectors.toList()));
+					.toList();
 		}
 		return Collections.unmodifiableList(fTips);
 	}

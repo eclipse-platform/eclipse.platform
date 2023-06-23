@@ -121,16 +121,10 @@ public class IDETipManager extends DefaultTipManager {
 	 *
 	 */
 	private void saveReadState(Map<String, List<Integer>> pReadTips) {
-		Job job = new Job(Messages.IDETipManager_3) {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				SubMonitor subMonitor = SubMonitor.convert(monitor, IProgressMonitor.UNKNOWN);
-				subMonitor.setTaskName(Messages.IDETipManager_4);
-				IStatus status = TipsPreferences.saveReadState(pReadTips);
-				subMonitor.done();
-				return status;
-			}
-		};
+		Job job = Job.create(Messages.IDETipManager_3, monitor -> {
+			SubMonitor.convert(monitor, Messages.IDETipManager_4, IProgressMonitor.UNKNOWN);
+			return TipsPreferences.saveReadState(pReadTips);
+		});
 		job.schedule();
 	}
 
@@ -193,22 +187,14 @@ public class IDETipManager extends DefaultTipManager {
 
 	@Override
 	public boolean isRead(Tip tip) {
-		if (fReadTips.containsKey(tip.getProviderId())
-				&& fReadTips.get(tip.getProviderId()).contains(Integer.valueOf(tip.hashCode()))) {
-			return true;
-		}
-		return false;
+		return fReadTips.getOrDefault(tip.getProviderId(), List.of()).contains(tip.hashCode());
 	}
 
 	@Override
 	public synchronized TipManager setAsRead(Tip tip) {
 		if (!isRead(tip)) {
-			List<Integer> readTips = fReadTips.get(tip.getProviderId());
-			if (readTips == null) {
-				readTips = new ArrayList<>();
-				fReadTips.put(tip.getProviderId(), readTips);
-			}
-			readTips.add(Integer.valueOf(tip.hashCode()));
+			List<Integer> readTips = fReadTips.computeIfAbsent(tip.getProviderId(), i -> new ArrayList<>());
+			readTips.add(tip.hashCode());
 		}
 		return this;
 	}
@@ -265,11 +251,7 @@ public class IDETipManager extends DefaultTipManager {
 			Element element = (Element) doc.getElementsByTagName("enablement").item(0); //$NON-NLS-1$
 			Expression expressionObj = ExpressionConverter.getDefault().perform(element);
 			final EvaluationResult result = expressionObj.evaluate(getEvaluationContext());
-			if (result == EvaluationResult.TRUE) {
-				return 10;
-			} else {
-				return 30;
-			}
+			return EvaluationResult.TRUE.equals(result) ? 10 : 30;
 		} catch (Exception e) {
 			log(LogUtil.error(e));
 			return 20;
@@ -282,8 +264,7 @@ public class IDETipManager extends DefaultTipManager {
 	 */
 	private static IEvaluationContext getEvaluationContext() {
 		IEvaluationService evalService = PlatformUI.getWorkbench().getService(IEvaluationService.class);
-		IEvaluationContext currentState = evalService.getCurrentState();
-		return currentState;
+		return evalService.getCurrentState();
 	}
 
 	/**
@@ -294,7 +275,7 @@ public class IDETipManager extends DefaultTipManager {
 	 * @return the state location file
 	 * @throws Exception if something went wrong
 	 */
-	public static File getStateLocation() throws Exception {
+	public static File getStateLocation() throws IOException {
 		String stateLocation = System.getProperty("org.eclipse.tips.statelocation"); //$NON-NLS-1$
 		if (stateLocation == null) {
 			stateLocation = System.getProperty("user.home") + File.separator + ".eclipse" + File.separator //$NON-NLS-1$ //$NON-NLS-2$

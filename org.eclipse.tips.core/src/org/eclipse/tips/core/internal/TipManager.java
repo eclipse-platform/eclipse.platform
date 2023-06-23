@@ -134,24 +134,21 @@ public abstract class TipManager implements ITipManager {
 	}
 
 	private void addToPriorityMap(TipProvider provider, Integer priorityHint) {
-		if (!fProviderPrio.get(priorityHint).contains(provider.getID())) {
-			if (!fProviderPrio.get(priorityHint).contains(provider.getID())) {
-				fProviderPrio.get(priorityHint).add(provider.getID());
-			}
+		List<String> providers = fProviderPrio.get(priorityHint);
+		if (!providers.contains(provider.getID())) {
+			providers.add(provider.getID());
 		}
 	}
 
 	private void addToProviderMaps(TipProvider provider, Integer priorityHint) {
 		fProviders.put(provider.getID(), provider);
-		if (fProviderPrio.get(priorityHint) == null) {
-			fProviderPrio.put(priorityHint, new ArrayList<>());
-		}
+		fProviderPrio.computeIfAbsent(priorityHint, p -> new ArrayList<>());
 	}
 
 	private void removeFromMaps(TipProvider provider) {
 		if (fProviders.containsKey(provider.getID())) {
-			for (Map.Entry<Integer, List<String>> entry : fProviderPrio.entrySet()) {
-				entry.getValue().remove(provider.getID());
+			for (List<String> providers : fProviderPrio.values()) {
+				providers.remove(provider.getID());
 			}
 			fProviders.remove(provider.getID());
 		}
@@ -169,15 +166,9 @@ public abstract class TipManager implements ITipManager {
 		if (fProviders == null) {
 			return Collections.emptyList();
 		}
-		ArrayList<TipProvider> result = new ArrayList<>();
-		for (Map.Entry<Integer, List<String>> entry : fProviderPrio.entrySet()) {
-			for (String id : entry.getValue()) {
-				if (fProviders.get(id).isReady()) {
-					result.add(fProviders.get(id));
-				}
-			}
-		}
-		return Collections.unmodifiableList(result);
+		return fProviderPrio.values().stream().flatMap(List::stream) //
+				.map(fProviders::get).filter(TipProvider::isReady) //
+				.toList();
 	}
 
 	/**
@@ -278,11 +269,6 @@ public abstract class TipManager implements ITipManager {
 
 	@Override
 	public boolean hasContent() {
-		for (TipProvider provider : getProviders()) {
-			if (provider.isReady() && !provider.getTips(tip -> !isRead(tip)).isEmpty()) {
-				return true;
-			}
-		}
-		return false;
+		return getProviders().stream().anyMatch(p -> p.isReady() && !p.getTips(tip -> !isRead(tip)).isEmpty());
 	}
 }

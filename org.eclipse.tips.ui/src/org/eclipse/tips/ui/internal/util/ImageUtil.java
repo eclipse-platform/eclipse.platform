@@ -82,8 +82,7 @@ public class ImageUtil {
 		Decoder decoder = Base64.getDecoder();
 		byte[] imageByte = decoder.decode(image);
 		try (ByteArrayInputStream bis = new ByteArrayInputStream(imageByte)) {
-			ImageData imageData = new ImageData(bis);
-			return imageData;
+			return new ImageData(bis);
 		}
 	}
 

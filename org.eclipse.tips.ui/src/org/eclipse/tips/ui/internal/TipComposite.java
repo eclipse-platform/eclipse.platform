@@ -24,7 +24,6 @@ import java.util.TimerTask;
 import java.util.function.Function;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -35,8 +34,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
 import org.eclipse.swt.custom.StackLayout;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -146,21 +144,16 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 
 		fStartupItem = new ToolItem(ftoolBar, SWT.DROP_DOWN);
 		fStartupItem.setText(Messages.TipComposite_13);
-		fStartupItem.addListener(SWT.Selection, event -> {
-			showStartupOptions(menu);
-		});
+		fStartupItem.addListener(SWT.Selection, event -> showStartupOptions(menu));
 
 		fUnreadOnly = new Button(preferenceBar, SWT.CHECK);
 		fUnreadOnly.setText(Messages.TipComposite_2);
-		fUnreadOnly.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				fTipManager.setServeReadTips(!fUnreadOnly.getSelection());
-				fPreviousTipButton.setEnabled(fTipManager.mustServeReadTips());
-				fSlider.load();
-				getNextTip();
-			}
-		});
+		fUnreadOnly.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
+			fTipManager.setServeReadTips(!fUnreadOnly.getSelection());
+			fPreviousTipButton.setEnabled(fTipManager.mustServeReadTips());
+			fSlider.load();
+			getNextTip();
+		}));
 
 		Composite buttonBar = new Composite(fNavigationBar, SWT.NONE);
 		buttonBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
@@ -181,12 +174,8 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 		fSingleActionButton = new Button(fSingleActionComposite, SWT.NONE);
 		fSingleActionButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		fSingleActionButton.setText(Messages.TipComposite_3);
-		fSingleActionButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				runTipAction(fCurrentTip.getActions().get(0));
-			}
-		});
+		fSingleActionButton.addSelectionListener(
+				SelectionListener.widgetSelectedAdapter(e -> runTipAction(fCurrentTip.getActions().get(0))));
 
 		fMultiActionComposite = new Composite(actionComposite, SWT.NONE);
 		GridLayout gl_MultiActionComposite = new GridLayout(2, false);
@@ -197,21 +186,12 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 
 		fMultiActionButton = new Button(fMultiActionComposite, SWT.NONE);
 		fMultiActionButton.setText(Messages.TipComposite_4);
-		fMultiActionButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				runTipAction(fCurrentTip.getActions().get(0));
-			}
-		});
+		fMultiActionButton.addSelectionListener(
+				SelectionListener.widgetSelectedAdapter(e -> runTipAction(fCurrentTip.getActions().get(0))));
 
 		fMultiActionMenuButton = new Button(fMultiActionComposite, SWT.NONE);
 		fMultiActionMenuButton.setImage(DefaultTipManager.getImage("icons/popup_menu.png", resourceManager)); //$NON-NLS-1$
-		fMultiActionMenuButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				showActionMenu();
-			}
-		});
+		fMultiActionMenuButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> showActionMenu()));
 
 		fEmptyActionComposite = new Composite(actionComposite, SWT.NONE);
 		fEmptyActionComposite.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -219,33 +199,17 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 		fPreviousTipButton = new Button(buttonBar, SWT.NONE);
 		fPreviousTipButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		fPreviousTipButton.setText(Messages.TipComposite_7);
-		fPreviousTipButton.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				getPreviousTip();
-			}
-		});
+		fPreviousTipButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> getPreviousTip()));
 		fPreviousTipButton.setEnabled(false);
 
 		fNextTipButton = new Button(buttonBar, SWT.NONE);
 		fNextTipButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		fNextTipButton.setText(Messages.TipComposite_8);
-		fNextTipButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				getNextTip();
-			}
-		});
+		fNextTipButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> getNextTip()));
 		fNextTipButton.setEnabled(false);
 
 		Button btnClose = new Button(buttonBar, SWT.NONE);
-		btnClose.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				getParent().dispose();
-			}
-		});
+		btnClose.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> getParent().dispose()));
 		btnClose.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		btnClose.setText(Messages.TipComposite_9);
 
@@ -314,19 +278,16 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 	}
 
 	private void runTipAction(TipAction tipAction) {
-		Job job = new Job(MessageFormat.format(Messages.TipComposite_10, tipAction.getTooltip())) {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					tipAction.getRunner().run();
-				} catch (Exception e) {
-					IStatus status = LogUtil.error(getClass(), e);
-					fTipManager.log(status);
-					return status;
-				}
-				return Status.OK_STATUS;
+		Job job = Job.create(MessageFormat.format(Messages.TipComposite_10, tipAction.getTooltip()), monitor -> {
+			try {
+				tipAction.getRunner().run();
+			} catch (Exception e) {
+				IStatus status = LogUtil.error(getClass(), e);
+				fTipManager.log(status);
+				return status;
 			}
-		};
+			return Status.OK_STATUS;
+		});
 		job.setUser(true);
 		job.schedule();
 	}
@@ -495,18 +456,19 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 
 	private void enableActionButtons(Tip tip) {
 		disposeActionImages();
-		if (tip.getActions().isEmpty()) {
+		List<TipAction> actions = tip.getActions();
+		if (actions.isEmpty()) {
 			fActionStack.topControl = fEmptyActionComposite;
-		} else if (tip.getActions().size() == 1) {
-			TipAction action = tip.getActions().get(0);
+		} else if (actions.size() == 1) {
+			TipAction action = actions.get(0);
 			fActionStack.topControl = fSingleActionComposite;
 			fSingleActionButton.setImage(getActionImage(action.getTipImage()));
 			fSingleActionButton.setText(action.getText());
 			fSingleActionButton.setToolTipText(action.getTooltip());
 		} else {
-			TipAction action = tip.getActions().get(0);
+			TipAction action = actions.get(0);
 			fActionStack.topControl = fMultiActionComposite;
-			fMultiActionButton.setImage(getActionImage(tip.getActions().get(0).getTipImage()));
+			fMultiActionButton.setImage(getActionImage(actions.get(0).getTipImage()));
 			fMultiActionButton.setText(action.getText());
 			fMultiActionButton.setToolTipText(action.getTooltip());
 			loadActionMenu(tip);
@@ -524,7 +486,8 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 			fActionMenu.dispose();
 		}
 		fActionMenu = new Menu(fContentComposite.getShell(), SWT.POP_UP);
-		pTip.getActions().subList(1, pTip.getActions().size()).forEach(action -> {
+		List<TipAction> actions = pTip.getActions();
+		actions.subList(1, actions.size()).forEach(action -> {
 			MenuItem item = new MenuItem(fActionMenu, SWT.PUSH);
 			item.setText(action.getText());
 			item.setToolTipText(action.getTooltip());
@@ -540,10 +503,8 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 		}
 		try {
 			Image image = new Image(getDisplay(), ImageUtil.decodeToImage(tipImage.getBase64Image()));
-			if (image != null) {
-				fActionImages.add(image);
-				return image;
-			}
+			fActionImages.add(image);
+			return image;
 		} catch (IOException e) {
 			fTipManager.log(LogUtil.error(getClass(), e));
 		}
@@ -583,12 +544,11 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 		int width = fBrowser.getClientArea().width;
 		int height = Math.min(fBrowser.getClientArea().height / 2, (2 * (width / 3)));
 		String attributes = image.getIMGAttributes(width, height).trim();
-		String encoded = EMPTY + "<center> <img " // //$NON-NLS-1$
+		return EMPTY + "<center> <img " // //$NON-NLS-1$
 				+ attributes //
 				+ " src=\"" // //$NON-NLS-1$
 				+ image.getBase64Image() //
 				+ "\"></center><br/>"; //$NON-NLS-1$
-		return encoded;
 	}
 
 	@Override

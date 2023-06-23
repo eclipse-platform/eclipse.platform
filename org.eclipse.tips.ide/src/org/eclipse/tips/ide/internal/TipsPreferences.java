@@ -109,9 +109,6 @@ public class TipsPreferences extends AbstractPreferenceInitializer {
 	 */
 	public static final String PREF_DISABLED_PROVIDERS = "disabled_providers"; //$NON-NLS-1$
 
-	public TipsPreferences() {
-	}
-
 	@Override
 	public void initializeDefaultPreferences() {
 		// nothing needs to be done right now
@@ -123,14 +120,16 @@ public class TipsPreferences extends AbstractPreferenceInitializer {
 	 * @return a map that stores the read tip hashes per provider.
 	 */
 	public static Map<String, List<Integer>> getReadState() {
-		HashMap<String, List<Integer>> result = new HashMap<>();
+		Map<String, List<Integer>> result = new HashMap<>();
 
 		try {
 			File stateLocation = getStateLocation();
-			for (String key : stateLocation.list(getStateFileNameFilter(stateLocation))) {
+			FilenameFilter stateFileNameFilter = (pDir, pName) -> pDir.equals(stateLocation)
+					&& pName.endsWith(".state"); //$NON-NLS-1$
+			for (String key : stateLocation.list(stateFileNameFilter)) {
 				PreferenceStore store = new PreferenceStore(new File(stateLocation, key).getAbsolutePath());
 				store.load();
-				ArrayList<Integer> tips = new ArrayList<>();
+				List<Integer> tips = new ArrayList<>();
 				for (String tipKey : store.preferenceNames()) {
 					if (!"provider".equals(tipKey)) { //$NON-NLS-1$
 						tips.add(Integer.valueOf(store.getInt(tipKey)));
@@ -139,19 +138,9 @@ public class TipsPreferences extends AbstractPreferenceInitializer {
 				result.put(store.getString("provider"), tips); //$NON-NLS-1$
 			}
 		} catch (Exception e) {
-			Status status = new Status(IStatus.ERROR, "org.eclipse.tips.ide", e.getMessage(), e); //$NON-NLS-1$
-			log(status);
+			log(Status.error(e.getMessage(), e));
 		}
 		return result;
-	}
-
-	private static FilenameFilter getStateFileNameFilter(File stateLocation) {
-		return (pDir, pName) -> {
-			if (pDir.equals(stateLocation) && pName.endsWith(".state")) { //$NON-NLS-1$
-				return true;
-			}
-			return false;
-		};
 	}
 
 	private static File getStateLocation() throws Exception {
@@ -243,22 +232,18 @@ public class TipsPreferences extends AbstractPreferenceInitializer {
 		if (behavior == null) {
 			behavior = getDefaultStartupBehavior();
 		}
-		switch (behavior) {
-		case PREF_STARTUP_BEHAVIOR_DIALOG:
-			return TipManager.START_DIALOG;
-		case PREF_STARTUP_BEHAVIOR_BACKGROUND:
-			return TipManager.START_BACKGROUND;
-		case PREF_STARTUP_BEHAVIOR_DISABLE:
-			return TipManager.START_DISABLE;
-		default:
-			return TipManager.START_BACKGROUND;
-		}
+		return switch (behavior) {
+		case PREF_STARTUP_BEHAVIOR_DIALOG -> TipManager.START_DIALOG;
+		case PREF_STARTUP_BEHAVIOR_BACKGROUND -> TipManager.START_BACKGROUND;
+		case PREF_STARTUP_BEHAVIOR_DISABLE -> TipManager.START_DISABLE;
+		default -> TipManager.START_BACKGROUND;
+		};
 	}
 
 	private static String getDefaultStartupBehavior() {
 		String startupBehavior = System.getProperty(PREF_STARTUP_BEHAVIOR_PROPERTY);
 		if (startupBehavior == null) {
-			return startupBehavior = DefaultScope.INSTANCE.getNode(Constants.BUNDLE_ID).get(PREF_STARTUP_BEHAVIOR,
+			return DefaultScope.INSTANCE.getNode(Constants.BUNDLE_ID).get(PREF_STARTUP_BEHAVIOR,
 					PREF_STARTUP_BEHAVIOR_BACKGROUND);
 		}
 		return startupBehavior;

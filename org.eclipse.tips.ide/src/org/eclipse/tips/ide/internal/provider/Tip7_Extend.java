@@ -17,10 +17,9 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -29,8 +28,6 @@ import org.eclipse.tips.core.IHtmlTip;
 import org.eclipse.tips.core.Tip;
 import org.eclipse.tips.core.TipAction;
 import org.eclipse.tips.core.TipImage;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 public class Tip7_Extend extends Tip implements IHtmlTip {
 
@@ -40,35 +37,26 @@ public class Tip7_Extend extends Tip implements IHtmlTip {
 
 	@Override
 	public List<TipAction> getActions() {
-		Function<String, Boolean> openBrowser = input -> {
-			Desktop d = Desktop.getDesktop();
+		Runnable action = () -> Display.getDefault().asyncExec(() -> {
+			if (Platform.isRunning() && Platform.getWS().startsWith("gtk")) { //$NON-NLS-1$
+				boolean confirm = MessageDialog.openConfirm(null, "Action",
+						"Can't open a browser in GTK. It crashes the JVM. Press Ok to try anyway.");
+				if (!confirm) {
+					return;
+				}
+			}
 			try {
-				d.browse(new URI("https://wiki.eclipse.org/Tip_of_the_Day"));
+				Desktop.getDesktop().browse(new URI("https://wiki.eclipse.org/Tip_of_the_Day")); //$NON-NLS-1$
 			} catch (IOException | URISyntaxException e) {
 				e.printStackTrace();
 			}
-			return false;
-		};
-		Runnable runner = () -> Display.getDefault().asyncExec(() -> {
-			if (Platform.isRunning() && Platform.getWS().startsWith("gtk")) {
-				boolean confirm = MessageDialog.openConfirm(null, "Action",
-						"Can't open a browser in GTK. It crashes the JVM. Press Ok to try anyway.");
-				if (confirm) {
-					openBrowser.apply("go");
-				}
-			} else {
-				openBrowser.apply("go");
-			}
 		});
-
-		ArrayList<TipAction> actions = new ArrayList<>();
-		actions.add(new TipAction("Open Browser", "Opens Eclipse Wiki.", runner, null));
-		return actions;
+		return List.of(new TipAction("Open Browser", "Opens Eclipse Wiki.", action, null));
 	}
 
 	@Override
 	public Date getCreationDate() {
-		return TipsTipProvider.getDateFromYYMMDD("09/01/2019");
+		return TipsTipProvider.getDateFromYYMMDD(9, 1, 2019);
 	}
 
 	@Override
@@ -87,11 +75,8 @@ public class Tip7_Extend extends Tip implements IHtmlTip {
 	@Override
 	public TipImage getImage() {
 		if (fImage == null) {
-			try {
-				Bundle bundle = FrameworkUtil.getBundle(getClass());
-				fImage = new TipImage(bundle.getEntry("images/tips/photon.jpg")).setAspectRatio(720, 480, true);
-			} catch (Exception e) {
-			}
+			Optional<TipImage> tipImage = TipsTipProvider.getTipImage("images/tips/photon.jpg"); //$NON-NLS-1$
+			fImage = tipImage.map(i -> i.setAspectRatio(720, 480, true)).orElse(null);
 		}
 		return fImage;
 	}

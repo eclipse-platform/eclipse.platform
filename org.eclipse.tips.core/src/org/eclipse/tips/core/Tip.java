@@ -16,6 +16,7 @@ package org.eclipse.tips.core;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This is the base Tip class of the UI agnostic Tip framework. You might want
@@ -69,12 +70,7 @@ public abstract class Tip {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((getCreationDate() == null) ? 0 : getCreationDate().hashCode());
-		result = prime * result + ((providerId == null) ? 0 : providerId.hashCode());
-		result = prime * result + ((getSubject() == null) ? 0 : getSubject().hashCode());
-		return result;
+		return Objects.hash(getCreationDate(), providerId, getSubject());
 	}
 
 	@Override
@@ -89,27 +85,8 @@ public abstract class Tip {
 			return false;
 		}
 		Tip other = (Tip) obj;
-		if (getCreationDate() == null) {
-			if (other.getCreationDate() != null) {
-				return false;
-			}
-		} else if (!getCreationDate().equals(other.getCreationDate())) {
-			return false;
-		}
-		if (providerId == null) {
-			if (other.providerId != null) {
-				return false;
-			}
-		} else if (!providerId.equals(other.providerId)) {
-			return false;
-		}
-		if (getSubject() == null) {
-			if (other.getSubject() != null) {
-				return false;
-			}
-		} else if (!getSubject().equals(other.getSubject())) {
-			return false;
-		}
-		return true;
+		return Objects.equals(getCreationDate(), other.getCreationDate()) //
+				&& Objects.equals(providerId, other.providerId) //
+				&& Objects.equals(getSubject(), other.getSubject());
 	}
 }

@@ -104,7 +104,7 @@ public abstract class DefaultTipManager extends TipManager {
 	static Image getImage(String path, ResourceManager resourceManager) {
 		Bundle bundle = FrameworkUtil.getBundle(DefaultTipManager.class);
 		ImageDescriptor descriptor = ImageDescriptor.createFromURL(bundle.getEntry(path));
-		return (Image) resourceManager.get(descriptor);
+		return resourceManager.get(descriptor);
 	}
 
 }
