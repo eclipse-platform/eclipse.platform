@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2023 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -177,7 +177,11 @@ public class Utilities {
 				SafeRunner.run(() -> listener.propertyChange(event));
 			}
 		};
-		Display.getDefault().execute(runnable);
+		if (Display.getCurrent() == null) {
+			Display.getDefault().syncExec(runnable);
+		} else {
+			runnable.run();
+		}
 	}
 
 	public static boolean okToUse(Widget widget) {
