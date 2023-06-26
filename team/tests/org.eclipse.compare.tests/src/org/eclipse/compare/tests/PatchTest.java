@@ -287,7 +287,7 @@ public class PatchTest {
 	// both copy-pasted from CoreTest
 
 	private void log(String pluginID, IStatus status) {
-		Platform.getLog(Platform.getBundle(pluginID)).log(status);
+		ILog.of(Platform.getBundle(pluginID)).log(status);
 	}
 
 	private void log(String pluginID, Throwable e) {

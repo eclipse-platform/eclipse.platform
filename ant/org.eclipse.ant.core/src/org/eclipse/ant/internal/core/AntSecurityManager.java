@@ -23,8 +23,8 @@ import java.util.PropertyPermission;
 
 import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.core.AntSecurityException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 
 /**
@@ -415,10 +415,10 @@ public class AntSecurityManager extends SecurityManager {
 	}
 
 	private static void logDeprecatedAccess(Throwable e) {
-		Platform.getLog(AntCorePlugin.getPlugin().getBundle()).log(new Status(IStatus.WARNING, AntCorePlugin.PI_ANTCORE, InternalCoreAntMessages.AntSecurityManager_0, e));
+		ILog.of(AntCorePlugin.getPlugin().getBundle()).log(new Status(IStatus.WARNING, AntCorePlugin.PI_ANTCORE, InternalCoreAntMessages.AntSecurityManager_0, e));
 	}
 
 	private static void logException(Throwable e) {
-		Platform.getLog(AntCorePlugin.getPlugin().getBundle()).log(new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, e.getLocalizedMessage(), e));
+		ILog.of(AntCorePlugin.getPlugin().getBundle()).log(new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, e.getLocalizedMessage(), e));
 	}
 }

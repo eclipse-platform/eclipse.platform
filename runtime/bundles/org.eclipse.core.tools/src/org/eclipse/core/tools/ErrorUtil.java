@@ -34,7 +34,7 @@ public class ErrorUtil {
 		if (userMessage == null)
 			userMessage = exception.getMessage();
 		IStatus status = new Status(IStatus.ERROR, ErrorUtil.class, -1, userMessage, exception);
-		Platform.getLog(ErrorUtil.class).log(status);
+		ILog.of(ErrorUtil.class).log(status);
 	}
 
 	/**
