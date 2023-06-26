@@ -17,9 +17,9 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
@@ -207,7 +207,7 @@ public class StandaloneLaunchConfigExecutor implements IBackgroundLaunchExecutor
 					}
 				}
 			} catch (Exception e) {
-				Platform.getLog(this.getClass()).error(NLS.bind(LaunchViewMessages.StandaloneLaunchConfigExecutor_FailedLaunching, config.getName()), e);
+				ILog.of(this.getClass()).error(NLS.bind(LaunchViewMessages.StandaloneLaunchConfigExecutor_FailedLaunching, config.getName()), e);
 			} finally {
 				monitor.done();
 			}

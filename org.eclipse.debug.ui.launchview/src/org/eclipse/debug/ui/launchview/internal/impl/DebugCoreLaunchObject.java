@@ -19,9 +19,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugException;
@@ -64,7 +64,7 @@ public class DebugCoreLaunchObject implements ILaunchObject, Comparable<ILaunchO
 		try {
 			return config.getType();
 		} catch (CoreException e) {
-			Platform.getLog(this.getClass()).error(NLS.bind(LaunchViewMessages.DebugCoreLaunchObject_CannotGetType, config.getName()), e);
+			ILog.of(this.getClass()).error(NLS.bind(LaunchViewMessages.DebugCoreLaunchObject_CannotGetType, config.getName()), e);
 		}
 		return null;
 	}
@@ -175,7 +175,7 @@ public class DebugCoreLaunchObject implements ILaunchObject, Comparable<ILaunchO
 	@Override
 	public int compareTo(ILaunchObject o) {
 		if (getId() == null) {
-			Platform.getLog(this.getClass()).warn(NLS.bind(LaunchViewMessages.LaunchObject_ErrorNoId, this), null);
+			ILog.of(this.getClass()).warn(NLS.bind(LaunchViewMessages.LaunchObject_ErrorNoId, this), null);
 			if (o.getId() == null) {
 				return 0;
 			}

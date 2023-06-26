@@ -26,8 +26,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
@@ -67,7 +67,7 @@ public class TestUtil {
 		}
 		Bundle testBundle = FrameworkUtil.getBundle(TestUtil.class);
 		Status status = new Status(severity, testBundle.getSymbolicName(), "[" + owner + "] " + message, error);
-		Platform.getLog(testBundle).log(status);
+		ILog.of(testBundle).log(status);
 	}
 
 	/**

@@ -24,7 +24,7 @@ import java.nio.charset.Charset;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.debug.internal.core.InputStreamMonitor;
 import org.eclipse.debug.tests.AbstractDebugTest;
 import org.eclipse.debug.tests.TestUtil;
@@ -103,7 +103,7 @@ public class InputStreamMonitorTests extends AbstractDebugTest {
 		};
 		long alreadyLeakedThreads = getInputStreamMonitorThreads.get();
 		if (alreadyLeakedThreads > 0) {
-			Platform.getLog(TestsPlugin.class).warn("Test started with " + alreadyLeakedThreads + " leaked monitor threads.");
+			ILog.of(TestsPlugin.class).warn("Test started with " + alreadyLeakedThreads + " leaked monitor threads.");
 		}
 
 		{

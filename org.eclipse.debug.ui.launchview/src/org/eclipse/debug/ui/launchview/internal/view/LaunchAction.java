@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.debug.core.ILaunchMode;
 import org.eclipse.debug.ui.launchview.internal.LaunchViewBundleInfo;
 import org.eclipse.debug.ui.launchview.internal.LaunchViewMessages;
@@ -69,7 +69,7 @@ public class LaunchAction {
 			try {
 				return m.getType().getDelegates(Collections.singleton(mode.getIdentifier())).length > 0;
 			} catch (CoreException e) {
-				Platform.getLog(this.getClass()).warn(LaunchViewMessages.LaunchAction_FailedFetchLaunchDelegates, e);
+				ILog.of(this.getClass()).warn(LaunchViewMessages.LaunchAction_FailedFetchLaunchDelegates, e);
 				return false;
 			}
 		});

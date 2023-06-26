@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -47,7 +46,7 @@ import org.osgi.framework.FrameworkUtil;
  */
 public final class ExternalToolBuilder extends IncrementalProjectBuilder {
 
-	private static final ILog LOG = Platform.getLog(ExternalToolBuilder.class);
+	private static final ILog LOG = ILog.of(ExternalToolBuilder.class);
 
 	private static final class IgnoreTeamPrivateChanges implements IResourceDeltaVisitor {
 		private boolean[] fTrueChange;

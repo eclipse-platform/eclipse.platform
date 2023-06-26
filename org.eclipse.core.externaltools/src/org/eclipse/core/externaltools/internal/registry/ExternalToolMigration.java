@@ -21,7 +21,6 @@ import java.util.StringTokenizer;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -37,7 +36,7 @@ import org.eclipse.debug.core.RefreshUtil;
  */
 public final class ExternalToolMigration {
 
-	private static final ILog LOG = Platform.getLog(ExternalToolMigration.class);
+	private static final ILog LOG = ILog.of(ExternalToolMigration.class);
 
 	/**
 	 * Structure to represent a variable definition within a

@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
@@ -48,7 +48,7 @@ public class FileLogger implements IStreamListener, Closeable {
 			writer.write(text);
 			writer.flush();
 		} catch (Exception ex) {
-			Platform.getLog(this.getClass()).warn(NLS.bind(LaunchViewMessages.FileLogger_FailedAppend, text), ex);
+			ILog.of(this.getClass()).warn(NLS.bind(LaunchViewMessages.FileLogger_FailedAppend, text), ex);
 		}
 	}
 

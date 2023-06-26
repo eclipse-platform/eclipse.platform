@@ -64,7 +64,7 @@ public class DebugCoreProvider extends AbstractLaunchObjectProvider implements I
 		try {
 			return Arrays.stream(DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations()).map(DebugCoreLaunchObject::new).collect(Collectors.toCollection(TreeSet::new));
 		} catch (CoreException e) {
-			org.eclipse.core.runtime.Platform.getLog(this.getClass()).error(LaunchViewMessages.DebugCoreProvider_FailedLookup, e);
+			org.eclipse.core.runtime.ILog.of(this.getClass()).error(LaunchViewMessages.DebugCoreProvider_FailedLookup, e);
 			return Collections.emptySet();
 		}
 	}

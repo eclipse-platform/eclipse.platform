@@ -24,9 +24,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
@@ -277,7 +277,7 @@ public class ExternalToolsCoreUtil {
 		try {
 			launchInBackground= configuration.getAttribute(IExternalToolConstants.ATTR_LAUNCH_IN_BACKGROUND, false);
 		} catch (CoreException ce) {
-			Platform.getLog(ExternalToolsCoreUtil.class).log(Status.error("Error logged from Ant UI: ", ce)); //$NON-NLS-1$
+			ILog.of(ExternalToolsCoreUtil.class).log(Status.error("Error logged from Ant UI: ", ce)); //$NON-NLS-1$
 		}
 		return launchInBackground;
 	}

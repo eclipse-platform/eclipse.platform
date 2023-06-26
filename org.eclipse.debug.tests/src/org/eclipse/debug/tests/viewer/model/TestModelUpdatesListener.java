@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
@@ -236,7 +236,7 @@ public class TestModelUpdatesListener implements IViewerUpdateListener, ILabelUp
 		fStateRestoreComplete = false;
 		fExpectRestoreAfterSaveComplete = false;
 		fTimeoutTime = System.currentTimeMillis() + fTimeoutInterval;
-		Platform.getLog(TestModelUpdatesListener.class).log(Status.info("fTimeOut Reset: " + fTimeoutTime)); //$NON-NLS-1$
+		ILog.of(TestModelUpdatesListener.class).log(Status.info("fTimeOut Reset: " + fTimeoutTime)); //$NON-NLS-1$
 		resetModelChanged();
 	}
 
