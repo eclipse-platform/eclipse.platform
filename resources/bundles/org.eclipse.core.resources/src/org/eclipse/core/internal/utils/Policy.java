@@ -164,7 +164,7 @@ public class Policy {
 		final Bundle bundle = Platform.getBundle(ResourcesPlugin.PI_RESOURCES);
 		if (bundle == null)
 			return;
-		Platform.getLog(bundle).log(status);
+		ILog.of(bundle).log(status);
 	}
 
 	/**

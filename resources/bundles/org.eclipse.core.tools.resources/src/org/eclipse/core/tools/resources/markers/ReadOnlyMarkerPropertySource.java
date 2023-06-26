@@ -86,7 +86,7 @@ public class ReadOnlyMarkerPropertySource implements IPropertySource {
 		for (String superId : anInfo.declaredSupers) {
 			MarkerExtensionModel.MarkerInfo superInfo = model.getInfo(superId);
 			if (superInfo == null) {
-				Platform.getLog(ReadOnlyMarkerPropertySource.class).log(new Status(IStatus.ERROR,ReadOnlyMarkerPropertySource.class,"internal error. could not find supertype" + superId + "of marker" + info.id));
+				ILog.of(ReadOnlyMarkerPropertySource.class).log(new Status(IStatus.ERROR,ReadOnlyMarkerPropertySource.class,"internal error. could not find supertype" + superId + "of marker" + info.id));
 				continue;
 			}
 			findDeclaredPropertyDescriptorsFor(superInfo, descriptorList, actualAttributeSet);
@@ -101,7 +101,7 @@ public class ReadOnlyMarkerPropertySource implements IPropertySource {
 		try {
 			return marker.getAttribute(name);
 		} catch (CoreException e) {
-			Platform.getLog(ReadOnlyMarkerPropertySource.class).log(e.getStatus());
+			ILog.of(ReadOnlyMarkerPropertySource.class).log(e.getStatus());
 			return "exception occured accessing: " + name;
 		}
 	}
@@ -114,7 +114,7 @@ public class ReadOnlyMarkerPropertySource implements IPropertySource {
 		try {
 			return marker.getAttribute(name) != null;
 		} catch (CoreException e) {
-			Platform.getLog(ReadOnlyMarkerPropertySource.class).log(e.getStatus());
+			ILog.of(ReadOnlyMarkerPropertySource.class).log(e.getStatus());
 			return false;
 		}
 	}
@@ -138,7 +138,7 @@ public class ReadOnlyMarkerPropertySource implements IPropertySource {
 		try {
 			this.info = model.getInfo(marker.getType());
 		} catch (CoreException e) {
-			Platform.getLog(ReadOnlyMarkerPropertySource.class).log(e.getStatus());
+			ILog.of(ReadOnlyMarkerPropertySource.class).log(e.getStatus());
 		}
 	}
 }

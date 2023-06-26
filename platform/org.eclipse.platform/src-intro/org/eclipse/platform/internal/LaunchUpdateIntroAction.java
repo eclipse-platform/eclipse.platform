@@ -50,7 +50,7 @@ public class LaunchUpdateIntroAction implements IIntroAction {
 		try {
 			cmd.executeWithChecks(executionEvent);
 		} catch (ExecutionException e) {
-			Platform.getLog(LaunchUpdateIntroAction.class).error("Exception executing command: " + command, e); //$NON-NLS-1$
+			ILog.of(LaunchUpdateIntroAction.class).error("Exception executing command: " + command, e); //$NON-NLS-1$
 		} catch (NotDefinedException e) {
 			return false;
 		} catch (NotEnabledException e) {

@@ -33,7 +33,7 @@ public class LineReader {
 			try (BufferedReader bufferedReader = new BufferedReader(content.createReader())) {
 				lines = readLines(bufferedReader);
 			} catch (CoreException ex) {
-				Platform.getLog(LineReader.class).error(Messages.Activator_1, ex);
+				ILog.of(LineReader.class).error(Messages.Activator_1, ex);
 			} catch (IOException closeException) {
 				// silently ignored
 			}

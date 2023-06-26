@@ -363,7 +363,7 @@ public class MarkerView extends ViewPart implements ISelectionListener, IResourc
 					return message == null ? type : message + " : " + type;
 				}
 			} catch (CoreException e) {
-				Platform.getLog(MarkerView.class).log(e.getStatus());
+				ILog.of(MarkerView.class).log(e.getStatus());
 			}
 			return obj.toString();
 		}
@@ -402,7 +402,7 @@ public class MarkerView extends ViewPart implements ISelectionListener, IResourc
 						imageKey = SharedImages.IMG_OBJS_TASK_TSK;
 					}
 				} catch (CoreException e) {
-					Platform.getLog(MarkerView.class).log(e.getStatus());
+					ILog.of(MarkerView.class).log(e.getStatus());
 				}
 			}
 			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);

@@ -321,7 +321,7 @@ public class FileDiffResult implements IFilePatchResult {
 			try {
 				bytes = contents.getBytes(charSet);
 			} catch (UnsupportedEncodingException e) {
-				Platform.getLog(FileDiffResult.class).error(Messages.Activator_1, e);
+				ILog.of(FileDiffResult.class).error(Messages.Activator_1, e);
 			}
 		}
 		if (bytes == null) {

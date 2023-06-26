@@ -112,7 +112,7 @@ public class DumpContentsView extends SpyView {
 		if (dump.isFailed()) {
 			Status status = new Status(IStatus.ERROR, DumpContentsView.class, 0, "Error during file dump", //$NON-NLS-1$
 					dump.getFailureReason());
-			Platform.getLog(DumpContentsView.class).log(status);
+			ILog.of(DumpContentsView.class).log(status);
 			String message = "File dumping did not complete successfully. Reason: " + dump.getFailureReason(); //$NON-NLS-1$
 			ErrorUtil.showErrorMessage(message, "Error during file dump"); //$NON-NLS-1$
 		}

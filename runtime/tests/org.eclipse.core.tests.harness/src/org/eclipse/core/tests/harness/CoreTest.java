@@ -29,6 +29,7 @@ import java.io.PrintStream;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -88,7 +89,7 @@ public class CoreTest extends TestCase {
 	}
 
 	public static void log(String pluginID, IStatus status) {
-		Platform.getLog(Platform.getBundle(pluginID)).log(status);
+		ILog.of(Platform.getBundle(pluginID)).log(status);
 	}
 
 	public static void log(String pluginID, Throwable e) {

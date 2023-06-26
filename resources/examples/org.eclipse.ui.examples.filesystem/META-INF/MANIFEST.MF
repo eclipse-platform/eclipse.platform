@@ -10,6 +10,6 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.ui.ide,
  org.eclipse.ui,
  org.eclipse.osgi,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime;bundle-version="[3.28.0,4.0.0)"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
