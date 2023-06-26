@@ -16,8 +16,10 @@ package org.eclipse.debug.ui.actions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.IEvaluationContext;
@@ -231,6 +233,7 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 			 new MenuItem(menu, SWT.SEPARATOR);
 		}
 		List<String> categories = new ArrayList<>();
+		Map<LaunchShortcutExtension, ILaunchConfiguration[]> launchConfigurations = new LinkedHashMap<>();
 		for(LaunchShortcutExtension ext : filteredShortCuts) {
 			for(String mode : ext.getModes()) {
 				if (mode.equals(fMode)) {
@@ -244,9 +247,7 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 						ext.getLaunchConfigurations(editor) :
 						ext.getLaunchConfigurations(ss);
 					if (configurations != null) {
-						for (ILaunchConfiguration configuration : configurations) {
-							populateMenuItem(mode, ext, menu, configuration, accelerator++, "   "); //$NON-NLS-1$
-						}
+						launchConfigurations.put(ext, configurations);
 					}
 				}
 			}
@@ -276,6 +277,12 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 					ActionContributionItem item= new ActionContributionItem(action);
 					item.fill(menu, -1);
 				}
+			}
+		}
+		// now add collected launches
+		for (Entry<LaunchShortcutExtension, ILaunchConfiguration[]> entry : launchConfigurations.entrySet()) {
+			for (ILaunchConfiguration configuration : entry.getValue()) {
+				populateMenuItem(fMode, entry.getKey(), menu, configuration, accelerator++, null);
 			}
 		}
 
