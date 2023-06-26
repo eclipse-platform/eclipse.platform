@@ -599,7 +599,10 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 	 * Returns whether the project has a project description file on disk.
 	 */
 	public boolean hasSavedDescription(IProject project) {
-		return getStore(project).getChild(IProjectDescription.DESCRIPTION_FILE_NAME).fetchInfo().exists();
+		IResource dotProjectResource = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
+		return dotProjectResource.exists() ? //
+			getStore(dotProjectResource).fetchInfo().exists() : //
+			getStore(project).getChild(IProjectDescription.DESCRIPTION_FILE_NAME).fetchInfo().exists();
 	}
 
 	/**
@@ -885,8 +888,9 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 		if (isDefaultLocation) {
 			projectLocation = URIUtil.toURI(getProjectDefaultLocation(target));
 		}
+		IFile descFile = target.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		IFileStore projectStore = initializeStore(target, projectLocation);
-		IFileStore descriptionStore = projectStore.getChild(IProjectDescription.DESCRIPTION_FILE_NAME);
+		IFileStore descriptionStore = descFile.exists() ? getStore(descFile) : projectStore.getChild(IProjectDescription.DESCRIPTION_FILE_NAME);
 		ProjectDescription description = null;
 		//hold onto any exceptions until after sync info is updated, then throw it
 		ResourceException error = null;
