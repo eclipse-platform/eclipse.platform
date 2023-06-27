@@ -74,6 +74,11 @@ public class Log implements ILog, SynchronousLogListener, LogFilter {
 	public void log(final IStatus status) {
 		if (logger == null) {
 			// can happen on system shutdown...
+			System.out.println(status);
+			Throwable exception = status.getException();
+			if (exception != null) {
+				exception.printStackTrace(System.out);
+			}
 			return;
 		}
 		// Log to the logger
