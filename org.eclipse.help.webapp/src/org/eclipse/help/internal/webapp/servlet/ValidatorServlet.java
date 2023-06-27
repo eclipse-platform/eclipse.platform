@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.webapp.HelpWebappPlugin;
 import org.eclipse.help.internal.webapp.WebappResources;
@@ -85,7 +86,7 @@ public class ValidatorServlet extends HttpServlet {
 
 			String errorMsg = WebappResources.getString("cantCreateServlet", //$NON-NLS-1$
 					locale, service);
-			Platform.getLog(getClass()).error(errorMsg, ex);
+			ILog.of(getClass()).error(errorMsg, ex);
 
 			@SuppressWarnings("resource")
 			PrintWriter writer = resp.getWriter();

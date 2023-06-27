@@ -18,7 +18,7 @@ import java.util.Dictionary;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.search.ISearchEngine;
 import org.eclipse.help.search.ISearchScope;
 import org.eclipse.help.ui.ISearchScopeFactory;
@@ -109,7 +109,7 @@ public class EngineTypeDescriptor {
 					return (ISearchEngine)obj;
 			}
 			catch (CoreException e) {
-				Platform.getLog(getClass()).error("Engine " + eclass + " cannot be instantiated", null); //$NON-NLS-1$ //$NON-NLS-2$
+				ILog.of(getClass()).error("Engine " + eclass + " cannot be instantiated", null); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		return null;
@@ -127,7 +127,7 @@ public class EngineTypeDescriptor {
 					}
 				}
 				catch (CoreException e) {
-					Platform.getLog(getClass()).error("Scope factory " + fclass + " cannot be instantiated", //$NON-NLS-1$ //$NON-NLS-2$
+					ILog.of(getClass()).error("Scope factory " + fclass + " cannot be instantiated", //$NON-NLS-1$ //$NON-NLS-2$
 							null);
 				}
 			}

@@ -23,6 +23,7 @@ import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
@@ -109,7 +110,7 @@ public class MissingContentManager {
 				} catch (Exception e) {
 					// log and skip
 					String msg = "Exception reading " + ELEMENT_NAME_PLACEHOLDER + " extension in bundle" + pluginId; //$NON-NLS-1$ //$NON-NLS-2$
-					Platform.getLog(getClass()).error(msg, e);
+					ILog.of(getClass()).error(msg, e);
 				}
 			}
 		}
@@ -214,7 +215,7 @@ public class MissingContentManager {
 		try {
 			prefs.flush();
 		} catch (BackingStoreException e) {
-			Platform.getLog(getClass()).error("Cannot save preferences", e); //$NON-NLS-1$
+			ILog.of(getClass()).error("Cannot save preferences", e); //$NON-NLS-1$
 		}
 	}
 

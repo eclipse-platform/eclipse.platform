@@ -34,6 +34,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -101,7 +102,7 @@ public class LocalSearchManager {
 						participant.init(getId());
 					}
 				} catch (Throwable t) {
-					Platform.getLog(getClass()).error("Exception occurred creating Lucene search participant.", //$NON-NLS-1$
+					ILog.of(getClass()).error("Exception occurred creating Lucene search participant.", //$NON-NLS-1$
 							t);
 				}
 			}
@@ -139,7 +140,7 @@ public class LocalSearchManager {
 					participant.clear();
 				}
 				catch (Throwable t) {
-					Platform.getLog(getClass()).error("Error occured in search participant's clear() operation: " //$NON-NLS-1$
+					ILog.of(getClass()).error("Error occured in search participant's clear() operation: " //$NON-NLS-1$
 									+ participant.getClass().getName(), t);
 				}
 			}
@@ -172,7 +173,7 @@ public class LocalSearchManager {
 				list.add(new SearchHit(href, label, summary, score, null, id, participantId, isPotentialHit));
 			}
 			catch (IOException e) {
-				Platform.getLog(LocalSearchManager.class).error("An error occured while reading search hits", e); //$NON-NLS-1$
+				ILog.of(LocalSearchManager.class).error("An error occured while reading search hits", e); //$NON-NLS-1$
 				continue;
 			}
 		}
@@ -372,7 +373,7 @@ public class LocalSearchManager {
 				ids = gp.getContributingPlugins();
 			}
 			catch (Throwable t) {
-				Platform.getLog(getClass())
+				ILog.of(getClass())
 						.error("Error getting the contributing plugins from help search participant: " //$NON-NLS-1$
 						+ gp.getClass().getName() + ". skipping this one.", t); //$NON-NLS-1$
 				continue;
@@ -635,7 +636,7 @@ public class LocalSearchManager {
 		}
 		catch (IndexingException e) {
 			String msg = "Error indexing documents"; //$NON-NLS-1$
-			Platform.getLog(getClass()).error(msg, e);
+			ILog.of(getClass()).error(msg, e);
 		}
 	}
 

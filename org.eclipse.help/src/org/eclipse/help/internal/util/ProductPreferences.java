@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
@@ -347,7 +348,7 @@ public class ProductPreferences {
 					return properties;
 				} catch (IOException e) {
 					// log the fact that it couldn't load it
-					Platform.getLog(ProductPreferences.class)
+					ILog.of(ProductPreferences.class)
 							.error("Error opening product's plugin customization file: " + bundleId + "/" + path, e); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}

@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.help.ui.internal.browser;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.browser.IBrowser;
 import org.eclipse.help.ui.internal.Messages;
 import org.eclipse.help.ui.internal.util.ErrorUtil;
@@ -41,7 +41,7 @@ public class SystemBrowserAdapter implements IBrowser {
 	public void displayURL(String url) {
 		//		if (Constants.WS_WIN32.equalsIgnoreCase(Platform.getOS())) {
 		if (!Program.launch(url)) {
-			Platform.getLog(getClass())
+			ILog.of(getClass())
 					.error(
 							"Browser adapter for System Browser failed.  The system has no program registered for file " //$NON-NLS-1$
 									+ url

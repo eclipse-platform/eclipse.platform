@@ -16,6 +16,7 @@ package org.eclipse.help.ui.internal.preferences;
 
 import java.util.Iterator;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -281,7 +282,7 @@ public class HelpPreferencePage extends PreferencePage implements
 		try {
 			pref.flush();
 		} catch (BackingStoreException e) {
-			Platform.getLog(getClass()).error("Failed to save preferences", e); //$NON-NLS-1$
+			ILog.of(getClass()).error("Failed to save preferences", e); //$NON-NLS-1$
 		}
 
 		return true;

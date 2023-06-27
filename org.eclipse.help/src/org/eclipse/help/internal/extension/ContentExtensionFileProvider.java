@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.AbstractContentExtensionProvider;
 import org.eclipse.help.IContentExtension;
@@ -59,7 +60,7 @@ public class ContentExtensionFileProvider extends AbstractContentExtensionProvid
 				}
 				catch (Throwable t) {
 					String msg = "Error reading user assistance content extension file /\"" + bundleId + '/' + file + "\" (skipping file)"; //$NON-NLS-1$ //$NON-NLS-2$
-					Platform.getLog(getClass()).error(msg, t);
+					ILog.of(getClass()).error(msg, t);
 				}
 			}
 		}

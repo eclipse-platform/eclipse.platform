@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.webapp.AbstractFrame;
 
@@ -51,7 +52,7 @@ public class FrameData extends RequestData {
 				} catch (CoreException e) {
 
 
-					Platform.getLog(getClass()).error("Create extension failed:[" //$NON-NLS-1$
+					ILog.of(getClass()).error("Create extension failed:[" //$NON-NLS-1$
 							+ FRAME_EXTENSION_POINT + "].", e); //$NON-NLS-1$
 				}
 				if (obj instanceof AbstractFrame frame) {
@@ -95,7 +96,7 @@ public class FrameData extends RequestData {
 		AbstractFrame[] frames = getFrames(AbstractFrame.HELP_TOOLBAR);
 		if(frames.length > 0) {
 			if(frames.length > 1){
-				Platform.getLog(getClass()).warn("Only one extra frame is supported to be added to Help Toolbar. The first reterived element will be used.");  //$NON-NLS-1$
+				ILog.of(getClass()).warn("Only one extra frame is supported to be added to Help Toolbar. The first reterived element will be used.");  //$NON-NLS-1$
 			}
 			return frames[0];
 		}else {

@@ -19,7 +19,7 @@ import java.util.Hashtable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.browser.IBrowser;
 import org.eclipse.help.internal.browser.BrowserManager;
 import org.eclipse.help.ui.internal.Messages;
@@ -86,7 +86,7 @@ public class LaunchURL implements IWorkbenchWindowActionDelegate,
 		try {
 			browser.displayURL(url);
 		} catch (Exception e) {
-			Platform.getLog(getClass()).error("Exception occurred when opening URL: " //$NON-NLS-1$
+			ILog.of(getClass()).error("Exception occurred when opening URL: " //$NON-NLS-1$
 					+ url + ".", e); //$NON-NLS-1$
 			ErrorUtil.displayErrorDialog(Messages.LaunchURL_exception);
 		}

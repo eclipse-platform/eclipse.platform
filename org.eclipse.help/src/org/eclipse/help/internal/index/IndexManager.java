@@ -30,6 +30,7 @@ import java.util.StringTokenizer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.AbstractIndexProvider;
 import org.eclipse.help.IIndex;
@@ -94,10 +95,10 @@ public class IndexManager {
 				for (int j = 0; j < contrib.length; ++j) {
 					if (contrib[j] == null) {
 						String msg = "Help keyword index provider \"" + providers[i].getClass().getName() + "\" returned a null contribution (skipping)"; //$NON-NLS-1$ //$NON-NLS-2$
-						Platform.getLog(getClass()).error(msg);
+						ILog.of(getClass()).error(msg);
 					} else if (contrib[j].getIndex() == null) {
 						String msg = "Help keyword index provider \"" + providers[i].getClass().getName() + "\" returned a contribution with a null root element (expected a \"" + Index.NAME + "\" element; skipping)"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-						Platform.getLog(getClass()).error(msg);
+						ILog.of(getClass()).error(msg);
 					} else {
 						IndexContribution contribution = new IndexContribution();
 						contribution.setId(contrib[j].getId());
@@ -111,7 +112,7 @@ public class IndexManager {
 			} catch (Throwable t) {
 				// log, and skip the offending provider
 				String msg = "Error getting help keyword index data from provider: " + providers[i].getClass().getName() + " (skipping provider)"; //$NON-NLS-1$ //$NON-NLS-2$
-				Platform.getLog(getClass()).error(msg, t);
+				ILog.of(getClass()).error(msg, t);
 				continue;
 			}
 		}
@@ -146,7 +147,7 @@ public class IndexManager {
 					catch (CoreException e) {
 						// log and skip
 						String msg = "Error instantiating help keyword index provider class \"" + elem.getAttribute(ATTRIBUTE_NAME_CLASS) + '"'; //$NON-NLS-1$
-						Platform.getLog(getClass()).error(msg, e);
+						ILog.of(getClass()).error(msg, e);
 					}
 				}
 			}

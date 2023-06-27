@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.base.HelpBasePlugin;
 
@@ -181,7 +181,7 @@ public class SearchProgressMonitor implements IProgressMonitor {
 			} catch (Exception e) {
 				progressMonitors.remove(locale);
 				if (HelpBasePlugin.getDefault() != null) {
-					Platform.getLog(SearchProgressMonitor.class)
+					ILog.of(SearchProgressMonitor.class)
 							.error(
 							"Problem occurred during indexing of documentation.", e); //$NON-NLS-1$
 				} else {

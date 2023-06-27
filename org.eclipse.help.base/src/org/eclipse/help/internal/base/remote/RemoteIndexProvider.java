@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.AbstractIndexProvider;
 import org.eclipse.help.IIndexContribution;
 import org.eclipse.help.internal.base.util.ProxyUtil;
@@ -77,10 +77,10 @@ public class RemoteIndexProvider extends AbstractIndexProvider {
 						Collections.addAll(contributions, result);
 					} catch (IOException e) {
 						String msg = "I/O error while trying to contact the remote help server"; //$NON-NLS-1$
-						Platform.getLog(getClass()).error(msg, e);
+						ILog.of(getClass()).error(msg, e);
 					} catch (Throwable t) {
 						String msg = "Internal error while reading index contents from remote server"; //$NON-NLS-1$
-						Platform.getLog(getClass()).error(msg, t);
+						ILog.of(getClass()).error(msg, t);
 					} finally {
 						if (in != null) {
 							try {

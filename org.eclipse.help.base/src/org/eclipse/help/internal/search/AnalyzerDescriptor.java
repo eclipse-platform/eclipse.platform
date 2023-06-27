@@ -131,7 +131,7 @@ public class AnalyzerDescriptor {
 					return this.luceneAnalyzer;
 				}
 			} catch (CoreException ce) {
-				Platform.getLog(getClass()).error(
+				ILog.of(getClass()).error(
 						"Exception occurred creating text analyzer " //$NON-NLS-1$
 								+ configElement.getAttribute("class") + " for " + locale + " locale.", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 						ce);

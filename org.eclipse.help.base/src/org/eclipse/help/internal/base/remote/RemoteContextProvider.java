@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.AbstractContextProvider;
 import org.eclipse.help.IContext;
 import org.eclipse.help.internal.base.util.ProxyUtil;
@@ -84,10 +84,10 @@ public class RemoteContextProvider extends AbstractContextProvider {
 
 					} catch (IOException e) {
 						String msg = "I/O error while trying to contact the remote help server"; //$NON-NLS-1$
-						Platform.getLog(getClass()).error(msg, e);
+						ILog.of(getClass()).error(msg, e);
 					} catch (Throwable t) {
 						String msg = "Internal error while reading search results from remote server"; //$NON-NLS-1$
-						Platform.getLog(getClass()).error(msg, t);
+						ILog.of(getClass()).error(msg, t);
 					} finally {
 						if (in != null) {
 							try {

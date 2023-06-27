@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.IContext;
 import org.eclipse.help.IHelpResource;
@@ -200,7 +201,7 @@ public class HelpDisplay {
 			BaseHelpSystem.getHelpBrowser(forceExternal)
 						.displayURL(helpURL);
 		} catch (Exception e) {
-			Platform.getLog(getClass()).error("An exception occurred while launching help.  Check the log at " //$NON-NLS-1$
+			ILog.of(getClass()).error("An exception occurred while launching help.  Check the log at " //$NON-NLS-1$
 					+ Platform.getLogFileLocation().toOSString(), e);
 			BaseHelpSystem.getDefaultErrorUtil()
 					.displayError(
@@ -293,7 +294,7 @@ public class HelpDisplay {
 					helpDisplay = (AbstractHelpDisplay) (displayElement
 							.createExecutableExtension(HELP_DISPLAY_CLASS_ATTRIBUTE));
 				} catch (CoreException e) {
-					Platform.getLog(HelpDisplay.class).log(e.getStatus());
+					ILog.of(HelpDisplay.class).log(e.getStatus());
 				}
 			}
 		}

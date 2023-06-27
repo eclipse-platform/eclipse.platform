@@ -25,6 +25,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.IHelpContentProducer;
 import org.eclipse.help.internal.base.HelpBasePlugin;
@@ -122,9 +123,9 @@ public class StatusProducer implements IHelpContentProducer {
 								HelpURLStreamHandler.getDefault());
 					return ProxyUtil.getStream(helpURL);
 				} catch (MalformedURLException e) {
-					Platform.getLog(getClass()).error("Unable to locate error page: "+ errorPage, e); //$NON-NLS-1$
+					ILog.of(getClass()).error("Unable to locate error page: "+ errorPage, e); //$NON-NLS-1$
 				} catch (IOException e) {
-					Platform.getLog(getClass()).error("Unable to open error page: "+ errorPage, e); //$NON-NLS-1$
+					ILog.of(getClass()).error("Unable to open error page: "+ errorPage, e); //$NON-NLS-1$
 				}
 
 			}

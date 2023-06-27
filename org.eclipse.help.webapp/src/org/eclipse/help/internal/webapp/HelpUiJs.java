@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 
 public class HelpUiJs extends HttpServlet {
@@ -44,12 +45,12 @@ public class HelpUiJs extends HttpServlet {
             return loadTemplate(jsTemplateLocation);
         } catch (Exception e) {
             String msg = "Failed to load template file for 'index.js': " + jsTemplateLocation; //$NON-NLS-1$
-            Platform.getLog(HelpUiJs.class).error(msg, e);
+            ILog.of(HelpUiJs.class).error(msg, e);
             try {
                 return loadTemplate(JS_TEMPLATE_DEFAULT);
             } catch (Exception e2) {
                 String msg2 = "Failed to load default template file for 'index.js': " + JS_TEMPLATE_DEFAULT; //$NON-NLS-1$
-                Platform.getLog(HelpUiJs.class).error(msg2, e2);
+                ILog.of(HelpUiJs.class).error(msg2, e2);
                 return ""; //$NON-NLS-1$
             }
         }

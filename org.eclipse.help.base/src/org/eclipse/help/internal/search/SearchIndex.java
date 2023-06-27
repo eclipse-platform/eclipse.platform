@@ -64,6 +64,7 @@ import org.apache.lucene.store.NIOFSDirectory;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
@@ -323,7 +324,7 @@ public class SearchIndex implements IHelpSearchIndex {
 			iw = new IndexWriter(luceneDirectory, writerConfig);
 			return true;
 		} catch (IOException e) {
-			Platform.getLog(getClass()).error("Exception occurred in search indexing at beginAddBatch.", e); //$NON-NLS-1$
+			ILog.of(getClass()).error("Exception occurred in search indexing at beginAddBatch.", e); //$NON-NLS-1$
 			return false;
 		}
 	}
@@ -343,7 +344,7 @@ public class SearchIndex implements IHelpSearchIndex {
 			iw = new IndexWriter(luceneDirectory, new IndexWriterConfig(analyzerDescriptor.getAnalyzer()));
 			return true;
 		} catch (IOException e) {
-			Platform.getLog(getClass()).error("Exception occurred in search indexing at beginDeleteBatch.", e); //$NON-NLS-1$
+			ILog.of(getClass()).error("Exception occurred in search indexing at beginDeleteBatch.", e); //$NON-NLS-1$
 			return false;
 		}
 	}
@@ -362,7 +363,7 @@ public class SearchIndex implements IHelpSearchIndex {
 			}
 			return true;
 		} catch (IOException e) {
-			Platform.getLog(getClass()).error("Exception occurred in search indexing at beginDeleteBatch.", e); //$NON-NLS-1$
+			ILog.of(getClass()).error("Exception occurred in search indexing at beginDeleteBatch.", e); //$NON-NLS-1$
 			return false;
 		}
 	}
@@ -420,7 +421,7 @@ public class SearchIndex implements IHelpSearchIndex {
 			}
 			return true;
 		} catch (IOException e) {
-			Platform.getLog(getClass()).error("Exception occurred in search indexing at endAddBatch.", e); //$NON-NLS-1$
+			ILog.of(getClass()).error("Exception occurred in search indexing at endAddBatch.", e); //$NON-NLS-1$
 			return false;
 		}
 	}
@@ -452,7 +453,7 @@ public class SearchIndex implements IHelpSearchIndex {
 			}
 			return true;
 		} catch (IOException e) {
-			Platform.getLog(getClass()).error("Exception occurred in search indexing at endDeleteBatch.", e); //$NON-NLS-1$
+			ILog.of(getClass()).error("Exception occurred in search indexing at endDeleteBatch.", e); //$NON-NLS-1$
 			return false;
 		}
 	}
@@ -478,7 +479,7 @@ public class SearchIndex implements IHelpSearchIndex {
 			setInconsistent(false);
 			return true;
 		} catch (IOException e) {
-			Platform.getLog(getClass()).error("Exception occurred in search indexing at endDeleteBatch.", e); //$NON-NLS-1$
+			ILog.of(getClass()).error("Exception occurred in search indexing at endDeleteBatch.", e); //$NON-NLS-1$
 			return false;
 		}
 	}
@@ -512,7 +513,7 @@ public class SearchIndex implements IHelpSearchIndex {
 					NIOFSDirectory dir = new NIOFSDirectory(new File(indexPath).toPath());
 					dirList.add(dir);
 				} catch (IOException ioe) {
-					Platform.getLog(getClass()).error(
+					ILog.of(getClass()).error(
 							"Help search indexing directory could not be created for directory " + indexPath, ioe); //$NON-NLS-1$
 					continue;
 				}
@@ -558,7 +559,7 @@ public class SearchIndex implements IHelpSearchIndex {
 			iw.addIndexes(luceneDirs);
 			iw.forceMerge(1, true);
 		} catch (IOException ioe) {
-			Platform.getLog(getClass()).error("Merging search indexes failed.", ioe); //$NON-NLS-1$
+			ILog.of(getClass()).error("Merging search indexes failed.", ioe); //$NON-NLS-1$
 			return new HashMap<>();
 		}
 		return mergedDocs;
@@ -665,7 +666,7 @@ public class SearchIndex implements IHelpSearchIndex {
 		} catch (QueryTooComplexException qe) {
 			collector.addQTCException(qe);
 		} catch (Exception e) {
-			Platform.getLog(getClass()).error(
+			ILog.of(getClass()).error(
 					"Exception occurred performing search for: " //$NON-NLS-1$
 					+ searchQuery.getSearchWord() + ".", e); //$NON-NLS-1$
 		} finally {
@@ -998,7 +999,7 @@ public class SearchIndex implements IHelpSearchIndex {
 
 	private void logLockFailure(IOException ioe) {
 		if (!errorReported) {
-			Platform.getLog(getClass()).error("Unable to Lock Help Search Index", ioe); //$NON-NLS-1$
+			ILog.of(getClass()).error("Unable to Lock Help Search Index", ioe); //$NON-NLS-1$
 			errorReported = true;
 		}
 	}

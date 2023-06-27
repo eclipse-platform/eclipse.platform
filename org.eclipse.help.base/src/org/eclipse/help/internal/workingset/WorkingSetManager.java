@@ -39,6 +39,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -218,15 +219,15 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 
 				return true;
 			} catch (ParserConfigurationException pce) {
-				Platform.getLog(getClass()).error(
+				ILog.of(getClass()).error(
 						"DocumentBuilder implementation could not be loaded, to restore working set state.", pce); //$NON-NLS-1$
 				return false;
 			} catch (SAXException se) {
-				Platform.getLog(getClass()).error(
+				ILog.of(getClass()).error(
 								"Error occurred parsing file " + stateFile.toString() + ", while restoring working set state.", se); //$NON-NLS-1$ //$NON-NLS-2$
 				return false;
 			} catch (IOException ioe) {
-				Platform.getLog(getClass()).error(
+				ILog.of(getClass()).error(
 								"Error occurred parsing file " + stateFile.toString() + ", while restoring working set state.", ioe); //$NON-NLS-1$ //$NON-NLS-2$
 				return false;
 			}

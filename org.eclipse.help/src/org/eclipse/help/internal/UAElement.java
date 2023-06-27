@@ -28,7 +28,7 @@ import org.eclipse.core.expressions.ExpressionConverter;
 import org.eclipse.core.expressions.ExpressionTagNames;
 import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.IUAElement;
 import org.eclipse.help.internal.dynamic.FilterResolver;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
@@ -223,7 +223,7 @@ public class UAElement implements IUAElement {
 				}
 				catch (ParserConfigurationException e) {
 					String msg = "Error creating document builder"; //$NON-NLS-1$
-					Platform.getLog(UAElement.class).error(msg, e);
+					ILog.of(UAElement.class).error(msg, e);
 				}
 			}
 			document = builder.newDocument();

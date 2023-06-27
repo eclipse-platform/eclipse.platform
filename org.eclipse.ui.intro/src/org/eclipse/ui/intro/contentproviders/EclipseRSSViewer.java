@@ -34,6 +34,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -179,7 +180,7 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 			try {
 				url = new URL(getParameter("url")); //$NON-NLS-1$
 			} catch (MalformedURLException e) {
-				Platform.getLog(getClass()).error("Bad URL: " + url, e); //$NON-NLS-1$
+				ILog.of(getClass()).error("Bad URL: " + url, e); //$NON-NLS-1$
 			}
 			if (url != null) {
 				out.println("<p><span class=\"rss-feed-link\">"); //$NON-NLS-1$
@@ -505,7 +506,7 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 				}
 
 			} catch (Exception e) {
-				Platform.getLog(getClass()).error(NLS.bind(Messages.RSS_Malformed_feed, getParameter("url"))); //$NON-NLS-1$
+				ILog.of(getClass()).error(NLS.bind(Messages.RSS_Malformed_feed, getParameter("url"))); //$NON-NLS-1$
 				refresh();
 			} finally {
 				threadRunning = false;
@@ -522,7 +523,7 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 			try{
 				Thread.sleep(SOCKET_TIMEOUT);
 			}catch(Exception ex){
-				Platform.getLog(getClass()).error("Timeout failed.", ex); //$NON-NLS-1$
+				ILog.of(getClass()).error("Timeout failed.", ex); //$NON-NLS-1$
 			}
 			if (threadRunning)
 			{

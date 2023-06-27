@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -209,6 +210,6 @@ public class TipsStartupService implements EventHandler {
 
 	private static void log(CoreException e) {
 		Bundle bundle = FrameworkUtil.getBundle(TipsStartupService.class);
-		Platform.getLog(bundle).error(e.getMessage(), e);
+		ILog.of(bundle).error(e.getMessage(), e);
 	}
 }

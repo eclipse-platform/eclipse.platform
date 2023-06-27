@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.AbstractContentExtensionProvider;
 import org.eclipse.help.IContentExtension;
 import org.eclipse.help.internal.UAElement;
@@ -69,10 +69,10 @@ public class RemoteExtensionProvider extends AbstractContentExtensionProvider {
 						Collections.addAll(contributions, children);
 					} catch (IOException e) {
 						String msg = "I/O error while trying to contact the remote help server"; //$NON-NLS-1$
-						Platform.getLog(getClass()).error(msg, e);
+						ILog.of(getClass()).error(msg, e);
 					} catch (Throwable t) {
 						String msg = "Internal error while reading topic extensions from remote server"; //$NON-NLS-1$
-						Platform.getLog(getClass()).error(msg, t);
+						ILog.of(getClass()).error(msg, t);
 					} finally {
 						if (in != null) {
 							try {

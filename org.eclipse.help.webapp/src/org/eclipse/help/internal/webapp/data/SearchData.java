@@ -30,6 +30,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.HelpSystem;
 import org.eclipse.help.IHelpResource;
@@ -452,7 +453,7 @@ public class SearchData extends ActivitiesData {
 						results, pm);
 				hits = results.getSearchHits();
 				if (hits == null) {
-					Platform.getLog(getClass()).warn("No search results returned.  Help index is in use."); //$NON-NLS-1$
+					ILog.of(getClass()).warn("No search results returned.  Help index is in use."); //$NON-NLS-1$
 				}
 				return;
 			}

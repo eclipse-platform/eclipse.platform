@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -132,7 +133,7 @@ public class BrowserManager {
 
 								@Override
 								public void displayURL(String url) {
-											Platform.getLog(getClass())
+											ILog.of(getClass())
 													.error(
 													"There is no browser adapter configured to display " //$NON-NLS-1$
 															+ url

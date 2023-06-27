@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -179,7 +180,7 @@ public class HelpData {
 			}
 			catch (Throwable t) {
 				String msg = "Error loading help data file \"" + url + "\""; //$NON-NLS-1$ //$NON-NLS-2$
-				Platform.getLog(getClass()).error(msg, t);
+				ILog.of(getClass()).error(msg, t);
 			}
 		} else {
 			// Derive information from preferences

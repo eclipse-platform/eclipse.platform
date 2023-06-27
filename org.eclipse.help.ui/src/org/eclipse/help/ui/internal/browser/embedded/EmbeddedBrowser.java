@@ -21,6 +21,7 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
@@ -400,7 +401,7 @@ public class EmbeddedBrowser {
 				}
 				catch (Throwable t) {
 					String msg = "Error opening external Web browser"; //$NON-NLS-1$
-					Platform.getLog(getClass()).error(msg, t);
+					ILog.of(getClass()).error(msg, t);
 				}
 				externalShell.getDisplay().asyncExec(() -> externalShell.dispose());
 			}

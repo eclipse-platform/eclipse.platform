@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.http.jetty.JettyConfigurator;
 import org.eclipse.equinox.http.jetty.JettyConstants;
@@ -146,7 +147,7 @@ public class JettyHelpServer extends HelpServer {
 			execute(stopRunnable);
 		}
 		catch (Exception e) {
-			Platform.getLog(getClass()).error("An error occured while stopping the help server", e); //$NON-NLS-1$
+			ILog.of(getClass()).error("An error occured while stopping the help server", e); //$NON-NLS-1$
 		}
 	}
 
@@ -190,7 +191,7 @@ public class JettyHelpServer extends HelpServer {
 				}
 				catch (NumberFormatException e) {
 					String msg = "Help server port specified in VM arguments is invalid (" + portCommandLineOverride + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-					Platform.getLog(getClass()).error(msg, e);
+					ILog.of(getClass()).error(msg, e);
 				}
 			}
 		}

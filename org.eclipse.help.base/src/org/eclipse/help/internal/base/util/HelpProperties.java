@@ -73,7 +73,7 @@ public class HelpProperties extends Properties {
 			super.load(in);
 			loaded = true;
 		} catch (IOException ioe00) {
-			Platform.getLog(getClass()).error("File " + file.getName() + " cannot be read."); //$NON-NLS-1$ //$NON-NLS-2$
+			ILog.of(getClass()).error("File " + file.getName() + " cannot be read."); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return loaded;
 	}
@@ -89,7 +89,7 @@ public class HelpProperties extends Properties {
 			super.store(out, "This is a generated file; do not edit."); //$NON-NLS-1$
 			ret = true;
 		} catch (IOException ioe00) {
-			Platform.getLog(getClass()).error("Exception occurred while saving table " + name //$NON-NLS-1$
+			ILog.of(getClass()).error("Exception occurred while saving table " + name //$NON-NLS-1$
 					+ " to file " + file.getAbsolutePath() + ".", ioe00); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return ret;

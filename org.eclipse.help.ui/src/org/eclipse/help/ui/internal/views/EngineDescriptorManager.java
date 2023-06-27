@@ -33,6 +33,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.ui.internal.HelpUIPlugin;
@@ -123,7 +124,7 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 			writer.println("</engines>"); //$NON-NLS-1$
 			writer.flush();
 		} catch (IOException e) {
-			Platform.getLog(getClass()).error(Messages.EngineDescriptorManager_errorSaving, e);
+			ILog.of(getClass()).error(Messages.EngineDescriptorManager_errorSaving, e);
 		}
 	}
 
@@ -135,7 +136,7 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 			load(fileName);
 		}
 		catch (IOException e) {
-			Platform.getLog(getClass()).error(Messages.EngineDescriptorManager_errorLoading, e);
+			ILog.of(getClass()).error(Messages.EngineDescriptorManager_errorLoading, e);
 		}
 	}
 

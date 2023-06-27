@@ -170,7 +170,7 @@ public class MozillaBrowserAdapter implements IBrowser {
 				return ret;
 			} catch (InterruptedException e) {
 			} catch (IOException e) {
-				Platform.getLog(getClass()).error("Launching " + executableName + " has failed.", e); //$NON-NLS-1$ //$NON-NLS-2$
+				ILog.of(getClass()).error("Launching " + executableName + " has failed.", e); //$NON-NLS-1$ //$NON-NLS-2$
 				String msg = NLS.bind(HelpBaseResources.MozillaBrowserAdapter_executeFailed, executableName);
 				BaseHelpSystem.getDefaultErrorUtil()
 						.displayError(msg, uiThread);

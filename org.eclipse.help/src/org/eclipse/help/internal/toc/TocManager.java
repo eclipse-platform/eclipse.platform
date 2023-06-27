@@ -27,6 +27,7 @@ import java.util.StringTokenizer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.AbstractTocProvider;
 import org.eclipse.help.IToc;
@@ -81,7 +82,7 @@ public class TocManager {
 				catch (Throwable t) {
 					// log and skip
 					String msg = "Error getting " + Toc.class.getName() + " from " + ITocContribution.class.getName() + ": " + ordered[i]; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					Platform.getLog(getClass()).error(msg, t);
+					ILog.of(getClass()).error(msg, t);
 				}
 			}
 			tocs = orderedTocs.toArray(new Toc[orderedTocs.size()]);
@@ -231,7 +232,7 @@ public class TocManager {
 				catch (Throwable t) {
 					// log, and skip the offending provider
 					String msg = "Error getting help table of contents data from provider: " + providers[i].getClass().getName() + " (skipping provider)"; //$NON-NLS-1$ //$NON-NLS-2$
-					Platform.getLog(getClass()).error(msg, t);
+					ILog.of(getClass()).error(msg, t);
 					continue;
 				}
 
@@ -273,7 +274,7 @@ public class TocManager {
 					catch (CoreException e) {
 						// log and skip
 						String msg = "Error instantiating help table of contents provider class \"" + elem.getAttribute(ATTRIBUTE_NAME_CLASS) + '"'; //$NON-NLS-1$
-						Platform.getLog(getClass()).error(msg, e);
+						ILog.of(getClass()).error(msg, e);
 					}
 				}
 			}

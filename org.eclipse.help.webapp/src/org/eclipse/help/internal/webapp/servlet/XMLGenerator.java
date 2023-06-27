@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.internal.base.util.TString;
 
 /**
@@ -65,7 +65,7 @@ public class XMLGenerator {
 			);
 			println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
 		} catch (IOException ioe) {
-			Platform.getLog(getClass()).error("Error accessing file: " + outFile.getAbsolutePath() + "", ioe); //$NON-NLS-1$ //$NON-NLS-2$
+			ILog.of(getClass()).error("Error accessing file: " + outFile.getAbsolutePath() + "", ioe); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
@@ -82,7 +82,7 @@ public class XMLGenerator {
 		out.close();
 		if (out.checkError()) {
 			if (outFile != null) {
-				Platform.getLog(getClass()).error("Errors occurred generating file: " + outFile.getAbsolutePath() + "", null); //$NON-NLS-1$ //$NON-NLS-2$
+				ILog.of(getClass()).error("Errors occurred generating file: " + outFile.getAbsolutePath() + "", null); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		out = null;

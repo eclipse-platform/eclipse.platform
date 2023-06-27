@@ -16,7 +16,7 @@ package org.eclipse.help.ui.internal.views;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.ui.internal.IHelpUIConstants;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
@@ -43,7 +43,7 @@ public class ScopePreferenceManager extends PreferenceManager implements IHelpUI
 				page.setTitle(getLabelText());
 			}
 			catch (CoreException e) {
-				Platform.getLog(getClass()).error("Unable to create executable extension", e); //$NON-NLS-1$
+				ILog.of(getClass()).error("Unable to create executable extension", e); //$NON-NLS-1$
 			}
 		}
 	}

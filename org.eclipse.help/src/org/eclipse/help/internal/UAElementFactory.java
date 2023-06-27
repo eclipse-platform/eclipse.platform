@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.IAnchor;
 import org.eclipse.help.ICommandLink;
 import org.eclipse.help.IContentExtension;
@@ -112,7 +112,7 @@ public class UAElementFactory {
 			}
 			catch (Exception e) {
 				String msg = "Error creating document model element"; //$NON-NLS-1$
-				Platform.getLog(UAElementFactory.class).error(msg, e);
+				ILog.of(UAElementFactory.class).error(msg, e);
 			}
 		}
 		return new UAElement(element);
@@ -129,7 +129,7 @@ public class UAElementFactory {
 				}
 				catch (Exception e) {
 					String msg = "Error creating document model element"; //$NON-NLS-1$
-					Platform.getLog(UAContentFilter.class).error(msg, e);
+					ILog.of(UAContentFilter.class).error(msg, e);
 				}
 			}
 		}

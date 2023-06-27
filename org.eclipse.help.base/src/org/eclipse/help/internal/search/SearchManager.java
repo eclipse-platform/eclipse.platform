@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -132,7 +133,7 @@ public class SearchManager {
 		}
 		catch (InterruptedException e) {
 			String msg = "Unexpected InterruptedException while waiting for help search jobs to finish"; //$NON-NLS-1$
-			Platform.getLog(getClass()).error(msg, e);
+			ILog.of(getClass()).error(msg, e);
 		}
 
 		// results are in; send them off to the collector

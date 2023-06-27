@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.AbstractIndexProvider;
 import org.eclipse.help.IIndexContribution;
@@ -58,12 +59,12 @@ public class IndexFileProvider extends AbstractIndexProvider {
 				Exception x = spe;
 				if (spe.getException() != null)
 					x = spe.getException();
-				Platform.getLog(getClass()).error(buffer.toString(), x);
+				ILog.of(getClass()).error(buffer.toString(), x);
 
 			}
 			catch (Throwable t) {
 				String msg = ERROR_READING_HELP_KEYWORD_INDEX_FILE + getIndexFilePath(indexFile) + "\" (skipping file)"; //$NON-NLS-1$
-				Platform.getLog(getClass()).error(msg, t);
+				ILog.of(getClass()).error(msg, t);
 			}
 		}
 		return contributions.toArray(new IIndexContribution[contributions.size()]);

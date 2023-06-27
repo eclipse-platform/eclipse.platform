@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.base.MissingContentManager;
@@ -215,7 +215,7 @@ public class EclipseConnector {
 
 		} catch (Exception e) {
 			String msg = "Error processing help request " + url; //$NON-NLS-1$
-			Platform.getLog(getClass()).error(msg, e);
+			ILog.of(getClass()).error(msg, e);
 		}
 	}
 

@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.AbstractTocProvider;
 import org.eclipse.help.ITocContribution;
 import org.eclipse.help.internal.base.util.ProxyUtil;
@@ -118,7 +118,7 @@ public class RemoteTocProvider extends AbstractTocProvider {
 						}
 					} catch (Throwable t) {
 						String msg = "Internal error while reading TOC contents from remote server"; //$NON-NLS-1$
-						Platform.getLog(getClass()).error(msg, t);
+						ILog.of(getClass()).error(msg, t);
 						RemoteHelp.setError(t);
 					} finally {
 						if (in != null) {

@@ -25,6 +25,7 @@ import java.util.Properties;
 
 import org.apache.lucene.util.Version;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.base.util.ProxyUtil;
@@ -91,7 +92,7 @@ public class PluginIndex {
 			try {
 				resolved = FileLocator.resolve(url);
 			} catch (IOException ioe) {
-				Platform.getLog(getClass()).error(
+				ILog.of(getClass()).error(
 						"Help index directory at " //$NON-NLS-1$
 						+ prefixedPath + " for plugin " //$NON-NLS-1$
 						+ bundle.getSymbolicName() + " cannot be resolved.", //$NON-NLS-1$
@@ -118,7 +119,7 @@ public class PluginIndex {
 						}
 					}
 				} catch (IOException ioe) {
-					Platform.getLog(getClass())
+					ILog.of(getClass())
 							.error("Help index directory at " + prefixedPath + " for plugin " + bundle.getSymbolicName() //$NON-NLS-1$ //$NON-NLS-2$
 									+ " cannot be resolved.", ioe); //$NON-NLS-1$
 					continue;
@@ -126,7 +127,7 @@ public class PluginIndex {
 			}
 		}
 		if (!found) {
-			Platform.getLog(getClass()).error("Help index declared, but missing for plugin " + getPluginId() + ".");//$NON-NLS-1$ //$NON-NLS-2$
+			ILog.of(getClass()).error("Help index declared, but missing for plugin " + getPluginId() + ".");//$NON-NLS-1$ //$NON-NLS-2$
 
 		}
 	}
@@ -134,7 +135,7 @@ public class PluginIndex {
 	public boolean isCompatible(Bundle bundle, IPath prefixedPath) {
 		URL url = FileLocator.find(bundle, prefixedPath.append(SearchIndex.DEPENDENCIES_VERSION_FILENAME), null);
 		if (url == null) {
-			Platform.getLog(getClass()).error(
+			ILog.of(getClass()).error(
 					prefixedPath.append(SearchIndex.DEPENDENCIES_VERSION_FILENAME) + " file missing from help index \"" //$NON-NLS-1$
 							+ path + "\" of plugin " + getPluginId(), //$NON-NLS-1$
 					null);
@@ -150,13 +151,13 @@ public class PluginIndex {
 			if (!targetIndex.isLuceneCompatible(lucene) || !targetIndex.isAnalyzerCompatible(analyzer)) {
 				String message = "Unable to consume Lucene index from bundle '" + bundle.toString() //$NON-NLS-1$
 						+ "'. The index should be rebuilt with Lucene " + Version.LATEST; //$NON-NLS-1$
-				Platform.getLog(getClass()).warn(message);
+				ILog.of(getClass()).warn(message);
 				return false;
 			}
 		} catch (MalformedURLException mue) {
 			return false;
 		} catch (IOException ioe) {
-			Platform.getLog(getClass()).error(
+			ILog.of(getClass()).error(
 					"IOException accessing prebuilt index.", ioe); //$NON-NLS-1$
 		}
 		return true;

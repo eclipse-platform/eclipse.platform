@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.HelpSystem;
 import org.eclipse.help.ICommandLink;
@@ -387,7 +388,7 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 			getSection().layout();
 			getManagedForm().reflow(true);
 		} catch (Exception e) {
-			Platform.getLog(getClass()).error("Error displaying context help text " + helpText, e); //$NON-NLS-1$
+			ILog.of(getClass()).error("Error displaying context help text " + helpText, e); //$NON-NLS-1$
 		}
 	}
 

@@ -34,7 +34,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.HelpSystem;
 import org.eclipse.help.IToc;
 import org.eclipse.help.ITopic;
@@ -138,7 +138,7 @@ public class PrintData extends RequestData {
 			try {
 				allowedConnections = Integer.parseInt(maxConnections);
 			} catch (NumberFormatException e) {
-				Platform.getLog(PrintData.class).error("Init maxConnections error. Set to default.", e); //$NON-NLS-1$
+				ILog.of(PrintData.class).error("Init maxConnections error. Set to default.", e); //$NON-NLS-1$
 				allowedConnections = defaultMaxConnections;
 			}
 		}
@@ -151,7 +151,7 @@ public class PrintData extends RequestData {
 			try {
 				allowedMaxTopics = Integer.parseInt(maxTopics);
 			} catch (NumberFormatException e) {
-				Platform.getLog(PrintData.class).error("Init maxTopics error. Set to default.", e); //$NON-NLS-1$
+				ILog.of(PrintData.class).error("Init maxTopics error. Set to default.", e); //$NON-NLS-1$
 				allowedMaxTopics = defaultMaxTopics;
 			}
 		}
@@ -411,7 +411,7 @@ public class PrintData extends RequestData {
 			}
 			catch (Exception e) {
 				String msg = "Error retrieving print preview content for " + href; //$NON-NLS-1$
-				Platform.getLog(getClass()).error(msg, e);
+				ILog.of(getClass()).error(msg, e);
 			}
 			finally {
 				try {

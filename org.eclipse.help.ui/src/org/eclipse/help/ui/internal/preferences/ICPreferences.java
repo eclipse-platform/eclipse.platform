@@ -19,7 +19,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -97,7 +97,7 @@ public class ICPreferences {
 						"true".equalsIgnoreCase(states[i])); //$NON-NLS-1$
 					ics.add(ic);
 				} catch (MalformedURLException e) {
-					Platform.getLog(ICPreferences.class).error(e.getMessage(), e);
+					ILog.of(ICPreferences.class).error(e.getMessage(), e);
 				}
 			}
 		}

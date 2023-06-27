@@ -16,6 +16,7 @@ package org.eclipse.help;
 
 import org.eclipse.core.expressions.EvaluationContext;
 import org.eclipse.core.expressions.IEvaluationContext;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 
 /**
@@ -84,7 +85,7 @@ public class UAContentFilter {
 			}
 			catch (Throwable t) {
 				String msg = "Error while checking element filter"; //$NON-NLS-1$
-				Platform.getLog(UAContentFilter.class).error(msg, t);
+				ILog.of(UAContentFilter.class).error(msg, t);
 			}
 		}
 		return false;

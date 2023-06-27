@@ -23,6 +23,7 @@ import java.util.Stack;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.base.AbstractHelpScope;
 import org.eclipse.help.base.IHelpScopeProducer;
@@ -82,7 +83,7 @@ public class ScopeRegistry {
 			try {
 				obj = element.createExecutableExtension("class"); //$NON-NLS-1$
 			} catch (CoreException e) {
-				Platform.getLog(getClass()).error("Create extension failed:[" + SCOPE_XP_NAME + "].", e); //$NON-NLS-1$ //$NON-NLS-2$
+				ILog.of(getClass()).error("Create extension failed:[" + SCOPE_XP_NAME + "].", e); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			if (obj instanceof AbstractHelpScope) {
 				String id = element.getAttribute("id"); //$NON-NLS-1$

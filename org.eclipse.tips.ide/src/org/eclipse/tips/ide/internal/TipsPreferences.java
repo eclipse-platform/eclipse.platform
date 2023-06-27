@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -196,7 +197,7 @@ public class TipsPreferences extends AbstractPreferenceInitializer {
 	public static void log(IStatus status) {
 		if (status.matches(IStatus.ERROR | IStatus.WARNING) || isDebug()) {
 			Bundle bundle = FrameworkUtil.getBundle(TipsPreferences.class);
-			Platform.getLog(bundle).log(status);
+			ILog.of(bundle).log(status);
 		}
 		if (isConsoleLog()) {
 			System.out.println(

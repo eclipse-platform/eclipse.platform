@@ -24,6 +24,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.AbstractContextProvider;
 import org.eclipse.help.IContext;
@@ -77,7 +78,7 @@ public class ContextManager {
 				catch (Throwable t) {
 					// log and skip
 					String msg = "Error querying context provider (" + provider.getClass().getName() + ") with context Id: " + contextId; //$NON-NLS-1$ //$NON-NLS-2$
-					Platform.getLog(getClass()).error(msg, t);
+					ILog.of(getClass()).error(msg, t);
 				}
 			}
 		}
@@ -163,7 +164,7 @@ public class ContextManager {
 				catch (CoreException e) {
 					// log and skip
 					String msg = "Error instantiating context-sensitive help provider class \"" + elem.getAttribute(ATTRIBUTE_NAME_CLASS) + '"'; //$NON-NLS-1$
-					Platform.getLog(getClass()).error(msg, e);
+					ILog.of(getClass()).error(msg, e);
 				}
 			}
 		}

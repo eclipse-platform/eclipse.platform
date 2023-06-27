@@ -15,8 +15,8 @@ package org.eclipse.help.internal.search;
 
 import java.io.InputStream;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.xhtml.DynamicXHTMLProcessor;
 import org.eclipse.help.search.SearchParticipantXML;
 import org.xml.sax.Attributes;
@@ -102,7 +102,7 @@ public class XHTMLSearchParticipant extends SearchParticipantXML {
 		}
 		catch (Throwable t) {
 			String msg = "An error occured while pre-processing help XHTML document \"" + name + "\" for search indexing"; //$NON-NLS-1$ //$NON-NLS-2$
-			Platform.getLog(getClass()).error(msg, t);
+			ILog.of(getClass()).error(msg, t);
 			return in;
 		}
 	}

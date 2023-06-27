@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.help.ui.internal;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.IContext;
 import org.eclipse.help.IContext2;
@@ -410,7 +411,7 @@ public class ContextHelpDialog {
 										.toString());
 			}
 		} catch (Throwable e) {
-			Platform.getLog(getClass()).error("An error occurred when opening context-sensitive help pop-up.", e); //$NON-NLS-1$
+			ILog.of(getClass()).error("An error occurred when opening context-sensitive help pop-up.", e); //$NON-NLS-1$
 		}
 	}
 

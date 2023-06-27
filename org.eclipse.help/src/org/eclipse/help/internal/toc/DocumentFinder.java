@@ -27,6 +27,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.util.ResourceLocator;
@@ -87,14 +88,14 @@ public class DocumentFinder {
 				return result;
 			}
 		} catch (IOException ioe) {
-			Platform.getLog(DocumentFinder.class).error("IOException occurred, when resolving URL " //$NON-NLS-1$
+			ILog.of(DocumentFinder.class).error("IOException occurred, when resolving URL " //$NON-NLS-1$
 					+ url.toString() + ".", ioe); //$NON-NLS-1$
 			return result;
 		}
 		try (ZipFile zipFile = new ZipFile(realZipURL.getFile())) {
 			result = createExtraTopicsFromZipFile(pluginID, zipFile, directory);
 		} catch (IOException ioe) {
-			Platform.getLog(DocumentFinder.class).error(
+			ILog.of(DocumentFinder.class).error(
 					"IOException occurred, when accessing Zip file " //$NON-NLS-1$
 							+ realZipURL.getFile()
 							+ ".  File might not be locally available.", ioe); //$NON-NLS-1$

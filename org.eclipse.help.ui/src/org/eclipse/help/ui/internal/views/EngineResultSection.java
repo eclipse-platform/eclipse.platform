@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.IHelpResource;
@@ -219,7 +220,7 @@ public class EngineResultSection {
 				try {
 					page.showView(PROGRESS_VIEW);
 				} catch (PartInitException e) {
-					Platform.getLog(getClass()).error(Messages.EngineResultSection_progressError, e);
+					ILog.of(getClass()).error(Messages.EngineResultSection_progressError, e);
 				}
 			}
 		}

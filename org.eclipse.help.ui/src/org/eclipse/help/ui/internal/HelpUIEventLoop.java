@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.help.ui.internal;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.internal.base.HelpApplication;
 import org.eclipse.swt.widgets.Display;
 
@@ -49,7 +49,7 @@ public class HelpUIEventLoop {
 						display.sleep();
 					}
 				} catch (Throwable t) {
-					Platform.getLog(HelpUIEventLoop.class).error(t.getMessage(), t);
+					ILog.of(HelpUIEventLoop.class).error(t.getMessage(), t);
 				}
 			}
 			display.dispose();

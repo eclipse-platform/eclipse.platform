@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.AbstractTocProvider;
@@ -62,7 +63,7 @@ public class TocFileProvider extends AbstractTocProvider {
 					+ ResourceLocator.getErrorPath(pluginId, file, locale)
 					+ locationInfo
 					+ "\" (skipping file)"; //$NON-NLS-1$
-				Platform.getLog(getClass()).error(msg, t);
+				ILog.of(getClass()).error(msg, t);
 			}
 		}
 		return contributions.toArray(new ITocContribution[contributions.size()]);

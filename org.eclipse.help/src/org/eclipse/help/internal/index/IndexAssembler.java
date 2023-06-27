@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.IIndexEntry;
 import org.eclipse.help.ITopic;
 import org.eclipse.help.IUAElement;
@@ -304,7 +304,7 @@ public class IndexAssembler {
 					}
 					else {
 						String msg = "Unable to look up label for help keyword index topic \"" + topic.getHref() + "\" with missing \"" + Topic.ATTRIBUTE_LABEL + "\" attribute (topic does not exist in table of contents; using href as label)"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-						Platform.getLog(getClass()).error(msg);
+						ILog.of(getClass()).error(msg);
 						topic.setLabel(topic.getHref());
 					}
 				}

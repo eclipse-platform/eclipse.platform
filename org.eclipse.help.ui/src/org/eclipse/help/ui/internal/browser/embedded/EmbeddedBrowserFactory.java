@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.eclipse.help.ui.internal.browser.embedded;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -84,7 +85,7 @@ public class EmbeddedBrowserFactory implements IBrowserFactory {
 				} else {
 					Status errorStatus = new Status(IStatus.WARNING, HelpUIPlugin.PLUGIN_ID, IStatus.OK,
 							"An error occurred during creation of embedded help browser.", new Exception(se)); //$NON-NLS-1$
-					Platform.getLog(getClass()).log(errorStatus);
+					ILog.of(getClass()).log(errorStatus);
 				}
 			} catch (Exception e) {
 				// Browser not implemented

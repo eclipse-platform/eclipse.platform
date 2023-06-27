@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.AbstractCriteriaProvider;
 import org.eclipse.help.ICriteria;
@@ -63,7 +64,7 @@ public class CriteriaProviderRegistry {
 			try {
 				obj = elements[i].createExecutableExtension("class"); //$NON-NLS-1$
 			} catch (CoreException e) {
-				Platform.getLog(getClass()).error("Create extension failed:[" //$NON-NLS-1$
+				ILog.of(getClass()).error("Create extension failed:[" //$NON-NLS-1$
 						+ PROVIDER_XP_NAME + "].", e); //$NON-NLS-1$
 			}
 			if (obj instanceof AbstractCriteriaProvider) {

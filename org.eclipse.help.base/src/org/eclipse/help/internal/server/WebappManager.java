@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.server.HelpServer;
 
@@ -70,7 +71,7 @@ public class WebappManager {
 					server = (HelpServer) (serverElement
 							.createExecutableExtension(SERVER_CLASS_ATTRIBUTE));
 				} catch (CoreException e) {
-					Platform.getLog(WebappManager.class).log(e.getStatus());
+					ILog.of(WebappManager.class).log(e.getStatus());
 				}
 			}
 		}

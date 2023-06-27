@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.HelpSystem;
@@ -166,7 +167,7 @@ public final class BaseHelpSystem {
 			});
 		}
 		catch (Exception e) {
-			Platform.getLog(BaseHelpSystem.class).error("Error launching help.", e); //$NON-NLS-1$
+			ILog.of(BaseHelpSystem.class).error("Error launching help.", e); //$NON-NLS-1$
 		}
 
 		/*
@@ -183,7 +184,7 @@ public final class BaseHelpSystem {
 				// start the help web app
 				WebappManager.start("help"); //$NON-NLS-1$
 			} catch (Exception e) {
-				Platform.getLog(BaseHelpSystem.class).error(HelpBaseResources.HelpWebappNotStarted, e);
+				ILog.of(BaseHelpSystem.class).error(HelpBaseResources.HelpWebappNotStarted, e);
 				return false;
 			}
 			getInstance().webappRunning = true;

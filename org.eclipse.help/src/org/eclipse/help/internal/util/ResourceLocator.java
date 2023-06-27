@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionDelta;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.IHelpContentProducer;
@@ -83,7 +84,7 @@ public class ResourceLocator {
 					if (o instanceof IHelpContentProducer)
 						producer = (IHelpContentProducer) o;
 				} catch (CoreException ce) {
-					Platform.getLog(getClass())
+					ILog.of(getClass())
 							.error("Exception occurred creating help content producer for plug-in " //$NON-NLS-1$
 									+ config.getContributor().getName() + ".", ce); //$NON-NLS-1$
 				}
@@ -190,7 +191,7 @@ public class ResourceLocator {
 				continue;
 			}
 			if (keys.contains(key)) {
-				Platform.getLog(ResourceLocator.class).warn(
+				ILog.of(ResourceLocator.class).warn(
 						"Extension " + CONTENTPRODUCER_XP_FULLNAME + //$NON-NLS-1$
 						"in " + pluginName + " contains more than  <" //$NON-NLS-1$ //$NON-NLS-2$
 						+ CONTENTPRODUCER_XP_NAME + "> or <" //$NON-NLS-1$

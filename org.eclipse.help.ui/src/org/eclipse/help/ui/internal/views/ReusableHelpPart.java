@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.help.IContext;
@@ -1359,7 +1360,7 @@ public class ReusableHelpPart implements IHelpUIConstants, IActivityManagerListe
 				PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(aurl);
 
 			} catch (Exception e) {
-				Platform.getLog(getClass()).error("Error opening browser", e); //$NON-NLS-1$
+				ILog.of(getClass()).error("Error opening browser", e); //$NON-NLS-1$
 			}
 		}
 	}

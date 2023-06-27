@@ -19,8 +19,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.ui.internal.HelpUIPlugin;
 import org.eclipse.help.ui.internal.Messages;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -88,7 +88,7 @@ public class ScopeSet {
 			}
 			catch (IOException e) {
 				String message = Messages.bind(Messages.ScopeSet_errorLoading, name);
-				Platform.getLog(getClass()).error(message, e);
+				ILog.of(getClass()).error(message, e);
 			}
 		}
 		return preferenceStore;
@@ -156,7 +156,7 @@ public class ScopeSet {
 				preferenceStore.save();
 			} catch (IOException e) {
 				String message = Messages.bind(Messages.ScopeSet_errorSaving, name);
-				Platform.getLog(getClass()).error(message, e);
+				ILog.of(getClass()).error(message, e);
 			}
 		}
 		this.name = name;
@@ -173,7 +173,7 @@ public class ScopeSet {
 			}
 			catch (IOException e) {
 				String message = Messages.bind(Messages.ScopeSet_errorSaving, name);
-				Platform.getLog(getClass()).error(message, e);
+				ILog.of(getClass()).error(message, e);
 			}
 		}
 	}

@@ -17,7 +17,7 @@ package org.eclipse.ua.tests.doc.internal.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.internal.toc.Toc;
 import org.eclipse.help.internal.validation.TocValidator;
 import org.eclipse.help.internal.validation.TocValidator.BrokenLink;
@@ -43,7 +43,7 @@ public class CheckTocAction implements IWorkbenchWindowActionDelegate {
 	}
 
 	private static void reportStatus(String errorMessage) {
-		Platform.getLog(CheckTocAction.class).warn(errorMessage);
+		ILog.of(CheckTocAction.class).warn(errorMessage);
 	}
 
 

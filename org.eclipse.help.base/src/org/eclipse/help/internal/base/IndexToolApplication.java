@@ -22,8 +22,8 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.util.NLS;
@@ -55,7 +55,7 @@ public class IndexToolApplication implements IApplication {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			Platform.getLog(getClass()).error("Preindexing failed.", e); //$NON-NLS-1$
+			ILog.of(getClass()).error("Preindexing failed.", e); //$NON-NLS-1$
 		}
 		return EXIT_OK;
 	}

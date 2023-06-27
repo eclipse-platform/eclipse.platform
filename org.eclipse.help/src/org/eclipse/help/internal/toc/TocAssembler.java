@@ -24,7 +24,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.ICriteria;
 import org.eclipse.help.ITocContribution;
 import org.eclipse.help.IUAElement;
@@ -179,7 +179,7 @@ public class TocAssembler {
 			catch (Throwable t) {
 				iter.remove();
 				String msg = "Error processing help table of contents: " + contrib.getId() + " (skipping)"; //$NON-NLS-1$ //$NON-NLS-2$
-				Platform.getLog(getClass()).error(msg, t);
+				ILog.of(getClass()).error(msg, t);
 			}
 		}
 		return linkedContributionIds;

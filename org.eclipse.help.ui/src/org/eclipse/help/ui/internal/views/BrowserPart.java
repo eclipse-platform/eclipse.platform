@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.StringTokenizer;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -184,7 +185,7 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 						event.required = true;
 					}
 				} catch (MalformedURLException e) {
-					Platform.getLog(getClass()).error("Malformed URL: " + statusURL, e); //$NON-NLS-1$
+					ILog.of(getClass()).error("Malformed URL: " + statusURL, e); //$NON-NLS-1$
 				}
 			}
 		});
@@ -214,7 +215,7 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 					try {
 						parent.showExternalURL(BaseHelpSystem.unresolve(new URL(url)));
 					} catch (MalformedURLException e) {
-						Platform.getLog(getClass()).error("Malformed URL: " + statusURL, e); //$NON-NLS-1$
+						ILog.of(getClass()).error("Malformed URL: " + statusURL, e); //$NON-NLS-1$
 					}
 				});
 			}

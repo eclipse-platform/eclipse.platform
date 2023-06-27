@@ -15,6 +15,7 @@ package org.eclipse.help.ui.internal;
 
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.common.CommandException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.ILiveHelpAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -113,7 +114,7 @@ public class ExecuteCommandAction implements ILiveHelpAction {
 			ParameterizedCommand command = commandService.deserialize(serializedCommand);
 			handlerService.executeCommand(command, null);
 		} catch (CommandException ex) {
-			Platform.getLog(getClass()).error("There was an error executing the command: " + serializedCommand, //$NON-NLS-1$
+			ILog.of(getClass()).error("There was an error executing the command: " + serializedCommand, //$NON-NLS-1$
 					ex);
 		}
 	}

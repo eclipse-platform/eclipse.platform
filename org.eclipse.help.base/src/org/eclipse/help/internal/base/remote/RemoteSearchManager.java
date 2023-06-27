@@ -19,8 +19,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.help.internal.base.util.ProxyUtil;
 import org.eclipse.help.internal.search.ISearchHitCollector;
@@ -83,10 +83,10 @@ public class RemoteSearchManager {
 							collector.addHits(hits, null);
 						} catch (IOException e) {
 							String msg = "I/O error while trying to contact the remote help server"; //$NON-NLS-1$
-							Platform.getLog(getClass()).error(msg, e);
+							ILog.of(getClass()).error(msg, e);
 						} catch (Throwable t) {
 							String msg = "Internal error while reading search results from remote server"; //$NON-NLS-1$
-							Platform.getLog(getClass()).error(msg, t);
+							ILog.of(getClass()).error(msg, t);
 						} finally {
 							if (in != null) {
 								try {

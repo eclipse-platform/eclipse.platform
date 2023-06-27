@@ -19,6 +19,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.IContext;
 import org.eclipse.help.IContextProvider;
@@ -511,7 +512,7 @@ public class DefaultHelpUI extends AbstractHelpUI {
 				browser.openURL(BaseHelpSystem.resolve(url, "/help/nftopic")); //$NON-NLS-1$
 				return true;
 			} catch (PartInitException e) {
-				Platform.getLog(DefaultHelpUI.class).error(Messages.ReusableHelpPart_internalWebBrowserError, e);
+				ILog.of(DefaultHelpUI.class).error(Messages.ReusableHelpPart_internalWebBrowserError, e);
 			}
 		}
 		return false;

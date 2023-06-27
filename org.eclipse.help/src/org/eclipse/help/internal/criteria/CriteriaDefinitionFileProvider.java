@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.AbstractCriteriaDefinitionProvider;
 import org.eclipse.help.ICriteriaDefinitionContribution;
@@ -58,12 +59,12 @@ public class CriteriaDefinitionFileProvider extends AbstractCriteriaDefinitionPr
 				Exception x = spe;
 				if (spe.getException() != null)
 					x = spe.getException();
-				Platform.getLog(getClass()).error(buffer.toString(), x);
+				ILog.of(getClass()).error(buffer.toString(), x);
 
 			}
 			catch (Throwable t) {
 				String msg = ERROR_READING_HELP_CRITERIA_DEFINITION_FILE + getCriteriaDefinitionFilePath(criteriaDefinitionFile) + "\" (skipping file)"; //$NON-NLS-1$
-				Platform.getLog(getClass()).error(msg, t);
+				ILog.of(getClass()).error(msg, t);
 			}
 		}
 		return contributions.toArray(new ICriteriaDefinitionContribution[contributions.size()]);

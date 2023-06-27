@@ -16,7 +16,7 @@ package org.eclipse.help.internal.browser;
 
 import java.io.*;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 
 /**
  * Used to receive output from processes
@@ -42,7 +42,7 @@ public class StreamConsumer extends Thread {
 			}
 			bReader.close();
 		} catch (IOException ioe) {
-			Platform.getLog(getClass()).error(
+			ILog.of(getClass()).error(
 					"Exception occurred reading from web browser.", ioe); //$NON-NLS-1$
 		}
 	}

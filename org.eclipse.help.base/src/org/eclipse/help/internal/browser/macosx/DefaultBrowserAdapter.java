@@ -16,7 +16,7 @@ package org.eclipse.help.internal.browser.macosx;
 
 import java.io.*;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.browser.*;
 
 public class DefaultBrowserAdapter implements IBrowser {
@@ -43,7 +43,7 @@ public class DefaultBrowserAdapter implements IBrowser {
 					"-e", //$NON-NLS-1$
 					"open location \"" + url + "\"" }); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (IOException ioe) {
-			Platform.getLog(getClass()).error("Launching \"osascript\" has failed.", ioe); //$NON-NLS-1$
+			ILog.of(getClass()).error("Launching \"osascript\" has failed.", ioe); //$NON-NLS-1$
 		}
 	}
 

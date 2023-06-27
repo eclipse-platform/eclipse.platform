@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.AbstractContextProvider;
 import org.eclipse.help.IContext;
@@ -205,7 +206,7 @@ public class ContextFileProvider extends AbstractContextProvider {
 			}
 		} catch (Throwable t) {
 			String msg = "Error reading context-sensitive help file /\"" + getErrorPath(descriptor, locale) + "\" (skipping file)"; //$NON-NLS-1$ //$NON-NLS-2$
-			Platform.getLog(getClass()).error(msg, t);
+			ILog.of(getClass()).error(msg, t);
 		}
 		return null;
 	}
@@ -259,7 +260,7 @@ public class ContextFileProvider extends AbstractContextProvider {
 		}
 		else {
 			String msg = "Required root element \"contexts\" missing from context-sensitive help file \"/" + getErrorPath(descriptor, locale) + "\" (skipping)"; //$NON-NLS-1$ //$NON-NLS-2$
-			Platform.getLog(getClass()).error(msg);
+			ILog.of(getClass()).error(msg);
 		}
 		return null;
 	}
@@ -309,7 +310,7 @@ public class ContextFileProvider extends AbstractContextProvider {
 							}
 							catch (TransformerException e) {
 								String msg = "Internal error while normalizing context-sensitive help descriptions"; //$NON-NLS-1$
-								Platform.getLog(getClass()).error(msg, e);
+								ILog.of(getClass()).error(msg, e);
 							}
 						}
 						Node old = node;

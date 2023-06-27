@@ -23,6 +23,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.AbstractContentExtensionProvider;
 import org.eclipse.help.IContentExtension;
@@ -143,7 +144,7 @@ public class ContentExtensionManager {
 					catch (CoreException e) {
 						// log and skip
 						String msg = "Error instantiating user assistance content extension provider class \"" + elem.getAttribute(ATTRIBUTE_NAME_CLASS) + '"'; //$NON-NLS-1$
-						Platform.getLog(getClass()).error(msg, e);
+						ILog.of(getClass()).error(msg, e);
 					}
 				}
 			}

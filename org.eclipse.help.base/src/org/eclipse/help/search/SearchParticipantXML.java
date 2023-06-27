@@ -23,8 +23,8 @@ import java.util.Stack;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.help.internal.base.HelpBasePlugin;
 import org.eclipse.help.internal.base.util.ProxyUtil;
@@ -375,7 +375,7 @@ public abstract class SearchParticipantXML extends SearchParticipant {
 		}
 		catch (Throwable t) {
 			String msg = "An error occured while pre-processing user assistance document \"" + name + "\" for search indexing"; //$NON-NLS-1$ //$NON-NLS-2$
-			Platform.getLog(getClass()).error(msg, t);
+			ILog.of(getClass()).error(msg, t);
 			return in;
 		}
 	}

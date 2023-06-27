@@ -16,7 +16,7 @@ package org.eclipse.help.internal.dynamic;
 
 import java.util.Map;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.help.ITocContribution;
 import org.eclipse.help.internal.UAElement;
 
@@ -53,7 +53,7 @@ public class ValidationHandler extends ProcessorHandler {
 			String suggestion = deprecatedElements.get(element.getElementName());
 			if (suggestion != null) {
 				String msg = "The \"" + element.getElementName() + "\" element is deprecated in \"" + id + "\"; use \"" + suggestion + "\" instead."; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-				Platform.getLog(getClass()).warn(msg);
+				ILog.of(getClass()).warn(msg);
 			}
 		}
 		String[] attributes = requiredAttributes.get(element.getElementName());
@@ -68,7 +68,7 @@ public class ValidationHandler extends ProcessorHandler {
 					if (parent != null && !(parent instanceof ITocContribution)) {
 						msg += " (skipping element)"; //$NON-NLS-1$
 						parent.removeChild(element);
-						Platform.getLog(getClass()).error(msg);
+						ILog.of(getClass()).error(msg);
 						return HANDLED_SKIP;
 					}
 					else {
