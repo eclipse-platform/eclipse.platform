@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.debug.ui" id="contextViewBindings" name="Context View Bindings"/>
+      </appInfo>
+      <documentation>
+         This extension point provides a mechanism for associating a view with a context identifier. When a context is activated by the Debug view, views associated with it (and also views associated with any parent contexts) are opened, closed, or activated. Contributors have the option to override the automatic open and close behavior.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="contextViewBinding" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="perspective" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="contextViewBinding">
+      <complexType>
+         <attribute name="contextId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Specifies the context identifier that this binding is for.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.contexts/context/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="viewId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Specifies the identifier of the view which should be associated with the specified context. When the specified context is enabled, this view will be automatically brought to the front. When elements are selected in the Debug view, contexts associated with those elements (as specified by extensions of the debugModelContextBindings extension point) are automatically enabled.
+Note that this only occurs in perspectives which are specified by the perspective elements, or for which the user has requested &quot;automatic view management&quot; via the preferences.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.views/view/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="autoOpen" type="boolean">
+            <annotation>
+               <documentation>
+                  Specifies whether the view should be automatically opened when the given context is enabled. If unspecified, the value of this attribute is &lt;code&gt;true&lt;/code&gt;. If this attribute is specified &lt;code&gt;false&lt;/code&gt;, the view will not be automatically opened, but it will still be brought to the front if it is open when the given context is enabled. Clients are intended to specify &lt;code&gt;false&lt;/code&gt; to avoid cluttering the perspective with views that are used infrequently.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="autoClose" type="boolean">
+            <annotation>
+               <documentation>
+                  Clients are not intended to specify this attribute except in rare cases.
+Specifies whether the view should be automatically closed when the given context is disabled (this occurs when all debug targets that contained the specified context have terminated). When unspecified, the value of this attribute is &lt;code&gt;true&lt;/code&gt;. This attribute should only be specified &lt;code&gt;false&lt;/code&gt; in the unlikely case that a debugging view must remain open even when the user is not debugging.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="perspective">
+      <annotation>
+         <documentation>
+            Specifies a perspective in which the view management will be enabled (since 3.5).
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="perspectiveId" type="string">
+            <annotation>
+               <documentation>
+                  Identifier of the perspective in which to enable view management.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.perspectives/perspective/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of a context view binding contribution:
+&lt;pre&gt;
+&lt;extension
+      point=&quot;org.eclipse.debug.ui.contextViewBindings&quot;&gt;
+   &lt;contextViewBinding
+         contextId=&quot;com.example.mydebugger.debugging&quot;
+         viewId=&quot;com.example.view&quot;
+         autoOpen=&quot;true&quot;
+         autoClose=&quot;false&quot;&gt;
+   &lt;/contextViewBinding&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+In the above example, when a context with the specified identifier is activated by the Debug view, the given view will be automatically opened. When a context which is bound to a different debug model is activated that isn&apos;t associated with the view, the view will not be automatically closed.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiinfo"/>
+      </appInfo>
+      <documentation>
+         Since 3.5 , the &lt;samp&gt;perspective&lt;/samp&gt; element can be used to spectify a perspectives in which to enable view management.  A product or the user override this setting, by specifying the &lt;samp&gt;org.eclipse.debug.ui.manage_view_perspectives&lt;/samp&gt; preference with a comma-delimited set of perspective IDs.
+      </documentation>
+   </annotation>
+
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2003, 2005 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

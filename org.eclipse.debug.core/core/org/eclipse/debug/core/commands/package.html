@@ -1,0 +1,29 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Debug Commands</title>
+</head>
+
+<body link="#0000FF" vlink="#800080">
+
+<p>Provides a set of interfaces for common debug commands.</p>
+
+<h2>Package Specification</h2>
+
+<p>This package provides a set interfaces for common debug commands. A debug command 
+  represent a debugger function that can be enabled or disabled and executed. 
+  The debug platform provides actions corresponding to the common debug commands. 
+  The actions delegate to the command handler interfaces to determine enabled 
+  state and execute.</p>
+<p>A debugger implementation can provide its own implementation of a command by 
+  implementing a command handler interface directly, or by registering an adapter 
+  that implements the command handler interface. The debug platform's actions 
+  update enabled state and execute based on the active debug context. The debug 
+  platform provides implementations of handlers for the common debug commands 
+  for debuggers that are an implementation of the standard debug model. For example, 
+  the debug platform registers an <code>IStepOverHandler</code> adapter for implementations 
+  of <code>IStep</code>.</p>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.unittest.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.unittest.ui" id="unittestViewSupport" name="UnitTest View Support"/>
+      </appInfo>
+      <documentation>
+         Internal extension point to register Unit Test View support.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="viewSupport" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified extention point identifier
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  a name of this extention point
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="viewSupport">
+      <annotation>
+         <documentation>
+            A Test View Support definition that implements org.eclipse.unittest.launcher.ITestViewSupport.
+This is used by the &lt;i&gt;Unit Test&lt;/i&gt; view to provide support for test engines.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified extention point identifier. 
+This identifier is used to load support for the &lt;i&gt;Unit Test&lt;/i&gt; view when some ILaunch is running, and the underlying launch configuration sets attributes &lt;code&gt;UnitTestLaunchConfigurationConstants.ATTR_UNIT_TEST_VIEW_SUPPORT&lt;/code&gt; to the given id.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified class name that implements org.eclipse.unittest.launcher.ITestViewSupport.
+This is used by the &lt;i&gt;Unit Test&lt;/i&gt; view to provide support for test engines.
+The class defines the method that creates a Unit Test Runner Client  dedicated to communicate with a  test engine and to gather the results of testing as well as  a number of methods that help to  the &lt;i&gt;Unit Test&lt;/i&gt; view in creation of unit test related actions, like openning a test source or a file reported on a stack trace in  editor or returning a ILaunchConfiguration for Rerun action.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.unittest.launcher.ITestViewSupport"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+
+
+
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2006, 2020 IBM Corporation and others.
+
+This program and the accompanying materials are made available under the terms of the Eclipse Public License 2.0 which accompanies this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

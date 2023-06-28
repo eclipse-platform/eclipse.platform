@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.ui">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.debug.ui" id="consoleLineTrackers" name="Console Line Trackers"/>
+      </appInfo>
+      <documentation>
+         This extension point provides a mechanism to listen to console output for a type of process.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="consoleLineTracker" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="consoleLineTracker">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a unique identifier for this console line tracker.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a fully qualified name of a Java class that implements &lt;code&gt;IConsoleLineTracker&lt;/code&gt;
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.debug.ui.console.IConsoleLineTracker"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="processType" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies the type of process this line tracker is for. This attribute corresponds to the process attribute &lt;code&gt;IProcess.ATTR_PROCESS_TYPE&lt;/code&gt;.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         2.1
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of a console line tracker extension point: 
+
+ &lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.debug.ui.consoleLineTrackers&quot;&gt;
+  &lt;consoleLineTracker 
+     id=&quot;com.example.ExampleConsoleLineTracker&quot;
+     class=&quot;com.example.ExampleConsoleLineTracker&quot;
+     processType=&quot;ExampleProcessType&quot;&gt;
+  &lt;/consoleLineTracker&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+In the above example, the contributed line tracker will be notified as lines are appended to the console for processes of type &quot;ExampleProcessType&quot;, which corresponds to the process attribute IProcess.ATTR_PROCESS_TYPE. Process types are client defined, and are set by clients that create processes.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Value of the attribute &lt;b&gt;class&lt;/b&gt; must be a fully qualified name of a Java class that implements the interface &lt;b&gt;org.eclipse.debug.ui.console.IConsoleLineTracker&lt;/b&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+Copyright (c) 2000, 2005 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

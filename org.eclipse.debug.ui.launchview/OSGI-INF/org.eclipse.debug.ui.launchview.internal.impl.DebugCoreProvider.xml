@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="createService" deactivate="destroyService" name="org.eclipse.debug.ui.launchview.internal.impl.DebugCoreProvider">
+   <service>
+      <provide interface="org.eclipse.debug.ui.launchview.services.ILaunchObjectProvider"/>
+   </service>
+   <implementation class="org.eclipse.debug.ui.launchview.internal.impl.DebugCoreProvider"/>
+</scr:component>

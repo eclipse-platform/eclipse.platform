@@ -1,0 +1,4 @@
+# To force a version qualifier update add the bug here
+Bug 509973 - Comparator errors in I20170105-0320
+Bug 534597 - Unanticipated comparator errors in I20180511-2000
+Bug 566471 - I20200828-0150 - Comparator Errors Found

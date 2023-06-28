@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.debug.ui" id="toggleBreakpointsTargetFactories" name="Toggle Breakpoints Target Factories"/>
+      </appinfo>
+      <documentation>
+         This extension point provides a mechanism for contributing breakpoint toggle action targets which can be registered for specific editors, debug models, or files.
+      </documentation>
+   </annotation>
+
+   <include schemaLocation="schema://org.eclipse.core.expressions/schema/expressionLanguage.exsd"/>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="toggleTargetFactory" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="toggleTargetFactory">
+      <annotation>
+         <documentation>
+            Element declaring a toggle breakpoints target factory.  This element can optionally contain an enablement element which determines when this factory is going to be applicable.  The evaluation context for the enablement expression includes:
+(default variable) - the active workbench part of type IWorkbenchPart
+&quot;debugContext&quot; - currently active debug context selection, of type List
+&quot;editorInput&quot; - the editor input to the editor if the currently active part is an editor, of type IEditorInput
+&quot;selection&quot; - the current selection in the active part, of type List
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="enablement" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Specifies a unique identifier for this breakpoint toggle target.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Class implementing the IToggleBreakpointsTargetFactory interface.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.debug.ui.actions.IToggleBreakpointsTargetFactory"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.5
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following is an example of a breakpoint toggle target factory extension.
+
+&lt;p&gt;
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.debug.ui.toggleBreakpointsTargetFactories&quot;&gt;
+  &lt;toggleTargetFactory
+   id=&quot;com.example.ExampleBreakpointToggleTargetFactory&quot;
+   class=&quot;com.example.BreakpointToggleTargetFactory&quot;&gt;
+      &lt;enablement&gt;
+         &lt;!-- Test the active debug context.  Enable only if the active context
+              is an element from &quot;Example&quot; debugger, or if there is no debug context 
+              associated with the context element.  Also enable if debug context is
+              empty --&gt;
+         &lt;with variable=&quot;debugContext&quot;&gt;
+            &lt;iterate&gt;
+             &lt;or&gt;
+                &lt;test property=&quot;org.eclipse.debug.ui.getModelIdentifier&quot; value=&quot;com.example.model&quot;/&gt;
+                &lt;test property=&quot;org.eclipse.debug.ui.getModelIdentifier&quot; value=&quot;&quot;/&gt;
+             &lt;/or&gt;
+         &lt;/iterate&gt;
+         &lt;/with&gt;
+         &lt;!-- If the debug context matches of if there isno active debug context.  
+              Enable the breakpoint toggle for the &quot;Example&quot; editors --&gt;
+         &lt;instanceof value=&quot;com.example.Editor&quot;/&gt;
+      &lt;/enablement&gt;
+  &lt;/toggleTargetFactory&gt;
+ &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         Value of the attribute &lt;b&gt;class&lt;/b&gt; must be a fully qualified name of a Java class that implements the interface &lt;b&gt;org.eclipse.debug.ui.actions.IToggleBreakpointsTargetFactory&lt;/b&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2007, 2011 Wind River Systems and others.&lt;br&gt;
+
+This program and the accompanying materials
+are made available under the terms of the Eclipse Public License 2.0
+which accompanies this distribution, and is available at
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

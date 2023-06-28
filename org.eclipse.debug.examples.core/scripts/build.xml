@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!-- ======================================================================
+ 	 Copyright (c) 2005, 2008 IBM Corporation and others.\
+
+ 	 This program and the accompanying materials 
+ 	 are made available under the terms of the Eclipse Public License 2.0
+ 	 which accompanies this distribution, and is available at
+ 	 https://www.eclipse.org/legal/epl-2.0/
+
+ 	 SPDX-License-Identifier: EPL-2.0
+ 
+ 	 Contributors:
+    	 IBM Corporation - initial API and implementation
+
+     EclipseCon    
+     Debug Tutorial Exercises
+     ====================================================================== -->
+<project name="EclipseCon" default="generateAll">
+	<description>
+            Debug Tutorial Exercises
+    </description>
+
+	<taskdef name="preprocess" classname="org.eclipse.debug.examples.ant.tasks.PreProcessor" classpath="../bin" />
+	<property name="destBase" location="c:\temp\example" />
+	<property name="workspace" location="c:\eclipse-dev\dev-3.4" />
+	<property name="coreSource" location="${workspace}\org.eclipse.debug.examples.core" />
+	<property name="uiSource" location="${workspace}\org.eclipse.debug.examples.ui" />
+
+	<!-- ================================= 
+          target: generateAll              
+         ================================= -->
+	<target name="generateAll" description="--> Debug Tutorial Exercises">
+		
+    <!-- = = = = = = = = = = = = = = = = =
+          macrodef: process          
+         = = = = = = = = = = = = = = = = = -->
+    <macrodef name="process">
+        <attribute name="destdir"/>
+    	<attribute name="symbols"/>
+        <sequential>
+            <delete dir="@{destdir}"/>
+        	<mkdir dir="@{destdir}\org.eclipse.debug.examples.core"/>
+        	<mkdir dir="@{destdir}\org.eclipse.debug.examples.ui"/>
+        	<preprocess destdir="@{destdir}\org.eclipse.debug.examples.core" symbols="@{symbols}">
+        		<fileset dir="${coreSource}">
+        			<exclude name="**/*.class"/>
+        			<exclude name="**/PreProcessor.java"/>
+        		</fileset>
+        	</preprocess>
+        	<preprocess destdir="@{destdir}\org.eclipse.debug.examples.ui" symbols="@{symbols}">
+        		<fileset dir="${uiSource}">
+        			<exclude name="**/*.class"/>
+        		</fileset>
+        	</preprocess>
+        </sequential>
+    </macrodef>
+
+	<process destdir="${destBase}\exercise1.1" symbols="ex1"/>
+	<process destdir="${destBase}\exercise2.1" symbols="ex2"/>
+	<process destdir="${destBase}\exercise3.1" symbols="ex3"/>
+	<process destdir="${destBase}\exercise4.1" symbols="ex4"/>
+	<process destdir="${destBase}\exercise5.1" symbols="ex5"/>
+	<process destdir="${destBase}\exercise6.1" symbols="ex6"/>
+	<process destdir="${destBase}\exercise7.1" symbols="ex7"/>
+    <process destdir="${destBase}\answer" symbols="answer"/>
+	</target>
+
+</project>
+

@@ -1,0 +1,52 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Andrea Guarinoni and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Andrea Guarinoni - initial API and implementation
+ *******************************************************************************/
+
+/* ############################## Debug preferences ############################## */
+
+IEclipsePreferences#org-eclipse-debug-ui {
+	preferences:
+		'org.eclipse.debug.ui.MemoryHistoryKnownColor=235,235,235'
+		'org.eclipse.debug.ui.MemoryHistoryUnknownColor=170,175,185'
+		'org.eclipse.debug.ui.PREF_CHANGED_VALUE_BACKGROUND=150,80,115'
+		'org.eclipse.debug.ui.changedDebugElement=255,128,128'
+		'org.eclipse.debug.ui.consoleBackground=53,53,53'
+		'org.eclipse.debug.ui.errorColor=225,30,70'
+		'org.eclipse.debug.ui.inColor=140,175,210'
+		'org.eclipse.debug.ui.outColor=235,235,235'
+}
+
+#DebugBreadcrumbComposite
+#DebugBreadcrumbComposite > Composite,
+#DebugBreadcrumbItemComposite,
+#DebugBreadcrumbItemDetailComposite,
+#DebugBreadcrumbItemDetailTextComposite,
+#DebugBreadcrumbItemDetailImageComposite,
+#DebugBreadcrumbItemDetailTextLabel,
+#DebugBreadcrumbItemDetailImageLabel,
+#DebugBreadcrumbItemDropDownToolBar
+{
+    /*
+     * Bug 465666
+     *
+     * Note: as we can't change the arrow to black, we configure
+     * the background with the lighter color used for the background
+     * of toolbars and make the foreground color brighter too.
+     */
+    background-color:#515658;
+    color: white;
+}
+
+#VariablesViewer {
+    font-family: '#org-eclipse-debug-ui-VariableTextFont';
+}

@@ -1,0 +1,72 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Eclipse Debug Tools</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>Provides a generic debugger user interface that clients may customize via standard
+workbench extension points.</p>
+
+<h2>Package Specification</h2>
+
+<p>The Eclipse platform debug UI plug-in provides a set of classes and interfaces to
+support a language independent debugger user interface. A generic debug perspective is provided with a common
+set of views. Clients contribute actions to the debug views via the
+standard workbench extension points.</p>
+
+<h4>The Debug View</h4>
+
+<p>The debug view presents a tree of launched programs in debug and non-debug (run) mode.
+The view provides support for standard interactions such as terminating, stepping, suspending, and resuming
+threads, debug targets, and processes. The debug view is linked to an editor view, variable view, and
+console. The editor view is used to display source code for stack frames. A selection in
+the debug view causes the line of code being executed to be highlighted in the editor
+view. The variable view shows the visible variables in the selected stack frame, and the
+console view handles I/O for the debuggable process.</p>
+
+<h4>The Variables View</h4>
+
+<p>The variables view presents a tree of variables for the currently selected stack frame.
+A "details" area may be hidden/shown which provides a detailed description of 
+the selected variable. For example, the Java debugger displays the result of
+invoking 'toString()' on the selected variable in this area.</p>
+
+<h4>The Breakpoints View</h4>
+
+<p>The breakpoints view presents a list of all breakpoints currently defined in the
+workspace. It supports enabling/disabling and breakpoint removal.</p>
+
+<h4>The Expression View</h4>
+
+<p>The expression view presents a tree of expressions and their corresponding values.</p>
+
+<h4>Debug Model Presentation</h4>
+
+<p>The debug UI plug-in defines an extension (<b>org.eclipse.debug.ui.debugModelPresentations</b>)
+point to allow implementations of debug models to provide custom rendering and
+presentation of its debug elements. Extensions are registered for a specific debug
+model. It is intended that an implementation of a debug model will also provide an
+implementation of a debug model presentation. The presentation provides: 
+
+<ul>
+  <li>an image for a debug element or breakpoint</li>
+  <li>a label for a debug element or breakpoint</li>
+  <li>an editor input and editor id used to display a debug element, breakpoint, or source element</li>
+  <li>a detailed description of a variable value, used to display
+   in the "details" section of the variables view</li>
+</ul>
+
+<h4>Launch Configuration Dialog</h4>
+
+<p>The debug UI plug-in provides a lanuch configuration dialog for
+creating and editing launch configurations. Clients may contribute
+tabs to the launch configuration dialog via the launchConfigurationTabGroup
+extension point.</p>
+
+
+</body>
+</html>

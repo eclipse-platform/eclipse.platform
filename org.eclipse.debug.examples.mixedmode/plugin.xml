@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.core.launchDelegates">
+         <launchDelegate
+               delegate="org.eclipse.debug.internal.examples.mixedmode.DoNothingLaunchConfigurationDelegate"
+               delegateDescription="This launch tooling redirects the default Java launch delegate to a DoNothing delegate"
+               id="org.eclipse.debug.examples.mixedmode.donothing.redirect"
+               modes="run, debug"
+               name="%launchDelegate.name"
+               type="org.eclipse.jdt.launching.localJavaApplication">
+      </launchDelegate>
+         <launchDelegate
+               delegate="org.eclipse.debug.internal.examples.mixedmode.DoNothingLaunchConfigurationDelegate"
+               delegateDescription="This delegate redirects a profile launch in run, debug, profile mode to a DoNothing delegate"
+               id="org.eclipse.debug.examples.mixedmode.profile"
+               modes="run, debug"
+               name="%launchDelegate.name.0"
+               type="org.eclipse.jdt.launching.localJavaApplication">
+            <modeCombination
+                  modes="debug, profile">
+            </modeCombination>
+         </launchDelegate>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabs">
+    <tab
+          class="org.eclipse.debug.internal.examples.mixedmode.DoNothingMainTab"
+          group="org.eclipse.jdt.debug.ui.launchConfigurationTabGroup.localJavaApplication"
+          id="org.eclipse.debug.examples.mixedmode.main.tab"
+          name="%doNothingMainTab.name">
+       <placement
+             after="org.eclipse.jdt.debug.ui.javaMainTab"></placement>
+       <associatedDelegate
+             delegate="org.eclipse.debug.examples.mixedmode.donothing.redirect">
+       </associatedDelegate>
+    </tab>
+    <tab
+          class="org.eclipse.debug.internal.examples.mixedmode.AntExtraTab"
+          group="org.eclipse.ant.ui.launchConfigurationTabGroup.ant"
+          id="org.eclipse.debug.examples.mixedmode.ant.tab"
+          name="%antExtraTab.name">
+    </tab>
+    <tab
+          class="org.eclipse.debug.internal.examples.mixedmode.DoNothingMainTab"
+          group="org.eclipse.jdt.debug.ui.launchConfigurationTabGroup.localJavaApplication"
+          id="org.eclipse.debug.examples.mixedmode.profile.tab"
+          name="%doNothingProfileTab.name">
+       <placement
+             after="org.eclipse.jdt.debug.ui.javaMainTab">
+       </placement>
+       <associatedDelegate
+             delegate="org.eclipse.debug.examples.mixedmode.profile">
+       </associatedDelegate>
+    </tab>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchModes">
+      <launchMode
+            label="%launchMode.label"
+            launchAsLabel="%launchMode.launchAsLabel"
+            mode="org.eclipse.debug.examples.mixedmode.launchmode">
+      </launchMode>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu?after=org.eclipse.ui.run">
+         <menu
+               label="%menu.label.0">
+            <command
+                  commandId="org.eclipse.debug.examples.mixedmode.clear.delegates"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.debug.internal.examples.mixedmode.ClearPreferredDelegatesHandler"
+            description="%action.tooltip"
+            id="org.eclipse.debug.examples.mixedmode.clear.delegates"
+            name="%action.label">
+      </command>
+   </extension>
+
+</plugin>

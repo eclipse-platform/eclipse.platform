@@ -1,0 +1,34 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Eclipse Debug Platform</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>Provides support for source lookup.</p>
+
+<h2>Package Specification</h2>
+
+<p>This package provides classes and interfaces to support source lookup. A source 
+  lookup director is a persistable source locator that directs source lookup among 
+  a collection of source lookup participants and a collection of source containers. 
+  Each source lookup participant is a source locator itself, which allows more 
+  than one source locator to participate in source lookup for a launch. Each source 
+  lookup participant searches for source in the source containers managed by its 
+  director, and each participant is notified of changes in the set of source containers 
+  being searched.</p>
+<p>A source lookup participant participates in source lookup by searching an ordered 
+  list of source containers for source elements corresponding to a debug artifact. 
+  For example, a participant may be asked to find source corresponding to a stack 
+  frame or breakpoint. An implementation of a source lookup participant is debug 
+  model specific, since it must convert the debug model artifact (stack frame, 
+  breakpoint, etc.), into a source name that can be recognized by a source container, 
+  to search for source elements. Source containers are generally debug model independent, 
+  whereas source lookup participants are debug model specific.</p>
+
+<blockquote>&nbsp;</blockquote>
+</body>
+</html>

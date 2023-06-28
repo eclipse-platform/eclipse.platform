@@ -1,0 +1,99 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>PDA Interpreter Debug Protocol</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>Provides classes representing PDA protocol commands, command results and events</p>
+
+<h2>Package Specification</h2>
+
+<h3>Virtual Machine execution control</h3>
+<h4>Commands</h4>
+<ul>
+<li>{@link PDATerminateCommand}</li>
+<li>{@link PDAVMSuspendCommand}</li>
+<li>{@link PDAVMResumeCommand}</li>
+<li>{@link PDAEventStopCommand}</li>
+</ul>
+<h4>Events</h4>
+<ul>
+<li>{@link PDAVMStarted}</li>
+<li>{@link PDAVMTerminated}</li>
+<li>{@link PDAVMSuspneded}</li>
+<li>{@link PDAVMResumed}</li>
+<li>{@link PDAUnimplementedInstructionEvent}</li>
+<li>{@link PDANoSuchLabelEvent}</li>
+</ul>
+
+<h3>Thread execution control</h3>
+<h4>Commands</h4>
+<ul>
+<li>{@link PDASuspendCommand}</li>
+<li>{@link PDAResumeCommand}</li>
+<li>{@link PDAStepCommand}</li>
+<li>{@link PDADropFrameCommand}</li>
+</ul>
+<h4>Events</h4>
+<ul>
+<li>{@link PDAStarted}</li>
+<li>{@link PDAExited}</li>
+<li>{@link PDASuspended}</li>
+<li>{@link PDAResumed}</li>
+</ul>
+
+<h3>Breakpoints</h3>
+<h4>Commands</h4>
+<ul>
+<li>{@link PDASetBreakpointCommand}</li>
+<li>{@link PDAClearBreakpointCommand}</li>
+<li>{@link PDAWatchCommand}</li>
+</ul>
+
+<h3>Data stack</h3>
+<h4>Commands</h4>
+<ul>
+<li>{@link PDADataCommand}</li>
+<li>{@link PDASetDataCommand}</li>
+<li>{@link PDAPopDataCommand}</li>
+<li>{@link PDAPushDataCommand}</li>
+</ul>
+
+<h3>Expression evaluation</h3>
+<h4>Commands</h4>
+<ul>
+<li>{@link PDAEvalCommand}</li>
+</ul>
+<h4>Events</h4>
+<ul>
+<li>{@link PDAEvalResultEvent}</li>
+</ul>
+
+<h3>Execution control stack</h3>
+<h4>Commands</h4>
+<ul>
+<li>{@link PDAStackCommand}</li>
+<li>{@link PDAStackDepthCommand}</li>
+<li>{@link PDAFrameCommand}</li>
+<li>{@link PDAVarCommand}</li>
+<li>{@link PDASetVarCommand}</li>
+<li>{@link PDAChildrenCommand}</li>
+</ul>
+
+<h3>Registers</h3>
+<h4>Commands</h4>
+<ul>
+<li>{@link PDAGroupsCommand}</li>
+<li>{@link PDARegistersCommand}</li>
+</ul>
+<h4>Events</h4>
+<ul>
+<li>{@link PDARegistersEvent}</li>
+</ul>
+
+</body>
+</html>

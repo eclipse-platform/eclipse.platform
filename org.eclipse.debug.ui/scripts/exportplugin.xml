@@ -1,0 +1,35 @@
+<!-- Export a jar of .class files for the org.eclipse.debug.ui Eclipse plugin
+     along with other important plugin files to the "plugin-export" subdirectory
+     of the target Eclipse installation -->
+<project name="Export debug.ui" default="export" basedir="..">
+
+	<!-- Set the timestamp and important properties -->
+	<target name="init">
+		<tstamp/>
+		<property name="destdir" value="../../plugin-export" />
+		<property name="dest"  value="${destdir}/org.eclipse.debug.ui_3.0.0" />
+	</target>
+
+	<!-- Create the jar of .class files, and copy other important files to export dir -->
+	<target name="export" depends="init">
+		<mkdir dir="${destdir}" />
+		<delete dir="${dest}" />
+		<mkdir dir="${dest}" />
+		<jar 
+			jarfile="${dest}/dtui.jar"
+			basedir="bin"
+		/>
+		<!-- Create the source zip -->
+		<zip zipfile="${dest}/dtuisrc.zip">
+			<fileset dir="ui"/>
+		</zip>
+		<copy file="plugin.xml" todir="${dest}"/>
+		<copy file="plugin.properties" todir="${dest}"/>
+		<copy file=".classpath" todir="${dest}"/>
+		<copy file=".options" todir="${dest}"/>
+		<copy todir="${dest}/icons">
+			<fileset dir="icons" />
+		</copy>
+	</target>
+	
+</project>

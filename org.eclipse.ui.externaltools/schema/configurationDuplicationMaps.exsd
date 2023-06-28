@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.ui.externaltools" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.ui.externaltools" id="configurationDuplicationMaps" name="Configuration Duplication Maps"/>
+      </appinfo>
+      <documentation>
+         This is an internal extension point to declare the launch configuration type that
+should be created when duplicating an existing configuration as a project builder.
+
+Clients are not intended to use this extension point.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="configurationMap" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="configurationMap">
+      <complexType>
+         <attribute name="sourceType" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies the identifier of the launch configuration type for which this mapping is provided
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.core.launchConfigurationTypes/launchConfigurationType/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="builderType" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies the identifier of the launch configuration type which should be created when a configuration of type &quot;sourceType&quot; is imported to be a project builder
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.core.launchConfigurationTypes/launchConfigurationType/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following example specifies that when the user chooses to import a launch configuration
+of the type &quot;org.eclipse.ui.externaltools.ProgramLaunchConfigurationType&quot;, a new launch
+configuration of the type&quot;org.eclipse.ui.externaltools.ProgramBuilderLaunchConfigurationType&quot;
+should be created.
+
+&lt;pre&gt;
+&lt;extension
+      point=&quot;org.eclipse.ui.externaltools.configurationDuplicationMaps&quot;&gt;
+   &lt;configurationMap
+         sourceType=&quot;org.eclipse.ui.externaltools.ProgramLaunchConfigurationType&quot;
+         builderType=&quot;org.eclipse.ui.externaltools.ProgramBuilderLaunchConfigurationType&quot;&gt;
+   &lt;/configurationMap&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2003, 2005 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

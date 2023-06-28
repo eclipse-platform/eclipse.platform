@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+     Copyright (c) 2005, 2010 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+   <extension-point id="consolePatternMatchListeners" name="%ConsolePatternMatchListenerName" schema="schema/consolePatternMatchListeners.exsd"/>
+   <extension-point id="consolePageParticipants" name="%ConsolePageParticipantName" schema="schema/consolePageParticipants.exsd"/>
+   <extension-point id="consoleFactories" name="%ConsoleFactoryName" schema="schema/consoleFactories.exsd"/>
+
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="true"
+            class="org.eclipse.ui.internal.console.ConsoleView"
+            icon="$nl$/icons/full/cview16/console_view.png"
+            category="org.eclipse.ui"
+            name="%ConsoleView.name"
+            id="org.eclipse.ui.console.ConsoleView">
+      </view>
+   </extension>
+<!-- commands and their bindings
+NOTE:
+M1 = CTRL/COMMAND
+M2 = SHIFT
+M3 = ALT
+M4 = Platform-specific fourth key
+-->
+    <extension point="org.eclipse.ui.bindings">
+     <key
+           commandId="org.eclipse.ui.views.showView"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M2+M3+Q C">
+        <parameter
+              id="org.eclipse.ui.views.showView.viewId"
+              value="org.eclipse.ui.console.ConsoleView">
+        </parameter>
+     </key>
+     <key
+           platform="carbon"
+           sequence="M2+M3+Q C"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+     <key
+           commandId="org.eclipse.ui.views.showView"
+           platform="carbon"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1+M3+Q C">
+        <parameter
+              id="org.eclipse.ui.views.showView.viewId"
+              value="org.eclipse.ui.console.ConsoleView">
+        </parameter>
+     </key>
+     <!-- temporarily disabled, see https://github.com/eclipse-platform/eclipse.platform.debug/issues/57
+     <key
+           commandId="AnsiConsole.command.copy_without_escapes"
+           contextId="org.eclipse.ui.console.ConsoleView"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1+C">
+     </key>
+     -->
+     <key
+           commandId="AnsiConsole.command.copy_without_escapes"
+           contextId="org.eclipse.ui.console.ConsoleView"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1+Insert">
+     </key>
+     <!-- temporarily disabled, see https://github.com/eclipse-platform/eclipse.platform.debug/issues/57
+     <key
+           commandId="AnsiConsole.command.copy_with_escapes"
+           contextId="org.eclipse.ui.console.ConsoleView"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1+M2+C">
+     </key>
+     <key
+           commandId="AnsiConsole.command.copy_with_escapes"
+           contextId="org.eclipse.ui.console.ConsoleView"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1+M2+Insert">
+     </key>
+     -->
+    </extension>
+
+    <extension
+          point="org.eclipse.core.expressions.propertyTesters">
+       <propertyTester
+             namespace="org.eclipse.ui.console"
+             type="org.eclipse.ui.console.IConsole"
+             class="org.eclipse.ui.internal.console.ConsoleTypePropertyTester"
+             properties="consoleTypeTest"
+             id="org.eclipse.ui.console.ConsoleTypePropertyTester"/>
+    </extension>
+
+    <extension
+          point="org.eclipse.ui.console.consoleFactories">
+       <consoleFactory
+             label="%consoleViewConsoleFactory.name"
+             icon="$nl$/icons/full/cview16/console_view.png"
+             class="org.eclipse.ui.internal.console.ConsoleViewConsoleFactory"/>
+    </extension>
+
+    <extension
+          point="org.eclipse.ui.contexts">
+       <context
+             description="%context.consoleview.description"
+             id="org.eclipse.ui.console.ConsoleView"
+             name="%context.consoleview.name"
+             parentId="org.eclipse.ui.contexts.window">
+       </context>
+    </extension>
+
+    <extension point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.eclipse.ui.internal.console.ConsoleUIPreferenceInitializer"/>
+      <initializer class="org.eclipse.ui.internal.console.ansi.preferences.AnsiConsolePreferenceInitializer" />
+    </extension>
+
+    <extension
+        point="org.eclipse.ui.commands">
+      <category
+           id="AnsiConsole.command.categoryid"
+           name="%command.category.name">
+      </category>
+      <command
+          categoryId="AnsiConsole.command.categoryid"
+          defaultHandler="org.eclipse.ui.internal.console.ansi.commands.CopyWithEscapesHandler"
+          description="%command.copy_with_escapes.description"
+          id="AnsiConsole.command.copy_with_escapes"
+          name="%command.copy_with_escapes.name">
+      </command>
+      <command
+          categoryId="AnsiConsole.command.categoryid"
+          defaultHandler="org.eclipse.ui.internal.console.ansi.commands.CopyWithoutEscapesHandler"
+          description="%command.copy_without_escapes.description"
+          id="AnsiConsole.command.copy_without_escapes"
+          name="%command.copy_without_escapes.name">
+      </command>
+      <command
+          categoryId="AnsiConsole.command.categoryid"
+          defaultHandler="org.eclipse.ui.internal.console.ansi.commands.EnableDisableHandler"
+          description="%command.enable_disable.description"
+          id="AnsiConsole.command.enable_disable"
+          name="%command.enable_disable.name">
+        <state
+            class="org.eclipse.ui.handlers.RegistryToggleState:true"
+            id="org.eclipse.ui.commands.toggleState">
+        </state>
+      </command>
+    </extension>
+
+    <extension point="org.eclipse.ui.preferencePages">
+      <page name="%ansicon.prefpage.name"
+          category="org.eclipse.debug.ui.ConsolePreferencePage"
+          class="org.eclipse.ui.internal.console.ansi.preferences.AnsiConsolePreferencePage"
+          id="org.eclipse.ui.internal.console.ansi.preferences.AnsiConsolePreferencePage" />
+    </extension>
+
+    <extension point="org.eclipse.ui.console.consolePageParticipants">
+      <consolePageParticipant
+          class="org.eclipse.ui.internal.console.ansi.participants.AnsiConsolePageParticipant"
+          id="org.eclipse.ui.internal.console.ansi.participants.AnsiConsolePageParticipant">
+        <enablement>
+          <instanceof value="org.eclipse.ui.console.IConsole" />
+        </enablement>
+      </consolePageParticipant>
+    </extension>
+
+</plugin>

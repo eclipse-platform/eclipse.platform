@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.debug.ui" id="launchConfigurationTabs" name="Launch Configuration Tabs"/>
+      </appinfo>
+      <documentation>
+         This extension point is to contribute launch configuration tabs (one or more) to an existing launch configuration tab group.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="tab"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="tab">
+      <annotation>
+         <documentation>
+            describes an individual launch configuration tab contribution
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="placement" minOccurs="0" maxOccurs="1"/>
+            <element ref="associatedDelegate" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the unique id of this contributed tab
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="group" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the unique id of an existnig &lt;code&gt;ILaunchConfigurationTabGroup&lt;/code&gt; that this tab should be contributed to
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.ui.launchConfigurationTabGroups/launchConfigurationTabGroup/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a human readable name for this tab. The provided name does not have to be the name that appears on the tab itself, but should sufficiently describe the tab.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  fully qualified name of the java class that implements &lt;code&gt;ILaunchConfigurationTab&lt;/code&gt;.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.debug.ui.ILaunchConfigurationTab"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="placement">
+      <annotation>
+         <documentation>
+            This element allows contributors to specify relative locale for their contributed tab
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="after" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Specifies the id of the tab that this tab should appear immediately after in the left to right arrangement of tabs.  The ID specified here should match the value returned by org.eclipse.debug.ui.AbstractLaunchConfigurationTab.getID(), which may be different than the ID specified in the tab declaration of this extension point. 
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="associatedDelegate">
+      <annotation>
+         <documentation>
+            This attribute is used to map a contrinbuted tab to one or more launch delegates. This allows tabs to be filtered from the launch dialog based on what launch delegate is selected as the current default. For example, if two plug-ins contribute launch delegates and tabs for the same launch mode, only one set of tabs will be displayed to the user based on the enabled delegate chosen by the user.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="delegate" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of the &lt;code&gt;launchDelegate&lt;/code&gt; that this tab is associated with. The association allows the tab to be filtered based on the modesets supported by the delegates.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.core.launchDelegates/launchDelegate/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.3
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following example adds the tab &quot;FooTab&quot; to the local java application launch tab group.
+
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.debug.ui.launchConfigurationTabs&quot;&gt;
+    &lt;tab
+       class=&quot;org.eclipse.jdt.debug.ui.launchConfigurations.FooTab&quot;
+        group=&quot;org.eclipse.jdt.debug.ui.launchConfigurationTabGroup.localJavaApplication&quot;
+        id=&quot;org.eclipse.jdt.debug.ui.fooTab&quot;
+        name=&quot;Foo Tab&quot;&gt;
+    &lt;/tab&gt;
+ &lt;/extension&gt; 
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         The debug platform provides two abstract classes that clients should subclass when implementing launch tabs. See &lt;code&gt;AbstractLaunchConfigurationTab&lt;/code&gt; and &lt;code&gt;AbstractOptionLaunchConfigurationTab&lt;/code&gt; in package &lt;code&gt;org.eclipse.debug.ui&lt;/code&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2006 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

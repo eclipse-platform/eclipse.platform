@@ -1,0 +1,45 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Eclipse Debug Platform</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>Provides support for defining and contributing variables for the purpose of 
+  string substitution.</p>
+
+<h2>Package Specification</h2>
+
+<p>This package provides classes and interfaces to support the definition and 
+  contribution of variables for the purpose of string substitution. The plug-in 
+  supports the recursive replacement of variables referenced by name in arbitrary 
+  strings with the value of the variable. Two types of variables are provided 
+  - value variables (<code>IValueVariable</code>) and dynamic variables (<code>IDynamicVariable</code>). 
+  A value variable has a simple setter and getter for its current value. A dynamic 
+  variable has an associated resolver that provides a variable's value each time 
+  it is referenced (replaced) in a string substitution. A dynamic variable may 
+  also provide an argument in its reference that can be used by its resolver to 
+  determine its substitution value.</p>
+<p>A variable manager (<code>IStringVariableManager</code>) is provided to manage 
+  the set of defined variables. Value variables may be created via API on the 
+  variable manager, or contributed via the <code>valueVariables</code> extension 
+  point. Dynamic variables must be contributed via the <code>dynamicVariables</code> 
+  extension point. The variable manager also provides change notification for 
+  value variables. The variable manager also provides an API for performing string 
+  substitution, which accepts a string, and returns a string with all variable 
+  references replaced by associated variable values.</p>
+<p>Variables are referenced in strings by enclosing them in braces, preceded with 
+  a dollar sign. For example, consider a variable defined with the name <code>foo</code>, 
+  and referenced in the following string: <code>&quot;abc${foo}ghi&quot;</code>. 
+  If the value of <code>foo</code> is <code>&quot;def&quot;</code>, the result 
+  of a string substitution would be <code>&quot;abcdefghi&quot;</code>. In the 
+  case of a dynamic variable, an (optional) argument is supplied by appending 
+  a colon and argument value after the variable name. For example <code>&quot;${foo:bar}&quot;</code>. 
+  In this case, the resolver associated with <code>foo</code> would be provided 
+  with the referenced argument (<code>bar</code>) when asked to resolve a value 
+  for the variable <code>foo</code>. </p>
+</body>
+</html>

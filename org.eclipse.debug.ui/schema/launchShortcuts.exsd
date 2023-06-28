@@ -1,0 +1,431 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.debug.ui" id="launchShortcuts" name="Launch Shortcuts"/>
+      </appInfo>
+      <documentation>
+         This extension point provides support for selection sensitive launching.  Extensions register a shortcut which
+appears in the run and/or debug cascade menus to launch the workbench selection or active editor.
+      </documentation>
+   </annotation>
+
+   <include schemaLocation="schema://org.eclipse.core.expressions/schema/expressionLanguage.exsd"/>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="shortcut" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="shortcut">
+      <annotation>
+         <appInfo>
+            <meta.element labelAttribute="label"/>
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="perspective" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="contextualLaunch" minOccurs="0" maxOccurs="1"/>
+            <element ref="enablement" minOccurs="0" maxOccurs="1"/>
+            <element ref="configurationType" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="description" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a unique identifier for this launch shortcut.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="modes" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a comma-separated list of modes this shortcut supports.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies the fully qualified name of a class which implements
+&lt;code&gt;org.eclipse.debug.ui.ILaunchShortcut&lt;/code&gt;.
+
+New in 3.4, clients can implement &lt;code&gt;org.eclipse.debug.ui.ILaunchShortcut2&lt;/code&gt; to participate in context sensitive launching of resource and non-resource based artifacts.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.debug.ui.ILaunchShortcut"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a label used to render this shortcut.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  specifies a plugin-relative path to an image used to render this shortcut. Icon is optional because it is up to other plugins (i.e. Views) to render it.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="category" type="string">
+            <annotation>
+               <documentation>
+                  specifies the launch configuration type category this shortcut is applicable for. When unspecified, the category is &lt;code&gt;null&lt;/code&gt; (default).
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.core.launchConfigurationTypes/launchConfigurationType/@category"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="helpContextId" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier that specifies the help context to associate with this launch shortcut
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="path" type="string">
+            <annotation>
+               <documentation>
+                  an optional menu path used to group launch shortcuts in menus. Launch shortcuts are grouped alphabetically based on the &lt;code&gt;path&lt;/code&gt; attribute, and then sorted alphabetically within groups based on the &lt;code&gt;label&lt;/code&gt; attribute. When unspecified, a shortcut appears in the last group. This attribute was added in the 3.0.1 release.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  Provides a human readable description of what the shortcut does (or will do) if the user selects it. A Description provided in this field will apply as the default description for all of the modes listed in the modes attribute. This attribute was added in the 3.3 release.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="perspective">
+      <annotation>
+         <appInfo>
+            <meta.element deprecated="true"/>
+         </appInfo>
+         <documentation>
+            The &lt;code&gt;perspective&lt;/code&gt; element has been &lt;b&gt;deprecated&lt;/b&gt; in the 3.1 release. The top level Run/Debug/Profile cascade menus now support contextual (selection sensitive) launching, and clients should provide a &lt;code&gt;contextualLaunch&lt;/code&gt; element instead.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the unique identifier of a perspective in which a menu shortcut for this launch shortcut will appear.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.perspectives/perspective/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="contextualLaunch">
+      <annotation>
+         <documentation>
+            Holds all descriptions for adding shortcuts to the selection sensitive Run/Debug/Profile cascade menus. Only objects that provide an &lt;code&gt;org.eclipse.debug.ui.actions.ILaunchable&lt;/code&gt; adapter are considered for the cascade menus. The &lt;code&gt;org.eclipse.debug.ui.actions.ILaunchable&lt;/code&gt; interface is simply used to tag objects that support contextual launching.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="contextLabel" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="enablement" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+      </complexType>
+   </element>
+
+   <element name="contextLabel">
+      <annotation>
+         <documentation>
+            Specify the label for a contextual launch mode.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="mode" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a mode from the set {&quot;run&quot;,&quot;debug&quot;,&quot;profile&quot;}
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.core.launchModes/launchMode/@mode"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies the label to appear in the contextual launch menu.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="configurationType">
+      <annotation>
+         <documentation>
+            This element allows more that one associated launch configuration type to be specified for this launch shortcut. This element was added in the 3.3 release.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  This attribute is the identifier of an existing launch configuration type that is to be associated with this launch shortcut. This association is then used to determine what launch shortcuts apply to what types for context sensitive launching.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.core.launchConfigurationTypes/launchConfigurationType/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="description">
+      <annotation>
+         <documentation>
+            Provides a mode specific description for this launch shortcut. This element was added in the 3.3. release.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="mode" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A launch mode identifier this description applies to. For example, &quot;run&quot;.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The desciption for this launch shortcut when invoked in the associated mode.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of the Java Application launch shortcut contribution with an enablement expression, an associated launch configuration type id and descriptions for run and debug mode:
+
+&lt;p&gt;
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.debug.ui.launchShortcuts&quot;&gt;
+  &lt;shortcut
+    label=&quot;Java Application&quot;
+    icon=&quot;$nl$/icons/full/etool16/java_app.png&quot;
+    helpContextId=&quot;org.eclipse.jdt.debug.ui.shortcut_local_java_application&quot;
+    modes=&quot;run, debug&quot;
+    class=&quot;org.eclipse.jdt.internal.debug.ui.launcher.JavaApplicationLaunchShortcut&quot;
+    description=&quot;Launch a local Java application&quot;
+    id=&quot;org.eclipse.jdt.debug.ui.localJavaShortcut&quot;&gt;
+    &lt;description
+     description=&quot;Runs a local Java application&quot;
+     mode=&quot;run&quot;&gt;
+    &lt;/description&gt;
+    &lt;description
+     description=&quot;Debugs a local Java application&quot;
+     mode=&quot;debug&quot;&gt;
+    &lt;/description&gt;
+  &lt;contextualLaunch&gt;
+  &lt;enablement&gt;
+    &lt;with variable=&quot;selection&quot;&gt;
+     &lt;count value=&quot;1&quot;/&gt;
+      &lt;iterate&gt;
+       &lt;or&gt;
+        &lt;test property=&quot;org.eclipse.jdt.launching.hasMain&quot;/&gt;
+         &lt;and&gt;
+          &lt;test property=&quot;org.eclipse.jdt.launching.isContainer&quot;/&gt;
+          &lt;test property=&quot;org.eclipse.jdt.launching.hasProjectNature&quot; args=&quot;org.eclipse.jdt.core.javanature&quot;/&gt;
+         &lt;/and&gt;
+        &lt;/or&gt;
+      &lt;/iterate&gt;
+     &lt;/with&gt;
+  &lt;/enablement&gt;
+  &lt;/contextualLaunch&gt;
+  &lt;configurationType
+    id=&quot;org.eclipse.jdt.launching.localJavaApplication&quot;&gt;
+  &lt;/configurationType&gt;
+  &lt;/shortcut&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+&lt;p&gt;
+In the above example, a launch shortcut will be shown in the run and debug cascade menus with the label
+&quot;Java Application&quot;. Furthermore, the shortcut will only appear if the selected item contains a main method or is a Java project, and has an &lt;code&gt;org.eclipse.debug.ui.actions.ILaunchable&lt;/code&gt; adapter.
+&lt;/p&gt;
+&lt;p&gt;
+For more information on property testers see &lt;code&gt;org.eclipse.core.expressions.PropertyTester&lt;/code&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         &lt;p&gt;
+Value of the attribute &lt;b&gt;class&lt;/b&gt; must be a fully qualified name of a Java class that implements the 
+interface &lt;b&gt;org.eclipse.debug.ui.ILaunchShortcut&lt;/b&gt;.
+New in 3.4, clients can implement &lt;code&gt;org.eclipse.debug.ui.ILaunchShortcut2&lt;/code&gt; to participate in context sensitive launching of resource and non-resource based artifacts.
+&lt;/p&gt;
+&lt;p&gt;
+Since 3.1, the debug platform registers a command handler for each launch shortcut and its applicable modes to allow clients to define key-bindings for a launch shortcut. The command id for a handler is generated as the launch shortcut id attribute, followed by a dot and the applicable launch mode. For example, the command id for the above launch shortcut example would be &lt;code&gt;com.example.ExampleLaunchShortcutId.debug&lt;/code&gt; for launching in debug mode. A command and key binding could be defined as follows, to bind &quot;&lt;code&gt;ALT-SHIFT-D, E&lt;/code&gt;&quot; to the launch shortcut.
+&lt;pre&gt;
+   &lt;extension point=&quot;org.eclipse.ui.commands&quot;&gt;
+      &lt;command
+            name=&quot;Debug Example Launch&quot;
+            description=&quot;Debug Example Launch&quot;
+            categoryId=&quot;org.eclipse.debug.ui.category.run&quot;
+            id=&quot;com.example.ExampleLaunchShortcutId.debug&quot;&gt;
+      &lt;/command&gt;
+      &lt;keyBinding
+            keySequence=&quot;M3+M2+D E&quot;
+            contextId=&quot;org.eclipse.ui.globalScope&quot;
+            commandId=&quot;com.example.ExampleLaunchShortcutId.debug&quot;
+            keyConfigurationId=&quot;org.eclipse.ui.defaultAcceleratorConfiguration&quot;&gt;
+      &lt;/keyBinding&gt;
+   &lt;/extension&gt;      
+&lt;/pre&gt;
+&lt;/p&gt;
+&lt;p&gt;
+Since 3.3, launch shortcuts can now indicate what kind of launch configuration(s) they will create using the configurationType element. In the event that a given launch shortcut can create more than one type of launch configuration, more than one type can be specified using this element.&lt;br&gt;
+Example:
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.debug.ui.launchShortcuts&quot;&gt;
+      &lt;shortcut
+            class=&quot;MyShortcut&quot;
+            description=&quot;Launches a simple program&quot;
+            id=&quot;myShortcut&quot;
+            label=&quot;My Shortcut&quot;
+            modes=&quot;run&quot;&gt;
+         &lt;configurationType 
+          id=&quot;mylaunchtypes&quot;&gt;
+         &lt;/configurationType&gt;
+      &lt;/shortcut&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+&lt;p&gt;
+Since 3.3, launch shortcuts can provdie a human readable description. This is used to aid novice users during the context launching process when they are presented with a listing of launch shortcuts to choose from.&lt;br&gt;
+Descriptions can be provided in one of two ways:
+&lt;ol&gt;
+&lt;li&gt;A general description can be provided for the shortcut, which will apply to all modes that the shortcut supports&lt;/li&gt;
+&lt;li&gt;Each description can be specified for a specific mode&lt;/li&gt;
+&lt;/ol&gt;
+Example of general description which applies to run and debug modes:
+&lt;pre&gt;
+ &lt;shortcut
+            class=&quot;MyShortcut&quot;
+            description=&quot;Launches a simple program&quot;
+            id=&quot;myShortcut&quot;
+            label=&quot;My Shortcut&quot;
+            modes=&quot;run, debug&quot;&gt;
+      &lt;/shortcut&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+Example of a description for the run mode only:
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.debug.ui.launchShortcuts&quot;&gt;
+      &lt;shortcut
+            class=&quot;MyShortcut&quot;
+            id=&quot;myShortcut&quot;
+            label=&quot;My Shortcut&quot;
+            modes=&quot;run, debug&quot;&gt;
+         &lt;description
+               description=&quot;Runs a simple program&quot;
+               mode=&quot;run&quot;&gt;
+         &lt;/description&gt;
+      &lt;/shortcut&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         No launch shortcuts are provided by the platform. Note that although launch shortcuts do not have to be associated with a specific launch configuration type, launch shortcut menus will not appear unless there is at least one launch configuration type that supports a shortcut&apos;s launch mode(s).
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2000, 2007 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

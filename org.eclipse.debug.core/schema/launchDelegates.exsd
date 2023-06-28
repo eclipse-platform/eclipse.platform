@@ -1,0 +1,225 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.debug.core" id="launchDelegates" name="Launch Delegates"/>
+      </appInfo>
+      <documentation>
+         This extension point provides a mechanism for contributing a launch delegate to an existing launch configuration type for one or more launch modes. Since launch modes are extensible, it may be neccessary to contribute additional launch delegates to an existing launch configuration type. Each launch delegate is contributed for a specific launch configuration type. A launch delegate supports one or more launch modes, and specifies a delegate responsible for the implementation of launching.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="launchDelegate" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="launchDelegate">
+      <complexType>
+         <sequence minOccurs="0" maxOccurs="1">
+            <element ref="modeCombination" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a unique identifier for this launch delegate.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  A human readable name for this delegate - for example, &quot;Eclipse JDT Launcher&quot;. This name is presented to the user when more than one launcher is available for a launch configuration and the user must choose a preferred launcher. This attribute was added in the 3.3. release.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="delegate" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies the fully qualified name of the Java class that implements &lt;code&gt;ILaunchConfigurationDelegate&lt;/code&gt;.
+Launch configuration instances of this delegate&apos;s type will delegate to instances of this class to perform launching in the modes this launch delegate supports - see the &lt;code&gt;modes&lt;/code&gt; attribute and the &lt;code&gt;modeCombination&lt;/code&gt; element.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.debug.core.model.ILaunchConfigurationDelegate"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="modes" type="string">
+            <annotation>
+               <documentation>
+                  A comma-separated list of the &lt;b&gt;individual&lt;/b&gt; launch modes this delegate supports.
+&lt;p&gt;
+This attribute should be used when a launch delegate supports single launch modes - for example launching in run mode or debug mode. When a launch delegate supports launching in mixed mode (for example, debug and profile), the &lt;code&gt;modeCombination&lt;/code&gt; element should be used to specify supported launch mode combinations.
+&lt;/p&gt;
+&lt;p&gt;
+This attribute can be used in conjunction with &lt;code&gt;modeCombination&lt;/code&gt; elements. It is suggested practice to provide one or the other (either a comma seperated listing in the &lt;code&gt;modes&lt;/code&gt; attribute, or &lt;code&gt;modeCombinations&lt;/code&gt;). Specifying &apos;run,debug&apos; in the modes attribute is analogous to specifying two &lt;code&gt;modeCombination&lt;/code&gt; contributions, one for &apos;run&apos; and another for &apos;debug&apos;.
+&lt;/p&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="type" type="string">
+            <annotation>
+               <documentation>
+                  identifier of an existing launch configuration type that this launch delegate is capable of launching.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.core.launchConfigurationTypes/launchConfigurationType/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="sourcePathComputerId" type="string">
+            <annotation>
+               <documentation>
+                  The unique identifier of a sourcePathComputer extension that is used to compute a default source lookup path for launch configurations of this type. Since 3.1, this attribute cab be specified in a launchDelegate extension when unspecified in the assocaited launchConfigurationType extension. Only one source path computer can be specified per launch configuration type.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.core.sourcePathComputers/sourcePathComputer/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="sourceLocatorId" type="string">
+            <annotation>
+               <documentation>
+                  The unique identifier of a sourceLocator extension that is used to create the source locator for sessions launched using launch configurations of this type. Since 3.1, this attribute can be specified in a launchDelegate extension when unspecified in the assocaited launchConfigurationType extension. Only one source locater can be specified per launch configuration type.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.core.sourceLocators/sourceLocator/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="delegateDescription" type="string">
+            <annotation>
+               <documentation>
+                  A description of this launch delegate - for example &quot;The Eclipse JDT Java Application Launcher supports running and debugging local Java applications&quot;. This description is presented to the user when more than one launcher is available for a launch configuration and the user must choose a preferred launcher. This attribute was added in the 3.3 release.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="modeCombination">
+      <annotation>
+         <documentation>
+            This element specifies a launch mode combination this delegate supports. Each &lt;code&gt;modeCombination&lt;/code&gt; element specifies a comma seperated list of modes specifying a supported mixed launch mode. For example, a delegate that supports debugging, profiling and code coverage at the same time would specify a &lt;code&gt;modes&lt;/code&gt; element of consisting of &apos;debug, profile, coverage&apos;. This element can also be used to specify single launch modes that are supported - for example a &lt;code&gt;modes&lt;/code&gt; attribute of &apos;debug&apos;. This element was added in the 3.3 release.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="modes" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a comma seperated list specifying a combination of modes the associated delegate supportes.
+
+&lt;p&gt;
+Unlike the modes attribute of the &lt;code&gt;launchDeleaget&lt;/code&gt; element definition, this comma seperated list represents a mixed launch mode rather than the single supported launch modes. For example: a &lt;code&gt;modeCombination&lt;/code&gt; element specifying &lt;code&gt;modes&lt;/code&gt; of &apos;profile,debug&apos; indicates the delegate can debug and profile at the same time. In contrast, if &apos;profile,debug&apos; was specified by the &lt;code&gt;modes&lt;/code&gt; attribute of the &lt;code&gt;launchDelegate&lt;/code&gt; element, it would indicate the delegate could debug or profile, but not at the same time.
+&lt;/p&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="perspective" type="string">
+            <annotation>
+               <documentation>
+                  a string representing the id of a persepctive to switch to when launching.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of a launch delegate extension point:
+
+&lt;p&gt;
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.debug.core.launchDelegates&quot;&gt;
+  &lt;launchDelegate
+    id=&quot;com.example.ExampleProfileDelegate&quot;
+    delegate=&quot;com.example.ExampleProfileDelegate&quot;
+    type=&quot;org.eclipse.jdt.launching.localJavaApplication&quot;
+    name=&quot;Eclipse JDT Java Profile Tooling&quot;&gt;
+   &lt;modeCombination 
+    modes=&quot;run, profile&quot;
+    perspective=&quot;com.example.Perspective&quot;&gt;
+   &lt;/modeCombination&gt;
+   &lt;modeCombination modes=&quot;debug, profile, coverage&quot;&gt;&lt;/modeCombination&gt;
+  &lt;/launchDelegate&gt;
+ &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+
+In the example above, the specified launch delegate is contributed to launch Java applications in profile mode. The delegate supports mixed mode launching. The delegate supports profiling when launching in run or debug mode, with code coverage in debug mode only. When the mode combination or run and profile is used, in this example, the perspective com.example.Perspective can also be opened.
+      </documentation>
+   </annotation>
+
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2000, 2013 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Value of the attribute &lt;b&gt;delegate&lt;/b&gt; must be a fully qualified name of a Java class that implements the interface &lt;b&gt;org.eclipse.debug.core.model.ILaunchConfigurationDelegate&lt;/b&gt;.
+      </documentation>
+   </annotation>
+
+</schema>
