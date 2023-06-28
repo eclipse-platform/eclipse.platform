@@ -24,7 +24,6 @@ more.
 
 The project maintains the following source code repositories
 
-* https://github.com/eclipse-platform/eclipse.platform.common
 * https://github.com/eclipse-platform/eclipse.platform.debug
 * https://github.com/eclipse-platform/eclipse.platform
 * https://github.com/eclipse-platform/eclipse.platform.releng.aggregator
@@ -35,7 +34,6 @@ The project maintains the following source code repositories
 * https://github.com/eclipse-platform/eclipse.platform.text
 * https://github.com/eclipse-platform/eclipse.platform.ua
 * https://github.com/eclipse-platform/eclipse.platform.ui
-* https://github.com/eclipse-platform/eclipse.platform.ui.tools
 
 This project uses Github to track ongoing development and issues.
 
