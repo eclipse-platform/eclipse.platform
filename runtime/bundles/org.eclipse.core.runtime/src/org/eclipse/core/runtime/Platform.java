@@ -584,7 +584,7 @@ public final class Platform {
 	 * @see #removeLogListener(ILogListener)
 	 */
 	public static void addLogListener(ILogListener listener) {
-		InternalPlatform.getDefault().addLogListener(listener);
+		ILog.addRuntimeLogListener(listener);
 	}
 
 	/**
@@ -789,7 +789,7 @@ public final class Platform {
 	 * @see #addLogListener(ILogListener)
 	 */
 	public static void removeLogListener(ILogListener listener) {
-		InternalPlatform.getDefault().removeLogListener(listener);
+		ILog.removeRuntimeLogListener(listener);
 	}
 
 	/**

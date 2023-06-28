@@ -15,6 +15,7 @@
 package org.eclipse.core.runtime;
 
 import org.eclipse.core.internal.runtime.InternalPlatform;
+import org.eclipse.core.internal.runtime.RuntimeLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -174,5 +175,41 @@ public interface ILog {
 		} catch (IllegalCallerException e) {
 			return of(ILog.class);
 		}
+	}
+
+	/**
+	 * Adds a log listener that is notified about all log events of the runtime.
+	 * <p>
+	 * Once registered, a listener starts receiving notification as entries are
+	 * added via any <code>ILog.log()</code>. The listener continues to receive
+	 * notifications until it is replaced or removed.
+	 * </p>
+	 *
+	 * @param listener the listener to register
+	 * @see ILog#addLogListener(ILogListener)
+	 * @see #removeLogListener(ILogListener)
+	 * @since 3.31
+	 */
+	public static void addRuntimeLogListener(ILogListener listener) {
+		if (listener == null) {
+			return;
+		}
+		RuntimeLog.addLogListener(listener);
+	}
+
+	/**
+	 * Removes the log listener from receiving notfications about all log events of
+	 * the runtime. If no such listener exists, no action is taken.
+	 *
+	 * @param listener the listener to de-register
+	 * @see ILog#removeLogListener(ILogListener)
+	 * @see #addLogListener(ILogListener)
+	 * @since 3.31
+	 */
+	public static void removeRuntimeLogListener(ILogListener listener) {
+		if (listener == null) {
+			return;
+		}
+		RuntimeLog.removeLogListener(listener);
 	}
 }
