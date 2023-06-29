@@ -1,0 +1,50 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Debug Contexts</title>
+</head>
+
+<body link="#0000FF" vlink="#800080">
+
+<p style="text-align: left;">Provides a set of interfaces and classes for debug context management.</p>
+
+<h2 style="text-align: left;">Package Specification</h2>
+
+<p>This package provides a set interfaces and classes to manage debug contexts.</p>
+<p>A debug context represents an active state of a program being debugged. The 
+  active debug context drives the enabled state of debug actions (step, terminate, 
+  etc.), source lookup, visible variables, watch expression values, etc. The debug 
+  platform allows clients to register for context change notification in order 
+  to respond to changes in the active debug state, as well as register context 
+  providers that drive the active debug state. The debug platform has context 
+  listeners and providers itself. For example, the debug platform's stepping actions 
+  register for context change notification to update enabled state and the Debug 
+  view registers as a context provider.</p>
+<p>There can be any number of debug contexts within a workbench window, but at 
+  any one time there is only one active debug context within a part and one active 
+  context within a workbench window. The debug platform provides a debug context 
+  service per window (<code>IDebugContextService</code>) that allows clients to 
+  register context providers for that window, and register for change notification 
+  within the window or a specific part in the window. If there is only one context 
+  provider in a window, it provides the context for the entire window as well 
+  as its part. If there is more than one context provider for a window, the context 
+  provider associated with the most recently active part provides the context 
+  for that window. It is possible to register a context provider that has no associated 
+  part. Only one such context provider can be registered with each service (window). 
+  A context provider that has no associated part provides context for its window 
+  only if there are no other context providers registered for that window.</p>
+<p>A debug context is represented by a selection (<code>ISelection</code>). This 
+  allows for single or multi-element selections as well as text selections to 
+  provide context. Listeners are notified of context changes with debug context 
+  events (<code>DebugContextEvent</code>) . An event specifies the context that 
+  has changed and a bit mask describing how the context has changed. The platform 
+  defines two types of changes - activation and state change. An activated state 
+  indicates a new context - for example a thread suspending at a breakpoint or 
+  after a step. An activation triggers variables to refresh, source lookup, etc. 
+  A state change indicates that a previously activated state has changed. For 
+  example, a stack frame or thread that was activated has completed an implicit 
+  evaluation. A state change triggers action enabled states to update.</p>
+</body>
+</html>

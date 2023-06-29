@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.ui">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.debug.ui" id="breakpointOrganizers" name="Breakpoint Organizers"/>
+      </appInfo>
+      <documentation>
+         Breakpoint organizers categorize breakpoints based on some specific criteria. For example, a breakpoint organizer is provided to categorize breakpoints by project.
+
+Organizers with the specified name will be automatically created by the Debug Platform and presented to the user as options for grouping breakpoints. The supplied class, which must implement org.eclipse.debug.ui.IBreakpointOrganizerDelegate, will be loaded only as necessary, to avoid early plugin activation.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="breakpointOrganizer" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="breakpointOrganizer">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Unique identifier for this breakpoint organizer.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Implementation of &lt;code&gt;org.eclipse.debug.ui.IBreakpointOrganizerDelegate&lt;/code&gt; that performs categorization. Since 3.3, the class may optionally implement &lt;code&gt;org.eclipse.debug.ui.IBreakpointOrganizerDelegateExtension&lt;/code&gt;.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Label for this organizer which is suitable for presentation to the user.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  Optional path to an icon which can be shown for this organizer.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="othersLabel" type="string">
+            <annotation>
+               <documentation>
+                  Optional label for this organizer which is suitable for presentation to the user to describe breakpoints that do not fall into a category supplied by this organizer. For example, if an organizer categorizes breakpoints by working sets, but a breakpoint does not belong to a working set, this label will be used. When unspecified, &quot;Others&quot; is used.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.1
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         Following is an example of a breakpoint organizer extension.
+&lt;pre&gt;
+&lt;extension
+    point=&quot;org.eclipse.debug.ui.breakpointOrganizers&quot;&gt;
+    &lt;breakpointOrganizer
+    class=&quot;com.example.BreakpointOrganizer&quot;
+     id=&quot;com.example.BreakpointOrganizer&quot;
+     label=&quot;Example Organizer&quot;
+     icon=&quot;icons/full/obj16/example_org.png&quot;/&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+In the above example, the supplied factory will be included in the list of options for grouping breakpoints (&quot;Group By &gt; Example Organizer&quot;). When selected, the associated organizer will be used to categorize breakpoints.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Value of the attribute &lt;b&gt;class&lt;/b&gt; must be a fully qualified name of a Java class that implements the interface &lt;b&gt;org.eclipse.debug.ui.IBreakpointOrganizerDelegate&lt;/b&gt;. Since 3.3 the class may optionally implement &lt;b&gt;org.eclipse.debug.ui.IBreakpointOrganizerDelegateExtension&lt;/b&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The Debug Platform provides breakpoint organizers for projects, files, breakpoint types, and working sets.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2005 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

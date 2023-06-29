@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="org.eclipse.debug.ui" version="2">
+    <resource path="ui/org/eclipse/debug/internal/ui/launchConfigurations/LaunchConfigurationViewer.java" type="org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationViewer">
+        <filter comment="Known illegal extension" id="571473929">
+            <message_arguments>
+                <message_argument value="TreeViewer"/>
+                <message_argument value="LaunchConfigurationViewer"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="ui/org/eclipse/debug/internal/ui/preferences/LaunchPerspectivePreferencePage.java" type="org.eclipse.debug.internal.ui.preferences.LaunchPerspectivePreferencePage$PerspectivesTreeViewer">
+        <filter comment="Known illegal extension" id="571473929">
+            <message_arguments>
+                <message_argument value="TreeViewer"/>
+                <message_argument value="PerspectivesTreeViewer"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="ui/org/eclipse/debug/internal/ui/sourcelookup/SourceContainerViewer.java" type="org.eclipse.debug.internal.ui.sourcelookup.SourceContainerViewer">
+        <filter comment="Known illegal extension" id="571473929">
+            <message_arguments>
+                <message_argument value="TreeViewer"/>
+                <message_argument value="SourceContainerViewer"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="ui/org/eclipse/debug/internal/ui/sourcelookup/browsers/ProjectSourceContainerDialog.java" type="org.eclipse.debug.internal.ui.sourcelookup.browsers.ProjectSourceContainerDialog">
+        <filter comment="Known illegal extension" id="571473929">
+            <message_arguments>
+                <message_argument value="ListSelectionDialog"/>
+                <message_argument value="ProjectSourceContainerDialog"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="ui/org/eclipse/debug/internal/ui/viewers/model/InternalTreeModelViewer.java" type="org.eclipse.debug.internal.ui.viewers.model.InternalTreeModelViewer">
+        <filter comment="Known illegal extension for the async viewer support" id="571473929">
+            <message_arguments>
+                <message_argument value="TreeViewer"/>
+                <message_argument value="InternalTreeModelViewer"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="ui/org/eclipse/debug/internal/ui/views/breakpoints/BreakpointsViewer.java" type="org.eclipse.debug.internal.ui.views.breakpoints.BreakpointsViewer">
+        <filter comment="Known illegal extension" id="571473929">
+            <message_arguments>
+                <message_argument value="CheckboxTreeViewer"/>
+                <message_argument value="BreakpointsViewer"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="ui/org/eclipse/debug/ui/actions/AbstractLaunchHistoryAction.java" type="org.eclipse.debug.ui.actions.AbstractLaunchHistoryAction">
+        <filter comment="Known leaked internal types" id="576725006">
+            <message_arguments>
+                <message_argument value="ILaunchHistoryChangedListener"/>
+                <message_argument value="AbstractLaunchHistoryAction"/>
+            </message_arguments>
+        </filter>
+        <filter comment="Known leaked internal types" id="643842064">
+            <message_arguments>
+                <message_argument value="LaunchHistory"/>
+                <message_argument value="AbstractLaunchHistoryAction"/>
+                <message_argument value="getLaunchHistory()"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>

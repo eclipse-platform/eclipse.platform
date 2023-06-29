@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.debug.core" id="breakpointImportParticipants" name="Breakpoint Import Participants"/>
+      </appinfo>
+      <documentation>
+         This extension point allows contributors to explicitly define how breakpoints should be compared when being imported into the workspace, and how they should be updated if a similar breakpoint already exists in the workspace.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="importParticipant"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="importParticipant">
+      <annotation>
+         <documentation>
+            Describes one import participant
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="participant" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The class that participates in the breakpoint importing
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.debug.core.model.IBreakpointImportParticipant"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="type" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of the marker backing the breakpoint type this participant cares about. For example &apos;org.eclipse.jdt.debug.javaLineBreakpointMarker&apos;, the id of the backing marker for the Java line breakpoint
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.core.resources.markers/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.5
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following is an example of the breakpoint participant extension:
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.debug.core.breakpointImportParticipants&quot;&gt;
+ &lt;importParticipant
+     participant=&quot;x.y.z.BreakpointImportParticipant&quot;
+     type=&quot;org.eclipse.jdt.debug.javaLineBreakpointMarker&quot;&gt;
+ &lt;/importParticipant&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+In the above example the participant cares about Java line breakpoints: where &lt;code&gt;org.eclipse.jdt.debug.javaLineBreakpointMarker&lt;/code&gt;
+is a breakpoint type defined using the &lt;code&gt;org.eclipse.debug.core.breakpoints&lt;/code&gt; extension point in &lt;code&gt;org.eclipse.jdt.debug&lt;/code&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         The &lt;code&gt;type&lt;/code&gt; attribute is the id of the marker backing the breakpoint type this participant cares about. The type needs to be the exact marker id of the breakpoint this participant cares about, marker hierarchies are not considered. For example &apos;org.eclipse.jdt.debug.javaLineBreakpointMarker&apos;, the id of the backing marker for the Java line breakpoint
+The &lt;code&gt;participant&lt;/code&gt; attribute must specify a Java class that implements the &lt;code&gt;org.eclipse.debug.core.model.IBreakpointImportParticipant&lt;/code&gt; interface.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         Platform Debug supplies a default implemementation for breakpoints in general which compares breakpoints the way they were compared prior to the participant support: based on breakpoint type and line number information.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2008 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

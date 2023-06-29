@@ -64,6 +64,7 @@
     <module>runtime</module>
     <module>team</module>
     <module>resources</module>
+    <module>debug</module>
   </modules>
   <build>
     <pluginManagement>

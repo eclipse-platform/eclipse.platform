@@ -1,0 +1,145 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Eclipse Debug Platform [org.eclipse.debug.core.model]</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>Defines interfaces for debug model elements, source lookup, and launching.</p>
+
+<h2>Package Specification</h2>
+
+<p>This package defines classes and interfaces known as the &quot;debug model&quot; 
+  which support an extensible set of debug architectures and languages. The debug 
+  model is a set of interfaces representing common artifacts in debuggable programs. 
+  The debug plug-in itself does not provide an implementation of a debug model. 
+  It is intended that third parties providing an integrated set of development 
+  tools for a specific language will also implement a debug model for that language, 
+  using an underlying debug architecture of their choice. For example, Java development 
+  tooling provides an implementation of a debug model based on the standard Java 
+  Platform Debug Architecture (JPDA).</p>
+
+<h4>The Debug Model</h4>
+
+<p>A client implements a debug model by
+providing an implementation of the interfaces defined in this package. (There is no explicit
+extension point that represents a debug model). Each debug model provides one or more
+launch configuration types capable of initiating a debug session.</p>
+
+<p>The common elements defined by the debug model are: 
+
+<ul>
+  <li>Debug Target - A debug target represents a debuggable program - for example, a virtual
+    machine or a process.</li>
+  <li>Thread - A debug target may contain one or more threads.</li>
+  <li>Stack Frame - A suspended thread may contain one or more stack frames.</li>
+  <li>Variable - A stack frame may contain variables.</li>
+  <li>Value - Each variable has an associated value, and a value may contain more variables (to
+  	represent complex data structures and objects).</li>
+  <li>Register Group - A stack frame may (optionally) be associated with one or more register
+    groups.</li>
+  <li>Register - A register group contains one or more registers.</li>
+  <li>Memory Blocks - A debug target may (optionally) support the retrieval of
+    arbitrary contiguous segments of memory.</li>
+  <li>Breakpoint - Breakpoints suspend the execution of a program.</li>
+  <li>Expression -  An expression is a snippet of code that can be evaluated to
+  	produce a value.</li>
+</ul>
+
+<p>A debug model implementation is responsible for firing debug events. A debug event
+corresponds to an event in a program being debugged - for example the creation or
+termination of a thread.</p>
+
+<h4>Breakpoints</h4>
+
+<p>Breakpoints are used to suspend the execution of a program being debugged. There are
+many kinds of breakpoints - line breakpoints, conditional line breakpoints, hit count
+breakpoints, exception breakpoints, etc. The kinds of breakpoints supported by each debug
+architecture, and the information required to create those breakpoints
+is dictated by each debug architecture. The debug platform supports an extensible
+set of breakpoint via the breakpoints extension point.</p>
+
+<p>The debug platform provides a breakpoint manager that maintains the collection 
+  of all registered breakpoints. Clients add and remove breakpoints via this manager. 
+  Breakpoints are implemented by instances of <b>IBreakpoint</b>. Each breakpoint 
+  object has an associated marker, which provides persistence and presentation 
+  in editors. The debug platform defines a generic breakpoint and line breakpoint, 
+  as well as their corresponding marker definitions. Breakpoint creation is a 
+  client responsibility - that is, defining the attributes of a breakpoint and 
+  the resource to associate a breakpoint marker with.</p>
+
+<p>Breakpoints are persisted via their underlying marker. Breakpoint markers defined 
+  with the <b>persisted</b> attribute as <b>false</b> will not be persisted. Breakpoints 
+  are restored at workspace startup time by the breakpoint manager - that is, 
+  breakpoint objects are created for all persisted markers which are a subtype 
+  of the root breakpoint marker and are added to the breakpoint manager. To allow 
+  for selective persistence of breakpoints (of the same kind), the <b>IBreakpoint</b> 
+  interface and root breakpoint implementation defines a &quot;persisted&quot; 
+  attribute. If this value is set to false, the breakpoint will not be persisted 
+  across workspace invocations.</p>
+
+<p>As breakpoint markers are modified (created, removed, and changed), resource 
+  deltas are created by the platform. The breakpoint manager translates pertinent 
+  resource deltas into breakpoint change notifications (breakpoint added/removed/changed 
+  messages). Interested listeners may register with the breakpoint manager. The 
+  breakpoint manager only fires change notifications for registered breakpoints. 
+  This simplifies breakpoint processing for clients, as resource delta traversal 
+  and analysis is not required. Debug targets that support breakpoints should 
+  register for breakpoint change notifications.</p>
+<h4>New Features in the Debug Model, Eclipse 3.0</h4>
+<blockquote> 
+  <h4>Launch Delegate Enhancements<br>
+  </h4>
+  <p>Lanuch delegates can optionally implement the new interface <code>ILaunchConfigurationDelegate2</code>. 
+    This allows launch delegates to provide a launch object to be used for a launch. 
+    For example, when debugging on a server a delegate could create a new launch 
+    object or may reuse an existing launch object if the server is already running 
+    in debug mode. As well, the inteface provides a mechanism for performing a 
+    scoped build prior to launching (i.e. scoped to the projects in the workspace 
+    pertaining to the launch), and searching for errors in the workspace which 
+    may prevent the launch from succeeding (for example, compilation errors).</p>
+  <h4>Extensible Watch Expressions</h4>
+  <p>The debug platform provides an implementation of watch expressions. Debug 
+    models can contribute watch expression delegates if they support watch expressions. 
+    When a stack frame is selected, the associated delegate is queried to provide 
+    a value for a watch expression in that context. The debug platform provides 
+    persistence, enabling, disabling, entering, and editing of watch expressions.</p>
+  <h4>Automatic Array Partitioning<br>
+  </h4>
+  <p>The debug plug-in supports automatic partitioning of indexed collections, 
+    which partitions large arrays into sub-ranges in the variables view. This 
+    is supported with the introduction of a new interface in the debug model representing 
+    an indexed value - <code>IIndexedValue</code>. If a value implements this 
+    interface, the variables view will automatically partition its elements as 
+    required, into sub-ranges</p>
+  <h4>Logical Structure Types<br>
+  </h4>
+  <p>Often, it is convenient to navigate complex data structures in terms of a 
+    logical structure, rather than an implementation structure. For example, no 
+    matter how a list is implemented (i.e. linked list, collection of arrays, 
+    etc.), it is often convenient to be able to view the list as an ordered collection. 
+    To facilitate the display of logical structures in the variables view, an 
+    extension point has been added (<code>org.eclipse.debug.core.logicalStructureTypes</code>) 
+    allowing debug models to contribute logical structures of its values, where 
+    applicable. Debug models may contribute delegates to translate raw implementation 
+    values into logical values. The variables view will display the logical values, 
+    when the option to display logical structures is turned on. More than one 
+    logical structure can be provided for a single value - the user can choose 
+    which structure to display.</p>
+  <h4>Step Filters<br>
+  </h4>
+  <p>To support step filters on all stepping functions (into, over, return), a 
+    new interface has been added to the debug platform - <code>IStepFilters</code> 
+    - which can be implemented by debug targets. This interface replaces <code>IFilteredStep</code>, 
+    which is now deprecated. The debugger provides a global toggle that turns 
+    step filters on/off for all stepping functions. Debug targets should implement 
+    this new interface and honor the step filter enablement setting when stepping.</p>
+  <p>This change maintains binary compatibility with previous releases. However, 
+    targets wishing to leverage the new function must implement the new interface.<br>
+  </p>
+</blockquote>
+</body>
+</html>

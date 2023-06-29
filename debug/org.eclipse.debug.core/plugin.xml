@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+     Copyright (c) 2005, 2017 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+
+<!-- Extension points -->
+   <extension-point id="breakpoints" name="%breakpointExtensionPointName" schema="schema/breakpoints.exsd"/>
+   <extension-point id="launchConfigurationComparators" name="%launchConfigurationComparatorsExtensionPointName" schema="schema/launchConfigurationComparators.exsd"/>
+   <extension-point id="launchConfigurationTypes" name="%launchConfigurationTypeNameExtensionPointName" schema="schema/launchConfigurationTypes.exsd"/>
+   <extension-point id="launchModes" name="%launchModesExtensionPointName" schema="schema/launchModes.exsd"/>
+   <extension-point id="launchDelegates" name="%launchDelegatesExtensionPointName" schema="schema/launchDelegates.exsd"/>
+   <extension-point id="launchers" name="%launcherExtensionPointName" schema="schema/launchers.exsd"/>
+   <extension-point id="sourceLocators" name="%sourceLocatorsExtensionPointName" schema="schema/sourceLocators.exsd"/>
+   <extension-point id="statusHandlers" name="%statusHandlerExtensionPointName" schema="schema/statusHandlers.exsd"/>
+   <extension-point id="watchExpressionDelegates" name="%watchExpressionDelegatesName" schema="schema/watchExpressionDelegates.exsd"/>
+   <extension-point id="processFactories" name="%processFactoriesExtensionPointName" schema="schema/processFactories.exsd"/>
+   <extension-point id="logicalStructureTypes" name="%logicalStructureTypesExtensionPointName" schema="schema/logicalStructureTypes.exsd"/>
+   <extension-point id="sourceContainerTypes" name="%sourceContainerTypesName" schema="schema/sourceContainerTypes.exsd"/>
+   <extension-point id="sourcePathComputers" name="%sourcePathComputersName" schema="schema/sourcePathComputers.exsd"/>
+   <extension-point id="logicalStructureProviders" name="%logicalStructureProvidersExtensionPointName" schema="schema/logicalStructureProviders.exsd"/>
+   <extension-point id="breakpointImportParticipants" name="%breakpointImportParticipantsExtensionPoint.name" schema="schema/breakpointImportParticipants.exsd"/>
+   <extension-point id="stepFilters" name="%stepFiltersExtensionPointName" schema="schema/stepFilters.exsd"/>
+
+<!-- Extensions -->
+   <extension
+         id="breakpointMarker"
+         name="%Breakpoint.name"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.marker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+      <attribute
+            name="org.eclipse.debug.core.modelIdentifier">
+      </attribute>
+      <attribute
+            name="org.eclipse.debug.core.enabled">
+      </attribute>
+      <attribute
+            name="org.eclipse.debug.core.registered">
+      </attribute>
+      <attribute
+            name="org.eclipse.debug.core.persisted">
+      </attribute>
+   </extension>
+   <extension
+         id="lineBreakpointMarker"
+         name="%LineBreakpoint.name"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.debug.core.breakpointMarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.team.core.fileTypes">
+      <fileTypes
+            type="text"
+            extension="launch">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="prototype">
+      </fileTypes>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchModes">
+      <launchMode
+            label="%run"
+            launchAsLabel="%runAs.label"
+            mode="run">
+      </launchMode>
+      <launchMode
+            label="%debug"
+            launchAsLabel="%debugAs.label"
+            mode="debug">
+      </launchMode>
+      <launchMode
+            label="%profile"
+            launchAsLabel="%profileAs.label"
+            mode="profile">
+      </launchMode>
+   </extension>
+<!-- Dynamic (String Substitution) Variables -->
+   <extension
+         point="org.eclipse.core.variables.dynamicVariables">
+      <variable
+            name="env_var"
+            resolver="org.eclipse.debug.internal.core.EnvironmentVariableResolver"
+            description="%env_var.description">
+      </variable>
+      <variable
+            name="system"
+            resolver="org.eclipse.debug.internal.core.SystemVariableResolver"
+            description="%system_var.description">
+      </variable>
+      <variable
+            name="system_property"
+            resolver="org.eclipse.debug.internal.core.SystemPropertyResolver"
+            description="%system_property.description">
+      </variable>
+      <variable
+            description="%workspace_loc.description"
+            name="workspace_loc"
+            resolver="org.eclipse.debug.internal.core.variables.WorkspaceResolver">
+      </variable>
+      <variable
+            name="project_loc"
+            description="%project_loc.description"
+            resolver="org.eclipse.debug.internal.core.variables.ProjectResolver">
+      </variable>
+      <variable
+            name="project_path"
+            description="%project_path.description"
+            resolver="org.eclipse.debug.internal.core.variables.ProjectResolver">
+      </variable>
+      <variable
+            name="project_name"
+            description="%project_name.description"
+            resolver="org.eclipse.debug.internal.core.variables.ProjectResolver">
+      </variable>
+      <variable
+            name="resource_loc"
+            description="%resource_loc.description"
+            resolver="org.eclipse.debug.internal.core.variables.ResourceResolver">
+      </variable>
+      <variable
+            name="resource_path"
+            description="%resource_path.description"
+            resolver="org.eclipse.debug.internal.core.variables.ResourceResolver">
+      </variable>
+      <variable
+            name="resource_name"
+            description="%resource_name.description"
+            resolver="org.eclipse.debug.internal.core.variables.ResourceResolver">
+      </variable>
+      <variable
+            name="container_loc"
+            description="%container_loc.description"
+            resolver="org.eclipse.debug.internal.core.variables.ContainerResolver">
+      </variable>
+      <variable
+            name="container_path"
+            description="%container_path.description"
+            resolver="org.eclipse.debug.internal.core.variables.ContainerResolver">
+      </variable>
+      <variable
+            name="container_name"
+            description="%container_name.description"
+            resolver="org.eclipse.debug.internal.core.variables.ContainerResolver">
+      </variable>
+      <variable
+            description="%current_date.description"
+            name="current_date"
+            resolver="org.eclipse.debug.internal.core.variables.DateTimeResolver"
+            supportsArgument="true">
+      </variable>
+   </extension>
+
+<!-- ====================== -->
+<!--  source containers     -->
+<!-- ====================== -->
+   <extension
+         point="org.eclipse.debug.core.sourceContainerTypes">
+      <sourceContainerType
+            name="%containerName.project"
+            class="org.eclipse.debug.internal.core.sourcelookup.containers.ProjectSourceContainerType"
+            id="org.eclipse.debug.core.containerType.project"
+            description="%containerDescription.project">
+      </sourceContainerType>
+      <sourceContainerType
+            name="%containerName.folder"
+            class="org.eclipse.debug.internal.core.sourcelookup.containers.FolderSourceContainerType"
+            id="org.eclipse.debug.core.containerType.folder"
+            description="%containerDescription.folder">
+      </sourceContainerType>
+      <sourceContainerType
+            name="%containerName.directory"
+            class="org.eclipse.debug.internal.core.sourcelookup.containers.DirectorySourceContainerType"
+            id="org.eclipse.debug.core.containerType.directory"
+            description="%containerDescription.directory">
+      </sourceContainerType>
+      <sourceContainerType
+            name="%containerName.workspace"
+            class="org.eclipse.debug.internal.core.sourcelookup.containers.WorkspaceSourceContainerType"
+            id="org.eclipse.debug.core.containerType.workspace"
+            description="%containerDescription.workspace">
+      </sourceContainerType>
+      <sourceContainerType
+            name="%containerName.default"
+			class="org.eclipse.debug.internal.core.sourcelookup.containers.DefaultSourceContainerType"
+            id="org.eclipse.debug.core.containerType.default"
+            description="%containerDescription.default">
+      </sourceContainerType>
+      <sourceContainerType
+            name="%containerName.archive"
+			class="org.eclipse.debug.internal.core.sourcelookup.containers.ArchiveSourceContainerType"
+            id="org.eclipse.debug.core.containerType.archive"
+            description="%containerDescription.archive">
+      </sourceContainerType>
+      <sourceContainerType
+            name="%containerName.externalArchive"
+			class="org.eclipse.debug.internal.core.sourcelookup.containers.ExternalArchiveSourceContainerType"
+            id="org.eclipse.debug.core.containerType.externalArchive"
+            description="%containerDescription.externalArchive">
+      </sourceContainerType>
+   </extension>
+
+<!-- ===================================== -->
+<!--  launch configuration comparators     -->
+<!-- ===================================== -->
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationComparators">
+      <launchConfigurationComparator
+            attribute="org.eclipse.debug.core.source_locator_memento"
+            class="org.eclipse.debug.internal.core.sourcelookup.SourceLocatorMementoComparator"
+            id="org.eclipse.debug.core.sourceLocatorMementoComparator">
+      </launchConfigurationComparator>
+      <launchConfigurationComparator
+            attribute="org.eclipse.debug.core.ATTR_REFRESH_SCOPE"
+            class="org.eclipse.debug.internal.core.RefreshScopeComparator"
+            id="org.eclipse.debug.core.comparator.refresh.scope">
+      </launchConfigurationComparator>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.debug.internal.core.DebugPreferenceInitializer">
+      </initializer>
+      <modifier
+            class="org.eclipse.debug.internal.core.PreferredDelegateModifyListener">
+      </modifier>
+   </extension>
+
+<!-- ===================================== -->
+<!--  property testers 					   -->
+<!-- ===================================== -->
+	<extension point="org.eclipse.core.expressions.propertyTesters">
+	  <propertyTester
+			namespace="org.eclipse.debug.core"
+			properties="launchable"
+			type="java.lang.Object"
+			class="org.eclipse.debug.internal.core.LaunchablePropertyTester"
+			id="org.eclipse.debug.core.propertyTesters.launchable">
+	  </propertyTester>
+	</extension>
+ <extension
+       point="org.eclipse.debug.core.launchDelegates">
+    <launchDelegate
+          delegate="org.eclipse.debug.internal.core.groups.GroupLaunchConfigurationDelegate"
+          delegateDescription="%GroupLaunch.description"
+          id="org.eclipse.debug.core.groups.GroupLaunchConfigurationDelegate"
+          modes="run,debug"
+          name="%GroupLaunch.name"
+          type="org.eclipse.debug.core.groups.GroupLaunchConfigurationType">
+    </launchDelegate>
+ </extension>
+ <extension
+       point="org.eclipse.debug.core.launchConfigurationTypes">
+    <launchConfigurationType
+          id="org.eclipse.debug.core.groups.GroupLaunchConfigurationType"
+          name="%GroupLaunch.name"
+          public="true">
+    </launchConfigurationType>
+ </extension>
+ <extension
+       point="org.eclipse.core.contenttype.contentTypes">
+    <content-type
+          base-type="org.eclipse.core.runtime.xml"
+          file-extensions="launch"
+          id="org.eclipse.debug.core.launch"
+          name="%LaunchConfiguration"
+          priority="normal">
+    </content-type>
+    <content-type
+          base-type="org.eclipse.debug.core.launch"
+          file-extensions="prototype"
+          id="org.eclipse.debug.core.launch.prototype"
+          name="%LaunchConfigurationPrototype"
+          priority="normal">
+    </content-type>
+ </extension>
+</plugin>

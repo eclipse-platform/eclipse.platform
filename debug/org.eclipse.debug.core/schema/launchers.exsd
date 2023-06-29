@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.core">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.debug.core" id="launchers" name="Launcher"/>
+      </appInfo>
+      <documentation>
+         This extension point has been replaced by the launchConfigurationTypes extension point. Extensions of this type are obsolete as of release 2.0 and are ignored. This extension point was used to contribute launchers. 
+A launcher was responsible for initiating a debug session 
+or running a program and registering the result with the 
+launch manager.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element deprecated="true"/>
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="launcher" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="launcher">
+      <annotation>
+         <appInfo>
+            <meta.element labelAttribute="label" icon="icon"/>
+         </appInfo>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier that can be used to reference 
+this launcher.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  fully qualified name of the Java class that implements 
+&lt;code&gt;org.eclipse.debug.core.model.ILauncherDelegate&lt;/code&gt;.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.debug.core.model.ILauncherDelegate"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="modes" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A comma separated list of modes this launcher supports. 
+The two supported modes are &quot;run&quot; and &quot;debug&quot; - 
+as defined in &lt;code&gt;org.eclipse.debug.core.ILaunchManager&lt;/code&gt;. 
+A launcher may be capable of launching in one or both modes.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a label to use for the launcher. This attribute is used by the debug UI.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="wizard" type="string">
+            <annotation>
+               <documentation>
+                  fully qualified name of the class that implements 
+&lt;code&gt;org.eclipse.debug.ui.ILaunchWizard&lt;/code&gt;. 
+This attribute is used by the debug UI. A launcher 
+may contribute a wizard that allows users to configure 
+and launch specific attributes.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.jface.wizard.Wizard:org.eclipse.debug.ui.ILaunchWizard"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="public" type="boolean">
+            <annotation>
+               <documentation>
+                  whether a launcher is publically visible in the debug UI.
+If &lt;code&gt;true&lt;/code&gt;,  the launcher will be available from the 
+debug UI - the launcher will appear as a choice 
+for a default launcher, launches created by this 
+launcher will appear in the launch history, and the 
+launcher will be available from the drop-down run/debug 
+toolbar actions.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  a description of the launcher.  Currently only used 
+if the wizard attribute is specified.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="perspective" type="string">
+            <annotation>
+               <documentation>
+                  the identifier of the perspective that will be switched 
+to on a successful launch.  Default value is the 
+identifier for the debug perspective. This attribute 
+is used by the debug UI.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  a relative path of an icon that will represent the launcher 
+in the UI if specified.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of a launcher extension point: 
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension 
+      point = &quot;org.eclipse.debug.core.launchers&quot;&gt; 
+         &lt;launcher 
+             id = &quot;com.example.ExampleLauncher&quot;
+             class = &quot;com.example.launchers.ExampleLauncher&quot; 
+             modes = &quot;run, debug&quot;
+        label = &quot;Example Launcher&quot;
+      wizard = &quot;com.example.launchers.ui.ExampleLaunchWizard&quot;     
+      public = &quot;true&quot;
+      description = &quot;Launches example programs&quot;
+      perspective= &quot;com.example.JavaPerspective&quot;&gt;  
+         &lt;/launcher&gt; 
+   &lt;/extension&gt; 
+&lt;/pre&gt;
+&lt;/p&gt;
+In the example above, the specified launcher supports 
+both run and debug modes. Following a successful launch, 
+the debug UI will change to the Java perspective. When 
+the debug UI presents the user with a list of launchers 
+to choose from, &quot;Example Launcher&quot; will appear as one of 
+the choices with the &quot;Launches example programs&quot; as the 
+description, and the wizard specified by 
+&lt;samp&gt;com.example.launchers.ui.ExampleLaunchWizard&lt;/samp&gt;
+will be used to configure any launch specific details.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Value of the attribute &lt;samp&gt;class&lt;/samp&gt; must be a fully 
+qualified class name of a Java class that implements 
+the interface 
+&lt;samp&gt;org.eclipse.debug.core.ILauncherDelegate&lt;/samp&gt;. 
+Value of the attribute &lt;samp&gt;wizard&lt;/samp&gt; must be a 
+fully qualified class name of a Java class that 
+implements &lt;samp&gt;org.eclipse.debug.ui.ILaunchWizard&lt;/samp&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2000, 2011 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

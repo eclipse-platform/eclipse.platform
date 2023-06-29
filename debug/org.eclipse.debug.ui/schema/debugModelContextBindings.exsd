@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.debug.ui" id="debugModelContextBindings" name="Debug Model Context Bindings"/>
+      </appinfo>
+      <documentation>
+         This extension point provides a mechanism for specifying a context that should be associated with the given debug model.
+
+The Debug view uses these bindings to automatically enable contexts. When an element in the Debug view which provides an &lt;code&gt;IDebugModelProvider&lt;/code&gt; adapter or a stack frame with the specified debug model identifier is selected, the context with the given identifier will be enabled.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="modelContextBinding" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="modelContextBinding">
+      <complexType>
+         <attribute name="debugModelId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies the debug model identifier this binding is for
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="contextId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies the context identifier of the context that should be associated with the given debug model
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.contexts/context/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following is an example of a debug model context binding contribution:
+&lt;pre&gt;
+&lt;extension
+      point=&quot;org.eclipse.debug.ui.debugModelContextBindings&quot;&gt;
+   &lt;modelContextBinding
+         contextId=&quot;com.example.myLanguage.debugging&quot;
+         debugModelId=&quot;com.example.myLanguageDebugModel&quot;&gt;
+   &lt;/modelContextBinding&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+In the above example, when a stack frame with the debug model identifier of &quot;com.example.myLanguageDebugModel&quot; is selected, the context with the identifier &quot;com.example.myLanguage.debugging&quot; will be enabled.
+      </documentation>
+   </annotation>
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2004, 2005 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

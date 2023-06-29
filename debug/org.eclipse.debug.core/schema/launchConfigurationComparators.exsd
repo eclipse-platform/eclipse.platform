@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.core">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.debug.core" id="launchConfigurationComparators" name="Launch Configuration Comparators"/>
+      </appInfo>
+      <documentation>
+         This extension point provides a configurable mechanism for comparing specific attributes of a launch configuration.
+In general, launch configuration attributes can be compared for equality via the default implementation of &lt;samp&gt;java.lang.Object.equals(Object)&lt;/samp&gt;.
+However, attributes that require special handling should implement this extension point.
+For example, when an attribute is stored as XML, it is possible that two strings representing an equivalent attribute have different whitespace formatting.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="launchConfigurationComparator" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="launchConfigurationComparator">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a unique identifier for this extension.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="attribute" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies the launch configuration attribute name that this comparator compares.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a fully-qualified name of a class that implements &lt;code&gt;java.util.Comparator&lt;/code&gt;.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="java.util.Comparator"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of a launch configuration comparator extension point:
+
+&lt;p&gt;
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.debug.core.launchConfigurationComparators&quot;&gt;
+  &lt;launchConfigurationComparator
+   id=&quot;com.example.ExampleIdentifier&quot;
+   attribute=&quot;com.example.ExampleAttributeName&quot;
+   class=&quot;com.example.ComparatorImplementation&quot;&gt;
+  &lt;/launchConfigurationComparator&gt;
+ &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+
+In the example above, the specified type of launch configuration comparator will be consulted when comparing the equality of attributes keyed with name &lt;samp&gt;com.example.ExampleAttributeName&lt;/samp&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Value of the attribute &lt;b&gt;class&lt;/b&gt; must be a fully-qualified name of a Java class that implements the interface &lt;b&gt;java.util.Comparator&lt;/b&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2000, 2005 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

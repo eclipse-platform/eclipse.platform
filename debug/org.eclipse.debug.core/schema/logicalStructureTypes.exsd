@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.core">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.debug.core" id="logicalStructureTypes" name="Logical Structure Types"/>
+      </appInfo>
+      <documentation>
+         This extension point allows debuggers to present alternative logical structures of values. Often, complex data structures are more convenient to navigate in terms of their logical structure, rather than in terms of their implementation. For example, no matter how a list is implemented (linked, array, etc.), a user may simply want to see the elements in the list in terms of an ordered collection. This extension point allows the contribution of logical structure types, to provide translations from a raw implementation value to a logical value.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="logicalStructureType" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="logicalStructureType">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier for this logical structure type
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  a description of this logical structure. Since 3.1, this attribute is optional. When unspecified, a logical structure type delegate must also implement &lt;code&gt;ILogicalStructureTypeDelegate2&lt;/code&gt; to provide descriptions for values that logical structures are provided for.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  fully qualified name of a Java class that implements &lt;code&gt;ILogicalStructureTypeDelegate&lt;/code&gt;. The class may optionally implement &lt;code&gt;ILogicalStructureTypeDelegate2&lt;/code&gt;.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.debug.core.model.ILogicalStructureTypeDelegate"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="modelIdentifier" type="string" use="required">
+            <annotation>
+               <documentation>
+                  identifier of the debug model this logical structure type is associated with
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of a logical structure type extension point:
+
+&lt;p&gt;
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.debug.core.logicalStructureTypes&quot;&gt;
+  &lt;logicalStructureType
+   id=&quot;com.example.ExampleLogicalStructure&quot;
+   class=&quot;com.example.ExampleLogicalStructureDelegate&quot;
+   modelIdentifier=&quot;com.example.debug.model&quot;
+   description=&quot;Ordered Collection&quot;&gt;
+  &lt;/logicalStructureType&gt;
+ &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+
+In the example above, the specified logical structure type will be consulted for alternative logical values for values from the &lt;code&gt;com.example.debug.model&lt;/code&gt; debug model as they are displayed in the variables view.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Value of the attribute &lt;b&gt;class&lt;/b&gt; must be a fully qualified name of a Java class that implements the interface &lt;b&gt;org.eclipse.debug.core.model.ILogicalStructureTypeDelegate&lt;/b&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2000, 2005 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>
