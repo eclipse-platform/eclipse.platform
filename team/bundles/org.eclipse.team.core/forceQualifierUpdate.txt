@@ -5,3 +5,4 @@ Bug 574012 - Comparator errors in I20210604-0350
 Bug 578351 - Lambda generation order is unstable in ecj 
 Comparator errors in I20220902-1100
 Comparator errors in I20230607-0720
+https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/1184
