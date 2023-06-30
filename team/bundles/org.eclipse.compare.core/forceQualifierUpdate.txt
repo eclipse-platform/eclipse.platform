@@ -1,3 +1,4 @@
 # To force a version qualifier update add the bug here
 Bug 466408: Split 'org.eclipse.compare.patch' packages do not have identical certificate
 Pick up new signing certificate (same as bug 466408)
+https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/1184
