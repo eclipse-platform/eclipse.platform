@@ -42,6 +42,7 @@ public class AllTeamTests extends ResourceTest {
 		suite.addTest(StreamTests.suite());
 		suite.addTest(StorageMergerTests.suite());
 		suite.addTest(AllTeamRegressionTests.suite());
+		suite.addTest(UserMappingTest.suite());
 		return suite;
 	}
 }
