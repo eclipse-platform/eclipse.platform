@@ -45,7 +45,7 @@ public class HunkTypedElement implements ITypedElement, IEncodedStreamContentAcc
 	public Image getImage() {
 		LocalResourceManager imageCache = PatchCompareEditorInput.getImageCache(fHunkResult.getDiffResult().getConfiguration());
 		ImageDescriptor imageDesc = CompareUIPlugin.getImageDescriptor(ICompareUIConstants.HUNK_OBJ);
-		Image image = imageCache.createImage(imageDesc);
+		Image image = imageCache.create(imageDesc);
 		if (!fHunkResult.isOK()) {
 			return getHunkErrorImage(image, imageCache, true);
 		}  else if (fHunkResult.getFuzz() > 0) {
@@ -60,7 +60,7 @@ public class HunkTypedElement implements ITypedElement, IEncodedStreamContentAcc
 
 	private static Image getHunkOverlayImage(Image baseImage, LocalResourceManager imageCache, String path, boolean onLeft) {
 		ImageDescriptor desc = new DiffImageDescriptor(baseImage, CompareUIPlugin.getImageDescriptor(path), ICompareUIConstants.COMPARE_IMAGE_WIDTH, onLeft);
-		Image image = imageCache.createImage(desc);
+		Image image = imageCache.create(desc);
 		return image;
 	}
 

@@ -63,7 +63,7 @@ public class ImageManager {
 		if (descriptor == null || disposed)
 			return null;
 		ResourceManager manager = getResourceManager();
-		Image image = manager.createImage(descriptor);
+		Image image = manager.create(descriptor);
 		return image;
 	}
 
