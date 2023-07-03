@@ -33,6 +33,7 @@ import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
 
 
+@SuppressWarnings("restriction")
 public class ProxyUtil {
 
 	public static boolean isAuthConnSupported()

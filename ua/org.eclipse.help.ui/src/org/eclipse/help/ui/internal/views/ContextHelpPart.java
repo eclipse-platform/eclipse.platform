@@ -81,6 +81,7 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 
+@SuppressWarnings("restriction")
 public class ContextHelpPart extends SectionPart implements IHelpPart {
 	private ReusableHelpPart parent;
 
