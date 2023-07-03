@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<root>
+   <name>This is the name</name>
+   <description>This is the description</description>
+   <elem attr="value">
+      <elem attr="value2"/>
+   </elem>
+</root>

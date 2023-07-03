@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cheatsheet
+      title="Hyperlinks Demo">
+   <item
+         title="Introduction"
+         description="<form><p>Welcome to the hyperlinks cheat sheet demo.
+   <br/>Click the <a href="http://org.eclipse.ui.cheatsheet/execute?command=org.eclipse.search.ui.openSearchDialog">link</a> to open <b>Search</b> dialog.
+   <br/>Open <a href="http://org.eclipse.ui.cheatsheet/execute?command=org.eclipse.ui.newWizard%28newWizardId%3Dorg.eclipse.ui.wizards.new.project%29">new project</a> wizard.
+   <br/>Activate <a href="http://org.eclipse.ui.cheatsheet/showView?id=org.eclipse.pde.runtime.LogView">Error Log</a> view.
+  </p></form>"
+         Href="null"
+         contextId="null">
+      <nullAction/>
+      <nullList/>
+      <nullPerformWhen/>
+      <nullList/>
+   </item>
+   <list>
+      <item
+            title="Step 1"
+            description="<form><p>Open <a href="https://eclipse.org">eclipse.org</a> in external browser. 
+  </p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+   </list>
+</cheatsheet>

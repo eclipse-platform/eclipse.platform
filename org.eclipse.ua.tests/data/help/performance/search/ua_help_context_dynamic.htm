@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Dynamic context help</title>
+</head>
+<body>
+
+<h2>Dynamic context help</h2>
+
+<p>
+In addition to statically associating widgets and context Ids, it is possible to 
+provide this information dynamically for a more dynamic context-sensitive help 
+capability. Help system uses context Ids to locate the matching
+<a href="../reference/api/org/eclipse/help/IContext.html">
+org.eclipse.help.IContext</a> object. The new Help view tracks activation of the 
+workbench parts (views and editors) and checks if they adapt to
+<a href="../reference/api/org/eclipse/help/IContextProvider.html">
+org.eclipse.help.IContextProvider</a> interface. If they do, the view will use 
+the context provider to locate the <code>IContext</code> object and get the 
+required information from it. This object can be cached or created on the fly.</p>
+<p>
+Workbench parts that want to create the context object dynamically should adapt 
+to the <code>IContextProvider.class</code> object as a key:</p>
+<blockquote>
+	<pre>public Object getAdapter(Class key) {
+	if (key.equals(IContextProvider.class)) {
+		return new MyContextProvider();
+	}
+	return super.getAdapter(key);
+}</pre>
+</blockquote>
+<p>The context provider interface requires implementation of three methods:</p>
+<blockquote>
+	<pre>public class MyContextProvider implements IContextProvider {
+	int getContextChangeMask() {
+		return NONE;
+	}
+	IContext getContext(Object target) {
+		return myContext;
+	}
+	String getSearchExpression(Object target) {
+		return null;
+	}
+}</pre>
+</blockquote>
+<p>If context change mask returns <code>NONE</code>, context object will need to 
+be provided when the workbench part is activated. If <code>SELECTION</code> is 
+returned, you will need to provide context object that is sensitive to the 
+current selection in the part. Each time part selection provider fires a 
+selection change event, the context provider will be asked to provide context 
+object.</p>
+<p>Optionally, search expression for the dynamic help can be provided. 
+Otherwise, a combination of the part name and perspective name will be used with 
+good results in most cases.
+</p>
+
+<p>
+<b>Note:</b> In addition to using context providers (or alternatively), you can use
+XML annotations to <a href="ua_dynamic_filters.htm">filter</a> topics in context
+help.
+</p>
+
+</body>
+</html>

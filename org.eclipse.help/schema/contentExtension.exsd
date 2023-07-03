@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.help">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.help" id="contentExtension" name="Content Extension"/>
+      </appInfo>
+      <documentation>
+         &lt;p&gt;
+This extension point is for supporting dynamic and reusable content in user assistance documents. It allows for contributing content into an existing document. A document can declare that it can accept content contributions by explicitly specifying these contribution points using an &lt;code&gt;anchor&lt;/code&gt; element. An element in a document with a unique &lt;code&gt;id&lt;/code&gt; attribute specified can be replaced.
+&lt;/p&gt;
+&lt;p&gt;
+Content extensions are applicable to the following types of documents:
+&lt;/p&gt;
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Help XHTML topics&lt;/li&gt;
+&lt;li&gt;Help table of contents&lt;/li&gt;
+&lt;li&gt;Help keyword index&lt;/li&gt;
+&lt;li&gt;Help context-sensitive help&lt;/li&gt;
+&lt;li&gt;Cheat sheets (both simple and composite)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+&lt;p&gt;
+Welcome content is extended using the &lt;code&gt;org.eclipse.ui.intro.configExtension&lt;/code&gt; extension point.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="contentExtension"/>
+            <element ref="contentExtensionProvider"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="contentExtension">
+      <annotation>
+         <documentation>
+            Defines content extension to one or more user assistance documents. The location of the content extension file is specified by the &lt;code&gt;file&lt;/code&gt; attribute.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="file" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a plugin-relative path to the location of an extension content file. An extension content file is an XML file that specifies the location of content contributions and the target document where they should be merged into. A content extension is either a contribution of content at a known anchor, or the replacement of an element in an existing document. The content file is parsed at run time by the platform and each content extension is loaded and inserted into the target location specified by the anchor.
+
+&lt;p&gt;
+This content file should have the a syntax like the following:
+&lt;/p&gt;
+&lt;pre&gt;
+&lt;contentExtension&gt;
+   &lt;contribution
+         content=&quot;bundleRelativePath/content.xhml&quot; 
+         path=&quot;pluginId/path/file.xml#elementId&quot;/&gt;
+   &lt;replacement
+         content=&quot;bundleRelativePath/content.xhml&quot; 
+         path=&quot;pluginId/path/file.xml#elementId&quot;/&gt;
+&lt;/contentExtension&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;
+&lt;code&gt;contribution&lt;/code&gt; is the element used to insert content at the target anchor location.
+&lt;code&gt;replacement&lt;/code&gt; is the markup used to replace the content of the target element by the specified content. In other words, content can be contributed that either adds to the target location or replaces the content of the target location.
+&lt;/p&gt;
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="contentExtensionProvider">
+      <annotation>
+         <documentation>
+            (&lt;b&gt;since 3.3&lt;/b&gt;) Allows java code to be plugged-in so that extensions can be generated at run-time. This is an alternative to the XML file, has the same capabilities, but doesn&apos;t require you to provide static XML.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the implementation class for the content extension provider.  This class must implement the &lt;code&gt;org.eclipse.help.AbstractContentExtensionProvider&lt;/code&gt; interface and must have a no-arg constructor.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.AbstractContentExtensionProvider"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         &lt;p&gt;
+The following is an example of using the &lt;code&gt;contentExtension&lt;/code&gt; extension point.
+&lt;/p&gt;
+
+&lt;p&gt;
+In file &lt;code&gt;plugin.xml&lt;/code&gt;:
+&lt;pre&gt;
+   &lt;extension point=&quot;org.eclipse.help.contentExtension&quot;&gt; 
+      &lt;contentExtension file=&quot;contentExtensionFile.xml&quot;/&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+In file &lt;code&gt;contentExtensionFile.xml&lt;/code&gt;:
+&lt;pre&gt;
+   &lt;contentExtension&gt;
+      &lt;contribution
+            content=&quot;xhtml/topicA.xhtml&quot;
+            path=&quot;/org.xxx.yyy.somePluginId/xhtml/someHelpPage.xhtml#topicAnchor&quot;/&gt;
+   &lt;/contentExtension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+The above contribution inserts the content of the XHTML file, &lt;code&gt;topicA.xhtml&lt;/code&gt;, into the target Help system page specified by the &lt;code&gt;path&lt;/code&gt; attribute. In this case, the content extension will be inserted in the location of an anchor called &lt;code&gt;topicAnchor&lt;/code&gt; in page &lt;code&gt;someHelpPage.xhtml&lt;/code&gt; in plugin &lt;code&gt;org.xxx.yyy.somePluginId&lt;/code&gt;.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         &lt;p&gt;
+An implementation of &lt;code&gt;org.eclipse.help.AbstractContentExtensionProvider&lt;/code&gt; must be supplied if a &lt;code&gt;contentExtensionProvider&lt;/code&gt; is used.
+&lt;/p&gt;
+&lt;p&gt;
+Note: &lt;code&gt;contribution&lt;/code&gt; and &lt;code&gt;replacement&lt;/code&gt; were introduced in 3.3, replacing the old &lt;code&gt;topicExtension&lt;/code&gt; and &lt;code&gt;topicReplace&lt;/code&gt; elements, in order to be more general. The old elements are deprecated but will still work.
+&lt;/p&gt;
+
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The default implementation of the base help system supplied with the Eclipse platform fully supports this extension point.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2000, 2006 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

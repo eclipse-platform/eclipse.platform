@@ -1,0 +1,226 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.help" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.help" id="index" name="Keyword Index"/>
+      </appInfo>
+      <documentation>
+         For registering a keyword index for contributed help content.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="index"/>
+            <element ref="indexProvider"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="index">
+      <annotation>
+         <documentation>
+            an index contribution made by supplying an XML file
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="file" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the index file which contains the list of keywords and related topics of the help content.
+&lt;p&gt;
+&lt;i&gt;&lt;b&gt;Configuration Markup for index file:&lt;/b&gt;&lt;/i&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT index (entry)* &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT entry (entry | topic |see)* &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST entry keyword CDATA #REQUIRED &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT topic EMPTY &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST topic href CDATA #REQUIRED &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST topic title CDATA #IMPLIED &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT see (subpath)* &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST see keyword CDATA #REQUIRED &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT subpath EMPTY &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST subpath keyword CDATA #IMPLIED &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;The index element&lt;/b&gt;
+&lt;p&gt;The index element represents an instance of index. Index consists of entries, each of them corresponds to a particular keyword. All contributed indexes are merged to one master index which the Help System provides to the user. When index is built, entries are appended in alphabetical order.
+&lt;p&gt;&lt;b&gt;The entry element&lt;/b&gt;
+&lt;p&gt;The entry element represents a keyword of the index. Each entry may contain several links to help topics which associated with the keyword. Entry can also be a container for other entries (subentries) to form hierarchy of keywords. It is allowed to entry to be a container for subentries and to have topics simultaneously.
+&lt;p&gt;&lt;b&gt;The topic element&lt;/b&gt;
+&lt;p&gt;The topic element provides reference to help content related to the keyword. The href attribute is relative to the plug-in that manifest file belongs to. If you need to access a file in another plug-in, you can use the syntax
+&lt;p&gt;&lt;tt&gt;&amp;lt;topic label=&quot;topic in another plug-in&quot; href=&quot;../other.plugin.id/concepts/some_other_file.html&quot;/&gt;&lt;/tt&gt;
+&lt;p&gt;The title attribute is used to name the link to help content when multiple
+topics are associated with the single keyword. If the attribute is not
+specified, the title comes from the label attribute if present otherwise from a TOC which owns the link. If the link does not
+belong to any TOC, the title or label attribute must be specified, or else the title
+becomes undefined.
+&lt;p&gt;&lt;b&gt;The see element&lt;/b&gt;
+The see element represents a synonym to an entry in the index. Clicking on a see link will cause the index to navigate to the index entry for which this is a synonym. The keyword attribute represents the top level element for the synonym. The &lt;b&gt;subpath&lt;/b&gt; elements are used only if the synonym is not at the top level of the index and represent additional components of the synonym path.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="indexProvider">
+      <annotation>
+         <documentation>
+            (&lt;b&gt;since 3.3&lt;/b&gt;) an index contribution made by plugging in code
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the implementation class for the index provider.  This class must implement the &lt;samp&gt;org.eclipse.help.AbstractIndexProvider&lt;/samp&gt; interface.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.AbstractIndexProvider"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.2
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of using the index extension point.
+
+&lt;p&gt;(in file &lt;tt&gt;plugin.xml&lt;/tt&gt;) 
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.help.index&quot;&gt;
+     &lt;indexProvider class=&quot;com.myplugin.MyIndexProvider&quot;/&gt;
+ &lt;/extension&gt;
+ 
+ &lt;extension point=&quot;org.eclipse.help.index&quot;&gt;
+     &lt;index file=&quot;index.xml&quot;/&gt;
+ &lt;/extension&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;(in file &lt;tt&gt;index.xml&lt;/tt&gt;)
+&lt;blockquote&gt;&lt;tt&gt;&amp;lt;index&gt;&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;entry keyword=&quot;Vehicle&quot;&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;topic href=&quot;inventory_of_wheel.html&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;entry keyword=&quot;Car&quot;&gt;&lt;/tt&gt;&lt;br&gt;
+            &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;topic href=&quot;car.html&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;/entry&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;entry keyword=&quot;Ship&quot;&gt;&lt;/tt&gt;&lt;br&gt;
+            &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;topic href=&quot;ship.html&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;/entry&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;entry keyword=&quot;Airplane&quot;&gt;&lt;/tt&gt;&lt;br&gt;
+            &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;topic href=&quot;airplane.html&quot; title=&quot;History of aviation&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+            &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;topic href=&quot;jet.html&quot; title=&quot;Jet engine&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;/entry&gt;&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;/entry&gt;&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;entry keyword=&quot;Engine&quot;&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;entry keyword=&quot;Horse&quot;&gt;&lt;/tt&gt;&lt;br&gt;
+            &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;topic href=&quot;horse.html&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;/entry&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;entry keyword=&quot;Steamer&quot;&gt;&lt;/tt&gt;&lt;br&gt;
+            &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;topic href=&quot;steamer.html&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;/entry&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;entry keyword=&quot;Wankel engine&quot;&gt;&lt;/tt&gt;&lt;br&gt;
+            &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;topic href=&quot;wankel.html&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;/entry&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;entry keyword=&quot;Jet engine&quot;&gt;&lt;/tt&gt;&lt;br&gt;
+            &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;topic href=&quot;jet.html&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;/entry&gt;&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;/entry&gt;&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;entry keyword=&quot;Electricity&quot;&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;topic href=&quot;electricity.html&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;/entry&gt;&lt;/tt&gt;&lt;br&gt;
+&lt;tt&gt;&amp;lt;/index&gt;&lt;/tt&gt;&lt;br&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;b&gt;&lt;em&gt;Internationalization&lt;/em&gt;&lt;/b&gt; The index XML files can be translated and the resulting copy (with translated keywords) should be placed in nl/&amp;lt;language&gt;/&amp;lt;country&gt; or nl/&amp;lt;language&gt; directory.  The &amp;lt;language&gt; and &amp;lt;country&gt; stand for two letter language and country codes as used in locale codes.  For example, Traditional Chinese translations should be placed in the nl/zh/TW directory.  The nl/&amp;lt;language&gt;/&amp;lt;country&gt; directory has a higher priority than nl/&amp;lt;language&gt;.  Only if no file is found in the nl/&amp;lt;language&gt;/&amp;lt;country&gt;, the file residing in nl/&amp;lt;language&gt; will be used. The the root directory of a plugin will be searched last.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         An implementation of &lt;samp&gt;org.eclipse.help.AbstractIndexProvider&lt;/samp&gt; must be supplied if a &lt;samp&gt;indexProvider&lt;/samp&gt; is used.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The default implementation of the help system UI supplied with the Eclipse platform fully supports the &lt;samp&gt;index&lt;/samp&gt; extension point.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2006 Intel Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

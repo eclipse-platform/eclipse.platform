@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<!--
+   This is an intro used to test dynamic content with XHTML files. This lists all the pages, and
+   the referenced XHTML files contain the content. See the files for more details.
+-->
+<introContent>
+    <page id="root" content="content/root.xhtml"/>
+    <page id="static" content="content/static.xhtml"/>
+    <page id="filter" content="content/filter.xhtml"/>
+    <page id="include" content="content/include.xhtml"/>
+    <page id="include2" content="content/include2.xhtml"/>
+    <page id="anchor" content="content/anchor.xhtml"/>
+    <page id="anchor2" content="content/anchor2.xhtml"/>
+</introContent>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compositeCheatsheet name="Performance test composite cheat sheet">
+   <taskGroup kind="set" name="Create an Eclipse plug-in" skip="false">
+      <intro>
+         This cheat sheet will guide you through the individual steps to 
+         create a plug-in, a plug-in extension, a feature and an update site
+         using the Plug-in Development Environment (PDE).  It will also
+         demonstrate how to install and uninstall a feature using
+         Install/Update.
+         <br/>
+         <br/>
+         To assist you along the way, wizards and commands
+         will be available for you to launch automatically.
+      </intro>
+      <onCompletion>
+         Congratulations!  You just created a plug-in, a plug-in extension, a 
+         feature and an update site using PDE.  You also installed and 
+         uninstalled a feature using Install/Update
+      </onCompletion>
+      <task kind="cheatsheet" name="Create a plug-in" skip="false">
+         <intro>
+            This cheat sheet will demonstrate how to  
+            create, modify and test a plug-in.
+         </intro>
+         <onCompletion>
+            Congratulations!  You just created a plug-in!
+         </onCompletion>
+         <param name="path" value="composite/helloworld-create.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Create a plug-in extension" skip="false">
+         <intro>
+            This cheat sheet will demonstrate how to create and test a plug-in extension.
+         </intro>
+         <onCompletion>
+            Congratulations!  You just created a plug-in extension!
+         </onCompletion>
+         <param name="path" value="composite/helloworld-extension.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Create a feature" skip="false">
+         <intro>
+            This cheat sheet will demonstrate how to create a feature for a plug-in using
+            PDE.
+         </intro>
+         <onCompletion>
+            Congratulations!  You just created a feature!
+         </onCompletion>
+         <param name="path" value="composite/helloworld-feature.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Create an update site" skip="false">
+         <intro>
+            This cheat sheet will demonstrate how to create an update site for a plug-in.
+         </intro>
+         <onCompletion>
+            Congratulations!  You just created an update site!
+         </onCompletion>
+         <param name="path" value="composite/helloworld-update.xml">
+         </param>
+      </task>
+      <task kind="cheatsheet" name="Install and uninstall a feature" skip="false">
+         <intro>
+            This cheat sheet will demonstrate how to install and uninstall a feature
+            using Install/Update.
+         </intro>
+         <onCompletion>
+            Congratulations!  You just installed and uninstalled a feature!
+         </onCompletion>
+         <param name="path" value="composite/helloworld-install.xml">
+         </param>
+      </task>
+   </taskGroup>
+</compositeCheatsheet>

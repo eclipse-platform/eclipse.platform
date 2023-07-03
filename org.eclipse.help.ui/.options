@@ -1,0 +1,4 @@
+org.eclipse.help.ui/debug=true
+org.eclipse.help.ui/debug/embeddedBrowser = false
+org.eclipse.help.ui/debug/embeddedBrowser/inprocess = false
+org.eclipse.help.ui/debug/infopop = false

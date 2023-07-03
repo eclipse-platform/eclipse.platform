@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<!--
+     Copyright (c) 2009 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<toc label="Sorted Toc" link_to="data/help/toc/assembler/b.xml#B_anchor" sort="true">
+	<topic href="C_topic.html" label="C Topic">
+    <topic href="B_topic.html" label="B Child of C">
+    </topic>
+    <topic href="A_topic.html" label="A Child of C">
+    </topic>
+ </topic>
+ <topic href="B_topic.html" label="B Topic">
+ </topic>
+ <topic href="A_topic.html" label="A Topic (sorted)" sort="true">
+    <topic href="B_topic.html" label="B Child">
+    </topic>
+    <topic href="A_topic.html" label="A Child">
+    </topic>
+ </topic>
+</toc>

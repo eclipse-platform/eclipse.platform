@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+     Copyright (c) 2005, 2010 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+    
+<!-- ========== Extension Points ================= -->
+
+   <!-- =============================================================================== -->
+   <!-- Extension point: org.eclipse.ui.cheatsheets.cheatSheetContent                   -->
+   <!-- Extension-point for contributing a cheat sheet.                                 -->
+   <!--                                                                                 -->
+   <!-- =============================================================================== -->
+   <extension-point
+      id="cheatSheetContent"
+      name="%CHEAT_SHEET_CONTENT"
+      schema="schema/cheatSheetContent.exsd"/>
+      
+   <!-- =============================================================================== -->
+   <!-- Extension point: org.eclipse.ui.cheatsheets.cheatSheetItemExtension             -->
+   <!-- Extension-point for contributing controls to a cheat sheet item.                -->
+   <!--                                                                                 -->
+   <!-- =============================================================================== -->
+   <extension-point
+      id="cheatSheetItemExtension"
+      name="%CHEAT_SHEET_ITEM_EXTENSION"
+      schema="schema/cheatSheetItemExtension.exsd"/>
+
+<!-- ========== Extensions ================= -->
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="%CHEAT_SHEETS"
+            icon="$nl$/icons/view16/cheatsheet_view.png"
+            category="org.eclipse.help.ui"
+            fastViewWidthRatio="0.5"
+            class="org.eclipse.ui.internal.cheatsheets.views.CheatSheetView"
+            id="org.eclipse.ui.cheatsheets.views.CheatSheetView">
+      </view>
+      <stickyView
+      		id="org.eclipse.ui.cheatsheets.views.CheatSheetView"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.ui.category.help"
+            defaultHandler="org.eclipse.ui.internal.cheatsheets.handlers.OpenCheatSheetHandler"
+            description="%command.openCheatSheet.description"
+            id="org.eclipse.ui.cheatsheets.openCheatSheet"
+            name="%command.openCheatSheet.name">
+         <commandParameter
+               id="cheatSheetId"
+               name="%commandParameter.openCheatSheet.cheatSheetId.name"
+               optional="true"
+               values="org.eclipse.ui.internal.cheatsheets.registry.CheatSheetParameterValues"/>
+      </command>
+      <command
+            categoryId="org.eclipse.ui.category.help"
+            defaultHandler="org.eclipse.ui.internal.cheatsheets.handlers.OpenCheatSheetURLHandler"
+            description="%command.openCheatSheetURL.description"
+            id="org.eclipse.ui.cheatsheets.openCheatSheetURL"
+            name="%command.openCheatSheetURL.name">
+         <commandParameter
+               id="cheatSheetId"
+               name="%commandParameter.openCheatSheetURL.cheatSheetId.name"
+               optional="false"/>
+         <commandParameter
+               id="name"
+               name="%commandParameter.openCheatSheetURL.name.name"
+               optional="false"/>
+         <commandParameter
+               id="url"
+               name="%commandParameter.openCheatSheetURL.url.name"
+               optional="false"/>
+      </command>
+      <category
+            description="%category.dialogs.description"
+            id="org.eclipse.ui.category.dialogs"
+            name="%category.dialogs.name"/>
+      <commandParameterType
+            converter="org.eclipse.ui.internal.cheatsheets.handlers.DialogIntegerValueConverter"
+            id="org.eclipse.ui.dialogs.Integer"
+            type="java.lang.Integer"/>
+      <command
+            categoryId="org.eclipse.ui.category.dialogs"
+            defaultHandler="org.eclipse.ui.internal.cheatsheets.handlers.OpenMessageDialogHandler"
+            description="%command.openMessageDialog.description"
+            id="org.eclipse.ui.dialogs.openMessageDialog"
+            name="%command.openMessageDialog.name"
+            >
+         <commandParameter
+               id="title"
+               name="%commandParameter.openMessageDialog.title.name"
+               optional="true"/>
+         <commandParameter
+               id="message"
+               name="%commandParameter.openMessageDialog.message.name"
+               optional="true"/>
+         <commandParameter
+               id="imageType"
+               name="%commandParameter.openMessageDialog.imageType.name"
+               optional="true"
+               typeId="org.eclipse.ui.dialogs.Integer"/>
+         <commandParameter
+               id="defaultIndex"
+               name="%commandParameter.openMessageDialog.defaultIndex.name"
+               optional="true"
+               typeId="org.eclipse.ui.dialogs.Integer"/>
+         <commandParameter
+               id="buttonLabel0"
+               name="%commandParameter.openMessageDialog.buttonLabel0.name"
+               optional="true"/>
+         <commandParameter
+               id="buttonLabel1"
+               name="%commandParameter.openMessageDialog.buttonLabel1.name"
+               optional="true"/>
+         <commandParameter
+               id="buttonLabel2"
+               name="%commandParameter.openMessageDialog.buttonLabel2.name"
+               optional="true"/>
+         <commandParameter
+               id="buttonLabel3"
+               name="%commandParameter.openMessageDialog.buttonLabel3.name"
+               optional="true"/>
+         <commandParameter
+               id="cancelReturns"
+               name="%commandParameter.openMessageDialog.cancelReturns.name"
+               optional="true"
+               />
+      </command>
+      <command
+            categoryId="org.eclipse.ui.category.dialogs"
+            defaultHandler="org.eclipse.ui.internal.cheatsheets.handlers.OpenInputDialogHandler"
+            description="%command.openInputDialog.description"
+            id="org.eclipse.ui.dialogs.openInputDialog"
+            name="%command.openInputDialog.name">
+         <commandParameter
+               id="title"
+               name="%commandParameter.openInputDialog.title.name"
+               optional="true"/>
+         <commandParameter
+               id="message"
+               name="%commandParameter.openInputDialog.message.name"
+               optional="true"/>
+         <commandParameter
+               id="initialValue"
+               name="%commandParameter.openInputDialog.initialValue.name"
+               optional="true"/>
+         <commandParameter
+               id="cancelReturns"
+               name="%commandParameter.openInputDialog.cancelReturns.name"
+               optional="true"/>
+      </command>
+     </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="org.eclipse.ui.cheatsheets.openCheatSheet"
+            icon="$nl$/icons/view16/cheatsheet_view.png"/>
+      <image
+            commandId="org.eclipse.ui.cheatsheets.openCheatSheetURL"
+            icon="$nl$/icons/view16/cheatsheet_view.png"/>
+   </extension>
+    <extension
+    	point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.ui.views.showView"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+M3+Q H">
+         <parameter
+               id="org.eclipse.ui.views.showView.viewId"
+               value="org.eclipse.ui.cheatsheets.views.CheatSheetView">
+         </parameter>
+      </key>      
+      <key
+            platform="carbon"
+            sequence="M2+M3+Q H"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>      
+      <key
+            commandId="org.eclipse.ui.views.showView"
+            platform="carbon"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+Q H">
+         <parameter
+               id="org.eclipse.ui.views.showView.viewId"
+               value="org.eclipse.ui.cheatsheets.views.CheatSheetView">
+         </parameter>
+      </key>      
+    </extension>
+    <extension
+          point="org.eclipse.ui.activitySupport">
+      <triggerPoint id="org.eclipse.ui.cheatsheetSelectionDialog">
+         <hint
+               id="interactive"
+               value="true"/>
+      </triggerPoint>
+    </extension>
+   <extension
+         point="org.eclipse.help.base.searchParticipant">
+      <searchParticipant
+            icon="$nl$/icons/view16/cheatsheet_view.png"
+            id="org.eclipse.ui.cheatsheets"
+            name="%searchParticipant.name"
+            participant="org.eclipse.ui.internal.cheatsheets.CheatsheetSearchParticipant"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.cheatsheets.cheatSheetContent">
+      <taskEditor
+            class="org.eclipse.ui.internal.cheatsheets.composite.views.CheatsheetTaskEditor"
+            icon="$nl$/icons/obj16/cheatsheet_task.png"
+            id="cheatsheet"/>
+      <taskExplorer
+            class="org.eclipse.ui.internal.cheatsheets.composite.explorer.TreeTaskExplorer"
+            icon="$nl$/icons/elcl16/tree_explorer.png"
+            id="tree"
+            name="Tree"/>
+   </extension>
+</plugin>

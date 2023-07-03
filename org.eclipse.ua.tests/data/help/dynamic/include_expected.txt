@@ -1,0 +1,88 @@
+<root>
+
+	<description>
+		This file tests the include capability. Below are some includes that
+		pull in content from other files.
+	</description>
+	
+	<element id="element.1">
+		This element is used to test includes within the same file.
+	</element>
+	
+	
+	
+	
+	<paragraph id="paragraph.1">
+		This is the first paragraph from
+		/org.eclipse.ua.tests/data/help/dynamic/include/doc1.xml
+	</paragraph>
+
+	
+	<element id="element.1">
+		This element is used to test includes within the same file.
+	</element>
+
+	
+	<doc id="doc.1">
+	<description>
+		This document contains a mixture of dynamic content and is used by other
+		tests that incorporate outside content, to make sure it is processed.
+	</description>
+	<element id="element.1">
+		This element has no replaces.
+	</element>
+	<element id="element.1">
+		This is element 1 of doc2.xml
+	</element>
+	
+	
+	
+	<element id="element.1">
+		This is element 1 of doc2.xml
+	</element>
+	<element id="element.2">
+		This is element 2 of doc2.xml
+	</element><element id="element.3">
+		This is element 3 of doc2.xml
+	</element>
+</doc>
+
+	
+	<paragraph id="paragraph.1">
+		This is the first paragraph from
+		/org.eclipse.ua.tests/data/help/dynamic/include/doc1.xml
+	</paragraph>
+
+	
+	<paragraph id="paragraph.1">
+		This is the first paragraph from
+		/org.eclipse.ua.tests/data/help/dynamic/include/doc1.xml
+	</paragraph>
+
+	
+	<paragraph id="paragraph.1">
+		This is the first paragraph from
+		/org.eclipse.ua.tests/data/help/dynamic/include/doc1.xml
+	</paragraph>
+
+	
+
+	
+	
+
+	
+	
+	
+	
+	
+
+	
+	
+
+	
+	
+
+	
+	
+	
+</root>

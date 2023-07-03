@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Using about.html to debug infocenters</title>
+<link rel="stylesheet" href="../book.css" charset="utf-8" type="text/css">
+</head>
+<body>
+
+<h1>Using about.html to debug infocenters</h1>
+
+<p>
+When developing an infocenter sometimes not all of the books show as expected or 
+customizations do not have the desired effect. The about.html page can be used to get information 
+about installed plug-ins and help system preferences. If the home page of the help system is 
+<pre>http://&lt;hostname&gt;:&lt;port&gt;/help/index.jsp</pre> the about page has a url of 
+<pre>http://&lt;hostname&gt;:&lt;port&gt;/help/about.html</pre> 
+Without any parameters the about page shows a list of all plug-ins installed on the system. 
+Parameters can be added to show other kinds of information as follows:
+<ul>
+<li>
+<code>about.html?show=preferences</code> shows the values of the help system preferences.
+</li>
+<li>
+<code>about.html?show=agent</code> shows the user agent information from the Web Browser used to 
+read the page.
+</li>
+</ul>
+</p>
+
+</body>
+</html>

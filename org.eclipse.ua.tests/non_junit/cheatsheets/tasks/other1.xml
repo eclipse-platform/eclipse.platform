@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2009 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet
+      title="Help Menu">
+   <intro>
+      <description>
+         Test that the help menu contains the correct contents and that each menu itemn works as expected.
+      </description>
+   </intro>
+   <item
+         title="Menu Entries">
+      <description>
+         Check that the help menu contains the following
+<br/>Welcome
+<br/>Help Contents
+<br/>Search
+<br/>Dynamic Help
+<br/>Key Assist
+<br/>Tips and Tricks
+<br/>Cheat Sheets
+<br/>Check for updates
+<br/>Install new software
+<br/>About Eclipse SDK
+      </description>
+   </item>
+   <item
+         title="Welcome">
+      <description>
+         Select Help/Welcome. verify that the Welcome screen shows and return to the workbench.
+      </description>
+   </item>
+   <item
+         title="Help Contents">
+      <description>
+         Select Help/Help Contents. Verify that the help contents open.
+      </description>
+   </item>
+   <item
+         title="Search">
+      <description>
+         Help/Search. Verify that the Help view shows with the Search Tab visible.
+      </description>
+   </item>
+   <item
+         title="Dynamic Help">
+      <description>
+         Help/Dynamic Help. Verify that the Help view is shown with the related topics page visible.
+      </description>
+   </item>
+   <item
+         title="Cheat Sheets">
+      <description>
+         Help/Cheat Sheets. Verify that the cheat sheet selection dialog opens.
+      </description>
+   </item>
+   <item
+         title="Key Assist">
+      <description>
+         Help/Key Assist. Verify that a table of key bindings is opened.
+      </description>
+   </item>
+   <item
+         title="Tips and Tricks">
+      <description>
+         Help/Tips and Tricks. Verify that a small dialog shows three lines: 
+<br/>Eclipse Java Development Tools
+<br/>Eclipse Platform
+<br/>PDE
+      </description>
+   </item>
+   <item
+         title="About Eclipse SDK" dialog = "true">
+      <description>
+         Test the about box.
+      </description>
+      <subitem
+            label="Help/About Eclipse SDK. Verify that an About dialog is shown which contains the Eclipse version number, logo and copyright information.">
+         <command
+               required="false"
+               serialization="org.eclipse.ui.help.aboutAction"/>
+      </subitem>
+      <subitem
+            label="Press the Installation Details Button. Verify that a Dialog opens with five tabs - Installed Software, Installation History, Features, Plug-Ins, Configuration. Look at each tab to make sure that each one has content.">
+      </subitem>
+      <subitem
+            label="Exit both dialogs">
+      </subitem>
+   </item>
+</cheatsheet>

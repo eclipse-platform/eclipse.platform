@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2005. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." />
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css" />
+<title>Exporting files</title>
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js" xml:space="preserve"> </script>
+</head>
+
+<body bgcolor="#ffffff">
+<h1>
+Exporting files </h1>
+<p class="Para">Files can be exported from the Workbench either by:</p>
+<ul>
+  <li> Dragging and dropping to the file system (Windows and Linux GTK only), or</li>
+  <li> <img align="texttop" border="0" src="../images/win_only.png" alt="Windows only" />
+    Copying and pasting to the file system, or</li>
+  <li> Using the
+  <a class="command-link" href="javascript:executeCommand(&quot;org.eclipse.ui.file.export&quot;)" shape="rect">
+  <img src="PLUGINS_ROOT/org.eclipse.help/command_link.png"/>
+  <b>Export wizard</b></a>.</li>
+</ul>
+<h2>
+Drag and drop or copy and paste</h2>
+<p class="Para"> <img align="texttop" border="0" src="../images/win_only.png" alt="Windows only" /> 
+  The operating system's file system explorer can be used to export a copy of 
+  a folder or file from the Workbench to the file system.</p>
+<ol>
+  <li> 
+    <p class="Para"> Open the operating system's file system explorer.</p>
+  </li>
+  <li> 
+    <p class="Para"> Drag the file JanesFile.txt from one of the navigation view 
+      to the file system explorer.</p>
+  </li>
+  <li> 
+    <p class="Para">Depending on where you are dragging to, you may need to hold 
+      down the Ctrl or Shift key while dragging to ensure the file is copied. 
+      Look for a small plus sign on the drag cursor to know whether the file is 
+      being copied or moved. </p>
+  </li>
+  <li> 
+    <p class="Para"> The export can also be achieved by selecting the file in 
+      the Navigator and choosing <b>Edit &gt; Copy</b>, then</p> 
+    <p class="Para">pasting it in the file system explorer.</p> </li>
+</ol>
+<h2>
+ Export wizard</h2>
+<p class="Para"> The Export wizard can be used to export from the Workbench to 
+  the file system.</p>
+<ol>
+  <li> 
+    <p class="Para"> Select the project JaneQuser in the navigation view. </p>
+  </li>
+  <li> 
+    <p class="Para"> From the popup menu, select <b>Export</b>.</p>
+  </li>
+  <li> 
+    <p class="Para"> In the Export wizard, select <b>File system</b>, then click 
+      <b>Next</b>.</p>
+    <p class="Para"> <img src="../images/Image42_export.png" alt="Export Wizard. Select an export destination." border="0" /></p>
+  </li>
+  <li> 
+    <p class="Para">Expand JaneQuser project, and click on JanesFolder. In the 
+      right pane ensure that only JanesINIFile.ini is selected. Notice the 
+      folder and project in the left pane now have a grayed checkbox indicating 
+      that some, but not all, of their contents will be exported.</p>
+    <p class="Para">The <b>Select Types</b> button can be used to filter the types 
+      of resources to export.</p>
+    <p class="Para"><strong>Note:</strong> To export JanesINIFile.ini only, simply 
+      select it in the navigation view and choose <b>File &gt; Export</b>. The 
+      Export wizard will automatically ensure it is the only file selected for 
+      export. </p>
+    <p class="Para"> <img src="../images/Image43_export_tree.png" alt="Export Wizard. Enter a destination directory." border="0" /></p>
+  </li>
+  <li> 
+    <p class="Para"> In the <b> To directory</b> field, type or browse to select 
+      a location in the file system for the exported resources to reside.</p>
+    <p class="Para"> If the name of a directory that does not exist is entered 
+      the Export wizard will offer to create it once <b>Finish</b> is selected.</p>
+  </li>
+  <li> 
+    <p class="Para"> In the <b>Options</b> area, options are given to:</p>
+    <ul class="UnorderedList">
+      <li class="Item"> Overwrite existing resources without warning </li>
+      <li class="Item"> Create directory structure for files or Create only selected 
+        directories</li>
+    </ul>
+  </li>
+  <li> 
+    <p class="Para"> Click <b>Finish</b> when done.</p>
+  </li>
+</ol>
+
+</body>
+</html>

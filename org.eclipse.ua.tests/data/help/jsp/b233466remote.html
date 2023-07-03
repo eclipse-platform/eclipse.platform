@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Bug 233466 -  [Webapp][Security] Site redirection vulnerability in Eclipse Help System</title>
+    <script type="text/javascript" src="server.js"></script>
+	<script type="text/javascript">
+	    function loadhandler() {
+            showHelpPath();
+            patchAnchors();
+        }
+
+	</script>
+</head>
+
+<body onload = "loadhandler()">
+<h1>Bug 233466 -  [Webapp][Security] Site redirection vulnerability in Eclipse Help System</h1>
+
+<h3 id="path"></h3>
+
+To reproduce open help in an external browser ((The bug reproduces on both IE and Firefox)
+<br>
+Right on the link below and open in a new window. If the help frames are displayed and eclipse.org
+is opened in the content frame the test is failing.
+<br>
+<a href = "../../../../../index.jsp?topic=http://www.eclipse.org
+" >Open link in a new window </a>
+</p>
+
+</body>
+</html>

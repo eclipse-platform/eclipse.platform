@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2005, 2010 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Searching documentation, basic scenario">
+   <intro>
+      <description>
+         Basic tests for search
+      </description>
+   </intro>
+   <item
+         title="Open Help Browser">
+      <description>
+         Press Help/Help contents to open the help browser
+      </description>
+   </item>
+   <item title="Simple search" dialog="false" skip="false">
+      <description>
+         In the Search entry field enter the word &quot;participation&quot; without the double quotes. The navigation frame should turn to the Search Results view, and if this was the first time you search the docs, you should see the indexing progress monitor in that page. When indexing is finished (or right away if other searches were performed before) you should get the results.
+      </description>
+   </item>
+   <item title="Select result" dialog="false" skip="false">
+      <description>
+         Select a search result: &quot;Workspace save participation&quot;. You should see the &quot;participation&quot; string highlighted, as well as &quot;particip&quot;. This is because the search engine uses word stemming on English, so the highlighting respects the same stemming algorithm.
+      </description>
+   </item>
+   <item title="Highlighting Button" dialog="false" skip="false">
+      <description>
+         Test that highlighting can be turned on and off
+      </description>
+      <subitem label="Verify that there is an enabled button &quot;Highlight search items&quot;" skip="false">
+      </subitem>
+      <subitem label="Turn off highlighting by pressing the button." skip="false">
+      </subitem>
+      <subitem label="Turn on highlighting by pressing the button again." skip="false">
+      </subitem>
+   </item>
+   <item title="Open result" dialog="false" skip="false">
+      <description>
+         Click on two other results. You should see the page for each result open.
+      </description>
+   </item>
+   <item
+         title="Quick Search">
+      <description>
+         Test the quick search feature
+      </description>
+      <subitem
+            label="With one of the pages corresponding to a search result open press &quot;Show in table of contents&quot; and verify that the TOC shows and the correct item is highlighted.">
+      </subitem>
+      <subitem
+            label="In the TOC select the parent of the highlighted element">
+      </subitem>
+      <subitem
+            label="Press the button that looks like a flashlight, select &quot;search selected topic and all subtopics&quot; from the dropdown menu and verify that a dialog opens.opic and all subtopics&quot; and verify that a dialog opens.">
+      </subitem>
+      <subitem
+            label="Verify that the input is set to &quot;participation&quot; and hit &quot;OK&quot;">
+      </subitem>
+      <subitem
+            label="Verify that the search resutls are redisplayed and that there are far fewer results which include the page that is currently displayed.">
+      </subitem>
+   </item>
+   <item title="Narrow Search" dialog="false" skip="false">
+      <description>
+         Let&apos;s narrow the results by book.
+      </description>
+      <subitem label="Click on the &quot;Scope&quot; link in the search bar. This should launch the Select Scope Search dialog that let&apos;s use define search list." skip="false">
+      </subitem>
+      <subitem label="Click on &quot;New&quot; to launch the dialog for defining a new search list." skip="false">
+      </subitem>
+      <subitem label="Enter the name &quot;workbench&quot; and select the &quot;Workbench User Guide&quot;, click OK to close the dialog." skip="false">
+      </subitem>
+      <subitem label="The name &quot;workbench&quot; should now be visible in the list in the Select Scope Search dialog. Select it, and click OK (or double click instead)." skip="false">
+      </subitem>
+   </item>
+   <item title="Check search scope" dialog="false" skip="false">
+      <description>
+         The dialog should be closed and the Search Scope should now display the name &quot;workbench&quot;. Note: Sometimes the search bar is not updated right away, so you may have to wait a bit.
+      </description>
+   </item>
+   <item
+         title="Check Toc is Filtered">
+      <description>
+         Click on the contents tab to show the table of contents. Verify that only one book, &quot;Workbench User Guide&quot; shows.
+      </description>
+   </item>
+   <item title="Search again" dialog="false" skip="false">
+      <description>
+   Search again for the same word, &quot;participation&quot;. You should see fewer results than were returned by the unscoped search.
+      </description>
+   </item>
+   <item title="Select an item" dialog="false" skip="false">
+      <description>
+         Select the &quot;Minimizing data loss from crashes&quot; hit, and click on the &quot;Show in table of contents&quot; button on the navigation or content toolbar. This should switch the navigation view to the Contents view, and expand the Workbench User Guide down to the &quot;Minimizing data loss from crashes&quot; topic.
+      </description>
+   </item>
+   <item title="Redisplay search results" dialog="false" skip="false">
+      <description>
+         Click the &quot;Search Results&quot; tab at the bottom of the navigation tree. This should redisplay the search result you&apos;ve seen in &quot;Search Again&quot;
+      </description>
+   </item>
+   <item title="Show TOC" dialog="false" skip="false">
+      <description>
+         Click on the &quot;Contents&quot; tab at the bottom of the navigation tree. This should redisplay the navigation tree as you left it before switching to the search results tab.
+      </description>
+   </item>
+   <item
+         title="Show all">
+      <description>
+         Click on &quot;Scope&quot; and in the scope dialog select the radio button &quot;Show All&quot;
+      </description>
+   </item>
+</cheatsheet>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Testing Context Help and Help Links">
+
+<intro 
+	href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm">
+	<description>
+This cheat sheet will test context help and help link.
+Let's get started!
+	</description>
+</intro>
+
+<item
+	title="Test help link"
+	href="/org.eclipse.platform.doc.user/concepts/chelpsys.htm">
+	<description>
+Try the help link, you should see the concepts for the help system.
+	</description>
+</item>
+
+<item
+	title="Test item without help link">
+	<description>
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+	</description>
+</item>
+
+<item
+	title="Display the gathered data and additional parameters"
+	contextId="org.eclipse.ua.tests.test_cheatsheets">
+	<description>
+Try the help link, you should see context help with some sample text.
+	</description>
+</item>
+
+<item
+	title="Display the gathered data and additional parameters"
+	href="/org.eclipse.platform.doc.user/concepts/chelpsys.htm"
+	contextId="org.eclipse.ua.tests.test_cheatsheets">
+	<description>
+Try the help link, you should see the same context help again.
+	</description>
+</item>
+
+<item
+	title="Test item without help link">
+	<description>
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+This item should not have a help link.
+	</description>
+</item>
+
+</cheatsheet>

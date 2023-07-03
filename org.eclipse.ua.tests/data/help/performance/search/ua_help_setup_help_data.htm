@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Help Data</title>
+<link rel="stylesheet" href="../schema.css" charset="utf-8" type="text/css">
+<link rel="stylesheet" href="../book.css" charset="utf-8" type="text/css">
+</HEAD>
+<BODY>
+<CENTER>
+<H1>Help Data</H1></CENTER>
+<p></p>
+<h6 class=CaptionFigColumn id=header>Identifier: </h6>org.eclipse.help.HELP_DATA<p></p>
+<h6 class=CaptionFigColumn id=header>Since: </h6>3.3
+<p></p>
+
+<p></p>
+<h6 class=CaptionFigColumn id=header>Description: </h6>
+<p>The help data XML file is used by products to control the order of books in the help table of contents, as well whether or not books or keyword index sets should be displayed at all. The file must be referenced in the product's <code>plugin_customization.ini</code> file using the <code>org.eclipse.help/HELP_DATA</code> property.</p>
+<h6 class=CaptionFigColumn id=header>Configuration Markup:</h6>
+<p class=code id=dtd>&lt;!ELEMENT <a name="e.extensions">extensions</a> (<a href="#e.tocOrder">tocOrder</a>? , <a href="#e.hidden">hidden</a>?)&gt;</p>
+<p></p>
+<p class=ConfigMarkup id=elementDesc>
+The extension data for Help.</p>
+<br><br>
+<p class=code id=dtd>&lt;!ELEMENT <a name="e.tocOrder">tocOrder</a> (<a href="#e.toc">toc</a> | <a href="#e.category">category</a>)*&gt;</p>
+<p></p>
+<p class=ConfigMarkup id=elementDesc>
+Specifies the order in which top-level table of contents entries (also called "books") or categories of books should appear in Help. If one of the items listed is not available, it is ignored. If there are items available that are not listed and not hidden, they will be displayed after the ones listed here.</p>
+<br><br>
+<p class=code id=dtd>&lt;!ELEMENT <a name="e.toc">toc</a> EMPTY&gt;</p>
+<p class=code id=dtd>&lt;!ATTLIST toc</p>
+<p class=code id=dtdAttlist>id&nbsp;CDATA #REQUIRED&gt;</p>
+<p></p>
+<p class=ConfigMarkup id=elementDesc>
+A reference to a top-level table of contents (TOC) entry, also called a "book".</p>
+<br>
+<ul class=ConfigMarkup id=attlistDesc>
+<li><b>id</b> - The unique identifier for this book. For XML file TOC contributions, this is a path to the file in the form "<code>/&lt;plugin_id&gt;/&lt;path&gt;/&lt;file&gt;</code>" (e.g., "<code>/org.eclipse.platform.doc.user/toc.xml</code>"). In general, this is the ID of the <code>TocContribution</code> supplied by its originating <code>AbstractTocProvider</code>.</li>
+</ul>
+<br><p class=code id=dtd>&lt;!ELEMENT <a name="e.category">category</a> EMPTY&gt;</p>
+<p class=code id=dtd>&lt;!ATTLIST category</p>
+<p class=code id=dtdAttlist>id&nbsp;CDATA #REQUIRED&gt;</p>
+<p></p>
+<p class=ConfigMarkup id=elementDesc>
+A reference to a category of top-level table of contents (TOC) entries (books). Categories are implicitly created when a table of contents contribution declares itself to be of that category, for example, by specifying a <code>category</code> attribute for the <code>toc</code> element in the <code>org.eclipse.help.toc</code> extension point.</p>
+<br>
+<ul class=ConfigMarkup id=attlistDesc>
+<li><b>id</b> - The unique id of the category.</li>
+</ul>
+<br><p class=code id=dtd>&lt;!ELEMENT <a name="e.hidden">hidden</a> (<a href="#e.toc">toc</a> | <a href="#e.category">category</a> | <a href="#e.index">index</a>)*&gt;</p>
+<p></p>
+<p class=ConfigMarkup id=elementDesc>
+Contains a set of help items that should be hidden from the user.</p>
+<br><br>
+<p class=code id=dtd>&lt;!ELEMENT <a name="e.index">index</a> EMPTY&gt;</p>
+<p class=code id=dtd>&lt;!ATTLIST index</p>
+<p class=code id=dtdAttlist>id&nbsp;CDATA #REQUIRED&gt;</p>
+<p></p>
+<p class=ConfigMarkup id=elementDesc>
+A reference to a contribution of help index keywords.</p>
+<br>
+<ul class=ConfigMarkup id=attlistDesc>
+<li><b>id</b> - The unique identifier for this contribution of keywords. For XML file index contributions, this is a path to the file in the form "<code>/&lt;plugin_id&gt;/&lt;path&gt;/&lt;file&gt;</code>" (e.g., "<code>/org.eclipse.platform.doc.user/index.xml</code>"). In general, this is the ID of the <code>IndexContribution</code> supplied by its originating <code>AbstractIndexProvider</code>.</li>
+</ul>
+<br><h6 class=CaptionFigColumn id=header>Examples: </h6><p>
+The following example shows how to arrange the following books in the order shown:
+</p>
+
+<ul>
+<li>Book #1: "Introduction to XYZ" (category: "<code>user.intro</code>") in <code>/com.xyz.doc.user/introToc.xml</code></li>
+<li>Book #2: "Using XYZ" (category: "<code>user.content</code>") in <code>/com.xyz.doc.user/usingToc.xml</code></li>
+<li>Book #3: "Troubleshooting" (category: "<code>user.reference</code>") in <code>/com.xyz.doc.user/refToc.xml</code></li>
+</ul>
+
+<p>
+As well as hide the following books/categories and related keyword indexes:
+</p>
+
+<ul>
+<li>Book #4: "Platform ABC" (category: <code>none</code>) in <code>/org.abc.doc.isv/toc.xml</code></li>
+<li>Book #5: "DEF Toolkit" (category: "<code>isv.reference</code>") in <code>/com.def.doc.isv/toc.xml</code></li>
+<li>Book #6: "GHI Support" (category: "<code>isv.reference</code>") in <code>/com.ghi.doc.isv/toc.xml</code></li>
+</ul>
+
+<p>
+The markup would be the following:
+</p>
+
+<pre>
+<font color="#0000ff">&lt;extensions&gt;
+   &lt;tocOrder&gt;
+      &lt;toc id=</font><font color="#008000">&quot;/com.xyz.doc.user/introToc.xml&quot;</font><font color="#0000ff">/&gt;
+      &lt;category id=</font><font color="#008000">&quot;user.content&quot;</font><font color="#0000ff">/&gt;
+      &lt;toc id=</font><font color="#008000">&quot;/com.xyz.doc.user/refToc.xml&quot;</font><font color="#0000ff">/&gt;
+   &lt;/tocOrder&gt;
+   &lt;hidden&gt;
+      &lt;toc id=</font><font color="#008000">&quot;/org.abc.doc.isv/toc.xml&quot;</font><font color="#0000ff">/&gt;
+      &lt;category id=</font><font color="#008000">&quot;isv.reference&quot;</font><font color="#0000ff">/&gt;
+      &lt;index id=</font><font color="#008000">&quot;/org.abc.doc.isv/index.xml&quot;</font><font color="#0000ff">/&gt;
+      &lt;index id=</font><font color="#008000">&quot;/com.def.doc.isv/index.xml&quot;</font><font color="#0000ff">/&gt;
+   &lt;/hidden&gt;
+&lt;/extensions&gt;</font>
+</pre>
+
+<h6 class=CaptionFigColumn id=header>Supplied Implementation: </h6>This API is supported by any help implementation that is based on <code>org.eclipse.help</code>, including the default help implementation provided by Eclipse.
+<p class=note id=copyright>
+Copyright (c) 2006 IBM Corporation and others.<br>
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+>https://www.eclipse.org/legal/epl-2.0/
+>
+>SPDX-License-Identifier: EPL-2.0</a>
+</p>
+</BODY>
+</HTML>

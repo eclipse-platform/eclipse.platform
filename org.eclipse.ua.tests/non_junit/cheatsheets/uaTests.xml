@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2011 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+<compositeCheatsheet name="User Assistance Test Suite">
+   <taskGroup kind="set" name="All Tests" skip="false">
+      <intro>
+         This contains the non JUnit tests for user assistance in the form of a cheat sheet.
+      </intro>
+      <onCompletion>
+         All tests have been completed.
+      </onCompletion>
+      <taskGroup kind="set" id="helptests" name="Help Tests" skip="false">
+         <intro>
+            This cheatsheet contains the non JUnit help tests
+         </intro>
+         <onCompletion>
+            All help tests completed.
+         </onCompletion>
+         <taskGroup kind="sequence" name="Help Scenario A: Integration with the workbench" skip="false">
+            <intro>
+               Tests for initiating help actions from the workbench and preferences.
+            </intro>
+            <onCompletion>
+               Conclusion
+            </onCompletion>
+            <task kind="cheatsheet" name="A1: Help browser preferences" skip="true">
+               <intro>
+                  Test help browser preferences
+               </intro>
+               <onCompletion>
+                  Conclusion
+               </onCompletion>
+               <param name="path" value="tasks/helpA1.xml">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="A2: Displaying help preferences" skip="true">
+               <intro>
+                  Test the display of help preferences.
+               </intro>
+               <onCompletion>
+                  Conclusion
+               </onCompletion>
+               <param name="path" value="tasks/helpA2.xml">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="A3: Opening / closing help browser" skip="true">
+               <intro>
+                  Test opening and closing of browser.
+               </intro>
+               <onCompletion>
+                  Conclusion
+               </onCompletion>
+               <param name="path" value="tasks/helpA3.xml">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="A4: Search" skip="true">
+               <intro>
+                  Tests for search
+               </intro>
+               <onCompletion>
+                  Conclusion
+               </onCompletion>
+               <param name="path" value="tasks/helpA4.xml">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="A7:  Live help and Commands" skip="true">
+               <intro>
+                  Tests for live help
+               </intro>
+               <onCompletion>
+                  Conclusion
+               </onCompletion>
+               <param name="path" value="tasks/helpA7.xml">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="A10:  Dialog help" skip="true">
+               <intro>
+                  Test help in a dialog tray
+               </intro>
+               <onCompletion>
+                  Conclusion
+               </onCompletion>
+               <param name="path" value="tasks/helpA10.xml">
+               </param>
+            </task>
+            <taskGroup kind="sequence" name="A11: Dynamic Help" skip="false">
+               <intro>
+                  <b>Introduction</b>
+               </intro>
+               <onCompletion>
+                  <b>Conclusion</b>
+               </onCompletion>
+               <task kind="cheatsheet" name="Install org.eclipse.ua.tests" skip="true">
+                  <intro>
+                     Skip this task if org.eclipse.ua.tests is already installed.
+                  </intro>
+                  <onCompletion>
+                     <b>Conclusion</b>
+                  </onCompletion>
+                  <param name="path" value="tasks/helpA11setup.xml">
+                  </param>
+               </task>
+               <task kind="cheatsheet" name="Test dynamic help" skip="true">
+                  <intro>
+                     <b>Introduction</b>
+                  </intro>
+                  <onCompletion>
+                     <b>Conclusion</b>
+                  </onCompletion>
+                  <param name="path" value="tasks/helpA11.xml">
+                  </param>
+               </task>
+            </taskGroup>
+            <task kind="cheatsheet" name="A12:  Keyword Index" skip="true">
+               <intro>
+                  Tests for the Index view
+               </intro>
+               <onCompletion>
+                  Conclusion
+               </onCompletion>
+               <param name="path" value="tasks/helpA12.xml">
+               </param>
+            </task>
+         </taskGroup>
+         <taskGroup kind="sequence" name="Help Scenario B: Navigation and browsing" skip="false">
+            <intro>
+               The main things to look for here are:
+Moving around the navigation views (Contents, Search Results, Links, Bookmarks) 
+Opening a book, expanding/collapsing/selecting topic nodes.
+Navigating links inside the help pages 
+Using toolbar actions for displaying the main table of contents, for hiding or maximizing the navigation frame, for topic/navigation synchronization, printing 
+Performing simple searching.
+            </intro>
+            <onCompletion>
+               Conclusion
+            </onCompletion>
+            <task kind="cheatsheet" name="B1: Basic topic navigation" skip="false">
+               <intro>
+                  Test opening of book and topics
+               </intro>
+               <onCompletion>
+                  Conclusion
+               </onCompletion>
+               <param name="path" value="tasks/helpB1.xml">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="B2: Document toolbar actions" skip="false">
+               <intro>
+                  Test each tool in the toolbar
+               </intro>
+               <onCompletion>
+                  Conclusion
+               </onCompletion>
+               <param name="path" value="tasks/helpB2.xml">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="B3: Searching documentation, basic scenario" skip="false">
+               <intro>
+                  Test search
+               </intro>
+               <onCompletion>
+                  Conclusion
+               </onCompletion>
+               <param name="path" value="tasks/helpB3.xml">
+               </param>
+            </task>
+         </taskGroup>
+         <task kind="cheatsheet" name="Help Scenario C: Search" skip="false">
+            <intro>
+               Perform search from the &quot;Help&quot; view in Eclipse&quot;.
+            </intro>
+            <onCompletion>
+               Conclusion
+            </onCompletion>
+            <param name="path" value="tasks/helpC.xml">
+            </param>
+         </task>
+         <taskGroup kind="sequence" name="Help Scenario D: Criteria Tests" skip="true">
+            <intro>
+               <b>Introduction</b>
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+            </onCompletion>
+            <task kind="cheatsheet" name="D0: Start Eclipse with Criteria" skip="true">
+               <intro>
+                  <b>Introduction</b>
+               </intro>
+               <onCompletion>
+                  <b>Conclusion</b>
+               </onCompletion>
+               <param name="path" value="tasks/criteria1.xml">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="D1: Define a criteria based scope" skip="true">
+               <intro>
+                  <b>Introduction</b>
+               </intro>
+               <onCompletion>
+                  <b>Conclusion</b>
+               </onCompletion>
+               <param name="path" value="tasks/criteria2.xml">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="D2: Filtered Help" skip="false">
+               <intro>
+                  <b>Introduction</b>
+               </intro>
+               <onCompletion>
+                  <b>Conclusion</b>
+               </onCompletion>
+               <param name="path" value="tasks/criteria3.xml">
+               </param>
+            </task>
+         </taskGroup>
+      </taskGroup>
+      <taskGroup id="cheatsheettests" name="Cheat Sheet Tests" skip="false">
+         <intro>
+            <p>This composite cheat sheet contains the UI tests for cheat sheets.</p>
+         <p>To begin testing right click on this task in the explorer and restart all tasks. 
+         Then use the links and task descriptions to direct you through each task.</p>
+         </intro>
+         <task kind="cheatsheet" name="Tray Dialog" skip="false">
+            <intro>
+               Cheatsheet which tests tray dialogs
+            </intro>
+            <param name="path" value="tasks/cs1.xml">
+            </param>
+         </task>
+         <task kind="cheatsheet" name="Subitems and commands" skip="false">
+            <intro>
+               Cheatsheet which tests subitems.
+            </intro>
+            <param name="path" value="tasks/cs2.xml">
+            </param>
+         </task>
+         <taskGroup kind="sequence" name="Task sequence" skip="false">
+            <intro>
+               <p>This is a sequence of tasks. Verify that the following statements are true:</p>
+                 <li> If S1 has not been started and you click on task S2 in the explorer it shows that S2 cannot be started until S1 has been completed.</li>
+                 <li> Task S2 can be started after S1 has been completed. </li>
+                 <li> If S1 and S2 are both completed this task group is complete. </li>
+                 <li> If S1 is reset from the context menu in the explorer S2 will also be reset. </li>
+            </intro>
+            <task id="S1" kind="cheatsheet" name="S1" skip="true">
+               <intro>
+                  Task in sequence. When this task is not started it should display two hyperlinks,
+                 one to start the task, one to skip the task. After completion the message &quot;S1 complete&quot; will be displayed.
+               </intro>
+               <onCompletion>
+                  S1 complete
+               </onCompletion>
+               <param name="path" value="tasks/placeholder.xml">
+               </param>
+            </task>
+            <task id="S2" kind="cheatsheet" name="S2" skip="false">
+               <intro>
+                  Task in sequence. When this task is not started it should display one hyperlink
+                 to start the task, one to skip the task. After completion the message &quot;S1 complete&quot; will be displayed.
+               </intro>
+               <param name="path" value="tasks/placeholder.xml">
+               </param>
+            </task>
+         </taskGroup>
+         <taskGroup kind="choice" name="Task choice" skip="false">
+            <intro>
+               <p>This is a sequence of tasks. Verify that the following statements are true:</p>
+                 <li> When this task group is not started two links are shown: &quot;Go to C1&quot; and &quot;Go to C2&quot; </li>
+                 <li> If task C1 is completed this task group is complete </li>
+                 <li> Task C2 cannot be started if C1 has been completed and it&apos;s icon
+                 is grayed in the explorer. </li>
+            </intro>
+            <task id="C1" kind="cheatsheet" name="C1" skip="true">
+               <intro>
+                  Task 1 in choice.
+               </intro>
+               <param name="path" value="tasks/placeholder.xml">
+               </param>
+            </task>
+            <task id="C2" kind="cheatsheet" name="C2" skip="true">
+               <intro>
+                  Task 2 in choice.
+               </intro>
+               <param name="path" value="tasks/placeholder.xml">
+               </param>
+            </task>
+         </taskGroup>
+         <taskGroup kind="sequence" name="Registered cheat sheets and content files" skip="true">
+            <intro>
+               Tests for opening a registered cheatsheet and for testing cheat sheets with missing files.
+            </intro>
+            <task kind="cheatsheet" name="Open registered cheatsheet" skip="true">
+               <intro>
+                  This task is registered. Verify that it can be opened and completed.
+               </intro>
+               <param name="id" value="org.eclipse.ua.tests.cheatsheet.placeholder">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="Skip Intro" skip="true">
+               <intro>
+                  Verify that this task starts on the first step instead of the intro.
+               </intro>
+               <param name="id" value="org.eclipse.ua.tests.cheatsheet.placeholder">
+               </param>
+               <param name="showIntro" value="false">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="Non registered cheatsheet" skip="true">
+               <intro>
+                  This task is not registered. Verify that an error message is displayed then skip this task.
+               </intro>
+               <param name="id" value="org.eclipse.ua.tests.cheatsheet.notregistered">
+               </param>
+               <param name="showIntro" value="false">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="Missing Content File (1)" skip="true">
+               <intro>
+                  This task is registered but has a missing content file. Verify that an error message
+                  is displayed when trying to open the cheatsheet and that it can be skipped.
+               </intro>
+               <param name="id" value="org.eclipse.ua.tests.cheatsheet.nocontent">
+               </param>
+               <param name="showIntro" value="false">
+               </param>
+            </task>
+            <task kind="cheatsheet" name="Missing Content File (2)" skip="true">
+               <intro>
+                  This task  has a missing content file. Verify that an error message
+                  is displayed when trying to open the cheatsheet and that it can be skipped.
+               </intro>
+               <param name="path" value="tasks/nosuchfile.xml">
+               </param>
+               <param name="showIntro" value="false">
+               </param>
+            </task>
+         </taskGroup>
+      </taskGroup>
+      <taskGroup kind="set" id="othertests" name="Other Tests" skip="false">
+         <intro>
+            Tests for Help Menu etc
+         </intro>
+         <onCompletion>
+            <b>Conclusion</b>
+         </onCompletion>
+         <task kind="cheatsheet" name="Help Menu" skip="false">
+            <intro>
+               Test that the help menu has the correct contents and that each menu item works.
+            </intro>
+            <onCompletion>
+               <b>Conclusion</b>
+            </onCompletion>
+            <param name="path" value="tasks/other1.xml">
+            </param>
+         </task>
+      </taskGroup>
+      <task kind="cheatsheet" name="All Tests Complete" skip="false">
+          <dependsOn task = "helptests"/>
+          <dependsOn task = "cheatsheettests"/>
+          <dependsOn task = "othertests"/>
+         <intro>
+            <b>Introduction</b>
+         </intro>
+         <onCompletion>
+            <b>Conclusion</b>
+         </onCompletion>
+         <param name="path" value="tasks/allcomplete.xml">
+         </param>
+      </task>
+   </taskGroup>
+</compositeCheatsheet>

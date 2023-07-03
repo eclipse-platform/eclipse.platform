@@ -1,0 +1,113 @@
+/*******************************************************************************
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
+ *
+ * This program and the accompanying materials 
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * 
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+body {
+    <%=prefs.getViewBackgroundStyle()%>
+	color: WindowText;
+	font: <%=prefs.getViewFont()%>;
+	font-size: .875rem;
+	padding: 0px;
+	border: 0px;
+	margin-top: 5px;
+	margin-bottom: 8px;
+	margin-left: 5px;
+	margin-right: 5px;
+	cursor: default;
+}
+
+table {
+	font: <%=prefs.getViewFont()%>;
+	font-size: .875rem;
+	width: 100%;
+	table-layout: fixed;
+}
+
+a {
+	text-decoration:none; 
+	padding:0px;
+}
+
+a:hover {
+	text-decoration:underline; 
+}
+
+.category {
+	font-weight: bold;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.sectiontitle {
+	background-color: <%=prefs.getToolbarBackground()%>;
+	font-weight:bold;
+	margin-top:7px;
+}
+
+.results .active { 
+	background:Highlight;
+	color:HighlightText;
+	width:100%;
+	height:100%;
+}
+
+.showall {
+    text-decoration:underline; 
+    color:#0066FF; 
+	cursor:pointer;
+}
+
+#menu {
+	position:absolute;
+	display:none;
+	background:<%=prefs.getToolbarBackground()%>;
+	border:2px outset;
+	padding:2px 0px;
+}
+
+.selectedMenuItem {
+	background:Highlight;
+	color:HighlightText;
+	padding-left:10px;
+	padding-right:10px;
+}
+
+.unselectedMenuItem {
+	background:<%=prefs.getToolbarBackground()%>;
+	color:WindowText;
+	padding-left:10px;
+	padding-right:10px;
+}
+
+.icon {
+	width: 23px;
+	padding-<%=isRTL?"right":"left"%>: <%=data.isShowCategories() ? 3 : 0%>px;
+}
+
+.description {
+	display: <%=data.isShowDescriptions() ? "block" : "none"%>;
+}
+.location {
+	display: <%=data.isShowLocations() ? "block" : "none"%>;
+	font-size:80%;
+	overflow:visible;
+	white-space:nowrap;
+}
+.location, .location a {
+	color:#006633;
+}
+.active .location, .active .location a {
+	color:HighlightText;
+}
+
+<%@ include file="darkTheme.css"%>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Test for two commands">
+  <intro>
+    <description>Test cheat sheet</description>
+  </intro>
+  
+  <item title="New Item">
+    <description>Item with subitem containing two commands</description>
+    <subitem label="New SubItem">
+        <command serialization="org.eclipse.jdt.ui.PackageExplorer"/>  
+        <command serialization="CommandSerialization"/>
+    </subitem>
+    <subitem label = "Another subitem"/>
+  </item>
+</cheatsheet>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<toc label="manual.xml" link_to="data/help/toc/root.xml#content">
+	<topic label="manual">
+		<topic label="filter" href="data/help/manual/filter.xhtml"/>
+  <topic label="anchors one and two">
+     <topic href="data/help/manual/anchors.html#one" label="anchor one">
+     </topic>
+     <topic href="data/help/manual/anchors.html#two" label="anchor two">
+     </topic>
+  </topic>
+  <topic label="anchors three and four">
+     <topic href="data/help/manual/anchors.html#three" label="anchor three">
+     </topic>
+     <topic href="data/help/manual/anchors.html#four" label="anchor four">
+     </topic>
+  </topic>
+	</topic>
+</toc>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+	<xs:element name="tocContributions">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:element ref="tocContribution" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="tocContribution " abstract="false"
+		nillable="false">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:element ref="toc" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="extraDocument" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="categoryId" type="xs:string" /> <!-- optional attribute for tree_data -->
+			<xs:attribute name="contributorId" type="xs:string" /> <!-- optional attribute for tree_data -->
+			<xs:attribute name="id" type="xs:string" use="required" /> <!-- attribute for tree_data -->
+			<xs:attribute name="locale" type="xs:string" use="required" /> <!-- attribute for tree_data -->
+			<xs:attribute name="isPrimary" type="xs:boolean" use="required" /> <!-- attribute for tree_data -->
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="toc" abstract="false">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+
+
+				<xs:any namespace="##any" minOccurs="0" maxOccurs="unbounded" />
+
+			</xs:sequence>
+			<xs:attribute name="href" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="label" type="xs:string" use="required" /> <!-- optional attribute for node -->
+			<xs:attribute name="link_to" type="xs:string" /> <!-- attribute for node -->
+			<xs:attribute name="topic" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="unknownAttribute" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="sort" type="xs:string" /> <!-- optional attribute for node -->
+		</xs:complexType>
+		
+	</xs:element>
+
+	<xs:element name="extraDocument" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:attribute name="href" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="topic" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:any namespace="##any" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+
+			<xs:attribute name="label" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="href" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="unknownAttribute2" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="aegraerg" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="filter" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="sort" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="icon" type="xs:string" /> <!-- optional attribute for node -->
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="anchor" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:attribute name="id" type="xs:string" /> <!-- optional attribute for node -->
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="link" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:attribute name="toc" type="xs:string" /> <!-- optional attribute for node -->
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="enablement" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:element ref="with" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="test" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="systemTest" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="test" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+
+			<xs:sequence>
+				<xs:any namespace="##any" minOccurs="0" maxOccurs="unbounded" /> <!-- accept any data -->
+			</xs:sequence>
+
+			<xs:attribute name="args" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="property" type="xs:string" /> <!-- attribute for node -->
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="with" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:element ref="test" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="variable" type="xs:string" /> <!-- optional attribute for node -->
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="systemTest" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:attribute name="property" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="value" type="xs:string" /> <!-- attribute for node -->
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="criteria" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:attribute name="name" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="value" type="xs:string" /> <!-- attribute for node -->
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="blah" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:attribute name="value" type="xs:string" /> <!-- attribute for node -->
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="test2" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:any namespace="##any" minOccurs="0" maxOccurs="unbounded" />  <!-- accept any data -->
+			</xs:sequence>
+			<xs:attribute name="attr" type="xs:string" /> <!-- optional attribute for node -->
+
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="aergaer" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:any namespace="##any" minOccurs="0" maxOccurs="unbounded" /> <!-- accept any data -->
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="gaergr" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:any namespace="##any" minOccurs="0" maxOccurs="unbounded" /> <!-- accept any data -->
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="filter" abstract="false" nillable="false">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:any namespace="##any" minOccurs="0" maxOccurs="unbounded" /> <!-- accept any data -->
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="value" type="xs:string" /> <!-- optional attribute for node -->
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

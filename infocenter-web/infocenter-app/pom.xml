@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2020 Eclipse Foundation. All rights reserved. This program 
+	and the accompanying materials are made available under the terms of the 
+	Eclipse Distribution License v1.0 which accompanies this distribution, and 
+	is available at http://www.eclipse.org/org/documents/edl-v10.php Contributors: 
+	Karsten Thoms - initial implementation -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eclipse.help</groupId>
+		<artifactId>infocenter-parent</artifactId>
+		<version>4.29.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>infocenter-app</artifactId>
+	<packaging>war</packaging>
+	<build>
+		<finalName>help</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>src/main/webapp/WEB-INF</directory>
+							<includes>
+								<include>configuration/**</include>
+								<include>lib/**</include>
+								<include>plugins/**</include>
+								<include>*.ini</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.3.2</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<?m2e ignore?>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<copy todir="src/main/webapp/WEB-INF">
+									<fileset
+										dir="../infocenter-product/target/products/infocenter/linux/gtk/x86_64/infocenter"
+										includes="**" excludes="artifacts.xml,p2/**"/>
+								</copy>
+								<copy todir="src/main/webapp/WEB-INF/lib">
+									<fileset dir="src/main/webapp/WEB-INF/plugins"
+										includes="*.equinox.servletbridge_*.jar" />
+								</copy>
+								<!-- org.eclipse.equinox.servletbridge.FrameworkLauncher.LAUNCH_INI -->
+								<move file="src/main/webapp/WEB-INF/eclipse.ini" tofile="src/main/webapp/WEB-INF/launch.ini"/>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.tips.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.tips.core" id="tips" name="Tips"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;
+This extension point allows bundles to hook into the eclipse tips framework.
+&lt;/p&gt;
+@see Examples
+      </documentation>
+   </annotation>
+
+   <include schemaLocation="schema://org.eclipse.core.expressions/schema/expressionLanguage.exsd"/>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <choice>
+            <element ref="provider" minOccurs="1" maxOccurs="unbounded"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="provider">
+      <complexType>
+         <sequence>
+            <element ref="enablement" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.tips.core.TipProvider:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;
+This extension defines a tip provider. The provider is given higher priority if the current active perspective is the java perspective.
+&lt;pre&gt;
+   &amp;lt;extension
+         point=&quot;org.eclipse.tips.ide.tips&quot;&gt;
+      &amp;lt;provider
+            class=&quot;org.eclipse.tips.examples.java.java9.Java9TipProvider&quot;
+            description=&quot;Java 9 Tips&quot;
+            id=&quot;org.eclipse.tips.examples.java.java9.Java9TipProvider&quot;&gt;
+         &amp;lt;enablement&gt;
+            &amp;lt;with
+                  variable=&quot;activeWorkbenchWindow.activePerspective&quot;&gt;
+               &amp;lt;equals
+                     value=&quot;org.eclipse.jdt.ui.JavaPerspective&quot;&gt;
+               &amp;lt;/equals&gt;
+            &amp;lt;/with&gt;
+         &amp;lt;/enablement&gt;
+      &amp;lt;/provider&gt;
+   &amp;lt;/extension&gt;
+&lt;/pre&gt;   
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;b&gt;Example Tip Providers&lt;/b&gt;   
+&lt;/p&gt;
+  
+&lt;ul&gt;  
+&lt;li&gt; &lt;a href=&quot;https://git.eclipse.org/c/platform/eclipse.platform.ua.git&quot;&gt;Repository with example tips.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt; &lt;a href=&quot;https://wiki.eclipse.org/Tip_of_the_Day&quot;&gt;Eclipse Wiki&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2017 Remain Software
+                                                                      
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

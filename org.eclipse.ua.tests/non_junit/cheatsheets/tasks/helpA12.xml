@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2005, 2011 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Keyword Index">
+   <intro>
+      <description>
+         Tests for the index view. These tests require org.eclispe.ua.tests to be installed.
+      </description>
+   </intro>
+   <item title="Test Index View" dialog="false" skip="false">
+      <description>
+         Run some tests on the index view in the webapp.
+      </description>
+      <subitem label="Open Help -&gt; Help Contents" skip="false">
+      </subitem>
+      <subitem label="Verify that there’s an index tab at the bottom left. Click on it to open the index." skip="false">
+      </subitem>
+      <subitem label="Verify that there is a text box with a DISPLAY button to the right and that there is a list of keywords." skip="false">
+      </subitem>
+   </item>
+   <item title="Index view order" dialog="true" skip="false">
+      <description>
+         Tests for the ordering of keywords in index view
+      </description>
+      <subitem label="Verify that _keyword, -keyword, +keyword and =keyword appear at the front of the index, before any keywords that start with letters." skip="false">
+      </subitem>
+      <subitem label="Verify that xaa, Xyx and xyz appear in that order." skip="false">
+      </subitem>
+      <subitem
+            label="Verify that action, ámbito and assistance appear in that order.">
+      </subitem>
+   </item>
+   <item title="Typein" dialog="true" skip="false">
+      <description>
+         Verify that the typein advances the index
+      </description>
+      <subitem label="Type &quot;x&quot; into the typein area. Verify that xaa is at the top of the screen." skip="false">
+      </subitem>
+      <subitem label="Type &quot;y&quot; after the &quot;x&quot; (making xy). Verify that Xyx is at the head of the list." skip="false">
+      </subitem>
+   </item>
+   <item title="Navigate to content" dialog="true" skip="false">
+      <description>
+         Click on &quot;keyword1&quot;, verify that topic1 opens.
+      </description>
+   </item>
+   <item title="Test Index in Help View" dialog="false" skip="false">
+      <description>
+         Repeat the tests using the help view
+      </description>
+      <subitem label="Help-&gt;Dynamic Help" skip="false">
+      </subitem>
+      <subitem label="Verify that there’s a hyperlink titled index at the top. Click on it to open the index.led index at teh top. Click on it to open the index." skip="false">
+      </subitem>
+      <subitem label="Verify that there is a text box with a DISPLAY button to the right and that there is a list of keywords." skip="false">
+      </subitem>
+   </item>
+   <item title="Help view order" dialog="true" skip="false">
+      <description>
+         Tests for the ordering of keywords in help view
+      </description>
+      <subitem label="Verify that _keyword, -keyword, +keyword and =keyword appear at the front of the index, before any keywords that start with letters." skip="false">
+      </subitem>
+      <subitem label="Verify that xaa, Xyx and xyz appear in that order." skip="false">
+      </subitem>
+      <subitem
+            label="Verify that action, ámbito and assistance appear in that order.">
+      </subitem>
+   </item>
+   <item title="Help view Typein" dialog="true" skip="false">
+      <description>
+         Verify that the typein selects the correct item
+      </description>
+      <subitem label="Type &quot;x&quot; into the typein area. Verify that xaa is highlighted." skip="false">
+      </subitem>
+      <subitem label="Type &quot;y&quot; after the &quot;x&quot; (making xy). Verify that Xyx is highlighted." skip="false">
+      </subitem>
+   </item>
+   <item title="Help view Navigate to content" dialog="true" skip="false">
+      <description>
+         Click on &quot;keyword1&quot;, verify that topic1 opens.
+      </description>
+   </item>
+</cheatsheet>

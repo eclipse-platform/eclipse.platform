@@ -1,0 +1,451 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.help" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.help" id="toc" name="Table of Contents (TOC)"/>
+      </appInfo>
+      <documentation>
+         For registering an online help contribution for an individual plug-in.
+
+&lt;p&gt;Each plug-in that contributes help files should in general do the following:
+&lt;ul&gt;
+&lt;ul&gt;
+&lt;li&gt;
+create TOC files that describe the table of contents for the help and the necessary
+topic interleaving. See the syntax below.&lt;/li&gt;
+
+&lt;li&gt;
+the plugin.xml file should extend the &lt;tt&gt;org.eclipse.help.toc&lt;/tt&gt; extension
+point and specify TOC file(s).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/ul&gt;
+&lt;p&gt;Optionally, a search index can be prebuilt and registered using &lt;code&gt;index&lt;/code&gt; element in order to improve the performance of the first search attempt. Only one index per plug-in can be registered - multiple &lt;code&gt;index&lt;/code&gt; elements will result in undefined behaviour.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="toc"/>
+            <element ref="tocProvider"/>
+            <element ref="index"/>
+            <element ref="tocIcon"/>
+            <element ref="placeholder"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="toc">
+      <annotation>
+         <documentation>
+            a toc contribution made by supplying an XML file
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="file" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the TOC file which contains the table of contents or section for this plug-in&apos;s online help.
+&lt;p&gt;
+&lt;i&gt;&lt;b&gt;Configuration Markup for toc file:&lt;/b&gt;&lt;/i&gt;
+&lt;p&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT toc (topic | anchor | link)* &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST toc link_to CDATA #IMPLIED &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST toc label CDATA #REQUIRED &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST toc topic CDATA #IMPLIED &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST toc sort CDATA #IMPLIED &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST toc icon CDATA #IMPLIED &gt;&lt;/tt&gt;
+&lt;p&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT topic (topic | anchor | link )*
+&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST topic label CDATA #REQUIRED &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST topic href CDATA #IMPLIED &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST topic sort CDATA #IMPLIED &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST topic icon CDATA #IMPLIED &gt;&lt;/tt&gt;
+&lt;p&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT anchor EMPTY &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST anchor id ID&amp;nbsp; #REQUIRED &gt;&lt;/tt&gt;
+&lt;p&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT link EMPTY &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST link toc CDATA #REQUIRED &gt;&lt;/tt&gt;
+&lt;p&gt;In general, a plug-in that needs to provide online help will define
+its own TOC files. In the end, the help system is configured to be launched
+as some actions, and the path of the TOC file can be used to do so.
+&lt;p&gt;&lt;b&gt;The topic element&lt;/b&gt;
+&lt;p&gt;All help topic element are contributed as part of the toc container
+element. They can have a hierarchical structure, or can be listed as a
+flat list.
+&lt;p&gt;The topic element is the workhorse of structure of Table of Contents.
+There are two typical uses for the topic element:
+&lt;p&gt;1.&amp;nbsp; To provide a link to a documentation file - usually an HTML
+file.
+&lt;br&gt;2.&amp;nbsp; To act as a container for other toc, either in the same manifest
+or another.
+&lt;p&gt;&lt;b&gt;&lt;i&gt;1.&amp;nbsp; Topics as links&lt;/i&gt;&lt;/b&gt;
+&lt;br&gt;The simplest use of a topic is as a link to a documentation file.
+&lt;p&gt;&lt;tt&gt;&amp;lt;topic label=&quot;Some concept file&quot; href=&quot;concepts/some_file.html&quot;
+/&gt;&lt;/tt&gt;
+&lt;p&gt;The href attribute is relative to the plug-in that the manifest file
+belongs to.&amp;nbsp; If you need to access a file in another plug-in, you
+can use the syntax
+&lt;p&gt;&lt;tt&gt;&amp;lt;topic label=&quot;topic in another plug-in&quot; href=&quot;../other.plugin.id/concepts/some_other_file.html&quot;
+/&gt;&lt;/tt&gt;
+&lt;p&gt;&lt;b&gt;&lt;i&gt;2.&amp;nbsp; Topics as containers&lt;/i&gt;&lt;/b&gt;
+&lt;br&gt;The next most common use of a topic is to use it as a container for
+other toc.&amp;nbsp; The container topic itself can always refer to a particular
+file as well.
+&lt;p&gt;&lt;tt&gt;&amp;lt;topic label=&quot;Integrated Development Environment&quot; href=&quot;concepts/ciover.htm&quot;
+&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;topic label=&quot;Starting the IDE&quot; href=&quot;concepts/blah.htm&quot;
+/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; ...&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;lt;/topic&gt;&lt;/tt&gt;
+&lt;p&gt; If the sort attribute is true child topics will be sorted alphabetically.&lt;/p&gt;&lt;p&gt; The
+optional icon attribute allows the use of a different icon as defined by a 
+&amp;lt; tocIcon &amp;gt; element in an org.eclipse.help.toc extension.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;The link element&lt;/b&gt;
+&lt;p&gt;The link element allows to link Table of Contents defined in another
+toc file.&amp;nbsp; All the topics from the toc file specified in the toc attribute
+will appear in the table of contents as if they were defined directly in
+place of the link element.&amp;nbsp; To include toc from api.xml file you could
+write
+&lt;p&gt;&lt;tt&gt;&amp;lt;topic label=&quot;References&quot; &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; ...&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;link toc=&quot;api.xml&quot; /&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; ...&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;lt;/topic&gt;&lt;/tt&gt;
+&lt;p&gt;&lt;b&gt;The anchor element&lt;/b&gt;
+&lt;p&gt;The anchor element defines a point that will allow linking other toc
+files to this navigation, and extending it, without using the link element
+and referencing other toc files from here.&amp;nbsp; To allow inserting Table
+of Contents with more topics after the &quot;ZZZ&quot; document you would define
+an anchor as follows:
+&lt;p&gt;&lt;tt&gt;...&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;lt;topic label=&quot;zzz&quot; href=&quot;zzz.html&quot; /&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;lt;anchor id=&quot;moreapi&quot; /&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;...&lt;/tt&gt;
+&lt;p&gt;&lt;b&gt;The toc element&lt;/b&gt;
+&lt;p&gt;The toc element is a Table of Contents that groups topics and other
+elements defined in this file.&amp;nbsp; The label identifies the table of
+contents to the user, when it is displayed to the user.&amp;nbsp;&lt;/p&gt;&lt;p&gt; The optional topic
+attribute is the path to a topic file describing the TOC.&amp;nbsp; &lt;/p&gt;
+&lt;p&gt; If the sort attribute is true child topics will be sorted alphabetically.&lt;/p&gt;&lt;p&gt; The
+optional icon attribute allows the use of a different icon as defined by a 
+&amp;lt; tocIcon &amp;gt; element in an org.eclipse.help.toc extension.&lt;/p&gt;&lt;p&gt;The optional
+link_to attribute allows for linking toc from this file into another toc
+file being higher in the navigation hierarchy.&amp;nbsp; The value of the link_to
+attribute must specify an anchor in another toc file. To link toc from
+myapi.xml to api.xml file, specified in another plugin you would use
+the syntax
+&lt;p&gt;&lt;tt&gt;&amp;lt;toc link_to=&quot;../anotherPlugin/api.xml#moreapi&quot; label=&quot;My Tool
+API&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;...&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;lt;toc /&gt;&lt;/tt&gt;
+&lt;p&gt;where # character separates toc file name from the anchor identifier.
+&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Filters&lt;/b&gt;
+&lt;p&gt;&lt;a href = &quot;../../guide/ua_dynamic_filters.htm&quot;&gt;Filters&lt;/a&gt;  can be used to make parts of the TOC conditional. One possible use for filters is to show a set of topics only if a specific plugin is installed. 
+&lt;/p&gt;
+&lt;br&gt;
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="primary" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  specifies whether the TOC file is a primary table of contents and is meant to be the master table of contents,
+or not primary and intended to be integrated into another table of contents.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="extradir" type="string">
+            <annotation>
+               <documentation>
+                  specifies a plug-in relative path to a directory containing additional documents that are associated with the table of contents. All help documents in this directory, and all subdirectories, will be indexed and accessible through the documentation search, even if the documents are not in the table of contents. Note: the directory must be within the declaring plug-in (e.g. &quot;../my.other.plugin/path&quot; is invalid)
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="category" type="string">
+            <annotation>
+               <documentation>
+                  specifies the category of TOCs to which this one belongs. This applies only to primary TOCs. Categories are used to group together related books. The value must be a string that uniquely identifies the category.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="tocProvider">
+      <annotation>
+         <documentation>
+            (&lt;b&gt;since 3.3&lt;/b&gt;) a toc contribution made by plugging in code
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the implementation class for the toc provider.  This class must implement the &lt;samp&gt;org.eclipse.help.AbstractTocProvider&lt;/samp&gt; interface.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.AbstractTocProvider"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="index">
+      <annotation>
+         <documentation>
+            (&lt;b&gt;since 3.1&lt;/b&gt;) an optional element that allows declaration of prebuilt search index created from documents contributed by this plug-in.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="path" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a plug-in-relative path of the prebuilt search index. The index referenced by the path must exist. Missing index will be flagged in the log file. Note that each locale must have a different index. If a plug-in contributes index directories for multiple locales, it should append the locale using standard Eclipse NLS lookup. (e.g. &lt;code&gt;index/&lt;/code&gt;, &lt;code&gt;nl/ja/JP/index/&lt;/code&gt;, &lt;code&gt;nl/en/US/index/&lt;/code&gt; etc.).
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="tocIcon">
+      <annotation>
+         <documentation>
+            (&lt;b&gt;since 3.5&lt;/b&gt;) an optional element that allows the icon to be specified for elements in a toc. Once a tocIcon has been declared it can be specified in a topic or toc using the &quot;icon&quot; attribute, for example &amp;lt;toc label=&quot;Sample Table of Contents&quot; topic=&quot;html/toc.html&quot; icon=&quot;myicon&quot;&amp;gt;
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The unique id of this icon. Typically this id will include the name of the plugin in which it is declared.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="openIcon" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The path of an icon to be used for a toc or topic whose chidren have been expanded.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="closedIcon" type="string">
+            <annotation>
+               <documentation>
+                  The path of an icon to be used for a toc or topic whose chidren have been expanded. If no provided openIcon will be used.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="leafIcon" type="string">
+            <annotation>
+               <documentation>
+                  The path of an icon to be used for a toc or topic without children. If not provided openIcon will be used.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="altText" type="string">
+            <annotation>
+               <documentation>
+                  Text that will be used in the &quot;alt&quot; attribute for the img tag in the web presentation.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="placeholder">
+      <annotation>
+         <documentation>
+            A placeholder is used for products where the documentation is installed as an additional step. The placeholder specifies a help page which will be presented to the user if help is opened and a documentation bundle is not installed. Typically this help page would contain information about how to install the documentation.
+
+ Each placeholder specifies a bundle or list of bundles and a help page which will be displayed if one or more of the bundles in the list is not installed
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="plugin" type="string">
+            <annotation>
+               <documentation>
+                  The name of a help plug-in for which this is a placeholder.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="placeholderPage" type="string">
+            <annotation>
+               <documentation>
+                  The page to show when the plug-in is not installed.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of using the &lt;samp&gt;toc&lt;/samp&gt; extension point.
+
+&lt;p&gt;(in file &lt;tt&gt;plugin.xml&lt;/tt&gt;)
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.help.toc&quot;&gt;
+  &lt;toc file=&quot;toc1.xml&quot; primary=&quot;true&quot;/&gt;
+  &lt;toc file=&quot;toc2.xml&quot; primary=&quot;true&quot; category=&quot;myCategory&quot;/&gt;
+  &lt;toc file=&quot;task.xml&quot;/&gt;
+  &lt;toc file=&quot;sample.xml&quot; extradir=&quot;samples&quot;/&gt;
+  &lt;index path=&quot;index/&quot;/&gt;
+ &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+
+&lt;p&gt;(in file &lt;tt&gt;maindocs.xml&lt;/tt&gt;)
+&lt;blockquote&gt;&lt;tt&gt;&amp;lt;toc label=&quot;Help System Example&quot;&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;lt;topic label=&quot;Introduction&quot; href=&quot;intro.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;lt;topic label=&quot;Tasks&quot;&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;topic label=&quot;Creating a Project&quot; href=&quot;tasks/task1.html&quot;&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp; &amp;lt;topic label=&quot;Creating a Web Project&quot; href=&quot;tasks/task11.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp; &amp;lt;topic label=&quot;Creating a Java Project&quot; href=&quot;tasks/task12.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;/topic&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;link toc=&quot;task.xml&quot; /&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;topic label=&quot;Testing a Project&quot; href=&quot;tasks/taskn.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;lt;/topic&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;lt;topic label=&quot;Samples&quot;&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;topic label=&quot;Creating Java Project&quot; href=&quot;samples/sample1.html&quot;&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp; &amp;lt;topic label=&quot;Launch a Wizard&quot; href=&quot;samples/sample11.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp; &amp;lt;topic label=&quot;Set Options&quot; href=&quot;samples/sample12.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp; &amp;lt;topic label=&quot;Finish Creating Project&quot; href=&quot;samples/sample13.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;/topic&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;anchor id=&quot;samples&quot; /&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;lt;/topic&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;lt;/toc&gt;&lt;/tt&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;br&gt;(in file &lt;tt&gt;tasks.xml&lt;/tt&gt;)
+&lt;blockquote&gt;&lt;tt&gt;&amp;lt;toc label=&quot;Building a Project&quot;&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;lt;topic label=&quot;Building a Project&quot; href=&quot;build/building.html&quot;&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;topic label=&quot;Building a Web Project&quot; href=&quot;build/web.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;topic label=&quot;Building a Java Project&quot; href=&quot;build/java.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;lt;/topic&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;lt;/toc&gt;&lt;/tt&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;br&gt;(in file &lt;tt&gt;samples.xml&lt;/tt&gt;)
+&lt;blockquote&gt;&lt;tt&gt;&amp;lt;toc link_to=&quot;maindocs.xml#samples&quot; label=&quot;Using The
+Compile Tool&quot;&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;lt;topic label=&quot;The Compile Tool Sample&quot; href=&quot;compilesample/example.html&quot;&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;topic label=&quot;Step 1&quot; href=&quot;compilesample/step1.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;topic label=&quot;Step 2&quot; href=&quot;compilesample/step2.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;topic label=&quot;Step 3&quot; href=&quot;compilesample/step3.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp; &amp;lt;topic label=&quot;Step 4&quot; href=&quot;compilesample/step4.html&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;lt;/topic&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;lt;/toc&gt;&lt;/tt&gt;&lt;/blockquote&gt;
+
+
+&lt;p&gt;Assuming more documents exists with the path starting with &quot;samples&quot;,
+they will not be displayed in the navigation tree, but be accessible using
+search.&amp;nbsp; It is due to the presence of &quot;extradir&quot; attribute in the
+element &lt;tt&gt;&amp;lt;toc file=&quot;sample.xml&quot; extradir=&quot;samples&quot; /&gt; &lt;/tt&gt;inside&lt;tt&gt;
+plugin.xml &lt;/tt&gt;file. For example searching for &quot;Creating Java Project&quot;
+could return a document &quot;Other Ways of Creating Java Project&quot;, which path
+is &lt;tt&gt;samples/sample2.html.&lt;/tt&gt;
+
+&lt;p&gt;
+&lt;b&gt;&lt;em&gt;Internationalization&lt;/em&gt;&lt;/b&gt;
+The TOC XML files can be translated and the resulting copy (with translated
+labels) should be placed in nl/&amp;lt;language&gt;/&amp;lt;country&gt; or nl/&amp;lt;language&gt;
+directory.&amp;nbsp; The &amp;lt;language&gt; and &amp;lt;country&gt; stand for two letter
+language and country codes as used in locale codes.&amp;nbsp; For example,
+Traditional Chinese translations should be placed in the nl/zh/TW directory.&amp;nbsp;
+The nl/&amp;lt;language&gt;/&amp;lt;country&gt; directory has a higher priority than
+nl/&amp;lt;language&gt;.&amp;nbsp; Only if no file is found in the nl/&amp;lt;language&gt;/&amp;lt;country&gt;,
+the file residing in nl/&amp;lt;language&gt; will be used.&amp;nbsp; The the root
+directory of a plugin will be searched last.
+&lt;p&gt;The documentation contained in doc.zip can be localized by creating
+a doc.zip file with translated version of documents, and placing doc.zip
+in
+&lt;br&gt;nl/&amp;lt;language&gt;/&amp;lt;country&gt; or nl/&amp;lt;language&gt; directory. The help
+system will look for the files under this directories before defaulting
+to plugin directory.
+&lt;br&gt;&amp;nbsp;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         An implementation of &lt;samp&gt;org.eclipse.help.AbstractTocProvider&lt;/samp&gt; must be supplied if a &lt;samp&gt;tocProvider&lt;/samp&gt; is used.
+      </documentation>
+   </annotation>
+
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The default implementation of the help system UI supplied with the Eclipse platform fully supports this extension point.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2000, 2006 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

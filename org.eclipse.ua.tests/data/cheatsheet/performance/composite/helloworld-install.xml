@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Simple Cheat Sheet -->
+
+<cheatsheet title="Install and uninstall a feature">
+
+   <!-- Introduction -->
+
+   <intro href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm">
+      <description>
+         This cheat sheet will demonstrate how to install and uninstall a feature
+         using Install/Update.
+         <br/>
+         <br/>
+         To learn more about using cheat sheets, click the help button
+         in the top right corner (?). 
+      </description>
+   </intro>
+
+   <!-- Item -->
+
+   <item title="Register the update site with Eclipse"
+         dialog="true"
+         skip="false">
+      <description>
+         To register the update site with Eclipse, perform the following steps:
+      </description>
+      <subitem label="Select &quot;Help-&gt;Software Updates-&gt;Find and Install...&quot; from the main menu to launch the &quot;Install/Update&quot; wizard" 
+               skip="false"/>  
+      <subitem label="Select the &quot;Search for new features to install&quot; radio button and click &quot;Next &gt;&quot;" 
+               skip="false"/>              
+      <subitem label="Click the &quot;New Local Site...&quot; button" 
+               skip="false"/>      
+      <subitem label="Browse to &quot;C:\helloworld.site&quot; in the list box, select the &quot;helloworld.site&quot; folder and click &quot;OK&quot;" 
+               skip="false"/>  
+      <subitem label="Input &quot;Hello World! Update Site&quot; into the &quot;Name&quot; text box of the &quot;Edit Local Site&quot; dialog box and click &quot;OK&quot;" 
+               skip="false"/>  
+      <subitem label="Click &quot;Finish&quot;" 
+               skip="false"/>  
+      <subitem label="Note an &quot;Updates&quot; dialog box that immediately comes into focus" 
+               skip="false"/>  
+      <subitem label="Click &quot;Cancel&quot; to close the dialog box for now" 
+               skip="false"/>  
+   </item>
+
+
+   <!-- Item -->
+
+   <item title="Install the feature"
+         dialog="true"
+         skip="false">
+      <description>
+         To install the feature, perform the following steps:
+      </description>
+      <subitem label="Select &quot;Help-&gt;Software Updates-&gt;Find and Install...&quot; from the main menu to launch the &quot;Install/Update&quot; wizard" 
+               skip="false"/>  
+      <subitem label="Select the &quot;Search for new features to install&quot; radio button and click &quot;Next &gt;&quot;" 
+               skip="false"/>              
+      <subitem label="Click &quot;Finish&quot;" 
+               skip="false"/>  
+      <subitem label="Again the &quot;Updates&quot; dialog box comes into focus.  This time do not close it." 
+               skip="false"/>  
+      <subitem label="Expand the &quot;helloworld.site&quot; tree dialog in the &quot;Select the features to install&quot; list box and note the &quot;Hello World!&quot; feature category" 
+               skip="false"/>  
+      <subitem label="Expand the &quot;Hello World!&quot; feature category tree dialog and note the &quot;Hello World! Feature&quot; feature" 
+               skip="false"/> 
+      <subitem label="Select the &quot;Hello World! Feature&quot; text box and click &quot;Next &gt;&quot;" 
+               skip="false"/>  
+      <subitem label="Select the &quot;I accept the terms in the license agreement&quot; radio button and click &quot;Next &gt;&quot;" 
+               skip="false"/>  
+      <subitem label="Click &quot;Finish&quot; to install the feature" 
+               skip="false"/>  
+      <subitem label="Click &quot;Install&quot; in the resulting &quot;Verification&quot; dialog box" 
+               skip="false"/>  
+      <subitem label="Click &quot;Yes&quot; from the Install/Update dialog box to restart the Eclipse workbench" 
+               skip="false"/>  
+   </item>
+
+   <!-- Item -->
+
+   <item title="Verify the feature installation"
+         dialog="true"
+         skip="false">
+      <description>
+         To verify the feature installation, perform the following steps after 
+         Eclipse restarts:
+      </description>
+      <subitem label="Select &quot;Help-&gt;Software Updates-&gt;Manage Configuration...&quot; from the main menu" 
+               skip="false"/>  
+      <subitem label="Fully expand the &quot;Eclipse SDK&quot; tree dialog" 
+               skip="false"/>  
+      <subitem label="Note the &quot;Hello World! Feature&quot; and close the dialog box" 
+               skip="true"/>  
+   </item>
+
+   <!-- Item -->
+
+   <item title="Uninstall the feature"
+         dialog="true"
+         skip="false">
+      <description>
+         To uninstall the feature, perform the following steps:
+      </description>
+      <subitem label="Select &quot;Help-&gt;Software Updates-&gt;Manage Configuration...&quot; from the main menu" 
+               skip="false"/>  
+      <subitem label="Fully expand the &quot;Eclipse SDK&quot; tree dialog" 
+               skip="false"/>  
+      <subitem label="Select the &quot;Hello World! Feature&quot; feature within the tree dialog and right-click it" 
+               skip="false"/>  
+      <subitem label="Select &quot;Uninstall&quot; from the context menu and click &quot;OK&quot;" 
+               skip="false"/>  
+      <subitem label="Click &quot;OK&quot; in the resulting &quot;Uninstall&quot; dialog box" 
+               skip="false"/>  
+      <subitem label="Click &quot;Yes&quot; from the &quot;Install/Update&quot; dialog box to restart the Eclipse workbench" 
+               skip="false"/>  
+   </item>
+
+</cheatsheet>

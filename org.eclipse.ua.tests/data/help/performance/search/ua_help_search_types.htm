@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Plugging in search engines</title>
+</head>
+<body>
+
+<h2>Plugging in search engines</h2>
+
+<p>
+The new federated information search in Help system uses the notion of <b>search 
+engine types</b> and <b>search engines</b>. An engine type is a meta-engine from 
+which a number of concrete search engines can be created by parameterization.</p>
+<p>New engine types are contributed through the
+<a href="../reference/extension-points/org_eclipse_help_ui_searchEngine.html">
+org.eclipse.help.ui.searchEngine</a>:</p>
+<blockquote>
+	<pre>&lt;extension point=&quot;org.eclipse.help.ui.searchEngine&quot;&gt;
+	&lt;engineType
+		scopeFactory=&quot;com.example.xyz.XYZScopeFactory&quot;
+		label=&quot;XYZ Search&quot;
+		class=&quot;com.example.xyz.search.XYZSearch&quot;
+		icon=&quot;icons/etool16/xyzsearch.gif&quot;
+		pageClass=&quot;com.example.xyz.search.XYZSearchPage&quot;
+		id=&quot;com.example.xyz.XYZSearch&quot;&gt;
+		&lt;description&gt;
+			Instances of XYZ Search search the XYZ site.
+		&lt;/description&gt;
+	&lt;/engineType&gt;</pre>
+</blockquote>
+This extension point is used to plug in search participants in the information 
+search. Each search engine can be configured individually. When search is 
+initiated, each search engine is executed as a background job, and the results 
+are collated in the help view immediately under the query. 
+<p>Search engines defined here will not automatically show up as federated 
+search participants until engine product binding is established, unless <code>
+productId</code> attribute is left undefined. For engines that define it, only 
+those bound to a particular product will show up when that product is running.
+</p>
+<p>Search engines can simply compose a URL and provide only one hit containing 
+that URL as <code>href</code>. Popular search engines for which API support 
+requires license can be plugged in like this. On the other end of the spectrum, 
+search engines can communicate with the server and receive individual hits with 
+information like label, href, short description, score etc. Local help engine 
+can produce hits this way.</p>
+<p>Regardless of the search mechanism, engines can provide various search scope 
+settings using JFace preference pages. These pages are shown when 'Advanced 
+Settings' link is followed from the Help view. In addition to root preference 
+pages defined with the engine, additional preference sub-pages can be plugged in 
+for more advanced settings. </p>
+<p>Scope settings are loaded and stored using <code>IPreferenceStore</code> 
+objects. Scope settings for all engines are grouped together under a named <b>
+scope set</b>. When first opened, default scope set ('Default') is created, but 
+users can define more scope sets and flip between them. </p>
+<p>Since federated search support is part of <code>org.eclipse.help.base</code> 
+plug-in, a factory is needed to create search scope objects from the data in the 
+preference store. Clients that plug in scope preference pages are required to 
+plug in scope factories as well. </p>
+<p>Engines defined in this extension point do not show up in the UI by default. 
+What is shown there is a concrete <b>instance</b> of a search engine that can be 
+individually modified. Products can pre-configure the help system with a number 
+of instances of the registered engine types, possibly parameterized to perform 
+in a desired way. In addition, users can add their own instances of the 
+registered engines and configure them to their liking:</p>
+<blockquote>
+	<pre>
+&lt;engine
+	enabled=&quot;true&quot;
+	engineTypeId=&quot;com.example.xyz.search.XYZSearch&quot;
+	id=&quot;com.example.xyz.XYZSearch&quot;
+	label=&quot;XYZ Search&quot;&gt;
+&lt;/engine&gt;
+&lt;engine
+	enabled=&quot;true&quot;
+	engineTypeId=&quot;org.eclipse.help.ui.web&quot;
+	id=&quot;org.eclipse.sdk.Eclipse&quot;
+	label=&quot;%search.Eclipse.label&quot;&gt;
+	&lt;description&gt;
+		%search.Eclipse.desc
+	&lt;/description&gt;
+	&lt;param 
+		name=&quot;url&quot; 
+		value=&quot;http://eclipse.org/search/search.cgi?q={expression}&amp;amp;ul=&amp;amp;ps=20&amp;amp;m=all&quot;&gt;
+	&lt;/param&gt;
+&lt;/engine&gt;</pre>
+</blockquote>
+
+</body>
+</html>

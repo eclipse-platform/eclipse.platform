@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+     Copyright (c) 2005, 2007 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<!-- 
+	A content file for a simple non universal welcome theme
+-->
+<introContent>
+	<!-- Root page -->
+	<page id="root" alt-style="$theme$/swt/root.properties"  style-id="page">	    
+        <title style-id="intro-header">Tests for intro anchors</title>
+        <text>This is used to test that extensions link to anchors correctly.</text>
+        <text>There is one root page and 5 extensions including extensions to extensions.</text>
+        <group id="action-links">
+            <link url="http://org.eclipse.ui.intro/switchToLaunchBar" label="Go to the Workbench" id="workbench" style-id="$high-contrast$">
+            </link>
+        </group>
+        <title style-id="intro-header">Fixed Anchor</title>
+		<anchor id="root-anchor"/>
+        <title style-id="intro-header">Universal Anchor</title>
+		<anchor id="universal" path="*"/>       
+    </page>
+	
+	<!-- Standby page -->
+    <page id="standby" alt-style="$theme$/swt/standby.properties" style="$theme$/html/standby.css" style-id="page">
+   		<anchor id="head-anchor"/>
+        <title style-id="intro-header">Standby</title>
+    
+    </page>    
+    
+</introContent>

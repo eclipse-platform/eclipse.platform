@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cheatsheet
+      title="Testing SubItems">
+   <item
+         title="Introduction"
+         description="This cheat sheet will test subitems.
+Let's get started!"
+         Href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm"
+         contextId="null">
+      <nullAction/>
+      <nullList/>
+      <nullPerformWhen/>
+      <nullList/>
+   </item>
+   <list>
+      <item
+            title="Test SubItems"
+            description="Try the help link, you should see the concepts for the help system."
+            Href="/org.eclipse.platform.doc.user/concepts/chelpsys.htm"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <list>
+            <subItem
+                  label="sub 1"
+                  when="null"
+                  isSkip="true">
+               <nullAction/>
+               <nullPerformWhen/>
+            </subItem>
+            <subItem
+                  label="sub 2"
+                  when="null"
+                  isSkip="true">
+               <action
+                     class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"
+                     pluginId="org.eclipse.ua.tests"
+                     when="null"
+                     isConfirm="false">
+                  <nullArray/>
+               </action>
+               <nullPerformWhen/>
+            </subItem>
+            <subItem
+                  label="sub 3"
+                  when="null"
+                  isSkip="false">
+               <nullAction/>
+               <nullPerformWhen/>
+            </subItem>
+            <subItem
+                  label="sub 4"
+                  when="null"
+                  isSkip="false">
+               <action
+                     class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"
+                     pluginId="org.eclipse.ua.tests"
+                     when="null"
+                     isConfirm="false">
+                  <nullArray/>
+               </action>
+               <nullPerformWhen/>
+            </subItem>
+            <subItem
+                  label="sub 5"
+                  when="null"
+                  isSkip="false">
+               <nullAction/>
+               <nullPerformWhen/>
+            </subItem>
+            <subItem
+                  label="sub 6"
+                  when="null"
+                  isSkip="false">
+               <action
+                     class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"
+                     pluginId="org.eclipse.ua.tests"
+                     when="null"
+                     isConfirm="false">
+                  <nullArray/>
+               </action>
+               <nullPerformWhen/>
+            </subItem>
+            <subItem
+                  label="sub 7"
+                  when="null"
+                  isSkip="false">
+               <action
+                     class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"
+                     pluginId="org.eclipse.ua.tests"
+                     when="null"
+                     isConfirm="true">
+                  <nullArray/>
+               </action>
+               <nullPerformWhen/>
+            </subItem>
+            <subItem
+                  label="sub 8"
+                  when="null"
+                  isSkip="false">
+               <action
+                     class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"
+                     pluginId="org.eclipse.ua.tests"
+                     when="null"
+                     isConfirm="false">
+                  <nullArray/>
+               </action>
+               <nullPerformWhen/>
+            </subItem>
+            <subItem
+                  label="sub 9"
+                  when="null"
+                  isSkip="true">
+               <action
+                     class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"
+                     pluginId="org.eclipse.ua.tests"
+                     when="null"
+                     isConfirm="true">
+                  <nullArray/>
+               </action>
+               <nullPerformWhen/>
+            </subItem>
+            <subItem
+                  label="sub 10"
+                  when="null"
+                  isSkip="true">
+               <action
+                     class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"
+                     pluginId="org.eclipse.ua.tests"
+                     when="null"
+                     isConfirm="false">
+                  <nullArray/>
+               </action>
+               <nullPerformWhen/>
+            </subItem>
+            <subItem
+                  label="sub 11"
+                  when="null"
+                  isSkip="false">
+               <action
+                     class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+                     pluginId="org.eclipse.ua.tests"
+                     when="null"
+                     isConfirm="false">
+                  <nullArray/>
+               </action>
+               <nullPerformWhen/>
+            </subItem>
+            <subItem
+                  label="sub 12"
+                  when="null"
+                  isSkip="false">
+               <action
+                     class="org.eclipse.ua.tests.cheatsheet.util.IncrementVariableAction"
+                     pluginId="org.eclipse.ua.tests"
+                     when="null"
+                     isConfirm="true">
+                  <nullArray/>
+               </action>
+               <nullPerformWhen/>
+            </subItem>
+         </list>
+      </item>
+      <item
+            title="All done!"
+            description="Did the test work?"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+   </list>
+</cheatsheet>

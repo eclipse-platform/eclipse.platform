@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="Help data XML format" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="Help data XML format" id="null" name="Help data XML format"/>
+      </appinfo>
+      <documentation>
+         The help data XML file is used by products to control the order of books in the help table of contents, as well whether or not books or keyword index sets should be displayed at all. The file must be referenced in the product&apos;s &lt;code&gt;plugin_customization.ini&lt;/code&gt; file using the &lt;code&gt;org.eclipse.help/HELP_DATA&lt;/code&gt; property.
+      </documentation>
+   </annotation>
+
+   <element name="extensions">
+      <annotation>
+         <documentation>
+            The extension data for Help.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="tocOrder" minOccurs="0" maxOccurs="1"/>
+            <element ref="hidden" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+      </complexType>
+   </element>
+
+   <element name="tocOrder">
+      <annotation>
+         <documentation>
+            Specifies the order in which top-level table of contents entries (also called &quot;books&quot;) or categories of books should appear in Help. If one of the items listed is not available, it is ignored. If there are items available that are not listed and not hidden, they will be displayed after the ones listed here.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="toc"/>
+            <element ref="category"/>
+         </choice>
+      </complexType>
+   </element>
+
+   <element name="toc">
+      <annotation>
+         <documentation>
+            A reference to a top-level table of contents (TOC) entry, also called a &quot;book&quot;.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The unique identifier for this book. For XML file TOC contributions, this is a path to the file in the form &quot;&lt;code&gt;/&amp;lt;plugin_id&amp;gt;/&amp;lt;path&amp;gt;/&amp;lt;file&amp;gt;&lt;/code&gt;&quot; (e.g., &quot;&lt;code&gt;/org.eclipse.platform.doc.user/toc.xml&lt;/code&gt;&quot;). In general, this is the ID of the &lt;code&gt;TocContribution&lt;/code&gt; supplied by its originating &lt;code&gt;AbstractTocProvider&lt;/code&gt;.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="category">
+      <annotation>
+         <documentation>
+            A reference to a category of top-level table of contents (TOC) entries (books). Categories are implicitly created when a table of contents contribution declares itself to be of that category, for example, by specifying a &lt;code&gt;category&lt;/code&gt; attribute for the &lt;code&gt;toc&lt;/code&gt; element in the &lt;code&gt;org.eclipse.help.toc&lt;/code&gt; extension point.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The unique id of the category.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="hidden">
+      <annotation>
+         <documentation>
+            Contains a set of help items that should be hidden from the user.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="toc"/>
+            <element ref="category"/>
+            <element ref="index"/>
+         </choice>
+      </complexType>
+   </element>
+
+   <element name="index">
+      <annotation>
+         <documentation>
+            A reference to a contribution of help index keywords.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The unique identifier for this contribution of keywords. For XML file index contributions, this is a path to the file in the form &quot;&lt;code&gt;/&amp;lt;plugin_id&amp;gt;/&amp;lt;path&amp;gt;/&amp;lt;file&amp;gt;&lt;/code&gt;&quot; (e.g., &quot;&lt;code&gt;/org.eclipse.platform.doc.user/index.xml&lt;/code&gt;&quot;). In general, this is the ID of the &lt;code&gt;IndexContribution&lt;/code&gt; supplied by its originating &lt;code&gt;AbstractIndexProvider&lt;/code&gt;.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="otherTocs">
+      <complexType>
+         <attribute name="sort" type="boolean" use="default" value="true">
+            <annotation>
+               <documentation>
+                  Defines whether the tocs not specified in tocOrder will be sorted alphabetically by title. Not sorting gives a similar order to that in Eclipse 3.3 before sorting was introduced.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.3
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;
+The following example shows how to arrange the following books in the order shown:
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Book #1: &quot;Introduction to XYZ&quot; (category: &quot;&lt;code&gt;user.intro&lt;/code&gt;&quot;) in &lt;code&gt;/com.xyz.doc.user/introToc.xml&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Book #2: &quot;Using XYZ&quot; (category: &quot;&lt;code&gt;user.content&lt;/code&gt;&quot;) in &lt;code&gt;/com.xyz.doc.user/usingToc.xml&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Book #3: &quot;Troubleshooting&quot; (category: &quot;&lt;code&gt;user.reference&lt;/code&gt;&quot;) in &lt;code&gt;/com.xyz.doc.user/refToc.xml&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;
+As well as hide the following books/categories and related keyword indexes:
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Book #4: &quot;Platform ABC&quot; (category: &lt;code&gt;none&lt;/code&gt;) in &lt;code&gt;/org.abc.doc.isv/toc.xml&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Book #5: &quot;DEF Toolkit&quot; (category: &quot;&lt;code&gt;isv.reference&lt;/code&gt;&quot;) in &lt;code&gt;/com.def.doc.isv/toc.xml&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Book #6: &quot;GHI Support&quot; (category: &quot;&lt;code&gt;isv.reference&lt;/code&gt;&quot;) in &lt;code&gt;/com.ghi.doc.isv/toc.xml&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;
+The markup would be the following:
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extensions&gt;
+   &lt;tocOrder&gt;
+      &lt;toc id=&quot;/com.xyz.doc.user/introToc.xml&quot;/&gt;
+      &lt;category id=&quot;user.content&quot;/&gt;
+      &lt;toc id=&quot;/com.xyz.doc.user/refToc.xml&quot;/&gt;
+   &lt;/tocOrder&gt;
+   &lt;hidden&gt;
+      &lt;toc id=&quot;/org.abc.doc.isv/toc.xml&quot;/&gt;
+      &lt;category id=&quot;isv.reference&quot;/&gt;
+      &lt;index id=&quot;/org.abc.doc.isv/index.xml&quot;/&gt;
+      &lt;index id=&quot;/com.def.doc.isv/index.xml&quot;/&gt;
+   &lt;/hidden&gt;
+&lt;/extensions&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         This API is supported by any help implementation that is based on &lt;code&gt;org.eclipse.help&lt;/code&gt;, including the default help implementation provided by Eclipse.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2006 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

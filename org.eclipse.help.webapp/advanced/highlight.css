@@ -1,0 +1,8 @@
+.resultofText {
+	background-color:#FFFF66;
+	color: #000000;
+}
+
+a:link .resultofText, a:visited .resultofText {
+	text-decoration: underline;
+}

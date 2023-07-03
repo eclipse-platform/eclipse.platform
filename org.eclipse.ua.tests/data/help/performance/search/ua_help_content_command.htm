@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Embedding commands in help</title>
+</head>
+<body>
+
+<h2>Embedding commands in help</h2>
+
+<p>It is possible to create links to workbench commands in help content.  When
+the user clicks the link, the command will be executed.  This feature is similar
+to <a href="ua_help_content_active.htm">Active Help</a> in that it uses JavaScript to bridge between the documentation
+HTML and the Eclipse Java runtime.  Also like Active Help, the command framework is extensible;
+so you can contribute new commands with interesting behaviors.
+However, unlike Active Help, there are a large number of useful commands already defined
+in the workbench and more are being added all the time.  This should be appealing to
+documentation authors because linking to an existing command does not require
+writing any Java code.
+</p>
+<p>
+Command links can be used to:
+</p>
+<ul>
+<li>
+Open a specific preference page, such as
+
+<a class="command-link" href='javascript:executeCommand("org.eclipse.ui.window.preferences(preferencePageId=org.eclipse.ui.preferencePages.Views)")'>
+<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png">
+<b>General &gt; Appearance</b></a>.
+
+</li>
+<li>
+
+<a class="command-link" href='javascript:executeCommand("org.eclipse.ui.perspectives.showPerspective")'>
+<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png">
+Select a new perspective</a>
+
+or switch to a pre-determined perspective like the
+
+<a class="command-link" href='javascript:executeCommand("org.eclipse.ui.perspectives.showPerspective(org.eclipse.ui.perspectives.showPerspective.perspectiveId=org.eclipse.jdt.ui.JavaBrowsingPerspective)")'>
+<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png">
+<b>Java Browsing</b></a>.
+
+perspective
+</li>
+<li>
+
+<a class="command-link" href='javascript:executeCommand("org.eclipse.ui.views.showView")'>
+<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png">
+Select a view to open</a>
+
+or open a pre-determined view like the
+
+<a class="command-link" href='javascript:executeCommand("org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.eclipse.ui.views.BookmarkView)")'>
+<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png">
+<b>Bookmarks</b></a>.
+
+view
+</li>
+<li>
+Open wizards like the
+
+<a class="command-link" href='javascript:executeCommand("org.eclipse.ui.newWizard(newWizardId=org.eclipse.pde.ui.NewProjectWizard)")'>
+<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png">
+<b>New Plug-in Project</b></a>
+
+wizard and the
+
+<a class="command-link" href='javascript:executeCommand("org.eclipse.ui.file.export(exportWizardId=org.eclipse.ui.wizards.export.Preferences)")'>
+<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png">
+<b>Export Preferences</b></a>.
+
+wizard
+</li>
+<li>
+
+<a class="command-link" href='javascript:executeCommand("org.eclipse.ui.cheatsheets.openCheatSheet(cheatSheetId=org.eclipse.jdt.helloworld)")'>
+<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png">
+Open a Cheat Sheet</a>.
+
+</li>
+<li>
+Open a
+
+<a class="command-link" href='javascript:executeCommand("org.eclipse.ui.dialogs.openMessageDialog(imageType=3,buttonLabel2=Maybe,title=Opinion Poll,message=Do you like command links?,buttonLabel0=Yes,defaultIndex=0,buttonLabel1=No)")'>
+<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png">
+message dialog</a>.
+
+</li>
+<li>
+Open the
+
+<a class="command-link" href='javascript:executeCommand("org.eclipse.ui.help.aboutAction")'>
+<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png">
+<b>About Eclipse SDK</b></a>
+
+dialog.
+</li>
+<li>
+And much more!
+</li>
+</ul>
+
+<p>
+To get an idea of the range of commands available, look at the
+
+<a class="command-link" href='javascript:executeCommand("org.eclipse.ui.window.preferences(preferencePageId=org.eclipse.ui.preferencePages.Keys)")'>
+<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png">
+<b>General &gt; Keys</b></a>
+
+preference page. This page is used to bind key sequences to commands
+so it shows the list of available commands.  <i>Note that not every command will do something useful from
+help content.  Many commands are designed to work within a somewhat narrow context (like a particular view,
+or expecting a certain type of selection).</i>
+</p>
+
+<p>
+If you want to define your own commands, refer to the documentation for the
+<a href="../reference/api/org/eclipse/core/commands/package-summary.html"><tt>org.eclipse.core.commands</tt></a> API package
+and the <a href="../reference/extension-points/org_eclipse_ui_commands.html"><tt>org.eclipse.ui.commands</tt></a> and
+<a href="../reference/extension-points/org_eclipse_ui_handlers.html"><tt>org.eclipse.ui.handlers</tt></a> extension-points.
+</p>
+
+</body>
+</html>

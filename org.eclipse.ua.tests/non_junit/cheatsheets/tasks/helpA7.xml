@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2008 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Live help">
+   <intro>
+      <description>
+         Tests for live help
+      </description>
+   </intro>
+   <item title="Search for page with active help" dialog="false" skip="false">
+      <description>
+         Type &quot;active help&quot; (no quotes) in the search field in the help view, and search.
+      </description>
+   </item>
+   <item title="Select document" dialog="false" skip="false">
+      <description>
+         Choose a document titled &quot;Active help&quot; from the search results
+      </description>
+   </item>
+   <item title="Open link" dialog="false" skip="false">
+      <description>
+         There is a link &quot;Open a cheatsheet&quot; at the bottom of this test. When you click on it it will open the cheat sheet  &quot;Check out a CVS Project&quot;. The UA test cheatsheet can be reopened to continue from this step by selecting &quot;User Assistance Test Suite&quot; from the dropdown menu of the cheatsheet view.
+      </description>
+   </item>
+   <item title="Commands in Help View" dialog="false" skip="false">
+      <description>
+         Test command activation from the Help View
+      </description>
+      <subitem label="Type &quot;Embedding commands&quot; (no quotes) in the search field in the help view, and search." skip="false">
+      </subitem>
+      <subitem label="Choose a document titled &quot;Embedding Commands in Help&quot; from the search results" skip="false">
+      </subitem>
+      <subitem label="Click the link for &quot;Open a specific preference page, such as  General &gt; Appearance&quot;" skip="false">
+      </subitem>
+      <subitem label="Check that the preference dialog opens. Close the preference dialog." skip="false">
+      </subitem>
+   </item>
+   <item title="Commands in Help Browser" dialog="false" skip="false">
+      <description>
+         Repeat of the previous test only using the Help Browser instead of the Help View.
+      </description>
+      <subitem label="Type &quot;Embedding commands&quot; (no quotes) in the search field in the help browser, and search." skip="false">
+      </subitem>
+      <subitem label="Choose a document titled &quot;Embedding Commands in Help&quot; from the search results" skip="false">
+      </subitem>
+      <subitem label="Click the link for &quot;Open a specific preference page, such as  General &gt; Appearance&quot;" skip="false">
+      </subitem>
+      <subitem label="Check that the preference dialog opens. Close the preference dialog." skip="false">
+      </subitem>
+   </item>
+</cheatsheet>

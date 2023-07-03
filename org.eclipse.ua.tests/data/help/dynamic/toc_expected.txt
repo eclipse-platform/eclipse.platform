@@ -1,0 +1,1064 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<!-- ============================================================================= -->
+<!-- Define topics for the main guide                                              -->
+<!-- ============================================================================= -->
+<toc label="Guide">
+	<topic href="guide/int.htm" label="Welcome to Eclipse">
+		<topic href="guide/int_who.htm" label="Who needs a platform?"/>
+		<topic href="guide/int_goal.htm" label="The holy grail"/>
+		<topic href="guide/int_eclipse.htm" label="What is Eclipse?"/>
+		<topic href="http://www.eclipse.org" label="Go to eclipse.org"/>
+	</topic>
+
+	<topic href="guide/arch.htm" label="Platform architecture">
+		<topic href="guide/arch_struct.htm" label="Platform SDK roadmap"/>
+	</topic>
+
+	<topic href="guide/firstplugin.htm" label="Simple plug-in example">
+		<topic href="guide/firstplugin_minimal.htm" label="A minimal plug-in"/>
+		<topic href="guide/firstplugin_create.htm" label="Creating the plug-in project"/>
+		<topic href="guide/firstplugin_view.htm" label="The Hello World view"/>
+		<topic href="guide/firstplugin_manifest.htm" label="The Hello World manifest"/>
+		<topic href="guide/firstplugin_run.htm" label="Running the plug-in"/>
+		<topic href="guide/firstplugin_btb.htm" label="Beyond the basics"/>
+	</topic>
+
+	<topic href="guide/runtime.htm" label="Runtime overview">
+		<topic href="guide/runtime_model.htm" label="The runtime plug-in model">
+			<topic href="guide/runtime_model_bundles.htm" label="Plug-ins and bundles"/>
+			<topic href="guide/runtime_registry.htm" label="Extension points and the registry"/>
+		</topic>
+		<topic href="guide/runtime_preferences.htm" label="Runtime preferences"/>
+		<topic href="guide/runtime_content.htm" label="Content types">
+		</topic>
+		<topic href="guide/runtime_jobs.htm" label="Concurrency infrastructure">
+			<topic href="guide/runtime_jobs_progress.htm" label="Reporting progress"/>
+			<topic href="guide/runtime_jobs_scheduling.htm" label="Job scheduling"/>
+			<topic href="guide/runtime_jobs_rules.htm" label="Scheduling rules"/>
+			<topic href="guide/runtime_jobs_locks.htm" label="Locks"/>
+		</topic>
+	</topic>
+
+	<topic href="guide/workbench.htm" label="Plugging into the workbench">
+		<topic href="guide/workbench_structure.htm" label="Workbench under the covers"/>
+		<topic href="guide/workbench_basicext.htm" label="Basic workbench extension points">
+			<topic href="guide/workbench_basicext_views.htm" label="org.eclipse.ui.views"/>
+			<topic href="guide/workbench_basicext_viewActions.htm" label="org.eclipse.ui.viewActions"/>
+			<topic href="guide/workbench_basicext_editors.htm" label="org.eclipse.ui.editors"/>
+			<topic href="guide/workbench_basicext_editorActions.htm" label="org.eclipse.ui.editorActions"/>
+			<topic href="guide/workbench_basicext_popupMenus.htm" label="org.eclipse.ui.popupMenus"/>
+			<topic href="guide/workbench_basicext_actionSets.htm" label="org.eclipse.ui.actionSets"/>
+		</topic>
+		<topic href="guide/workbench_plugin.htm" label="The plug-in class"/>
+		<topic href="guide/preferences_prefs.htm" label="Preference pages">
+			<topic href="guide/preferences_prefs_contribute.htm" label="Contributing a preference page"/>
+			<topic href="guide/preferences_prefs_implement.htm" label="Implementing a preference page"/>
+			<topic href="guide/preferences_prefs_fieldeditors.htm" label="Field editors"/>
+		</topic>
+	</topic>
+
+	<topic href="guide/dialogs.htm" label="Dialogs and wizards">
+		<topic href="guide/dialogs_standard.htm" label="Standard dialogs"/>
+		<topic href="guide/dialogs_applications.htm" label="Application dialogs"/>
+		<topic href="guide/dialogs_settings.htm" label="Dialog settings"/>
+		<topic href="guide/dialogs_wizards.htm" label="Wizards"/>
+		<topic href="guide/dialogs_wizards_extensions.htm" label="Workbench wizard extension points">
+			<topic href="guide/dialogs_wizards_newWizards.htm" label="org.eclipse.ui.newWizards"/>
+			<topic href="guide/dialogs_wizards_importWizards.htm" label="org.eclipse.ui.importWizards"/>
+			<topic href="guide/dialogs_wizards_exportWizards.htm" label="org.eclipse.ui.exportWizards"/>
+		</topic>
+		<topic href="guide/dialogs_wizards_wizarddialogs.htm" label="Wizard dialogs"/>
+		<topic href="guide/dialogs_wizards_multipage.htm" label="Multi-page wizards"/>
+	</topic>
+	
+	<topic href="guide/jface.htm" label="JFace UI framework">
+		<topic href="guide/jface_viewers.htm" label="Viewers"/>
+		<topic href="guide/jface_actions.htm" label="Actions and contributions"/>
+		<topic href="guide/jface_resources.htm" label="User interface resources"/>
+		<topic href="guide/jface_operations.htm" label="Long-running operations"/>
+	</topic>
+
+	<topic href="guide/swt.htm" label="Standard Widget Toolkit">
+		<topic href="guide/swt_widgets.htm" label="Widgets">
+			<topic href="guide/swt_widgets_controls.htm" label="Controls"/>
+			<topic href="guide/swt_widgets_events.htm" label="Events"/>
+			<topic href="guide/swt_widgets_custom.htm" label="Custom widgets"/>
+		</topic>
+		<topic href="guide/swt_layouts.htm" label="Layouts">
+			<topic href="guide/swt_layouts_fill.htm" label="FillLayout"/>
+			<topic href="guide/swt_layouts_row.htm" label="RowLayout"/>
+			<topic href="guide/swt_layouts_form.htm" label="FormLayout"/>
+			<topic href="guide/swt_layouts_grid.htm" label="GridLayout"/>
+			<topic href="guide/swt_layouts_stack.htm" label="StackLayout"/>
+			<topic href="guide/swt_layouts_custom.htm" label="Custom Layouts"/>
+		</topic>
+		<topic href="guide/swt_threading.htm" label="Threading issues "/>
+		<topic href="guide/swt_error.htm" label="Error handling"/>
+		<topic href="guide/swt_graphics.htm" label="Graphics"/>
+	</topic>
+	
+	<topic href="guide/resInt.htm" label="Resources overview">
+		<topic href="guide/resInt_workspace.htm" label="Resources and the workspace"/>
+		<topic href="guide/resInt_filesystem.htm" label="Resources and the local file system"/>
+		<topic href="guide/resInt_properties.htm" label="Resource properties"/>
+		<topic href="guide/resInt_preferences.htm" label="Project-scoped preferences"/>
+		<topic href="guide/resInt_content.htm" label="File encoding and content types"/>
+		<topic href="guide/resInt_linked.htm" label="Linked resources"/>
+		<topic href="guide/resAdv_markers.htm" label="Resource markers"/>
+		<topic href="guide/resAdv_modify.htm" label="Modifying the workspace">
+			<topic href="guide/resAdv_batching.htm" label="Batching resource changes"/>
+			<topic href="guide/resAdv_events.htm" label="Tracking resource changes"/>
+			<topic href="guide/resAdv_concurrency.htm" label="Concurrency and the workspace"/>
+		</topic>
+		<topic href="guide/resAdv_builders.htm" label="Incremental project builders"/>
+		<topic href="guide/resAdv_derived.htm" label="Derived resources"/>
+		<topic href="guide/resAdv_saving.htm" label="Workspace save participation"/>
+		<topic href="guide/resAdv_natures.htm" label="Project natures"/>
+		<topic href="guide/resAdv_hooks.htm" label="Resource modification hooks"/>
+		<topic href="guide/resAdv_refresh.htm" label="Refresh providers"/>
+	</topic>
+
+	<topic href="guide/wrkAdv.htm" label="Advanced Workbench Concepts">
+		<topic href="guide/workbench_menus.htm" label="Workbench menu contributions"/>
+		<topic href="guide/workbench_menupaths.htm" label="Menu and toolbar paths"/>
+		<topic href="guide/workbench_basicext_actionSetPartAssociations.htm" label="Action set part associations"/>
+		<topic href="guide/workbench_actionfilters.htm" label="Boolean expressions and action filters"/>
+		<topic href="guide/wrkAdv_retarget.htm" label="Retargetable actions">
+			<topic href="guide/wrkAdv_retarget_setting.htm" label="Setting a global action handler"/>
+			<topic href="guide/wrkAdv_retarget_contribute.htm" label="Contributing new retargetable actions">
+				<topic href="guide/wrkAdv_retarget_contribute_editors.htm" label="Retargetable editor actions"/>
+				<topic href="guide/wrkAdv_retarget_contribute_actionsets.htm" label="Retargetable action set actions"/>
+			</topic>
+		</topic>
+		<topic href="guide/wrkAdv_undo.htm" label="Undoable operations"/>
+		<topic href="guide/workbench_perspectives.htm" label="Perspectives">
+			<topic href="guide/workbench_advext_perspectives.htm" label="org.eclipse.ui.perspectives"/>
+			<topic href="guide/workbench_advext_perspectiveExtension.htm" label="org.eclipse.ui.perspectiveExtensions"/>
+		</topic>
+		<topic href="guide/workbench_advext_decorators.htm" label="Decorators"/>
+		<topic href="guide/wrkAdv_keyBindings.htm" label="Workbench key bindings">
+			<topic href="guide/wrkAdv_keyBindings_actionDef.htm" label="Commands"/>
+			<topic href="guide/wrkAdv_keyBindings_accelSet.htm" label="Key bindings"/>
+			<topic href="guide/wrkAdv_keyBindings_accelConfig.htm" label="Key configurations"/>
+			<topic href="guide/wrkAdv_keyBindings_contexts.htm" label="Contexts and key bindings"/>
+			<topic href="guide/wrkAdv_keyBindings_list.htm" label="List of key bindings"/>
+		</topic>
+		<topic href="guide/workbench_advext_elementFactories.htm" label="Element factories"/>
+		<topic href="guide/wrkAdv_accessibility.htm" label="Accessible user interfaces"/>
+		<topic href="guide/wrkAdv_singleclick.htm" label="Honoring single click support"/>
+		<topic href="guide/wrkAdv_workingsets.htm" label="Working sets"/>
+		<topic href="guide/workbench_scalability.htm" label="Filtering large user interfaces">
+			<topic href="guide/workbench_advext_activities.htm" label="Activities"/>
+			<topic href="guide/workbench_advext_contexts.htm" label="Contexts"/>
+		</topic>
+		<topic href="guide/workbench_guiding.htm" label="Guiding the user through tasks">
+			<topic href="guide/workbench_advext_cheatsheets.htm" label="Cheat sheets"/>
+			<topic href="guide/workbench_advext_intro.htm" label="Intro support"/>
+		</topic>
+		<topic href="guide/workbench_jobs.htm" label="Workbench concurrency support"/>
+		<topic href="guide/workbench_resources.htm" label="Workbench resource support">
+			<topic href="guide/preferences_prop_contribute.htm" label="Contributing a property page"/>
+			<topic href="guide/preferences_prop_implement.htm" label="Implementing a property page"/>
+			<topic href="guide/wrkAdv_markers.htm" label="Marker help and resolution">
+				<topic href="guide/wrkAdv_markerhelp.htm" label="Contributing marker help"/>
+				<topic href="guide/wrkAdv_markerresolution.htm" label="Contributing marker resolution"/>
+			</topic>
+			<topic href="guide/workbench_advext_resourceFilters.htm" label="Contributing resource filters"/>
+			<topic href="guide/wrkAdv_encoding.htm" label="Text file encoding"/>	
+		</topic>
+	</topic>
+	
+	<topic href="guide/editors.htm" label="Editors">
+		<topic href="guide/editors_workbench.htm" label="Workbench editors"/>
+		<topic href="guide/editors_jface.htm" label="Text editors and platform text"/>
+		<topic href="guide/editors_documents.htm" label="Documents and partitions"/>
+		<topic href="guide/editors_annotations.htm" label="Source viewers and annotations"/>
+		<topic href="guide/editors_sourceviewers.htm" label="Configuring a source viewer"/>
+		<topic href="guide/editors_hover.htm" label="Text and ruler hover"/>
+		<topic href="guide/editors_highlighting.htm" label="Syntax coloring"/>
+		<topic href="guide/editors_contentassist.htm" label="Content assist"/>
+		<topic href="guide/editors_actions.htm" label="Registering editor actions"/>
+		<topic href="guide/editors_utilities.htm" label="Other text editor responsibilities"/>
+		<topic href="guide/editors_workbench_outliner.htm" label="Content outliners"/>
+	</topic>
+	
+	<topic href="guide/help.htm" label="Plugging in help">
+		<topic href="guide/help_plugin.htm" label="Building a help plug-in">
+			<topic href="guide/help_plugin_toc.htm" label="Table of contents (toc) files"/>
+			<topic href="guide/help_plugin_files.htm" label="Help server and file locations"/>
+			<topic href="guide/help_plugin_manifest.htm" label="Completing the plug-in manifest"/>
+			<topic href="guide/help_plugin_nested.htm" label="Building nested documentation structures"/>
+			<topic href="guide/help_dynamic.htm" label="Dynamic help"/>
+		</topic>
+		<topic href="guide/help_infopops.htm" label="Infopops">
+			<topic href="guide/help_infopops_id.htm" label="Declaring a context id"/>
+			<topic href="guide/help_infopops_xml.htm" label="Describing and packaging infopop content"/>
+		</topic>
+		<topic href="guide/help_active.htm" label="Active help">
+			<topic href="guide/help_active_action.htm" label="Writing the help action"/>
+			<topic href="guide/help_active_invoke.htm" label="Invoking the action from HTML"/>
+			<topic href="guide/help_active_debug.htm" label="Tips for debugging active help"/>
+		</topic>	
+	</topic>
+	
+	<topic href="guide/search.htm" label="Search support">
+		<topic href="guide/search_page.htm" label="Contributing a search page"/>
+		<topic href="guide/search_result.htm" label="Contributing a search result page"/>
+	</topic>
+	
+	<topic href="guide/compare.htm" label="Compare support">
+		<topic href="guide/compare_streammerger.htm" label="Merging multiple streams"/>
+		<topic href="guide/compare_contentviewer.htm" label="Implementing a content viewer"/>
+		<topic href="guide/compare_structureviewer.htm" label="Implementing a structure viewer"/>
+		<topic href="guide/compare_beyond.htm" label="Advanced compare techniques"/>
+	</topic>
+	
+	<topic href="guide/team.htm" label="Team support">
+		<topic href="guide/team_provider_repository.htm" label="Repository providers"/>
+		<topic href="guide/team_resources.htm" label="Resource management"/>
+		<topic href="guide/team_synchronize.htm" label="Synchronization Support">
+			<topic href="guide/team_synchronize_localhistory_example.htm" label="Local History Synchronization Example"/>
+			<topic href="guide/team_synchronize_beyond_basics.htm" label="Beyond the basics"/>
+		</topic>
+		<topic href="guide/team_howto.htm" label="Rich Team Integration">
+			<topic href="guide/team_ui_actions.htm" label="Adding team actions"/>
+			<topic href="guide/team_ui_decorators.htm" label="Team decorators"/>
+			<topic href="guide/team_ui_prefs.htm" label="Adding preferences and properties"/>
+		</topic>
+	</topic>
+	
+	<topic href="guide/debug.htm" label="Program debug and launch support">
+		<topic href="guide/debug_launch.htm" label="Launching a program">
+			<topic href="guide/debug_launch_adding.htm" label="Adding launchers to the platform">
+				<topic href="guide/debug_launch_sourcelocators.htm" label="Obtaining a program's source code"/>
+				<topic href="guide/debug_launch_comparators.htm" label="Comparing launch configurations"/>
+				<topic href="guide/debug_launch_processfactories.htm" label="Process factories"/>
+				<topic href="guide/debug_launch_java.htm" label="Launching Java applications"/>		
+			</topic>
+			<topic href="guide/debug_launch_status.htm" label="Handling errors from a launched program"/>		
+			<topic href="guide/debug_launch_ui.htm" label="Launch configuration dialog"/>
+			<topic href="guide/debug_launch_uiimages.htm" label="Launch configuration type images"/>
+			<topic href="guide/debug_launch_uishortcuts.htm" label="Launch shortcuts"/>
+		</topic>
+		<topic href="guide/debug_debug.htm" label="Debugging a program">
+			<topic href="guide/debug_model.htm" label="Platform debug model"/>
+			<topic href="guide/debug_breakpoints.htm" label="Breakpoints"/>
+			<topic href="guide/debug_expressions.htm" label="Expressions"/>
+			<topic href="guide/debug_presentation.htm" label="Debug model presentation"/>
+			<topic href="guide/debug_ui.htm" label="Debug UI utility classes"/>
+		</topic>
+	</topic>
+	
+	<topic href="guide/ant.htm" label="Platform Ant support">
+		<topic href="guide/ant_running_buildfiles_programmatically.htm" label="Running Ant buildfiles programmatically"/>
+		<topic href="guide/ant_eclipse_tasks.htm" label="Ant tasks provided by the platform"/>
+		<topic href="guide/ant_contributing_task.htm" label="Contributing tasks and types"/>
+		<topic href="guide/ant_developing.htm" label="Developing Ant tasks and types within Eclipse"/>
+		<topic href="guide/ant_expanding_classpath.htm" label="Expanding the Ant classpath"/>
+	</topic>
+	
+	<topic href="guide/product.htm" label="Packaging and delivering Eclipse based products">
+		<topic href="guide/product_def.htm" label="Defining a Product">
+			<topic href="guide/product_def_extpt.htm" label="The products extension point"/>
+			<topic href="guide/product_configproduct.htm" label="Customizing a product"/>
+			<topic href="guide/product_def_primary.htm" label="Products as primary features"/>
+			<topic href="guide/product_configfeature.htm" label="Customizing a primary feature"/>
+		</topic>
+		<topic href="guide/product_def_feature.htm" label="Features"/>
+		<topic href="guide/product_def_plugins.htm" label="Plug-ins and fragments"/>
+		<topic href="guide/product_def_nl.htm" label="Locale specific files"/>
+		<topic href="guide/product_config_install.htm" label="Product installation guidelines"/>
+		<topic href="guide/product_extension.htm" label="Product extensions"/>
+		<topic href="guide/product_update.htm" label="Updating a product or extension"/>
+	</topic>
+	
+	<topic href="guide/rcp.htm" label="Building a Rich Client Platform application">
+		<topic href="guide/rcp_browser.htm" label="The browser example"/>
+		<topic href="guide/rcp_define.htm" label="Defining a rich client application"/>
+		<topic href="guide/rcp_advisor.htm" label="Customizing the workbench"/>
+		<topic href="guide/rcp_extensions.htm" label="Making UI contributions">
+			<topic href="guide/rcp_perspective.htm" label="Adding the perspective"/>
+			<topic href="guide/rcp_view.htm" label="Adding views"/>
+			<topic href="guide/rcp_actions.htm" label="Defining the actions"/>
+		</topic>
+	</topic>			
+
+
+	<topic href="reference/api/overview-summary.html" label="API Reference">
+      <topic href="reference/api/org/eclipse/ant/core/package-summary.html" label="org.eclipse.ant.core"/>
+      <topic href="reference/api/org/eclipse/compare/package-summary.html" label="org.eclipse.compare"/>
+      <topic href="reference/api/org/eclipse/compare/contentmergeviewer/package-summary.html" label="org.eclipse.compare.contentmergeviewer"/>
+      <topic href="reference/api/org/eclipse/compare/rangedifferencer/package-summary.html" label="org.eclipse.compare.rangedifferencer"/>
+      <topic href="reference/api/org/eclipse/compare/structuremergeviewer/package-summary.html" label="org.eclipse.compare.structuremergeviewer"/>
+      <topic href="reference/api/org/eclipse/core/expressions/package-summary.html" label="org.eclipse.core.expressions"/>
+      <topic href="reference/api/org/eclipse/core/filebuffers/package-summary.html" label="org.eclipse.core.filebuffers"/>
+      <topic href="reference/api/org/eclipse/core/launcher/package-summary.html" label="org.eclipse.core.launcher"/>
+      <topic href="reference/api/org/eclipse/core/resources/package-summary.html" label="org.eclipse.core.resources"/>
+      <topic href="reference/api/org/eclipse/core/resources/refresh/package-summary.html" label="org.eclipse.core.resources.refresh"/>
+      <topic href="reference/api/org/eclipse/core/resources/team/package-summary.html" label="org.eclipse.core.resources.team"/>
+      <topic href="reference/api/org/eclipse/core/runtime/package-summary.html" label="org.eclipse.core.runtime"/>
+      <topic href="reference/api/org/eclipse/core/runtime/content/package-summary.html" label="org.eclipse.core.runtime.content"/>
+      <topic href="reference/api/org/eclipse/core/runtime/jobs/package-summary.html" label="org.eclipse.core.runtime.jobs"/>
+      <topic href="reference/api/org/eclipse/core/runtime/model/package-summary.html" label="org.eclipse.core.runtime.model"/>
+      <topic href="reference/api/org/eclipse/core/runtime/preferences/package-summary.html" label="org.eclipse.core.runtime.preferences"/>
+      <topic href="reference/api/org/eclipse/core/variables/package-summary.html" label="org.eclipse.core.variables"/>
+      <topic href="reference/api/org/eclipse/debug/core/package-summary.html" label="org.eclipse.debug.core"/>
+      <topic href="reference/api/org/eclipse/debug/core/model/package-summary.html" label="org.eclipse.debug.core.model"/>
+      <topic href="reference/api/org/eclipse/debug/core/sourcelookup/package-summary.html" label="org.eclipse.debug.core.sourcelookup"/>
+      <topic href="reference/api/org/eclipse/debug/core/sourcelookup/containers/package-summary.html" label="org.eclipse.debug.core.sourcelookup.containers"/>
+      <topic href="reference/api/org/eclipse/debug/ui/package-summary.html" label="org.eclipse.debug.ui"/>
+      <topic href="reference/api/org/eclipse/debug/ui/actions/package-summary.html" label="org.eclipse.debug.ui.actions"/>
+      <topic href="reference/api/org/eclipse/debug/ui/console/package-summary.html" label="org.eclipse.debug.ui.console"/>
+      <topic href="reference/api/org/eclipse/help/package-summary.html" label="org.eclipse.help"/>
+      <topic href="reference/api/org/eclipse/help/browser/package-summary.html" label="org.eclipse.help.browser"/>
+      <topic href="reference/api/org/eclipse/help/ui/browser/package-summary.html" label="org.eclipse.help.ui.browser"/>
+      <topic href="reference/api/org/eclipse/jface/action/package-summary.html" label="org.eclipse.jface.action"/>
+      <topic href="reference/api/org/eclipse/jface/dialogs/package-summary.html" label="org.eclipse.jface.dialogs"/>
+      <topic href="reference/api/org/eclipse/jface/contentassist/package-summary.html" label="org.eclipse.jface.contentassist"/>
+      <topic href="reference/api/org/eclipse/jface/operation/package-summary.html" label="org.eclipse.jface.operation"/>
+      <topic href="reference/api/org/eclipse/jface/preference/package-summary.html" label="org.eclipse.jface.preference"/>
+      <topic href="reference/api/org/eclipse/jface/resource/package-summary.html" label="org.eclipse.jface.resource"/>
+      <topic href="reference/api/org/eclipse/jface/text/package-summary.html" label="org.eclipse.jface.text"/>
+      <topic href="reference/api/org/eclipse/jface/text/contentassist/package-summary.html" label="org.eclipse.jface.text.contentassist"/>
+      <topic href="reference/api/org/eclipse/jface/text/formatter/package-summary.html" label="org.eclipse.jface.text.formatter"/>
+      <topic href="reference/api/org/eclipse/jface/text/information/package-summary.html" label="org.eclipse.jface.text.information"/>
+      <topic href="reference/api/org/eclipse/jface/text/link/package-summary.html" label="org.eclipse.jface.text.link"/>
+      <topic href="reference/api/org/eclipse/jface/text/presentation/package-summary.html" label="org.eclipse.jface.text.presentation"/>
+      <topic href="reference/api/org/eclipse/jface/text/projection/package-summary.html" label="org.eclipse.jface.text.projection"/>
+      <topic href="reference/api/org/eclipse/jface/text/reconciler/package-summary.html" label="org.eclipse.jface.text.reconciler"/>
+      <topic href="reference/api/org/eclipse/jface/text/rules/package-summary.html" label="org.eclipse.jface.text.rules"/>
+      <topic href="reference/api/org/eclipse/jface/text/source/package-summary.html" label="org.eclipse.jface.text.source"/>
+      <topic href="reference/api/org/eclipse/jface/text/source/projection/package-summary.html" label="org.eclipse.jface.text.source.projection"/>
+      <topic href="reference/api/org/eclipse/jface/text/templates/package-summary.html" label="org.eclipse.jface.text.templates"/>
+      <topic href="reference/api/org/eclipse/jface/text/templates/persistence/package-summary.html" label="org.eclipse.jface.text.templates.persistence"/>
+      <topic href="reference/api/org/eclipse/jface/util/package-summary.html" label="org.eclipse.jface.util"/>
+      <topic href="reference/api/org/eclipse/jface/viewers/package-summary.html" label="org.eclipse.jface.viewers"/>
+      <topic href="reference/api/org/eclipse/jface/window/package-summary.html" label="org.eclipse.jface.window"/>
+      <topic href="reference/api/org/eclipse/jface/wizard/package-summary.html" label="org.eclipse.jface.wizard"/>
+      <topic href="reference/api/org/eclipse/search/ui/package-summary.html" label="org.eclipse.search.ui"/>
+      <topic href="reference/api/org/eclipse/search/ui/text/package-summary.html" label="org.eclipse.search.ui.text"/>
+      <topic href="reference/api/org/eclipse/swt/package-summary.html" label="org.eclipse.swt"/>
+      <topic href="reference/api/org/eclipse/swt/accessibility/package-summary.html" label="org.eclipse.swt.accessibility"/>
+      <topic href="reference/api/org/eclipse/swt/awt/package-summary.html" label="org.eclipse.swt.awt"/>
+      <topic href="reference/api/org/eclipse/swt/browser/package-summary.html" label="org.eclipse.swt.browser"/>
+      <topic href="reference/api/org/eclipse/swt/custom/package-summary.html" label="org.eclipse.swt.custom"/>
+      <topic href="reference/api/org/eclipse/swt/dnd/package-summary.html" label="org.eclipse.swt.dnd"/>
+      <topic href="reference/api/org/eclipse/swt/events/package-summary.html" label="org.eclipse.swt.events"/>
+      <topic href="reference/api/org/eclipse/swt/graphics/package-summary.html" label="org.eclipse.swt.graphics"/>
+      <topic href="reference/api/org/eclipse/swt/layout/package-summary.html" label="org.eclipse.swt.layout"/>
+      <topic href="reference/api/org/eclipse/swt/ole/win32/package-summary.html" label="org.eclipse.swt.ole.win32"/>
+      <topic href="reference/api/org/eclipse/swt/printing/package-summary.html" label="org.eclipse.swt.printing"/>
+      <topic href="reference/api/org/eclipse/swt/program/package-summary.html" label="org.eclipse.swt.program"/>
+      <topic href="reference/api/org/eclipse/swt/widgets/package-summary.html" label="org.eclipse.swt.widgets"/>
+      <topic href="reference/api/org/eclipse/team/core/package-summary.html" label="org.eclipse.team.core"/>
+      <topic href="reference/api/org/eclipse/team/core/subscribers/package-summary.html" label="org.eclipse.team.core.subscribers"/>
+      <topic href="reference/api/org/eclipse/team/core/synchronize/package-summary.html" label="org.eclipse.team.core.synchronize"/>
+      <topic href="reference/api/org/eclipse/team/core/variants/package-summary.html" label="org.eclipse.team.core.variants"/>
+      <topic href="reference/api/org/eclipse/team/ui/package-summary.html" label="org.eclipse.team.ui"/>
+      <topic href="reference/api/org/eclipse/team/ui/synchronize/package-summary.html" label="org.eclipse.team.ui.synchronize"/>
+      <topic href="reference/api/org/eclipse/text/edits/package-summary.html" label="org.eclipse.text.edits"/>
+      <topic href="reference/api/org/eclipse/ui/package-summary.html" label="org.eclipse.ui"/>
+      <topic href="reference/api/org/eclipse/ui/actions/package-summary.html" label="org.eclipse.ui.actions"/>
+      <topic href="reference/api/org/eclipse/ui/activities/package-summary.html" label="org.eclipse.ui.activities"/>
+      <topic href="reference/api/org/eclipse/ui/application/package-summary.html" label="org.eclipse.ui.application"/>
+      <topic href="reference/api/org/eclipse/ui/branding/package-summary.html" label="org.eclipse.ui.branding"/>
+      <topic href="reference/api/org/eclipse/ui/cheatsheets/package-summary.html" label="org.eclipse.ui.cheatsheets"/>
+      <topic href="reference/api/org/eclipse/ui/commands/package-summary.html" label="org.eclipse.ui.commands"/>
+      <topic href="reference/api/org/eclipse/ui/console/package-summary.html" label="org.eclipse.ui.console"/>
+      <topic href="reference/api/org/eclipse/ui/console/actions/package-summary.html" label="org.eclipse.ui.console.actions"/>
+      <topic href="reference/api/org/eclipse/ui/contexts/package-summary.html" label="org.eclipse.ui.contexts"/>
+      <topic href="reference/api/org/eclipse/ui/dialogs/package-summary.html" label="org.eclipse.ui.dialogs"/>
+      <topic href="reference/api/org/eclipse/ui/editors/text/package-summary.html" label="org.eclipse.ui.editors.text"/>
+      <topic href="reference/api/org/eclipse/ui/forms/package-summary.html" label="org.eclipse.ui.forms"/>
+      <topic href="reference/api/org/eclipse/ui/forms/editor/package-summary.html" label="org.eclipse.ui.forms.editor"/>
+      <topic href="reference/api/org/eclipse/ui/forms/events/package-summary.html" label="org.eclipse.ui.forms.events"/>
+      <topic href="reference/api/org/eclipse/ui/forms/widgets/package-summary.html" label="org.eclipse.ui.forms.widgets"/>
+      <topic href="reference/api/org/eclipse/ui/help/package-summary.html" label="org.eclipse.ui.help"/>
+      <topic href="reference/api/org/eclipse/ui/ide/package-summary.html" label="org.eclipse.ui.ide"/>
+      <topic href="reference/api/org/eclipse/ui/intro/package-summary.html" label="org.eclipse.ui.intro"/>
+      <topic href="reference/api/org/eclipse/ui/intro/config/package-summary.html" label="org.eclipse.ui.intro.config"/>
+      <topic href="reference/api/org/eclipse/ui/keys/package-summary.html" label="org.eclipse.ui.keys"/>
+      <topic href="reference/api/org/eclipse/ui/model/package-summary.html" label="org.eclipse.ui.model"/>
+      <topic href="reference/api/org/eclipse/ui/part/package-summary.html" label="org.eclipse.ui.part"/>
+      <topic href="reference/api/org/eclipse/ui/plugin/package-summary.html" label="org.eclipse.ui.plugin"/>
+      <topic href="reference/api/org/eclipse/ui/progress/package-summary.html" label="org.eclipse.ui.progress"/>
+      <topic href="reference/api/org/eclipse/ui/testing/package-summary.html" label="org.eclipse.ui.testing"/>
+      <topic href="reference/api/org/eclipse/ui/themes/package-summary.html" label="org.eclipse.ui.themes"/>
+      <topic href="reference/api/org/eclipse/ui/texteditor/package-summary.html" label="org.eclipse.ui.texteditor"/>
+      <topic href="reference/api/org/eclipse/ui/texteditor/link/package-summary.html" label="org.eclipse.ui.texteditor.link"/>
+      <topic href="reference/api/org/eclipse/ui/texteditor/quickdiff/package-summary.html" label="org.eclipse.ui.texteditor.quickdiff"/>
+      <topic href="reference/api/org/eclipse/ui/texteditor/templates/package-summary.html" label="org.eclipse.ui.texteditor.templates"/>
+      <topic href="reference/api/org/eclipse/ui/views/bookmarkexplorer/package-summary.html" label="org.eclipse.ui.views.bookmarkexplorer"/>
+      <topic href="reference/api/org/eclipse/ui/views/contentoutline/package-summary.html" label="org.eclipse.ui.views.contentoutline"/>
+      <topic href="reference/api/org/eclipse/ui/views/framelist/package-summary.html" label="org.eclipse.ui.views.framelist"/>
+      <topic href="reference/api/org/eclipse/ui/views/markers/package-summary.html" label="org.eclipse.ui.views.markers"/>
+      <topic href="reference/api/org/eclipse/ui/views/navigator/package-summary.html" label="org.eclipse.ui.views.navigator"/>
+      <topic href="reference/api/org/eclipse/ui/views/properties/package-summary.html" label="org.eclipse.ui.views.properties"/>
+      <topic href="reference/api/org/eclipse/ui/views/tasklist/package-summary.html" label="org.eclipse.ui.views.tasklist"/>
+      <topic href="reference/api/org/eclipse/ui/wizards/datatransfer/package-summary.html" label="org.eclipse.ui.wizards.datatransfer"/>
+      <topic href="reference/api/org/eclipse/ui/wizards/newresource/package-summary.html" label="org.eclipse.ui.wizards.newresource"/>
+    </topic>
+
+	<topic href="reference/extension-points/index.html" label="Extension Points Reference">
+       <topic href="reference/extension-points/org_eclipse_ant_core_antProperties.html" label="org.eclipse.ant.core.antProperties"/>
+       <topic href="reference/extension-points/org_eclipse_ant_core_antTasks.html" label="org.eclipse.ant.core.antTasks"/>
+       <topic href="reference/extension-points/org_eclipse_ant_core_antTypes.html" label="org.eclipse.ant.core.antTypes"/>
+       <topic href="reference/extension-points/org_eclipse_ant_core_extraClasspathEntries.html" label="org.eclipse.ant.core.extraClasspathEntries"/>
+       <topic href="reference/extension-points/org_eclipse_compare_contentMergeViewers.html" label="org.eclipse.compare.contentMergeViewers"/>
+       <topic href="reference/extension-points/org_eclipse_compare_contentViewers.html" label="org.eclipse.compare.contentViewers"/>
+       <topic href="reference/extension-points/org_eclipse_compare_streamMergers.html" label="org.eclipse.compare.streamMergers"/>
+       <topic href="reference/extension-points/org_eclipse_compare_structureCreators.html" label="org.eclipse.compare.structureCreators"/>
+       <topic href="reference/extension-points/org_eclipse_compare_structureMergeViewers.html" label="org.eclipse.compare.structureMergeViewers"/>
+       <topic href="reference/extension-points/org_eclipse_core_expressions_propertyTesters.html" label="org.eclipse.core.expressions.propertyTesters"/>
+       <topic href="reference/extension-points/org_eclipse_core_filebuffers_annotationModelCreation.html" label="org.eclipse.core.filebuffers.annotationModelCreation"/>
+       <topic href="reference/extension-points/org_eclipse_core_filebuffers_documentCreation.html" label="org.eclipse.core.filebuffers.documentCreation"/>
+       <topic href="reference/extension-points/org_eclipse_core_filebuffers_documentSetup.html" label="org.eclipse.core.filebuffers.documentSetup"/>
+       <topic href="reference/extension-points/org_eclipse_core_resources_builders.html" label="org.eclipse.core.resources.builders"/>
+       <topic href="reference/extension-points/org_eclipse_core_resources_fileModificationValidator.html" label="org.eclipse.core.resources.fileModificationValidator"/>
+       <topic href="reference/extension-points/org_eclipse_core_resources_markers.html" label="org.eclipse.core.resources.markers"/>
+       <topic href="reference/extension-points/org_eclipse_core_resources_moveDeleteHook.html" label="org.eclipse.core.resources.moveDeleteHook"/>
+       <topic href="reference/extension-points/org_eclipse_core_resources_natures.html" label="org.eclipse.core.resources.natures"/>
+       <topic href="reference/extension-points/org_eclipse_core_resources_refreshProviders.html" label="org.eclipse.core.resources.refreshProviders"/>
+       <topic href="reference/extension-points/org_eclipse_core_resources_teamHook.html" label="org.eclipse.core.resources.teamHook"/>
+       <topic href="reference/extension-points/org_eclipse_core_runtime_adapters.html" label="org.eclipse.core.runtime.adapters"/>
+       <topic href="reference/extension-points/org_eclipse_core_runtime_applications.html" label="org.eclipse.core.runtime.applications"/>
+       <topic href="reference/extension-points/org_eclipse_core_runtime_contentTypes.html" label="org.eclipse.core.runtime.contentTypes"/>
+       <topic href="reference/extension-points/org_eclipse_core_runtime_preferences.html" label="org.eclipse.core.runtime.preferences"/>
+       <topic href="reference/extension-points/org_eclipse_core_runtime_products.html" label="org.eclipse.core.runtime.products"/>
+       <topic href="reference/extension-points/org_eclipse_core_variables_dynamicVariables.html" label="org.eclipse.core.variables.dynamicVariables"/>
+       <topic href="reference/extension-points/org_eclipse_core_variables_valueVariables.html" label="org.eclipse.core.variables.valueVariables"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_breakpoints.html" label="org.eclipse.debug.core.breakpoints"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_launchConfigurationComparators.html" label="org.eclipse.debug.core.launchConfigurationComparators"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_launchConfigurationTypes.html" label="org.eclipse.debug.core.launchConfigurationTypes"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_launchDelegates.html" label="org.eclipse.debug.core.launchDelegates"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_launchers.html" label="org.eclipse.debug.core.launchers"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_launchModes.html" label="org.eclipse.debug.core.launchModes"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_logicalStructureTypes.html" label="org.eclipse.debug.core.logicalStructureTypes"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_processFactories.html" label="org.eclipse.debug.core.processFactories"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_sourceContainerTypes.html" label="org.eclipse.debug.core.sourceContainerTypes"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_sourceLocators.html" label="org.eclipse.debug.core.sourceLocators"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_sourcePathComputers.html" label="org.eclipse.debug.core.sourcePathComputers"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_statusHandlers.html" label="org.eclipse.debug.core.statusHandlers"/>
+       <topic href="reference/extension-points/org_eclipse_debug_core_watchExpressionDelegates.html" label="org.eclipse.debug.core.watchExpressionDelegates"/>
+       <topic href="reference/extension-points/org_eclipse_debug_ui_consoleColorProviders.html" label="org.eclipse.debug.ui.consoleColorProviders"/>
+       <topic href="reference/extension-points/org_eclipse_debug_ui_consoleLineTrackers.html" label="org.eclipse.debug.ui.consoleLineTrackers"/>
+       <topic href="reference/extension-points/org_eclipse_debug_ui_contextViewBindings.html" label="org.eclipse.debug.ui.contextViewBindings"/>
+       <topic href="reference/extension-points/org_eclipse_debug_ui_debugModelContextBindings.html" label="org.eclipse.debug.ui.debugModelContextBindings"/>
+       <topic href="reference/extension-points/org_eclipse_debug_ui_debugModelPresentations.html" label="org.eclipse.debug.ui.debugModelPresentations"/>
+       <topic href="reference/extension-points/org_eclipse_debug_ui_launchConfigurationTabGroups.html" label="org.eclipse.debug.ui.launchConfigurationTabGroups"/>
+       <topic href="reference/extension-points/org_eclipse_debug_ui_launchConfigurationTypeImages.html" label="org.eclipse.debug.ui.launchConfigurationTypeImages"/>
+       <topic href="reference/extension-points/org_eclipse_debug_ui_launchGroups.html" label="org.eclipse.debug.ui.launchGroups"/>
+       <topic href="reference/extension-points/org_eclipse_debug_ui_launchShortcuts.html" label="org.eclipse.debug.ui.launchShortcuts"/>
+       <topic href="reference/extension-points/org_eclipse_debug_ui_sourceContainerPresentations.html" label="org.eclipse.debug.ui.sourceContainerPresentations"/>
+       <topic href="reference/extension-points/org_eclipse_debug_ui_stringVariablePresentations.html" label="org.eclipse.debug.ui.stringVariablePresentations"/>
+       <topic href="reference/extension-points/org_eclipse_help_contentProducer.html" label="org.eclipse.help.contentProducer"/>
+       <topic href="reference/extension-points/org_eclipse_help_contexts.html" label="org.eclipse.help.contexts"/>
+       <topic href="reference/extension-points/org_eclipse_help_toc.html" label="org.eclipse.help.toc"/>
+       <topic href="reference/extension-points/org_eclipse_help_base_browser.html" label="org.eclipse.help.base.browser"/>
+       <topic href="reference/extension-points/org_eclipse_help_base_luceneAnalyzer.html" label="org.eclipse.help.base.luceneAnalyzer"/>
+       <topic href="reference/extension-points/org_eclipse_search_searchPages.html" label="org.eclipse.search.searchPages"/>
+       <topic href="reference/extension-points/org_eclipse_search_searchResultSorters.html" label="org.eclipse.search.searchResultSorters"/>
+       <topic href="reference/extension-points/org_eclipse_search_searchResultViewPages.html" label="org.eclipse.search.searchResultViewPages"/>
+       <topic href="reference/extension-points/org_eclipse_team_core_fileTypes.html" label="org.eclipse.team.core.fileTypes"/>
+       <topic href="reference/extension-points/org_eclipse_team_core_ignore.html" label="org.eclipse.team.core.ignore"/>
+       <topic href="reference/extension-points/org_eclipse_team_core_projectSets.html" label="org.eclipse.team.core.projectSets"/>
+       <topic href="reference/extension-points/org_eclipse_team_core_repository.html" label="org.eclipse.team.core.repository"/>
+       <topic href="reference/extension-points/org_eclipse_team_ui_configurationWizards.html" label="org.eclipse.team.ui.configurationWizards"/>
+       <topic href="reference/extension-points/org_eclipse_team_ui_synchronizeParticipants.html" label="org.eclipse.team.ui.synchronizeParticipants"/>
+       <topic href="reference/extension-points/org_eclipse_team_ui_synchronizeWizards.html" label="org.eclipse.team.ui.synchronizeWizards"/>
+       <topic href="reference/extension-points/org_eclipse_ui_acceleratorConfigurations.html" label="org.eclipse.ui.acceleratorConfigurations"/>
+       <topic href="reference/extension-points/org_eclipse_ui_acceleratorScopes.html" label="org.eclipse.ui.acceleratorScopes"/>
+       <topic href="reference/extension-points/org_eclipse_ui_acceleratorSets.html" label="org.eclipse.ui.acceleratorSets"/>
+       <topic href="reference/extension-points/org_eclipse_ui_actionDefinitions.html" label="org.eclipse.ui.actionDefinitions"/>
+       <topic href="reference/extension-points/org_eclipse_ui_actionSetPartAssociations.html" label="org.eclipse.ui.actionSetPartAssociations"/>
+       <topic href="reference/extension-points/org_eclipse_ui_actionSets.html" label="org.eclipse.ui.actionSets"/>
+       <topic href="reference/extension-points/org_eclipse_ui_activities.html" label="org.eclipse.ui.activities"/>
+       <topic href="reference/extension-points/org_eclipse_ui_cheatsheets_cheatSheetContent.html" label="org.eclipse.ui.cheatsheets.cheatSheetContent"/>
+       <topic href="reference/extension-points/org_eclipse_ui_cheatsheets_cheatSheetItemExtension.html" label="org.eclipse.ui.cheatsheets.cheatSheetItemExtension"/>
+       <topic href="reference/extension-points/org_eclipse_ui_commands.html" label="org.eclipse.ui.commands"/>
+       <topic href="reference/extension-points/org_eclipse_ui_contexts.html" label="org.eclipse.ui.contexts"/>
+       <topic href="reference/extension-points/org_eclipse_ui_decorators.html" label="org.eclipse.ui.decorators"/>
+       <topic href="reference/extension-points/org_eclipse_ui_dropActions.html" label="org.eclipse.ui.dropActions"/>
+       <topic href="reference/extension-points/org_eclipse_ui_editorActions.html" label="org.eclipse.ui.editorActions"/>
+       <topic href="reference/extension-points/org_eclipse_ui_editors.html" label="org.eclipse.ui.editors"/>
+       <topic href="reference/extension-points/org_eclipse_ui_editors_annotationTypes.html" label="org.eclipse.ui.editors.annotationTypes"/>
+       <topic href="reference/extension-points/org_eclipse_ui_editors_documentProviders.html" label="org.eclipse.ui.editors.documentProviders"/>
+       <topic href="reference/extension-points/org_eclipse_ui_editors_markerAnnotationSpecification.html" label="org.eclipse.ui.editors.markerAnnotationSpecification"/>
+       <topic href="reference/extension-points/org_eclipse_ui_editors_markerUpdaters.html" label="org.eclipse.ui.editors.markerUpdaters"/>
+       <topic href="reference/extension-points/org_eclipse_ui_editors_templates.html" label="org.eclipse.ui.editors.templates"/>
+       <topic href="reference/extension-points/org_eclipse_ui_elementFactories.html" label="org.eclipse.ui.elementFactories"/>
+       <topic href="reference/extension-points/org_eclipse_ui_exportWizards.html" label="org.eclipse.ui.exportWizards"/>
+       <topic href="reference/extension-points/org_eclipse_ui_externaltools_configurationDuplicationMaps.html" label="org.eclipse.ui.externaltools.configurationDuplicationMaps"/>
+       <topic href="reference/extension-points/org_eclipse_ui_fontDefinitions.html" label="org.eclipse.ui.fontDefinitions"/>
+       <topic href="reference/extension-points/org_eclipse_ui_helpSupport.html" label="org.eclipse.ui.helpSupport"/>
+       <topic href="reference/extension-points/org_eclipse_ui_ide_markerHelp.html" label="org.eclipse.ui.ide.markerHelp"/>
+       <topic href="reference/extension-points/org_eclipse_ui_ide_markerImageProviders.html" label="org.eclipse.ui.ide.markerImageProviders"/>
+       <topic href="reference/extension-points/org_eclipse_ui_ide_markerResolution.html" label="org.eclipse.ui.ide.markerResolution"/>
+       <topic href="reference/extension-points/org_eclipse_ui_ide_projectNatureImages.html" label="org.eclipse.ui.ide.projectNatureImages"/>
+       <topic href="reference/extension-points/org_eclipse_ui_ide_resourceFilters.html" label="org.eclipse.ui.ide.resourceFilters"/>
+       <topic href="reference/extension-points/org_eclipse_ui_importWizards.html" label="org.eclipse.ui.importWizards"/>
+       <topic href="reference/extension-points/org_eclipse_ui_intro.html" label="org.eclipse.ui.intro"/>
+       <topic href="reference/extension-points/org_eclipse_ui_intro_config.html" label="org.eclipse.ui.intro.config"/>
+       <topic href="reference/extension-points/org_eclipse_ui_intro_configExtension.html" label="org.eclipse.ui.intro.configExtension"/>
+       <topic href="reference/extension-points/org_eclipse_ui_newWizards.html" label="org.eclipse.ui.newWizards"/>
+       <topic href="reference/extension-points/org_eclipse_ui_perspectiveExtensions.html" label="org.eclipse.ui.perspectiveExtensions"/>
+       <topic href="reference/extension-points/org_eclipse_ui_perspectives.html" label="org.eclipse.ui.perspectives"/>
+       <topic href="reference/extension-points/org_eclipse_ui_popupMenus.html" label="org.eclipse.ui.popupMenus"/>
+       <topic href="reference/extension-points/org_eclipse_ui_preferencePages.html" label="org.eclipse.ui.preferencePages"/>
+       <topic href="reference/extension-points/org_eclipse_ui_presentationFactories.html" label="org.eclipse.ui.presentationFactories"/>
+       <topic href="reference/extension-points/org_eclipse_ui_propertyPages.html" label="org.eclipse.ui.propertyPages"/>
+       <topic href="reference/extension-points/org_eclipse_ui_startup.html" label="org.eclipse.ui.startup"/>
+       <topic href="reference/extension-points/org_eclipse_ui_systemSummarySections.html" label="org.eclipse.ui.systemSummarySections"/>
+       <topic href="reference/extension-points/org_eclipse_ui_themes.html" label="org.eclipse.ui.themes"/>
+       <topic href="reference/extension-points/org_eclipse_ui_viewActions.html" label="org.eclipse.ui.viewActions"/>
+       <topic href="reference/extension-points/org_eclipse_ui_views.html" label="org.eclipse.ui.views"/>
+       <topic href="reference/extension-points/org_eclipse_ui_workbench_texteditor_quickDiffReferenceProvider.html" label="org.eclipse.ui.workbench.texteditor.quickDiffReferenceProvider"/>
+       <topic href="reference/extension-points/org_eclipse_ui_workingSets.html" label="org.eclipse.ui.workingSets"/>
+    </topic>
+
+	<topic href="reference/osgi/overview-summary.html" label="OSGi API Reference"/>
+
+	<topic href="reference/misc/index.html" label="Other reference information">
+		<topic href="/reference/misc/bidi.html" label="Bidirectional Support"/>
+      	<topic href="reference/misc/runtime-options.html" label="Runtime options"/>
+      	<topic href="reference/misc/eclipsestarter.html" label="Starting Eclipse from Java"/>
+      	<topic href="reference/misc/api-usage-rules.html" label="API rules of engagement"/>
+      	<topic href="reference/misc/naming.html" label="Naming Conventions"/>
+      	<topic href="reference/misc/terminology.html" label="Glossary of Terms"/>
+      	<topic href="reference/misc/overview-platform.html" label="Map of Platform Plug-ins"/>
+      	<topic href="reference/misc/plugin_manifest.html" label="Plug-in Manifest "/>
+		<topic href="reference/misc/preference_store.html" label="Preference Stores"/>
+     	<topic href="reference/misc/project_description_file.html" label="Project Description File"/>
+      	<topic href="reference/misc/ui_accessibility_tips.html" label="Tips for making user interfaces accessible"/>
+      	<topic href="reference/misc/help_product_index.html" label="Pre-built documentation index"/>
+      	<topic href="reference/misc/help_standalone.html" label="Installing the stand-alone help system"/>
+      	<topic href="reference/misc/help_infocenter.html" label="Installing the help system as an infocenter"/>
+      	<topic href="reference/misc/help_preferences.html" label="Help System Preferences"/>
+       	<topic href="reference/misc/eclipse-install.html" label="How to write an Eclipse Installer"/>
+       	<topic href="reference/misc/about_customization.html" label="About.ini file format"/>
+       	<topic href="reference/misc/plugin_archive.html" label="Plug-in archives"/>
+       	<topic href="reference/misc/feature_manifest.html" label="Feature manifest"/>
+       	<topic href="reference/misc/feature_archive.html" label="Feature archives"/>
+       	<topic href="reference/misc/update_sitemap.html" label="Update server site map"/>
+       	<topic href="reference/misc/update_policy.html" label="Update policy control"/>
+       	<topic href="reference/misc/update_standalone.html" label="Running update manager from command line"/>
+   	</topic>
+	<topic label="Java Development Toolkit (JDT) Basics">
+		<topic href="reference/ref-2.htm" label="JDT Actions">
+			<topic href="reference/ref-menu-file.htm" label="File Actions"/>
+			<topic href="reference/ref-menu-edit.htm" label="Edit Actions"/>
+			<topic href="reference/ref-menu-source.htm" label="Source Actions"/>
+			<topic href="reference/ref-menu-refactor.htm" label="Refactor Actions"/>
+			<topic href="reference/ref-menu-navigate.htm" label="Navigate Actions"/>
+			<topic href="reference/ref-menu-search.htm" label="Search Actions"/>
+			<topic href="reference/ref-menu-project.htm" label="Project Actions"/>
+			<topic href="reference/ref-149.htm" label="Run Actions"/>
+			<topic href="reference/ref-3.htm" label="Java Toolbar Actions"/>
+			<topic href="reference/ref-java-editor.htm" label="Java editor"/>
+			<topic href="reference/ref-4.htm" label="Run and Debug Actions"/>
+		</topic>
+		<!--<topic label="JDT Perspectives" href="reference/ref-6.htm">
+			<topic label="Java" href="reference/ref-7.htm" />
+			<topic label="Java Type Hierarchy" href="reference/ref-8.htm" />
+			<topic label="Debug" href="reference/ref-9.htm" />
+		</topic> -->
+	</topic>
+	
+	
+
+	<topic href="reference/ref-24.htm" label="Views and editors">
+		<topic href="reference/ref-java-editor.htm" label="Java Editor">
+			<topic href="reference/ref-143.htm" label="Java Content Assist"/>
+			<topic href="reference/ref-java-editor-quickfix.htm" label="Quick fix"/>
+		</topic>
+		
+		<topic href="reference/ref-34.htm" label="Java Scrapbook Page"/>
+		
+		<topic href="reference/ref-35.htm" label="Breakpoints View">
+			<topic href="reference/ref-38.htm" label="Go to File for Breakpoint"/>
+			<topic href="reference/ref-40.htm" label="Add Java Exception Breakpoint"/>
+			<topic href="reference/brkSuspendPolicy.htm" label="Suspend Policy"/>
+			<topic href="reference/ref-43.htm" label="Hit Count"/>
+			<topic href="reference/ref-41.htm" label="Uncaught"/>
+			<topic href="reference/ref-42.htm" label="Caught"/>
+			<topic href="reference/brkMod.htm" label="Modification"/>
+			<topic href="reference/brkAccess.htm" label="Access"/>
+			<topic href="reference/brkExit.htm" label="Exit"/>
+			<topic href="reference/brkEntry.htm" label="Entry"/>
+			<topic href="reference/brkSelectAll.htm" label="Select All"/>
+			<topic href="reference/ref-44.htm" label="Enable"/>
+			<topic href="reference/ref-44a.htm" label="Disable"/>
+			<topic href="reference/ref-36.htm" label="Remove Selected Breakpoints"/>
+			<topic href="reference/ref-37.htm" label="Remove All Breakpoints"/>
+		    <topic href="reference/ref-39.htm" label="Show Qualified Names in Breakpoints View"/> 
+		    <topic href="reference/brkShowSupported.htm" label="Show Supported Breakpoints"/> 
+		    <topic href="reference/brkProperties.htm" label="Breakpoint Properties"/> 
+		</topic>
+		
+		<topic href="reference/ref-45.htm" label="Console View">
+			<topic href="reference/ref-47.htm" label="Copy"/>
+			<topic href="reference/ref-48.htm" label="Select All"/>
+			<topic href="reference/ref-49.htm" label="Find/Replace"/>
+			<topic href="reference/ref-50.htm" label="Go To Line"/>
+			<topic href="reference/ref-46.htm" label="Clear the Console"/>
+			<topic href="reference/ref-45b.htm" label="Terminate"/>
+		</topic>
+		
+		<topic href="reference/ref-51.htm" label="Debug View">
+		</topic>
+		
+		<topic href="reference/ref-52.htm" label="Display View">
+			<topic href="tasks/tasks-138.htm" label="Evaluating Expressions"/>
+			<topic href="reference/ref-55.htm" label="Inspect"/>
+			<topic href="reference/ref-54.htm" label="Display"/>
+		   	<topic href="reference/ref-53.htm" label="Clear"/>
+		</topic>
+		
+		<topic href="reference/ref-56.htm" label="Expressions View">
+			<topic href="reference/ref-56a.htm" label="Select All in the Expressions View"/>
+			<topic href="reference/ref-56b.htm" label="Copy Variables in the Expressions View"/>
+			<topic href="reference/ref-59.htm" label="Remove Selected Expressions"/>
+		    <topic href="reference/ref-60.htm" label="Remove All Expressions"/>
+		    <topic href="reference/ref-65.htm" label="Change Variable Values in the Expressions View"/> 
+		    <topic href="reference/ref-63.htm" label="Show Constants in the Expressions View"/>
+		    <topic href="reference/ref-62.htm" label="Show Static Fields in the Expressions View"/>
+		    <topic href="reference/ref-58.htm" label="Show Qualified Names in the Expressions View"/>
+			<topic href="reference/ref-57.htm" label="Show Type Names in the Expressions View"/> 
+		    <topic href="reference/ref-56c.htm" label="Show Detail Pane for the Expressions View"/> 
+		    <topic href="reference/ref-56d.htm" label="Add/Remove Watchpoint"/> 
+		    <topic href="reference/ref-64.htm" label="Inspect"/> 
+		    <topic href="reference/ref-56e.htm" label="Open Declared Type"/> 
+			<topic href="reference/ref-57.htm" label="Show Type Names"/>
+		</topic>
+		
+		
+		<topic href="reference/ref-74.htm" label="Variables View">	
+			<topic href="tasks/tasks-137.htm" label="Inspecting Values"/>
+	      	<topic href="reference/ref-76.htm" label="Show Qualified Names in Variables View"/>
+    	  	<topic href="reference/ref-75.htm" label="Show Type Names in Variables View"/>
+      		<topic href="reference/ref-showdetailpane.htm" label="Show Detail Pane in Variables View"/>
+      		<topic href="reference/ref-74a.htm" label="Add/Remove Watchpoint"/>
+	      	<topic href="reference/ref-62.htm" label="Show Static Fields in Variables View"/>
+    	  	<topic href="reference/ref-63.htm" label="Show Constants in Variables View"/>
+      		<topic href="reference/ref-81.htm" label="Change Variable Values in the Variables View"/> 
+	      	<topic href="reference/ref-80.htm" label="Inspect in the Variables View"/> 
+		</topic>
+		
+		
+		<topic href="reference/ref-type-hierarchy.htm" label="Type Hierarchy view"/>
+
+		<topic href="reference/ref-view-package-explorer.htm" label="Package Explorer view">
+            <topic href="reference/ref-dialog-java-element-filters.htm" label="Java Element Filters dialog"/>
+        </topic>
+
+		<topic href="reference/ref-view-outline.htm" label="Java Outline view"/>
+	</topic>
+	
+	<topic label="Menus">
+		<topic href="reference/ref-menu-file.htm" label="File Menu"/>
+		<topic href="reference/ref-menu-edit.htm" label="Edit Menu"/>
+		<topic href="reference/ref-menu-source.htm" label="Source Menu"/>
+		<topic href="reference/ref-menu-refactor.htm" label="Refactor Menu"/>
+		<topic href="reference/ref-menu-navigate.htm" label="Navigate Menu"/>
+		<topic href="reference/ref-menu-search.htm" label="Search Menu"/>
+		<topic href="reference/ref-menu-project.htm" label="Project Menu"/>
+		<topic href="reference/ref-149.htm" label="Run Menu">
+			<topic href="reference/ref-150.htm" label="Step Commands">
+			</topic>
+			<topic href="reference/ref-4.htm" label="Run and Debug Actions">
+			</topic>
+		</topic>
+	</topic>
+	
+	
+	<topic label="Toolbar">
+		<topic href="reference/ref-3.htm" label="Java Toolbar Actions"/>
+		<topic href="reference/ref-java-editor.htm" label="Java Editor Toolbar Actions"/>
+		<topic href="reference/ref-4.htm" label="Run and Debug Actions"/>
+	</topic>
+	
+	<topic label="Preferences">
+		<topic href="reference/ref-13.htm" label="Java">
+			<topic href="reference/ref-preferences-appearance.htm" label="Appearance"/>
+			<topic href="reference/ref-15.htm" label="Classpath Variables"/>
+			<topic href="reference/ref-17.htm" label="Code Formatter"/>
+			<topic href="reference/ref-preferences-code-generation.htm" label="Code Generation"/>
+			<topic href="reference/ref-preferences-compiler.htm" label="Compiler"/>
+			<topic href="reference/ref-21.htm" label="Java Editor">
+	  			<topic href="reference/ref-preferences-templates.htm" label="Templates"/>
+			</topic>
+			<topic href="reference/ref-19.htm" label="Installed JREs"/>
+			<topic href="reference/ref-preferences-junit.htm" label="JUnit"/>
+			<topic href="reference/ref-preferences-new-project.htm" label="New Project"/>		
+			<topic href="reference/ref-22.htm" label="Organize Imports"/>
+			<topic href="reference/ref-23.htm" label="Refactoring"/>
+			<topic href="reference/ref-preferences-task-tags.htm" label="Task Tags"/>
+		</topic>
+		<topic href="reference/ref-11.htm" label="Debug">
+			<topic href="reference/ref-12.htm" label="Console Preferences"/>
+		</topic>
+	</topic>
+		
+
+    <topic label="Dialogs">
+        <topic href="reference/ref-dialog-java-element-filters.htm" label="Java Element Filters"/>
+        <topic href="reference/ref-148.htm" label="Open Type dialog"/>
+		<topic href="reference/ref-dialog-gettersetter.htm" label="Create Getter and Setter"/>
+    	<topic href="reference/ref-dialog-override-method.htm" label="Override Methods"/>
+    </topic>
+
+    <topic label="Property Pages">
+        <topic href="reference/ref-dialog-javadoc-location.htm" label="Javadoc Location"/>
+ 		<topic href="reference/ref-123.htm" label="Java Build Path"/>
+ 		<topic href="reference/ref-properties-compiler.htm" label="Java Compiler"/>
+ 		<topic href="reference/ref-properties-task-tags.htm" label="Java Task Tags"/>
+		<topic href="reference/ref-124.htm" label="Source Attachment"/>
+    </topic>    
+
+    <topic label="Wizards">
+        <topic href="reference/ref-wizard-externalize-strings.htm" label="Externalize Strings wizard"/>
+		<topic href="reference/ref-export-jar.htm" label="JAR file exporter"/>
+		<topic href="reference/ref-export-javadoc.htm" label="Javadoc generation"/>
+    </topic>
+
+	<topic label="New Wizards">
+		<topic href="reference/ref-121.htm" label="New Java Project Wizard">
+			<topic href="reference/ref-123b.htm" label="Java Settings Page"/>
+			<topic href="reference/ref-124.htm" label="Attaching Source to JAR Files and Variables"/>
+		</topic>
+		
+		
+		<topic href="reference/ref-125.htm" label="New Java Package Wizard"/>
+		
+		<topic href="reference/ref-126.htm" label="New Java Class Wizard"/>
+		
+		<topic href="reference/ref-127.htm" label="New Java Interface Wizard"/>
+		
+		<topic href="reference/ref-128.htm" label="New Source Folder Wizard"/>
+		
+		<topic href="reference/ref-129.htm" label="New Java Scrapbook Page Wizard"/>
+	</topic>
+
+	<topic label="Search">
+		<topic href="reference/ref-131.htm" label="Java Search Tab"/>
+		<topic href="reference/ref-menu-search.htm" label="Java Search Actions"/>
+	</topic>
+	
+	<topic href="reference/ref-115.htm" label="Refactoring">
+		<topic href="reference/ref-menu-refactor.htm" label="Refactor Actions"/>
+		<topic href="reference/ref-117.htm" label="Refactor Wizard"/>
+		<topic href="reference/ref-23.htm" label="Refactor Preferences"/>		
+		<topic href="reference/ref-154.htm" label="Extract Method Errors"/>
+		
+
+	</topic>
+
+	<topic href="reference/ref-152.htm" label="Frequently-Asked Questions: JDT"/>
+	
+
+	<topic href="reference/ref-156.htm" label="Icons"/>
+	<topic href="reference/ref-155.htm" label="Glossary"/>
+	<topic label="Changing the appearance of the Java tools">
+		<topic href="tasks/tasks-2.htm" label="Showing and hiding elements">
+			<topic href="tasks/tasks-3.htm" label="Showing and hiding system files"/>
+			<topic href="tasks/tasks-4.htm" label="Showing and hiding CLASS files generated for inner types"/>
+			<topic href="tasks/tasks-5.htm" label="Showing and hiding libraries"/>
+			<topic href="tasks/tasks-183.htm" label="Showing and hiding empty packages "/>
+			<topic href="tasks/tasks-184.htm" label="Showing and hiding empty parent packages "/>
+			<topic href="tasks/tasks-185.htm" label="Showing and hiding Java files "/>
+			<topic href="tasks/tasks-186.htm" label="Showing and hiding non-Java elements"/>
+			<topic href="tasks/tasks-213.htm" label="Showing and hiding non-Java projects"/>
+			<topic href="tasks/tasks-191.htm" label="Showing and hiding members"/>
+			<topic href="tasks/tasks-192.htm" label="Showing and hiding override indicators"/>
+			<topic href="tasks/tasks-193.htm" label="Showing and hiding method return types"/>
+			<topic href="tasks/tasks-212.htm" label="Showing and hiding import declarations"/>
+			<topic href="tasks/tasks-214.htm" label="Showing and hiding package declarations"/>
+		</topic>
+		<topic href="tasks/tasks-194.htm" label="Showing full or compressed package names"/>
+		<topic href="tasks/tasks-195.htm" label="Sorting elements in Java views"/>		
+		<topic label="Customizing the debugger and console">
+			<topic href="tasks/tasks-9.htm" label="Changing the active perspective when launching"/>
+			<topic href="tasks/tasks-consoleAppearance.htm" label="Changing the appearance of the console view"/>
+		</topic>
+	</topic>
+	
+
+	<topic href="tasks/tasks-11.htm" label="Creating Java elements">
+		<topic href="tasks/tasks-12.htm" label="Creating a new Java project">
+			<topic href="tasks/tasks-13.htm" label="Creating a Java project as its own source container"/>
+			<topic href="tasks/tasks-14.htm" label="Creating a Java project with source folders"/>
+		</topic>
+		<topic href="tasks/tasks-26.htm" label="Creating a new source folder">
+			<topic href="tasks/tasks-221.htm" label="Creating a new source folder with exclusion filter"/>
+			<topic href="tasks/tasks-222.htm" label="Creating a new source folder with specific output folder"/>
+		</topic>
+		<topic href="tasks/tasks-15.htm" label="Creating a new Java package"/>
+		<topic href="tasks/tasks-17.htm" label="Creating a new Java class">
+			<topic href="tasks/tasks-18.htm" label="Creating a top-level class"/>
+			<topic href="tasks/tasks-19.htm" label="Creating a nested class"/>
+			<topic href="tasks/tasks-20.htm" label="Creating a new class in an existing compilation unit"/>
+		</topic>
+		<topic href="tasks/tasks-21.htm" label="Creating a new Java interface">
+			<topic href="tasks/tasks-23.htm" label="Creating a top-level interface"/>
+			<topic href="tasks/tasks-24.htm" label="Creating a nested interface"/>
+			<topic href="tasks/tasks-25.htm" label="Creating a new interface in an existing compilation unit"/>
+		</topic>
+		<!--<topic label="Creating a new Java scrapbook page" href="tasks/tasks-27.htm"></topic>-->
+	</topic>
+	
+
+	<topic href="tasks/tasks-32.htm" label="Creating JAR Files">
+		<topic href="tasks/tasks-33.htm" label="Creating a new JAR file"/>
+		<topic href="tasks/tasks-34.htm" label="Setting advanced options"/>
+		<topic href="tasks/tasks-35.htm" label="Defining the JAR file's manifest"/>
+		<topic href="tasks/tasks-36.htm" label="Regenerating a JAR File"/>
+	</topic>
+	
+
+	<topic href="tasks/tasks-196.htm" label="Creating Javadoc documentation">
+		<topic href="tasks/tasks-197.htm" label="Specifying the location of the Javadoc command"/>	
+		<topic href="tasks/tasks-198.htm" label="Using the Generate Javadoc wizard">
+			<topic href="tasks/tasks-199.htm" label="Selecting types for Javadoc generation"/>	
+			<topic href="tasks/tasks-200.htm" label="Configuring Javadoc arguments for standard doclet"/>	
+			<topic href="tasks/tasks-201.htm" label="Configuring Javadoc arguments"/>	
+		</topic>	
+	</topic>
+	
+	
+	<topic href="tasks/tasks-37.htm" label="Using the Hierarchy view">
+		<topic href="tasks/tasks-38.htm" label="Changing the appearance of the Hierarchy view"/>
+		<topic href="tasks/tasks-39.htm" label="Opening a type hierarchy on a Java element"/>
+		<topic href="tasks/tasks-40.htm" label="Opening a type hierarchy on the current text selection"/>
+		<!--<topic label="Opening a type hierarchy in the workbench" href="tasks/tasks-41.htm"></topic>-->
+		<topic href="tasks/tasks-42.htm" label="Opening a type hierarchy in its own perspective"/>
+		<topic href="tasks/tasks-43.htm" label="Overriding a method using the Hierarchy view"/>
+		<topic href="tasks/tasks-44.htm" label="Finding overridden methods"/>
+	</topic>
+	
+
+	<topic href="tasks/tasks-45.htm" label="Using the Package Explorer">
+		<topic href="tasks/tasks-47.htm" label="Filtering elements"/>
+		<topic href="tasks/tasks-51.htm" label="Moving folders, packages and files"/>
+	</topic>
+	
+
+	<topic href="tasks/tasks-54.htm" label="Using the Java editor">
+		<topic href="tasks/tasks-57.htm" label="Generating getters and setters"/>
+		<topic href="tasks/tasks-6.htm" label="Showing single elements or whole Java files"/>
+		<topic href="tasks/tasks-58.htm" label="Managing import statements">
+			<topic href="tasks/tasks-59.htm" label="Adding required import statements"/>
+			<topic href="tasks/tasks-60.htm" label="Organizing existing import statements"/>
+			<topic href="tasks/tasks-61.htm" label="Setting the order of import statements"/>
+		</topic>
+		<topic href="tasks/tasks-62.htm" label="Using the local history">
+			<topic href="tasks/tasks-63a.htm" label="Comparing a Java element with a local history edition"/>
+			<topic href="tasks/tasks-63.htm" label="Replacing a Java element with a local history edition"/>
+			<topic href="tasks/tasks-64.htm" label="Restoring a deleted workbench element"/>
+		</topic>
+		<topic href="tasks/tasks-65.htm" label="Using content assist"/>
+		<topic href="tasks/tasks-66.htm" label="Formatting Java code">
+			<topic href="tasks/tasks-67.htm" label="Formatting files or portions of code"/>
+			<topic href="tasks/tasks-68.htm" label="Setting code formatting preferences"/>
+		</topic>
+		<topic href="tasks/tasks-69.htm" label="Viewing documentation and information">
+			<topic href="tasks/tasks-70.htm" label="Viewing marker help"/>
+			<topic href="tasks/tasks-71.htm" label="Viewing Javadoc information"/>
+		</topic>
+		<topic href="tasks/tasks-171.htm" label="Using templates"/>
+		<topic href="tasks/tasks-203.htm" label="Writing your own templates"/>
+		<topic href="tasks/tasks-172.htm" label="Converting line delimiters"/>
+		<topic href="tasks/tasks-173.htm" label="Finding and replacing">
+			<topic href="tasks/tasks-181.htm" label="Using the Find/Replace dialog"/>
+			<topic href="tasks/tasks-182.htm" label="Using Incremental Find"/>
+			<topic href="tasks/tasks-187.htm" label="Finding Next or Previous Match"/>
+		</topic>
+		<topic href="tasks/tasks-174.htm" label="Changing the encoding used to show the source"/>
+		<topic href="tasks/tasks-175.htm" label="Using Quick Fix"/>
+		<topic href="tasks/tasks-176.htm" label="Using structured selection"/>
+		<topic href="tasks/tasks-177.htm" label="Commenting and uncommenting lines of code"/>
+		<topic href="tasks/tasks-178.htm" label="Shifting lines of code left and right"/>
+		<topic href="tasks/tasks-179.htm" label="Using Surround with try/catch"/>
+	</topic>
+	
+
+	<topic href="tasks/tasks-206.htm" label="Externalizing Strings">
+		<topic href="tasks/tasks-188.htm" label="Finding strings to externalize"/>
+		<topic href="tasks/tasks-202.htm" label="Finding unused and incorrectly used keys in property files"/>
+		<topic href="tasks/tasks-180.htm" label="Using the Externalize Strings wizard">
+			<topic href="tasks/tasks-189.htm" label="Key/value page"/>
+			<topic href="tasks/tasks-190.htm" label="Property file page"/>
+		</topic>
+	</topic>
+	
+	
+	<topic label="Navigating the JDT workbench">
+		<topic href="tasks/tasks-73.htm" label="Opening an editor for a selected element"/>
+		<topic href="tasks/tasks-74.htm" label="Showing an element in the Package Explorer view"/>
+		<topic href="tasks/tasks-75.htm" label="Opening a type in the Package Explorer view"/>
+		<topic href="tasks/tasks-76.htm" label="Opening an editor on a type"/>
+		<topic href="tasks/tasks-77.htm" label="Opening a package"/>
+		<!--<topic label="Viewing Source in a JAR File" href="tasks/tasks-78.htm"></topic>-->
+		<!--< topic label="Searching Java code" href="tasks/tasks-79.htm"></topic> -->
+	</topic>
+	
+
+	<topic href="tasks/tasks-80.htm" label="Refactoring">
+		<topic label="Refactoring steps">
+			<topic href="tasks/tasks-82.htm" label="Refactoring without preview"/>
+			<topic href="tasks/tasks-83.htm" label="Refactoring with preview"/>
+			<topic href="tasks/tasks-84.htm" label="Previewing refactoring changes"/>
+		</topic>
+		<topic href="tasks/tasks-85.htm" label="Copying and moving Java elements"/>
+		<topic href="tasks/tasks-87.htm" label="Extracting a method">
+			<topic href="tasks/tasks-88.htm" label="Parameters page"/>
+			<topic href="tasks/tasks-89.htm" label="Problems page"/>
+		</topic>
+		<topic href="tasks/tasks-90.htm" label="Renaming a package">
+			<topic href="tasks/tasks-91.htm" label="Parameters page"/>
+		</topic>
+		<topic href="tasks/tasks-92.htm" label="Renaming a compilation unit">
+			<topic href="tasks/tasks-93.htm" label="Parameters page"/>
+		</topic>
+		<topic href="tasks/tasks-94.htm" label="Renaming a class or interface">
+			<topic href="tasks/tasks-95.htm" label="Parameters page"/>
+		</topic>
+		<topic href="tasks/tasks-96.htm" label="Renaming a method">
+			<topic href="tasks/tasks-97.htm" label="Parameters page"/>
+		</topic>
+		<topic href="tasks/tasks-169.htm" label="Renaming a field">
+			<topic href="tasks/tasks-170.htm" label="Parameters page"/>
+		</topic>
+		<topic href="tasks/tasks-204.htm" label="Renaming a local variable">
+			<topic href="tasks/tasks-205.htm" label="Parameters page"/>
+		</topic>
+		<topic href="tasks/tasks-98.htm" label="Renaming method parameters">
+			<topic href="tasks/tasks-99.htm" label="Parameters page"/>
+		</topic>
+		<topic href="tasks/tasks-157.htm" label="Changing method signature">
+			<topic href="tasks/tasks-158.htm" label="Parameters page"/>
+		</topic>
+		<topic href="tasks/tasks-159.htm" label="Extracting a local variable">
+			<topic href="tasks/tasks-160.htm" label="Parameters page"/>
+		</topic>
+		<topic href="tasks/tasks-209.htm" label="Extracting a constant">
+		</topic>
+		<topic href="tasks/tasks-161.htm" label="Inlining a local variable">
+		</topic>
+		<topic href="tasks/tasks-208.htm" label="Inlining a method">
+		</topic>
+		<topic href="tasks/tasks-207.htm" label="Inlining a constant">
+		</topic>
+		<topic href="tasks/tasks-162.htm" label="Self encapsulating a field">
+			<topic href="tasks/tasks-163.htm" label="Parameters page"/>
+		</topic>
+		<topic href="tasks/tasks-164.htm" label="Replacing a local variable with a query">
+		</topic>
+		<topic href="tasks/tasks-165.htm" label="Pulling members up to superclass">
+			<topic href="tasks/tasks-166.htm" label="Parameters page"/>
+		</topic>
+		<topic href="tasks/tasks-220.htm" label="Pushing members down to subclasses">
+		</topic>
+		<topic href="tasks/tasks-167.htm" label="Moving static members between types">
+			<topic href="tasks/tasks-168.htm" label="Parameters page"/>
+		</topic>
+		<topic href="tasks/tasks-210.htm" label="Moving an instance method to a component">
+		</topic>
+		<topic href="tasks/tasks-211.htm" label="Converting a local variable to a field">
+		</topic>
+		<topic href="tasks/tasks-216.htm" label="Converting an anonynous inner class to a nested class">
+		</topic>
+		<topic href="tasks/tasks-217.htm" label="Converting a nested type to a top level type">
+		</topic>
+		<topic href="tasks/tasks-218.htm" label="Extracting an interface from a type">
+		</topic>
+		<topic href="tasks/tasks-219.htm" label="Replacing references to a type with references to one of its supertypes">
+		</topic>
+		
+		<topic href="tasks/tasks-100.htm" label="Undoing a refactoring operation"/>
+		<topic href="tasks/tasks-101.htm" label="Redoing a refactoring operation"/>
+	</topic>
+	
+
+	<topic label="Searching">
+		<topic href="tasks/tasks-103.htm" label="Conducting a Java search using the search dialog"/>
+		<topic href="tasks/tasks-104.htm" label="Conducting a Java search using pop-up menus"/>
+	</topic>
+	
+
+	<topic label="Building">
+		<topic href="tasks/tasks-106.htm" label="Building a Java program">
+			<topic href="tasks/tasks-107.htm" label="Viewing compilation errors and warnings"/>
+			<topic href="tasks/tasks-108.htm" label="Building automatically"/>
+			<topic href="tasks/tasks-109.htm" label="Building manually"/>
+			<topic href="tasks/tasks-109a.htm" label="Building circular projects"/>
+			<topic href="tasks/tasks-109b.htm" label="Building without cleaning output location"/>
+		</topic>
+		<topic href="tasks/tasks-110.htm" label="Working with build paths">
+			<topic href="tasks/tasks-111.htm" label="Viewing and editing a project's build path"/>
+			<topic href="tasks/tasks-112.htm" label="Adding a library folder to the build path"/>
+			<topic href="tasks/tasks-113.htm" label="Adding a JAR file to the build path"/>
+			<topic href="tasks/tasks-114.htm" label="Adding a classpath variable to the build path"/>
+			<topic href="tasks/tasks-115.htm" label="Attaching source to a JAR file"/>
+			<topic href="tasks/tasks-115a.htm" label="Attaching source to a library folder"/>
+			<topic href="tasks/tasks-116.htm" label="Attaching source to a classpath variable"/>
+			<topic href="tasks/tasks-117.htm" label="Defining a class path variable"/>
+			<topic href="tasks/tasks-118.htm" label="Deleting a class path variable"/>
+		</topic>
+		<topic href="tasks/tasks-JREs.htm" label="Working with JREs">
+			<topic href="tasks/tasks-120.htm" label="Assigning the default JRE for the workbench"/>
+			<topic href="tasks/tasks-121.htm" label="Adding a new JRE definition"/>
+			<topic href="tasks/tasks-122.htm" label="Overriding the default system libraries for a JRE definition"/>
+			<topic href="tasks/tasks-123.htm" label="Editing a JRE definition"/>
+			<topic href="tasks/tasks-124.htm" label="Choosing a JRE for launching a project"/>
+			<topic href="tasks/tasks-deleteJRE.htm" label="Deleting a JRE definition">	</topic>
+		</topic>
+	</topic>
+	
+
+	<topic href="tasks/tasks-126.htm" label="Running and debugging">
+		<topic href="tasks/tasks-130.htm" label="Launching a Java program"/>
+		<topic href="tasks/tasks-130a.htm" label="Launching a Java applet"/>
+		<topic href="tasks/tasks-java-local-configuration.htm" label="Creating a Java application launch configuration"/>
+		<topic href="tasks/tasks-executionArgs.htm" label="Setting execution arguments"/>
+		<topic href="tasks/tasks-131.htm" label="Relaunching a program"/>
+		<topic href="concepts/clocdbug.htm" label="Local debugging">
+			<topic href="tasks/tasks-133.htm" label="Preparing to debug"/>
+			<topic href="tasks/tasks-debug-launch.htm" label="Launching a Java program in debug mode"/>
+			<topic href="tasks/tasks-134.htm" label="Suspending threads"/>
+			<topic href="tasks/tasks-135.htm" label="Resuming the execution of suspended threads"/>
+			<topic href="tasks/tasks-136.htm" label="Stepping through the execution of a program"/>
+			<topic href="tasks/tasks-137.htm" label="Inspecting Values"/>
+			<topic href="tasks/tasks-138.htm" label="Evaluating expressions"/>
+		</topic>
+		<topic href="concepts/cremdbug.htm" label="Remote debugging">
+			<topic href="tasks/tasks-141.htm" label="Using the remote Java application launch configuration"/>
+			<topic href="tasks/tasks-142.htm" label="Disconnecting from a VM"/>
+		</topic>
+		<topic href="concepts/cbrkpnts.htm" label="Breakpoints">
+			<topic href="tasks/tasks-144.htm" label="Adding breakpoints"/>
+			<topic href="tasks/tasks-144a.htm" label="Removing breakpoints"/>
+			<topic href="tasks/tasks-144b.htm" label="Enabling and disabling breakpoints"/>
+			<topic href="tasks/tasks-145.htm" label="Setting method breakpoints"/>
+			<topic href="tasks/tasks-146.htm" label="Applying hit counts"/>
+			<topic href="tasks/tasks-144c.htm" label="Managing conditional breakpoints"/>
+			<topic href="tasks/tasks-147.htm" label="Catching Java exceptions"/>
+		</topic>
+	</topic>
+	
+	<topic href="concepts/concepts-11.htm" label="Using the scrapbook">
+		<topic href="tasks/tasks-149.htm" label="Creating a Java scrapbook page"/>
+		<topic href="tasks/tasks-150.htm" label="Inspecting the result of evaluating an expression"/>
+		<topic href="tasks/tasks-151.htm" label="Displaying the result of evaluating an expression"/>
+		<topic href="tasks/tasks-152.htm" label="Running an expression"/>
+		<topic href="tasks/tasks-153.htm" label="Using code assist"/>
+		<topic href="tasks/tasks-154.htm" label="Scrapbook error reporting">
+			<topic href="tasks/tasks-155.htm" label="Viewing compilation errors"/>
+			<topic href="tasks/tasks-156.htm" label="Viewing runtime exceptions"/>
+		</topic>
+	</topic>
+	
+	
+
+</toc>

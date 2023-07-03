@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:element name="tree_data">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element name="error" minOccurs="0" />
+				<xs:element ref="numeric_path" minOccurs="0" maxOccurs="1" />
+				<xs:element name="node"  minOccurs="0" maxOccurs="unbounded">
+					<!--
+						toc node, only difference b/w toc and topic level node is of
+						is_leaf attrb and order of attrb
+					-->
+					<xs:complexType mixed="false">
+						<xs:sequence>
+							<xs:element name="node" type="TopicNode" minOccurs="0" maxOccurs="unbounded" />
+						</xs:sequence>
+						<xs:attribute name="title" type="xs:string" /> <!-- optional attribute for node -->
+						<xs:attribute name="id" type="xs:string" use="required" /> <!-- attribute for node -->
+						<xs:attribute name="href" type="xs:string" use="required" /> <!-- attribute for node -->
+						<xs:attribute name="openImage" type="xs:string" /> <!-- optional attribute for node -->
+						<xs:attribute name="closedImage" type="xs:string" />  <!-- optional attribute for node -->
+						<xs:attribute name="imageAlt" type="xs:string" />  <!-- optional attribute for node -->
+						<xs:attribute name="image" type="xs:string" default="toc_closed" />  <!-- optional attribute for node -->
+						<xs:attribute name="is_selected" type="xs:boolean"
+							default="true" /> <!-- attribute for node -->
+						<xs:attribute name="is_highlighted" type="xs:boolean"
+							default="true" /> <!-- attribute for node -->
+
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="numeric_path">
+		<xs:complexType>
+			<xs:attribute name="path" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+	
+		<xs:complexType name="TopicNode" mixed="false">
+			<xs:sequence>
+				<xs:element name="node" type="TopicNode" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+
+			<xs:attribute name="title" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="id" type="xs:string" use="required" /> <!-- attribute for node -->
+			<xs:attribute name="href" type="xs:string" use="required" /> <!-- attribute for node -->
+			<xs:attribute name="is_leaf" type="xs:boolean" default="true" /> <!-- attribute for node -->
+			<xs:attribute name="is_selected" type="xs:boolean"
+				default="true" /> <!-- attribute for node -->
+			<xs:attribute name="is_highlighted" type="xs:boolean"
+				default="true" /> <!-- attribute for node -->
+			<xs:attribute name="openImage" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="closedImage" type="xs:string" />  <!-- optional attribute for node -->
+			<xs:attribute name="imageAlt" type="xs:string" />  <!-- optional attribute for node -->
+			<xs:attribute name="image" type="xs:string" default="toc_closed" />  <!-- optional attribute for node -->
+
+		</xs:complexType>
+	
+
+</xs:schema>

@@ -1,0 +1,336 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.ui.intro.quicklinks" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.ui.intro.quicklinks" id="org.eclipse.ui.intro.quicklinks" name="Quicklinks Configuration"/>
+      </appinfo>
+      <documentation>
+         This extension point is used to configure the Quicklinks Welcome/Intro viewer component.  Quicklinks are useful actions to be shown to a user in the Welcome/Intro.  The Quicklinks use the Eclipse Core Commands framework (see the &lt;tt&gt;org.eclipse.ui.commands&lt;/tt&gt; extension point), but supports overriding the icon and text to be used for an item.
+
+The Quicklinks is experimental component and is not yet considered API.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="command"/>
+            <element ref="override"/>
+            <element ref="url"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="command">
+      <annotation>
+         <documentation>
+            Defines a Quicklink component.  One of &quot;command&quot; or &quot;url&quot; must be specified.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The command identifier to be invoked.  The command can also be a serialized command to encode command parameters (see ParameterizedCommand#serialize() for details).
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.commands/command/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string">
+            <annotation>
+               <documentation>
+                  The label to be displayed. If unspecified, the command name is used instead.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  A description for the quicklink. If unspecified, use the command&apos;s description.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  The icon to be used for the quicklink.  If unspecified, the command&apos;s associated image is used instead.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="importance">
+            <annotation>
+               <documentation>
+                  Define the level of importance of this item.  If unspecified, defaults to &quot;low&quot;.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="high">
+                  </enumeration>
+                  <enumeration value="medium">
+                  </enumeration>
+                  <enumeration value="low">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="resolution">
+            <annotation>
+               <documentation>
+                  What should happen to the Welcome view after executing the command.
+If &quot;full&quot; or unspecified, the Welcome/Intro part will be put into full visual mode.
+If &quot;standby&quot;  (the default), the Welcome/Intro part will be put into standby mode.
+If &quot;launchbar&quot;, the Welcome/Intro will be put into &apos;launchbar&apos; mode in the status area.
+If &quot;close&quot; then the Welcome/Intro will be closed.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="standby">
+                  </enumeration>
+                  <enumeration value="launchbar">
+                  </enumeration>
+                  <enumeration value="close">
+                  </enumeration>
+                  <enumeration value="full">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="url">
+      <annotation>
+         <documentation>
+            Defines a URL Quicklink component.  URL Quicklinks must provide a label and it is recommended to provide an icon and description
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="location" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The URL to be invoked.  The URL can either be an Intro URL or an external URL.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The label to be displayed. If unspecified, the command name is used instead.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A description for the quicklink. If unspecified, use the command&apos;s description.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  The icon to be used for the quicklink.  If unspecified, the command&apos;s associated image is used instead.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="importance">
+            <annotation>
+               <documentation>
+                  Define the level of importance of this item.  If unspecified, defaults to &quot;low&quot;.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="high">
+                  </enumeration>
+                  <enumeration value="medium">
+                  </enumeration>
+                  <enumeration value="low">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="override">
+      <annotation>
+         <documentation>
+            Provide a mechanism for a theme to override the icons used to represent a command in a quicklink.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="command" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The command identifier as referenced in a &amp;lt;quicklink&amp;gt; element.  The command can also be a serialized command to encode command parameters (see ParameterizedCommand#serialize() for details).  The command may include simple &apos;*&apos; wildcards to match any substring.  For example, &lt;code&gt;org.eclipse.ui.newWizard*&lt;/code&gt; will match any &quot;New&quot; wizard definitions.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.commands/command/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="theme" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The theme identifier. May be a comma-separated set of values.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.intro.configExtension/theme/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The icon to be used for representing this command.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         Quicklinks first appeared in the Eclipse Platform 4.6, part of the Neon release train.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         Here is an example of configuring a Quicklink:
+&lt;pre&gt;
+   &lt;extension
+         point=&quot;org.eclipse.ui.intro.quicklinks&quot;&gt;
+      &lt;!-- Reuses command definition label and icons --&gt;
+      &lt;quicklink
+            command=&quot;org.eclipse.epp.mpc.ui.command.showMarketplaceWizard&quot;
+            icon=&quot;icons/mpcdrag.png&quot;&gt;
+      &lt;/quicklink&gt;
+      
+      &lt;!-- Invoke a particular new wizard; place the Welcome/Intro in Standby mode on success --&gt;
+      &lt;quicklink
+            command=&quot;org.eclipse.ui.newWizard(newWizardId=org.eclipse.jdt.ui.wizards.JavaProjectWizard)&quot;
+            description=&quot;Create a new Java Eclipse project&quot;
+            label=&quot;Create a new Java project&quot;
+            standby=&quot;true&quot;&gt;
+      &lt;/quicklink&gt;
+      
+      &lt;!-- Allow overriding theme and icons for all newWizard-related commands --&gt;
+      &lt;override
+            command=&quot;org.eclipse.ui.newWizard*&quot;
+            icon=&quot;icons/solstice/new-project.png&quot;
+            theme=&quot;org.eclipse.ui.intro.universal.solstice&quot;&gt;
+      &lt;/override&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;p&gt;
+Quicklinks are shown using the Quicklinks Viewer Component in a &lt;tt&gt;introContent.xml&lt;/tt&gt; definition.
+&lt;/p&gt;
+&lt;pre&gt;
+ &lt;extensionContent id=&quot;quicklinks&quot; name=&quot;Quick Actions&quot; path=&quot;root/extra-group2/anchor&quot;&gt;
+        &lt;contentProvider 
+         pluginId=&quot;org.eclipse.ui.intro.quicklinks&quot;
+         class=&quot;org.eclipse.ui.intro.quicklinks.QuicklinksViewer&quot;
+         id=&quot;quick-links&quot;&gt;
+        &lt;/contentProvider&gt;
+    &lt;/extensionContent&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         Quicklinks are still experimental and not yet considered API.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         Quicklinks are still experimental and not yet considered API.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2016, 2017 Manumitting Technologies Inc and others.
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<!-- ========================== -->
+<!-- Define topics for the Tasks -->
+<!-- ========================== -->
+<toc label="Tasks">
+
+	<topic label="Customizing the debugger and console" >
+		<topic label="Changing the active perspective when launching" href="tasks/tasks-9.htm"></topic>
+		<topic label="Changing the appearance of the console view" href="tasks/tasks-consoleAppearance.htm"></topic>
+	</topic>
+	<anchor id="t_appearancejava" />
+
+	<topic label="Creating JAR Files" href="tasks/tasks-32.htm">
+		<topic label="Creating a new JAR file" href="tasks/tasks-33.htm"></topic>
+		<topic label="Setting advanced options" href="tasks/tasks-34.htm"></topic>
+		<topic label="Defining the JAR file&apos;s manifest" href="tasks/tasks-35.htm"></topic>
+		<topic label="Regenerating a JAR File" href="tasks/tasks-36.htm"></topic>
+	</topic>
+	<anchor id="t_createjar" />
+
+	<topic label="Creating Javadoc documentation" href="tasks/tasks-196.htm">
+		<topic label="Selecting types for Javadoc generation" href="tasks/tasks-199.htm"></topic>	
+		<topic label="Configuring Javadoc arguments for standard doclet" href="tasks/tasks-200.htm"></topic>	
+		<topic label="Configuring Javadoc arguments" href="tasks/tasks-201.htm"></topic>	
+	</topic>
+	<anchor id="t_createjavadoc" />
+
+	<topic label="Using the local history" href="tasks/tasks-62.htm">
+		<topic label="Comparing a Java element with a local history edition" href="tasks/tasks-63a.htm"></topic>
+		<topic label="Replacing a Java element with a local history edition" href="tasks/tasks-63.htm"></topic>
+		<topic label="Restoring a deleted workbench element" href="tasks/tasks-64.htm"></topic>
+	</topic>
+	<anchor id="t_localhistory" />
+
+	<topic label="Externalizing Strings" href="tasks/tasks-206.htm">
+		<topic label="Finding strings to externalize" href="tasks/tasks-188.htm"></topic>
+		<topic label="Finding unused and incorrectly used keys in property files" href="tasks/tasks-202.htm"></topic>
+	</topic>
+	<anchor id="t_externalizingstrings" />
+	
+	<topic label="Navigating the workbench" >
+		<topic label="Opening an editor for a selected element" href="tasks/tasks-73.htm"></topic>
+		<topic label="Showing an element in the Package Explorer view" href="tasks/tasks-74.htm"></topic>
+		<topic label="Opening a type in the Package Explorer view" href="tasks/tasks-75.htm"></topic>
+		<topic label="Opening an editor on a type" href="tasks/tasks-76.htm"></topic>
+		<topic label="Opening a package" href="tasks/tasks-77.htm"></topic>
+		<!--<topic label="Viewing Source in a JAR File" href="tasks/tasks-78.htm"></topic>-->
+		<!--< topic label="Searching Java code" href="tasks/tasks-79.htm"></topic> -->
+	</topic>
+	<anchor id="t_navigatingjdt" />
+
+	<topic label="Refactoring" >
+		<topic label="Creating a refactoring script" href="tasks/tasks-240.htm"></topic>
+		<topic label="Applying a refactoring script" href="tasks/tasks-241.htm"></topic>
+		<topic label="Browsing the refactoring history" href="tasks/tasks-242.htm"></topic>
+	</topic>
+	<anchor id="t_refactoringjdt" />
+
+	<topic label="Working with JREs" href="tasks/tasks-JREs.htm">
+		<topic label="Assigning the default JRE for the workbench" href="tasks/task-assign_default_jre.htm"></topic>
+		<topic label="Adding a new JRE definition" href="tasks/task-add_new_jre.htm"></topic>
+		<topic label="Choosing a JRE for launching a project" href="tasks/task-choose_config_jre.htm"></topic>
+		<topic label="Deleting a JRE definition" href="tasks/tasks-deleteJRE.htm">	</topic>
+	</topic>
+	<anchor id="t_buildingjdt" />
+
+	<topic label="Running and Debugging" href="tasks/task-running_and_debugging.htm">
+		<topic label="Breakpoints" href="concepts/cbrkpnts.htm">
+			<topic label="Adding Line Breakpoints" href="tasks/task-add_line_breakpoints.htm"></topic>
+			<topic label="Removing Line Breakpoints" href="tasks/task-remove_line_breakpoints.htm"></topic>
+			<topic label="Enabling and Disabling Breakpoints" href="tasks/task-enable_disable_breakpoints.htm"></topic>
+			<topic label="Setting Method Breakpoints" href="tasks/task-set_method_breakpoints.htm"></topic>
+			<topic label="Applying Hit Counts" href="tasks/task-apply_hit_count.htm"></topic>
+			<topic label="Managing Conditional Breakpoints" href="tasks/task-manage_conditional_breakpoint.htm"></topic>
+			<topic label="Catching Java Exceptions" href="tasks/task-catching_exceptions.htm"></topic>
+		</topic>
+		<topic label="Local Debugging" href="concepts/clocdbug.htm">
+			<topic label="Preparing to Debug" href="tasks/task-preparing_to_debug.htm"></topic>
+			<topic label="Launching a Java program in Debug Mode" href="tasks/tasks-debug-launch.htm"></topic>
+			<topic label="Suspending Threads" href="tasks/task-suspending_threads.htm"></topic>
+			<topic label="Resuming Threads" href="tasks/task-resuming_threads.htm"></topic>
+			<topic label="Stepping through the execution of a program" href="tasks/task-stepping.htm"></topic>
+			<topic label="Inspecting Values" href="tasks/task-inspecting.htm"></topic>
+			<topic label="Evaluating expressions" href="tasks/task-evaluating_expressions.htm"></topic>
+		</topic>
+		<topic label="Remote Debugging" href="concepts/cremdbug.htm">
+			<topic label="Using the remote Java application launch configuration" href="tasks/task-remotejava_launch_config.htm"></topic>
+			<topic label="Disconnecting from a VM" href="tasks/task-disconnect_remote_debug.htm"></topic>
+		</topic>
+		<topic label="Creating a Java application launch configuration" href="tasks/tasks-java-local-configuration.htm"></topic>
+		<topic label="Launching a Java program" href="tasks/task-launching_java_program.htm"></topic>
+		<topic label="Launching a Java applet" href="tasks/task-launching_java_applet.htm"></topic>
+		<topic label="Setting execution arguments" href="tasks/tasks-executionArgs.htm"></topic>
+		<topic label="Relaunching a program" href="tasks/task-relaunch_program.htm"></topic>
+		
+	</topic>
+	
+	<topic label="Using the scrapbook" href="concepts/cscrapbook.htm">
+		<topic label="Creating a Java Scrapbook Page" href="tasks/task-create_scrapbook_page.htm"></topic>
+		<topic label="Inspecting the result of evaluating an expression" href="tasks/task-inspect_evaluation_result.htm"></topic>
+		<topic label="Displaying the result of evaluating an expression" href="tasks/task-display_evaluation_result.htm"></topic>
+		<topic label="Running an expression" href="tasks/task-executing_an_expression.htm"></topic>
+		<topic label="Using code assist" href="tasks/task-scrapbook_content_assist.htm"></topic>
+		<topic label="Scrapbook error reporting" href="tasks/task-scrapbook_error_reporting.htm">
+			<topic label="Viewing compilation errors" href="tasks/task-view_compilation_errors.htm"></topic>
+			<topic label="Viewing runtime exceptions" href="tasks/task-view_runtime_exceptions.htm"></topic>
+		</topic>
+	</topic>
+	<anchor id="t_scrapbook" />
+	<topic label="Using the Formatter Application" href="tasks/tasks-230.htm">
+			<topic label="Running the Formatter Application" href="tasks/tasks-231.htm"></topic>
+			<topic label="Generating a config file for the Formatter Application" href="tasks/tasks-232.htm"></topic>
+	</topic>
+	
+</toc>

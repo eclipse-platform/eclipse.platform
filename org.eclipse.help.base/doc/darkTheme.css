@@ -1,0 +1,26 @@
+@media (prefers-color-scheme: dark) {
+	body { 
+		color: #f0f0f0; 
+		background: #3d3d3d;
+	} 
+	a {
+		color:#ffffff;
+	}
+	a.active{ 
+		color:#ffffff;
+	}
+	
+	a.nolink:link, 
+	a.nolink:visited {
+		color:#ffffff;
+	}
+	
+	/* darken images to add some comfort while reading in dark theme */
+	img {
+		opacity: .75;
+		transition: opacity .5s ease-in-out;
+	}
+	img:hover {
+		opacity: 1;
+	}
+}

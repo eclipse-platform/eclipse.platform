@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Help content</title>
+</head>
+<body>
+
+<h2>The Help Menu</h2>
+
+<p>The Eclipse Platform and SDK contain menu items for Help Contents, Search and 
+Dynamic Help. A menu item to show the keyword index can be added to the help 
+menu in an Eclipse based product by adding the following extension point to the 
+plugin.xml file of the product plugin. The same approach will work equally well 
+for a Rich Client application.</p>
+<p><br>
+&lt;extension point=&quot;org.eclipse.ui.menus&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;menuContribution locationURI=&quot;menu:help?before=group.assist&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;command commandId=&quot;org.eclipse.help.ui.indexcommand&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+mnemonic=&quot;I&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+style=&quot;push&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/command&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/menuContribution&gt;<br>
+&lt;/extension&gt;</p>
+
+<pre>
+</pre>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cheatsheet
+      title="Hello World Demo with Subitems">
+   <item
+         title="Introduction"
+         description="Welcome to the hello world cheat sheet.
+This cheat sheet will help you to build the famous "hello world" application and try it out. You will create a java project, and a java class that will print "hello world" in the console when run.
+Let's get started!"
+         Href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm"
+         contextId="null">
+      <nullAction/>
+      <nullList/>
+      <nullPerformWhen/>
+      <nullList/>
+   </item>
+   <list>
+      <item
+            title="Open the Java Perspective"
+            description="To begin, open the Java Perspective in the Eclipse workbench.  
+You may do this by clicking window->open perspective->Java in the toolbar at the top of the 
+workbench.  When you have done this, press the "click when done" button below."
+            Href="/org.eclipse.platform.doc.user/concepts/concepts-4.htm"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Create java resources"
+            description="The first thing you will need is a Java Project.
+If you already have a java project in your workspace that you would like to use, you may skip this step by pressing the "skip" button.  If not, you may press the "click to perform" button to spawn the New Java Project wizard."
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <list>
+            <subItem
+                  label="Create a java project"
+                  when="null"
+                  isSkip="true">
+               <action
+                     class="org.eclipse.ui.examples.cheatsheets.pattern.actions.OpenJavaProjectWizard"
+                     pluginId="org.eclipse.ua.tests"
+                     when="null"
+                     isConfirm="false">
+                  <nullArray/>
+               </action>
+               <nullPerformWhen/>
+            </subItem>
+            <subItem
+                  label="Create your HelloWorld class"
+                  when="null"
+                  isSkip="false">
+               <action
+                     class="org.eclipse.ui.examples.cheatsheets.pattern.actions.OpenJavaClassWizardWithMain"
+                     pluginId="org.eclipse.ua.tests"
+                     when="null"
+                     isConfirm="true">
+                  <nullArray/>
+               </action>
+               <nullPerformWhen/>
+            </subItem>
+         </list>
+      </item>
+      <item
+            title="Add a System.out.println line in your main method"
+            description="Now that you have your HelloWorld class,
+In the "public static void main" method, add the following statement:  System.out.println("Hello world!"); and save your changes.  Press the "click when done" button below when finished."
+            Href="/org.eclipse.jdt.doc.user/tasks/tasks-54.htm"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Test your application"
+            description="The final moment has arrived!  You are ready to test your HelloWorld class.
+Select your class in the package explorer (the java tree view on the left of the workbench window in the Java Perspective.).  When your HelloWorld class is selected, press the down arrow beside the running man icon in the toolbar and select run as->application.  Hello world! should be printed in your "Console" view.  
+Congratulations!  You have built your hello world application and it worked!"
+            Href="/org.eclipse.jdt.doc.user/gettingStarted/qs-12.htm"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+   </list>
+</cheatsheet>

@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.help" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.help" id="contexts" name="Contexts"/>
+      </appInfo>
+      <documentation>
+         For defining context-sensitive help for an individual plug-in.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="contexts"/>
+            <element ref="contextProvider"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="contexts">
+      <annotation>
+         <documentation>
+            a context-sensitive help contribution made by supplying an XML file
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="file" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the manifest file which contains the context-sensitive help documentation for this plug-in.
+&lt;p&gt;
+&lt;i&gt;&lt;b&gt;Configuration Markup for what goes into the
+contexts manifest file:&lt;/b&gt;&lt;/i&gt;
+&lt;p&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT contexts (context)* ) &gt;&lt;/tt&gt;
+&lt;p&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT context (description?,topic*) &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST context 
+&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id CDATA #REQUIRED
+&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;title CDATA #IMPLIED &gt;&lt;/tt&gt;
+&lt;p&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT description (#PCDATA)&gt;&lt;/tt&gt;
+&lt;p&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT topic EMPTY &gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST topic 
+&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;label CDATA #REQUIRED &lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;href CDATA #REQUIRED &gt;&lt;/tt&gt;
+&lt;p&gt;The contexts manifest files provide all the information needed when
+context-sensitive help is requested by the user. The id is passed by the
+platform to the help system to identify the currently active context.The context definitions with matching IDs are then retrieved. If a title is defined it will be used when context help is displayed in the Help view, both as the title in the related topics section and also as
+the search term in the &quot;More results&quot; section. The IDs in the manifest file, must not contain the period character, since the IDs are uniquely identified by pluginID.contextID string when in memory.  The IContext object is then created by help system that contains descriptions and topics from all context definitions for a given ID in a plug-in.&amp;nbsp; The description is to be displayed to the user, and
+related topics might be useful to the user for understanding the current
+context.&amp;nbsp; The related topic are html files packaged in doc.zip, together
+with topics that are part of on line help.
+&lt;/p&gt;
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="plugin" type="string">
+            <annotation>
+               <documentation>
+                  Plugin to which its context definitions are extended with extra information.
+&lt;p&gt;If a plugin defines some context id&apos;s, one can extend the description or related links of a context by declaring another context with the same id.&lt;/p&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="contextProvider">
+      <annotation>
+         <documentation>
+            (&lt;b&gt;since 3.3&lt;/b&gt;) a context-sensitive help contribution made by supplying a java class to generate the content at run-time
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the implementation class for the context-sensitive help provider. This class must implement the &lt;samp&gt;org.eclipse.help.AbstractContextProvider&lt;/samp&gt; interface.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.AbstractContextProvider"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of using the contexts 
+extension point: 
+&lt;br&gt;
+(in file &lt;tt&gt;plugin.xml&lt;/tt&gt;)
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension point=&quot;org.eclipse.help.contexts&quot;&gt; 
+      &lt;contexts file=&quot;xyzContexts.xml&quot;/&gt; 
+   &lt;/extension&gt; 
+&lt;/pre&gt;
+&lt;/p&gt;
+
+&lt;p&gt;(in file &lt;tt&gt;xyzContexts.xml&lt;/tt&gt;)
+&lt;p&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;contexts&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;context&amp;nbsp; id=&quot;generalContextId&quot;&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;description&gt; This
+is a sample F1 help string.&amp;lt;/description&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;topic href=&quot;contexts/RelatedContext1.html&quot;&amp;nbsp;
+label=&quot;Help Related Topic 1&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;topic href=&quot;contexts/RelatedContext2.html&quot;&amp;nbsp;
+label=&quot;Help Related Topic 2&quot;/&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/context&gt;&lt;/tt&gt;
+&lt;br&gt;&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/contexts&gt;&lt;/tt&gt;
+&lt;br&gt;&amp;nbsp;
+&lt;/p&gt;
+
+&lt;b&gt;&lt;em&gt;Externalizing Strings&lt;/em&gt;&lt;/b&gt;
+The Context XML files can be translated and the resulting copy (with translated
+descriptions labels) should be placed in nl/&amp;lt;language&gt;/&amp;lt;country&gt;
+or nl/&amp;lt;language&gt; directory.&amp;nbsp; The &amp;lt;language&gt; and &amp;lt;country&gt;
+stand for two letter language and country codes as used in locale codes.&amp;nbsp;
+For example, Traditional Chinese translations should be placed in the nl/zh/TW
+directory.&amp;nbsp; The nl/&amp;lt;language&gt;/&amp;lt;country&gt; directory has a higher
+priority than nl/&amp;lt;language&gt;.&amp;nbsp; Only if no file is found in the nl/&amp;lt;language&gt;/&amp;lt;country&gt;,
+the file residing in nl/&amp;lt;language&gt; will be used.&amp;nbsp; The the root
+directory of a plugin will be searched last.
+&lt;p&gt;The related topics contained in doc.zip can be localized by creating
+a doc.zip file with translated version of documents, and placing doc.zip
+in
+&lt;br&gt;nl/&amp;lt;language&gt;/&amp;lt;country&gt; or nl/&amp;lt;language&gt; directory. The help
+system will look for the files under this directories before defaulting
+to plugin directory.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         An implementation of &lt;samp&gt;org.eclipse.help.AbstractContextProvider&lt;/samp&gt; must be supplied if a &lt;samp&gt;contextProvider&lt;/samp&gt; is used.
+      </documentation>
+   </annotation>
+
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The default implementation of the help system UI supplied with the Eclipse platform fully supports this extension point.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2000, 2006 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

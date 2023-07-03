@@ -1,0 +1,378 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.help.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.help.ui" id="searchEngine" name="Search Engine"/>
+      </appinfo>
+      <documentation>
+         This extension point is used to plug in search participants in the federated help search. Each search engine can be configured individually. When search is initiated, each search engine is executed as a background job, and the results are collated in the help view immediately under the query.
+&lt;p&gt;Search engines defined here will not automatically show up as federated search participants until engine product binding is established, unless &lt;code&gt;productId&lt;/code&gt; attribute is left undefined. For engines that define it, only thouse bound to a particular product will show up when that product is running.
+&lt;p&gt;
+Search engines can simply compose a URL and provide only one hit containing that URL as href. Popular search engines for which API support requires license can be plugged in like this. On the other end of the spectrum, search engines can communicate with the server and receive individual hits with information like label, href, short description, score etc. Local help engine can produce hits this way.
+&lt;p&gt;Regardless of the search mechanism, engines can provide various search scope settings using JFace preference pages. These pages are shown when &apos;Advanced Settings&apos; link is followed from the Help view. In addition to root preference pages defined with the engine, additional preference sub-pages can be plugged in for more advanced settings.
+&lt;p&gt;Scope settings are loaded and stored using &lt;code&gt;IPreferenceStore&lt;/code&gt; objects. Scope settings for all engines are grouped together under a named &lt;b&gt;scope set&lt;/b&gt;. When first opened, default scope set (&apos;Default&apos;) is created, but users can define more scope sets and flip between them.
+&lt;p&gt;Since federated search support is part of &lt;code&gt;org.eclipse.help.base&lt;/code&gt; plug-in, a factory is needed to create search scope objects from the data in the preference store. Clients that plug in scope preference pages are required to plug in scope factories as well.
+&lt;p&gt;Engines defined in this extension point do not show up in the UI by default. What is shown there is a concrete &lt;b&gt;instance&lt;/b&gt;
+of a search engine that can be individually modified. Products can preconfigure the help system with a number of instances of the registered engine types, possibly parametrized to perform in a desired way. In addition, users can add their own instances of the registered engines and configure them to their liking.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="engine"/>
+            <element ref="engineType"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="engineType">
+      <annotation>
+         <appinfo>
+            <meta.element labelAttribute="label" icon="icon"/>
+         </appinfo>
+         <documentation>
+            defines a particular type of a search engine. Search engine type can be used to create concrete engine instances either by the user or pre-loaded by the product. In order to be useful, engine types must be configurable so that a number of engines can be created using a single engine type.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="description" minOccurs="0" maxOccurs="1"/>
+            <element ref="subpage" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique name of the search engine type
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a translatable name of the search engine type
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  a 16x16 image that will be used to visually represent this engine type
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified name of the class that implements &lt;code&gt;org.eclipse.help.search.ISearchEngine&lt;/code&gt;. The class is responsible for searching based on a given query and scope.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.search.ISearchEngine"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="pageClass" type="string">
+            <annotation>
+               <documentation>
+                  a fully qualified name of the class that extends &lt;code&gt;org.eclipse.help.ui.RootScopePage&lt;/code&gt; class. This page holds the master switch for the search engine and is typically used to host widgets used to narrow down the search scope for the engine.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.ui.RootScopePage"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="scopeFactory" type="string">
+            <annotation>
+               <documentation>
+                  a fully qualified name of the class that implements &lt;code&gt;org.eclipse.help.ui.ISearchScopeFactory&lt;/code&gt;. The factory is responsible for creating ISearchScope objects from settings stored in &lt;code&gt;IPreferenceStore&lt;/code&gt; class. If &lt;code&gt;pageClass&lt;/code&gt; is specified, scope factory must be specified as well.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.ui.ISearchScopeFactory"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="description" type="string">
+      <annotation>
+         <appinfo>
+            <meta.element translatable="true"/>
+         </appinfo>
+         <documentation>
+            a short description of the search engine
+         </documentation>
+      </annotation>
+   </element>
+
+   <element name="subpage">
+      <annotation>
+         <appinfo>
+            <meta.element labelAttribute="label"/>
+         </appinfo>
+         <documentation>
+            a child page to the root scope preference page defined in the &lt;code&gt;engine&lt;/code&gt; element. If &lt;code&gt;pageClass&lt;/code&gt; engine attribute is not defined, sub-pages will be ignored.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier of this page
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a translatable name of this page
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  a fully qualified name of a class that implements &lt;code&gt;org.eclipse.help.ui.ISearchScopePage&lt;/code&gt; interface.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.ui.ISearchScopePage"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="category" type="string" use="required">
+            <annotation>
+               <documentation>
+                  id of the parent subpage or engine id if the parent is the root page.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="engine">
+      <annotation>
+         <documentation>
+            Specifies a concrete instance of a particular search engine type. Instance may be bound to the product in order to show up only when that product is active. Engine can have its own label and description. If not specified, engine type data will be used. Finally, each engine type defines a valid set of parameters that can be passed to it to configure it. Engines can specify values of these parameters.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="description" minOccurs="0" maxOccurs="1"/>
+            <element ref="param" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="productId" type="string">
+            <annotation>
+               <documentation>
+                  used to determine which engine is appropriate for the current product (as defined by &lt;code&gt;org.eclipse.core.runtime.Platform.getProduct()&lt;/code&gt;). If not specified, the engine will appear for all the products.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.core.runtime.products/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="engineTypeId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the unique identifier of a valid seach engine type
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.help.ui.searchEngine/engineType/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="enabled" type="boolean">
+            <annotation>
+               <documentation>
+                  if &lt;code&gt;true&lt;/code&gt;, the engine will initially be enabled. Users can override this value in the UI.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string">
+            <annotation>
+               <documentation>
+                  an optional label for this engine. If not specified, the label of the engine type will be used
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier of this engine
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="param">
+      <annotation>
+         <appinfo>
+            <meta.element labelAttribute="name"/>
+         </appinfo>
+         <documentation>
+            an optional parameter that is used to configure this instance of a search engine type. Valid parameters are defined by the engine type.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the parameter
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the value of the parameter
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.1
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following is the example of the help search extension:
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension
+         point=&quot;org.eclipse.help.ui.searchEngine&quot;&gt;
+      &lt;engineType
+            scopeFactory=&quot;com.example.xyz.XYZScopeFactory&quot;
+            label=&quot;XYZ Search&quot;
+            class=&quot;com.example.xyz.search.XYZSearch&quot;
+            icon=&quot;icons/etool16/xyzsearch.gif&quot;
+           pageClass=&quot;com.example.xyz.search.XYZSearchPage&quot;
+            id=&quot;com.example.xyz.XYZSearch&quot;&gt;
+         &lt;description&gt;
+            Instances of XYZ Search search the XYZ site.
+         &lt;/description&gt;
+      &lt;/engineType&gt;
+      &lt;engine
+            enabled=&quot;true&quot;
+            engineTypeId=&quot;com.example.xyz.search.XYZSearch&quot;
+            id=&quot;com.example.xyz.XYZSearch&quot;
+            label=&quot;XYZ Search&quot;&gt;
+      &lt;/engine&gt;
+      &lt;engine
+            enabled=&quot;true&quot;
+            engineTypeId=&quot;org.eclipse.help.ui.web&quot;
+            id=&quot;org.eclipse.sdk.Eclipse&quot;
+            label=&quot;%search.Eclipse.label&quot;&gt;
+        &lt;description&gt;
+         %search.Eclipse.desc
+        &lt;/description&gt;
+        &lt;param 
+         name=&quot;url&quot; 
+         value=&quot;http://eclipse.org/search/search.cgi?q={expression}&amp;amp;ul=&amp;amp;ps=20&amp;amp;m=all&quot;&gt;
+        &lt;/param&gt;
+      &lt;/engine&gt;
+    &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         Attribute &lt;code&gt;class&lt;/code&gt; of the element &lt;code&gt;engineType&lt;/code&gt; must provide a fully qualified name of the class that implements &lt;code&gt;org.eclipse.help.search.ISearchEngine&lt;/code&gt;. Attribute &lt;code&gt;pageClass&lt;/code&gt; must provide a fully qualified name of the class that extends &lt;code&gt;org.eclipse.help.ui.RootScopePage&lt;/code&gt;. Attribute &lt;code&gt;scopeFactory&lt;/code&gt; must provide a fully qualified name of the class that implements &lt;code&gt;org.eclipse.help.ui.ISearchScopeFactory&lt;/code&gt;.
+
+Attribute &lt;code&gt;class&lt;/code&gt; of the element &lt;code&gt;subpage&lt;/code&gt; must provide a fully qualified name of a class that implements &lt;code&gt;org.eclipse.help.ui.ISearchScopePage&lt;/code&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         Help UI plug-in provides search engine types for local help documentation, InfoCenter and Web search, as well as local help search engine instance. This instance does not accept parameters and has no product Id, thus will appear in every product.
+&lt;p&gt;
+Products can create concrete instances of InfoCenter and Web searches by using their engine id and the required paramaters.
+&lt;p&gt;
+InfoCenter engine type has engineId &lt;code&gt;org.eclipse.help.ui.infoCenter&lt;/code&gt; and accepts one parameter &lt;code&gt;url&lt;/code&gt; that points at the remote server where InfoCenter is installed. Results are shown in the same way as the local help results.
+&lt;p&gt;
+Web search engine type has engine id &lt;code&gt;org.eclipse.help.ui.web&lt;/code&gt; and accepts one parameter &lt;code&gt;url&lt;/code&gt; that represents a concrete search query with the actual search string replaced with a substitution symbol &apos;{expression}&apos;, as in the following example:
+&lt;p&gt;
+&lt;pre&gt;
+http://eclipse.org/search/search.cgi?q={expression}&amp;ul=&amp;ps=20&amp;m=all
+&lt;/pre&gt;
+&lt;/p&gt;
+Web search results are shown as one link that will open the web browser with the search string substituted in the &lt;code&gt;url&lt;/code&gt; parameter.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2000, 2005 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

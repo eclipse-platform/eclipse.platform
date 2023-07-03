@@ -1,0 +1,97 @@
+/*******************************************************************************
+ * Copyright (c) 2000, 2004 IBM Corporation and others.
+ *
+ * This program and the accompanying materials 
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * 
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+BODY {
+	color:WindowText;
+	font: <%=prefs.getViewFont()%>;
+	font-size: .875rem;
+	margin-top:5px;
+	margin-<%=isRTL?"right":"left"%>:5px;
+	padding:0;
+	border:0;
+	cursor:default;
+}
+
+A {
+	text-decoration:none; 
+	color:WindowText; 
+	padding:0px;
+	white-space: nowrap;
+}
+
+A:hover {
+	text-decoration:underline; 
+}
+
+IMG {
+	border:0px;
+	margin:0px;
+	padding:0px;
+	margin-<%=isRTL?"left":"right"%>:4px;
+}
+
+TABLE {
+	font: <%=prefs.getViewFont()%>;
+	font-size: .875rem;
+	width:100%;
+}
+
+.list {
+	padding:2px;
+}
+
+.sectiontitle {
+	background-color: <%=prefs.getToolbarBackground()%>;
+	font-weight:bold;
+	margin-top:7px;
+}
+     
+.active { 
+	background:Highlight;
+	color:HighlightText;
+	width:100%;
+	height:100%;
+}
+
+.label {
+	margin-<%=isRTL?"right":"left"%>:4px;
+}
+
+#menu {
+	position:absolute;
+	display:none;
+	background:<%=prefs.getToolbarBackground()%>;
+	border:2px outset;
+	padding:2px 0px;
+}
+
+.selectedMenuItem {
+	background:Highlight;
+	color:HighlightText;
+	padding-left:10px;
+	padding-right:10px;
+}
+
+.unselectedMenuItem {
+	background:<%=prefs.getToolbarBackground()%>;
+	color:WindowText;
+	padding-left:10px;
+	padding-right:10px;
+}
+
+.score {
+	padding-<%=isRTL?"left":"right"%>:5px;
+}
+
+<%@ include file="darkTheme.css"%>

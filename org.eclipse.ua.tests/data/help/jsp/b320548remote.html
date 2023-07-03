@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Bug 320548 -  [Webapp][Security] Ability to read files not in bundles</title>
+	<script type="text/javascript" src="server.js"></script>
+	<script type="text/javascript">
+	    function loadhandler() {
+            showHelpPath();
+            patchAnchors();
+        }
+
+	</script>
+</head>
+
+<body onload = "loadhandler()">
+<h1> Bug 320548 -  [Webapp][Security] Ability to read files not in bundles</h1>
+
+<h3 id="path">
+</h3>
+This bug is Windows only so should be tested on the Eclipse 
+workbench on Windows. Note that if none of the plug-ins listed below
+is present in the product the failure will not occur, however that does
+not mean that the bug is not present.
+<ol>
+<li>Create a file C:\temp.txt containing the text "Temp file".</li>
+<li>Now click on each of the links below, if any causes the line "Temp File" to be displayed 
+it means the bug is present.
+</ul>
+<br>
+<a href = "../../../../org.eclipse.ui.intro.universal/..\..\..\..\..\..\..\..\temp.txt" >D1 org.eclipse.ui.intro.universal</a>
+<br>
+<a href = "../../../../org.eclipse.platform/..\..\..\..\..\..\..\..\..\temp.txt" >D2 org.eclipse.ui.platform</a>
+<br>
+<a href = "../../../../org.eclipse.ui.workbench.compatibility/..\..\..\..\..\..\..\..\..\temp.txt" >D3 org.eclipse.ui.workbench.compatibility</a>
+
+</body>
+</html>

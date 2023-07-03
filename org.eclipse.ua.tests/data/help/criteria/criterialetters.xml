@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<!--
+     Copyright (c) 2005, 2009 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<toc label="Tests for criteria" link_to="data/help/toc/root.xml#content">
+	<topic label="Tests for criteria">
+    <topic label="Topic">
+    </topic>
+    <topic href="data/help/criteria/page_b.htm" label="Page b">
+    </topic>
+    <topic href="data/help/criteria/page_c.htm" label="Page c">
+    </topic>
+    <topic href="data/help/criteria/page_k.htm" label="Page k">
+    </topic>
+    <topic href="data/help/criteria/page_t.htm" label="Page t">
+    </topic>
+    <topic href="data/help/criteria/page_v.htm" label="Page v">
+    </topic>
+    <topic href="data/help/criteria/page_a.htm" label="Page a">
+    </topic>
+	</topic>
+</toc>

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="org.eclipse.help.base" version="2">
+    <resource path="META-INF/MANIFEST.MF">
+        <filter id="927989779">
+            <message_arguments>
+                <message_argument value="3.6.0"/>
+                <message_argument value="org.apache.lucene"/>
+            </message_arguments>
+        </filter>
+        <filter id="927989779">
+            <message_arguments>
+                <message_argument value="3.6.100"/>
+                <message_argument value="org.apache.lucene"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.analysis.de.WordlistLoader">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.de.WordlistLoader"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.de.WordlistLoader"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.analysis.standard.CharStream">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.CharStream"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.CharStream"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.analysis.standard.FastCharStream">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.FastCharStream"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.FastCharStream"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.analysis.standard.ParseException">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.ParseException"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.ParseException"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.analysis.standard.StandardTokenizerConstants">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.StandardTokenizerConstants"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.StandardTokenizerConstants"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.analysis.standard.StandardTokenizerTokenManager">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.StandardTokenizerTokenManager"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.StandardTokenizerTokenManager"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.analysis.standard.Token">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.Token"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.Token"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.analysis.standard.TokenMgrError">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.TokenMgrError"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.analysis.standard.TokenMgrError"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.index.SegmentTermPositionVector">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305426566">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.index.SegmentTermPositionVector"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305426566">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.index.SegmentTermPositionVector"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.search.DateFilter">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.DateFilter"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.DateFilter"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.search.DisjunctionSumScorer">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305426566">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.DisjunctionSumScorer"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305426566">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.DisjunctionSumScorer"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.search.PhrasePrefixQuery">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.PhrasePrefixQuery"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.PhrasePrefixQuery"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.search.RemoteSearchable">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.RemoteSearchable"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.RemoteSearchable"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.search.RemoteSearchable_Stub">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.RemoteSearchable_Stub"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.RemoteSearchable_Stub"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.search.ReqExclScorer">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305426566">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.ReqExclScorer"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305426566">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.ReqExclScorer"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.search.ReqOptSumScorer">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305426566">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.ReqOptSumScorer"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305426566">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.search.ReqOptSumScorer"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.store.InputStream">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.store.InputStream"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.store.InputStream"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="META-INF/MANIFEST.MF" type="org.apache.lucene.store.OutputStream">
+        <filter comment="Suppress API errors which result from changes to classes reexported from Lucene" id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.store.OutputStream"/>
+                <message_argument value="org.eclipse.help.base_3.5.0"/>
+            </message_arguments>
+        </filter>
+        <filter id="305422471">
+            <message_arguments>
+                <message_argument value="org.apache.lucene.store.OutputStream"/>
+                <message_argument value="org.eclipse.help.base_3.5.3"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>

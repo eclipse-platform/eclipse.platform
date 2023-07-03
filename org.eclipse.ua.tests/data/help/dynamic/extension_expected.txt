@@ -1,0 +1,132 @@
+<root>
+
+	<description>
+		This file tests the extension (anchor contribution and element replace)
+		capability.
+	</description>
+	
+	<element id="element.1">
+		This element is used to test contributions and replaces from within
+		the same file.
+	</element>
+	
+	
+
+	
+	
+
+	
+	<extendedContent id="content">
+      This is the first element from /org.eclipse.ua.tests/data/help/dynamic/extension/content.xml
+   </extendedContent>
+
+	
+	<extendedContent id="content2">
+      This is the second element from /org.eclipse.ua.tests/data/help/dynamic/extension/content.xml
+   </extendedContent><extendedContent id="content3">
+      This is the third element from /org.eclipse.ua.tests/data/help/dynamic/extension/content.xml
+   </extendedContent>
+
+	
+	<doc id="doc.1">
+	<description>
+		This document contains a mixture of dynamic content and is used by other
+		tests that incorporate outside content, to make sure it is processed.
+	</description>
+	<element id="element.1">
+		This element has no replaces.
+	</element>
+	<element id="element.1">
+		This is element 1 of doc2.xml
+	</element>
+	
+	
+	
+	<element id="element.1">
+		This is element 1 of doc2.xml
+	</element>
+	<element id="element.2">
+		This is element 2 of doc2.xml
+	</element><element id="element.3">
+		This is element 3 of doc2.xml
+	</element>
+</doc>
+
+	
+	<element id="element.1">
+		This element is used to test contributions and replaces from within
+		the same file.
+	</element>
+
+	
+	
+<h1>Heading</h1>
+<p>
+This is the body of /org.eclipse.ua.tests/data/help/dynamic/extension/doc.xhtml.
+</p>
+<p>
+The body contains several elements, including these two paragraphs and the
+heading above.
+</p>
+
+	
+	
+	<element></element>
+
+	
+	<element id="replace.1"></element>
+
+	
+	<extendedContent id="content">
+      This is the first element from /org.eclipse.ua.tests/data/help/dynamic/extension/content.xml
+   </extendedContent>
+
+	
+	<doc id="doc.1">
+	<description>
+		This document contains a mixture of dynamic content and is used by other
+		tests that incorporate outside content, to make sure it is processed.
+	</description>
+	<element id="element.1">
+		This element has no replaces.
+	</element>
+	<element id="element.1">
+		This is element 1 of doc2.xml
+	</element>
+	
+	
+	
+	<element id="element.1">
+		This is element 1 of doc2.xml
+	</element>
+	<element id="element.2">
+		This is element 2 of doc2.xml
+	</element><element id="element.3">
+		This is element 3 of doc2.xml
+	</element>
+</doc>
+
+	
+	<element id="element.1">
+		This element is used to test contributions and replaces from within
+		the same file.
+	</element>
+	
+	
+
+	
+	
+
+	
+	
+
+	
+	
+
+	
+	
+
+	
+	<element id="replace.invalid"></element>
+
+</root>

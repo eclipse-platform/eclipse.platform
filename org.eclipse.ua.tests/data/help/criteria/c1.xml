@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<!--
+     Copyright (c) 2010 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<toc label="Criteria">
+    <criteria name= "version" value="1.0" />
+    <criteria name= "version" value="2.0" />
+    <criteria name= "platform" value="win32" />
+    <criteria name= "platform" value="linux" />
+	<topic label="Topic 1.0" href="A_topic.html">	
+        <criteria name= "version" value="1.0" />       
+        <criteria name= "platform" value="win32" />
+        <criteria name= "platform" value="linux" />
+	</topic>
+	<topic label="Topic 2.0" href="A_topic.html">
+        <criteria name= "version" value="2.0" />
+	</topic>
+</toc>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <linearGradient id="b">
+   <stop stop-color="#679989" offset="0"/>
+   <stop stop-color="#7eb89d" offset="1"/>
+  </linearGradient>
+  <linearGradient id="a" x1="4.9375" x2="4.9375" y1="1021.4" y2="1016.5" gradientUnits="userSpaceOnUse" xlink:href="#b"/>
+ </defs>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g transform="translate(0 -1036.4)">
+  <g transform="translate(11.429 -2.1875e-7)">
+   <g transform="translate(17 -10)" fill="url(#a)">
+    <g transform="matrix(.30537 0 0 .48302 -22.444 560.15)" aria-label="&gt;">
+     <path d="m0.049481 1031.5v-3.6849l7.008-2.7123s0.68772-0.2884 0.6877-0.8489-0.6877-0.8488-0.6877-0.8488l-7.008-2.7384v-3.6589l13.099 5.6641s1.1462 0.4794 1.1462 1.5625-1.1462 1.5625-1.1462 1.5625z" fill="url(#a)"/>
+    </g>
+    <g transform="matrix(.30537 0 0 .48302 -17.444 560.15)" aria-label="&gt;">
+     <path d="m0.049481 1031.5v-3.6849l7.008-2.7123s0.68772-0.2884 0.6877-0.8489-0.6877-0.8488-0.6877-0.8488l-7.008-2.7384v-3.6589l13.099 5.6641s1.1462 0.4794 1.1462 1.5625-1.1462 1.5625-1.1462 1.5625z" fill="url(#a)"/>
+    </g>
+    <g transform="matrix(.30537 0 0 .48302 -27.444 560.15)" aria-label="&gt;">
+     <path d="m0.049481 1031.5v-3.6849l7.008-2.7123s0.68772-0.2884 0.6877-0.8489-0.6877-0.8488-0.6877-0.8488l-7.008-2.7384v-3.6589l13.099 5.6641s1.1462 0.4794 1.1462 1.5625-1.1462 1.5625-1.1462 1.5625z" fill="url(#a)"/>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>

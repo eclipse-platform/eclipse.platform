@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+    Copyright (c) 2005, 2009 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/linkcheck"
+            class="org.eclipse.ua.tests.doc.internal.LinkCheckServlet"
+            httpcontextId="org.eclipse.help.webapp.help">
+      </servlet>
+       <serviceSelector
+            filter="(other.info=org.eclipse.help)">
+      </serviceSelector>
+   </extension>   
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.eclipse.help.pageloader.actionSet"
+            label="%actionSet.label"
+            visible="true">
+         <action
+               class="org.eclipse.ua.tests.doc.internal.actions.LoadTocAction"
+               id="org.eclipse.ua.tests.loadToc"
+               label="%action.label"
+               menubarPath="help/group.tutorials"
+               style="push">
+         </action>
+      </actionSet>
+   </extension>
+   
+
+</plugin>

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGIN__ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Invoking the action from HTML</title>
+</head>
+<body>
+
+<h2>Invoking the action from HTML</h2>
+
+<P>
+To include active help links in your documentation, you must first declare the
+use of the supporting JavaScript code. The live help JavaScript is located in the <b>org.eclipse.help</b>
+plug-in.&nbsp; You refer to it using the help system's <a href="ua_help_content_files.htm#help_plugin_files_xref">cross
+plug-in referencing</a> technique. This script reference should be placed in the <b>HEAD</b> section of your HTML:
+</P>
+
+<pre >&lt;script language=&quot;JavaScript&quot; src=&quot;PLUGINS_ROOT/org.eclipse.help/livehelp.js&quot;&gt; &lt;/script&gt;</pre>
+
+<P >
+ In the body of your documentation, you invoke the liveAction script.&nbsp;&nbsp; </P>
+
+
+<pre >&lt;a href='javascript:liveAction(
+	&quot;org.eclipse.platform.doc.isv&quot;, 
+	&quot;org.eclipse.platform.doc.isv.activeHelp.ActiveHelpOpenDialogAction&quot;,
+	&quot;&quot;)'&gt;Click here for a Message.&lt;/a&gt;</pre>
+
+
+<P >The parameters for <b>liveAction </b> are&nbsp; </P>
+
+
+<ul>
+  <li> the ID of the plug-in that
+contains the action</li>
+  <li>the name of the class that implements the action</li>
+  <li>the String that will be passed to the live help action using <b>setInitializationString</b>.&nbsp;
+    We don't need to pass any information from the HTML page, so we just
+    pass an empty string.</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cheatsheet
+      title="Hello World Demo">
+   <item
+         title="Introduction"
+         description="This cheat sheet will test parameters.
+Let's get started!"
+         Href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm"
+         contextId="null">
+      <nullAction/>
+      <nullList/>
+      <nullPerformWhen/>
+      <nullList/>
+   </item>
+   <list>
+      <item
+            title="Prompt to enter some data"
+            description="To begin, let's gather some data."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ua.tests.parameters.GatherDisplayDataAction"
+               pluginId="org.eclipse.ua.tests"
+               when="null"
+               isConfirm="false">
+            <array>
+               <string
+                     value="gather">
+               </string>
+               <nullObject/>
+               <nullObject/>
+               <nullObject/>
+               <nullObject/>
+               <nullObject/>
+               <nullObject/>
+               <nullObject/>
+               <nullObject/>
+            </array>
+         </action>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Display the gathered data and additional parameters"
+            description="You data has been process, let's see the results."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ua.tests.parameters.GatherDisplayDataAction"
+               pluginId="org.eclipse.ua.tests"
+               when="null"
+               isConfirm="false">
+            <array>
+               <string
+                     value="display">
+               </string>
+               <string
+                     value="${name}">
+               </string>
+               <string
+                     value="${color}">
+               </string>
+               <string
+                     value="${animal}">
+               </string>
+               <string
+                     value="Testing is fun.">
+               </string>
+               <string
+                     value="Powered by Cheat Sheets!">
+               </string>
+               <nullObject/>
+               <nullObject/>
+               <nullObject/>
+            </array>
+         </action>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+   </list>
+</cheatsheet>

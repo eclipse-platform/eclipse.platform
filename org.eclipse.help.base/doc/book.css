@@ -1,0 +1,61 @@
+/*******************************************************************************
+ * Copyright (c) 2003, 2007 IBM Corporation and others.
+ *
+ * This program and the accompanying materials 
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ * 
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+
+body {
+	margin: 0px 0px 0px 0px;
+}
+span.icon {
+	white-space: nowrap;
+}
+img.icon {
+	width: 16px;
+	height: 16px;
+}
+#banner {
+	width: 100%;
+	overflow: hidden;
+}
+#content {
+	margin: 0px 10px 0px 10px;
+}
+
+/* following font face declarations need to be removed for DBCS */
+
+body, h1, h2, h3, h4, h5, h6, p, table, td, caption, th, ul, ol, dl, li, dd, dt {font-family: Arial, Helvetica, sans-serif; color: #000000}
+
+/* end font face declarations */
+
+body	     { font-size: 83%; background: #FFFFFF; margin-bottom: 1em }
+h1           { font-size: 140%; margin-top: 25px; margin-bottom: 3px }	
+h2           { font-size: 110%; margin-top: 20px; margin-bottom: 3px }
+
+@media (prefers-color-scheme: dark) {
+	body { 
+		color: #f0f0f0; 
+		background: #3d3d3d;
+	} 
+	body, h1, h2, h3, h4, h5, h6, p, table, td, caption, th, ul, ol, dl, li, dd, dt {
+		color: #f0f0f0;
+	}
+	
+	/* darken images to add some comfort while reading in dark theme */
+	img {
+		opacity: .75;
+		transition: opacity .5s ease-in-out;
+	}
+	img:hover {
+		opacity: 1;
+	}
+}

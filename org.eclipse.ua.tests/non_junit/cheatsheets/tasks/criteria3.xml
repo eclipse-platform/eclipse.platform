@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2010 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<cheatsheet
+      title="More tests of filtering">
+   <intro>
+      <description>
+         Test that when a scope is applied all functions work correctly
+      </description>
+   </intro>
+   <item
+         title="Create compound filter">
+      <description>
+         Create a filter based on more than one condition
+      </description>
+      <subitem
+            label="Click on the scope link next to the search typein, a dialog called &quot;Select Scope&quot; should open.">
+      </subitem>
+      <subitem
+            label="In the select scope dialog press &quot;New...&quot;. A dialog named New Scope should be opened. Enter &quot;tk&quot; as the name of the new criteria set (choose a different name if tk already in use) be opened">
+      </subitem>
+      <subitem
+            label="Expand Title contains the letter. Check  letter k and letter t.">
+      </subitem>
+      <subitem
+            label="Check the checkbox for the topic User Assistance tests">
+      </subitem>
+      <subitem
+            label="Hit the OK button to dismiss the dialog and hit the OK button again to dismiss the Select Scope dialog" >
+      </subitem>
+      
+   </item>
+   <item
+         title="Topics showing in toc">
+      <description>
+         Verify that only one book shows: User Assistance Tests
+      </description>
+   </item>
+   <item
+         title="Filtering of Tree">
+      <description>
+         Expand User Assistance Tests/Test for criteria. Verify that it has only two chilrdren: Page k and Page t
+      </description>
+   </item>
+   <item
+         title="Search">
+      <description>
+         Search for runtime. Verify that there are two hits, Page t and Page k.
+      </description>
+   </item>
+   <item
+         title="Print selected topic">
+      <description>
+         Select User Assistance Tests/Test for criteria and press Print Selected Topics and all Subtopics. Verify that only Criteria page &apos;k&apos; and Criteria page &apos;t&apos; are printed
+      </description>
+   </item>
+   <item
+         title="Search selected topic">
+      <description>
+         Test that search selected topic is scoped
+      </description>
+      <subitem
+            label="Select User Assistance Tests/Test for criteria and press Search Selected Topics and all Subtopics. Verify that a dialog opens.">
+      </subitem>
+      <subitem label="In the dialog enter the word &quot;searchable&quot; and hit OK">
+      </subitem>
+      <subitem
+            label="Verify that there are two hits, Page t and Page k.">
+      </subitem>
+   </item>
+   <item
+         title="Breadcrumbs and show in TOC">
+      <description>
+         Test Breadcrumbs and show in TOC
+      </description>
+      <subitem
+            label="Open Page k from the search results, verify that the breadcrumb is correct.">
+      </subitem>
+      <subitem
+            label="Press the Show in Table of Contents button. Verify that the correct page is selecetd in the table fo contents.">
+      </subitem>
+   </item>
+   <item
+         title="Entries in Index">
+      <description>
+         Verify that the index is filtered correctly
+      </description>
+      <subitem
+            label="Show the index view">
+      </subitem>
+      <subitem
+            label="Verify that  &apos;bundle&apos; is not displayed">
+      </subitem>
+      <subitem
+            label="Verify that keyword1 is displayed">
+      </subitem>
+      <subitem
+            label="Verify that keyword3 is displayed and has two subentries - topic2 and topic3">
+      </subitem>
+      <subitem
+            label="Verify that &apos;PDE&apos; is not displayed">
+      </subitem>
+   </item>
+</cheatsheet>

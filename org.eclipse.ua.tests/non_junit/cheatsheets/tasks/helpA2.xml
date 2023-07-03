@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2009 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="A2: Displaying help preferences">
+   <intro>
+      <description>
+         Test help preferences
+      </description>
+   </intro>
+   <item
+         skip="true"
+         title="Notes for Mac OS Users">
+      <description>
+         Newer Macintosh systems do not have a help key and any steps in the tests where you are asked to push the help key do not apply.
+      </description>
+   </item>
+   <item title="Default preferences" dialog="false" skip="false">
+      <description>
+         Tests for default help preferences
+      </description>
+      <subitem label="Press &quot;F1&quot; key (Ctrl+F1 on GTK, Help on Mac) in the workbench Package Explorer&quot; view (Java perspective). This should open help view in the workbench, turned to Related Topics page.  Verify &quot;About ...&quot; section displays description of workbench part in focus." skip="false">
+      </subitem>
+      <subitem label="Click on one of the related links.  A topic should open in the help view" skip="false">
+      </subitem>
+   </item>
+   <item title="Non-default preferences" dialog="true" skip="false">
+      <description>
+         In this step we will change the preferences and ensure they all work.
+      </description>
+      <subitem label="Open help preferences" skip="false">
+         <command
+               required="false"
+               serialization="org.eclipse.ui.window.preferences(preferencePageId=org.eclipse.help.ui.browsersPreferencePage)"/>
+      </subitem>
+      <subitem label="Change help preferences to open window context help in an infopop, dialog context help in an infopop, open help view documents - in editor." skip="false">
+      </subitem>
+      <subitem label="Hit OK to close the preference dialog" skip="false">
+      </subitem>
+      <subitem label="Click &quot;back&quot; in the help view to arrive at Related Topics page.  Select a link from Dynamic Help section.  Verify it opens in the editor area." skip="false">
+      </subitem>
+      <subitem label="Press &quot;F1&quot; key (Ctrl+F1 on GTK, Help on Mac) in the workbench &quot;Package Explorer&quot; view (&quot;Java&quot; perspective) again. This time it should open an infopop with a description and related links.  Focus should be on the first link (&quot;Browsing Java Elements&quot;)." skip="false">
+      </subitem>
+      <subitem label="Click &quot;Package Explorer View&quot; link.  This should launch help web browser, and display &quot;Package Explorer View&quot; document on the right and the list of related topics on the left.  The link called &quot;Package Explorer View&quot; should be selected." skip="false">
+      </subitem>
+      <subitem label="Open help preferences" skip="false">
+         <command
+               required="false"
+               serialization="org.eclipse.ui.window.preferences(preferencePageId=org.eclipse.help.ui.browsersPreferencePage)"/>
+      </subitem>
+      <subitem label="Press &quot;F1&quot;  (Ctrl+F1 on GTK, Help on Mac).  An infopop should open." skip="false">
+      </subitem>
+      <subitem
+            label="Change help preferences to open  help view documents - in a browser.">
+      </subitem>
+      <subitem label="Hit OK to close the preferences" skip="true">
+      </subitem>
+      <subitem
+            label="Select a link from Dynamic Help section kin the help view.  Verify it opens in the a browser.">
+      </subitem>
+   </item>
+   <item title="Default F1 behavior" dialog="true" skip="false">
+      <description>
+         Test default F1 behavior
+      </description>
+      <subitem label="Open help preferences" skip="false">
+         <command serialization="org.eclipse.ui.window.preferences(preferencePageId=org.eclipse.help.ui.browsersPreferencePage)" confirm="false">
+         </command>
+      </subitem>
+      <subitem label="Restore defaults in the the help preference page, and apply." skip="false">
+      </subitem>
+      <subitem label="Press F1 (Ctrl+F1 on GTK, Help on Mac) again.  A small help view with Related Topics should open adjacent to the preferences dialog." skip="false">
+      </subitem>
+      <subitem
+            label="Hit OK to close the preference dialog">
+      </subitem>
+   </item>
+</cheatsheet>

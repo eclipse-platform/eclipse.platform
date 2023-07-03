@@ -1,0 +1,26 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="IBM">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Package-level Javadoc</title>
+</head>
+
+<body>
+
+Provides the ability to add participants to help search and is responsible
+for creating search indices.
+<h2>Package Specification</h2>
+<p>This package contains the API for adding content to the help search functionality
+and is responsible for indexing all contents of the help system. To add content, a
+plug-in must extend the <code>SearchParticipant</code> abstract class and point to it
+using the <code>org.eclipse.help.search.searchParticipant</code> extension point.</p>
+<p>The package also provides an abstract class that extends <code>LuceneSearchParticipant</code>
+called <code>SearchParticipantXML</code> which adds functionality for parsing XML
+documents.</p>
+
+</body>
+
+</html>

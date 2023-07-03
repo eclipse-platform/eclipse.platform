@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<compositeCheatsheet name="Building and Publishing Plugins">
+    <taskGroup kind="sequence" name= "Introduction to the PDE" ref="docs/introduction.html">
+         <task kind="cheatsheet" name= "Create a java project" ref="org.eclipse.jdt.helloworld" />
+         <task kind="cheatsheet" name= "Deploy a java project" ref="org.eclipse.pde.updates" />
+         <taskGroup kind="sequence" name= "Additional Resources" ref="docs/additionalresources.html">
+             <task  kind="ua.junit" name= "Creating a help plugin" ref="docs/helpplugin.html" />
+             <task  kind="ua.junit" name= "The Eclipse Update Manager" ref="docs/updatemanager.html" />
+             <task  kind="ua.junit" name= "Eclipse home page" ref="http://www.eclipse.org" />
+         </task>
+    </taskGroup>
+</compositeCheatsheet>

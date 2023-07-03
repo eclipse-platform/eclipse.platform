@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<!--
+     Copyright (c) 2005, 2020 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<toc label="search" link_to="data/help/toc/root.xml#content">
+	<topic label="search">
+		<topic label="test1.xhtml" href="data/help/search/test1.xhtml"/>
+		<topic label="test2.xhtml" href="data/help/search/test2.xhtml"/>
+		<topic label="test3.xhtml" href="data/help/search/test3.xhtml"/>
+		<topic label="test4.xhtml" href="data/help/search/test4.xhtml"/>
+		<topic label="test5.xhtml" href="data/help/search/test5.xhtml"/>
+		<topic label="test6.xhtml" href="data/help/search/test6.xhtml"/>
+		<topic label="test7.html" href="data/help/search/test7.html"/>
+		<topic label="test9(a).htm" href="data/help/search/test9.htm"/>
+		<topic label="test9(b).htm" href="data/help/search/extraDir/../test9.htm"/>
+		<topic label="test9(c).htm" href="data/help/search//extraDir//subdir/../../test9.htm"/>
+  <topic href="data/help/search/test10.xhtml" label="test10.xhtml">
+  </topic>
+  <topic href="data/help/search/testnl1.xhtml" label="test1nl.xhtml">
+  </topic>
+  <topic href="data/help/search/test_en.html" label="testen.html">
+  </topic>
+      <topic href="data/help/search/testnl8859.htm" label="ISO 8859-1 doc">
+      </topic>
+      <topic href="data/help/search/testnl8859_html5.html" label="ISO 8859-1 doc html5"/>
+      <topic href="data/help/search/testnlUTF8.htm" label="UTF-8 doc">
+      </topic>
+      <topic href="data/help/search/testnlUTF8_html5.html" label="UTF-8 doc html5"/>
+      <topic href="data/help/search/testMeta.htm" label="HTML doc with meta">
+      </topic>
+      <topic href="data/help/search/testMeta.xhtml" label="XHTML doc with meta">
+      </topic>
+	</topic>
+</toc>

@@ -1,0 +1,291 @@
+Intro Model Content:
+======================
+
+Model has valid config = true
+Presentation type = 2
+Home page id = root
+Number of pages (not including Root Page) = 7
+Number of shared groups = 0
+Number of unresolved extensions = 0
+
+HOME PAGE: 
+--------------
+	is dynamic= true
+	id = root
+	title = Tests for intro anchors
+	style = null
+	alt-style = file:/<filtered>/root.properties
+	url = null
+	style-id = page
+	page styles are = 
+	page alt-styles are = 
+	page children = 12
+
+		TITLE: id = null
+				title = Tests for intro anchors
+				style-id = intro-header
+		TEXT: id = null
+				text = This is used to test that extensions link to anchors correctly.
+				style-id = null
+		TEXT: id = null
+				text = There is one root page and 5 extensions including extensions to extensions.
+				style-id = null
+		GROUP: id = action-links
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = workbench
+								label = Go to the Workbench
+								text = null
+								url = http://org.eclipse.ui.intro/switchToLaunchBar
+								style-id = $high-contrast$
+		TITLE: id = null
+				title = Fixed Anchor
+				style-id = intro-header
+		TEXT: id = null
+				text = Contribution from page 1
+				style-id = null
+		LINK: id = page1link
+				label = Link to page 1
+				text = null
+				url = http://org.eclipse.ui.intro/showPage?id=page1
+				style-id = null
+		TEXT: id = null
+				text = Contribution from page 2
+				style-id = null
+		LINK: id = page2link
+				label = Link to page 2
+				text = null
+				url = http://org.eclipse.ui.intro/showPage?id=page2
+				style-id = null
+		ANCHOR: id = root-anchor
+		TITLE: id = null
+				title = Universal Anchor
+				style-id = intro-header
+		ANCHOR: id = universal
+
+PAGE id = standby
+----------
+	title = Standby
+	style = file:/<filtered>/standby.css
+	alt-style = file:/<filtered>/standby.properties
+	style-id = page
+	page styles are = 
+	page alt-styles are = 
+	page children = 2
+
+		ANCHOR: id = head-anchor
+		TITLE: id = null
+				title = Standby
+				style-id = intro-header
+
+PAGE id = page1
+----------
+	title = Page 1
+	style = null
+	alt-style = file:/<filtered>/root.properties
+	style-id = page
+	page styles are = 
+	page alt-styles are = 
+	page children = 6
+
+		TITLE: id = null
+				title = Page 1
+				style-id = intro-header
+		GROUP: id = action-links
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = Go to the workbench
+								label = Workbench
+								text = null
+								url = http://org.eclipse.ui.intro/switchToLaunchBar
+								style-id = $high-contrast$
+		TEXT: id = null
+				text = Page 1 Anchor
+				style-id = null
+		TEXT: id = null
+				text = Contribution from page 3
+				style-id = null
+		LINK: id = page3link
+				label = Link to page 3
+				text = null
+				url = http://org.eclipse.ui.intro/showPage?id=page3
+				style-id = null
+		ANCHOR: id = anchor1
+
+PAGE id = page2
+----------
+	title = Page 2
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 6
+
+		TITLE: id = null
+				title = Page 2
+				style-id = null
+		GROUP: id = action-links
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = Go to the workbench
+								label = Workbench
+								text = null
+								url = http://org.eclipse.ui.intro/switchToLaunchBar
+								style-id = $high-contrast$
+		TEXT: id = null
+				text = Page 2 Anchor
+				style-id = null
+		TEXT: id = null
+				text = Contribution from page 4
+				style-id = null
+		LINK: id = page4link
+				label = Link to page 4
+				text = null
+				url = http://org.eclipse.ui.intro/showPage?id=page4
+				style-id = null
+		ANCHOR: id = anchor2
+
+PAGE id = page3
+----------
+	title = Page 3
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 4
+
+		TITLE: id = null
+				title = Page 3
+				style-id = null
+		GROUP: id = action-links
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = workbench
+								label = Go to the workbench
+								text = null
+								url = http://org.eclipse.ui.intro/switchToLaunchBar
+								style-id = $high-contrast$
+		TEXT: id = null
+				text = Page 3 Anchor
+				style-id = null
+		ANCHOR: id = anchor3
+
+PAGE id = page4
+----------
+	title = Page 4
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 7
+
+		TITLE: id = null
+				title = Page 4
+				style-id = null
+		GROUP: id = action-links
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = workbench
+								label = Go to the workbench
+								text = null
+								url = http://org.eclipse.ui.intro/switchToLaunchBar
+								style-id = $high-contrast$
+		TEXT: id = null
+				text = Page 4 Anchor
+				style-id = null
+		TEXT: id = null
+				text = Contribution from page 5
+				style-id = null
+		LINK: id = page5linkR
+				label = Replacement Link to page 5
+				text = null
+				url = http://org.eclipse.ui.intro/showPage?id=page5
+				style-id = null
+		LINK: id = page6link
+				label = Link to page 6
+				text = null
+				url = http://org.eclipse.ui.intro/showPage?id=page6
+				style-id = null
+		ANCHOR: id = anchor4
+
+PAGE id = page5
+----------
+	title = Page 5 Replacement Title
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 4
+
+		TITLE: id = page5titleR
+				title = Page 5 Replacement Title
+				style-id = null
+		GROUP: id = action-links
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = workbench
+								label = Go to the workbench
+								text = null
+								url = http://org.eclipse.ui.intro/switchToLaunchBar
+								style-id = $high-contrast$
+		TEXT: id = null
+				text = Page 5 Anchor
+				style-id = null
+		ANCHOR: id = anchor5
+
+PAGE id = page6
+----------
+	title = Page 6
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 3
+
+		TITLE: id = page6title
+				title = Page 6
+				style-id = null
+		GROUP: id = action-links
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = workbench
+								label = Go to the workbench
+								text = null
+								url = http://org.eclipse.ui.intro/switchToLaunchBar
+								style-id = $high-contrast$
+		LINK: id = page5linkR
+				label = Replacement Link to page 5
+				text = null
+				url = http://org.eclipse.ui.intro/showPage?id=page5
+				style-id = null
+
+Model Flag Tests: 
+----------------
+		First page children are: 
+			Groups: 1
+			Links: 1
+			Texts: 2
+			HTMLs: 0
+			Images: 0
+			Includes: 0
+			Page Titles: 1
+			Page Heads: 0
+			Model Elements: 6
+			Containers: 1
+			All Pages: 0
+			Anchors: 1
+			Content providers: 0
+			Elements with Text child(AbstractTextElemets): 1
+			Groups and Links: 2

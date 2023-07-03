@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2007 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Search">
+   <intro>
+      <description>
+         Tests for search
+      </description>
+   </intro>
+   <item title="Open Search" dialog="false" skip="false">
+      <description>
+         Choose &quot;Search&quot; from the workbench Help menu. Help search page should open in the search view.
+      </description>
+   </item>
+   <item title="Perform Search" dialog="false" skip="false">
+      <description>
+         Type a query &quot;open project&quot; (without quotes), click &quot;Go&quot;.
+      </description>
+   </item>
+   <item title="Select Result" dialog="false" skip="false">
+      <description>
+         Choose a result.  The document should open with occurrences of the words &quot;open&quot; and &quot;project&quot; highlighted.
+      </description>
+   </item>
+   <item title="Toggle Highlighting" dialog="true" skip="false">
+      <description>
+         Click the &quot;Highlight search items&quot; button in the help view toolbar to toggle highlighting off. Ensure that &quot;open&quot; and &quot;project&quot; are no longer highlighted. Toggle it on and off again and ensure highlighting toggle appropriately.
+      </description>
+   </item>
+   <item title="Default Highlighting" dialog="true" skip="false">
+      <description>
+         With highlighing turned off, click the &quot;Search&quot; link to return to the search results and select one. Ensure that highlighting is now turned off by default.
+      </description>
+   </item>
+</cheatsheet>

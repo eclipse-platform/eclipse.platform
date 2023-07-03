@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2005, 2010 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Search">
+   <intro>
+      <description>
+         This tests support for advanced search.  Perform search either from the browser opened by &quot;Help&quot;-&quot;Help Contents&quot;.
+      </description>
+   </intro>
+   <item title="Search for project close" dialog="false" skip="false">
+      <description>
+         Search for &apos;project close&apos; (no quotes).  Documents should be found containing both words.  Selecting document should show its contents with occurrences of both words highlighted.
+      </description>
+   </item>
+   <item title="Search for project AND close" dialog="false" skip="false">
+      <description>
+         Search for &apos;project AND close&apos; (no quotes).  The results should be same as for the previous query
+      </description>
+   </item>
+   <item title="Search for project OR close" dialog="false" skip="false">
+      <description>
+         Search for &apos;project OR close&apos; (no quotes).  The list of hits should be much longer, with some documents at the top containing both words, and documents down the list containing only one of them.
+      </description>
+   </item>
+   <item title="Search for project close not navigator" dialog="false" skip="false">
+      <description>
+         Search for &apos;project close not navigator&apos; (no quotes).  The list of hits should be smaller than in step 1.
+      </description>
+   </item>
+   <item title="Exact search" dialog="false" skip="false">
+      <description>
+         Search for &apos; &quot;close project&quot; &apos; (in double quotes).  The search results list should be shorter than in step 1. The documents should contain consecutive words close and project (possibly separated by a punctuation).
+      </description>
+   </item>
+   <item title="Unscoped search" dialog="false" skip="false">
+      <description>
+         Search for &apos;close project&apos; (no quotes). Record the number of hits.
+      </description>
+   </item>
+   <item title="Select a search result" dialog="false" skip="false">
+      <description>
+         Select a document.  Note the book the topic belongs to.  The book name is displayed on the toolbar in the browser, directly above the document.
+      </description>
+   </item>
+   <item title="Narrow scope" dialog="false" skip="false">
+      <description>
+         Create a new scope </description>
+      <subitem label="Click &quot;Scope:&quot;.  The scope selection window will open.  Click &quot;New&quot;, Select some books or sections, but leave the book that was noted in step 2 unchecked." skip="false">
+      </subitem>
+      <subitem label="Type a name for your new scope.  Close dialog windows, ensure that the scope name appears on the search tool bar." skip="false">
+      </subitem>
+   </item>
+   <item title="Scoped Search" dialog="false" skip="false">
+      <description>
+         Click the &quot;Go&quot; button for search again .  Verify that the document selected in step 3 does not appear in the list of search results.
+      </description>
+   </item>
+   <item title="Restore default scope" dialog="false" skip="false">
+      <description>
+         Click the Search Scope again and remove the scope you just defined. Click OK to close the dialog. The search bar should now have &quot;All topics&quot; in the Search Scope.
+      </description>
+   </item>
+</cheatsheet>

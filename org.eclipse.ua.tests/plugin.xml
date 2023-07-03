@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+    Copyright (c) 2005, 2020 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+         IBM Corporation - initial API and implementation
+         George Suaridze <suag@1c.ru> (1C-Soft LLC) - Bug 559885
+ -->
+
+<plugin>
+
+   <!-- 
+      Cheat sheet test content
+   -->
+   <extension
+         point="org.eclipse.ui.cheatsheets.cheatSheetContent">
+      <category
+            name="Cheat sheet examples - part 1"
+            id="org.eclipse.ua.tests.cheatsheet.cheatSheetsCat">
+      </category>
+      <category
+            name="Cheat sheet examples - part 2"
+            id="org.eclipse.ua.tests.cheatsheet.cheatSheetsCat2">
+      </category>
+      <category
+            name="Tests"
+            id="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat">
+      </category>
+      <cheatsheet
+            name="Hello World"
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsCat"
+            contentFile="data/cheatsheet/valid/HelloWorld.xml"
+            id="org.eclipse.ua.tests.cheatsheet.HelloWorld">
+         <description>
+            This cheat sheet will guide you through building a hello world Java application and testing it.
+            Uses only the basic cheat sheet features.
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            name="Hello World With Extensions Icons"
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsCat"
+            contentFile="data/cheatsheet/valid/HelloWorldWithExtensions.xml"
+            id="org.eclipse.ua.tests.cheatsheet.HelloWorldWithExtensions">
+         <description>
+            This cheat sheet has extra icons next to the help icon using the cheatSheetItemExtension extension point.
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            name="Hello World With Subitems"
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsCat"
+            contentFile="data/cheatsheet/valid/HelloWorldWithSubitems.xml"
+            id="org.eclipse.ua.tests.cheatsheet.HelloWorldWithSubitem">
+         <description>
+            This cheat sheet uses subitems.
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            name="Testing Cheat Sheets actions"
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            contentFile="data/cheatsheet/valid/TestCSActions.xml"
+            id="org.eclipse.ua.tests.cheatsheet.cheatsheetsActions">
+         <description>
+            This cheat sheet has items to test the framework
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            name="Testing Parameters"
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            contentFile="data/cheatsheet/valid/TestParameters.xml"
+            id="org.eclipse.ua.tests.cheatsheet.parameters">
+         <description>
+            This cheat sheet has items to test the framework
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            name="Testing Context Help and Help Links"
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            contentFile="data/cheatsheet/valid/TestContext_Help.xml"
+            id="org.eclipse.ua.tests.cheatsheet.infopop.help">
+         <description>
+            This cheat sheet has items to test the framework
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            name="Testing SubItems"
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            contentFile="data/cheatsheet/valid/TestSubItems.xml"
+            id="org.eclipse.ua.tests.cheatsheet.subitems">
+         <description>
+            This cheat sheet has items to test the framework
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            name="Testing Dynamic SubItems"
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            contentFile="data/cheatsheet/valid/TestDynamicSubItems.xml"
+            id="org.eclipse.ua.tests.cheatsheet.dynamic.subitems">
+         <description>
+            This cheat sheet has items to test the framework
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            name="Testing Item Description Formatting"
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            contentFile="data/cheatsheet/valid/TestDescriptionFormatting.xml"
+            id="org.eclipse.ua.tests.cheatsheet.description">
+         <description>
+            This cheat sheet has items to test the framework
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            name="Testing Actions"
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            contentFile="data/cheatsheet/valid/TestActions.xml"
+            id="org.eclipse.ua.tests.cheatsheet.actions">
+         <description>
+            This cheat sheet has items to test the framework
+         </description>
+      </cheatsheet>
+      <taskEditor
+            class="org.eclipse.ua.tests.cheatsheet.util.TestTaskEditor"
+            icon="$nl$/icons/sample.gif"
+            id="ua.junit"/>
+      <cheatsheet
+            composite="false"
+            contentFile="data/cheatsheet/search/CSSearchTest.xml"
+            id="org.eclipse.ua.tests.cheatsheet.searchTest"
+            name="Test cheat sheet search"/>
+      <cheatsheet
+            composite="true"
+            contentFile="data/cheatsheet/search/CompositeSearchTest.xml"
+            id="org.eclipse.ua.tests.composite.searchTest"
+            name="Composite cheat sheet search test"/>
+      <cheatsheet
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            composite="false"
+            contentFile="data/cheatsheet/performance/simple.xml"
+            id="org.eclipse.ua.tests.cheatsheet.performance.simple"
+            name="Performance test simple cheat sheet">
+         <description>
+            This cheat sheet is used to measure simple cheat sheet view performance.
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            composite="true"
+            contentFile="data/cheatsheet/performance/composite.xml"
+            id="org.eclipse.ua.tests.cheatsheet.performance.composite"
+            name="Performance test composite cheat sheet">
+         <description>
+            This cheat sheet is used to measure composite cheat sheet view performance.
+         </description>
+      </cheatsheet>
+      <category
+            id="org.eclipse.ua.tests.category.suite"
+            name="User Assistance Tests">
+      </category>
+      <cheatsheet
+            category="org.eclipse.ua.tests.category.suite"
+            composite="true"
+            contentFile="non_junit/cheatsheets/uaTests.xml"
+            id="org.eclipse.ua.tests.cheatsheet1052183668"
+            name="User Assistance Test Suite">
+         <description>
+            User Assistance Test Suite
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            composite="false"
+            contentFile="data/cheatsheet/search/NoSuchFile.xml"
+            id="org.eclipse.ua.tests.cheatsheet.nocontent"
+            name="Content file missing">
+      </cheatsheet>
+      <cheatsheet
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            composite="false"
+            contentFile="non_junit/cheatsheets/tasks/placeholder.xml"
+            id="org.eclipse.ua.tests.cheatsheet.placeholder"
+            name="Placeholder cheatsheet">
+      </cheatsheet>
+      <category
+            id="org.eclipse.ua.tests.subcategory"
+            name="Subcategory"
+            parentCategory="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat">
+      </category>
+       <cheatsheet
+            category="org.eclipse.ua.tests.subcategory"
+            composite="false"
+            contentFile="non_junit/cheatsheets/tasks/placeholder.xml"
+            id="org.eclipse.ua.tests.cheatsheet.subcategory.simple"
+            name="Cheatsheet in subcategory, non qualified name">
+      </cheatsheet>
+       <cheatsheet
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat/org.eclipse.ua.tests.subcategory"
+            composite="false"
+            contentFile="non_junit/cheatsheets/tasks/placeholder.xml"
+            id="org.eclipse.ua.tests.cheatsheet.subcategory.qualified"
+            name="Cheatsheet in subcategory, qualified name">
+      </cheatsheet>
+      <cheatsheet
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            contentFile="data/cheatsheet/valid/TestCSHyperlinks.xml"
+            id="org.eclipse.ua.tests.cheatsheet.cheatsheetsHyperlinks"
+            name="Testing Cheat Sheets hyperlinks">
+         <description>
+            This cheat sheet has items to test the framework
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            category="org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat"
+            composite="false"
+            contentFile="data/cheatsheet/other/ExtraLongContent.xml"
+            id="org.eclipse.ua.tests.cheatsheetExtraLongContent"
+            name="Extra Long Content">
+      </cheatsheet>
+   </extension>
+
+   <!-- 
+      Cheat sheet context help test
+   -->
+   <extension point="org.eclipse.help.contexts"> 
+       <contexts file="data/cheatsheet/contexts.xml"/>
+   </extension>
+
+   <!-- 
+      Command used in tests
+   -->
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="org.eclipse.ui.cheatsheets.tests.category1"
+            name="org.eclipse.ui.cheatsheets.tests.category1"/>
+      <command
+            categoryId="org.eclipse.ui.category.file"
+            defaultHandler="org.eclipse.ua.tests.cheatsheet.execution.CommandHandler"
+            id="org.eclipse.ui.cheatsheets.tests.command1"
+            name="Cheatsheet test command">
+         <commandParameter
+               id="param1_id"
+               name="Parameter1"
+               optional="true"
+               />
+         <commandParameter
+               id="param2_id"
+               name="Parameter2"
+               optional="true"
+               />
+      </command>
+      <command
+            defaultHandler="org.eclipse.ua.tests.cheatsheet.execution.NegateIntegerHandler"
+            id="org.eclipse.ui.cheatsheets.tests.NegateIntegerCommand"
+            name="Test Command with Integer Values"
+            returnTypeId="org.eclipse.ui.dialogs.Integer">
+         <commandParameter
+               id="number"
+               name="Number"
+               optional="false"
+               typeId="org.eclipse.ui.dialogs.Integer"/>
+      </command>
+   </extension>
+
+   <!--
+      Intro test content
+   -->
+   <extension
+         point="org.eclipse.ui.intro">
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            id="org.eclipse.ua.tests.intro.dynamicXHTML">
+      </intro>
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            id="org.eclipse.ua.tests.intro.dynamicXML">
+      </intro>
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            id="org.eclipse.ua.tests.intro.anchors">
+      </intro>
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            id="org.eclipse.ua.tests.intro.mixed">
+      </intro>
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            id="org.eclipse.ua.tests.intro.static">
+      </intro>
+      <introProductBinding
+            introId="org.eclipse.ua.tests.intro.static"
+            productId="org.eclipse.ua.tests.testproduct">
+      </introProductBinding>
+   </extension>   
+   <extension
+         point="org.eclipse.ui.intro.config">
+      <config
+            introId="org.eclipse.ua.tests.intro.dynamicXHTML"
+            content="data/intro/dynamicXHTML/introContent.xml"
+            id="org.eclipse.ua.tests.intro.config.dynamicXHTML">
+         <presentation
+               home-page-id="root">
+            <implementation
+                  kind="html"
+                  os="win32,linux,macosx">
+            </implementation>
+         </presentation>
+      </config>
+      <config
+            introId="org.eclipse.ua.tests.intro.dynamicXML"
+            id="org.eclipse.ua.tests.intro.config.dynamicXML"
+            content="data/intro/dynamicXML/introContent.xml">
+         <presentation
+               home-page-id="root" standby-page-id="standby">
+            <implementation
+                  style="data/intro/dynamicXML/css/shared.css"
+                  kind="html"
+                  os="win32,linux,macosx">
+            </implementation>
+            <implementation
+                  kind="swt">
+            </implementation>
+         </presentation>
+      </config>
+      <config
+            introId="org.eclipse.ua.tests.intro.anchors"
+            id="org.eclipse.ua.tests.intro.config.anchors"
+            content="data/intro/anchors/introContent.xml">
+         <presentation
+               home-page-id="root" standby-page-id="standby">
+            <implementation
+                  kind="html"
+                  os="win32,linux,macosx">
+            </implementation>
+            <implementation
+                  kind="swt">
+            </implementation>
+         </presentation>
+      </config>
+      <config
+            introId="org.eclipse.ua.tests.intro.mixed"
+            id="org.eclipse.ua.tests.intro.config.mixed"
+            content="data/intro/mixed/introContent.xml">
+         <presentation
+               home-page-id="dynamic1" standby-page-id="dynamic3">
+            <implementation
+                  kind="html"
+                  os="win32,linux,macosx">
+            </implementation>
+            <implementation
+                  kind="swt">
+            </implementation>
+         </presentation>
+      </config>
+      
+      <config
+            introId="org.eclipse.ua.tests.intro.static"
+            id="org.eclipse.ua.tests.intro.config.static"
+            content="data/intro/staticroot/introContent.xml">
+         <presentation
+               home-page-id="static1" standby-page-id="static3">
+            <implementation
+                  kind="html"
+                  os="win32,linux,macosx">
+            </implementation>
+            <implementation
+                  kind="swt">
+            </implementation>
+         </presentation>
+      </config>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            content="data/intro/dynamicXHTML/ext.xml"
+            configId="org.eclipse.ua.tests.intro.config.dynamicXHTML">
+      </configExtension>
+      <configExtension
+            content="data/intro/dynamicXHTML/ext2.xml"
+            configId="org.eclipse.ua.tests.intro.config.dynamicXHTML">
+      </configExtension>
+      <configExtension
+            content="data/intro/dynamicXML/ext.xml"
+            configId="org.eclipse.ua.tests.intro.config.dynamicXML">
+      </configExtension>
+      
+      <configExtension
+            content="data/intro/anchors/extn1.xml"
+            configId="org.eclipse.ua.tests.intro.config.anchors">
+      </configExtension>
+      <configExtension
+            content="data/intro/anchors/extn2.xml"
+            configId="org.eclipse.ua.tests.intro.config.anchors">
+      </configExtension>
+      <configExtension
+            content="data/intro/anchors/extn3.xml"
+            configId="org.eclipse.ua.tests.intro.config.anchors">
+      </configExtension>
+      <configExtension
+            content="data/intro/anchors/extn4.xml"
+            configId="org.eclipse.ua.tests.intro.config.anchors">
+      </configExtension>
+      <configExtension
+            content="data/intro/anchors/extn5.xml"
+            configId="org.eclipse.ua.tests.intro.config.anchors">
+      </configExtension>
+      <configExtension
+            content="data/intro/anchors/extn6.xml"
+            configId="org.eclipse.ua.tests.intro.config.anchors">
+      </configExtension>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/search/samplesExtensionContent.xml"/>  
+      
+      <!-- 3.2 welcome content used for open welcome performance test -->
+      <!-- filtered unless running test -->
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.jdt/overviewExtensionContent.xml"/>  
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.jdt/tutorialsExtensionContent.xml"/>  
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.jdt/samplesExtensionContent.xml"/>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.jdt/newsExtensionContent.xml"/>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig" 
+            content="data/intro/performance/org.eclipse.pde/overviewExtensionContent.xml"/>  
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.pde/tutorialsExtensionContent.xml"/>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.pde/samplesExtensionContent.xml"/>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.pde/samplesExtensionContent2.xml"/>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.pde/newsExtensionContent.xml"/> 
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.platform/overviewEx.xml"/>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.platform/tutorialsEx.xml"/>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.platform/whatsnewEx1.xml"/>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.platform/whatsnewEx2.xml"/>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.platform/whatsnewEx3.xml"/>
+   </extension>
+
+   <!--
+      TOC test content
+   -->
+   <extension point="org.eclipse.help.toc">
+       <toc file="data/help/toc/root.xml" primary="true"/>
+       <toc file="data/help/manual/manual.xml"/>
+       <toc file="data/help/toc/filteredToc/toc.xml"/>
+       <toc file="data/help/toc/filteredToc/filter.xml"/>
+       <toc file="data/help/toc/filteredToc/simple_toc.xml"/>
+       <toc file="data/help/toc/extraContent/toc.xml"/>
+       <toc file="data/help/toc/extraContent/toc2.xml"/>
+       <toc file="data/help/toc/extraContent/simple_toc.xml"/>
+       <toc file="data/help/search/toc.xml"/>
+       <toc file="data/help/search/toc2.xml" extradir="data/help/search/extraDir"/>
+       <toc file="data/help/search/toc3.xml" extradir="data/help/search/extraDir2"/>
+       <toc file="data/help/search/toc4.xml" extradir="data/help/search/extraDir3"/>
+       <toc file="data/help/index/toc.xml"/>
+       <toc file="data/help/jsp/toc.xml"/>
+       <toc file="non_junit/toc.xml"/>
+       <tocIcon
+             id="org.eclipse.ua.tests.openOnly"
+             openIcon="icons/sample.gif">
+       </tocIcon>
+       <tocIcon
+             altText="altSample"
+             closedIcon="icons/sample2.gif"
+             id="org.eclipse.ua.tests.iconSet"
+             leafIcon="icons/sample3.gif"
+             openIcon="icons/sample.gif">
+       </tocIcon>
+      <tocProvider
+            class="org.eclipse.ua.tests.help.toc.UaTestTocProvider">
+      </tocProvider>
+      <toc
+            file="data/help/toc/filteredToc/nonPrimaryToc.xml"
+            primary="false">
+      </toc>
+      <toc
+            file="data/help/criteria/criterialetters.xml"
+            primary="false">
+      </toc>
+   </extension>
+
+   <extension point= "org.eclipse.help.contentExtension"> 
+      <contentExtension file="data/help/dynamic/include/extension.xml"/>
+      <contentExtension file="data/help/dynamic/extension/extension.xml"/>
+      <contentExtension file="data/help/dynamic/shared/extension.xml"/>
+      <contentExtension file="data/help/search/extension.xml"/>
+      <contentExtension file="data/help/search/extension2.xml"/>
+      <contentExtensionProvider
+            class="org.eclipse.ua.tests.help.search.UATestContentExtensionProvider">
+      </contentExtensionProvider>
+   </extension>
+   <extension
+         point="org.eclipse.help.index">
+      <index
+            file="data/help/index/index.xml">
+      </index>
+   </extension>
+
+
+
+   <!--
+      A dummy product used to arrange the welcome contributions for the performance test.
+   -->
+   <extension id="dummy" point="org.eclipse.core.runtime.products"> 
+      <product name="dummyProductName" application="org.eclipse.ui.ide.workbench" description="dummyProductName"> 
+         <property name="preferenceCustomization" value="data/intro/performance/plugin_customization.ini"/>
+      </product> 
+   </extension> 
+   
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/loadtest"
+            class="org.eclipse.ua.tests.help.util.LoadTestServlet"
+            httpcontextId="org.eclipse.help.webapp.help">
+      </servlet>
+      <serviceSelector
+            filter="(other.info=org.eclipse.help)">
+      </serviceSelector>
+   </extension>
+   <extension
+         point="org.eclipse.help.contentProducer">
+      <contentProducer
+            producer="org.eclipse.ua.tests.util.UATestContentProducer">
+      </contentProducer>
+   </extension>
+   
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+       <servlet
+            alias="/titlesearch/*.jsp"
+            class="org.eclipse.equinox.jsp.jasper.registry.JSPFactory:/"
+            httpcontextId="org.eclipse.help.webapp.help">
+      </servlet>
+      <serviceSelector
+            filter="(other.info=org.eclipse.help)">
+      </serviceSelector>
+      <servlet
+            alias="/counter.html"
+            class="org.eclipse.ua.tests.browser.servlet.CounterServlet"
+            httpcontextId="org.eclipse.help.webapp.help">
+      </servlet>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.resources">
+      <resource
+            alias="/titlesearch/icons"
+            base-name="/icons">
+      </resource>
+      <resource
+            alias="/titlesearch/script"
+            base-name="/script">
+      </resource>
+      <resource
+            alias="/test"
+            base-name="/service">
+      </resource>
+      <serviceSelector
+            filter="(other.info=org.eclipse.help)">
+      </serviceSelector>
+   </extension>
+   <extension
+         point="org.eclipse.help.webapp.view">
+      <view
+            class="org.eclipse.ua.tests.help.webextension.TitleSearchView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.help.webapp.toolbarButton">
+      <button
+            class="org.eclipse.ua.tests.help.webextension.TitleSearchButton">
+      </button>
+   </extension>
+   <extension
+         point="org.eclipse.help.webapp.frame">
+      <frame
+            class="org.eclipse.ua.tests.help.webextension.TestFrame">
+      </frame>
+      <frame
+            class="org.eclipse.ua.tests.help.webextension.TestHelpToolbarFrame">
+      </frame>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.httpcontexts">
+      <httpcontext
+            id="uaTest">
+         <resource-mapping
+               path="/">
+         </resource-mapping>
+      </httpcontext>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/search"
+            class="org.eclipse.ua.tests.help.remote.MockSearchServlet"
+            httpcontextId="uaTest">
+      </servlet>
+       <servlet
+            alias="/toc"
+            class="org.eclipse.ua.tests.help.remote.MockTocServlet"
+            httpcontextId="uaTest">
+      </servlet>
+       <servlet
+             alias="/context"
+             class="org.eclipse.ua.tests.help.remote.MockContextServlet">
+       </servlet>
+       <servlet
+             alias="/rtopic"
+             class="org.eclipse.ua.tests.help.remote.MockContentServlet">
+       </servlet>
+       <servlet
+             alias="/index"
+             class="org.eclipse.ua.tests.help.remote.MockIndexServlet">
+       </servlet>
+      
+      <serviceSelector
+            filter="(other.info=org.eclipse.ua.tests)">
+      </serviceSelector>
+   </extension>
+   <extension
+         point="org.eclipse.help.base.searchParticipant">
+      <searchParticipant
+            headless="false"
+            icon="icons/sample4.gif"
+            id="org.eclipse.ua.tests.searchParticipant"
+            name="Mock Search Participant"
+            participant="org.eclipse.ua.tests.help.search.MockSearchParticipant">
+      </searchParticipant>
+      <searchParticipant
+            headless="false"
+            icon="icons/sample4.gif"
+            id="org.eclipse.ua.tests.searchParticipantXml"
+            name="Mock Search Participant for XML"
+            participant="org.eclipse.ua.tests.help.search.MockSearchParticipantXML">
+      </searchParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.help.criteriaProvider">
+      <provider
+            class="org.eclipse.ua.tests.help.criteria.SampleCriteriaProvider"></provider>
+   </extension>
+   <extension
+         point="org.eclipse.help.base.scope">
+      <scope
+            class="org.eclipse.ua.tests.help.scope.TScope"
+            id="tscope">
+      </scope>
+   </extension>
+   <extension
+         point="org.eclipse.help.criteriaDefinition">
+      <criteriaDefinitionProvider
+            class="org.eclipse.ua.tests.help.criteria.SampleCriteriaDefinitionProvider">
+      </criteriaDefinitionProvider>
+   </extension>
+   <extension
+         id="testproduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ui.ide.workbench"
+            name="UA Test Product">
+         <property
+               name="preferenceCustomization"
+               value="data/test_customization.ini">
+         </property>
+      </product>
+   </extension>
+   <extension
+         id="criteriaproduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ui.ide.workbench"
+            name="UA Criteria Test Product">
+         <property
+               name="preferenceCustomization"
+               value="data/criteria_customization.ini">
+         </property>
+      </product>
+   </extension>
+
+</plugin>

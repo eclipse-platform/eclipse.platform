@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<toc
+      label="filteredToc"
+      href="/org.eclipse.ua.tests/data/help/toc/filteredToc/toc.xml">
+   <topic
+         label="filter.xml"
+         href="null">
+      <topic
+            label="This topic should always appear"
+            href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+         <topic
+               label="test"
+               href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+         </topic>
+      </topic>
+      <topic
+            label="The plugin org.eclipse.help is installed"
+            href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+         <topic
+               label="test"
+               href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+         </topic>
+      </topic>
+      <topic
+            label="The product org.eclipse.sdk.ide is running"
+            href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+         <topic
+               label="test"
+               href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+         </topic>
+      </topic>
+      <topic
+            label="The category org.eclipse.categories.developmentCategory is enabled"
+            href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+         <topic
+               label="test"
+               href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+         </topic>
+      </topic>
+      <topic
+            label="The activity org.eclipse.javaDevelopment is enabled"
+            href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+         <topic
+               label="test"
+               href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+         </topic>
+      </topic>
+      <topic
+            label="This topic should always appear"
+            href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+      </topic>
+      <topic
+            label="The plugin org.eclipse.help is installed"
+            href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+      </topic>
+      <topic
+            label="The product org.eclipse.sdk.ide is running"
+            href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+      </topic>
+      <topic
+            label="The category org.eclipse.categories.developmentCategory is enabled"
+            href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+      </topic>
+      <topic
+            label="The activity org.eclipse.javaDevelopment is enabled"
+            href="/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html">
+      </topic>
+   </topic>
+</toc>

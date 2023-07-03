@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cheatsheet
+      title="Test cheatsheet without cheatsheet element">
+   <item
+         title="Introduction"
+         description="Simple test"
+         Href="null"
+         contextId="null">
+      <nullAction/>
+      <nullList/>
+      <nullPerformWhen/>
+      <nullList/>
+   </item>
+   <list>
+      <item
+            title="Just a simple test"
+            description="Did it work? Of course not, it is suppose to cause a parsing error."
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <list>
+            <repeatedSubItem
+                  values="${files}">
+               <list>
+                  <subItem
+                        label="Create class ${this}"
+                        when="null"
+                        isSkip="false">
+                     <action
+                           class="org.eclipse.ui.examples.cheatsheets.pattern.actions.OpenClassNameFilledAction"
+                           pluginId="org.eclipse.ua.tests"
+                           when="null"
+                           isConfirm="false">
+                        <array>
+                           <string
+                                 value="${this}">
+                           </string>
+                           <string
+                                 value="${project}">
+                           </string>
+                           <nullObject/>
+                           <nullObject/>
+                           <nullObject/>
+                           <nullObject/>
+                           <nullObject/>
+                           <nullObject/>
+                           <nullObject/>
+                        </array>
+                     </action>
+                     <nullPerformWhen/>
+                  </subItem>
+               </list>
+            </repeatedSubItem>
+         </list>
+      </item>
+   </list>
+</cheatsheet>

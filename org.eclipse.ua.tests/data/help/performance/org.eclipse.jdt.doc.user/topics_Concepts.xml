@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<!-- ========================== -->
+<!-- Define topics for the Concepts -->
+<!-- ========================== -->
+<toc label="Concepts" href="concepts/concepts-1.htm" >
+   <!-- <topic label="Overview" href="concepts/concepts-1.htm"/> -->
+   <topic label="Java projects" href="concepts/concepts-3.htm"/>
+   <anchor id="c_javaprojects" />
+   <topic label="Java builder" href="concepts/concepts-4.htm">
+      <anchor id="c_javabuilder" />
+      <topic label="Build classpath" href="concepts/cbuildcp.htm">
+         <anchor id="c_buildclasspath" />
+         <topic label="Exclusion and inclusion filters" href="concepts/filters.htm" />
+         <anchor id="c_filters" />
+         <topic label="Access rules" href="concepts/rules.htm" />
+         <anchor id="c_restrict" />
+         <topic label="Classpath variables" href="concepts/cclsspthv.htm" />
+         <anchor id="c_classpathvariables" />
+      </topic>
+   </topic>
+   <topic label="Java perspectives" href="concepts/concepts-5.htm"/>
+   <anchor id="c_javaperspective" />
+   <topic label="Java views" href="concepts/cjavaviews.htm">
+      <anchor id="c_javaviews" />
+      <topic label="Filtering in Java views" href="concepts/cjavaviews_filtering.htm"/>
+      <topic label="Sorting in Java views" href="concepts/cjavaviews_sorting.htm"/>
+      <topic label="Java element decorations" href="concepts/cjavaviews_decorators.htm"/>
+      <topic label="Presentation options for Java views" href="concepts/cjavaviews_presentation.htm"/>
+   </topic>
+   <topic label="Java editor" href="concepts/concepts-7.htm"/>
+   <anchor id="c_javaeditor" />
+   <topic label="Quick Fix" href="concepts/cquickfix.htm"/>
+   <anchor id="c_quickfix" />   
+   <topic label="Quick Assist" href="concepts/cquickassists.htm"/>
+   <anchor id="c_quickassist" />   
+   <topic label="Templates" href="concepts/ctemplates.htm" />
+   <anchor id="ctemplates" />
+   <topic label="Java search" href="concepts/concepts-8.htm"/>
+   <anchor id="c_javasearch" />
+   <topic label="Refactoring support" href="concepts/concepts-9.htm"/>
+   <anchor id="c_refactoring" />
+   <topic label="Debugger" href="concepts/cdebugger.htm"/>
+   <anchor id="c_debugger" />
+   <topic label="Scrapbook" href="concepts/cscrapbook.htm"/>
+   <anchor id="c_scrapbook" />
+   <topic label="Local debugging" href="concepts/clocdbug.htm" />
+   <anchor id="c_localdebug" />
+   <topic label="Remote debugging" href="concepts/cremdbug.htm" />
+   <anchor id="c_remotedebug" />
+   <topic label="Breakpoints" href="concepts/cbrkpnts.htm" />
+   <anchor id="c_breakpoints" />
+   <topic label="String externalization" href="concepts/cnls.htm" />
+   <anchor id="c_nls" />
+  
+</toc>
