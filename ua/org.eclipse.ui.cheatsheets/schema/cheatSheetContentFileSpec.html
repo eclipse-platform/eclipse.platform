@@ -1,0 +1,437 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Cheat Sheet Content File XML Format</title>
+<style>@import url("../../book.css");</style>
+<style>@import url("../../schema.css");</style>
+</HEAD>
+<BODY>
+<H1 style="text-align:center">Cheat Sheet Content File XML Format</H1>
+<p></p>
+<h6 class="CaptionFigColumn SchemaHeader">Identifier: </h6>org.eclipse.ui.cheatsheets.cheat_sheet_schema<p></p>
+<h6 class="CaptionFigColumn SchemaHeader">Since: </h6>3.2
+<p></p>
+
+<h6 class="CaptionFigColumn SchemaHeader">Description: </h6><p>This document describes the cheat sheet content file structure as a series of
+DTD fragments (<a href="cheatSheetContentFileSpec.exsd">machine readable XML schema</a>).</p>
+
+<p>A cheat sheet consists of a series of items (steps) which must be completed in order. Items can be divided into subitems and can launch commands or actions which will perform some of the steps for the user.</p><p></p>
+<h6 class="CaptionFigColumn SchemaHeader">Configuration Markup:</h6>
+<p></p>
+<p class="code SchemaDtd">&lt;!ELEMENT <a name="e.cheatsheet">cheatsheet</a> (<a href="#e.intro">intro</a> , <a href="#e.item">item</a>+)&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST cheatsheet</p>
+<p class="code SchemaDtdAttlist">title&nbsp;CDATA #REQUIRED</p>&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+The root element of a cheatsheet.</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>title</b> - The title of this cheat sheet. The title will be displayed at the head of the cheat sheet view when the cheat sheet is opened.</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.intro">intro</a> (<a href="#e.description">description</a>)&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST intro</p>
+<p class="code SchemaDtdAttlist">contextId&nbsp;CDATA #IMPLIED</p><p class="code SchemaDtdAttlist">href&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED</p>&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+The &lt;intro&gt; element is used to define the introductory text to be displayed when the cheat sheet is opened.</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>contextId</b> - The optional help context id of the documentation for this cheat sheet. If supplied, context help for the given fully-qualified context id is shown to the user (typically in a small pop-up window) when they clicks the introduction's help link. If this attribute is supplied, the <b>href</b> attribute should not be supplied (<b>href</b> will be ignored if both are present).</li>
+<li><b>href</b> - The optional help document describing this cheat sheet. If supplied, this help document is shown to the user (typically in a help browser shown in a separate window) when they clicks the introduction's help link. If this attribute is supplied, the <b>contextId</b> attribute should not be supplied (<b>href</b> will be ignored if both are present).</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.description">description</a> (#PCDATA)&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+The &lt;description&gt; element holds the description of a cheat sheet or of
+a cheat sheet item. The description consists of text interspersed with <a href="../../../org.eclipse.platform.doc.isv/guide/forms_controls_text_markup.htm">form text markup</a>. The cheat sheet automatically formats and lays out the text to
+make it show up reasonably in the UI.
+Hyperlinks are expressed using <b>&lt;a href="URL"&gt;text&lt;a&gt;</b>, where URL is a valid URL to an external web site or a CheatSheet URL that represents a CheatSheat action. All cheat sheet URLs have the following form:  http://org.eclipse.ui.cheatsheet/&lt;action name&gt;?param1=value1&amp;param2=value2 and will be processed by the cheat sheet framework.
+<br>
+The following predefined actions are included in the cheat sheet framework:
+<p style="margin-left:15px;">
+<b>showView</b> - activates view with given view id<br>
+<i>id</i> - a view id<br>
+<br>
+<b>execute</b> - executes the specified command.  See the <code>serialize()</code> method on <code>org.eclipse.core.command.ParameterizedCommand</code> for details of the command serialization format. Since 3.2.<br>
+<i>command</i> - a serialized <code>ParameterizedCommand</code><br>
+</p>
+Within the text, balanced <b>&lt;b&gt;</b>...<b>&lt;/b&gt;</b>
+tags cause the enclosed text to be rendered in a bold font, and the <b>&lt;br/&gt;</b>
+element can be used to force a line break. These are the only formatting tags
+supported at this time (however, others may be added in the future). Certain
+characters in the text have special significance for XML parsers; in particular,
+to write &quot;&lt;&quot;, &quot;&gt;&quot;, &quot;&amp;&quot;, &quot;'&quot;, and
+&quot;&quot;&quot; (quotation mark) instead write &quot;&amp;lt;&quot;,
+&quot;&amp;gt;&quot;, &quot;&amp;amp;&quot;, &quot;&amp;apos;&quot;, and &quot;&amp;quot;&quot;
+respectively. Whitespace (spaces and line breaks) is treated as a word
+separator; adjacent spaces and line breaks are treated as single unit and
+rendered as a single space or a line break. Whitespace immediately after the
+&lt;<b>description</b>&gt; and &lt;<b>br/</b>&gt; tags is ignored, as is
+whitespace immediately before the &lt;<b>/description</b>&gt; tag.</p>
+<br><br>
+<p class="code SchemaDtd">&lt;!ELEMENT <a name="e.item">item</a> (<a href="#e.description">description</a> , (<a href="#e.action">action</a> | <a href="#e.command">command</a> | <a href="#e.perform-when">perform-when</a> | (<a href="#e.subitem">subitem</a> | <a href="#e.conditional-subitem">conditional-subitem</a> | <a href="#e.repeated-subitem">repeated-subitem</a>)*) , <a href="#e.onCompletion">onCompletion</a>?)&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST item</p>
+<p class="code SchemaDtdAttlist">title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED</p><p class="code SchemaDtdAttlist">dialog&nbsp;&nbsp;&nbsp;&nbsp;(true | false) "false"</p><p class="code SchemaDtdAttlist">skip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(true | false) "false"</p><p class="code SchemaDtdAttlist">contextId&nbsp;CDATA #IMPLIED</p><p class="code SchemaDtdAttlist">href&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED</p>&gt;</p>
+<p></p>
+<div class="ConfigMarkupElementDesc">
+<p>Each &lt;item&gt; element describes one top-level step in a cheat sheet. An
+&lt;item&gt; may contain &lt;subitem&gt; elements. 
+
+<p>The org.eclipse.ui.cheatsheets.cheatSheetItemExtension allows additional
+custom controls for the item to be displayed in the UI. Contributions to this
+extension point declare the names of additional, string-valued attributes that
+may appear on &lt;item&gt; elements.</p>
+<p>Simple items have a description and an optional action or command. In the typical
+presentation, the titles of cheat sheet items are shown to the user most of the
+time. An item's description is only shown while the step is in the process of
+being executed. The presence of an &lt;action&gt;, &lt;command&gt; or &lt;perform-when&gt;)element is  associated with a button that the user can press to perform
+the step's action or command. If no action or command is present, the step is one that the user must
+carry out manually and then overtly indicate that they have successfully
+completed the step.</p>
+<p>Steps may be broken down into sub-steps as specified by the &lt;subitem&gt; subelements. Unlike items, which the user must follow in strict sequence, the
+sub-items of a given item can be performed in any order. All sub-items within an
+item have to be attempted (or skipped) before progressing to the next item.
+(Which means actions that must be performed in a required sequence cannot be
+represented as sub-items.)</p>
+<p>A &lt;conditional-subitem&gt; subelement allow a step to tailor the
+presentation of a sub-step based on cheat sheet variables whose values are
+acquired in earlier steps. A &lt;repeated-subitem&gt; subelement allows a step
+to include a set of similar sub-steps. Again, the exact set of sub-steps may be
+based on cheat sheet variables whose value are acquired in earlier steps.</p></div>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>title</b> - The title of this step.</li>
+<li><b>dialog</b> - if &quot;true&quot; means this step involves opening a modal dialog. This is a hint to the system that it should allow the user to continue using the cheat sheet while in the modal dialog. This attribute will only affect dialogs launched from a command or action.</li>
+<li><b>skip</b> - if &quot;true&quot; means that the whole step can be skipped; the UI generally shows a button that the user can press to indicate that they are skipping this step</li>
+<li><b>contextId</b> - The optional help context id of the documentation for this cheat sheet step. If supplied, context help for the given&nbsp; fully-qualified context id is shown to the user (typically in a small pop-up window) when they clicks the step's help link. If this attribute is supplied, the <b>href</b> attribute should not be supplied (<b>href</b> will be ignored if both are present).</li>
+<li><b>href</b> - The optional help document describing this cheat sheet step. If supplied, this help document is shown to the user (typically in a help browser shown in a separate window) when they clicks the step's help link. If this attribute is supplied, the <b>contextId</b> attribute should not be supplied (<b>href</b> will be ignored if both are present).</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.subitem">subitem</a> (<a href="#e.description">description</a>? , (<a href="#e.action">action</a> | <a href="#e.command">command</a> | <a href="#e.perform-when">perform-when</a>)?)&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST subitem</p>
+<p class="code SchemaDtdAttlist">label&nbsp;CDATA #REQUIRED</p><p class="code SchemaDtdAttlist">skip&nbsp;&nbsp;(true | false) "false"</p><p class="code SchemaDtdAttlist">when&nbsp;&nbsp;CDATA #IMPLIED</p>&gt;</p>
+<p></p>
+<div class="ConfigMarkupElementDesc">
+<p>Each &lt;subitem&gt; element describes a sub-step in a cheat sheet. A &lt;subitem&gt;
+carries a simple text label, but has neither a lengthy description nor further
+sub-items.
+<p>Sub-items may have an optional action or command. The presence of an &lt;action&gt;, 
+&lt;command&gt; or
+&lt;perform-when&gt; element is associated with a button that the
+user can press to perform the sub-step's action or command. If no action or 
+command is present, the
+sub-step is one that the user must carry out manually and then overtly indicate
+that they have successfully completed the step.</p>
+<p>Unlike items, which must be followed in strict sequence, the sub-items of a
+given item can be performed in any order. All sub-items within an item have to
+be completed or skipped before progressing to the next item. (Which means
+actions that must be performed in a required sequence should not be represented
+as sub-items.)</p>
+<p>Since version 3.4 a description has been allowed in a subitem in place of the label attribute, which allows for formatting tags to be used.</p></div>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>label</b> - The title of the cheat sheet sub-item. If the string
+    contains substring occurrences of the form &quot;${<i>var</i>}&quot;, they
+    are considered references to cheat sheet variables. All such occurrences in
+    the string value will be replaced by the value of the corresponding variable
+    in the context of the execution of the cheat sheet, or the empty string for
+    variables that are unbound. The values of the variables are as of the
+    beginning of the execution of the main step (when the &lt;item&gt; element
+    is elaborated), rather than when the individual sub-step are run.
+    
+  A subitem may have either a label or a description element but not both. A description element may contain the formating tags such as &lt;b&gt;, &lt;/b&gt; or &lt;br/&gt;.</li>
+<li><b>skip</b> - if &quot;true&quot; this sub-step can be
+    skipped. The UI generally shows a button that the user can press to indicate
+    that they are skipping this sub-step.</li>
+<li><b>when</b> - Indicates this subitem is to be used if and only if the
+    value of the condition attribute of the containing &lt;conditional-subitem&gt;
+    element matches this string value. This attribute is ignored if the &lt;subitem&gt;
+    element is not a child of&nbsp; a &lt;conditional-subitem&gt; element.</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.conditional-subitem">conditional-subitem</a> (<a href="#e.subitem">subitem</a>+)&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST conditional-subitem</p>
+<p class="code SchemaDtdAttlist">condition&nbsp;CDATA #REQUIRED</p>&gt;</p>
+<p></p>
+<div class="ConfigMarkupElementDesc">
+<p>Each &lt;conditional-subitem&gt; element describes a single sub-step whose
+form can differ based on a condition known at the time the item is expanded.
+<p>The <b>condition</b> attribute on the &lt;conditional-subitem&gt; element
+provides a string value (invariably this value comes from a cheat sheet
+variable). Each of the &lt;subitem&gt; children must carry a <b>when</b>
+attribute with a distinct string value. When the item is expanded, the
+&lt;conditional-subitem&gt; element is replaced by the &lt;subitem&gt; element
+with the matching value. It is considered an error if there is no &lt;subitem&gt;
+element with a matching value.</p>
+<p>For example, if the cheat sheet variable named &quot;v1&quot; has the value
+&quot;b&quot; when the following item is expanded</p>
+<pre class="Example"><span class="code SchemaTag">&lt;item ...&gt; 
+  &lt;conditional-subitem condition=</span><span class="code SchemaCstring">&quot;${v1}&quot;</span><span class="code SchemaTag">&gt;
+     &lt;subitem when=</span><span class="code SchemaCstring">&quot;a&quot;</span><span class="code SchemaTag"> label=</span><span class="code SchemaCstring">&quot;Step for A.&quot;</span><span class="code SchemaTag"> /&gt;
+     &lt;subitem when=</span><span class="code SchemaCstring">&quot;b&quot;</span><span class="code SchemaTag"> label=</span><span class="code SchemaCstring">&quot;Step for B.&quot;</span><span class="code SchemaTag"> /&gt;
+  &lt;/conditional-subitem&gt;
+&lt;/item&gt;</span></pre>
+then the second sub-item is selected and the item expands to something
+equivalent to
+<pre class="Example"><span class="code SchemaTag">&lt;item ...&gt; 
+  &lt;subitem label=</span><span class="code SchemaCstring">&quot;Step for B.&quot;</span><span class="code SchemaTag">/&gt;
+&lt;/item&gt;</span></pre></div>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>condition</b> - Arbitrary string value used to select which child &lt;subitem&gt;
+    will be used. If the attribute string has the form &quot;${<i>var</i>}&quot;,
+    it is considered a reference to a cheat sheet variable <i>var</i>, and value
+    of the condition will be the value of the variable for the cheat sheet at
+    the start of execution of the containing &lt;item&gt; element (or the empty
+    string if the variable is unbound at that time).</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.repeated-subitem">repeated-subitem</a> (<a href="#e.subitem">subitem</a>)&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST repeated-subitem</p>
+<p class="code SchemaDtdAttlist">values&nbsp;CDATA #REQUIRED</p>&gt;</p>
+<p></p>
+<div class="ConfigMarkupElementDesc">
+<p>Each &lt;repeated-subitem&gt; element describes a sub-item that expands into
+0, 1, or more similar sub-steps. 
+  
+<p>The <b>values</b> attribute provides a list of comma-separated strings; the
+&lt;subitem&gt; child provide the template. When the item is expanded, the
+&lt;repeated-subitem&gt; element is replaced by copies of the &lt;subitem&gt;
+element with occurrences of the variable &quot;this&quot; replaced by the
+corresponding string value.</p>
+<p>For example, if the cheat sheet variable named &quot;v1&quot; has the value
+&quot;1,b,three&quot; when the following item is expanded</p>
+<pre class="Example"><span class="code SchemaTag">&lt;item ...&gt; 
+  &lt;repeated-subitem values=</span><span class="code SchemaCstring">&quot;${v1}&quot;</span><span class="code SchemaTag">&gt;
+     &lt;subitem label=</span><span class="code SchemaCstring">&quot;Step ${this}.&quot;</span><span class="code SchemaTag">&gt;
+        &lt;action class=</span><span class="code SchemaCstring">&quot;com.xyz.myaction&quot;</span><span class="code SchemaTag"> pluginId=</span><span class="code SchemaCstring">&quot;com.xyz&quot;</span><span class="code SchemaTag"> param1=</span><span class="code SchemaCstring">&quot;${this}&quot;</span><span class="code SchemaTag">/&gt;
+     &lt;/subitem&gt;
+  &lt;/repeated-subitem&gt;
+&lt;/item&gt;</span></pre>
+then the item expands to something equivalent to:
+<pre class="Example"><span class="code SchemaTag">&lt;item ...&gt; 
+  &lt;subitem label=</span><span class="code SchemaCstring">&quot;Step 1.&quot;</span><span class="code SchemaTag">&gt;
+     &lt;action class=</span><span class="code SchemaCstring">&quot;com.xyz.myaction&quot;</span><span class="code SchemaTag"> pluginId=</span><span class="code SchemaCstring">&quot;com.xyz&quot;</span><span class="code SchemaTag"> param1=</span><span class="code SchemaCstring">&quot;1&quot;</span><span class="code SchemaTag">/&gt;
+  &lt;/subitem&gt;
+  &lt;subitem label=</span><span class="code SchemaCstring">&quot;Step b.&quot;</span><span class="code SchemaTag">&gt;
+     &lt;action class=</span><span class="code SchemaCstring">&quot;com.xyz.myaction&quot;</span><span class="code SchemaTag"> pluginId=</span><span class="code SchemaCstring">&quot;com.xyz&quot;</span><span class="code SchemaTag"> param1=</span><span class="code SchemaCstring">&quot;b&quot;</span><span class="code SchemaTag">/&gt;
+  &lt;/subitem&gt;
+  &lt;subitem label=</span><span class="code SchemaCstring">&quot;Step three.&quot;</span><span class="code SchemaTag">&gt;
+     &lt;action class=</span><span class="code SchemaCstring">&quot;com.xyz.myaction&quot;</span><span class="code SchemaTag"> pluginId=</span><span class="code SchemaCstring">&quot;com.xyz&quot;</span><span class="code SchemaTag"> param1=</span><span class="code SchemaCstring">&quot;three&quot;</span><span class="code SchemaTag">/&gt;
+  &lt;/subitem&gt;
+&lt;/item&gt;</span></pre></div>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>values</b> - A string containing a comma-separated list of values. If
+    the attribute string has the form &quot;${<i>var</i>}&quot;, it is
+    considered a reference to a cheat sheet variable <i>var</i>, and value of
+    the condition will be the value of the variable for the cheat sheet at the
+    start of execution of the containing &lt;item&gt; element (or the empty
+    string if the variable is unbound at that time).</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.action">action</a> EMPTY&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST action</p>
+<p class="code SchemaDtdAttlist">class&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #REQUIRED</p><p class="code SchemaDtdAttlist">pluginId&nbsp;&nbsp;CDATA #REQUIRED</p><p class="code SchemaDtdAttlist">paramN&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED</p><p class="code SchemaDtdAttlist">confirm&nbsp;&nbsp;&nbsp;(true | false) "false"</p><p class="code SchemaDtdAttlist">when&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED</p><p class="code SchemaDtdAttlist">required&nbsp;&nbsp;(true | false) "true"</p><p class="code SchemaDtdAttlist">translate&nbsp;CDATA #IMPLIED</p>&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+Each &lt;action&gt; element describes an action in a cheat sheet.</p>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>class</b> - The fully-qualified name of the Java class implementing <code>org.eclipse.jface.action.IAction</code>.
+    If this action also implements <code>org.eclipse.ui.cheatsheets.ICheatSheetAction</code>
+    it will be invoked via its run(String[],ICheatSheetManager) method and be
+    passed the cheat sheet manager and action parameters. The pluginId attribute
+    must be present whenever this attribute is present. It is strongly
+    recommended that actions intended to be invoked from cheat sheets should
+    report success/fail outcome if running the action might fail (perhaps
+    because the user cancels the action from its dialog). (See
+    org.eclipse.jface.action.Action.notifyResult(boolean) for details.)</li>
+<li><b>pluginId</b> - The id of the plug-in which contains the Java class of
+    the action class. This attribute must be present.</li>
+<li><b>paramN</b> - For action classes that also implement <code>org.eclipse.ui.cheatsheets.ICheatSheetAction</code>,
+    the string values of attributes <b>param1</b>,
+    <b>param2</b> up to <b>param9</b> are passed to the action when it is
+    invoked. You can pass up to 9 parameters to a cheat sheet action , etc. The parameters supplied must start with parameter 1
+    and be contiguous; that is, it is illegal to specify <b>param2</b> without <b>param1</b>
+    also being present. If the attribute string has the form &quot;${<i>var</i>}&quot;,
+    it is considered a reference to a cheat sheet variable <i>var</i>, and value
+    of the condition will be the value of the variable for the cheat sheet at
+    the start of execution of the containing &lt;item&gt; element (or the empty
+    string if the variable is unbound at that time).</li>
+<li><b>confirm</b> - If &quot;true&quot; indicates this step (or sub-step)
+    requires the user to manually confirm that the action has been completed.</li>
+<li><b>when</b> - Indicates this action is to be used if and only if the value
+    of the condition attribute of the containing &lt;perform-when&gt; element
+    matches this string value. This attribute is ignored if the &lt;action&gt;
+    element is not a child of&nbsp; a &lt;perform-when&gt; element.</li>
+<li><b>required</b> - if "true" this item or subitem can only be completed by performing this action (it may still be skipped if skip="true"). If "false" two buttons will be created, one to perform the task and one to mark it as complete, either will complete this step or substep.</li>
+<li><b>translate</b> - A comma separated list of parameters which are translatable. Any parameters not in the list are considered non-translatable. While this attribute is optional it is strongly recommended that it be provided for any cheat sheat which may end up being translated. If this attribute is not specified it means that there is no translation hint.
+<br>
+Examples:
+<br>
+<code>translate = "param2, param3"</code>  means translate param2 and param3 only.
+<br>
+<code>translate = ""</code> means do not translate any parameters for this action.</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.command">command</a> EMPTY&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST command</p>
+<p class="code SchemaDtdAttlist">serialization&nbsp;CDATA #REQUIRED</p><p class="code SchemaDtdAttlist">returns&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED</p><p class="code SchemaDtdAttlist">confirm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(true | false) "false"</p><p class="code SchemaDtdAttlist">when&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED</p><p class="code SchemaDtdAttlist">required&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(true | false) "true"</p><p class="code SchemaDtdAttlist">translate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDATA #IMPLIED</p>&gt;</p>
+<p></p>
+<div class="ConfigMarkupElementDesc">
+<p>Each &lt;command&gt; element describes an command in a cheat sheet.
+<p>Below is an example of an item with a command which opens a dialog box and 
+stores the result in the cheat sheet variable &quot;result&quot;.</p>
+<pre class="Example"><span class="code SchemaTag">&lt;item title=</span><span class="code SchemaCstring">&quot;View Selection&quot;</span><span class="code SchemaTag">&gt;
+     &lt;description&gt;Select a view which will be opened in the next step.&lt;/description&gt;
+     &lt;command returns = </span><span class="code SchemaCstring">&quot;result&quot;</span><span class="code SchemaTag">
+      serialization=</span><span class="code SchemaCstring">&quot;org.eclipse.ui.dialogs.openMessageDialog(title=Select View,buttonLabel0=Package Explorer,message=Select a view ,buttonLabel1=Search View)&quot;</span><span class="code SchemaTag">/&gt;  
+      &lt;onCompletion&gt; Selected the ${result}. &lt;/onCompletion&gt;
+&lt;/item&gt;</span></pre></div>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>serialization</b> - A serialized
+  <a href="../api/org/eclipse/core/commands/ParameterizedCommand.html">
+  ParameterizedCommand</a>,&nbsp; which is a string containing the command name 
+  and parameters. See the
+  <a href="../api/org/eclipse/core/commands/ParameterizedCommand.html#serialize()">
+  ParameterizedCommand.serialize()</a> method for full details on this format.</li>
+<li><b>returns</b> - An optional attribute which specifies the name of a cheat 
+  sheet variable which will be used to store the return value of the command. 
+  This allows a command to set a cheat sheet variable which is used in 
+  a later &lt;perform-when&gt;, &lt;conditional-subitem&gt; or &lt;repeated-subitem&gt;.</li>
+<li><b>confirm</b> - if &quot;true&quot; indicates that this step (or sub-step)
+    requires the user to manually confirm that the command has been completed.</li>
+<li><b>when</b> - Indicates this command is to be used if and only if the value
+    of the condition attribute of the containing &lt;perform-when&gt; element
+    matches this string value. This attribute is ignored if the &lt;command&gt;
+    element is not a child of&nbsp; a &lt;perform-when&gt; element.</li>
+<li><b>required</b> - if "true" this item or subitem can only be completed by performing this command (it may still be skipped if skip="true"). If "false" two buttons will be created, one to perform the task and one to mark it as complete, either will complete this step or substep.</li>
+<li><b>translate</b> - A comma separated list of parameters which are translatable. Any parameters not in the list are considered non-translatable. While this attribute is optional it is strongly recommended that it be provided for any cheat sheat which may end up being translated. If this attribute is not specified it means that there is no translation hint.
+<br>
+Examples:
+<br>
+<code>translate = "param2, param3"</code>  means translate param2 and param3 only.
+<br>
+<code>translate = ""</code> means do not translate any parameters for this command.</li>
+</ul>
+<br><p class="code SchemaDtd">&lt;!ELEMENT <a name="e.onCompletion">onCompletion</a> (#PCDATA)&gt;</p>
+<p></p>
+<p class="ConfigMarkupElementDesc">
+Contains text which will be displayed when 
+an item is completed. This is particularly useful in the final step of the cheat 
+sheet to acknowledge completion of the entire task. The description consists of text interspersed with <a href="../../../org.eclipse.platform.doc.isv/guide/forms_controls_text_markup.htm">form text markup</a> following the same rules as for a &lt;description&gt; element. 
+&lt;onCompletion&gt; elements may also contain references to cheat sheet variables of 
+the form&nbsp; &quot;${<i>var</i>}&quot;, which will be expanded using the actual value of 
+the cheat sheet variable <i>var</i> at the time this step was completed.</p>
+<br><br>
+<p class="code SchemaDtd">&lt;!ELEMENT <a name="e.perform-when">perform-when</a> (<a href="#e.action">action</a> | <a href="#e.command">command</a>)+&gt;</p>
+<p class="code SchemaDtd">&lt;!ATTLIST perform-when</p>
+<p class="code SchemaDtdAttlist">condition&nbsp;CDATA #REQUIRED</p>&gt;</p>
+<p></p>
+<div class="ConfigMarkupElementDesc">
+<p>Each &lt;perform-when&gt; element describes an action in a cheat sheet.
+<p>The <b>condition</b> attribute on the &lt;conditional-subitem&gt; element
+provides a string value (invariably this value comes from a cheat sheet
+variable). Each of the &lt;subitem&gt; children must carry a <b>when</b>
+attribute with a distinct string value. When the item is expanded, the
+&lt;conditional-subitem&gt; element is replaced by the &lt;subitem&gt; element
+with the matching value. It is considered an error if there is no &lt;subitem&gt;
+element with a matching value.</p>
+<p>For example, if the cheat sheet variable named &quot;v1&quot; has the value
+&quot;b&quot; when the following item is expanded</p>
+<pre class="Example"><span class="code SchemaTag">&lt;item ...&gt;
+  &lt;subitem label=</span><span class="code SchemaCstring">&quot;Main step&quot;</span><span class="code SchemaTag">&gt;
+     &lt;perform-when condition=</span><span class="code SchemaCstring">&quot;${v1}&quot;</span><span class="code SchemaTag">&gt;
+        &lt;action when=</span><span class="code SchemaCstring">&quot;a&quot;</span><span class="code SchemaTag"> class=</span><span class="code SchemaCstring">&quot;com.xyz.action1&quot;</span><span class="code SchemaTag"> pluginId=</span><span class="code SchemaCstring">&quot;com.xyz&quot;</span><span class="code SchemaTag"> /&gt;
+        &lt;action when=</span><span class="code SchemaCstring">&quot;b&quot;</span><span class="code SchemaTag"> class=</span><span class="code SchemaCstring">&quot;com.xyz.action2&quot;</span><span class="code SchemaTag"> pluginId=</span><span class="code SchemaCstring">&quot;com.xyz&quot;</span><span class="code SchemaTag"> /&gt;
+        &lt;command when=</span><span class="code SchemaCstring">&quot;c&quot;</span><span class="code SchemaTag"> serialization=</span><span class="code SchemaCstring">&quot;org.eclipse.search.ui.views.SearchView&quot;</span><span class="code SchemaTag">/&gt;
+     &lt;/perform-when&gt;
+  &lt;/subitem&gt;
+&lt;/item&gt;
+</span></pre>
+then the second action is selected and the item expands to something equivalent
+to
+<pre class="Example"><span class="code SchemaTag">&lt;item ...&gt; 
+  &lt;subitem label=</span><span class="code SchemaCstring">&quot;Main step&quot;</span><span class="code SchemaTag">&gt;
+     &lt;action class=</span><span class="code SchemaCstring">&quot;com.xyz.action2&quot;</span><span class="code SchemaTag"> pluginId=</span><span class="code SchemaCstring">&quot;com.xyz&quot;</span><span class="code SchemaTag"> /&gt;
+  &lt;/subitem&gt;
+&lt;/item&gt;
+</span></pre></div>
+<br>
+<ul class="ConfigMarkupAttlistDesc">
+<li><b>condition</b> - Arbitrary string value used to select which child
+    &lt;action&gt; or &lt;command&gt; will be performed. If the attribute string has the form
+    &quot;${<i>var</i>}&quot;, it is considered a reference to a cheat sheet
+    variable <i>var</i>, and value of the condition will be the value of the
+    variable for the cheat sheet at the start of execution of the containing
+    &lt;item&gt; element (or the empty string if the variable is unbound at that
+    time).</li>
+</ul>
+<br><h6 class="CaptionFigColumn SchemaHeader">Examples: </h6><p>The following is an example of a simple cheat sheet content file which 
+demonstrates the use of commands, perform-when and conditional subitems.</p>
+
+<pre class="Example"><span class="code SchemaTag"> 
+&lt;?xml version=</span><span class="code SchemaCstring">&quot;1.0&quot;</span><span class="code SchemaTag"> encoding=</span><span class="code SchemaCstring">&quot;UTF-8&quot;</span><span class="code SchemaTag">?&gt; 
+&lt;cheatsheet title=</span><span class="code SchemaCstring">&quot;Sample Cheat Sheet&quot;</span><span class="code SchemaTag">&gt;
+  &lt;intro&gt;
+    &lt;description&gt;A cheat sheet which demonstrates the use of perform-when and conditional subitems&lt;/description&gt;
+  &lt;/intro&gt;
+  &lt;item title=</span><span class="code SchemaCstring">&quot;View Selection&quot;</span><span class="code SchemaTag">&gt;
+     &lt;description&gt;Select a view which will be opened in the following steps.&lt;/description&gt;
+     &lt;command returns = </span><span class="code SchemaCstring">&quot;result&quot;</span><span class="code SchemaTag">
+      serialization=</span><span class="code SchemaCstring">&quot;org.eclipse.ui.dialogs.openMessageDialog(title=Select View,buttonLabel0=Package Explorer,message=Select a view ,buttonLabel1=Search View)&quot;</span><span class="code SchemaTag">/&gt;  
+      &lt;onCompletion&gt; Selected the ${result}. &lt;/onCompletion&gt;
+  &lt;/item&gt; 
+  &lt;item title=</span><span class="code SchemaCstring">&quot;Close Views&quot;</span><span class="code SchemaTag">&gt;
+     &lt;description&gt;Close the search view and package explorer if open&lt;/description&gt;
+  &lt;/item&gt;
+  &lt;item title=</span><span class="code SchemaCstring">&quot;Open the view from a perform when item&quot;</span><span class="code SchemaTag"> skip = </span><span class="code SchemaCstring">&quot;true&quot;</span><span class="code SchemaTag">&gt;
+     &lt;description&gt;Uses perform when to open the view seleted previously.&lt;/description&gt; 
+     &lt;perform-when condition = </span><span class="code SchemaCstring">&quot;${result}&quot;</span><span class="code SchemaTag">&gt;
+           &lt;command when = </span><span class="code SchemaCstring">&quot;Package Explorer&quot;</span><span class="code SchemaTag"> 
+            serialization=</span><span class="code SchemaCstring">&quot;org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.eclipse.jdt.ui.PackageExplorer)&quot;</span><span class="code SchemaTag">/&gt;
+           &lt;command when = </span><span class="code SchemaCstring">&quot;Search View&quot;</span><span class="code SchemaTag"> 
+            serialization=</span><span class="code SchemaCstring">&quot;org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.eclipse.search.ui.views.SearchView)&quot;</span><span class="code SchemaTag">/&gt;      
+     &lt;/perform-when&gt;
+  &lt;/item&gt; 
+  &lt;item title=</span><span class="code SchemaCstring">&quot;Close Views&quot;</span><span class="code SchemaTag">&gt;
+     &lt;description&gt;Close the search view and package explorer if open&lt;/description&gt;
+  &lt;/item&gt;
+  &lt;item title=</span><span class="code SchemaCstring">&quot;Open the view from a perform when subitem&quot;</span><span class="code SchemaTag">&gt;
+     &lt;description&gt;Uses perform when to open the view seleted previously.&lt;/description&gt; 
+     &lt;subitem label=</span><span class="code SchemaCstring">&quot;Perform when subitem&quot;</span><span class="code SchemaTag"> skip = </span><span class="code SchemaCstring">&quot;true&quot;</span><span class="code SchemaTag">&gt;
+     &lt;perform-when condition = </span><span class="code SchemaCstring">&quot;${result}&quot;</span><span class="code SchemaTag">&gt;
+           &lt;command when = </span><span class="code SchemaCstring">&quot;Package Explorer&quot;</span><span class="code SchemaTag"> 
+            serialization=</span><span class="code SchemaCstring">&quot;org.eclipse.jdt.ui.PackageExplorer&quot;</span><span class="code SchemaTag">/&gt;
+           &lt;command when = </span><span class="code SchemaCstring">&quot;Search View&quot;</span><span class="code SchemaTag"> 
+            serialization=</span><span class="code SchemaCstring">&quot;org.eclipse.search.ui.views.SearchView&quot;</span><span class="code SchemaTag">/&gt;      
+     &lt;/perform-when&gt;
+     &lt;/subitem&gt;
+  &lt;/item&gt; 
+  &lt;item title=</span><span class="code SchemaCstring">&quot;Close Views&quot;</span><span class="code SchemaTag">&gt;
+     &lt;description&gt;Close the search view and package explorer if open&lt;/description&gt;
+  &lt;/item&gt;
+  &lt;item title=</span><span class="code SchemaCstring">&quot;Open the view from a conditional subitem&quot;</span><span class="code SchemaTag">&gt;
+     &lt;description&gt;Uses perform when to open the view seleted previously.&lt;/description&gt; 
+      &lt;conditional-subitem condition=</span><span class="code SchemaCstring">&quot;${result}&quot;</span><span class="code SchemaTag">&gt;
+         &lt;subitem when=</span><span class="code SchemaCstring">&quot;Package Explorer&quot;</span><span class="code SchemaTag"> label=</span><span class="code SchemaCstring">&quot;Open package explorer.&quot;</span><span class="code SchemaTag">&gt;
+             &lt;command serialization = </span><span class="code SchemaCstring">&quot;org.eclipse.jdt.ui.PackageExplorer&quot;</span><span class="code SchemaTag">/&gt;
+         &lt;/subitem&gt;
+         &lt;subitem when=</span><span class="code SchemaCstring">&quot;Search View&quot;</span><span class="code SchemaTag"> label=</span><span class="code SchemaCstring">&quot;Open Search View&quot;</span><span class="code SchemaTag">&gt;
+             &lt;command serialization = </span><span class="code SchemaCstring">&quot;org.eclipse.search.ui.views.SearchView&quot;</span><span class="code SchemaTag">/&gt;
+         &lt;/subitem&gt;
+     &lt;/conditional-subitem&gt;
+  &lt;/item&gt;
+&lt;/cheatsheet&gt;
+</span></pre>
+<p></p>
+
+<br>
+<p class="note SchemaCopyright">
+Copyright (c) 2004, 2007 IBM Corporation and others.<br>
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at <a href="https://www.eclipse.org/legal/epl-2.0/">https://www.eclipse.org/legal/epl-2.0/</a>
+
+SPDX-License-Identifier: EPL-2.0
+</p>
+</BODY>
+</HTML>

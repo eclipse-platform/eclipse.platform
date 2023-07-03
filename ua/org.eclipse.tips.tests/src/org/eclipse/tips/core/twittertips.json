@@ -1,0 +1,105 @@
+{
+	"provider": {
+		"image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gQdDgUFxygUawAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAJeklEQVRo3u2YW4hdVxnHf2vtvc9lzpnJZC7JJE0mk6Yk6f1erWBFBFsVFUEUq8UiiL6qT7744ItQEMGigiCVQiG+SKmILa2tok1K75c0vaVp2maSJpOZ6ZzrPnut9X0+7HPOnJmmndROwEoWbPZt7cX//33/77IXnB/nx/lxfpwf58c5HKpqVLWoqkONdmdivdc355rAHX86sHWp0b7tdK21M7K2s3msemRq09i9P7j5sjfXY/34XBN47MU3N2c+fLeZ+ouTJFYnetzGyRHg40HgxHxN4igKSbGAiayppZmcXGjoeq3/gQT+es89l9fmTxfiYqKV4QrFYsnExQLiPGm7TavdJk1TXTh1kqltO6K9V1771uU3XHdycA1rLcYaBcWgRBi1Zv2Ue0YCs2+8buq1+jeW5l65fev0eKVYTEKcFDQuxDayESIJ3iU4XyaEIJ32sG03TSFNF5+eO7Xwx4nJjU8ZY3R1lCmgur4ePiOBrTMXTj6z/+Gfb9pSunBiaiNJIcFgwViMASWACqoCqthoghNvzZu5ueYn50/ODk9MbvwJcLqPetUQ1XMroece+/eXjTY2T27dFFdGhoECmKhrTgX1gAM6oBlEytYZpZMtcer44QubTZ3uETjdNtmmqsF0XaFAIJF1J/D2kcPGO3/L4UMvJLNHX791196porCBNB0lisoYG2OMQVEkZATXwrsazqUEVyeyDvFNlhYWZ44fO/ntv+zbt3Nq2DQfeaOz5/7X/XAQJVYw4srbo7mbnvjHw6WRLbue27Nnx5EehkOHXjWXXLJb/6s6sP+hB6ZLpcL93rWGOq3apokt46Xh0XFTLm+gUCgTxTEYg6rgXUonrdFuLNJuzJO2Fgmhjet0aNRSpxTr5Uq1USmYcHQxFO96Mho/nQ0VK6WYLZXMf35nc3HneHVJ4sn7yqOX/OK663ec/sgeePrR/VdefcPFF+zaOzOSJJOYCGKr2KiONQ2sAiKoBmLtYKI2cblFOeoQKoYQYlQh2pYksdWx2GZjhVjoJEISlwmpQYBS0cfTW9qTG8z85JFjS587ejS7F/jXRybw6sEX4+tv3NUaGy9WbaRWxaOhg4rPgzZ4jHpUPVY91jjigoPEd1NMhDGG1Anv1gNFG3CiHJ63tH1EEpucYGSpjkSMaBbS1jxH39DCusRAfanprPUQmkgIqDoQn5/xiASMOpScCBowBED6ubGUwGuzjn37HZm3lAqWl95JaPqEQpJPM0axRomsQcV3lhbeTdeFQFQoGQkpwdewCNIlALnV0QDkZwm+i0bRPgGFBE4tOh4+KMy1K4xWEohiSkULQQChaB2RdgihgwRrTVxOAH77m2eSYBWrytTETm21T5lLLx3Xa66b9GdFQNWikiK+ASbkoCUAAdWAMUKQQLOdkGZFgvYSY05AUaodqKeeStGSUmWonFBKILJ5DSlEwviQJ3MVTrfFpHZobObqa2964In2hua789VeoTM2k7KOJCdSbT92sPH8xXsrhzfEJnwgAcGgIUVDEzWhW6Ryq2EUo4GTi1VqbjtRshET5UGb+0ARhbpTKhPKVz5jSCUmjmw/2akaIits2eBoxI6s6O3wrtLW8cqW26PYNYY2lGPJ228MVl0IUceFML/Y+sOzz5nfA401CpkF6WAkRa3mpuhKwxqh2Ta8U5+mOn4ZE5MbsZFFFIIqQcAriML0pGH6Iu2+y5cQBRHNrwVElUSgAiVUdqoqqlE+TxUwNBoZWeqJYjNWiNWuXYnF5pIxvlv+tX8Y9bw5N4kpzbBpapKR4Ry8V/CSAw2ay1y6n8rAoaJ9EkG6z1RzMiJI971VRQHvBe8FFT1QKcf3z0wVW2sSENWubEJfVKoQR4F60/DG/DZ2XTxJUrK0HLigy8AHrDwIugdSVRG6XugRQPve0L6H8lal0chIm9m8Fbnn4Kt64NPXJOH9CNjBXlEIqPjlwMWDZrx2Yox4eIahkSqZQsspaYA0QOZzMr53eCUEWb4PigvgveID3TmCc7mlg+++8/m7tBNoNx14Do6PDD3yw29ulLPMQgajeaXt6aCQeGbnEt6u7WT3VZsoDVnamRK6llZdtqBqTyYgmnuvZ21RRXKz57ExOEclnyeKGGi3PC71jWrBPLv7wtH5flu+JgEBFcFoyHUPqDhent1KdXwHpaEyThQXZAUwHdCzDoCVAVLak8qAxKQXL6Ldd3lCaDUyfNs9Go8W7378+XDqrAuZSrco4QFDZD3H5go0zS62bZ5AMWSZILociMtW1WWL90Hqsld63uploi4B7ceNYgy0Wh7Xcq2i5Z9PPnHi2Z/9ePOanWk/BgLk1tfcCxICL89upji6nUK5SAhK5hTnGdC65vr3inOK84ILuZe8z+c6340DL/37/rMg+dygdJzSWEohhOdnto08ftu3LrUf7odGQDWgEogiYW6pxLzfxdaRMdRYnOTSCX0rLmeYlffd64GspP1U2pOU6V7nslIDzXqGpFmtaPR3n7py9O8fuhfKFxSUgGjgpeObGZmcoVItEVSRkOtUexqnq2PJ2wiVXuFaTpV9Ar2UKStjpic9F5S0njaHjN79tVtmHlJVs1bwvjcGoNthZizUi8w2LmL79BhqDc7LAPjBjKMDetblnL7KQyvPg8Gfk27VUvFZ+KcTd2e1ZI6vBvnKW43qnunqGq2Egun2Pi/NbqE4toOklBCCIGFACqsyzSD4HkBdFcAyENx0wQfJq67zinQyYu+e+f6tu189E8hCbNtnUQcA9ZxaKPDy6Uu56IpxrLF96/e0r6tlsULruddFepLpWpvl676MuvPa9Q7jlbixfUe5duCFmrnx8hFdtbdaMsaka/8PxIZGq8OBV6awI7splIt4CXhPX+P99LiqBViRFlUHND7wrWi/uesFfpYFNHOdd5v+zu/cfMEdZwJ438PHOmcVA1OjYl6bHTYLo1fwiatGUBTnBiSwIt/ryoasH9hmZaCqrpBP/1lQgvd0GqkUJRyZ2lh4+n12toeMMa2zIvCFr16TPfjSlN2+dxu1ekc1iAkD1gqysmXQFelxpXfQ5X8EHfROELzPcJ02LkspGa1XKkO//voXd//5jFsma4B/z/b63x489D3ioV8pVCDfA9IVaYr3brbp6icmJz3wWPr/FgaMURGxSWLrkTU/+tJnZ+56P3BPHVow114yts6bkefH//n46S8fTx7af9x8LMHvu++V5MN+Y/+XCExvH/HnNfhxG/8BVNCkBLE3Vt8AAAAASUVORK5CYII=",
+		"description": "Eclipse IDE Twitter Tip Collection",
+		"variables": {
+			"baseUrl": "http://www.eclipse.org/downloads/download.php?r=1&file=/eclipse/tips/org.eclipse.jdt.tips.user"
+		},
+		"tips": [{
+			"date": "2018-01-05",
+			"subject": "The 'Extract class...' refactoring (from Alt+Shift+T) extracts a group of fields into a separate class and replaces all occurrences to fit the new structure. See example. #EclipseTips https://t.co/tEI7ic7C1g",
+			"aspect-ratio": "2.0",
+			"url": "${baseUrl}/content/949238007051235328/949238007051235328.html"
+		}, {
+			"date": "2018-01-09",
+			"subject": "Use the 'new' template for quick object creation. #speed #EclipseTips https://t.co/yI33PEmfkm",
+			"aspect-ratio": "2.0",
+			"url": "${baseUrl}/content/950773930775793664/950773930775793664.html"
+		}, {
+			"date": "2017-12-15",
+			"subject": "You don't need to know which module contains a class in #Java9 Ctrl-1 can identify the module and add it for you! #EclipseTips https://t.co/OGjB3V7vJJ",
+			"aspect-ratio": "2.4",
+			"url": "${baseUrl}/content/941624342282108929/941624342282108929.html"
+		}, {
+			"date": "2017-12-14",
+			"subject": "Need to check for null? Use the ifnull template and don't slow down! #productivity #EclipseTips https://t.co/FrDemG6rPS",
+			"aspect-ratio": "2.1",
+			"url": "${baseUrl}/content/941264226940850177/941264226940850177.html"
+		}, {
+			"date": "2017-11-06",
+			"subject": "You can directly use a CSV file as a parameter source in #JUnit5 parameterized tests. Very handy to feed a large nr of cases! #EclipseTips https://t.co/FDMPAzR2em",
+			"aspect-ratio": "2.2",
+			"url": "${baseUrl}/content/927527210772258816/927527210772258816.html"
+		}, {
+			"date": "2017-11-16",
+			"subject": "Enjoy the Edit -> Block Selection (Alt+Shift+A) while working on your #Java9 https://t.co/txMxd39pJ0 #EclipseTips https://t.co/X63mh9uDd7",
+			"aspect-ratio": "1.7",
+			"url": "${baseUrl}/content/931124796502536192/931124796502536192.html"
+		}, {
+			"date": "2017-10-18",
+			"subject": "In #JUnit5 parameterized tests also accept CSV literals (and files) as a source of parameters. Quite handy to feed your tests! #EclipseTips https://t.co/T7Lphj5eyl",
+			"aspect-ratio": "1.9",
+			"url": "${baseUrl}/content/920608130274381825/920608130274381825.html"
+		}, {
+			"date": "2017-09-19",
+			"subject": "You can use methods returning #Java streams as a source of parameters in #JUnit5 tests. Use @MethodSource as shown below. #EclipseTips https://t.co/Jr1o00YEof",
+			"aspect-ratio": "1.9",
+			"url": "${baseUrl}/content/910089046600425472/910089046600425472.html"
+		}, {
+			"date": "2017-08-30",
+			"subject": "Put your cursor on a class name (or method) and press Shift+F2 to jump to the web version of your library's Javadoc! #EclipseTips https://t.co/vpUavzUgk6",
+			"aspect-ratio": "1.7",
+			"url": "${baseUrl}/content/902851499503607808/902851499503607808.html"
+		}, {
+			"date": "2017-07-24",
+			"subject": "Use the 'Quick Access' box (Ctrl+3) extensively to be more productive. Just type what you want and you'll probably find it. #EclipseTips https://t.co/KQB2i4BuDU",
+			"aspect-ratio": "1.6",
+			"url": "${baseUrl}/content/889435990976323584/889435990976323584.html"
+		}, {
+			"date": "2017-07-11",
+			"subject": "Always safer to 'Invert equals' on literal strings in order to avoid the horrible NullPointerException! Ctrl+1 does it for you. #EclipseTips https://t.co/DmjMWgiySM",
+			"aspect-ratio": "1.9",
+			"url": "${baseUrl}/content/884689449917050880/884689449917050880.html"
+		}, {
+			"date": "2017-07-21",
+			"subject": "Private methods in interfaces will be allowed in #Java9. Here's an example use case with a shared 'worker' method. #EclipseTips https://t.co/cdRcETAmMV",
+			"aspect-ratio": "1.2",
+			"url": "${baseUrl}/content/888360858119745536/888360858119745536.html"
+		}, {
+			"date": "2017-06-13",
+			"subject": "Whatever element you have selected, code or item, 'Show in...' (Alt+Shift+W) command pops up useful views for various details! #EclipseTips https://t.co/6GVpSPKOdT",
+			"aspect-ratio": "1.2",
+			"url": "${baseUrl}/content/874600197195796482/874600197195796482.html"
+		}, {
+			"date": "2017-06-01",
+			"subject": "Often you want to move lines up/down. Press Alt+Up/Dn to move the lines along with the cursor. Indenting is corrected for you. #EclipseTips https://t.co/5tnaajebZf",
+			"aspect-ratio": "1.3",
+			"url": "${baseUrl}/content/870170548722184192/870170548722184192.html"
+		}, {
+			"date": "2017-05-04",
+			"subject": "If you want to know where and how a variable was declared just press Shift while hovering and you'll get it in-place! #EclipseTips https://t.co/4Vpz4JKW0w",
+			"aspect-ratio": "1.8",
+			"url": "${baseUrl}/content/860125970556223489/860125970556223489.html"
+		}, {
+			"date": "2017-05-16",
+			"subject": "Here's our Edit -> Toggle Block Selection tool (or just hit Shift+Alt+A) in action. Very useful! #productivity #EclipseTips https://t.co/myMI2oaLLG",
+			"aspect-ratio": "1.5",
+			"url": "${baseUrl}/content/864423629697822720/864423629697822720.html"
+		}, {
+			"date": "2017-04-20",
+			"subject": "The 'enclosing' selection (Alt+Shift+Up/Dn) is a great shortcut. Selects the enclosing structure, e.g. var->if->method->class #EclipseTips https://t.co/joGBu9IzdB",
+			"aspect-ratio": "2.0",
+			"url": "${baseUrl}/content/855062302655209472/855062302655209472.html"
+		}, {
+			"date": "2017-04-25",
+			"subject": "Ever looked at a #Java method thinking 'what does this one do'? Press Shift while hovering it and it will show implementation in-place! #Tip https://t.co/5Qym5CkcJN",
+			"aspect-ratio": "2.1",
+			"url": "${baseUrl}/content/856867463409041410/856867463409041410.html"
+		}, {
+			"date": "2018-03-22",
+			"subject": "#Java10 is out. Time to play with 'var'. Try it out with @EclipseJavaIDE and its new quick assists (Ctrl+1). https://t.co/iUJcGjV1Ts #EclipseTips https://t.co/HfJqlymzZb",
+			"aspect-ratio": "4.2",
+			"url": "${baseUrl}/content/976836214857740288/976836214857740288.html"
+		}]
+	}
+}

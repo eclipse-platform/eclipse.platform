@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<toc label="B">
+	<topic label="B_topic1" href="B_topic1.html">
+		<topic label="B_topic2" href="B_topic2.html"/>
+		<anchor id="B_anchor"/>
+	</topic>
+	<link toc="data/help/toc/assembler/d.xml"/>
+	<topic label="B_topic3" href="B_topic3.html">
+		<filter name="os" value="!invalid"/>
+	</topic>
+</toc>

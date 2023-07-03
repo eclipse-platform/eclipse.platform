@@ -1,0 +1,312 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.ui.intro" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.ui.intro" id="configExtension" name="Intro Part Configuration Extension"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;This extension point is used to extend an existing intro configuration by providing more content, additional StandbyContentParts or additional IntroUrl actions.
+&lt;/p&gt;
+&lt;p&gt;Since 3.2, this extension point is also used to contribute a presentation theme that can be used by welcome implementations to separate presentation and content.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="configExtension"/>
+            <element ref="standbyContentPart"/>
+            <element ref="action"/>
+            <element ref="theme"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="configExtension">
+      <annotation>
+         <documentation>
+            Defines an extension to an intro configuration. Any page or group in an intro part configuration can be extended, if it has declared extensability by defining anchors.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="configId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the id of an intro contribution that will be extended
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.intro.config/config/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="content" type="string" use="required">
+            <annotation>
+               <documentation>
+                  an intro content file. The content file is an XML file that contains the specifics of the intro (&lt;a href=&quot;introContentFileSpec.html&quot;&gt;intro content file format specification)&lt;/a&gt;.
+The content file is parsed at run time by the intro framework. Based on the settings in this file, a certain number of pages, groups, and links are shown to the user when the intro is opened.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="standbyContentPart">
+      <annotation>
+         <documentation>
+            standbyContentPart registration. Once registered, standby parts can be launched through an introURL action of the following format:
+&lt;pre&gt; 
+http://org.eclipse.ui.intro/showStandby?partId=&amp;lt;id of standbyContentPart&amp;gt;
+&lt;/pre&gt;
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique id that identifies this standbyContentPart.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="pluginId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the plugin that holds the class defined in the &quot;class&quot; attribute.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the fully qualified class name of the class that implements &lt;code&gt;org.eclipse.ui.intro.config.IStandbyContentPart&lt;/code&gt; to handle displaying alternative standby content, such as a cheat sheet.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="action">
+      <annotation>
+         <documentation>
+            custom Intro URL action registration. This can be used to create new Intro URL actions or a shortCut to predefined actions.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique name that identifies this action.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="replaces" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the macro which replaces the action name in the Intro URL.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="theme">
+      <complexType>
+         <sequence>
+            <element ref="property" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier of the intro theme
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a translatable name of the intro theme that will be rendered in the UI
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="path" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a plug-in-relative path to the folder where the style sheets and associated graphics reside.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="default" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  an optional flag that indicates if this theme is the default. Default theme will be used if no theme is explicitly selected.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="previewImage" type="string">
+            <annotation>
+               <documentation>
+                  an optional image of 4x3 ratio that will be used to preview this theme in the UI. Recommended size is 160x120.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="scalable" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  Scalable themes use only relative fonts. When a scalable theme is used  toolbar items will be created to enlarge or reduce the font size by setting an absolute size for a containing element.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="property">
+      <annotation>
+         <documentation>
+            an optional theme property that can be used by intro configurers to further customize intro presentation.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  unique name of the property
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  value of the property
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         Here is an example implementation of this extension point:
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.ui.intro.configExtension&quot;&gt;
+    &lt;configExtension
+         configId=&quot;com.org.xyz.introConfig&quot; 
+         content=&quot;extensionContent.xml&quot;/&gt;  
+
+    &lt;standbyContentPart
+         id=&quot;com.org.xyz.myStandbyPart&quot;
+         class=&quot;com.org.xyz.internal.MyStandbyContent&quot;
+         pluginId=&quot;com.org.xyz&quot;/&gt;
+
+    &lt;action
+         name=&quot;shortcutAction&quot;
+         replaces=&quot;http://org.eclipse.ui.intro/showStandby?partId=com.org.xyz.myStandbyPart&quot;/&gt;
+
+    &lt;action
+         name=&quot;customAction&quot;
+         replaces=&quot;runAction?pluginId=com.org.xyz&amp;amp;class=com.org.xyz.CustomAction&amp;amp;param1=value1&quot;/&gt;
+
+    &lt;theme
+         id=&quot;com.example.intro.flowers&quot;
+         name=&quot;A Nice Flowers Welcome&quot;
+         path=&quot;$nl$/themes/flowers&quot;
+         previewImage=&quot;$nl$/themes/flowers/preview.png&quot;&gt;
+    &lt;/theme&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         For further details see the spec for the org.eclipse.ui.intro.config API package.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         There are three supplied implementations:
+&lt;ul&gt;
+&lt;li&gt;org.eclipse.jdt, makes use of configExtension&lt;/li&gt;
+&lt;li&gt;org.eclipse.pde, makes use of configExtension&lt;/li&gt;
+&lt;li&gt;org.eclipse.platform, makes use of standbyContentPart&lt;/li&gt;
+&lt;/ul&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2004, 2006 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

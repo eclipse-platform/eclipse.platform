@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+<xs:element name="indexContributions">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element ref="indexContribution" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	
+	<xs:element name="indexContribution">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element ref="index" minOccurs="1"	maxOccurs="1" />
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/> <!-- attribute for indexContribution -->
+			<xs:attribute name="locale" type="xs:string" use="required"/> <!-- attribute for indexContribution -->
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="index">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element ref="entry" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:string"/> <!-- optional attribute for index -->
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="entry">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element ref="topic" minOccurs="0" maxOccurs="unbounded" /> <!-- optional attribute for entry -->
+				<xs:element ref="entry" minOccurs="0" maxOccurs="unbounded" /> <!-- optional attribute for entry -->
+				<xs:element ref="see" minOccurs="0" maxOccurs="unbounded" /> <!-- optional attribute for entry -->
+			</xs:sequence>
+			<xs:attribute name="keyword" type="xs:string" use="required"/> <!-- attribute for entry -->
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="topic">
+		<xs:complexType mixed="false">
+			<xs:attribute name="href" type="xs:string" /> <!-- optional attribute for topic -->
+			<xs:attribute name="title" type="xs:string" /> <!-- optional attribute for topic -->
+			<xs:attribute name="label" type="xs:string" /> <!-- optional attribute for topic -->			
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="see">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element ref="subpath" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="keyword" type="xs:string" use="required"/> <!-- attribute for see -->
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="subpath">
+		<xs:complexType mixed="false">
+			<xs:attribute name="keyword" type="xs:string" use="required"/> <!-- attribute for subpath -->
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

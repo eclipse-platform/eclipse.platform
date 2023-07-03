@@ -1,0 +1,2 @@
+org.eclipse.help.webapp/debug = true
+org.eclipse.help.webapp/debug/workingsets = false

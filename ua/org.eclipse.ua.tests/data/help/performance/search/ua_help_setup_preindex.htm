@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Pre-indexing documentation</title>
+</head>
+<body>
+
+<h2>Pre-indexing documentation</h2>
+
+<p>When user searches help contents of a product, the search is performed
+within a documentation index. &nbsp;By default, this index &nbsp;is created
+on the first invocation of help search, but can be pre-built and delivered
+to the user with each plug-in, since 3.1, or as a complete index for a product. &nbsp;This
+prevents
+indexing
+from
+occurring
+on
+the user machine and lets the user obtain first search results faster.</p>
+
+<h3>Building a documentation index for a plug-in.</h3>
+
+<p>To build an index follow the steps:</p>
+<ul>
+  <li>add an <code>index</code> element to the <code>org.eclipse.help.toc
+      extension</code> in a documentation plug-in, to specify directory where
+      index will exist, for example 
+  <pre>&lt;extension
+      point=&quot;org.eclipse.help.toc&quot;&gt;
+   &lt;index
+         path=&quot;index&quot;&gt;
+   &lt;/index&gt;
+&lt;/extension&gt;</pre>
+  </li>
+  <li>Add the <code>help.buildHelpIndex</code> ANT task to the build.xml file in 
+  the plugin project by adding the lines below. A build.xml file can be created 
+  by right clinking on MANIFEST.MF in the package explorer and selecting the 
+  menu item PDE Tools/Create Ant Build File. This example build the index for 
+  the default locale and also for &quot;nl/fr&quot;. This should be modified to match the 
+  locales which you are using.<pre>&lt;target name=&quot;build.index&quot; description=&quot;Builds search index for the plug-in: org.eclipse.platform.doc.user.&quot; if=&quot;eclipse.running&quot;&gt;
+     &lt;help.buildHelpIndex manifest=&quot;plugin.xml&quot; destination=&quot;.&quot;/&gt;
+     &lt;help.buildHelpIndex manifest=&quot;plugin.xml&quot; destination=&quot;nl/fr&quot;/&gt;
+&lt;/target&gt;</pre>
+</li>
+  <li>create an index by building the target &quot;build.index&quot;. The ant task must be 
+  run in the same JRE as the workspace. To do this right click on build.xml, 
+  select the menu item Run As/Ant build... the ant dialog will appear. On the 
+  targets tab check only &quot;build.index&quot; and on the JRE tab select the radio 
+  button &quot;Run in the same JRE as the workspace&quot;. When you hit the 
+  &quot;Run&quot; button the indexes will be built.<br>
+</li>
+</ul>
+
+<h3>Building an index for a product</h3>
+
+<p>Per-product index is a one aggregate index of all documentation in the product.
+  It should be used in scenarios in which the set of documentation plug-ins is
+  not changing. For example an info-center installation will benefit
+  from per-product
+  index.</p>
+<p>To build an index follow the steps:<br>
+</p>
+<ul>
+  <li>build a product, including all documentation plug-ins,</li>
+  <li>create an index for a desired locale by running this command:     
+                          
+    <pre>eclipse -nosplash -application org.eclipse.help.base.indexTool -vmargs -DindexOutput=<i>outputDirectory</i> -DindexLocale=<i>locale</i></pre>
+from the directory containing the product. &nbsp;The following arguments
+need to be set :<br>
+    <b>outputDirectory</b> - specifies path of the directory where the index
+is to be saved<br>
+    <b>locale</b> - specifies locale for which the index will be built<br>
+  </li>
+</ul>
+<p>For example, running<br>
+</p>
+<pre>eclipse -nosplash -application org.eclipse.help.base.indexTool -vmargs -DindexOutput=d:/build/com.my.plugin -DindexLocale=en</pre>
+<p>will result in file <b>doc_index.zip</b> being saved in the <b>nl/en</b>
+directory that will be created under <b>d:/build/com.my.plugin</b>. &nbsp;The
+zip will contain index of contents of documents that are available to users
+when they run the product in the <b>en</b> locale.<br>
+</p>
+
+<h3>Packaging and Installation of the product's pre-built index</h3>
+
+Pre-built indices, the <b>doc_index.zip</b> files, need to be packaged as
+a plug-in. &nbsp; You can choose to use a plug-in associated with the primary
+feature, or choose to package the index for each language into separate fragments.<br>
+<br>
+For example, if product's documentation is available in three languages, say
+English, German and Simplified Chinese, a plug-in com.my.plugin can have the following structure:<br>
+<pre>com.my.plugin/<br>              plugin.xml<br>              nl/<br>                 de/<br>                    doc_index.zip<br>                 en/<br>                    doc_index.zip<br>                 zh/<br>                    CN/<br>                       doc_index.zip<br>              other files of this plugin</pre>
+<br>
+ The ID of the plug-in needs to be specified as a <b>productIndex</b> preference
+for org.eclipse.help.base plug-in.&nbsp;For plug-in in the above example, the
+plugin_customization.ini
+file needs to contain the entry<br>
+<pre>org.eclipse.help.base/productIndex=com.my.plugin<br></pre>
+
+</body>
+</html>

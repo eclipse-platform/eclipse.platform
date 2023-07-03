@@ -1,0 +1,28 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2010. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="IBM">
+   <meta name="GENERATOR" content="Mozilla/4.79 [en] (Windows NT 5.0; U) [Netscape]">
+   <title>Package-level Javadoc</title>
+</head>
+<body>
+Provides access to information center and stand alone help system.&nbsp;
+Classes in this package are not supposed to be called by Eclipse plugins,
+they are intended to be called from outside of Eclipse environment.
+<h2>
+Package Specification</h2>The help system in Eclipse can be used to run an information center or as a stand alone help system for use by other products.&nbsp; Access
+to the help system is provided
+<code>org.eclipse.help.standalone.Infocenter </code> and
+<code>org.eclipse.help.standalone.Help </code>
+classes.
+<P>To start or stop the information center, use the Infocenter class. The class can be used as a stand alone program, launched from a command line, or can be instantiated and used from a Java program.</P>
+<p>To start, stop the stand alone help system or cause it to display help on a user machine, use the Help class. The class can be used as a stand alone program, launched from a command line, or can be instantiated and used from a Java program.</P>
+<P>There
+is a general mechanism (defined at the plug-in level) by which individual
+plug-ins contribute on-line help and context-sensitive help for their component.
+This Eclipse mechanism for contributing help content needs to be used.&nbsp;
+The stand alone help system is responsible for accessing this information
+and displaying it to the user. The information center, unlike the stand alone help system, does not launch UI on the machine that it is running on. When infocenter is started the help content   can be obtained by connecting to a help server (port specified in Tomcat plugin preferences) using HTTP connection.</P></body>
+</html>

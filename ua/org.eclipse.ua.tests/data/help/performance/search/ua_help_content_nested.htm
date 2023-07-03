@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGIN__ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Building nested documentation structures</title>
+</head>
+<body>
+
+<h2>Building nested documentation structures</h2>
+
+<p>As plug-ins contribute function to the platform, it's common to add
+documentation that describes the new function.&nbsp; How can this documentation
+be structured so that the user sees a cohesive and complete set of documentation
+instead of many individual contributions?&nbsp; The table of contents definition
+provides mechanisms for building documentation in both a top-down and bottom-up
+fashion.</p>
+
+<h4>Top-down nesting</h4>
+
+<p>Top-down nesting refers to the technique of defining a master table of
+contents which refers to all other included tocs.&nbsp; Top-down nesting is a
+convenient method for breaking up known content into smaller pieces.&nbsp; With
+top-down nesting, the <b>link</b> attribute is used in the table of contents
+definition to refer to linked tocs rather than providing an <b>href</b>.&nbsp; </p>
+
+<pre>&lt;toc label=&quot;Online Help Sample&quot; topic=&quot;html/book.html&quot;&gt;
+	&lt;topic label=&quot;Concepts&quot;&gt;
+		&lt;link toc=&quot;toc_Concepts.xml&quot; /&gt;
+	&lt;/topic&gt;
+	&lt;topic label=&quot;Tasks&quot;&gt;
+		&lt;link toc=&quot;toc_Tasks.xml&quot; /&gt;
+	&lt;/topic&gt;
+	&lt;topic label=&quot;Reference&quot;&gt;
+		&lt;link toc=&quot;toc_Ref.xml&quot; /&gt;
+	&lt;/topic&gt;
+&lt;/toc&gt;</pre>
+
+
+<p>The basic structure stays the same (Concepts, Tasks, Reference), but the
+individual tocs are free to evolve.&nbsp; They in turn might link to other sub-tocs.
+</p>
+
+<h4>Bottom-up composition</h4>
+
+<p>Bottom-up composition is more flexible in that it lets new plug-ins decide
+where the documentation should exist in the toc structure.&nbsp; Bottom-up
+composition is accomplished using <b>anchor</b> attributes.&nbsp; A toc defines
+named anchor points where other plug-ins can contribute documentation.&nbsp; In
+our example, we could add anchors so that plug-ins can contribute additional
+material between the concepts, tasks, and reference sections.</p>
+
+<pre>&lt;toc label=&quot;Online Help Sample&quot; topic=&quot;html/book.html&quot;&gt;
+	&lt;topic label=&quot;Concepts&quot;&gt;
+		&lt;link toc=&quot;toc_Concepts.xml&quot; /&gt;
+		&lt;<b>anchor</b> id=&quot;postConcepts&quot; /&gt;
+	&lt;/topic&gt;
+	&lt;topic label=&quot;Tasks&quot;&gt;
+		&lt;link toc=&quot;toc_Tasks.xml&quot; /&gt;
+		&lt;<b>anchor</b> id=&quot;postTasks&quot; /&gt;
+	&lt;/topic&gt;
+	&lt;topic label=&quot;Reference&quot;&gt;
+		&lt;link toc=&quot;toc_Ref.xml&quot; /&gt;		
+		&lt;<b>anchor</b> id=&quot;postReference&quot; /&gt;
+	&lt;/topic&gt;
+&lt;/toc&gt;</pre>
+<p>Other plug-ins can then contribute to the anchor from their plug-in.&nbsp;
+This is done using the <b>link_to</b> attribute when defining a toc.</p>
+<pre>&lt;toc <b>link_to=&quot;../com.example.helpexample/toc.xml#postConcepts&quot;</b> label=&quot;Late breaking info about concepts&quot;&gt;
+	&lt;topic&gt;
+		...
+	&lt;/topic&gt;
+&lt;/toc&gt;</pre>
+
+</body>
+</html>

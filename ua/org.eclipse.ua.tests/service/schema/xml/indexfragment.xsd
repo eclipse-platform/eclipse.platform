@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:element name="tree_data">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element ref="node" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="enableNext" type="xs:boolean" use="required" /> <!-- attribute for tree_data -->
+			<xs:attribute name="enablePrevious" type="xs:boolean" use="required" /> <!-- attribute for tree_data -->
+
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="node" abstract="false" nillable="false">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element ref="node" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+
+			<xs:attribute name="title" type="xs:string" /> <!-- optional attribute for node -->
+			<xs:attribute name="id" type="xs:ID" use="required" /> <!-- attribute for node -->
+			<xs:attribute name="href" type="xs:string"/> <!-- optional attribute for node -->
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

@@ -1,0 +1,334 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.ui.cheatsheets" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.ui.cheatsheets" id="cheatSheetContent" name="Cheat Sheet Content"/>
+      </appinfo>
+      <documentation>
+         This extension point is used to register cheat sheet content contributions. Cheat sheets appear as choices from the &quot;Help&quot; menu or from within the cheat sheet view, and are typically used to aid a user through a series of complex tasks to accomplish an overall goal.
+&lt;p&gt;
+The cheat sheets are organized into categories which usually reflect a particular problem domain.  For instance, a Java oriented plug-in may define a category called &quot;Java&quot; which is appropriate for cheat sheets that would aid a user with any of the Java tools.  The categories defined by one plug-in can be referenced by other plug-ins using the category attribute of a cheatsheet element. Uncategorized cheat sheets, as well as cheat sheets with invalid category paths, will end up in an &quot;Other&quot; category. 
+&lt;p&gt;
+Cheat sheets may optionally specify a description subelement whose body should contain short text about the cheat sheet.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="category"/>
+            <element ref="cheatsheet"/>
+            <element ref="taskEditor"/>
+            <element ref="taskExplorer"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="category">
+      <annotation>
+         <appinfo>
+            <meta.element labelAttribute="name"/>
+         </appinfo>
+         <documentation>
+            A category element in the cheatsheetContent extension point creates a new category in the cheat sheet menu.
+The cheat sheet menu is available from the help menu in the workbench.
+If a new category is specified, cheat sheets may be targeted to that category and will appear under it in the 
+cheat sheet selection dialog.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique name that can be used to identify this category
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a translatable name of the category that will be used in the dialog box
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="parentCategory" type="string">
+            <annotation>
+               <documentation>
+                  a path to another category if this category should be added as a child
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="cheatsheet">
+      <annotation>
+         <appinfo>
+            <meta.element labelAttribute="name"/>
+         </appinfo>
+         <documentation>
+            A cheatsheet element is put into the cheatsheetContent extension point if there is a cheat sheet to be contributed to the 
+workbench.  A cheat sheet element must specify an id, a translatable name to appear in the selection options, a category id
+to specify which category this cheat sheet will be included in, and a content file.
+The cheat sheet content file is an XML file that describes the steps and actions that the cheat sheet has.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="description" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique name that can be used to identify this cheat sheet
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a translatable name of the cheat sheet that will be used in the help menu and the selection dialog box
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="category" type="string">
+            <annotation>
+               <documentation>
+                  a slash-delimited path (&apos;/&apos;) of category IDs. Each token in the
+path must represent a valid category ID previously defined
+by this or some other plug-in. If omitted, the wizard will be
+added to the &quot;Other&quot; category.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.cheatsheets.cheatSheetContent/category/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="contentFile" type="string">
+            <annotation>
+               <documentation>
+                  the path of a cheat sheet content file. The content file is an XML file that contains the specifics of the cheat sheet (&lt;a href=&quot;cheatSheetContentFileSpec.html&quot;&gt;cheat sheet content file format specification)&lt;/a&gt;.
+The content file is parsed at run time by the cheat sheet framework. Based on the settings in this file, a certain number of steps, actions, descriptions, and help links are shown to the user when the cheat sheet is opened. The path is interpreted as relative to the plug-in that declares the extension; the path may include special variables. In particular, use &quot;$nl$&quot; as the first segment of the path to indicate that there are locale-specific translations of the content file in subdirectories below &quot;nl/&quot;. For more detail about the special variables, you can read the Java API document for &lt;a href=&quot;../api/org/eclipse/core/runtime/Platform.html#find&quot;&gt;Platform.find&lt;/a&gt;.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="listener" type="string">
+            <annotation>
+               <documentation>
+                  listener is a fully qualified name of a Java class which must subclass &lt;code&gt;org.eclipse.ui.cheatsheets.CheatSheetListener&lt;/code&gt;.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="composite" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  Since Eclipse 3.2 a new kind of cheatsheet, a composite cheatsheet was introduced. A composite cheatsheet manages a set of tasks, each task can be a simple cheatsheet or other kind of task.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="description" type="string">
+      <annotation>
+         <documentation>
+            a short description of the cheat sheet
+         </documentation>
+      </annotation>
+   </element>
+
+   <element name="taskEditor">
+      <annotation>
+         <appinfo>
+            <meta.element labelAttribute="id"/>
+         </appinfo>
+         <documentation>
+            This extension point is provisional, being based on the provisional API class TaskEditor. 
+
+The taskEditor extension point allows for custom UI to appear in the editor pane of a composite cheatsheet. Any task in a compostite cheatsheet whose kind matches the id of this extension will use the class defined in this extension point to create the editor area.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  An id which must be unique among task editors.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A class which implements a task editor
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.ui.cheatsheets.ITaskEditor"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The icon which will be displayed in the task explorer for a task which uses this kind of editor.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="taskExplorer">
+      <annotation>
+         <appinfo>
+            <meta.element labelAttribute="id"/>
+         </appinfo>
+         <documentation>
+            This extension point is provisional, being based on the provisional API class TaskExplorer. 
+
+This extension point allows for the contribution of a task explorer which will be used when opening a composite cheatsheet.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The id of this explorer which must be unique among task explorer ids. If a composite cheatsheet has the explorerId set to this id, this explorer will be displayed in the task explorer area of a composite cheatsheet.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  A class which implements ITaskExplorer. The class must display the tasks in the composite cheatsheet and allow the user to select the tasks to be displayed in the editor.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.ui.cheatsheets.ITaskExplorer"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  An icon to be used in the dropdown menu which allows for switching between explorers.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         Here is a sample usage of the cheatSheetContent extension point:
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.ui.cheatsheets.cheatSheetContent&quot;&gt;
+  &lt;category
+     name=&quot;Example category&quot;
+     id=&quot;com.example.category&quot;&gt;
+  &lt;/category&gt;
+  &lt;cheatsheet
+     name=&quot;Example cheat sheet&quot;
+     category=&quot;com.example.category&quot;
+     id=&quot;com.example.cheatSheet&quot;
+     contentFile=&quot;ExampleCheatSheet.xml&quot;&gt;
+         &lt;description&gt;
+           This is a descriptive bit of text for my cheat sheet description.
+         &lt;/description&gt;
+  &lt;/cheatsheet&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         For further details see the spec for the org.eclipse.ui.cheatsheets API package.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         There are no built-in cheat sheets.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2004, 2006 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

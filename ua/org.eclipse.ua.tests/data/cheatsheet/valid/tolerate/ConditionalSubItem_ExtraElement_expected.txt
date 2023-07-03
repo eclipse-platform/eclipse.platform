@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cheatsheet
+      title="Test cheatsheet without cheatsheet element">
+   <item
+         title="Introduction"
+         description="Simple test"
+         Href="null"
+         contextId="null">
+      <nullAction/>
+      <nullList/>
+      <nullPerformWhen/>
+      <nullList/>
+   </item>
+   <list>
+      <item
+            title="Just a simple test"
+            description="Did it work? Of course not, it is suppose to cause a parsing error."
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <list>
+            <conditionalSubItem
+                  condition="${pattern}">
+               <list>
+                  <subItem
+                        label="Customize the Factory Pattern"
+                        when="Factory"
+                        isSkip="true">
+                     <action
+                           class="org.eclipse.ui.examples.cheatsheets.pattern.actions.FactoryCustomizeAction"
+                           pluginId="org.eclipse.ua.tests"
+                           when="null"
+                           isConfirm="true">
+                        <nullArray/>
+                     </action>
+                     <nullPerformWhen/>
+                  </subItem>
+                  <subItem
+                        label="Customize the Singleton Pattern"
+                        when="Singleton"
+                        isSkip="false">
+                     <action
+                           class="org.eclipse.ui.examples.cheatsheets.pattern.actions.SingletonCustomizeAction"
+                           pluginId="org.eclipse.ua.tests"
+                           when="null"
+                           isConfirm="true">
+                        <nullArray/>
+                     </action>
+                     <nullPerformWhen/>
+                  </subItem>
+                  <subItem
+                        label="Customize the Visitor Pattern"
+                        when="Visitor"
+                        isSkip="true">
+                     <action
+                           class="org.eclipse.ui.examples.cheatsheets.pattern.actions.VisitorCustomizeAction"
+                           pluginId="org.eclipse.ua.tests"
+                           when="null"
+                           isConfirm="false">
+                        <nullArray/>
+                     </action>
+                     <nullPerformWhen/>
+                  </subItem>
+               </list>
+            </conditionalSubItem>
+         </list>
+      </item>
+   </list>
+</cheatsheet>

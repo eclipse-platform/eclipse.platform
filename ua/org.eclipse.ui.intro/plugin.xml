@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+    Copyright (c) 2005, 2010 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+
+<!-- ========== Extension Points ================= -->
+<!-- =============================================================================== -->
+<!-- Extension point: org.eclipse.ui.intro.config                                    -->
+<!-- Extension-point for contributing a configuration to a Customizable Intro Part.  -->
+<!--                                                                                 -->
+<!-- =============================================================================== -->
+   <extension-point id="config" name="%config" schema="schema/config.exsd"/>
+<!-- ================================================================================= -->
+<!-- Extension point: org.eclipse.ui.intro.configExtension                             -->
+<!-- Extension-point for contributing an extension to an existing intro configuration  -->
+<!--                                                                                   -->
+<!-- ================================================================================= -->
+   <extension-point id="configExtension" name="%configExtension" schema="schema/configExtension.exsd"/>
+
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <standbyContentPart
+            pluginId="org.eclipse.ui.intro"
+            class="org.eclipse.ui.internal.intro.impl.parts.EmptyStandbyContentPart"
+            id="org.eclipse.ui.intro.config.emptyStandby">
+      </standbyContentPart>
+   </extension>
+   <extension
+         point="org.eclipse.help.base.searchParticipant">
+      <searchParticipant
+            icon="$nl$/icons/welcome16.png"
+            id="org.eclipse.ui.intro"
+            name="%searchParticipant.name.welcome"
+            participant="org.eclipse.ui.internal.intro.impl.model.IntroSearchParticipant"/>
+   </extension>
+</plugin>

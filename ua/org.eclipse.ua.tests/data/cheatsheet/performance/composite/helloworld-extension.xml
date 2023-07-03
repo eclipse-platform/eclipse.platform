@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Simple Cheat Sheet -->
+
+<cheatsheet title="Create a plug-in extension">
+
+   <!-- Introduction -->
+
+   <intro href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm">
+      <description>
+         This cheat sheet will demonstrate how to create and test a plug-in extension
+         using PDE. 
+         <br/>
+         <br/>
+         To learn more about using cheat sheets, click the help button
+         in the top right corner (?). 
+      </description>
+   </intro>
+
+   <!-- Item -->
+
+   <item title="Open the plug-in development perspective"
+         href="/org.eclipse.pde.doc.user/guide/tools/views/views.htm"
+         dialog="false"
+         skip="true">
+      <description>
+         To open the plug-in development perspective,
+         select <b>Window-&gt;Open Perspective-&gt;Other...</b> 
+         and choose <b>Plug-in Development</b>.
+         <br/>
+         <br/>
+         Alternatively, click the following button to perform the task.
+      </description>
+      <command serialization="org.eclipse.ui.perspectives.showPerspective(org.eclipse.ui.perspectives.showPerspective.perspectiveId=org.eclipse.pde.ui.PDEPerspective)"/>
+   </item>
+
+   <!-- Item -->
+
+   <item title="Open the plug-in editor"
+         href="/org.eclipse.pde.doc.user/guide/tools/editors/manifest_editor/editor.htm"
+         dialog="false"
+         skip="true">
+      <description>
+         To open the plug-in editor (if it is not already open),
+         expand the <b>com.example.helloworld</b> tree dialog
+         in the <b>Package Explorer</b> view and double-click
+         on the <b>plugin.xml</b> file (the <b>Extensions</b> page
+         should be open initially).
+         <br/>
+         <br/>
+         Alternatively, click the following button to perform the task.         
+      </description>
+      <command serialization="org.eclipse.ui.navigate.openResource(filePath=/com.example.helloworld/plugin.xml)"/>
+   </item>
+
+   <!-- Item -->
+
+   <item title="Define a view extension"
+         href="/org.eclipse.pde.doc.user/guide/tools/editors/manifest_editor/extensions.htm"
+         dialog="true"
+         skip="false">
+      <description>
+         To define a view extension, perform the following steps:
+      </description>
+      <subitem label="Click the &quot;Add&quot; button to open the &quot;New Extension&quot; wizard" 
+               skip="false"/>
+      <subitem label="Select &quot;org.eclipse.ui.views&quot; from the &quot;Extension Points&quot; list box and click &quot;Finish&quot;" 
+               skip="false"/>
+   </item>
+
+   <!-- Item -->
+
+   <item title="Add a view category"
+         href="/org.eclipse.pde.doc.user/guide/tools/editors/manifest_editor/extensions.htm"
+         dialog="false"
+         skip="false">
+      <description>
+         To define a view category, perform the following steps:
+      </description>
+      <subitem label="Select &quot;org.eclipse.ui.views&quot; in the list box under &quot;All Extensions&quot; heading in the &quot;Extensions&quot; page" 
+               skip="false"/>
+      <subitem label="Right-click and select &quot;New-&gt;category&quot; from the context menu" 
+               skip="false"/>
+      <subitem label="Replace the content of the &quot;id&quot; text box under &quot;Extension Element Details&quot; with &quot;com.example.helloworld.view.helloworldcategory&quot;" 
+               skip="false"/>
+      <subitem label="Replace the content of the &quot;name&quot; text box with &quot;Hello World!&quot;" 
+               skip="false"/>
+      <subitem label="Select &quot;File-&gt;Save&quot; from the main menu" 
+               skip="false"/>
+   </item>
+
+   <!-- Item -->
+
+   <item title="Add a view"
+         href="/org.eclipse.pde.doc.user/guide/tools/editors/manifest_editor/extensions.htm"
+         dialog="false"
+         skip="false">
+      <description>
+         To define a view, perform the following steps:
+      </description>
+      <subitem label="Select &quot;org.eclipse.ui.views&quot; in the list box under &quot;All Extensions&quot; heading in the &quot;Extensions&quot; page" 
+               skip="false"/>
+      <subitem label="Right-click and select &quot;New-&gt;view&quot; from the context menu" 
+               skip="false"/>
+      <subitem label="Replace the content of the &quot;id&quot; text box under &quot;Extension Element Details&quot; with &quot;com.example.helloworld.view.helloworldview&quot;" 
+               skip="false"/>
+      <subitem label="Replace the content of the &quot;name&quot; text box with &quot;Hello World!&quot;" 
+               skip="false"/>
+      <subitem label="Replace the content of the &quot;class&quot; text box with &quot;com.example.helloworld.view.SampleView&quot;" 
+               skip="false"/>
+      <subitem label="Replace the content of the &quot;category&quot; text box with &quot;com.example.helloworld.view.helloworldcategory&quot;" 
+               skip="false"/>
+      <subitem label="Select &quot;File-&gt;Save&quot; from the main menu" 
+               skip="false"/>
+   </item>
+
+   <item title="Create a view class"
+         dialog="true"
+         skip="false">
+      <description>
+         To create a view class, perform the following steps:
+      </description>
+      <subitem label="Click the &quot;class&quot; hyperlink under &quot;Extension Element Details&quot; to start the &quot;New Java Class&quot; wizard" 
+               skip="false"/>
+      <subitem label="Accept the default values and click the &quot;Finish&quot; button to exit the wizard" 
+               skip="false"/>
+   </item>
+
+   <item title="Add view class code"
+         dialog="false"
+         skip="false">
+      <description>
+         We are now going to add code to our view class to simply
+         display a &quot;Hello, Eclipse world!&quot; message in the view when
+         it is opened.
+         <br/>
+         <br/>
+         The previous step should have opened the <b>SampleView</b> class
+         in a Java editor.
+         <br/>
+         <br/>
+         Add the following lines of code under the pre-generated 
+         <b>createPartControl</b> method:
+         <br/>
+         <br/>
+		 Label label = new Label( parent, SWT.LEFT );
+         <br/>
+		 label.setText( &quot;Hello, Eclipse world!&quot; );
+         <br/>
+         <br/>
+         Note:  There will be two import errors to correct.
+         <br/>
+         Either add the following import statements manually or
+         click on the lightbulb icons in the margin of the Java
+         editor to add them:
+         <br/>
+         <br/>
+		 import org.eclipse.swt.widgets.Label;
+         <br/>
+		 import org.eclipse.swt.SWT;
+		 <br/>
+		 <br/>
+		 Select &quot;File-&gt;Save&quot; from the main menu
+      </description>
+   </item>
+
+   <item title="Test the plug-in"
+         dialog="false"
+         href="/org.eclipse.pde.doc.user/guide/tools/launchers/eclipse_application_launcher.htm"
+         skip="false">
+      <description>
+         To test your Eclipse plug-in inside a target Eclipse platform,
+         perform the following steps:
+      </description>
+      <subitem label="Open the plug-in editor and select the &quot;Overview&quot; tab" 
+               skip="true">
+         <command serialization="org.eclipse.ui.navigate.openResource(filePath=/com.example.helloworld/META-INF/MANIFEST.MF)"/>
+      </subitem>
+      <subitem label="Click the &quot;Launch an Eclipse application&quot; hyperlink under the &quot;Testing&quot; heading" 
+               skip="false"/>
+      <subitem label="Select &quot;Window-&gt;Show View-&gt;Other...&quot; from the main menu in the newly launched Eclipse platform" 
+               skip="false"/>
+      <subitem label="Note the &quot;Hello World!&quot; category and expand its tree dialog" 
+               skip="false"/>
+      <subitem label="Select the &quot;Hello World!&quot; view and click the &quot;OK&quot; button" 
+               skip="false"/>
+      <subitem label="Select &quot;File-&gt;Exit&quot; from the main menu to exit the target Eclipse platform" 
+               skip="false"/>
+   </item>
+
+</cheatsheet>

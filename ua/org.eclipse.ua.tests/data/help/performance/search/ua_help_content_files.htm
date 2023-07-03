@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Help server and file locations</title>
+</head>
+<body>
+
+<h2>Help server and file locations</h2>
+
+<P >
+The platform utilizes its own documentation server to provide the actual web pages
+for your plug-in's documentation.&nbsp; A custom server allows the platform to handle HTML content
+in a browser independent manner and to provide plug-in aware support.&nbsp; The
+main difference to you as a plug-in developer is that you have a little more
+flexibility in the way you structure your files and specify your links. </P>
+<P >
+A documentation plug-in can run from a jar file or unpacked into plug-in directory
+during installation. A plug-in archive jar is not
+ expanded into a plug-in directory when value of <code>unpack</code> attribute
+ of the <code>plugin</code> element is specified as true in the <a href="../reference/misc/feature_manifest.html">feature
+ manifest</a>. In such plug-in, the documentation is compressed in the plug-in's
+jar, together with other plug-in files. </P>
+<P >In plug-ins that run unpacked, the documentation can be delivered
+  in a zip file, avoiding problems that may result
+  when a large number of files
+  are
+  present
+  in a plug-in
+  directory.
+  In
+  our example
+plug-in, we created a sub-directory called <b>html</b>.&nbsp;
+Alternatively, we could have placed our html files into a zip file called
+<b>doc.zip</b>.&nbsp; This zip file must mimic the file
+structure underneath the plug-in directory.&nbsp; In our case, it must contain
+the sub-directory <b>html</b> and all the contents
+underneath <b>html</b>.</P>
+<P >Note that for plug-ins running from a jar, there is no need for documentation
+  to be additionally contained in doc.zip, and such set-up of doc.zip in an unexploded
+   plug-in jar
+is not supported by help system</P>
+<P >When resolving file names in a plug-in that runs unpacked, the help server
+  looks in the <b>doc.zip</b>
+file for documents before it looks in the plug-in directory itself.&nbsp; When
+used as a link, the argument in an
+<b> href</b> is assumed to be relative to the current plug-in.&nbsp; Consider
+the following link: </P>
+
+
+<pre>   &lt;topic label=&quot;Ref1&quot; href=&quot;html/ref/ref1.html&quot;/&gt;</pre>
+
+
+<P>The help plug-in will look for this file as follows: </P>
+
+
+<ul>
+  <li>look in <b> doc.zip</b> for the file <b>/html/ref/ref1.html</b></li>
+  <li>look for the file <b>ref1.html</b> in the <b>/html/ref </b>sub-directory structure underneath the plug-in
+    directory.</li>
+</ul>
+<P >A fully qualified link can be used to refer to any content on the web.&nbsp; </P>
+
+
+<pre >   &lt;topic label=&quot;Ref1&quot; href=&quot;http://www.example.com/myReference.html&quot;/&gt;</pre>
+
+
+<h4 >National language and translated documentation</h4>
+
+
+<p >The platform help system uses the same national language directory lookup
+scheme used by the rest of the platform for finding translated files.&nbsp; (See
+<a href="product_def_nl.htm#platform">Locale specific files</a> for an
+explanation of this directory structure.)&nbsp; If you are using a <b>doc.zip</b>
+file, you should produce a <b>doc.zip</b> file for <b>each</b> locale and place
+it inside the correct locale directory.&nbsp; (You should not replicate the <b>nl</b>
+locale directory structure inside the doc.zip file.)</p>
+<p >In addition to locale specific directories, help system checks windowing
+  system and operating system directories when locating help resources. Look-up
+  is performed in the following order: <strong>ws</strong>, <strong>os</strong>, <strong>nl</strong> subdirectories, then
+  the root of the plug-in, until the resource is located. Documents, and other
+  resource, like images which differ between system, should be placed under ws
+  or os directories for specific platform.</p>
+  
+<h4 ><a name="help_plugin_files_xref">Cross plug-in referencing</a></h4>
+
+<P >The <b>href</b> argument can also refer to content from another
+plug-in.&nbsp; This is done by using a special cross plug-in referencing
+notation that is resolved by the help server: </P>
+
+<pre >   &lt;topic label=&quot;Ref1&quot; href=&quot;<b>PLUGINS_ROOT/another_plugin_id</b>/ref/ref1.html&quot;/&gt;</pre>
+
+<p>
+Here <code><b>PLUGINS_ROOT</b></code> will be resolved at runtime and replaced with
+the root directory for the plugins. You can specify your own plug-in id for
+<code><b>another_plugin_id</b></code>. For example, you could link to this chapter
+of the programmer's guide using the following topic:
+</p>
+
+<pre >   &lt;topic label=&quot;Help Chapter in Platform Doc&quot; href=&quot;<b>PLUGINS_ROOT/org.eclipse.platform.doc.isv/guide/help.html</b>&quot;/&gt;</pre>
+
+<p>
+Prior to 3.2, references to documents in other plug-ins were made by using '..'
+to go up to the plug-in level, then referencing the plug-in Id followed by the
+HREF to the topic inside the plug-in. The recommended way to do this now is
+to use <code>PLUGINS_ROOT</code> instead of '..'. Using this variable avoids
+avoids these up/down trips in references, and can be used for all the resource
+URLs in the help documents (images, links, CSS files, java script files etc.)
+</p>
+
+<p class="Note">Note:&nbsp; When referencing content from another plug-in, be
+sure to use the plug-in's <b>id</b>, as declared in its <b>plugin.xml </b>file,
+not its directory name.&nbsp; While these are often the same in practice, it's
+important to check that you are using the id and not the directory name.</p>
+
+<h4 >Referencing the Product Plug-in.</h4>
+
+<p>Branding information is often placed in a plug-in defining a
+  product as explained in <a href="product_def.htm">Defining a Product</a>. Help
+  resources in the product plug-in can be referenced from the table of contents
+  or topics using special identifier <code><b>PRODUCT_PLUGIN</b></code> for the
+  plug-in ID. For example,</p>
+<pre >   href=&quot;PLUGINS_ROOT/<b>PRODUCT_PLUGIN</b>/book.css&quot;</pre>
+<p>refers to a style sheet residing in the plug-in for the currently running
+product.
+  </p>
+
+</body>
+</html>

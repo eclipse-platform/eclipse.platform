@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGIN__ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Table of contents (toc) files</title>
+</head>
+<body>
+
+<h2>Table of contents (toc) files</h2>
+
+<P >
+Now that we have our sample content files we can create a table of contents (<b>toc</b>)
+file. A toc file defines the key entry points into the HTML content files by mapping a topic
+label to a reference in one of the HTML files.&nbsp; </P>
+<P >
+Applications that are being migrated to the platform can reuse existing documentation by
+using the toc file to define entry points into that documentation. </P>
+<P >
+A plug-in can have one or more toc files. Our example documentation is organized into three main categories: concepts, tasks and reference. How do we make
+toc files that represent this structure?</P>
+<P >
+We could make one large toc file, or we could create a separate toc file for each main category of content. This decision should be made according to the way your documentation teams work together.
+If a different author owns each category, it might be preferable to keep
+separate toc files for each category.&nbsp; It is not dictated by the platform architecture. </P>
+<P >
+In this example, we will create a toc file for each major content category. For such a small number of files,
+having separate toc files for each category may not be necessary.&nbsp; We
+will build this example as if we had many more files or had separate authors who
+own each content category.</P>
+<P >
+Our files look like this:</P>
+
+<H4>toc_Concepts.xml</H4>
+<pre>
+   &lt;toc label=&quot;Concepts&quot;&gt;
+      &lt;topic label=&quot;Concept1&quot; href=&quot;html/concepts/concept1.html&quot;&gt;
+         &lt;topic label=&quot;Concept1_1&quot; href=&quot;html/concepts/concept1_1.html&quot;/&gt;
+         &lt;topic label=&quot;Concept1_2&quot; href=&quot;html/concepts/concept1_2.html&quot;/&gt;
+      &lt;/topic&gt; 
+   &lt;/toc&gt;
+</pre>
+
+<H4>
+toc_Tasks.xml</H4>
+<pre>
+   &lt;toc label=&quot;Tasks&quot;&gt;
+      &lt;topic id=&quot;plainTasks&quot; label=&quot;Plain Stuff&quot;&gt;
+         &lt;topic label=&quot;Task1&quot; href=&quot;html/tasks/task1.html&quot;/&gt;
+         &lt;topic label=&quot;Task2&quot; href=&quot;html/tasks/task2.html&quot;/&gt;
+      &lt;/topic&gt;
+      &lt;topic id=&quot;funTasks&quot; label=&quot;Fun Stuff&quot; &gt;
+         &lt;topic label=&quot;Task3_1&quot; href=&quot;html/tasks/task3_1.html&quot;/&gt;
+         &lt;topic label=&quot;Task3_2&quot; href=&quot;html/tasks/task3_2.html&quot;/&gt;
+      &lt;/topic&gt;
+   &lt;/toc&gt;
+</pre>
+
+<H4>
+toc_Ref.xml</H4>
+<pre>
+   &lt;toc label=&quot;Reference&quot;&gt;
+      &lt;topic label=&quot;Ref1&quot; href=&quot;html/ref/ref1.html&quot;/&gt;
+      &lt;topic label=&quot;Ref2&quot; href=&quot;html/ref/ref2.html&quot;/&gt;
+   &lt;/toc&gt;
+</pre>
+<P >
+ A topic can be a simple link to content.&nbsp;
+For example, &quot;Task1&quot; provides a <b>label</b>
+and an <b>href</b> linking to the content.&nbsp; A
+topic can also be a hierarchical grouping of sub topics with no content of its
+own.&nbsp; For example, &quot;Fun Stuff&quot; has only a <b>label</b>
+and sub topics, but no <b>href</b> .&nbsp; Topics can
+do both, too.&nbsp; &quot;Concept1&quot; has an <b>href</b>
+and sub topics. </P>
+
+<p><b>Dynamic content</b></p>
+
+<p>
+Dynamic content is available for the table of contents in the form of
+<a href="ua_dynamic_filters.htm">filters</a> and <a href="ua_dynamic_extensions.htm">
+extensions</a>. For example, you may want a topic to show up in the table of contents
+only when running on a specific operating system.
+</p>
+
+<p>
+<a href="ua_dynamic_includes.htm">Includes</a> are not supported here because they
+are not needed; use <a href="ua_help_content_nested.htm">links</a> instead.
+</p>
+
+</body>
+</html>

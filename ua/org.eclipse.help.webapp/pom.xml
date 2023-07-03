@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2012, 2019 Eclipse Foundation.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Distribution License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/org/documents/edl-v10.php
+ 
+  Contributors:
+     Igor Fedorenko - initial implementation
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>eclipse.platform.ua</artifactId>
+    <groupId>eclipse.platform.ua</groupId>
+    <version>4.29.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.eclipse.help</groupId>
+  <artifactId>org.eclipse.help.webapp</artifactId>
+  <version>3.11.100-SNAPSHOT</version>
+  <packaging>eclipse-plugin</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-jspc-maven-plugin</artifactId>
+        <version>10.0.15</version>
+        <executions>
+          <execution>
+            <id>jspc</id>
+            <goals>
+              <goal>jspc</goal>
+            </goals>
+            <configuration>
+              <jspc>
+                <package>org.eclipse.help.internal.webapp.jsp</package>
+              </jspc>
+              <webAppSourceDirectory>${basedir}</webAppSourceDirectory>
+              <useProvidedScope>true</useProvidedScope>
+              <sourceVersion>11</sourceVersion>
+              <targetVersion>11</targetVersion>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-plugin</artifactId>
+        <configuration>
+          <baselineReplace>none</baselineReplace>
+          <baselineMode>disable</baselineMode>
+          <ignoredPatterns>
+            <pattern>META-INF/ECLIPSE_.RSA</pattern>
+            <pattern>META-INF/ECLIPSE_.SF</pattern>
+          </ignoredPatterns>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

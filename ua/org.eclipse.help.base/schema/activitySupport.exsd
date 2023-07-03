@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.help.base">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.help.base" id="activitySupport" name="Activity Support"/>
+      </appInfo>
+      <documentation>
+         This extension point is used by product plug-ins to configure the behaviour of the Help system when activities are used. It provides for configuring the following aspects:
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt;By default, table of contents view hides topics that belong to disabled activities. A local tool bar button allows this filter to be turned off. A subsequent message box text can be plugged in using this extension point.&lt;/li&gt;
+&lt;li&gt;When activity filter is turned off, topics that belong to disabled activities will have a message injected at the top warning them about the possibility that they may not see the user interface artifact mentioned in the topic in the running UI. This message can be plugged in.
+&lt;li&gt;Optionally, if the message contains a link to take the users to the UI component that provides for enabling activites, a class can be plugged in to do the work.
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;
+&lt;b&gt;This extension point is experimental and is likely to change in the future releases as the activity support evolves.&lt;/b&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="support" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="support">
+      <complexType>
+         <sequence>
+            <element ref="localScopeCheckbox" minOccurs="0" maxOccurs="1"/>
+            <element ref="documentMessage"/>
+            <element ref="showAllMessage"/>
+         </sequence>
+         <attribute name="productId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a product identifier that this support should be associated with. When multiple &lt;code&gt;support&lt;/code&gt; elements are found, the one whose &lt;code&gt;productId&lt;/code&gt; value matches the active product id will be chosen.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="showAllMessage" type="string">
+      <annotation>
+         <appInfo>
+            <meta.element translatable="true"/>
+         </appInfo>
+         <documentation>
+            a plain text message that will be shown in the dialog when activity filtering is turned off. The intent of the message is to warn that without the filter some documents may be referring to user interface elements that are not visible.
+         </documentation>
+      </annotation>
+   </element>
+
+   <element name="localScopeCheckbox" type="string">
+      <annotation>
+         <appInfo>
+            <meta.element translatable="true" deprecated="true"/>
+         </appInfo>
+         <documentation>
+            a label of the checkbox in the local search scope preference page. When the checkbox is selected, search hits in documents that belong to disabled activites will be included in the search results. &lt;strong&gt;As of 3.6, this element is no longer used&lt;/strong&gt;.
+         </documentation>
+      </annotation>
+   </element>
+
+   <element name="documentMessage">
+      <annotation>
+         <appInfo>
+            <meta.element translatable="true"/>
+         </appInfo>
+         <documentation>
+            an HTML snippet that will be injected at the top of the help topic that belongs to the disabled activity. The intent of the message is to notify the user that the topic may contain references to the UI elements that are not visible. Since the message text is inside an XML file, HTML tags must be escaped using standard XML entities for special characters.
+&lt;p&gt;The message may contain a hyperlink that takes the user to the activity editor that provides for changing activity enablement state. Attribute &lt;code&gt;class&lt;/code&gt; must be used in this case.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  a fully qualified name of a Java class that implements &lt;code&gt;org.eclipse.help.ILiveHelpAction&lt;/code&gt;. This class will be used when the document message contains a hyperlink or a button whose &lt;code&gt;href&lt;/code&gt; value contains the substitution string &lt;b&gt;ACTIVITY_EDITOR&lt;/b&gt;. The class should be implemented in such a way as to programmatically invoke and show a UI component (e.g. a preference page) that the product offers for changing the activity enablement state.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.ui.IWorkbenchWindowActionDelegate"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="pluginId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  an identifier of the plug-in in which the activity editor class resides.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.1
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is a sample usage of the activity support extension point:
+&lt;p&gt;
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.help.base.activitySupport&quot;&gt;
+  &lt;support productId=&quot;com.example.xyzProduct&quot;&gt;
+     &lt;showAllMessage&gt;
+        This actions will reveal all topics in the table of contents.
+     &lt;/showAllMessage&gt;
+     &lt;documentMessage class=&quot;com.example.xyz.OpenRolePreference&quot;&gt;
+        This topic belongs to the role that is currently disabled.
+        &amp;lt;p&amp;gt;
+        To enable the role, open &amp;lt;a href=&quot;ACTIVITY_EDITOR&quot;&amp;gt;Role Preference Page.&amp;lt;/a&amp;gt;
+     &lt;/documentMessage&gt;
+  &lt;/support&gt;
+ &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Attribute &lt;code&gt;class&lt;/code&gt; of the element &lt;code&gt;documentMessage&lt;/code&gt; must implement &lt;code&gt;org.eclipse.help.ILiveHelpAction&lt;/code&gt; interface.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         Eclipse SDK provides the default activity support that uses the term &apos;capability&apos; and and opens the Capabilities preference page from the hyperlink in disabled topics. When overriding, make sure that the changes and the terminology match those in the platform UI.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2005, 2013 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

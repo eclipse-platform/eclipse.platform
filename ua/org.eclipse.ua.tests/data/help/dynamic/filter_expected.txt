@@ -1,0 +1,237 @@
+<root>
+
+	<description>
+		This file tests the filtering capability. Below are some filters, some
+		of which should be applied and others which shouldn't.
+	</description>
+	
+	
+	
+	
+	<element filter="os!=invalid"></element>
+	<element filter="ws!=invalid"></element>
+	<element filter="arch!=invalid"></element>
+	<element filter="product!=invalid"></element>
+	<element filter="plugin!=invalid"></element>
+	<element filter="category!=invalid"></element>
+	<element filter="activity!=invalid"></element>
+	<element filter="systemProperty!=invalid"></element>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+	<element>
+		<filter name="os" value="!invalid"></filter>
+	</element>
+	<element>
+		<filter name="ws" value="!invalid"></filter>
+	</element>
+	<element>
+		<filter name="arch" value="!invalid"></filter>
+	</element>
+	<element>
+		<filter name="product" value="!invalid"></filter>
+	</element>
+	<element>
+		<filter name="plugin" value="!invalid"></filter>
+	</element>
+	<element>
+		<filter name="category" value="!invalid"></filter>
+	</element>
+	<element>
+		<filter name="activity" value="!invalid"></filter>
+	</element>
+	<element>
+		<filter name="systemProperty" value="!invalid"></filter>
+	</element>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+	<element>
+		<filter name="os" value="!invalid"></filter>
+		<filter name="ws" value="!invalid"></filter>
+	</element>
+
+	
+	
+
+	
+	<element>
+		<filter name="os" value="!invalid"></filter>
+		<child>This child element shouldnt be filtered</child>
+	</element>
+
+	
+	
+
+	
+	
+	
+
+	
+	<element filter="os!=invalid">
+		<doc id="doc.1">
+	<description>
+		This document contains a mixture of dynamic content and is used by other
+		tests that incorporate outside content, to make sure it is processed.
+	</description>
+	<element id="element.1">
+		This element has no replaces.
+	</element>
+	<element id="element.1">
+		This is element 1 of doc2.xml
+	</element>
+	
+	
+	
+	<element id="element.1">
+		This is element 1 of doc2.xml
+	</element>
+	<element id="element.2">
+		This is element 2 of doc2.xml
+	</element><element id="element.3">
+		This is element 3 of doc2.xml
+	</element>
+</doc>
+	</element>
+	<element>
+		<filter name="os" value="!invalid"></filter>
+		<doc id="doc.1">
+	<description>
+		This document contains a mixture of dynamic content and is used by other
+		tests that incorporate outside content, to make sure it is processed.
+	</description>
+	<element id="element.1">
+		This element has no replaces.
+	</element>
+	<element id="element.1">
+		This is element 1 of doc2.xml
+	</element>
+	
+	
+	
+	<element id="element.1">
+		This is element 1 of doc2.xml
+	</element>
+	<element id="element.2">
+		This is element 2 of doc2.xml
+	</element><element id="element.3">
+		This is element 3 of doc2.xml
+	</element>
+</doc>
+	</element>
+
+	
+	<element>
+		<enablement>
+			<not>
+				<systemTest property="osgi.os" value="invalid"></systemTest>
+			</not>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<not>
+				<systemTest property="osgi.ws" value="invalid"></systemTest>
+			</not>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<not>
+				<systemTest property="osgi.arch" value="invalid"></systemTest>
+			</not>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<not>
+				<systemTest property="eclipse.product" value="org.eclipse.ua.invalid"></systemTest>
+			</not>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<with variable="platform">
+				<test args="org.eclipse.help" property="org.eclipse.core.runtime.isBundleInstalled"></test>
+				<not>
+					<test args="org.eclipse.ua.invalid" property="org.eclipse.core.runtime.isBundleInstalled"></test>
+				</not>
+			</with>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<with variable="workbench">
+				<not>
+					<test args="invalid" property="org.eclipse.ui.isActivityEnabled"></test>
+				</not>
+			</with>
+		</enablement>
+	</element>
+	<element>
+		<enablement>
+			<with variable="workbench">
+				<not>
+					<test args="invalid" property="org.eclipse.ui.isCategoryEnabled"></test>
+				</not>
+			</with>
+		</enablement>
+	</element>
+
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+
+	
+	<element filter=""></element>
+
+	
+	<element filter="invalid"></element>
+
+	
+	<element filter="invalid="></element>
+
+	
+	<element filter="=invalid"></element>
+
+	
+	<element>
+		<filter></filter>
+	</element>
+
+	
+	<element>
+		<filter value="invalid"></filter>
+	</element>
+
+	
+	<element>
+		<filter name="invalid"></filter>
+	</element>
+
+</root>

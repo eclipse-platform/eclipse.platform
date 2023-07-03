@@ -1,0 +1,5 @@
+a#cvs_checkout img { background-image : url('graphics/obj48/migrate_obj.gif'); }
+a#cvs_checkout:hover img { background-image : url('graphics/obj48/migratehov_obj.gif'); }
+
+a#cvs_merge img { background-image : url('graphics/obj48/community_obj.gif'); }
+a#cvs_merge:hover img { background-image : url('graphics/obj48/communityhov_obj.gif'); }

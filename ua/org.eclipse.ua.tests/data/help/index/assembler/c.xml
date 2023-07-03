@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<index>
+   <entry keyword="keyword6">
+      <entry keyword="keyword8">
+         <topic href="topic8b.html" label="topic8b"/>
+         <topic href="topic8a.html" label="topic8a"/>
+      </entry>
+      <entry keyword="keyword7">
+         <topic href="topic7.html" label="topic7"/>
+      </entry>
+   </entry>
+</index>

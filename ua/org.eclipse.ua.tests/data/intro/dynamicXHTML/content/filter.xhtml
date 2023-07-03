@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!--
+   The filter examples page. This tests filtering in intro XHTML. When viewed, this page
+   displays facts about your environment. For example, your os is linux, your ws is gtk, etc.
+   All the other content should be filtered out.
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>filter.xhtml</title>
+</head>
+
+<body>
+<h2>filter.xhtml</h2>
+<p>
+This page contains filtered content.
+</p>
+<ul>
+<!-- should never appear -->
+<li filter="os=invalid">This line should never appear.</li>
+<li filter="ws=invalid">This line should never appear.</li>
+<li filter="arch=invalid">Your ARCH is <strong>invalid</strong>.</li>
+<li>
+<filter name="os" value="win32"/>
+<filter name="ws" value="invalid"/>
+Your OS is <strong>win32</strong> AND your WS is <strong>invalid</strong>.
+</li>
+
+<li filter="plugin=org.eclipse.help">The plugin <code>org.eclipse.help</code> is installed.</li>
+
+<!-- should never appear -->
+<li filter="plugin=invalid">The plugin <code>invalid</code> is installed.</li>
+
+<li filter="product=org.eclipse.sdk.ide">The product <code>org.eclipse.sdk.ide</code> is running.</li>
+
+<!-- should never appear -->
+<li filter="product=invalid">The product <code>invalid</code> is running.</li>
+
+<li filter="category=org.eclipse.categories.developmentCategory">The category <code>org.eclipse.categories.developmentCategory</code> is enabled.</li>
+
+<!-- should never appear -->
+<li filter="category=invalid">The category <code>invalid</code> is enabled.</li>
+
+<li filter="activity=org.eclipse.javaDevelopment">The activity <code>org.eclipse.javaDevelopment</code> is enabled.</li>
+
+<!-- should never appear -->
+<li filter="activity=invalid">The activity <code>invalid</code> is enabled.</li>
+</ul>
+</body>
+</html>

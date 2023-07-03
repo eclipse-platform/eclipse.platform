@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<title>anchor.xhtml</title>
+</head>
+<body>
+
+<p>
+<strong>The section below should have the entire contents of anchor2.xhtml.</strong>
+</p>
+
+<small>[begin anchor 1]</small>
+<hr/>
+<p id="paragraph.1">
+This is the first paragraph in anchor2.xhtml.
+</p><p id="paragraph.2">
+This is the second paragraph in anchor2.xhtml.
+</p><p id="paragraph.3">
+This is the third paragraph in anchor2.xhtml.
+</p>
+<hr/>
+<small>[end anchor 1]</small>
+
+<p>
+<strong>The section below should only have the second paragraph from anchor2.xhtml.</strong>
+</p>
+
+<small>[begin anchor 2]</small>
+<hr/>
+<p id="paragraph.2">
+This is the second paragraph in anchor2.xhtml.
+</p>
+<hr/>
+<small>[end anchor 2]</small>
+
+</body>
+</html>

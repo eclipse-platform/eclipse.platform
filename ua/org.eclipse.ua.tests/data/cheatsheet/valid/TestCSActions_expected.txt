@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cheatsheet
+      title="Hello World Demo">
+   <item
+         title="Introduction"
+         description="Welcome to the hello world cheat sheet.
+This cheat sheet will help you to build the famous "hello world" application and try it out. You will create a java project, and a java class that will print "hello world" in the console when run.
+Let's get started!"
+         Href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm"
+         contextId="null">
+      <nullAction/>
+      <nullList/>
+      <nullPerformWhen/>
+      <nullList/>
+   </item>
+   <list>
+      <item
+            title="Open the Java Perspective"
+            description="To begin, open the Java Perspective in the Eclipse workbench.  
+You may do this by clicking window->open perspective->Java in the toolbar at the top of the 
+workbench.  When you have done this, press the "click when done" button below."
+            Href="/org.eclipse.platform.doc.user/concepts/concepts-4.htm"
+            contextId="null">
+         <nullAction/>
+         <list>
+            <array/>
+         </list>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Select a cheat sheet"
+            description="Test launching category based cheat sheet selection."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ui.internal.cheatsheets.actions.CheatSheetCategoryBasedSelectionAction"
+               pluginId="org.eclipse.ui.cheatsheets"
+               when="null"
+               isConfirm="false">
+            <nullArray/>
+         </action>
+         <list>
+            <array/>
+         </list>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Select a cheat sheet in another way"
+            description="Test launching single list cheat sheet selection."
+            Href="null"
+            contextId="null">
+         <action
+               class="org.eclipse.ui.internal.cheatsheets.actions.CheatSheetSelectionAction"
+               pluginId="org.eclipse.ui.cheatsheets"
+               when="null"
+               isConfirm="false">
+            <nullArray/>
+         </action>
+         <list>
+            <array/>
+         </list>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+   </list>
+</cheatsheet>

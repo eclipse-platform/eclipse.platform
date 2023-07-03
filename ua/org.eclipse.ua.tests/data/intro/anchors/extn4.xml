@@ -1,0 +1,31 @@
+<!--
+     Copyright (c) 2005, 2007 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+<introContent>
+      <extensionContent
+            path="page2/anchor2">
+         <text>Contribution from page 4</text>
+         <link label="Link to page 4" url="http://org.eclipse.ui.intro/showPage?id=page4" id="page4link">
+         </link>
+      </extensionContent>
+      <page id="page4" >
+        <title >Page 4</title>
+        <group id="action-links">
+            <link url="http://org.eclipse.ui.intro/switchToLaunchBar" label="Go to the workbench" id="workbench" style-id="$high-contrast$">
+            </link>
+        </group>  
+        <text>Page 4 Anchor</text>     
+		<anchor id="anchor4"/>
+    </page>
+</introContent>
+

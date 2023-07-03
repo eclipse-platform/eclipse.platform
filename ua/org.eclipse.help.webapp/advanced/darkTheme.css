@@ -1,0 +1,60 @@
+@media (prefers-color-scheme: dark) {
+	body { 
+		color: #f0f0f0; 
+		background: #3d3d3d;
+	}
+
+	#titleText,
+	#searchLabel,
+	#scopeLabel,
+	#scope,
+	a,
+	a.active
+	a.nolink:link, 
+	a.nolink:visited {
+		color:#ffffff;
+	}
+
+	.button a:hover, .buttonMenu a:hover { 
+		border-top:1px solid #3d3d3d; 
+		border-<%=isRTL?"right":"left"%>:1px solid #3d3d3d; 
+		border-<%=isRTL?"left":"right"%>:1px solid #3d3d3d; 
+		border-bottom:1px solid #3d3d3d;
+	}
+
+	table {
+		background:#3d3d3d;
+	}
+	.tab {
+		background:#7b7c7b
+	}
+
+	form {
+		background:#3d3d3d;
+	}
+	
+	.separator {
+
+	}
+	
+	input{
+		background:#a0a0a0;
+	}
+
+	.button a, .buttonMenu a { 
+		border:1px solid #3d3d3d;;
+	}
+	
+	/* darken images to add some comfort while reading in dark theme */
+	img {
+		opacity: .75;
+		transition: opacity .5s ease-in-out;
+	}
+	img:hover {
+		opacity: 1;
+	}
+
+	.location, .location a {
+		color:#00cc66;
+	}
+}

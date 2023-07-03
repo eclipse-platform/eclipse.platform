@@ -1,0 +1,13 @@
+a#hello-world img { background-image : url(graphics/obj_48/javaapp_obj.gif); }
+a#hello-world:hover img { background-image : url(graphics/obj_48/javaapphov_obj.gif); }
+
+a#applet img { background-image : url(graphics/obj_48/javaapplet_obj.gif); }
+a#applet:hover img { background-image : url(graphics/obj_48/javaapplethov_obj.gif); }
+
+a#swt img { background-image : url(graphics/obj_48/swtapp_obj.gif); }
+a#swt:hover img { background-image : url(graphics/obj_48/swtapphov_obj.gif); }
+
+a#ant img { background-image : url(graphics/obj_48/script_obj.gif); }
+a#ant:hover img { background-image : url(graphics/obj_48/scripthov_obj.gif); }
+
+

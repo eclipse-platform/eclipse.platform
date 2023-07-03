@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Enter remote host url</title>
+<script type="text/javascript">
+
+function doSubmit() {
+    var url = document.getElementById("url").value;
+    setCookie(encodeURIComponent(url));  
+}
+
+function loadHandler() {
+    document.getElementById("url").value = getHelpPath();
+}
+
+function testURL() {  
+    var url = document.getElementById("url").value;
+    setCookie(encodeURIComponent(url));  
+    window.open(url + "index.jsp");
+}
+
+
+function testThis() {
+    var thisURL = document.location.href;
+    var index = thisURL.indexOf('topic/');
+    if (index > 0) {
+        thisURL = thisURL.substr(0, index);
+    }
+    document.getElementById("url").value = thisURL;
+    setCookie(encodeURIComponent(thisURL));  
+}
+
+var defaultName = "http://help.eclipse.org/helios/";
+
+function getHelpPath() {
+    var path = getCookie();
+    if (path !== null) return decodeURIComponent(path);
+    return defaultName;
+}
+
+function getCookie() {
+	var nameEquals = "server=";
+	var cookies = document.cookie.split(";");
+	for (var i=0;i<cookies.length;++i) {
+		var cookie = cookies[i];
+		if (cookie.charAt(0) == ' ') {
+			cookie = cookie.substring(1, cookie.length);
+		}
+		if (cookie.indexOf(nameEquals) == 0) {
+			return cookie.substring(nameEquals.length, cookie.length);
+		}
+	}
+	return null;
+}
+
+function setCookie(value) {
+	var date = new Date();
+	date.setTime(date.getTime()+(365*24*60*60*1000));
+	document.cookie = "server=" + value + "; expires=" + date.toGMTString();
+}
+
+</script>
+
+</head>
+
+<body onload = "loadHandler()" >
+<h1>Enter host url</h1>
+
+This step sets the infocenter to be tested for security flaws. A remote infocenter
+can be tested by entering its URL.
+
+<form onsubmit="doSubmit();return false;">
+    Enter the url of the remote help system up to the context path.
+    <br>
+    Example: http://host:80/help/
+    <br>
+    <input type="text" id="url" name="url" 
+		    value='' maxlength=256 style="width:400px">
+	<table>
+		<tr id="buttonsTable"><td >
+  			<table cellspacing=0 cellpadding=0 border=0 style="background:transparent;">
+				<tr>		   
+					<td>
+						<button id="test" type="button"  onclick="testURL()" >Save and Test</button>
+					</td>  
+					<td>
+						<button id="test" type="button"  onclick="testThis()" >Test this server</button>
+					</td>
+					<td>
+						<button type="submit" id="ok">Save</button>
+					</td>
+				</tr>
+  			</table>
+		</td></tr>
+	</table>
+</form>
+
+</body>
+</html>

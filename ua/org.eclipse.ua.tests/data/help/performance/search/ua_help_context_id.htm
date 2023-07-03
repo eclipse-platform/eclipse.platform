@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Declaring a context id</title>
+</head>
+<body>
+
+<h2>Declaring a context id</h2>
+
+<p>
+The <b>setHelp</b> method in
+<b><a href="../reference/api/org/eclipse/ui/help/IWorkbenchHelpSystem.html">org.eclipse.ui.help.IWorkbenchHelpSystem</a></b>
+is used to associate a context id with a <code>Control</code>, <code>IAction</code>,
+<code>Menu</code>, or <code>MenuItem</code>. The context id should be fully
+qualified with the plug-in id. For example, the following snippet associates
+the id &quot;com.example.helpexample.panic_button&quot; with a button in the
+application.
+</p>
+
+<pre>PlatformUI.getWorkbench().getHelpSystem().setHelp(myButton, com.example.helpexample.panic_button);</pre>
+
+<p>
+The following UI controls cannot have context ids (and therefore cannot have
+context-sensitive help):
+</p>
+
+<ul>
+  <li>Toolbar buttons (ToolItem)</li>
+  <li>CTabItem</li>
+  <li>TabItem</li>
+  <li>TableColumn</li>
+  <li>TableItem</li>
+  <li>TableTreeItem</li>
+  <li>TreeItem</li>
+</ul>
+
+<p>
+Widgets that do not get focus should not be assigned context ids, since they
+will never trigger a context-sensitive help.
+</p>
+
+<p>
+<em>
+Note: The default implementation of help will display the help dialog tray only if
+the dialog is either large enough to accomodate it, or is resizable. Otherwise,
+an infopop will be shown.
+</em>
+</p>
+
+</body>
+</html>

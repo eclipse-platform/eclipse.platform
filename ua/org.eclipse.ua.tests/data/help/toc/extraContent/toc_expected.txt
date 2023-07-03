@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<toc
+      label="TOC with extra elements"
+      href="/org.eclipse.ua.tests/data/help/toc/extraContent/toc.xml">
+   <topic
+         label="Getting started"
+         href="null">
+      <topic
+            label="test"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+   </topic>
+   <topic
+         label="Concepts"
+         href="null">
+      <topic
+            label="test"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+   </topic>
+   <topic
+         label="Tasks"
+         href="null">
+      <topic
+            label="test"
+            href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+      </topic>
+   </topic>
+   <topic
+         label="Reference"
+         href="null">
+   </topic>
+   <topic
+         label="Tips and tricks"
+         href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+   </topic>
+   <topic
+         label="What's new"
+         href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+   </topic>
+   <topic
+         label="Documentation Images"
+         href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+   </topic>
+   <topic
+         label="Legal"
+         href="/org.eclipse.ua.tests/data/help/toc/extraContent/simple_page.html">
+   </topic>
+</toc>

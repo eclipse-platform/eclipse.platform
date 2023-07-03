@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+	<xs:element name="context">
+		<xs:complexType mixed="false">
+			<xs:sequence>
+				<xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1" /> <!-- at least and at most one description element -->
+				<xs:element ref="topic" minOccurs="0" maxOccurs="unbounded" />	
+			</xs:sequence>
+			<xs:attribute name="title" type="xs:string" /> <!-- optional attribute for context -->
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="topic">
+		<xs:complexType mixed="true">
+			<xs:attribute name="label" type="xs:string" /> <!-- optional attribute for topic -->
+			<xs:attribute name="href" type="xs:string" /> <!-- optional attribute for topic -->
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

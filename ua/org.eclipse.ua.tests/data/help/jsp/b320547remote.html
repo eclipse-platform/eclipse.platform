@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title> Bug 320547 -  [Webapp][Security] Misuse of /topic/file</title>
+	<script type="text/javascript" src="server.js"></script>
+	<script type="text/javascript">
+	    function loadhandler() {
+            showHelpPath();
+            patchAnchors();
+        }
+
+	</script>
+</head>
+
+<body onload = "loadhandler()">
+<h1> Bug 320547 -  [Webapp][Security] Misuse of /topic/file</h1>
+
+<h3 id="path"></h3>
+</h3>
+
+This bug is workbench only and Windows only so should be tested on the Eclipse 
+workbench on Windows.
+<br>
+Click on the link below: if a list of directory filenames shows the test is failing.
+<p>
+<a href = "../../../../file:/c:/" > Click here </a>
+</p>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<introContent>
+  <!-- Extension to the SDK What's New Page. -->
+  <extensionContent id="org.eclipse.pde.changes.2" name="Plug-in Development Environment (test)" alt-style="css/swt.properties" path="whatsnew/@">
+     <enablement>
+        <systemTest property="org.eclipse.ua.tests.property.isTesting" value="true"/>
+     </enablement>
+    <group style-id="content-group" id="content-group">
+    	<link label="Plug-in Development Environment (test)" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.eclipse.pde.doc.user/whatsNew/pde_whatsnew.htm" id="pde-noteworthy" style-id="content-link">
+      		<text>Learn about significant changes made to PDE for this release (test)</text>
+    	</link>
+    </group>
+  </extensionContent>
+</introContent>

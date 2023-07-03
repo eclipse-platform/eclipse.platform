@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Test Actions">
+
+<intro>
+	<description>
+Welcome to the Test Actions cheat sheet.
+This cheat sheet will test the various setting combinations for actions.
+Let's get started!
+	</description>
+</intro>
+
+<item
+	title="Test 1">
+	<description>
+		Test with no action.
+	</description>
+</item>
+
+<item
+	title="Test 2"
+	skip="false">
+	<description>
+		Test with no action and skip=false.
+	</description>
+</item>
+
+<item
+	title="Test 3"
+	skip="true">
+	<description>
+		Test with no action and skip=true.
+	</description>
+</item>
+
+<item
+	title="Test 4">
+	<action
+		pluginId="org.eclipse.ua.tests"
+		class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	<description>
+		Test with action.
+	</description>
+</item>
+
+<item
+	title="Test 5"
+	skip="false">
+	<action
+		pluginId="org.eclipse.ua.tests"
+		class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	<description>
+		Test with action and skip=false.
+	</description>
+</item>
+
+<item
+	title="Test 6"
+	skip="true">
+	<action
+		pluginId="org.eclipse.ua.tests"
+		class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"/>
+	<description>
+		Test action and skip=true.
+	</description>
+</item>
+
+<item
+	title="Test 7">
+	<action
+		pluginId="org.eclipse.ua.tests"
+		class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+		confirm="false"/>
+	<description>
+		Test action and confirm=false.
+	</description>
+</item>
+
+<item
+	title="Test 8">
+	<action
+		pluginId="org.eclipse.ua.tests"
+		class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+		confirm="true"/>
+	<description>
+		Test action and confirm=true.
+	</description>
+</item>
+
+<item
+	title="Test 9"
+	skip="false">
+	<action
+		pluginId="org.eclipse.ua.tests"
+		class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+		confirm="false"/>
+	<description>
+		Test action, skip=false and confirm=false.
+	</description>
+</item>
+
+<item
+	title="Test 10"
+	skip="true">
+	<action
+		pluginId="org.eclipse.ua.tests"
+		class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+		confirm="false"/>
+	<description>
+		Test action, skip=true and confirm=false.
+	</description>
+</item>
+
+<item
+	title="Test 11"
+	skip="false">
+	<action
+		pluginId="org.eclipse.ua.tests"
+		class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+		confirm="true"/>
+	<description>
+		Test action, skip=false and confirm=true.
+	</description>
+</item>
+
+<item
+	title="Test 12"
+	skip="true">
+	<action
+		pluginId="org.eclipse.ua.tests"
+		class="org.eclipse.ua.tests.cheatsheet.util.NoopAction"
+		confirm="true"/>
+	<description>
+		Test action, skip=true and confirm=true.
+	</description>
+</item>
+
+<item
+	title="All done!">
+	<description>
+		Did the test work?
+	</description>
+</item>
+
+</cheatsheet>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Hello World Demo">
+
+	<intro 
+		href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm">
+		<description>
+Welcome to the <b>hello world</b> cheat sheet.<br/>
+This cheat sheet will help you to build the famous "hello world" application and try it out. You will create a java project, and a java class that will print "hello world" in the console when run.<br/>
+Let's get started!
+		</description>
+</intro>
+
+	<item
+		href="/org.eclipse.platform.doc.user/concepts/concepts-4.htm"
+		title="Open the Java Perspective">
+		<description>
+To begin, open the Java Perspective in the Eclipse workbench.  
+You may do this by clicking window->open perspective->Java in the toolbar at the top of the 
+workbench.  When you have done this, press the "click when done" button below.
+		</description>
+</item>
+
+	<item
+		href="/org.eclipse.jdt.doc.user/tasks/tasks-12.htm"
+		title="Create a java project"
+		skip="true">
+		<action
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ui.examples.cheatsheets.pattern.actions.OpenJavaProjectWizard"/>
+		<description>
+The first thing you will need is a Java Project.
+If you already have a java project in your workspace that you would like to use, you may skip this step by pressing the "skip" button.  If not, you may press the "click to perform" button to spawn the New Java Project wizard.
+		</description>
+</item>
+
+	<item
+		href="/org.eclipse.jdt.doc.user/gettingStarted/qs-9.htm" 
+		title="Create your HelloWorld class">
+		<action
+			confirm="true"
+			pluginId="org.eclipse.ua.tests"
+			class="org.eclipse.ui.examples.cheatsheets.pattern.actions.OpenJavaClassWizardWithMain"/>
+		<description>
+You should now have a Java Project in your workspace.
+The next step in building your hello world application is to create your HelloWorld class.  You may do this by either pressing the "click to perform" button below to launch the New Java Class wizard, or you may use the Eclipse tools to do it, by using the file->new->Class action.  
+When you use the wizard, make sure that you specify that you would like to have a "main" method added. Name your class "HelloWorld".  If you use the button below it will be pre-filled for you. 
+If you do not use the "click to perform" button below, press the "click when done" button to advance to the next step in building your hello world app.
+		</description>
+</item>
+
+	<item
+		href="/org.eclipse.jdt.doc.user/tasks/tasks-54.htm"
+		title="Add a System.out.println line in your main method">
+		<description>
+Now that you have your HelloWorld class,
+In the "public static void main" method, add the following statement:  System.out.println("Hello world!"); and save your changes.  Press the "click when done" button below when finished.
+		</description>
+</item>
+
+	<item
+		href="/org.eclipse.jdt.doc.user/gettingStarted/qs-12.htm"
+		title="Test your application">
+		<description>
+The final moment has arrived!  You are ready to test your HelloWorld class.
+Select your class in the package explorer (the java tree view on the left of the workbench window in the Java Perspective.).  When your HelloWorld class is selected, press the down arrow beside the running man icon in the toolbar and select run as->application.  Hello world! should be printed in your "Console" view.  
+Congratulations!  You have built your hello world application and it worked!
+		</description>
+</item>
+
+</cheatsheet>

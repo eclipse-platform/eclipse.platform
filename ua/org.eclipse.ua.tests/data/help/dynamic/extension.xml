@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<root>
+
+	<description>
+		This file tests the extension (anchor contribution and element replace)
+		capability.
+	</description>
+	
+	<element id="element.1">
+		This element is used to test contributions and replaces from within
+		the same file.
+	</element>
+	
+	<!--
+	     Valid cases
+	-->
+
+	<!-- anchor with no contributions; should just remove -->
+	<anchor id="anchor.nocontributions"/>
+
+	<!-- anchor with one contribution -->
+	<anchor id="anchor.1"/>
+
+	<!-- anchor with two contributions; one in legacy format (slash vs '#') -->
+	<anchor id="anchor.2"/>
+
+	<!-- anchor with a contribution with dynamic content -->
+	<anchor id="anchor.3"/>
+
+	<!-- anchor with a contribution from this same file -->
+	<anchor id="anchor.4"/>
+
+	<!-- anchor with xhtml body element contribution -->
+	<anchor id="anchor.xhtml"/>
+	
+	<!-- element with no id; shouldn't be modified -->
+	<element/>
+
+	<!-- element with id but no replaces; shouldn't be modified -->
+	<element id="replace.1"/>
+
+	<!-- element to be replaced by another -->
+	<element id="replace.2"/>
+
+	<!-- element to be replaced by another with dynamic content -->
+	<element id="replace.3"/>
+
+	<!-- element to be replaced by another from the same file -->
+	<element id="replace.4"/>
+	
+	<!--
+	     Invalid cases
+	-->
+
+	<!-- anchor with valid id but invalid contributions -->
+	<anchor id="anchor.invalidcontribution"/>
+
+	<!-- anchor with missing id; should just remove -->
+	<anchor/>
+
+	<!-- anchor with missing id, wrong param; should just remove -->
+	<anchor wrongparam="value"/>
+
+	<!-- anchor with children elements; should just remove -->
+	<anchor>
+		<foo value="foo"/>
+		<bar value="bar"/>
+	</anchor>
+
+	<!-- element with invalid replaces -->
+	<element id="replace.invalid"/>
+
+</root>

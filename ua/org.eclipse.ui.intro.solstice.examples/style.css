@@ -1,0 +1,14 @@
+.left-right {
+}
+
+.left-right .left, .left-right .right {
+	display: inline-block;
+	max-width: 350px;
+	padding: 10px;
+}
+
+
+/* Hide RSS subscribe link */
+.rss-feed-link {
+	display: none;
+}

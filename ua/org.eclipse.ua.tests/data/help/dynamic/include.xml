@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<root>
+
+	<description>
+		This file tests the include capability. Below are some includes that
+		pull in content from other files.
+	</description>
+	
+	<element id="element.1">
+		This element is used to test includes within the same file.
+	</element>
+	
+	<!--
+	     Valid cases
+	-->
+	
+	<!-- valid include -->
+	<include path="/org.eclipse.ua.tests/data/help/dynamic/include/doc1.xml#paragraph.1"/>
+
+	<!-- include from same document -->
+	<include path="/org.eclipse.ua.tests/data/help/dynamic/include.xml#element.1"/>
+
+	<!-- included element has yet more dynamic content -->
+	<include path="/org.eclipse.ua.tests/data/help/dynamic/shared/doc1.xml#doc.1"/>
+
+	<!-- legacy format: no slash at beginning, slash in place of # -->
+	<include path="org.eclipse.ua.tests/data/help/dynamic/include/doc1.xml/paragraph.1"/>
+
+	<!-- extra unknown parameters -->
+	<include unknownparam="unknownvalue" path="/org.eclipse.ua.tests/data/help/dynamic/include/doc1.xml#paragraph.1" unknownparam2="unknownvalue2"/>
+
+	<!-- extra unknown children -->
+	<include path="/org.eclipse.ua.tests/data/help/dynamic/include/doc1.xml#paragraph.1">
+	   <unknownElement>This element should be ignored</unknownElement>
+	</include>
+
+	<!--
+	     Invalid cases
+	-->
+
+	<!-- missing path -->
+	<include/>
+
+	<!-- missing path; unknown parameter -->
+	<include unknownparam="unknownvalue"/>
+	
+	<!-- invalid bundle id -->
+	<include path="/org.eclipse.ua.tests.invalid/path/file.xml#id"/>
+
+	<!-- invalid path -->
+	<include path="/org.eclipse.ua.tests/invalid/doc1.xml#paragraph.1"/>
+
+	<!-- invalid file -->
+	<include path="/org.eclipse.ua.tests/data/help/dynamic/include/invalid.xml#paragraph.1"/>
+
+	<!-- invalid id -->
+	<include path="/org.eclipse.ua.tests/data/help/dynamic/include/doc1.xml#invalid"/>
+	
+</root>

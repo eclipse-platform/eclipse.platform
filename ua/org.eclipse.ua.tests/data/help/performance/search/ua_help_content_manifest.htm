@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGIN__ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Completing the plug-in manifest</title>
+</head>
+<body>
+
+<h2>Completing the plug-in manifest</h2>
+
+<P >
+We started this example by creating our plug-in and document files. Next we created
+toc files to describe the organization of our content.
+The remaining piece of work is to pull everything together into a master toc and
+update our <b> plugin.xml</b> to actually contribute the master toc.&nbsp; </P>
+
+<P >
+ We start by creating a <b>toc.xml</b> to contribute the three tocs we created
+ initially.&nbsp; Instead of providing an <b>href</b> for each topic, we use the
+ <b>link</b> attribute to refer to our existing toc files. </P>
+
+<pre>&lt;toc label=&quot;Online Help Sample&quot; topic=&quot;html/book.html&quot;&gt;
+	&lt;topic label=&quot;Concepts&quot;&gt;
+		&lt;link toc=&quot;toc_Concepts.xml&quot; /&gt;
+	&lt;/topic&gt;
+	&lt;topic label=&quot;Tasks&quot;&gt;
+		&lt;link toc=&quot;toc_Tasks.xml&quot; /&gt;
+	&lt;/topic&gt;
+	&lt;topic label=&quot;Reference&quot;&gt;
+		&lt;link toc=&quot;toc_Ref.xml&quot; /&gt;
+	&lt;/topic&gt;
+&lt;/toc&gt;</pre>
+
+<P >
+ Then we update the <b>plugin.xml</b> to contribute our master toc: </P>
+<pre>
+   &lt;extension point=&quot;org.eclipse.help.toc&quot;&gt;
+      &lt;toc file=&quot;toc.xml&quot; <b>primary</b>=&quot;true&quot; /&gt;
+   &lt;/extension&gt;</pre>
+<P >Note the use of the <b>primary</b> attribute.&nbsp; Setting this attribute
+to true indicates that the toc should always appear in the navigation, even if
+it is not referenced by any other toc.&nbsp; This way, our &quot;master&quot;
+toc is always guaranteed to show up in the topics list.&nbsp; It appears at the
+top level list of books since no other toc references it.&nbsp;<I><BR>
+Note</I>: 
+If more files were associated with this toc but not present in the navigation, but just linked from other topics, then to have those topics available to the search engine we would have to use the <B>extradir</B> attribute in the toc.</P>
+<P >Finally, we contribute our individual toc files. </P>
+<pre>   &lt;extension point=&quot;org.eclipse.help.toc&quot;&gt;
+       &lt;toc file=&quot;toc_Concepts.xml&quot; /&gt;
+       &lt;toc file=&quot;toc_Tasks.xml&quot; /&gt;
+       &lt;toc file=&quot;toc_Reference.xml&quot; /&gt;
+   &lt;/extension&gt;</pre>
+<P >These toc files will not appear in the top level list of books because we
+did not set the <b>primary</b> attribute.&nbsp; Toc files that are not
+designated as primary will only appear in the documentation web if they are
+referred to from some toc that is a primary toc or is linked in by a primary
+toc. </P>
+
+<P >That's it. If you copy your plug-in directory to the platform's <b> plugins</b> directory, start the platform, and choose
+<b> Help-&gt;Help Contents</b>, you should see your example appear in the list
+of books. If you click on the "Online Help Sample", you'll see your toc structure:</P>
+
+<p><img src="images/help_contents.png" alt="On-line help browser with sample book structure" border="0" ></p>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+a#updates img { background-image : url(graphics/obj48/updates_obj.gif); }
+a#updates:hover img { background-image : url(graphics/obj48/updateshov_obj.gif); }
+
+a#eclipse img { background-image : url(graphics/obj48/community_obj.gif); }
+a#eclipse:hover img { background-image : url(graphics/obj48/communityhov_obj.gif); }
+
+a#migration img { background-image : url(graphics/obj48/migrate_obj.gif); }
+a#migration:hover img { background-image : url(graphics/obj48/migratehov_obj.gif); }
+
+div#rss-news {
+	position: relative;
+	top: -25px;
+	margin-bottom: -25px;
+	margin-left: 52px;
+}
+
+#rss-news .div-label {
+	font-size: 9pt;
+}
+
+#rss-news .provided-content {
+}
+
+#rss-news .status-text {
+	font-weight: normal;
+	color: #909090;
+	font-size: 8pt;
+}
+
+ul#eclipse-news {
+	list-style-type: none;
+	list-style-image: url("graphics/arrow.gif");
+	margin-left: 10px;
+	margin-top: 5px;
+}
+
+ul#eclipse-news li {
+}
+
+ul#eclipse-news a {
+	font-weight: normal;
+}
+
+ul#eclipse-news a:hover {
+	text-decoration: underline;
+}

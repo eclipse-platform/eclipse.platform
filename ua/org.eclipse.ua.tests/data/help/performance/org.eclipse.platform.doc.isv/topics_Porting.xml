@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<!-- ============================================================================= -->
+<!-- Define topics for the porting guide index                                     -->
+<!-- ============================================================================= -->
+<toc label="Migration">
+	<topic label="Migrating to Eclipse 3.2 from 3.1">
+		<topic label="Introduction"
+		       href="porting/eclipse_3_2_porting_guide.html"/>
+		<topic label="FAQ" href="porting/3.2/faq.html" />
+		<topic label="Incompatibilities" href="porting/3.2/incompatibilities.html" />
+		<topic label="Adopting 3.2 Mechanisms and API" href="porting/3.2/recommended.html" />
+	</topic>
+	<topic label="Migrating to Eclipse 3.1 from 3.0">
+		<topic label="Introduction"
+		       href="porting/eclipse_3_1_porting_guide.html"/>
+		<topic label="FAQ" href="porting/3.1/faq.html" />
+		<topic label="Incompatibilities" href="porting/3.1/incompatibilities.html" />
+		<topic label="Adopting 3.1 Mechanisms and API" href="porting/3.1/recommended.html" />
+	</topic>
+	<topic label="Migrating to Eclipse 3.0 from 2.1">
+		<topic label="Introduction"
+		       href="porting/eclipse_3_0_porting_guide.html"/>
+		<topic label="FAQ" href="porting/3.0/faq.html" />
+		<topic label="Incompatibilities" href="porting/3.0/incompatibilities.html" />
+		<topic label="Adopting 3.0 Mechanisms and API" href="porting/3.0/recommended.html" />
+	</topic>
+</toc>

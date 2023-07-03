@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.help" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.help" id="contentProducer" name="Help Content Producer"/>
+      </appinfo>
+      <documentation>
+         For providing dynamic, generated at run time, help content. Content producers are registered per plug-in and only work within the plug-in scope. In order to reuse a content producer in another plug-in, &lt;code&gt;binding&lt;/code&gt; element should be used. This strategy prevents plug-ins from highjacking content producing for all the plug-ins. By binding to a content producer, a plug-in gives it permission to control content producing for all the documents in the granting plug-in.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <choice>
+            <element ref="contentProducer"/>
+            <element ref="binding"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="contentProducer">
+      <annotation>
+         <documentation>
+            A binding to a content producer class which will be used to produce content for all help documents in this plugin. A plugin may not contain more than one binding or contentProducer and may not contain both.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="0" maxOccurs="1">
+            <element ref="producer"/>
+         </sequence>
+         <attribute name="producer" type="string">
+            <annotation>
+               <documentation>
+                  the implementation class for the help content producer.  This class must implement the &lt;samp&gt;org.eclipse.help.IHelpContentProducer&lt;/samp&gt; interface.  This attribute may be omitted, and the nested &lt;samp&gt;producer&lt;/samp&gt; element may be provided instead.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.IHelpContentProducer"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="producer">
+      <complexType>
+         <sequence>
+            <element ref="parameter" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the implementation class for the help content producer.  This class must implement the &lt;samp&gt;org.eclipse.help.IHelpContentProducer&lt;/samp&gt; interface.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.IHelpContentProducer"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="parameter">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  name of a parameter passed to the implementation class
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  value of a parameter passed to the implementation class
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="binding">
+      <annotation>
+         <documentation>
+            A binding to a content producer defined in another plugin which will be used to produce content for all help documents in this plugin. A plugin may not contain more than one binding or contentProducer and may not contain both.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="producerId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique name of a content producer defined elsewhere using &lt;samp&gt;contentProducer&lt;/samp&gt; element. Binding allows a plug-in to reuse a content producer registered in another plug-in instead of defining its own.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following is a sample usage of the content producer extension point:
+
+&lt;p&gt;
+&lt;pre&gt;
+  &lt;extension point=&quot;org.eclipse.help.contentProducer&quot;
+   id=&quot;org.eclipse.myPlugin.myDynamicHelpProducer&quot;
+   name=&quot;My Dynamic Help Content&quot;&gt;
+   &lt;contentProducer producer=&quot;org.eclipse.myPlugin.myPackage.Myproducer&quot; /&gt;
+  &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         The supplied content producer class must implement the &lt;samp&gt;org.eclipse.help.IHelpContentProducer&lt;/samp&gt; interface.
+The producer is responsible for providing content for dynamic help resources from a plug-in.  The method of content producer is called by help for every help resource obtained from the plug-in.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         None.  If a documentation plug-in does not provide help content producer or a call to it results in null, help system searches doc.zip and file system in the plug-in install location for a static document and displays its content.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2000, 2006 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

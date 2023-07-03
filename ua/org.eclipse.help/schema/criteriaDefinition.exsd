@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.help" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.help" id="criteriaDefinition" name="Criteria Definition"/>
+      </appInfo>
+      <documentation>
+         For registering a criteria definition for contributed help content.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="criteriaDefinition"/>
+            <element ref="criteriaDefinitionProvider"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="criteriaDefinition">
+      <annotation>
+         <documentation>
+            A criteria contribution made by supplying an XML file
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="file" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the criteria definition file which contains the list of  criteria id and name of the help content.
+&lt;p&gt;
+&lt;i&gt;&lt;b&gt;Configuration Markup for criteria definition file:&lt;/b&gt;&lt;/i&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT criteriaDefinition (criterion)* &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT criterion (criterion-value)* &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST criterion id CDATA #REQUIRED &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST criterion name CDATA #REQUIRED &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ELEMENT criterion-value EMPTY &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST criterion-value id CDATA #REQUIRED &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!ATTLIST criterion-value name CDATA #REQUIRED &gt;&lt;/tt&gt;&lt;br&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;The criteriaDefinition element&lt;/b&gt;
+&lt;p&gt;The criteriaDefinition element represents an instance of criteria definition. CriteriaDefinition consists of criterion, each of them corresponds to a particular id and its name.
+&lt;p&gt;&lt;b&gt;The criterion element&lt;/b&gt;
+&lt;p&gt;The criterion element represents a criterion. Each criterion may contain several criterion-value which associated with the criterion. 
+&lt;p&gt;&lt;b&gt;The criterion-value element&lt;/b&gt;
+&lt;p&gt;The criterion-value element provides value to the criterion category. It also has id and name associated with it.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="criteriaDefinitionProvider">
+      <annotation>
+         <documentation>
+            (&lt;b&gt;since 3.5&lt;/b&gt;) an criteria definition contribution made by plugging in code
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the implementation class for the criteria definition provider.  This class must implement the &lt;samp&gt;org.eclipse.help.AbstractCriteriaDefinitionProvider&lt;/samp&gt; interface.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.help.AbstractCriteriaDefinitionProvider:"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.5
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of using the criteria definition extension point.
+
+&lt;p&gt;(in file &lt;tt&gt;plugin.xml&lt;/tt&gt;) 
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.help.criteriaDefinition&quot;&gt;
+     &lt;criteriaDefinition file=&quot;criteria.xml&quot;/&gt;
+ &lt;/extension&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;(in file &lt;tt&gt;criteria.xml&lt;/tt&gt;)
+&lt;blockquote&gt;&lt;tt&gt;&amp;lt;criteriaDefinition&gt;&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;criterion id=&quot;version&quot; name =&quot;Version&quot;&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;criterion-value id=&quot;1.0&quot; name =&quot;1.0&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;criterion-value id=&quot;2.0&quot; name =&quot;2.0&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;/criterion&gt;&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;criterion id=&quot;product&quot; name =&quot;Product&quot;&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;criterion-value id=&quot;DB2&quot; name =&quot;DB2&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+        &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;criterion-value id=&quot;WAS&quot; name =&quot;WAS&quot;/&gt;&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;lt;/criterion&gt;&lt;/tt&gt;&lt;br&gt;        
+&lt;tt&gt;&amp;lt;/criteriaDefinition&gt;&lt;/tt&gt;&lt;br&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;b&gt;&lt;em&gt;Internationalization&lt;/em&gt;&lt;/b&gt; The criteria definition XML files can be translated and the resulting copy should be placed in nl/&amp;lt;language&gt;/&amp;lt;country&gt; or nl/&amp;lt;language&gt; directory.  The &amp;lt;language&gt; and &amp;lt;country&gt; stand for two letter language and country codes as used in locale codes.  For example, Traditional Chinese translations should be placed in the nl/zh/TW directory.  The nl/&amp;lt;language&gt;/&amp;lt;country&gt; directory has a higher priority than nl/&amp;lt;language&gt;.  Only if no file is found in the nl/&amp;lt;language&gt;/&amp;lt;country&gt;, the file residing in nl/&amp;lt;language&gt; will be used. The root directory of a plugin will be searched last.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         An implementation of &lt;samp&gt;org.eclipse.help.AbstractCriteriaDefinitionProvider&lt;/samp&gt; must be supplied if a &lt;samp&gt;criteriaDefinitionProvider&lt;/samp&gt; is used.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The default implementation of the help system UI supplied with the Eclipse platform fully supports the &lt;samp&gt;criteriaDefinition&lt;/samp&gt; extension point.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2010 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which accompanies 
+this distribution, and is available at &lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

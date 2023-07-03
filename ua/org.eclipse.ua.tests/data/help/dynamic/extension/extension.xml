@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<contentExtension>
+
+   <!-- valid contributions -->
+   
+   <contribution
+         content="data/help/dynamic/extension/content.xml#content"
+         path="/org.eclipse.ua.tests/data/help/dynamic/extension.xml#anchor.1">
+   </contribution>
+   
+   <contribution
+         content="data/help/dynamic/extension/content.xml#content2"
+         path="/org.eclipse.ua.tests/data/help/dynamic/extension.xml#anchor.2">
+   </contribution>
+   
+   <contribution
+         content="data/help/dynamic/extension/content.xml#content3"
+         path="org.eclipse.ua.tests/data/help/dynamic/extension.xml/anchor.2">
+   </contribution>
+
+   <contribution
+         content="data/help/dynamic/shared/doc1.xml#doc.1"
+         path="org.eclipse.ua.tests/data/help/dynamic/extension.xml/anchor.3">
+   </contribution>
+
+   <contribution
+         content="data/help/dynamic/extension.xml/element.1"
+         path="org.eclipse.ua.tests/data/help/dynamic/extension.xml/anchor.4">
+   </contribution>
+   
+   <contribution
+         content="data/help/dynamic/extension/doc.xhtml"
+         path="/org.eclipse.ua.tests/data/help/dynamic/extension.xml#anchor.xhtml">
+   </contribution>
+
+   <replacement
+         content="data/help/dynamic/extension/content.xml#content"
+         path="/org.eclipse.ua.tests/data/help/dynamic/extension.xml#replace.2">
+   </replacement>
+
+   <replacement
+         content="data/help/dynamic/shared/doc1.xml#doc.1"
+         path="/org.eclipse.ua.tests/data/help/dynamic/extension.xml#replace.3">
+   </replacement>
+
+   <replacement
+         content="data/help/dynamic/extension.xml#element.1"
+         path="/org.eclipse.ua.tests/data/help/dynamic/extension.xml#replace.4">
+   </replacement>
+   
+   <!-- invalid contributions -->
+   
+   <contribution
+         content="data/help/dynamic/extension/nonExistentFile.xml"
+         path="/org.eclipse.ua.tests/data/help/dynamic/extension.xml#anchor.invalidcontribution">
+   </contribution>
+
+   <contribution
+         content="data/help/dynamic/extension/content.xml#nonExistentId"
+         path="/org.eclipse.ua.tests/data/help/dynamic/extension.xml#anchor.invalidcontribution">
+   </contribution>
+
+   <replacement
+         content="data/help/dynamic/extension/nonExistentFile.xml"
+         path="/org.eclipse.ua.tests/data/help/dynamic/extension.xml#replace.invalid">
+   </replacement>
+
+   <replacement
+         content="data/help/dynamic/extension/content.xml#nonExistentId"
+         path="/org.eclipse.ua.tests/data/help/dynamic/extension.xml#replace.invalid">
+   </replacement>
+   
+</contentExtension>

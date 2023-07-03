@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Test cheatsheet without cheatsheet element">
+
+	<intro>
+		<description>
+Simple test
+		</description>
+</intro>
+
+	<item
+		title="Just a simple test">
+		<description>
+Did it work? Of course not, it is suppose to cause a parsing error.
+		</description>
+	<conditional-subitem>
+		<subitem
+			when="Factory"
+			label="Customize the Factory Pattern"
+			skip="true">
+			<action
+				confirm="true"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.FactoryCustomizeAction"/>
+		</subitem>
+		<subitem
+			when="Singleton"
+			label="Customize the Singleton Pattern"
+			skip="false">
+			<action
+				confirm="true"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.SingletonCustomizeAction"/>
+		</subitem>
+		<subitem
+			when="Visitor"
+			label="Customize the Visitor Pattern"
+			skip="true">
+			<action
+				confirm="false"
+				pluginId="org.eclipse.ua.tests"
+				class="org.eclipse.ui.examples.cheatsheets.pattern.actions.VisitorCustomizeAction"/>
+		</subitem>
+	</conditional-subitem>
+</item>
+
+</cheatsheet>

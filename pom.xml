@@ -65,6 +65,7 @@
     <module>team</module>
     <module>resources</module>
     <module>debug</module>
+    <module>ua</module>
   </modules>
   <build>
     <pluginManagement>

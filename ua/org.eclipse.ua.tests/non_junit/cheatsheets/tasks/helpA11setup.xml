@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2007 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Setup for Dynamic content tests">
+   <intro>
+      <description>
+         This task installs org.eclipse.ua.tests .
+      </description>
+   </intro>
+   <item title="Install org.eclipse.ua.tests." dialog="true" skip="false">
+      <description>
+         Skip this step if org.eclipse.ua.tests is installed.
+      </description>
+      <subitem label="Go to the CVS Repository and check out the projects &quot;org.eclipse.ua.tests&quot; and &quot;org.eclipse.test.performance&quot;." skip="true">
+      </subitem>
+      <subitem label="Select File -&gt; Export..." skip="true">
+      </subitem>
+      <subitem label="In the Export Wizard, select &apos;Plug-in Development -&gt; Deployable Plug-ins and Fragments&apos; and click Next." skip="true">
+      </subitem>
+      <subitem label="Check the boxes next to &quot;org.eclipse.ua.tests&quot; and &quot;org.eclipse.test.performance&quot;." skip="true">
+      </subitem>
+      <subitem label="In the Destination tab, specify a folder with a copy of Eclipse in it. Click Finish." skip="true">
+      </subitem>
+      <subitem label="Restart the Eclipse workbench." skip="true">
+      </subitem>
+      <subitem label="To ensure a successful installation, go to Help -&gt; About Eclipse SDK and click on &quot;Plug-in Details&quot;. In the list that comes up, you should be able to find the &quot;org.eclipse.ua.tests&quot; plug-in." skip="true">
+      </subitem>
+   </item>
+</cheatsheet>

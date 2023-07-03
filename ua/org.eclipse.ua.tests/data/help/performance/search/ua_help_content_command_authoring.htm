@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Authoring a command link</title>
+</head>
+<body>
+
+<h2>Authoring a command link</h2>
+
+<P>
+To include command links in your documentation, you must first declare the
+use of the supporting JavaScript code. The live help JavaScript is located in the <b>org.eclipse.help</b>
+plug-in.&nbsp; You refer to it using the help system's <a href="ua_help_content_files.htm#help_plugin_files_xref">cross
+plug-in referencing</a> technique. This script reference should be placed in the <b>HEAD</b> section of your HTML:
+</P>
+
+<pre >&lt;script type=&quot;text/javascript&quot; src=&quot;PLUGINS_ROOT/org.eclipse.help/livehelp.js&quot;&gt;
+&lt;/script&gt;</pre>
+
+<P>
+Now in the body of your documentation you may invoke the <b>executeCommand</b> function.
+Here is an example:
+</P>
+
+<pre>&lt;a href='javascript:executeCommand("org.eclipse.ui.help.aboutAction")'&gt;
+Open the About dialog&lt;/a&gt;</pre>
+
+<P>
+The parameter for the <b>executeCommand</b> function is a serialized
+<a href="../reference/api/org/eclipse/core/commands/ParameterizedCommand.html">
+<b>ParameterizedCommand</b></a>.
+See the
+<a href="../reference/api/org/eclipse/core/commands/ParameterizedCommand.html#serialize()">
+<b>ParameterizedCommand.serialize()</b></a> method for full details on this format.
+</P>
+
+<P>
+The example above shows the bare minimum required to embed a command in an HTML link.
+The Eclipse documentation supplements this with two extra pieces of information.
+First a <tt>class</tt> attribute is specified to allow for tuning the look of the link
+via CSS.  Second, an image tag is included before the link text.  The image serves
+to distinguish command links from ordinary links to other HTML pages.  Supplementing
+our initial example with these two extra features will look like this:
+</P>
+
+<pre>&lt;a class="command-link" href='javascript:executeCommand("org.eclipse.ui.help.aboutAction")'&gt;
+&lt;img src="PLUGINS_ROOT/org.eclipse.help/command_link.svg"&gt;
+Open the About dialog&lt;/a&gt;</pre>
+
+<P>
+In the examples above, the About dialog command does not require any parameters, so the
+serialization is merely its command id: <tt>org.eclipse.ui.help.aboutAction</tt>.
+Below is another example showing a command with a parameter.  Note the command id is
+followed by the parameter id and value in parentheses:
+</P>
+
+<pre>&lt;a href='javascript:executeCommand(
+	"org.eclipse.ui.window.preferences(preferencePageId=org.eclipse.ui.preferencePages.Views)")'&gt;
+	Show a preference page&lt;/a&gt;</pre>
+
+<P>
+Another example demonstrates that multiple parameters are possible.  They are comma
+separated and the order of the parameters is not important.
+</P>
+
+<pre>&lt;a href='javascript:executeCommand(
+	"org.eclipse.ui.dialogs.openMessageDialog(imageType=3,buttonLabel2=Maybe,title=Opinion Poll,message=Do you like command links?,buttonLabel0=Yes,defaultIndex=0,buttonLabel1=No)")'&gt;
+	Open a message dialog&lt;/a&gt;</pre>
+
+</body>
+</html>

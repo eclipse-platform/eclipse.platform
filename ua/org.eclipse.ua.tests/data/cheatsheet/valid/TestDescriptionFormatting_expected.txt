@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cheatsheet
+      title="Testing Infopop and Help Links">
+   <item
+         title="Introduction"
+         description="This cheat sheet will test infopop and help link.
+Let's get started!"
+         Href="/org.eclipse.platform.doc.user/reference/ref-cheatsheets.htm"
+         contextId="null">
+      <nullAction/>
+      <nullList/>
+      <nullPerformWhen/>
+      <nullList/>
+   </item>
+   <list>
+      <item
+            title="Item with simple text"
+            description="Some simple text to test the decription formating."
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Item with a line break"
+            description="<form><p>Line one
+<br/>Line two with a special &lt; char in the middle.
+</p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Item with all the special charaters"
+            description="<form><p>&lt; - less than
+<br/><b>Special characters</b><br/>less than:   &lt;
+<br/>greater than: &gt;
+<br/>ampersand:   &amp;
+<br/>apostrophe:  &apos;
+<br/>quote:       &quot;
+<br/></p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Item with one less than"
+            description="<form><p><b>&lt;</b></p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Item with one greater than"
+            description=">"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Item with one bold less than"
+            description="<form><p><b>&lt;</b></p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Item with one bold greater than"
+            description="<form><p><b>&gt;</b></p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Item with one less than before a break"
+            description="<form><p>&lt;<br/></p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Item with one less than after a break"
+            description="<form><p><br/>&lt;</p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Item with one less than between breaks"
+            description="<form><p><br/>&lt;<br/></p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Item with one greater than before a break"
+            description="<form><p>&gt;<br/></p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Item with one greater than after a break"
+            description="<form><p><br/>&gt;</p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+      <item
+            title="Item with one greater than between breaks"
+            description="<form><p><br/>&gt;<br/></p></form>"
+            Href="null"
+            contextId="null">
+         <nullAction/>
+         <list/>
+         <nullPerformWhen/>
+         <nullList/>
+      </item>
+   </list>
+</cheatsheet>

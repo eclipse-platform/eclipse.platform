@@ -1,0 +1,642 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<meta name=ProgId content=FrontPage.Editor.Document>
+<meta name=Generator content="Microsoft FrontPage 5.0">
+<meta name=Originator content="Microsoft Word 10">
+<title>Testing Scenarios for Help</title>
+<meta name=Author content=eclipse.org>
+</head>
+
+<body lang=EN-US>
+
+<div >
+
+<h1 >Testing Scenarios for User Assistance </h1>
+
+<p >Last updated 5/18/2009</p>
+
+<h2 >About this Test Suite</h2>
+
+<p >The test suite is intended to test areas
+which the JUnit tests do not cover. Some of the tests have been converted to
+cheat sheets, these are all included in the composite cheat sheet titled &quot;User
+Assistance Test Suite&quot; which is in the file cheatsheets/usTests.xml. The
+remaining tests are described in detail.</p>
+
+<h2>Welcome</h2>
+
+<h3>Setup</h3>
+
+<p >Please ensure that you run this test plan with the <code><span
+>org.eclipse.ui.intro/debug=true</span></code> debug
+option set. This is the only intro debug option that you need turned on, and if
+there are any errors or warnings in the .log then this is a bug. Please open a
+defect and include the log.</p>
+
+<h3>Scenario A: Basic behavior </h3>
+
+<p  >Launch
+a fresh workbench. Make sure that Intro is automatically opened and is in full
+mode.</p>
+
+<p  >
+Test
+that root page come up/looks ok. Icons should be there. 
+Verify that the root page icons all have labels.</p>
+
+<p  >Test
+clicking on each of the links in the root page. Verify that on each page visited the
+size of the text can be increased or decreased by clicking on the two buttons on the toolbar that
+looks like a letter 'A' with a small arrow next to it.</p>
+
+<p  >In
+Overview page, test that each of the links brings you to a corresponding topic
+from the Help System documentation.</p>
+
+<p  >In
+the Tutorials page, make sure that clicking on each of the links brings you to
+the appropriate cheat sheet.</p>
+
+<p  >In
+the Samples page, click on any of the links, you should get a pop-up asking you
+to download the samples. Click Yes. Check that all samples can then be imported
+automatically into the workbench and that they can be run. </p>
+
+<p  >In
+the <span >What's</span> New page, the New and Noteworthy links and
+the Migration link should launch the Help System and take you to the
+appropriate page. The New Updates link should launch an Install/Update dialog
+to update features. The latest news from eclipse.org should also be available
+as links.</p>
+
+<p  >Click
+on the Eclipse Community link, it should open the eclipse.org web site.</p>
+
+<p  >Click
+on the curved arrow icon to &#8220;Go to the workbench&#8221; and make sure
+that you get the launch bar at the bottom right trim of the workbench window.
+It should have a button for each welcome page. All should have tooltip, and
+clicking on each should open Intro in full mode and take you to the appropriate
+page. </p>
+
+<p  >Hover
+over the Return to Workbench and the Close icons in the launch bar to get the
+&quot;move&quot; cursor. Test drag and drop of Launch bar.</p>
+
+<h3>Scenario B: Remembering state and Standby Behavior </h3>
+
+<p  >Close
+the workbench with the Intro view opened in full mode. Test that re-launching a
+workbench opens Intro.</p>
+
+<p  >Close
+the workbench with the Intro view opened in standby mode on a <span
+>cheatSheet</span> (<span >ie</span>: go to Tutorials
+and click on any of the links). Test that re-launching a workbench opens Intro
+with the same <span >cheatSheet</span> opened in standby mode. </p>
+
+<p  >Close
+the workbench with the Intro view opened in standby mode on the SDK Welcome
+standby page (<span >ie</span>: double click on the Intro view to
+bring it to the Standby page). Test that re-launching a workbench opens Intro
+with the SDK Welcome standby page opened. </p>
+
+<p  >From
+a <span >cheatSheet</span> in standby mode, click on Return to
+Welcome and make sure it takes you back to the last page you were at. </p>
+
+<h3>Scenario C: Icons and Toolbar Icon behavior </h3>
+
+<p  >Go
+to Help -&gt; Welcome, note the icon for the menu item</p>
+
+<p  >Make
+sure the same icon is used for the Welcome view. </p>
+
+<p  >In
+the welcome view toolbar, make sure that the Home icon is enabled and that it
+has a tooltip when the view is in full mode. </p>
+
+<p  >Make
+sure that the left and right icons are initially disabled, and are subsequently
+enabled when you navigate to some of the pages. These icons should be disabled
+if there is no history to navigate to. </p>
+
+<p  >When
+the welcome view is in standby mode (e.g. when you open a cheat sheet, or
+double click on Welcome view) the home, back, and next icons are disabled. </p>
+
+<h3>Scenario D: Universal Intro</h3>
+
+<p  >
+Click the customize button at the top of the Welcome view.</p>
+
+<p  >Change
+the theme, verify that it works. Make sure that you view every page of every theme.</p>
+
+<p  >Add
+and remove some pages, make sure it updates accordingly (some pages may be empty)</p>
+
+<p  >In
+the Overview, Tutorials, etc tabs, move some items to the Available Extensions
+and confirm that they no longer show up</p>
+
+<p  >Move
+some items to different columns and confirm that the welcome pages react
+accordingly</p>
+
+<p  >Change
+the priority on some items by clicking the icons. Verify that different
+priorities appear differently in the welcome.</p>
+
+<h3>Scenario E: Platforms </h3>
+
+<p  style='mso-list:l0 level1 lfo8;tab-stops:.5in'>Ensure that Intro uses the HTML presentation when a browser
+is properly configured on the platform. If the links for all the pages (Overview,
+Tutorials, etc.) are at the top left corner of the page, you have HTML
+presentation. If they are centered at the bottom of the page, you have SWT.</p>
+
+<h2>Help</h2>
+
+<h3>Scenario A: Integration with the workbench</h3>
+
+<p >These tests exercise interactions with help system from
+workbench. </p>
+
+<p >&nbsp;</p>
+
+<p >NOTE this scenario is part of the UA test cheatsheet. The 
+steps used to create the cheat sheet can be found <a href="legacy_tests.htm">
+here</a>.</p>
+
+<h3>Scenario B: Navigation and browsing</h3>
+
+<p>NOTE this scenario is part of the UA test cheatsheet. The steps used to 
+create the cheat sheet can be found <a href="legacy_tests.htm">here</a>.</p>
+
+<p  style='mso-list:l0 level1 lfo19;tab-stops:.5in'>The
+main things to look for here are: </p>
+
+<p  >moving
+around the navigation views (Contents, Search Results, Links, Bookmarks)</p>
+
+<p  >opening
+a book, expanding/collapsing/selecting topic nodes</p>
+
+<p  >navigating
+links inside the help pages</p>
+
+<p  >using
+toolbar actions for displaying the main table of contents, for hiding or
+maximizing the navigation frame, for topic/navigation synchronization, printing</p>
+
+<p  ><span
+>performing</span> simple searching.</p>
+
+<p ><o:p>&nbsp;</o:p></p>
+
+<p >Note: this test is to be done on browser adapters that are
+based on Internet Explorer or <span >Mozilla</span>. For other
+browser, refer to the &quot;basic&quot; test.</p>
+
+<h3>Scenario C: Search</h3>
+
+<p>NOTE this scenario is part of the UA test cheatsheet. The steps used to 
+create the cheat sheet can be found <a href="legacy_tests.htm">here</a>.</p>
+
+<h3>Scenario D: Customization</h3>
+
+<h4>D1: Help preferences and Webapp extensibility </h4>
+
+<ol>
+  <li>
+
+<p  >Download the eclipse automated test framework and install into your Eclipse installation.</p>
+
+  </li>
+  <li>
+
+<p  >Download the eclipse automated tests and copy the plugin org.eclipse.ua.tests 
+ into your Eclipse dropins directory.</p>
+
+  </li>
+  <li>
+
+<p  >Launch Eclipse, with the parameter <code>-product org.eclipse.ua.tests.testproduct</code>, e.g. eclipse -product org.eclipse.ua.tests.testproduct</p>
+
+  </li>
+  <li>
+
+<p  >From the workbench menu: 
+Help-&gt;Help Contents. This should open the help browser. Verify existence of 
+banner frame above search toolbar and a footer at the bottom  of the screen.</p>
+
+  </li>
+  <li>
+
+<p  >The page displayed in the content 
+frame should be eclipse.org page.</p>
+
+  </li>
+  <li>
+
+<p  >There should be only two Eclipse 
+books displayed Plugin Developer Guide and JDT Development Guide, in that order. Other 
+Eclipse books should not appear.</p>
+
+  </li>
+  <li>
+
+<p  >Search for &quot;workbench&quot;. Verify 
+there are no hits from Workbench User Guide that is not present.</p>
+
+  </li>
+  <li>
+
+<p  >Verify that the Contents, 
+Index and Search tabs show at the bottom of navigation frame, the bookmarks view is not present.</p>
+
+  </li>
+  <li>
+
+<p  >Verify the browser title shows 
+product name.</p>
+
+  </li>
+  <li>
+
+<p  >Verify help UI background is 
+yellow, and green in the toolbars.</p>
+
+  </li>
+  <li>
+
+<p  >Verify fonts are bold sans-serif 
+in the toolbars, and italic sans-serif in the rest of the UI.</p>
+
+  </li>
+  <li>
+
+<p  >Type &quot;active help&quot; (no 
+quotes) in the search field in the browser, and search.</p>
+
+  </li>
+  <li>
+
+<p  >Choose a document titled &quot;Active 
+help&quot; from the search results.</p>
+
+  </li>
+  <li>
+
+<p  >Click once &quot;Open a cheatsheet&quot; link at the bottom of the document.</p>
+
+  </li>
+  <li>
+
+<p  >Verify a message informing that 
+active help is not enabled is displayed, and &quot;Hello World&quot; workbench dialog does 
+not appear.</p>
+
+  </li>
+    <li>
+
+<p  >If you don't have 
+org.eclipse.ua.tests installed stop here</p>
+
+  </li>
+  <li>
+
+<p  >Open Platform Plug-in Developer's Guide/Programmer's Guide in 
+the browser and verify that the breadcrumbs have a gray background</p>
+
+  </li>
+  <li>
+
+<p  >Open Platform Plug-in Developer's Guide/What's New in 
+the browser and verify that the breadcrumbs are in&nbsp; a black box</p>
+
+  </li>
+  <li>
+
+<p  >In the help view open 
+Open Platform Plug-in Developer's Guide/What's New. Verify that the breadcrumbs and every header is in a 
+black box</p>
+
+  </li>
+ 
+   <li>
+<p  >Verify that there is an additional tab with a welcome icon, a button over the content frame which is a welcome icon
+and a narrow frame beneath the content frame titled 'Extra frame inserted by extension point'</p>
+
+  </li>
+   <li>
+
+<p  >Click on the welcome button in the content toolbar, verify that the new view shows. Verify that it 
+allows topic titles to be searched and test it by entering the word 'platform' and hitting the Go button/</p>
+
+  </li>
+</ol>
+
+<p  >&nbsp;</p>
+
+<h4>D2: BIDI </h4>
+
+<p  style='mso-list:l0 level1 lfo25;tab-stops:.5in'>Launch
+eclipse passing &quot;-dir <span >rtl</span>&quot; option on the
+command line. Open Help.</p>
+
+<p  >Verify
+Help UI is rendered right to left.</p>
+<p>Verify that each page of Intro is usable.</p>
+
+<h3>Scenario E: Accessibility</h3>
+
+<p  style='mso-list:l0 level1 lfo26;tab-stops:.5in'>Accessibility
+support should test for how the help view </p>
+
+<p  >uses
+system colors and fonts,</p>
+
+<p  >uses
+browser's accessibility support,</p>
+
+<p  ><span
+>can</span> be navigated using only the keyboard.</p>
+
+<p  >Note:
+Platform considerations for the accessibility tests: </p>
+
+<p  >on
+Windows things should work as described;</p>
+
+<p  ><span
+>on</span> Linux using the <span >Mozilla</span> browser
+adapter keyboard navigation works slightly different: Ctrl-Tab and Ctrl-Shift-Tab
+are to be replaced by Ctrl-F6 and Ctrl-Shift-F6 (this is for frame navigation,
+see below).</p>
+
+<p  ><span
+>on</span> Solaris/AIX/HP, unless you use <span >Mozilla</span>,
+the default browser adapter for Netscape 4.x has very little accessibility
+support, both for fonts/colors and for keyboard navigation.</p>
+
+<p  >System
+colors and fonts: </p>
+
+<p  >Observe
+if the colors and fonts match your system settings. Window backgrounds for
+navigation views (Contents/Search Results/Links/Bookmarks) should match the
+system background color (usually white on Windows and Linux). The toolbars
+should match the button face colour (usually gray). The font should match the
+system icon font. Highlight colour should match the system highlight colour.</p>
+
+<p  >Change
+your system colors/font settings and see if the changes take effect.</p>
+
+<p  >On
+Windows, try the high contrast settings: Control Panel -&gt; Accessibility
+Options -&gt; Display - &gt; Use high contrast.</p>
+
+<p  >Browser
+accessibility support: </p>
+
+<p  >Windows:
+in IE - &gt; Tools-&gt; Internet Options -&gt; General -&gt;Accessibility play
+with the settings for Format. Help should behave accordingly.</p>
+
+<p  >DO
+NOT turn off style sheet support, help will not work well.</p>
+
+<p  >Navigation
+with keyboard only:</p>
+
+<p ><o:p>&nbsp;</o:p></p>
+
+<p >Here are the keyboard navigation rules for help (as
+supported by browsers): </p>
+
+<p ><o:p>&nbsp;</o:p></p>
+
+<p >- To move to the next topic in the left frame, press TAB or
+DOWN arrow. <br>
+- To move to the previous <span >topic ,</span> press SHIFT-TAB or
+UP arrow. <br>
+- To expand/collapse a tree node press RIGHT/LEFT arrow. <br>
+- Press Enter to select a topic and have its content displayed <br>
+- To scroll all the way up/down press HOME/END. <br>
+- To go to the next frame (there are quite a number of frames in the help
+system) press CTRL-TAB (On <span >Mozilla</span> 1.2 press
+Ctrl-F6). <br>
+- To move to previous frame, press SHIFT-CTRL-TAB (On <span >Mozilla</span>
+&gt;1.2 press Ctrl-Shift-F6).<br>
+- To print the current page or active frame, press CTRL-P.</p>
+
+<p ><o:p>&nbsp;</o:p></p>
+
+<p  >F1 <span
+>infopop</span> keyboard accessibility: </p>
+
+<p  >Press
+F1 (on GTK - Ctrl-F1, on carbon - Help key) in the workbench Package Explorer view
+. This should open the <span >Related Topics</span> section of the Help view
+with some text and related links. Tabbing once should focus on the first link
+(&quot;Views&quot;). Use tab and ctrl-Tab to move up and down the links.
+Click on a link and the help view should open to the selected topic.</p>
+
+<p  >On
+Windows, use Windows Narrator (or JAWS if <span >installed )</span>,
+repeat the same tests and see if description an links read out correctly.</p>
+
+<h3>Scenario F: Other / Miscellaneous</h3>
+
+<p >In addition to the eclipse workbench help scenario, there
+are two other help uses scenarios: <a
+href="http://dev.eclipse.org/viewcvs/index.cgi/%7Echeckout%7E/org.eclipse.platform.doc.isv/reference/misc/help_standalone.html">standalone
+help</a> and <a
+href="http://dev.eclipse.org/viewcvs/index.cgi/%7Echeckout%7E/org.eclipse.platform.doc.isv/reference/misc/help_infocenter.html">info-center</a>
+(server based) help.</p>
+
+<h4>F1: <span >Infocenter</span></h4>
+
+<p  style='mso-list:l0 level1 lfo27;tab-stops:.5in'>Assuming
+eclipse is installed as d:\eclipse, change directory to d:\eclipse and run the
+following command: java -cp plugins/org.eclipse.help.base_3*.jar <span
+>org.eclipse.help.standalone.Infocenter</span> -command start -data
+<span >infocenter</span> -port 8888</p>
+
+<p  >Open
+a browser and navigate to http://localhost:8888/help. You should see the help
+system, but without the links and bookmarks tabs.</p>
+
+<p  >Define
+a working set, search help. Close the browser and reopen. Verify working sets
+are remembered.</p>
+
+<p  >Perform
+ad-hoc testing or follow the steps for the regular workbench scenarios, with
+the exception of bookmarks, <span >infopop</span> and active help.</p>
+
+<p  >Shutdown
+the <span >infocenter</span> by running: java -cp
+plugins/org.eclipse.help.base_3.1.0.jar <span >org.eclipse.help.standalone.Infocenter</span>
+-command shutdown -data <span >infocenter</span></p>
+
+<h4>F2: Stand-alone help </h4>
+
+<p  style='mso-list:l0 level1 lfo28;tab-stops:.5in'>Assuming
+eclipse is installed as d:\eclipse, change directory to d:\eclipse and run the
+following command, replacing the '*' with the actual plugin version information if testing on Windows: java -cp plugins/org.eclipse.help.base_3*.jar <span
+>org.eclipse.help.standalone.Help</span> -command <span
+>displayHelp</span> -data standalone</p>
+
+<p  >The
+above command should automatically open the browser so you can browse the help.
+Perform ad-hoc testing or follow the steps in the regular workbench scenario,
+with the exception of <span >infopop</span> and active help.</p>
+
+<p  >Shutdown
+the standalone help by running: java -cp
+plugins/org.eclipse.help.base_3*.jar <span >org.eclipse.help.standalone.Help</span>
+-command shutdown -data standalone</p>
+
+<h4>F3: Basic help <span >ui</span> (any browser with <span
+>Javascript</span> disabled or browsers other than IE, <span
+>Mozilla</span> or Netscape6+) </h4>
+
+<p  style='mso-list:l0 level1 lfo29;tab-stops:.5in'>Disable
+<span >javascript</span> in the browser that is used by the default
+browser adapter (normally, that's IE on Windows, <span >Mozilla</span>
+on Linux and Netscape6+ on others)</p>
+
+<p  >Launch
+help and you should see a simple 3-frame layout with links instead of tabs and
+just the synchronize navigation button available. Books are always expanded and
+there is no state preservation across views (i.e. when switching between
+contents/links/search/bookmarks) the page always reloads)</p>
+
+<p  >Try
+ad-hoc testing or follow the regular workbench scenario steps above.</p>
+
+<p  >Instead
+of step 1, you can launch Netscape 4.7 and navigate to the help system URL. To
+get this URL, right click in the help browser and select
+&quot;Properties&quot;. Check what the URL is.</p>
+
+<h2>Cheat Sheet</h2>
+
+<h3>Scenario A: Search for Cheat sheet</h3>
+
+<p  style='mso-list:l0 level1 lfo30;tab-stops:.5in'>Help/Search</p>
+
+<p  >Search
+for &quot;Creating Rich Client&quot;</p>
+
+<p  >Expected
+result: The cheat sheet &quot;Creating a rich client application&quot; should
+show in the matches at or near the top of the list of search results<span
+>..</span></p>
+
+<p  >Expected
+Result: The icon should be overlapping blue and white rectangles.</p>
+
+<p  >Double
+click on this cheat sheet in the search results.</p>
+
+<p  >If
+this is not a clean workbench and you have run this test before restart all
+tasks using the view menu.</p>
+
+<p  >Expected
+result: The <span >cheatsheet</span> opens in the cheat sheet view
+and displays two panes, a tree and a section containing a description of the
+cheat sheet and a hyperlink.</p>
+
+<p  >Resize
+the cheat sheet view so that it is taller than it is wide.</p>
+
+<p  >Expected
+result: The tree appears above the description.</p>
+
+<p  >Resize
+the cheat sheet view so that it is wider than it is tall.</p>
+
+<p  >Expected
+result: The tree appears to the left of description.</p>
+
+<p  >Click
+on the link &quot;Go to Create a plug-in&quot;</p>
+
+<p  >Expected
+result:<span style='mso-spacerun:yes'>  </span>&quot;Create a plug-in is
+selected in the tree and its description is displayed, with a hyperlink to
+&quot;Start working on this task&quot;.</p>
+
+<p  >Start
+the cheat sheet by clicking on the hyperlink and complete the Introduction and
+the following step.</p>
+
+<h3>Scenario B: Self testing cheat sheet</h3>
+
+<p>NOTE this scenario is part of the UA test cheatsheet and is not described
+here.</p>
+
+<h3>Scenario C: Open simple cheat sheet</h3>
+
+<p  style='mso-list:l0 level1 lfo32;tab-stops:.5in'>Help
+-&gt; <span >CheatSheets</span></p>
+
+<p  >Expected
+Result: The Cheat Sheet Selection dialog is opened.</p>
+
+<p  >Select
+the radio button &quot;Select a cheat sheet from the list&quot;</p>
+
+<p  >Select
+the cheat <span >sheet<span style='mso-spacerun:yes'>  </span>&quot;</span>Java
+Development/Hello World Application&quot; and hit OK.</p>
+
+<p  >Expected
+result: The cheat sheet opens.</p>
+
+<p  >Complete
+the introduction and the first steps.</p>
+
+<p  >Expected
+result: Next step is &quot;Create a Java project&quot;</p>
+
+<p  >Click
+the &quot;Click to perform&quot; hyperlink.</p>
+
+<p  >Expected
+result: A dialog titled &quot;New Java Project&quot; opens with the <span
+>cheatsheet</span> docked to the right of the dialog.</p>
+
+<p  >Cancel
+out of this dialog.</p>
+
+<h3>Scenario D: History</h3>
+
+<p  style='mso-list:l0 level1 lfo33;tab-stops:.5in'>Click
+on the cheat sheet view menu. </p>
+
+<p  >Expected
+result: 5 cheat sheets are shown in the dropdown menu as well as &quot;Launch <span
+>Other</span> ...&quot; and &quot;Restart all tasks&quot;. One of
+the cheat sheets in the list is &quot;Building a Rich Client Application&quot;,
+select that menu option.</p>
+
+<p  >Expected
+result: Building a rich client Application is opened, the selected task is
+&quot;Create a plug-in&quot; and the introduction and first step have been
+completed.</p>
+
+<p ><o:p>&nbsp;</o:p></p>
+
+</div>
+
+</body>
+
+</html>

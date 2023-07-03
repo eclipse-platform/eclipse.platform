@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2006 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<!--
+   An extension to the dynamicXML test intro that contributes a group into an anchor.
+   The link should appear in the anchor examples page (see introContent.xml in same folder).
+-->
+<introContent>
+	<!--
+	   The group below will be placed where the anchor is in the anchor page in introContent.xml in
+	   the same folder.
+	-->
+    <extensionContent path="anchor/my.id.anchor">
+        <group>
+            <link label="This link is from extension content ext.xml and is to be contributed into a page with an anchor." url="http://org.eclipse.ui.intro/showPage?id=anchor"/>
+            <link label="The plug-in org.eclipse.help is installed" url="http://org.eclipse.ui.intro/showPage?id=anchor">
+                <enablement>
+                    <with variable="platform">
+                        <test property="org.eclipse.core.runtime.isBundleInstalled" args="org.eclipse.help"/>
+                    </with>
+                </enablement>
+            </link>
+            <link label="Your OS is invalid" url="http://org.eclipse.ui.intro/showPage?id=anchor">
+                <enablement>
+                    <systemTest property="osgi.os" value="invalid"/>
+                </enablement>
+            </link>
+        </group>
+    </extensionContent>
+</introContent>

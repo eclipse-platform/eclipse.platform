@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<!-- ============================================================================= -->
+<!-- Define topics for the references                                              -->
+<!-- ============================================================================= -->
+<toc label="Reference">
+
+	<topic label="API Reference" href="reference/api/overview-summary.html">
+      <topic label="org.eclipse.ant.core" href="reference/api/org/eclipse/ant/core/package-summary.html"/>
+      <topic label="org.eclipse.compare" href="reference/api/org/eclipse/compare/package-summary.html"/>
+      <topic label="org.eclipse.compare.contentmergeviewer" href="reference/api/org/eclipse/compare/contentmergeviewer/package-summary.html"/>
+      <topic label="org.eclipse.compare.rangedifferencer" href="reference/api/org/eclipse/compare/rangedifferencer/package-summary.html"/>
+      <topic label="org.eclipse.compare.structuremergeviewer" href="reference/api/org/eclipse/compare/structuremergeviewer/package-summary.html"/>
+      <topic label="org.eclipse.core.commands" href="reference/api/org/eclipse/core/commands/package-summary.html"/>
+      <topic label="org.eclipse.core.commands.common" href="reference/api/org/eclipse/core/commands/common/package-summary.html"/>
+      <topic label="org.eclipse.core.commands.contexts" href="reference/api/org/eclipse/core/commands/contexts/package-summary.html"/>
+      <topic label="org.eclipse.core.commands.operations" href="reference/api/org/eclipse/core/commands/operations/package-summary.html"/>
+      <topic label="org.eclipse.core.expressions" href="reference/api/org/eclipse/core/expressions/package-summary.html"/>
+      <topic label="org.eclipse.core.filebuffers" href="reference/api/org/eclipse/core/filebuffers/package-summary.html"/>
+      <topic label="org.eclipse.core.filebuffers.manipulation" href="reference/api/org/eclipse/core/filebuffers/manipulation/package-summary.html"/>
+      <topic label="org.eclipse.core.filesystem" href="reference/api/org/eclipse/core/filesystem/package-summary.html"/>
+      <topic label="org.eclipse.core.filesystem.provider" href="reference/api/org/eclipse/core/filesystem/provider/package-summary.html"/>
+      <topic label="org.eclipse.core.launcher" href="reference/api/org/eclipse/core/launcher/package-summary.html"/>
+      <topic label="org.eclipse.core.resources" href="reference/api/org/eclipse/core/resources/package-summary.html"/>
+      <topic label="org.eclipse.core.resources.refresh" href="reference/api/org/eclipse/core/resources/refresh/package-summary.html"/>
+      <topic label="org.eclipse.core.resources.team" href="reference/api/org/eclipse/core/resources/team/package-summary.html"/>
+      <topic label="org.eclipse.core.resources.mapping" href="reference/api/org/eclipse/core/resources/mapping/package-summary.html"/>
+      <topic label="org.eclipse.core.runtime" href="reference/api/org/eclipse/core/runtime/package-summary.html"/>
+      <topic label="org.eclipse.core.runtime.adaptor" href="reference/api/org/eclipse/core/runtime/adaptor/package-summary.html"/>
+      <topic label="org.eclipse.core.runtime.content" href="reference/api/org/eclipse/core/runtime/content/package-summary.html"/>
+	  <topic label="org.eclipse.core.runtime.dynamichelpers" href="reference/api/org/eclipse/core/runtime/dynamichelpers/package-summary.html"/>
+	  <topic label="org.eclipse.core.runtime.spi" href="reference/api/org/eclipse/core/runtime/spi/package-summary.html"/>
+      <topic label="org.eclipse.core.runtime.jobs" href="reference/api/org/eclipse/core/runtime/jobs/package-summary.html"/>
+      <topic label="org.eclipse.core.runtime.model" href="reference/api/org/eclipse/core/runtime/model/package-summary.html"/>
+      <topic label="org.eclipse.core.runtime.preferences" href="reference/api/org/eclipse/core/runtime/preferences/package-summary.html"/>
+      <topic label="org.eclipse.core.variables" href="reference/api/org/eclipse/core/variables/package-summary.html"/>
+      <topic label="org.eclipse.debug.core" href="reference/api/org/eclipse/debug/core/package-summary.html"/>
+      <topic label="org.eclipse.debug.core.model" href="reference/api/org/eclipse/debug/core/model/package-summary.html"/>
+      <topic label="org.eclipse.debug.core.sourcelookup" href="reference/api/org/eclipse/debug/core/sourcelookup/package-summary.html"/>
+      <topic label="org.eclipse.debug.core.sourcelookup.containers" href="reference/api/org/eclipse/debug/core/sourcelookup/containers/package-summary.html"/>
+      <topic label="org.eclipse.debug.ui" href="reference/api/org/eclipse/debug/ui/package-summary.html"/>
+      <topic label="org.eclipse.debug.ui.actions" href="reference/api/org/eclipse/debug/ui/actions/package-summary.html"/>
+      <topic label="org.eclipse.debug.ui.console" href="reference/api/org/eclipse/debug/ui/console/package-summary.html"/>
+      <topic label="org.eclipse.debug.ui.memory" href="reference/api/org/eclipse/debug/ui/memory/package-summary.html"/>
+      <topic label="org.eclipse.debug.ui.sourcelookup" href="reference/api/org/eclipse/debug/ui/sourcelookup/package-summary.html"/>
+      <topic label="org.eclipse.help" href="reference/api/org/eclipse/help/package-summary.html"/>
+      <topic label="org.eclipse.help.browser" href="reference/api/org/eclipse/help/browser/package-summary.html"/>
+      <topic label="org.eclipse.help.search" href="reference/api/org/eclipse/help/search/package-summary.html"/>
+      <topic label="org.eclipse.help.standalone" href="reference/api/org/eclipse/help/standalone/package-summary.html"/>
+      <topic label="org.eclipse.help.ui" href="reference/api/org/eclipse/help/ui/package-summary.html"/>
+      <topic label="org.eclipse.help.ui.browser" href="reference/api/org/eclipse/help/ui/browser/package-summary.html"/>
+      <topic label="org.eclipse.jface.action" href="reference/api/org/eclipse/jface/action/package-summary.html"/>
+      <topic label="org.eclipse.jface.bindings" href="reference/api/org/eclipse/jface/bindings/package-summary.html"/>
+      <topic label="org.eclipse.jface.bindings.keys" href="reference/api/org/eclipse/jface/bindings/keys/package-summary.html"/>
+      <topic label="org.eclipse.jface.bindings.keys.formatting" href="reference/api/org/eclipse/jface/bindings/keys/formatting/package-summary.html"/>
+      <topic label="org.eclipse.jface.commands" href="reference/api/org/eclipse/jface/commands/package-summary.html"/>
+      <topic label="org.eclipse.jface.contentassist" href="reference/api/org/eclipse/jface/contentassist/package-summary.html"/>
+      <topic label="org.eclipse.jface.contexts" href="reference/api/org/eclipse/jface/contexts/package-summary.html"/>
+      <topic label="org.eclipse.jface.dialogs" href="reference/api/org/eclipse/jface/dialogs/package-summary.html"/>
+      <topic label="org.eclipse.jface.fieldassist" href="reference/api/org/eclipse/jface/fieldassist/package-summary.html"/>
+      <topic label="org.eclipse.jface.layout" href="reference/api/org/eclipse/jface/layout/package-summary.html"/>
+      <topic label="org.eclipse.jface.menus" href="reference/api/org/eclipse/jface/menus/package-summary.html"/>
+      <topic label="org.eclipse.jface.operation" href="reference/api/org/eclipse/jface/operation/package-summary.html"/>
+      <topic label="org.eclipse.jface.preference" href="reference/api/org/eclipse/jface/preference/package-summary.html"/>
+      <topic label="org.eclipse.jface.resource" href="reference/api/org/eclipse/jface/resource/package-summary.html"/>
+      <topic label="org.eclipse.jface.text" href="reference/api/org/eclipse/jface/text/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.contentassist" href="reference/api/org/eclipse/jface/text/contentassist/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.formatter" href="reference/api/org/eclipse/jface/text/formatter/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.hyperlink" href="reference/api/org/eclipse/jface/text/hyperlink/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.information" href="reference/api/org/eclipse/jface/text/information/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.link" href="reference/api/org/eclipse/jface/text/link/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.presentation" href="reference/api/org/eclipse/jface/text/presentation/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.projection" href="reference/api/org/eclipse/jface/text/projection/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.quickassist" href="reference/api/org/eclipse/jface/text/quickassist/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.reconciler" href="reference/api/org/eclipse/jface/text/reconciler/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.revisions" href="reference/api/org/eclipse/jface/text/revisions/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.rules" href="reference/api/org/eclipse/jface/text/rules/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.source" href="reference/api/org/eclipse/jface/text/source/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.source.projection" href="reference/api/org/eclipse/jface/text/source/projection/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.templates" href="reference/api/org/eclipse/jface/text/templates/package-summary.html"/>
+      <topic label="org.eclipse.jface.text.templates.persistence" href="reference/api/org/eclipse/jface/text/templates/persistence/package-summary.html"/>
+      <topic label="org.eclipse.jface.util" href="reference/api/org/eclipse/jface/util/package-summary.html"/>
+      <topic label="org.eclipse.jface.viewers" href="reference/api/org/eclipse/jface/viewers/package-summary.html"/>
+       <topic label="org.eclipse.jface.viewers.deferred" href="reference/api/org/eclipse/jface/viewers/deferred/package-summary.html"/>
+      <topic label="org.eclipse.jface.window" href="reference/api/org/eclipse/jface/window/package-summary.html"/>
+      <topic label="org.eclipse.jface.wizard" href="reference/api/org/eclipse/jface/wizard/package-summary.html"/>
+      <topic label="org.eclipse.ltk.core.refactoring" href="reference/api/org/eclipse/ltk/core/refactoring/package-summary.html"/>
+      <topic label="org.eclipse.ltk.core.refactoring.history" href="reference/api/org/eclipse/ltk/core/refactoring/history/package-summary.html"/>
+      <topic label="org.eclipse.ltk.core.refactoring.model" href="reference/api/org/eclipse/ltk/core/refactoring/model/package-summary.html"/>
+      <topic label="org.eclipse.ltk.core.refactoring.participants" href="reference/api/org/eclipse/ltk/core/refactoring/participants/package-summary.html"/>
+      <topic label="org.eclipse.ltk.ui.refactoring" href="reference/api/org/eclipse/ltk/ui/refactoring/package-summary.html"/>
+      <topic label="org.eclipse.ltk.ui.refactoring.history" href="reference/api/org/eclipse/ltk/ui/refactoring/history/package-summary.html"/>
+      <topic label="org.eclipse.ltk.ui.refactoring.model" href="reference/api/org/eclipse/ltk/ui/refactoring/model/package-summary.html"/>
+      <topic label="org.eclipse.osgi.service.datalocation" href="reference/api/org/eclipse/osgi/service/datalocation/package-summary.html"/>
+      <topic label="org.eclipse.osgi.util" href="reference/api/org/eclipse/osgi/util/package-summary.html"/>
+      <topic label="org.eclipse.search.core.text" href="reference/api/org/eclipse/search/core/text/package-summary.html"/>
+      <topic label="org.eclipse.search.ui" href="reference/api/org/eclipse/search/ui/package-summary.html"/>
+      <topic label="org.eclipse.search.ui.actions" href="reference/api/org/eclipse/search/ui/actions/package-summary.html"/>
+      <topic label="org.eclipse.search.ui.text" href="reference/api/org/eclipse/search/ui/text/package-summary.html"/>
+      <topic label="org.eclipse.swt" href="reference/api/org/eclipse/swt/package-summary.html"/>
+      <topic label="org.eclipse.swt.accessibility" href="reference/api/org/eclipse/swt/accessibility/package-summary.html"/>
+      <topic label="org.eclipse.swt.awt" href="reference/api/org/eclipse/swt/awt/package-summary.html"/>
+      <topic label="org.eclipse.swt.browser" href="reference/api/org/eclipse/swt/browser/package-summary.html"/>
+      <topic label="org.eclipse.swt.custom" href="reference/api/org/eclipse/swt/custom/package-summary.html"/>
+      <topic label="org.eclipse.swt.dnd" href="reference/api/org/eclipse/swt/dnd/package-summary.html"/>
+      <topic label="org.eclipse.swt.events" href="reference/api/org/eclipse/swt/events/package-summary.html"/>
+      <topic label="org.eclipse.swt.graphics" href="reference/api/org/eclipse/swt/graphics/package-summary.html"/>
+      <topic label="org.eclipse.swt.layout" href="reference/api/org/eclipse/swt/layout/package-summary.html"/>
+      <topic label="org.eclipse.swt.ole.win32" href="reference/api/org/eclipse/swt/ole/win32/package-summary.html"/>
+      <topic label="org.eclipse.swt.opengl" href="reference/api/org/eclipse/swt/opengl/package-summary.html"/>
+      <topic label="org.eclipse.swt.printing" href="reference/api/org/eclipse/swt/printing/package-summary.html"/>
+      <topic label="org.eclipse.swt.program" href="reference/api/org/eclipse/swt/program/package-summary.html"/>
+      <topic label="org.eclipse.swt.widgets" href="reference/api/org/eclipse/swt/widgets/package-summary.html"/>
+      <topic label="org.eclipse.team.core" href="reference/api/org/eclipse/team/core/package-summary.html"/>
+      <topic label="org.eclipse.team.core.diff" href="reference/api/org/eclipse/team/core/diff/package-summary.html"/>
+      <topic label="org.eclipse.team.core.diff.provider" href="reference/api/org/eclipse/team/core/diff/provider/package-summary.html"/>
+      <topic label="org.eclipse.team.core.history" href="reference/api/org/eclipse/team/core/history/package-summary.html"/>
+      <topic label="org.eclipse.team.core.history.provider" href="reference/api/org/eclipse/team/core/history/provider/package-summary.html"/>
+      <topic label="org.eclipse.team.core.mapping" href="reference/api/org/eclipse/team/core/mapping/package-summary.html"/>
+      <topic label="org.eclipse.team.core.mapping.provider" href="reference/api/org/eclipse/team/core/mapping/provider/package-summary.html"/>
+      <topic label="org.eclipse.team.core.subscribers" href="reference/api/org/eclipse/team/core/subscribers/package-summary.html"/>
+      <topic label="org.eclipse.team.core.synchronize" href="reference/api/org/eclipse/team/core/synchronize/package-summary.html"/>
+      <topic label="org.eclipse.team.core.variants" href="reference/api/org/eclipse/team/core/variants/package-summary.html"/>
+      <topic label="org.eclipse.team.ui" href="reference/api/org/eclipse/team/ui/package-summary.html"/>
+      <topic label="org.eclipse.team.ui.history" href="reference/api/org/eclipse/team/ui/history/package-summary.html"/>
+      <topic label="org.eclipse.team.ui.mapping" href="reference/api/org/eclipse/team/ui/mapping/package-summary.html"/>
+      <topic label="org.eclipse.team.ui.synchronize" href="reference/api/org/eclipse/team/ui/synchronize/package-summary.html"/>
+      <topic label="org.eclipse.text.edits" href="reference/api/org/eclipse/text/edits/package-summary.html"/>
+      <topic label="org.eclipse.text.undo" href="reference/api/org/eclipse/text/undo/package-summary.html"/>
+      <topic label="org.eclipse.ui" href="reference/api/org/eclipse/ui/package-summary.html"/>
+      <topic label="org.eclipse.ui.about" href="reference/api/org/eclipse/ui/about/package-summary.html"/>
+      <topic label="org.eclipse.ui.actions" href="reference/api/org/eclipse/ui/actions/package-summary.html"/>
+      <topic label="org.eclipse.ui.activities" href="reference/api/org/eclipse/ui/activities/package-summary.html"/>
+      <topic label="org.eclipse.ui.application" href="reference/api/org/eclipse/ui/application/package-summary.html"/>
+      <topic label="org.eclipse.ui.branding" href="reference/api/org/eclipse/ui/branding/package-summary.html"/>
+      <topic label="org.eclipse.ui.browser" href="reference/api/org/eclipse/ui/browser/package-summary.html"/>
+      <topic label="org.eclipse.ui.cheatsheets" href="reference/api/org/eclipse/ui/cheatsheets/package-summary.html"/>
+      <topic label="org.eclipse.ui.commands" href="reference/api/org/eclipse/ui/commands/package-summary.html"/>
+      <topic label="org.eclipse.ui.console" href="reference/api/org/eclipse/ui/console/package-summary.html"/>
+      <topic label="org.eclipse.ui.console.actions" href="reference/api/org/eclipse/ui/console/actions/package-summary.html"/>
+      <topic label="org.eclipse.ui.contentassist" href="reference/api/org/eclipse/ui/contentassist/package-summary.html"/>
+      <topic label="org.eclipse.ui.contexts" href="reference/api/org/eclipse/ui/contexts/package-summary.html"/>
+      <topic label="org.eclipse.ui.dialogs" href="reference/api/org/eclipse/ui/dialogs/package-summary.html"/>
+      <topic label="org.eclipse.ui.editors.text" href="reference/api/org/eclipse/ui/editors/text/package-summary.html"/>
+      <topic label="org.eclipse.ui.editors.text.templates" href="reference/api/org/eclipse/ui/editors/text/templates/package-summary.html"/>
+      <topic label="org.eclipse.ui.fieldassist" href="reference/api/org/eclipse/ui/fieldassist/package-summary.html"/>
+      <topic label="org.eclipse.ui.forms" href="reference/api/org/eclipse/ui/forms/package-summary.html"/>
+      <topic label="org.eclipse.ui.forms.editor" href="reference/api/org/eclipse/ui/forms/editor/package-summary.html"/>
+      <topic label="org.eclipse.ui.forms.events" href="reference/api/org/eclipse/ui/forms/events/package-summary.html"/>
+      <topic label="org.eclipse.ui.forms.widgets" href="reference/api/org/eclipse/ui/forms/widgets/package-summary.html"/>
+      <topic label="org.eclipse.ui.handlers" href="reference/api/org/eclipse/ui/handlers/package-summary.html"/>
+      <topic label="org.eclipse.ui.help" href="reference/api/org/eclipse/ui/help/package-summary.html"/>
+      <topic label="org.eclipse.ui.ide" href="reference/api/org/eclipse/ui/ide/package-summary.html"/>
+      <topic label="org.eclipse.ui.ide.dialogs" href="reference/api/org/eclipse/ui/ide/dialogs/package-summary.html"/>
+      <topic label="org.eclipse.ui.ide.fileSystem" href="reference/api/org/eclipse/ui/ide/fileSystem/package-summary.html"/>
+      <topic label="org.eclipse.ui.intro" href="reference/api/org/eclipse/ui/intro/package-summary.html"/>
+      <topic label="org.eclipse.ui.intro.config" href="reference/api/org/eclipse/ui/intro/config/package-summary.html"/>
+      <topic label="org.eclipse.ui.intro.universal" href="reference/api/org/eclipse/ui/intro/universal/package-summary.html"/>
+      <topic label="org.eclipse.ui.keys" href="reference/api/org/eclipse/ui/keys/package-summary.html"/>
+      <topic label="org.eclipse.ui.menus" href="reference/api/org/eclipse/ui/menus/package-summary.html"/>
+      <topic label="org.eclipse.ui.model" href="reference/api/org/eclipse/ui/model/package-summary.html"/>
+      <topic label="org.eclipse.ui.navigator" href="reference/api/org/eclipse/ui/navigator/package-summary.html"/>      
+	  <topic label="org.eclipse.ui.navigator.resources" href="reference/api/org/eclipse/ui/navigator/resources/package-summary.html"/>            
+      <topic label="org.eclipse.ui.operations" href="reference/api/org/eclipse/ui/operations/package-summary.html"/>
+      <topic label="org.eclipse.ui.part" href="reference/api/org/eclipse/ui/part/package-summary.html"/>
+      <topic label="org.eclipse.ui.plugin" href="reference/api/org/eclipse/ui/plugin/package-summary.html"/>
+      <topic label="org.eclipse.ui.preferences" href="reference/api/org/eclipse/ui/preferences/package-summary.html"/>
+      <topic label="org.eclipse.ui.progress" href="reference/api/org/eclipse/ui/progress/package-summary.html"/>
+      <topic label="org.eclipse.ui.services" href="reference/api/org/eclipse/ui/services/package-summary.html"/>
+      <topic label="org.eclipse.ui.testing" href="reference/api/org/eclipse/ui/testing/package-summary.html"/>
+      <topic label="org.eclipse.ui.themes" href="reference/api/org/eclipse/ui/themes/package-summary.html"/>
+      <topic label="org.eclipse.ui.texteditor" href="reference/api/org/eclipse/ui/texteditor/package-summary.html"/>
+      <topic label="org.eclipse.ui.texteditor.link" href="reference/api/org/eclipse/ui/texteditor/link/package-summary.html"/>
+      <topic label="org.eclipse.ui.texteditor.quickdiff" href="reference/api/org/eclipse/ui/texteditor/quickdiff/package-summary.html"/>
+      <topic label="org.eclipse.ui.texteditor.templates" href="reference/api/org/eclipse/ui/texteditor/templates/package-summary.html"/>
+      <topic label="org.eclipse.ui.texteditor.spelling" href="reference/api/org/eclipse/ui/texteditor/spelling/package-summary.html"/>
+      <topic label="org.eclipse.ui.views" href="reference/api/org/eclipse/ui/views/package-summary.html"/>
+      <topic label="org.eclipse.ui.views.bookmarkexplorer" href="reference/api/org/eclipse/ui/views/bookmarkexplorer/package-summary.html"/>
+      <topic label="org.eclipse.ui.views.contentoutline" href="reference/api/org/eclipse/ui/views/contentoutline/package-summary.html"/>
+      <topic label="org.eclipse.ui.views.framelist" href="reference/api/org/eclipse/ui/views/framelist/package-summary.html"/>
+      <topic label="org.eclipse.ui.views.markers" href="reference/api/org/eclipse/ui/views/markers/package-summary.html"/>
+      <topic label="org.eclipse.ui.views.navigator" href="reference/api/org/eclipse/ui/views/navigator/package-summary.html"/>
+      <topic label="org.eclipse.ui.views.properties" href="reference/api/org/eclipse/ui/views/properties/package-summary.html"/>
+      <topic label="org.eclipse.ui.views.properties.tabbed" href="reference/api/org/eclipse/ui/views/properties/tabbed/package-summary.html"/>
+      <topic label="org.eclipse.ui.views.tasklist" href="reference/api/org/eclipse/ui/views/tasklist/package-summary.html"/>
+      <topic label="org.eclipse.ui.wizards" href="reference/api/org/eclipse/ui/wizards/package-summary.html"/>
+      <topic label="org.eclipse.ui.wizards.datatransfer" href="reference/api/org/eclipse/ui/wizards/datatransfer/package-summary.html"/>
+      <topic label="org.eclipse.ui.wizards.newresource" href="reference/api/org/eclipse/ui/wizards/newresource/package-summary.html"/>
+    </topic>
+
+	<topic label="Extension Points Reference" href="reference/extension-points/index.html">
+       <topic label="org.eclipse.ant.core.antProperties" href="reference/extension-points/org_eclipse_ant_core_antProperties.html"/>
+       <topic label="org.eclipse.ant.core.antTasks" href="reference/extension-points/org_eclipse_ant_core_antTasks.html"/>
+       <topic label="org.eclipse.ant.core.antTypes" href="reference/extension-points/org_eclipse_ant_core_antTypes.html"/>
+       <topic label="org.eclipse.ant.core.extraClasspathEntries" href="reference/extension-points/org_eclipse_ant_core_extraClasspathEntries.html"/>
+       <topic label="org.eclipse.compare.contentMergeViewers" href="reference/extension-points/org_eclipse_compare_contentMergeViewers.html"/>
+       <topic label="org.eclipse.compare.contentViewers" href="reference/extension-points/org_eclipse_compare_contentViewers.html"/>
+       <topic label="org.eclipse.compare.streamMergers" href="reference/extension-points/org_eclipse_compare_streamMergers.html"/>
+       <topic label="org.eclipse.compare.structureCreators" href="reference/extension-points/org_eclipse_compare_structureCreators.html"/>
+       <topic label="org.eclipse.compare.structureMergeViewers" href="reference/extension-points/org_eclipse_compare_structureMergeViewers.html"/>
+       <topic label="org.eclipse.core.contenttype.contentTypes" href="reference/extension-points/org_eclipse_core_contenttype_contentTypes.html"/>
+       <topic label="org.eclipse.core.expressions.propertyTesters" href="reference/extension-points/org_eclipse_core_expressions_propertyTesters.html"/>
+       <topic label="org.eclipse.core.filebuffers.annotationModelCreation" href="reference/extension-points/org_eclipse_core_filebuffers_annotationModelCreation.html"/>
+       <topic label="org.eclipse.core.filebuffers.documentCreation" href="reference/extension-points/org_eclipse_core_filebuffers_documentCreation.html"/>
+       <topic label="org.eclipse.core.filebuffers.documentSetup" href="reference/extension-points/org_eclipse_core_filebuffers_documentSetup.html"/>
+       <topic label="org.eclipse.core.filesystem.filesystems" href="reference/extension-points/org_eclipse_core_filesystem_filesystems.html"/>
+       <topic label="org.eclipse.core.resources.builders" href="reference/extension-points/org_eclipse_core_resources_builders.html"/>
+       <topic label="org.eclipse.core.resources.fileModificationValidator" href="reference/extension-points/org_eclipse_core_resources_fileModificationValidator.html"/>
+       <topic label="org.eclipse.core.resources.markers" href="reference/extension-points/org_eclipse_core_resources_markers.html"/>
+       <topic label="org.eclipse.core.resources.moveDeleteHook" href="reference/extension-points/org_eclipse_core_resources_moveDeleteHook.html"/>
+       <topic label="org.eclipse.core.resources.natures" href="reference/extension-points/org_eclipse_core_resources_natures.html"/>
+       <topic label="org.eclipse.core.resources.refreshProviders" href="reference/extension-points/org_eclipse_core_resources_refreshProviders.html"/>
+       <topic label="org.eclipse.core.resources.teamHook" href="reference/extension-points/org_eclipse_core_resources_teamHook.html"/>
+       <topic label="org.eclipse.core.runtime.adapters" href="reference/extension-points/org_eclipse_core_runtime_adapters.html"/>
+       <topic label="org.eclipse.core.runtime.applications" href="reference/extension-points/org_eclipse_core_runtime_applications.html"/>
+       <topic label="org.eclipse.core.runtime.contentTypes" href="reference/extension-points/org_eclipse_core_runtime_contentTypes.html"/>
+       <topic label="org.eclipse.core.runtime.preferences" href="reference/extension-points/org_eclipse_core_runtime_preferences.html"/>
+       <topic label="org.eclipse.core.runtime.products" href="reference/extension-points/org_eclipse_core_runtime_products.html"/>
+       <topic label="org.eclipse.core.variables.dynamicVariables" href="reference/extension-points/org_eclipse_core_variables_dynamicVariables.html"/>
+       <topic label="org.eclipse.core.variables.valueVariables" href="reference/extension-points/org_eclipse_core_variables_valueVariables.html"/>
+       <topic label="org.eclipse.debug.core.breakpoints" href="reference/extension-points/org_eclipse_debug_core_breakpoints.html"/>
+       <topic label="org.eclipse.debug.core.launchConfigurationComparators" href="reference/extension-points/org_eclipse_debug_core_launchConfigurationComparators.html"/>
+       <topic label="org.eclipse.debug.core.launchConfigurationTypes" href="reference/extension-points/org_eclipse_debug_core_launchConfigurationTypes.html"/>
+       <topic label="org.eclipse.debug.core.launchDelegates" href="reference/extension-points/org_eclipse_debug_core_launchDelegates.html"/>
+       <topic label="org.eclipse.debug.core.launchers" href="reference/extension-points/org_eclipse_debug_core_launchers.html"/>
+       <topic label="org.eclipse.debug.core.launchModes" href="reference/extension-points/org_eclipse_debug_core_launchModes.html"/>
+       <topic label="org.eclipse.debug.core.logicalStructureProviders" href="reference/extension-points/org_eclipse_debug_core_logicalStructureProviders.html"/>
+       <topic label="org.eclipse.debug.core.logicalStructureTypes" href="reference/extension-points/org_eclipse_debug_core_logicalStructureTypes.html"/>
+       <topic label="org.eclipse.debug.core.processFactories" href="reference/extension-points/org_eclipse_debug_core_processFactories.html"/>
+       <topic label="org.eclipse.debug.core.sourceContainerTypes" href="reference/extension-points/org_eclipse_debug_core_sourceContainerTypes.html"/>
+       <topic label="org.eclipse.debug.core.sourceLocators" href="reference/extension-points/org_eclipse_debug_core_sourceLocators.html"/>
+       <topic label="org.eclipse.debug.core.sourcePathComputers" href="reference/extension-points/org_eclipse_debug_core_sourcePathComputers.html"/>
+       <topic label="org.eclipse.debug.core.statusHandlers" href="reference/extension-points/org_eclipse_debug_core_statusHandlers.html"/>
+       <topic label="org.eclipse.debug.core.watchExpressionDelegates" href="reference/extension-points/org_eclipse_debug_core_watchExpressionDelegates.html"/>
+       <topic label="org.eclipse.debug.ui.breakpointOrganizers" href="reference/extension-points/org_eclipse_debug_ui_breakpointOrganizers.html"/>
+       <topic label="org.eclipse.debug.ui.consoleColorProviders" href="reference/extension-points/org_eclipse_debug_ui_consoleColorProviders.html"/>
+       <topic label="org.eclipse.debug.ui.consoleLineTrackers" href="reference/extension-points/org_eclipse_debug_ui_consoleLineTrackers.html"/>
+       <topic label="org.eclipse.debug.ui.contextViewBindings" href="reference/extension-points/org_eclipse_debug_ui_contextViewBindings.html"/>
+       <topic label="org.eclipse.debug.ui.debugModelContextBindings" href="reference/extension-points/org_eclipse_debug_ui_debugModelContextBindings.html"/>
+       <topic label="org.eclipse.debug.ui.debugModelPresentations" href="reference/extension-points/org_eclipse_debug_ui_debugModelPresentations.html"/>
+       <topic label="org.eclipse.debug.ui.launchConfigurationTabGroups" href="reference/extension-points/org_eclipse_debug_ui_launchConfigurationTabGroups.html"/>
+       <topic label="org.eclipse.debug.ui.launchConfigurationTypeImages" href="reference/extension-points/org_eclipse_debug_ui_launchConfigurationTypeImages.html"/>
+       <topic label="org.eclipse.debug.ui.launchGroups" href="reference/extension-points/org_eclipse_debug_ui_launchGroups.html"/>
+       <topic label="org.eclipse.debug.ui.launchShortcuts" href="reference/extension-points/org_eclipse_debug_ui_launchShortcuts.html"/>
+       <topic label="org.eclipse.debug.ui.memoryRenderings" href="reference/extension-points/org_eclipse_debug_ui_memoryRenderings.html"/>
+       <topic label="org.eclipse.debug.ui.sourceContainerPresentations" href="reference/extension-points/org_eclipse_debug_ui_sourceContainerPresentations.html"/>
+       <topic label="org.eclipse.debug.ui.stringVariablePresentations" href="reference/extension-points/org_eclipse_debug_ui_stringVariablePresentations.html"/>
+       <topic label="org.eclipse.debug.ui.variableValueEditors" href="reference/extension-points/org_eclipse_debug_ui_variableValueEditors.html"/>
+       <topic label="org.eclipse.equinox.preferences.preferences" href="reference/extension-points/org_eclipse_equinox_preferences_preferences.html"/>
+       <topic label="org.eclipse.help.contentExtension" href="reference/extension-points/org_eclipse_help_contentExtension.html"/>
+       <topic label="org.eclipse.help.contentProducer" href="reference/extension-points/org_eclipse_help_contentProducer.html"/>
+       <topic label="org.eclipse.help.contexts" href="reference/extension-points/org_eclipse_help_contexts.html"/>
+       <topic label="org.eclipse.help.index" href="reference/extension-points/org_eclipse_help_index.html"/>
+       <topic label="org.eclipse.help.toc" href="reference/extension-points/org_eclipse_help_toc.html"/>
+       <topic label="org.eclipse.help.base.activitySupport" href="reference/extension-points/org_eclipse_help_base_activitySupport.html"/>
+       <topic label="org.eclipse.help.base.browser" href="reference/extension-points/org_eclipse_help_base_browser.html"/>
+       <topic label="org.eclipse.help.base.luceneAnalyzer" href="reference/extension-points/org_eclipse_help_base_luceneAnalyzer.html"/>
+       <topic label="org.eclipse.help.base.luceneSearchParticipants" href="reference/extension-points/org_eclipse_help_base_luceneSearchParticipants.html"/>
+       <topic label="org.eclipse.help.ui.searchEngine" href="reference/extension-points/org_eclipse_help_ui_searchEngine.html"/>
+       <topic label="org.eclipse.ltk.core.refactoring.copyParticipants" href="reference/extension-points/org_eclipse_ltk_core_refactoring_copyParticipants.html"/>
+       <topic label="org.eclipse.ltk.core.refactoring.createParticipants" href="reference/extension-points/org_eclipse_ltk_core_refactoring_createParticipants.html"/>
+       <topic label="org.eclipse.ltk.core.refactoring.deleteParticipants" href="reference/extension-points/org_eclipse_ltk_core_refactoring_deleteParticipants.html"/>
+       <topic label="org.eclipse.ltk.core.refactoring.moveParticipants" href="reference/extension-points/org_eclipse_ltk_core_refactoring_moveParticipants.html"/>
+       <topic label="org.eclipse.ltk.core.refactoring.refactoringContributions" href="reference/extension-points/org_eclipse_ltk_core_refactoring_refactoringContributions.html"/>
+       <topic label="org.eclipse.ltk.core.refactoring.renameParticipants" href="reference/extension-points/org_eclipse_ltk_core_refactoring_renameParticipants.html"/>
+       <topic label="org.eclipse.ltk.ui.refactoring.changePreviewViewers" href="reference/extension-points/org_eclipse_ltk_ui_refactoring_changePreviewViewers.html"/>
+       <topic label="org.eclipse.ltk.ui.refactoring.statusContextViewers" href="reference/extension-points/org_eclipse_ltk_ui_refactoring_statusContextViewers.html"/>
+       <topic label="org.eclipse.search.searchPages" href="reference/extension-points/org_eclipse_search_searchPages.html"/>
+       <topic label="org.eclipse.search.searchResultSorters" href="reference/extension-points/org_eclipse_search_searchResultSorters.html"/>
+       <topic label="org.eclipse.search.searchResultViewPages" href="reference/extension-points/org_eclipse_search_searchResultViewPages.html"/>
+       <topic label="org.eclipse.search.textSearchEngine" href="reference/extension-points/org_eclipse_search_textSearchEngine.html"/>
+       <topic label="org.eclipse.search.textSearchQueryProvider" href="reference/extension-points/org_eclipse_search_textSearchQueryProvider.html"/>
+       <topic label="org.eclipse.team.core.fileTypes" href="reference/extension-points/org_eclipse_team_core_fileTypes.html"/>
+       <topic label="org.eclipse.team.core.ignore" href="reference/extension-points/org_eclipse_team_core_ignore.html"/>
+       <topic label="org.eclipse.team.core.projectSets" href="reference/extension-points/org_eclipse_team_core_projectSets.html"/>
+       <topic label="org.eclipse.team.core.repository" href="reference/extension-points/org_eclipse_team_core_repository.html"/>
+       <topic label="org.eclipse.team.ui.configurationWizards" href="reference/extension-points/org_eclipse_team_ui_configurationWizards.html"/>
+       <topic label="org.eclipse.team.ui.synchronizeParticipants" href="reference/extension-points/org_eclipse_team_ui_synchronizeParticipants.html"/>
+       <topic label="org.eclipse.team.ui.synchronizeWizards" href="reference/extension-points/org_eclipse_team_ui_synchronizeWizards.html"/>
+       <topic label="org.eclipse.ui.acceleratorConfigurations" href="reference/extension-points/org_eclipse_ui_acceleratorConfigurations.html"/>
+       <topic label="org.eclipse.ui.acceleratorScopes" href="reference/extension-points/org_eclipse_ui_acceleratorScopes.html"/>
+       <topic label="org.eclipse.ui.acceleratorSets" href="reference/extension-points/org_eclipse_ui_acceleratorSets.html"/>
+       <topic label="org.eclipse.ui.actionDefinitions" href="reference/extension-points/org_eclipse_ui_actionDefinitions.html"/>
+       <topic label="org.eclipse.ui.actionSetPartAssociations" href="reference/extension-points/org_eclipse_ui_actionSetPartAssociations.html"/>
+       <topic label="org.eclipse.ui.actionSets" href="reference/extension-points/org_eclipse_ui_actionSets.html"/>
+       <topic label="org.eclipse.ui.activities" href="reference/extension-points/org_eclipse_ui_activities.html"/>
+	    <topic label="org.eclipse.ui.activitySupport" href="reference/extension-points/org_eclipse_ui_activitySupport.html"/>
+		 <topic label="org.eclipse.ui.bindings" href="reference/extension-points/org_eclipse_ui_bindings.html"/>
+       <topic label="org.eclipse.ui.browser.browsers" href="reference/extension-points/org_eclipse_ui_browser_browsers.html"/>
+		 <topic label="org.eclipse.ui.browserSupport" href="reference/extension-points/org_eclipse_ui_browserSupport.html"/>
+       <topic label="org.eclipse.ui.cheatsheets.cheatSheetContent" href="reference/extension-points/org_eclipse_ui_cheatsheets_cheatSheetContent.html"/>
+       <topic label="org.eclipse.ui.cheatsheets.cheatSheetItemExtension" href="reference/extension-points/org_eclipse_ui_cheatsheets_cheatSheetItemExtension.html"/>
+       <topic label="org.eclipse.ui.commands" href="reference/extension-points/org_eclipse_ui_commands.html"/>
+       <topic label="org.eclipse.ui.commandImages" href="reference/extension-points/org_eclipse_ui_commandImages.html"/>
+       <topic label="org.eclipse.ui.console.consoleFactories" href="reference/extension-points/org_eclipse_ui_console_consoleFactories.html"/>
+       <topic label="org.eclipse.ui.console.consolePageParticipants" href="reference/extension-points/org_eclipse_ui_console_consolePageParticipants.html"/>
+       <topic label="org.eclipse.ui.console.consolePatternMatchListeners" href="reference/extension-points/org_eclipse_ui_console_consolePatternMatchListeners.html"/>
+	    <topic label="org.eclipse.ui.contexts" href="reference/extension-points/org_eclipse_ui_contexts.html"/>
+       <topic label="org.eclipse.ui.decorators" href="reference/extension-points/org_eclipse_ui_decorators.html"/>
+       <topic label="org.eclipse.ui.dropActions" href="reference/extension-points/org_eclipse_ui_dropActions.html"/>
+       <topic label="org.eclipse.ui.editorActions" href="reference/extension-points/org_eclipse_ui_editorActions.html"/>
+       <topic label="org.eclipse.ui.editors" href="reference/extension-points/org_eclipse_ui_editors.html"/>
+       <topic label="org.eclipse.ui.editors.annotationTypes" href="reference/extension-points/org_eclipse_ui_editors_annotationTypes.html"/>
+       <topic label="org.eclipse.ui.editors.documentProviders" href="reference/extension-points/org_eclipse_ui_editors_documentProviders.html"/>
+       <topic label="org.eclipse.ui.editors.markerAnnotationSpecification" href="reference/extension-points/org_eclipse_ui_editors_markerAnnotationSpecification.html"/>
+       <topic label="org.eclipse.ui.editors.markerUpdaters" href="reference/extension-points/org_eclipse_ui_editors_markerUpdaters.html"/>
+       <topic label="org.eclipse.ui.editors.templates" href="reference/extension-points/org_eclipse_ui_editors_templates.html"/>
+       <topic label="org.eclipse.ui.elementFactories" href="reference/extension-points/org_eclipse_ui_elementFactories.html"/>
+	    <topic label="org.eclipse.ui.encodings" href="reference/extension-points/org_eclipse_ui_encodings.html"/>
+       <topic label="org.eclipse.ui.exportWizards" href="reference/extension-points/org_eclipse_ui_exportWizards.html"/>
+       <topic label="org.eclipse.ui.externaltools.configurationDuplicationMaps" href="reference/extension-points/org_eclipse_ui_externaltools_configurationDuplicationMaps.html"/>
+       <topic label="org.eclipse.ui.fontDefinitions" href="reference/extension-points/org_eclipse_ui_fontDefinitions.html"/>
+	    <topic label="org.eclipse.ui.handlers" href="reference/extension-points/org_eclipse_ui_handlers.html"/>
+       <topic label="org.eclipse.ui.helpSupport" href="reference/extension-points/org_eclipse_ui_helpSupport.html"/>
+       <topic label="org.eclipse.ui.ide.filesystemSupport" href="reference/extension-points/org_eclipse_ui_ide_filesystemSupport.html"/>
+       <topic label="org.eclipse.ui.ide.markerHelp" href="reference/extension-points/org_eclipse_ui_ide_markerHelp.html"/>
+       <topic label="org.eclipse.ui.ide.markerImageProviders" href="reference/extension-points/org_eclipse_ui_ide_markerImageProviders.html"/>
+       <topic label="org.eclipse.ui.ide.markerResolution" href="reference/extension-points/org_eclipse_ui_ide_markerResolution.html"/>
+        <topic label="org.eclipse.ui.ide.markerSupport" href="reference/extension-points/org_eclipse_ui_ide_markerSupport.html"/>
+       <topic label="org.eclipse.ui.ide.projectNatureImages" href="reference/extension-points/org_eclipse_ui_ide_projectNatureImages.html"/>
+       <topic label="org.eclipse.ui.ide.resourceFilters" href="reference/extension-points/org_eclipse_ui_ide_resourceFilters.html"/>
+       <topic label="org.eclipse.ui.importWizards" href="reference/extension-points/org_eclipse_ui_importWizards.html"/>
+       <topic label="org.eclipse.ui.intro" href="reference/extension-points/org_eclipse_ui_intro.html"/>
+       <topic label="org.eclipse.ui.intro.config" href="reference/extension-points/org_eclipse_ui_intro_config.html"/>
+       <topic label="org.eclipse.ui.intro.configExtension" href="reference/extension-points/org_eclipse_ui_intro_configExtension.html"/>
+	    <topic label="org.eclipse.ui.keywords" href="reference/extension-points/org_eclipse_ui_keywords.html"/>	    
+	    <topic label="org.eclipse.ui.menus" href="reference/extension-points/org_eclipse_ui_menus.html"/>
+       <topic label="org.eclipse.ui.navigator.linkHelper" href="reference/extension-points/org_eclipse_ui_navigator_linkHelper.html"/>
+	   <topic label="org.eclipse.ui.navigator.navigatorContent" href="reference/extension-points/org_eclipse_ui_navigator_navigatorContent.html"/>
+	   <topic label="org.eclipse.ui.navigator.viewer" href="reference/extension-points/org_eclipse_ui_navigator_viewer.html"/>
+       <topic label="org.eclipse.ui.newWizards" href="reference/extension-points/org_eclipse_ui_newWizards.html"/>
+       <topic label="org.eclipse.ui.perspectiveExtensions" href="reference/extension-points/org_eclipse_ui_perspectiveExtensions.html"/>
+       <topic label="org.eclipse.ui.perspectives" href="reference/extension-points/org_eclipse_ui_perspectives.html"/>
+       <topic label="org.eclipse.ui.popupMenus" href="reference/extension-points/org_eclipse_ui_popupMenus.html"/>
+       <topic label="org.eclipse.ui.preferencePages" href="reference/extension-points/org_eclipse_ui_preferencePages.html"/>
+       <topic label="org.eclipse.ui.preferenceTransfer" href="reference/extension-points/org_eclipse_ui_preferenceTransfer.html"/>
+       <topic label="org.eclipse.ui.presentationFactories" href="reference/extension-points/org_eclipse_ui_presentationFactories.html"/>
+       <topic label="org.eclipse.ui.propertyPages" href="reference/extension-points/org_eclipse_ui_propertyPages.html"/>
+       <topic label="org.eclipse.ui.startup" href="reference/extension-points/org_eclipse_ui_startup.html"/>
+       <topic label="org.eclipse.ui.systemSummarySections" href="reference/extension-points/org_eclipse_ui_systemSummarySections.html"/>
+       <topic label="org.eclipse.ui.themes" href="reference/extension-points/org_eclipse_ui_themes.html"/>
+       <topic label="org.eclipse.ui.viewActions" href="reference/extension-points/org_eclipse_ui_viewActions.html"/>
+       <topic label="org.eclipse.ui.views" href="reference/extension-points/org_eclipse_ui_views.html"/>
+       <topic label="org.eclipse.ui.views.properties.tabbed.propertyContributor" href="reference/extension-points/org_eclipse_ui_views_properties_tabbed_propertyContributor.html"/>
+       <topic label="org.eclipse.ui.views.properties.tabbed.propertySections" href="reference/extension-points/org_eclipse_ui_views_properties_tabbed_propertySections.html"/>
+       <topic label="org.eclipse.ui.views.properties.tabbed.propertyTabs" href="reference/extension-points/org_eclipse_ui_views_properties_tabbed_propertyTabs.html"/>
+       <topic label="org.eclipse.ui.workbench.texteditor.quickDiffReferenceProvider" href="reference/extension-points/org_eclipse_ui_workbench_texteditor_quickDiffReferenceProvider.html"/>
+       <topic label="org.eclipse.ui.workbench.texteditor.spellingEngine" href="reference/extension-points/org_eclipse_ui_workbench_texteditor_spellingEngine.html"/>
+       <topic label="org.eclipse.ui.workingSets" href="reference/extension-points/org_eclipse_ui_workingSets.html"/>
+    </topic>
+
+	<topic label="OSGi API Reference" href="http://bundles.osgi.org/javadoc/r4"/>
+
+	<topic label="Other reference information" href="reference/misc/index.html">
+      	<topic label="Runtime options" href="reference/misc/runtime-options.html"/>
+      	<topic label="API rules of engagement" href="reference/misc/api-usage-rules.html"/>
+      	<topic label="Naming conventions" href="reference/misc/naming.html"/>
+      	<topic label="Glossary of terms" href="reference/misc/terminology.html"/>
+      	<topic label="Map of platform plug-ins" href="reference/misc/overview-platform.html"/>
+      	<topic label="Starting Eclipse from Java" href="reference/misc/eclipsestarter.html"/>
+      	<topic label="Multi-user installs" href="reference/misc/multi_user_installs.html"/>		
+       	<topic label="Third party libraries and classloading" href="reference/misc/buddy_loading.html"/>
+      	<topic label="Plug-in manifest " href="reference/misc/plugin_manifest.html"/>
+       	<topic label="OSGi bundle manifest" href="reference/misc/bundle_manifest.html"/>
+     	<topic label="Project description file" href="reference/misc/project_description_file.html"/>
+		<topic label="Message bundles" href="reference/misc/message_bundles.html"/>
+      	<topic label="Tips for making user interfaces accessible" href="reference/misc/ui_accessibility_tips.html"/>
+		<topic label ="Supporting bidirectional text" href="reference/misc/bidi.html"/>
+       	<topic label="How to write an Eclipse installer" href="reference/misc/eclipse-install.html"/>
+       	<topic label="About.ini file format" href="reference/misc/about_customization.html"/>
+       	<topic label="Plug-in archives" href="reference/misc/plugin_archive.html"/>
+       	<topic label="Feature manifest" href="reference/misc/feature_manifest.html"/>
+       	<topic label="Feature archives" href="reference/misc/feature_archive.html"/>
+       	<topic label="The platform.xml file" href="reference/misc/update_platform_xml.html"/>
+       	<topic label="Update server site map" href="reference/misc/update_sitemap.html"/>
+       	<topic label="Running update manager from command line" href="reference/misc/update_standalone.html"/>
+   	</topic>
+</toc>

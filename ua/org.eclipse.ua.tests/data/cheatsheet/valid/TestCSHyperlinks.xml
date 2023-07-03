@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+     Copyright (c) 2020 1C-Soft LLC and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+
+     Contributors:
+         George Suaridze <suag@1c.ru> (1C-Soft LLC) - Bug 559885
+ -->
+<cheatsheet title="Hyperlinks Demo">
+	<intro>
+		<description>
+			Welcome to the hyperlinks cheat sheet demo.
+			<br/>
+			Click the <a href="http://org.eclipse.ui.cheatsheet/execute?command=org.eclipse.search.ui.openSearchDialog">link</a> to open <b>Search</b> dialog.
+			<br/>
+			Open <a href="http://org.eclipse.ui.cheatsheet/execute?command=org.eclipse.ui.newWizard%28newWizardId%3Dorg.eclipse.ui.wizards.new.project%29">new project</a> wizard.
+			<br/>
+			Activate <a href="http://org.eclipse.ui.cheatsheet/showView?id=org.eclipse.pde.runtime.LogView">Error Log</a> view.
+		</description>
+	</intro>
+	<item
+		title="Step 1">
+		<description>
+			Open <a href="https://eclipse.org">eclipse.org</a> in external browser.	
+		</description>
+	</item>
+</cheatsheet>

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+    Copyright (c) 2005, 2010 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+<!-- Extension points -->
+   <extension-point id="luceneAnalyzer" name="%lucene_analyzer" schema="schema/luceneAnalyzer.exsd"/>
+   <extension-point id="browser" name="%browser_extension_point_name" schema="schema/browser.exsd"/>
+   <extension-point id="activitySupport" name="%activity_extension_point_name" schema="schema/activitySupport.exsd"/>
+   <extension-point id="server" name="%server_extension_point_name" schema="schema/server.exsd"/>
+   <extension-point id="searchParticipant" name="%help_search_participant_extension_point_name" schema="schema/searchParticipant.exsd"/>
+   <extension-point id="scope" name="%help_scope_extension_point_name" schema="schema/scope.exsd"/>
+   <extension-point id="display" name="%help_display_extension_point_name" schema="schema/display.exsd"/>
+   <extension-point id="searchProcessor" name="%search_processor_extension_point_name" schema="schema/searchProcessor.exsd"/>
+
+<!-- Stand-alone infocenter application -->
+   <extension
+         id="infocenterApplication"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.eclipse.help.internal.base.HelpApplication">
+            <parameter
+                  name="mode"
+                  value="infocenter">
+            </parameter>
+         </run>
+      </application>
+   </extension>
+<!-- Stand-alone help application -->
+   <extension
+         id="helpApplication"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.eclipse.help.internal.base.HelpApplication">
+            <parameter
+                  name="mode"
+                  value="standalone">
+            </parameter>
+         </run>
+      </application>
+   </extension>
+<!-- Pre-indexing tool -->
+   <extension
+         id="indexTool"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.eclipse.help.internal.base.IndexToolApplication">
+         </run>
+      </application>
+   </extension>
+<!-- Text Analyzers for search -->
+   <extension
+         id="org.eclipse.help.base.Analyzer_en"
+         point="org.eclipse.help.base.luceneAnalyzer">
+      <analyzer
+            locale="en"
+            class="org.eclipse.help.internal.search.Analyzer_en">
+      </analyzer>
+      <analyzer
+            locale="pt"
+            class="org.eclipse.help.internal.search.AnalyzerFactory:pt">
+      </analyzer>
+      <analyzer
+            locale="ja"
+            class="org.eclipse.help.internal.search.AnalyzerFactory:ja">
+      </analyzer>
+      <analyzer
+            locale="ko"
+            class="org.eclipse.help.internal.search.AnalyzerFactory:ko">
+      </analyzer>
+      <analyzer
+            locale="cs"
+            class="org.eclipse.help.internal.search.AnalyzerFactory:cs">
+      </analyzer>
+      <analyzer
+            locale="de"
+            class="org.eclipse.help.internal.search.AnalyzerFactory:de">
+      </analyzer>
+      <analyzer
+            locale="el"
+            class="org.eclipse.help.internal.search.AnalyzerFactory:el">
+      </analyzer>
+      <analyzer
+            locale="fr"
+            class="org.eclipse.help.internal.search.AnalyzerFactory:fr">
+      </analyzer>
+      <analyzer
+            class="org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer"
+            locale="zh">
+      </analyzer>
+      <analyzer
+            locale="nl"
+            class="org.eclipse.help.internal.search.AnalyzerFactory:nl">
+      </analyzer>
+      <analyzer
+            locale="ru"
+            class="org.eclipse.help.internal.search.AnalyzerFactory:ru">
+      </analyzer>
+   </extension>
+<!-- Web Browsers -->
+   <extension
+         point="org.eclipse.help.base.browser">
+      <browser
+            name="%mozilla_adapter"
+            id="org.eclipse.help.base.mozilla">
+         <factoryclass
+               class="org.eclipse.help.internal.browser.MozillaFactory">
+            <parameter
+                  name="executable"
+                  value="mozilla">
+            </parameter>
+            <parameter
+                  name="executableName"
+                  value="%mozilla">
+            </parameter>
+            <parameter
+                  name="os"
+                  value="Linux,AIX,HP,SunOS">
+            </parameter>
+         </factoryclass>
+      </browser>
+      <browser
+            name="%netscape_adapter"
+            id="org.eclipse.help.base.netscape">
+         <factoryclass
+               class="org.eclipse.help.internal.browser.MozillaFactory">
+            <parameter
+                  name="executable"
+                  value="netscape">
+            </parameter>
+            <parameter
+                  name="executableName"
+                  value="%netscape">
+            </parameter>
+            <parameter
+                  name="os"
+                  value="Linux,AIX,HP,SunOS">
+            </parameter>
+         </factoryclass>
+      </browser>
+      <browser
+            name="%firefox_adapter"
+            id="org.eclipse.help.base.firefox">
+         <factoryclass
+               class="org.eclipse.help.internal.browser.MozillaFactory">
+            <parameter
+                  name="executable"
+                  value="firefox">
+            </parameter>
+            <parameter
+                  name="executableName"
+                  value="%firefox">
+            </parameter>
+            <parameter
+                  name="os"
+                  value="Linux,AIX,HP,SunOS">
+            </parameter>
+         </factoryclass>
+      </browser>
+      <browser
+            factoryclass="org.eclipse.help.internal.browser.macosx.DefaultBrowserFactory"
+            name="%defaultBrowser"
+            id="org.eclipse.help.base.defaultBrowserMacOSX">
+      </browser>
+      <browser
+            factoryclass="org.eclipse.help.internal.browser.CustomBrowserFactory"
+            name="%custom_browser"
+            id="org.eclipse.help.base.custombrowser">
+      </browser>
+   </extension>
+   <extension
+         id="org.eclipse.help.base.preferences"
+         name="%preferences"
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.eclipse.help.internal.base.HelpBasePreferenceInitializer"/>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ant.core.antTasks">
+      <antTask
+            class="org.eclipse.help.internal.base.ant.BuildHelpIndex"
+            eclipseRuntime="true"
+            headless="true"
+            library="ant_tasks/helpbase-ant.jar"
+            name="help.buildHelpIndex">
+      </antTask>
+   </extension>
+   <extension
+         point="org.eclipse.ant.core.extraClasspathEntries">
+      <extraClasspathEntry
+            eclipseRuntime="true"
+            headless="true"
+            library="ant_tasks/helpbase-ant.jar">
+      </extraClasspathEntry>
+   </extension>
+   <extension
+         point="org.eclipse.help.base.searchParticipant">
+      <searchParticipant
+            extensions="xhtml"
+            id="org.eclipse.help.base.xhtml"
+            participant="org.eclipse.help.internal.search.XHTMLSearchParticipant"
+            headless="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <tocProvider
+            class="org.eclipse.help.internal.base.remote.RemoteTocProvider">
+      </tocProvider>
+   </extension>
+   <extension
+         point="org.eclipse.help.index">
+      <indexProvider
+            class="org.eclipse.help.internal.base.remote.RemoteIndexProvider">
+      </indexProvider>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contextProvider
+            class="org.eclipse.help.internal.base.remote.RemoteContextProvider">
+      </contextProvider>
+   </extension>
+   <extension
+         point="org.eclipse.help.contentExtension">
+      <contentExtensionProvider
+            class="org.eclipse.help.internal.base.remote.RemoteExtensionProvider">
+      </contentExtensionProvider>
+   </extension>
+
+</plugin>

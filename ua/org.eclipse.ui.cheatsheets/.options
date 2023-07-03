@@ -1,0 +1,7 @@
+# Debugging options for the org.eclipse.ui.cheatsheets.
+
+# Master flag for all org.eclipse.ui.intro plugin debug options.
+org.eclipse.ui.cheatsheets/debug = true
+
+# Enable printing of time taken during creation of cheat sheet.
+org.eclipse.ui.cheatsheets/trace/creation/times = true

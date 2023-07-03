@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<!-- ============================================================================= -->
+<!-- Define the top level topics                                                   -->
+<!-- ============================================================================= -->
+
+<toc label="JDT Plug-in Developer Guide">
+	<topic label="Programmer&apos;s Guide" href="guide/jdt_int.htm">
+		<link toc="data/help/performance/org.eclipse.jdt.doc.isv/topics_Guide.xml" />
+	</topic>
+	<topic label="Reference">
+		<link toc="data/help/performance/org.eclipse.jdt.doc.isv/topics_Reference.xml" />
+	</topic>
+	<topic label="3.2 Plug-in Migration Guide">
+		<link toc="data/help/performance/org.eclipse.jdt.doc.isv/topics_Porting.xml"/>
+	</topic>
+	<topic label="Examples Guide">
+		<link toc="data/help/performance/org.eclipse.jdt.doc.isv/topics_Samples.xml" />
+	</topic>
+	<topic label="Questions Index" href="questions/index.html">
+		<link toc="data/help/performance/org.eclipse.jdt.doc.isv/topics_Questions.xml" />
+	</topic>
+	<topic label="Legal" href="notices.html"/>
+</toc>

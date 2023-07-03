@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Remote Help</title>
+</head>
+<body>
+
+<h2>Remote Help</h2>
+
+<p><b>What is remote help?</b></p>
+
+<p>
+The help system provides the ability to retrieve content, not only from plug-ins
+installed in the local instance of Eclipse, but also from one or more remote servers running
+help in <a href="ua_help_setup_infocenter.htm">infocenter</a> mode. This allows
+products to ship without help content and provide it from a server to reduce their
+download and install size. It also allows user the ability to include help content
+from plug-ins not installed in their environment.
+</p>
+
+<p><b>How does remote help work?</b></p>
+
+<p>
+Content from the remote help servers is merged seamlessly with the local content. There
+will be no difference perceptible to the user other than potential network delays. This
+is done by adding a second implementation of <code>AbstractTocProvider</code> called
+<code>RemoteTocProvider</code> that supplies the content from the remote help server
+alongside the local <code>TocFileProvider</code>. For performance reasons, where both
+are available, local content will be supplied rather than remote content.
+</p>
+
+<p><b>How do I setup a remote help server?</b></p>
+
+<p>
+All you have to do to setup a remote help server is run the help system (version 3.3
+or later) in <a href="ua_help_setup_infocenter.htm">infocenter</a> mode.
+</p>
+
+<p><b>How do I access a remote help server?</b></p>
+
+<p>
+A remote help server can be specified in two ways as follows:</p>
+<ul>
+<li><a href="ua_help_setup_preferences.htm#remoteHelp">Product customization</a>: There are 
+6 options that can be included in the <code>plugin_customization.ini</code> file to
+setup remote help defaults. They are <code>remoteHelpOn</code>, <code>remoteHelpHost</code>,
+<code>remoteHelpPath</code>,
+<code>remoteHelpPort, remoteHelpName, remoteHelpICEnabled.</code>.
+</li>
+<li><a href="PLUGINS_ROOT/org.eclipse.platform.doc.user/reference/help_preferences_content.htm">
+Help Content preferences</a>: There is a preference page that allows users to
+configure remote help server settings manually.</li>
+</ul>
+
+
+</body>
+</html>

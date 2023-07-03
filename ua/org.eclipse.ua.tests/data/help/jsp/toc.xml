@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc label="JSP tests" link_to="data/help/toc/root.xml#content" topic="data/help/jsp/remote.html">
+    <topic label="JSP tests">
+    <topic href="data/help/jsp/getlocation.html" label="Setup help path">
+    </topic>
+    <topic href="data/help/jsp/b233466remote.html" label="A - Bug 233466">
+    </topic>
+    <topic href="data/help/jsp/b317055remote.html" label="B - Bug 317055">
+    </topic>
+    <topic href="data/help/jsp/b320547remote.html" label="C - Bug 320547">
+    </topic>
+    <topic href="data/help/jsp/b320548remote.html" label="D - Bug 320548">
+    </topic>
+    <topic href="data/help/jsp/xssremote.html" label="O - other tests">
+    </topic>
+    </topic>
+</toc>

@@ -1,0 +1,256 @@
+Intro Model Content:
+======================
+
+Model has valid config = true
+Presentation type = 2
+Home page id = root
+Number of pages (not including Root Page) = 5
+Number of shared groups = 0
+Number of unresolved extensions = 0
+
+HOME PAGE: 
+--------------
+	is dynamic= true
+	id = root
+	title = Dynamic XML Intro
+	style = null
+	alt-style = null
+	url = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 5
+
+		TITLE: id = null
+				title = Dynamic XML Intro
+				style-id = null
+		GROUP: id = null
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = Static Content Example
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=static
+								style-id = null
+		GROUP: id = null
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = Filter Example
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=filter
+								style-id = null
+		GROUP: id = null
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = Include Example
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=include
+								style-id = null
+		GROUP: id = null
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = Anchor Example
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=anchor
+								style-id = null
+
+PAGE id = static
+----------
+	title = Static Content Example
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 2
+
+		TITLE: id = null
+				title = Static Content Example
+				style-id = null
+		GROUP: id = null
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = This page contains static content only.
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=static
+								style-id = null
+
+PAGE id = filter
+----------
+	title = Filter Example
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 6
+
+		TITLE: id = null
+				title = Filter Example
+				style-id = null
+		GROUP: id = null
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = Sanity test
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=filter
+								style-id = null
+		GROUP: id = null
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = The plugin org.eclipse.help is installed.
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=filter
+								style-id = null
+		GROUP: id = null
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = The product org.eclipse.sdk.ide is running.
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=filter
+								style-id = null
+		GROUP: id = null
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = The category org.eclipse.categories.developmentCategory is enabled.
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=filter
+								style-id = null
+		GROUP: id = null
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = The activity org.eclipse.javaDevelopment is enabled.
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=filter
+								style-id = null
+
+PAGE id = include
+----------
+	title = Include Example
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 3
+
+		TITLE: id = null
+				title = Include Example
+				style-id = null
+		GROUP: id = null
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = There should be one link below included from another page.
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=include
+								style-id = null
+		GROUP: id = my.id.include2
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = This link is from page id=include2 and is to be included into other pages.
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=include
+								style-id = null
+
+PAGE id = include2
+----------
+	title = Include Example 2
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 2
+
+		TITLE: id = null
+				title = Include Example 2
+				style-id = null
+		GROUP: id = my.id.include2
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = This link is from page id=include2 and is to be included into other pages.
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=include
+								style-id = null
+
+PAGE id = anchor
+----------
+	title = Anchor Example
+	style = null
+	alt-style = null
+	style-id = null
+	page styles are = 
+	page alt-styles are = 
+	page children = 4
+
+		TITLE: id = null
+				title = Anchor Example
+				style-id = null
+		GROUP: id = null
+				label = null
+				children = 1
+				style-id = null
+						LINK: id = null
+								label = There is an anchor below this link that should be populated from another page.
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=anchor
+								style-id = null
+		GROUP: id = null
+				label = null
+				children = 2
+				style-id = null
+						LINK: id = null
+								label = This link is from extension content ext.xml and is to be contributed into a page with an anchor.
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=anchor
+								style-id = null
+						LINK: id = null
+								label = The plug-in org.eclipse.help is installed
+								text = null
+								url = http://org.eclipse.ui.intro/showPage?id=anchor
+								style-id = null
+		ANCHOR: id = my.id.anchor
+
+Model Flag Tests: 
+----------------
+		First page children are: 
+			Groups: 1
+			Links: 0
+			Texts: 0
+			HTMLs: 0
+			Images: 0
+			Includes: 0
+			Page Titles: 1
+			Page Heads: 0
+			Model Elements: 2
+			Containers: 1
+			All Pages: 0
+			Anchors: 0
+			Content providers: 0
+			Elements with Text child(AbstractTextElemets): 0
+			Groups and Links: 1

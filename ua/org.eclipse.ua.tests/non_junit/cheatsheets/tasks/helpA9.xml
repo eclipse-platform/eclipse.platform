@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2005, 2009 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<cheatsheet title="Workbench Capabilities in Help">
+   <intro>
+      <description>
+         Test enabling and disabling capabilities
+      </description>
+   </intro>
+   <item title="Turn off Development Capability" dialog="true" skip="false">
+      <description>
+      </description>
+      <subitem label="Launch &quot;Window&quot;-&gt;&quot;Preferences&quot;.  Open &quot;General&quot;-&gt;&quot;Capabilities&quot; preference page." skip="false">
+         <command serialization="org.eclipse.ui.window.preferences(preferencePageId=org.eclipse.sdk.capabilities)" confirm="false">
+         </command>
+      </subitem>
+      <subitem label="Uncheck the &quot;Development&quot; capability, leave &quot;Team&quot; checked." skip="false">
+      </subitem>
+      <subitem label="Hit OK" skip="false">
+      </subitem>
+   </item>
+   <item title="Test Show All Topics" dialog="false" skip="false">
+      <description>
+         Test that show all topics affects the TOC and search
+      </description>
+      <subitem label="Launch help , by selecting Help-&gt;Help Contents from the menu.  Verify only two workbench books appear." skip="false">
+      </subitem>
+      <subitem label="Select &quot;Show All Topics&quot; button in the navigation toolbar.  A dialog will appear. Confirm." skip="false">
+      </subitem>
+      <subitem label="Verify &quot;Show All Topics&quot; toolbar button appears pressed, and all books (including PDE Guide are displayed)." skip="false">
+      </subitem>
+      <subitem label="Search for &quot;PDE&quot;.  There should be large number of hits" skip="false">
+      </subitem>
+   </item>
+   <item title="Turn off Show All Topics" dialog="false" skip="false">
+      <description>
+         Test for reduced scope in TOC and Search
+      </description>
+      <subitem label="Turn off showing all topics. Verify that PDE Guide disappeared, since it is does not belong to enabled workbench capabilities" skip="false">
+      </subitem>
+      <subitem label="Perform search for &quot;PDE&quot;. Verify search results were redisplayed and there are not as many results." skip="false">
+      </subitem>
+   </item>
+   <item title="Restore all capabilities" dialog="true" skip="false">
+      <description>
+         Restore the default capabilities
+      </description>
+      <subitem label="Launch Window-&gt;Preferences" skip="false">
+         <command serialization="org.eclipse.ui.window.preferences(preferencePageId=org.eclipse.sdk.capabilities)" confirm="false">
+         </command>
+      </subitem>
+      <subitem label="Hit &quot;Restore Defaults&quot;" skip="false">
+      </subitem>
+      <subitem label="Hit OK" skip="false">
+      </subitem>
+   </item>
+</cheatsheet>

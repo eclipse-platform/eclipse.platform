@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta name="copyright" content="Copyright (c) IBM Corporation and others 2000, 2006. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page." >
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<script type="text/javascript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"></script>
+<title>Deploying the infocenter as a Web Archive</title>
+</head>
+<body>
+
+<h2>Deploying the infocenter as a Web Archive</h2>
+
+<p>Using Eclipse 3.4 or later it is possible to configure the help plugins to be deployed 
+as a web archive (war file) which will act as a fully <br>
+functioning infocenter. The instructions below assume a Tomcat server has been 
+installed, but with minor modifications <br>
+these steps should work for any full featured server. <br>
+<br>
+In your Eclipse installation locate the plugin org.eclipse.help.webapp.&lt;version&gt;.jar 
+and copy it to a temporary directory, <br>
+unzip the copy into that folder.</p>
+
+<ol>
+  <li>In the webapp plugin locate the web-archive directory and underneath that 
+there will be two directories titled &quot;help&quot; and <br>
+&quot;org.eclipse.help.infocenter-feature&quot;.</li>
+  <li>Import the org.eclipse.help.infocenter-feature using File-&gt;Import-&gt;Existing 
+Project.</li>
+  <li>Export org.eclipse.help.infocenter-feature as a deployable feature and set 
+the destination to be
+web-archive/help/WEB-INF/eclipse in the area where org.eclipse.help.webapp.&lt;version&gt;.jar 
+was unzipped.</li>
+  <li>Add some documentation plugins to the webapps/help/WEB-INF/eclipse/plugins 
+directory.</li>
+  <li>Download org.eclipse.equinox.http.servletbridge_&lt;version&gt;.jar and 
+  org.eclipse.equinox.servletbridge_&lt;version&gt;.jar from the
+  <a href="https://download.eclipse.org/eclipse/equinox/">equinox download site</a>. 
+  Select a version of Equinox that matches the version of Eclipse you are 
+  running to take you to the downloads page.</li>
+  <li>Extract servletbridge.jar from org.eclipse.equinox.servletbridge_&lt;version&gt;.jar.</li>
+  <li>Add the file servletbridge.jar to the help/WEB-INF/lib directory. You may 
+need to create this directory.</li>
+  <li>Add the file org.eclipse.equinox.http.servletbridge_&lt;version&gt;.jar to the 
+help/WEB-INFeclipse/plugins directory</li>
+  <li>At this stage you can create a war file from the help directory or you can 
+copy the directory and its contents to the webapps 
+folder of your Tomcat installation.</li>
+  <li>Start Tomcat and see the help system start up.</li>
+</ol>Notes: If you look in the config.ini in the help.war file under directory help/WEB_INF/eclipse/configuration 
+you will notice the <br>
+line eclipse.product=org.eclipse.productname. If your product has help system 
+customizations in a product plugin you can <br>
+activate these by changing this line to point to your product plugin.<br>
+&nbsp;
+
+</body>
+</html>
