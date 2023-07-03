@@ -2036,12 +2036,6 @@ M4 = Platform-specific fourth key
             description="%ActionDefinition.eof.description"
             id="org.eclipse.debug.ui.commands.eof">
       </command>
-      <command
-            name="%ActionDefinition.clear.name"
-            categoryId="org.eclipse.debug.ui.category.run"
-            description="%ActionDefinition.clear.description"
-            id="org.eclipse.debug.ui.commands.console.clear">
-      </command>
 <!-- Memory View -->
  	  <command
        		categoryId="org.eclipse.debug.ui.category.run"

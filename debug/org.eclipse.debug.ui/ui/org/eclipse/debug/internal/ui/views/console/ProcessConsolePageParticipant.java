@@ -133,6 +133,7 @@ public class ProcessConsolePageParticipant implements IConsolePageParticipant, I
 		fEOFHandler = new EOFHandler();
 		fClearConsoleHandler = new ClearConsoleHandler();
 		fClearConsoleAction = new ClearOutputAction(fConsole);
+		fClearConsoleAction.setActionDefinitionId(IConsoleConstants.COMMAND_ID_CLEAR_CONSOLE);
 	}
 
 	@Override
@@ -248,8 +249,8 @@ public class ProcessConsolePageParticipant implements IConsolePageParticipant, I
 			IContextService contextService = site.getService(IContextService.class);
 			fActivatedContext = contextService.activateContext(fContextId);
 			fEOFActivatedHandler = handlerService.activateHandler("org.eclipse.debug.ui.commands.eof", fEOFHandler); //$NON-NLS-1$
-			fClearConsoleActivatedHandler = handlerService
-					.activateHandler("org.eclipse.debug.ui.commands.console.clear", fClearConsoleHandler); //$NON-NLS-1$
+			fClearConsoleActivatedHandler = handlerService.activateHandler(IConsoleConstants.COMMAND_ID_CLEAR_CONSOLE,
+					fClearConsoleHandler);
 		}
 	}
 

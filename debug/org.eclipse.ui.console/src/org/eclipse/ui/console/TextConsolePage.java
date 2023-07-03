@@ -261,6 +261,8 @@ public class TextConsolePage implements IPageBookViewPage, IPropertyChangeListen
 		setGlobalAction(actionBars, ActionFactory.PASTE.getId(), action);
 
 		fClearOutputAction = new ClearOutputAction(fConsole);
+		fClearOutputAction.setActionDefinitionId(IConsoleConstants.COMMAND_ID_CLEAR_CONSOLE);
+		setGlobalAction(actionBars, IConsoleConstants.COMMAND_ID_CLEAR_CONSOLE, fClearOutputAction);
 
 		ResourceBundle bundle = ConsoleResourceBundleMessages.getBundle();
 		FindReplaceAction fraction = new FindReplaceAction(bundle, "find_replace_action_", fConsoleView); //$NON-NLS-1$
