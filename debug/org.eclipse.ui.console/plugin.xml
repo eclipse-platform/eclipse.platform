@@ -176,4 +176,14 @@ M4 = Platform-specific fourth key
       </consolePageParticipant>
     </extension>
 
+   <extension
+          point="org.eclipse.ui.commands">
+      <command
+            name="%command.clear.name"
+            categoryId="org.eclipse.ui.category.edit"
+            description="%command.clear.description"
+            id="org.eclipse.debug.ui.commands.console.clear">
+      </command>
+   </extension>
+
 </plugin>

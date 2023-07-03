@@ -170,4 +170,15 @@ public interface IConsoleConstants {
 	 */
 	int DEFAULT_TAB_SIZE = 8;
 
+	/**
+	 * Command ID of the 'clear' command.
+	 * <p>
+	 * Note: The command ID intentionally starts with
+	 * <code>org.eclipse.debug.ui</code>, because it was moved from that plugin and
+	 * kept stable to not break existing bindings.
+	 *
+	 * @since 3.13
+	 */
+	String COMMAND_ID_CLEAR_CONSOLE = "org.eclipse.debug.ui.commands.console.clear"; //$NON-NLS-1$
+
 }
