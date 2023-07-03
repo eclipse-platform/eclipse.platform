@@ -19,20 +19,47 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
-import javax.xml.parsers.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.events.BuildCommand;
 import org.eclipse.core.internal.localstore.SafeFileInputStream;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.FileInfoMatcherDescription;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
-import org.xml.sax.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -219,13 +246,13 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			StringTokenizer tokens = new StringTokenizer(charBuffer.toString(), ","); //$NON-NLS-1$
 			while (tokens.hasMoreTokens()) {
 				String next = tokens.nextToken();
-				if (next.toLowerCase().equals(TRIGGER_AUTO)) {
+				if (next.equalsIgnoreCase(TRIGGER_AUTO)) {
 					command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, true);
-				} else if (next.toLowerCase().equals(TRIGGER_CLEAN)) {
+				} else if (next.equalsIgnoreCase(TRIGGER_CLEAN)) {
 					command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, true);
-				} else if (next.toLowerCase().equals(TRIGGER_FULL)) {
+				} else if (next.equalsIgnoreCase(TRIGGER_FULL)) {
 					command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, true);
-				} else if (next.toLowerCase().equals(TRIGGER_INCREMENTAL)) {
+				} else if (next.equalsIgnoreCase(TRIGGER_INCREMENTAL)) {
 					command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, true);
 				}
 			}
@@ -885,7 +912,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			// popped off the stack, massaged into the right format
 			// and added to the project description when we hit the
 			// end element for PROJECTS.
-			objectStack.push(new ArrayList<String>());
+			objectStack.push(new ArrayList<>());
 			return;
 		}
 		if (elementName.equals(BUILD_SPEC)) {
@@ -894,30 +921,30 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			// for this build spec.  This array list will be popped off the stack,
 			// massaged into the right format and added to the project's build
 			// spec when we hit the end element for BUILD_SPEC.
-			objectStack.push(new ArrayList<ICommand>());
+			objectStack.push(new ArrayList<>());
 			return;
 		}
 		if (elementName.equals(NATURES)) {
 			state = S_NATURES;
 			// Push an array list to hold all the nature names.
-			objectStack.push(new ArrayList<String>());
+			objectStack.push(new ArrayList<>());
 			return;
 		}
 		if (elementName.equals(LINKED_RESOURCES)) {
 			// Push a HashMap to collect all the links.
-			objectStack.push(new HashMap<IPath, LinkDescription>());
+			objectStack.push(new HashMap<>());
 			state = S_LINKED_RESOURCES;
 			return;
 		}
 		if (elementName.equals(FILTERED_RESOURCES)) {
 			// Push a HashMap to collect all the filters.
-			objectStack.push(new HashMap<IPath, LinkedList<FilterDescription>>());
+			objectStack.push(new HashMap<>());
 			state = S_FILTERED_RESOURCES;
 			return;
 		}
 		if (elementName.equals(VARIABLE_LIST)) {
 			// Push a HashMap to collect all the variables.
-			objectStack.push(new HashMap<String, VariableDescription>());
+			objectStack.push(new HashMap<>());
 			state = S_VARIABLE_LIST;
 			return;
 		}
@@ -1015,7 +1042,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 					state = S_BUILD_COMMAND_ARGUMENTS;
 					// Push a HashMap to hold all the key/value pairs which
 					// will become the argument list.
-					objectStack.push(new HashMap<String, String>());
+					objectStack.push(new HashMap<>());
 				}
 				break;
 			case S_BUILD_COMMAND_ARGUMENTS :
@@ -1091,7 +1118,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 					state = S_MATCHER_ID;
 				} else if (elementName.equals(ARGUMENTS)) {
 					state = S_MATCHER_ARGUMENTS;
-					objectStack.push(new ArrayList<FileInfoMatcherDescription>());
+					objectStack.push(new ArrayList<>());
 				}
 				break;
 			case S_MATCHER_ARGUMENTS :

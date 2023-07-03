@@ -133,16 +133,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 	}
 
 	/**
-	 * Tears down the fixture, for example, close a network connection.
-	 * This method is called after a test is executed.
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		getWorkspace().getRoot().delete(true, getMonitor());
-	}
-
-	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 * @see SortBuilderPlugin
 	 * @see SortBuilder

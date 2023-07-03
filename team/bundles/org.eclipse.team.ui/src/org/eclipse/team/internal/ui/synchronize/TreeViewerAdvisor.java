@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
@@ -237,19 +237,19 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 		modelRoot.addCompareInputChangeListener(source -> getActionGroup().modelChanged(modelRoot));
 		final StructuredViewer viewer = getViewer();
 		if (viewer != null) {
-			viewer.setSorter(modelProvider.getViewerSorter());
+			viewer.setComparator(modelProvider.getViewerComparator());
 			viewer.setInput(modelRoot);
 			modelProvider.addPropertyChangeListener(event -> {
 				if (event.getProperty() == ISynchronizeModelProvider.P_VIEWER_SORTER) {
 					if (viewer != null && !viewer.getControl().isDisposed()) {
 						viewer.getControl().getDisplay().syncExec(() -> {
 							if (viewer != null && !viewer.getControl().isDisposed()) {
-								ViewerSorter newSorter = modelProvider.getViewerSorter();
-								ViewerSorter oldSorter = viewer.getSorter();
+								ViewerComparator newSorter = modelProvider.getViewerComparator();
+								ViewerComparator oldSorter = viewer.getComparator();
 								if (newSorter == oldSorter) {
 									viewer.refresh();
 								} else {
-									viewer.setSorter(newSorter);
+									viewer.setComparator(newSorter);
 								}
 							}
 						});

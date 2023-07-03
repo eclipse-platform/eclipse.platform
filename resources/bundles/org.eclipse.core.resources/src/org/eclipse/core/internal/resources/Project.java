@@ -1363,8 +1363,11 @@ public class Project extends Container implements IProject {
 				workspace.getWorkManager().operationCanceled();
 				throw e;
 			} finally {
-				workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.POST_PROJECT_CHANGE, this));
-				workspace.endOperation(rule, true);
+				try {
+					workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.POST_PROJECT_CHANGE, this));
+				} finally {
+					workspace.endOperation(rule, true);
+				}
 			}
 		} finally {
 			monitor.done();

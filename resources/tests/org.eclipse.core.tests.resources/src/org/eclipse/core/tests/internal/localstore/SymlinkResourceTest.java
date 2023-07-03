@@ -20,7 +20,11 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
 public class SymlinkResourceTest extends LocalStoreTest {
 
 	protected void mkLink(IFileStore dir, String src, String tgt, boolean isDir) {
@@ -67,11 +71,11 @@ public class SymlinkResourceTest extends LocalStoreTest {
 	 * been visited before.
 	 * See <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=232426">bug 232426</a>
 	 */
+	@Test
 	public void testBug232426() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		/* Re-use projects which are cleaned up automatically */
 		final IProject project = projects[0];
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
@@ -98,11 +102,11 @@ public class SymlinkResourceTest extends LocalStoreTest {
 		});
 	}
 
+	@Test
 	public void testBug358830() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeCanCreateSymLinks();
+
 		/* Re-use projects which are cleaned up automatically */
 		final IProject project = projects[0];
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {

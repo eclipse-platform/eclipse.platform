@@ -165,7 +165,7 @@ public class ThreeWaySynchronizer {
 				beginOperation();
 				String base = new String(baseBytes);
 				String[] slots = new String[] {
-						Long.valueOf(resource.getModificationStamp()).toString(),
+						Long.toString(resource.getModificationStamp()),
 						base,
 						base
 				};

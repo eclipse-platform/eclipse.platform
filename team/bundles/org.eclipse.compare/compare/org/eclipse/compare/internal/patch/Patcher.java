@@ -401,20 +401,14 @@ public class Patcher implements IHunkFilter {
 	}
 
 	protected void store(byte[] bytes, IFile file, IProgressMonitor pm) throws CoreException {
-		InputStream is= new ByteArrayInputStream(bytes);
-		try {
+		try (InputStream is = new ByteArrayInputStream(bytes)) {
 			if (file.exists()) {
 				file.setContents(is, false, true, pm);
 			} else {
 				file.create(is, false, pm);
 			}
-		} finally {
-			if (is != null)
-				try {
-					is.close();
-				} catch(IOException ex) {
-					// silently ignored
-				}
+		} catch (IOException closeException) {
+			// silently ignored
 		}
 	}
 

@@ -341,7 +341,7 @@ public class CompareConfiguration {
 			return null;
 		}
 		ResourceManager rm = getResourceManager();
-		return rm.createImage(id);
+		return rm.create(id);
 	}
 
 	private synchronized ResourceManager getResourceManager() {
@@ -369,7 +369,7 @@ public class CompareConfiguration {
 			return null;
 		ImageDescriptor id = new DiffImageDescriptor(base, getImageDescriptor(kind), ICompareUIConstants.COMPARE_IMAGE_WIDTH, false);
 		ResourceManager rm = getResourceManager();
-		return rm.createImage(id);
+		return rm.create(id);
 	}
 
 	/**

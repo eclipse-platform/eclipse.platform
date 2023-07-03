@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension-point id="unittestViewSupport" name="%testViewSupport.name" schema="schema/unittestViewSupport.exsd"/>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="%View.label"
+            icon="$nl$/icons/full/eview16/unit.png"
+            category="org.eclipse.debug.ui"
+            fastViewWidthRatio="0.40"
+            class="org.eclipse.unittest.internal.ui.TestRunnerViewPart"
+            id="org.eclipse.unittest.ui.ResultView">
+      </view>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+         name="%GotoTestCommand.name"
+         description="%GotoTestCommand.description"
+         categoryId="org.eclipse.search.ui.category.search"
+         id="org.eclipse.unittest.ui.gotoTest">
+      </command>
+      <command
+            name="%UnitTestShortcut.description.run"
+            description="%UnitTestShortcut.description.run"
+            categoryId="org.eclipse.debug.ui.category.run"
+            id="org.eclipse.unittest.ui.UnitTestShortcut.run">
+      </command>
+      <command
+            name="%UnitTestShortcut.description.debug"
+            description="%UnitTestShortcut.description.debug"
+            categoryId="org.eclipse.debug.ui.category.run"
+            id="org.eclipse.unittest.ui.UnitTestShortcut.debug">
+      </command>
+      <command
+            name="%UnitTestShortcut.description.rerunLast"
+            description="%UnitTestShortcut.description.rerunLast"
+            categoryId="org.eclipse.debug.ui.category.run"
+            id="org.eclipse.unittest.ui.UnitTestShortcut.rerunLast">
+      </command>
+      <command
+            name="%UnitTestShortcut.description.rerunFailedCases"
+            description="%UnitTestShortcut.description.rerunFailedCases"
+            categoryId="org.eclipse.debug.ui.category.run"
+            id="org.eclipse.unittest.ui.UnitTestShortcut.rerunFailedCases">
+      </command>
+      <command
+            defaultHandler="org.eclipse.unittest.internal.ui.history.HistoryHandler"
+            description="%UnitTestShortcut.description.history"
+            id="org.eclipse.unittest.ui.history"
+            name="%UnitTestShortcut.description.history">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="org.eclipse.unittest.ui.history"
+            disabledIcon="icons/full/dlcl16/history_list.png"
+            icon="icons/full/elcl16/history_list.png">
+      </image>
+   </extension>
+
+</plugin>

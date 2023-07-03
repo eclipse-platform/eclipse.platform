@@ -35,15 +35,13 @@ public class BuildProjectFromMultipleJobsTest extends ResourceTest {
 	private static final String TEST_PROJECT_NAME = "ProjectForBuildCommandTest";
 
 	private final ErrorLogListener logListener = new ErrorLogListener();
-	private boolean wasAutoBuildOn;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		// auto-build makes reproducing the problem harder,
 		// since it may build before we trigger parallel builds from the test
-		wasAutoBuildOn = setWorkspaceAutoBuild(false);
-
+		setAutoBuilding(false);
 		Platform.addLogListener(logListener);
 	}
 
@@ -60,7 +58,6 @@ public class BuildProjectFromMultipleJobsTest extends ResourceTest {
 				testProject.delete(true, null);
 			}
 		} finally {
-			setWorkspaceAutoBuild(wasAutoBuildOn);
 		}
 
 		super.tearDown();
@@ -151,17 +148,6 @@ public class BuildProjectFromMultipleJobsTest extends ResourceTest {
 		IWorkspaceRoot workspaceRoot = getWorkspace().getRoot();
 		IProject project = workspaceRoot.getProject(TEST_PROJECT_NAME);
 		return project;
-	}
-
-	private static boolean setWorkspaceAutoBuild(boolean autobuildOn) throws CoreException {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		final IWorkspaceDescription description = workspace.getDescription();
-		boolean oldAutoBuildingState = description.isAutoBuilding();
-		if (oldAutoBuildingState != autobuildOn) {
-			description.setAutoBuilding(autobuildOn);
-			workspace.setDescription(description);
-		}
-		return oldAutoBuildingState;
 	}
 
 	private static class ErrorLogListener implements ILogListener {

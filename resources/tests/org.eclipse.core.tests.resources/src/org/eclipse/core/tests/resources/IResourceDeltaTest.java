@@ -63,16 +63,6 @@ public class IResourceDeltaTest extends ResourceTest {
 	}
 
 	/**
-	 * Tears down the fixture, for example, close a network connection.
-	 * This method is called after a test is executed.
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
-	}
-
-	/**
 	 * Tests the IResourceDelta#findMember method.
 	 */
 	public void testFindMember() {

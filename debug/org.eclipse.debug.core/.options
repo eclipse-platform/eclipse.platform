@@ -1,0 +1,3 @@
+org.eclipse.debug.core/debug=false
+org.eclipse.debug.core/debug/commands=false
+org.eclipse.debug.core/debug/events=false

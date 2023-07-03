@@ -369,20 +369,14 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 					file.delete(false, true, Policy.subMonitorFor(monitor1, 95));
 				} else if (remote != null) {
 					ensureParentsExist(file, monitor1);
-					InputStream stream = remote.getStorage(monitor1).getContents();
-					stream = new BufferedInputStream(stream);
-					try {
+					try (InputStream stream = new BufferedInputStream(remote.getStorage(monitor1).getContents())) {
 						if (file.exists()) {
 							file.setContents(stream, false, true, Policy.subMonitorFor(monitor1, 95));
 						} else {
 							file.create(stream, false, Policy.subMonitorFor(monitor1, 95));
 						}
-					} finally {
-						try {
-							stream.close();
-						} catch (IOException e) {
-							// Ignore
-						}
+					} catch (IOException closeException) {
+						// Ignore
 					}
 				}
 				// Performing a replace should leave the file in-sync

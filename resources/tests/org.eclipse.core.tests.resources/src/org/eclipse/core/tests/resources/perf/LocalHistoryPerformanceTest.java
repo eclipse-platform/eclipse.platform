@@ -29,8 +29,6 @@ import org.eclipse.core.tests.resources.ResourceTest;
  */
 public class LocalHistoryPerformanceTest extends ResourceTest {
 
-	private IWorkspaceDescription original;
-
 	void cleanHistory() {
 		((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore().clean(getMonitor());
 	}
@@ -81,14 +79,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 	}
 
 	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		original = getWorkspace().getDescription();
-	}
-
-	@Override
 	protected void tearDown() throws Exception {
-		getWorkspace().setDescription(original);
 		super.tearDown();
 		HistoryStoreTest.wipeHistoryStore(getMonitor());
 	}

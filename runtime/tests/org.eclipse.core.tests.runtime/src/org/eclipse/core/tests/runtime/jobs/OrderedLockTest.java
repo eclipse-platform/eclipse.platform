@@ -15,10 +15,17 @@ package org.eclipse.core.tests.runtime.jobs;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
-import org.eclipse.core.internal.jobs.*;
+import org.eclipse.core.internal.jobs.DeadlockDetector;
+import org.eclipse.core.internal.jobs.LockManager;
+import org.eclipse.core.internal.jobs.OrderedLock;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.LockListener;
 import org.eclipse.core.tests.harness.TestBarrier2;
@@ -55,6 +62,36 @@ public class OrderedLockTest {
 			createRunnables(new ILock[] { lock3, lock2, lock1 }, 5, allRunnables);
 			createRunnables(new ILock[] { lock1, lock3, lock2 }, 5, allRunnables);
 			createRunnables(new ILock[] { lock2, lock3, lock1 }, 5, allRunnables);
+			execute(allRunnables);
+			// the underlying array has to be empty
+			assertTrue("Locks not removed from graph.", manager.isEmpty());
+		});
+	}
+
+	@Test
+	public void testManyLocksAndThreads() {
+		int numberOfLocks = 10;
+		int numberOfThreads = 10;
+		DeadlockDetector.runSilent(() -> {
+			ArrayList<LockAcquiringRunnable> allRunnables = new ArrayList<>();
+			LockManager manager = new LockManager();
+			manager.setLockListener(new LockListener() {
+				@Override
+				public boolean aboutToWait(Thread lockOwner) {
+					// Yield upon waiting for a lock to give other threads the chance for
+					// conflicting lock acquisitions
+					Thread.yield();
+					return false;
+				}
+			});
+			List<OrderedLock> locks = new ArrayList<>();
+			for (int i = 0; i < numberOfLocks; i++) {
+				locks.add(manager.newLock());
+			}
+			for (int i = 0; i < numberOfThreads / 5; i++) {
+				Collections.shuffle(locks);
+				createRunnables(locks.toArray(OrderedLock[]::new), 5, allRunnables);
+			}
 			execute(allRunnables);
 			// the underlying array has to be empty
 			assertTrue("Locks not removed from graph.", manager.isEmpty());
@@ -291,21 +328,29 @@ public class OrderedLockTest {
 			thread.start();
 		}
 		randomOrder.waitForEnd();
-		long joinMillis = 5000;
+		long maxNano = System.nanoTime() + 5000 * 1_000_000;
 		for (Thread thread : threads) {
 			try {
-				long n0 = System.nanoTime();
-				thread.join(joinMillis);
-				long n1 = System.nanoTime();
-				joinMillis = Math.max(joinMillis - (n1 - n0) / 1000_000, 1);
-				if (thread.isAlive()) {
-					throw new IllegalStateException("thread did not end");
+				long joinMs = (maxNano - System.nanoTime()) / 1_000_000;
+				thread.join(Math.max(joinMs, 1));
+				if (thread.isAlive() || joinMs < 0) {
+					throw new IllegalStateException(
+							"Threads did not end in time. All thread infos begin: ----\n" + getThreadDump()
+									+ "---- All thread infos end.\n");
 
 				}
 			} catch (InterruptedException e) {
 				throw new IllegalStateException("interrupted");
 			}
 		}
+	}
+
+	public static String getThreadDump() {
+		StringBuilder b = new StringBuilder();
+		for (ThreadInfo info : ManagementFactory.getThreadMXBean().dumpAllThreads(true, true)) {
+			b.append(info);
+		}
+		return b.toString();
 	}
 
 }

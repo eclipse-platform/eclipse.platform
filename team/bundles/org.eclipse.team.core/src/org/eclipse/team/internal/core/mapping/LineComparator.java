@@ -82,16 +82,9 @@ class LineComparator implements IRangeComparator {
 
 	public static LineComparator create(IStorage storage, String outputEncoding)
 			throws CoreException, IOException {
-		InputStream is = new BufferedInputStream(storage.getContents());
-		try {
+		try (InputStream is = new BufferedInputStream(storage.getContents())) {
 			String encoding = getEncoding(storage, outputEncoding);
 			return new LineComparator(is, encoding);
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				// Ignore
-			}
 		}
 	}
 

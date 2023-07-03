@@ -87,6 +87,7 @@ import org.eclipse.jface.text.ISynchronizable;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
+@SuppressWarnings("removal") // SecurityManager
 public class AntModel implements IAntModel {
 
 	private static ClassLoader fgClassLoader;

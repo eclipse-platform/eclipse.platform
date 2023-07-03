@@ -31,7 +31,7 @@ public class StringPoolJob extends Job {
 	 * Stores all registered string pool participants, along with the scheduling
 	 * rule required when running it.
 	 */
-	private Map<IStringPoolParticipant, ISchedulingRule> participants = Collections.synchronizedMap(new HashMap<IStringPoolParticipant, ISchedulingRule>(10));
+	private Map<IStringPoolParticipant, ISchedulingRule> participants = Collections.synchronizedMap(new HashMap<>(10));
 
 	private final Bundle systemBundle = Platform.getBundle("org.eclipse.osgi"); //$NON-NLS-1$
 

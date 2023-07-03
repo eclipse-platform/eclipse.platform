@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2022 IBM Corporation and others.
+ *  Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -18,18 +18,54 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+import java.util.function.Consumer;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.resources.FileInfoMatcherDescription;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceFilterDescription;
+import org.eclipse.core.resources.IResourceProxyVisitor;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
+import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 
 public class IResourceTest extends ResourceTest {
 	protected static final Boolean[] FALSE_AND_TRUE = { Boolean.FALSE, Boolean.TRUE };
-	protected static IPath[] interestingPaths;
+	protected static final IPath[] interestingPaths = getInterestingPaths();
 	protected static IResource[] interestingResources;
 	protected static Set<IResource> nonExistingResources = new HashSet<>();
 	protected static final IProgressMonitor[] PROGRESS_MONITORS = { new FussyProgressMonitor(),
@@ -193,9 +229,21 @@ public class IResourceTest extends ResourceTest {
 
 		//file system only
 		unsynchronized = buildResources(root, new String[] {"1/1/2/2/1"});
+		ensureDoesNotExistInWorkspace(unsynchronized);
 		ensureExistsInFileSystem(unsynchronized);
 		unsynchronizedResources.add(unsynchronized[0]);
 		return result;
+	}
+
+	private static IPath[] getInterestingPaths() {
+		String[] interestingPathnames = { "1/", "1/1/", "1/1/1/", "1/1/1/1", "1/1/2/1/", "1/1/2/2/", "1/1/2/3/",
+				"1/2/", "1/2/1", "1/2/2", "1/2/3/", "1/2/3/1", "1/2/3/2", "1/2/3/3", "1/2/3/4", "2", "2/1", "2/2",
+				"2/3", "2/4", "2/1/", "2/2/", "2/3/", "2/4/", ".." };
+		IPath[] paths = new IPath[interestingPathnames.length];
+		for (int i = 0; i < interestingPathnames.length; i++) {
+			paths[i] = new Path(interestingPathnames[i]);
+		}
+		return paths;
 	}
 
 	/**
@@ -365,17 +413,13 @@ public class IResourceTest extends ResourceTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		IWorkspaceDescription description = getWorkspace().getDescription();
-		description.setAutoBuilding(false);
-		getWorkspace().setDescription(description);
+		setAutoBuilding(false);
+		initializeProjects();
+	}
 
+	private void initializeProjects() {
+		nonExistingResources.clear();
 		try {
-			// open project
-			IProject openProject = getWorkspace().getRoot().getProject("openProject");
-			openProject.create(null);
-			openProject.open(null);
-			IResource[] resourcesInOpenProject = buildSampleResources(openProject);
-
 			// closed project
 			IProject closedProject = getWorkspace().getRoot().getProject("ClosedProject");
 			closedProject.create(null);
@@ -383,7 +427,13 @@ public class IResourceTest extends ResourceTest {
 			IResource[] resourcesInClosedProject = buildSampleResources(closedProject);
 			closedProject.close(null);
 
-			// non-existant project
+			// open project
+			IProject openProject = getWorkspace().getRoot().getProject("openProject");
+			openProject.create(null);
+			openProject.open(null);
+			IResource[] resourcesInOpenProject = buildSampleResources(openProject);
+
+			// non-existent project
 			IProject nonExistingProject = getWorkspace().getRoot().getProject("nonExistingProject");
 			nonExistingProject.create(null);
 			nonExistingProject.open(null);
@@ -406,17 +456,35 @@ public class IResourceTest extends ResourceTest {
 
 			interestingResources = new IResource[resources.size()];
 			resources.toArray(interestingResources);
+		} catch (Exception e) {
+			fail("failed creating test projects", e);
+		}
+	}
 
-			String[] interestingPathnames = { "1/", "1/1/", "1/1/1/", "1/1/1/1", "1/1/2/1/", "1/1/2/2/", "1/1/2/3/",
-					"1/2/", "1/2/1", "1/2/2", "1/2/3/", "1/2/3/1", "1/2/3/2", "1/2/3/3", "1/2/3/4", "2", "2/1", "2/2",
-					"2/3", "2/4", "2/1/", "2/2/", "2/3/", "2/4/", ".." };
-			interestingPaths = new IPath[interestingPathnames.length];
-			for (int i = 0; i < interestingPathnames.length; i++) {
-				interestingPaths[i] = new Path(interestingPathnames[i]);
+	private abstract class ProjectsReinitializingTestPerformer extends TestPerformer {
+		private boolean reinitializeOnCleanup = false;
+
+		public ProjectsReinitializingTestPerformer(String name) {
+			super(name);
+		}
+
+		protected void reinitializeProjectsAfterTestIteration() {
+			reinitializeOnCleanup = true;
+		}
+
+		@Override
+		public void cleanUp(Object[] args, int countArg) {
+			// Reinitialize projects if necessary
+			if (reinitializeOnCleanup) {
+				try {
+					IResourceTest.this.cleanup();
+				} catch (CoreException e) {
+					fail("unexpected exception occurred during cleanup between test iterations", e);
+				}
+				IResourceTest.this.initializeProjects();
+				reinitializeOnCleanup = false;
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw ex;
+			super.cleanUp(args, countArg);
 		}
 	}
 
@@ -531,9 +599,9 @@ public class IResourceTest extends ResourceTest {
 			getWorkspace().removeResourceChangeListener(verifier);
 		}
 		getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
-		interestingPaths = null;
 		interestingResources = null;
+		nonExistingResources.clear();
+		unsynchronizedResources.clear();
 		super.tearDown();
 	}
 
@@ -777,12 +845,7 @@ public class IResourceTest extends ResourceTest {
 		}
 
 		Object[][] inputs = new Object[][] {interestingResources, interestingPaths, TRUE_AND_FALSE, PROGRESS_MONITORS};
-		new TestPerformer("IResourceTest.testCopy") {
-
-			@Override
-			public Object[] interestingOldState(Object[] args) {
-				return null;
-			}
+		new ProjectsReinitializingTestPerformer("IResourceTest.testCopy") {
 
 			@Override
 			public Object invokeMethod(Object[] args, int count) throws Exception {
@@ -790,12 +853,12 @@ public class IResourceTest extends ResourceTest {
 				IPath destination = (IPath) args[1];
 				Boolean force = (Boolean) args[2];
 				IProgressMonitor monitor = (IProgressMonitor) args[3];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				resource.copy(destination, force.booleanValue(), monitor);
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}
@@ -804,16 +867,18 @@ public class IResourceTest extends ResourceTest {
 			public boolean shouldFail(Object[] args, int count) {
 				IResource resource = (IResource) args[0];
 				IPath destination = (IPath) args[1];
-				//Boolean force = (Boolean) args[2];
-				if (!resource.isAccessible()) {
+				boolean forceUpdate = (boolean) args[2];
+				IProgressMonitor monitor = (IProgressMonitor) args[3];
+				if (shouldMoveOrCopyFail(resource, destination, forceUpdate, monitor, this::setReasonForExpectedFail)) {
 					return true;
 				}
-				if (isProject(resource) && destination.segmentCount() > 1 && !getWorkspace().validatePath(destination.toString(), IResource.FOLDER).isOK()) {
+				if (!forceUpdate && !isProject(resource) && hasUnsynchronizedContents(resource)) {
+					// Reinitialize affected out-of-sync resources
+					reinitializeProjectsAfterTestIteration();
+					setReasonForExpectedFail("source has unsynchronized contents and move is not enforced");
 					return true;
 				}
-				java.io.File destinationParent = destination.isAbsolute() ? destination.removeLastSegments(1).toFile() : resource.getLocation().removeLastSegments(1).append(destination.removeLastSegments(1)).toFile();
-				java.io.File destinationFile = destination.isAbsolute() ? destination.toFile() : resource.getLocation().removeLastSegments(1).append(destination).removeTrailingSeparator().toFile();
-				return !destinationParent.exists() || !destinationParent.isDirectory() || destinationFile.exists() || destinationFile.toString().startsWith(resource.getLocation().toFile().toString());
+				return false;
 			}
 
 			@Override
@@ -835,9 +900,192 @@ public class IResourceTest extends ResourceTest {
 				if (copy.findMarkers(IMarker.TASK, true, IResource.DEPTH_INFINITE).length > 0) {
 					return false;
 				}
+				// Restore workspace when copy was successful
+				reinitializeProjectsAfterTestIteration();
 				return true;
 			}
 		}.performTest(inputs);
+	}
+
+	private boolean shouldMoveOrCopyFail(IResource source, IPath destination, boolean forceUpdate,
+			IProgressMonitor monitor, Consumer<String> expectedFailMessageReceiver) {
+		if (monitor instanceof CancelingProgressMonitor) {
+			expectedFailMessageReceiver.accept("canceling progress monitor is used");
+			return true;
+		}
+		if (!source.isAccessible()) {
+			expectedFailMessageReceiver.accept("source is not accessible");
+			return true;
+		}
+		File destinationParent = destination.isAbsolute() ? destination.removeLastSegments(1).toFile()
+				: source.getLocation().removeLastSegments(1).append(destination.removeLastSegments(1)).toFile();
+		File destinationFile = destination.isAbsolute() ? destination.toFile()
+				: source.getLocation().removeLastSegments(1).append(destination).removeTrailingSeparator().toFile();
+		if (!destinationParent.exists()) {
+			expectedFailMessageReceiver.accept("parent of destination does not exist");
+			return true;
+		}
+		if (!destinationParent.isDirectory()) {
+			expectedFailMessageReceiver.accept("parent of destination is not a directory");
+			return true;
+		}
+		if (destinationFile.exists()) {
+			expectedFailMessageReceiver.accept("destination already exists");
+			return true;
+		}
+		if(destinationFile.toString().startsWith(source.getLocation().toFile().toString())) {
+			expectedFailMessageReceiver.accept("destination is child of source");
+			return true;
+		}
+		return false;
+
+	}
+
+	private boolean hasUnsynchronizedContents(IResource resource) {
+		final boolean[] hasUnsynchronizedResources = new boolean[] { false };
+		try {
+			resource.accept(new IResourceVisitor() {
+				@Override
+				public boolean visit(IResource toVisit) throws CoreException {
+					File target = toVisit.getLocation().toFile();
+					if (target.exists() != toVisit.exists()) {
+						hasUnsynchronizedResources[0] = true;
+						return false;
+					}
+					if (target.isFile() != (toVisit.getType() == IResource.FILE)) {
+						hasUnsynchronizedResources[0] = true;
+						return false;
+					}
+					if (unsynchronizedResources.contains(toVisit)) {
+						hasUnsynchronizedResources[0] = true;
+						return false;
+					}
+					if (target.isFile()) {
+						return false;
+					}
+					// Process children that only exist in file system but not in workspace
+					String[] list = target.list();
+					if (list == null) {
+						return true;
+					}
+					IContainer container = (IContainer) toVisit;
+					for (String element : list) {
+						File file = new File(target, element);
+						IResource child = file.isFile() ? (IResource) container.getFile(new Path(element))
+								: container.getFolder(new Path(element));
+						if (!child.exists()) {
+							visit(child);
+						}
+					}
+					return true;
+				}
+			});
+		} catch (Exception e) {
+			fail("an unexpected error occurred when checking for unsychronized resource contents", e);
+		}
+		return hasUnsynchronizedResources[0];
+	}
+
+	/**
+	 * copy a project to external location which has resource filters.
+	 */
+	public void testCopyProjectWithResFilterToExternLocation() throws CoreException {
+		IProject sourceProj = createProject(true);
+
+		// prepare destination project description.
+		IProject destProj = getWorkspace().getRoot().getProject("testCopyProject" + 2);
+		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, new Path(FileSystemHelper
+				.getRandomLocation(FileSystemHelper.getTempDir()).append(destProj.getName()).toOSString()));
+
+		LogListener logListener = copyProject(sourceProj, desc);
+
+		// assert there are no errors in error log.
+		logListener.assertNoLoggedErrors();
+		// assert there is no duplicate folder in the workspace.
+		IPath destProjLocInWs = getWorkspace().getRoot().getLocation().append(destProj.getName());
+		assertFalse("Project folder should not exist in workspace when copied to external location",
+				destProjLocInWs.toFile().exists());
+	}
+
+	/**
+	 * copy a project to external location.
+	 */
+	public void testCopyProjectWithoutResFilterToExternLocation() throws CoreException {
+		IProject sourceProj = createProject(false);
+
+		// prepare destination project description.
+		IProject destProj = getWorkspace().getRoot().getProject("testCopyProject" + 2);
+		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, new Path(FileSystemHelper
+				.getRandomLocation(FileSystemHelper.getTempDir()).append(destProj.getName()).toOSString()));
+
+		LogListener logListener = copyProject(sourceProj, desc);
+
+		// assert there are no errors in error log.
+		logListener.assertNoLoggedErrors();
+		// assert there is no duplicate folder in the workspace.
+		IPath destProjLocInWs = getWorkspace().getRoot().getLocation().append(destProj.getName());
+		assertFalse("Project folder should not exist in workspace when copied to external location",
+				destProjLocInWs.toFile().exists());
+		assertTrue("Project folder should exist in external location", destProj.getLocation().toFile().exists());
+	}
+
+	/**
+	 * copy a project within the workspace(i.e default location) which has a
+	 * resource filter.
+	 */
+	public void testCopyProjectWithResFilterWithinWorkspace() throws CoreException {
+		IProject sourceProj = createProject(true);
+
+		// prepare destination project description.
+		IProject destProj = getWorkspace().getRoot().getProject("testCopyProject" + 2);
+		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, null);
+
+		LogListener logListener = copyProject(sourceProj, desc);
+
+		// assert there are no errors in error log.
+		logListener.assertNoLoggedErrors();
+		// assert there is no duplicate folder in the workspace.
+		IPath destProjLocInWs = getWorkspace().getRoot().getLocation().append(destProj.getName());
+		assertTrue("Project folder should exist in workspace when copied with default location",
+				destProjLocInWs.toFile().exists());
+	}
+
+	private LogListener copyProject(IProject sourceProj, IProjectDescription desc) throws CoreException {
+		LogListener logListener = null;
+		try {
+			logListener = new LogListener();
+			Platform.addLogListener(logListener);
+			sourceProj.copy(desc, IResource.NONE, getMonitor());
+		} finally {
+			Platform.removeLogListener(logListener);
+		}
+		return logListener;
+	}
+
+	private IProjectDescription prepareDestProjDesc(IProject sourceProj, IProject destProj, Path destLocation)
+			throws CoreException {
+		ensureDoesNotExistInWorkspace(destProj);
+		IProjectDescription desc = sourceProj.getDescription();
+		desc.setName(destProj.getName());
+		desc.setLocation(destLocation);
+		return desc;
+	}
+
+	private IProject createProject(boolean applyResFilter) throws CoreException {
+		IProject sourceProj = getWorkspace().getRoot().getProject("testCopyProject" + 1);
+		// create source project and apply resource filter.
+		sourceProj.create(getMonitor());
+		sourceProj.open(getMonitor());
+		// create a new filter.
+		if (applyResFilter) {
+			String MULTI_FILT_ID = "org.eclipse.ui.ide.multiFilter";
+			String FILT_ARG = "1.0-length-equals-false-false-10485760";
+			FileInfoMatcherDescription filterDesc = new FileInfoMatcherDescription(MULTI_FILT_ID, FILT_ARG);
+			int EXCL_FILE_GT = IResourceFilterDescription.EXCLUDE_ALL + IResourceFilterDescription.FILES
+					+ IResourceFilterDescription.INHERITABLE;
+			sourceProj.createFilter(EXCL_FILE_GT, filterDesc, IResource.BACKGROUND_REFRESH, getMonitor());
+		}
+		return sourceProj;
 	}
 
 	/**
@@ -848,7 +1096,7 @@ public class IResourceTest extends ResourceTest {
 		IProgressMonitor[] monitors = new IProgressMonitor[] {new FussyProgressMonitor(), null};
 		Object[][] inputs = { FALSE_AND_TRUE, monitors, interestingResources };
 		final String CANCELED = "canceled";
-		new TestPerformer("IResourceTest.testDelete") {
+		new ProjectsReinitializingTestPerformer("IResourceTest.testDelete") {
 
 			@Override
 			public Object[] interestingOldState(Object[] args) throws Exception {
@@ -862,16 +1110,20 @@ public class IResourceTest extends ResourceTest {
 				Boolean force = (Boolean) args[0];
 				IProgressMonitor monitor = (IProgressMonitor) args[1];
 				IResource resource = (IResource) args[2];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				try {
+					if (resource.exists()) {
+						deleteOnTearDown(resource.getLocation()); // Ensure that resource contents are removed from file
+																	// system
+					}
 					resource.delete(force.booleanValue(), monitor);
 				} catch (OperationCanceledException e) {
 					return CANCELED;
 				}
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}
@@ -905,47 +1157,13 @@ public class IResourceTest extends ResourceTest {
 					}
 					return false;
 				}
-				final boolean[] hasUnsynchronizedResources = new boolean[] {false};
-				try {
-					resource.accept(new IResourceVisitor() {
-						@Override
-						public boolean visit(IResource toVisit) throws CoreException {
-							File target = toVisit.getLocation().toFile();
-							if (target.exists() != toVisit.exists()) {
-								hasUnsynchronizedResources[0] = true;
-								return false;
-							}
-							if (target.isFile() != (toVisit.getType() == IResource.FILE)) {
-								hasUnsynchronizedResources[0] = true;
-								return false;
-							}
-							if (unsynchronizedResources.contains(toVisit)) {
-								hasUnsynchronizedResources[0] = true;
-								return false;
-							}
-							if (target.isFile()) {
-								return false;
-							}
-							String[] list = target.list();
-							if (list == null) {
-								return true;
-							}
-							IContainer container = (IContainer) toVisit;
-							for (String element : list) {
-								File file = new File(target, element);
-								IResource child = file.isFile() ? (IResource) container.getFile(new Path(element)) : container.getFolder(new Path(element));
-								if (!child.exists()) {
-									visit(child);
-								}
-							}
-							return true;
-						}
-					});
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					throw new RuntimeException("there is a problem in the testing method 'shouldFail'");
+				if (hasUnsynchronizedContents(resource)) {
+					// Reinitialize affected out-of-sync resources
+					reinitializeProjectsAfterTestIteration();
+					setReasonForExpectedFail("source has unsynchronized contents");
+					return true;
 				}
-				return hasUnsynchronizedResources[0];
+				return false;
 			}
 
 			@Override
@@ -961,7 +1179,8 @@ public class IResourceTest extends ResourceTest {
 				// the file system
 				//oldState[2] : all resources that should have been deleted
 				// from the workspace
-				if (resource.getType() != IResource.PROJECT && ((Boolean) oldState[0]).booleanValue()) {
+				boolean wasResourceAccessible = ((Boolean) oldState[0]).booleanValue();
+				if (resource.getType() != IResource.PROJECT && wasResourceAccessible) {
 					// check the parent's members, deleted resource should not
 					// be a member
 					IResource[] children = ((IContainer) getWorkspace().getRoot().findMember(resource.getFullPath().removeLastSegments(1))).members();
@@ -971,13 +1190,13 @@ public class IResourceTest extends ResourceTest {
 						}
 					}
 				}
-				if (!getAllFilesForResource(resource, force.booleanValue()).isEmpty()) {
+				if (wasResourceAccessible && !getAllFilesForResource(resource, force.booleanValue()).isEmpty()) {
 					return false;
 				}
 				@SuppressWarnings("unchecked")
 				Set<File> oldFiles = (Set<File>) oldState[1];
 				for (File oldFile : oldFiles) {
-					if (oldFile.exists()) {
+					if (oldFile.exists() == wasResourceAccessible) {
 						return false;
 					}
 				}
@@ -988,6 +1207,8 @@ public class IResourceTest extends ResourceTest {
 						return false;
 					}
 				}
+				// Restore workspace when delete was successful
+				reinitializeProjectsAfterTestIteration();
 				return true;
 			}
 		}.performTest(inputs);
@@ -1199,7 +1420,7 @@ public class IResourceTest extends ResourceTest {
 
 		/* remove trash */
 		try {
-			project.delete(true, getMonitor());
+			project.delete(true, true, getMonitor());
 		} catch (CoreException e) {
 			fail("7.0", e);
 		}
@@ -1407,7 +1628,7 @@ public class IResourceTest extends ResourceTest {
 	public void testGetModificationStamp() {
 		// cleanup auto-created resources
 		try {
-			getWorkspace().getRoot().delete(true, getMonitor());
+			getWorkspace().getRoot().delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
 		} catch (CoreException e) {
 			fail("0.0", e);
 		}
@@ -1917,7 +2138,7 @@ public class IResourceTest extends ResourceTest {
 	 */
 	public void testMove() {
 		Object[][] inputs = { interestingResources, interestingPaths, TRUE_AND_FALSE, PROGRESS_MONITORS };
-		new TestPerformer("IResourceTest.testMove") {
+		new ProjectsReinitializingTestPerformer("IResourceTest.testMove") {
 
 			@Override
 			public Object[] interestingOldState(Object[] args) {
@@ -1930,12 +2151,12 @@ public class IResourceTest extends ResourceTest {
 				IPath destination = (IPath) args[1];
 				Boolean force = (Boolean) args[2];
 				IProgressMonitor monitor = (IProgressMonitor) args[3];
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).prepare();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.prepare();
 				}
 				resource.move(destination, force.booleanValue(), monitor);
-				if (monitor instanceof FussyProgressMonitor) {
-					((FussyProgressMonitor) monitor).sanityCheck();
+				if (monitor instanceof FussyProgressMonitor fussy) {
+					fussy.sanityCheck();
 				}
 				return null;
 			}
@@ -1944,23 +2165,24 @@ public class IResourceTest extends ResourceTest {
 			public boolean shouldFail(Object[] args, int count) {
 				IResource resource = (IResource) args[0];
 				IPath destination = (IPath) args[1];
-				//			Boolean force = (Boolean) args[2];
-				if (!resource.isAccessible()) {
+				boolean forceUpdate = (boolean) args[2];
+				IProgressMonitor monitor = (IProgressMonitor) args[3];
+				if (shouldMoveOrCopyFail(resource, destination, forceUpdate, monitor, this::setReasonForExpectedFail)) {
 					return true;
 				}
-				if (isProject(resource)) {
-					if (destination.isAbsolute() ? destination.segmentCount() != 2 : destination.segmentCount() != 1) {
-						return true;
-					}
-					return !getWorkspace().validateName(destination.segment(0), IResource.PROJECT).isOK();
+				if (!forceUpdate && hasUnsynchronizedContents(resource)) {
+					// Reinitialize affected out-of-sync resources
+					reinitializeProjectsAfterTestIteration();
+					setReasonForExpectedFail("source has unsynchronized contents and move is not enforced");
+					return true;
 				}
-				File destinationParent = destination.isAbsolute() ? destination.removeLastSegments(1).toFile() : resource.getLocation().removeLastSegments(1).append(destination.removeLastSegments(1)).toFile();
-				File destinationFile = destination.isAbsolute() ? destination.toFile() : resource.getLocation().removeLastSegments(1).append(destination).removeTrailingSeparator().toFile();
-				return !destinationParent.exists() || !destinationParent.isDirectory() || destinationFile.exists() || destinationFile.toString().startsWith(resource.getLocation().toFile().toString());
+				return false;
 			}
 
 			@Override
 			public boolean wasSuccess(Object[] args, Object result, Object[] oldState) {
+				// Restore workspace when move was successful
+				reinitializeProjectsAfterTestIteration();
 				return true;
 			}
 		}.performTest(inputs);
@@ -2136,7 +2358,7 @@ public class IResourceTest extends ResourceTest {
 
 		/* remove trash */
 		try {
-			project.delete(true, getMonitor());
+			project.delete(true, true, getMonitor());
 		} catch (CoreException e) {
 			fail("3.0", e);
 		}
@@ -2471,5 +2693,26 @@ public class IResourceTest extends ResourceTest {
 
 		List<IResource> expectedOrder = Arrays.asList(project, project.getFile(".project"),  settings, prefs, a, a1, a2, b, b2, b1);
 		assertEquals("1.0", expectedOrder.toString(), actualOrder.toString());
+	}
+
+	private static class LogListener implements ILogListener {
+		private final List<IStatus> errors = new ArrayList<>();
+
+		@Override
+		public void logging(IStatus status, String plugin) {
+			if (status.getSeverity() == IStatus.ERROR) {
+				errors.add(status);
+			}
+		}
+
+		void assertNoLoggedErrors() {
+			if (!errors.isEmpty()) {
+				StringBuilder failMessage = new StringBuilder();
+				for (IStatus error : errors) {
+					failMessage.append(error.toString());
+				}
+				fail(failMessage.toString());
+			}
+		}
 	}
 }

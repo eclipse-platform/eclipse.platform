@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2017 IBM Corporation and others.
+ * Copyright (c) 2008, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -37,7 +37,7 @@ public class Bug_226264 extends ResourceTest {
 		};
 
 		// the listener will schedule another project delete
-		workspace.addResourceChangeListener(event -> {
+		IResourceChangeListener projectDeletingChangeListener = event -> {
 			if (event.getResource() == project1) {
 				// because notification is run in a protected block,
 				// this job will start after the notification
@@ -49,15 +49,17 @@ public class Bug_226264 extends ResourceTest {
 					//ignore
 				}
 			}
-		}, IResourceChangeEvent.PRE_DELETE);
-
-		// delete project
-		project1.delete(true, null);
+		};
+		workspace.addResourceChangeListener(projectDeletingChangeListener, IResourceChangeEvent.PRE_DELETE);
 
 		try {
+			// delete project
+			project1.delete(true, null);
 			job.join();
 		} catch (InterruptedException e) {
 			fail("1.0", e);
+		} finally {
+			workspace.removeResourceChangeListener(projectDeletingChangeListener);
 		}
 
 		assertTrue("2.0: " + job.getResult(), job.getResult().isOK());

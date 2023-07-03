@@ -230,13 +230,15 @@ public abstract class Plugin implements BundleActivator {
 
 
 	/**
-	 * Returns the log for this plug-in.  If no such log exists, one is created.
+	 * Returns the log for this plug-in. If no such log exists, one is created.
+	 * <b>Hint: </b> instead of caling this method, consider using
+	 * {@link ILog#of(Class)} instead that is independent from implementing a
+	 * {@link Plugin}
 	 *
 	 * @return the log for this plug-in
-	 * XXX change this into a LogMgr service that would keep track of the map. See if it can be a service factory.
 	 */
 	public final ILog getLog() {
-		return InternalPlatform.getDefault().getLog(getBundle());
+		return ILog.of(getBundle());
 	}
 
 	/**
@@ -354,7 +356,7 @@ public abstract class Plugin implements BundleActivator {
 			// need to save them because someone else might have
 			// made changes via the OSGi APIs.
 			getPluginPreferences();
-	
+
 			// Performance: isolate PreferenceForwarder and BackingStoreException into
 			// an inner class to avoid class loading (and then activation of the Preferences plugin)
 			// as the Plugin class is loaded.

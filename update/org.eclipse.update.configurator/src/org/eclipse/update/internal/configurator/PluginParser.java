@@ -61,17 +61,8 @@ public class PluginParser extends DefaultHandler implements IConfigurationConsta
 	 * @since 2.0
 	 */
 	public synchronized PluginEntry parse(File pluginFile) throws SAXException, IOException {
-		FileInputStream in = null;
-		try{
-			in = new FileInputStream(pluginFile);
+		try (FileInputStream in = new FileInputStream(pluginFile)) {
 			return parse(in, PLUGINS + "/" + pluginFile.getParentFile().getName() + "/"); //$NON-NLS-1$ //$NON-NLS-2$
-		}finally{
-			if (in != null){
-				try{
-					in.close();
-				}catch(IOException e){
-				}
-			}
 		}
 	}
 	/**

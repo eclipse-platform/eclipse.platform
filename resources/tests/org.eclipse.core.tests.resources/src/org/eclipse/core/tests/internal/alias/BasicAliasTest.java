@@ -21,20 +21,39 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.internal.filesystem.NullFileStore;
 import org.eclipse.core.internal.filesystem.NullFileSystem;
-import org.eclipse.core.internal.resources.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.resources.AliasManager;
+import org.eclipse.core.internal.resources.Folder;
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
 import org.eclipse.core.tests.resources.ResourceTest;
+import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Tests basic API methods in the face of aliased resources, and ensures that
  * nothing is ever out of sync.
  */
+@RunWith(JUnit4.class)
 public class BasicAliasTest extends ResourceTest {
 	//resource handles (p=project, f=folder, l=file)
 	private IProject pNoOverlap;
@@ -121,10 +140,10 @@ public class BasicAliasTest extends ResourceTest {
 	 * alphabetical order.
 	 */
 	private IResource[] getSortedChildren(IResource resource) throws CoreException {
-		if (!(resource instanceof IContainer)) {
+		if (!(resource instanceof IContainer container)) {
 			return new IResource[0];
 		}
-		IResource[] children = ((IContainer) resource).members();
+		IResource[] children = container.members();
 		Arrays.sort(children, (arg0, arg1) -> arg0.getFullPath().toString().compareTo(arg1.getFullPath().toString()));
 		return children;
 	}
@@ -181,6 +200,7 @@ public class BasicAliasTest extends ResourceTest {
 	 * This tests regression of bug 32785.  In this bug, moving a linked folder,
 	 * then copying a linked folder, resulted in the alias table having a stale entry
 	 */
+	@Test
 	public void testBug32785() throws CoreException {
 		IProject project = pNoOverlap;
 		IFolder link = project.getFolder("Source");
@@ -218,6 +238,7 @@ public class BasicAliasTest extends ResourceTest {
 	 * other projects, but the other projects don't overlap each other.  I.e.,
 	 * Project Top overlaps Sub1 and Sub2, but Sub1 and Sub2 do not overlap each other.
 	 */
+	@Test
 	public void testBug156082() throws CoreException {
 		IProject top = getWorkspace().getRoot().getProject("Bug156082_Top");
 		IProject sub1 = getWorkspace().getRoot().getProject("Bug156082_Sub1");
@@ -241,16 +262,13 @@ public class BasicAliasTest extends ResourceTest {
 	 * Regression test for bug 198571.  Device ids should be respected by the comparator
 	 * used in the locations map of AliasManager.
 	 */
+	@Test
 	public void testBug198571() {
-		if (!isWindows()) {
-			return;
-		}
+		Assume.assumeTrue(isWindows());
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
-		if (devices[0] == null || devices[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(devices[0] == null || devices[1] == null);
 
 		String location = getUniqueString();
 		IProject testProject1 = getWorkspace().getRoot().getProject(location + "1");
@@ -301,10 +319,12 @@ public class BasicAliasTest extends ResourceTest {
 	private void replaceProject(IProject project, URI newLocation) throws CoreException {
 		IProjectDescription projectDesc = project.getDescription();
 		projectDesc.setLocationURI(newLocation);
+		deleteOnTearDown(project.getLocation()); // Ensure that project contents are removed from file system
 		project.move(projectDesc, IResource.REPLACE, null);
 	}
 
 	/* Bug570896 */
+	@Test
 	public void testCompareUriAuthorityDistinct() throws URISyntaxException {
 		// AliasManager requires that different authority (server:port) are distinct
 		// (doesnt actually matter if compare yields +1 or -1 for different values)
@@ -316,7 +336,7 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	private void assertComparedDistinct(List<String> urisStrings) {
-		List<BatFSURI> batfsList = urisStrings.stream().map(BatFSURI::new).collect(Collectors.toList());
+		List<BatFSURI> batfsList = urisStrings.stream().map(BatFSURI::new).toList();
 		for (BatFSURI bu1 : batfsList) {
 			for (BatFSURI bu2 : batfsList) {
 				if (!bu1.equals(bu2)) {
@@ -327,6 +347,7 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	/* Bug570896 */
+	@Test
 	public void testCompareUriPathHierarchy() throws URISyntaxException {
 		// AliasManager requires that the path is ordered such path < path%00
 		// and that any subpath of path yields path < subpath < path%00
@@ -350,6 +371,7 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	/* Bug570896 */
+	@Test
 	public void testCompareUriOctets() throws URISyntaxException {
 		// uri.getPath() will normalize the octets
 		assertPreOrdered(List.of( //
@@ -361,6 +383,7 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	/* Bug570896 */
+	@Test
 	public void testCompareUriCase() throws URISyntaxException {
 		// its not a requirement but a back compatibility that the order is
 		// case sensitive even on case insensitive OSes:
@@ -371,6 +394,7 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	/* Bug570896 */
+	@Test
 	public void testCompareUriFragment() throws URISyntaxException {
 		// fragments should NOT be distinct! Even though they might not be used:
 		assertPreOrdered(List.of( //
@@ -382,13 +406,14 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	private void assertPreOrdered(List<String> urisStrings) {
-		List<BatFSURI> batfsList = urisStrings.stream().map(BatFSURI::new).collect(Collectors.toList());
+		List<BatFSURI> batfsList = urisStrings.stream().map(BatFSURI::new).toList();
 		// stable sort:
-		List<BatFSURI> sorted = batfsList.stream().sorted(IFileStore::compareTo).collect(Collectors.toList());
+		List<BatFSURI> sorted = batfsList.stream().sorted(IFileStore::compareTo).toList();
 		// proof sort order did not change
 		assertEquals("1.0", batfsList, sorted);
 	}
 
+	@Test
 	public void testBug256837() throws CoreException {
 		final AliasManager aliasManager = ((Workspace) getWorkspace()).getAliasManager();
 		//force AliasManager to restart (simulates a shutdown/startup)
@@ -420,6 +445,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertEquals("8.0", link2TempFolder, resources[0]);
 	}
 
+	@Test
 	public void testBug258987() throws CoreException {
 		// Create the directory to which you will link. The directory needs a single file.
 		IFileStore dirStore = getTempStore();
@@ -455,6 +481,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertNull("8.0", resources);
 	}
 
+	@Test
 	public void testCloseOpenProject() throws CoreException {
 		// close the project and make sure aliases in that project are no longer updated
 		pOverlap.close(getMonitor());
@@ -472,6 +499,7 @@ public class BasicAliasTest extends ResourceTest {
 	/**
 	 * Tests adding a file to a duplicate region by copying.
 	 */
+	@Test
 	public void testCopyFile() throws CoreException {
 		IFile sourceFile = pNoOverlap.getFile("CopySource");
 		ensureExistsInWorkspace(sourceFile, true);
@@ -521,6 +549,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertOverlap("3.6", linkDest, overlapDest);
 	}
 
+	@Test
 	public void testCopyFolder() throws CoreException {
 		IFolder source = pNoOverlap.getFolder("CopyFolder");
 		ensureExistsInWorkspace(source, true);
@@ -546,6 +575,7 @@ public class BasicAliasTest extends ResourceTest {
 	/**
 	 * Test copying a linked folder into a child of its alias.
 	 */
+	@Test
 	public void testCopyToChild() throws CoreException {
 		//copying link to child should fail
 		IFolder copyDest = fLinkOverlap1.getFolder("CopyDest");
@@ -564,6 +594,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertThrows(CoreException.class, () -> copyDest.move(copyDest2.getFullPath(), IResource.NONE, getMonitor()));
 	}
 
+	@Test
 	public void testCreateDeleteFile() throws CoreException {
 		// file in linked folder
 		lChildLinked.delete(IResource.NONE, getMonitor());
@@ -594,6 +625,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertOverlap("1.2", lChildLinked, lChildOverlap);
 	}
 
+	@Test
 	public void testCreateDeleteFolder() throws CoreException {
 		// folder in overlapping project
 		fOverlap.delete(IResource.NONE, getMonitor());
@@ -630,6 +662,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertFalse("3.5", child2.exists());
 	}
 
+	@Test
 	public void testCreateDeleteLink() throws CoreException {
 		IFolder folder = pNoOverlap.getFolder("folder");
 		IFile folderChild = folder.getFile("Child.txt");
@@ -650,6 +683,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertFalse("1.3", linkChild.exists());
 	}
 
+	@Test
 	public void testDeepLink() throws CoreException {
 		IFolder folder = pNoOverlap.getFolder("folder");
 		IFile folderChild = folder.getFile("Child.txt");
@@ -701,6 +735,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertNull("Unexpected aliases: " + Arrays.toString(aliases), aliases);
 	}
 
+	@Test
 	public void testCreateOpenProject() throws CoreException {
 		//test creating a project whose location is within an existing link
 		IProject newProject = getWorkspace().getRoot().getProject("createOpenProject");
@@ -715,6 +750,7 @@ public class BasicAliasTest extends ResourceTest {
 
 	}
 
+	@Test
 	public void testDeleteLink() throws CoreException {
 		//test deletion of a link that overlaps a project location
 		IFolder linkOnProject = pLinked.getFolder("LinkOnProject");
@@ -733,6 +769,7 @@ public class BasicAliasTest extends ResourceTest {
 	 * the location of another project.  The nested project should
 	 * be deleted automatically in this case.
 	 */
+	@Test
 	public void testDeleteProjectUnderProject() throws CoreException {
 		IProject parent = getWorkspace().getRoot().getProject("parent");
 		IProject child = getWorkspace().getRoot().getProject("child");
@@ -768,6 +805,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertFalse("4.3", childProjectFileInParent.exists());
 	}
 
+	@Test
 	public void testDeleteProjectContents() throws CoreException {
 		//delete the overlapping project - it should delete the children of the linked folder
 		//but leave the actual links intact in the resource tree
@@ -777,6 +815,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertExistsInWorkspace("1.3", new IResource[] {pLinked, fLinked, lLinked});
 	}
 
+	@Test
 	public void testFileAppendContents() throws CoreException {
 		//linked file
 		lLinked.appendContents(getRandomContents(), IResource.NONE, getMonitor());
@@ -793,6 +832,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertOverlap("3.1", lChildLinked, lChildOverlap);
 	}
 
+	@Test
 	public void testFileSetContents() throws CoreException {
 		//linked file
 		lLinked.setContents(getRandomContents(), IResource.NONE, getMonitor());
@@ -813,6 +853,7 @@ public class BasicAliasTest extends ResourceTest {
 	 * Tests moving a file into and out of an overlapping area (similar to
 	 * creation/deletion).
 	 */
+	@Test
 	public void testMoveFile() throws CoreException {
 		IFile destination = pNoOverlap.getFile("MoveDestination");
 		//file in linked folder

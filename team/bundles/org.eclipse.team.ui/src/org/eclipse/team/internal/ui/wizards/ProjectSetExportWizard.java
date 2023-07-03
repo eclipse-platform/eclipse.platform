@@ -133,12 +133,10 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 
 					UIProjectSetSerializationContext context = new UIProjectSetSerializationContext(getShell(), filename);
 
-					BufferedWriter writer = null;
-					try {
+					try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"))) { //$NON-NLS-1$
 						// if file was written to the workspace, perform the validateEdit
 						if (!locationPage.isSaveToFileSystem())
 							locationPage.validateEditWorkspaceFile(getShell());
-						writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")); //$NON-NLS-1$
 
 						//
 						XMLMemento xmlMemento = getXMLMementoRoot();
@@ -173,14 +171,6 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 						throw new InvocationTargetException(e);
 					} catch (TeamException e) {
 						throw new InvocationTargetException(e);
-					} finally {
-						if (writer != null) {
-							try {
-								writer.close();
-							} catch (IOException e) {
-								throw new InvocationTargetException(e);
-							}
-						}
 					}
 
 					// if file was written to the workspace, refresh it

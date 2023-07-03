@@ -26,12 +26,6 @@ public class IResourceTest extends ResourceTest {
 
 	private final boolean DISABLED = true;
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		getWorkspace().getRoot().delete(true, null);
-	}
-
 	/**
 	 * 1G9RBH5: ITPCORE:WIN98 - IFile.appendContents might lose data
 	 */

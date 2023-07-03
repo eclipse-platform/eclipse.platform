@@ -1,0 +1,114 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Eclipse Debug Platform</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>Provides support for launching programs, breakpoint management, expression management,
+and debug events.</p>
+
+<h2>Package Specification</h2>
+
+<p>This package provides classes and interfaces to support facilities common among 
+  many debug architectures: launching programs, breakpoint management, expression 
+  management, and debug events. An extensible set of debug architectures and languages 
+  are supported by the definition of a &quot;debug model&quot; - a set of interfaces 
+  representing common artifacts in debuggable programs, which are defined in <b>org.eclipse.debug.core.model</b>. 
+  The debug plug-in itself does not provide an implementation of a debug model. 
+  It is intended that third parties providing an integrated set of development 
+  tools for a specific language will also implement a debug model for that language, 
+  using an underlying debug architecture of their choice. For example, Java development 
+  tooling provides an implementation of a debug model based on the standard Java 
+  Platform Debug Architecture (JPDA).</p>
+
+<h4>The Managers</h4>
+
+<p>The debug platform defines and provides an implementation of the following managers:
+<ul>
+  <li>Launch Manager - The launch manager maintains the set of registered launches 
+    - that is, a collection of programs that have been launched in debuggable 
+    or non-debuggable (run) mode. Each launch contains its associated debug targets 
+    and system processes. A launch that represents a debuggable program may specify 
+    an associated source locator used to locate source elements associated with 
+    stack frames for a particular debug session. Clients may provide implementations 
+    of source locators, which are generally tied to the manner in which a program 
+    is launched.</li>
+ <li>Breakpoint Manager - The breakpoint manager maintains, persists, and restores the collection
+    of all registered breakpoints in the workspace. As well, it provides change notification for
+    breakpoints.</li>
+ <li>Expression Manager - The expression manager maintains a collection of registered expressions.
+    Expressions are not automatically persisted, but a client could persist its own expressions
+    if required.</li>
+</ul>
+
+<h4>Launch Configurations</h4>
+
+<p>A launch configuration is a persistable description of how to launch an application. 
+  Each launch configuration is an instance of a type of launch configuration - 
+  for example, a Java Application. The debug plug-in defines a launch configuration 
+  type extension point that clients can contribute to. A launch configuration 
+  is a set of attributes describing how to launch a program. The launching of 
+  an application is performed by an associated implementation of a launch configuration 
+  delegate, contributed by each launch configuration type extension.</p>
+<p>A launch configuration may be stored as a file in the worksapce (and shared 
+  in a repository via standard team mechanisms), or may be stored locally, essentially 
+  making the launch configuration private for a single user.</p>
+<h4>New Features in the Debug Platform, Eclipse 3.0</h4>
+<blockquote> 
+  <h4>Extensible Launch Modes</h4>
+  <p>The debug platform supports an extensible set of launch modes. Prior releases 
+    only supported two launch modes - run and debug. The debug platform defines 
+    an extension point for contributing new launch modes (<code>org.eclipse.debug.core.launchModes)</code>, 
+    and contributes three basic launch modes itself: run, debug, and profile. 
+    The launch manager has API to retrieve all launch modes, and a human readable 
+    label for each launch mode.</p>
+  <p>The debug platform has an extension point to support the contribution of 
+    a launch delegate for a specific launch configuration type and launch mode 
+    - <code>org.eclipse.debug.core.launchDelegates</code>. This allows launch 
+    configurations to be extended by third parties, to support new launch modes. 
+    For example, a client could contribute a launch delegate that launches a Java 
+    Application in profile mode (currently, the SDK does not provide a Java profiler).</p>
+  <p>For backwards compatibility, the launch delegate supplied by a launch configuration 
+    type extension is used for the launch modes specified by the launch configuration 
+    type. A launch delegate supplied for a specific mode, is used only for that 
+    mode.</p>
+  <h4>Extensible Debug Events</h4>
+  <p>The debug platform supports an extensible set of debug events. A debug event 
+    kind of <code>MODEL_SPECIFIC</code> has been added to indicate an application 
+    specific debug event. When a debug event of kind <code>MODEL_SPECIFIC</code> 
+    is created, the detail code in the event is client defined. The source of 
+    the event (debug element that generated the event) identifies the debug model 
+    from which the event was generated. The debug platform and user interface 
+    ignores model specific debug events.</p>
+  <p>A data field has been added to debug events to allow clients to store application 
+    specific data in debug events.<br>
+  </p>
+  <h4>Process Factories<br>
+  </h4>
+  <p>The debug platform provides an extension point (<code>org.eclipse.debug.core.processFactories</code>) 
+    for contributing process factories. A process factory can be used to override 
+    default process creation for a launch configuration when the debug plug-in 
+    creates a new process. A launch configuration can specify a process factory 
+    to use when creating a process, via the launch configuration attribute<code> 
+    DebugPlugin.ATTR_PROCESS_FACTORY_ID</code>.</p>
+  <h4>Launch Termination Notification<br>
+  </h4>
+  <p>The debug platform provides a mechanism for launch listeners to be notified 
+    when a launch terminates. A launch is a container of processes and debug targets. 
+    When all of the contained targets and processes terminate, a terminate notification 
+    is sent to those listeners implementing <code>ILaunchesListener2</code>.</p>
+  <h4>Breakpoint Manager Enablement<br>
+  </h4>
+  <p>The breakpoint manager defines the methods <code>setEnabled(boolean)</code> 
+    and <code>isEnabled()</code>. When the breakpoint manager is disabled, debuggers 
+    should ignore all registered breakpoints. The debug platform also provides 
+    a new listener mechanism, <code>IBreakpointManagerListener</code> which allows 
+    clients to register with the breakpoint manager to be notified when its enablement 
+    changes.</p>
+</blockquote>
+</body>
+</html>

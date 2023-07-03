@@ -453,11 +453,6 @@ public class MarkerTest extends ResourceTest {
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, originalRefreshSetting);
 		super.tearDown();
-		try {
-			getWorkspace().getRoot().delete(true, null);
-		} catch (CoreException e) {
-			fail("#tearDown", e);
-		}
 	}
 
 	/**

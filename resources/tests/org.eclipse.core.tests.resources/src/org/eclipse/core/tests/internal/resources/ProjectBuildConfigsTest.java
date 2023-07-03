@@ -24,9 +24,9 @@ import org.eclipse.core.tests.resources.ResourceTest;
 public class ProjectBuildConfigsTest extends ResourceTest {
 
 	private IProject project;
-	private final String variantId0 = "Variant0";
-	private final String variantId1 = "Variant1";
-	private final String variantId2 = "Variant2";
+	private static final String variantId0 = "Variant0";
+	private static final String variantId1 = "Variant1";
+	private static final String variantId2 = "Variant2";
 	private IBuildConfiguration variant0;
 	private IBuildConfiguration variant1;
 	private IBuildConfiguration variant2;
@@ -40,12 +40,6 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		variant1 = new BuildConfiguration(project, variantId1);
 		variant2 = new BuildConfiguration(project, variantId2);
 		defaultVariant = new BuildConfiguration(project, IBuildConfiguration.DEFAULT_CONFIG_NAME);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		project.delete(true, null);
 	}
 
 	public void testBasics() throws CoreException {

@@ -35,13 +35,6 @@ public class PatchReader {
 	//	private static final int NORMAL= 2;
 	//	private static final int UNIFIED= 3;
 
-	// we recognize the following date/time formats
-	private DateFormat[] fDateFormats= new DateFormat[] {
-		new SimpleDateFormat("EEE MMM dd kk:mm:ss yyyy"), //$NON-NLS-1$
-		new SimpleDateFormat("yyyy/MM/dd kk:mm:ss"), //$NON-NLS-1$
-		new SimpleDateFormat("EEE MMM dd kk:mm:ss yyyy", Locale.US) //$NON-NLS-1$
-	};
-
 	private boolean fIsWorkspacePatch;
 	private boolean fIsGitPatch;
 	private DiffProject[] fDiffProjects;
@@ -61,18 +54,6 @@ public class PatchReader {
 	 */
 	public PatchReader() {
 		// nothing here
-	}
-
-	/**
-	 * Create a patch reader for the given date formats.
-	 *
-	 * @param dateFormats
-	 *            Array of <code>DateFormat</code>s to be used when
-	 *            extracting dates from the patch.
-	 */
-	public PatchReader(DateFormat[] dateFormats) {
-		this();
-		this.fDateFormats = dateFormats;
 	}
 
 	public void parse(BufferedReader reader) throws IOException {
@@ -589,7 +570,13 @@ public class PatchReader {
 	private long extractDate(String[] args, int n) {
 		if (n < args.length) {
 			String line= args[n];
-			for (DateFormat dateFormat : this.fDateFormats) {
+			// we recognize the following date/time formats
+			DateFormat[] fDateFormats= new DateFormat[] {
+				new SimpleDateFormat("EEE MMM dd kk:mm:ss yyyy"), //$NON-NLS-1$
+				new SimpleDateFormat("yyyy/MM/dd kk:mm:ss"), //$NON-NLS-1$
+				new SimpleDateFormat("EEE MMM dd kk:mm:ss yyyy", Locale.US) //$NON-NLS-1$
+			};
+			for (DateFormat dateFormat : fDateFormats) {
 				dateFormat.setLenient(true);
 				try {
 					Date date = dateFormat.parse(line);

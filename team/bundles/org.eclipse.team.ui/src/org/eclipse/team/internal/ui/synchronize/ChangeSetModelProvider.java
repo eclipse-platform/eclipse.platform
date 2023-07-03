@@ -20,7 +20,7 @@ import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent;
 import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.core.synchronize.SyncInfoSet;
@@ -42,14 +42,14 @@ import org.eclipse.team.ui.synchronize.SynchronizePageActionGroup;
  */
 public class ChangeSetModelProvider extends CompositeModelProvider {
 
-	private ViewerSorter viewerSorter;
+	private ViewerComparator viewerComparator;
 
 	// The id of the sub-provider
 	private final String subProvierId;
 
 	private Map<ISynchronizeModelElement, ISynchronizeModelProvider> rootToProvider = new HashMap<>();
 
-	private ViewerSorter embeddedSorter;
+	private ViewerComparator embeddedSorter;
 
 	private SyncInfoSetChangeSetCollector checkedInCollector;
 
@@ -214,18 +214,18 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 	}
 
 	@Override
-	public ViewerSorter getViewerSorter() {
-		if (viewerSorter == null) {
-			viewerSorter = new ChangeSetModelSorter(this, ChangeSetActionGroup.getSortCriteria(getConfiguration()));
+	public ViewerComparator getViewerComparator() {
+		if (viewerComparator == null) {
+			viewerComparator = new ChangeSetModelComparator(this, ChangeSetActionGroup.getSortCriteria(getConfiguration()));
 		}
-		return viewerSorter;
+		return viewerComparator;
 	}
 
 	/*
 	 * Method to allow ChangeSetActionGroup to set the viewer sorter of this provider.
 	 */
-	public void setViewerSorter(ViewerSorter viewerSorter) {
-		this.viewerSorter = viewerSorter;
+	public void setViewerComparator(ViewerComparator viewerSorter) {
+		this.viewerComparator = viewerSorter;
 		firePropertyChange(ISynchronizeModelProvider.P_VIEWER_SORTER, null, null);
 	}
 
@@ -263,7 +263,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 	 * Return the sorter associated with the sub-provider being used.
 	 * @return the sorter associated with the sub-provider being used
 	 */
-	public ViewerSorter getEmbeddedSorter() {
+	public ViewerComparator getEmbeddedComparator() {
 		return embeddedSorter;
 	}
 
@@ -294,7 +294,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 			tree = new SyncInfoTree();
 		}
 		final ISynchronizeModelProvider provider = createProviderRootedAt(getModelRoot(), tree);
-		embeddedSorter = provider.getViewerSorter();
+		embeddedSorter = provider.getViewerComparator();
 		if (provider instanceof AbstractSynchronizeModelProvider) {
 			SynchronizePageActionGroup actionGroup = ((AbstractSynchronizeModelProvider)provider).getActionGroup();
 			if (actionGroup != null) {
@@ -302,7 +302,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 				getConfiguration().addActionContribution(actionGroup);
 				provider.addPropertyChangeListener(event -> {
 					if (event.getProperty().equals(P_VIEWER_SORTER)) {
-						embeddedSorter = provider.getViewerSorter();
+						embeddedSorter = provider.getViewerComparator();
 						ChangeSetModelProvider.this.firePropertyChange(P_VIEWER_SORTER, null, null);
 					}
 				});

@@ -19,7 +19,6 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -259,6 +258,7 @@ public class Bug_032076 extends ResourceTest {
 			}
 
 			try {
+				deleteOnTearDown(sourceProject.getLocation()); // Ensure project location is moved after test
 				sourceProject.move(destinationProject.getFullPath(), IResource.FORCE, getMonitor());
 				fail("2.0");
 			} catch (CoreException ce) {
@@ -294,13 +294,6 @@ public class Bug_032076 extends ResourceTest {
 				}
 			} catch (IOException e) {
 				fail("6.0", e);
-			} finally {
-				if (sourceProject != null) {
-					ensureDoesNotExistInFileSystem(sourceProject);
-				}
-				if (destinationProject != null) {
-					ensureDoesNotExistInFileSystem(destinationProject);
-				}
 			}
 		}
 	}
@@ -309,7 +302,7 @@ public class Bug_032076 extends ResourceTest {
 	 * TODO: This test is currently failing and needs further investigation (bug 203078)
 	 */
 	public void _testFileBugOnLinux() {
-		if (!(Platform.getOS().equals(Platform.OS_LINUX) && isReadOnlySupported())) {
+		if (!(isLinux() && isReadOnlySupported())) {
 			return;
 		}
 
@@ -395,7 +388,7 @@ public class Bug_032076 extends ResourceTest {
 	 * TODO: This test is currently failing and needs further investigation (bug 203078)
 	 */
 	public void _testFolderBugOnLinux() {
-		if (!(Platform.getOS().equals(Platform.OS_LINUX) && isReadOnlySupported())) {
+		if (!(isLinux() && isReadOnlySupported())) {
 			return;
 		}
 
@@ -499,7 +492,7 @@ public class Bug_032076 extends ResourceTest {
 	 * TODO: This test is currently failing and needs further investigation (bug 203078)
 	 */
 	public void _testProjectBugOnLinux() {
-		if (!(Platform.getOS().equals(Platform.OS_LINUX) && isReadOnlySupported())) {
+		if (!(isLinux() && isReadOnlySupported())) {
 			return;
 		}
 

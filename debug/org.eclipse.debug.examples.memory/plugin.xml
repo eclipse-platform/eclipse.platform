@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+    
+<!-- Launch Configuration for IExtendedMemoryBlock -->
+      <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.eclipse.debug.examples.internal.memory.launchconfig.SampleLaunchConfigurationDelegateEx"
+            id="example.debug.memoryview.samplelaunch.iextendedmemoryblock"
+            modes="debug"
+            name="%launchConfigurationType.name"
+            public="true">        
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="example.debug.memoryview.samplelaunch.iextendedmemoryblock"
+            class="org.eclipse.debug.examples.internal.memory.launchconfig.SampleLaunchTabGroup"
+            id="example.debug.memoryview.samplelaunch.sampletabgroup">
+      </launchConfigurationTabGroup>
+   </extension>  
+<!-- model presentation -->   
+<extension 
+         point="org.eclipse.debug.ui.debugModelPresentations"> 
+      <debugModelPresentation 
+            class="org.eclipse.debug.examples.internal.memory.launchconfig.SampleModelPresentation" 
+            id="example.debug.memoryview"> 
+      </debugModelPresentation> 
+</extension>
+<!-- rendering bindings -->
+<extension
+      point="org.eclipse.debug.ui.memoryRenderings">
+   <renderingBindings
+         defaultIds="org.eclipse.debug.ui.rendering.raw_memory,org.eclipse.debug.ui.rendering.signedint"
+         primaryId="org.eclipse.debug.ui.rendering.raw_memory"
+         renderingIds="org.eclipse.debug.ui.rendering.raw_memory,org.eclipse.debug.ui.rendering.ascii,org.eclipse.debug.ui.rendering.signedint,org.eclipse.debug.ui.rendering.unsignedint">
+      <enablement>
+         <instanceof value="org.eclipse.debug.examples.internal.memory.core.SampleMemoryBlock"/>
+      </enablement>
+   </renderingBindings>   
+</extension>
+<!-- context binding to open memory view automatically -->
+<extension
+         point="org.eclipse.ui.contexts">
+		<context
+            name="%context.name"
+            description="%context.description"
+            parentId="org.eclipse.debug.ui.debugging"
+            id="example.debug.memoryview.debugging">
+      </context>
+
+</extension>
+   <extension
+         point="org.eclipse.debug.ui.debugModelContextBindings">
+      <modelContextBinding
+            debugModelId="example.debug.memoryview"
+            contextId="example.debug.memoryview.debugging">
+      </modelContextBinding>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.contextViewBindings">
+      <contextViewBinding
+            autoOpen="true"
+            contextId="example.debug.memoryview.debugging"
+            viewId="org.eclipse.debug.ui.MemoryView">
+      </contextViewBinding>
+    </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="example.debug.memoryview.samplelaunch.iextendedmemoryblock"
+            icon="icons/full/obj16/launch.gif"
+            id="example.debug.memoryview.launchConfigurationTypeImage1"/>
+   </extension>
+</plugin>

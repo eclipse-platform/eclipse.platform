@@ -1,0 +1,277 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.debug.core" id="launchConfigurationTypes" name="Launch Configuration Types"/>
+      </appinfo>
+      <documentation>
+         This extension point provides a configurable mechanism for launching applications.
+Each launch configuration type has a name, supports one or more modes (run and/or debug), and specifies a delegate
+responsible for the implementation of launching an application.
+
+As of 3.2 the types can also define a migration delegate that can be used to set resource mappings between projects and the launch configurations that launch them.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="launchConfigurationType" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="launchConfigurationType">
+      <annotation>
+         <appinfo>
+            <meta.element labelAttribute="name"/>
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="0" maxOccurs="1">
+            <element ref="fileExtension" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a unique identifier for this launch configuration type.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="delegate" type="string">
+            <annotation>
+               <documentation>
+                  specifies the fully qualified name of the Java class that implements &lt;code&gt;ILaunchConfigurationDelegate&lt;/code&gt;.
+Launch configuration instances of this type will delegate to instances of this class to perform launching. Launch delegates can also be contributed for a launch configuration type via the &lt;code&gt;launchDelegates&lt;/code&gt; extension. The launch delegate specified by a &lt;code&gt;launchConfigurationType&lt;/code&gt; extension is responsible for launching in all modes specified by the same extension. To extend the launching capabilities of an existing configuration type, or when different delegates are required for different launch mode combinations, the &lt;code&gt;launchDelegates&lt;/code&gt; extension should be used to contribute a launch delegate.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.debug.core.model.ILaunchConfigurationDelegate"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="modes" type="string">
+            <annotation>
+               <documentation>
+                  specifies a comma-separated list of the modes this type of lauch configuration supports - &quot;run&quot; and/or &quot;debug&quot;. Launch modes can also be contributed for a launch configuration type via the &lt;code&gt;launchDelegates&lt;/code&gt; extension.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a human-readable name for this type of launch configuration.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="public" type="boolean">
+            <annotation>
+               <documentation>
+                  specifies whether this launch configuration type is accessible by users.  Defaults to &lt;code&gt;true&lt;/code&gt; if not specified.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="category" type="string">
+            <annotation>
+               <documentation>
+                  an optional attribute that specifies this launch configuration type&apos;s category. The default value is unspecified (&lt;code&gt;null&lt;/code&gt;). Categories are client defined. This attribute was added in the 2.1 release.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="sourcePathComputerId" type="string">
+            <annotation>
+               <documentation>
+                  The unique identifier of a sourcePathComputer extension that is used to compute a default source lookup path for launch configurations of this type. This atttribute was added in the 3.0 release.
+
+Since 3.3, the &lt;code&gt;sourcePathComputerId&lt;/code&gt; can also be specified via the &lt;code&gt;launchDelegates&lt;/code&gt; extension point.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.core.sourcePathComputers/sourcePathComputer/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="sourceLocatorId" type="string">
+            <annotation>
+               <documentation>
+                  The unique identifier of a sourceLocator extension that is used to create the source locator for sessions launched using launch configurations of this type. This atttribute was added in the 3.0 release.
+
+Since 3.3, the &lt;code&gt;sourceLocatorId&lt;/code&gt; can also be specified via the &lt;code&gt;launchDelegates&lt;/code&gt; extension point.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.core.sourceLocators/sourceLocator/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="migrationDelegate" type="string">
+            <annotation>
+               <documentation>
+                  specifies the fully qualified name of a Java class that implements &lt;code&gt;org.eclipse.debug.core.ILaunchConfigurationMigrationDelegate&lt;/code&gt;. Optional delegate used to migrate launch configurations of this type to be compatible with current tooling, since 3.2
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.debug.core.ILaunchConfigurationMigrationDelegate"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="delegateName" type="string">
+            <annotation>
+               <documentation>
+                  A human readable name for the associated launch delegate - for example, &quot;Eclipse JDT Launcher&quot;. This name is presented to the user when more than one launcher is available for a launch configuration and the user must choose a preferred launcher. This attribute was added in the 3.3 release.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="delegateDescription" type="string">
+            <annotation>
+               <documentation>
+                  A description of this type&apos;s launch delegate - for example &quot;The Eclipse JDT Java Application Launcher supports running and debugging local Java applications&quot;.  This description is presented to the user when more than one launcher is available for a launch configuration and the user must choose a preferred launcher. This attribute was added in the 3.3 release.
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="allowPrototypes" type="boolean">
+            <annotation>
+               <documentation>
+                  specifies whether this launch configuration type allows prototypes or not.  Defaults to &lt;code&gt;false&lt;/code&gt; if not specified. This attribute was added in 4.7 release.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="allowCommandLine" type="boolean">
+            <annotation>
+               <documentation>
+                  specifies whether this launch configuration type allows command line or not.  Defaults to &lt;code&gt;false&lt;/code&gt; if not specified. This attribute was added in 4.7 release.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="allowOutputMerging" type="boolean">
+            <annotation>
+               <documentation>
+                  specifies whether this launch configuration type supports output merging. A launch configuration which singals support must check the launch configuration attribute "org.eclipse.debug.core.ATTR_MERGE_OUTPUT" and if its value is true perform the launch in a way that stderr and stdout are merged and both can be read through stdout.
+                  Defaults to &lt;code&gt;false&lt;/code&gt; if not specified. This attribute was added in 4.13 release.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="fileExtension">
+      <annotation>
+         <appinfo>
+            <meta.element deprecated="true"/>
+         </appinfo>
+         <documentation>
+            This element is no longer used. Instead, use the &lt;code&gt;org.eclipse.debug.ui.launchShortcuts&lt;/code&gt; extension point.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="extension" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a file extension that this launch configuration type can be used for.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="default" type="boolean">
+            <annotation>
+               <documentation>
+                  specifies whether this launch configuration type should be the default launch configuration type for the specified file extension.  Defaults to &lt;code&gt;false&lt;/code&gt; if not specified.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;
+The following is an example of a launch configuration type extension point:
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;pre&gt;
+ &lt;extension point=&quot;org.eclipse.debug.core.launchConfigurationTypes&quot;&gt;
+  &lt;launchConfigurationType
+   id=&quot;com.example.ExampleIdentifier&quot;
+   delegate=&quot;com.example.ExampleLaunchConfigurationDelegate&quot;
+   modes=&quot;run,debug&quot;
+   name=&quot;Example Application&quot;
+   migrationDelegate=&quot;com.example.migrationDelegate&quot;
+   sourceLocatorId=&quot;com.example.sourceLookupDirector&quot;
+   sourcePathComputerId=&quot;com.example.sourcePathComputer&quot;
+   delegateName=&quot;Example Application Launch Tooling&quot;
+   delegateDescription=&quot;This example tooling will run or debug example code.&quot;&gt;
+  &lt;/launchConfigurationType&gt;
+ &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+In the example above, the specified type of launch configuration supports both run and debug modes. 
+The specified type also has an associated migration delegate, a source locator id, a source path computer, and launch delegate name and description.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;
+Value of the attribute &lt;b&gt;delegate&lt;/b&gt; must be a fully qualified name of a Java class that implements the interface &lt;b&gt;org.eclipse.debug.core.model.ILaunchConfigurationDelegate&lt;/b&gt;. 
+
+The value of the attribute &lt;b&gt;migrationDelegate&lt;/b&gt; must be a fully qualified name of a Java class that implements &lt;b&gt;org.eclipse.debug.core.ILaunchConfigurationMigrationDelegate&lt;/b&gt;.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2000, 2019 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

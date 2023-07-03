@@ -13,15 +13,39 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import java.util.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.stream.Stream;
 import junit.framework.AssertionFailedError;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
-import org.eclipse.core.tests.harness.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.core.runtime.jobs.LockListener;
+import org.eclipse.core.runtime.jobs.MultiRule;
+import org.eclipse.core.tests.harness.FussyProgressMonitor;
+import org.eclipse.core.tests.harness.TestBarrier2;
+import org.eclipse.core.tests.harness.TestJob;
 
 /**
  * Tests the API of the class IJobManager
@@ -29,7 +53,7 @@ import org.eclipse.core.tests.harness.*;
 @SuppressWarnings("restriction")
 public class IJobManagerTest extends AbstractJobManagerTest {
 	class TestJobListener extends JobChangeAdapter {
-		private Set<Job> scheduled = Collections.synchronizedSet(new HashSet<Job>());
+		private Set<Job> scheduled = Collections.synchronizedSet(new HashSet<>());
 
 		public void cancelAllJobs() {
 			Job[] jobs = scheduled.toArray(new Job[0]);
@@ -1040,21 +1064,22 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	public void testJobFamilyJoinLockListener() {
 		final TestJobFamily family = new TestJobFamily(TestJobFamily.TYPE_ONE);
 		int count = 5;
-		Job[] jobs = new Job[count];
+		TestJob[] jobs = new TestJob[count];
 		for (int i = 0; i < jobs.length; i++) {
-			jobs[i] = new FamilyTestJob("TestJobFamilyJoinLockListener" + i, 5, 5, family.getType());
+			jobs[i] = new FamilyTestJob("TestJobFamilyJoinLockListener" + i, 100000, 10, family.getType());
 			jobs[i].schedule();
 		}
-		TestLockListener lockListener = new TestLockListener();
+		TestLockListener lockListener = new TestLockListener(() -> Stream.of(jobs).forEach(TestJob::terminate));
 		try {
 			manager.setLockListener(lockListener);
 			manager.join(family, new FussyProgressMonitor());
 		} catch (OperationCanceledException | InterruptedException e) {
-			fail("4.99", e);
+			fail("Exception occurred when joining on JobManager", e);
 		} finally {
 			manager.setLockListener(null);
 		}
-		lockListener.assertNotWaiting("1.0");
+		lockListener.assertHasBeenWaiting("JobManager has not been waiting for lock");
+		lockListener.assertNotWaiting("JobManager has not finished waiting for lock");
 	}
 
 	public void testJobFamilyJoinNothing() {
@@ -1201,8 +1226,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		final Object family = new TestJobFamily(TestJobFamily.TYPE_ONE);
 		final int[] familyJobsCount = new int[] {-1};
 		final TestBarrier2 barrier = new TestBarrier2();
-		final Job waiting = new FamilyTestJob("waiting job", 1000000, 10, TestJobFamily.TYPE_ONE);
-		final Job running = new FamilyTestJob("running job", 2, 1, TestJobFamily.TYPE_ONE);
+		final TestJob waiting = new FamilyTestJob("waiting job", 1000000, 10, TestJobFamily.TYPE_ONE);
+		final TestJob running = new FamilyTestJob("running job", 1000000, 10, TestJobFamily.TYPE_ONE);
 		final IJobChangeListener listener = new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -1233,6 +1258,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 						public boolean aboutToWait(Thread lockOwner) {
 							// aboutToWait will be called when main job will start joining the running job
 							if (!scheduled) {
+								running.terminate();
 								waiting.schedule();
 								barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 							}
@@ -1291,8 +1317,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		final Object family = new TestJobFamily(TestJobFamily.TYPE_ONE);
 		final int[] familyJobsCount = new int[] {-1};
 		final TestBarrier2 barrier = new TestBarrier2();
-		final Job waiting = new FamilyTestJob("waiting job", 1000000, 10, TestJobFamily.TYPE_ONE);
-		final Job running = new FamilyTestJob("running job", 2, 1, TestJobFamily.TYPE_ONE);
+		final TestJob waiting = new FamilyTestJob("waiting job", 1000000, 10, TestJobFamily.TYPE_ONE);
+		final TestJob running = new FamilyTestJob("running job", 1000000, 10, TestJobFamily.TYPE_ONE);
 		final IJobChangeListener listener = new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -1325,6 +1351,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 							if (!scheduled) {
 								// suspend before scheduling new job
 								getJobManager().suspend();
+								running.terminate();
 								waiting.schedule();
 								barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 							}
@@ -1381,8 +1408,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	public void testJobFamilyJoinWhenSuspended_3() throws InterruptedException {
 		final Object family = new TestJobFamily(TestJobFamily.TYPE_ONE);
 		final TestBarrier2 barrier = new TestBarrier2();
-		final Job waiting = new FamilyTestJob("waiting job", 4, 1, TestJobFamily.TYPE_ONE);
-		final Job running = new FamilyTestJob("running job", 2, 1, TestJobFamily.TYPE_ONE);
+		final TestJob waiting = new FamilyTestJob("waiting job", 1000000, 10, TestJobFamily.TYPE_ONE);
+		final TestJob running = new FamilyTestJob("running job", 1000000, 10, TestJobFamily.TYPE_ONE);
 		final IJobChangeListener listener = new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -1417,6 +1444,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 						waiting.schedule();
 						// resume to start the waiting job
 						manager.resume();
+						running.terminate();
+						waiting.terminate();
 						scheduled = true;
 					}
 					return super.aboutToWait(lockOwner);
@@ -1717,7 +1746,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	public void testOrder() {
 		//ensure jobs are run in order from lowest to highest sleep time.
 		final Queue<Job> done = new ConcurrentLinkedQueue<>();
-		int[] sleepTimes = new int[] { 5, 100, 200, 300 };
+		int[] sleepTimes = new int[] { 5, 200, 400, 600 };
 		Job[] jobs = new Job[sleepTimes.length];
 		for (int i = 0; i < sleepTimes.length; i++) {
 			jobs[i] = new Job("testOrder(" + i + ")") {
@@ -1744,33 +1773,17 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
-	public void testReverseOrder() {
-		//ensure jobs are run in order from lowest to highest sleep time.
-		final Queue<Job> done = new ConcurrentLinkedQueue<>();
-		int[] sleepTimes = new int[] { 300, 200, 100, 5 };
-		Job[] jobs = new Job[sleepTimes.length];
-		for (int i = 0; i < sleepTimes.length; i++) {
-			jobs[i] = new Job("testReverseOrder(" + i + ")") {
-
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					done.add(this);
-					return Status.OK_STATUS;
-				}
-
-			};
-		}
-		for (int i = 0; i < sleepTimes.length; i++) {
-			jobs[i].schedule(sleepTimes[i]);
-		}
-		while (done.size() != jobs.length) {
-			Thread.yield();
-		}
-		Job[] doneOrder = done.toArray(new Job[done.size()]);
-		assertEquals("1.0", jobs.length, doneOrder.length);
-		for (int i = 0; i < doneOrder.length; i++) {
-			assertEquals("1.1." + i, jobs[i], doneOrder[doneOrder.length - 1 - i]);
-		}
+	public void testReverseOrder() throws InterruptedException {
+		// ensure that a job does not wait for one that is scheduled with a high delay
+		Job directlyExecutedJob = new TestJob("Directly executed job", 0, 0);
+		Job delayedJob = new TestJob("Delayed job", 0, 0);
+		long delayInSeconds = 20;
+		delayedJob.schedule(delayInSeconds * 1000);
+		directlyExecutedJob.schedule(1);
+		directlyExecutedJob.join(delayInSeconds * 1000 / 2, null);
+		int delayedJobState = delayedJob.getState();
+		delayedJob.cancel();
+		assertThat("delayed job should still be waiting", delayedJobState, is(Job.SLEEPING));
 	}
 
 	/**
@@ -1878,7 +1891,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	}
 
 	public void testSleep() {
-		TestJob job = new TestJob("ParentJob", 10, 10);
+		TestJob job = new TestJob("ParentJob", 1000000, 10);
 		//sleeping a job that isn't scheduled should have no effect
 		assertEquals("1.0", Job.NONE, job.getState());
 		assertTrue("1.1", job.sleep());
@@ -1891,11 +1904,11 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		assertState("2.0", job, Job.RUNNING);
 		assertTrue("2.1", !job.sleep());
 		assertState("2.2", job, Job.RUNNING);
-
+		job.terminate();
 		waitForCompletion();
 
 		//sleeping a job that is already sleeping should make sure it never runs
-		job.schedule(500);
+		job.schedule(10000);
 		assertState("3.0", job, Job.SLEEPING);
 		assertTrue("3.1", job.sleep());
 		assertState("3.2", job, Job.SLEEPING);

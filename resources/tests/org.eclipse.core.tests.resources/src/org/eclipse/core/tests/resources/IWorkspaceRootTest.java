@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -23,23 +23,22 @@ import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
+import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
 public class IWorkspaceRootTest extends ResourceTest {
-
-	@Override
-	protected void tearDown() throws Exception {
-		IProject[] projects = getWorkspace().getRoot().getProjects();
-		getWorkspace().delete(projects, true, null);
-	}
 
 	/**
 	 * Tests findFilesForLocation when non-canonical paths are used (bug 155101).
 	 */
+	@Test
 	public void testFindFilesNonCanonicalPath() {
 		// this test is for windows only
-		if (!isWindows()) {
-			return;
-		}
+		Assume.assumeTrue(isWindows());
+
 		IProject project = getWorkspace().getRoot().getProject("testFindFilesNonCanonicalPath");
 		ensureExistsInWorkspace(project, true);
 
@@ -65,6 +64,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	/**
 	 * Tests the API method findContainersForLocation.
 	 */
+	@Test
 	public void testFindContainersForLocation() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject p1 = root.getProject("p1");
@@ -78,6 +78,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		project.move(projectDesc, IResource.REPLACE, null);
 	}
 
+	@Test
 	public void testFindContainersForLocationOnWrappedFileSystem() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject p1 = root.getProject("p1");
@@ -99,7 +100,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	/**
 	 * Tests the API method findContainersForLocation.
 	 */
-	public void testFindContainersForLocation(IProject p1, IProject p2) {
+	private void testFindContainersForLocation(IProject p1, IProject p2) {
 		//should find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IContainer[] result = root.findContainersForLocation(root.getLocation());
@@ -170,6 +171,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	/**
 	 * Tests the API method findFilesForLocation.
 	 */
+	@Test
 	public void testFindFilesForLocationOnWrappedFileSystem() {
 		//should not find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
@@ -186,6 +188,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	/**
 	 * Tests the API method findFilesForLocation on non-default file system.
 	 */
+	@Test
 	public void testFindFilesForLocation() {
 		//should not find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
@@ -195,7 +198,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	/**
 	 * Tests the API method findFilesForLocation.
 	 */
-	public void testFindFilesForLocation(IProject project) {
+	private void testFindFilesForLocation(IProject project) {
 		//should not find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IFile[] result = root.findFilesForLocation(root.getLocation());
@@ -277,6 +280,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	/**
 	 * Tests the API method getContainerForLocation.
 	 */
+	@Test
 	public void testGetContainerForLocation() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		assertEquals("1.0", root, root.getContainerForLocation(root.getLocation()));
@@ -285,6 +289,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	/**
 	 * Tests the AP method getFile(IPath)
 	 */
+	@Test
 	public void testGetFile() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IFile file = root.getFile(new Path("//P1/a.txt"));
@@ -294,11 +299,13 @@ public class IWorkspaceRootTest extends ResourceTest {
 	/**
 	 * Tests the API method getFileForLocation
 	 */
+	@Test
 	public void testGetFileForLocation() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		assertTrue("1.0", root.getFileForLocation(root.getLocation()) == null);
 	}
 
+	@Test
 	public void testPersistentProperty() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		String value = "this is a test property value";
@@ -330,6 +337,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	 * operation, try it inside an operation to make sure it still works.
 	 * (See bug 14179).
 	 */
+	@Test
 	public void testPersistentPropertyInRunnable() {
 		final IWorkspaceRoot root = getWorkspace().getRoot();
 		final String value = "this is a test property value";
@@ -358,6 +366,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testRefreshLocal() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("Project");
@@ -375,6 +384,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testBug234343_folderInHiddenProject() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject hiddenProject = root.getProject(getUniqueString());
@@ -400,6 +410,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		assertEquals("3.0", 1, containers.length);
 	}
 
+	@Test
 	public void testBug234343_fileInHiddenProject() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject hiddenProject = root.getProject(getUniqueString());
@@ -434,6 +445,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	/**
 	 * Regression test for bug 476585: IWorkspaceRoot#getFileForLocation(IPath) should return IFile in nested project
 	 */
+	@Test
 	public void testBug476585() {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("a");
@@ -472,6 +484,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	/*
 	* see bug 232765 for details
 	*/
+	@Test
 	public void testFindMethodsWithHiddenAndTeamPrivateFlags() {
 		checkFindMethods(IResource.NONE, new int[][] {{IResource.NONE, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0}, {IContainer.INCLUDE_HIDDEN, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0}, {IContainer.INCLUDE_HIDDEN | IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}});
 

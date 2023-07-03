@@ -20,12 +20,6 @@ import org.eclipse.core.tests.resources.ResourceTest;
 
 public class PR_1GH2B0N_Test extends ResourceTest {
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
-	}
-
 	public void test_1GH2B0N() {
 		IPath path = getTempDir().append("1GH2B0N");
 		IProject project = getWorkspace().getRoot().getProject("MyProject");

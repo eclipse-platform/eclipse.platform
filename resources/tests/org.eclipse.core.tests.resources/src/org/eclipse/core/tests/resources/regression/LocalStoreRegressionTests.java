@@ -60,6 +60,7 @@ public class LocalStoreRegressionTests extends LocalStoreTest {
 	public void test_1G65KR1() {
 		/* evaluate test environment */
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
+		deleteOnTearDown(root);
 		File temp = root.toFile();
 		temp.mkdirs();
 

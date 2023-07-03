@@ -15,9 +15,6 @@ package org.eclipse.core.tests.runtime.jobs;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.core.internal.jobs.JobListeners;
 import org.eclipse.core.runtime.*;
@@ -396,73 +393,57 @@ public class JobEventTest {
 
 	@Test
 	public void testDeadlockRecovery() throws Exception {
-		Object deadlock = new Object();
-		CountDownLatch testDoneSignal1 = new CountDownLatch(1);
-		CountDownLatch testDoneSignal2 = new CountDownLatch(1);
-		Collection<String> errors = new ConcurrentLinkedQueue<>();
-		int TIMEOUT = 500;
-		Job job = new Job("testDeadlockRecovery: INTENTIONAL LOGS TIMEOUTEXCEPTION!") {
+		Object commonLockObject = new Object();
+		TestBarrier2 waitingForJobListenerBarrier = new TestBarrier2();
+		TestBarrier2 waitingForBlockBarrier = new TestBarrier2();
 
+		Job jobWithListener = new Job("Job-Listener-Triggering Job") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				return Status.OK_STATUS;
 			}
-
 		};
 		IJobChangeListener jobListener = new JobChangeAdapter() {
-
 			@Override
 			public void done(IJobChangeEvent event) {
-				testDoneSignal1.countDown();
-				try {
-					// wait for a bad moment
-					testDoneSignal2.await();
-				} catch (InterruptedException e) {
-				}
-				synchronized (deadlock) {
-					// can not enter while lock is hold
+				waitingForJobListenerBarrier.setStatus(TestBarrier2.STATUS_RUNNING);
+				// wait for threadDeadlockingWithJobListener having lock
+				waitingForBlockBarrier.waitForStatus(TestBarrier2.STATUS_BLOCKED);
+				synchronized (commonLockObject) {
+					// can not enter/proceed while lock is hold by threadDeadlockingWithJobListener
 				}
 			}
 		};
+		jobWithListener.addJobChangeListener(jobListener);
+		Thread threadDeadlockingWithJobListener = new Thread("Deadlocking Thread") {
+			@Override
+			public void run() {
+				// Ensure job listener is executing
+				waitingForJobListenerBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
+				synchronized (commonLockObject) {
+					// Try to schedule job with acquired lock while listener is still being
+					// processed and demands lock to finish --> deadlock
+					waitingForBlockBarrier.setStatus(TestBarrier2.STATUS_BLOCKED);
+					jobWithListener.schedule(); // NOK - deadlock
+				}
+				// jobWithListener.schedule(); // would be OK
+			}
+		};
 
-		job.addJobChangeListener(jobListener);
-		Timer timeout = new Timer();
+		final int DEADLOCK_TIMEOUT = 250;
+		final int ABORT_TEST_TIMEOUT = 60_000;
 		try {
 			testNoTimeoutOccured(); // before changing timeout
-			JobListeners.setJobListenerTimeout(TIMEOUT / 2);
-			job.schedule();
-			timeout.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					System.out.println(TestBarrier2.getThreadDump());
-					errors.add("timeout (probably deadlock)");
-				}
-			}, TIMEOUT);
-			Thread thread = new Thread("deadlock") {
-				@Override
-				public void run() {
-					try {
-						// wait for a bad moment
-						testDoneSignal1.await();
-					} catch (InterruptedException e) {
-					}
-					synchronized (deadlock) {
-						testDoneSignal2.countDown();
-						job.schedule(); // NOK - deadlock
-					}
-					// job.schedule(); // would be OK
-				}
-			};
-			thread.start();
-			thread.join(TIMEOUT * 2);
-			errors.forEach(e -> {
-				throw new AssertionError(e);
-			});
+			JobListeners.setJobListenerTimeout(DEADLOCK_TIMEOUT);
+			threadDeadlockingWithJobListener.start();
+			jobWithListener.schedule();
+
+			waitingForBlockBarrier.waitForStatus(TestBarrier2.STATUS_BLOCKED);
+			threadDeadlockingWithJobListener.join(ABORT_TEST_TIMEOUT);
 			assertEquals(0, JobListeners.getJobListenerTimeout());
 		} finally {
 			JobListeners.resetJobListenerTimeout();
-			job.removeJobChangeListener(jobListener);
-			timeout.cancel();
+			jobWithListener.removeJobChangeListener(jobListener);
 		}
 	}
 }

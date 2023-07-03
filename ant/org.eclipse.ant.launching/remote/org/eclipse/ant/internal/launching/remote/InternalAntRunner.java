@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2022 IBM Corporation and others.
+ * Copyright (c) 2000, 2023 IBM Corporation and others.
  * Portions Copyright  2000-2005 The Apache Software Foundation
  *
  * This program and the accompanying materials are made
@@ -343,7 +343,7 @@ public class InternalAntRunner {
 	/*
 	 * Note that the list passed to this method must support List#remove(Object)
 	 */
-	@SuppressWarnings("unused")
+	@SuppressWarnings("removal") // SecurityManager
 	private void run(List<String> argList) {
 		setCurrentProject(new Project());
 		if (isVersionCompatible("1.6.3")) { //$NON-NLS-1$
@@ -453,7 +453,7 @@ public class InternalAntRunner {
 				logMessage(null, RemoteAntMessages.getString("InternalAntRunner.SecurityManagerError"), Project.MSG_WARN); //$NON-NLS-1$
 			}
 			if (targets == null) {
-				targets = new Vector<String>(1);
+				targets = new Vector<>(1);
 			}
 			if (targets.isEmpty() && getCurrentProject().getDefaultTarget() != null) {
 				targets.add(getCurrentProject().getDefaultTarget());
@@ -1288,8 +1288,7 @@ public class InternalAntRunner {
 		for (String filename : propertyFiles) {
 			File file = getFileRelativeToBaseDir(filename);
 			Properties props = new Properties();
-			try {
-				FileInputStream fis = new FileInputStream(file);
+			try (FileInputStream fis = new FileInputStream(file)) {
 				props.load(fis);
 			}
 			catch (IOException e) {

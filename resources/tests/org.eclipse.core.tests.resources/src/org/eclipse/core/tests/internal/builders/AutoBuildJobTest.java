@@ -57,20 +57,16 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		setAutoBuilding(true);
 		scheduled = new AtomicLong(0);
 		running = new AtomicLong(0);
 		setupProjectWithOurBuilder();
-
-		// Setup above will trigger autobuild
-		waitForBuild();
+		setAutoBuilding(true);
 		Job.getJobManager().addJobChangeListener(jobChangeListener);
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
 		Job.getJobManager().removeJobChangeListener(jobChangeListener);
-		project.delete(true, null);
 		super.tearDown();
 	}
 

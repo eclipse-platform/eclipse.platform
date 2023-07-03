@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -16,13 +16,16 @@ package org.eclipse.core.tests.internal.resources;
 
 import java.util.*;
 import junit.framework.ComparisonFailure;
+import junit.framework.Test;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.resources.WorkspacePreferences;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
+import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
-public class WorkspacePreferencesTest extends ResourceTest {
+public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 	private IWorkspace workspace;
 	private Preferences preferences;
 
@@ -300,4 +303,9 @@ public class WorkspacePreferencesTest extends ResourceTest {
 		assertEquals(message + " - 9", description1.getMaxBuildIterations(), description2.getMaxBuildIterations());
 		assertEquals(message + " -10", description1.isKeepDerivedState(), description2.isKeepDerivedState());
 	}
+
+	public static Test suite() {
+		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, WorkspacePreferencesTest.class);
+	}
+
 }

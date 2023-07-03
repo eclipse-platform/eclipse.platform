@@ -16,10 +16,15 @@ package org.eclipse.core.tests.internal.localstore;
 import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
+import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Tests the move operation.
  */
+@RunWith(JUnit4.class)
 public class MoveTest extends LocalStoreTest {
 
 	@Override
@@ -30,16 +35,13 @@ public class MoveTest extends LocalStoreTest {
 	/**
 	 * This test has Windows as the target OS. Drives C: and D: should be available.
 	 */
+	@Test
 	public void testMoveFileAcrossVolumes() {
-		if (!isWindows()) {
-			return;
-		}
+		Assume.assumeTrue(isWindows());
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
-		if (devices[0] == null || devices[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(devices[0] == null || devices[1] == null);
 
 		// create common objects
 		String location = getUniqueString();
@@ -105,19 +107,12 @@ public class MoveTest extends LocalStoreTest {
 		} catch (CoreException e) {
 			fail("5.3", e);
 		}
-
-		// remove garbage
-		try {
-			source.delete(true, true, getMonitor());
-			destination.delete(true, true, getMonitor());
-		} catch (CoreException e) {
-			fail("20.0", e);
-		}
 	}
 
 	/**
 	 * Move one file from one project to another.
 	 */
+	@Test
 	public void testMoveFileBetweenProjects() throws Exception {
 		// create common objects
 		IProject[] projects = getWorkspace().getRoot().getProjects();
@@ -162,16 +157,13 @@ public class MoveTest extends LocalStoreTest {
 	/**
 	 * This test has Windows as the target OS. Drives C: and D: should be available.
 	 */
+	@Test
 	public void testMoveFolderAcrossVolumes() {
-		if (!isWindows()) {
-			return;
-		}
+		Assume.assumeTrue(isWindows());
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
-		if (devices[0] == null || devices[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(devices[0] == null || devices[1] == null);
 
 		// create common objects
 		String location = getUniqueString();
@@ -238,19 +230,12 @@ public class MoveTest extends LocalStoreTest {
 		} catch (CoreException e) {
 			fail("5.3", e);
 		}
-
-		// remove garbage
-		try {
-			source.delete(true, true, getMonitor());
-			destination.delete(true, true, getMonitor());
-		} catch (CoreException e) {
-			fail("6.0", e);
-		}
 	}
 
 	/**
 	 * Move one folder from one project to another.
 	 */
+	@Test
 	public void testMoveFolderBetweenProjects() throws Exception {
 		// create common objects
 		IProject[] projects = getWorkspace().getRoot().getProjects();
@@ -295,6 +280,7 @@ public class MoveTest extends LocalStoreTest {
 	/**
 	 * Move some hierarchy of folders and files.
 	 */
+	@Test
 	public void testMoveHierarchy() throws Exception {
 		// create common objects
 		IProject[] projects = getWorkspace().getRoot().getProjects();
@@ -365,6 +351,7 @@ public class MoveTest extends LocalStoreTest {
 	 * Move some hierarchy of folders and files between projects. It also test moving a
 	 * hierarchy across volumes.
 	 */
+	@Test
 	public void testMoveHierarchyBetweenProjects() throws Exception {
 		// create common objects
 		IProject[] projects = getWorkspace().getRoot().getProjects();
@@ -429,6 +416,7 @@ public class MoveTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testMoveResource() throws Exception {
 		/* create common objects */
 		IProject[] projects = getWorkspace().getRoot().getProjects();
@@ -551,6 +539,7 @@ public class MoveTest extends LocalStoreTest {
 	/**
 	 * A simple test that renames a file.
 	 */
+	@Test
 	public void testRenameFile() throws Exception {
 		// create common objects
 		IProject[] projects = getWorkspace().getRoot().getProjects();
@@ -602,6 +591,7 @@ public class MoveTest extends LocalStoreTest {
 	 * - assert rename worked
 	 * - assert properties still exist
 	 */
+	@Test
 	public void testRenameFolder() throws Exception {
 		// create common objects
 		IProject[] projects = getWorkspace().getRoot().getProjects();
@@ -652,6 +642,7 @@ public class MoveTest extends LocalStoreTest {
 	 *	- assert properties are correct
 	 *	- assert resources are correct
 	 */
+	@Test
 	public void testRenameProjects() throws Exception {
 		/* create common objects */
 		IProject[] projects = getWorkspace().getRoot().getProjects();

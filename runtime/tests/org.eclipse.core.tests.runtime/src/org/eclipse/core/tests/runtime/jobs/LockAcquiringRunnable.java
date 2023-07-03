@@ -44,24 +44,30 @@ public class LockAcquiringRunnable implements Runnable {
 		public boolean randomWait(LockAcquiringRunnable me) {
 			int waitingCount = waiting.incrementAndGet();
 			try {
-				while (randomRunnables.peek() != me) {
-					if (randomRunnables.isEmpty()) {
-						return false; // no more work
-					}
-					if (waitingCount >= workerCount - busy.get()) {
-						// the head thread is not progressing (waiting in
-						// acquire), so stop waiting
-						LockAcquiringRunnable head = randomRunnables.poll();
-						if (head != null) {
-							randomRunnables.add(head);
-							return true;
+				synchronized (randomRunnables) {
+					while (randomRunnables.peek() != me) {
+						if (randomRunnables.isEmpty()) {
+							return false; // no more work
+						}
+						if (waitingCount >= workerCount - busy.get()) {
+							// the head thread is not progressing (waiting in
+							// acquire), so stop waiting
+							LockAcquiringRunnable head = randomRunnables.poll();
+							if (head != null) {
+								randomRunnables.add(head);
+								return true;
+							}
+						}
+						try {
+							randomRunnables.wait(0, 1);
+						} catch (InterruptedException e) {
+							// ignore
 						}
 					}
-					Thread.yield();
+					// fast path - do not wait any fixed time
+					randomRunnables.remove(); // remove me
+					return true;
 				}
-				// fast path - do not wait any fixed time
-				randomRunnables.remove();
-				return true;
 			} finally {
 				waiting.decrementAndGet();
 			}

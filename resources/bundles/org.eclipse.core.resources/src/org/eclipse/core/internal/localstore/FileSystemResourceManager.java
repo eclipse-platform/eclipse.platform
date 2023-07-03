@@ -599,7 +599,10 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 	 * Returns whether the project has a project description file on disk.
 	 */
 	public boolean hasSavedDescription(IProject project) {
-		return getStore(project).getChild(IProjectDescription.DESCRIPTION_FILE_NAME).fetchInfo().exists();
+		IResource dotProjectResource = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
+		return dotProjectResource.exists() ? //
+			getStore(dotProjectResource).fetchInfo().exists() : //
+			getStore(project).getChild(IProjectDescription.DESCRIPTION_FILE_NAME).fetchInfo().exists();
 	}
 
 	/**
@@ -885,8 +888,9 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 		if (isDefaultLocation) {
 			projectLocation = URIUtil.toURI(getProjectDefaultLocation(target));
 		}
+		IFile descFile = target.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		IFileStore projectStore = initializeStore(target, projectLocation);
-		IFileStore descriptionStore = projectStore.getChild(IProjectDescription.DESCRIPTION_FILE_NAME);
+		IFileStore descriptionStore = descFile.exists() ? getStore(descFile) : projectStore.getChild(IProjectDescription.DESCRIPTION_FILE_NAME);
 		ProjectDescription description = null;
 		//hold onto any exceptions until after sync info is updated, then throw it
 		ResourceException error = null;
@@ -1172,14 +1176,18 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 				subMonitor.split(1);
 			}
 			int options = append ? EFS.APPEND : EFS.NONE;
-			OutputStream out = store.openOutputStream(options, subMonitor.split(1));
-			if (restoreHiddenAttribute) {
-				fileInfo.setAttribute(EFS.ATTRIBUTE_HIDDEN, true);
-				store.putInfo(fileInfo, EFS.SET_ATTRIBUTES, subMonitor.split(1));
-			} else {
-				subMonitor.split(1);
+			try (OutputStream out = store.openOutputStream(options, subMonitor.split(1))) {
+				if (restoreHiddenAttribute) {
+					fileInfo.setAttribute(EFS.ATTRIBUTE_HIDDEN, true);
+					store.putInfo(fileInfo, EFS.SET_ATTRIBUTES, subMonitor.split(1));
+				} else {
+					subMonitor.split(1);
+				}
+				FileUtil.transferStreams(content, out, store.toString(), subMonitor.split(1));
+			} catch (IOException e) {
+				String msg = NLS.bind(Messages.localstore_couldNotWrite, store.toString());
+				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, new Path(store.toString()), msg, e);
 			}
-			FileUtil.transferStreams(content, out, store.toString(), subMonitor.split(1));
 			// get the new last modified time and stash in the info
 			lastModified = store.fetchInfo().getLastModified();
 			ResourceInfo info = ((Resource) target).getResourceInfo(false, true);

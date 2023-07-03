@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+     Copyright (c) 2005, 2008 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+   <extension
+         point="org.eclipse.core.variables.valueVariables">
+      <variable
+            description="%variable.description"
+            name="perlExecutable"
+            initialValue="c:\perl\bin\perl.exe"/>
+   </extension>
+<!--#ifdef ex1-->
+<!--#else-->
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            sourceLocatorId="pda.sourceLocator"
+            delegate="org.eclipse.debug.examples.core.pda.launcher.PDALaunchDelegate"
+            sourcePathComputerId="pda.sourcePathComputer"
+            name="%pda.launchConfigurationType.name"
+            id="pda.launchType"
+            modes="run, debug"/>
+   </extension>
+<!--#endif-->  
+
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.eclipse.debug.examples.core.midi.launcher.MidiLaunchDelegate"
+            name="%midi.launchConfigurationType.name"
+            id="midi.launchType"
+            modes="run, debug"/>
+   </extension>
+
+<!--#ifdef ex4-->
+<!--#else-->
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            class="org.eclipse.debug.examples.core.pda.sourcelookup.PDASourceLookupDirector"
+            name="%sourceLocator.name"
+            id="pda.sourceLocator"/>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+            class="org.eclipse.debug.examples.core.pda.sourcelookup.PDASourcePathComputerDelegate"
+            id="pda.sourcePathComputer"/>
+   </extension>
+<!--#endif-->
+    
+<!--#ifdef ex3-->
+<!--#else-->    
+   <extension
+         point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            class="org.eclipse.debug.examples.core.pda.breakpoints.PDALineBreakpoint"
+            name="%line.breakpoints.name"
+            markerType="org.eclipse.debug.examples.core.pda.markerType.lineBreakpoint"
+            id="pda.lineBreakpoint"/>
+      <breakpoint
+            class="org.eclipse.debug.examples.core.pda.breakpoints.PDAWatchpoint"
+            name="%watchpoints.name"
+            markerType="org.eclipse.debug.examples.core.pda.markerType.watchpoint"
+            id="pda.watchpoint"/>
+   </extension>
+   <extension
+         id="pda.markerType.lineBreakpoint"
+         name="%line.breakpoint.marker.name"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.debug.core.lineBreakpointMarker"/>
+      <persistent value="true"/>
+   </extension>
+   <extension
+         id="pda.markerType.watchpoint"
+         name="%watchpoint.marker.name"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.debug.examples.core.pda.markerType.lineBreakpoint"/>
+      <persistent value="true"/>
+   </extension>
+<!--#endif-->   
+
+<!--#ifdef ex6-->
+<!--#else--> 
+   <extension
+         point="org.eclipse.debug.core.logicalStructureTypes">
+      <logicalStructureType
+            class="org.eclipse.debug.examples.core.pda.model.WordStructureDelegate"
+            description="%logicalStructureType.description"
+            id="pda.wordStructure"
+            modelIdentifier="pda.debugModel"/>
+   </extension>
+<!--#endif-->
+</plugin>

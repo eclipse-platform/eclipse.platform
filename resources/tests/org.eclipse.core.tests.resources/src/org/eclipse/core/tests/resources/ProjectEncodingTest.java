@@ -40,7 +40,7 @@ public class ProjectEncodingTest extends ResourceTest {
 	@Override
 	protected void tearDown() throws Exception {
 		if (project != null) {
-			project.delete(true, null);
+			project.delete(true, true, null);
 		}
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).putInt(
 				ResourcesPlugin.PREF_MISSING_ENCODING_MARKER_SEVERITY,

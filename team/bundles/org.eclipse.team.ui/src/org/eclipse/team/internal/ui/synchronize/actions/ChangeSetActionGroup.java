@@ -35,7 +35,7 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.team.core.diff.IDiff;
@@ -49,8 +49,8 @@ import org.eclipse.team.internal.core.subscribers.ChangeSet;
 import org.eclipse.team.internal.ui.TeamUIMessages;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.internal.ui.synchronize.ChangeSetCapability;
+import org.eclipse.team.internal.ui.synchronize.ChangeSetModelComparator;
 import org.eclipse.team.internal.ui.synchronize.ChangeSetModelProvider;
-import org.eclipse.team.internal.ui.synchronize.ChangeSetModelSorter;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 import org.eclipse.team.ui.synchronize.SubscriberParticipant;
 import org.eclipse.team.ui.synchronize.SynchronizeModelAction;
@@ -259,7 +259,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 					pageSettings.put(key, criteria);
 				}
 				update();
-				provider.setViewerSorter(getViewerSorter());
+				provider.setViewerComparator(getViewerComparator());
 			}
 		}
 
@@ -292,10 +292,10 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 	/*
 	 * The currently chosen sort criteria
 	 */
-	private int sortCriteria = ChangeSetModelSorter.DATE;
+	private int sortCriteria = ChangeSetModelComparator.DATE;
 
 	public static int getSortCriteria(ISynchronizePageConfiguration configuration) {
-		int sortCriteria = ChangeSetModelSorter.DATE;
+		int sortCriteria = ChangeSetModelComparator.DATE;
 		try {
 			IDialogSettings pageSettings = configuration.getSite().getPageSettings();
 			if(pageSettings != null) {
@@ -305,12 +305,12 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 			// ignore and use the defaults.
 		}
 		switch (sortCriteria) {
-		case ChangeSetModelSorter.COMMENT:
-		case ChangeSetModelSorter.DATE:
-		case ChangeSetModelSorter.USER:
+		case ChangeSetModelComparator.COMMENT:
+		case ChangeSetModelComparator.DATE:
+		case ChangeSetModelComparator.USER:
 			break;
 		default:
-			sortCriteria = ChangeSetModelSorter.DATE;
+			sortCriteria = ChangeSetModelComparator.DATE;
 			break;
 		}
 		return sortCriteria;
@@ -327,9 +327,9 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 		if (getChangeSetCapability().supportsCheckedInChangeSets()) {
 			sortCriteria = getSortCriteria(configuration);
 			sortByComment = new MenuManager(TeamUIMessages.ChangeLogModelProvider_0a);
-			sortByComment.add(new ToggleSortOrderAction(TeamUIMessages.ChangeLogModelProvider_1a, ChangeSetModelSorter.COMMENT));
-			sortByComment.add(new ToggleSortOrderAction(TeamUIMessages.ChangeLogModelProvider_2a, ChangeSetModelSorter.DATE));
-			sortByComment.add(new ToggleSortOrderAction(TeamUIMessages.ChangeLogModelProvider_3a, ChangeSetModelSorter.USER));
+			sortByComment.add(new ToggleSortOrderAction(TeamUIMessages.ChangeLogModelProvider_1a, ChangeSetModelComparator.COMMENT));
+			sortByComment.add(new ToggleSortOrderAction(TeamUIMessages.ChangeLogModelProvider_2a, ChangeSetModelComparator.DATE));
+			sortByComment.add(new ToggleSortOrderAction(TeamUIMessages.ChangeLogModelProvider_3a, ChangeSetModelComparator.USER));
 		}
 
 		if (getChangeSetCapability().supportsActiveChangeSets()) {
@@ -449,12 +449,12 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 	}
 
 	/**
-	 * Return a viewer sorter that utilizes the sort criteria
+	 * Return a viewer comparator that utilizes the sort criteria
 	 * selected by the user.
 	 * @return a sorter
 	 */
-	public ViewerSorter getViewerSorter() {
-		return new ChangeSetModelSorter(provider, sortCriteria);
+	public ViewerComparator getViewerComparator() {
+		return new ChangeSetModelComparator(provider, sortCriteria);
 	}
 
 	private ActiveChangeSet createChangeSet(IDiff[] diffs) {

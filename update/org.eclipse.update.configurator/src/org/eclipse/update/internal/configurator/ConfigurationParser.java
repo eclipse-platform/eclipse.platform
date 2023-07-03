@@ -50,7 +50,6 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 	private URL currentSiteURL;
 	private Configuration config;
 	private URL configURL;
-	private InputStream input;
 	private URL installLocation;
 	
 	/**
@@ -75,32 +74,29 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 		// DEBUG:		
 		Utils.debug("Start parsing Configuration:" + url); //$NON-NLS-1$	
 		long lastModified = 0;
+		this.configURL = url;
+		this.installLocation = installLocation;
 		try {
-			configURL = url;
-			this.installLocation = installLocation;
 			if ("file".equals(url.getProtocol())) { //$NON-NLS-1$
 				File inputFile = URIUtil.toFile(URIUtil.toURI(url));
 				if (!inputFile.exists() || !inputFile.canRead())
 					return null;
 				lastModified = inputFile.lastModified();
-				input = new FileInputStream(inputFile);
-			} else 
-				input = url.openStream();
-			parser.parse(new InputSource(input), this);
+				try (InputStream input = new FileInputStream(inputFile)) {
+					parser.parse(new InputSource(input), this);
+				}
+			} else {
+				try (InputStream input = url.openStream()) {
+					parser.parse(new InputSource(input), this);
+				}
+			}
 			return config;
 		} catch (Exception e) {
 			Utils.log(Utils.newStatus("ConfigurationParser.parse() error:", e)); //$NON-NLS-1$
 			throw e;
 		} finally {
-			if (config != null)
+			if (config != null) {
 				config.setLastModified(lastModified);
-			try {
-				if (input != null) { 
-					input.close();
-					input = null;
-				}
-			} catch (IOException e1) {
-				Utils.log(e1.getLocalizedMessage());
 			}
 		}
 	}

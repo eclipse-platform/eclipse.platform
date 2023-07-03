@@ -154,7 +154,7 @@ public @interface Message {
 	/**
 	 * @deprecated Use contributionURI instead
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "4.26")
 	String contributorURI() default "";
 
 	/**

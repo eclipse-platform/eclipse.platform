@@ -47,7 +47,6 @@ public class IWorkspaceTest extends ResourceTest {
 	@Override
 	protected void tearDown() throws Exception {
 		getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
 		super.tearDown();
 	}
 

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!--
+    Copyright (c) 2005, 2012 IBM Corporation and others.
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+    
+<!-- For internal use only. Not to be extended. -->
+   <extension-point id="configurationDuplicationMaps" name="%ExtPoint.configurationDuplicationMaps"  schema="schema/configurationDuplicationMaps.exsd"/>
+
+<!-- UI extensions -->
+<!-- Extensions -->
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="%ActionSet.externalTools"
+            visible="true"
+            id="org.eclipse.ui.externaltools.ExternalToolsSet">
+         <menu
+               label="%Menu.run"
+               path="additions"
+               id="org.eclipse.ui.run">
+            <separator
+                  name="ExternalToolsGroup">
+            </separator>
+         </menu>
+         <action
+               label="%Action.externalTools"
+               style="pulldown"
+               icon="$nl$/icons/full/obj16/external_tools.png"
+               class="org.eclipse.ui.externaltools.internal.menu.ExternalToolMenuDelegate"
+               menubarPath="org.eclipse.ui.run/ExternalToolsGroup"
+               id="org.eclipse.ui.externaltools.ExternalToolMenuDelegateMenu">
+         </action>
+         <action
+               definitionId="org.eclipse.ui.externaltools.ExternalToolMenuDelegateToolbar"
+               label="%Action.externalTools"
+               style="pulldown"
+               icon="$nl$/icons/full/obj16/external_tools.png"
+               tooltip="%Action.externalToolsTip"
+               class="org.eclipse.ui.externaltools.internal.menu.ExternalToolMenuDelegate"
+               toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
+               id="org.eclipse.ui.externaltools.ExternalToolMenuDelegateToolbar">
+         </action>
+         <action
+               definitionId="org.eclipse.ui.externalTools.commands.OpenExternalToolsConfigurations"
+               label="%ActionDefinition.openExternalToolsConfigurations.name"
+               class="org.eclipse.ui.externaltools.internal.menu.OpenExternalToolsConfigurations"
+               id="org.eclipse.ui.externaltools.OpenExternalToolsConfigurations">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            name="%ActionDefinition.externalToolMenuDelegateToolbar.name"
+            description="%ActionDefinition.externalToolMenuDelegateToolbar.description"
+            categoryId="org.eclipse.debug.ui.category.run"
+            id="org.eclipse.ui.externaltools.ExternalToolMenuDelegateToolbar">
+      </command>
+       <command
+            name="%ActionDefinition.openExternalToolsConfigurations.name"
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="%ActionDefinition.openExternalToolsConfigurations.description"
+            id="org.eclipse.ui.externalTools.commands.OpenExternalToolsConfigurations">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            name="%PropertyPage.externalToolsBuilders"
+            class="org.eclipse.ui.externaltools.internal.ui.BuilderPropertyPage"
+            id="org.eclipse.ui.externaltools.propertypages.BuilderPropertyPage">
+         <filter
+               name="open"
+               value="true">
+         </filter>
+         <enabledWhen>
+         	<adapt
+                type="org.eclipse.core.resources.IProject">
+          	</adapt>
+		</enabledWhen>
+      </page>
+   </extension>
+<!-- Launch Configuration Extensions -->
+   <extension
+         point="org.eclipse.ui.externaltools.configurationDuplicationMaps">
+      <configurationMap
+            sourceType="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType"
+            builderType="org.eclipse.ui.externaltools.ProgramBuilderLaunchConfigurationType">
+      </configurationMap>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType"
+            description="%programLaunchConfigurationTabGroup.description"
+            helpContextId="org.eclipse.ui.externaltools.program_type_context"
+            class="org.eclipse.ui.externaltools.internal.program.launchConfigurations.ProgramTabGroup"
+            id="org.eclipse.ui.externaltools.launchConfigurationTabGroup.program">
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            type="org.eclipse.ui.externaltools.ProgramBuilderLaunchConfigurationType"
+            description="%programBuilderLaunchConfigurationTabGroup.description"
+            helpContextId="org.eclipse.ui.externaltools.launchConfigHelpContext.program_builder"
+            class="org.eclipse.ui.externaltools.internal.program.launchConfigurations.ProgramBuilderTabGroup"
+            id="org.eclipse.ui.externaltools.launchConfigurationTabGroup.program.builder">
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            icon="$nl$/icons/full/obj16/external_tools.png"
+            configTypeID="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType"
+            id="org.eclipse.ui.externaltools.launchConfigurationTypeImage.program">
+      </launchConfigurationTypeImage>
+      <launchConfigurationTypeImage
+            icon="$nl$/icons/full/obj16/external_tools.png"
+            configTypeID="org.eclipse.ui.externaltools.ProgramBuilderLaunchConfigurationType"
+            id="org.eclipse.ui.externaltools.launchConfigurationTypeImage.program.builder">
+      </launchConfigurationTypeImage>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchGroups">
+      <launchGroup
+            label="%ExternalToolsLaunchGroup.label"
+            bannerImage="$nl$/icons/full/wizban/ext_tools_wiz.png"
+            category="org.eclipse.ui.externaltools"
+            image="$nl$/icons/full/obj16/external_tools.png"
+            mode="run"
+            id="org.eclipse.ui.externaltools.launchGroup"
+            title="%ExternalToolsLaunchGroup.title">
+      </launchGroup>
+      <launchGroup
+            label="%ExternalToolsLaunchGroup.label"
+            bannerImage="$nl$/icons/full/wizban/ext_tools_wiz.png"
+            category="org.eclipse.ui.externaltools.builder"
+            image="$nl$/icons/full/obj16/external_tools.png"
+            public="false"
+            mode="run"
+            id="org.eclipse.ui.externaltools.launchGroup.builder">
+      </launchGroup>
+   </extension>
+<!-- Dynamic (String Substitution) Variables -->	
+   <extension
+         point="org.eclipse.core.variables.dynamicVariables">
+      <variable
+            name="build_type"
+            resolver="org.eclipse.ui.externaltools.internal.variables.BuildTypeResolver"
+            description="%build_type.description"
+            supportsArgument="false">
+      </variable>
+       <variable
+            name="build_project"
+            resolver="org.eclipse.ui.externaltools.internal.variables.BuildProjectResolver"
+            description="%build_project.description">
+      </variable>
+       <variable
+            name="build_files"
+            resolver="org.eclipse.ui.externaltools.internal.variables.BuildFilesResolver"
+            description="%build_files.description"
+            supportsArgument="true">
+      </variable>
+       <variable
+            name="system_path"
+            resolver="org.eclipse.ui.externaltools.internal.variables.SystemPathResolver"
+            description="%system_path.description"
+            supportsArgument="true">
+      </variable>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationComparators">
+      <launchConfigurationComparator
+            attribute="org.eclipse.ui.externaltools.ATTR_BUILD_SCOPE"
+            class="org.eclipse.ui.externaltools.internal.launchConfigurations.WorkingSetComparator"
+            id="org.eclipse.ui.externaltools.workingSetComparator">
+      </launchConfigurationComparator>
+   </extension>
+
+</plugin>

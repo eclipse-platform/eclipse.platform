@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2017 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -61,34 +61,35 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class InjectorImpl implements IInjector {
 
-	final static private boolean shouldDebug = Boolean.getBoolean("org.eclipse.e4.core.di.debug"); //$NON-NLS-1$
+	private static final boolean shouldDebug = Boolean.getBoolean("org.eclipse.e4.core.di.debug"); //$NON-NLS-1$
 
-	final static private String JAVA_OBJECT = "java.lang.Object"; //$NON-NLS-1$
+	private static final String JAVA_OBJECT = "java.lang.Object"; //$NON-NLS-1$
 
-	final private static Boolean DEFAULT_BOOLEAN = Boolean.FALSE;
-	final private static Integer DEFAULT_INTEGER = Integer.valueOf(0);
-	final private static Character DEFAULT_CHAR = Character.valueOf((char) 0);
-	final private static Float DEFAULT_FLOAT = Float.valueOf(0.0f);
-	final private static Double DEFAULT_DOUBLE = Double.valueOf(0.0d);
-	final private static Long DEFAULT_LONG = Long.valueOf(0L);
-	final private static Short DEFAULT_SHORT = Short.valueOf((short) 0);
-	final private static Byte DEFAULT_BYTE = Byte.valueOf((byte) 0);
+	private final static Boolean DEFAULT_BOOLEAN = Boolean.FALSE;
+	private final static Integer DEFAULT_INTEGER = Integer.valueOf(0);
+	private final static Character DEFAULT_CHAR = Character.valueOf((char) 0);
+	private final static Float DEFAULT_FLOAT = Float.valueOf(0.0f);
+	private final static Double DEFAULT_DOUBLE = Double.valueOf(0.0d);
+	private final static Long DEFAULT_LONG = Long.valueOf(0L);
+	private final static Short DEFAULT_SHORT = Short.valueOf((short) 0);
+	private final static Byte DEFAULT_BYTE = Byte.valueOf((byte) 0);
 
-	private Map<PrimaryObjectSupplier, List<WeakReference<?>>> injectedObjects = new HashMap<>();
-	private Set<WeakReference<Class<?>>> injectedClasses = new HashSet<>();
-	private HashMap<Class<?>, Object> singletonCache = new HashMap<>();
-	private Map<Class<?>, Set<Binding>> bindings = new HashMap<>();
-	private Map<Class<? extends Annotation>, Map<AnnotatedElement, Boolean>> annotationsPresent = new HashMap<>();
+	private final Map<PrimaryObjectSupplier, List<WeakReference<?>>> injectedObjects = new WeakHashMap<>();
+	private final Set<WeakReference<Class<?>>> injectedClasses = new HashSet<>();
+	private final HashMap<Class<?>, Object> singletonCache = new HashMap<>();
+	private final Map<Class<?>, Set<Binding>> bindings = new HashMap<>();
+	private final Map<Class<? extends Annotation>, Map<AnnotatedElement, Boolean>> annotationsPresent = new HashMap<>();
 
 	// Performance improvement:
-	private Map<Class<?>, Method[]> methodsCache = Collections.synchronizedMap(new WeakHashMap<>());
-	private Map<Class<?>, Field[]> fieldsCache = Collections.synchronizedMap(new WeakHashMap<>());
-	private Map<Class<?>, Constructor<?>[]> constructorsCache = Collections.synchronizedMap(new WeakHashMap<>());
-	private Map<Class<?>, Map<Method, Boolean>> isOverriddenCache = Collections.synchronizedMap(new WeakHashMap<>());
+	private final Map<Class<?>, Method[]> methodsCache = Collections.synchronizedMap(new WeakHashMap<>());
+	private final Map<Class<?>, Field[]> fieldsCache = Collections.synchronizedMap(new WeakHashMap<>());
+	private final Map<Class<?>, Constructor<?>[]> constructorsCache = Collections.synchronizedMap(new WeakHashMap<>());
+	private final Map<Class<?>, Map<Method, Boolean>> isOverriddenCache = Collections
+			.synchronizedMap(new WeakHashMap<>());
 
-	private Set<Class<?>> classesBeingCreated = new HashSet<>(5);
+	private final Set<Class<?>> classesBeingCreated = new HashSet<>(5);
 
-	private PrimaryObjectSupplier defaultSupplier;
+	private volatile PrimaryObjectSupplier defaultSupplier;
 
 	@Override
 	public void inject(Object object, PrimaryObjectSupplier objectSupplier) {
@@ -147,12 +148,7 @@ public class InjectorImpl implements IInjector {
 
 	private void rememberInjectedObject(Object object, PrimaryObjectSupplier objectSupplier) {
 		synchronized (injectedObjects) {
-			List<WeakReference<?>> list;
-			if (!injectedObjects.containsKey(objectSupplier)) {
-				list = new ArrayList<>();
-				injectedObjects.put(objectSupplier, list);
-			} else
-				list = injectedObjects.get(objectSupplier);
+			List<WeakReference<?>> list = injectedObjects.computeIfAbsent(objectSupplier, k -> new ArrayList<>());
 			for (WeakReference<?> ref : list) {
 				if (object == ref.get())
 					return; // we already have it
@@ -163,14 +159,14 @@ public class InjectorImpl implements IInjector {
 
 	private boolean forgetInjectedObject(Object object, PrimaryObjectSupplier objectSupplier) {
 		synchronized (injectedObjects) {
-			if (!injectedObjects.containsKey(objectSupplier))
-				return false;
 			List<WeakReference<?>> list = injectedObjects.get(objectSupplier);
-			for (Iterator<WeakReference<?>> i = list.iterator(); i.hasNext();) {
-				WeakReference<?> ref = i.next();
-				if (object == ref.get()) {
-					i.remove();
-					return true;
+			if (list != null) {
+				for (Iterator<WeakReference<?>> i = list.iterator(); i.hasNext();) {
+					WeakReference<?> ref = i.next();
+					if (object == ref.get()) {
+						i.remove();
+						return true;
+					}
 				}
 			}
 			return false;
@@ -179,16 +175,12 @@ public class InjectorImpl implements IInjector {
 
 	private List<WeakReference<?>> forgetSupplier(PrimaryObjectSupplier objectSupplier) {
 		synchronized (injectedObjects) {
-			if (!injectedObjects.containsKey(objectSupplier))
-				return null;
 			return injectedObjects.remove(objectSupplier);
 		}
 	}
 
 	private List<WeakReference<?>> getSupplierObjects(PrimaryObjectSupplier objectSupplier) {
 		synchronized (injectedObjects) {
-			if (!injectedObjects.containsKey(objectSupplier))
-				return null;
 			return injectedObjects.get(objectSupplier);
 		}
 	}

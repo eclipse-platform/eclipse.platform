@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2018 IBM Corporation and others.
+ *  Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -17,29 +17,44 @@ import java.io.File;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.provider.FileSystem;
 import org.eclipse.core.internal.filesystem.Messages;
 import org.eclipse.core.internal.filesystem.NullFileSystem;
 import org.eclipse.core.internal.filesystem.local.LocalFile;
 import org.eclipse.core.internal.filesystem.local.LocalFileSystem;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.internal.localstore.LocalStoreTest;
 import org.eclipse.osgi.util.NLS;
+import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Basic tests for the IFileStore API
  */
+@RunWith(JUnit4.class)
 public class FileStoreTest extends LocalStoreTest {
 	private IFileStore createDir(IFileStore store, boolean clear) throws CoreException {
 		if (clear && store.fetchInfo().exists()) {
 			store.delete(EFS.NONE, null);
 		}
 		store.mkdir(EFS.NONE, null);
+		deleteOnTearDown(store);
 		IFileInfo info = store.fetchInfo();
 		assertTrue("createDir.1", info.exists());
 		assertTrue("createDir.1", info.isDirectory());
@@ -54,6 +69,7 @@ public class FileStoreTest extends LocalStoreTest {
 	 * Tests behavior of IFileStore#fetchInfo when underlying file system throws
 	 * exceptions.
 	 */
+	@Test
 	public void testBrokenFetchInfo() {
 		IFileStore broken = null;
 		try {
@@ -78,7 +94,10 @@ public class FileStoreTest extends LocalStoreTest {
 
 	private IFileStore getDirFileStore(String path) throws CoreException {
 		IFileStore store = EFS.getFileSystem(EFS.SCHEME_FILE).getStore(new Path(path));
-		store.mkdir(EFS.NONE, null);
+		if (!store.toLocalFile(EFS.NONE, getMonitor()).exists()) {
+			store.mkdir(EFS.NONE, null);
+			deleteOnTearDown(store);
+		}
 		return store;
 	}
 
@@ -108,39 +127,46 @@ public class FileStoreTest extends LocalStoreTest {
 	/**
 	 * Basically this is a test for the Windows Platform.
 	 */
+
+	@Test
 	public void testCopyAcrossVolumes() throws Throwable {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		if (tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
-				|| tempDirectories[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
+				|| tempDirectories[1] == null);
 
 		/* build scenario */
 		// create source root folder
 		IFileStore tempSrc = tempDirectories[0];
 		/* get the destination folder */
 		IFileStore tempDest = tempDirectories[1];
+
 		// create tree
-		IFileStore target = tempSrc.getChild("target");
+		String subfolderName = "target_" + System.currentTimeMillis();
+
+		IFileStore target = tempSrc.getChild(subfolderName);
 		createDir(target, true);
 		createTree(getTree(target));
 
 		/* c:\temp\target -> d:\temp\target */
-		IFileStore destination = tempDest.getChild("target");
+		IFileStore destination = tempDest.getChild(subfolderName);
+		deleteOnTearDown(destination);
 		target.copy(destination, EFS.NONE, null);
 		assertTrue("3.1", verifyTree(getTree(destination)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\copy of target */
-		destination = tempDest.getChild("copy of target");
+		String copyOfSubfolderName = "copy of " + subfolderName;
+		destination = tempDest.getChild(copyOfSubfolderName);
+		deleteOnTearDown(destination);
 		target.copy(destination, EFS.NONE, null);
 		assertTrue("4.1", verifyTree(getTree(destination)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a file) */
-		destination = tempDest.getChild("target");
+		destination = tempDest.getChild(subfolderName);
+		deleteOnTearDown(destination);
 		String anotherContent = "nothing..................gnihton";
 		createFile(destination, anotherContent);
 		assertTrue("5.1", !destination.fetchInfo().isDirectory());
@@ -154,20 +180,19 @@ public class FileStoreTest extends LocalStoreTest {
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a folder */
-		destination = tempDest.getChild("target");
+		destination = tempDest.getChild(subfolderName);
 		createDir(destination, true);
 		target.copy(destination, EFS.NONE, null);
 		assertTrue("6.2", verifyTree(getTree(destination)));
 		destination.delete(EFS.NONE, null);
-
-		/* remove trash */
-		target.delete(EFS.NONE, null);
 	}
 
+	@Test
 	public void testCopyDirectory() throws Throwable {
 		/* build scenario */
 		IFileStore temp = EFS.getFileSystem(EFS.SCHEME_FILE)
 				.getStore(getWorkspace().getRoot().getLocation().append("temp"));
+		deleteOnTearDown(temp);
 		temp.mkdir(EFS.NONE, null);
 		assertTrue("1.1", temp.fetchInfo().isDirectory());
 		// create tree
@@ -179,12 +204,9 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore copyOfTarget = temp.getChild("copy of target");
 		target.copy(copyOfTarget, EFS.NONE, null);
 		assertTrue("2.1", verifyTree(getTree(copyOfTarget)));
-
-		/* remove trash */
-		target.delete(EFS.NONE, null);
-		copyOfTarget.delete(EFS.NONE, null);
 	}
 
+	@Test
 	public void testCopyDirectoryParentMissing() throws Throwable {
 		IFileStore parent = getTempStore();
 		IFileStore child = parent.getChild("child");
@@ -201,13 +223,12 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("1.1", !child.fetchInfo().exists());
 	}
 
+	@Test
 	public void testCaseInsensitive() throws Throwable {
 		IFileStore temp = createDir(getWorkspace().getRoot().getLocation().append("temp").toString(), true);
 		boolean isCaseSensitive = temp.getFileSystem().isCaseSensitive();
-		if (isCaseSensitive) {
-			System.out.println("Skipping copy test on caseSensitive System");
-			return;
-		}
+		Assume.assumeFalse("Skipping copy test on caseSensitive System", isCaseSensitive);
+
 		// create a file
 		String content = "this is just a simple content \n to a simple file \n to test a 'simple' copy";
 		IFileStore fileWithSmallName = temp.getChild("filename");
@@ -236,11 +257,9 @@ public class FileStoreTest extends LocalStoreTest {
 			String message = NLS.bind(Messages.couldNotMove, fileWithSmallName.toString());
 			assertEquals(message, e.getMessage());
 		}
-
-		/* take out the trash */
-		temp.delete(EFS.NONE, null);
 	}
 
+	@Test
 	public void testCopyFile() throws Throwable {
 		/* build scenario */
 		IFileStore temp = createDir(getWorkspace().getRoot().getLocation().append("temp").toString(), true);
@@ -290,22 +309,18 @@ public class FileStoreTest extends LocalStoreTest {
 		bigFile.copy(destination, EFS.NONE, monitor);
 		assertTrue("7.3", compareContent(getContents(sb.toString()), destination.openInputStream(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
-
-		/* take out the trash */
-		temp.delete(EFS.NONE, null);
 	}
 
 	/**
 	 * Basically this is a test for the Windows Platform.
 	 */
+	@Test
 	public void testCopyFileAcrossVolumes() throws Throwable {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		if (tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
-				|| tempDirectories[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
+				|| tempDirectories[1] == null);
 
 		/* build scenario */
 		/* get the source folder */
@@ -314,26 +329,33 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore tempDest = tempDirectories[1];
 		// create target
 		String content = "this is just a simple content \n to a simple file \n to test a 'simple' copy";
-		IFileStore target = tempSrc.getChild("target");
+		String subfolderName = "target_" + System.currentTimeMillis();
+
+		IFileStore target = tempSrc.getChild(subfolderName);
 		target.delete(EFS.NONE, null);
 		createFile(target, content);
+		deleteOnTearDown(target);
 		assertTrue("1.3", target.fetchInfo().exists());
 		assertTrue("1.4", compareContent(getContents(content), target.openInputStream(EFS.NONE, null)));
 
 		/* c:\temp\target -> d:\temp\target */
-		IFileStore destination = tempDest.getChild("target");
+		IFileStore destination = tempDest.getChild(subfolderName);
+		deleteOnTearDown(destination);
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
 		assertTrue("3.1", compareContent(getContents(content), destination.openInputStream(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\copy of target */
-		destination = tempDest.getChild("copy of target");
+		String copyOfSubfoldername = "copy of " + subfolderName;
+		destination = tempDest.getChild(copyOfSubfoldername);
+		deleteOnTearDown(destination);
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
 		assertTrue("4.1", compareContent(getContents(content), destination.openInputStream(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a file */
-		destination = tempDest.getChild("target");
+		destination = tempDest.getChild(subfolderName);
+		deleteOnTearDown(destination);
 		String anotherContent = "nothing..................gnihton";
 		createFile(destination, anotherContent);
 		assertTrue("5.1", !destination.fetchInfo().isDirectory());
@@ -342,7 +364,7 @@ public class FileStoreTest extends LocalStoreTest {
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a folder */
-		destination = tempDest.getChild("target");
+		destination = tempDest.getChild(subfolderName);
 		createDir(destination, true);
 		assertTrue("6.1", destination.fetchInfo().isDirectory());
 		boolean ok = false;
@@ -357,38 +379,31 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("6.2", ok);
 		assertTrue("6.3", destination.fetchInfo().isDirectory());
 		destination.delete(EFS.NONE, null);
-
-		/* remove trash */
-		target.delete(EFS.NONE, null);
 	}
 
+	@Test
 	public void testGetLength() throws Exception {
 		// evaluate test environment
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
 		IFileStore temp = createDir(root.toString(), true);
-		try {
-			// create common objects
-			IFileStore target = temp.getChild("target");
+		// create common objects
+		IFileStore target = temp.getChild("target");
 
-			// test non-existent file
-			assertEquals("1.0", EFS.NONE, target.fetchInfo().getLength());
+		// test non-existent file
+		assertEquals("1.0", EFS.NONE, target.fetchInfo().getLength());
 
-			// create empty file
-			target.openOutputStream(EFS.NONE, null).close();
-			assertEquals("1.0", 0, target.fetchInfo().getLength());
+		// create empty file
+		target.openOutputStream(EFS.NONE, null).close();
+		assertEquals("1.0", 0, target.fetchInfo().getLength());
 
-			try ( // add a byte
-					OutputStream out = target.openOutputStream(EFS.NONE, null)) {
-				out.write(5);
-			}
-			assertEquals("1.0", 1, target.fetchInfo().getLength());
-		} finally {
-			/* remove trash */
-			temp.delete(EFS.NONE, null);
+		try ( // add a byte
+				OutputStream out = target.openOutputStream(EFS.NONE, null)) {
+			out.write(5);
 		}
-
+		assertEquals("1.0", 1, target.fetchInfo().getLength());
 	}
 
+	@Test
 	public void testGetStat() throws CoreException {
 		/* evaluate test environment */
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
@@ -406,11 +421,9 @@ public class FileStoreTest extends LocalStoreTest {
 		createDir(target, true);
 		stat = target.fetchInfo().getLastModified();
 		assertTrue("2.0", EFS.NONE != stat);
-
-		/* remove trash */
-		temp.delete(EFS.NONE, null);
 	}
 
+	@Test
 	public void testMove() throws Throwable {
 		/* build scenario */
 		IFileStore tempC = createDir(getWorkspace().getRoot().getLocation().append("temp").toString(), true);
@@ -467,20 +480,15 @@ public class FileStoreTest extends LocalStoreTest {
 		destination.move(tree, EFS.NONE, null);
 		assertTrue("6.3", verifyTree(getTree(tree)));
 		assertTrue("6.4", !destination.fetchInfo().exists());
-
-		/* remove trash */
-		target.delete(EFS.NONE, null);
-		tree.delete(EFS.NONE, null);
 	}
 
+	@Test
 	public void testMoveAcrossVolumes() throws Throwable {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		if (tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
-				|| tempDirectories[1] == null) {
-			return;
-		}
+		Assume.assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
+				|| tempDirectories[1] == null);
 
 		/* build scenario */
 		/* get the source folder */
@@ -488,7 +496,10 @@ public class FileStoreTest extends LocalStoreTest {
 		/* get the destination folder */
 		IFileStore tempDest = tempDirectories[1];
 		// create target file
-		IFileStore target = tempSrc.getChild("target");
+		String subfolderName = "target_" + System.currentTimeMillis();
+
+		IFileStore target = tempSrc.getChild(subfolderName);
+		deleteOnTearDown(target);
 		String content = "just a content.....tnetnoc a tsuj";
 		createFile(target, content);
 		assertTrue("1.3", target.fetchInfo().exists());
@@ -498,7 +509,8 @@ public class FileStoreTest extends LocalStoreTest {
 		createTree(getTree(tree));
 
 		/* move file across volumes */
-		IFileStore destination = tempDest.getChild("target");
+		IFileStore destination = tempDest.getChild(subfolderName);
+		deleteOnTearDown(destination);
 		target.move(destination, EFS.NONE, null);
 		assertTrue("5.1", !destination.fetchInfo().isDirectory());
 		assertTrue("5.2", !target.fetchInfo().exists());
@@ -507,19 +519,17 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("5.4", !destination.fetchInfo().exists());
 
 		/* move folder across volumes */
-		destination = tempDest.getChild("target");
+		destination = tempDest.getChild(subfolderName);
+		deleteOnTearDown(destination);
 		tree.move(destination, EFS.NONE, null);
 		assertTrue("9.1", verifyTree(getTree(destination)));
 		assertTrue("9.2", !tree.fetchInfo().exists());
 		destination.move(tree, EFS.NONE, null);
 		assertTrue("9.3", verifyTree(getTree(tree)));
 		assertTrue("9.4", !destination.fetchInfo().exists());
-
-		/* remove trash */
-		target.delete(EFS.NONE, null);
-		tree.delete(EFS.NONE, null);
 	}
 
+	@Test
 	public void testMoveDirectoryParentMissing() throws Throwable {
 		IFileStore parent = getTempStore();
 		IFileStore child = parent.getChild("child");
@@ -540,6 +550,7 @@ public class FileStoreTest extends LocalStoreTest {
 	 * Tests public API method
 	 * {@link IFileStore#putInfo(IFileInfo, int, IProgressMonitor)}.
 	 */
+	@Test
 	public void testPutInfo() {
 		IFileStore nonExisting = getTempStore();
 
@@ -562,10 +573,12 @@ public class FileStoreTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testReadOnly() throws CoreException {
 		testAttribute(EFS.ATTRIBUTE_READ_ONLY);
 	}
 
+	@Test
 	public void testPermissionsEnabled() {
 		String os = Platform.getOS();
 		if (Platform.OS_LINUX.equals(os) || Platform.OS_MACOSX.equals(os)) {
@@ -591,6 +604,7 @@ public class FileStoreTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testPermissions() throws CoreException {
 		testAttribute(EFS.ATTRIBUTE_OWNER_READ);
 		testAttribute(EFS.ATTRIBUTE_OWNER_WRITE);
@@ -604,9 +618,7 @@ public class FileStoreTest extends LocalStoreTest {
 	}
 
 	private void testAttribute(int attribute) throws CoreException {
-		if (!isAttributeSupported(attribute)) {
-			return;
-		}
+		Assume.assumeTrue(isAttributeSupported(attribute));
 
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
 		IFileStore targetFolder = createDir(root.toString(), true);
@@ -634,6 +646,7 @@ public class FileStoreTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testGetFileStore() throws Exception {
 		// create files
 		File file = getTempDir().append("test.txt").toFile();
@@ -675,6 +688,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("11.0", info.exists());
 	}
 
+	@Test
 	public void testSortOrder() {
 		IFileSystem nullfs = NullFileSystem.getInstance();
 		if (nullfs == null) {
@@ -701,6 +715,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertEquals("4.1", 1, nabc.compareTo(null));
 	}
 
+	@Test
 	public void testSortOrderPaths() {
 		IFileSystem lfs = LocalFileSystem.getInstance();
 		boolean isWindows = java.io.File.separatorChar == '\\';
@@ -713,23 +728,23 @@ public class FileStoreTest extends LocalStoreTest {
 				"/a/e/../c", //
 				"/a/d", //
 				"/aa", //
-				"/b").stream().map(s -> prefix + s).collect(Collectors.toList());
+				"/b").stream().map(s -> prefix + s).toList();
 		List<String> pathsTrimmed = paths.stream().map(s -> s //
 				.replaceAll("/$", "") // remove trailing slashes
 				.replaceAll("/[^/]+/\\.\\./", "/") // collapse /a/../ to /
 				.replaceAll("/\\./", "/") // collapse /./ to /
-		).collect(Collectors.toList());
+		).toList();
 		paths = new ArrayList<>(paths); // to get a mutable copy for shuffling
 		Collections.shuffle(paths);
 		// Test with new Path(string).getStore()
 		Stream<IFileStore> pathStores = paths.stream().map(Path::new).map(lfs::getStore);
 		List<String> sortedPathStores = pathStores.sorted(IFileStore::compareTo).map(IFileStore::toURI)
-				.map(URI::getPath).collect(Collectors.toList());
+				.map(URI::getPath).toList();
 		assertEquals("1.0 ", pathsTrimmed, sortedPathStores);
 		// Test with new LocalFile(new File(string)))
 		Stream<IFileStore> localFileStores = paths.stream().map(File::new).map(LocalFile::new);
 		List<String> sortedLocalFileStores = localFileStores.sorted(IFileStore::compareTo).map(IFileStore::toURI)
-				.map(URI::getPath).collect(Collectors.toList());
+				.map(URI::getPath).toList();
 		assertEquals("2.0 ", pathsTrimmed, sortedLocalFileStores);
 	}
 }

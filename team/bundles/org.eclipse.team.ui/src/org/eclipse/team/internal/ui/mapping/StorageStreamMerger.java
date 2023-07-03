@@ -43,14 +43,13 @@ public class StorageStreamMerger implements IStorageMerger {
 
 	@Override
 	public IStatus merge(OutputStream output, String outputEncoding, IStorage ancestorStorage, IStorage targetStorage, IStorage otherStorage, IProgressMonitor monitor) throws CoreException {
-		InputStream ancestorStream = null;
-		InputStream remoteStream = null;
-		InputStream targetStream = null;
-		try {
-			ancestorStream = new BufferedInputStream(ancestorStorage.getContents());
-			remoteStream = new BufferedInputStream(otherStorage.getContents());
-			targetStream = new BufferedInputStream(targetStorage.getContents());
-			IStatus status = merger.merge(output, outputEncoding,
+		IStatus status = null;
+		try (
+			InputStream ancestorStream = new BufferedInputStream(ancestorStorage.getContents());
+			InputStream remoteStream = new BufferedInputStream(otherStorage.getContents());
+			InputStream targetStream = new BufferedInputStream(targetStorage.getContents())
+				){
+			status = merger.merge(output, outputEncoding,
 					ancestorStream, getEncoding(ancestorStorage, outputEncoding),
 					targetStream, getEncoding(targetStorage, outputEncoding),
 					remoteStream, getEncoding(otherStorage, outputEncoding),
@@ -59,27 +58,10 @@ public class StorageStreamMerger implements IStorageMerger {
 				return status;
 			if (status.getCode() == IStreamMerger.CONFLICT)
 				return new Status(status.getSeverity(), status.getPlugin(), CONFLICT, status.getMessage(), status.getException());
-			return status;
-		} finally {
-			try {
-				if (ancestorStream != null)
-					ancestorStream.close();
-			} catch (IOException e) {
-				// Ignore
-			}
-			try {
-				if (remoteStream != null)
-					remoteStream.close();
-			} catch (IOException e) {
-				// Ignore
-			}
-			try {
-				if (targetStream != null)
-					targetStream.close();
-			} catch (IOException e) {
-				// Ignore
-			}
+		} catch (IOException closeException) {
+			// Ignore
 		}
+		return status;
 	}
 
 	private String getEncoding(IStorage ancestorStorage, String outputEncoding) {

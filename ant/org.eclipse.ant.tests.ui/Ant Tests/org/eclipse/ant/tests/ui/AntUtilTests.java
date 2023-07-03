@@ -15,6 +15,7 @@
 package org.eclipse.ant.tests.ui;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -200,11 +201,11 @@ public class AntUtilTests extends AbstractAntUITest {
 		 * is not set), but every include-file now includes the "big build.xml"
 		 */
 		String buildFileName = "bug412809/performance/buildFileHierarchical"; //$NON-NLS-1$
-		long startTime = System.currentTimeMillis();
+		long startTimeInNanoseconds = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 		File buildFile = getBuildFile(buildFileName + ".xml"); //$NON-NLS-1$
 		IAntModel model = AntUtil.getAntModel(buildFile.getAbsolutePath(), false, true, true);
 		AntProjectNode project = model.getProjectNode();
-		long endTime = System.currentTimeMillis();
+		long endTimeInNanoseconds = ManagementFactory.getThreadMXBean().getCurrentThreadCpuTime();
 
 		Assert.assertNotNull(project);
 		/*
@@ -214,11 +215,13 @@ public class AntUtilTests extends AbstractAntUITest {
 		 *
 		 * - 10s elsewhere
 		 */
-		long duration = endTime - startTime;
+
+		long durationInMilliseconds = (endTimeInNanoseconds - startTimeInNanoseconds) / 1_000_000;
 		// Change this value if it does not fit the performance needs
 		long maxDuration = this.getExecutionTresholdIncludeTask();
 
-		Assert.assertTrue("Expecting a duration < " + maxDuration + ", but we have " + duration + "ms", duration < maxDuration); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		Assert.assertTrue("Expecting a duration < " + maxDuration + ", but we have " + durationInMilliseconds + "ms", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				durationInMilliseconds < maxDuration);
 		// Test the rest
 		AntTargetNode[] targets = getAntTargetNodesOfBuildFile(buildFileName);
 

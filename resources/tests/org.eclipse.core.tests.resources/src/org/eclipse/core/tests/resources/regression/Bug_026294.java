@@ -15,7 +15,8 @@ package org.eclipse.core.tests.resources.regression;
 
 import java.io.*;
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -131,7 +132,7 @@ public class Bug_026294 extends ResourceTest {
 	 * Works only for Linux with natives.
 	 */
 	public void testDeleteOpenProjectLinux() {
-		if (!(Platform.getOS().equals(Platform.OS_LINUX) && isReadOnlySupported())) {
+		if (!(isLinux() && isReadOnlySupported())) {
 			return;
 		}
 
@@ -279,7 +280,7 @@ public class Bug_026294 extends ResourceTest {
 	 * TODO: enable this test once bug 48321 is fixed.
 	 */
 	public void testDeleteClosedProjectLinux() {
-		if (!(Platform.getOS().equals(Platform.OS_LINUX))) {
+		if (!isLinux()) {
 			return;
 		}
 
@@ -416,7 +417,7 @@ public class Bug_026294 extends ResourceTest {
 	 * Works only for Linux with natives.
 	 */
 	public void testDeleteFolderLinux() {
-		if (!(Platform.getOS().equals(Platform.OS_LINUX))) {
+		if (!isLinux()) {
 			return;
 		}
 

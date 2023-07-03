@@ -54,6 +54,8 @@ public final class InternalPlatform {
 
 	private static final String[] ARCH_LIST = { Platform.ARCH_AARCH64, Platform.ARCH_X86, Platform.ARCH_X86_64 };
 
+	public static final StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+
 	// debug support:  set in loadOptions()
 	public static boolean DEBUG = false;
 	public static boolean DEBUG_PLUGIN_PREFERENCES = false;

@@ -1,4 +1,5 @@
-#Mon Oct 30 17:02:51 EST 2006
 eclipse.preferences.version=1
 formatter_profile=_core
 formatter_settings_version=10
+org.eclipse.jdt.ui.ondemandthreshold=99
+org.eclipse.jdt.ui.staticondemandthreshold=99

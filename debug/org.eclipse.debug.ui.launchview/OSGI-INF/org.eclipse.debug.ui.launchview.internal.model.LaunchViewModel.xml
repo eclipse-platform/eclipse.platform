@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" deactivate="deactivate" immediate="true" name="org.eclipse.debug.ui.launchview.internal.model.LaunchViewModel">
+   <service>
+      <provide interface="org.eclipse.debug.ui.launchview.internal.model.ILaunchModel"/>
+   </service>
+   <reference bind="addLaunchObjectProvider" cardinality="0..n" interface="org.eclipse.debug.ui.launchview.services.ILaunchObjectProvider" name="LaunchObjectProvider" policy="dynamic" policy-option="greedy" unbind="removeLaunchObjectProvider"/>
+   <reference bind="setWorkbench" cardinality="1..1" interface="org.eclipse.ui.IWorkbench" name="Workbench" policy="static" unbind="unsetWorkbench"/>
+   <implementation class="org.eclipse.debug.ui.launchview.internal.model.LaunchViewModel"/>
+</scr:component>

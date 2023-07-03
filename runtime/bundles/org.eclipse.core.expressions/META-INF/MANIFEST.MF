@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.core.expressions; singleton:=true
-Bundle-Version: 3.8.200.qualifier
+Bundle-Version: 3.9.100.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -10,8 +10,8 @@ Export-Package: org.eclipse.core.expressions,
  org.eclipse.core.internal.expressions;x-internal:=true,
  org.eclipse.core.internal.expressions.propertytester;x-internal:=true,
  org.eclipse.core.internal.expressions.util;x-internal:=true
-Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.3.0,4.0.0)"
+Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.28.0,4.0.0)"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: org.w3c.dom
 Automatic-Module-Name: org.eclipse.core.expressions

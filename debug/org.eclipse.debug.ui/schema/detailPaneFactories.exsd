@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.debug.ui" id="detailPaneFactories" name="Detail Pane Factories Extension"/>
+      </appInfo>
+      <documentation>
+         This extension point allows clients to contribute custom renderings for the detail pane in the variables, registers, expressions, and breakpoints views (note that support for breakpoint view detail panes was added in 3.6). To contribute a custom detail pane, an implementation of &lt;code&gt;IDetailPaneFactory&lt;/code&gt; is registered using this extension point.  A detail pane factory creates an &lt;code&gt;IDetailPane&lt;/code&gt; for each custom rendering (note that optional extensions have been added to detail panes via  &lt;code&gt;IDetailPane2&lt;/code&gt; and &lt;code&gt;IDetailPane3&lt;/code&gt;).
+&lt;p&gt;
+Views with detail panes allow users select from available detail panes via the context menu. All contributions to this extension point are checked agaist the current selection. A detail factory should provide an enablement expression to ensure lazy plug-in loading. A factory will only be instantiated if its expression evaluates to true for the current selection (see the example extension point for an example enablement expression). Each applicable factory is then consulted for the types of detail panes it can produce for the current selection.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <include schemaLocation="schema://org.eclipse.core.expressions/schema/expressionLanguage.exsd"/>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="detailFactories"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="detailFactories">
+      <complexType>
+         <sequence>
+            <element ref="enablement" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  specifies a unique identifier for this factory
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  fully qualified name of a class that implements &lt;code&gt;org.eclipse.debug.ui.IDetailPaneFactory&lt;/code&gt;
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.debug.ui.IDetailPaneFactory"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.3
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         Following in an example of a detail pane factory extension with an expression that enables for selections containing exactly two Java variables:
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.debug.ui.detailPaneFactories&quot;&gt;
+       &lt;detailFactories
+             class=&quot;org.eclipse.temp.JavaTableDetailPaneFactory&quot;
+             name=&quot;javaTableDetailPaneFactory&quot;&gt;
+          &lt;enablement&gt;
+          &lt;with
+                variable=&quot;selection&quot;&gt;
+             &lt;count
+                   value=&quot;2&quot;&gt;
+             &lt;/count&gt;
+             &lt;iterate&gt;
+                &lt;instanceof
+                      value=&quot;org.eclipse.jdt.debug.core.IJavaVariable&quot;&gt;
+                &lt;/instanceof&gt;
+             &lt;/iterate&gt;
+          &lt;/with&gt;
+       &lt;/enablement&gt;
+       &lt;/detailFactories&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Value of the attribute &lt;b&gt;class&lt;/b&gt; must be a fully qualified name of a Java class that implements the interface &lt;b&gt;org.eclipse.debug.ui.IDetailPaneFactory&lt;/b&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The debug platform contributes a detail pane factory providing a default text source viewer detail pane. The default detail pane displays textual details of a selected element based on the corresponding debug model presentation&apos;s implementation of &lt;code&gt;computeDetail(IValue value, IValueDetailListener listener)&lt;/code&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2000, 2010 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

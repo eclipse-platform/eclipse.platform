@@ -14,25 +14,63 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import java.io.*;
+import static org.junit.Assert.assertArrayEquals;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-import org.eclipse.core.filesystem.*;
-import org.eclipse.core.internal.resources.*;
+import java.util.stream.Stream;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.internal.resources.CharsetDeltaJob;
+import org.eclipse.core.internal.resources.ContentDescriptionManager;
+import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.ValidateProjectEncoding;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourceAttributes;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.harness.FileSystemHelper;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Superclass for tests that use the Eclipse Platform workspace.
@@ -96,6 +134,23 @@ public abstract class ResourceTest extends CoreTest {
 		return ResourcesPlugin.getWorkspace();
 	}
 
+	private IWorkspaceDescription storedWorkspaceDescription;
+
+	private final void storeWorkspaceDescription() {
+		this.storedWorkspaceDescription = getWorkspace().getDescription();
+	}
+
+	private final void restoreWorkspaceDescription() {
+		if (storedWorkspaceDescription != null) {
+			try {
+				getWorkspace().setDescription(storedWorkspaceDescription);
+			} catch (CoreException e) {
+				fail("Failed restoring workspace description", e);
+			}
+		}
+		storedWorkspaceDescription = null;
+	}
+
 	/**
 	 * Returns whether the file system in which the provided resource
 	 * is stored is case sensitive. This succeeds whether or not the resource
@@ -112,6 +167,26 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	protected static boolean isWindows() {
 		return Platform.getOS().equals(Platform.OS_WIN32);
+	}
+
+	/**
+	 * Returns whether the current platform is linux.
+	 *
+	 * @return <code>true</code> if this platform is linux, and <code>false</code>
+	 *         otherwise.
+	 */
+	protected static boolean isLinux() {
+		return Platform.getOS().equals(Platform.OS_LINUX);
+	}
+
+	/**
+	 * Returns whether the current platform is mac OSX.
+	 *
+	 * @return <code>true</code> if this platform is mac OSX, and <code>false</code>
+	 *         otherwise.
+	 */
+	protected static boolean isMacOSX() {
+		return Platform.getOS().equals(Platform.OS_MACOSX);
 	}
 
 	/**
@@ -145,6 +220,30 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	public ResourceTest(String name) {
 		super(name);
+	}
+
+	/**
+	 * Bridge method to be able to run subclasses with JUnit4 as well as with
+	 * JUnit3.
+	 *
+	 * @throws Exception
+	 *             comes from {@link #setUp()}
+	 */
+	@Before
+	public final void before() throws Exception {
+		setUp();
+	}
+
+	/**
+	 * Bridge method to be able to run subclasses with JUnit4 as well as with
+	 * JUnit3.
+	 *
+	 * @throws Exception
+	 *             comes from {@link #tearDown()}
+	 */
+	@After
+	public final void after() throws Exception {
+		tearDown();
 	}
 
 	/**
@@ -363,18 +462,30 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	protected void cleanup() throws CoreException {
+		// Wait for any build job that may still be executed
+		waitForBuild();
 		final IFileStore[] toDelete = storesToDelete.toArray(new IFileStore[0]);
 		storesToDelete.clear();
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
-			getWorkspace().getRoot().delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+			getWorkspace().getRoot().delete(true, true, getMonitor());
 			//clear stores in workspace runnable to avoid interaction with resource jobs
 			for (IFileStore element : toDelete) {
 				clear(element);
 			}
 		}, null);
 		getWorkspace().save(true, null);
-		//don't leak builder jobs, since they may affect subsequent tests
+		// don't leak builder jobs, since they may affect subsequent tests
 		waitForBuild();
+		assertWorkspaceFolderEmpty();
+	}
+
+	private void assertWorkspaceFolderEmpty() {
+		final String metadataDirectoryName = ".metadata";
+		File workspaceLocation = getWorkspace().getRoot().getLocation().toFile();
+		File[] remainingFilesInWorkspace = workspaceLocation
+				.listFiles(file -> !file.getName().equals(metadataDirectoryName));
+		assertArrayEquals("There are unexpected contents in the workspace folder", new File[0],
+				remainingFilesInWorkspace);
 	}
 
 	protected void clear(IFileStore store) {
@@ -532,7 +643,7 @@ public abstract class ResourceTest extends CoreTest {
 	public void ensureDoesNotExistInWorkspace(IResource resource) {
 		try {
 			if (resource.exists()) {
-				resource.delete(true, null);
+				resource.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
 			}
 		} catch (CoreException e) {
 			fail("#ensureDoesNotExistInWorkspace(IResource): " + resource.getFullPath(), e);
@@ -569,8 +680,8 @@ public abstract class ResourceTest extends CoreTest {
 	 * manager to ensure that we have a correct Path -&gt; File mapping.
 	 */
 	public void ensureExistsInFileSystem(IResource resource) {
-		if (resource instanceof IFile) {
-			ensureExistsInFileSystem((IFile) resource);
+		if (resource instanceof IFile file) {
+			ensureExistsInFileSystem(file);
 		} else {
 			try {
 				((Resource) resource).getStore().mkdir(EFS.NONE, null);
@@ -654,6 +765,7 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	public void ensureOutOfSync(final IFile file) {
 		modifyInFileSystem(file);
+		waitForRefresh();
 		touchInFilesystem(file);
 		assertTrue("File not out of sync: " + file.getLocation().toOSString(), file.getLocation().toFile().lastModified() != file.getLocalTimeStamp());
 	}
@@ -818,15 +930,23 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	protected IFileStore getTempStore() {
 		IFileStore store = EFS.getLocalFileSystem().getStore(FileSystemHelper.getRandomLocation(getTempDir()));
-		storesToDelete.add(store);
+		deleteOnTearDown(store);
 		return store;
 	}
 
 	/**
-	 * Ensures that the file system location associated with the corresponding path is deleted during test tear down.
+	 * Ensures that the file system location associated with the corresponding path
+	 * is deleted during test tear down.
 	 */
 	protected void deleteOnTearDown(IPath path) {
 		storesToDelete.add(EFS.getLocalFileSystem().getStore(path));
+	}
+
+	/**
+	 * Ensures that the given store is deleted during test tear down.
+	 */
+	protected void deleteOnTearDown(IFileStore store) {
+		storesToDelete.add(store);
 
 	}
 
@@ -996,11 +1116,14 @@ public abstract class ResourceTest extends CoreTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		// Wait for any pending refresh operation, in particular from startup
+		waitForRefresh();
 		TestUtil.log(IStatus.INFO, getName(), "setUp");
 		FreezeMonitor.expectCompletionInAMinute();
 		assertNotNull("Workspace was not setup", getWorkspace());
 		loggedErrors.clear();
 		Platform.addLogListener(errorLogListener);
+		storeWorkspaceDescription();
 	}
 
 	@Override
@@ -1009,6 +1132,7 @@ public abstract class ResourceTest extends CoreTest {
 		TestUtil.log(IStatus.INFO, getName(), "tearDown");
 		// Ensure everything is in a clean state for next one.
 		// Session tests should overwrite it.
+		restoreWorkspaceDescription();
 		cleanup();
 		super.tearDown();
 		FreezeMonitor.done();
@@ -1029,6 +1153,30 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
+	 * Enables or disables workspace autobuild. Waits for the build to be finished,
+	 * even if the autobuild value did not change and a previous build is still running.
+	 */
+	protected void setAutoBuilding(boolean enabled) throws CoreException {
+		IWorkspace workspace = getWorkspace();
+		if (workspace.isAutoBuilding() != enabled) {
+			IWorkspaceDescription description = workspace.getDescription();
+			description.setAutoBuilding(enabled);
+			workspace.setDescription(description);
+		}
+		waitForBuild();
+	}
+
+	/**
+	 * Sets the workspace build order to just contain the given projects.
+	 */
+	protected void setBuildOrder(IProject... projects) throws CoreException {
+		IWorkspace workspace = getWorkspace();
+		IWorkspaceDescription desc = workspace.getDescription();
+		desc.setBuildOrder(Stream.of(projects).map(IProject::getName).toArray(String[]::new));
+		workspace.setDescription(desc);
+	}
+
+	/**
 	 * Blocks the calling thread until autobuild completes.
 	 */
 	protected void waitForBuild() {
@@ -1036,7 +1184,7 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Blocks the calling thread until autobuild completes.
+	 * Blocks the calling thread until refresh job completes.
 	 */
 	protected void waitForRefresh() {
 		try {

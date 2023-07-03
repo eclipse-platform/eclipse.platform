@@ -858,8 +858,6 @@ public class DeltaDataTreeTest {
 			caught = true;
 		}
 		assertTrue("13", caught);
-
-		return;
 	}
 
 	/**
@@ -884,8 +882,6 @@ public class DeltaDataTreeTest {
 		assertFalse(tree.includes(leftKey.append("bogus")));
 		assertFalse(tree.includes(leftKey.append("one").append("bogus")));
 		assertFalse(tree.includes(rightKey.append("bogus")));
-
-		return;
 	}
 
 	/**

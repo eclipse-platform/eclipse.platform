@@ -1,4 +1,5 @@
-#Thu Dec 07 16:35:13 JST 2006
 eclipse.preferences.version=1
 formatter_profile=_eclipse-java-code-formatter-20060522
 formatter_settings_version=10
+org.eclipse.jdt.ui.ondemandthreshold=99
+org.eclipse.jdt.ui.staticondemandthreshold=99

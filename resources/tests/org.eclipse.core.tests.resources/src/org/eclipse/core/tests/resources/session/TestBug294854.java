@@ -46,9 +46,15 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		scenario3.addCrashTest(new TestBug294854("testDelete_01"));
 		scenario3.addTest(new TestBug294854("testDelete_02"));
 
+		SessionTestSuite scenario4 = new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS,
+				"deleteWithoutWaitingForSnapshot");
+		scenario4.addCrashTest(new TestBug294854("testDeleteWithoutWaitingForSnapshot_01"));
+		scenario4.addTest(new TestBug294854("testDeleteWithoutWaitingForSnapshot_02"));
+
 		suite.addTest(scenario1);
 		suite.addTest(scenario2);
 		suite.addTest(scenario3);
+		suite.addTest(scenario4);
 
 		return suite;
 	}
@@ -75,6 +81,11 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		return project.exists();
 	}
 
+	private boolean checkProjectIsOpen(String name) {
+		IProject project = getWorkspace().getRoot().getProject(name);
+		return project.isOpen();
+	}
+
 	public void testRenameUsingProjectDescription_01() throws CoreException, InterruptedException {
 		IProject project = createProject();
 
@@ -83,8 +94,8 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		description.setName(PROJECT_NEW_NAME);
 		project.move(description, true, getMonitor());
 
-		// give a moment for the snapshot to run
-		Thread.sleep(1000);
+		// wait for the snapshot job to run
+		TestingSupport.waitForSnapshot();
 
 		// simulate process kill
 		System.exit(1);
@@ -101,8 +112,8 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		// move project using IPath
 		project.move(project.getFullPath().removeLastSegments(1).append(PROJECT_NEW_NAME), true, getMonitor());
 
-		// give a moment for the snapshot to run
-		Thread.sleep(1000);
+		// wait for the snapshot job to run
+		TestingSupport.waitForSnapshot();
 
 		// simulate process kill
 		System.exit(1);
@@ -119,11 +130,37 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		// delete project
 		project.delete(true, getMonitor());
 
+		// wait for the snapshot job to run
+		TestingSupport.waitForSnapshot();
+
 		// simulate process kill
 		System.exit(1);
 	}
 
 	public void testDelete_02() {
 		assertFalse("1.0", checkProjectExists(PROJECT_OLD_NAME));
+	}
+
+	public void testDeleteWithoutWaitingForSnapshot_01() throws CoreException {
+		IProject project = createProject();
+
+		// simulate process kill after deleting project but before persisting the state
+		// in the snapshot job
+		IResourceChangeListener selfDeregisteringExistingChangeListener = new IResourceChangeListener() {
+			@Override
+			public void resourceChanged(IResourceChangeEvent event) {
+				getWorkspace().removeResourceChangeListener(this);
+				System.exit(1);
+			}
+		};
+		getWorkspace().addResourceChangeListener(selfDeregisteringExistingChangeListener, IResourceChangeEvent.POST_CHANGE);
+
+		// delete project
+		project.delete(true, getMonitor());
+	}
+
+	public void testDeleteWithoutWaitingForSnapshot_02() {
+		assertTrue("1.0", checkProjectExists(PROJECT_OLD_NAME));
+		assertFalse("1.1", checkProjectIsOpen(PROJECT_OLD_NAME));
 	}
 }

@@ -60,7 +60,6 @@ public class EmptyDeltaTest extends AbstractBuilderTest {
 			verifier.assertLifecycleEvents("3.1");
 		} catch (CoreException e) {
 			fail("3.2", e);
-			return;
 		}
 		// Now do another incremental build. Even though the delta is empty, it should be called
 		try {

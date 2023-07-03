@@ -72,7 +72,6 @@ public class Bug_147232 extends AbstractBuilderTest implements IResourceChangeLi
 			project.open(getMonitor());
 			addBuilder(project, ClearMarkersBuilder.BUILDER_NAME);
 			setAutoBuilding(true);
-			waitForBuild();
 		} catch (CoreException e) {
 			fail("0.99", e);
 		}

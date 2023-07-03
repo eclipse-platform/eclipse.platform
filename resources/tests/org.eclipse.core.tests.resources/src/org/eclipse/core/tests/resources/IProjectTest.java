@@ -444,7 +444,7 @@ public class IProjectTest extends ResourceTest {
 		assertFalse("3.1", target.isOpen());
 
 		monitor.prepare();
-		target.delete(true, monitor);
+		target.delete(true, true, monitor);
 		monitor.assertUsedUp();
 		assertFalse("4.1", target.exists());
 	}
@@ -1372,6 +1372,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file, true);
+		waitForRefresh();
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1623,6 +1624,7 @@ public class IProjectTest extends ResourceTest {
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
 		ensureExistsInWorkspace(project, true);
+		waitForRefresh();
 		ensureExistsInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
@@ -1923,6 +1925,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file, true);
+		waitForRefresh();
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -2065,13 +2068,13 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("5.3", getWorkspace().validateProjectLocation(null, root.append("%20foo")).isOK());
 
 		monitor.prepare();
-		project1.delete(true, monitor);
+		project1.delete(true, true, monitor);
 		monitor.assertUsedUp();
 		monitor.prepare();
-		project2.delete(true, monitor);
+		project2.delete(true, true, monitor);
 		monitor.assertUsedUp();
 		monitor.prepare();
-		project3.delete(true, monitor);
+		project3.delete(true, true, monitor);
 		monitor.assertUsedUp();
 	}
 

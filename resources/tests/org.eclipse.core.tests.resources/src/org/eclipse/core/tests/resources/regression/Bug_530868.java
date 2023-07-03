@@ -45,38 +45,33 @@ public class Bug_530868 extends ResourceTest {
 
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		try {
-			testProject.delete(true, getMonitor());
-		} finally {
-			super.tearDown();
-		}
-	}
-
 	/**
 	 * Create a file several times and check that we see different modification
 	 * timestamps.
 	 */
 	public void testMillisecondResolution() throws Exception {
-		assertTrue("can only run if native provider is used", LocalFileNativesManager.isUsingNatives());
-		if (Platform.OS_MACOSX.equals(Platform.getOS())) {
-			// Mac still has no milliseconds resolution
-			return;
-		}
-		/*
-		 * Run 3 times in case we have seconds resolution due to a bug, but by chance we
-		 * happened to modify the file in-between two seconds.
-		 */
-		long timestamp1 = modifyTestFileAndFetchTimestamp("some contents 1");
-		Thread.sleep(50);
-		long timestamp2 = modifyTestFileAndFetchTimestamp("some contents 2");
-		Thread.sleep(50);
-		long timestamp3 = modifyTestFileAndFetchTimestamp("some contents 3");
+		try {
+			assertTrue("can only run if native provider can be enabled", LocalFileNativesManager.setUsingNative(true));
+			if (Platform.OS_MACOSX.equals(Platform.getOS())) {
+				// Mac still has no milliseconds resolution
+				return;
+			}
+			/*
+			 * Run 3 times in case we have seconds resolution due to a bug, but by chance we
+			 * happened to modify the file in-between two seconds.
+			 */
+			long timestamp1 = modifyTestFileAndFetchTimestamp("some contents 1");
+			Thread.sleep(50);
+			long timestamp2 = modifyTestFileAndFetchTimestamp("some contents 2");
+			Thread.sleep(50);
+			long timestamp3 = modifyTestFileAndFetchTimestamp("some contents 3");
 
-		String failMessage = "expected different timestamps for modifications in quick succession";
-		assertNotEquals(failMessage, timestamp1, timestamp2);
-		assertNotEquals(failMessage, timestamp2, timestamp3);
+			String failMessage = "expected different timestamps for modifications in quick succession";
+			assertNotEquals(failMessage, timestamp1, timestamp2);
+			assertNotEquals(failMessage, timestamp2, timestamp3);
+		} finally {
+			LocalFileNativesManager.reset();
+		}
 	}
 
 	private long modifyTestFileAndFetchTimestamp(String contents) throws Exception {

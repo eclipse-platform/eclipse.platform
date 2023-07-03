@@ -1,0 +1,36 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Eclipse Console</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>Application programming interfaces for interaction
+with the Eclipse console.</p>
+
+<h2>Package Specification</h2>
+
+<p>The Eclipse platform UI console plug-in provides a set of classes and interfaces to
+facilitate the creation and display of consoles in the <b>ConsoleView</b>. This package
+contains a generic abstract console (<b>AbstractConsole</b>) that provides some basic 
+functionality as well as two complete implementations of consoles that may be subclassed.
+ <p> The class <b>TextConsole</b> supports regular expression matching and hyperlinks. 
+ Clients must provide their own document partitioner.
+ </p>
+<p><b>IOConsole</b> extends <b>TextConsole</b> and provides support for creating consoles based upon
+input and output streams via the use of <b>IOConsoleOutputStream</b> and 
+<b>IOConsoleInputStream</b>. IOConsole is not an abstract class, it may be used as is or
+subclassed.
+ </p>
+<p>A console manager (<b>IConsoleManager</b>) manages all active consoles, and 
+  provides notification of consoles which are added and removed. Consoles are 
+  displayed in a page book view. Each console implementation is reponsible for 
+  creating its page (<b>IPageBookView</b>), which provides freedom of presentation 
+  to the console implementation. A single console may be displayed simultaneously 
+  in multiple console views, in different workbench windows.
+</p>
+</body>
+</html>

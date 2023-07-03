@@ -68,31 +68,22 @@ public class BufferedResourceNode extends ResourceNode {
 	 */
 	public void commit(IProgressMonitor pm) throws CoreException {
 		if (fDirty) {
-
 			if (fDeleteFile != null) {
 				fDeleteFile.delete(true, true, pm);
 				return;
 			}
-
-			IResource resource= getResource();
+			IResource resource = getResource();
 			if (resource instanceof IFile) {
-
-				byte[] bytes= getContent();
-				ByteArrayInputStream is= new ByteArrayInputStream(bytes);
-				try {
-					IFile file= (IFile) resource;
+				byte[] bytes = getContent();
+				try (ByteArrayInputStream is = new ByteArrayInputStream(bytes)) {
+					IFile file = (IFile) resource;
 					if (file.exists())
 						file.setContents(is, false, true, pm);
 					else
 						file.create(is, false, pm);
-					fDirty= false;
-				} finally {
-					if (is != null)
-						try {
-							is.close();
-						} catch(IOException ex) {
-							// Silently ignored
-						}
+					fDirty = false;
+				} catch (IOException closeException) {
+					// Silently ignored
 				}
 			}
 		}
@@ -127,12 +118,11 @@ public class BufferedResourceNode extends ResourceNode {
 		if (other instanceof IStreamContentAccessor && child instanceof IEditableContent) {
 			IEditableContent dst= (IEditableContent) child;
 
-			try {
-				InputStream is= ((IStreamContentAccessor)other).getContents();
-				byte[] bytes= Utilities.readBytes(is);
+			try (InputStream is = ((IStreamContentAccessor) other).getContents()) {
+				byte[] bytes = is.readAllBytes();
 				if (bytes != null)
 					dst.setContent(bytes);
-			} catch (CoreException ex) {
+			} catch (CoreException | IOException ex) {
 				// NeedWork
 			}
 		}

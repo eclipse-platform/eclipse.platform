@@ -43,6 +43,7 @@ import org.osgi.service.log.Logger;
 import org.osgi.service.log.LoggerFactory;
 
 @Component
+@SuppressWarnings("removal") // AccessController
 public class MessageFactoryServiceImpl implements IMessageFactoryService {
 
 	private LoggerFactory factory;

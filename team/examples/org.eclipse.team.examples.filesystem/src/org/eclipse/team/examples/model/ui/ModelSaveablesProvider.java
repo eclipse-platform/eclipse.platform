@@ -39,7 +39,7 @@ public class ModelSaveablesProvider extends SaveablesProvider {
 
 	@Override
 	public Saveable getSaveable(Object element) {
-		for (Object element2 : saveables) {
+		for (Saveable element2 : saveables) {
 			ModelSaveable saveable = (ModelSaveable) element2;
 			if (saveable.getModelObject().equals(element))
 				return saveable;

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import java.util.Arrays;
 import java.util.Random;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.junit.Assert;
@@ -24,6 +25,8 @@ import org.junit.Assert;
  */
 public abstract class TestPerformer {
 	private int count = 0;
+
+	private String reasonForExpectedFail = null;
 
 	/**
 	 * TestPerformer constructor comment.
@@ -52,7 +55,6 @@ public abstract class TestPerformer {
 				scramble(input);
 			}
 		}
-		//	System.out.println("\nTesting " + permutations + " permutations of " + name);
 		performTestRecursiveLoop(inputs, new Object[inputs.length], 0);
 	}
 
@@ -67,18 +69,13 @@ public abstract class TestPerformer {
 			if (nth == inputs.length - 1) {
 				// breakpoint goes here, may be conditional on name and count, e.g.:
 				// name.equals("IResourceTest.testMove") && count==2886
+				reasonForExpectedFail = null;
 				if (shouldFail(args, count)) {
 					try {
 						invokeMethod(args, count);
-						StringBuilder buffer = new StringBuilder();
-						buffer.append("invocation " + count + " should fail, but it doesn't [");
-						for (Object arg : args) {
-							buffer.append(arg);
-							buffer.append(',');
-						}
-						buffer.deleteCharAt(buffer.length() - 1);
-						buffer.append(']');
-						Assert.fail(buffer.toString());
+						Assert.fail(getFailMessagePrefixForCurrentInvocation(args)
+								+ "invocation did not fail although it should"
+								+ (reasonForExpectedFail != null ? ": " + reasonForExpectedFail : ""));
 					} catch (Exception ex) {
 					}
 				} else {
@@ -92,9 +89,12 @@ public abstract class TestPerformer {
 					try {
 						result = invokeMethod(args, count);
 					} catch (FussyProgressMonitor.FussyProgressAssertionFailed fussyEx) {
-						throw new AssertionError("invocation " + count + ": " + fussyEx.getMessage(), fussyEx);
+						throw new AssertionError(getFailMessagePrefixForCurrentInvocation(args)
+								+ "invocation should succeed but fuzzy progress assertion failed: " + fussyEx.getMessage(),
+								fussyEx);
 					} catch (Exception ex) {
-						throw new AssertionError("invocation " + count + " failed with " + ex, ex);
+						throw new AssertionError(getFailMessagePrefixForCurrentInvocation(args)
+								+ "invocation should succeed but unexpected exception occurred: " + ex, ex);
 					}
 					boolean success = false;
 					try {
@@ -102,7 +102,8 @@ public abstract class TestPerformer {
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
-					Assert.assertTrue("invocation " + count + " did not produce desired result", success);
+					Assert.assertTrue(getFailMessagePrefixForCurrentInvocation(args)
+							+ "invocation should succeed but did not produce desired result", success);
 				}
 				cleanUp(args, count);
 				count++;
@@ -110,6 +111,27 @@ public abstract class TestPerformer {
 				performTestRecursiveLoop(inputs, args, nth + 1);
 			}
 		}
+	}
+
+	/**
+	 * Sets a message describing the reason for the next iteration to fail to be
+	 * logged if the test does unexpectedly succeed. Setting the message is
+	 * optional. A reasonable place to set it is inside the
+	 * {@link #shouldFail(Object[], int)} method. If no message is specified by
+	 * calling this method, a generic failure message will be logged. The message is
+	 * restored after each executed test iteration.
+	 *
+	 * @param reasonForFailing
+	 *            a description for the reason of a fail expected from the next test
+	 *            iteration
+	 */
+	protected void setReasonForExpectedFail(String reasonForFailing) {
+		this.reasonForExpectedFail = reasonForFailing;
+	}
+
+	private String getFailMessagePrefixForCurrentInvocation(Object[] currentArgs) {
+		return "failure in invocation " + count + " with inputs " + Arrays.toString(currentArgs)
+				+ System.lineSeparator();
 	}
 
 	/**

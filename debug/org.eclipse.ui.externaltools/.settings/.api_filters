@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="org.eclipse.ui.externaltools" version="2">
+    <resource path="External Tools Base/org/eclipse/ui/externaltools/internal/menu/OpenExternalToolsConfigurations.java" type="org.eclipse.ui.externaltools.internal.menu.OpenExternalToolsConfigurations">
+        <filter comment="Known illegal extension" id="571473929">
+            <message_arguments>
+                <message_argument value="OpenLaunchDialogAction"/>
+                <message_argument value="OpenExternalToolsConfigurations"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>

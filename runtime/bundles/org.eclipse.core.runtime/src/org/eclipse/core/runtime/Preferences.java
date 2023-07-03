@@ -336,11 +336,8 @@ public class Preferences {
 			file.delete();
 		file.getParentFile().mkdirs();
 		IPreferencesService service = PreferencesService.getDefault();
-		OutputStream output = null;
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(file);
-			output = new BufferedOutputStream(fos);
+		try (FileOutputStream fos = new FileOutputStream(file); //
+				OutputStream output = new BufferedOutputStream(fos)) {
 			IEclipsePreferences node = (IEclipsePreferences) service.getRootNode().node(InstanceScope.SCOPE);
 			service.exportPreferences(node, output, (String[]) null);
 			output.flush();
@@ -349,13 +346,6 @@ public class Preferences {
 			String message = NLS.bind(PrefsMessages.preferences_errorWriting, file, e.getMessage());
 			IStatus status = new Status(IStatus.ERROR, PrefsMessages.OWNER_NAME, IStatus.ERROR, message, e);
 			throw new CoreException(status);
-		} finally {
-			if (output != null)
-				try {
-					output.close();
-				} catch (IOException e) {
-					// ignore
-				}
 		}
 	}
 
@@ -387,20 +377,13 @@ public class Preferences {
 			throw new CoreException(new Status(IStatus.ERROR, PrefsMessages.OWNER_NAME, 1, msg, null));
 		}
 		IPreferencesService service = PreferencesService.getDefault();
-		InputStream input = null;
-		try {
-			input = new BufferedInputStream(new FileInputStream(path.toFile()));
+		try (InputStream input = new BufferedInputStream(new FileInputStream(path.toFile()))) {
 			service.importPreferences(input);
 		} catch (FileNotFoundException e) {
 			String msg = NLS.bind(PrefsMessages.preferences_fileNotFound, path.toOSString());
 			throw new CoreException(new Status(IStatus.ERROR, PrefsMessages.OWNER_NAME, 1, msg, e));
-		} finally {
-			if (input != null)
-				try {
-					input.close();
-				} catch (IOException e) {
-					// ignore
-				}
+		} catch (IOException closeException) {
+			// ignore
 		}
 	}
 

@@ -109,13 +109,13 @@ public class PerformanceStats {
 	 * All known event statistics.
 	 */
 	private final static Map<PerformanceStats, PerformanceStats> statMap =
-				Collections.synchronizedMap(new HashMap<PerformanceStats,PerformanceStats>());
+				Collections.synchronizedMap(new HashMap<>());
 
 	/**
 	 * Maximum allowed durations for each event.
 	 * Maps String (event name) -&gt; Long (threshold)
 	 */
-	private final static Map<String, Long> thresholdMap = Collections.synchronizedMap(new HashMap<String, Long>());
+	private final static Map<String, Long> thresholdMap = Collections.synchronizedMap(new HashMap<>());
 
 	/**
 	 * Whether non-failure statistics should be retained.

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <e4view
+            category="org.eclipse.debug.ui"
+            class="org.eclipse.debug.ui.launchview.internal.view.LaunchViewImpl"
+            icon="$nl$/icons/run_exc.png"
+            id="org.eclipse.debug.ui.launchView"
+            name="%LaunchView.name"
+            restorable="true">
+      </e4view>
+   </extension>
+</plugin>

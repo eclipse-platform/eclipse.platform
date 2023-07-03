@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+     Copyright (c) 2009, 2020 IBM Corporation and others.
+
+     This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License 2.0
+     which accompanies this distribution, and is available at
+     https://www.eclipse.org/legal/epl-2.0/
+
+     SPDX-License-Identifier: EPL-2.0
+    
+     Contributors:
+         IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+   <extension point="org.eclipse.debug.ui.memoryRenderings">
+      <renderingType
+            id="rendering_type_1"
+            name="%renderingType.name"
+            class="org.eclipse.debug.tests.view.memory.RenderingTypeDelegate">
+      </renderingType>
+      <renderingType
+            id="rendering_type_2"
+            name="%renderingType.name.0"
+            class="org.eclipse.debug.tests.view.memory.RenderingTypeDelegate">
+      </renderingType>
+      <renderingType
+            id="rendering_type_3"
+            name="%renderingType.name.1"
+            class="org.eclipse.debug.tests.view.memory.RenderingTypeDelegate">
+      </renderingType>
+      <renderingBindings
+      		primaryId="rendering_type_1">
+      		<enablement>
+      			<instanceof value="org.eclipse.debug.tests.view.memory.MemoryBlockOne"/>
+      		</enablement>
+      </renderingBindings>
+      <renderingBindings
+      		renderingIds="rendering_type_1, rendering_type_2">
+      		<enablement>
+      			<instanceof value="org.eclipse.debug.tests.view.memory.MemoryBlockTwo"/>
+      		</enablement>
+      </renderingBindings>
+      <renderingBindings
+      		defaultIds="rendering_type_3">
+      		<enablement>
+      			<instanceof value="org.eclipse.debug.tests.view.memory.MemoryBlockThree"/>
+      		</enablement>
+      </renderingBindings>  
+      <renderingBindings
+      		class="org.eclipse.debug.tests.view.memory.DynamicRenderingBindings">
+      		<enablement>
+      			<instanceof value="org.eclipse.debug.tests.view.memory.MemoryBlockDynamic"/>
+      		</enablement>
+      </renderingBindings>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.eclipse.debug.tests.launching.TestLaunchDelegate"
+            id="org.eclipse.debug.tests.launch.type"
+            modes="run, debug"
+            name="%launchConfigurationType.name">
+      </launchConfigurationType>
+      <launchConfigurationType
+            delegate="org.eclipse.debug.tests.launching.CancellingLaunchDelegate"
+            id="cancelling.type"
+            modes="run"
+            name="%launchConfigurationType.name.0">
+      </launchConfigurationType>
+      <launchConfigurationType
+            delegate="org.eclipse.debug.tests.launching.ThrowingLaunchDelegate"
+            id="throwing.type"
+            modes="run"
+            name="%launchConfigurationType.name.1">
+      </launchConfigurationType>
+   </extension>
+   <extension
+        id="debugFS"
+        name="%extension.name"
+        point="org.eclipse.core.filesystem.filesystems">
+     <filesystem
+           scheme="debug">
+        <run
+              class="org.eclipse.debug.tests.launching.DebugFileSystem">
+        </run>
+     </filesystem>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.statusHandlers">
+      <statusHandler
+            class="org.eclipse.debug.tests.statushandlers.StatusHandler"
+            code="333"
+            id="org.eclipse.debug.tests.statusHandler"
+            plugin="org.eclipse.debug.tests">
+      </statusHandler>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="org.eclipse.debug.tests.launch.type1"
+            icon="platform:/plugin/org.eclipse.debug.tests/icons/image1.gif"
+            id="type.image.1">
+      </launchConfigurationTypeImage>
+      <launchConfigurationTypeImage
+            configTypeID="org.eclipse.debug.tests.launch.type"
+            icon="icons/image2.gif"
+            id="type.image.2">
+      </launchConfigurationTypeImage>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.stepFilters">
+      <stepFilter
+            class="org.eclipse.debug.tests.stepfilters.TestStepFilter"
+            modelIdentifier="com.example.debug.model">
+      </stepFilter>
+   </extension>
+   <extension point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+          id="org.eclipse.debug.tests.testBreakpoint"
+          class="org.eclipse.debug.tests.breakpoint.TestBreakpoint"
+          markerType="org.eclipse.debug.core.breakpointMarker">
+      </breakpoint>
+   </extension>
+   <extension
+         id="org.eclipse.debug.tests.testBreakpointMarker"
+         name="%testBreakpoint.name"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.debug.core.breakpointMarker">
+      </super>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.debugModelPresentations">
+      <debugModelPresentation
+            class="org.eclipse.debug.tests.viewer.model.DebugTestModelPresentation"
+            id="org.eclipse.debug.tests">
+      </debugModelPresentation>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.logicalStructureTypes">
+      <logicalStructureType
+            class="org.eclipse.debug.tests.logicalstructure.TestLogicalStructureTypeDelegate"
+            id="org.eclipse.debug.tests.logicalStructureType1"
+            modelIdentifier="org.eclipse.debug.tests">
+      </logicalStructureType>
+   </extension>
+   <extension
+       point="org.eclipse.debug.ui.variableValueEditors">
+     <variableValueEditor
+         modelId="testModel"
+         priority="x"
+         class="org.eclipse.debug.tests.ui.TestVariableValueEditor1"/>
+     <variableValueEditor
+         modelId="testModel"
+         priority="10"
+         class="org.eclipse.debug.tests.ui.TestVariableValueEditor2"/>
+     <variableValueEditor
+         modelId="testModel"
+         priority="-1"
+         class="org.eclipse.debug.tests.ui.TestVariableValueEditor3"/>
+   </extension>
+</plugin>

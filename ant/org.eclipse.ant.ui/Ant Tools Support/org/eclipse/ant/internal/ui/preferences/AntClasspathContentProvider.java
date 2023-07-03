@@ -154,7 +154,7 @@ public class AntClasspathContentProvider implements ITreeContentProvider {
 		}
 		if (parentElement == null) {
 			List<Object> all = new ArrayList<>();
-			for (Object object : model.getEntries()) {
+			for (IAntClasspathEntry object : model.getEntries()) {
 				if (object instanceof ClasspathEntry) {
 					all.add(object);
 				} else if (object instanceof GlobalClasspathEntries) {

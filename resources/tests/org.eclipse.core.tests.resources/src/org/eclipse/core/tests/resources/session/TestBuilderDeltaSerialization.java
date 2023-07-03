@@ -60,11 +60,8 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 			unsortedFile1.setContents(new ByteArrayInputStream(new byte[] {1, 4, 3}), true, true, null);
 			unsortedFile2.setContents(new ByteArrayInputStream(new byte[] {1, 4, 3}), true, true, null);
 
-			//turn off autobuild
-			IWorkspaceDescription desc = workspace.getDescription();
-			desc.setAutoBuilding(false);
-			desc.setBuildOrder(new String[] {project1.getName(), project2.getName()});
-			workspace.setDescription(desc);
+			setBuildOrder(project1, project2);
+			setAutoBuilding(false);
 
 			//configure builder for project1
 			IProjectDescription description = project1.getDescription();

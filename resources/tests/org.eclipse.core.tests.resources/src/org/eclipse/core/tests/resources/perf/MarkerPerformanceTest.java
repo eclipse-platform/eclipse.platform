@@ -101,12 +101,4 @@ public class MarkerPerformanceTest extends ResourceTest {
 		markers = createdMarkers;
 	}
 
-	/**
-	 * @see TestCase#tearDown()
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		project.delete(true, true, null);
-	}
 }

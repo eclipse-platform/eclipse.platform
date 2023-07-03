@@ -126,7 +126,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 	@Override
 	public void setEnabledDescriptors(ITeamContentProviderDescriptor[] descriptors) {
 		List<ITeamContentProviderDescriptor> previouslyEnabled = new ArrayList<>();
-		for (Object element : this.descriptors.values()) {
+		for (ITeamContentProviderDescriptor element : this.descriptors.values()) {
 			TeamContentProviderDescriptor descriptor = (TeamContentProviderDescriptor) element;
 			if (descriptor.isEnabled()) {
 				previouslyEnabled.add(descriptor);

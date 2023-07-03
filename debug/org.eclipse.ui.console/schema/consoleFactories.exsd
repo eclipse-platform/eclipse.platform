@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.ui.console">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.ui.console" id="consoleFactories" name="Console Factories"/>
+      </appInfo>
+      <documentation>
+         A console factory creates or activates a console, and appears as an action in the console view.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="consoleFactory"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="consoleFactory">
+      <complexType>
+         <attribute name="label" type="string" use="required">
+            <annotation>
+               <documentation>
+                  action label to appear in menu
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  optional plug-in relative path to an icon to appear with the action
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  class implementing &lt;code&gt;org.eclipse.ui.console.IConsoleFactory&lt;/code&gt; that will be called when the associated action is invoked
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.ui.console.IConsoleFactory"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         3.1
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of a console factory extension point: 
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.ui.console.consoleFactories&quot;&gt;
+  &lt;consoleFactory 
+     label=&quot;Command Console&quot;
+     class=&quot;com.example.CommandConsoleFactory&quot;
+     icon=&quot;icons/cmd_console.png&quot;&gt;
+  &lt;/consoleFactory&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+This extension will cause an entry to appear in the console view&apos;s &lt;b&gt;Open Console&lt;/b&gt; drop-down menu labelled &lt;b&gt;Command Console&lt;/b&gt; with the specified icon. When the action is invoked by a user, the method &lt;b&gt;openConsole()&lt;/b&gt; on the class &lt;b&gt;com.example.CommandConsoleFactory&lt;/b&gt; will be called. The factory can the decide to create a new console or activate an existing console.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Value of the attribute &lt;b&gt;class&lt;/b&gt; must be a fully qualified name of a Java class that implements the interface &lt;b&gt;org.eclipse.ui.console.IConsoleFactory&lt;/b&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The console plug-in provides a console factory to open a new console view.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2004, 2005 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -37,6 +38,9 @@ public class RetryTestRule implements TestRule {
 				for (int i = 0; i < retryCount; i++) {
 					try {
 						base.evaluate();
+					} catch (AssumptionViolatedException e) {
+						// re-throw assumption violation as it should not make the test fail
+						throw e;
 					} catch (Throwable t) {
 						caughtThrowable = t;
 						System.err.println(description.getDisplayName() + ": run " + (i + 1) + " failed:");

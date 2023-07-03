@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -62,10 +62,6 @@ public class ResourceURLTest extends ResourceTest {
 		return new String[] {"/", "/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1", "/2/2", "/2/3", "/3/", "/3/1", "/3/2", "/3/3", "/4/", "/5"};
 	}
 
-	public void doCleanup() throws CoreException {
-		getWorkspace().getRoot().delete(true, true, null);
-	}
-
 	protected IProject getTestProject() {
 		return getWorkspace().getRoot().getProject("testProject");
 	}
@@ -80,11 +76,6 @@ public class ResourceURLTest extends ResourceTest {
 
 	private URL getURL(IResource resource) throws Throwable {
 		return getURL(resource.getFullPath());
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		// overwrite the superclass and do nothing since our test methods build on each other
 	}
 
 	public void testBasicURLs() throws Throwable {

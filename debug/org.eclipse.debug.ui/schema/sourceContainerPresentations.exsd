@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.debug.ui" id="sourceContainerPresentations" name="Source Container Presentations"/>
+      </appinfo>
+      <documentation>
+         Extension point to define a presentation aspects of a source container type.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="sourceContainerPresentation" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="sourceContainerPresentation">
+      <annotation>
+         <documentation>
+            An extension point to define presentation aspects of a source container type.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The unique id used to refer to this implementation.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  The icon that should be displayed for the source container type and instances.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="containerTypeID" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The unique identifier of the source container type for which this presentation is being provided.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.debug.core.sourceContainerTypes/sourceContainerType/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="browserClass" type="string">
+            <annotation>
+               <documentation>
+                  A class that can be called to display a browse dialog for the source container type. Must implement &lt;code&gt;ISourceLocationBrowser&lt;/code&gt;.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.debug.internal.ui.sourcelookup.ISourceLocationBrowser"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         3.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         Following is an example of an source container presentation definition.
+&lt;pre&gt;
+   &lt;extension point=&quot;org.eclipse.debug.ui.sourceContainerPresentations&quot;&gt;
+      &lt;sourceContainerPresentation
+            browserClass=&quot;org.eclipse.debug.internal.ui.sourcelookup.browsers.ProjectSourceContainerBrowser&quot;
+            containerTypeID=&quot;org.eclipse.debug.core.containerType.project&quot;
+            icon=&quot;icons/full/obj16/prj_obj.png&quot;
+            id=&quot;org.eclipse.debug.ui.containerPresentation.project&quot;&gt;
+      &lt;/sourceContainerPresentation&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         Value of the attribute &lt;b&gt;browserClass&lt;/b&gt; must be a fully qualified name of a Java class that implements the interface &lt;b&gt;ISourceLocationBrowser&lt;/b&gt;.
+      </documentation>
+   </annotation>
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2003, 2014 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

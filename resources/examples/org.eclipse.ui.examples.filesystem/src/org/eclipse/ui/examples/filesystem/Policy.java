@@ -30,17 +30,17 @@ public class Policy {
 	}
 
 	public static void log(IStatus status) {
-		Platform.getLog(getBundle()).log(status);
+		ILog.of(getBundle()).log(status);
 	}
 
 	public static void log(String message, IStatus status) {
-		final ILog log = Platform.getLog(getBundle());
+		final ILog log = ILog.of(getBundle());
 		log.log(new Status(status.getSeverity(), PI_FILESYSTEM_EXAMPLE, 1, message, null));
 		log.log(status);
 	}
 
 	public static void log(String message, Throwable t) {
-		final ILog log = Platform.getLog(getBundle());
+		final ILog log = ILog.of(getBundle());
 		log.log(new Status(IStatus.ERROR, PI_FILESYSTEM_EXAMPLE, 1, message, t));
 	}
 }

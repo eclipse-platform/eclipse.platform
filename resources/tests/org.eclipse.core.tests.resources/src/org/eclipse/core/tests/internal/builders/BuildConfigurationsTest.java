@@ -31,9 +31,9 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	private IProject project1;
 	private IFile file0;
 	private IFile file1;
-	private final String variant0 = "Variant0";
-	private final String variant1 = "Variant1";
-	private final String variant2 = "Variant2";
+	private static final String variant0 = "Variant0";
+	private static final String variant1 = "Variant1";
+	private static final String variant2 = "Variant2";
 
 	public BuildConfigurationsTest(String name) {
 		super(name);
@@ -53,15 +53,6 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		setAutoBuilding(false);
 		setupProject(project0);
 		setupProject(project1);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-
-		// Delete resources
-		project0.delete(true, null);
-		project1.delete(true, null);
 	}
 
 	/**

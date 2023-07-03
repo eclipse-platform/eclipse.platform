@@ -255,8 +255,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 
 		// filter out unexportable projects
 		List passedInExportableProjects = new ArrayList();
-		for (Object element : passedInSelectedProjects) {
-			IProject project = (IProject) element;
+		for (IProject project : passedInSelectedProjects) {
 			if (isProjectExportable(project))
 				passedInExportableProjects.add(project);
 		}
@@ -410,7 +409,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			selectAll.setText(TeamUIMessages.ExportProjectSetMainPage_SelectAll);
 			selectAll.addListener(SWT.Selection, event -> {
 				tableViewer.setAllChecked(true);
-				selectedProjects.removeAll(selectedProjects);
+				selectedProjects.clear();
 				Object[] checked = tableViewer.getCheckedElements();
 				Collections.addAll(selectedProjects, checked);
 				updateEnablement();
@@ -426,7 +425,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			deselectAll.setText(TeamUIMessages.ExportProjectSetMainPage_DeselectAll);
 			deselectAll.addListener(SWT.Selection, event -> {
 				tableViewer.setAllChecked(false);
-				selectedProjects.removeAll(selectedProjects);
+				selectedProjects.clear();
 				updateEnablement();
 			});
 		}
@@ -578,8 +577,8 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			selectAll.addListener(SWT.Selection, event -> {
 				wsTableViewer.setAllChecked(true);
 
-				selectedProjects.removeAll(selectedProjects);
-				selectedWorkingSet.removeAll(selectedWorkingSet);
+				selectedProjects.clear();
+				selectedWorkingSet.clear();
 				Object[] checked = wsTableViewer.getCheckedElements();
 				for (Object c : checked) {
 					selectedWorkingSet.add(c);
@@ -603,9 +602,9 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			deselectAll.setText(TeamUIMessages.ExportProjectSetMainPage_DeselectAll);
 			deselectAll.addListener(SWT.Selection, event -> {
 				wsTableViewer.setAllChecked(false);
-				selectedWorkingSet.removeAll(selectedWorkingSet);
-				selectedProjects.removeAll(selectedProjects);
-				referenceCountProjects.removeAll(referenceCountProjects);
+				selectedWorkingSet.clear();
+				selectedProjects.clear();
+				referenceCountProjects.clear();
 				tableViewer.setInput(selectedProjects);
 				updateEnablement();
 			});
@@ -632,9 +631,9 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 						workingSetManager.addPropertyChangeListener(propListener);
 						wsWizard.open();
 						//recalculate working sets
-						selectedWorkingSet.removeAll(selectedWorkingSet);
-						referenceCountProjects.removeAll(selectedProjects);
-						selectedProjects.removeAll(selectedProjects);
+						selectedWorkingSet.clear();
+						referenceCountProjects.clear();
+						selectedProjects.clear();
 						wsTableViewer.setInput(workingSetManager);
 						Object[] checked = wsTableViewer.getCheckedElements();
 						for (Object c : checked) {
@@ -678,8 +677,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			// check if there is at least one exportable project selected
 			if (complete || !pageShown) {
 				complete = false;
-				for (Object element : selectedProjects) {
-					IProject selectedProject = (IProject) element;
+				for (IProject selectedProject : selectedProjects) {
 					if (isProjectExportable(selectedProject)) {
 						complete = true;
 					} else {

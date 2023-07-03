@@ -19,23 +19,33 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.util.Map;
 import junit.framework.Test;
-import org.eclipse.core.internal.resources.*;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.internal.resources.SaveManager;
+import org.eclipse.core.internal.resources.SavedState;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ISaveContext;
+import org.eclipse.core.resources.ISaveParticipant;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.harness.BundleTestingHelper;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.content.ContentTypeTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 
 /**
  * Tests regression of bug 297635
  */
-public class TestBug297635 extends WorkspaceSessionTest implements ISaveParticipant {
+public class TestBug297635 extends ResourceTest implements ISaveParticipant {
 
 	private static final String BUNDLE01_ID = "org.eclipse.bundle01";
+	private static final String FILE = "file1.txt";
+	private static final String ANOTHER_FILE = "file2.txt";
 
 	public static Test suite() {
 		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug297635.class);
@@ -45,122 +55,106 @@ public class TestBug297635 extends WorkspaceSessionTest implements ISaveParticip
 		return Platform.getBundle(PI_RESOURCES_TESTS).getBundleContext();
 	}
 
-	public void test1() {
-		// install a bundle
-		try {
-			Bundle b = BundleTestingHelper.installBundle("1", getContext(), ContentTypeTest.TEST_FILES_ROOT + "content/bundle01");
-			BundleTestingHelper.resolveBundles(getContext(), new Bundle[] {b});
-			b.start(Bundle.START_TRANSIENT);
-		} catch (MalformedURLException e) {
-			fail("1.0", e);
-		} catch (BundleException e) {
-			fail("1.1", e);
-		} catch (IOException e) {
-			fail("1.2", e);
-		}
+	public void testBug() throws Exception {
+		installBundle();
 
-		// register a save participant for the bundle
-		try {
-			getWorkspace().addSaveParticipant(BUNDLE01_ID, TestBug297635.this);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		addSaveParticipant();
 
-		// create a project with a file
-		IProject project = getWorkspace().getRoot().getProject("Project1");
-		IFile file = project.getFile("file1.txt");
+		IProject project = getProject("Project1");
 		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(file, getRandomContents());
+		createFileInProject(FILE, project);
 
-		// perform a full save
-		try {
-			getWorkspace().save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		saveFull();
+
+		reinstallBundle();
+
+		project = getProject("Project1");
+		createFileInProject(ANOTHER_FILE, project);
+
+		Map<String, SavedState> savedStates = getSavedStatesFromSaveManager();
+
+		addSaveParticipant();
+
+		assertStateTreesIsNotNull(savedStates.get(BUNDLE01_ID));
+
+		saveSnapshot();
+
+		assertStateTreesIsNull(savedStates.get(BUNDLE01_ID));
+	}
+
+	private void assertStateTreesIsNotNull(SavedState savedState) throws Exception {
+		assertStateTrees(savedState, false);
+	}
+
+	private void assertStateTreesIsNull(SavedState savedState) throws Exception {
+		assertStateTrees(savedState, true);
+	}
+
+	private IFile createFileInProject(String fileName, IProject project) {
+		IFile file = project.getFile(fileName);
+		ensureExistsInWorkspace(file, getRandomContents());
+		return file;
+	}
+
+	private IProject getProject(String projectName) {
+		return getWorkspace().getRoot().getProject(projectName);
+	}
+
+	private void installBundle() throws BundleException, MalformedURLException, IOException {
+		Bundle b = BundleTestingHelper.installBundle("1", getContext(),
+				ContentTypeTest.TEST_FILES_ROOT + "content/bundle01");
+		BundleTestingHelper.resolveBundles(getContext(), new Bundle[] { b });
+		b.start(Bundle.START_TRANSIENT);
+	}
+
+	private void addSaveParticipant() throws CoreException {
+		getWorkspace().addSaveParticipant(BUNDLE01_ID, TestBug297635.this);
+	}
+
+	private void saveFull() throws CoreException {
+		getWorkspace().save(true, getMonitor());
+	}
+
+	private void reinstallBundle() throws BundleException, MalformedURLException, IOException {
+		/*
+		 * install the bundle again. We need to restart the org.eclipse.core.resources
+		 * bundle to read the tree file again. We rely on the fact that the
+		 * core.resources bundle doesn't save the tree when it is stopped
+		 */
+		Bundle coreResourcesBundle = Platform.getBundle(ResourcesPlugin.PI_RESOURCES);
+		coreResourcesBundle.stop(Bundle.STOP_TRANSIENT);
+		Bundle b = BundleTestingHelper.installBundle("1", getContext(),
+				ContentTypeTest.TEST_FILES_ROOT + "content/bundle01");
+		BundleTestingHelper.resolveBundles(getContext(), new Bundle[] { b });
+		coreResourcesBundle.start(Bundle.START_TRANSIENT);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void test2() {
-		// install the bundle again
-		// we need to restart the org.eclipse.core.resources bundle to read the tree file again
-		// we rely on the fact that the core.resources bundle doesn't save the tree when it is stopped
-		try {
-			Bundle coreResourcesBundle = Platform.getBundle(ResourcesPlugin.PI_RESOURCES);
-			coreResourcesBundle.stop(Bundle.STOP_TRANSIENT);
-			Bundle b = BundleTestingHelper.installBundle("1", getContext(), ContentTypeTest.TEST_FILES_ROOT + "content/bundle01");
-			BundleTestingHelper.resolveBundles(getContext(), new Bundle[] {b});
-			coreResourcesBundle.start(Bundle.START_TRANSIENT);
-		} catch (MalformedURLException e2) {
-			fail("1.0", e2);
-		} catch (BundleException e2) {
-			fail("1.1", e2);
-		} catch (IOException e2) {
-			fail("1.2", e2);
-		}
-
-		// create yet another file in the existing project
-		IProject project = getWorkspace().getRoot().getProject("Project1");
-		IFile file = project.getFile("file2.txt");
-		ensureExistsInWorkspace(file, getRandomContents());
-
-		// get access to SaveManager#savedStates to verify that tress are being kept there
-		Map<String, SavedState> savedStates = null;
-		try {
-			Field field = SaveManager.class.getDeclaredField("savedStates");
-			field.setAccessible(true);
-			savedStates = (Map<String, SavedState>) field.get(((Workspace) getWorkspace()).getSaveManager());
-		} catch (IllegalArgumentException e) {
-			fail("2.0", e);
-		} catch (IllegalAccessException e) {
-			fail("2.1", e);
-		} catch (SecurityException e) {
-			fail("2.2", e);
-		} catch (NoSuchFieldException e) {
-			fail("2.3", e);
-		}
-
-		// register a save participant for the bundle
-		try {
-			getWorkspace().addSaveParticipant(BUNDLE01_ID, TestBug297635.this);
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
-
-		// assert the saved state for Bundle01, trees should not be null
-		assertStateTrees(savedStates.get(BUNDLE01_ID), false);
-
-		try {
-			((Workspace) getWorkspace()).getSaveManager().save(ISaveContext.SNAPSHOT, true, null, getMonitor());
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
-
-		// assert the saved state for Bundle01, trees should be null after a snapshot save
-		assertStateTrees(savedStates.get(BUNDLE01_ID), true);
+	private Map<String, SavedState> getSavedStatesFromSaveManager()
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		// get access to SaveManager#savedStates to verify that tress are being kept
+		// there
+		Field field = SaveManager.class.getDeclaredField("savedStates");
+		field.setAccessible(true);
+		return (Map<String, SavedState>) field.get(((Workspace) getWorkspace()).getSaveManager());
 	}
 
-	private void assertStateTrees(SavedState savedState, boolean isNull) {
+	private void saveSnapshot() throws CoreException {
+		((Workspace) getWorkspace()).getSaveManager().save(ISaveContext.SNAPSHOT, true, null, getMonitor());
+	}
+
+	private void assertStateTrees(SavedState savedState, boolean isNull)
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		Object oldTree = null;
 		Object newTree = null;
 
-		try {
-			Field oldTreeField = SavedState.class.getDeclaredField("oldTree");
-			oldTreeField.setAccessible(true);
-			oldTree = oldTreeField.get(savedState);
+		Field oldTreeField = SavedState.class.getDeclaredField("oldTree");
+		oldTreeField.setAccessible(true);
+		oldTree = oldTreeField.get(savedState);
 
-			Field newTreeField = SavedState.class.getDeclaredField("newTree");
-			newTreeField.setAccessible(true);
-			newTree = newTreeField.get(savedState);
-		} catch (SecurityException e) {
-			fail("1.0", e);
-		} catch (NoSuchFieldException e) {
-			fail("2.0", e);
-		} catch (IllegalArgumentException e) {
-			fail("3.0", e);
-		} catch (IllegalAccessException e) {
-			fail("4.0", e);
-		}
+		Field newTreeField = SavedState.class.getDeclaredField("newTree");
+		newTreeField.setAccessible(true);
+		newTree = newTreeField.get(savedState);
 
 		if (isNull) {
 			assertNull(oldTree);

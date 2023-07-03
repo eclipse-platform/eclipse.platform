@@ -173,7 +173,11 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		desc.setBuildSpec(new ICommand[] {command});
 		project.setDescription(desc, getMonitor());
 		command = project.getDescription().getBuildSpec()[0];
-		setAutoBuilding(true);
+
+		// Turn on autobuild without waiting for build to be finished
+		IWorkspaceDescription description = workspace.getDescription();
+		description.setAutoBuilding(true);
+		workspace.setDescription(description);
 
 		// do an initial workspace build to get the builder instance
 		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
@@ -554,7 +558,6 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 
 		// turn auto-building on
 		setAutoBuilding(true);
-		waitForBuild();
 		CustomTriggerBuilder builder = CustomTriggerBuilder.getInstance();
 		assertNotNull("1.0", builder);
 		assertEquals("1.1", 0, builder.triggerForLastBuild);

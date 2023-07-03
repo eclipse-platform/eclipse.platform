@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.debug.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.debug.ui" id="debugModelPresentations" name="Debug Model Presentation"/>
+      </appinfo>
+      <documentation>
+         This extension point allows tools to handle the 
+presentation aspects of a debug model. 
+A debug model presentation is responsible for 
+providing labels, images, and editors for elements 
+in a specific debug model.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="debugModelPresentation" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="debugModelPresentation">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  fully qualifed name of a Java class that implements the 
+&lt;code&gt;org.eclipse.debug.ui.IDebugModelPresentation&lt;/code&gt;
+interface. Since 3.1, debug model presentations may optionally implement &lt;code&gt;IColorProvider&lt;/code&gt; and &lt;code&gt;IFontProvider&lt;/code&gt; to override default fonts and colors for debug elements.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.debug.ui.IDebugModelPresentation"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the identifier of the debug model this presentation is responsible for
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="detailsViewerConfiguration" type="string">
+            <annotation>
+               <documentation>
+                  the fully qualified name of the Java class that is an instance of &lt;code&gt;org.eclipse.jface.text.source.SourceViewerConfiguration&lt;/code&gt;. When specified, the source viewer configuration will be used in the &quot;details&quot; area of the variables and expressions view when displaying the details of an element from the debug model associated with this debug model presentation. When unspecified, a default configuration is used.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.jface.text.source.SourceViewerConfiguration:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following is an example of a debug model presentations extension point:
+
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension point = &quot;org.eclipse.debug.ui.debugModelPresentations&quot;&gt; 
+       &lt;debugModelPresentation 
+           class = &quot;com.example.JavaModelPresentation&quot;
+           id = &quot;com.example.JavaDebugModel&quot;&gt;
+       &lt;/debugModelPresentation&gt; 
+   &lt;/extension&gt; 
+&lt;/pre&gt;
+&lt;/p&gt;
+In the example above, the class 
+&lt;samp&gt;com.example.JavaModelPresentation&lt;/samp&gt; will be 
+used to render and present debug elements originating 
+from the debug model identified by 
+&lt;samp&gt;com.example.JavaDebugModel&lt;/samp&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         Value of the action attribute &lt;samp&gt;class&lt;/samp&gt; must be a fully 
+qualified class name of a Java class that implements 
+&lt;samp&gt;org.eclipse.debug.ui.IDebugModelPresentation&lt;/samp&gt;. Since 3.1, debug model presentations may optionally implement &lt;code&gt;IColorProvider&lt;/code&gt; and &lt;code&gt;IFontProvider&lt;/code&gt; to override default fonts and colors for debug elements.
+      </documentation>
+   </annotation>
+
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 2000, 2005 IBM Corporation and others.&lt;br&gt;
+
+This program and the accompanying materials are made 
+available under the terms of the Eclipse Public License 2.0 which 
+accompanies this distribution, and is available at 
+&lt;a href=&quot;https://www.eclipse.org/legal/epl-2.0&quot;&gt;https://www.eclipse.org/legal/epl-v20.html&lt;/a&gt;/
+
+SPDX-License-Identifier: EPL-2.0
+      </documentation>
+   </annotation>
+
+</schema>

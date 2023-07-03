@@ -22,7 +22,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener;
 import org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent;
 import org.eclipse.team.core.synchronize.SyncInfo;
@@ -79,7 +79,7 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	 * @return the sorter for this model provider.
 	 */
 	@Override
-	public abstract ViewerSorter getViewerSorter();
+	public abstract ViewerComparator getViewerComparator();
 
 	/**
 	 * Return the model object (i.e. an instance of <code>SyncInfoModelElement</code>
