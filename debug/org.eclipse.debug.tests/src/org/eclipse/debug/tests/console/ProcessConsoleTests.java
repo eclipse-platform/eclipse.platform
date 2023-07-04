@@ -244,7 +244,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		assertTrue("Failed to prepare input file.", fileCreated);
 		try {
 			ILaunchConfigurationType launchType = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType(LaunchConfigurationTests.ID_TEST_LAUNCH_TYPE);
-			ILaunchConfigurationWorkingCopy launchConfiguration = launchType.newInstance(null, "testProcessTerminationNotificationWithInputFromFile");
+			ILaunchConfigurationWorkingCopy launchConfiguration = launchType.newInstance(null, name.getMethodName());
 			launchConfiguration.setAttribute(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE, inFile.getAbsolutePath());
 			TestUtil.log(IStatus.INFO, name.getMethodName(), "Process terminates after Console is initialized.");
 			processTerminationTest(launchConfiguration, false);
@@ -267,7 +267,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 	public void processTerminationTest(ILaunchConfiguration launchConfig, boolean terminateBeforeConsoleInitialization) throws Exception {
 		final AtomicBoolean terminationSignaled = new AtomicBoolean(false);
 		final Process mockProcess = new MockProcess(null, null, terminateBeforeConsoleInitialization ? 0 : -1);
-		final IProcess process = DebugPlugin.newProcess(new Launch(launchConfig, ILaunchManager.RUN_MODE, null), mockProcess, "testProcessTerminationNotification");
+		final IProcess process = DebugPlugin.newProcess(new Launch(launchConfig, ILaunchManager.RUN_MODE, null), mockProcess, name.getMethodName());
 		@SuppressWarnings("restriction")
 		final org.eclipse.debug.internal.ui.views.console.ProcessConsole console = new org.eclipse.debug.internal.ui.views.console.ProcessConsole(process, new ConsoleColorProvider());
 		console.addPropertyChangeListener(event -> {
@@ -281,8 +281,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 			if (mockProcess.isAlive()) {
 				mockProcess.destroy();
 			}
-			TestUtil.waitForJobs(name.getMethodName(), 50, 10000);
-			assertTrue("No console complete notification received.", terminationSignaled.get());
+			waitWhile(__ -> !terminationSignaled.get(), 10_000, __ -> "No console complete notification received.");
 		} finally {
 			consoleManager.removeConsoles(new IConsole[] { console });
 			TestUtil.waitForJobs(name.getMethodName(), 0, 10000);
