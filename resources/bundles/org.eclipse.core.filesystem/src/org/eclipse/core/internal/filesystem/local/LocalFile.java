@@ -156,9 +156,7 @@ public class LocalFile extends FileStore {
 			monitor = new InfiniteProgress(monitor);
 		try {
 			monitor.beginTask(NLS.bind(Messages.deleting, this), 200);
-			String message = Messages.deleteProblem;
-			MultiStatus result = new MultiStatus(Policy.PI_FILE_SYSTEM, EFS.ERROR_DELETE, message, null);
-			internalDelete(file, filePath, result, monitor);
+			IStatus result = internalDelete(file, filePath, monitor);
 			if (!result.isOK())
 				throw new CoreException(result);
 		} finally {
@@ -234,7 +232,7 @@ public class LocalFile extends FileStore {
 	 * the provided status object.  The filePath is passed as a parameter
 	 * to optimize java.io.File object creation.
 	 */
-	private boolean internalDelete(File target, String pathToDelete, MultiStatus status, IProgressMonitor monitor) {
+	private IStatus internalDelete(File target, String pathToDelete, IProgressMonitor monitor) {
 		if (monitor.isCanceled()) {
 			throw new OperationCanceledException();
 		}
@@ -242,23 +240,27 @@ public class LocalFile extends FileStore {
 			try {
 				// First try to delete - this should succeed for files and symbolic links to directories.
 				Files.deleteIfExists(target.toPath());
-				return true;
+				return Status.OK_STATUS;
 			} catch (AccessDeniedException e) {
 				// If the file is read only, it can't be deleted via Files.deleteIfExists()
 				// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=500306
 				if (target.delete()) {
-					return true;
+					return Status.OK_STATUS;
 				}
 				throw e;
 			}
 		} catch (DirectoryNotEmptyException e) {
+			// The target is a directory and it's not empty
 			monitor.subTask(NLS.bind(Messages.deleting, target));
-			String[] list = target.list();
-			if (list == null)
-				list = EMPTY_STRING_ARRAY;
+			String[] directoryElements = target.list();
+			if (directoryElements == null) {
+				directoryElements = EMPTY_STRING_ARRAY;
+			}
 			int parentLength = pathToDelete.length();
-			boolean failedRecursive = false;
-			for (String element : list) {
+
+			// Try to delete all children.
+			MultiStatus deleteChildrenStatus = new MultiStatus(Policy.PI_FILE_SYSTEM, EFS.ERROR_DELETE, Messages.deleteProblem, null);
+			for (String element : directoryElements) {
 				if (monitor.isCanceled()) {
 					throw new OperationCanceledException();
 				}
@@ -268,34 +270,45 @@ public class LocalFile extends FileStore {
 				childBuffer.append(File.separatorChar);
 				childBuffer.append(element);
 				String childName = childBuffer.toString();
-				// Try best effort on all children so put logical OR at end.
-				failedRecursive = !internalDelete(new java.io.File(childName), childName, status, monitor) || failedRecursive;
+
+				deleteChildrenStatus.add(internalDelete(new File(childName), childName, monitor));
+
 				monitor.worked(1);
 			}
+
+			// Abort if one of the children couldn't be deleted.
+			if (!deleteChildrenStatus.isOK()) {
+				return deleteChildrenStatus;
+			}
+
+			// Try to delete the root directory
 			try {
-				// Don't try to delete the root if one of the children failed.
-				if (!failedRecursive && Files.deleteIfExists(target.toPath()))
-					return true;
+				if (Files.deleteIfExists(target.toPath())) {
+					return Status.OK_STATUS;
+				}
 			} catch (Exception e1) {
 				// We caught a runtime exception so log it.
-				String message = NLS.bind(Messages.couldnotDelete, target.getAbsolutePath());
-				status.add(new Status(IStatus.ERROR, Policy.PI_FILE_SYSTEM, EFS.ERROR_DELETE, message, e1));
-				return false;
+				return createErrorStatus(target, Messages.couldnotDelete, e1);
 			}
+
 			// If we got this far, we failed.
-			String message = null;
-			if (fetchInfo().getAttribute(EFS.ATTRIBUTE_READ_ONLY)) {
-				message = NLS.bind(Messages.couldnotDeleteReadOnly, target.getAbsolutePath());
-			} else {
-				message = NLS.bind(Messages.couldnotDelete, target.getAbsolutePath());
-			}
-			status.add(new Status(IStatus.ERROR, Policy.PI_FILE_SYSTEM, EFS.ERROR_DELETE, message, null));
-			return false;
+			String message = fetchInfo().getAttribute(EFS.ATTRIBUTE_READ_ONLY) //
+					? Messages.couldnotDeleteReadOnly
+
+					// This is the worst-case scenario: something failed but we don't know what. The children were 
+					// deleted successfully and the directory is NOT read-only... there's nothing else to report.
+					: Messages.couldnotDelete;
+
+			return createErrorStatus(target, message, null);
+
 		} catch (IOException e) {
-			String message = NLS.bind(Messages.couldnotDelete, target.getAbsolutePath());
-			status.add(new Status(IStatus.ERROR, Policy.PI_FILE_SYSTEM, EFS.ERROR_DELETE, message, e));
-			return false;
+			return createErrorStatus(target, Messages.couldnotDelete, e);
 		}
+	}
+
+	private IStatus createErrorStatus(File target, String msg, Exception e) {
+		String message = NLS.bind(msg, target.getAbsolutePath());
+		return new Status(IStatus.ERROR, Policy.PI_FILE_SYSTEM, EFS.ERROR_DELETE, message, e);
 	}
 
 	@Override
