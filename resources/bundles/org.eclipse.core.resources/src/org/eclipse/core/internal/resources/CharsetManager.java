@@ -440,43 +440,58 @@ public class CharsetManager implements IManager {
 	}
 
 	public void setCharsetFor(IPath resourcePath, String newCharset) throws CoreException {
-		// for the workspace root we just set a preference in the instance scope
-		if (resourcePath.segmentCount() == 0) {
-			IEclipsePreferences resourcesPreferences = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
-			if (newCharset != null)
-				resourcesPreferences.put(ResourcesPlugin.PREF_ENCODING, newCharset);
-			else
-				resourcesPreferences.remove(ResourcesPlugin.PREF_ENCODING);
-			try {
-				resourcesPreferences.flush();
-			} catch (BackingStoreException e) {
-				IProject project = workspace.getRoot().getProject(resourcePath.segment(0));
-				String message = Messages.resources_savingEncoding;
-				throw new ResourceException(IResourceStatus.FAILED_SETTING_CHARSET, project.getFullPath(), message, e);
-			}
-			return;
+		if (IPath.ROOT.equals(resourcePath)) {
+			setCharsetForRoot(newCharset);
+		} else if (workspace.getRoot().findMember(resourcePath) instanceof Resource resource) {
+			setCharsetForResource(resourcePath, newCharset, resource);
 		}
-		// for all other cases, we set a property in the corresponding project
-		IResource resource = workspace.getRoot().findMember(resourcePath);
-		if (resource != null) {
-			try {
-				// disable the listener so we don't react to changes made by ourselves
-				Preferences encodingSettings = getPreferences(resource.getProject(), true, resource.isDerived(IResource.CHECK_ANCESTORS));
-				if (newCharset == null || newCharset.trim().length() == 0)
-					encodingSettings.remove(getKeyFor(resourcePath));
-				else
-					encodingSettings.put(getKeyFor(resourcePath), newCharset);
-				flushPreferences(encodingSettings, true);
-				if (resource instanceof IProject) {
-					IProject project = (IProject) resource;
-					ValidateProjectEncoding.scheduleProjectValidation(workspace, project);
-				}
-			} catch (BackingStoreException e) {
-				IProject project = workspace.getRoot().getProject(resourcePath.segment(0));
-				String message = Messages.resources_savingEncoding;
-				throw new ResourceException(IResourceStatus.FAILED_SETTING_CHARSET, project.getFullPath(), message, e);
-			}
+	}
+
+	private void setCharsetForRoot(String newCharset) throws ResourceException {
+		IEclipsePreferences resourcesPreferences = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+		if (newCharset != null) {
+			resourcesPreferences.put(ResourcesPlugin.PREF_ENCODING, newCharset);
+		} else {
+			resourcesPreferences.remove(ResourcesPlugin.PREF_ENCODING);
 		}
+
+		try {
+			resourcesPreferences.flush();
+		} catch (BackingStoreException e) {
+			setCharsetForHasFailed(IPath.ROOT, e);
+		}
+	}
+
+	private void setCharsetForResource(IPath resourcePath, String newCharset, IResource resource)
+			throws ResourceException {
+		try {
+			setResourceEncodingSettings(resourcePath, newCharset, resource);
+			if (resource instanceof Project project) {
+				ValidateProjectEncoding.scheduleProjectValidation(workspace, project);
+			}
+		} catch (BackingStoreException e) {
+			setCharsetForHasFailed(resourcePath, e);
+		}
+	}
+
+	private void setResourceEncodingSettings(IPath resourcePath, String newCharset, IResource resource)
+			throws BackingStoreException {
+		// disable the listener so we don't react to changes made by ourselves
+		Preferences encodingSettings = getPreferences(resource.getProject(), true,
+				resource.isDerived(IResource.CHECK_ANCESTORS));
+
+		if (newCharset == null || newCharset.isBlank()) {
+			encodingSettings.remove(getKeyFor(resourcePath));
+		} else {
+			encodingSettings.put(getKeyFor(resourcePath), newCharset);
+		}
+		flushPreferences(encodingSettings, true);
+	}
+
+	private void setCharsetForHasFailed(IPath resourcePath, BackingStoreException e) throws ResourceException {
+		IProject project = workspace.getRoot().getProject(resourcePath.segment(0));
+		String message = Messages.resources_savingEncoding;
+		throw new ResourceException(IResourceStatus.FAILED_SETTING_CHARSET, project.getFullPath(), message, e);
 	}
 
 	@Override
