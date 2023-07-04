@@ -18,11 +18,30 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -421,44 +440,72 @@ public class CharsetManager implements IManager {
 		charsetListener.charsetPreferencesChanged(project);
 	}
 
-	public void setCharsetFor(IPath resourcePath, String newCharset) throws CoreException {
-		// for the workspace root we just set a preference in the instance scope
-		if (resourcePath.segmentCount() == 0) {
-			IEclipsePreferences resourcesPreferences = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
-			if (newCharset != null)
-				resourcesPreferences.put(ResourcesPlugin.PREF_ENCODING, newCharset);
-			else
-				resourcesPreferences.remove(ResourcesPlugin.PREF_ENCODING);
-			try {
-				resourcesPreferences.flush();
-			} catch (BackingStoreException e) {
-				IProject project = workspace.getRoot().getProject(resourcePath.segment(0));
-				String message = Messages.resources_savingEncoding;
-				throw new ResourceException(IResourceStatus.FAILED_SETTING_CHARSET, project.getFullPath(), message, e);
-			}
-			return;
+	public void setCharsetFor(IPath resourcePath, String newCharset) throws CoreException, ResourceException {
+		if (isResourceRoot(resourcePath))
+			setCharsetForRoot(resourcePath, newCharset);
+		else
+			setCharsetForResource(resourcePath, newCharset, getResourceFromPath(resourcePath));
+	}
+
+	private void setCharsetForRoot(IPath resourcePath, String newCharset) throws ResourceException {
+		IEclipsePreferences resourcesPreferences = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+
+		if (newCharset != null)
+			resourcesPreferences.put(ResourcesPlugin.PREF_ENCODING, newCharset);
+		else
+			resourcesPreferences.remove(ResourcesPlugin.PREF_ENCODING);
+
+		try {
+			resourcesPreferences.flush();
+		} catch (BackingStoreException e) {
+			setCharsetForHasFailed(resourcePath, e);
 		}
-		// for all other cases, we set a property in the corresponding project
+	}
+
+	private void setCharsetForResource(IPath resourcePath, String newCharset, IResource resource)
+			throws ResourceException {
+		try {
+			setResourceEncodingSettings(resourcePath, newCharset, resource);
+			if (resource instanceof IProject) {
+				IProject project = (IProject) resource;
+				ValidateProjectEncoding.scheduleProjectValidation(workspace, project);
+			}
+		} catch (BackingStoreException e) {
+			setCharsetForHasFailed(resourcePath, e);
+		}
+	}
+
+	private IResource getResourceFromPath(IPath resourcePath) throws ResourceException {
 		IResource resource = workspace.getRoot().findMember(resourcePath);
-		if (resource != null) {
-			try {
-				// disable the listener so we don't react to changes made by ourselves
-				Preferences encodingSettings = getPreferences(resource.getProject(), true, resource.isDerived(IResource.CHECK_ANCESTORS));
-				if (newCharset == null || newCharset.trim().length() == 0)
-					encodingSettings.remove(getKeyFor(resourcePath));
-				else
-					encodingSettings.put(getKeyFor(resourcePath), newCharset);
-				flushPreferences(encodingSettings, true);
-				if (resource instanceof IProject) {
-					IProject project = (IProject) resource;
-					ValidateProjectEncoding.scheduleProjectValidation(workspace, project);
-				}
-			} catch (BackingStoreException e) {
-				IProject project = workspace.getRoot().getProject(resourcePath.segment(0));
-				String message = Messages.resources_savingEncoding;
-				throw new ResourceException(IResourceStatus.FAILED_SETTING_CHARSET, project.getFullPath(), message, e);
-			}
-		}
+		if (resource == null)
+			throw new ResourceException(null);
+		return resource;
+	}
+
+	private boolean isResourceRoot(IPath resourcePath) {
+		return resourcePath.segmentCount() == 0;
+	}
+
+	private void setResourceEncodingSettings(IPath resourcePath, String newCharset, IResource resource)
+			throws BackingStoreException {
+		// disable the listener so we don't react to changes made by ourselves
+		Preferences encodingSettings = getPreferences(resource.getProject(), true,
+				resource.isDerived(IResource.CHECK_ANCESTORS));
+		if (isCharsetNameBlank(newCharset))
+			encodingSettings.remove(getKeyFor(resourcePath));
+		else
+			encodingSettings.put(getKeyFor(resourcePath), newCharset);
+		flushPreferences(encodingSettings, true);
+	}
+
+	private boolean isCharsetNameBlank(String newCharset) {
+		return newCharset == null || newCharset.trim().length() == 0;
+	}
+
+	private void setCharsetForHasFailed(IPath resourcePath, BackingStoreException e) throws ResourceException {
+		IProject project = workspace.getRoot().getProject(resourcePath.segment(0));
+		String message = Messages.resources_savingEncoding;
+		throw new ResourceException(IResourceStatus.FAILED_SETTING_CHARSET, project.getFullPath(), message, e);
 	}
 
 	@Override
