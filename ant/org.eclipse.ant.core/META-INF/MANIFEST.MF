@@ -18,5 +18,4 @@ Require-Bundle: org.eclipse.core.variables;bundle-version="[3.1.0,4.0.0)",
  org.eclipse.core.runtime;bundle-version="[3.28.0,4.0.0)"
 Bundle-ActivationPolicy: lazy;exclude:="org.eclipse.ant.internal.core.contentDescriber"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Bundle-ClassPath: .
 Automatic-Module-Name: org.eclipse.ant.core

@@ -9,7 +9,6 @@ Bundle-Localization: plugin
 Export-Package: org.eclipse.update.configurator,
  org.eclipse.update.internal.configurator;x-friends:="org.eclipse.update.core",
  org.eclipse.update.internal.configurator.branding;x-friends:="org.eclipse.update.core"
-Eclipse-LazyStart: true
 Require-Bundle: org.eclipse.equinox.common;bundle-version="[3.2.0,4.0.0)",
  org.eclipse.osgi;bundle-version="[3.2.0,4.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
