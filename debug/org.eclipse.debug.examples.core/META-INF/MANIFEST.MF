@@ -9,7 +9,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.variables;bundle-version="3.2.800",
  org.eclipse.debug.core;bundle-version="3.9.0",
  org.apache.ant;bundle-version="1.9.2";resolution:=optional
-Eclipse-LazyStart: true
 Export-Package: org.eclipse.debug.examples.ant.tasks;x-friends:="org.eclipse.debug.examples.ui",
  org.eclipse.debug.examples.core.midi.launcher;x-friends:="org.eclipse.debug.examples.ui",
  org.eclipse.debug.examples.core.pda;x-friends:="org.eclipse.debug.examples.ui",

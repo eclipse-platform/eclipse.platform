@@ -43,7 +43,6 @@ Export-Package: org.eclipse.e4.core.internal.services;x-friends:="org.eclipse.e4
  org.eclipse.e4.core.services.statusreporter;x-friends:="org.eclipse.e4.ui.workbench.swt,org.eclipse.e4.ui.progress,org.eclipse.ui.ide",
  org.eclipse.e4.core.services.translation
 Eclipse-ExtensibleAPI: true
-Bundle-ClassPath: .
 Service-Component: OSGI-INF/*.xml
 Require-Capability: osgi.extender;
   filter:="(&(osgi.extender=osgi.component)(version>=1.2)(!(version>=2.0)))"

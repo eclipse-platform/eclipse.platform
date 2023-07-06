@@ -21,7 +21,6 @@ Require-Bundle: org.eclipse.help.base;bundle-version="[4.0.0,5.0.0)";visibility:
  org.eclipse.ui;bundle-version="[3.6.0,4.0.0)";visibility:=reexport,
  org.eclipse.core.runtime;bundle-version="[3.28.0,4.0.0)";visibility:=reexport,
  org.eclipse.ui.forms;bundle-version="[3.5.0,4.0.0)"
-Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.eclipse.help.ui
