@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -101,17 +103,14 @@ public class LinkTest {
 		assertEquals(Collections.emptySet().toString(), linkFailures.toString());
 	}
 
+	private static final Pattern HREF = Pattern.compile("<a href=\"([^\"]+)\"");
+
 	private Set<String> checkLinks(InputStream stream, URI currentDoc, Set<URI> knownPagesURIs) throws IOException {
 		Set<String> res = new HashSet<>();
 		try (BufferedReader in = new BufferedReader(new InputStreamReader(stream))) {
-			String inputLine;
-			while ((inputLine = in.readLine()) != null) {
-				int index = 0;
-				while ((index = inputLine.indexOf("<a href=\"", index)) > 0) {
-					int closeIndex = inputLine.indexOf('"', index + "<a href=\"".length());
-					URI href = URI
-							.create(inputLine.substring(index + "<a href=\"".length(), closeIndex).replace(" ", "%20"));
-					index = closeIndex;
+			for (String inputLine; (inputLine = in.readLine()) != null;) {
+				for (Matcher matcher = HREF.matcher(inputLine); matcher.find();) {
+					URI href = URI.create(matcher.group(1).replace(" ", "%20"));
 					if (href.isAbsolute()) {
 						continue;
 					}
