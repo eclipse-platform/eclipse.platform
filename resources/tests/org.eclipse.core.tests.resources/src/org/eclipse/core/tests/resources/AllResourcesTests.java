@@ -27,6 +27,7 @@ import org.junit.runners.Suite;
 		LinkedResourceWithPathVariableTest.class, LinkedResourceSyncMoveAndCopyTest.class, MarkerSetTest.class,
 		MarkerTest.class, NatureTest.class, NonLocalLinkedResourceTest.class, ProjectEncodingTest.class,
 		ProjectOrderTest.class,
+		ProjectLinksTest.class,
 		ProjectScopeTest.class, ProjectSnapshotTest.class, ResourceAttributeTest.class, ResourceURLTest.class,
 		TeamPrivateMemberTest.class, WorkspaceTest.class })
 public class AllResourcesTests {
