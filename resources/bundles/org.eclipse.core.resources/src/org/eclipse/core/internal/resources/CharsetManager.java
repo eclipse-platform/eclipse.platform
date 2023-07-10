@@ -489,9 +489,8 @@ public class CharsetManager implements IManager {
 	}
 
 	private void setCharsetForHasFailed(IPath resourcePath, BackingStoreException e) throws ResourceException {
-		IProject project = workspace.getRoot().getProject(resourcePath.segment(0));
 		String message = Messages.resources_savingEncoding;
-		throw new ResourceException(IResourceStatus.FAILED_SETTING_CHARSET, project.getFullPath(), message, e);
+		throw new ResourceException(IResourceStatus.FAILED_SETTING_CHARSET, resourcePath, message, e);
 	}
 
 	@Override
