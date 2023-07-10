@@ -13,23 +13,30 @@
  *******************************************************************************/
 package org.eclipse.core.runtime.jobs;
 
+import java.util.function.Consumer;
+
 /**
- * Callback interface for clients interested in being notified when jobs change state.
+ * Callback interface for clients interested in being notified when jobs change
+ * state.
  * <p>
- * A single job listener instance can be added either to the job manager, for notification
- * of all scheduled jobs, or to any set of individual jobs.  A single listener instance should
- * not be added to both the job manager, and to individual jobs (such a listener may
- * receive duplicate notifications).
- * </p><p>
+ * A single job listener instance can be added either to the job manager, for
+ * notification of all scheduled jobs, or to any set of individual jobs. A
+ * single listener instance should not be added to both the job manager, and to
+ * individual jobs (such a listener may receive duplicate notifications).
+ * </p>
+ * <p>
  * Clients should not rely on the result of the <code>Job#getState()</code>
  * method on jobs for which notification is occurring. Listeners are notified of
  * all job state changes, but whether the state change occurs before, during, or
  * after listeners are notified is unspecified.
- * </p><p>
+ * </p>
+ * <p>
  * It is undefined in which Thread the notification occurs.
- * </p><p>
+ * </p>
+ * <p>
  * Clients may implement this interface.
  * </p>
+ *
  * @see JobChangeAdapter
  * @see IJobManager#addJobChangeListener(IJobChangeListener)
  * @see IJobManager#removeJobChangeListener(IJobChangeListener)
@@ -119,4 +126,22 @@ public interface IJobChangeListener {
 	 * @param event the event details
 	 */
 	void sleeping(IJobChangeEvent event);
+
+	/**
+	 * Static helper method to create an <code>IJobChangeListener</code> for the
+	 * {@link #done(IJobChangeEvent)}) method, given a lambda expression or a method
+	 * reference.
+	 *
+	 * @param c the consumer of the event
+	 * @return IJobChangeAdapter
+	 * @since 3.15
+	 */
+	static IJobChangeListener onDone(Consumer<IJobChangeEvent> c) {
+		return new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				c.accept(event);
+			}
+		};
+	}
 }
