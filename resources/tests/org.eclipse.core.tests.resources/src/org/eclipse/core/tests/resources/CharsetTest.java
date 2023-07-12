@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.eclipse.core.internal.events.NotificationManager;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.internal.resources.CharsetDeltaJob;
@@ -174,22 +173,20 @@ public class CharsetTest extends ResourceTest {
 	 *
 	 * TODO enable when bug is fixed
 	 */
-	public void _testBug67606() throws CoreException {
+	public void testBug67606() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		final IProject project = workspace.getRoot().getProject("MyProject");
 		try {
 			final IFile file = project.getFile("file.txt");
 			ensureExistsInWorkspace(file, true);
 			project.setDefaultCharset("FOO", getMonitor());
-			workspace.run((IWorkspaceRunnable) monitor -> {
-				assertEquals("0.9", "FOO", file.getCharset());
-				file.setCharset("BAR", getMonitor());
-				assertEquals("1.0", "BAR", file.getCharset());
-				file.move(project.getFullPath().append("file2.txt"), IResource.NONE, monitor);
-				IFile file2 = project.getFile("file2.txt");
-				assertExistsInWorkspace(file2, false);
-				assertEquals("2.0", "BAR", file.getCharset());
-			}, null);
+			assertEquals("0.9", "FOO", file.getCharset());
+			file.setCharset("BAR", getMonitor());
+			assertEquals("1.0", "BAR", file.getCharset());
+			file.move(project.getFullPath().append("file2.txt"), IResource.NONE, getMonitor());
+			IFile file2 = project.getFile("file2.txt");
+			assertExistsInWorkspace(file2, false);
+			assertEquals("2.0", "BAR", file2.getCharset());
 		} finally {
 			ensureDoesNotExistInWorkspace(project);
 		}
