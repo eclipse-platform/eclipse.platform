@@ -64,6 +64,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class CharsetTest extends ResourceTest {
@@ -188,6 +190,61 @@ public class CharsetTest extends ResourceTest {
 				assertExistsInWorkspace(file2, false);
 				assertEquals("2.0", "BAR", file.getCharset());
 			}, null);
+		} finally {
+			ensureDoesNotExistInWorkspace(project);
+		}
+	}
+
+	/**
+	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=380114
+	 *
+	 * When moving files between projects that have different charsets, we want the
+	 * file to keep it's old charset.
+	 */
+	@Test
+	@Ignore("To be fixed in a subsequent Pull-Request, in TDD-style")
+	public void testBug380114() throws CoreException
+	{
+		IWorkspace workspace = getWorkspace();
+		final IProject pBase = workspace.getRoot().getProject("projectbase");
+		final IProject pDest = workspace.getRoot().getProject("projectdest");
+		try {
+			ensureExistsInWorkspace(pBase, false);
+			ensureExistsInWorkspace(pDest, false);
+
+			pBase.setDefaultCharset("FOO", getMonitor());
+			pDest.setDefaultCharset("BAR", getMonitor());
+			assertEquals("Base Project's default Charset was set", pBase.getDefaultCharset(false), "FOO");
+			assertEquals("Destination Project's default Charset was set", pDest.getDefaultCharset(false), "BAR");
+
+			final IFile file = pBase.getFile("file.txt");
+			ensureExistsInWorkspace(file, true);
+			assertEquals("File in Base Project implicitly inherits parent's charset", file.getCharset(true), "FOO");
+
+			file.move(pDest.getFullPath().append("file.txt"), IResource.NONE, getMonitor());
+
+			IFile movedFile = pDest.getFile("file.txt");
+			assertExistsInWorkspace(movedFile, false);
+			assertEquals("Moved File kept it's old encoding", movedFile.getCharset(true), "FOO");
+		} finally {
+			ensureDoesNotExistInWorkspace(pBase);
+			ensureDoesNotExistInWorkspace(pDest);
+		}
+	}
+
+	@Test
+	public void testCopyFileCopiesCharset() throws CoreException {
+		IWorkspace workspace = getWorkspace();
+		final IProject project = workspace.getRoot().getProject("MyProject");
+		try {
+			ensureExistsInWorkspace(project, false);
+			final IFile file = project.getFile("file.txt");
+			ensureExistsInWorkspace(file, true);
+			file.setCharset("FOO", getMonitor());
+			assertEquals("File charset correctly set", file.getCharset(true), "FOO");
+			file.copy(project.getFullPath().append("file2.txt"), IResource.NONE, getMonitor());
+			final IFile copiedFile = project.getFile("file2.txt");
+			assertEquals("File with explicitly set charset keeps charset", copiedFile.getCharset(true), "FOO");
 		} finally {
 			ensureDoesNotExistInWorkspace(project);
 		}
