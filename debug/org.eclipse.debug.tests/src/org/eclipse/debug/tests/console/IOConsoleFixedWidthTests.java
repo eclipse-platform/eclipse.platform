@@ -21,8 +21,8 @@ import org.eclipse.debug.tests.TestUtil;
 public class IOConsoleFixedWidthTests extends IOConsoleTests {
 
 	@Override
-	protected IOConsoleTestUtil getTestUtil(String title) {
-		final IOConsoleTestUtil c = super.getTestUtil(title);
+	protected IOConsoleTestUtil getTestUtil(String title, String... attrValues) {
+		final IOConsoleTestUtil c = super.getTestUtil(title, attrValues);
 		// Varying the width may reveal new bugs. There is no width value
 		// which is invalid. (but remember most test output is quite short)
 		// And try the most beautiful width of 1 aka the vertical console.

@@ -401,6 +401,10 @@ public final class IOConsoleTestUtil {
 		return this;
 	}
 
+	public int getTextPanelCharCount() {
+		return textPanel.getCharCount();
+	}
+
 	/**
 	 * Set caret to offset relative to start of current line.
 	 *

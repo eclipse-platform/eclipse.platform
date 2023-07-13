@@ -23,9 +23,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.ui.WorkbenchEncoding;
+import org.eclipse.ui.internal.console.ConsoleDocument;
 import org.eclipse.ui.internal.console.IOConsolePage;
 import org.eclipse.ui.internal.console.IOConsolePartitioner;
 import org.eclipse.ui.part.IPageBookViewPage;
@@ -122,6 +125,19 @@ public class IOConsole extends TextConsole {
 			partitioner.connect(document);
 			document.setDocumentPartitioner(partitioner);
 		}
+	}
+
+	/**
+	 * Enable command line history.
+	 * <p>
+	 * Not usually called directly. Instead call via {@link IConsolePageParticipant}
+	 * to ensure proper management of the cursor.
+	 *
+	 * @param enable Enable it.
+	 * @since 3.13
+	 */
+	public void setEnableCommandLineHistory(boolean enable) {
+		partitioner.setEnableCommandLineHistory(enable);
 	}
 
 	/**
@@ -410,5 +426,46 @@ public class IOConsole extends TextConsole {
 		synchronized (openStreams) {
 			openStreams.add(stream);
 		}
+	}
+
+	/**
+	 * Show the previous command line history entry.
+	 *
+	 * @throws ExecutionException Previous command line entry in history exists, but
+	 *                            was unable insert it.
+	 * @since 3.13
+	 */
+	public void showPreviousCommand() throws ExecutionException {
+		IOConsolePartitioner ioConsolePartitioner = findIOConsoleParitioner();
+		if (ioConsolePartitioner != null) {
+			ioConsolePartitioner.showPreviousCommand();
+		}
+	}
+
+	/**
+	 * Show the next command line history entry.
+	 *
+	 * @throws ExecutionException Next command line entry in history exists, but was
+	 *                            unable insert it.
+	 * @since 3.13
+	 */
+	public void showNextCommand() throws ExecutionException {
+		IOConsolePartitioner ioConsolePartitioner = findIOConsoleParitioner();
+		if (ioConsolePartitioner != null) {
+			ioConsolePartitioner.showNextCommand();
+		}
+	}
+
+	private IOConsolePartitioner findIOConsoleParitioner() {
+		final IDocument document = getDocument();
+		if (document instanceof ConsoleDocument) {
+			final ConsoleDocument consoleDocument = (ConsoleDocument) document;
+			// Find the document partitioner for the text document.
+			final IDocumentPartitioner documentPartitioner = consoleDocument.getDocumentPartitioner();
+			if (documentPartitioner instanceof IOConsolePartitioner) {
+				return (IOConsolePartitioner) documentPartitioner;
+			}
+		}
+		return null;
 	}
 }

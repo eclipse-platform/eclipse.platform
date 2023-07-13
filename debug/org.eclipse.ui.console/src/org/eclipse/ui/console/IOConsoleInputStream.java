@@ -77,9 +77,15 @@ public class IOConsoleInputStream extends InputStream {
 	/**
 	 * Constructs a new input stream on the given console.
 	 *
+	 * This constructor is public so clients can use it to intercept keyboard output
+	 * from an IOConsole by using
+	 * <code>IOConsole.setInputStream(InputStream inputStream)</code>. This can be
+	 * used to log, filter, transform user input.
+	 *
 	 * @param console I/O console
+	 * @since 3.13
 	 */
-	IOConsoleInputStream(IOConsole console) {
+	public IOConsoleInputStream(IOConsole console) {
 		this.console = console;
 	}
 

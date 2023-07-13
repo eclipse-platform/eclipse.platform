@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -183,6 +184,10 @@ public class IOConsolePartitioner
 	 * Offset where next output is written to console.
 	 */
 	private int outputOffset = 0;
+
+	private CommandLineHistory _commandHistory = new CommandLineHistory();
+
+	private boolean enableCommandLineHistory;
 
 	/**
 	 * Create new partitioner for an {@link IOConsole}.
@@ -596,6 +601,9 @@ public class IOConsolePartitioner
 					inputPartitions.clear();
 					if (ASSERT) {
 						Assert.isTrue(inputLine.length() > 0);
+					}
+					if (enableCommandLineHistory) {
+						_commandHistory.addCommand(inputLine.toString());
 					}
 					if (inputStream != null) {
 						inputStream.appendData(inputLine.toString());
@@ -1464,5 +1472,70 @@ public class IOConsolePartitioner
 			Assert.isTrue(offset == document.getLength());
 			Assert.isTrue(knownInputPartitions.isEmpty());
 		}
+	}
+
+	public void showPreviousCommand() throws ExecutionException {
+		String command = _commandHistory.prevCommand();
+		replaceIncompleteUserInputWith(command);
+	}
+
+	public void showNextCommand() throws ExecutionException {
+		String command = _commandHistory.nextCommand();
+		replaceIncompleteUserInputWith(command);
+	}
+
+	/**
+	 * Replace the last input the user entered with the given command. If the last
+	 * user input is not the last partition, we append an input partition.
+	 *
+	 * @param command Replaces the last user input.
+	 * @throws ExecutionException An error occurred attempting to insert history.
+	 */
+	@SuppressWarnings("resource")
+	public void replaceIncompleteUserInputWith(String command) throws ExecutionException {
+		if (!enableCommandLineHistory) {
+			return;
+		}
+
+		int offset;
+		int length;
+		synchronized (partitions) {
+			IOConsolePartition lastPartition = getLastPartition();
+			// If lastPartition is null, there is no user input.
+			// If lastPartition is read-only, the user has already pressed <enter>.
+			// In either case, we need to create a new one to hold the input text.
+			if (lastPartition == null || lastPartition.isReadOnly()) {
+				lastPartition = new IOConsolePartition(getDocument().getLength(), console.getInputStream());
+				partitions.add(lastPartition);
+				inputPartitions.add(lastPartition);
+			}
+			offset = getLastPartition().getOffset();
+			length = getLastPartition().getLength();
+		}
+		// We don't want to hold the partitions lock when we call replace, since the
+		// replace may call listener methods on this object, possibly in another thread.
+		// That could lead to nested-monitor deadlock.
+		try {
+			getDocument().replace(offset, length, command);
+		} catch (BadLocationException e) {
+			throw new ExecutionException("Internal Error: Bad offset detected in up-arrow processing. Command ignored.", //$NON-NLS-1$
+					e);
+		}
+	}
+
+	/**
+	 * Determine the last partition.
+	 *
+	 * @return The last partition, or null if none.
+	 */
+	private IOConsolePartition getLastPartition() {
+		if (partitions.size() == 0) {
+			return null;
+		}
+		return partitions.get(partitions.size() - 1);
+	}
+
+	public void setEnableCommandLineHistory(boolean enable) {
+		enableCommandLineHistory = enable;
 	}
 }

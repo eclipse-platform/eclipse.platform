@@ -178,12 +178,63 @@ M4 = Platform-specific fourth key
 
    <extension
           point="org.eclipse.ui.commands">
+      <category
+            description="%consoleViewCategory"
+            id="org.eclipse.ui.console.history_commands.category"
+            name="%consoleViewCategoryName">
+      </category>
       <command
             name="%command.clear.name"
             categoryId="org.eclipse.ui.category.edit"
             description="%command.clear.description"
             id="org.eclipse.debug.ui.commands.console.clear">
       </command>
-   </extension>
-
+      <command
+            categoryId="org.eclipse.ui.console.history_commands.category"
+            description="%consoleViewPrevCommandDescription"
+            id="org.eclipse.ui.console.showPreviousCommand"
+            name="%consoleViewPrevCommandName">
+      </command>
+      <command
+            categoryId="org.eclipse.ui.console.history_commands.category"
+            description="%consoleViewNextCommandDescription"
+            id="org.eclipse.ui.console.showNextCommand"
+            name="%consoleViewNextCommandName">
+      </command>
+    </extension>
+    <extension
+          point="org.eclipse.ui.handlers">
+       <handler
+             class="org.eclipse.ui.console.actions.ShowPreviousCommandHandler"
+             commandId="org.eclipse.ui.console.showPreviousCommand">
+          <activeWhen>
+          	<with variable="activePartId">
+        		<equals value="org.eclipse.ui.console.ConsoleView"/>
+    		</with>
+          </activeWhen>
+       </handler>
+       <handler
+             class="org.eclipse.ui.console.actions.ShowNextCommandHandler"
+             commandId="org.eclipse.ui.console.showNextCommand">
+          <activeWhen>
+          	<with variable="activePartId">
+        		<equals value="org.eclipse.ui.console.ConsoleView"/>
+    		</with>
+          </activeWhen>
+       </handler>
+    </extension>
+    <extension point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.ui.console.showPreviousCommand"
+            contextId="org.eclipse.debug.ui.console"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+ARROW_UP">
+      </key>
+      <key
+            commandId="org.eclipse.ui.console.showNextCommand"
+            contextId="org.eclipse.debug.ui.console"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+ARROW_DOWN">
+      </key>
+    </extension>
 </plugin>

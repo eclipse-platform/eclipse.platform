@@ -163,4 +163,10 @@
          priority="-1"
          class="org.eclipse.debug.tests.ui.TestVariableValueEditor3"/>
    </extension>
-</plugin>
+   <extension
+         point="org.eclipse.ui.console.consolePageParticipants">
+      <consolePageParticipant
+            class="org.eclipse.debug.tests.TestsConsolePageParticipant"
+            id="org.eclipse.debug.tests.consolePageParticipant">
+      </consolePageParticipant>
+   </extension></plugin>

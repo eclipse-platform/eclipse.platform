@@ -93,7 +93,6 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 
 	private boolean consoleAutoScrollLock = true;
 
-
 	private IPropertyChangeListener propertyChangeListener;
 
 	private IScrollLockStateProvider scrollLockStateProvider;
@@ -224,8 +223,6 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 	public TextConsoleViewer(Composite parent, TextConsole console, IScrollLockStateProvider scrollLockStateProvider) {
 		this(parent, console);
 		this.scrollLockStateProvider = scrollLockStateProvider;
-
-
 	}
 
 	/**
@@ -853,5 +850,11 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 		}
 	}
 
-
+	/**
+	 * @return The console this viewer shows.
+	 * @since 3.13
+	 */
+	public TextConsole getConsole() {
+		return console;
+	}
 }

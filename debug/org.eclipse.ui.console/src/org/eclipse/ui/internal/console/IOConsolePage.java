@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IConsoleView;
+import org.eclipse.ui.console.IIOConsolePage;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.console.TextConsolePage;
 import org.eclipse.ui.console.TextConsoleViewer;
@@ -31,7 +32,7 @@ import org.eclipse.ui.console.TextConsoleViewer;
  * @since 3.1
  *
  */
-public class IOConsolePage extends TextConsolePage {
+public class IOConsolePage extends TextConsolePage implements IIOConsolePage {
 
 	private ScrollLockAction fScrollLockAction;
 	private WordWrapAction fWordWrapAction;
@@ -74,6 +75,14 @@ public class IOConsolePage extends TextConsolePage {
 		if (viewer != null) {
 			viewer.setAutoScroll(scroll);
 			fScrollLockAction.setChecked(!scroll);
+		}
+	}
+
+	@Override
+	public void setEnableCommandLineHistory(boolean enable) {
+		IOConsoleViewer viewer = (IOConsoleViewer) getViewer();
+		if (viewer != null) {
+			viewer.setEnableCommandLineHistory(enable);
 		}
 	}
 

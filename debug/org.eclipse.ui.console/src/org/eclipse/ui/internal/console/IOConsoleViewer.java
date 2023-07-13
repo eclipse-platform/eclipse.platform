@@ -46,6 +46,12 @@ public class IOConsoleViewer extends TextConsoleViewer {
 	private boolean fAutoScroll = true;
 
 	/**
+	 * If a document modification occurs at the end of the document, move the cursor
+	 * to the end of the document.
+	 */
+	private boolean fAutoMoveCursorToEnd = false;
+
+	/**
 	 * Listener required for auto scroll.
 	 */
 	private IDocumentListener fAutoScrollListener;
@@ -62,8 +68,13 @@ public class IOConsoleViewer extends TextConsoleViewer {
 	 * @param parent  the containing composite
 	 * @param console the IO console
 	 */
-	public IOConsoleViewer(Composite parent, TextConsole console) {
+	public IOConsoleViewer(Composite parent, IOConsole console) {
 		super(parent, console);
+	}
+
+	@Override
+	public IOConsole getConsole() {
+		return (IOConsole) super.getConsole();
 	}
 
 	/**
@@ -84,6 +95,11 @@ public class IOConsoleViewer extends TextConsoleViewer {
 
 	public void setAutoScroll(boolean scroll) {
 		fAutoScroll = scroll;
+	}
+
+	public void setEnableCommandLineHistory(boolean enableCommandLineHistory) {
+		getConsole().setEnableCommandLineHistory(enableCommandLineHistory);
+		fAutoMoveCursorToEnd = enableCommandLineHistory;
 	}
 
 	public boolean isWordWrap() {
@@ -160,17 +176,31 @@ public class IOConsoleViewer extends TextConsoleViewer {
 			getTextWidget().setCaretOffset(content.getCharCount());
 			getTextWidget().showSelection();
 		} else if (partitioner.isReadOnly(offset) && partitioner.isReadOnly(offset - 1)) {
-			// If input is entered in read-only partition add it to the next writable
-			// partition instead
+			// If input is entered in a read-only partition add it to the end of next
+			// writable partition instead. Why the end? Consider this scenario. The user has
+			// typed some input, selects text from earlier in the console, copies it and
+			// pastes it. The user will expect the text to be pasted after the text already
+			// typed.
 			e.doit = false;
 
-			final int insertOffset = partitionerExt.getNextOffsetByState(offset, true);
+			final int insertOffset = getEndOfWritableParition(partitionerExt, offset);
 			content.replaceTextRange(insertOffset, 0, eventText);
 
 			getTextWidget().setCaretOffset(insertOffset + eventText.length());
 			getTextWidget().showSelection();
 		} else {
 			super.handleVerifyEvent(e);
+		}
+	}
+
+	private int getEndOfWritableParition(IConsoleDocumentPartitionerExtension partitionerExt, int offset) {
+		final int startOfWritableParition = partitionerExt.getNextOffsetByState(offset, true);
+		ITypedRegion[] regions = partitionerExt.computeWritablePartitions(startOfWritableParition, 0);
+		if (regions.length == 0) {
+			return startOfWritableParition;
+		} else {
+			ITypedRegion region = regions[regions.length - 1];
+			return region.getOffset() + region.getLength();
 		}
 	}
 
@@ -224,6 +254,12 @@ public class IOConsoleViewer extends TextConsoleViewer {
 				@Override
 				public void documentChanged(DocumentEvent event) {
 					if (fAutoScroll) {
+						boolean modificationAtEndOfDocument = fAutoMoveCursorToEnd
+								&& event.getOffset() + event.getText().length() == getTextWidget().getCharCount();
+						if (modificationAtEndOfDocument) {
+							// A console prompt may have been issued, move the cursor to the end.
+							getTextWidget().setCaretOffset(getTextWidget().getCharCount());
+						}
 						revealEndOfDocument();
 					}
 				}

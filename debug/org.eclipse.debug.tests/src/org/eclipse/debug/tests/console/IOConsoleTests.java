@@ -15,6 +15,7 @@ package org.eclipse.debug.tests.console;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -137,8 +138,11 @@ public class IOConsoleTests extends AbstractDebugTest {
 	 * @param title console title
 	 * @return util to help testing console functions
 	 */
-	protected IOConsoleTestUtil getTestUtil(String title) {
+	protected IOConsoleTestUtil getTestUtil(String title, String... attrValues) {
 		final IOConsole console = new IOConsole(title, "", null, StandardCharsets.UTF_8.name(), true);
+		for (int i = 0; i < attrValues.length; i += 2) {
+			console.setAttribute(attrValues[i], attrValues[i + 1]);
+		}
 		consoleFinished.set(false);
 		console.addPropertyChangeListener((PropertyChangeEvent event) -> {
 			if (event.getSource() == console && IConsoleConstants.P_CONSOLE_OUTPUT_COMPLETE.equals(event.getProperty())) {
@@ -917,6 +921,63 @@ public class IOConsoleTests extends AbstractDebugTest {
 			throw jobException[0];
 		}
 		assertFalse("Deadlock in stream processing.", deadlocked.get());
+		closeConsole(c);
+	}
+
+	/**
+	 * Regression test for deadlock in stream processing.
+	 */
+	@Test
+	public void testHistory() throws Exception {
+
+		// Set the history attribute to true to communicate to
+		// TestsConsolePageParticipant that it should enable history.
+		final IOConsoleTestUtil c = getTestUtil("Test history", "history", "true");
+
+		c.writeAndVerify("Process output line 1");
+		c.write("\n");
+		c.writeAndVerify("Process output line 2");
+		c.write("\n");
+		c.insert("ls\n");
+		c.writeAndVerify("Process output line 3");
+		c.write("\n");
+		c.writeAndVerify("Process output line 4");
+		c.write("\n");
+		c.insert("step\n");
+		c.writeAndVerify("Process output line 5");
+		c.write("\n");
+		c.writeAndVerify("Process output line 6");
+		c.write("\n");
+		c.insert("next\n");
+		c.writeAndVerify("Process output line 7");
+		c.write("\n");
+		c.writeAndVerify("Process output line 8");
+		c.write("\n");
+
+		c.getConsole().showPreviousCommand();
+		c.verifyContentByLine("next", 11);
+		c.getConsole().showPreviousCommand();
+		c.verifyContentByLine("step", 11);
+		c.getConsole().showPreviousCommand();
+		c.verifyContentByLine("ls", 11);
+		c.getConsole().showNextCommand();
+		c.verifyContentByLine("step", 11);
+		c.getConsole().showNextCommand();
+		c.verifyContentByLine("next", 11);
+
+		c.moveCaret(-3);
+		c.getConsole().showPreviousCommand();
+		assertEquals("Caret is not at end of line", c.getTextPanelCharCount(), c.getCaretOffset());
+
+		c.moveCaret(-20);
+		c.getConsole().showPreviousCommand();
+		assertEquals("Caret is not at end of line", c.getTextPanelCharCount(), c.getCaretOffset());
+
+		c.moveCaret(-2);
+		c.insert("abc");
+		c.waitForScheduledJobs();
+		assertNotEquals("Caret is at end of line", c.getTextPanelCharCount(), c.getCaretOffset());
+
 		closeConsole(c);
 	}
 
