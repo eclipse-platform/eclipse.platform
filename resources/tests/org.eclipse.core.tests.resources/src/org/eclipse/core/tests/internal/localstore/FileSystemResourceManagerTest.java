@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.internal.filesystem.bug440110.Bug440110FileSystem;
 import org.junit.Test;
 
@@ -398,6 +399,17 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		project.delete(true, null);
 		URI locationAfterDelete = manager.locationURIFor(project);
 		assertEquals("Expected location of project to not change after delete", location, locationAfterDelete);
+	}
+
+	@Test
+	public void testLightweightAutoRefreshPrefChange() {
+		FileSystemResourceManager manager = ((Workspace) getWorkspace()).getFileSystemManager();
+		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES)
+				.putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false);
+		assertFalse(manager.isLightweightAutoRefreshEnabled());
+		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES)
+				.putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, true);
+		assertTrue(manager.isLightweightAutoRefreshEnabled());
 	}
 
 	protected void write(final IFile file, final InputStream contents, final boolean force, IProgressMonitor monitor)

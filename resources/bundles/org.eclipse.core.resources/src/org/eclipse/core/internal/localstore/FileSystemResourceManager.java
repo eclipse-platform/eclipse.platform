@@ -72,16 +72,16 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.InputSource;
 
 /**
  * Manages the synchronization between the workspace's view and the file system.
  */
-public class FileSystemResourceManager implements ICoreConstants, IManager, Preferences.IPropertyChangeListener {
+public class FileSystemResourceManager implements ICoreConstants, IManager {
 
 	/**
 	 * The history store is initialized lazily - always use the accessor method
@@ -90,6 +90,13 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 	protected Workspace workspace;
 
 	private volatile boolean lightweightAutoRefreshEnabled;
+
+	private IPreferenceChangeListener lightweightAutoRefreshPrefListener = event -> {
+		if (ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH.equals(event.getKey())) {
+			lightweightAutoRefreshEnabled = Platform.getPreferencesService().getBoolean(ResourcesPlugin.PI_RESOURCES,
+					ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false, null);
+		}
+	};
 
 	public FileSystemResourceManager(Workspace workspace) {
 		this.workspace = workspace;
@@ -864,13 +871,6 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 		getStore(source).move(destination, EFS.NONE, monitor);
 	}
 
-	@Deprecated
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		if (ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH.equals(event.getProperty()))
-			lightweightAutoRefreshEnabled = Boolean.parseBoolean(event.getNewValue().toString());
-	}
-
 	public InputStream read(IFile target, boolean force, IProgressMonitor monitor) throws CoreException {
 		IFileStore store = getStore(target);
 		if (lightweightAutoRefreshEnabled || !force) {
@@ -1124,14 +1124,16 @@ public class FileSystemResourceManager implements ICoreConstants, IManager, Pref
 	public void shutdown(IProgressMonitor monitor) throws CoreException {
 		if (_historyStore != null)
 			_historyStore.shutdown(monitor);
-		ResourcesPlugin.getPlugin().getPluginPreferences().removePropertyChangeListener(this);
+		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES)
+				.removePreferenceChangeListener(lightweightAutoRefreshPrefListener);
 	}
 
 	@Override
 	public void startup(IProgressMonitor monitor) {
-		Preferences preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
-		preferences.addPropertyChangeListener(this);
-		lightweightAutoRefreshEnabled = preferences.getBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH);
+		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES)
+				.addPreferenceChangeListener(lightweightAutoRefreshPrefListener);
+		lightweightAutoRefreshEnabled = Platform.getPreferencesService().getBoolean(ResourcesPlugin.PI_RESOURCES,
+				ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false, null);
 	}
 
 	/**
