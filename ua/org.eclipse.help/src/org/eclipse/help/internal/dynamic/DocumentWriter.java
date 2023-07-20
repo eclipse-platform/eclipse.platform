@@ -59,7 +59,9 @@ public class DocumentWriter {
 	public byte[] writeBytes(Element element, boolean xmlDecl) throws TransformerException, TransformerConfigurationException {
 		Document document = element.getOwnerDocument();
 		if (transformer == null) {
-			TransformerFactory factory = TransformerFactory.newInstance();
+			@SuppressWarnings("restriction")
+			TransformerFactory factory = org.eclipse.core.internal.runtime.XmlProcessorFactory
+					.createTransformerFactoryWithErrorOnDOCTYPE();
 			transformer = factory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
 		}

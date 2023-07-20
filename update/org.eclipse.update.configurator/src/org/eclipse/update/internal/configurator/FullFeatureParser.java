@@ -14,15 +14,19 @@
 package org.eclipse.update.internal.configurator;
 
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ResourceBundle;
 
-import javax.xml.parsers.*;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
 
 import org.eclipse.osgi.util.NLS;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * A more complete feature parser. It adds the plugins listed to the feature.
@@ -30,23 +34,19 @@ import org.xml.sax.helpers.*;
 public class FullFeatureParser extends DefaultHandler implements IConfigurationConstants{
 
 	private SAXParser parser;
-	private FeatureEntry feature;
+	private final FeatureEntry feature;
 	private URL url;
 	private boolean isDescription;
-	private StringBuffer description = new StringBuffer();
-
-	private final static SAXParserFactory parserFactory =
-		SAXParserFactory.newInstance();
+	private final StringBuffer description = new StringBuffer();
 
 	/**
 	 * Constructs a feature parser.
 	 */
+	@SuppressWarnings("restriction")
 	public FullFeatureParser(FeatureEntry feature) {
-		super();
 		this.feature = feature;
 		try {
-			parserFactory.setNamespaceAware(true);
-			this.parser = parserFactory.newSAXParser();
+			this.parser = org.eclipse.core.internal.runtime.XmlProcessorFactory.createSAXParserWithErrorOnDOCTYPE(true);
 		} catch (ParserConfigurationException e) {
 			System.out.println(e);
 		} catch (SAXException e) {

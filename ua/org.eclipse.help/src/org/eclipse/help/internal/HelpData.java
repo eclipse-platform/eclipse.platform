@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProduct;
@@ -175,7 +174,9 @@ public class HelpData {
 		sortMode = "true"; //$NON-NLS-1$
 		if (url != null) {
 			try (InputStream in = url.openStream()) {
-				SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+				@SuppressWarnings("restriction")
+				SAXParser parser = org.eclipse.core.internal.runtime.XmlProcessorFactory
+						.createSAXParserWithErrorOnDOCTYPE(false);
 				parser.parse(in, new Handler());
 			}
 			catch (Throwable t) {

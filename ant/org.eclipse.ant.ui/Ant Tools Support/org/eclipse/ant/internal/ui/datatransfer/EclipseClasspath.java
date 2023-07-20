@@ -15,6 +15,7 @@
 
 package org.eclipse.ant.internal.ui.datatransfer;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -466,7 +467,9 @@ public class EclipseClasspath {
 	 */
 	private IClasspathEntry convertVariableClasspathEntry(IRuntimeClasspathEntry entry) {
 		try {
-			Document doc = ExportUtil.parseXmlString(entry.getMemento());
+			ByteArrayInputStream is = new ByteArrayInputStream(entry.getMemento().getBytes());
+			@SuppressWarnings("restriction")
+			Document doc = org.eclipse.core.internal.runtime.XmlProcessorFactory.parseWithErrorOnDOCTYPE(is);
 			Element element = (Element) doc.getElementsByTagName("memento").item(0); //$NON-NLS-1$
 			String variableString = element.getAttribute("variableString"); //$NON-NLS-1$
 			ExportUtil.addVariable(variable2valueMap, variableString, ExportUtil.getProjectRoot(project));

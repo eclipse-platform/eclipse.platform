@@ -14,19 +14,24 @@
 package org.eclipse.update.internal.configurator;
 
 
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
-import javax.xml.parsers.*;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
 
 import org.eclipse.osgi.util.NLS;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Default feature parser.
  * Parses the feature manifest file as defined by the platform.
- * 
+ *
  * @since 3.0
  */
 public class FeatureParser extends DefaultHandler {
@@ -35,17 +40,13 @@ public class FeatureParser extends DefaultHandler {
 	private FeatureEntry feature;
 	private URL url;
 
-	private final static SAXParserFactory parserFactory =
-		SAXParserFactory.newInstance();
-
 	/**
 	 * Constructs a feature parser.
 	 */
+	@SuppressWarnings("restriction")
 	public FeatureParser() {
-		super();
 		try {
-			parserFactory.setNamespaceAware(true);
-			this.parser = parserFactory.newSAXParser();
+			this.parser = org.eclipse.core.internal.runtime.XmlProcessorFactory.createSAXParserWithErrorOnDOCTYPE(true);
 		} catch (ParserConfigurationException e) {
 			System.out.println(e);
 		} catch (SAXException e) {

@@ -399,11 +399,11 @@ public final class AntLaunchingUtil {
 		String fileName = null;
 		String lineNumber = ""; //$NON-NLS-1$
 		int fileStart = 0;
-		int index = message.indexOf("xml"); //$NON-NLS-1$
+		int index = message.indexOf(".xml"); //$NON-NLS-1$
 		if (index > 0) {
-			int numberStart = index + 4;
+			int numberStart = index + 5;
 			int numberEnd = message.indexOf(':', numberStart);
-			int fileEnd = index + 3;
+			int fileEnd = index + 4;
 			if (numberStart > 0 && fileEnd > 0) {
 				fileName = message.substring(fileStart, fileEnd).trim();
 				if (numberEnd > 0) {

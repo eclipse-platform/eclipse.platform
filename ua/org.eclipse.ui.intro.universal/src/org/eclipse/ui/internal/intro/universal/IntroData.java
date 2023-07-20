@@ -146,8 +146,8 @@ public class IntroData {
 	private Document parse(String fileNameOrData) {
 		Document document = null;
 		try {
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-			docFactory.setValidating(false);
+			@SuppressWarnings("restriction")
+			DocumentBuilderFactory docFactory = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderFactoryWithErrorOnDOCTYPE();
 			// if this is not set, Document.getElementsByTagNameNS() will fail.
 			docFactory.setNamespaceAware(true);
 			docFactory.setExpandEntityReferences(false);

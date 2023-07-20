@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Observable;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -181,10 +179,10 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 	public void load(Reader r) {
 		Document document = null;
 		try {
-			DocumentBuilder parser = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder();
-			// parser.setProcessNamespace(true);
-			document = parser.parse(new InputSource(r));
+			@SuppressWarnings("restriction")
+			Document d = org.eclipse.core.internal.runtime.XmlProcessorFactory
+					.parseWithErrorOnDOCTYPE(new InputSource(r));
+			document = d;
 
 			// Strip out any comments first
 			Node root = document.getFirstChild();

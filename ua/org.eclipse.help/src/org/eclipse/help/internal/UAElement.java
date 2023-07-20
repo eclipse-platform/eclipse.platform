@@ -18,8 +18,6 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.expressions.EvaluationResult;
@@ -46,7 +44,6 @@ public class UAElement implements IUAElement {
 	private static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_VALUE = "value"; //$NON-NLS-1$
 
-	private static DocumentBuilder builder;
 	private static Document document;
 
 	private Element element;
@@ -216,17 +213,12 @@ public class UAElement implements IUAElement {
 
 	private static Document getDocument() {
 		if (document == null) {
-			if (builder == null) {
-				try {
-					builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-					builder.setEntityResolver(new LocalEntityResolver());
-				}
-				catch (ParserConfigurationException e) {
-					String msg = "Error creating document builder"; //$NON-NLS-1$
-					ILog.of(UAElement.class).error(msg, e);
-				}
+			try {
+				document = LocalEntityResolver.newDocument();
+			} catch (ParserConfigurationException e) {
+				String msg = "Error creating document builder"; //$NON-NLS-1$
+				ILog.of(UAElement.class).error(msg, e);
 			}
-			document = builder.newDocument();
 		}
 		return document;
 	}

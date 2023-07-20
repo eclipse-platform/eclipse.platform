@@ -157,13 +157,15 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 	 */
 	private static synchronized SAXParserFactory createParserFactory() throws ParserConfigurationException {
 		if (singletonParserFactory == null) {
-			singletonParserFactory = SAXParserFactory.newInstance();
-			singletonParserFactory.setNamespaceAware(true);
+			@SuppressWarnings("restriction")
+			SAXParserFactory f = org.eclipse.core.internal.runtime.XmlProcessorFactory
+					.createSAXFactoryWithErrorOnDOCTYPE(true);
 			try {
-				singletonParserFactory.setFeature("http://xml.org/sax/features/string-interning", true); //$NON-NLS-1$
+				f.setFeature("http://xml.org/sax/features/string-interning", true); //$NON-NLS-1$
 			} catch (SAXException e) {
 				// In case support for this feature is removed
 			}
+			singletonParserFactory = f;
 		}
 		return singletonParserFactory;
 	}

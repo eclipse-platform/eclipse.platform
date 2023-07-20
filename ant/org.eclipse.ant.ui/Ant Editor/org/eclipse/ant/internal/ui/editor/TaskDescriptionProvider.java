@@ -205,7 +205,8 @@ public class TaskDescriptionProvider {
 	private Document parseFile(String aFileName) {
 		Document tempDocument = null;
 
-		DocumentBuilderFactory tempFactory = DocumentBuilderFactory.newInstance();
+		@SuppressWarnings("restriction")
+		DocumentBuilderFactory tempFactory = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderFactoryWithErrorOnDOCTYPE();
 		tempFactory.setIgnoringComments(true);
 		tempFactory.setIgnoringElementContentWhitespace(true);
 		tempFactory.setCoalescing(true);

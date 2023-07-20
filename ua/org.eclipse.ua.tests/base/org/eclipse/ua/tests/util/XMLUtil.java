@@ -19,16 +19,13 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.junit.Assert;
 import org.xml.sax.Attributes;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -60,8 +57,9 @@ public class XMLUtil extends Assert {
 	}
 
 	private static String process(InputStream in) throws Exception {
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		SAXParser parser = factory.newSAXParser();
+		@SuppressWarnings("restriction")
+		SAXParser parser = org.eclipse.core.internal.runtime.XmlProcessorFactory
+				.createSAXParserNoExternal();
 		Handler handler = new Handler();
 		parser.parse(in, handler);
 		return handler.toString();
@@ -70,7 +68,6 @@ public class XMLUtil extends Assert {
 	private static class Handler extends DefaultHandler {
 
 		private StringBuilder buf = new StringBuilder();
-		private EntityResolver entityResolver = new LocalEntityResolver();
 
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -82,9 +79,7 @@ public class XMLUtil extends Assert {
 				list.add(attributes.getQName(i));
 			}
 			list.sort(null);
-			Iterator<String> iter = list.iterator();
-			while (iter.hasNext()) {
-				String name = iter.next();
+			for (String name : list) {
 				buf.append(' ');
 				buf.append(name);
 				buf.append('=');
@@ -117,7 +112,7 @@ public class XMLUtil extends Assert {
 		@Override
 		public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
 			try {
-				return entityResolver.resolveEntity(publicId, systemId);
+				return LocalEntityResolver.resolve(publicId, systemId);
 			} catch (IOException e) {
 				return new InputSource(new StringReader("")); //$NON-NLS-1$
 			}

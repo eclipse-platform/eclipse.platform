@@ -35,7 +35,7 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -114,8 +114,9 @@ public class BuildFileCreator {
 		this.projectName = project.getProject().getName();
 		this.projectRoot = ExportUtil.getProjectRoot(project);
 		this.variable2valueMap = new LinkedHashMap<>();
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		this.doc = dbf.newDocumentBuilder().newDocument();
+		@SuppressWarnings("restriction")
+		DocumentBuilder db = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
+		this.doc = db.newDocument();
 		this.shell = shell;
 	}
 
@@ -303,7 +304,9 @@ public class BuildFileCreator {
 			// child
 			Document docCandidate;
 			try {
-				docCandidate = ExportUtil.parseXmlFile(file);
+				@SuppressWarnings("restriction")
+				Document doc1 = org.eclipse.core.internal.runtime.XmlProcessorFactory.parseWithErrorOnDOCTYPE(file);
+				docCandidate = doc1;
 				NodeList nodes = docCandidate.getChildNodes();
 				for (int j = 0; j < nodes.getLength(); j++) {
 					Node node = nodes.item(j);

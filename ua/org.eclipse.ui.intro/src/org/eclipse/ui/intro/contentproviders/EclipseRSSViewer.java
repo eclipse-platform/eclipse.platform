@@ -31,8 +31,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
@@ -500,13 +498,14 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 				conn.setConnectTimeout(SOCKET_TIMEOUT); // Connection timeout to 6 seconds
 				conn.connect();
 				try (InputStream in = url.openStream()) {
-					SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+					@SuppressWarnings("restriction")
+					SAXParser parser = org.eclipse.core.internal.runtime.XmlProcessorFactory.createSAXParserWithErrorOnDOCTYPE();
 					parser.parse(in, new RSSHandler());
 					refresh();
 				}
 
 			} catch (Exception e) {
-				ILog.of(getClass()).error(NLS.bind(Messages.RSS_Malformed_feed, getParameter("url"))); //$NON-NLS-1$
+				ILog.of(getClass()).error(NLS.bind(Messages.RSS_Malformed_feed, getParameter("url")), e); //$NON-NLS-1$
 				refresh();
 			} finally {
 				threadRunning = false;

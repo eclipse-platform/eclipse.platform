@@ -49,7 +49,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -519,8 +518,8 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	 * @since 3.0
 	 */
 	public static Document getDocument() throws ParserConfigurationException {
-		DocumentBuilderFactory dfactory= DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder= dfactory.newDocumentBuilder();
+		@SuppressWarnings("restriction")
+		DocumentBuilder docBuilder = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
 		return docBuilder.newDocument();
 	}
 
@@ -551,7 +550,8 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	 */
 	public static String serializeDocument(Document doc, String lineDelimiter) throws TransformerException, IOException {
 		ByteArrayOutputStream s = new ByteArrayOutputStream();
-		TransformerFactory factory = TransformerFactory.newInstance();
+		@SuppressWarnings("restriction")
+		TransformerFactory factory = org.eclipse.core.internal.runtime.XmlProcessorFactory.createTransformerFactoryWithErrorOnDOCTYPE();
 		Transformer transformer = factory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
@@ -947,7 +947,8 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	 */
 	protected LaunchConfigurationInfo createInfoFromXML(InputStream stream, boolean isPrototype) throws CoreException, ParserConfigurationException, IOException, SAXException {
 		Element root = null;
-		DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		@SuppressWarnings("restriction")
+		DocumentBuilder parser = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
 		parser.setErrorHandler(new DefaultHandler());
 		root = parser.parse(new InputSource(stream)).getDocumentElement();
 		LaunchConfigurationInfo info = new LaunchConfigurationInfo();

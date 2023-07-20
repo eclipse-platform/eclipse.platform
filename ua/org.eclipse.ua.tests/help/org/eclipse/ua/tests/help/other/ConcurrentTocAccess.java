@@ -18,8 +18,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.eclipse.help.ITopic;
+import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.toc.Toc;
-import org.eclipse.ua.tests.help.util.DocumentCreator;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -183,7 +183,7 @@ public class ConcurrentTocAccess {
 		Toc toc;
 		Document doc;
 		try {
-			doc = DocumentCreator.createDocument(tocSource);
+			doc = LocalEntityResolver.parse(tocSource);
 		} catch (Exception e) {
 			fail("Exception creating TOC");
 			doc = null;

@@ -23,8 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -123,9 +121,7 @@ public class ParallelSearchServletTest {
 			SAXException {
 		try (InputStream is = url.openStream()) {
 			InputSource inputSource = new InputSource(is);
-			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			documentBuilder.setEntityResolver(new LocalEntityResolver());
-			Document document = documentBuilder.parse(inputSource);
+			Document document = LocalEntityResolver.parse(inputSource);
 			Node root = document.getFirstChild();
 			is.close();
 			assertEquals("searchHits", root.getNodeName());

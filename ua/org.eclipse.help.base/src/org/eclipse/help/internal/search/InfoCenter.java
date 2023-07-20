@@ -199,14 +199,11 @@ public final class InfoCenter implements ISearchEngine {
 			ISearchEngineResultCollector collector, IProgressMonitor monitor) {
 		Document document = null;
 		try {
-			DocumentBuilder parser = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder();
-			parser.setEntityResolver(new LocalEntityResolver());
 			if (monitor.isCanceled())
 				return;
 			SubMonitor subMonitor = SubMonitor.convert(monitor, 5);
 			subMonitor.subTask(HelpBaseResources.InfoCenter_searching);
-			document = parser.parse(new InputSource(r));
+			document = LocalEntityResolver.parse(new InputSource(r));
 			if (monitor.isCanceled())
 				return;
 

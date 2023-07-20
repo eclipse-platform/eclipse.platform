@@ -17,32 +17,22 @@ package org.eclipse.ua.tests.help.other;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 public class XHTMLEntityTest {
-	private static final String XHTML1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
-	"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n" +
-	"<head></head><body>";
+	private static final String XHTML1 = """
+			<?xml version="1.0" encoding="ISO-8859-1"?>
+			<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+			<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+			<head></head><body>""";
 	private static final String XHTML2 = "</body></html>";
 
 	public void checkResolution(String text, int expected) throws Exception {
-		DocumentBuilder documentBuilder;
-		documentBuilder = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder();
-		documentBuilder.setEntityResolver(new LocalEntityResolver());
 		String xmlSource = XHTML1 + text + XHTML2;
-		InputStream is = new ByteArrayInputStream(xmlSource.getBytes());
-		Document doc = documentBuilder.parse(is);
+		Document doc = LocalEntityResolver.parse(xmlSource);
 		assertEquals(2, doc.getChildNodes().getLength());
 		Node bodyNode = doc.getElementsByTagName("body").item(0);
 		Node textNode = bodyNode.getChildNodes().item(0);

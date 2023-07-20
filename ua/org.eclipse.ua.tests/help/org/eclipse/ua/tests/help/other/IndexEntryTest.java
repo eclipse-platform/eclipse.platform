@@ -26,9 +26,9 @@ import org.eclipse.help.ITopic;
 import org.eclipse.help.internal.Topic;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.base.HelpEvaluationContext;
+import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.index.IndexEntry;
 import org.eclipse.help.internal.index.IndexSee;
-import org.eclipse.ua.tests.help.util.DocumentCreator;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -82,7 +82,7 @@ public class IndexEntryTest {
 		IndexEntry element;
 		Document doc;
 		try {
-			doc = DocumentCreator.createDocument(elementSource);
+			doc = LocalEntityResolver.parse(elementSource);
 		} catch (Exception e) {
 			fail("Caught Exception");
 			doc = null;

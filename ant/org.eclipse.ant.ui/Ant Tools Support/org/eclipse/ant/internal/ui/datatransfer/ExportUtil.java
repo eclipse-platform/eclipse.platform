@@ -19,7 +19,6 @@
 package org.eclipse.ant.internal.ui.datatransfer;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -38,8 +37,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -80,7 +77,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * Collection of utility methods to help when exporting to an Ant build file.
@@ -462,7 +458,8 @@ public class ExportUtil {
 		StringWriter writer = new StringWriter();
 		Source source = new DOMSource(doc);
 		Result result = new StreamResult(writer);
-		TransformerFactory factory = TransformerFactory.newInstance();
+		@SuppressWarnings("restriction")
+		TransformerFactory factory = org.eclipse.core.internal.runtime.XmlProcessorFactory.createTransformerFactoryWithErrorOnDOCTYPE();
 		// https://ant.apache.org/manual/Tasks/style.html
 		// Need this feature to set true for Java 9 to enable extension Functions in the presence of Security manager
 		factory.setFeature("http://www.oracle.com/xml/jaxp/properties/enableExtensionFunctions", Boolean.TRUE); //$NON-NLS-1$
@@ -483,26 +480,6 @@ public class ExportUtil {
 		}
 		transformer.transform(source, result);
 		return writer.toString();
-	}
-
-	/**
-	 * Read XML file.
-	 */
-	public static Document parseXmlFile(File file) throws SAXException, IOException, ParserConfigurationException {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setValidating(false);
-		Document doc = factory.newDocumentBuilder().parse(file);
-		return doc;
-	}
-
-	/**
-	 * Read XML string.
-	 */
-	public static Document parseXmlString(String s) throws SAXException, IOException, ParserConfigurationException {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setValidating(false);
-		Document doc = factory.newDocumentBuilder().parse(new ByteArrayInputStream(s.getBytes()));
-		return doc;
 	}
 
 	/**

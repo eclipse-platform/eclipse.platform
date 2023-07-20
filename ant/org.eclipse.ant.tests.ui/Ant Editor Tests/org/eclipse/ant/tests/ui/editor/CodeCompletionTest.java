@@ -1,15 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2014 GEBIT Gesellschaft fuer EDV-Beratung
- * und Informatik-Technologien mbH, 
+ * und Informatik-Technologien mbH,
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     GEBIT Gesellschaft fuer EDV-Beratung und Informatik-Technologien mbH - initial implementation
  * 	   IBM Corporation - additional tests
@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.ant.core.AntCorePlugin;
@@ -35,6 +34,7 @@ import org.eclipse.ant.internal.ui.editor.AntEditor;
 import org.eclipse.ant.tests.ui.editor.performance.EditorTestHelper;
 import org.eclipse.ant.tests.ui.editor.support.TestTextCompletionProcessor;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
+import org.eclipse.core.internal.runtime.XmlProcessorFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.TextSelection;
@@ -47,14 +47,14 @@ import org.w3c.dom.Element;
 
 /**
  * Tests everything about code completion and code assistance.
- * 
+ *
  */
 @SuppressWarnings("restriction")
 public class CodeCompletionTest extends AbstractAntUITest {
 
 	/**
 	 * Constructor for CodeCompletionTest.
-	 * 
+	 *
 	 * @param name
 	 */
 	public CodeCompletionTest(String name) {
@@ -692,7 +692,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	public void testFindChildElement() throws ParserConfigurationException {
 
 		// Create the test data
-		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		DocumentBuilder docBuilder = XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
 		Document doc = docBuilder.newDocument();
 		Element parentElement = doc.createElement("parent"); //$NON-NLS-1$
 		Attr attribute = doc.createAttribute("att1"); //$NON-NLS-1$

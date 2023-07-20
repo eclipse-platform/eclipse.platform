@@ -22,11 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.parsers.DocumentBuilder;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.XMLMemento;
@@ -182,9 +181,7 @@ public class CheatSheetSaveHelper {
 			return null;
 
 		try {
-			DocumentBuilder documentBuilder = CheatSheetPlugin.getPlugin()
-					.getDocumentBuilder();
-			return documentBuilder.parse(source);
+			return LocalEntityResolver.parse(source);
 		} catch (Exception e) {
 		} finally {
 			try {

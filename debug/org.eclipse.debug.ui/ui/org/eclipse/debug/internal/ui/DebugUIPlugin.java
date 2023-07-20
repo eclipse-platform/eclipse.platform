@@ -26,7 +26,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.expressions.EvaluationContext;
@@ -905,11 +904,10 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	 * @since 3.0
 	 */
 	public static Document getDocument() throws ParserConfigurationException {
-		DocumentBuilderFactory dfactory= DocumentBuilderFactory.newInstance();
-
-		DocumentBuilder docBuilder= dfactory.newDocumentBuilder();
-		Document doc= docBuilder.newDocument();
-		return doc;
+		@SuppressWarnings("restriction")
+		DocumentBuilder docBuilder = org.eclipse.core.internal.runtime.XmlProcessorFactory
+				.createDocumentBuilderWithErrorOnDOCTYPE();
+		return docBuilder.newDocument();
 	}
 
 	/**

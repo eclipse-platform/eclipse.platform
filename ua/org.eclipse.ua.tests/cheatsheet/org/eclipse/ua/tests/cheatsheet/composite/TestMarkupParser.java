@@ -15,19 +15,14 @@
 package org.eclipse.ua.tests.cheatsheet.composite;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.io.StringReader;
 
-import javax.xml.parsers.DocumentBuilder;
-
-import org.eclipse.ui.internal.cheatsheets.CheatSheetPlugin;
+import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.ui.internal.cheatsheets.composite.parser.MarkupParser;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 public class TestMarkupParser {
 
@@ -35,16 +30,11 @@ public class TestMarkupParser {
 		StringReader reader = new StringReader(input);
 		InputSource source = new InputSource(reader);
 
-		DocumentBuilder documentBuilder = CheatSheetPlugin.getPlugin()
-					.getDocumentBuilder();
 		try {
-			return documentBuilder.parse(source);
-		} catch (SAXException e) {
-			fail("SAX exception");
-		} catch (IOException e) {
-			fail("IOException");
+			return LocalEntityResolver.parse(source);
+		} catch (Exception e) {
+			throw new AssertionError(e);
 		}
-		return null;
 	}
 
 	private String parse(String input) {

@@ -22,10 +22,8 @@ import java.util.Date;
 import java.util.Optional;
 
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
@@ -129,8 +127,9 @@ public class HistoryItem {
 	public HistoryItem(File file) {
 		this.historyFile = file;
 		try {
-			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-			SAXParser parser = parserFactory.newSAXParser();
+			@SuppressWarnings("restriction")
+			SAXParser parser = org.eclipse.core.internal.runtime.XmlProcessorFactory
+					.createSAXParserWithErrorOnDOCTYPE();
 			HistoryEntryHandler handler = new HistoryEntryHandler();
 			parser.parse(getFile(), handler);
 			this.name = handler.getName();
@@ -150,8 +149,9 @@ public class HistoryItem {
 	public TestRunSession reloadTestRunSession() throws CoreException {
 		if (this.session == null && getFile() != null) {
 			try {
-				SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-				SAXParser parser = parserFactory.newSAXParser();
+				@SuppressWarnings("restriction")
+				SAXParser parser = org.eclipse.core.internal.runtime.XmlProcessorFactory
+						.createSAXParserWithErrorOnDOCTYPE();
 				TestRunHandler handler = new TestRunHandler(new NullProgressMonitor());
 				parser.parse(getFile(), handler);
 				this.session = handler.getTestRunSession();
@@ -196,7 +196,9 @@ public class HistoryItem {
 			return;
 		}
 		try (FileOutputStream out = new FileOutputStream(target)) {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			@SuppressWarnings("restriction")
+			Transformer transformer = org.eclipse.core.internal.runtime.XmlProcessorFactory
+					.createTransformerFactoryWithErrorOnDOCTYPE().newTransformer();
 			InputSource inputSource = new InputSource();
 			SAXSource source = new SAXSource(new TestRunSessionSerializer(this.session), inputSource);
 			StreamResult result = new StreamResult(out);

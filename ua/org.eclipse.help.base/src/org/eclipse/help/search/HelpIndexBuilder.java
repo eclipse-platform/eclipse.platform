@@ -31,9 +31,6 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -109,11 +106,6 @@ public class HelpIndexBuilder {
 	private ArrayList<TocFile> tocFiles = new ArrayList<>();
 
 	private ArrayList<LocaleDir> localeDirs = new ArrayList<>();
-
-	private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-			.newInstance();
-
-	private DocumentBuilder parser;
 
 	private static Locale[] legalLocales = Locale.getAvailableLocales();
 	private static HashSet<String> legalLanguages = null;
@@ -716,11 +708,7 @@ public class HelpIndexBuilder {
 				InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
 			InputSource inputSource = new InputSource(reader);
 			inputSource.setSystemId(manifest.toString());
-
-			if (parser == null)
-				parser = documentBuilderFactory.newDocumentBuilder();
-			parser.setEntityResolver(new LocalEntityResolver());
-			d = parser.parse(inputSource);
+			d = LocalEntityResolver.parse(inputSource);
 		} catch (Exception e) {
 			String message = NLS.bind(HelpBaseResources.HelpIndexBuilder_errorParsing, file.getName());
 			throwCoreException(message, e);

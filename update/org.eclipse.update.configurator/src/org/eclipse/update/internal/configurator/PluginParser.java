@@ -14,27 +14,31 @@
 package org.eclipse.update.internal.configurator;
 
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import javax.xml.parsers.*;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
 
 import org.eclipse.osgi.util.NLS;
-import org.xml.sax.*;
-import org.xml.sax.helpers.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Parse default feature.xml
  */
 
 public class PluginParser extends DefaultHandler implements IConfigurationConstants {
-	private final static SAXParserFactory parserFactory =
-		SAXParserFactory.newInstance();
 	private SAXParser parser;
 	private PluginEntry pluginEntry;
 	private String location;
 
 	private static class ParseCompleteException extends SAXException {
-		
+
 		private static final long serialVersionUID = 1L;
 
 		public ParseCompleteException(String arg0) {
@@ -45,11 +49,10 @@ public class PluginParser extends DefaultHandler implements IConfigurationConsta
 	/**
 	 * Constructor for DefaultFeatureParser
 	 */
+	@SuppressWarnings("restriction")
 	public PluginParser() {
-		super();
 		try {
-			parserFactory.setNamespaceAware(true);
-			this.parser = parserFactory.newSAXParser();
+			this.parser = org.eclipse.core.internal.runtime.XmlProcessorFactory.createSAXParserWithErrorOnDOCTYPE(true);
 		} catch (ParserConfigurationException e) {
 			System.out.println(e);
 		} catch (SAXException e) {

@@ -251,7 +251,7 @@ public class InfoCenterPage extends RootScopePage {
 	private void load(Reader r) {
 		Document document = null;
 		try {
-			DocumentBuilder parser = DocumentBuilderFactory.newInstance()
+			DocumentBuilder parser = XmlProcessorFactory.createDocumentBuilderFactoryWithErrorOnDOCTYPE()
 					.newDocumentBuilder();
 			parser.setEntityResolver(new LocalEntityResolver());
 			// parser.setProcessNamespace(true);

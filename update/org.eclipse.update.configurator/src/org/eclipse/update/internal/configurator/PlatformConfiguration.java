@@ -61,8 +61,6 @@ import org.w3c.dom.Element;
 public class PlatformConfiguration implements IPlatformConfiguration, IConfigurationConstants {
 
 	private static PlatformConfiguration currentPlatformConfiguration = null;
-	//private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-	//	private static final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	private static final String XML_ENCODING = "UTF-8"; //$NON-NLS-1$
 
 	private Configuration config;
@@ -960,9 +958,9 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 	private void saveAsXML(OutputStream stream) throws CoreException, IOException {
 		BufferedWriter xmlWriter = new BufferedWriter(new OutputStreamWriter(stream, XML_ENCODING));
 		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			@SuppressWarnings("restriction")
+			DocumentBuilderFactory factory = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderFactoryWithErrorOnDOCTYPE();
 			factory.setExpandEntityReferences(false);
-			factory.setValidating(false);
 			factory.setIgnoringComments(true);
 			DocumentBuilder docBuilder = factory.newDocumentBuilder();
 			Document doc = docBuilder.newDocument();

@@ -22,12 +22,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
 
 import org.eclipse.core.expressions.EvaluationResult;
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.ExpressionConverter;
 import org.eclipse.core.expressions.IEvaluationContext;
+import org.eclipse.core.internal.runtime.XmlProcessorFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -246,8 +247,8 @@ public class IDETipManager extends DefaultTipManager {
 		try {
 			String myExpression = "<enablement>" + expression + "</enablement>"; //$NON-NLS-1$ //$NON-NLS-2$
 			myExpression = "<?xml version=\"1.0\"?>" + myExpression; //$NON-NLS-1$
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			Document doc = factory.newDocumentBuilder().parse(new ByteArrayInputStream(myExpression.getBytes()));
+			DocumentBuilder builder = XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
+			Document doc = builder.parse(new ByteArrayInputStream(myExpression.getBytes()));
 			Element element = (Element) doc.getElementsByTagName("enablement").item(0); //$NON-NLS-1$
 			Expression expressionObj = ExpressionConverter.getDefault().perform(element);
 			final EvaluationResult result = expressionObj.evaluate(getEvaluationContext());

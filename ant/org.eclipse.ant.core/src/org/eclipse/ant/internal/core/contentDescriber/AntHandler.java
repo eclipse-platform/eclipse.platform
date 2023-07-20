@@ -19,15 +19,11 @@ import java.io.StringReader;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.ant.internal.core.IAntCoreConstants;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -71,61 +67,17 @@ public final class AntHandler extends DefaultHandler {
 	 * successful to the point of finding the top-level element.
 	 */
 	private String fTopElementFound = null;
-	private SAXParserFactory fFactory;
-
 	private boolean fDefaultAttributeFound = false;
 	private boolean fTargetFound = false;
 	private boolean fAntElementFound = false;
 
 	private int fLevel = -1;
 
-	/**
-	 * Creates a new SAX parser for use within this instance.
-	 *
-	 * @return The newly created parser.
-	 * @throws ParserConfigurationException
-	 *             If a parser of the given configuration cannot be created.
-	 * @throws SAXException
-	 *             If something in general goes wrong when creating the parser.
-	 */
-	private final SAXParser createParser(SAXParserFactory parserFactory) throws ParserConfigurationException, SAXException, SAXNotRecognizedException, SAXNotSupportedException {
-		// Initialize the parser.
-		final SAXParser parser = parserFactory.newSAXParser();
-		final XMLReader reader = parser.getXMLReader();
-		// disable DTD validation (bug 63625)
-		try {
-			// be sure validation is "off" or the feature to ignore DTD's will not apply
-			reader.setFeature("http://xml.org/sax/features/validation", false); //$NON-NLS-1$
-			reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false); //$NON-NLS-1$
-		}
-		catch (SAXNotRecognizedException e) {
-			// not a big deal if the parser does not recognize the features
-		}
-		catch (SAXNotSupportedException e) {
-			// not a big deal if the parser does not support the features
-		}
-		return parser;
-	}
-
-	private SAXParserFactory getFactory() {
-		synchronized (this) {
-			if (fFactory != null) {
-				return fFactory;
-			}
-			fFactory = SAXParserFactory.newInstance();
-			fFactory.setNamespaceAware(true);
-		}
-		return fFactory;
-	}
-
 	protected boolean parseContents(InputSource contents) throws IOException, ParserConfigurationException, SAXException {
 		// Parse the file into we have what we need (or an error occurs).
 		try {
-			fFactory = getFactory();
-			if (fFactory == null) {
-				return false;
-			}
-			final SAXParser parser = createParser(fFactory);
+			@SuppressWarnings("restriction")
+			final SAXParser parser = org.eclipse.core.internal.runtime.XmlProcessorFactory.createSAXParserNoExternal(true);
 			// to support external entities specified as relative URIs (see bug 63298)
 			contents.setSystemId("/"); //$NON-NLS-1$
 			parser.parse(contents, this);

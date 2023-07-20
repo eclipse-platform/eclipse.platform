@@ -24,9 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.ant.internal.ui.AntUIPlugin;
 import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
@@ -419,23 +417,6 @@ public abstract class AbstractAntUITest extends TestCase {
 		BufferedReader bufferedReader = new BufferedReader(reader);
 
 		return getReaderContentAsString(bufferedReader);
-	}
-
-	/**
-	 * @return a new SAX parser instrance
-	 */
-	protected SAXParser getSAXParser() {
-		SAXParser parser = null;
-		try {
-			parser = SAXParserFactory.newInstance().newSAXParser();
-		}
-		catch (ParserConfigurationException e) {
-			AntUIPlugin.log(e);
-		}
-		catch (SAXException e) {
-			AntUIPlugin.log(e);
-		}
-		return parser;
 	}
 
 	/**

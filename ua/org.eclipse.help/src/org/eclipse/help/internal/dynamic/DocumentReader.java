@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -37,7 +35,6 @@ import org.xml.sax.SAXException;
 public class DocumentReader {
 
 	private static class ManagedBuilder {
-		public DocumentBuilder builder;
 		public boolean inUse;
 	}
 
@@ -56,7 +53,7 @@ public class DocumentReader {
 		else {
 			input = new InputSource(in);
 		}
-		Document document = managedBuilder.builder.parse(input);
+		Document document = LocalEntityResolver.parse(input);
 		managedBuilder.inUse = false;
 		prepareDocument(document);
 		return UAElementFactory.newElement(document.getDocumentElement());
@@ -68,20 +65,12 @@ public class DocumentReader {
 	protected void prepareDocument(Document document) {
 	}
 
-	private synchronized ManagedBuilder getManagedBuilder() throws FactoryConfigurationError, ParserConfigurationException {
+	private synchronized ManagedBuilder getManagedBuilder() throws FactoryConfigurationError {
 		if (cachedBuilder == null || cachedBuilder.inUse) {
-			cachedBuilder = createManagedBuilder();
+			ManagedBuilder managedBuilder = new ManagedBuilder();
+			cachedBuilder = managedBuilder;
 		}
 		cachedBuilder.inUse = true;
 		return cachedBuilder;
-	}
-
-	private ManagedBuilder createManagedBuilder() throws FactoryConfigurationError, ParserConfigurationException {
-		ManagedBuilder managedBuilder = new ManagedBuilder();
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(false);
-		managedBuilder.builder= factory.newDocumentBuilder();
-		managedBuilder.builder.setEntityResolver(new LocalEntityResolver());
-		return managedBuilder;
 	}
 }

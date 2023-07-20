@@ -22,8 +22,6 @@ import java.util.Stack;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.help.internal.search.SearchHit;
 import org.xml.sax.Attributes;
@@ -74,7 +72,10 @@ public class RemoteSearchParser extends DefaultHandler {
 		}
 		summary = null;
 		if (parser == null) {
-			parser = SAXParserFactory.newInstance().newSAXParser();
+			@SuppressWarnings("restriction")
+			SAXParser p = org.eclipse.core.internal.runtime.XmlProcessorFactory
+					.createSAXParserWithErrorOnDOCTYPE();
+			parser = p;
 		}
 	}
 

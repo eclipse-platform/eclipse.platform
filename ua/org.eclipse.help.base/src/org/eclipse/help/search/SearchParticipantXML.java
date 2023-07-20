@@ -21,8 +21,6 @@ import java.net.URL;
 import java.util.Stack;
 
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -283,7 +281,9 @@ public abstract class SearchParticipantXML extends SearchParticipant {
 		InputStream stream = null;
 		try {
 			if (parser == null) {
-				parser = SAXParserFactory.newInstance().newSAXParser();
+				@SuppressWarnings("restriction")
+				SAXParser p = org.eclipse.core.internal.runtime.XmlProcessorFactory.createSAXParserNoExternal();
+				parser = p;
 			}
 			stack.clear();
 			hasFilters = false;

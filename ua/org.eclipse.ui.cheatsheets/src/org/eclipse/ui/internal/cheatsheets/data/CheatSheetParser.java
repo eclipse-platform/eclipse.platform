@@ -20,7 +20,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 
-import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
@@ -34,10 +34,10 @@ import org.eclipse.help.internal.dynamic.ExtensionHandler;
 import org.eclipse.help.internal.dynamic.FilterHandler;
 import org.eclipse.help.internal.dynamic.IncludeHandler;
 import org.eclipse.help.internal.dynamic.ProcessorHandler;
+import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.cheatsheets.AbstractItemExtensionElement;
 import org.eclipse.ui.internal.cheatsheets.CheatSheetEvaluationContext;
-import org.eclipse.ui.internal.cheatsheets.CheatSheetPlugin;
 import org.eclipse.ui.internal.cheatsheets.ICheatSheetResource;
 import org.eclipse.ui.internal.cheatsheets.Messages;
 import org.eclipse.ui.internal.cheatsheets.composite.model.CompositeCheatSheetModel;
@@ -69,7 +69,6 @@ public class CheatSheetParser implements IStatusContainer {
 
 	private static final String TRUE_STRING = "true"; //$NON-NLS-1$
 
-	private DocumentBuilder documentBuilder;
 	private DocumentProcessor processor;
 	private ArrayList<CheatSheetItemExtensionElement> itemExtensionContainerList;
 
@@ -83,15 +82,6 @@ public class CheatSheetParser implements IStatusContainer {
 	private int commandCount;
 
 	private int actionCount;
-
-
-	/**
-	 * Java constructor comment.
-	 */
-	public CheatSheetParser() {
-		super();
-		documentBuilder = CheatSheetPlugin.getPlugin().getDocumentBuilder();
-	}
 
 	/**
 	 *  Gets the status of the last call to parse()
@@ -1008,11 +998,10 @@ public class CheatSheetParser implements IStatusContainer {
 
 		Document document;
 		try {
-			if(documentBuilder == null) {
-				addStatus(IStatus.ERROR, Messages.ERROR_DOCUMENT_BUILDER_NOT_INIT, null);
-				return null;
-			}
-			document = documentBuilder.parse(inputSource);
+			document = LocalEntityResolver.parse(inputSource);
+		} catch (ParserConfigurationException e) {
+			addStatus(IStatus.ERROR, Messages.ERROR_DOCUMENT_BUILDER_NOT_INIT, null);
+			return null;
 		} catch (IOException e) {
 			String message = NLS.bind(Messages.ERROR_OPENING_FILE_IN_PARSER, (new Object[] {filename}));
 			addStatus(IStatus.ERROR, message, e);

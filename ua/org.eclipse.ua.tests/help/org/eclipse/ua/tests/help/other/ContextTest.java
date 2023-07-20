@@ -27,7 +27,7 @@ import org.eclipse.help.internal.UAElement;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.base.HelpEvaluationContext;
 import org.eclipse.help.internal.context.Context;
-import org.eclipse.ua.tests.help.util.DocumentCreator;
+import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -66,7 +66,7 @@ public class ContextTest {
 		Context context;
 		Document doc;
 		try {
-			doc = DocumentCreator.createDocument(contextSource);
+			doc = LocalEntityResolver.parse(contextSource);
 		} catch (Exception e) {
 			fail("Caught Exception");
 			doc = null;

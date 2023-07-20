@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.expressions.IEvaluationContext;
@@ -492,7 +491,9 @@ public class LaunchConfigurationManager implements ILaunchListener, ISavePartici
 		try (InputStream stream = new BufferedInputStream(new FileInputStream(file))) {
 			// Parse the history file
 			try {
-				DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+				@SuppressWarnings("restriction")
+				DocumentBuilder parser = org.eclipse.core.internal.runtime.XmlProcessorFactory
+						.createDocumentBuilderWithErrorOnDOCTYPE();
 				parser.setErrorHandler(new DefaultHandler());
 				rootHistoryElement = parser.parse(new InputSource(stream)).getDocumentElement();
 			} catch (SAXException e) {

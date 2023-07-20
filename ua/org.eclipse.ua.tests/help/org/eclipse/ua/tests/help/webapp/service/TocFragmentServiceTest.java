@@ -21,9 +21,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.eclipse.help.ITopic;
 import org.eclipse.help.internal.HelpPlugin;
 import org.eclipse.help.internal.base.BaseHelpSystem;
@@ -201,9 +198,7 @@ public class TocFragmentServiceTest {
 			throws Exception {
 		try (InputStream is = url.openStream()) {
 			InputSource inputSource = new InputSource(is);
-			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			documentBuilder.setEntityResolver(new LocalEntityResolver());
-			Document document = documentBuilder.parse(inputSource);
+			Document document = LocalEntityResolver.parse(inputSource);
 			Node root = document.getFirstChild();
 			assertEquals("tree_data", root.getNodeName());
 			return root;

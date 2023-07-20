@@ -30,9 +30,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.junit.Test;
 import org.osgi.framework.FrameworkUtil;
 
@@ -958,11 +955,10 @@ public class ExpressionTests {
 		IExtensionRegistry registry= Platform.getExtensionRegistry();
 		IConfigurationElement[] ces= registry.getConfigurationElementsFor("org.eclipse.core.expressions.tests", "testParticipants"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		DocumentBuilder builder= DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		URL url = FrameworkUtil.getBundle(ExpressionTests.class).getEntry("plugin.xml");
 		Document document;
 		try (var in = url.openStream()) {
-			document = builder.parse(in);
+			document = org.eclipse.core.internal.runtime.XmlProcessorFactory.parseWithErrorOnDOCTYPE(in);
 		}
 		NodeList testParticipants= document.getElementsByTagName("testParticipant");
 		for (int i= 0; i < testParticipants.getLength(); i++) {

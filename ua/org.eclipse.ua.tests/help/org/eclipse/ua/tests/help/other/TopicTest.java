@@ -23,7 +23,7 @@ import org.eclipse.help.ITopic;
 import org.eclipse.help.internal.Topic;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.base.HelpEvaluationContext;
-import org.eclipse.ua.tests.help.util.DocumentCreator;
+import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,7 +84,7 @@ public class TopicTest {
 		Topic topic;
 		Document doc;
 		try {
-			doc = DocumentCreator.createDocument(topicSource);
+			doc = LocalEntityResolver.parse(topicSource);
 		} catch (Exception e) {
 			fail("Caught Exception");
 			doc = null;

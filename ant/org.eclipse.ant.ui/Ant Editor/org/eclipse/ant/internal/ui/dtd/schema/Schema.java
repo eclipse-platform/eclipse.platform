@@ -30,11 +30,17 @@ public class Schema implements ISchema {
 
 	@Override
 	public IElement getElement(String qname) {
+		if (fErrorException != null) {
+			throw new RuntimeException(fErrorException);
+		}
 		return fElementMap.get(qname);
 	}
 
 	@Override
 	public IElement[] getElements() {
+		if (fErrorException != null) {
+			throw new RuntimeException(fErrorException);
+		}
 		return fElementMap.values().toArray(new IElement[fElementMap.size()]);
 	}
 

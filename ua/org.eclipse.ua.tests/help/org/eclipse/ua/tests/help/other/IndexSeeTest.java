@@ -22,9 +22,9 @@ import static org.junit.Assert.fail;
 import org.eclipse.help.IIndexSee;
 import org.eclipse.help.IIndexSubpath;
 import org.eclipse.help.internal.base.BaseHelpSystem;
+import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.index.IndexEntry;
 import org.eclipse.help.internal.index.IndexSee;
-import org.eclipse.ua.tests.help.util.DocumentCreator;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -59,7 +59,7 @@ public class IndexSeeTest {
 		IndexSee element;
 		Document doc;
 		try {
-			doc = DocumentCreator.createDocument(elementSource);
+			doc = LocalEntityResolver.parse(elementSource);
 		} catch (Exception e) {
 			fail("Caught Exception");
 			doc = null;
@@ -73,7 +73,7 @@ public class IndexSeeTest {
 		Document doc;
 		String elementSource = "<see keyword=\"" + keyword + "\" />";
 		try {
-			doc = DocumentCreator.createDocument(elementSource);
+			doc = LocalEntityResolver.parse(elementSource);
 		} catch (Exception e) {
 			fail("Caught Exception");
 			doc = null;

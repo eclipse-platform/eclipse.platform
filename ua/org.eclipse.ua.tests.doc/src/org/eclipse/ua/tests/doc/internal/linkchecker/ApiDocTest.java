@@ -24,8 +24,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
+import org.eclipse.core.internal.runtime.XmlProcessorFactory;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -53,6 +53,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+@SuppressWarnings("restriction")
 public class ApiDocTest {
 
 	static class InternalExtensionFoundException extends SAXException {
@@ -208,8 +209,7 @@ public class ApiDocTest {
 			} else {
 				InputSource schemaSource = getExtensionPointSchemaSource(extensionPoint, schemaReference, sourceBundlesCache);
 				if (schemaSource != null) {
-					SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-					SAXParser parser = parserFactory.newSAXParser();
+					SAXParser parser = XmlProcessorFactory.createSAXParserWithErrorOnDOCTYPE(false);
 					InternalExtensionFinder handler = new InternalExtensionFinder();
 					try {
 						parser.parse(schemaSource, handler);

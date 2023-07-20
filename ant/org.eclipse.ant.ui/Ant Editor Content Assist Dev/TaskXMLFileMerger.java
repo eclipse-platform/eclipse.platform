@@ -259,7 +259,7 @@ public class TaskXMLFileMerger {
 	private Document parseFile(String aFileName) {
 		Document tempDocument = null;
 
-		DocumentBuilderFactory tempFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilderFactory tempFactory = XmlProcessorFactory.createDocumentBuilderFactoryWithErrorOnDOCTYPE();
 		tempFactory.setIgnoringComments(true);
 		tempFactory.setIgnoringElementContentWhitespace(true);
 		tempFactory.setCoalescing(true);

@@ -22,7 +22,6 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
@@ -207,9 +206,9 @@ public final class UnitTestModel {
 			@Override
 			public void run() {
 				try {
-					SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-//					parserFactory.setValidating(true); // TODO: add DTD and debug flag
-					SAXParser parser = parserFactory.newSAXParser();
+					@SuppressWarnings("restriction")
+					SAXParser parser = org.eclipse.core.internal.runtime.XmlProcessorFactory
+							.createSAXParserWithErrorOnDOCTYPE();
 					parser.parse(trimmedUrl, handler);
 					session[0] = handler.getTestRunSession();
 				} catch (OperationCanceledException e) {

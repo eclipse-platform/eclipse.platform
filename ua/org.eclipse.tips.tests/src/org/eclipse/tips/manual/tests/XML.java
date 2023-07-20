@@ -16,7 +16,7 @@ package org.eclipse.tips.manual.tests;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -36,10 +36,14 @@ public class XML {
 		pExpression = "<enablement>" + pExpression + "</enablement>";
 		pExpression = "<?xml version=\"1.0\"?>" + pExpression;
 		System.out.println(pExpression);
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		Document doc = factory.newDocumentBuilder().parse(new ByteArrayInputStream(pExpression.getBytes()));
+		@SuppressWarnings("restriction")
+		DocumentBuilder builder = org.eclipse.core.internal.runtime.XmlProcessorFactory
+				.createDocumentBuilderWithErrorOnDOCTYPE();
+		Document doc = builder.parse(new ByteArrayInputStream(pExpression.getBytes()));
 		Element element2 = (Element) doc.getElementsByTagName("enablement").item(0);
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		@SuppressWarnings("restriction")
+		TransformerFactory transformerFactory = org.eclipse.core.internal.runtime.XmlProcessorFactory
+				.createTransformerFactoryWithErrorOnDOCTYPE();
 		Transformer transformer = transformerFactory.newTransformer();
 		DOMSource source = new DOMSource(element2);
 		StreamResult result = new StreamResult(System.out);

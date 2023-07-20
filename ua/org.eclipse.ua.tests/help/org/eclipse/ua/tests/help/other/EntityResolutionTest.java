@@ -27,8 +27,7 @@ public class EntityResolutionTest {
 
 	public void resolve(String systemId, boolean isSupportedDtd) throws Exception {
 
-		LocalEntityResolver resolver = new LocalEntityResolver();
-		InputSource is = resolver.resolveEntity("publicId", systemId);
+		InputSource is = LocalEntityResolver.resolve("publicId", systemId);
 		try (Reader reader = is.getCharacterStream(); InputStream stream = is.getByteStream()) {
 			int read;
 			if (reader != null) {

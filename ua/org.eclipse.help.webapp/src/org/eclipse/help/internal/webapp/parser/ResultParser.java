@@ -15,13 +15,10 @@ package org.eclipse.help.internal.webapp.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.eclipse.help.internal.webapp.utils.JSonHelper;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -30,7 +27,7 @@ public class ResultParser extends DefaultHandler {
 
 	protected String id;
 	protected String label;
-	protected ArrayList<ParseElement> items = new ArrayList<>(); //parser populates the items arrayList withe parsed data.
+	protected ArrayList<ParseElement> items = new ArrayList<>(); //parser populates the items arrayList with parsed data.
 
 	public ResultParser(String label) {
 		this(label, JSonHelper.ID);
@@ -41,16 +38,9 @@ public class ResultParser extends DefaultHandler {
 		this.id = id;
 	}
 
-	public void parse(URL url)
-		throws ParserConfigurationException, SAXException, IOException
-	{
-		parse(url.openStream());
-	}
-
-	public void parse(InputStream in)
-		throws ParserConfigurationException, SAXException, IOException
-	{
-		SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+	public void parse(InputStream in) throws ParserConfigurationException, SAXException, IOException {
+		@SuppressWarnings("restriction")
+		SAXParser parser = org.eclipse.core.internal.runtime.XmlProcessorFactory.createSAXParserWithErrorOnDOCTYPE();
 		parser.parse(in, this);
 	}
 

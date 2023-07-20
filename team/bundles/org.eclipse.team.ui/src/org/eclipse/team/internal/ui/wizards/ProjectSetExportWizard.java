@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.resources.IProject;
@@ -198,8 +198,9 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 				private XMLMemento getXMLMementoRoot() {
 					Document document;
 					try {
-						document = DocumentBuilderFactory.newInstance()
-								.newDocumentBuilder().newDocument();
+						@SuppressWarnings("restriction")
+						DocumentBuilder b = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
+						document = b.newDocument();
 						Element element = document.createElement("psf"); //$NON-NLS-1$
 						element.setAttribute("version", "2.0"); //$NON-NLS-1$ //$NON-NLS-2$
 						document.appendChild(element);

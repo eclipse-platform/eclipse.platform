@@ -20,6 +20,7 @@ import java.io.Reader;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
@@ -58,6 +59,7 @@ public final class AntBuildfileContentDescriber extends XMLContentDescriber impl
 		}
 		catch (SAXException e) {
 			// we may be handed any kind of contents... it is normal we fail to parse
+			AntCorePlugin.log(e);
 			return INDETERMINATE;
 		}
 		catch (ParserConfigurationException e) {

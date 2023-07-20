@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -594,26 +593,8 @@ public class XMLStructureCreator implements IStructureCreator {
 			XMLHandler handler= new XMLHandler();
 
 			try {
-				//            	/* original xerces code
-				//            	SAXParser parser = (SAXParser)Class.forName(parserName).newInstance();
-				//            	*/
-				//				XMLReader parser = XMLReaderFactory.createXMLReader(parserName);
-				//				
-				//	            parser.setFeature( "http://xml.org/sax/features/validation", setValidation); //$NON-NLS-1$
-				//    	        parser.setFeature( "http://xml.org/sax/features/namespaces", setNameSpaces ); //$NON-NLS-1$
-				//    	        /*
-				//    	        parser.setFeature( "http://apache.org/xml/features/nonvalidating/load-external-dtd", false); //$NON-NLS-1$
-				//        	    parser.setFeature( "http://apache.org/xml/features/validation/schema", setSchemaSupport ); //$NON-NLS-1$
-				//	            parser.setFeature( "http://apache.org/xml/features/validation/schema-full-checking", setSchemaFullSupport); //$NON-NLS-1$
-				//	           	*/
-				//	            parser.setContentHandler(handler);
-				//	            parser.setErrorHandler(handler);
-				//	            
-				//	            parser.parse(new InputSource(sca.getContents()));
-
-				SAXParserFactory factory= SAXParserFactory.newInstance();
-				factory.setNamespaceAware(true);
-				SAXParser parser= factory.newSAXParser();
+				@SuppressWarnings("restriction")
+				SAXParser parser = org.eclipse.core.internal.runtime.XmlProcessorFactory.createSAXParserNoExternal(true);
 				parser.parse(new InputSource(new StringReader(contents)), handler);
 
 				if (XMLStructureCreator.DEBUG_MODE)
@@ -622,7 +603,6 @@ public class XMLStructureCreator implements IStructureCreator {
 				XMLPlugin.log(e);
 				return null;
 			} catch (Exception e) {
-				//				MessageDialog.openError(XMLPlugin.getActiveWorkbenchShell(),"Error in XML parser","An error occured in the XML parser.\nNo structured compare can be shown");
 				XMLPlugin.log(e);
 				return null;
 			}

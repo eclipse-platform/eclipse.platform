@@ -21,7 +21,7 @@ import static org.junit.Assert.fail;
 import org.eclipse.help.IHelpResource;
 import org.eclipse.help.IUAElement;
 import org.eclipse.help.internal.context.Context;
-import org.eclipse.ua.tests.help.util.DocumentCreator;
+import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -44,7 +44,7 @@ public class ContextMergeTest {
 		Context context;
 		Document doc;
 		try {
-			doc = DocumentCreator.createDocument(contextSource);
+			doc = LocalEntityResolver.parse(contextSource);
 		} catch (Exception e) {
 			fail("Caught Exception");
 			doc = null;

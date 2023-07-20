@@ -19,10 +19,8 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.debug.core.DebugPlugin;
@@ -44,8 +42,6 @@ public final class XMLMemento {
 
 	private Element element;
 
-	private static String FILE_STRING = "file"; //$NON-NLS-1$
-
 	/**
 	 * Creates a <code>Document</code> from the <code>Reader</code>
 	 * and returns a memento on the first <code>Element</code> for reading
@@ -64,27 +60,6 @@ public final class XMLMemento {
 	}
 
 	/**
-	 * Clients who need to use the "file" protocol can override this method to
-	 * return the original attribute value
-	 *
-	 * @param attributeOldValue
-	 * @return return the new attribute value after concatenating the "file"
-	 *         protocol restriction if does not exist already
-	 */
-	private static String getAttributeNewValue(Object attributeOldValue) {
-		StringBuffer strNewValue = new StringBuffer(FILE_STRING);
-		if (attributeOldValue instanceof String && ((String) attributeOldValue).length() != 0) {
-			String strOldValue = (String) attributeOldValue;
-			boolean exists = Arrays.asList(strOldValue.split(",")).stream().anyMatch(x -> x.trim().equals(FILE_STRING)); //$NON-NLS-1$
-			if (!exists) {
-				strNewValue.append(", ").append(strOldValue); //$NON-NLS-1$
-			} else {
-				strNewValue = new StringBuffer(strOldValue);
-			}
-		}
-		return strNewValue.toString();
-	}
-	/**
 	 * Creates a <code>Document</code> from the <code>Reader</code>
 	 * and returns a memento on the first <code>Element</code> for reading
 	 * the document.
@@ -102,26 +77,13 @@ public final class XMLMemento {
 			throws Exception {
 		String errorMessage = null;
 		Exception exception = null;
-		DocumentBuilderFactory factory = null;
-		Object attributeDTDOldValue = null;
-		Object attributeSchemaOldValue = null;
 		try {
-			factory = DocumentBuilderFactory.newInstance();
-			try {
-				attributeDTDOldValue = factory.getAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD);
-				attributeSchemaOldValue = factory.getAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA);
-			} catch (NullPointerException | IllegalArgumentException e) {
-				// Attributes not defined
-			}
-			factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, getAttributeNewValue(attributeDTDOldValue));
-			factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, getAttributeNewValue(attributeSchemaOldValue));
-
-			DocumentBuilder parser = factory.newDocumentBuilder();
 			InputSource source = new InputSource(reader);
 			if (baseDir != null) {
 				source.setSystemId(baseDir);
 			}
-			Document document = parser.parse(source);
+			@SuppressWarnings("restriction")
+			Document document = org.eclipse.core.internal.runtime.XmlProcessorFactory.parseWithErrorOnDOCTYPE(source);
 			NodeList list = document.getChildNodes();
 			for (int i = 0; i < list.getLength(); i++) {
 				Node node = list.item(i);
@@ -138,11 +100,6 @@ public final class XMLMemento {
 		} catch (SAXException e) {
 			exception = e;
 			// errorMessage = WorkbenchMessages.XMLMemento_formatError;
-		} finally {
-			if (factory != null) {
-				factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, attributeDTDOldValue);
-				factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, attributeSchemaOldValue);
-			}
 		}
 
 		String problemText = null;
@@ -165,8 +122,9 @@ public final class XMLMemento {
 	public static XMLMemento createWriteRoot(String type) {
 		Document document;
 		try {
-			document = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder().newDocument();
+			@SuppressWarnings("restriction")
+			DocumentBuilder b = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
+			document = b.newDocument();
 			Element element = document.createElement(type);
 			document.appendChild(element);
 			return new XMLMemento(document, element);

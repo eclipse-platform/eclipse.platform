@@ -19,9 +19,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.server.WebappManager;
@@ -64,9 +61,7 @@ public class IndexFragmentServiceTest {
 		URL url = new URL("http", "localhost", port, "/help/vs/service/indexfragment?lang=" + locale);
 		try (InputStream is = url.openStream()) {
 			InputSource inputSource = new InputSource(is);
-			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			documentBuilder.setEntityResolver(new LocalEntityResolver());
-			Document document = documentBuilder.parse(inputSource);
+			Document document = LocalEntityResolver.parse(inputSource);
 			Node root = document.getFirstChild();
 			assertEquals("tree_data", root.getNodeName());
 		}

@@ -79,17 +79,15 @@ public class IntroContentParser {
 
 
 	private Document parse(String fileURI) {
-		Document document = null;
 		try {
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory
-				.newInstance();
-			docFactory.setValidating(false);
+			@SuppressWarnings("restriction")
+			DocumentBuilderFactory docFactory = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderFactoryIgnoringDOCTYPE();
 			// if this is not set, Document.getElementsByTagNameNS() will fail.
 			docFactory.setNamespaceAware(true);
 			docFactory.setExpandEntityReferences(false);
 			DocumentBuilder parser = docFactory.newDocumentBuilder();
 			parser.setEntityResolver((publicId, systemId) -> new InputSource(new StringReader(""))); //$NON-NLS-1$
-			document = parser.parse(fileURI);
+			Document document = parser.parse(fileURI);
 			return document;
 
 		} catch (SAXParseException spe) {
@@ -141,9 +139,9 @@ public class IntroContentParser {
 	public static String convertToString(Document document) {
 		try {
 			// identity xslt.
-			TransformerFactory tFactory = TransformerFactory.newInstance();
+			@SuppressWarnings("restriction")
+			TransformerFactory tFactory = org.eclipse.core.internal.runtime.XmlProcessorFactory.createTransformerFactoryWithErrorOnDOCTYPE();
 			Transformer transformer = tFactory.newTransformer();
-
 			DOMSource source = new DOMSource(document);
 
 			StringWriter stringWriter = new StringWriter();

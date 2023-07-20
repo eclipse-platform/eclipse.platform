@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -1293,10 +1292,8 @@ public class DebugPlugin extends Plugin {
 	public static String serializeDocument(Document document) throws CoreException {
 		try {
 			return LaunchManager.serializeDocument(document);
-		} catch (TransformerException e) {
+		} catch (IOException | TransformerException e) {
 			abort("Unable to serialize XML document.", e);  //$NON-NLS-1$
-		} catch (IOException e) {
-			abort("Unable to serialize XML document.",e);  //$NON-NLS-1$
 		}
 		return null;
 	}
@@ -1313,7 +1310,8 @@ public class DebugPlugin extends Plugin {
 	public static Element parseDocument(String document) throws CoreException {
 		Element root = null;
 		try{
-			DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			@SuppressWarnings("restriction")
+			DocumentBuilder parser = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
 			parser.setErrorHandler(new DefaultHandler());
 			try (InputStream stream = new ByteArrayInputStream(document.getBytes(StandardCharsets.UTF_8))) {
 				root = parser.parse(stream).getDocumentElement();

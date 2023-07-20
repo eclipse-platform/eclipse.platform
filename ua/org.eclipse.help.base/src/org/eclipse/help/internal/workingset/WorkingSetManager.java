@@ -28,8 +28,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -75,11 +73,9 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 
 	private Map<String, Set<String>> allCriteriaValues;
 
-	private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-			.newInstance();
-
-	private static final TransformerFactory transformerFactory = TransformerFactory
-			.newInstance();
+	@SuppressWarnings("restriction")
+	private static final TransformerFactory transformerFactory = org.eclipse.core.internal.runtime.XmlProcessorFactory
+			.createTransformerFactoryWithErrorOnDOCTYPE();
 
 	/**
 	 * Constructor
@@ -210,9 +206,9 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 				InputSource inputSource = new InputSource(reader);
 				inputSource.setSystemId(stateFile.toString());
 
-				DocumentBuilder parser = documentBuilderFactory
-						.newDocumentBuilder();
-				Document d = parser.parse(inputSource);
+				@SuppressWarnings("restriction")
+				Document d = org.eclipse.core.internal.runtime.XmlProcessorFactory
+						.createDocumentBuilderWithErrorOnDOCTYPE().parse(inputSource);
 
 				Element rootElement = d.getDocumentElement();
 				restoreWorkingSetState(rootElement);
@@ -342,8 +338,9 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 	public synchronized boolean saveState() {
 		File stateFile = null;
 		try {
-			DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
-			Document doc = docBuilder.newDocument();
+			@SuppressWarnings("restriction")
+			Document doc = org.eclipse.core.internal.runtime.XmlProcessorFactory
+					.createDocumentBuilderWithErrorOnDOCTYPE().newDocument();
 			Element rootElement = doc.createElement("workingSets"); //$NON-NLS-1$
 			doc.appendChild(rootElement);
 

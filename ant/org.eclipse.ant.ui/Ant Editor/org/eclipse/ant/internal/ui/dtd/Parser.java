@@ -19,7 +19,6 @@ import java.io.StringReader;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.ant.internal.ui.dtd.schema.SchemaFactory;
 import org.xml.sax.EntityResolver;
@@ -98,7 +97,9 @@ public class Parser {
 	private XMLReader getXMLReader() throws ParseError {
 		SAXParser parser = null;
 		try {
-			parser = SAXParserFactory.newInstance().newSAXParser();
+			@SuppressWarnings("restriction")
+			SAXParser p = org.eclipse.core.internal.runtime.XmlProcessorFactory.createSAXParserNoExternal();
+			parser = p;
 			return parser.getXMLReader();
 		}
 		catch (ParserConfigurationException e) {

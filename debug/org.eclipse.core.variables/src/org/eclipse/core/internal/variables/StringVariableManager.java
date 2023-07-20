@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -281,7 +280,8 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 		Element root= null;
 		try {
 			ByteArrayInputStream stream = new ByteArrayInputStream(variablesString.getBytes(StandardCharsets.UTF_8));
-			DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			@SuppressWarnings("restriction")
+			DocumentBuilder parser = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
 			parser.setErrorHandler(new DefaultHandler());
 			root = parser.parse(stream).getDocumentElement();
 		} catch (Exception e) {
@@ -452,9 +452,9 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 	}
 
 	private Document getDocument() throws ParserConfigurationException {
-		DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-		Document doc =docBuilder.newDocument();
+		@SuppressWarnings("restriction")
+		DocumentBuilder docBuilder = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
+		Document doc = docBuilder.newDocument();
 		return doc;
 	}
 
@@ -470,8 +470,9 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 	private String serializeDocument(Document doc) throws TransformerException, UnsupportedEncodingException {
 		ByteArrayOutputStream s= new ByteArrayOutputStream();
 
-		TransformerFactory factory= TransformerFactory.newInstance();
-		Transformer transformer= factory.newTransformer();
+		@SuppressWarnings("restriction")
+		TransformerFactory factory = org.eclipse.core.internal.runtime.XmlProcessorFactory.createTransformerFactoryWithErrorOnDOCTYPE();
+		Transformer transformer = factory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
 
