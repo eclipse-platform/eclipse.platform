@@ -1371,7 +1371,9 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 				fLastControl = null;
 			}
 			// Attach the progress monitor part to the cancel button
-			fProgressMonitorPart.attachToCancelComponent(null);
+			if (cancelable) {
+				fProgressMonitorPart.attachToCancelComponent(null);
+			}
 			fProgressMonitorPart.getParent().setVisible(true);
 			fActiveRunningOperations++;
 
@@ -1393,7 +1395,9 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 				updateRunnnableControls(true, prev);
 				if (getShell() != null) {
 					fProgressMonitorPart.getParent().setVisible(false);
-					fProgressMonitorPart.removeFromCancelComponent(null);
+					if (cancelable) {
+						fProgressMonitorPart.removeFromCancelComponent(null);
+					}
 					if (fLastControl != null && !fLastControl.isDisposed()) {
 						fLastControl.setFocus();
 					}
