@@ -19,14 +19,14 @@
                 <contentProvider 
                 	pluginId="org.eclipse.ui.intro"
                 	class="org.eclipse.ui.intro.contentproviders.EclipseRSSViewer"
-                	id="url=http://www.eclipse.org/home/eclipsenews.rss##welcome_items=5##no_news_url=http://www.eclipse.org/community/##no_news_text=News from the Eclipse Foundation">
+                	id="url=https://www.eclipse.org/home/eclipsenews.rss##welcome_items=5##no_news_url=https://www.eclipse.org/community/##no_news_text=News from the Eclipse Foundation">
                 </contentProvider>
             </group>
 			<group style-id="right" id="rss-community-news" label="Community News" expandable="true" expanded="true">
                 <contentProvider 
                 	pluginId="org.eclipse.ui.intro"
                 	class="org.eclipse.ui.intro.contentproviders.EclipseRSSViewer"
-                	id="url=http://feeds.feedburner.com/eclipse/cnews##welcome_items=5##no_news_url=https://www.eclipse.org/community/news/##no_news_text=Updates from the wider Eclipse Community">
+                	id="url=https://feeds.feedburner.com/eclipse/cnews##welcome_items=5##no_news_url=https://www.eclipse.org/community/news/##no_news_text=Updates from the wider Eclipse Community">
                 </contentProvider>
             </group>
 		</group>
