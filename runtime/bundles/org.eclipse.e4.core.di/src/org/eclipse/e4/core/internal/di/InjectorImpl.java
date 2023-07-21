@@ -32,6 +32,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,8 +75,8 @@ public class InjectorImpl implements IInjector {
 	private final static Short DEFAULT_SHORT = Short.valueOf((short) 0);
 	private final static Byte DEFAULT_BYTE = Byte.valueOf((byte) 0);
 
-	private final Map<PrimaryObjectSupplier, List<WeakReference<?>>> injectedObjects = new WeakHashMap<>();
-	private final Set<WeakReference<Class<?>>> injectedClasses = new HashSet<>();
+	private final Map<PrimaryObjectSupplier, Set<IdentityWeakReference<?>>> injectedObjects = new WeakHashMap<>();
+	private final Set<IdentityWeakReference<Class<?>>> injectedClasses = new LinkedHashSet<>();
 	private final HashMap<Class<?>, Object> singletonCache = new HashMap<>();
 	private final Map<Class<?>, Set<Binding>> bindings = new HashMap<>();
 	private final Map<Class<? extends Annotation>, Map<AnnotatedElement, Boolean>> annotationsPresent = new HashMap<>();
@@ -148,38 +149,28 @@ public class InjectorImpl implements IInjector {
 
 	private void rememberInjectedObject(Object object, PrimaryObjectSupplier objectSupplier) {
 		synchronized (injectedObjects) {
-			List<WeakReference<?>> list = injectedObjects.computeIfAbsent(objectSupplier, k -> new ArrayList<>());
-			for (WeakReference<?> ref : list) {
-				if (object == ref.get())
-					return; // we already have it
-			}
-			list.add(new WeakReference<>(object));
+			injectedObjects.computeIfAbsent(objectSupplier,
+					k -> new LinkedHashSet<>()).add(new IdentityWeakReference<>(object));
 		}
 	}
 
 	private boolean forgetInjectedObject(Object object, PrimaryObjectSupplier objectSupplier) {
 		synchronized (injectedObjects) {
-			List<WeakReference<?>> list = injectedObjects.get(objectSupplier);
-			if (list != null) {
-				for (Iterator<WeakReference<?>> i = list.iterator(); i.hasNext();) {
-					WeakReference<?> ref = i.next();
-					if (object == ref.get()) {
-						i.remove();
-						return true;
-					}
-				}
+			Set<IdentityWeakReference<?>> set = injectedObjects.get(objectSupplier);
+			if (set != null) {
+				return set.remove(new IdentityWeakReference<>(object));
 			}
 			return false;
 		}
 	}
 
-	private List<WeakReference<?>> forgetSupplier(PrimaryObjectSupplier objectSupplier) {
+	private Set<IdentityWeakReference<?>> forgetSupplier(PrimaryObjectSupplier objectSupplier) {
 		synchronized (injectedObjects) {
 			return injectedObjects.remove(objectSupplier);
 		}
 	}
 
-	private List<WeakReference<?>> getSupplierObjects(PrimaryObjectSupplier objectSupplier) {
+	private Set<IdentityWeakReference<?>> getSupplierObjects(PrimaryObjectSupplier objectSupplier) {
 		synchronized (injectedObjects) {
 			return injectedObjects.get(objectSupplier);
 		}
@@ -425,7 +416,7 @@ public class InjectorImpl implements IInjector {
 	}
 
 	public void disposed(PrimaryObjectSupplier objectSupplier) {
-		List<WeakReference<?>> references = getSupplierObjects(objectSupplier);
+		Set<IdentityWeakReference<?>> references = getSupplierObjects(objectSupplier);
 		if (references == null)
 			return;
 		Object[] objects = new Object[references.size()];
@@ -668,20 +659,13 @@ public class InjectorImpl implements IInjector {
 
 	private boolean hasInjectedStatic(Class<?> objectsClass) {
 		synchronized (injectedClasses) {
-			for (WeakReference<Class<?>> ref : injectedClasses) {
-				Class<?> injectedClass = ref.get();
-				if (injectedClass == null)
-					continue;
-				if (injectedClass == objectsClass) // use pointer comparison
-					return true;
-			}
-			return false;
+			return injectedClasses.contains(new IdentityWeakReference<>(objectsClass));
 		}
 	}
 
 	private void rememberInjectedStatic(Class<?> objectsClass) {
 		synchronized (injectedClasses) {
-			injectedClasses.add(new WeakReference<>(objectsClass));
+			injectedClasses.add(new IdentityWeakReference<>(objectsClass));
 		}
 	}
 
@@ -1025,5 +1009,35 @@ public class InjectorImpl implements IInjector {
 		boolean isPresent = annotatedElement.isAnnotationPresent(annotation);
 		cache.put(annotatedElement, isPresent);
 		return isPresent;
+	}
+
+	/**
+	 * The IdentityWeakReference extends the {@link WeakReference} with the
+	 * difference that it can be compared to another IdentityWeakReference. The
+	 * compare is done on the Identity of the Referenced Object, this allows us to
+	 * use this element in a Set and have unique objects in it.
+	 */
+	private static class IdentityWeakReference<T> extends WeakReference<T> {
+
+		private final int hashCode;
+
+		IdentityWeakReference(T referent) {
+			super(referent);
+			hashCode = System.identityHashCode(referent);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof IdentityWeakReference other) {
+				return other.get() == get();
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			return hashCode;
+		}
+
 	}
 }
