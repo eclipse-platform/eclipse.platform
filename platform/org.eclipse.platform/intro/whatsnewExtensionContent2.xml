@@ -9,7 +9,7 @@
           		<text>Join the community, read articles and news on Eclipse.org</text>
        		</link>
 			<group id="rss-news" label="Latest News" expandable="true" expanded="true">
-				<contentProvider id="url=http://www.eclipse.org/home/eclipsenews.rss##welcome_items=5##no_news_url=http://www.eclipse.org/community/##no_news_text=Welcome to the Eclipse Community Page" pluginId="org.eclipse.ui.intro" class="org.eclipse.ui.intro.contentproviders.EclipseRSSViewer">
+				<contentProvider id="url=https://www.eclipse.org/home/eclipsenews.rss##welcome_items=5##no_news_url=http://www.eclipse.org/community/##no_news_text=Welcome to the Eclipse Community Page" pluginId="org.eclipse.ui.intro" class="org.eclipse.ui.intro.contentproviders.EclipseRSSViewer">
 				</contentProvider>
 			</group>
        </group>

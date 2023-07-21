@@ -81,7 +81,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * For example:
  * <pre><code>
  * &lt;contentProvider
- * id=&quot;url=http://www.eclipse.org/home/eclipsenews.rss##welcome_items=5##no_news_url=http://www.eclipse.org/community/##no_news_text=Welcome to the Eclipse Community Page&quot;
+ * id=&quot;url=https://www.eclipse.org/home/eclipsenews.rss##welcome_items=5##no_news_url=http://www.eclipse.org/community/##no_news_text=Welcome to the Eclipse Community Page&quot;
  * pluginId=&quot;org.eclipse.ui.intro&quot;
  * class=&quot;org.eclipse.ui.intro.contentproviders.EclipseRSSViewer&quot;&gt;
  * &lt;/contentProvider&gt;
