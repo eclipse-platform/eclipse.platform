@@ -34,18 +34,18 @@ import org.eclipse.ui.console.TextConsole;
 
 public class ConsolePatternMatcher implements IDocumentListener {
 
-	private MatchJob fMatchJob;
+	private final MatchJob fMatchJob;
 
 	/**
 	 * Collection of compiled pattern match listeners
 	 */
-	private ArrayList<CompiledPatternMatchListener> fPatterns = new ArrayList<>();
+	private final ArrayList<CompiledPatternMatchListener> fPatterns = new ArrayList<>();
 
-	private TextConsole fConsole;
+	private final TextConsole fConsole;
 
-	private boolean fFinalMatch;
+	private volatile boolean fFinalMatch;
 
-	private boolean fScheduleFinal;
+	private volatile boolean fScheduleFinal;
 
 	public ConsolePatternMatcher(TextConsole console) {
 		fConsole = console;

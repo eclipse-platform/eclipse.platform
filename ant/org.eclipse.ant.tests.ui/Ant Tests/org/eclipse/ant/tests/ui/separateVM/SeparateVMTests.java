@@ -35,6 +35,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.console.IHyperlink;
 
@@ -153,9 +154,10 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	 */
 	public void testBuildFailedLinks() throws CoreException, BadLocationException {
 		launch("102282"); //$NON-NLS-1$
-		int offset = ConsoleLineTracker.getDocument().getLineOffset(9) + 10; // second line of build failed link
-		IHyperlink link = getHyperlink(offset, ConsoleLineTracker.getDocument());
-		assertNotNull("No hyperlink found at offset " + offset, link); //$NON-NLS-1$
+		IDocument document = ConsoleLineTracker.getDocument();
+		int offset = document.getLineOffset(9) + 10; // second line of build failed link
+		IHyperlink link = getHyperlink(offset, document);
+		assertNotNull("No hyperlink found at offset " + offset + "\n" + document, link); //$NON-NLS-1$ //$NON-NLS-2$
 		activateLink(link);
 	}
 
