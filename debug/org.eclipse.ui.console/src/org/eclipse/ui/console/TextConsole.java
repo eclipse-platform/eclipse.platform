@@ -55,11 +55,11 @@ public abstract class TextConsole extends AbstractConsole {
 	 * The current width of the console. Used for fixed width consoles.
 	 * A value of <=0 means does not have a fixed width.
 	 */
-	private int fConsoleWidth;
+	private volatile int fConsoleWidth;
 	/**
 	 * The current tab width
 	 */
-	private int fTabWidth;
+	private volatile int fTabWidth;
 	/**
 	 * The font used by this console
 	 */
@@ -73,38 +73,38 @@ public abstract class TextConsole extends AbstractConsole {
 	/**
 	 * The Console's regular expression pattern matcher
 	 */
-	private ConsolePatternMatcher fPatternMatcher;
+	private final ConsolePatternMatcher fPatternMatcher;
 
 	/**
 	 * The Console's document
 	 */
-	private ConsoleDocument fDocument;
+	private final ConsoleDocument fDocument;
 
 	/**
 	 * indication that the console's partitioner is not expecting more input
 	 */
-	private boolean fPartitionerFinished = false;
+	private volatile boolean fPartitionerFinished = false;
 
 	/**
 	 * Indication that the console's pattern matcher has finished.
 	 * (all matches have been found and all listeners notified)
 	 */
-	private boolean fMatcherFinished = false;
+	private volatile boolean fMatcherFinished = false;
 
 	/**
 	 * indication that the console output complete property has been fired
 	 */
 	private boolean fCompleteFired = false;
 
-	private boolean fConsoleAutoScrollLock = true;
+	private volatile boolean fConsoleAutoScrollLock = true;
 
 
 	/**
 	 * Map of client defined attributes
 	 */
-	private HashMap<String, Object> fAttributes = new HashMap<>();
+	private final HashMap<String, Object> fAttributes = new HashMap<>();
 
-	private IConsoleManager fConsoleManager = ConsolePlugin.getDefault().getConsoleManager();
+	private final IConsoleManager fConsoleManager = ConsolePlugin.getDefault().getConsoleManager();
 	private ScopedPreferenceStore store;
 	private IPropertyChangeListener propListener;
 

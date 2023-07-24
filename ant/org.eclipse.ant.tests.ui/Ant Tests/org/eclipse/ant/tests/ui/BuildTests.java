@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.console.IHyperlink;
 
@@ -79,9 +80,10 @@ public class BuildTests extends AbstractAntUIBuildTest {
 		assertTrue("Incorrect last message. Should start with BUILD FAILED. Message: " + message, //$NON-NLS-1$
 				message.startsWith("BUILD FAILED")); //$NON-NLS-1$
 		int offset = -1;
-		offset = ConsoleLineTracker.getDocument().getLineOffset(4) + 30; // link to buildfile that failed
-		IHyperlink link = getHyperlink(offset, ConsoleLineTracker.getDocument());
-		assertNotNull("No hyperlink found at offset " + offset, link); //$NON-NLS-1$
+		IDocument document = ConsoleLineTracker.getDocument();
+		offset = document.getLineOffset(4) + 30; // link to buildfile that failed
+		IHyperlink link = getHyperlink(offset, document);
+		assertNotNull("No hyperlink found at offset " + offset + "\n" + document, link); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -106,9 +108,10 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	 */
 	public void testBuildFailedLinks() throws CoreException, BadLocationException {
 		launch("102282"); //$NON-NLS-1$
-		int offset = ConsoleLineTracker.getDocument().getLineOffset(9) + 10; // second line of build failed link
-		IHyperlink link = getHyperlink(offset, ConsoleLineTracker.getDocument());
-		assertNotNull("No hyperlink found at offset " + offset, link); //$NON-NLS-1$
+		IDocument document = ConsoleLineTracker.getDocument();
+		int offset = document.getLineOffset(9) + 10; // second line of build failed link
+		IHyperlink link = getHyperlink(offset, document);
+		assertNotNull("No hyperlink found at offset " + offset + "\n" + document, link); //$NON-NLS-1$ //$NON-NLS-2$
 		activateLink(link);
 	}
 
