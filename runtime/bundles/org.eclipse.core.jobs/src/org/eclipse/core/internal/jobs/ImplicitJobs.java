@@ -13,9 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.internal.jobs;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.eclipse.core.internal.runtime.RuntimeLog;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 
@@ -23,7 +29,6 @@ import org.eclipse.core.runtime.jobs.Job;
  * Implicit jobs are jobs that are running by virtue of a JobManager.begin/end
  * pair. They act like normal jobs, except they are tied to an arbitrary thread
  * of the client's choosing, and they can be nested.
- * @ThreadSafe
  */
 class ImplicitJobs {
 
