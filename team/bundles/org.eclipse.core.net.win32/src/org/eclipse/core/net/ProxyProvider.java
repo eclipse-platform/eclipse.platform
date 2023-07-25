@@ -424,8 +424,8 @@ public class ProxyProvider extends AbstractProxyProvider {
 			HMODULE hmodule = Kernel32.INSTANCE.GetModuleHandle(System.mapLibraryName(LIBRARY_NAME));
 
 			if (hmodule == null) {
-				return "Error code " + code + "; No error message due to failure of ´GetModuleHandle("
-						+ System.mapLibraryName(LIBRARY_NAME) + ")´.";
+				return "Error code " + code + "; No error message due to failure of 'GetModuleHandle("
+						+ System.mapLibraryName(LIBRARY_NAME) + ")'.";
 			} else {
 				PointerByReference msgBuf = new PointerByReference();
 				int size = Kernel32.INSTANCE.FormatMessage(
