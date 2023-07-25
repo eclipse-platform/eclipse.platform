@@ -19,7 +19,7 @@ Export-Package: org.eclipse.help.ui,
  org.eclipse.help.ui.internal.views;x-friends:="org.eclipse.ui.cheatsheets,org.eclipse.ua.tests"
 Require-Bundle: org.eclipse.help.base;bundle-version="[4.0.0,5.0.0)";visibility:=reexport,
  org.eclipse.ui;bundle-version="[3.6.0,4.0.0)";visibility:=reexport,
- org.eclipse.core.runtime;bundle-version="[3.28.0,4.0.0)";visibility:=reexport,
+ org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)";visibility:=reexport,
  org.eclipse.ui.forms;bundle-version="[3.5.0,4.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy

@@ -140,7 +140,7 @@ public interface ILog {
 	 *
 	 * @param bundle the bundle whose log is returned
 	 * @return the log for the given bundle
-	 * @since 3.28
+	 * @since 3.29
 	 */
 	public static ILog of(Bundle bundle) {
 		return InternalPlatform.getDefault().getLog(bundle);
@@ -153,7 +153,7 @@ public interface ILog {
 	 * @param clazz the class in a bundle whose log is returned
 	 * @return the log for the bundle to which the clazz belongs
 	 *
-	 * @since 3.28
+	 * @since 3.29
 	 */
 	public static ILog of(Class<?> clazz) {
 		Bundle bundle = FrameworkUtil.getBundle(clazz);
@@ -166,7 +166,7 @@ public interface ILog {
 	 *
 	 * @return the log for the bundle to which the caller belongs
 	 *
-	 * @since 3.28
+	 * @since 3.29
 	 */
 	public static ILog get() {
 		try {
