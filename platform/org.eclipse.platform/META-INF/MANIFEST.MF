@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.ui.intro;bundle-version="[3.2.0,4.0.0)",
  org.eclipse.ui.cheatsheets;bundle-version="[3.2.0,4.0.0)";resolution:=optional,
  org.eclipse.ui.forms;bundle-version="[3.2.0,4.0.0)";resolution:=optional,
  org.eclipse.ui;bundle-version="[3.2.0,4.0.0)";resolution:=optional,
- org.eclipse.core.runtime;bundle-version="[3.28.0,4.0.0)"
+ org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.eclipse.platform.internal;x-internal:=true
 Eclipse-BundleShape: dir
