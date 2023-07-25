@@ -76,7 +76,6 @@ import org.eclipse.osgi.util.NLS;
  * WorkerPool -&gt; JobManager.implicitJobs -&gt; JobManager.lock -&gt;
  * InternalJob.jobStateLock or InternalJobGroup.jobGroupStateLock
  *
- * @ThreadSafe
  */
 public class JobManager implements IJobManager, DebugOptionsListener {
 
