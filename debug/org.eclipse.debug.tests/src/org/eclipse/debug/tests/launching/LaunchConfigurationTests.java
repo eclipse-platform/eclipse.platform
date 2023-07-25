@@ -1363,8 +1363,9 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		IProcess process = null;
 		try {
 			process = DebugPlugin.newProcess(launch, new MockProcess(0), "test-terminate-timestamp");
+			final IProcess finalProcess = process;
 			waitWhile(__ -> !terminatedLaunches.contains(launch), testTimeout,
-					__ -> "Launch did not finish");
+					__ -> "Launch termination event did not occur and termination state of launched process is: " + finalProcess.isTerminated());
 			String launchTerminateTimestampUntyped = launch.getAttribute(DebugPlugin.ATTR_TERMINATE_TIMESTAMP);
 			assertNotNull("Time stamp is missing", launchTerminateTimestampUntyped);
 			long launchTerminateTimestamp = Long.parseLong(launchTerminateTimestampUntyped);
