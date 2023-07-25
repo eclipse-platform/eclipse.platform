@@ -24,14 +24,13 @@ import java.util.function.BiConsumer;
  * Faster then a synchronized Map.
  */
 public class ConcurrentNeutralValueMap<K, V> {// implements subset of Map<K, V>
-	final ConcurrentHashMap<K, V> delegate = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<K, V> delegate = new ConcurrentHashMap<>();
 	/** a value that is used for null elements **/
-	final private V neutralValue;
-	final private static NullValue NULL = new NullValue();
+	private final V neutralValue;
+	private static final NullValue NULL = new NullValue();
 
 	/**
 	 * @param neutralValue a Element that does not equal any other Value
-	 * @see #neutralObject()
 	 */
 	public ConcurrentNeutralValueMap(V neutralValue) {
 		this.neutralValue = neutralValue;
