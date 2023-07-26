@@ -22,11 +22,9 @@
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.views.variables;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -565,11 +563,10 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
 		String string = store.getString(PREF_STATE_MEMENTO);
 		if(string.length() > 0) {
-			try (ByteArrayInputStream bin = new ByteArrayInputStream(string.getBytes()); InputStreamReader reader = new InputStreamReader(bin)) {
+			try (StringReader reader = new StringReader(string)) {
 				XMLMemento stateMemento = XMLMemento.createReadRoot(reader);
 				setMemento(stateMemento);
 			} catch (WorkbenchException e) {
-			} catch (IOException e1) {
 			}
 		}
 		IMemento mem = getMemento();
@@ -609,13 +606,13 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 	public void partDeactivated(IWorkbenchPart part) {
 		String id = part.getSite().getId();
 		if (id.equals(getSite().getId())) {
-			try (ByteArrayOutputStream bout = new ByteArrayOutputStream(); OutputStreamWriter writer = new OutputStreamWriter(bout)) {
+			try (StringWriter writer = new StringWriter()) {
 				XMLMemento memento = XMLMemento.createWriteRoot("VariablesViewMemento"); //$NON-NLS-1$
 				saveViewerState(memento);
 				memento.save(writer);
 
 				IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
-				String xmlString = bout.toString();
+				String xmlString = writer.toString();
 				store.putValue(PREF_STATE_MEMENTO, xmlString);
 			} catch (IOException e) {
 			}
