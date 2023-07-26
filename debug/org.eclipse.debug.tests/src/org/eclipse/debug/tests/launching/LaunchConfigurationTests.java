@@ -41,6 +41,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.resources.IContainer;
@@ -1378,6 +1380,72 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 			}
 			if (process != null) {
 				process.terminate();
+			}
+		}
+	}
+
+	/**
+	 * Tests that a launch is properly registered for notifications before a
+	 * process is spawned and may already propagate a termination event.
+	 *
+	 * @see https://github.com/eclipse-platform/eclipse.platform/issues/598
+	 */
+	@Test
+	public void testTerminateLaunchListener_Issue598() throws Exception {
+		final ILaunchConfigurationWorkingCopy workingCopy = newConfiguration(null, "test-launch-listener");
+		final AtomicBoolean processStarted = new AtomicBoolean(false);
+		final AtomicBoolean launchTerminated = new AtomicBoolean(false);
+		ILaunchesListener2 listener = new ILaunchesListener2() {
+			@Override
+			public void launchesRemoved(ILaunch[] launches) {
+			}
+
+			@Override
+			public void launchesChanged(ILaunch[] launches) {
+			}
+
+			@Override
+			public void launchesAdded(ILaunch[] launches) {
+			}
+
+			@Override
+			public void launchesTerminated(ILaunch[] launches) {
+				launchTerminated.set(true);
+			}
+		};
+		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(listener);
+
+		MockProcess mockProcess = new MockProcess(0) {
+			@Override
+			public int waitFor() throws InterruptedException {
+				processStarted.set(true);
+				return super.waitFor();
+			}
+		};
+		ILaunch launch = new Launch(workingCopy, ILaunchManager.DEBUG_MODE, null) {
+			@Override
+			public void addProcess(IProcess process) {
+				long msecToWaitForProcessToStart = 500;
+				long startTimeMsec = System.currentTimeMillis();
+				while (System.currentTimeMillis() - startTimeMsec < msecToWaitForProcessToStart) {
+					assertFalse("Process started before registering launch for notifications", processStarted.get());
+				}
+				super.addProcess(process);
+			}
+		 };
+		DebugPlugin.getDefault().getLaunchManager().addLaunch(launch);
+
+		IProcess runtimeProcess = null;
+		try {
+			runtimeProcess = DebugPlugin.newProcess(launch, mockProcess, "test-terminate-launch-listener");
+			waitWhile(__ -> !launchTerminated.get(), testTimeout, __ -> "Launch termination event did not occur");
+		} finally {
+			DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(listener);
+			if (launch != null) {
+				getLaunchManager().removeLaunch(launch);
+			}
+			if (runtimeProcess != null) {
+				runtimeProcess.terminate();
 			}
 		}
 	}
