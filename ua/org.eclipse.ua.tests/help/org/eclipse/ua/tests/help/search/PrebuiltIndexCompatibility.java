@@ -47,33 +47,25 @@ import org.osgi.framework.FrameworkUtil;
 /**
  * Verify that older versions of the index can be read by this
  * version of Eclipse.
- *
- * How to maintain this test - if when upgrading to a new version
- * of Lucene one of the IndexReadable tests fails you need to
- * make the following changes:
- * 1. Change the corresponding Compatible() test to expect a result of false
- * 2. Comment out the failing test
- * 3. Change the help system to recognize that version of Lucene as being incompatible
  */
-
 public class PrebuiltIndexCompatibility {
 
 	/**
 	 * Test index built with Lucene 8.4.1
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void test8_4_1_IndexReadable() throws Exception {
+	public void test8_4_1_IndexUnreadable() throws Exception {
 		checkReadable("data/help/searchindex/index841");
 	}
 
 	@Test
-	public void test8_4_1LuceneCompatible() {
+	public void test8_4_1LuceneIncompatible() {
 		checkLuceneCompatible("8.4.1", false);
 	}
 
 	@Test
-	public void test9_4_2LuceneCompatible() {
-		checkLuceneCompatible("9.4.2", true);
+	public void testLatestLuceneCompatible() {
+		checkLuceneCompatible(org.apache.lucene.util.Version.LATEST.toString(), true);
 	}
 
 	@Test
