@@ -1359,13 +1359,14 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 			}
 		};
 		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(listener);
-		ILaunch launch = workingCopy.launch(ILaunchManager.DEBUG_MODE, null);
+		final ILaunch launch = workingCopy.launch(ILaunchManager.DEBUG_MODE, null);
 		IProcess process = null;
 		try {
 			process = DebugPlugin.newProcess(launch, new MockProcess(0), "test-terminate-timestamp");
-			final IProcess finalProcess = process;
 			waitWhile(__ -> !terminatedLaunches.contains(launch), testTimeout,
-					__ -> "Launch termination event did not occur and termination state of launched process is: " + finalProcess.isTerminated());
+					__ -> "Launch termination event did not occur: "+
+							"launch termination state is \"" + launch.isTerminated() + "\" " +
+							"and " + terminatedLaunches.size() + " launches have terminated");
 			String launchTerminateTimestampUntyped = launch.getAttribute(DebugPlugin.ATTR_TERMINATE_TIMESTAMP);
 			assertNotNull("Time stamp is missing", launchTerminateTimestampUntyped);
 			long launchTerminateTimestamp = Long.parseLong(launchTerminateTimestampUntyped);
@@ -1764,6 +1765,8 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		}
 		// no NPE should be logged
 		lm.addLaunch(l);
+		// Clean up by removing launch again
+		lm.removeLaunch(l);
 	}
 
 	/**
