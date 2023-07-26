@@ -33,7 +33,7 @@ public abstract class ElementContentProvider implements IElementContentProvider 
 
 	protected static final Object[] EMPTY = new Object[0];
 
-	protected abstract class ElementContentProviderJob extends Job {
+	protected abstract static class ElementContentProviderJob extends Job {
 
 		public ElementContentProviderJob(String name) {
 			super(name);
