@@ -153,8 +153,13 @@ public class RuntimeProcess extends PlatformObject implements IProcess {
 
 		fStreamsProxy = createStreamsProxy();
 		fMonitor = new ProcessMonitorThread(fThreadNameSuffix);
-		fMonitor.start();
+		// Process must be added to launch (to register for notifications)
+		// before starting the monitor thread as otherwise the process may
+		// terminate and generate notifications before they can properly be
+		// processed.
+		// See https://github.com/eclipse-platform/eclipse.platform/issues/598
 		launch.addProcess(this);
+		fMonitor.start();
 		fireCreationEvent();
 	}
 
