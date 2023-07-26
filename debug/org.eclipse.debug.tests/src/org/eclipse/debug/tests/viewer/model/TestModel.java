@@ -564,10 +564,9 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 	}
 
 	public ModelDelta addElementChild(TreePath parentPath, ModelDelta rootDelta, int index, TestElement newChild) {
-		if (rootDelta == null) {
-			rootDelta = new ModelDelta(fInput, IModelDelta.NO_CHANGE);
-		}
-		ModelDelta baseDelta = getBaseDelta(rootDelta);
+		ModelDelta nonNullRootDelta = rootDelta != null ? rootDelta : new ModelDelta(fInput, IModelDelta.NO_CHANGE);
+
+		ModelDelta baseDelta = getBaseDelta(nonNullRootDelta);
 		TreePath relativePath = getRelativePath(parentPath);
 
 		// Find the parent element and generate the delta node for it.
@@ -581,7 +580,7 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 		delta.setChildCount(element.getChildren().length);
 		delta.addNode(newChild, index, IModelDelta.ADDED);
 
-		return rootDelta;
+		return nonNullRootDelta;
 	}
 
 	public ModelDelta insertElementChild(TreePath parentPath, int index, TestElement newChild) {
@@ -589,10 +588,9 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 	}
 
 	public ModelDelta insertElementChild(ModelDelta rootDelta, TreePath parentPath, int index, TestElement newChild) {
-		if (rootDelta == null) {
-			rootDelta = new ModelDelta(fInput, IModelDelta.NO_CHANGE);
-		}
-		ModelDelta baseDelta = getBaseDelta(rootDelta);
+		ModelDelta nonNullRootDelta = rootDelta != null ? rootDelta : new ModelDelta(fInput, IModelDelta.NO_CHANGE);
+
+		ModelDelta baseDelta = getBaseDelta(nonNullRootDelta);
 		TreePath relativePath = getRelativePath(parentPath);
 
 		// Find the parent element and generate the delta node for it.
@@ -606,7 +604,7 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 		delta.setChildCount(element.getChildren().length);
 		delta.addNode(newChild, index, IModelDelta.INSERTED);
 
-		return rootDelta;
+		return nonNullRootDelta;
 	}
 
 	private TestElement[] doInsertElementInArray(TestElement[] children, int index, TestElement newChild) {
@@ -721,12 +719,12 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 		}
 		int count = levelCounts[0];
 		int[] oldLevelCounts = levelCounts;
-		levelCounts = new int[levelCounts.length - 1];
-		System.arraycopy(oldLevelCounts, 1, levelCounts, 0, levelCounts.length);
+		int[] newlevelCounts = new int[levelCounts.length - 1];
+		System.arraycopy(oldLevelCounts, 1, newlevelCounts, 0, newlevelCounts.length);
 		TestElement[] elements = new TestElement[count];
 		for (int i = 0; i < count; i++) {
 			String name = prefix + i;
-			elements[i] = new TestElement(model, name, makeMultiLevelElements2(model, levelCounts, name + ".")); //$NON-NLS-1$
+			elements[i] = new TestElement(model, name, makeMultiLevelElements2(model, newlevelCounts, name + ".")); //$NON-NLS-1$
 		}
 		return elements;
 	}

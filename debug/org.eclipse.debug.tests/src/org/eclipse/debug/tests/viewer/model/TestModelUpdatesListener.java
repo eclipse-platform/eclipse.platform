@@ -356,11 +356,12 @@ public class TestModelUpdatesListener implements IViewerUpdateListener, ILabelUp
 	 */
 	private TreePath getViewerTreePath(IModelDelta node) {
 		ArrayList<Object> list = new ArrayList<>();
-		IModelDelta parentDelta = node.getParentDelta();
+		IModelDelta currentDelta = node;
+		IModelDelta parentDelta = currentDelta.getParentDelta();
 		while (parentDelta != null) {
-			list.add(0, node.getElement());
-			node = parentDelta;
-			parentDelta = node.getParentDelta();
+			list.add(0, currentDelta.getElement());
+			currentDelta = parentDelta;
+			parentDelta = currentDelta.getParentDelta();
 		}
 		return new TreePath(list.toArray());
 	}
@@ -400,7 +401,7 @@ public class TestModelUpdatesListener implements IViewerUpdateListener, ILabelUp
 			}
 		}
 
-		if (levels-- != 0) {
+		if (levels != 0) {
 			TestElement[] children = element.getChildren();
 			if (children.length > 0 && (viewer == null || path.getSegmentCount() == 0 || viewer.getExpandedState(path))) {
 				if ((flags & CHILD_COUNT_UPDATES) != 0) {
@@ -417,7 +418,7 @@ public class TestModelUpdatesListener implements IViewerUpdateListener, ILabelUp
 				}
 
 				for (TestElement child : children) {
-					addUpdates(viewer, path.createChildPath(child), child, filters, levels, flags);
+					addUpdates(viewer, path.createChildPath(child), child, filters, levels - 1, flags);
 				}
 			}
 

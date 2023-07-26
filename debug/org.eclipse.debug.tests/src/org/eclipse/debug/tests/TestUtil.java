@@ -154,12 +154,10 @@ public class TestUtil {
 	 * @return value of condition when method returned
 	 */
 	public static boolean waitWhile(Supplier<Boolean> condition, long timeout) throws Exception {
-		if (condition == null) {
-			condition = () -> true;
-		}
+		Supplier<Boolean> nonNullCondition = condition != null ? condition : () -> true;
 		long start = System.currentTimeMillis();
 		Display display = Display.getCurrent();
-		while (System.currentTimeMillis() - start < timeout && condition.get()) {
+		while (System.currentTimeMillis() - start < timeout && nonNullCondition.get()) {
 			Thread.yield();
 			if (display != null && !display.isDisposed()) {
 				if (!display.readAndDispatch()) {
@@ -169,7 +167,7 @@ public class TestUtil {
 				Thread.sleep(5);
 			}
 		}
-		return condition.get();
+		return nonNullCondition.get();
 	}
 
 	/**

@@ -49,20 +49,20 @@ public abstract class AbstractLaunchTest extends AbstractDebugTest {
 	/**
 	 * Returns a launch configuration with the given name, creating one if required.
 	 *
-	 * @param name configuration name
+	 * @param configurationName configuration name
 	 * @return launch configuration
 	 * @throws CoreException
 	 */
-	protected ILaunchConfiguration getLaunchConfiguration(String name) throws CoreException {
+	protected ILaunchConfiguration getLaunchConfiguration(String configurationName) throws CoreException {
 		ILaunchManager manager = getLaunchManager();
 		ILaunchConfiguration[] configurations = manager.getLaunchConfigurations();
 		for (ILaunchConfiguration config : configurations) {
-			if (config.getName().equals(name)) {
+			if (config.getName().equals(configurationName)) {
 				return config;
 			}
 		}
 		 ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(LaunchConfigurationTests.ID_TEST_LAUNCH_TYPE);
-		 ILaunchConfigurationWorkingCopy wc = type.newInstance(null, name);
+		 ILaunchConfigurationWorkingCopy wc = type.newInstance(null, configurationName);
 		 ILaunchConfiguration saved = wc.doSave();
 		 return saved;
 	}

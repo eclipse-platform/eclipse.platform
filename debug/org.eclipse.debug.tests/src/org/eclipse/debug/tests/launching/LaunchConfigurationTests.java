@@ -237,11 +237,11 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 *  - Boolean1 = true
 	 *  - Boolean2 = false
 	 */
-	protected ILaunchConfigurationWorkingCopy newConfiguration(IContainer container, String name) throws CoreException {
+	protected ILaunchConfigurationWorkingCopy newConfiguration(IContainer container, String configurationName) throws CoreException {
 		ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(ID_TEST_LAUNCH_TYPE);
 		assertTrue("Should support debug mode", type.supportsMode(ILaunchManager.DEBUG_MODE)); //$NON-NLS-1$
 		assertTrue("Should support run mode", type.supportsMode(ILaunchManager.RUN_MODE)); //$NON-NLS-1$
-		ILaunchConfigurationWorkingCopy wc = type.newInstance(container, name);
+		ILaunchConfigurationWorkingCopy wc = type.newInstance(container, configurationName);
 		wc.setAttribute("String1", "String1"); //$NON-NLS-1$ //$NON-NLS-2$
 		wc.setAttribute("Int1", 1); //$NON-NLS-1$
 		wc.setAttribute("Boolean1", true); //$NON-NLS-1$
@@ -254,9 +254,9 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * Creates and returns a new launch configuration with the given name, local
 	 * or shared, with no attributes
 	 */
-	protected ILaunchConfigurationWorkingCopy newEmptyConfiguration(IContainer container, String name) throws CoreException {
+	protected ILaunchConfigurationWorkingCopy newEmptyConfiguration(IContainer container, String configurationName) throws CoreException {
 		ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(ID_TEST_LAUNCH_TYPE);
-		ILaunchConfigurationWorkingCopy wc = type.newInstance(container, name);
+		ILaunchConfigurationWorkingCopy wc = type.newInstance(container, configurationName);
 		assertEquals("Should have no attributes", 0, wc.getAttributes().size()); //$NON-NLS-1$
 		return wc;
 	}
@@ -269,11 +269,11 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 *  - Boolean1 = true
 	 *  - Boolean2 = false
 	 */
-	protected ILaunchConfigurationWorkingCopy newPrototype(IContainer container, String name) throws CoreException {
+	protected ILaunchConfigurationWorkingCopy newPrototype(IContainer container, String configurationName) throws CoreException {
 		ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(ID_TEST_LAUNCH_TYPE);
 		assertTrue("Should support debug mode", type.supportsMode(ILaunchManager.DEBUG_MODE)); //$NON-NLS-1$
 		assertTrue("Should support run mode", type.supportsMode(ILaunchManager.RUN_MODE)); //$NON-NLS-1$
-		ILaunchConfigurationWorkingCopy wc = type.newPrototypeInstance(container, name);
+		ILaunchConfigurationWorkingCopy wc = type.newPrototypeInstance(container, configurationName);
 		wc.setAttribute("String1", "String1"); //$NON-NLS-1$ //$NON-NLS-2$
 		wc.setAttribute("Int1", 1); //$NON-NLS-1$
 		wc.setAttribute("Boolean1", true); //$NON-NLS-1$
@@ -286,9 +286,9 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * Creates and returns a new launch configuration prototype with the given name, local
 	 * or shared, with no attributes
 	 */
-	protected ILaunchConfigurationWorkingCopy newEmptyPrototype(IContainer container, String name) throws CoreException {
+	protected ILaunchConfigurationWorkingCopy newEmptyPrototype(IContainer container, String configurationName) throws CoreException {
 		ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(ID_TEST_LAUNCH_TYPE);
-		ILaunchConfigurationWorkingCopy wc = type.newPrototypeInstance(container, name);
+		ILaunchConfigurationWorkingCopy wc = type.newPrototypeInstance(container, configurationName);
 		assertEquals("Should have no attributes", 0, wc.getAttributes().size()); //$NON-NLS-1$
 		return wc;
 	}
@@ -513,9 +513,9 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations();
 		assertTrue("Configuration should exist in project index", existsIn(configs, handle)); //$NON-NLS-1$
 
-		String name = wc.getName();
+		String configurationName = wc.getName();
 		wc.rename("newName"); //$NON-NLS-1$
-		wc.rename(name);
+		wc.rename(configurationName);
 		assertTrue("Should be dirty", wc.isDirty()); //$NON-NLS-1$
 		wc.doSave();
 

@@ -46,11 +46,12 @@ public class VisibleVirtualItemValidator implements IVirtualItemValidator {
 	@Override
 	public boolean isItemVisible(VirtualItem item) {
 		int position = 0;
-		while (item.getParent() != null) {
-			position += item.getIndex().intValue();
-			item = item.getParent();
+		VirtualItem currentItem = item;
+		while (currentItem.getParent() != null) {
+			position += currentItem.getIndex().intValue();
+			currentItem = currentItem.getParent();
 		}
-		return position >= fStart && position < fEnd || isSelected(item);
+		return position >= fStart && position < fEnd || isSelected(currentItem);
 	}
 
 	@Override
@@ -62,9 +63,10 @@ public class VisibleVirtualItemValidator implements IVirtualItemValidator {
 
 	private int calcPosition(VirtualItem item) {
 		int position = 0;
-		while (item.getParent() != null) {
-			position += item.getIndex().intValue();
-			item = item.getParent();
+		VirtualItem currentItem = item;
+		while (currentItem.getParent() != null) {
+			position += currentItem.getIndex().intValue();
+			currentItem = currentItem.getParent();
 		}
 		return position;
 	}
@@ -92,9 +94,10 @@ public class VisibleVirtualItemValidator implements IVirtualItemValidator {
 	}
 
 	private VirtualTree getTree(VirtualItem item) {
-		while (item != null && !(item instanceof VirtualTree)) {
-			item = item.getParent();
+		VirtualItem currentItem = item;
+		while (currentItem != null && !(currentItem instanceof VirtualTree)) {
+			currentItem = currentItem.getParent();
 		}
-		return (VirtualTree)item;
+		return (VirtualTree) currentItem;
 	}
 }

@@ -100,7 +100,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 		boolean fCaptureLabelUpdates = false;
 		boolean fCaptureChildrenUpdates = false;
 
-		List<IViewerUpdate> fCapturedUpdates = Collections.synchronizedList(new ArrayList<IViewerUpdate>());
+		List<IViewerUpdate> fCapturedUpdates = Collections.synchronizedList(new ArrayList<>());
 
 		@Override
 		public void update(IChildrenUpdate[] updates) {
@@ -161,7 +161,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 		waitWhile(t -> model.fCapturedUpdates.size() < model.getRootElement().fChildren.length, createModelErrorMessage(model));
 
 		List<IViewerUpdate> firstUpdates = model.fCapturedUpdates;
-		model.fCapturedUpdates = Collections.synchronizedList(new ArrayList<IViewerUpdate>(2));
+		model.fCapturedUpdates = Collections.synchronizedList(new ArrayList<>(2));
 
 //      // Change the model and run another update set.
 		model.getElement(model.findElement("1")).setLabelAppendix(" - changed"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -216,7 +216,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 		TestUtil.waitForJobs(name.getMethodName(), 300, 5000);
 		waitWhile(t -> model.fCapturedUpdates.size() < model.getRootElement().fChildren.length, createModelErrorMessage(model));
 		List<IViewerUpdate> firstUpdates = model.fCapturedUpdates;
-		model.fCapturedUpdates = Collections.synchronizedList(new ArrayList<IViewerUpdate>(2));
+		model.fCapturedUpdates = Collections.synchronizedList(new ArrayList<>(2));
 
 		// Change the model and run another update set.
 		model.setElementChildren(TreePath.EMPTY, new TestElement[] {
