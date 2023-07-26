@@ -54,8 +54,8 @@ public class LaunchTests extends AbstractLaunchTest {
 		final Launch launch = new Launch(null, ILaunchManager.RUN_MODE, null);
 
 		handler = (proxy, method, args) -> {
-			String name = method.getName();
-			if (name.equals("equals")) { //$NON-NLS-1$
+			String methodName = method.getName();
+			if (methodName.equals("equals")) { //$NON-NLS-1$
 				return args.length == 1 && proxy == args[0];
 			}
 			return Boolean.TRUE;

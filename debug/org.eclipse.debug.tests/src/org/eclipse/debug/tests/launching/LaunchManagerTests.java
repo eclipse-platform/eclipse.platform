@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.eclipse.core.runtime.CoreException;
@@ -49,9 +48,9 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 */
 	@Test
 	public void testGenereateConfigName() {
-		String configname = "launch_configuration"; //$NON-NLS-1$
-		String name = getLaunchManager().generateLaunchConfigurationName(configname);
-		assertTrue("the name nust be '" + configname + "'", name.equals(configname)); //$NON-NLS-1$ //$NON-NLS-2$
+		String originalName = "launch_configuration";
+		String generatedName = getLaunchManager().generateLaunchConfigurationName(originalName);
+		assertEquals("unexpected generated configuration name", originalName, generatedName);
 	}
 
 	/**
@@ -60,9 +59,9 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 */
 	@Test
 	public void testGenereateConfigNameBadChar() {
-		String configname = "config:name"; //$NON-NLS-1$
-		String name = getLaunchManager().generateUniqueLaunchConfigurationNameFrom(configname);
-		assertEquals("config name should be '" + configname + "'", configname, name); //$NON-NLS-1$ //$NON-NLS-2$
+		String originalName = "config:name";
+		String generatedName = getLaunchManager().generateUniqueLaunchConfigurationNameFrom(originalName);
+		assertEquals("unexpected generated configuration name", originalName, generatedName);
 	}
 
 	/**
@@ -70,9 +69,9 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 */
 	@Test
 	public void testGenerateValidName() {
-		String configname = "thisisavalidname"; //$NON-NLS-1$
-		String name = getLaunchManager().generateLaunchConfigurationName(configname);
-		assertEquals("Should be the same as the seed", configname, name); //$NON-NLS-1$
+		String originalName = "thisisavalidname";
+		String generatedName = getLaunchManager().generateLaunchConfigurationName(originalName);
+		assertEquals("unexpected generated configuration name", originalName, generatedName);
 	}
 
 	/**
@@ -82,9 +81,9 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	@Test
 	public void testGenerateConfigNameReservedName() {
 		if(Platform.OS_WIN32.equals(Platform.getOS())) {
-			String configname = "aux"; //$NON-NLS-1$
-			String name = getLaunchManager().generateUniqueLaunchConfigurationNameFrom(configname);
-			assertEquals("config name should be 'aux'", configname, name); //$NON-NLS-1$
+			String originalName = "aux";
+			String generatedName = getLaunchManager().generateUniqueLaunchConfigurationNameFrom(originalName);
+			assertEquals("unexpected generated configuration name", originalName, generatedName);
 		}
 	}
 
@@ -93,9 +92,10 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 */
 	@Test
 	public void testGenerateBadConfigName() {
-		String configname = "config:name"; //$NON-NLS-1$
-		String name = getLaunchManager().generateLaunchConfigurationName(configname);
-		assertEquals("config name should be 'config_name'", "config_name", name); //$NON-NLS-1$ //$NON-NLS-2$
+		String originalName = "config:name";
+		String expectedName = "config_name";
+		String generatedName = getLaunchManager().generateLaunchConfigurationName(originalName);
+		assertEquals("unexpected generated configuration name", expectedName, generatedName);
 	}
 
 	/**
@@ -105,9 +105,10 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	@Test
 	public void testGenerateConflictingName() {
 		if(Platform.OS_WIN32.equals(Platform.getOS())) {
-			String configname = "aux"; //$NON-NLS-1$
-			String name = getLaunchManager().generateLaunchConfigurationName(configname);
-			assertEquals("config name should be 'launch_configuration'", "launch_configuration", name); //$NON-NLS-1$ //$NON-NLS-2$
+			String originalName = "aux";
+			String expectedName = "launch_configuration";
+			String generatedName = getLaunchManager().generateLaunchConfigurationName(originalName);
+			assertEquals("unexpected generated configuration name", expectedName, generatedName);
 		}
 	}
 
@@ -117,13 +118,15 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 */
 	@Test
 	public void testGenerateBadCharConflict() throws Exception {
-		String configname = "config:name"; //$NON-NLS-1$
-		String name = getLaunchManager().generateLaunchConfigurationName(configname);
-		assertEquals("config name should be 'config_name'", "config_name", name); //$NON-NLS-1$ //$NON-NLS-2$
-		getLaunchConfiguration(name);
-		name = getLaunchManager().generateLaunchConfigurationName(configname);
-		assertEquals("config name should be 'config_name (1)'", "config_name (1)", name); //$NON-NLS-1$ //$NON-NLS-2$
-		ILaunchConfiguration config = getLaunchConfiguration("config_name"); //$NON-NLS-1$
+		String originalName = "config:name";
+		String expectedName =  "config_name";
+		String generatedName = getLaunchManager().generateLaunchConfigurationName(originalName);
+		assertEquals("unexpected generated configuration name", expectedName, generatedName);
+		getLaunchConfiguration(generatedName);
+		expectedName = "config_name (1)";
+		generatedName = getLaunchManager().generateLaunchConfigurationName(originalName);
+		assertEquals("unexpected generated configuration name", expectedName, generatedName);
+		ILaunchConfiguration config = getLaunchConfiguration("config_name");
 		config.delete();
 	}
 
@@ -135,13 +138,15 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	@Test
 	public void testGenerateBadNameConflict() throws Exception {
 		if(Platform.OS_WIN32.equals(Platform.getOS())) {
-			String configname = "com2"; //$NON-NLS-1$
-			String name = getLaunchManager().generateLaunchConfigurationName(configname);
-			assertEquals("config name should be 'launch_configuration'", "launch_configuration", name); //$NON-NLS-1$ //$NON-NLS-2$
-			getLaunchConfiguration(name);
-			name = getLaunchManager().generateLaunchConfigurationName(configname);
-			assertEquals("config name should be 'launch_configuration (1)'", "launch_configuration (1)", name); //$NON-NLS-1$ //$NON-NLS-2$
-			ILaunchConfiguration config = getLaunchConfiguration("launch_configuration"); //$NON-NLS-1$
+			String originalName = "com2";
+			String expectedName = "launch_configuration";
+			String generatedName = getLaunchManager().generateLaunchConfigurationName(originalName);
+			assertEquals("unexpected generated configuration name", expectedName, generatedName);
+			getLaunchConfiguration(generatedName);
+			expectedName = "launch_configuration (1)";
+			generatedName = getLaunchManager().generateLaunchConfigurationName(originalName);
+			assertEquals("unexpected generated configuration name", expectedName, generatedName);
+			ILaunchConfiguration config = getLaunchConfiguration("launch_configuration");
 			config.delete();
 		}
 	}
@@ -205,18 +210,18 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 */
 	@Test
 	public void testGenerateNameExistingConfig() throws Exception {
-		String configname = "x.y.z.configname"; //$NON-NLS-1$
-		getLaunchConfiguration(configname);
-		String name = getLaunchManager().generateLaunchConfigurationName(configname);
-		assertEquals("the configuration name should have been " + configname + " (1)", configname + " (1)", name); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		getLaunchConfiguration(name);
-		name = getLaunchManager().generateLaunchConfigurationName(name);
-		assertEquals("the configuration name should have been " + configname + " (2)", configname + " (2)", name); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		ILaunchConfiguration config = getLaunchConfiguration(configname);
+		String originalName = "x.y.z.configname"; //$NON-NLS-1$
+		getLaunchConfiguration(originalName);
+		String generatedConfigurationName = getLaunchManager().generateLaunchConfigurationName(originalName);
+		assertEquals("unexpected generated configuration name", originalName + " (1)", generatedConfigurationName); //$NON-NLS-1$ //$NON-NLS-2$
+		getLaunchConfiguration(generatedConfigurationName);
+		generatedConfigurationName = getLaunchManager().generateLaunchConfigurationName(generatedConfigurationName);
+		assertEquals("unexpected generated configuration name", originalName + " (2)", generatedConfigurationName); //$NON-NLS-1$ //$NON-NLS-2$
+		ILaunchConfiguration config = getLaunchConfiguration(originalName);
 		if(config != null) {
 			config.delete();
 		}
-		config = getLaunchConfiguration(configname + " (1)"); //$NON-NLS-1$
+		config = getLaunchConfiguration(originalName + " (1)"); //$NON-NLS-1$
 		if(config != null) {
 			config.delete();
 		}

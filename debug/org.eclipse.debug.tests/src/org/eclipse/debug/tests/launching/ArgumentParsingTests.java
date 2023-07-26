@@ -110,8 +110,8 @@ public class ArgumentParsingTests extends AbstractDebugTest {
 
 	private static ArrayList<String> runCommandLine(String[] execArgs)
 			throws CoreException, IOException {
-		execArgs = quoteWindowsArgs(execArgs);
-		Process process = DebugPlugin.exec(execArgs, null);
+		String[] systemDependentExecArgs = quoteWindowsArgs(execArgs);
+		Process process = DebugPlugin.exec(systemDependentExecArgs, null);
 		BufferedReader procOut = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
 		ArrayList<String> procArgs = new ArrayList<>();
@@ -124,14 +124,15 @@ public class ArgumentParsingTests extends AbstractDebugTest {
 
 	private static String[] quoteWindowsArgs(String[] cmdLine) {
 		// see https://bugs.eclipse.org/387504#c13 , workaround for http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6511002
+		String[] systemDependentCmdLine = cmdLine;
 		if (Platform.getOS().equals(Constants.OS_WIN32)) {
 			String[] winCmdLine = new String[cmdLine.length];
 			for (int i = 0; i < cmdLine.length; i++) {
 				winCmdLine[i] = winQuote(cmdLine[i]);
 			}
-			cmdLine = winCmdLine;
+			systemDependentCmdLine = winCmdLine;
 		}
-		return cmdLine;
+		return systemDependentCmdLine;
 	}
 
 
@@ -155,9 +156,7 @@ public class ArgumentParsingTests extends AbstractDebugTest {
 		if (! needsQuoting(s)) {
 			return s;
 		}
-		s = s.replaceAll("([\\\\]*)\"", "$1$1\\\\\""); //$NON-NLS-1$ //$NON-NLS-2$
-		s = s.replaceAll("([\\\\]*)\\z", "$1$1"); //$NON-NLS-1$ //$NON-NLS-2$
-		return "\"" + s + "\""; //$NON-NLS-1$ //$NON-NLS-2$
+		return "\"" + s.replaceAll("([\\\\]*)\"", "$1$1\\\\\"").replaceAll("([\\\\]*)\\z", "$1$1") + "\"";
 	}
 
 	// -- tests:
