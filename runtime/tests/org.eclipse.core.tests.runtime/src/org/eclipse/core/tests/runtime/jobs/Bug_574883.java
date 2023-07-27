@@ -17,7 +17,10 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -204,7 +207,6 @@ public class Bug_574883 extends AbstractJobManagerTest {
 		Job[] jobs = Job.getJobManager().find(this);
 		int length = jobs.length;
 		int firstState = executions.get();
-		System.out.println(garbage);
 		try {
 		if (length > 0) {
 				// Check if that still would work?
