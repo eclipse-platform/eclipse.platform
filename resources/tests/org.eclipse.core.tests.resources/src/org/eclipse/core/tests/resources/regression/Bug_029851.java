@@ -28,8 +28,6 @@ import org.eclipse.core.tests.resources.ResourceTest;
  */
 public class Bug_029851 extends ResourceTest {
 
-	private final boolean DISABLED = true;
-
 	private Collection<String> createChildren(int breadth, int depth, IPath prefix) {
 		ArrayList<String> result = new ArrayList<>();
 		for (int i = 0; i < breadth; i++) {
@@ -53,10 +51,6 @@ public class Bug_029851 extends ResourceTest {
 	}
 
 	public void test() {
-		// disable for now.
-		if (DISABLED) {
-			return;
-		}
 		createHierarchy();
 		final QualifiedName key = new QualifiedName("local", getUniqueString());
 		final String value = getUniqueString();
