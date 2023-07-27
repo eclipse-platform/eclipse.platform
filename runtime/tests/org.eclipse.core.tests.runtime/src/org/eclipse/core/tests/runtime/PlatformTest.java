@@ -130,9 +130,7 @@ public class PlatformTest extends RuntimeTest {
 
 	public void testGetLogLocation() throws IOException {
 		IPath initialLocation = Platform.getLogFileLocation();
-		System.out.println(Platform.getLogFileLocation());
 		Platform.getStateLocation(Platform.getBundle("org.eclipse.equinox.common"));//causes DataArea to be initialzed
-		System.out.println(Platform.getLogFileLocation());
 
 		assertNotNull("1.0", initialLocation);
 
