@@ -18,7 +18,13 @@ import java.net.URI;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.resources.projectvariables.ProjectLocationVariableResolver;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
@@ -222,7 +228,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	/**
 	 * Tests bug 299024.
 	 */
-	public void _testMoveFolderWithLinksToNonExisitngLocations_withShallow() {
+	public void testMoveFolderWithLinksToNonExisitngLocations_withShallow() {
 		// create a folder
 		IFolder folderWithLinks = existingProject.getFolder(getUniqueString());
 		try {
