@@ -235,7 +235,7 @@ public class MarkerTest extends ResourceTest {
 		}
 	}
 
-	public void _testPerformanceOneResource() {
+	public void testPerformanceOneResource() {
 		debug("testPerformanceOneResource");
 		long start;
 		long stop;
