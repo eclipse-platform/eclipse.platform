@@ -119,9 +119,11 @@ public class PrebuiltIndexCompatibility {
 			Query luceneQuery = queryBuilder.getLuceneQuery(new ArrayList<>() , false);
 			IndexSearcher searcher;
 			try (Directory luceneDirectory = new NIOFSDirectory(new File(filePath).toPath())) {
-				searcher = new IndexSearcher(DirectoryReader.open(luceneDirectory));
-				TopDocs hits = searcher.search(luceneQuery, 500);
-				assertTrue(hits.totalHits.value >= 1);
+				try (DirectoryReader luceneDirectoryReader = DirectoryReader.open(luceneDirectory)) {
+					searcher = new IndexSearcher(luceneDirectoryReader);
+					TopDocs hits = searcher.search(luceneQuery, 500);
+					assertTrue(hits.totalHits.value >= 1);
+				}
 			}
 		} else {
 			fail("Cannot resolve to file protocol");
