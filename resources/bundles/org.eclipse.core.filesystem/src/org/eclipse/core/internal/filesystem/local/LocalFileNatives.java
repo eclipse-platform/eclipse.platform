@@ -19,9 +19,16 @@ import java.util.Enumeration;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.provider.FileInfo;
-import org.eclipse.core.internal.filesystem.*;
+import org.eclipse.core.internal.filesystem.FileSystemAccess;
+import org.eclipse.core.internal.filesystem.Messages;
+import org.eclipse.core.internal.filesystem.Policy;
+import org.eclipse.core.internal.filesystem.local.unix.UnixFileNatives;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osgi.service.environment.Constants;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 abstract class LocalFileNatives {
 	private static boolean hasNatives = false;
@@ -33,19 +40,22 @@ abstract class LocalFileNatives {
 	private static final String LIBRARY_NAME = "localfile_1_0_0"; //$NON-NLS-1$
 
 	static {
-		try {
-			System.loadLibrary(LIBRARY_NAME);
-			hasNatives = true;
-			isUnicode = internalIsUnicode();
+		String os = System.getProperty("osgi.os", ""); //$NON-NLS-1$//$NON-NLS-2$
+		if (Constants.OS_WIN32.equals(os) && hasBundle("org.eclipse.core.filesystem.win32.x86_64") && isLibraryPresent()) { //$NON-NLS-1$
 			try {
-				nativeAttributes = nativeAttributes();
+				System.loadLibrary(LIBRARY_NAME);
+				hasNatives = true;
+				isUnicode = internalIsUnicode();
+				try {
+					nativeAttributes = nativeAttributes();
+				} catch (UnsatisfiedLinkError e) {
+					// older native implementations did not support this
+					// call, so we need to handle the error silently
+				}
 			} catch (UnsatisfiedLinkError e) {
-				// older native implementations did not support this
-				// call, so we need to handle the error silently
+				if (isLibraryPresent())
+					logMissingNativeLibrary(e);
 			}
-		} catch (UnsatisfiedLinkError e) {
-			if (isLibraryPresent())
-				logMissingNativeLibrary(e);
 		}
 	}
 
@@ -53,6 +63,21 @@ abstract class LocalFileNatives {
 		String libName = System.mapLibraryName(LIBRARY_NAME);
 		Enumeration<URL> entries = FileSystemAccess.findEntries("/", libName, true); //$NON-NLS-1$
 		return entries != null && entries.hasMoreElements();
+	}
+
+	private static boolean hasBundle(String bsn) {
+		Bundle bundle = FrameworkUtil.getBundle(UnixFileNatives.class);
+		if (bundle != null) {
+			BundleContext bundleContext = bundle.getBundleContext();
+			if (bundleContext != null) {
+				for (Bundle other : bundleContext.getBundles()) {
+					if (other.getSymbolicName().equals(bsn)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	private static void logMissingNativeLibrary(UnsatisfiedLinkError e) {

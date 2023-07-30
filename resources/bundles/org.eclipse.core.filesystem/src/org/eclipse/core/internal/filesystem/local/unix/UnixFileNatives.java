@@ -18,13 +18,20 @@ import java.io.File;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
+import java.util.regex.Pattern;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
-import org.eclipse.core.internal.filesystem.*;
+import org.eclipse.core.internal.filesystem.FileSystemAccess;
+import org.eclipse.core.internal.filesystem.Messages;
+import org.eclipse.core.internal.filesystem.Policy;
 import org.eclipse.core.internal.filesystem.local.Convert;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osgi.service.environment.Constants;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 public abstract class UnixFileNatives {
 	private static final String LIBRARY_NAME = "unixfile_1_0_0"; //$NON-NLS-1$
@@ -36,13 +43,19 @@ public abstract class UnixFileNatives {
 	private static final int libattr;
 
 	static {
+		String os = System.getProperty("osgi.os", ""); //$NON-NLS-1$//$NON-NLS-2$
 		boolean _usingNatives = false;
 		int _libattr = 0;
 		try {
-			System.loadLibrary(LIBRARY_NAME);
-			_usingNatives = true;
-			initializeStructStatFieldIDs();
-			_libattr = libattr();
+			//To prevent loading on systems that do not support unixfile first check if this is a supported os and the fragment is present that ships the native...
+			boolean isLinux = Constants.OS_LINUX.equals(os) && hasBundle("org\\.eclipse\\.core\\.filesystem\\.linux\\.(?:aarch64|loongarch64|ppc64le|x86_64)"); //$NON-NLS-1$
+			boolean isMacOs = Constants.OS_MACOSX.equals(os) && hasBundle("org\\.eclipse\\.core\\.filesystem\\.macosx"); //$NON-NLS-1$
+			if ((isLinux || isMacOs) && isLibraryPresent()) {
+				System.loadLibrary(LIBRARY_NAME);
+				_usingNatives = true;
+				initializeStructStatFieldIDs();
+				_libattr = libattr();
+			}
 		} catch (UnsatisfiedLinkError e) {
 			if (isLibraryPresent())
 				logMissingNativeLibrary(e);
@@ -56,6 +69,22 @@ public abstract class UnixFileNatives {
 		String libName = System.mapLibraryName(LIBRARY_NAME);
 		Enumeration<URL> entries = FileSystemAccess.findEntries("/", libName, true); //$NON-NLS-1$
 		return entries != null && entries.hasMoreElements();
+	}
+
+	private static boolean hasBundle(String pattern) {
+		Pattern compile = Pattern.compile(pattern);
+		Bundle bundle = FrameworkUtil.getBundle(UnixFileNatives.class);
+		if (bundle != null) {
+			BundleContext bundleContext = bundle.getBundleContext();
+			if (bundleContext != null) {
+				for (Bundle other : bundleContext.getBundles()) {
+					if (compile.matcher(other.getSymbolicName()).matches()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	private static void logMissingNativeLibrary(UnsatisfiedLinkError e) {

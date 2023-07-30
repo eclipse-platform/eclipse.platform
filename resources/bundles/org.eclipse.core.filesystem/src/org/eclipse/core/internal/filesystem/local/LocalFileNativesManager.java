@@ -18,10 +18,11 @@ import java.nio.file.FileSystems;
 import java.util.Set;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
-import org.eclipse.core.internal.filesystem.local.nio.*;
+import org.eclipse.core.internal.filesystem.local.nio.DefaultHandler;
+import org.eclipse.core.internal.filesystem.local.nio.DosHandler;
+import org.eclipse.core.internal.filesystem.local.nio.PosixHandler;
 import org.eclipse.core.internal.filesystem.local.unix.UnixFileHandler;
 import org.eclipse.core.internal.filesystem.local.unix.UnixFileNatives;
-import org.eclipse.osgi.service.environment.Constants;
 
 /**
  * <p>Dispatches methods backed by native code to the appropriate platform specific
@@ -57,12 +58,11 @@ public class LocalFileNativesManager {
 	 */
 	public static boolean setUsingNative(boolean useNatives) {
 		boolean nativesAreUsed;
-		boolean isWindowsOS = Constants.OS_WIN32.equals(LocalFileSystem.getOS());
 
-		if (useNatives && !isWindowsOS && UnixFileNatives.isUsingNatives()) {
+		if (useNatives && UnixFileNatives.isUsingNatives()) {
 			HANDLER = new UnixFileHandler();
 			nativesAreUsed = true;
-		} else if (useNatives && isWindowsOS && LocalFileNatives.isUsingNatives()) {
+		} else if (useNatives && LocalFileNatives.isUsingNatives()) {
 			HANDLER = new LocalFileHandler();
 			nativesAreUsed = true;
 		} else {
