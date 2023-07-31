@@ -95,56 +95,56 @@ import org.eclipse.debug.ui.sourcelookup.ISourceDisplay;
  */
 public class DebugElementAdapterFactory implements IAdapterFactory {
 
-	private static IModelProxyFactory fgModelProxyFactoryAdapter = new DefaultModelProxyFactory();
-	private static ISourceDisplay fgStackFrameSourceDisplayAdapter = new StackFrameSourceDisplayAdapter();
-	private static IModelSelectionPolicyFactory fgModelSelectionPolicyFactoryAdapter = new DefaultModelSelectionPolicyFactory();
+	private final static IModelProxyFactory fgModelProxyFactoryAdapter = new DefaultModelProxyFactory();
+	private final static ISourceDisplay fgStackFrameSourceDisplayAdapter = new StackFrameSourceDisplayAdapter();
+	private final static IModelSelectionPolicyFactory fgModelSelectionPolicyFactoryAdapter = new DefaultModelSelectionPolicyFactory();
 
-	private static IAsynchronousLabelAdapter fgDebugLabelAdapter = new AsynchronousDebugLabelAdapter();
-	private static IAsynchronousLabelAdapter fgMemoryBlockLabelAdapter = new MemoryBlockLabelAdapter();
-	private static IAsynchronousLabelAdapter fgTableRenderingLineLabelAdapter = new MemorySegmentLabelAdapter();
+	private final static IAsynchronousLabelAdapter fgDebugLabelAdapter = new AsynchronousDebugLabelAdapter();
+	private final static IAsynchronousLabelAdapter fgMemoryBlockLabelAdapter = new MemoryBlockLabelAdapter();
+	private final static IAsynchronousLabelAdapter fgTableRenderingLineLabelAdapter = new MemorySegmentLabelAdapter();
 
-	private static IElementLabelProvider fgLPDebugElement = new DebugElementLabelProvider();
-	private static IElementLabelProvider fgLPVariable = new VariableLabelProvider();
-	private static IElementLabelProvider fgLPExpression = new ExpressionLabelProvider();
-	private static IElementLabelProvider fgLPRegisterGroup = new RegisterGroupLabelProvider();
-	private static IElementLabelProvider fgLPMemoryBlock = new MemoryBlockLabelProvider();
-	private static IElementLabelProvider fgLPBreakpoint = new BreakpointLabelProvider();
-	private static IElementLabelProvider fgLPBreakpointContainer = new BreakpointContainerLabelProvider();
-	private static IElementEditor fgEEVariable = new VariableEditor();
-	private static IElementEditor fgEEWatchExpression = new WatchExpressionEditor();
+	private final static IElementLabelProvider fgLPDebugElement = new DebugElementLabelProvider();
+	private final static IElementLabelProvider fgLPVariable = new VariableLabelProvider();
+	private final static IElementLabelProvider fgLPExpression = new ExpressionLabelProvider();
+	private final static IElementLabelProvider fgLPRegisterGroup = new RegisterGroupLabelProvider();
+	private final static IElementLabelProvider fgLPMemoryBlock = new MemoryBlockLabelProvider();
+	private final static IElementLabelProvider fgLPBreakpoint = new BreakpointLabelProvider();
+	private final static IElementLabelProvider fgLPBreakpointContainer = new BreakpointContainerLabelProvider();
+	private final static IElementEditor fgEEVariable = new VariableEditor();
+	private final static IElementEditor fgEEWatchExpression = new WatchExpressionEditor();
 
-	private static IAsynchronousContentAdapter fgAsyncMemoryRetrieval = new MemoryRetrievalContentAdapter();
-	private static IAsynchronousContentAdapter fgAsyncMemoryBlock = new MemoryBlockContentAdapter();
+	private final static IAsynchronousContentAdapter fgAsyncMemoryRetrieval = new MemoryRetrievalContentAdapter();
+	private final static IAsynchronousContentAdapter fgAsyncMemoryBlock = new MemoryBlockContentAdapter();
 
-	private static IElementContentProvider fgCPLaunchManger = new LaunchManagerContentProvider();
-	private static IElementContentProvider fgCPLaunch = new LaunchContentProvider();
-	private static IElementContentProvider fgCPProcess = new ProcessContentProvider();
-	private static IElementContentProvider fgCPTarget = new DebugTargetContentProvider();
-	private static IElementContentProvider fgCPThread = new ThreadContentProvider();
-	private static IElementContentProvider fgCPFrame = new StackFrameContentProvider();
-	private static IElementContentProvider fgCPVariable = new VariableContentProvider();
-	private static IElementContentProvider fgCPExpressionManager = new ExpressionManagerContentProvider();
-	private static IElementContentProvider fgCPExpression = new ExpressionContentProvider();
-	private static IElementContentProvider fgCPRegisterGroup = new RegisterGroupContentProvider();
-	private static IElementContentProvider fgCPMemoryRetrieval = new MemoryRetrievalContentProvider();
-	private static IElementContentProvider fgCPMemoryBlock = new MemoryBlockContentProvider();
-	private static IElementContentProvider fgCPBreakpointManager = new BreakpointManagerContentProvider();
-	private static IElementContentProvider fgCPBreakpoint = new BreakpointContentProvider();
+	private final static IElementContentProvider fgCPLaunchManger = new LaunchManagerContentProvider();
+	private final static IElementContentProvider fgCPLaunch = new LaunchContentProvider();
+	private final static IElementContentProvider fgCPProcess = new ProcessContentProvider();
+	private final static IElementContentProvider fgCPTarget = new DebugTargetContentProvider();
+	private final static IElementContentProvider fgCPThread = new ThreadContentProvider();
+	private final static IElementContentProvider fgCPFrame = new StackFrameContentProvider();
+	private final static IElementContentProvider fgCPVariable = new VariableContentProvider();
+	private final static IElementContentProvider fgCPExpressionManager = new ExpressionManagerContentProvider();
+	private final static IElementContentProvider fgCPExpression = new ExpressionContentProvider();
+	private final static IElementContentProvider fgCPRegisterGroup = new RegisterGroupContentProvider();
+	private final static IElementContentProvider fgCPMemoryRetrieval = new MemoryRetrievalContentProvider();
+	private final static IElementContentProvider fgCPMemoryBlock = new MemoryBlockContentProvider();
+	private final static IElementContentProvider fgCPBreakpointManager = new BreakpointManagerContentProvider();
+	private final static IElementContentProvider fgCPBreakpoint = new BreakpointContentProvider();
 
-	private static IElementMementoProvider fgMPFrame = new StackFrameMementoProvider();
-	private static IElementMementoProvider fgMPVariable = new VariableMementoProvider();
-	private static IElementMementoProvider fgMPExpression = new ExpressionMementoProvider();
-	private static IElementMementoProvider fgMPRegisterGroup = new RegisterGroupMementoProvider();
-	private static IElementMementoProvider fgMPExpressionManager = new ExpressionManagerMementoProvider();
-	private static IElementMementoProvider fgMPMemory = new MemoryViewElementMementoProvider();
-	private static IElementMementoProvider fgMPBreakpointManagerInput = new BreakpointManagerInputMementoProvider();
-	private static IElementMementoProvider fgMPBreakpointContainer = new BreakpointContainerMementoProvider();
-	private static IElementMementoProvider fgMPBreakpoint = new BreakpointMementoProvider();
+	private final static IElementMementoProvider fgMPFrame = new StackFrameMementoProvider();
+	private final static IElementMementoProvider fgMPVariable = new VariableMementoProvider();
+	private final static IElementMementoProvider fgMPExpression = new ExpressionMementoProvider();
+	private final static IElementMementoProvider fgMPRegisterGroup = new RegisterGroupMementoProvider();
+	private final static IElementMementoProvider fgMPExpressionManager = new ExpressionManagerMementoProvider();
+	private final static IElementMementoProvider fgMPMemory = new MemoryViewElementMementoProvider();
+	private final static IElementMementoProvider fgMPBreakpointManagerInput = new BreakpointManagerInputMementoProvider();
+	private final static IElementMementoProvider fgMPBreakpointContainer = new BreakpointContainerMementoProvider();
+	private final static IElementMementoProvider fgMPBreakpoint = new BreakpointMementoProvider();
 
-	private static IColumnPresentationFactory fgVariableColumnFactory = new VariableColumnFactoryAdapter();
+	private final static IColumnPresentationFactory fgVariableColumnFactory = new VariableColumnFactoryAdapter();
 
-	private static IViewerInputProvider fgDefaultViewerInputProvider = new DefaultViewerInputProvider();
-	private static IViewerInputProvider fgStackFrameViewerInputProvider = new StackFrameViewerInputProvider();
+	private final static IViewerInputProvider fgDefaultViewerInputProvider = new DefaultViewerInputProvider();
+	private final static IViewerInputProvider fgStackFrameViewerInputProvider = new StackFrameViewerInputProvider();
 
 	@SuppressWarnings("unchecked")
 	@Override

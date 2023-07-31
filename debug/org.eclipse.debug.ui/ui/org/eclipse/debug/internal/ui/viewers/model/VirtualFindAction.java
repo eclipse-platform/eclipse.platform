@@ -59,7 +59,7 @@ import org.eclipse.ui.texteditor.IUpdate;
  */
 public class VirtualFindAction extends Action implements IUpdate {
 
-	private TreeModelViewer fClientViewer;
+	private final TreeModelViewer fClientViewer;
 
 	private static class VirtualViewerListener implements IViewerUpdateListener, ILabelUpdateListener {
 
@@ -154,7 +154,6 @@ public class VirtualFindAction extends Action implements IUpdate {
 		setId(DebugUIPlugin.getUniqueIdentifier() + ".FindElementAction"); //$NON-NLS-1$
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.FIND_ELEMENT_ACTION);
 		setActionDefinitionId(IWorkbenchCommandConstants.EDIT_FIND_AND_REPLACE);
-		fClientViewer = viewer;
 	}
 
 	private VirtualTreeModelViewer initVirtualViewer(TreeModelViewer clientViewer, VirtualViewerListener listener) {

@@ -32,13 +32,13 @@ import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
 public class VirtualItem {
 
 	// Data keys for display attributes of an item.
-	public static String LABEL_KEY = "LABEL_KEY"; //$NON-NLS-1$
-	public static String IMAGE_KEY = "IMAGE_KEY"; //$NON-NLS-1$
-	public static String FONT_KEY = "FONT_KEY"; //$NON-NLS-1$
-	public static String FOREGROUND_KEY = "FOREGROUND_KEY"; //$NON-NLS-1$
-	public static String BACKGROUND_KEY = "BACKGROUND_KEY"; //$NON-NLS-1$
+	public static final String LABEL_KEY = "LABEL_KEY"; //$NON-NLS-1$
+	public static final String IMAGE_KEY = "IMAGE_KEY"; //$NON-NLS-1$
+	public static final String FONT_KEY = "FONT_KEY"; //$NON-NLS-1$
+	public static final String FOREGROUND_KEY = "FOREGROUND_KEY"; //$NON-NLS-1$
+	public static final String BACKGROUND_KEY = "BACKGROUND_KEY"; //$NON-NLS-1$
 
-	public static String ELEMENT_DATA_KEY = "element"; //$NON-NLS-1$
+	public static final String ELEMENT_DATA_KEY = "element"; //$NON-NLS-1$
 
 	/**
 	 * Index object of a tree item. It allows the indexes to be modified
