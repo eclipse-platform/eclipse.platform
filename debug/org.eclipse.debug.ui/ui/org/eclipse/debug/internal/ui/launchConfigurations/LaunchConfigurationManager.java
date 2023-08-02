@@ -45,6 +45,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
@@ -161,7 +162,7 @@ public class LaunchConfigurationManager implements ILaunchListener, ISavePartici
 	/**
 	 * The list of registered implementors of <code>ILaunchHistoryChangedListener</code>
 	 */
-	protected List<ILaunchHistoryChangedListener> fLaunchHistoryChangedListeners = new ArrayList<>(3);
+	protected ListenerList<ILaunchHistoryChangedListener> fLaunchHistoryChangedListeners = new ListenerList<>();
 
 	/**
 	 * Launch shortcuts
@@ -370,9 +371,7 @@ public class LaunchConfigurationManager implements ILaunchListener, ISavePartici
 	 * @param listener the listener to add - adding a duplicate listener has no effect
 	 */
 	public void addLaunchHistoryListener(ILaunchHistoryChangedListener listener) {
-		if (!fLaunchHistoryChangedListeners.contains(listener)) {
-			fLaunchHistoryChangedListeners.add(listener);
-		}
+		fLaunchHistoryChangedListeners.add(listener);
 	}
 
 	/**
