@@ -35,7 +35,7 @@
 		<delete dir="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
 		<mkdir dir="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
 		<!-- compile the source code -->
-		<javac destdir="${temp.folder}/ant_tasks/resources-ant.jar.bin" failonerror="true" verbose="true" debug="on" target="1.5" source="1.5">
+		<javac destdir="${temp.folder}/ant_tasks/resources-ant.jar.bin" failonerror="true" verbose="true" debug="on" target="11" source="11">
 			<compilerarg value="-warn:-unavoidableGenericProblems"/>
 			<classpath>
 				<dirset dir="${basedir}/..">
