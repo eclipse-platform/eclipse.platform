@@ -17,7 +17,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import org.eclipse.core.internal.runtime.RuntimeLog;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
@@ -311,7 +314,7 @@ public class DeadlockDetector {
 				ISchedulingRule current = conflicting.get(k);
 				for (int j = 0; j < locks.size(); j++) {
 					ISchedulingRule possible = locks.get(j);
-					if (current.isConflicting(possible) && !conflicting.contains(possible)) {
+					if (!conflicting.contains(possible) && current.isConflicting(possible)) {
 						conflicting.add(possible);
 						graph[threadIndex][j]++;
 					}
@@ -345,7 +348,8 @@ public class DeadlockDetector {
 		//release all locks that conflict with the given lock
 		//or release all rules that are owned by the given thread, if we are releasing a rule
 		for (int j = 0; j < graph[threadIndex].length; j++) {
-			if ((lock.isConflicting(locks.get(j))) || (!(lock instanceof ILock) && !(locks.get(j) instanceof ILock) && (graph[threadIndex][j] > NO_STATE))) {
+			if (((!(lock instanceof ILock) && !(locks.get(j) instanceof ILock) && (graph[threadIndex][j] > NO_STATE))
+					|| lock.isConflicting(locks.get(j)))) {
 				if (graph[threadIndex][j] == NO_STATE) {
 					if (JobManager.DEBUG_LOCKS)
 						System.out.println("[lockReleased] More releases than acquires for thread " + owner.getName() + " and lock " + lock); //$NON-NLS-1$ //$NON-NLS-2$
@@ -519,7 +523,7 @@ public class DeadlockDetector {
 		 * (consist of locks which conflict with the given lock, or of locks which are rules)
 		 */
 		for (int j = 0; j < numLocks; j++) {
-			if ((lock.isConflicting(locks.get(j))) || !(locks.get(j) instanceof ILock))
+			if (!(locks.get(j) instanceof ILock) || (lock.isConflicting(locks.get(j))))
 				emptyColumns[j] = true;
 		}
 
