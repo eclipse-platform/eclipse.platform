@@ -287,8 +287,7 @@ public class IndexEntryTest {
 		checkCreatedEntry(entry);
 	}
 
-	/*
-	 * Disabled, see Bug 210024 [Help] Topic element problems constructing from an ITopic
+	@Test
 	public void testUserEntryChildEnablement() {
 		UserIndexEntry u1 = createUserEntry();
 		IndexEntry entry = new IndexEntry(u1);
@@ -296,7 +295,7 @@ public class IndexEntryTest {
 		assertTrue(entry.isEnabled(HelpEvaluationContext.getContext()));
 		checkEntryChildEnablement(entry);
 	}
-	*/
+
 	@Test
 	public void testCopyUserEntry() {
 		UserIndexEntry u1 = createUserEntry();
