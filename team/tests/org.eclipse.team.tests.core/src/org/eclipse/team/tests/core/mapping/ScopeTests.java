@@ -107,12 +107,12 @@ public class ScopeTests extends TeamTest {
 		assertProperContainment(sm);
 	}
 
-//	public void testScopeContraction() throws OperationCanceledException, InterruptedException, CoreException {
-//		workingSet.setElements( new IProject[] { project1, project2 });
-//		ISynchronizationScopeManager sm = createScopeManager();
-//		assertProperContainment(sm);
-//		workingSet.setElements( new IProject[] { project1 });
-//		assertProperContainment(sm);
-//	}
+	public void testScopeContraction() throws OperationCanceledException, InterruptedException, CoreException {
+		workingSet.setElements( new IProject[] { project1, project2 });
+		ISynchronizationScopeManager sm = createScopeManager();
+		assertProperContainment(sm);
+		workingSet.setElements( new IProject[] { project1 });
+		assertProperContainment(sm);
+	}
 
 }
