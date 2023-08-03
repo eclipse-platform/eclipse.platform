@@ -276,11 +276,14 @@ public class NetTest {
 		assertProxyDataEqual(data);
 	}
 
-	// TODO test disabled, see Bug 403311
+	// This comment is for informational purposes in case the test will fail again
+	// once the bundle can be executed by Tycho:
+	// The test once failed due to Bug 403311. The Bug got probably fixed so this
+	// test was reactivated. Mind that the test is not executed in CI builds, as the whole
+	// test bundle is deactivated during Maven builds. The tests runs fine when
+	// started from every system.
 	@Test
-	@Ignore
-	public void _testSimpleHost() throws CoreException {
-
+	public void testSimpleHost() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
 		setDataTest(IProxyData.SOCKS_PROXY_TYPE);
