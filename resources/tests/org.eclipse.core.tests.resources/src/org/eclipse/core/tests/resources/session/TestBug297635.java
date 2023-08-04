@@ -55,6 +55,22 @@ public class TestBug297635 extends ResourceTest implements ISaveParticipant {
 		return Platform.getBundle(PI_RESOURCES_TESTS).getBundleContext();
 	}
 
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		getSaveManager().suspendSnapshotJob();
+	}
+
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		getSaveManager().resumeSnapshotJob();
+	}
+
+	private SaveManager getSaveManager() {
+		return ((Workspace) getWorkspace()).getSaveManager();
+	}
+
 	public void testBug() throws Exception {
 		installBundle();
 
@@ -136,11 +152,11 @@ public class TestBug297635 extends ResourceTest implements ISaveParticipant {
 		// there
 		Field field = SaveManager.class.getDeclaredField("savedStates");
 		field.setAccessible(true);
-		return (Map<String, SavedState>) field.get(((Workspace) getWorkspace()).getSaveManager());
+		return (Map<String, SavedState>) field.get(getSaveManager());
 	}
 
 	private void saveSnapshot() throws CoreException {
-		((Workspace) getWorkspace()).getSaveManager().save(ISaveContext.SNAPSHOT, true, null, getMonitor());
+		getSaveManager().save(ISaveContext.SNAPSHOT, true, null, getMonitor());
 	}
 
 	private void assertStateTrees(SavedState savedState, boolean isNull)

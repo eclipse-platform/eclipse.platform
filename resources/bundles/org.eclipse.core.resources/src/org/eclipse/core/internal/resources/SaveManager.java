@@ -1464,6 +1464,22 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	}
 
 	/**
+	 * Tries to determine if the workspace has changes and calls
+	 * {@link #snapshotIfNeeded(boolean)}. If an exception occurs while trying to
+	 * determine whether or not the workspace has changes then the snapshot might be
+	 * taken anyway, the workspace will be simply assumed unchanged.
+	 */
+	private void snapshotIfNeeded() {
+		boolean workspaceHasTreeChanges = false;
+		try {
+			workspaceHasTreeChanges = workspace.hasTreeChanges();
+		} catch (CoreException e) {
+			Policy.log(e);
+		}
+		snapshotIfNeeded(workspaceHasTreeChanges);
+	}
+
+	/**
 	 * Performs a snapshot if one is deemed necessary.
 	 * Encapsulates rules for determining when a snapshot is needed.
 	 * This should be called at the end of every top level operation.
@@ -2204,5 +2220,14 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		output.writeLong(workspace.nextMarkerId.get());
 		// save the registered sync partners in the synchronizer
 		((Synchronizer) workspace.getSynchronizer()).savePartners(output);
+	}
+
+	public void suspendSnapshotJob() {
+		snapshotJob.suspend();
+	}
+
+	public void resumeSnapshotJob() {
+		snapshotJob.resume();
+		snapshotIfNeeded();
 	}
 }

@@ -17,7 +17,10 @@ package org.eclipse.core.internal.resources;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.resources.ISaveContext;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
@@ -28,6 +31,7 @@ public class DelayedSnapshotJob extends Job {
 	private static final String MSG_SNAPSHOT = Messages.resources_snapshot;
 	private SaveManager saveManager;
 	private Workspace workspace;
+	private volatile boolean suspended;
 
 	public DelayedSnapshotJob(SaveManager manager, Workspace workspace) {
 		super(MSG_SNAPSHOT);
@@ -44,7 +48,7 @@ public class DelayedSnapshotJob extends Job {
 	public IStatus run(IProgressMonitor monitor) {
 		if (monitor.isCanceled())
 			return Status.CANCEL_STATUS;
-		if (!workspace.isOpen()) {
+		if (!workspace.isOpen() || suspended) {
 			return Status.OK_STATUS;
 		}
 		try {
@@ -55,5 +59,23 @@ public class DelayedSnapshotJob extends Job {
 			saveManager.operationCount = 0;
 			saveManager.snapshotRequested = false;
 		}
+	}
+
+	/**
+	 * Suspend automatic snapshots until {@link #resume()} is called.
+	 *
+	 * @see #resume()
+	 */
+	void suspend() {
+		suspended = true;
+	}
+
+	/**
+	 * Resume automatic snapshots. This method does not schedule this Job.
+	 *
+	 * @see #suspend()
+	 */
+	void resume() {
+		suspended = false;
 	}
 }

@@ -1578,11 +1578,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 				// build() and snapshot() should not fail if they are called.
 				workManager.rebalanceNestedOperations();
 
-				//find out if any operation has potentially modified the tree
-				hasTreeChanges = workManager.shouldBuild();
-				//double check if the tree has actually changed
-				if (hasTreeChanges)
-					hasTreeChanges = operationTree != null && ElementTree.hasChanges(tree, operationTree, ResourceComparator.getBuildComparator(), true);
+				hasTreeChanges = hasTreeChanges();
 				broadcastPostChange();
 				// Request a snapshot if we are sufficiently out of date.
 				saveManager.snapshotIfNeeded(hasTreeChanges);
@@ -1599,6 +1595,13 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 		}
 		if (depthOne)
 			buildManager.endTopLevel(hasTreeChanges);
+	}
+
+	boolean hasTreeChanges() throws CoreException {
+		return getWorkManager().shouldBuild() // find out if any operation has potentially modified the tree
+		//double check if the tree has actually changed
+				&& operationTree != null
+				&& ElementTree.hasChanges(tree, operationTree, ResourceComparator.getBuildComparator(), true);
 	}
 
 	/**
