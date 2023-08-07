@@ -64,13 +64,12 @@ public class CountExpressionTest extends TestCase {
 		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(5)));
 	}
 
-//	@Test
-//	public void testLessThanOrEqualToExpression() throws CoreException {
-//		CountExpression e = new CountExpression("-3]"); //$NON-NLS-1$
-//		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(1)));
-//		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(3)));
-//		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(4)));
-//	}
+	public void testLessThanOrEqualToExpression() throws CoreException {
+		CountExpression e = new CountExpression("-3]"); //$NON-NLS-1$
+		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(1)));
+		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(3)));
+		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(4)));
+	}
 
 	public void testLessThanExpression() throws CoreException {
 		CountExpression e = new CountExpression("-3)"); //$NON-NLS-1$
@@ -79,13 +78,12 @@ public class CountExpressionTest extends TestCase {
 		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(4)));
 	}
 
-//	@Test
-//	public void testGreaterThanOrEqualToExpression() throws CoreException {
-//		CountExpression e = new CountExpression("[3-"); //$NON-NLS-1$
-//		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(5)));
-//		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(3)));
-//		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(2)));
-//	}
+	public void testGreaterThanOrEqualToExpression() throws CoreException {
+		CountExpression e = new CountExpression("[3-"); //$NON-NLS-1$
+		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(5)));
+		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(3)));
+		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(2)));
+	}
 
 	public void testGreaterThanExpression() throws CoreException {
 		CountExpression e = new CountExpression("(3-"); //$NON-NLS-1$
