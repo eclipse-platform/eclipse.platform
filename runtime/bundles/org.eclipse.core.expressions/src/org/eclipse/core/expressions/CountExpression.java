@@ -23,25 +23,26 @@ import org.eclipse.core.internal.expressions.Expressions;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 
-
 /**
  * @since 3.7
  */
 public class CountExpression extends Expression {
 
+	private static final int GREATER_THAN_OR_EQUAL = 9; // [N-
+	private static final int LESS_THAN_OR_EQUAL = 8; // -N]
 	private static final int GREATER_THAN = 7; // (N-
-	private static final int LESS_THAN    = 6; // -N)
-	private static final int ANY_NUMBER   = 5; // *
-	private static final int EXACT        = 4; // N
-	private static final int ONE_OR_MORE  = 3; // +
-	private static final int NONE_OR_ONE  = 2; // ?
-	private static final int NONE         = 1; // !
-	private static final int UNKNOWN      = 0;
+	private static final int LESS_THAN = 6; // -N)
+	private static final int ANY_NUMBER = 5; // *
+	private static final int EXACT = 4; // N
+	private static final int ONE_OR_MORE = 3; // +
+	private static final int NONE_OR_ONE = 2; // ?
+	private static final int NONE = 1; // !
+	private static final int UNKNOWN = 0;
 
 	/**
 	 * The seed for the hash code for all count expressions.
 	 */
-	private static final int HASH_INITIAL= CountExpression.class.getName().hashCode();
+	private static final int HASH_INITIAL = CountExpression.class.getName().hashCode();
 
 	private int fMode;
 	private int fSize;
@@ -62,68 +63,86 @@ public class CountExpression extends Expression {
 
 	private void initializeSize(String size) {
 		if (size == null)
-			size= "*"; //$NON-NLS-1$
+			size = "*"; //$NON-NLS-1$
 		if ("*".equals(size)) //$NON-NLS-1$
-			fMode= ANY_NUMBER;
+			fMode = ANY_NUMBER;
 		else if ("?".equals(size)) //$NON-NLS-1$
-			fMode= NONE_OR_ONE;
+			fMode = NONE_OR_ONE;
 		else if ("!".equals(size)) //$NON-NLS-1$
-			fMode= NONE;
+			fMode = NONE;
 		else if ("+".equals(size)) //$NON-NLS-1$
-			fMode= ONE_OR_MORE;
+			fMode = ONE_OR_MORE;
 		else if (size.charAt(0) == '-' && size.charAt(size.length() - 1) == ')') {
 			try {
 				fMode = LESS_THAN;
 				fSize = Integer.parseInt(size.substring(1, size.length() - 1));
 			} catch (NumberFormatException e) {
-				fMode= UNKNOWN;
+				fMode = UNKNOWN;
+			}
+		} else if (size.charAt(0) == '-' && size.charAt(size.length() - 1) == ']') {
+			try {
+				fMode = LESS_THAN_OR_EQUAL;
+				fSize = Integer.parseInt(size.substring(1, size.length() - 1));
+			} catch (NumberFormatException e) {
+				fMode = UNKNOWN;
 			}
 		} else if (size.charAt(0) == '(' && size.charAt(size.length() - 1) == '-') {
 			try {
 				fMode = GREATER_THAN;
 				fSize = Integer.parseInt(size.substring(1, size.length() - 1));
 			} catch (NumberFormatException e) {
-				fMode= UNKNOWN;
+				fMode = UNKNOWN;
+			}
+		} else if (size.charAt(0) == '[' && size.charAt(size.length() - 1) == '-') {
+			try {
+				fMode = GREATER_THAN_OR_EQUAL;
+				fSize = Integer.parseInt(size.substring(1, size.length() - 1));
+			} catch (NumberFormatException e) {
+				fMode = UNKNOWN;
 			}
 		} else {
 			try {
-				fSize= Integer.parseInt(size);
-				fMode= EXACT;
+				fSize = Integer.parseInt(size);
+				fMode = EXACT;
 			} catch (NumberFormatException e) {
-				fMode= UNKNOWN;
+				fMode = UNKNOWN;
 			}
 		}
 	}
 
 	@Override
 	public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
-		Object var= context.getDefaultVariable();
+		Object var = context.getDefaultVariable();
 		int size;
-		if (var instanceof Collection) {
-			size= ((Collection<?>)var).size();
+		if (var instanceof Collection collection) {
+			size = collection.size();
 		} else {
-			ICountable countable= Expressions.getAsICountable(var, this);
+			ICountable countable = Expressions.getAsICountable(var, this);
 			if (countable == null)
 				return EvaluationResult.NOT_LOADED;
-			size= countable.count();
+			size = countable.count();
 		}
 		switch (fMode) {
-			case UNKNOWN:
-				return EvaluationResult.FALSE;
-			case NONE:
-				return EvaluationResult.valueOf(size == 0);
-			case NONE_OR_ONE:
-				return EvaluationResult.valueOf(size == 0 || size == 1);
-			case ONE_OR_MORE:
-				return EvaluationResult.valueOf(size >= 1);
-			case EXACT:
-				return EvaluationResult.valueOf(fSize == size);
-			case ANY_NUMBER:
-				return EvaluationResult.TRUE;
-			case LESS_THAN:
-				return EvaluationResult.valueOf(size < fSize);
-			case GREATER_THAN:
-				return EvaluationResult.valueOf(size > fSize);
+		case UNKNOWN:
+			return EvaluationResult.FALSE;
+		case NONE:
+			return EvaluationResult.valueOf(size == 0);
+		case NONE_OR_ONE:
+			return EvaluationResult.valueOf(size == 0 || size == 1);
+		case ONE_OR_MORE:
+			return EvaluationResult.valueOf(size >= 1);
+		case EXACT:
+			return EvaluationResult.valueOf(fSize == size);
+		case ANY_NUMBER:
+			return EvaluationResult.TRUE;
+		case LESS_THAN:
+			return EvaluationResult.valueOf(size < fSize);
+		case GREATER_THAN:
+			return EvaluationResult.valueOf(size > fSize);
+		case LESS_THAN_OR_EQUAL:
+			return EvaluationResult.valueOf(size <= fSize);
+		case GREATER_THAN_OR_EQUAL:
+			return EvaluationResult.valueOf(size >= fSize);
 		}
 		return EvaluationResult.FALSE;
 	}
@@ -138,14 +157,13 @@ public class CountExpression extends Expression {
 		if (!(object instanceof CountExpression))
 			return false;
 
-		final CountExpression that= (CountExpression)object;
+		final CountExpression that = (CountExpression) object;
 		return (this.fMode == that.fMode) && (this.fSize == that.fSize);
 	}
 
 	@Override
 	protected int computeHashCode() {
-		return HASH_INITIAL * HASH_FACTOR + fMode
-			* HASH_FACTOR + fSize;
+		return HASH_INITIAL * HASH_FACTOR + fMode * HASH_FACTOR + fSize;
 	}
 
 	@Override
@@ -156,6 +174,12 @@ public class CountExpression extends Expression {
 		builder.append(", mode: "); //$NON-NLS-1$
 		builder.append(fMode);
 		switch (fMode) {
+		case GREATER_THAN_OR_EQUAL:
+			builder.append(" GREATER_THAN_OR_EQUAL"); //$NON-NLS-1$ [N-
+			break;
+		case LESS_THAN_OR_EQUAL:
+			builder.append(" LESS_THAN_OR_EQUAL"); //$NON-NLS-1$ // -N]
+			break;
 		case GREATER_THAN:
 			builder.append(" GREATER_THAN"); //$NON-NLS-1$
 			break;
@@ -186,5 +210,4 @@ public class CountExpression extends Expression {
 		builder.append("]"); //$NON-NLS-1$
 		return builder.toString();
 	}
-
 }
