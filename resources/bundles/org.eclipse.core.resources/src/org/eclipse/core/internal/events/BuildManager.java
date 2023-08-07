@@ -19,22 +19,71 @@
  *******************************************************************************/
 package org.eclipse.core.internal.events;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.internal.resources.ComputeProjectOrder.Digraph;
+import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.IManager;
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.ProjectDescription;
+import org.eclipse.core.internal.resources.ResourceStatus;
+import org.eclipse.core.internal.resources.WorkManager;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.internal.watson.ElementTree;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.IBuildContext;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IIncrementalProjectBuilder2;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.ILock;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobGroup;
+import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 
 public class BuildManager implements ICoreConstants, IManager, ILifecycleListener {
+
+	public static class JobManagerSuspendedException extends RuntimeException {
+		private static final long serialVersionUID = 330426099787223028L;
+
+		public JobManagerSuspendedException(String message) {
+			super(message);
+		}
+	}
 
 	private static final String BUILDER_INIT = "BuilderInitInfo"; //$NON-NLS-1$
 
@@ -750,12 +799,19 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	}
 
 	private static void waitFor(Job job) {
+		IJobManager jobManager = Job.getJobManager();
+
 		// Need to loop because jobs can reschedule itself and concurrent running
 		// background jobs change the states too
-		while (!(job.getState() == Job.NONE)) {
+		while (job.getState() != Job.NONE) {
 			// Need to wake up thread to finish as soon as possible:
-			while (!(job.getState() == Job.RUNNING || job.getState() == Job.NONE)) {
-				Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_BUILD);
+			while (job.getState() != Job.RUNNING && job.getState() != Job.NONE) {
+				if (jobManager.isSuspended())
+					throw new JobManagerSuspendedException("The JobManager is suspended, waiting for " //$NON-NLS-1$
+							+ "a job to finish will just block this thread forever. Activate the JobManager again before waiting " //$NON-NLS-1$
+							+ "for a job to finish"); //$NON-NLS-1$
+
+				jobManager.wakeUp(ResourcesPlugin.FAMILY_AUTO_BUILD);
 				Thread.yield();
 				// After wakeup the woken job may go into sleep again when asynchronous
 				// workspace save interrupts autobuild so we need to wait till RUNNING or NONE
@@ -763,7 +819,7 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 			}
 			// Need to wait till job finished:
 			try {
-				Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
+				jobManager.join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
 			} catch (OperationCanceledException | InterruptedException e) {
 				// Ignore
 			}
