@@ -61,9 +61,8 @@ public class FilterTest {
 
 	@Test
 	public void testVerify() {
-		// Assert.assertNull("filters don't verify",
-		// Filter.validateResourceFilters("*.class, .cvsignore, bin/"));
-		// Assert.assertNotNull("filters shouldn't verify",
-		// Filter.validateResourceFilters("bin//"));
+		Assert.assertNull("filters don't verify",
+				CompareResourceFilter.validateResourceFilters("*.class, .cvsignore, bin/"));
+		Assert.assertNotNull("filters shouldn't verify", CompareResourceFilter.validateResourceFilters("bin//"));
 	}
 }
