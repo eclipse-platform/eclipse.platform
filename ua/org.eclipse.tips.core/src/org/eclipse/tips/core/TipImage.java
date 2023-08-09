@@ -41,7 +41,7 @@ public class TipImage {
 	private final URL fURL;
 	private double fAspectRatio = THREE_TO_TWO;
 
-	private final String fBase64Image;
+	private String fBase64Image;
 
 	/**
 	 * Creates a new TipImage with the specified URL which gets read into a base 64
@@ -80,7 +80,6 @@ public class TipImage {
 	 *
 	 * @param base64Image
 	 *            the non-null base64 encoded image according to RFC-2397.
-	 *
 	 * @throws RuntimeException
 	 *             if the string is not valid
 	 * @see TipImage
@@ -94,8 +93,7 @@ public class TipImage {
 			fBase64Image = base64Image;
 			int from = base64Image.indexOf('/') + 1;
 			int to = base64Image.indexOf(';');
-			setExtension(base64Image.substring(from, to).trim());
-			setExtension(base64Image.substring(from, to).trim());
+			fExtension = base64Image.substring(from, to).trim();
 		} else {
 			int length = base64Image.length();
 			throw new RuntimeException(Messages.TipImage_5 + base64Image.substring(0, length < 50 ? length : 50));
@@ -202,15 +200,16 @@ public class TipImage {
 
 	/**
 	 * Changes the default value "null" to the passed value which commonly is "png",
-	 * "gif" and such.
+	 * "gif" and such. It also updates the Base64Image to properly include the new
+	 * extension.
 	 *
-	 * @param extension
-	 *            the extension of this file
+	 * @param newExtension the new extension of this file
 	 * @return this
 	 * @see #getExtension()
 	 */
-	public TipImage setExtension(String extension) {
-		fExtension = extension;
+	public TipImage setExtension(String newExtension) {
+		fBase64Image = fBase64Image.replaceAll("/.*;", "/" + newExtension + ";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		fExtension = newExtension;
 		return this;
 	}
 
