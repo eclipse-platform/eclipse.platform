@@ -236,6 +236,14 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 	}
 
 	public void shutdown() {
+		try {
+			// try to prevent execution of this job to avoid prevent "already shutdown.":
+			cancel();
+			// if job is already running wait for it to finish:
+			join();
+		} catch (InterruptedException e) {
+			// ignore
+		}
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		//if the service is already gone there is nothing to do
 		if (contentTypeManager != null)
