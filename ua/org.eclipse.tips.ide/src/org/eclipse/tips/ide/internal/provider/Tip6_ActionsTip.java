@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software and others
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     wim.jongman@remainsoftware.com - initial API and implementation
+ *     Nikifor Fedorov (ArSysOp) - externalize tips text
  *******************************************************************************/
 package org.eclipse.tips.ide.internal.provider;
 
@@ -26,6 +27,7 @@ import org.eclipse.tips.core.IHtmlTip;
 import org.eclipse.tips.core.Tip;
 import org.eclipse.tips.core.TipAction;
 import org.eclipse.tips.core.TipImage;
+import org.eclipse.tips.ide.internal.Messages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
@@ -48,17 +50,21 @@ public class Tip6_ActionsTip extends Tip implements IHtmlTip {
 
 	@Override
 	public List<TipAction> getActions() {
-		TipAction tip1 = tip("Clock", "What is the time?", "icons/clock.png", () -> MessageDialog.openConfirm(null, //$NON-NLS-3$
+		TipAction tip1 = tip(Messages.Tip6_ActionsTip_tip_clock_title, Messages.Tip6_ActionsTip_tip_clock_message,
+				"icons/clock.png", () -> MessageDialog.openConfirm(null, //$NON-NLS-1$
 				getSubject(), DateFormat.getTimeInstance().format(Calendar.getInstance().getTime())));
-		TipAction tip2 = tip("Open Preferences", "Opens the preferences", null, () -> {
+		TipAction tip2 = tip(Messages.Tip6_ActionsTip_tip_preferences_title,
+				Messages.Tip6_ActionsTip_tip_preferences_message, null, () -> {
 			PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "myPreferencePage", null, null);
+							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "myPreferencePage", null, //$NON-NLS-1$
+							null);
 			if (pref != null) {
 				pref.open();
 			}
 		});
-		TipAction tip3 = tip("Open Dialog", "Opens a Dialog", "icons/asterisk.png", //$NON-NLS-3$
-				() -> MessageDialog.openConfirm(null, getSubject(), "A dialog was opened."));
+		TipAction tip3 = tip(Messages.Tip6_ActionsTip_tip_dialog_title, Messages.Tip6_ActionsTip_tip_dialog_message,
+				"icons/asterisk.png", //$NON-NLS-1$
+				() -> MessageDialog.openConfirm(null, getSubject(), Messages.Tip6_ActionsTip_tip_dialog_result));
 		return List.of(tip1, tip2, tip3);
 	}
 
@@ -76,14 +82,11 @@ public class Tip6_ActionsTip extends Tip implements IHtmlTip {
 
 	@Override
 	public String getSubject() {
-		return "Actions";
+		return Messages.Tip6_ActionsTip_subject;
 	}
 
 	@Override
 	public String getHTML() {
-		return "<h2>ActionTips</h2>Some tips enable you to start one or more actions. " //
-				+ "If this is the case then an additional button will be displayed " //
-				+ "like in this tip. Go ahead and press the button, or choose another "
-				+ "action from the drop down menu next to the button. <br><br><br>";
+		return new TipHtml(Messages.Tip6_ActionsTip_text_header, Messages.Tip6_ActionsTip_text_body).get();
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     wim.jongman@remainsoftware.com - initial API and implementation
+ *     Nikifor Fedorov (ArSysOp) - externalize tips text
  *******************************************************************************/
 package org.eclipse.tips.ide.internal.provider;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 import org.eclipse.tips.core.IHtmlTip;
 import org.eclipse.tips.core.Tip;
 import org.eclipse.tips.core.TipImage;
+import org.eclipse.tips.ide.internal.Messages;
 
 public class Tip3_StartingTips extends Tip implements IHtmlTip {
 
@@ -33,14 +35,13 @@ public class Tip3_StartingTips extends Tip implements IHtmlTip {
 
 	@Override
 	public String getSubject() {
-		return "Opening the Tips Dialog";
+		return Messages.Tip3_StartingTips_subject;
 	}
 
 	@Override
 	public String getHTML() {
-		return "<h2>Tips Available?</h2>In case you do not want to start tips at startup, you can still see if there are tips available. "
-				+ "Check the bottom right corner to see a little lightbulb. This lightbulb only appears if there is something to read."
-				+ "<br><br>" + "Press <b><i>Next Tip</i></b> to see how to navigate tips.<br><br>";
+		return new TipHtml(Messages.Tip3_StartingTips_text_header, Messages.Tip3_StartingTips_text_body,
+				Messages.Tip3_StartingTips_text_footer).get();
 	}
 
 	private TipImage fImage;

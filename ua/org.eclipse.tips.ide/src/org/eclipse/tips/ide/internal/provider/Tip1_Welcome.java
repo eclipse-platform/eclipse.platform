@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Remain Software
+ * Copyright (c) 2018, 2023 Remain Software and others
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     wim.jongman@remainsoftware.com - initial API and implementation
+ *     Nikifor Fedorov (ArSysOp) - externalize tips text
  *******************************************************************************/
 package org.eclipse.tips.ide.internal.provider;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 import org.eclipse.tips.core.IHtmlTip;
 import org.eclipse.tips.core.Tip;
 import org.eclipse.tips.core.TipImage;
+import org.eclipse.tips.ide.internal.Messages;
 
 public class Tip1_Welcome extends Tip implements IHtmlTip {
 
@@ -35,14 +37,13 @@ public class Tip1_Welcome extends Tip implements IHtmlTip {
 
 	@Override
 	public String getSubject() {
-		return "Welcome to the tips framework";
+		return Messages.Tip1_Welcome_subject;
 	}
 
 	@Override
 	public String getHTML() {
-		return "<h2>Welcome to the Tips Framework</h2>It can show tips from various tip providers which are listed in the bottom. This provider has tips about tips which will show you how to navigate this UI."
-				+ "Tips appear here in various forms. They can come from Twitter, a Wiki, a Website, a file or even from Java and inline HTML, like this one."
-				+ "<br><br>" + "Press <b><i>Next Tip</i></b> to see how to start tips manually.<br><br>";
+		return new TipHtml(Messages.Tip1_Welcome_text_header, Messages.Tip1_Welcome_text_body,
+				Messages.Tip1_Welcome_text_footer).get();
 	}
 
 	@Override
