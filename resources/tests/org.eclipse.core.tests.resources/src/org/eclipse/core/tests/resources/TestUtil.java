@@ -16,10 +16,13 @@ package org.eclipse.core.tests.resources;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.eclipse.core.internal.runtime.InternalPlatform;
 import org.eclipse.core.internal.utils.StringPoolJob;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.junit.Assert;
 
@@ -55,6 +58,27 @@ public class TestUtil {
 		}
 		Status status = new Status(severity, "org.eclipse.core.tests.resources", message, error);
 		InternalPlatform.getDefault().getLog(Platform.getBundle("org.eclipse.core.tests.resources")).log(status);
+	}
+
+	/**
+	 * Waits until the given condition is fulfilled or the given timeout is reached.
+	 *
+	 * @param condition
+	 *            the condition to validate periodically
+	 * @param timeoutInMilliseconds
+	 *            the timeout for abortion in case the condition is not fulfilled
+	 * @return {@code true} if the condition was fulfilled and {@code false} if the
+	 *         timeout value was reached
+	 */
+	public static boolean waitForCondition(Supplier<Boolean> condition, int timeoutInMilliseconds) {
+		long timeoutInNs = timeoutInMilliseconds * 1_000_000L;
+		long startTimeInNs = System.nanoTime();
+		long durationInNs = 0;
+		while (!condition.get() && durationInNs < timeoutInNs) {
+			Thread.yield();
+			durationInNs = System.nanoTime() - startTimeInNs;
+		}
+		return condition.get();
 	}
 
 	/**
