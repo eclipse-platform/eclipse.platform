@@ -15,12 +15,13 @@
 package org.eclipse.core.internal.filesystem.local;
 
 import java.io.UnsupportedEncodingException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.service.environment.Constants;
 
 public class Convert {
 
-	/** Indicates the default string encoding on this platform */
-	private static String defaultEncoding = new java.io.InputStreamReader(new java.io.ByteArrayInputStream(new byte[0])).getEncoding();
+	/** Indicates the default native encoding on this platform */
+	private static String defaultEncoding = Platform.getSystemCharset().name();
 
 	/** Indicates if we are running on windows */
 	private static final boolean isWindows = Constants.OS_WIN32.equals(LocalFileSystem.getOS());
