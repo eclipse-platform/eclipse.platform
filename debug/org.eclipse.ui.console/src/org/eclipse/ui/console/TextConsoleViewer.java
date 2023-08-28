@@ -293,9 +293,9 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 					setScrollLock(true);
 				} else if ((e.keyCode == SWT.PAGE_UP || e.keyCode == SWT.ARROW_UP) && !checkStartOfDocument()) {
 					setScrollLock(true);
-				} else if (e.keyCode == SWT.END || e.keyCode == SWT.BOTTOM) {
-					setScrollLock(false);// selecting END makes it reveal the
-					// end
+				} else if ((e.keyCode == SWT.END && (e.stateMask & SWT.CTRL) != 0) || e.keyCode == SWT.BOTTOM) {
+					// pressing CTRL+END reveals the end
+					setScrollLock(false);
 				} else if ((e.keyCode == SWT.PAGE_DOWN || e.keyCode == SWT.ARROW_DOWN) && checkEndOfDocument()) {
 					// unlock if Down at the end of document
 					setScrollLock(false);
