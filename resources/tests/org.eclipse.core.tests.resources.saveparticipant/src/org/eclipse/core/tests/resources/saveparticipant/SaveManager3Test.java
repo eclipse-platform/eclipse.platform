@@ -133,6 +133,8 @@ public class SaveManager3Test extends SaveManagerTest {
 		plugin2.addExpectedChange(file, project, IResourceDelta.ADDED, 0);
 		IResource prjFile = project.getFile(".project");
 		plugin2.addExpectedChange(prjFile, IResourceDelta.ADDED, 0);
+		plugin2.addExpectedChange(project.getFolder(".settings"), IResourceDelta.ADDED, 0);
+		plugin2.addExpectedChange(project.getFolder(".settings").getFile("org.eclipse.core.resources.prefs"), IResourceDelta.ADDED, 0);
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_2));
 		plugin2.addExpectedChange(resources, IResourceDelta.ADDED, 0);
 		//
