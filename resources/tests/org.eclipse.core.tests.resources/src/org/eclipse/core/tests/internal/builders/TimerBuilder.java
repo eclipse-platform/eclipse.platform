@@ -36,6 +36,8 @@ public class TimerBuilder extends IncrementalProjectBuilder {
 	public static final String DURATION_ARG = "duration";
 	public static final String RULE_TYPE_ARG = "ruleType";
 
+	private static final int SHUTDOWN_TIMEOUT_IN_MILLIS = 60_000;
+
 	private static BuildExecutionState executionState = new BuildExecutionState(-1);
 
 	private static class BuildExecutionState {
@@ -72,11 +74,14 @@ public class TimerBuilder extends IncrementalProjectBuilder {
 
 		private synchronized void abortAndWaitForAllBuilds() {
 			shallAbort = true;
-			while (isExecuting()) {
+			long durationInMillis = 0;
+			long waitingStartTimeInMillis = System.currentTimeMillis();
+			while (isExecuting() && durationInMillis < SHUTDOWN_TIMEOUT_IN_MILLIS) {
 				try {
-					wait();
+					wait(SHUTDOWN_TIMEOUT_IN_MILLIS);
 				} catch (InterruptedException e) {
 				}
+				durationInMillis = System.currentTimeMillis() - waitingStartTimeInMillis;
 			}
 		}
 
