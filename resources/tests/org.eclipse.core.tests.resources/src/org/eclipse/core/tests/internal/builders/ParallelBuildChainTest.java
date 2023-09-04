@@ -51,7 +51,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 
 	private static final int MAXIMUM_NUMBER_OF_CONCURRENT_BUILDS = 3;
 
-	private static final int TIMEOUT_IN_MILLIS = 60_000;
+	private static final int TIMEOUT_IN_MILLIS = 20_000;
 
 	private static enum BuildDurationType {
 		/*
