@@ -13,17 +13,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static java.util.Collections.synchronizedList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
@@ -1743,34 +1744,37 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		jobs[JOB_COUNT - 1].cancel();
 	}
 
-	public void testOrder() {
-		//ensure jobs are run in order from lowest to highest sleep time.
-		final Queue<Job> done = new ConcurrentLinkedQueue<>();
-		int[] sleepTimes = new int[] { 5, 200, 400, 600 };
-		Job[] jobs = new Job[sleepTimes.length];
-		for (int i = 0; i < sleepTimes.length; i++) {
-			jobs[i] = new Job("testOrder(" + i + ")") {
+	public void testOrder() throws Exception {
+		// ensure jobs are run in order from lowest to highest sleep time.
+		int[] sleepTimes = new int[] { 0, 1, 2, 5, 10, 15, 25, 50 };
+		final LinkedList<Job> allJobs = new LinkedList<>();
+		final List<Job> jobsRunningBeforePrevious = synchronizedList(new ArrayList<>());
 
+		for (int sleepTime : sleepTimes) {
+			final Job previouslyScheduledJob = allJobs.isEmpty() ? null : allJobs.getLast();
+			Job currentJob = new Job("testOrder job to be run with sleep time " + sleepTime) {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
-					done.add(this);
+					if (!hasPreviousJobStartedRunning()) {
+						jobsRunningBeforePrevious.add(this);
+					}
 					return Status.OK_STATUS;
 				}
 
+				private boolean hasPreviousJobStartedRunning() {
+					return previouslyScheduledJob == null || previouslyScheduledJob.getState() == Job.RUNNING
+							|| previouslyScheduledJob.getState() == Job.NONE;
+				}
 			};
+			currentJob.schedule(sleepTime);
+			allJobs.add(currentJob);
 		}
-		for (int i = 0; i < sleepTimes.length; i++) {
-			jobs[i].schedule(sleepTimes[i]);
+		for (Job job : allJobs) {
+			job.join();
 		}
-		// make sure listener has had a chance to process the finished job
-		while (done.size() != jobs.length) {
-			Thread.yield();
-		}
-		Job[] doneOrder = done.toArray(new Job[done.size()]);
-		assertEquals("1.0", jobs.length, doneOrder.length);
-		for (int i = 0; i < doneOrder.length; i++) {
-			assertEquals("1.1." + i, jobs[i], doneOrder[i]);
-		}
+
+		assertThat("there have jobs started running before a previously scheduled one", jobsRunningBeforePrevious,
+				empty());
 	}
 
 	public void testReverseOrder() throws InterruptedException {
