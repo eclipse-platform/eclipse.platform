@@ -47,10 +47,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ParallelBuildChainTest extends AbstractBuilderTest {
-	private static final int NUMBER_OF_PROJECTS_TO_CREATE_AT_ONCE = 3;
-
-	private static final int MAXIMUM_NUMBER_OF_CONCURRENT_BUILDS = 3;
-
 	private static final int TIMEOUT_IN_MILLIS = 20_000;
 
 	private static enum BuildDurationType {
@@ -103,28 +99,30 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		setWorkspaceMaxNumberOfConcurrentBuilds();
 		setAutoBuilding(false);
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
+		// Cleanup workspace first to ensure that auto-build is not started on projects
 		cleanup();
 		super.tearDown();
 		TimerBuilder.abortCurrentBuilds();
 	}
 
-	private void setWorkspaceMaxNumberOfConcurrentBuilds() throws CoreException {
+	private void setWorkspaceMaxNumberOfConcurrentBuilds(int maximumNumberOfConcurrentBuilds) throws CoreException {
 		IWorkspaceDescription description = getWorkspace().getDescription();
-		description.setMaxConcurrentBuilds(MAXIMUM_NUMBER_OF_CONCURRENT_BUILDS);
+		description.setMaxConcurrentBuilds(maximumNumberOfConcurrentBuilds);
 		getWorkspace().setDescription(description);
 	}
 
 	@Test
 	public void testIndividualProjectBuilds_NoConflictRule() throws Exception {
-		createMultipleTestProjects(BuildDurationType.IMMEDIATE, RuleType.NO_CONFLICT);
-		var longRunningProjects = createMultipleTestProjects(BuildDurationType.LONG_RUNNING, RuleType.NO_CONFLICT);
-		executeIndividualFullProjectBuilds(() -> {
+		int numberOfParallelBuilds = 3;
+		createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.IMMEDIATE, RuleType.NO_CONFLICT);
+		var longRunningProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.LONG_RUNNING,
+				RuleType.NO_CONFLICT);
+		executeIndividualFullProjectBuilds(numberOfParallelBuilds, () -> {
 			assertBuildsToStart(getAllProjects());
 			assertMinimumNumberOfSimultaneousBuilds(longRunningProjects.size());
 		});
@@ -132,10 +130,12 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 
 	@Test
 	public void testIndividualProjectBuilds_ProjectRelaxedRule() throws Exception {
-		createMultipleTestProjects(BuildDurationType.IMMEDIATE, RuleType.CURRENT_PROJECT_RELAXED);
-		var longRunningProjects = createMultipleTestProjects(BuildDurationType.LONG_RUNNING,
+		int numberOfParallelBuilds = 3;
+		createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.IMMEDIATE,
 				RuleType.CURRENT_PROJECT_RELAXED);
-		executeIndividualFullProjectBuilds(() -> {
+		var longRunningProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.LONG_RUNNING,
+				RuleType.CURRENT_PROJECT_RELAXED);
+		executeIndividualFullProjectBuilds(numberOfParallelBuilds, () -> {
 			assertBuildsToStart(getAllProjects());
 			assertMinimumNumberOfSimultaneousBuilds(longRunningProjects.size());
 		});
@@ -143,55 +143,70 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 
 	@Test
 	public void testWorkspaceBuild_NoConflictRule() throws Exception {
-		createMultipleTestProjects(BuildDurationType.IMMEDIATE, RuleType.NO_CONFLICT);
-		var longRunningBuildProjects = createMultipleTestProjects(BuildDurationType.LONG_RUNNING, RuleType.NO_CONFLICT);
+		int numberOfParallelBuilds = 3;
+		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
+		createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.IMMEDIATE, RuleType.NO_CONFLICT);
+		var longRunningBuildProjects = createMultipleTestProjects(numberOfParallelBuilds,
+				BuildDurationType.LONG_RUNNING, RuleType.NO_CONFLICT);
 		executeIncrementalWorkspaceBuild(() -> {
 			assertBuildsToStart(longRunningBuildProjects);
 			assertMinimumNumberOfSimultaneousBuilds(longRunningBuildProjects.size());
-			assertMaximumNumberOfWorkspaceBuilds();
+			assertMaximumNumberOfConcurrentWorkspaceBuilds();
 		});
 	}
 
 	@Test
 	public void testWorkspaceBuild_NoConflictRule_WithBuildConfigurations() throws Exception {
-		createMultipleTestProjects(BuildDurationType.IMMEDIATE, RuleType.NO_CONFLICT);
-		var longRunningBuildProjects = createMultipleTestProjects(BuildDurationType.LONG_RUNNING, RuleType.NO_CONFLICT);
+		int numberOfParallelBuilds = 3;
+		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
+		createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.IMMEDIATE, RuleType.NO_CONFLICT);
+		var longRunningBuildProjects = createMultipleTestProjects(numberOfParallelBuilds,
+				BuildDurationType.LONG_RUNNING, RuleType.NO_CONFLICT);
 		IBuildConfiguration[] buildConfigurations = getBuildConfigurations(getAllProjects());
 		executeIncrementalWorkspaceBuild(buildConfigurations, () -> {
 			assertBuildsToStart(longRunningBuildProjects);
 			assertMinimumNumberOfSimultaneousBuilds(longRunningBuildProjects.size());
-			assertMaximumNumberOfWorkspaceBuilds();
+			assertMaximumNumberOfConcurrentWorkspaceBuilds();
 		});
 	}
 
 	@Test
 	public void testWorkspaceBuild_ProjectRule() throws Exception {
-		createMultipleTestProjects(BuildDurationType.IMMEDIATE, RuleType.CURRENT_PROJECT);
-		var longRunningProjects = createMultipleTestProjects(BuildDurationType.LONG_RUNNING, RuleType.CURRENT_PROJECT);
+		int numberOfParallelBuilds = 3;
+		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
+		createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.IMMEDIATE, RuleType.CURRENT_PROJECT);
+		var longRunningProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.LONG_RUNNING,
+				RuleType.CURRENT_PROJECT);
 		executeIncrementalWorkspaceBuild(() -> {
 			assertBuildsToStart(longRunningProjects);
 			assertMinimumNumberOfSimultaneousBuilds(longRunningProjects.size());
-			assertMaximumNumberOfWorkspaceBuilds();
+			assertMaximumNumberOfConcurrentWorkspaceBuilds();
 		});
 	}
 
 	@Test
 	public void testWorkspaceBuild_ProjectRule_WithBuildConfigurations() throws Exception {
-		createMultipleTestProjects(BuildDurationType.IMMEDIATE, RuleType.CURRENT_PROJECT);
-		var longRunningBuildProjects = createMultipleTestProjects(BuildDurationType.LONG_RUNNING,
+		int numberOfParallelBuilds = 3;
+		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
+		createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.IMMEDIATE, RuleType.CURRENT_PROJECT);
+		var longRunningBuildProjects = createMultipleTestProjects(numberOfParallelBuilds,
+				BuildDurationType.LONG_RUNNING,
 				RuleType.CURRENT_PROJECT);
 		IBuildConfiguration[] buildConfigurations = getBuildConfigurations(getAllProjects());
 		executeIncrementalWorkspaceBuild(buildConfigurations, () -> {
 			assertBuildsToStart(longRunningBuildProjects);
 			assertMinimumNumberOfSimultaneousBuilds(longRunningBuildProjects.size());
-			assertMaximumNumberOfWorkspaceBuilds();
+			assertMaximumNumberOfConcurrentWorkspaceBuilds();
 		});
 	}
 
 	@Test
 	public void testWorkspaceBuild_ConflictingRule() throws Exception {
 		int millisToWaitForUnexpectedParallelBuild = 3_000;
-		var longRunningProjects = createMultipleTestProjects(BuildDurationType.LONG_RUNNING, RuleType.WORKSPACE_ROOT);
+		int numberOfParallelBuilds = 3;
+		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
+		var longRunningProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.LONG_RUNNING,
+				RuleType.WORKSPACE_ROOT);
 		executeIncrementalWorkspaceBuild(() -> {
 			waitForCondition(() -> TimerBuilder.getStartedProjectBuilds().size() > 1,
 					millisToWaitForUnexpectedParallelBuild);
@@ -203,8 +218,11 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 	}
 
 	public void testWorkspaceBuild_DependentProjects() throws Exception {
-		createMultipleTestProjects(BuildDurationType.IMMEDIATE, RuleType.NO_CONFLICT);
-		var shortRunningProjects = createMultipleTestProjects(BuildDurationType.SHORT_RUNNING, RuleType.NO_CONFLICT);
+		int numberOfParallelBuilds = 3;
+		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
+		createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.IMMEDIATE, RuleType.NO_CONFLICT);
+		var shortRunningProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.SHORT_RUNNING,
+				RuleType.NO_CONFLICT);
 		var projectsToBuild = getAllProjects();
 		makeProjectsDependOnEachOther(projectsToBuild);
 		int minimumExecutionTimeInMillis = shortRunningProjects.size()
@@ -220,8 +238,12 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 	}
 
 	public void testWorkspaceBuild_DependentProjects_ProjectSubset() throws Exception {
-		var immediateBuiltProjects = createMultipleTestProjects(BuildDurationType.IMMEDIATE, RuleType.NO_CONFLICT);
-		var shortRunningProjects = createMultipleTestProjects(BuildDurationType.SHORT_RUNNING, RuleType.NO_CONFLICT);
+		int numberOfParallelBuilds = 3;
+		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
+		var immediateBuiltProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.IMMEDIATE,
+				RuleType.NO_CONFLICT);
+		var shortRunningProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.SHORT_RUNNING,
+				RuleType.NO_CONFLICT);
 		var projectsToBuild = List.of(immediateBuiltProjects.get(0),
 				immediateBuiltProjects.get(immediateBuiltProjects.size() - 1), shortRunningProjects.get(0),
 				shortRunningProjects.get(shortRunningProjects.size() - 1));
@@ -239,8 +261,11 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 	}
 
 	public void testWorkspaceBuild_DependentProjectBuildConfigurations() throws Exception {
-		createMultipleTestProjects(BuildDurationType.IMMEDIATE, RuleType.NO_CONFLICT);
-		var shortRunningProjects = createMultipleTestProjects(BuildDurationType.SHORT_RUNNING, RuleType.NO_CONFLICT);
+		int numberOfParallelBuilds = 3;
+		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
+		createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.IMMEDIATE, RuleType.NO_CONFLICT);
+		var shortRunningProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.SHORT_RUNNING,
+				RuleType.NO_CONFLICT);
 		var projectsToBuild = getAllProjects();
 		makeProjectBuildConfigurationsDependOnEachOther(projectsToBuild);
 		int minimumExecutionTimeInMillis = shortRunningProjects.size()
@@ -256,8 +281,12 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 	}
 
 	public void testWorkspaceBuild_DependentProjectBuildConfigurations_ProjectSubset() throws Exception {
-		var immediateBuiltProjects = createMultipleTestProjects(BuildDurationType.IMMEDIATE, RuleType.NO_CONFLICT);
-		var shortRunningProjects = createMultipleTestProjects(BuildDurationType.SHORT_RUNNING, RuleType.NO_CONFLICT);
+		int numberOfParallelBuilds = 3;
+		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
+		var immediateBuiltProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.IMMEDIATE,
+				RuleType.NO_CONFLICT);
+		var shortRunningProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.SHORT_RUNNING,
+				RuleType.NO_CONFLICT);
 		var projectsToBuild = List.of(immediateBuiltProjects.get(0),
 				immediateBuiltProjects.get(immediateBuiltProjects.size() - 1), shortRunningProjects.get(0),
 				shortRunningProjects.get(shortRunningProjects.size() - 1));
@@ -286,10 +315,11 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 		return buildConfigurations;
 	}
 
-	private List<IProject> createMultipleTestProjects(BuildDurationType buildDurationType, RuleType ruleType)
+	private List<IProject> createMultipleTestProjects(int numberOfProjects, BuildDurationType buildDurationType,
+			RuleType ruleType)
 			throws CoreException {
 		List<IProject> result = new ArrayList<>();
-		for (int projectNumber = 0; projectNumber < NUMBER_OF_PROJECTS_TO_CREATE_AT_ONCE; projectNumber++) {
+		for (int projectNumber = 0; projectNumber < numberOfProjects; projectNumber++) {
 			result.add(createTestProject(buildDurationType, ruleType));
 		}
 		return result;
@@ -383,11 +413,11 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 		}
 	}
 
-	private void executeIndividualFullProjectBuilds(Runnable executeWhileRunningBuild) throws Exception {
-		int maximumThreadsForJobGroup = 5;
+	private void executeIndividualFullProjectBuilds(int numberOfParallelBuilds, Runnable executeWhileRunningBuild)
+			throws Exception {
 		List<IProject> projects = getAllProjects();
 		TimerBuilder.setExpectedNumberOfBuilds(projects.size());
-		JobGroup jobGroup = new JobGroup("Build Group", maximumThreadsForJobGroup, projects.size());
+		JobGroup jobGroup = new JobGroup("Build Group", numberOfParallelBuilds, projects.size());
 		Map<IProject, TestBarrier2> waitForRunningJobBarriers = new HashMap<>();
 		for (IProject project : projects) {
 			waitForRunningJobBarriers.put(project, new TestBarrier2());
@@ -431,7 +461,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 				lessThanOrEqualTo(maximumNumberOfSimulaneousBuilds));
 	}
 
-	private void assertMaximumNumberOfWorkspaceBuilds() {
+	private void assertMaximumNumberOfConcurrentWorkspaceBuilds() {
 		assertThat("too many workspace builds have run in parallel",
 				TimerBuilder.getMaximumNumberOfSimultaneousBuilds(),
 				lessThanOrEqualTo(getWorkspace().getDescription().getMaxConcurrentBuilds()));
