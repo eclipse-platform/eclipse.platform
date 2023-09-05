@@ -15,8 +15,14 @@ package org.eclipse.core.internal.jobs;
 
 import java.util.List;
 import org.eclipse.core.internal.runtime.RuntimeLog;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.LockListener;
 
 /**
  * Captures the implicit job state for a given thread.
@@ -317,11 +323,19 @@ class ThreadJob extends Job {
 						// The actual exit conditions are listed above at the beginning of
 						// this while loop
 						int state = blockingJob.getState();
-						//ensure we don't wait forever if the blocker is waiting, because it might have yielded to me
-						if (state == Job.RUNNING && canBlock) {
-							blockingJob.jobStateLock.wait();
-						} else if (state != Job.NONE) {
-							blockingJob.jobStateLock.wait(250);
+						// Check that blockingJob has not acquired a different, non-conflicting
+						// scheduling rule since checking for conflicts by JobManager. This can
+						// particularly happen if blockingJob is a ThreadJob that is reused for the
+						// same thread across the acquisition of different rules (see ThreadJob::recycle
+						// and ImplicitJob::newThreadJob) via JobManager::beginRule.
+						if (state != Job.NONE && blockingJob.isConflicting(threadJob)) {
+							// ensure we don't wait forever if the blocker is waiting, because it might have
+							// yielded to me
+							if (state == Job.RUNNING && canBlock) {
+								blockingJob.jobStateLock.wait();
+							} else {
+								blockingJob.jobStateLock.wait(250);
+							}
 						}
 					} catch (InterruptedException e) {
 						// This thread may be interrupted via two common scenarios. 1) If
