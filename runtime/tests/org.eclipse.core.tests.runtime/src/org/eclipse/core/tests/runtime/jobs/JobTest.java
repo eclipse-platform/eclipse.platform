@@ -23,11 +23,29 @@ import static org.junit.Assert.assertNotEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.concurrent.atomic.*;
-import org.eclipse.core.internal.jobs.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
-import org.eclipse.core.tests.harness.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.concurrent.atomic.AtomicLong;
+import org.eclipse.core.internal.jobs.InternalJob;
+import org.eclipse.core.internal.jobs.JobListeners;
+import org.eclipse.core.internal.jobs.JobManager;
+import org.eclipse.core.internal.jobs.Worker;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.core.runtime.jobs.LockListener;
+import org.eclipse.core.tests.harness.FussyProgressMonitor;
+import org.eclipse.core.tests.harness.TestBarrier2;
+import org.eclipse.core.tests.harness.TestJob;
 import org.junit.Assert;
 
 /**
@@ -1600,6 +1618,37 @@ public class JobTest extends AbstractJobTest {
 		waitForState(job, Job.NONE);
 		assertEquals("1.0", IStatus.CANCEL, job.getResult().getSeverity());
 		group.done();
+	}
+
+	public void testSetProgressGroup_propagatesGroupCancellation() throws InterruptedException {
+		Job checkMonitorJob = createJobReactingToCancelRequest();
+
+		final IProgressMonitor progressGroup = Job.getJobManager().createProgressGroup();
+		progressGroup.beginTask("", 2);
+
+		checkMonitorJob.setProgressGroup(progressGroup, 1);
+
+		progressGroup.setCanceled(true);
+
+		checkMonitorJob.schedule();
+		checkMonitorJob.join();
+
+		assertEquals("The job should have been canceled", IStatus.CANCEL, checkMonitorJob.getResult().getSeverity());
+	}
+
+	private Job createJobReactingToCancelRequest() {
+		return new Job("Check if own monitor is canceled") {
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+
+				if (monitor.isCanceled()) {
+					return Status.CANCEL_STATUS;
+				}
+
+				return Status.OK_STATUS;
+			}
+		};
 	}
 
 	/*

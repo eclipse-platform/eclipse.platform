@@ -554,15 +554,12 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 
 	/**
 	 * Returns a new progress monitor for this job.  Never returns null.
-	 * @GuardedBy("lock")
 	 */
 	private IProgressMonitor createMonitor(Job job) {
-		IProgressMonitor monitor = null;
-		if (progressProvider != null)
-			monitor = progressProvider.createMonitor(job);
-		if (monitor == null)
-			monitor = new NullProgressMonitor();
-		return monitor;
+		if (progressProvider != null) {
+			return progressProvider.createMonitor(job);
+		}
+		return new NullProgressMonitor();
 	}
 
 	@Override
@@ -1785,7 +1782,10 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 				synchronized (internal.jobStateLock) {
 					if (internal.internalGetState() == InternalJob.ABOUT_TO_RUN) {
 						if (shouldReallyRun && !internal.isAboutToRunCanceled()) {
-							internal.setProgressMonitor(createMonitor(j));
+							// only set the monitor if it wasn't already set.
+							if (internal.getProgressMonitor() == null) {
+								internal.setProgressMonitor(createMonitor(j));
+							}
 							//change from ABOUT_TO_RUN to RUNNING
 							internal.setThread(worker);
 							internal.internalSetState(Job.RUNNING);
