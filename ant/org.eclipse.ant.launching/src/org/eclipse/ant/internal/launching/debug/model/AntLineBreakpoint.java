@@ -51,7 +51,7 @@ public class AntLineBreakpoint extends LineBreakpoint {
 	 *             if unable to create the breakpoint
 	 */
 	public AntLineBreakpoint(IResource resource, int lineNumber) throws CoreException {
-		this(resource, lineNumber, new HashMap<String, Object>(), true);
+		this(resource, lineNumber, new HashMap<>(), true);
 	}
 
 	/**
