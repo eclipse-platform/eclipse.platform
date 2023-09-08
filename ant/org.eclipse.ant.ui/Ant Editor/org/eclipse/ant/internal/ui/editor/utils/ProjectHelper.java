@@ -718,7 +718,7 @@ public class ProjectHelper extends ProjectHelper2 {
 				newCurrent.setProject(project);
 				newCurrent.setName(IAntCoreConstants.EMPTY_STRING);
 				context.setCurrentTarget(newCurrent);
-				context.setCurrentTargets(new HashMap<String, Target>());
+				context.setCurrentTargets(new HashMap<>());
 				context.setImplicitTarget(newCurrent);
 				parse(project, source, new RootHandler(context, mainHandler));
 			}
@@ -729,7 +729,7 @@ public class ProjectHelper extends ProjectHelper2 {
 			}
 		} else {
 			// top level file
-			context.setCurrentTargets(new HashMap<String, Target>());
+			context.setCurrentTargets(new HashMap<>());
 			parse(project, source, new RootHandler(context, mainHandler));
 		}
 	}

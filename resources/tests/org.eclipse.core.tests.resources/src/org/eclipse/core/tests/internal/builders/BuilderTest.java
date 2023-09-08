@@ -408,7 +408,7 @@ public class BuilderTest extends AbstractBuilderTest {
 			IProjectDescription desc = proj1.getDescription();
 			desc.setBuildSpec(new ICommand[] {createCommand(desc, "Build0")});
 			proj1.setDescription(desc, getMonitor());
-			proj1.build(IncrementalProjectBuilder.FULL_BUILD, SortBuilder.BUILDER_NAME, new HashMap<String, String>(), null);
+			proj1.build(IncrementalProjectBuilder.FULL_BUILD, SortBuilder.BUILDER_NAME, new HashMap<>(), null);
 			notified[0] = false;
 			//now turn on autobuild and see if the listener is notified again
 			setAutoBuilding(true);
