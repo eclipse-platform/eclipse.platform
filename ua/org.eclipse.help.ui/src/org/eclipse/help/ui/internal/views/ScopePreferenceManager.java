@@ -24,9 +24,9 @@ import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
 
 public class ScopePreferenceManager extends PreferenceManager implements IHelpUIConstants {
-	private ScopeSet set;
+	private final ScopeSet set;
 	class SubpagePreferenceNode extends PreferenceNode {
-		private IConfigurationElement config;
+		private final IConfigurationElement config;
 
 		public SubpagePreferenceNode(String id, String label,
 				IConfigurationElement config) {
@@ -48,7 +48,7 @@ public class ScopePreferenceManager extends PreferenceManager implements IHelpUI
 		}
 	}
 	class EnginePreferenceNode extends PreferenceNode {
-		private EngineDescriptor desc;
+		private final EngineDescriptor desc;
 
 		public EnginePreferenceNode(EngineDescriptor desc) {
 			super(desc.getId(), desc.getLabel(), desc.getImageDescriptor(), null);

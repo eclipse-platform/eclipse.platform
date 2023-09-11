@@ -21,7 +21,7 @@ import org.eclipse.ui.actions.SelectionListenerAction;
  */
 public abstract class BreakpointSelectionAction extends SelectionListenerAction {
 
-	private BreakpointsView fView;
+	private final BreakpointsView fView;
 
 	/**
 	 * Constructs an action for the breakpoints view.

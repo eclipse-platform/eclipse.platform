@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	private Viewer fViewer;
-	private boolean fControlVisibility;
+	private final boolean fControlVisibility;
 	private String fTitle;
 	private String fTitleArgument;
 

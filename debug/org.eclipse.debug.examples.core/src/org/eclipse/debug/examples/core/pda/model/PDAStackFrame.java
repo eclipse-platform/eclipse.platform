@@ -28,11 +28,11 @@ import org.eclipse.debug.examples.core.pda.protocol.PDAFrameData;
  */
 public class PDAStackFrame extends PDADebugElement implements IStackFrame {
 
-	private PDAThread fThread;
+	private final PDAThread fThread;
 	private String fName;
 	private int fPC;
 	private IPath fFilePath;
-	private int fId;
+	private final int fId;
 
 	/**
 	 * Constructs a stack frame in the given thread with the given

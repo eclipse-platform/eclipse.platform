@@ -35,9 +35,9 @@ public class IterateExpression extends CompositeExpression {
 
 	private static class IteratePool implements IEvaluationContext {
 
-		private Iterator<?> fIterator;
+		private final Iterator<?> fIterator;
 		private Object fDefaultVariable;
-		private IEvaluationContext fParent;
+		private final IEvaluationContext fParent;
 
 		public IteratePool(IEvaluationContext parent, Iterator<?> iterator) {
 			Assert.isNotNull(parent);

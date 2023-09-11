@@ -56,7 +56,7 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 	public static final String OPTIMIZED_ALGORITHM_USED = "OPTIMIZED_ALGORITHM_USED"; //$NON-NLS-1$
 	public static final String DISABLE_CAPPING_TEMPORARILY = "DISABLE_CAPPING_TEMPORARILY"; //$NON-NLS-1$
 
-	private CompareEditorInput fCompareEditorInput;
+	private final CompareEditorInput fCompareEditorInput;
 
 	private ViewerDescriptor fSelectedViewerDescriptor;
 

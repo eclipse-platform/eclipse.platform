@@ -41,13 +41,13 @@ import org.eclipse.help.internal.workingset.WorkingSet;
 public class SearchResults implements ISearchHitCollector {
 	// Collection of AdaptableHelpResource[]
 	private ArrayList<AdaptableHelpResource> scopes;
-	private int maxHits;
-	private String locale;
+	private final int maxHits;
+	private final String locale;
 	private AbstractHelpScope filter;
-	private CriteriaHelpScope criteriaScope;
+	private final CriteriaHelpScope criteriaScope;
 	protected SearchHit[] searchHits = new SearchHit[0];
 	private QueryTooComplexException searchException = null;
-	private boolean isQuickSearch;
+	private final boolean isQuickSearch;
 
 	public SearchResults(WorkingSet[] workingSets, int maxHits, String locale) {
 		this(workingSets, maxHits, locale, false);

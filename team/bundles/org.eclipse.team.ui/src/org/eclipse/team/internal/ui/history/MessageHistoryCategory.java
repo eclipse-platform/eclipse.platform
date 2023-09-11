@@ -16,7 +16,7 @@ package org.eclipse.team.internal.ui.history;
 import org.eclipse.team.core.history.IFileRevision;
 
 public class MessageHistoryCategory extends AbstractHistoryCategory {
-	private String message;
+	private final String message;
 
 	public MessageHistoryCategory(String message){
 		this.message = message;

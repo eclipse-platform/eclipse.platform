@@ -48,10 +48,10 @@ public class ElementTreeIterator implements IPathRequestor {
 	private int nextFreeSegment;
 
 	/* the tree being visited */
-	private ElementTree tree;
+	private final ElementTree tree;
 
 	/* the root of the subtree to visit */
-	private IPath path;
+	private final IPath path;
 
 	/* the immutable data tree being visited */
 	private DataTreeNode treeRoot;

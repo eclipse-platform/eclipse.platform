@@ -26,8 +26,8 @@ import org.eclipse.jface.action.IAction;
  */
 public class GroupBreakpointsAction extends Action {
 
-	private IBreakpointOrganizer fOrganzier;
-	private BreakpointsView fView;
+	private final IBreakpointOrganizer fOrganzier;
+	private final BreakpointsView fView;
 
 	/**
 	 * Creates a new action which will group breakpoints in the given

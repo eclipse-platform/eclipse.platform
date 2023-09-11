@@ -48,9 +48,9 @@ import org.eclipse.core.runtime.Status;
 public class HistoryStore2 implements IHistoryStore {
 
 	class HistoryCopyVisitor extends Bucket.Visitor {
-		private List<HistoryEntry> changes = new ArrayList<>();
-		private IPath destination;
-		private IPath source;
+		private final List<HistoryEntry> changes = new ArrayList<>();
+		private final IPath destination;
+		private final IPath source;
 
 		public HistoryCopyVisitor(IPath source, IPath destination) {
 			this.source = source;
@@ -88,10 +88,10 @@ public class HistoryStore2 implements IHistoryStore {
 		}
 	}
 
-	private BlobStore blobStore;
+	private final BlobStore blobStore;
 	private Set<UniversalUniqueIdentifier> blobsToRemove = new HashSet<>();
 	final BucketTree tree;
-	private Workspace workspace;
+	private final Workspace workspace;
 
 	public HistoryStore2(Workspace workspace, IFileStore store, int limit) {
 		this.workspace = workspace;

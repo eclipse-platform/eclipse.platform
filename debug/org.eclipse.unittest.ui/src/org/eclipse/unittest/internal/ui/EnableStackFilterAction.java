@@ -24,7 +24,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class EnableStackFilterAction extends Action {
 
-	private FailureTraceUIBlock fView;
+	private final FailureTraceUIBlock fView;
 
 	/**
 	 * Constructs an enable stack filter action object

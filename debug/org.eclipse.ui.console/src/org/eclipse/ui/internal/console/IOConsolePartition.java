@@ -34,7 +34,7 @@ public class IOConsolePartition implements ITypedRegion {
 
 	private int offset;
 	private int length;
-	private String type;
+	private final String type;
 
 	/**
 	 * Output partitions are all read only. Input partitions are read only once they

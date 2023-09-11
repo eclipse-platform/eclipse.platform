@@ -42,7 +42,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 public class SourceLookupService implements IDebugContextListener, ISourceDisplay {
 
 	private IWorkbenchWindow fWindow;
-	private IDebugContextService fDebugContextService;
+	private final IDebugContextService fDebugContextService;
 
 	public SourceLookupService(IWorkbenchWindow window) {
 		fWindow = window;

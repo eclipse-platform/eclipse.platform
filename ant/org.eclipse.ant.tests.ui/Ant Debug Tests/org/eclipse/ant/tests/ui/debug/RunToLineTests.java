@@ -46,7 +46,7 @@ public class RunToLineTests extends AbstractAntDebugTest {
 		super(name);
 	}
 
-	private Object fLock = new Object();
+	private final Object fLock = new Object();
 	private IEditorPart fEditor = null;
 
 	class MyListener implements IPerspectiveListener2 {

@@ -64,7 +64,7 @@ public class InternalJobGroup {
 	/** synchronized by JobManager.lock **/
 	private int canceledJobsCount;
 	/** synchronized by JobManager.lock **/
-	private int seedJobsCount;
+	private final int seedJobsCount;
 	/** synchronized by JobManager.lock **/
 	private int seedJobsRemainingCount;
 

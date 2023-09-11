@@ -32,7 +32,7 @@ public class ViewContextManager implements IWindowListener {
 	/**
 	 * Map of services
 	 */
-	private Map<IWorkbenchWindow, ViewContextService> fWindowToService = new HashMap<>();
+	private final Map<IWorkbenchWindow, ViewContextService> fWindowToService = new HashMap<>();
 
 	// singleton manager
 	private static ViewContextManager fgManager;

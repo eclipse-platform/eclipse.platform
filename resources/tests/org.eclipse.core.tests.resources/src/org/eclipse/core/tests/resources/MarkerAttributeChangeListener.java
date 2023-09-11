@@ -27,7 +27,7 @@ import org.junit.Assert;
  */
 public class MarkerAttributeChangeListener extends Assert implements IResourceChangeListener {
 	//Map of (Long(id) -> Map of (String(attribute key) -> Object(attribute value)))
-	private Map<Long, Map<String, Object>> attributeMap = new HashMap<>();
+	private final Map<Long, Map<String, Object>> attributeMap = new HashMap<>();
 
 	//cache the exception because it can't be thrown from a listener
 	private AssertionError error;

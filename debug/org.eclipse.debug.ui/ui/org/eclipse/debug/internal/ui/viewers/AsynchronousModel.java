@@ -48,7 +48,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 public abstract class AsynchronousModel {
 
 	private ModelNode fRoot; // root node
-	private Map<Object, ModelNode[]> fElementToNodes = new HashMap<>(); // map
+	private final Map<Object, ModelNode[]> fElementToNodes = new HashMap<>(); // map
 																							// of
 																							// element
 																							// to
@@ -56,14 +56,14 @@ public abstract class AsynchronousModel {
 																							// tree
 																							// nodes
 																							// (list)
-	private Map<Object, IModelProxy> fModelProxies = new HashMap<>(); // map
+	private final Map<Object, IModelProxy> fModelProxies = new HashMap<>(); // map
 																							// of
 																							// installed
 																							// model
 																							// proxies,
 																							// by
 																							// element
-	private AsynchronousViewer fViewer; // viewer this model works for
+	private final AsynchronousViewer fViewer; // viewer this model works for
 	private boolean fDisposed = false; // whether disposed
 
 	static class EmptyContentAdapter extends AsynchronousContentAdapter {
@@ -89,12 +89,12 @@ public abstract class AsynchronousModel {
 	/**
 	 * List of requests currently being performed.
 	 */
-	private List<IStatusMonitor> fPendingUpdates = new ArrayList<>();
+	private final List<IStatusMonitor> fPendingUpdates = new ArrayList<>();
 
 	/**
 	 * List of pending viewer updates
 	 */
-	private List<IStatusMonitor> fViewerUpdates = new ArrayList<>();
+	private final List<IStatusMonitor> fViewerUpdates = new ArrayList<>();
 
 	/**
 	 * Constructs a new empty tree model

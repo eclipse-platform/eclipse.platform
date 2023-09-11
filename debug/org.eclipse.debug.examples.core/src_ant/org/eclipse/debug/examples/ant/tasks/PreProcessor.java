@@ -49,10 +49,10 @@ import org.apache.tools.ant.util.FileUtils;
  */
 public class PreProcessor extends Task {
 
-	private Vector<FileSet> fFileSets = new Vector<>();
+	private final Vector<FileSet> fFileSets = new Vector<>();
 	private File fDestDir = null;
-	private Set<String> fSymbols = new HashSet<>();
-	private FileUtils fUtils = FileUtils.getFileUtils();
+	private final Set<String> fSymbols = new HashSet<>();
+	private final FileUtils fUtils = FileUtils.getFileUtils();
 
 	// possible states
 	private static final int STATE_OUTSIDE_CONDITION = 0;
@@ -61,10 +61,10 @@ public class PreProcessor extends Task {
 	private static final int STATE_POST_TRUE_CONDITION = 3;
 
 	// matchers
-	private Matcher IF_DEF_MATCHER = Pattern.compile("#ifdef\\s+\\w+").matcher(""); //$NON-NLS-1$ //$NON-NLS-2$
-	private Matcher ELSE_IF_MATCHER = Pattern.compile("#elseif\\s+\\w+").matcher(""); //$NON-NLS-1$ //$NON-NLS-2$
-	private Matcher ELSE_MATCHER = Pattern.compile("#else$|#else\\W+").matcher(""); //$NON-NLS-1$ //$NON-NLS-2$
-	private Matcher END_MATCHER = Pattern.compile("#endif").matcher(""); //$NON-NLS-1$ //$NON-NLS-2$
+	private final Matcher IF_DEF_MATCHER = Pattern.compile("#ifdef\\s+\\w+").matcher(""); //$NON-NLS-1$ //$NON-NLS-2$
+	private final Matcher ELSE_IF_MATCHER = Pattern.compile("#elseif\\s+\\w+").matcher(""); //$NON-NLS-1$ //$NON-NLS-2$
+	private final Matcher ELSE_MATCHER = Pattern.compile("#else$|#else\\W+").matcher(""); //$NON-NLS-1$ //$NON-NLS-2$
+	private final Matcher END_MATCHER = Pattern.compile("#endif").matcher(""); //$NON-NLS-1$ //$NON-NLS-2$
 
 
 	/**

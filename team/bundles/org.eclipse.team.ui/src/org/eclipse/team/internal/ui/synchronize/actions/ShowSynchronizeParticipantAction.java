@@ -35,8 +35,8 @@ import org.eclipse.team.ui.synchronize.SubscriberParticipant;
 @SuppressWarnings("deprecation")
 public class ShowSynchronizeParticipantAction extends Action implements IPropertyChangeListener {
 
-	private ISynchronizeParticipantReference fPage;
-	private ISynchronizeView fView;
+	private final ISynchronizeParticipantReference fPage;
+	private final ISynchronizeView fView;
 
 	@SuppressWarnings("unlikely-arg-type")
 	@Override
@@ -82,8 +82,8 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
 
 	private static final class ParticipantOverlay extends CompositeImageDescriptor {
 
-		private ImageData pinnedData = TeamUIPlugin.getImageDescriptor("ovr/pinned_ovr.png").getImageData(); //$NON-NLS-1$
-		private ImageData scheduledData = TeamUIPlugin.getImageDescriptor("ovr/waiting_ovr.png").getImageData(); //$NON-NLS-1$
+		private final ImageData pinnedData = TeamUIPlugin.getImageDescriptor("ovr/pinned_ovr.png").getImageData(); //$NON-NLS-1$
+		private final ImageData scheduledData = TeamUIPlugin.getImageDescriptor("ovr/waiting_ovr.png").getImageData(); //$NON-NLS-1$
 		private ImageData imageData;
 		private ISynchronizeParticipant participant;
 

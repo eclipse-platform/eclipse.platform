@@ -46,7 +46,7 @@ public abstract class AbstractDebugCommand implements IDebugCommandHandler {
 		/**
 		 * The request to update
 		 */
-		private IEnabledStateRequest request;
+		private final IEnabledStateRequest request;
 
 		/**
 		 * Whether this job has been run

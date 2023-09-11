@@ -82,7 +82,7 @@ public class XMLStructureCreator implements IStructureCreator {
 	private XMLNode fcurrentParent;
 	private String fsignature;
 	private Document fdoc;
-	private boolean ignoreBodies= false;
+	private final boolean ignoreBodies= false;
 	private HashMap fIdMapsInternal;
 	private HashMap fIdMaps;
 	private HashMap fIdExtensionToName;

@@ -148,10 +148,10 @@ public class SyncInfo implements IAdaptable {
 	/*====================================================================
 	 * Members:
 	 *====================================================================*/
-	private IResource local;
-	private IResourceVariant base;
-	private IResourceVariant remote;
-	private IResourceVariantComparator comparator;
+	private final IResource local;
+	private final IResourceVariant base;
+	private final IResourceVariant remote;
+	private final IResourceVariantComparator comparator;
 
 	private int syncKind;
 

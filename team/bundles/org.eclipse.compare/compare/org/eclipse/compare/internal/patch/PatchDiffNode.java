@@ -22,7 +22,7 @@ import org.eclipse.core.resources.IResource;
 
 public abstract class PatchDiffNode extends DiffNode implements IResourceProvider {
 
-	private Object fElement;
+	private final Object fElement;
 
 	public PatchDiffNode(Object patchElement, IDiffContainer parent, int kind,
 			ITypedElement ancestor, ITypedElement left, ITypedElement right) {

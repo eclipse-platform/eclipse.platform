@@ -26,8 +26,8 @@ import org.w3c.dom.Node;
 
 public class IncompatibleSiblingChecker {
 
-	private IStatusContainer statusContainer;
-	private Node parentNode;
+	private final IStatusContainer statusContainer;
+	private final Node parentNode;
 	private String existingChild;
 	private boolean errorReported = false;
 

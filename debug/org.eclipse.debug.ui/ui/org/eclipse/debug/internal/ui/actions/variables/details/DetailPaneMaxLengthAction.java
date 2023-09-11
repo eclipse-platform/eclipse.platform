@@ -28,7 +28,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class DetailPaneMaxLengthAction extends Action {
 
-	private Shell fDialogShell;
+	private final Shell fDialogShell;
 
 	public DetailPaneMaxLengthAction(Shell dialogShell){
 		super(ActionMessages.DetailPaneMaxLengthAction_0);

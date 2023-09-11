@@ -30,7 +30,7 @@ public class EqualsExpression extends Expression {
 	 */
 	private static final int HASH_INITIAL= EqualsExpression.class.getName().hashCode();
 
-	private Object fExpectedValue;
+	private final Object fExpectedValue;
 
 	public EqualsExpression(Object expectedValue) {
 		Assert.isNotNull(expectedValue);

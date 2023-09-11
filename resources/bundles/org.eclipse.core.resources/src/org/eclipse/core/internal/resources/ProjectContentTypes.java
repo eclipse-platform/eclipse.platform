@@ -44,9 +44,9 @@ public class ProjectContentTypes {
 	 */
 	private class ProjectContentTypeSelectionPolicy implements ISelectionPolicy, IScopeContext {
 		// corresponding project
-		private Project project;
+		private final Project project;
 		// cached project scope
-		private IScopeContext projectScope;
+		private final IScopeContext projectScope;
 
 		public ProjectContentTypeSelectionPolicy(Project project) {
 			this.project = project;
@@ -102,8 +102,8 @@ public class ProjectContentTypes {
 
 	private static final String PREF_LOCAL_CONTENT_TYPE_SETTINGS = "enabled"; //$NON-NLS-1$
 	private static final Preferences PROJECT_SCOPE = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE);
-	private Cache contentTypesPerProject;
-	private Workspace workspace;
+	private final Cache contentTypesPerProject;
+	private final Workspace workspace;
 
 	static boolean usesContentTypePreferences(String projectName) {
 		try {

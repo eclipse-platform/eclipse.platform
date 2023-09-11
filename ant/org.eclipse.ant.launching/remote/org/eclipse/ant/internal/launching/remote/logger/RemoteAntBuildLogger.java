@@ -43,7 +43,7 @@ import org.eclipse.ant.internal.launching.remote.RemoteAntMessages;
 public class RemoteAntBuildLogger extends DefaultLogger {
 
 	/** Time of the start of the build */
-	private long fStartTime = System.currentTimeMillis();
+	private final long fStartTime = System.currentTimeMillis();
 
 	/**
 	 * The client socket.

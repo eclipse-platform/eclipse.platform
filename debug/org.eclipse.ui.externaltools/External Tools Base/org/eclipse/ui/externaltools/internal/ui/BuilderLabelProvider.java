@@ -36,8 +36,8 @@ class BuilderLabelProvider extends LabelProvider {
 		private static final String IMG_INVALID_BUILD_TOOL = "icons/full/obj16/invalid_build_tool.png"; //$NON-NLS-1$
 		IDebugModelPresentation debugModelPresentation= DebugUITools.newDebugModelPresentation();
 
-		private Image builderImage = ExternalToolsPlugin.getDefault().getImageDescriptor(IMG_BUILDER).createImage();
-		private Image invalidBuildToolImage = ExternalToolsPlugin.getDefault().getImageDescriptor(IMG_INVALID_BUILD_TOOL).createImage();
+		private final Image builderImage = ExternalToolsPlugin.getDefault().getImageDescriptor(IMG_BUILDER).createImage();
+		private final Image invalidBuildToolImage = ExternalToolsPlugin.getDefault().getImageDescriptor(IMG_INVALID_BUILD_TOOL).createImage();
 
 		@Override
 		public String getText(Object element) {

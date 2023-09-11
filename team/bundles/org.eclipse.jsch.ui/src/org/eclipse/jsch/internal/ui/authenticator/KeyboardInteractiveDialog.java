@@ -58,7 +58,7 @@ public class KeyboardInteractiveDialog extends TrayDialog{
 	protected String lang;
 	protected String[] prompt;
 	protected boolean[] echo;
-	private String message;
+	private final String message;
 	private String[] result;
 	protected boolean allowCaching=false;
 

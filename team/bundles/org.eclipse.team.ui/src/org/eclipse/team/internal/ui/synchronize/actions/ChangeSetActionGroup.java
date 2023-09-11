@@ -242,7 +242,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 	 * Action that allows changing the model providers sort order.
 	 */
 	private class ToggleSortOrderAction extends Action {
-		private int criteria;
+		private final int criteria;
 		protected ToggleSortOrderAction(String name, int criteria) {
 			super(name, IAction.AS_RADIO_BUTTON);
 			this.criteria = criteria;
@@ -275,7 +275,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 	/*
 	 * The model provider for this action group
 	 */
-	private ChangeSetModelProvider provider;
+	private final ChangeSetModelProvider provider;
 
 	/*
 	 * The actions created by this group
@@ -381,7 +381,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 	protected void addChangeSets(IMenuManager manager) {
 		ChangeSet[] sets = getActiveChangeSetManager().getSets();
 		Arrays.sort(sets, new Comparator<ChangeSet>() {
-			private Collator collator = Collator.getInstance();
+			private final Collator collator = Collator.getInstance();
 			@Override
 			public int compare(ChangeSet o1, ChangeSet o2) {
 				return collator.compare(o1.getName(), o2.getName());

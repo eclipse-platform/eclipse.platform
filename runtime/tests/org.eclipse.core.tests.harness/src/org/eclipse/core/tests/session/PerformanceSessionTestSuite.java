@@ -33,8 +33,8 @@ public class PerformanceSessionTestSuite extends SessionTestSuite {
 		private boolean failed;
 		private int runs = 0;
 		private boolean started = false;
-		private TestResult target;
-		private int timesToRun;
+		private final TestResult target;
+		private final int timesToRun;
 
 		public ConsolidatedTestResult(TestResult target, int timesToRun) {
 			this.target = target;
@@ -86,7 +86,7 @@ public class PerformanceSessionTestSuite extends SessionTestSuite {
 
 	public static final String PROP_PERFORMANCE = "perf_ctrl";
 
-	private int timesToRun;
+	private final int timesToRun;
 
 	public PerformanceSessionTestSuite(String pluginId, int timesToRun) {
 		super(pluginId);

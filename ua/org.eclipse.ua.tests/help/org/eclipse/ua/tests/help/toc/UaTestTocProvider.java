@@ -24,7 +24,7 @@ public class UaTestTocProvider extends AbstractTocProvider {
 
 	UserToc toc;
 	TocContribution contribution;
-	private ITocContribution[] contributions;
+	private final ITocContribution[] contributions;
 
 	private class TocContribution implements ITocContribution {
 

@@ -32,8 +32,8 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class EvaluationContext implements IEvaluationContext {
 
-	private IEvaluationContext fParent;
-	private Object fDefaultVariable;
+	private final IEvaluationContext fParent;
+	private final Object fDefaultVariable;
 	private Map<String, Object> fVariables;
 	private IVariableResolver[] fVariableResolvers;
 	private Boolean fAllowPluginActivation;

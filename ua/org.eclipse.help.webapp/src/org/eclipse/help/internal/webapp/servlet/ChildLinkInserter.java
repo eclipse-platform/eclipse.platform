@@ -33,11 +33,11 @@ import org.eclipse.help.internal.webapp.data.UrlUtil;
 
 public class ChildLinkInserter {
 
-	private HttpServletRequest req;
-	private OutputStream out;
+	private final HttpServletRequest req;
+	private final OutputStream out;
 	private static final String NO_CHILDREN = "no_child_topics"; //$NON-NLS-1$
 	private static final String HAS_CHILDREN = "has_child_topics"; //$NON-NLS-1$
-	private AbstractHelpScope scope;
+	private final AbstractHelpScope scope;
 
 	public ChildLinkInserter(HttpServletRequest req, OutputStream out) {
 		this.req = req;

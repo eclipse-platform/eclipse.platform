@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.PlatformObject;
  */
 public class ShallowContainer extends PlatformObject {
 
-	private IContainer container;
+	private final IContainer container;
 
 	public ShallowContainer(IContainer container) {
 		this.container = container;

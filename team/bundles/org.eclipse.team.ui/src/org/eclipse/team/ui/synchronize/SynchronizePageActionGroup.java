@@ -73,7 +73,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 
 	private ISynchronizePageConfiguration configuration;
 
-	private Map<String, Map<String, List<Object>>> menuContributions = new HashMap<>();
+	private final Map<String, Map<String, List<Object>>> menuContributions = new HashMap<>();
 
 	private VisibleRootsSelectionProvider visibleRootSelectionProvider;
 
@@ -84,7 +84,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	 */
 	private static class VisibleRootsSelectionProvider extends SynchronizePageActionGroup implements ISelectionProvider {
 
-		private ListenerList<ISelectionChangedListener> selectionChangedListeners = new ListenerList<>(ListenerList.IDENTITY);
+		private final ListenerList<ISelectionChangedListener> selectionChangedListeners = new ListenerList<>(ListenerList.IDENTITY);
 		private ISelection selection;
 
 		protected VisibleRootsSelectionProvider(ISynchronizeModelElement element) {

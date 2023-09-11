@@ -22,7 +22,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class FormatTableRenderingAction extends Action {
 
-	private AbstractBaseTableRendering fRendering;
+	private final AbstractBaseTableRendering fRendering;
 
 	int fColumnSize = -1;
 	int fRowSize = -1;

@@ -311,12 +311,12 @@ public abstract class ContentMergeViewer extends ContentViewer
 	}
 
 	/** Style bits for top level composite */
-	private int fStyles;
-	private ResourceBundle fBundle;
+	private final int fStyles;
+	private final ResourceBundle fBundle;
 	private final CompareConfiguration fCompareConfiguration;
 	private IPropertyChangeListener fPropertyChangeListener;
 	private IPropertyChangeListener fPreferenceChangeListener;
-	private ICompareInputChangeListener fCompareInputChangeListener;
+	private final ICompareInputChangeListener fCompareInputChangeListener;
 	private ListenerList<IPropertyChangeListener> fListenerList;
 	boolean fConfirmSave= true;
 
@@ -357,7 +357,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	private Cursor fVSashCursor;
 	private Cursor fHVSashCursor;
 
-	private ILabelProviderListener labelChangeListener = event -> {
+	private final ILabelProviderListener labelChangeListener = event -> {
 		Object[] elements = event.getElements();
 		for (Object object : elements) {
 			if (object == getInput())

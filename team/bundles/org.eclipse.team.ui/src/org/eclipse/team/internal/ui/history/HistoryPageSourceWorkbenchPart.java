@@ -24,9 +24,9 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * Fake part to use in page book for the History view
  */
 public class HistoryPageSourceWorkbenchPart implements IWorkbenchPart {
-	private Object object;
-	private IHistoryPageSource source;
-	private IWorkbenchPartSite site;
+	private final Object object;
+	private final IHistoryPageSource source;
+	private final IWorkbenchPartSite site;
 
 	@Override
 	public boolean equals(Object obj) {

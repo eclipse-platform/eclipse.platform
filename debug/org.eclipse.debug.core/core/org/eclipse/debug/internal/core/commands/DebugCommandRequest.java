@@ -22,7 +22,7 @@ import org.eclipse.debug.core.commands.IDebugCommandRequest;
  */
 public class DebugCommandRequest extends Request implements IDebugCommandRequest {
 
-	private Object[] fElements;
+	private final Object[] fElements;
 
 	public DebugCommandRequest(Object[] elements) {
 		fElements = elements;

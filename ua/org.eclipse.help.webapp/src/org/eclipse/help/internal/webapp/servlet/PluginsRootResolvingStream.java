@@ -45,11 +45,11 @@ public class PluginsRootResolvingStream extends OutputStream {
 	private static final String INSERT_CHILD_LINK_STYLE = "<!--INSERT_CHILD_LINK_STYLE-->"; //$NON-NLS-1$
 	private final String[] keywords = { INSERT_CHILD_LINKS, INSERT_CHILD_LINK_STYLE };
 	private boolean[] possibleKeywordMatches;
-	private String pathPrefix;
+	private final String pathPrefix;
 	private StringBuilder tag;
 	private ByteArrayOutputStream metaTagBuffer;
 	private boolean tagRead;
-	private HttpServletRequest req;
+	private final HttpServletRequest req;
 	private String charset;
 
 	public PluginsRootResolvingStream(OutputStream out, HttpServletRequest req, String prefix) {

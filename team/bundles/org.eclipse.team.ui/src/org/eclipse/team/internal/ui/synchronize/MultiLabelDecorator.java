@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 class MultiLabelDecorator extends LabelProvider implements ILabelDecorator, IFontDecorator, IColorDecorator {
-	private ILabelDecorator[] decorators;
+	private final ILabelDecorator[] decorators;
 
 	public MultiLabelDecorator(ILabelDecorator[] decorators) {
 		this.decorators = decorators;

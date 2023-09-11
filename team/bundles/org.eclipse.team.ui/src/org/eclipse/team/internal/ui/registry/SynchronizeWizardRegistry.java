@@ -24,7 +24,7 @@ public class SynchronizeWizardRegistry extends RegistryReader {
 
 	public static final String PT_SYNCHRONIZE_WIZARDS = "synchronizeWizards"; //$NON-NLS-1$
 	private static final String TAG_SYNCHRONIZE_WIZARD = "wizard"; //$NON-NLS-1$
-	private Map<String, SynchronizeWizardDescription> wizards = new HashMap<>();
+	private final Map<String, SynchronizeWizardDescription> wizards = new HashMap<>();
 
 	@Override
 	protected boolean readElement(IConfigurationElement element) {

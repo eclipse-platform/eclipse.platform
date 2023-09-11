@@ -38,7 +38,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 	private final long closeTimeout; // close() timeout in millis, or -1
 
 	// requests for the thread (synchronized)
-	private byte[] iobuffer; // circular buffer
+	private final byte[] iobuffer; // circular buffer
 	private int head = 0; // points to first unwritten byte
 	private int length = 0; // number of remaining unwritten bytes
 	private boolean closeRequested = false; // if true, close requested

@@ -30,7 +30,7 @@ public class ImageManager {
 
 	private LocalResourceManager imageManager;
 	// Contains direction images
-	private CompareConfiguration compareConfig = new CompareConfiguration();
+	private final CompareConfiguration compareConfig = new CompareConfiguration();
 	private boolean disposed = false;
 
 	public synchronized static ImageManager getImageManager(ISynchronizationContext context, ISynchronizePageConfiguration configuration) {

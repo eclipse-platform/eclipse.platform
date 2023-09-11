@@ -30,7 +30,7 @@ import org.eclipse.debug.ui.memory.IMemoryRenderingTypeDelegate;
  */
 class MemoryRenderingType implements IMemoryRenderingType {
 
-	private IConfigurationElement fConfigurationElement;
+	private final IConfigurationElement fConfigurationElement;
 	private IMemoryRenderingTypeDelegate fDelegate;
 
 	// attributes for a memoryRenderingType

@@ -33,7 +33,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ResetToBaseAddressAction extends Action {
 
-	private AbstractBaseTableRendering fRendering;
+	private final AbstractBaseTableRendering fRendering;
 
 	public ResetToBaseAddressAction(AbstractBaseTableRendering rendering) {
 		fRendering = rendering;

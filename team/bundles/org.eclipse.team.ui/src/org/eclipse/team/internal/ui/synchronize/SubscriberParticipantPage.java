@@ -36,7 +36,7 @@ import org.eclipse.team.ui.synchronize.SubscriberParticipant;
  */
 public final class SubscriberParticipantPage extends AbstractSynchronizePage {
 
-	private SubscriberParticipant participant;
+	private final SubscriberParticipant participant;
 
 	private final static int[] INCOMING_MODE_FILTER = new int[] {SyncInfo.CONFLICTING, SyncInfo.INCOMING};
 	private final static int[] OUTGOING_MODE_FILTER = new int[] {SyncInfo.CONFLICTING, SyncInfo.OUTGOING};

@@ -31,7 +31,7 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 public class ContentTypeBuilder {
 	public static final String PT_CONTENTTYPES = "contentTypes"; //$NON-NLS-1$
-	private ContentTypeCatalog catalog;
+	private final ContentTypeCatalog catalog;
 
 	private static String getUniqueId(String namespace, String baseTypeId) {
 		if (baseTypeId == null)

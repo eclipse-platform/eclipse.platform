@@ -49,10 +49,10 @@ public class FormatTableRenderingDialog extends TrayDialog
 	{
 
 		// possible number of addressable units per column
-		private int[] fColumnSizes = new int[] {1, 2, 4, 8, 16, 32, 64, 128};
+		private final int[] fColumnSizes = new int[] {1, 2, 4, 8, 16, 32, 64, 128};
 
 		// possible number of addressable units per column
-		private int[] fRowSizes = new int[] {1, 2, 4, 8, 16, 32, 64, 128};
+		private final int[] fRowSizes = new int[] {1, 2, 4, 8, 16, 32, 64, 128};
 
 		private Combo fColumnControl;
 		private Combo fRowControl;
@@ -64,7 +64,7 @@ public class FormatTableRenderingDialog extends TrayDialog
 		private Button fDefaultButton;
 		private Text fDefaultColValue;
 		private Text fDefaultRowValue;
-		private AbstractBaseTableRendering fRendering;
+		private final AbstractBaseTableRendering fRendering;
 		private int fColumnSize;
 		private int fRowSize;
 		private Label fMsgLabel;

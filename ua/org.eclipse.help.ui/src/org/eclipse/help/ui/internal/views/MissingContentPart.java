@@ -36,7 +36,7 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 public class MissingContentPart extends AbstractFormPart implements IHelpPart  {
 
-	private Composite container;
+	private final Composite container;
 	private String id;
 	private ReusableHelpPart helpPart;
 	private ImageHyperlink statusLink;

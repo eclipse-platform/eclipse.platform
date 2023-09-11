@@ -83,7 +83,7 @@ public abstract class ViewItem {
 	private boolean isSkipped = false;
 	private ExpandableComposite mainItemComposite;
 
-	private Composite parent;
+	private final Composite parent;
 	protected CheatSheetViewer viewer;
 	protected CheatSheetPage page;
 	private Composite titleComposite;

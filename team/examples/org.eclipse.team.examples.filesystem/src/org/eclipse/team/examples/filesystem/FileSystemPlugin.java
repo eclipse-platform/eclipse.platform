@@ -48,7 +48,7 @@ public class FileSystemPlugin extends AbstractUIPlugin {
 	// This static field will hold the singleton instance of the plugin class
 	private static FileSystemPlugin plugin;
 
-	private PessimisticFilesystemProviderPlugin pessPlugin;
+	private final PessimisticFilesystemProviderPlugin pessPlugin;
 
 	private PluginManifestChangeTracker tracker;
 

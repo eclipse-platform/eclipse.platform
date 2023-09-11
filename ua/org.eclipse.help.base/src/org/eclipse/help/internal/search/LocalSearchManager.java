@@ -57,15 +57,15 @@ public class LocalSearchManager {
 	private static final String SEARCH_PARTICIPANT_XP_NAME = "searchParticipant"; //$NON-NLS-1$
 	private static final String BINDING_XP_NAME = "binding"; //$NON-NLS-1$
 	private static final ArrayList<ParticipantDescriptor> PARTICIPANTS_NOT_FOUND = new ArrayList<>();
-	private Map<String, Object> indexes = new HashMap<>();
-	private Map<String, AnalyzerDescriptor> analyzerDescriptors = new HashMap<>();
-	private Map<String, ParticipantDescriptor> searchParticipantsById = new HashMap<>();
-	private Map<String, ArrayList<ParticipantDescriptor>> searchParticipantsByPlugin = new HashMap<>();
+	private final Map<String, Object> indexes = new HashMap<>();
+	private final Map<String, AnalyzerDescriptor> analyzerDescriptors = new HashMap<>();
+	private final Map<String, ParticipantDescriptor> searchParticipantsById = new HashMap<>();
+	private final Map<String, ArrayList<ParticipantDescriptor>> searchParticipantsByPlugin = new HashMap<>();
 	private ArrayList<ParticipantDescriptor> globalSearchParticipants;
 
 	private static class ParticipantDescriptor implements IHelpResource {
 
-		private IConfigurationElement element;
+		private final IConfigurationElement element;
 		private SearchParticipant participant;
 
 		public ParticipantDescriptor(IConfigurationElement element) {

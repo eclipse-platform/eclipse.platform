@@ -26,7 +26,7 @@ import org.eclipse.jface.action.*;
  */
 class ChooseMatcherDropDownAction extends Action implements IMenuCreator {
 
-	private XMLStructureViewer fViewer;
+	private final XMLStructureViewer fViewer;
 
 	public ChooseMatcherDropDownAction(XMLStructureViewer viewer) {
 		fViewer = viewer;

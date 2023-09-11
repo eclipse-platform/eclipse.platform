@@ -37,7 +37,7 @@ public class Eclipse extends Thread {
 	private int status = STATUS_INIT;
 	private Exception exception;
 	Process pr;
-	private EclipseLifeCycleListener lifeCycleListener;
+	private final EclipseLifeCycleListener lifeCycleListener;
 	/**
 	 * Constructor
 	 */

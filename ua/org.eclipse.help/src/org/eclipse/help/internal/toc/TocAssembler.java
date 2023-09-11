@@ -55,7 +55,7 @@ public class TocAssembler {
 	private Map<String, ITocContribution[]> contributionsByLinkTo;
 	private Set<ITocContribution> processedContributions;
 	private Map<String, String[]> requiredAttributes;
-	private Set<String> tocsToFilter;
+	private final Set<String> tocsToFilter;
 
 
 	public TocAssembler() {

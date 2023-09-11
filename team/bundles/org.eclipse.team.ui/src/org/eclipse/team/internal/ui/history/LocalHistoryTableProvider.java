@@ -66,7 +66,7 @@ public class LocalHistoryTableProvider {
 		private Image dateImage;
 		private Font currentRevisionFont;
 
-		private IPropertyChangeListener themeListener = event -> LocalHistoryTableProvider.this.viewer.refresh();
+		private final IPropertyChangeListener themeListener = event -> LocalHistoryTableProvider.this.viewer.refresh();
 
 		public LocalHistoryLabelProvider() {
 			PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(themeListener);
@@ -177,10 +177,10 @@ public class LocalHistoryTableProvider {
 	 */
 	private class HistoryComparator extends ViewerComparator {
 		private boolean reversed = false;
-		private int columnNumber;
+		private final int columnNumber;
 
 		// column headings:	"Revision" "Tags" "Date" "Author" "Comment"
-		private int[][] SORT_ORDERS_BY_COLUMN = {
+		private final int[][] SORT_ORDERS_BY_COLUMN = {
 				{COL_DATE}, /* date */
 		};
 

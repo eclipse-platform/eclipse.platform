@@ -20,11 +20,11 @@ import org.eclipse.help.webapp.AbstractView ;
 
 public class View extends AbstractView {
 	public static char NO_SHORTCUT = (char)0;
-	private String name;
-	private String url;
-	private String imageURL;
-	private char shortcut;
-	private boolean isDeferred;
+	private final String name;
+	private final String url;
+	private final String imageURL;
+	private final char shortcut;
+	private final boolean isDeferred;
 
 	public View(String name, String url, String imageURL, char shortcut, boolean isDeferred) {
 		this.name = name;

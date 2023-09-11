@@ -30,7 +30,7 @@ import org.eclipse.jface.text.IRegion;
  */
 public class RegexDiffComparator extends RangeDifferenceComparator {
 
-	private Pattern pattern;
+	private final Pattern pattern;
 
 	public RegexDiffComparator(Pattern pattern, boolean ignoreWhitespace) {
 		super(ignoreWhitespace);

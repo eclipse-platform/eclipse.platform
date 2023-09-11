@@ -61,7 +61,7 @@ public class Launch extends PlatformObject implements ILaunch, IDisconnect, ILau
 	 * in this collection), or empty if
 	 * there are no debug targets.
 	 */
-	private List<IDebugTarget> fTargets = new ArrayList<>();
+	private final List<IDebugTarget> fTargets = new ArrayList<>();
 
 	/**
 	 * The configuration that was launched, or null.
@@ -72,7 +72,7 @@ public class Launch extends PlatformObject implements ILaunch, IDisconnect, ILau
 	 * The system processes associated with
 	 * this launch, or empty if none.
 	 */
-	private List<IProcess> fProcesses = new ArrayList<>();
+	private final List<IProcess> fProcesses = new ArrayList<>();
 
 	/**
 	 * The source locator to use in the debug session
@@ -83,7 +83,7 @@ public class Launch extends PlatformObject implements ILaunch, IDisconnect, ILau
 	/**
 	 * The mode this launch was launched in.
 	 */
-	private String fMode;
+	private final String fMode;
 
 	/**
 	 * Table of client defined attributes

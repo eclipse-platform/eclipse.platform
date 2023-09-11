@@ -55,7 +55,7 @@ public abstract class RootScopePage extends PreferencePage implements
 
 	private Text descText;
 
-	private Hashtable<Control, Boolean> disabledStates = new Hashtable<>();
+	private final Hashtable<Control, Boolean> disabledStates = new Hashtable<>();
 
 	private Label spacer;
 

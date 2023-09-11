@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Control;
 
 public class SimpleTextViewer extends AbstractViewer {
 
-	private SourceViewer fSourceViewer;
+	private final SourceViewer fSourceViewer;
 	private ICompareInput fInput;
 
 

@@ -40,7 +40,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.progress.UIJob;
 
 public class MemoryRetrievalProxy extends AbstractModelProxy implements IMemoryBlockListener {
-	private IMemoryBlockRetrieval fRetrieval;
+	private final IMemoryBlockRetrieval fRetrieval;
 
 	public MemoryRetrievalProxy(IMemoryBlockRetrieval retrieval) {
 		fRetrieval = retrieval;

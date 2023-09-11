@@ -67,12 +67,12 @@ public class DetailPaneProxy implements ISaveablePart {
 	/**
 	 * Detail pane container that the detail panes will be added to.
 	 */
-	private IDetailPaneContainer fParentContainer;
+	private final IDetailPaneContainer fParentContainer;
 
 	/**
 	 * Property listeners
 	 */
-	private ListenerList<IPropertyListener> fListeners = new ListenerList<>();
+	private final ListenerList<IPropertyListener> fListeners = new ListenerList<>();
 
 	/**
 	 * Constructor that sets up the detail pane for a view.  Note that no default pane

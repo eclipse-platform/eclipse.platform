@@ -193,7 +193,7 @@ public class ScopeRegistry {
 	 */
 	static class ScopePhrase{
 
-		private String phrase;
+		private final String phrase;
 		private int cursor;
 
 		public ScopePhrase(String phrase)
@@ -247,7 +247,7 @@ public class ScopeRegistry {
 		public final static int UNION=1;
 		public final static int INTERSECTION=2;
 
-		private ArrayList<AbstractHelpScope> kids = new ArrayList<>();
+		private final ArrayList<AbstractHelpScope> kids = new ArrayList<>();
 		private int type;
 
 		public void setType(int type)

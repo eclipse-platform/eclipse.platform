@@ -78,7 +78,7 @@ public class LaunchConfigurationsPreferencePage extends PreferencePage implement
 	 */
 	class LaunchConfigurationMigrationSelectionDialog extends AbstractDebugCheckboxSelectionDialog {
 
-		private Object fInput;
+		private final Object fInput;
 
 		public LaunchConfigurationMigrationSelectionDialog(Shell parentShell, Object input) {
 			super(parentShell);

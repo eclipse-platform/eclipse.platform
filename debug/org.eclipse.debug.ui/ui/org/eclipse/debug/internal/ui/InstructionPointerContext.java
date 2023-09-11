@@ -28,22 +28,22 @@ public class InstructionPointerContext {
 	/**
 	 * The thread this context belongs to.
 	 */
-	private IThread fThread;
+	private final IThread fThread;
 
 	/**
 	 * The debug target this context belongs to.
 	 */
-	private IDebugTarget fDebugTarget;
+	private final IDebugTarget fDebugTarget;
 
 	/**
 	 * The editor that the annotation is being displayed in
 	 */
-	private ITextEditor fEditor;
+	private final ITextEditor fEditor;
 
 	/**
 	 * The vertical ruler annotation for this context.
 	 */
-	private Annotation fAnnotation;
+	private final Annotation fAnnotation;
 
 	public InstructionPointerContext(IDebugTarget target, IThread thread, ITextEditor editor, Annotation annotation) {
 		fDebugTarget = target;

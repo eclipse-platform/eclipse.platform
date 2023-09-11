@@ -45,8 +45,8 @@ public class PasteAction extends SelectionListenerAction {
 
 	private final static String ID = TeamUIPlugin.PLUGIN_ID
 			+ ".synchronize.action.paste"; //$NON-NLS-1$
-	private Shell fShell;
-	private Clipboard fClipboard;
+	private final Shell fShell;
+	private final Clipboard fClipboard;
 
 	public PasteAction(IWorkbenchPart part) {
 		super(TeamUIMessages.PasteAction_1);

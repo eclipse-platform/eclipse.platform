@@ -65,7 +65,7 @@ public abstract class BackgroundEventHandler {
 	public static final int RUNNABLE_EVENT = 1000;
 
 	// Events that need to be processed
-	private List<Event> awaitingProcessing = new ArrayList<>();
+	private final List<Event> awaitingProcessing = new ArrayList<>();
 
 	// The job that runs when events need to be processed
 	private Job eventHandlerJob;
@@ -74,7 +74,7 @@ public abstract class BackgroundEventHandler {
 	private boolean shutdown;
 
 	// Accumulate exceptions that occur
-	private ExceptionCollector errors;
+	private final ExceptionCollector errors;
 
 	// time the last dispatch occurred
 	private long timeOfLastDispatch = 0L;
@@ -94,13 +94,13 @@ public abstract class BackgroundEventHandler {
 	// time to wait for messages to be queued
 	private static final long WAIT_DELAY = 100;
 
-	private String jobName;
+	private final String jobName;
 
 	/**
 	 * General event class. The type is specific to subclasses.
 	 */
 	public static class Event {
-		private int type;
+		private final int type;
 		public Event(int type) {
 			this.type = type;
 		}
@@ -126,8 +126,8 @@ public abstract class BackgroundEventHandler {
 	 * Resource event class. The type is specific to subclasses.
 	 */
 	public static class ResourceEvent extends Event {
-		private IResource resource;
-		private int depth;
+		private final IResource resource;
+		private final int depth;
 		public ResourceEvent(IResource resource, int type, int depth) {
 			super(type);
 			this.resource = resource;
@@ -174,8 +174,8 @@ public abstract class BackgroundEventHandler {
 	 * high priority event has been processed
 	 */
 	public static class RunnableEvent extends Event {
-		private IWorkspaceRunnable runnable;
-		private boolean preemtive;
+		private final IWorkspaceRunnable runnable;
+		private final boolean preemtive;
 		public RunnableEvent(IWorkspaceRunnable runnable, boolean preemtive) {
 			super(RUNNABLE_EVENT);
 			this.runnable = runnable;

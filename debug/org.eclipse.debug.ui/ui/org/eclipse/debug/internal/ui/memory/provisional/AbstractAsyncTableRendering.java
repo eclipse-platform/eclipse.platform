@@ -284,7 +284,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 	}
 
 	private class SwitchPageJob extends UIJob {
-		private Object fLock = new Object();
+		private final Object fLock = new Object();
 		private boolean fShowMessagePage = false;
 		private String fMessage = IInternalDebugCoreConstants.EMPTY_STRING;
 
@@ -389,7 +389,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 	private NextPageAction fNextAction;
 	private PrevPageAction fPrevAction;
 
-	private ArrayList<IContextActivation> fContext = new ArrayList<>();
+	private final ArrayList<IContextActivation> fContext = new ArrayList<>();
 	private AbstractHandler fGoToAddressHandler;
 
 	private AbstractHandler fNextPageHandler;
@@ -399,7 +399,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 	private boolean fIsDisposed = false;
 	private boolean fIsShowAddressColumn = true;
 
-	private SwitchPageJob fSwitchPageJob = new SwitchPageJob();
+	private final SwitchPageJob fSwitchPageJob = new SwitchPageJob();
 	private boolean fError = false;
 
 	private PendingPropertyChanges fPendingSyncProperties;
@@ -408,7 +408,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 	private ArrayList<IMenuListener> fMenuListeners;
 	private MenuManager fMenuMgr;
 
-	private ISchedulingRule serialByRenderingRule = new SerialByObjectRule(this);
+	private final ISchedulingRule serialByRenderingRule = new SerialByObjectRule(this);
 
 	/**
 	 * Identifier for an empty group preceding all context menu actions (value
@@ -434,26 +434,26 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 	 */
 	public static final String EMPTY_PROPERTY_GROUP = "propertyGroup"; //$NON-NLS-1$
 
-	private ISelectionChangedListener fViewerSelectionChangedListener = event -> {
+	private final ISelectionChangedListener fViewerSelectionChangedListener = event -> {
 		updateSyncTopAddress(getTopVisibleAddress());
 		updateSyncSelectedAddress(getSelectedAddress());
 	};
 
-	private SelectionAdapter fScrollBarSelectionListener = new SelectionAdapter() {
+	private final SelectionAdapter fScrollBarSelectionListener = new SelectionAdapter() {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			updateSyncTopAddress(getTopVisibleAddress());
 		}
 	};
 
-	private IModelChangedListener fModelChangedListener = (delta, proxy) -> {
+	private final IModelChangedListener fModelChangedListener = (delta, proxy) -> {
 		if (delta.getElement() == getMemoryBlock()) {
 			showTable();
 			updateRenderingLabel(isVisible());
 		}
 	};
 
-	private IVirtualContentListener fViewerListener = new IVirtualContentListener() {
+	private final IVirtualContentListener fViewerListener = new IVirtualContentListener() {
 
 		private int startThreshold;
 		private int endThreshold;
@@ -507,7 +507,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 		}
 	};
 
-	private IPresentationErrorListener fPresentationErrorListener = (monitor,
+	private final IPresentationErrorListener fPresentationErrorListener = (monitor,
 			status) -> showMessage(status.getMessage());
 
 	/**

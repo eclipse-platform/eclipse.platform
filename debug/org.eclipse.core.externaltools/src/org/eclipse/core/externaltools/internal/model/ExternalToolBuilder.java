@@ -49,7 +49,7 @@ public final class ExternalToolBuilder extends IncrementalProjectBuilder {
 	private static final ILog LOG = ILog.of(ExternalToolBuilder.class);
 
 	private static final class IgnoreTeamPrivateChanges implements IResourceDeltaVisitor {
-		private boolean[] fTrueChange;
+		private final boolean[] fTrueChange;
 		private IgnoreTeamPrivateChanges(boolean[] trueChange) {
 			super();
 			fTrueChange= trueChange;

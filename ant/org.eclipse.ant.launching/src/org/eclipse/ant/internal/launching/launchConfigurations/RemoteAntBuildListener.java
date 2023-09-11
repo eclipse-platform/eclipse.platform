@@ -68,13 +68,13 @@ public class RemoteAntBuildListener implements ILaunchesListener {
 	 *
 	 * @since 3.7
 	 */
-	private String fEncoding;
+	private final String fEncoding;
 
 	/**
 	 * Reads the message stream from the RemoteAntBuildLogger
 	 */
 	private class ServerConnection extends Thread {
-		private int fServerPort;
+		private final int fServerPort;
 
 		public ServerConnection(int port) {
 			super("Ant Build Server Connection"); //$NON-NLS-1$

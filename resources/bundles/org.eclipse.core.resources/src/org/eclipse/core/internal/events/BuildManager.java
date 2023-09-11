@@ -126,7 +126,7 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	 */
 	class MissingBuilder extends IncrementalProjectBuilder {
 		private boolean hasBeenBuilt = false;
-		private String name;
+		private final String name;
 
 		MissingBuilder(String name) {
 			this.name = name;
@@ -172,7 +172,7 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	 */
 	final private DeltaCache<IResourceDelta> deltaCache = new DeltaCache<>();
 
-	private ILock lock;
+	private final ILock lock;
 
 	/**
 	 * {@code true} if we can exit inner build loop cycle early after
@@ -207,12 +207,12 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	private final Bundle systemBundle = Platform.getBundle("org.eclipse.osgi"); //$NON-NLS-1$
 
 	// protects against concurrent access of session stored builders during builder initialization
-	private Object builderInitializationLock = new Object();
+	private final Object builderInitializationLock = new Object();
 
 	//used for debug/trace timing
 	private long timeStamp = -1;
 	private long overallTimeStamp = -1;
-	private Workspace workspace;
+	private final Workspace workspace;
 
 	public BuildManager(Workspace workspace, ILock workspaceLock) {
 		this.workspace = workspace;

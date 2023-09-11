@@ -19,7 +19,7 @@ import java.io.IOException;
 
 public class LimitedSizeCharArrayWriter extends CharArrayWriter {
 
-	private long maxSize;
+	private final long maxSize;
 	private long size = 0;
 
 	public LimitedSizeCharArrayWriter(long maxSize) {

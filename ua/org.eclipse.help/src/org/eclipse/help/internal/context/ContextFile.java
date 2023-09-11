@@ -19,8 +19,8 @@ package org.eclipse.help.internal.context;
  */
 public class ContextFile {
 
-	private String bundleId;
-	private String file;
+	private final String bundleId;
+	private final String file;
 
 	/*
 	 * Creates a new context file reference.

@@ -30,8 +30,8 @@ import org.eclipse.debug.examples.core.pda.protocol.PDAVarCommand;
 public class PDAVariable extends PDADebugElement implements IVariable {
 
 	// name & stack frmae
-	private String fName;
-	private PDAStackFrame fFrame;
+	private final String fName;
+	private final PDAStackFrame fFrame;
 
 	/**
 	 * Constructs a variable contained in the given stack frame

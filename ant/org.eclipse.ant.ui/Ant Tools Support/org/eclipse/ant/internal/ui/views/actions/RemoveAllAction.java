@@ -23,7 +23,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IUpdate;
 
 public class RemoveAllAction extends Action implements IUpdate {
-	private AntView view;
+	private final AntView view;
 
 	public RemoveAllAction(AntView view) {
 		super(AntViewActionMessages.RemoveAllAction_Remove_All, AntUIImages.getImageDescriptor(IAntUIConstants.IMG_REMOVE_ALL));

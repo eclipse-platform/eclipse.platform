@@ -42,10 +42,10 @@ public class HelpActivitySupport implements IHelpActivitySupport {
 	private static final String SHOW_DISABLED_ACTIVITIES_ON = "on"; //$NON-NLS-1$
 //	private static final String SHOW_DISABLED_ACTIVITIES_ALWAYS = "always"; //$NON-NLS-1$
 
-	private IWorkbenchActivitySupport activitySupport;
+	private final IWorkbenchActivitySupport activitySupport;
 	private boolean userCanToggleFiltering;
 	private boolean filteringEnabled;
-	private ActivityDescriptor activityDescriptor;
+	private final ActivityDescriptor activityDescriptor;
 
 	static class ActivityDescriptor {
 		private IConfigurationElement config;

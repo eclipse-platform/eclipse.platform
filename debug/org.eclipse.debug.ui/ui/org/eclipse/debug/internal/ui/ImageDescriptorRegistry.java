@@ -29,8 +29,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ImageDescriptorRegistry {
 
-	private Map<ImageDescriptor, Image> fRegistry = Collections.synchronizedMap(new HashMap<>(10));
-	private Display fDisplay;
+	private final Map<ImageDescriptor, Image> fRegistry = Collections.synchronizedMap(new HashMap<>(10));
+	private final Display fDisplay;
 
 	/**
 	 * Creates a new image descriptor registry for the current or default display,

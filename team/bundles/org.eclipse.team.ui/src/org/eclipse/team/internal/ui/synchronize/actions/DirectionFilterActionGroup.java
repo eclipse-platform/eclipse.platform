@@ -35,7 +35,7 @@ import org.eclipse.ui.actions.ActionGroup;
 public class DirectionFilterActionGroup extends ActionGroup implements IPropertyChangeListener {
 
 	// The list of created actions
-	private List<DirectionFilterAction> actions = new ArrayList<>(3);
+	private final List<DirectionFilterAction> actions = new ArrayList<>(3);
 
 	// The modes
 	private DirectionFilterAction incomingMode;
@@ -43,13 +43,13 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 	private DirectionFilterAction bothMode;
 	private DirectionFilterAction conflictsMode;
 
-	private ISynchronizePageConfiguration configuration;
+	private final ISynchronizePageConfiguration configuration;
 
 	/**
 	 * An action filter for a specific mode.
 	 */
 	class DirectionFilterAction extends Action {
-		private int modeId;
+		private final int modeId;
 
 		public DirectionFilterAction(String prefix,String commandId, int modeId) {
 			super("", AS_RADIO_BUTTON); //$NON-NLS-1$

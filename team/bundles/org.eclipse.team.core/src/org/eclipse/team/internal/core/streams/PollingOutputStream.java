@@ -33,8 +33,8 @@ import org.eclipse.team.internal.core.Policy;
  * much of the operation completed; conversely, at what point to resume.
  */
 public class PollingOutputStream extends FilterOutputStream {
-	private int numAttempts;
-	private IProgressMonitor monitor;
+	private final int numAttempts;
+	private final IProgressMonitor monitor;
 	private boolean cancellable;
 
 	/**

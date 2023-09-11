@@ -75,8 +75,8 @@ public class IntroPartPresentation extends AbstractIntroElement {
 	// private String title;
 	private String [] implementationStyles;
 	private String implementationKind;
-	private String homePageId;
-	private String standbyPageId;
+	private final String homePageId;
+	private final String standbyPageId;
 
 	// The Head contributions to this preentation (inherited from child
 	// implementation).

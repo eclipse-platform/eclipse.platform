@@ -20,7 +20,7 @@ import org.apache.tools.ant.Project;
 
 public class EclipseAntMain extends Main {
 
-	private Project fEclipseAntProject;
+	private final Project fEclipseAntProject;
 
 	public EclipseAntMain(Project eclipseAntProject) {
 		super();

@@ -35,7 +35,7 @@ public class SelectionDragAdapter extends DragSourceAdapter implements TransferD
 	/**
 	 * The associated viewer for the adapter
 	 */
-	private TreeModelViewer fViewer;
+	private final TreeModelViewer fViewer;
 
 	/**
 	 * Constructor, takes the viewer that contains the selection provider

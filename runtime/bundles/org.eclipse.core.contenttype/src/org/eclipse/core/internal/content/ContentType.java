@@ -84,7 +84,7 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 	// we need a Cloneable list
 	private ArrayList<FileSpec> fileSpecs = EMPTY_LIST;
 	String id;
-	private ContentTypeManager manager;
+	private final ContentTypeManager manager;
 	private String name;
 	private byte priority;
 	private ContentType target;

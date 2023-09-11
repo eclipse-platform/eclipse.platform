@@ -74,7 +74,7 @@ public class ExpressionManager extends PlatformObject implements IExpressionMana
 	 * Mapping of debug model identifiers (String) to
 	 * expression delegate extensions (IConfigurationElement)
 	 */
-	private Map<String, IConfigurationElement> fWatchExpressionDelegates = new HashMap<>();
+	private final Map<String, IConfigurationElement> fWatchExpressionDelegates = new HashMap<>();
 
 	// Constants for add/remove/change/insert/move notification
 	private static final int ADDED = 1;

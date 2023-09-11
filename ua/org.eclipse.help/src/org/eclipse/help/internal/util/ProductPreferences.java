@@ -229,7 +229,7 @@ public class ProductPreferences {
 
 	private static class NameComparator implements Comparator<String> {
 
-		private Map<String, String> tocNames;
+		private final Map<String, String> tocNames;
 
 		public NameComparator(Map<String, String> tocNames) {
 			this.tocNames = tocNames;

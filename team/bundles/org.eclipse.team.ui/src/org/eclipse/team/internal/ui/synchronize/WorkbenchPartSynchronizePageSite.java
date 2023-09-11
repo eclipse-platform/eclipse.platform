@@ -27,9 +27,9 @@ import org.eclipse.ui.part.IPageSite;
  * Maps a workbench part to a synchronize page site.
  */
 public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
-	private IWorkbenchPart part;
-	private IDialogSettings settings;
-	private IPageSite site;
+	private final IWorkbenchPart part;
+	private final IDialogSettings settings;
+	private final IPageSite site;
 
 	public WorkbenchPartSynchronizePageSite(IWorkbenchPart part, IPageSite site, IDialogSettings settings) {
 		this.part = part;

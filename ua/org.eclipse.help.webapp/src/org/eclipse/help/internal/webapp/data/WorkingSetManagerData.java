@@ -41,7 +41,7 @@ public class WorkingSetManagerData extends RequestData {
 	private static final int EDIT = 3;
 
 	private String name;
-	private WebappWorkingSetManager wsmgr;
+	private final WebappWorkingSetManager wsmgr;
 	// Indicates whether operation specified in the request failed
 	private boolean saved = true;
 

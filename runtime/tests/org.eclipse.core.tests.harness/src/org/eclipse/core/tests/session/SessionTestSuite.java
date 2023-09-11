@@ -28,8 +28,8 @@ public class SessionTestSuite extends TestSuite {
 	public static final String CORE_TEST_APPLICATION = "org.eclipse.pde.junit.runtime.coretestapplication"; //$NON-NLS-1$
 	public static final String UI_TEST_APPLICATION = "org.eclipse.pde.junit.runtime.uitestapplication"; //$NON-NLS-1$
 	protected String applicationId = CORE_TEST_APPLICATION;
-	private Set<TestCase> crashTests = new HashSet<>();
-	private Set<TestCase> localTests = new HashSet<>();
+	private final Set<TestCase> crashTests = new HashSet<>();
+	private final Set<TestCase> localTests = new HashSet<>();
 	// the id for the plug-in whose classloader ought to be used to load the test case class
 	protected String pluginId;
 	private Setup setup;

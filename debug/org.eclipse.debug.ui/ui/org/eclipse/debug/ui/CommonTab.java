@@ -152,7 +152,7 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	/**
 	 * Modify listener that simply updates the owning launch configuration dialog.
 	 */
-	private ModifyListener fBasicModifyListener = evt -> scheduleUpdateJob();
+	private final ModifyListener fBasicModifyListener = evt -> scheduleUpdateJob();
 
 	/**
 	 * Constructs a new tab with default context help.
@@ -1112,7 +1112,7 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	 */
 	class FavoritesLabelProvider implements ITableLabelProvider {
 
-		private Map<Object, Image> fImages = new HashMap<>();
+		private final Map<Object, Image> fImages = new HashMap<>();
 
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {

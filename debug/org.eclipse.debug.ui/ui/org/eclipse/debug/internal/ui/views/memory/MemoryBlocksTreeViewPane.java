@@ -74,7 +74,7 @@ public class MemoryBlocksTreeViewPane implements ISelectionListener, ISelectionC
 
 	public static final String PANE_ID = DebugUIPlugin.getUniqueIdentifier() + ".MemoryView.MemoryBlocksTreeViewPane"; //$NON-NLS-1$
 
-	private IViewPart fParent;
+	private final IViewPart fParent;
 	private IPresentationContext fPresentationContext;
 	private MemoryViewTreeViewer fTreeViewer;
 	protected IMemoryBlockRetrieval fRetrieval;

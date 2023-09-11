@@ -28,8 +28,8 @@ public class IntroURLAction extends AbstractIntroElement {
 	private static final String ATT_NAME = "name"; //$NON-NLS-1$
 	private static final String ATT_REPLACES = "replaces"; //$NON-NLS-1$
 
-	private String name;
-	private String replaces;
+	private final String name;
+	private final String replaces;
 
 
 	/**

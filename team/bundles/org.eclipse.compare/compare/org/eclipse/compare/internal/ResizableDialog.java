@@ -42,7 +42,7 @@ public abstract class ResizableDialog extends Dialog {
 
 	protected ResourceBundle fBundle;
 	private Rectangle fNewBounds;
-	private IDialogSettings fSettings;
+	private final IDialogSettings fSettings;
 	private String fContextId;
 
 

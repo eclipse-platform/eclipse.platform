@@ -23,10 +23,10 @@ import org.eclipse.help.IUAElement;
 
 public class UserToc implements IToc {
 
-	private List<ITopic> children = new ArrayList<>();
-	private boolean isEnabled;
-	private String href;
-	private String label;
+	private final List<ITopic> children = new ArrayList<>();
+	private final boolean isEnabled;
+	private final String href;
+	private final String label;
 
 	public UserToc(String label, String href, boolean isEnabled) {
 		this.label = label;

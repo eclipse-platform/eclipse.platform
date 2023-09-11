@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.SafeRunner;
  */
 public abstract class ChangeSetManager {
 
-	private ListenerList<IChangeSetChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
+	private final ListenerList<IChangeSetChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 	private Set<ChangeSet> sets;
 	private boolean initializing;
 

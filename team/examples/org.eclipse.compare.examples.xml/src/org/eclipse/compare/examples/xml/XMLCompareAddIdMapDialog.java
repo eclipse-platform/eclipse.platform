@@ -29,11 +29,11 @@ import org.eclipse.compare.examples.xml.ui.StatusInfo;
  */
 public class XMLCompareAddIdMapDialog extends StatusDialog {
 	
-	private IdMap fIdMap;
-	private HashMap fIdMaps;
-	private HashMap fIdMapsInternal;
-	private HashMap fIdExtensionToName;
-	private boolean fEdit;
+	private final IdMap fIdMap;
+	private final HashMap fIdMaps;
+	private final HashMap fIdMapsInternal;
+	private final HashMap fIdExtensionToName;
+	private final boolean fEdit;
 	
 	private Text fIdMapText;
 	private Text fIdMapExtText;

@@ -71,7 +71,7 @@ public abstract class Bucket {
 		 * Logical path of the object we are storing history for. This does not
 		 * correspond to a file system path.
 		 */
-		private IPath path;
+		private final IPath path;
 
 		/**
 		 * State for this entry. Possible values are STATE_CLEAR, STATE_DIRTY and STATE_DELETED.

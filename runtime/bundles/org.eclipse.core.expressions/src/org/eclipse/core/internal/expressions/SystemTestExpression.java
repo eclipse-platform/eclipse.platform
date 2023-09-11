@@ -26,8 +26,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 public class SystemTestExpression extends Expression {
 
-	private String fProperty;
-	private String fExpectedValue;
+	private final String fProperty;
+	private final String fExpectedValue;
 
 	private static final String ATT_PROPERTY= "property"; //$NON-NLS-1$
 

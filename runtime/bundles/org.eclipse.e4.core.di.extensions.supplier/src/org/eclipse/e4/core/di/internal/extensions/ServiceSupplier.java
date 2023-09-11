@@ -204,11 +204,11 @@ public class ServiceSupplier extends ExtendedObjectSupplier implements EventHand
 
 	private static final class ServiceSupplierContext {
 
-		private Bundle bundle;
-		private BundleContext serviceBundleContext;
+		private final Bundle bundle;
+		private final BundleContext serviceBundleContext;
 		final Map<Class<?>, ServiceSupplierTracker<?>> serviceTracker = new ConcurrentHashMap<>();
 		volatile boolean disposed;
-		private UncaughtExceptionHandler exceptionHandler;
+		private final UncaughtExceptionHandler exceptionHandler;
 
 		ServiceSupplierContext(Bundle bundle, BundleContext serviceBundleContext,
 				UncaughtExceptionHandler exceptionHandler) {
@@ -263,8 +263,8 @@ public class ServiceSupplier extends ExtendedObjectSupplier implements EventHand
 	private static final class ServiceSupplierTracker<T> extends ServiceTracker<T, T> {
 
 		Set<IRequestor> trackedRequestors = ConcurrentHashMap.newKeySet();
-		private UncaughtExceptionHandler exceptionHandler;
-		private AtomicReference<CompletableFuture<?>> pending = new AtomicReference<>();
+		private final UncaughtExceptionHandler exceptionHandler;
+		private final AtomicReference<CompletableFuture<?>> pending = new AtomicReference<>();
 
 		public ServiceSupplierTracker(BundleContext context, Class<T> clazz,
 				UncaughtExceptionHandler exceptionHandler) {

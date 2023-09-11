@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  */
 public class ResumeCommandActionDelegate implements IWorkbenchWindowActionDelegate, IActionDelegate2 {
 
-	private DebugCommandAction fDebugAction = new ResumeCommandAction();
+	private final DebugCommandAction fDebugAction = new ResumeCommandAction();
 
 	@Override
 	public void dispose() {

@@ -36,7 +36,7 @@ public class NetTest {
 	private boolean isSetEnabled;
 	private boolean isProxiesDefault;
 	private boolean isSystemProxiesDefault;
-	private Map<String, IProxyData> dataCache = new HashMap<>();
+	private final Map<String, IProxyData> dataCache = new HashMap<>();
 
 	@Before
 	public void setUp() throws Exception {

@@ -138,9 +138,9 @@ public class ReusableHelpPart implements IHelpUIConstants, IActivityManagerListe
 
 	private ManagedForm mform;
 
-	private int verticalSpacing = 15;
+	private final int verticalSpacing = 15;
 
-	private int bmargin = 5;
+	private final int bmargin = 5;
 
 	private String defaultContextHelpText;
 
@@ -162,11 +162,11 @@ public class ReusableHelpPart implements IHelpUIConstants, IActivityManagerListe
 
 	private Action showAllAction;
 
-	private ReusableHelpPartHistory history;
+	private final ReusableHelpPartHistory history;
 
 	private HelpPartPage currentPage;
 
-	private int style;
+	private final int style;
 
 	private IMemento memento;
 
@@ -174,7 +174,7 @@ public class ReusableHelpPart implements IHelpUIConstants, IActivityManagerListe
 
 	private int numberOfInPlaceHits = 8;
 
-	private IRunnableContext runnableContext;
+	private final IRunnableContext runnableContext;
 
 	private IToolBarManager toolBarManager;
 
@@ -292,7 +292,7 @@ public class ReusableHelpPart implements IHelpUIConstants, IActivityManagerListe
 	}
 
 	private class HelpPartPage implements IHelpPartPage {
-		private String id;
+		private final String id;
 
 		private String iconId;
 
@@ -302,7 +302,7 @@ public class ReusableHelpPart implements IHelpUIConstants, IActivityManagerListe
 
 		private int horizontalMargin = 0;
 
-		private String text;
+		private final String text;
 
 		private SubActionBars bars;
 

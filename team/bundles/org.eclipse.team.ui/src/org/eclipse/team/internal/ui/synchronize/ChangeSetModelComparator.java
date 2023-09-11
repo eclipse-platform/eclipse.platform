@@ -29,8 +29,8 @@ import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
  */
 public class ChangeSetModelComparator extends ViewerComparator {
 
-	private int commentCriteria;
-	private ChangeSetModelProvider provider;
+	private final int commentCriteria;
+	private final ChangeSetModelProvider provider;
 
 	// Comment sorting options
 	public final static int DATE = 1;

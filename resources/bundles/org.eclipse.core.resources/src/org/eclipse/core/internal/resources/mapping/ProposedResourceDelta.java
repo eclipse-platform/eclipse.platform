@@ -25,10 +25,10 @@ import org.eclipse.core.runtime.*;
 public final class ProposedResourceDelta extends PlatformObject implements IResourceDelta {
 	protected static int KIND_MASK = 0xFF;
 
-	private HashMap<String, ProposedResourceDelta> children = new HashMap<>(8);
+	private final HashMap<String, ProposedResourceDelta> children = new HashMap<>(8);
 	private IPath movedFromPath;
 	private IPath movedToPath;
-	private IResource resource;
+	private final IResource resource;
 	private int status;
 
 	public ProposedResourceDelta(IResource resource) {

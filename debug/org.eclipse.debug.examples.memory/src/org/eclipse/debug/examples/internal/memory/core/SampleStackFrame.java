@@ -29,10 +29,10 @@ import org.eclipse.osgi.util.NLS;
  */
 public class SampleStackFrame extends DebugElement implements IStackFrame {
 
-	private SampleThread fThread;
+	private final SampleThread fThread;
 	private SampleRegisterGroup fRegisterGroup;
-	private long timeStamp;
-	private String fName;
+	private final long timeStamp;
+	private final String fName;
 
 	/**
 	 * Constructs a SampleStackFrame

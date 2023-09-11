@@ -47,7 +47,7 @@ public abstract class TableEditorImpl {
 	private FocusListener fFocusListener;
 	private MouseListener fMouseListener;
 	private int fDoubleClickExpirationTime;
-	private StructuredViewer fViewer;
+	private final StructuredViewer fViewer;
 
 	TableEditorImpl(StructuredViewer viewer) {
 		fViewer = viewer;

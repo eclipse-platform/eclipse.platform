@@ -34,7 +34,7 @@ import org.eclipse.ui.console.IPatternMatchListenerDelegate;
 
 public class PatternMatchListenerExtension implements IPluginContribution {
 
-	private IConfigurationElement fConfig;
+	private final IConfigurationElement fConfig;
 	private Expression fEnablementExpression;
 	private String fPattern;
 	private String fQualifier;

@@ -52,8 +52,8 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 	private static final String PROP_CONFIG_AREA_READ_ONLY = InternalPlatform.PROP_CONFIG_AREA + ".readOnly";
 	private static final String PROP_CONFIG_CASCADED = "osgi.configuration.cascaded";
 	private static final String PROP_SHARED_CONFIG_AREA = "osgi.sharedConfiguration.area";
-	private Collection<String> bundles = new ArrayList<>();
-	private Map<String, String> configIniValues = new HashMap<>();
+	private final Collection<String> bundles = new ArrayList<>();
+	private final Map<String, String> configIniValues = new HashMap<>();
 	private boolean cascaded;
 
 	// by default we clean-up after ourselves

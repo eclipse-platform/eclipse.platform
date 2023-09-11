@@ -32,7 +32,7 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class ImportLaunchConfigurationsWizard extends Wizard implements IImportWizard {
 
-	private String EXPORT_DIALOG_SETTINGS = "ExportLaunchConfigurations"; //$NON-NLS-1$
+	private final String EXPORT_DIALOG_SETTINGS = "ExportLaunchConfigurations"; //$NON-NLS-1$
 
 	/**
 	 * Constructor

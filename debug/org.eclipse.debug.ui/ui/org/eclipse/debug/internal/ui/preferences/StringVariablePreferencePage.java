@@ -472,7 +472,7 @@ public class StringVariablePreferencePage extends PreferencePage implements IWor
 		/**
 		 * The content provider stores variable wrappers for use during editing.
 		 */
-		private List<VariableWrapper> fWorkingSet = new ArrayList<>();
+		private final List<VariableWrapper> fWorkingSet = new ArrayList<>();
 
 		@Override
 		public Object[] getElements(Object inputElement) {

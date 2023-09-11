@@ -100,8 +100,8 @@ public class ParallelServerAccessTest {
 
 	private static class UnexpectedValueException extends Exception {
 		private static final long serialVersionUID = 1L;
-		private long expected;
-		private long actual;
+		private final long expected;
+		private final long actual;
 
 		UnexpectedValueException(long expected, long actual) {
 			this.expected = expected;

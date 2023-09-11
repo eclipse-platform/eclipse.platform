@@ -38,7 +38,7 @@ public class IOConsolePage extends TextConsolePage {
 
 	private boolean fReadOnly;
 
-	private IPropertyChangeListener fPropertyChangeListener;
+	private final IPropertyChangeListener fPropertyChangeListener;
 
 	private IConsoleView fView;
 

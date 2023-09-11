@@ -63,9 +63,9 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	private Differencer fDifferencer;
 	private boolean fThreeWay= false;
 
-	private StructureInfo fAncestorStructure = new StructureInfo();
-	private StructureInfo fLeftStructure = new StructureInfo();
-	private StructureInfo fRightStructure = new StructureInfo();
+	private final StructureInfo fAncestorStructure = new StructureInfo();
+	private final StructureInfo fLeftStructure = new StructureInfo();
+	private final StructureInfo fRightStructure = new StructureInfo();
 
 	private IStructureCreator fStructureCreator;
 	private IDiffContainer fRoot;
@@ -76,13 +76,13 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	/*
 	 * A set of background tasks for updating the structure
 	 */
-	private IRunnableWithProgress diffTask = monitor -> {
+	private final IRunnableWithProgress diffTask = monitor -> {
 		monitor.beginTask(CompareMessages.StructureDiffViewer_0, 100);
 		diff(SubMonitor.convert(monitor, 100));
 		monitor.done();
 	};
 
-	private IRunnableWithProgress inputChangedTask = monitor -> {
+	private final IRunnableWithProgress inputChangedTask = monitor -> {
 		monitor.beginTask(CompareMessages.StructureDiffViewer_1, 100);
 		// TODO: Should we always force
 		compareInputChanged((ICompareInput) getInput(), true, SubMonitor.convert(monitor, 100));
@@ -96,7 +96,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	private class StructureInfo {
 		private ITypedElement fInput;
 		private IStructureComparator fStructureComparator;
-		private IRunnableWithProgress refreshTask = this::refresh;
+		private final IRunnableWithProgress refreshTask = this::refresh;
 
 		public boolean setInput(ITypedElement newInput, boolean force, IProgressMonitor monitor) {
 			boolean changed = false;

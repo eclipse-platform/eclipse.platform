@@ -27,7 +27,7 @@ public class NotExpression extends Expression {
 	 */
 	private static final int HASH_INITIAL= NotExpression.class.getName().hashCode();
 
-	private Expression fExpression;
+	private final Expression fExpression;
 
 	public NotExpression(Expression expression) {
 		Assert.isNotNull(expression);

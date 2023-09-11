@@ -25,7 +25,7 @@ import java.util.Objects;
  */
 public abstract class Tip {
 
-	private String providerId;
+	private final String providerId;
 
 	private final List<TipAction> fActions = new ArrayList<>();
 

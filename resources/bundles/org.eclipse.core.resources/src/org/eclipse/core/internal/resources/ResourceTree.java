@@ -41,9 +41,9 @@ class ResourceTree implements IResourceTree {
 	/**
 	 * The lock to acquire when the workspace needs to be manipulated
 	 */
-	private ILock lock;
-	private MultiStatus multistatus;
-	private int updateFlags;
+	private final ILock lock;
+	private final MultiStatus multistatus;
+	private final int updateFlags;
 
 	/**
 	 * Constructor for this class.

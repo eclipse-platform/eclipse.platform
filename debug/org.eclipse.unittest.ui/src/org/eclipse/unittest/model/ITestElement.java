@@ -42,7 +42,7 @@ public interface ITestElement {
 		FAILURE("Failure"), //$NON-NLS-1$
 		IGNORED("Ignored"); //$NON-NLS-1$
 
-		private String fName;
+		private final String fName;
 
 		private Result(String name) {
 			fName = name;

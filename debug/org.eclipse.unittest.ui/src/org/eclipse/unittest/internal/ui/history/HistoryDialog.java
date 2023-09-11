@@ -61,7 +61,7 @@ public class HistoryDialog extends SelectionDialog {
 
 	private static final Comparator<HistoryItem> COMPARING_START_DATE = Comparator.comparing(HistoryItem::getStartDate)
 			.reversed();
-	private Set<TestRunSession> fCurrentlyVisible;
+	private final Set<TestRunSession> fCurrentlyVisible;
 	private Button fRemoveButton;
 	private Button fExportButton;
 	private TableViewer fTable;

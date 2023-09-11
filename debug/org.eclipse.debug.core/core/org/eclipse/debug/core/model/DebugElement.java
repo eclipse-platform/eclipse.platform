@@ -31,7 +31,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
  */
 public abstract class DebugElement extends PlatformObject implements IDebugElement {
 
-	private IDebugTarget fTarget;
+	private final IDebugTarget fTarget;
 
 	/**
 	 * Constructs a debug element referring to an artifact in the given

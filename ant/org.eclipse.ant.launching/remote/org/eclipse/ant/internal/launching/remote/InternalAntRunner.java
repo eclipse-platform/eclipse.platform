@@ -110,12 +110,12 @@ public class InternalAntRunner {
 	private String loggerClassname = null;
 
 	/** Extra arguments to be parsed as command line arguments. */
-	private String[] extraArguments = null;
+	private final String[] extraArguments = null;
 
 	private boolean scriptExecuted = false;
 
 	@SuppressWarnings("unused")
-	private List<String> propertyFiles = new ArrayList<String>();
+	private final List<String> propertyFiles = new ArrayList<String>();
 
 	/**
 	 * The Ant InputHandler class. There may be only one input handler.

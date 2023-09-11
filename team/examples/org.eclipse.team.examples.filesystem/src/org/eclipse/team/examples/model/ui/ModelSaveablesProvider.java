@@ -26,7 +26,7 @@ import org.eclipse.ui.navigator.SaveablesProvider;
  */
 public class ModelSaveablesProvider extends SaveablesProvider {
 
-	private List<Saveable> saveables = new ArrayList<>();
+	private final List<Saveable> saveables = new ArrayList<>();
 
 	@Override
 	public Object[] getElements(Saveable saveable) {

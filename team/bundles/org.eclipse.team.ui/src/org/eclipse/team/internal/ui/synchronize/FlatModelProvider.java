@@ -84,7 +84,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 	 */
 	public class FlatComparator extends ViewerComparator {
 
-		private int resourceCriteria;
+		private final int resourceCriteria;
 
 		// Resource sorting options
 		public final static int NAME = 1;
@@ -140,7 +140,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 	 * Action that allows changing the model providers sort order.
 	 */
 	private class ToggleSortOrderAction extends Action {
-		private int criteria;
+		private final int criteria;
 		protected ToggleSortOrderAction(String name, int criteria) {
 			super(name, IAction.AS_RADIO_BUTTON);
 			this.criteria = criteria;

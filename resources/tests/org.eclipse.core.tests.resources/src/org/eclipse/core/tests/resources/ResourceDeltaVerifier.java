@@ -104,9 +104,9 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 	/**
 	 * Table of IPath -&gt; ExpectedChange
 	 */
-	private Hashtable<IPath, ExpectedChange> fExpectedChanges = new Hashtable<>();
+	private final Hashtable<IPath, ExpectedChange> fExpectedChanges = new Hashtable<>();
 	boolean fIsDeltaValid = true;
-	private StringBuilder fMessage = new StringBuilder();
+	private final StringBuilder fMessage = new StringBuilder();
 	/**
 	 * The verifier can be in one of three states.  In the initial
 	 * state, the verifier is still receiving inputs via the

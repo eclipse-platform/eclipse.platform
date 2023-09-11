@@ -37,7 +37,7 @@ import org.eclipse.ui.texteditor.templates.TemplatePreferencePage;
 
 public class AntTemplatePreferencePage extends TemplatePreferencePage {
 
-	private FormattingPreferences fFormattingPreferences = new FormattingPreferences();
+	private final FormattingPreferences fFormattingPreferences = new FormattingPreferences();
 
 	public AntTemplatePreferencePage() {
 		setPreferenceStore(AntUIPlugin.getDefault().getPreferenceStore());

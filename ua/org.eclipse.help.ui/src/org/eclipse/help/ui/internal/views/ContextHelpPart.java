@@ -89,7 +89,7 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 
 	private static final String MORE_HREF = "__more__"; //$NON-NLS-1$
 
-	private FormText text;
+	private final FormText text;
 
 	private Control lastControl;
 
@@ -428,8 +428,8 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 
 	private static class SearchTerms {
 
-		private List<String> terms = new ArrayList<>();
-		private Set<String> termSet = new HashSet<>();
+		private final List<String> terms = new ArrayList<>();
+		private final Set<String> termSet = new HashSet<>();
 		public void add(String term) {
 			if (term == null ) return;
 			String lowerCaseTerm = term.toLowerCase();

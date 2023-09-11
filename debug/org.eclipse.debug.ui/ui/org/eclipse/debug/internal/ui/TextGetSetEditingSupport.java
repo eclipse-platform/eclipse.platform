@@ -25,9 +25,9 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Composite;
 
 public class TextGetSetEditingSupport<T> extends EditingSupport {
-	private Function<T, String> getter;
-	private BiConsumer<T, String> setter;
-	private ColumnViewer viewer;
+	private final Function<T, String> getter;
+	private final BiConsumer<T, String> setter;
+	private final ColumnViewer viewer;
 	public TextGetSetEditingSupport(ColumnViewer viewer, Function<T, String> getter, BiConsumer<T, String> setter) {
 		super(viewer);
 		this.viewer = viewer;

@@ -127,13 +127,13 @@ public class PerformanceStats {
 	 * typically a string representation of the object whose code was running when
 	 * the event occurred or a <code>String</code> describing the event.
 	 */
-	private String blame;
+	private final String blame;
 
 	/**
 	 * The id of the plugin that defined the blame object for this event, or
 	 * <code>null</code> if it could not be determined.
 	 */
-	private String blamePluginId;
+	private final String blamePluginId;
 
 	/**
 	 * An optional context for the event (may be <code>null</code>).
@@ -151,7 +151,7 @@ public class PerformanceStats {
 	 * The symbolic name of the event that occurred. This is usually the name of
 	 * the debug option for this event.
 	 */
-	private String event;
+	private final String event;
 
 	/**
 	 * Whether this is a performance failure event

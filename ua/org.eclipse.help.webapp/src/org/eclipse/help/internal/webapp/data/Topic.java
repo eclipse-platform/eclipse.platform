@@ -14,8 +14,8 @@
 package org.eclipse.help.internal.webapp.data;
 
 public class Topic {
-	private String label;
-	private String href;
+	private final String label;
+	private final String href;
 
 	public Topic(String label, String href) {
 		this.label = label;

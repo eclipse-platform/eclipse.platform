@@ -25,7 +25,7 @@ public class StructureCreatorDescriptor {
 	private final static String CLASS_ATTRIBUTE= "class"; //$NON-NLS-1$
 	private final static String EXTENSIONS_ATTRIBUTE= "extensions"; //$NON-NLS-1$
 
-	private IConfigurationElement fElement;
+	private final IConfigurationElement fElement;
 
 	/*
 	 * Creates a new sorter node with the given configuration element.

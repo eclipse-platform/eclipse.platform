@@ -30,7 +30,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
  * @since 3.3
  */
 public class SharedDocumentAdapterWrapper implements ISharedDocumentAdapter {
-	private ISharedDocumentAdapter wrappedAdapter;
+	private final ISharedDocumentAdapter wrappedAdapter;
 
 	/**
 	 * Helper method that returns the shared document adapter for the

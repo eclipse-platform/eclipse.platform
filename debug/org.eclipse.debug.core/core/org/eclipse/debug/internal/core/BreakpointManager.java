@@ -140,7 +140,7 @@ public class BreakpointManager implements IBreakpointManager, IResourceChangeLis
 	/**
 	 * Collection of (plural) breakpoint listeners.
 	 */
-	private ListenerList<IBreakpointsListener> fBreakpointsListeners= new ListenerList<>();
+	private final ListenerList<IBreakpointsListener> fBreakpointsListeners= new ListenerList<>();
 
 	/**
 	 * Singleton resource delta visitor which handles marker
@@ -173,7 +173,7 @@ public class BreakpointManager implements IBreakpointManager, IResourceChangeLis
 	 */
 	class PostChangeListener implements IResourceChangeListener {
 
-		private PostChangeVisitor fVisitor = new PostChangeVisitor();
+		private final PostChangeVisitor fVisitor = new PostChangeVisitor();
 
 		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
@@ -221,7 +221,7 @@ public class BreakpointManager implements IBreakpointManager, IResourceChangeLis
 	/**
 	 * The listener
 	 */
-	private PostChangeListener fPostChangeListener = new PostChangeListener();
+	private final PostChangeListener fPostChangeListener = new PostChangeListener();
 
 	class PostChangeVisitor implements IResourceDeltaVisitor {
 
@@ -706,23 +706,23 @@ public class BreakpointManager implements IBreakpointManager, IResourceChangeLis
 		/**
 		 * Moved markers
 		 */
-		private List<IMarker> fMoved = new ArrayList<>();
+		private final List<IMarker> fMoved = new ArrayList<>();
 		/**
 		 * Removed breakpoints
 		 */
-		private List<IBreakpoint> fRemoved = new ArrayList<>();
+		private final List<IBreakpoint> fRemoved = new ArrayList<>();
 
 		/**
 		 * Added breakpoints.
 		 * @since 3.7
 		 */
-		private List<IBreakpoint> fAdded = new ArrayList<>();
+		private final List<IBreakpoint> fAdded = new ArrayList<>();
 
 		/**
 		 * Changed breakpoints and associated marker deltas
 		 */
-		private List<IBreakpoint> fChanged = new ArrayList<>();
-		private List<IMarkerDelta> fChangedDeltas = new ArrayList<>();
+		private final List<IBreakpoint> fChanged = new ArrayList<>();
+		private final List<IMarkerDelta> fChangedDeltas = new ArrayList<>();
 
 		/**
 		 * Resets the visitor for a delta traversal - empties

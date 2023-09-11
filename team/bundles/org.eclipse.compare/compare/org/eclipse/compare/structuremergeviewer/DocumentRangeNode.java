@@ -67,9 +67,9 @@ public class DocumentRangeNode
 		IEncodedStreamContentAccessor, IAdaptable, IEditableContentExtension {
 	private static final String UTF_16= "UTF-16"; //$NON-NLS-1$
 
-	private IDocument fBaseDocument;
+	private final IDocument fBaseDocument;
 	private Position fRange; // the range in the base document
-	private int fTypeCode;
+	private final int fTypeCode;
 	private String fID;
 	private Position fAppendPosition; // a position where to insert a child textually
 	private ArrayList<DocumentRangeNode> fChildren;

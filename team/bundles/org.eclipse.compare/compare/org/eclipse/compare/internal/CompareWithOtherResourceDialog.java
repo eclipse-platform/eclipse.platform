@@ -71,13 +71,13 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
-	private int MIN_WIDTH = 320;
-	private int MIN_HEIGHT_WITH_ANCESTOR = 320;
-	private int MIN_HEIGHT_WITHOUT_ANCESTOR = 238;
+	private final int MIN_WIDTH = 320;
+	private final int MIN_HEIGHT_WITH_ANCESTOR = 320;
+	private final int MIN_HEIGHT_WITHOUT_ANCESTOR = 238;
 
 	private static class FileTextDragListener implements DragSourceListener {
 
-		private ContentTypeElement element;
+		private final ContentTypeElement element;
 
 		public FileTextDragListener(ContentTypeElement element) {
 			this.element = element;
@@ -102,9 +102,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
 	private static class FileTextDropListener implements DropTargetListener {
 
-		private ContentTypeElement element;
-		private ResourceTransfer resourceTransfer;
-		private TextTransfer textTransfer;
+		private final ContentTypeElement element;
+		private final ResourceTransfer resourceTransfer;
+		private final TextTransfer textTransfer;
 
 		public FileTextDropListener(ContentTypeElement element) {
 			this.element = element;
@@ -185,7 +185,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		private Button radioButton;
 		protected Button mainButton;
 		protected Text text;
-		private String type;
+		private final String type;
 		protected InternalSection section;
 		private IResource resource;
 
@@ -673,8 +673,8 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 	private Button okButton;
 	private InternalGroup rightPanel, leftPanel;
 	private InternalExpandable ancestorPanel;
-	private ISelection selection;
-	private ExternalResourcesProject tmpProject = new ExternalResourcesProject();
+	private final ISelection selection;
+	private final ExternalResourcesProject tmpProject = new ExternalResourcesProject();
 
 	/**
 	 * Creates the dialog.

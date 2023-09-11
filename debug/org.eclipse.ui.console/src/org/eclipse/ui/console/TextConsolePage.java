@@ -76,8 +76,8 @@ import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
  */
 public class TextConsolePage implements IPageBookViewPage, IPropertyChangeListener, IAdaptable {
 	private IPageSite fSite;
-	private TextConsole fConsole;
-	private IConsoleView fConsoleView;
+	private final TextConsole fConsole;
+	private final IConsoleView fConsoleView;
 	private TextConsoleViewer fViewer;
 	private MenuManager fMenuManager;
 	protected Map<String, IAction> fGlobalActions = new HashMap<>();
@@ -85,10 +85,10 @@ public class TextConsolePage implements IPageBookViewPage, IPropertyChangeListen
 	protected ClearOutputAction fClearOutputAction;
 
 	// text selection listener, used to update selection dependent actions on selection changes
-	private ISelectionChangedListener selectionChangedListener =  event -> updateSelectionDependentActions();
+	private final ISelectionChangedListener selectionChangedListener =  event -> updateSelectionDependentActions();
 
 	// updates the find actions and the clear action if the document length is > 0
-	private ITextListener textListener = event -> {
+	private final ITextListener textListener = event -> {
 		Stream.of(ActionFactory.FIND.getId(), ITextEditorActionConstants.FIND_NEXT,
 				ITextEditorActionConstants.FIND_PREVIOUS)
 				.map(id -> fGlobalActions.get(id)).filter(Objects::nonNull).map(IUpdate.class::cast)

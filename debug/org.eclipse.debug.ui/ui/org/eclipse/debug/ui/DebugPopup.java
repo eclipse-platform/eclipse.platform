@@ -46,13 +46,13 @@ import org.osgi.framework.FrameworkUtil;
  */
 public abstract class DebugPopup extends PopupDialog {
 
-	private Point fAnchor;
+	private final Point fAnchor;
 
 	private IHandlerActivation fActivation;
 
 	private IHandlerService fHandlerService;
 
-	private String fCommandId;
+	private final String fCommandId;
 
 	private boolean fPersisted = false;
 

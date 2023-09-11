@@ -41,7 +41,7 @@ import org.eclipse.ui.texteditor.IUpdate;
  */
 public class ConfigureColumnsAction extends Action implements IUpdate {
 
-	private TreeModelViewer fViewer;
+	private final TreeModelViewer fViewer;
 
 	static class ColumnContentProvider implements IStructuredContentProvider {
 
@@ -62,7 +62,7 @@ public class ConfigureColumnsAction extends Action implements IUpdate {
 
 	class ColumnLabelProvider extends LabelProvider {
 
-		private Map<ImageDescriptor, Image> fImages = new HashMap<>();
+		private final Map<ImageDescriptor, Image> fImages = new HashMap<>();
 
 		@Override
 		public Image getImage(Object element) {

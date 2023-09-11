@@ -120,7 +120,7 @@ class ViewerStateTracker {
 	class LRUMap<K, V> extends LinkedHashMap<K, V> {
 		private static final long serialVersionUID = 1L;
 
-		private int fMaxSize;
+		private final int fMaxSize;
 
 		LRUMap(int maxSize) {
 			super();
@@ -136,7 +136,7 @@ class ViewerStateTracker {
 	/**
 	 * Content provider that is using this state tracker.
 	 */
-	private TreeModelContentProvider fContentProvider;
+	private final TreeModelContentProvider fContentProvider;
 
 	ViewerStateTracker(TreeModelContentProvider contentProvider) {
 		fContentProvider = contentProvider;
@@ -145,7 +145,7 @@ class ViewerStateTracker {
 	/**
 	 * Map of viewer states keyed by viewer input mementos
 	 */
-	private Map<String, ModelDelta> fViewerStates = new LRUMap<>(20);
+	private final Map<String, ModelDelta> fViewerStates = new LRUMap<>(20);
 
 	/**
 	 * Pending viewer state to be restored
@@ -161,7 +161,7 @@ class ViewerStateTracker {
 	/**
 	 * State update listeners
 	 */
-	private ListenerList<IStateUpdateListener> fStateUpdateListeners = new ListenerList<>();
+	private final ListenerList<IStateUpdateListener> fStateUpdateListeners = new ListenerList<>();
 
 	/**
 	 * Postpone restoring REVEAL element until the current updates are complete.
@@ -172,7 +172,7 @@ class ViewerStateTracker {
 	/**
 	 * Set of IMementoManager's that are currently saving state
 	 */
-	private Set<IElementMementoCollector> fPendingStateSaves = new HashSet<>();
+	private final Set<IElementMementoCollector> fPendingStateSaves = new HashSet<>();
 
 	/**
 	 * Used to queue a viewer input for state restore
@@ -210,7 +210,7 @@ class ViewerStateTracker {
 	/**
 	 * Compare requests that are currently running.
 	 */
-	private Map<CompareRequestKey, ElementCompareRequest> fCompareRequestsInProgress = new LinkedHashMap<>();
+	private final Map<CompareRequestKey, ElementCompareRequest> fCompareRequestsInProgress = new LinkedHashMap<>();
 
 
 	/**
@@ -656,7 +656,7 @@ class ViewerStateTracker {
 			/**
 			 * list of memento fRequests
 			 */
-			private List<IElementMementoRequest> fRequests = new ArrayList<>();
+			private final List<IElementMementoRequest> fRequests = new ArrayList<>();
 
 			/**
 			 * Flag indicating whether the encoding of delta has been canceled.
@@ -1227,7 +1227,7 @@ class ViewerStateTracker {
 		 * Counter that tracks how many time the viewer updates were completed.
 		 */
 		private int fCounter = 0;
-		private Object fModelInput = fPendingState.getElement();
+		private final Object fModelInput = fPendingState.getElement();
 
 		@Override
 		public void viewerUpdatesComplete() {

@@ -24,7 +24,7 @@ import java.util.Arrays;
  * @see java.io.FileFilter
  */
 class MetadataFileFilter implements FileFilter {
-	private String[] fileNames;
+	private final String[] fileNames;
 
 	MetadataFileFilter(String[] fileNames) {
 		this.fileNames = fileNames;

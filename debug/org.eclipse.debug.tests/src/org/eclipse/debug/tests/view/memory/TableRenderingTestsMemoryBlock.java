@@ -28,8 +28,8 @@ import org.eclipse.debug.core.model.MemoryByte;
  */
 public class TableRenderingTestsMemoryBlock implements IMemoryBlockExtension {
 
-	private int fAddressableSize;
-	private byte[] fBytes;
+	private final int fAddressableSize;
+	private final byte[] fBytes;
 
 	public TableRenderingTestsMemoryBlock(byte[] bytes, int addressableSize) {
 		fBytes = bytes;

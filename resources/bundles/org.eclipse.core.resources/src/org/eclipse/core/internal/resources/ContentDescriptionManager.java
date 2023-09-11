@@ -155,7 +155,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 	 */
 	static class LazyFileInputStream extends InputStream {
 		private InputStream actual;
-		private IFileStore target;
+		private final IFileStore target;
 
 		LazyFileInputStream(IFileStore target) {
 			this.target = target;

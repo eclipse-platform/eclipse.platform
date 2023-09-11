@@ -943,7 +943,7 @@ public class EnvironmentTab extends AbstractLaunchConfigurationTab {
 	 */
 	private class NativeEnvironmentSelectionDialog extends AbstractDebugCheckboxSelectionDialog {
 
-		private Object fInput;
+		private final Object fInput;
 
 		public NativeEnvironmentSelectionDialog(Shell parentShell, Object input) {
 			super(parentShell);

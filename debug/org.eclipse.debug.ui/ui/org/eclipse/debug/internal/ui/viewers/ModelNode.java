@@ -27,7 +27,7 @@ public class ModelNode {
 
 	private Object fElement; // model element
 	private boolean fIsContainer; // whether this element may have children
-	private ModelNode fParent; // parent node or null for root
+	private final ModelNode fParent; // parent node or null for root
 	private ModelNode[] fChildren; // child nodes, possibly null
 	private boolean fDisposed; // whether this node has been disposed
 

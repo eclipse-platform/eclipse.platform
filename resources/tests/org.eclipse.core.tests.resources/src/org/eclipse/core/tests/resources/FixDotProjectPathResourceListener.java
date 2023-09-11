@@ -43,7 +43,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 public class FixDotProjectPathResourceListener implements IResourceChangeListener, ILifecycleListener {
 
-	private Map<IProject, Instant> createdProjects = new HashMap<>();
+	private final Map<IProject, Instant> createdProjects = new HashMap<>();
 	private boolean enabled;
 	private final File tmpDir = createTmpDir();
 

@@ -53,7 +53,7 @@ public class HelpData {
 
 	private static HelpData productHelpData;
 
-	private URL url;
+	private final URL url;
 	private List<String> tocOrder;
 	private Set<String> hiddenTocs;
 	private Set<String> hiddenIndexes;

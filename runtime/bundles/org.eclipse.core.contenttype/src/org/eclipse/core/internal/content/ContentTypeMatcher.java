@@ -28,8 +28,8 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 public class ContentTypeMatcher implements IContentTypeMatcher {
 
-	private IScopeContext context;
-	private IContentTypeManager.ISelectionPolicy policy;
+	private final IScopeContext context;
+	private final IContentTypeManager.ISelectionPolicy policy;
 
 	public ContentTypeMatcher(IContentTypeManager.ISelectionPolicy policy, IScopeContext context) {
 		this.policy = policy;

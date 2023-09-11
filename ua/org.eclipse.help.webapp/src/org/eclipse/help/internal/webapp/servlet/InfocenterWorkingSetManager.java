@@ -49,13 +49,13 @@ public class InfocenterWorkingSetManager implements IHelpWorkingSetManager {
 	private static final String COOKIE_WSET_CONTENTS = "wset_contents"; //$NON-NLS-1$
 	private static final String COOKIE_WSET_CRITERIA = "wset_criteria"; //$NON-NLS-1$
 	private static final int MAX_COOKIES = 15;
-	private HttpServletRequest request;
-	private HttpServletResponse response;
+	private final HttpServletRequest request;
+	private final HttpServletResponse response;
 
 	// Current working set , empty string means all documents
 	private String currentWorkingSet = ""; //$NON-NLS-1$
-	private SortedSet<WorkingSet> workingSets = new TreeSet<>(new WorkingSetComparator());
-	private String locale;
+	private final SortedSet<WorkingSet> workingSets = new TreeSet<>(new WorkingSetComparator());
+	private final String locale;
 	private AdaptableTocsArray root;
 
 	private static final String UNCATEGORIZED = "Uncategorized"; //$NON-NLS-1$

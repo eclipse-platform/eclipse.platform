@@ -80,7 +80,7 @@ public class ServiceSupplierTestCase {
 		List<TestService> services;
 	}
 
-	private List<ServiceRegistration<?>> registrations = new ArrayList<>();
+	private final List<ServiceRegistration<?>> registrations = new ArrayList<>();
 
 	@After
 	public void cleanup() {

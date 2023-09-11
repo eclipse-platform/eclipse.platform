@@ -22,7 +22,7 @@ import org.eclipse.jface.action.Action;
 public class OrganizeFavoritesAction extends Action {
 
 	// launch group identifier
-	private String fGroupId;
+	private final String fGroupId;
 
 	/**
 	 * @param text

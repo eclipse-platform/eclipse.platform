@@ -91,9 +91,9 @@ public class BookmarkManager extends Observable {
 	}
 
 	public static class BookmarkEvent {
-		private int type;
+		private final int type;
 
-		private Bookmark bookmark;
+		private final Bookmark bookmark;
 
 		public BookmarkEvent(int type, Bookmark bookmark) {
 			this.type = type;

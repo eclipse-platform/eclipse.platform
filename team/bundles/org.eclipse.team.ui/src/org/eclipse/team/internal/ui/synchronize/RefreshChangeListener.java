@@ -25,9 +25,9 @@ import org.eclipse.team.internal.core.subscribers.SubscriberSyncInfoCollector;
 import org.eclipse.team.internal.ui.synchronize.RefreshParticipantJob.IChangeDescription;
 
 public class RefreshChangeListener implements ISubscriberChangeListener, IChangeDescription {
-	private List<ISubscriberChangeEvent> changes = new ArrayList<>();
-	private SubscriberSyncInfoCollector collector;
-	private IResource[] resources;
+	private final List<ISubscriberChangeEvent> changes = new ArrayList<>();
+	private final SubscriberSyncInfoCollector collector;
+	private final IResource[] resources;
 
 	public RefreshChangeListener(IResource[] resources, SubscriberSyncInfoCollector collector) {
 		this.resources = resources;

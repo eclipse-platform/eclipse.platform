@@ -48,7 +48,7 @@ public class NonProxyHostsComposite extends Composite {
 	private Button removeButton;
 
 	protected String currentProvider;
-	private ArrayList<ProxyBypassData> bypassHosts = new ArrayList<>();
+	private final ArrayList<ProxyBypassData> bypassHosts = new ArrayList<>();
 
 	NonProxyHostsComposite(Composite parent, int style) {
 		super(parent, style);

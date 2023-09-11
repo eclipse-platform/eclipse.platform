@@ -24,9 +24,9 @@ import org.eclipse.core.tests.harness.TestBarrier2;
  * end the rule before returning.
  */
 class SimpleRuleRunner implements Runnable {
-	private ISchedulingRule rule;
-	private IProgressMonitor monitor;
-	private AtomicIntegerArray status;
+	private final ISchedulingRule rule;
+	private final IProgressMonitor monitor;
+	private final AtomicIntegerArray status;
 	RuntimeException exception;
 	private static final IJobManager manager = Job.getJobManager();
 

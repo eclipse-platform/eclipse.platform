@@ -24,12 +24,12 @@ import org.eclipse.core.runtime.IPath;
  */
 public class ChangeDescription {
 
-	private List<IResource> addedRoots = new ArrayList<>();
-	private List<IResource> changedFiles = new ArrayList<>();
-	private List<IResource> closedProjects = new ArrayList<>();
-	private List<IResource> copiedRoots = new ArrayList<>();
-	private List<IResource> movedRoots = new ArrayList<>();
-	private List<IResource> removedRoots = new ArrayList<>();
+	private final List<IResource> addedRoots = new ArrayList<>();
+	private final List<IResource> changedFiles = new ArrayList<>();
+	private final List<IResource> closedProjects = new ArrayList<>();
+	private final List<IResource> copiedRoots = new ArrayList<>();
+	private final List<IResource> movedRoots = new ArrayList<>();
+	private final List<IResource> removedRoots = new ArrayList<>();
 
 	private IResource createSourceResource(IResourceDelta delta) {
 		IPath sourcePath = delta.getMovedFromPath();

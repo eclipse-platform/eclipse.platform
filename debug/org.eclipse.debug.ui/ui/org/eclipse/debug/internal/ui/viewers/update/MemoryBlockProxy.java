@@ -24,8 +24,8 @@ import org.eclipse.jface.viewers.Viewer;
 
 public class MemoryBlockProxy extends EventHandlerModelProxy  {
 
-	private IMemoryBlock fMemoryBlock;
-	private DebugEventHandler fDebugEventHandler = new DebugEventHandler(this)  {
+	private final IMemoryBlock fMemoryBlock;
+	private final DebugEventHandler fDebugEventHandler = new DebugEventHandler(this)  {
 
 		@Override
 		protected boolean handlesEvent(DebugEvent event) {

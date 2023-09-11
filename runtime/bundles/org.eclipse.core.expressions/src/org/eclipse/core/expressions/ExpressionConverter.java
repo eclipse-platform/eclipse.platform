@@ -41,7 +41,7 @@ import org.eclipse.core.runtime.Status;
  */
 public final class ExpressionConverter {
 
-	private ElementHandler[] fHandlers;
+	private final ElementHandler[] fHandlers;
 	private static final ExpressionConverter INSTANCE = new ExpressionConverter(
 			new ElementHandler[] { ElementHandler.getDefault() });
 

@@ -35,9 +35,9 @@ public class PropertyManager2 implements IPropertyManager {
 	private static final int MAX_VALUE_SIZE = 2 * 1024;
 
 	class PropertyCopyVisitor extends Bucket.Visitor {
-		private List<PropertyEntry> changes = new ArrayList<>();
-		private IPath destination;
-		private IPath source;
+		private final List<PropertyEntry> changes = new ArrayList<>();
+		private final IPath destination;
+		private final IPath source;
 
 		public PropertyCopyVisitor(IPath source, IPath destination) {
 			this.source = source;

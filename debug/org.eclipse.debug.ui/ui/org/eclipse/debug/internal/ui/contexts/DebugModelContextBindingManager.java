@@ -71,33 +71,33 @@ public class DebugModelContextBindingManager implements IDebugContextListener, I
 	 * Map of debug model identifier to associated contexts as defined
 	 * by <code>debugModelContextBindings</code> extensions.
 	 */
-	private Map<String, List<String>> fModelToContextIds = new HashMap<>();
+	private final Map<String, List<String>> fModelToContextIds = new HashMap<>();
 
 	/**
 	 * Map of launch objects to enabled model ids
 	 */
-	private Map<ILaunch, Set<String>> fLaunchToModelIds = new HashMap<>();
+	private final Map<ILaunch, Set<String>> fLaunchToModelIds = new HashMap<>();
 
 	/**
 	 * Map of launch objects to context activations
 	 */
-	private Map<ILaunch, List<IContextActivation>> fLanuchToContextActivations = new HashMap<>();
+	private final Map<ILaunch, List<IContextActivation>> fLanuchToContextActivations = new HashMap<>();
 
 	/**
 	 * A list of activity pattern bindings for debug models.
 	 */
-	private List<IActivityPatternBinding> fModelPatternBindings = new ArrayList<>();
+	private final List<IActivityPatternBinding> fModelPatternBindings = new ArrayList<>();
 
 	/**
 	 * Map of debug model ids to associated activity ids.
 	 */
-	private Map<String, Set<String>> fModelToActivities = new HashMap<>();
+	private final Map<String, Set<String>> fModelToActivities = new HashMap<>();
 
 	/**
 	 * A set of debug model ids for which activities have been enabled.
 	 * Cleared when enabled activities change.
 	 */
-	private Set<String> fModelsEnabledForActivities = new HashSet<>();
+	private final Set<String> fModelsEnabledForActivities = new HashSet<>();
 
 	// extension point
 	public static final String ID_DEBUG_MODEL_CONTEXT_BINDINGS= "debugModelContextBindings"; //$NON-NLS-1$

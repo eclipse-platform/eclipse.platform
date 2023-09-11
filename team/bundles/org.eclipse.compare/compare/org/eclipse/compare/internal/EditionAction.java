@@ -58,8 +58,8 @@ public class EditionAction extends BaseCompareAction {
 	 */
 	static class DocumentBufferNode implements ITypedElement, IEncodedStreamContentAccessor {
 		private static final String UTF_16= "UTF-16"; //$NON-NLS-1$
-		private IDocument fDocument;
-		private IFile fFile;
+		private final IDocument fDocument;
+		private final IFile fFile;
 
 		DocumentBufferNode(IDocument document, IFile file) {
 			fDocument= document;
@@ -92,8 +92,8 @@ public class EditionAction extends BaseCompareAction {
 		}
 	}
 
-	private String fBundleName;
-	private boolean fReplaceMode;
+	private final String fBundleName;
+	private final boolean fReplaceMode;
 	protected boolean fPrevious= false;
 	protected String fHelpContextId;
 

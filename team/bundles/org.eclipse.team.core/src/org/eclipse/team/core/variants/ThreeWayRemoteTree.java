@@ -28,7 +28,7 @@ import org.eclipse.team.core.TeamException;
  */
 public abstract class ThreeWayRemoteTree extends ResourceVariantTree {
 
-	private ThreeWaySubscriber subscriber;
+	private final ThreeWaySubscriber subscriber;
 
 	/*
 	 * A resource variant byte store that accesses the remote bytes
@@ -36,7 +36,7 @@ public abstract class ThreeWayRemoteTree extends ResourceVariantTree {
 	 * are supported.
 	 */
 	static class RemoteResourceVariantByteStore extends ResourceVariantByteStore {
-		private ThreeWaySynchronizer synchronizer;
+		private final ThreeWaySynchronizer synchronizer;
 		public RemoteResourceVariantByteStore(ThreeWaySynchronizer synchronizer) {
 			this.synchronizer = synchronizer;
 		}

@@ -36,7 +36,7 @@ import org.eclipse.team.internal.core.TeamPlugin;
 public class BundleImporterExtension implements IBundleImporter {
 
 	private IBundleImporterDelegate delegate;
-	private IConfigurationElement element;
+	private final IConfigurationElement element;
 
 	/**
 	 * Constructs a bundle importer extension on the given element.

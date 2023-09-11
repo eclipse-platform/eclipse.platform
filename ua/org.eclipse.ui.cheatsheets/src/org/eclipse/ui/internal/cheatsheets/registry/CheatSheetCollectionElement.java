@@ -30,12 +30,12 @@ import org.eclipse.ui.model.WorkbenchAdapter;
  * these elements. Instances also store a list of cheatsheets.
  */
 public class CheatSheetCollectionElement extends WorkbenchAdapter implements IPluginContribution {
-	private String pluginId;
+	private final String pluginId;
 	private String id;
-	private String name;
-	private CheatSheetCollectionElement parent;
+	private final String name;
+	private final CheatSheetCollectionElement parent;
 	private AdaptableList cheatsheets = new AdaptableList();
-	private List<CheatSheetCollectionElement> childCollections = new ArrayList<>();
+	private final List<CheatSheetCollectionElement> childCollections = new ArrayList<>();
 
 	/**
 	 * Creates a new <code>CheatSheetCollectionElement</code>.  Parent can be null.

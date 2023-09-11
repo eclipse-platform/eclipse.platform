@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.*;
 public class TableSelectionProviderDecorator implements ISelectionProvider {
 
 	/** The decorated selection provider. */
-	private ISelectionProvider selectionProvider;
+	private final ISelectionProvider selectionProvider;
 
 	/**
 	 * Constructs a <code>TableSelectionProviderDecorator</code> having

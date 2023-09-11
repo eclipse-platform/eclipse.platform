@@ -36,15 +36,15 @@ import org.eclipse.jface.text.IRegion;
 @SuppressWarnings("restriction")
 public class DocLineComparator implements ITokenComparator {
 
-	private IDocument fDocument;
+	private final IDocument fDocument;
 	private int fLineOffset;
 	private int fLineCount;
 	private int fLength;
-	private boolean fIgnoreWhiteSpace;
-	private ICompareFilter[] fCompareFilters;
-	private char fContributor;
+	private final boolean fIgnoreWhiteSpace;
+	private final ICompareFilter[] fCompareFilters;
+	private final char fContributor;
 	private final Optional<IIgnoreWhitespaceContributor> fIgnoreWhitespaceContributor;
-	private LRUCache fCompareFilterCache;
+	private final LRUCache fCompareFilterCache;
 
 	/**
 	 * Creates a <code>DocLineComparator</code> for the given document range.

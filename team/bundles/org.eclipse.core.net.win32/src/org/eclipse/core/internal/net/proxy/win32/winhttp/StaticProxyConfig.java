@@ -33,9 +33,9 @@ import org.eclipse.core.net.proxy.IProxyData;
 public class StaticProxyConfig {
 
 	private static final String[] KNOWN_TYPES = {"HTTP", "HTTPS", "FTP", "GOPHER"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-	private List<IProxyData> universalProxies = new ArrayList<>();
-	private Map<String, List<IProxyData>> protocolSpecificProxies = new HashMap<>();
-	private ProxyBypass proxyBypass;
+	private final List<IProxyData> universalProxies = new ArrayList<>();
+	private final Map<String, List<IProxyData>> protocolSpecificProxies = new HashMap<>();
+	private final ProxyBypass proxyBypass;
 
 	/**
 	 * @param proxiesString

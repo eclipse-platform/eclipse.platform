@@ -45,7 +45,7 @@ public class SwtTipImpl extends Tip implements ISwtTip {
 		}
 	}
 
-	private String fSubject;
+	private final String fSubject;
 
 	public SwtTipImpl(String providerId, long number) {
 		super(providerId);

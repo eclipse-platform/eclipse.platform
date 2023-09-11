@@ -26,9 +26,9 @@ import org.eclipse.core.runtime.Status;
 
 public class PropertyTesterDescriptor implements IPropertyTester {
 
-	private IConfigurationElement fConfigElement;
-	private String fNamespace;
-	private String fProperties;
+	private final IConfigurationElement fConfigElement;
+	private final String fNamespace;
+	private final String fProperties;
 
 	private static final String PROPERTIES= "properties"; //$NON-NLS-1$
 	private static final String NAMESPACE= "namespace"; //$NON-NLS-1$

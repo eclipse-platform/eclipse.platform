@@ -32,9 +32,9 @@ import org.eclipse.swt.widgets.Text;
  */
 public class XMLCompareEditMappingDialog extends StatusDialog {
 	
-	private Mapping fMapping;
-	private HashMap fIdmapHM;
-	private boolean fEdit;
+	private final Mapping fMapping;
+	private final HashMap fIdmapHM;
+	private final boolean fEdit;
 	
 	private Text fElementText;
 	private Text fSignatureText;

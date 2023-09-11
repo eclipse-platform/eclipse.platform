@@ -32,9 +32,9 @@ public class EnabledTopicTest {
 
 	private static class ETopic implements ITopic {
 
-		private String label;
-		private boolean isEnabled;
-		private List<ITopic> children = new ArrayList<>();
+		private final String label;
+		private final boolean isEnabled;
+		private final List<ITopic> children = new ArrayList<>();
 
 		public ETopic(String label, boolean isEnabled) {
 			this.label = label;
@@ -87,9 +87,9 @@ public class EnabledTopicTest {
 
 	private static class EIndexEntry extends UAElement implements IIndexEntry  {
 
-		private String keyword;
-		private List<ITopic> topics = new ArrayList<>();
-		private List<IIndexEntry> subEntries = new ArrayList<>();
+		private final String keyword;
+		private final List<ITopic> topics = new ArrayList<>();
+		private final List<IIndexEntry> subEntries = new ArrayList<>();
 
 		public EIndexEntry(String keyword) {
 			super(keyword);

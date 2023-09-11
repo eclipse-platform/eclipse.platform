@@ -26,8 +26,8 @@ import org.eclipse.core.runtime.jobs.Job;
 public class DelayedSnapshotJob extends Job {
 
 	private static final String MSG_SNAPSHOT = Messages.resources_snapshot;
-	private SaveManager saveManager;
-	private Workspace workspace;
+	private final SaveManager saveManager;
+	private final Workspace workspace;
 
 	public DelayedSnapshotJob(SaveManager manager, Workspace workspace) {
 		super(MSG_SNAPSHOT);

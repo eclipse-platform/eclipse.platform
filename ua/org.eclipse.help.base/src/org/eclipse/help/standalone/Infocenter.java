@@ -28,7 +28,7 @@ import org.eclipse.help.internal.standalone.*;
  * </ul>
  */
 public class Infocenter {
-	private StandaloneInfocenter infocenter;
+	private final StandaloneInfocenter infocenter;
 	/**
 	 * Constructs Infocenter
 	 *

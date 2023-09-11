@@ -52,7 +52,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public abstract class ModelOperation extends TeamOperation {
 
 	private boolean previewRequested;
-	private ISynchronizationScopeManager manager;
+	private final ISynchronizationScopeManager manager;
 
 	/**
 	 * Return the list of provides sorted by their extends relationship.

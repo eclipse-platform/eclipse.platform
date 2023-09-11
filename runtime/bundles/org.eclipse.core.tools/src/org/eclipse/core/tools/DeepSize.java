@@ -40,7 +40,7 @@ public class DeepSize {
 	 * Used as keys to track sets of non-identical objects.
 	 */
 	public static class ObjectWrapper {
-		private Object object;
+		private final Object object;
 
 		public ObjectWrapper(Object object) {
 			this.object = object;

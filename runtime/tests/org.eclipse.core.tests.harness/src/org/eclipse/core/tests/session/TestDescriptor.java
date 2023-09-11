@@ -26,11 +26,11 @@ import junit.framework.TestResult;
 public class TestDescriptor extends TestCase {
 	private String applicationId;
 	private boolean crashTest;
-	private String method;
+	private final String method;
 	private String pluginId;
 	private Setup setup;
 	private Test test;
-	private String testClass;
+	private final String testClass;
 	private SessionTestRunner testRunner;
 
 	public TestDescriptor(String testClass, String method) {

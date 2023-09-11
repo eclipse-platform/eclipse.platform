@@ -23,7 +23,7 @@ import org.eclipse.search.ui.ISearchResult;
 public class FindUnusedSearchQuery implements ISearchQuery {
 
 	private final ICompilationUnit[] fCus;
-	private FindUnusedSearchResult fSearchResult;
+	private final FindUnusedSearchResult fSearchResult;
 
 	public FindUnusedSearchQuery(ICompilationUnit[] cus) {
 		fCus = cus;

@@ -30,16 +30,16 @@ import org.eclipse.ui.internal.provisional.cheatsheets.ICompositeCheatSheetTask;
 
 public class CompositeCheatSheetModel extends Observable implements ICompositeCheatSheet, ICheatSheet{
 
-	private String name;
-	private String description;
-	private String explorerId;
+	private final String name;
+	private final String description;
+	private final String explorerId;
 	private ICompositeCheatSheetTask rootTask;
 	private TaskDependencies dependencies;
 	private String id;
 	private CompositeCheatSheetSaveHelper saveHelper;
 	private URL contentURL;
 	private CheatSheetManager manager;
-	private Set<ICompositeCheatSheetTask> stateChangedSet = new HashSet<>();
+	private final Set<ICompositeCheatSheetTask> stateChangedSet = new HashSet<>();
 
 	public void setRootTask(ICompositeCheatSheetTask task) {
 		rootTask = task;

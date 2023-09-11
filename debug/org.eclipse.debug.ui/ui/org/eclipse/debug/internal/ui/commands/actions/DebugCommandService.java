@@ -54,7 +54,7 @@ public class DebugCommandService implements IDebugContextListener {
 	/**
 	 * The context service for this command service.
 	 */
-	private IDebugContextService fContextService;
+	private final IDebugContextService fContextService;
 
 	/**
 	 * Service per window

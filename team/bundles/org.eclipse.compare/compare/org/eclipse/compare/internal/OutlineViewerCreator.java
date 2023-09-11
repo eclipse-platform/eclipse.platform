@@ -34,7 +34,7 @@ public abstract class OutlineViewerCreator {
 	 */
 	public static final String PROP_INPUT = "org.eclipse.compare.OutlineInput"; //$NON-NLS-1$
 
-	private ListenerList<IPropertyChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
+	private final ListenerList<IPropertyChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	/**
 	 * Method called by the editor to create a structure viewer for the current content merge viewer.

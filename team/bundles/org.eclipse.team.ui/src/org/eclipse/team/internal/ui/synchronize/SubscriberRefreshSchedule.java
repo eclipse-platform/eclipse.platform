@@ -42,7 +42,7 @@ public class SubscriberRefreshSchedule {
 
 	private RefreshParticipantJob job;
 
-	private IRefreshable refreshable;
+	private final IRefreshable refreshable;
 
 	private IRefreshEvent lastRefreshEvent;
 
@@ -66,7 +66,7 @@ public class SubscriberRefreshSchedule {
 	 */
 	private static final String CTX_REFRESHSCHEDULE_RUNONCE = TeamUIPlugin.ID + ".CTX_REFRESHSCHEDULE_RUNONCE"; //$NON-NLS-1$
 
-	private IRefreshSubscriberListener refreshSubscriberListener = new IRefreshSubscriberListener() {
+	private final IRefreshSubscriberListener refreshSubscriberListener = new IRefreshSubscriberListener() {
 		@Override
 		public void refreshStarted(IRefreshEvent event) {
 		}

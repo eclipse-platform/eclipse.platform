@@ -83,7 +83,7 @@ public class TreeModelContentProvider implements ITreeModelContentProvider, ICon
 	 * Used to install different model proxy instances for one element depending
 	 * on the tree path.
 	 */
-	private Map<TreePath, IModelProxy> fTreeModelProxies = new HashMap<>(); // tree
+	private final Map<TreePath, IModelProxy> fTreeModelProxies = new HashMap<>(); // tree
 																									// model
 																									// proxy
 																									// by
@@ -95,7 +95,7 @@ public class TreeModelContentProvider implements ITreeModelContentProvider, ICon
 	 * Used to install a single model proxy which is responsible for all
 	 * instances of an element in the model tree.
 	 */
-	private Map<Object, IModelProxy> fModelProxies = new HashMap<>(); // model
+	private final Map<Object, IModelProxy> fModelProxies = new HashMap<>(); // model
 																							// proxy
 																							// by
 																							// element
@@ -103,17 +103,17 @@ public class TreeModelContentProvider implements ITreeModelContentProvider, ICon
 	/**
 	 * Map of nodes that have been filtered from the viewer.
 	 */
-	private FilterTransform fTransform = new FilterTransform();
+	private final FilterTransform fTransform = new FilterTransform();
 
 	/**
 	 * Model listeners
 	 */
-	private ListenerList<IModelChangedListener> fModelListeners = new ListenerList<>();
+	private final ListenerList<IModelChangedListener> fModelListeners = new ListenerList<>();
 
 	/**
 	 * Viewer update listeners
 	 */
-	private ListenerList<IViewerUpdateListener> fUpdateListeners = new ListenerList<>();
+	private final ListenerList<IViewerUpdateListener> fUpdateListeners = new ListenerList<>();
 
 	/**
 	 * Flag indicating whether we are currently in a model sequence.
@@ -124,19 +124,19 @@ public class TreeModelContentProvider implements ITreeModelContentProvider, ICon
 	/**
 	 * Map of updates in progress: element path -> list of requests
 	 */
-	private Map<TreePath, List<ViewerUpdateMonitor>> fRequestsInProgress = new HashMap<>();
+	private final Map<TreePath, List<ViewerUpdateMonitor>> fRequestsInProgress = new HashMap<>();
 
 	/**
 	 * Map of dependent requests waiting for parent requests to complete:
 	 * element path -> list of requests
 	 */
-	private Map<TreePath, List<ViewerUpdateMonitor>> fWaitingRequests = new HashMap<>();
+	private final Map<TreePath, List<ViewerUpdateMonitor>> fWaitingRequests = new HashMap<>();
 
 	private List<ViewerUpdateMonitor> fCompletedUpdates = new ArrayList<>();
 
 	private Runnable fCompletedUpdatesRunnable;
 
-	private ViewerStateTracker fStateTracker = new ViewerStateTracker(this);
+	private final ViewerStateTracker fStateTracker = new ViewerStateTracker(this);
 
 	private TreePath fRevealPath;
 

@@ -33,7 +33,7 @@ public class IntroLink extends AbstractTextElement {
 	private static final String ATT_URL = "url"; //$NON-NLS-1$
 	private static final String TAG_IMG = "img"; //$NON-NLS-1$
 
-	private String label;
+	private final String label;
 	private String url;
 	private IntroImage img;
 	private IntroURL introURL;

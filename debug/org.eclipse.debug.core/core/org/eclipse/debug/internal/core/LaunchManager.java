@@ -442,7 +442,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	 */
 	static class ResourceProxyVisitor implements IResourceProxyVisitor {
 
-		private List<IResource> fList;
+		private final List<IResource> fList;
 
 		protected ResourceProxyVisitor(List<IResource> list) {
 			fList= list;
@@ -571,7 +571,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	 * Launch configuration cache. Keys are <code>LaunchConfiguration</code>,
 	 * values are <code>LaunchConfigurationInfo</code>.
 	 */
-	private Map<ILaunchConfiguration, LaunchConfigurationInfo> fLaunchConfigurations = new HashMap<>(10);
+	private final Map<ILaunchConfiguration, LaunchConfigurationInfo> fLaunchConfigurations = new HashMap<>(10);
 
 	/**
 	 * A cache of launch configuration names currently in the workspace.
@@ -611,13 +611,13 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	/**
 	 * Collection of launches
 	 */
-	private List<ILaunch> fLaunches = new ArrayList<>(10);
+	private final List<ILaunch> fLaunches = new ArrayList<>(10);
 	/**
 	 * Set of launches for efficient 'isRegistered()' check TODO remove this -
 	 * Launches don't implement hashCode() or equals() - so its no more
 	 * efficient than walking the other collection
 	 */
-	private Set<ILaunch> fLaunchSet = new HashSet<>(10);
+	private final Set<ILaunch> fLaunchSet = new HashSet<>(10);
 
 	/**
 	 * Collection of listeners

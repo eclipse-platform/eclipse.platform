@@ -119,7 +119,7 @@ import org.w3c.dom.NodeList;
  */
 public class AntEditorCompletionProcessor extends TemplateCompletionProcessor implements ICompletionListener {
 
-	private Comparator<ICompletionProposal> proposalComparator = new Comparator<>() {
+	private final Comparator<ICompletionProposal> proposalComparator = new Comparator<>() {
 		@Override
 		public int compare(ICompletionProposal o1, ICompletionProposal o2) {
 

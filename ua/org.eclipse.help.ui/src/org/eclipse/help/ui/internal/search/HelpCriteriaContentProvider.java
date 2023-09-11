@@ -30,8 +30,8 @@ public class HelpCriteriaContentProvider implements ITreeContentProvider {
 			this.parent = parent;
 		}
 
-		private String id;
-		private Object parent;
+		private final String id;
+		private final Object parent;
 
 		public String getId() {
 			return id;
@@ -66,8 +66,8 @@ public class HelpCriteriaContentProvider implements ITreeContentProvider {
 			this.parent = parent;
 		}
 
-		private String id;
-		private Object parent;
+		private final String id;
+		private final Object parent;
 
 		public String getId() {
 			return id;

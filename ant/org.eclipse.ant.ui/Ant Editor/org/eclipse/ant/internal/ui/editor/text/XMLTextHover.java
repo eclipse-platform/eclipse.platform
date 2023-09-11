@@ -52,7 +52,7 @@ import org.eclipse.ui.editors.text.EditorsUI;
 
 public class XMLTextHover implements ITextHover, ITextHoverExtension, IInformationProviderExtension2 {
 
-	private AntEditor fEditor;
+	private final AntEditor fEditor;
 
 	public XMLTextHover(AntEditor editor) {
 		super();

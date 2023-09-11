@@ -26,10 +26,10 @@ import org.w3c.dom.Element;
 
 public class ConcurrentTocAccess {
 
-	private boolean checkAttributes = true;
+	private final boolean checkAttributes = true;
 
 	// Set enableTimeout to false for debugging
-	private boolean enableTimeout = true;
+	private final boolean enableTimeout = true;
 
 	private static class TocGenerator {
 		private int[] dimensions;

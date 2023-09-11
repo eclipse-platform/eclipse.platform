@@ -17,10 +17,10 @@ import java.util.Random;
 import org.eclipse.core.runtime.jobs.ILock;
 
 public class RandomTestRunnable extends Thread {
-	private ILock[] locks;
-	private Random random = new Random();
+	private final ILock[] locks;
+	private final Random random = new Random();
 	private boolean alive;
-	private boolean needRandomization;
+	private final boolean needRandomization;
 	volatile int runs;
 
 	/**

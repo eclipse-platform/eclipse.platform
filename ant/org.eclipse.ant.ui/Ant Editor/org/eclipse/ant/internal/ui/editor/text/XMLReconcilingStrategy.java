@@ -32,7 +32,7 @@ public class XMLReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 	 */
 	public static final int DELAY = 500;
 
-	private AntEditor fEditor;
+	private final AntEditor fEditor;
 
 	public XMLReconcilingStrategy(AntEditor editor) {
 		fEditor = editor;

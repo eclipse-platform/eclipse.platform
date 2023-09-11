@@ -62,11 +62,11 @@ public class DelegatingModelPresentation implements IDebugModelPresentation, IDe
 	 * A mapping of attribute ids to their values
 	 * @see IDebugModelPresentation#setAttribute
 	 */
-	private HashMap<String, Object> fAttributes = new HashMap<>(3);
+	private final HashMap<String, Object> fAttributes = new HashMap<>(3);
 	/**
 	 * A table of label providers keyed by debug model identifiers.
 	 */
-	private HashMap<String, IDebugModelPresentation> fLabelProviders = new HashMap<>(5);
+	private final HashMap<String, IDebugModelPresentation> fLabelProviders = new HashMap<>(5);
 
 	@Override
 	public void removeAnnotations(IEditorPart editorPart, IThread thread) {

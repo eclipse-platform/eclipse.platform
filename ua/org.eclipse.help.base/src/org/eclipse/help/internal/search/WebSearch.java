@@ -47,7 +47,7 @@ public final class WebSearch implements ISearchEngine {
 	private static final char C_STOP = '}';
 
 	public static class Scope implements ISearchScope {
-		private String urlTemplate;
+		private final String urlTemplate;
 
 		public Scope(String urlTemplate) {
 			this.urlTemplate = urlTemplate;
@@ -59,9 +59,9 @@ public final class WebSearch implements ISearchEngine {
 	}
 
 	private static class SearchResult implements ISearchEngineResult {
-		private String query;
+		private final String query;
 
-		private String urlTemplate;
+		private final String urlTemplate;
 
 		public SearchResult(String query, String urlTemplate) {
 			this.query = query;

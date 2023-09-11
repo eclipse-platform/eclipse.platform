@@ -27,7 +27,7 @@ public abstract class AbstractOverlayIcon extends CompositeImageDescriptor {
 
 	private Point fSize = null;
 
-	private ImageDescriptor fOverlays[][];
+	private final ImageDescriptor fOverlays[][];
 
 	public AbstractOverlayIcon(ImageDescriptor[][] overlays) {
 		this(overlays, null);

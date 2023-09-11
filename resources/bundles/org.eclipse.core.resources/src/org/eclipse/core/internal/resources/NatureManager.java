@@ -42,7 +42,7 @@ public class NatureManager implements ILifecycleListener, IManager {
 	private static final byte GREY = 1;
 	private static final byte BLACK = 2;
 
-	private Workspace workspace;
+	private final Workspace workspace;
 
 	protected NatureManager(Workspace workspace) {
 		super();

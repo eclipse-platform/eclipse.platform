@@ -22,7 +22,7 @@ import java.util.Iterator;
  */
 public class SortedMap implements FactoryObject {
 
-	private SortedSet fSet;
+	private final SortedSet fSet;
 	private IMapHolder fHolder;
 	private SortedMap fNext;
 

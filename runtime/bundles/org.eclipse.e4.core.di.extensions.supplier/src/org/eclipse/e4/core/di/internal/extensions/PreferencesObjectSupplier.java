@@ -98,7 +98,7 @@ public class PreferencesObjectSupplier extends ExtendedObjectSupplier implements
 	}
 
 	// Hash (nodePath -> Hash (key -> list))
-	private Map<String, HashMap<String, List<PrefInjectionListener>>> listenerCache = new HashMap<>();
+	private final Map<String, HashMap<String, List<PrefInjectionListener>>> listenerCache = new HashMap<>();
 
 	@Override
 	public Object get(IObjectDescriptor descriptor, IRequestor requestor, boolean track, boolean group) {

@@ -19,11 +19,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class ContextHelpProviderInput {
-	private IContext context;
-	private IContextProvider provider;
-	private Control control;
-	private IWorkbenchPart part;
-	private boolean explicitRequest;
+	private final IContext context;
+	private final IContextProvider provider;
+	private final Control control;
+	private final IWorkbenchPart part;
+	private final boolean explicitRequest;
 	public ContextHelpProviderInput(IContextProvider provider, IContext context, Control control, IWorkbenchPart part, boolean explicitRequest) {
 		this.provider = provider;
 		this.context = context;

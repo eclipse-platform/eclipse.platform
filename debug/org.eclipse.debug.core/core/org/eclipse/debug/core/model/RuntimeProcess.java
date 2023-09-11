@@ -81,12 +81,12 @@ public class RuntimeProcess extends PlatformObject implements IProcess {
 	/**
 	 * The streams proxy for this process
 	 */
-	private IStreamsProxy fStreamsProxy;
+	private final IStreamsProxy fStreamsProxy;
 
 	/**
 	 * The name of the process
 	 */
-	private String fName;
+	private final String fName;
 
 	/**
 	 * Whether this process has been terminated

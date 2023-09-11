@@ -50,8 +50,8 @@ import org.eclipse.ui.PlatformUI;
 public class AddSourceContainerDialog extends TitleAreaDialog {
 
 	private TableViewer fViewer;
-	private SourceContainerViewer fSourceContainerViewer;
-	private ISourceLookupDirector fDirector;
+	private final SourceContainerViewer fSourceContainerViewer;
+	private final ISourceLookupDirector fDirector;
 
 	/**
 	 * Constructor

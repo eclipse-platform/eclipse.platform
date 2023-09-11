@@ -25,7 +25,7 @@ import org.eclipse.ui.internal.intro.universal.util.ImageUtil;
 public class CustomizationDialog extends TrayDialog {
 
 	private CustomizationContentsArea contentsArea;
-	private String pageId;
+	private final String pageId;
 
 	private CustomizationContentsArea getContentsArea() {
 		if (contentsArea == null) {

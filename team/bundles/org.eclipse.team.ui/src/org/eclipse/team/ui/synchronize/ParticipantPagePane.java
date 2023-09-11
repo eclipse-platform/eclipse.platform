@@ -42,11 +42,11 @@ import org.eclipse.ui.part.IPageBookViewPage;
  */
 public final class ParticipantPagePane {
 
-	private ISynchronizeParticipant participant;
-	private ISynchronizePageConfiguration pageConfiguration;
+	private final ISynchronizeParticipant participant;
+	private final ISynchronizePageConfiguration pageConfiguration;
 	private Image titleImage;
 	private Shell shell;
-	private boolean isModal;
+	private final boolean isModal;
 
 	// SWT controls
 	private CompareViewerPane fEditionPane;

@@ -32,8 +32,8 @@ import org.eclipse.ui.intro.config.IIntroContentProviderSite;
  */
 public class PageContentForm implements IIntroConstants {
 
-	private FormToolkit toolkit;
-	private IntroModelRoot model;
+	private final FormToolkit toolkit;
+	private final IntroModelRoot model;
 	private PageStyleManager styleManager;
 	// composite to control reflow.
 	private Composite contentComposite;

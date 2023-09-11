@@ -41,7 +41,7 @@ public class ProxyEntriesComposite extends Composite {
 	private Button removeButton;
 
 	protected String currentProvider;
-	private ArrayList<ProxyData> proxyEntries = new ArrayList<>();
+	private final ArrayList<ProxyData> proxyEntries = new ArrayList<>();
 
 	ProxyEntriesComposite(Composite parent, int style) {
 		super(parent, style);

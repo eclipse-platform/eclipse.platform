@@ -180,7 +180,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private static Image fgTitleImage;
 
 	private Splitter fComposite;
-	private CompareConfiguration fCompareConfiguration;
+	private final CompareConfiguration fCompareConfiguration;
 	private CompareViewerPane fStructureInputPane;
 	private CompareViewerSwitchingPane fStructurePane1;
 	private CompareViewerSwitchingPane fStructurePane2;
@@ -189,11 +189,11 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private String fMessage;
 	private Object fInput;
 	private String fTitle;
-	private ListenerList<IPropertyChangeListener> fListenerList= new ListenerList<>();
+	private final ListenerList<IPropertyChangeListener> fListenerList= new ListenerList<>();
 	private CompareNavigator fNavigator;
 	private boolean fLeftDirty;
 	private boolean fRightDirty;
-	private IPropertyChangeListener fDirtyStateListener;
+	private final IPropertyChangeListener fDirtyStateListener;
 
 	boolean fStructureCompareOnSingleClick= true;
 

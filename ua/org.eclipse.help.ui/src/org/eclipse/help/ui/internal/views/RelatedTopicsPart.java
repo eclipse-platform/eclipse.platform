@@ -36,9 +36,9 @@ import org.eclipse.ui.forms.widgets.ILayoutExtension;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class RelatedTopicsPart extends AbstractFormPart implements IHelpPart {
-	private ManagedForm mform;
+	private final ManagedForm mform;
 
-	private ContextHelpPart contextHelpPart;
+	private final ContextHelpPart contextHelpPart;
 
 	private DynamicHelpPart dynamicHelpPart;
 
@@ -46,7 +46,7 @@ public class RelatedTopicsPart extends AbstractFormPart implements IHelpPart {
 
 	private String id;
 
-	private int VSPACE = 10;
+	private final int VSPACE = 10;
 
 	private static boolean dynamicHelpPreferenceRead = false;
 	private static boolean useDynamicHelp = false;

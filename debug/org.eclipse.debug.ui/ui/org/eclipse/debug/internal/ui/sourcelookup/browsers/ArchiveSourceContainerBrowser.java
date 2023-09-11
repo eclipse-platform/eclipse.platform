@@ -44,7 +44,7 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
  */
 public class ArchiveSourceContainerBrowser extends AbstractSourceContainerBrowser {
 
-	private ISelectionStatusValidator validator= selection -> {
+	private final ISelectionStatusValidator validator= selection -> {
 		if (selection.length == 0) {
 			return new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), 0, IInternalDebugCoreConstants.EMPTY_STRING, null);
 		}

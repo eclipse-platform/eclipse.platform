@@ -35,7 +35,7 @@ public class StyledLineWrapper implements StyledTextContent {
 	 */
 	public static final String BOLD_TAG = "<@#$b>"; //$NON-NLS-1$
 
-	private Drawable drawable;
+	private final Drawable drawable;
 
 	/** Lines after splitting */
 	private ArrayList<String> lines = new ArrayList<>();

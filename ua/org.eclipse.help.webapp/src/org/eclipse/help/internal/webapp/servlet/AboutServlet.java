@@ -62,7 +62,7 @@ public class AboutServlet extends HttpServlet {
 			this.column = column;
 		}
 
-		private int column;
+		private final int column;
 
 		@Override
 		public int compare(PluginDetails pd1, PluginDetails pd2) {

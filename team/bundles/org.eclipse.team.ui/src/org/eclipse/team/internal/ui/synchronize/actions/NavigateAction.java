@@ -30,7 +30,7 @@ import org.eclipse.ui.actions.ActionFactory;
  */
 public class NavigateAction extends Action {
 	private final boolean next;
-	private ISynchronizePageConfiguration configuration;
+	private final ISynchronizePageConfiguration configuration;
 
 	public NavigateAction(ISynchronizePageConfiguration configuration, boolean next) {
 		this.configuration = configuration;

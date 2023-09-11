@@ -65,7 +65,7 @@ public class FavoritesDialog extends TrayDialog {
 	private TableViewer fFavoritesTable;
 
 	// history being organized
-	private LaunchHistory fHistory;
+	private final LaunchHistory fHistory;
 
 	// favorites collection under edit
 	private List<ILaunchConfiguration> fFavorites;
@@ -80,7 +80,7 @@ public class FavoritesDialog extends TrayDialog {
 	/**
 	 * Listener that delegates when a button is pressed
 	 */
-	private SelectionAdapter fButtonListener= new SelectionAdapter() {
+	private final SelectionAdapter fButtonListener= new SelectionAdapter() {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			Button button = (Button) e.widget;
@@ -99,12 +99,12 @@ public class FavoritesDialog extends TrayDialog {
 	/**
 	 * Listener that delegates when the selection changes in a table
 	 */
-	private ISelectionChangedListener fSelectionChangedListener= event -> handleFavoriteSelectionChanged();
+	private final ISelectionChangedListener fSelectionChangedListener= event -> handleFavoriteSelectionChanged();
 
 	/**
 	 * Listener that delegates when a key is pressed in a table
 	 */
-	private KeyListener fKeyListener= new KeyAdapter() {
+	private final KeyListener fKeyListener= new KeyAdapter() {
 		@Override
 		public void keyPressed(KeyEvent event) {
 			if (event.character == SWT.DEL && event.stateMask == 0) {

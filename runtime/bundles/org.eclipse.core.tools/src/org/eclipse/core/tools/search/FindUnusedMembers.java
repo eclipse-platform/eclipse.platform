@@ -89,7 +89,7 @@ public class FindUnusedMembers implements IRunnableWithProgress {
 	}
 
 	private final IResultReporter result;
-	private ICompilationUnit[] units;
+	private final ICompilationUnit[] units;
 	protected int unusedMemberCount = 0;
 
 	public FindUnusedMembers(ICompilationUnit[] units, Writer writer) {

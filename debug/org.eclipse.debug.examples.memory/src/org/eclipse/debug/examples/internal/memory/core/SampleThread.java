@@ -28,7 +28,7 @@ import org.eclipse.debug.core.model.IThread;
  */
 public class SampleThread extends DebugElement implements IThread {
 
-	private SampleDebugTarget fTarget;
+	private final SampleDebugTarget fTarget;
 
 	/**
 	 * Constructs SampleThread

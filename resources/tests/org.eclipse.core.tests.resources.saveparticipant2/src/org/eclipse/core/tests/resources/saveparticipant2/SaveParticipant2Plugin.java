@@ -25,7 +25,7 @@ import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
  */
 public class SaveParticipant2Plugin extends Plugin implements ISaveParticipant {
 	/** expected values */
-	private ResourceDeltaVerifier deltaVerifier;
+	private final ResourceDeltaVerifier deltaVerifier;
 	private int expectedPreviousSaveNumber;
 	private int saveKind;
 

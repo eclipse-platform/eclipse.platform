@@ -17,7 +17,7 @@ package org.eclipse.help.ui.internal.views;
 public class ScopeState  {
 
 	private static ScopeState instance;
-	private ScopeSetManager scopeSetManager;
+	private final ScopeSetManager scopeSetManager;
 	private EngineDescriptorManager engineManager;
 
 	public static synchronized ScopeState getInstance() {

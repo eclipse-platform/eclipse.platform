@@ -38,7 +38,7 @@ import org.eclipse.ui.model.WorkbenchAdapter;
  */
 public class ConfigurationWizardElement extends WorkbenchAdapter implements IAdaptable, IPluginContribution  {
 	private String id;
-	private String name;
+	private final String name;
 	private ImageDescriptor imageDescriptor;
 	private IConfigurationElement configurationElement;
 

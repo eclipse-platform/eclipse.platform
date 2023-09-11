@@ -83,9 +83,9 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		}
 	}
 
-	private String name;
+	private final String name;
 	private boolean updatingPreferences;
-	private PreferenceManager preferenceManager;
+	private final PreferenceManager preferenceManager;
 
 	public static String convertHostsToPropertyString(String[] value) {
 		StringBuilder buffer = new StringBuilder();

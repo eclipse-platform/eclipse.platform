@@ -26,8 +26,8 @@ import org.eclipse.ui.IWorkbenchPartSite;
  */
 public class SynchronizeViewWorkbenchPart implements IWorkbenchPart {
 
-	private ISynchronizeParticipant participant;
-	private IWorkbenchPartSite site;
+	private final ISynchronizeParticipant participant;
+	private final IWorkbenchPartSite site;
 	private ISynchronizePageConfiguration configuration;
 
 	@Override

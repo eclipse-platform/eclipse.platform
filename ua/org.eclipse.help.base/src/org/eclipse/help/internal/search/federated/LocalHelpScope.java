@@ -17,8 +17,8 @@ import org.eclipse.help.internal.workingset.WorkingSet;
 import org.eclipse.help.search.ISearchScope;
 
 public class LocalHelpScope implements ISearchScope {
-	private WorkingSet workingSet;
-	private boolean capabilityFiltered;
+	private final WorkingSet workingSet;
+	private final boolean capabilityFiltered;
 	public LocalHelpScope(WorkingSet workingSet, boolean capabilityFiltered) {
 		this.workingSet = workingSet;
 		this.capabilityFiltered = capabilityFiltered;

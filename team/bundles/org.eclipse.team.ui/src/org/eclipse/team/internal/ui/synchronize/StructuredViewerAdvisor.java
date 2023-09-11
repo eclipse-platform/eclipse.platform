@@ -87,7 +87,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	// Property change listener which responds to:
 	//    - working set selection by the user
 	//    - decorator format change selected by the user
-	private IPropertyChangeListener propertyListener = event -> {
+	private final IPropertyChangeListener propertyListener = event -> {
 		// Change to showing of sync state in text labels preference
 		if(event.getProperty().equals(IPreferenceIds.SYNCVIEW_VIEW_SYNCINFO_IN_LABEL)) {
 			StructuredViewer viewer = getViewer();

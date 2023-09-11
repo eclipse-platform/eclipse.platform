@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 public class ScopePreferenceDialog extends PreferenceDialog {
-	private EngineDescriptorManager descManager;
+	private final EngineDescriptorManager descManager;
 	private ArrayList<PendingOperation> pendingOperations;
 
 	static class PendingOperation {

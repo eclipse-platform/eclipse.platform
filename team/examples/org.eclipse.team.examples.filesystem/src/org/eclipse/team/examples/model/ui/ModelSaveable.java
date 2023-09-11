@@ -26,7 +26,7 @@ import org.eclipse.ui.Saveable;
  */
 public class ModelSaveable extends Saveable {
 
-	private ModelObject modelObject;
+	private final ModelObject modelObject;
 	private boolean dirty;
 	private final ModelSaveablesProvider modelSaveablesProvider;
 

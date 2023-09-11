@@ -42,8 +42,8 @@ import org.eclipse.ui.IWorkbenchPage;
 
 public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 
-	private ITypedElement left;
-	private ITypedElement right;
+	private final ITypedElement left;
+	private final ITypedElement right;
 
 	CompareInputChangeNotifier notifier = new CompareInputChangeNotifier() {
 		@Override

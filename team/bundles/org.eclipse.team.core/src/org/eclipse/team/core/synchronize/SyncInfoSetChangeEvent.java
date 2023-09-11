@@ -31,17 +31,17 @@ import org.eclipse.team.core.ITeamStatus;
  */
 public class SyncInfoSetChangeEvent implements ISyncInfoSetChangeEvent {
 
-	private SyncInfoSet set;
+	private final SyncInfoSet set;
 
 	// List that accumulate changes
 	// SyncInfo
-	private Map<IResource, SyncInfo> changedResources = new HashMap<>();
-	private Set<IResource> removedResources = new HashSet<>();
-	private Map<IResource, SyncInfo> addedResources = new HashMap<>();
+	private final Map<IResource, SyncInfo> changedResources = new HashMap<>();
+	private final Set<IResource> removedResources = new HashSet<>();
+	private final Map<IResource, SyncInfo> addedResources = new HashMap<>();
 
 	private boolean reset = false;
 
-	private List<ITeamStatus> errors = new ArrayList<>();
+	private final List<ITeamStatus> errors = new ArrayList<>();
 
 	public SyncInfoSetChangeEvent(SyncInfoSet set) {
 		super();

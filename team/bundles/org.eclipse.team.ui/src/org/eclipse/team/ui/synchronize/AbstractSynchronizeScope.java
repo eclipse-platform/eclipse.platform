@@ -45,7 +45,7 @@ public abstract class AbstractSynchronizeScope implements ISynchronizeScope {
 	/*
 	 * Scope change listeners
 	 */
-	private ListenerList<IPropertyChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
+	private final ListenerList<IPropertyChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	/**
 	 * Save the scope to the given memento

@@ -78,7 +78,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 	private HashMap fOrderedElementsInternal;
 	private HashMap fOrderedElements;
 	
-	private ListenerList fViewers= new ListenerList();
+	private final ListenerList fViewers= new ListenerList();
 
 
 	/**

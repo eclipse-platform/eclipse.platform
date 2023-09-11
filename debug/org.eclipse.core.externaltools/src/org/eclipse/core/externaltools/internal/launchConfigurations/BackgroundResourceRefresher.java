@@ -28,8 +28,8 @@ import org.eclipse.debug.core.model.IProcess;
  */
 public class BackgroundResourceRefresher implements IDebugEventSetListener  {
 
-	private ILaunchConfiguration fConfiguration;
-	private IProcess fProcess;
+	private final ILaunchConfiguration fConfiguration;
+	private final IProcess fProcess;
 
 
 

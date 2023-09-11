@@ -54,7 +54,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 
 	private final Object fInput;
 	private final StructureCreator fCreator;
-	private ISharedDocumentAdapter fAdapter;
+	private final ISharedDocumentAdapter fAdapter;
 
 	/**
 	 * Create the structure root node.

@@ -21,8 +21,8 @@ import org.eclipse.ui.console.TextConsole;
 
 public class PatternMatchListener implements IPatternMatchListener {
 
-	private PatternMatchListenerExtension fExtension;
-	private IPatternMatchListenerDelegate fDelegate;
+	private final PatternMatchListenerExtension fExtension;
+	private final IPatternMatchListenerDelegate fDelegate;
 
 	public PatternMatchListener(PatternMatchListenerExtension extension) throws CoreException {
 		fExtension = extension;

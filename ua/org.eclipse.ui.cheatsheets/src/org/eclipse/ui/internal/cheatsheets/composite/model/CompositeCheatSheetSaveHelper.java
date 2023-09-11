@@ -41,7 +41,7 @@ import org.eclipse.ui.internal.provisional.cheatsheets.TaskEditor;
 public class CompositeCheatSheetSaveHelper {
 	private static final String DOT_XML = ".xml"; //$NON-NLS-1$
 	private Map<String, IMemento> taskMementoMap;
-	private ICheatSheetStateManager stateManager;
+	private final ICheatSheetStateManager stateManager;
 
 	/**
 	 * Constructor

@@ -33,9 +33,9 @@ public class ErrorPage extends Page {
 	 * Class used to sort status with errors first, then warnings
 	 */
 	private static class StatusSorter {
-		private List<IStatus> errors = new ArrayList<>();
-		private List<IStatus> warnings = new ArrayList<>();
-		private List<IStatus> info = new ArrayList<>();
+		private final List<IStatus> errors = new ArrayList<>();
+		private final List<IStatus> warnings = new ArrayList<>();
+		private final List<IStatus> info = new ArrayList<>();
 
 		public StatusSorter(IStatus status) {
 			sortStatus(status);

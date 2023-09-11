@@ -33,15 +33,15 @@ import org.eclipse.swt.widgets.Table;
 
 public class ICButtons implements SelectionListener{
 
-	private HelpContentPreferencePage page;
+	private final HelpContentPreferencePage page;
 
-	private Button addIC;
-	private Button editIC;
-	private Button removeIC;
-	private Button moveUp;
-	private Button moveDown;
-	private Button testIC;
-	private Button enableIC;
+	private final Button addIC;
+	private final Button editIC;
+	private final Button removeIC;
+	private final Button moveUp;
+	private final Button moveDown;
+	private final Button testIC;
+	private final Button enableIC;
 
 	private boolean enabled = true;
 

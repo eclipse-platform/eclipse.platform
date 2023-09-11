@@ -17,10 +17,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class LazyInputStream extends InputStream implements ILazySource {
-	private int blockCapacity;
+	private final int blockCapacity;
 	byte[][] blocks = {};
 	private int bufferSize;
-	private InputStream in;
+	private final InputStream in;
 	private int mark;
 	private int offset;
 

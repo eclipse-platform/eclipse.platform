@@ -25,7 +25,7 @@ import org.eclipse.ui.internal.provisional.cheatsheets.ICompositeCheatSheetTask;
 public class SkipAction extends Action {
 
 	private static final String SKIP_CCS_TASK_GIF = "skip_ccs_task.png"; //$NON-NLS-1$
-	private AbstractTask task;
+	private final AbstractTask task;
 
 	public SkipAction(ICompositeCheatSheetTask task) {
 		this.task = (AbstractTask) task;

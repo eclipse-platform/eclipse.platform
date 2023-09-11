@@ -44,9 +44,9 @@ public class FilePatch2 implements IFilePatch2 {
 	 */
 	public static final int CHANGE= 3;
 
-	private IPath fOldPath, fNewPath;
-	private long oldDate, newDate;
-	private List<Hunk> fHunks= new ArrayList<>();
+	private final IPath fOldPath, fNewPath;
+	private final long oldDate, newDate;
+	private final List<Hunk> fHunks= new ArrayList<>();
 	private DiffProject fProject; //the project that contains this diff
 	private String header;
 	private int addedLines, removedLines;

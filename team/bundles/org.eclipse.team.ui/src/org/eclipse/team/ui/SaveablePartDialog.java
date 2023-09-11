@@ -44,7 +44,7 @@ import org.osgi.framework.FrameworkUtil;
 @Deprecated
 public class SaveablePartDialog extends TrayDialog {
 
-	private ISaveableWorkbenchPart input;
+	private final ISaveableWorkbenchPart input;
 	private String fContextId;
 	private boolean hasSettings = true;
 

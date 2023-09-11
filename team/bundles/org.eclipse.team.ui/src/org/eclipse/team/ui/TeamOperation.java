@@ -57,8 +57,8 @@ import org.eclipse.ui.progress.IProgressConstants;
  */
 public abstract class TeamOperation extends JobChangeAdapter implements IRunnableWithProgress {
 
-	private IWorkbenchPart part;
-	private IRunnableContext context;
+	private final IWorkbenchPart part;
+	private final IRunnableContext context;
 
 	/*
 	 * Job context that configures how the team operation will

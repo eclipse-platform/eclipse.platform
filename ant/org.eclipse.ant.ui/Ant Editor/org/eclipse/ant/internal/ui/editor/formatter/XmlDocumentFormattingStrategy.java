@@ -30,7 +30,7 @@ public class XmlDocumentFormattingStrategy extends ContextBasedFormattingStrateg
 	private final LinkedList<IDocument> fDocuments = new LinkedList<>();
 
 	/** access to the preferences store * */
-	private FormattingPreferences prefs;
+	private final FormattingPreferences prefs;
 
 	private int indent = -1;
 

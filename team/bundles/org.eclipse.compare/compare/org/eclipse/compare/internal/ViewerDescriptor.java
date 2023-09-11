@@ -29,7 +29,7 @@ public class ViewerDescriptor implements IViewerDescriptor {
 	private final static String EXTENSIONS_ATTRIBUTE= "extensions"; //$NON-NLS-1$
 	private final static String LABEL_ATTRIBUTE = "label"; //$NON-NLS-1$
 
-	private IConfigurationElement fConfiguration;
+	private final IConfigurationElement fConfiguration;
 	private IViewerCreator fViewerCreator;
 	private Class<? extends Viewer> fViewerClass;
 

@@ -295,7 +295,7 @@ public class TestRunnerViewPart extends ViewPart {
 	private ILock fUnitTestIsRunningLock;
 	public static final Object FAMILY_UNITTEST_RUN = new Object();
 
-	private IPartListener2 fPartListener = new IPartListener2() {
+	private final IPartListener2 fPartListener = new IPartListener2() {
 		@Override
 		public void partActivated(IWorkbenchPartReference ref) {
 		}
@@ -339,7 +339,7 @@ public class TestRunnerViewPart extends ViewPart {
 
 	private static class UnitTesttPasteAction extends Action {
 		private final Shell fShell;
-		private Clipboard fClipboard;
+		private final Clipboard fClipboard;
 
 		public UnitTesttPasteAction(Shell shell, Clipboard clipboard) {
 			super(Messages.TestRunnerViewPart_PasteAction_label);

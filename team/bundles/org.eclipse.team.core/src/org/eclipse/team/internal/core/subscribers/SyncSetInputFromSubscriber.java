@@ -24,7 +24,7 @@ import org.eclipse.team.core.subscribers.Subscriber;
  */
 public class SyncSetInputFromSubscriber extends SyncSetInput  {
 
-	private Subscriber subscriber;
+	private final Subscriber subscriber;
 
 	public SyncSetInputFromSubscriber(Subscriber subscriber, SubscriberEventHandler handler) {
 		super(handler);

@@ -54,7 +54,7 @@ class AutoBuildJob extends Job implements IEclipsePreferences.IPreferenceChangeL
 	private volatile boolean isAutoBuilding;
 	private volatile long lastBuild = 0L;
 	private final Bundle systemBundle = Platform.getBundle("org.eclipse.osgi"); //$NON-NLS-1$
-	private Workspace workspace;
+	private final Workspace workspace;
 	final Job noBuildJob;
 
 	AutoBuildJob(Workspace workspace) {

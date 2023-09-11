@@ -31,7 +31,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class EngineTypeWizardPage extends WizardPage {
 	private TableViewer tableViewer;
-	private EngineTypeDescriptor [] engineTypes;
+	private final EngineTypeDescriptor [] engineTypes;
 	private EngineTypeDescriptor selection;
 
 	class EngineContentProvider implements IStructuredContentProvider {

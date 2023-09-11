@@ -49,7 +49,7 @@ public class RefactorActionGroup extends ActionGroup {
 	private CopyToClipboardAction copyAction;
 	private MoveResourceAction moveAction;
 	private RenameResourceAction renameAction;
-	private ISynchronizePageSite site;
+	private final ISynchronizePageSite site;
 	private DeleteResourceAction deleteAction;
 	private final INavigatorContentService navigatorContentService;
 

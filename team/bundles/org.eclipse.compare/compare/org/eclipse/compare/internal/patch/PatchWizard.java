@@ -50,7 +50,7 @@ public class PatchWizard extends Wizard {
 
 	private final WorkspacePatcher fPatcher;
 
-	private CompareConfiguration fConfiguration;
+	private final CompareConfiguration fConfiguration;
 	private IStorage patch;
 
 	private boolean patchReadIn = false;

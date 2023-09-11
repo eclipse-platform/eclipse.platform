@@ -107,7 +107,7 @@ public class LoadTocAction implements IWorkbenchWindowActionDelegate {
 	}
 
 	private class LinkProvider implements Iterator<String> {
-		private List<String> links;
+		private final List<String> links;
 		int lastLink = -1;
 
 		public LinkProvider(List<String> links) {

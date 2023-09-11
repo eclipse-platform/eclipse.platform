@@ -25,8 +25,8 @@ import org.eclipse.swt.widgets.Shell;
  * resource is specified 'ok/cancel' will be shown.
  */
 public class PromptingDialog extends MultipleYesNoPrompter {
-	private IPromptCondition condition;
-	private IResource[] resources;
+	private final IPromptCondition condition;
+	private final IResource[] resources;
 	/**
 	 * Prompt for the given resources using the specific condition. The prompt dialog will
 	 * have the title specified.

@@ -38,13 +38,13 @@ import org.eclipse.jface.viewers.IColorProvider;
  */
 public class SampleMemoryBlock extends DebugElement implements IMemoryBlockExtension {
 
-	private String fExpression;
-	private SampleDebugTarget fDebugTarget;
+	private final String fExpression;
+	private final SampleDebugTarget fDebugTarget;
 
 	private boolean isEnabled = true;
 	private BigInteger fBaseAddress;
 
-	private ArrayList<Object> fConnections = new ArrayList<>();
+	private final ArrayList<Object> fConnections = new ArrayList<>();
 
 	/**
 	 * Creates memory block

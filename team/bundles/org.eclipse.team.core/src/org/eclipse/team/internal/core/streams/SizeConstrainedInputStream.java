@@ -31,7 +31,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
  * much of the operation completed; conversely, at what point to resume.
  */
 public class SizeConstrainedInputStream extends FilterInputStream {
-	private boolean discardOnClose;
+	private final boolean discardOnClose;
 	private long bytesRemaining;
 
 	/**

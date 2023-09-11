@@ -30,7 +30,7 @@ import org.eclipse.ui.internal.provisional.cheatsheets.ICompositeCheatSheetTask;
  */
 
 public class ResetTaskAction extends Action {
-	private AbstractTask task;
+	private final AbstractTask task;
 
 	public ResetTaskAction(ICompositeCheatSheetTask task) {
 		this.task = (AbstractTask) task;

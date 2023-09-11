@@ -43,7 +43,7 @@ public class LaunchAction {
 	}
 
 	private final ILaunchMode mode;
-	private LaunchViewImpl view;
+	private final LaunchViewImpl view;
 
 	public LaunchAction(ILaunchMode mode, LaunchViewImpl view) {
 		this.mode = mode;

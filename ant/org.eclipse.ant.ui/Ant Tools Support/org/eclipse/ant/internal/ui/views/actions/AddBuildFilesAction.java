@@ -35,7 +35,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AddBuildFilesAction extends Action {
 
-	private AntView view;
+	private final AntView view;
 
 	public AddBuildFilesAction(AntView view) {
 		super(AntViewActionMessages.AddBuildFilesAction_1, AntUIImages.getImageDescriptor(IAntUIConstants.IMG_ADD));

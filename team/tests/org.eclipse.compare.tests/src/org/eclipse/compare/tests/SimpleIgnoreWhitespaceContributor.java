@@ -24,7 +24,7 @@ import org.junit.Assert;
 public class SimpleIgnoreWhitespaceContributor implements IIgnoreWhitespaceContributor {
 
 	private final IDocument document;
-	private TreeMap<Integer /* start offset */, Integer /* end offset */> literalsByOffset = new TreeMap<>();
+	private final TreeMap<Integer /* start offset */, Integer /* end offset */> literalsByOffset = new TreeMap<>();
 
 	public SimpleIgnoreWhitespaceContributor(IDocument document) {
 		this.document = document;

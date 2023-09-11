@@ -22,8 +22,8 @@ import org.eclipse.debug.core.model.IVariable;
  */
 public class AntProperty extends AntDebugElement implements IVariable, Comparable<AntProperty> {
 
-	private String fName;
-	private AntValue fValue;
+	private final String fName;
+	private final AntValue fValue;
 	private String fLabel;
 
 	/**

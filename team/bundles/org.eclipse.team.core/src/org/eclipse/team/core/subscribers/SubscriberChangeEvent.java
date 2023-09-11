@@ -26,9 +26,9 @@ import org.eclipse.core.resources.IResource;
  */
 public class SubscriberChangeEvent implements ISubscriberChangeEvent {
 
-	private Subscriber subscriber;
-	private int flags;
-	private IResource resource;
+	private final Subscriber subscriber;
+	private final int flags;
+	private final IResource resource;
 
 	/**
 	 * Create a change event with the given flags for the given subscriber and resource.

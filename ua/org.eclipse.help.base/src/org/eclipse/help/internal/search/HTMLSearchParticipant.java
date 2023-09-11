@@ -32,8 +32,8 @@ import org.eclipse.help.search.SearchParticipant;
 public class HTMLSearchParticipant extends SearchParticipant {
 
 	private static final String HELP_BASE_XHTML = "org.eclipse.help.base.xhtml"; //$NON-NLS-1$
-	private HTMLDocParser parser;
-	private String indexPath;
+	private final HTMLDocParser parser;
+	private final String indexPath;
 	private IContentDescriber xhtmlDescriber;
 	private XHTMLSearchParticipant xhtmlParticipant;
 

@@ -81,7 +81,7 @@ import org.osgi.util.tracker.ServiceTracker;
 public class AntCorePreferences implements IPropertyChangeListener {
 
 	static class WrappedClassLoader extends ClassLoader {
-		private Bundle bundle;
+		private final Bundle bundle;
 
 		public WrappedClassLoader(Bundle bundle) {
 			super();
@@ -137,7 +137,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 		}
 	}
 
-	private IPreferenceChangeListener prefListener = event -> {
+	private final IPreferenceChangeListener prefListener = event -> {
 		String property = event.getKey();
 		if (property.equals(IAntCoreConstants.PREFERENCE_TASKS) || property.startsWith(IAntCoreConstants.PREFIX_TASK)) {
 			restoreTasks();
@@ -156,9 +156,9 @@ public class AntCorePreferences implements IPropertyChangeListener {
 		}
 	};
 
-	private List<Task> defaultTasks;
-	private List<Type> defaultTypes;
-	private List<AntClasspathEntry> extraClasspathURLs;
+	private final List<Task> defaultTasks;
+	private final List<Type> defaultTypes;
+	private final List<AntClasspathEntry> extraClasspathURLs;
 	private List<Property> defaultProperties;
 	private IAntClasspathEntry[] defaultAntHomeEntries;
 

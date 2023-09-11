@@ -29,9 +29,9 @@ import org.eclipse.debug.core.model.IValue;
  */
 public class LogicalStructureProvider {
 
-	private IConfigurationElement fConfigurationElement;
+	private final IConfigurationElement fConfigurationElement;
 
-	private String fModelIdentifier;
+	private final String fModelIdentifier;
 
 	private ILogicalStructureProvider fDelegate;
 

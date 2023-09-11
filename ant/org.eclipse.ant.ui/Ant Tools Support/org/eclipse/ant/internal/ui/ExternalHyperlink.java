@@ -32,8 +32,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class ExternalHyperlink implements IHyperlink {
 
-	private File fFile;
-	private int fLineNumber;
+	private final File fFile;
+	private final int fLineNumber;
 
 	public ExternalHyperlink(File file, int lineNumber) {
 		super();

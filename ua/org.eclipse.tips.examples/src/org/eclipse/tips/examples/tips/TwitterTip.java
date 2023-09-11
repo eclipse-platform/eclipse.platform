@@ -29,9 +29,9 @@ import org.eclipse.tips.core.TipProvider;
  */
 public class TwitterTip extends Tip implements IUrlTip {
 
-	private String fPageUrl;
-	private Date fCreationDate;
-	private String fSubject;
+	private final String fPageUrl;
+	private final Date fCreationDate;
+	private final String fSubject;
 
 	/**
 	 * Constructor.

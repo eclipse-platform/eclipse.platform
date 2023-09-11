@@ -46,7 +46,7 @@ import javax.servlet.http.Part;
 public class MockServletRequest implements HttpServletRequest {
 
 	private Locale locale;
-	private Map<String, String[]> parameterMap = new HashMap<>();
+	private final Map<String, String[]> parameterMap = new HashMap<>();
 	private Cookie[] cookies = new Cookie[0];
 	private String pathInfo = null;
 

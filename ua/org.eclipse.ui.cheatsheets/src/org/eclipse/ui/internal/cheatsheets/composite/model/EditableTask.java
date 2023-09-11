@@ -29,7 +29,7 @@ public class EditableTask extends AbstractTask implements IEditableTask {
 
 	private TaskEditor editor;
 
-	private ITaskParseStrategy parserStrategy;
+	private final ITaskParseStrategy parserStrategy;
 
 	private boolean editorInitialized = false;
 

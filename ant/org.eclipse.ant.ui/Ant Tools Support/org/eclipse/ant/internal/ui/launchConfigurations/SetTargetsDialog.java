@@ -30,7 +30,7 @@ public class SetTargetsDialog extends Dialog {
 
 	private static String DIALOG_SETTINGS_SECTION = "SetTargetsDialogSettings"; //$NON-NLS-1$
 
-	private ILaunchConfigurationWorkingCopy fConfiguration;
+	private final ILaunchConfigurationWorkingCopy fConfiguration;
 	private AntTargetsTab fTargetsTab;
 
 	public SetTargetsDialog(Shell parentShell, ILaunchConfigurationWorkingCopy config) {

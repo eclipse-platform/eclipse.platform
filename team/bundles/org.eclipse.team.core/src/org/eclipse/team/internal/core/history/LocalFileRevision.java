@@ -38,10 +38,10 @@ public class LocalFileRevision extends FileRevision {
 	 * to be used.
 	 */
 	//Used for wrapping local file history items
-	private IFileState state;
+	private final IFileState state;
 
 	//Used for displaying the "real" current file
-	private IFile file;
+	private final IFile file;
 	//Used for displaying which base revision
 	private IFileRevision baseRevision;
 

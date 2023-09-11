@@ -31,7 +31,7 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class ActionDelegateWrapper extends Action implements ISelectionChangedListener {
 
-	private IActionDelegate delegate;
+	private final IActionDelegate delegate;
 
 	public ActionDelegateWrapper(IActionDelegate delegate, ISynchronizePageConfiguration configuration) {
 		this.delegate = delegate;

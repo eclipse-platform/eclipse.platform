@@ -34,7 +34,7 @@ import org.eclipse.team.core.mapping.ISynchronizationScopeChangeListener;
  */
 public abstract class AbstractSynchronizationScope implements ISynchronizationScope {
 
-	private ListenerList<ISynchronizationScopeChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
+	private final ListenerList<ISynchronizationScopeChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	@Override
 	public IResource[] getRoots() {

@@ -34,7 +34,7 @@ public class SourceLookupManager implements IWindowListener {
 	/**
 	 * Services per window
 	 */
-	private Map<IWorkbenchWindow, SourceLookupService> fServices = new HashMap<>();
+	private final Map<IWorkbenchWindow, SourceLookupService> fServices = new HashMap<>();
 
 	private SourceLookupManager() {
 		IWorkbench workbench = PlatformUI.getWorkbench();

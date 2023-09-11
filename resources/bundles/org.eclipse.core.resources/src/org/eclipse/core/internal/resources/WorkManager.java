@@ -68,7 +68,7 @@ public class WorkManager implements IManager {
 	 * Indicates whether any operations have run that may require a build.
 	 */
 	private volatile boolean hasBuildChanges;
-	private IJobManager jobManager;
+	private final IJobManager jobManager;
 	/**
 	 * The primary workspace lock. This lock must be held by any thread
 	 * modifying the workspace tree.
@@ -80,7 +80,7 @@ public class WorkManager implements IManager {
 	 */
 	private int nestedOperations = 0;
 
-	private NotifyRule notifyRule = new NotifyRule();
+	private final NotifyRule notifyRule = new NotifyRule();
 
 	private boolean operationCanceled = false;
 
@@ -88,7 +88,7 @@ public class WorkManager implements IManager {
 	 * The current depth of prepared operations.
 	 */
 	private int preparedOperations = 0;
-	private Workspace workspace;
+	private final Workspace workspace;
 
 	WorkManager(Workspace workspace) {
 		this.workspace = workspace;

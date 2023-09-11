@@ -29,7 +29,7 @@ public abstract class AbstractTreeContentProvider implements ITreeContentProvide
 	/**
 	 * Flag for omitting the root or not when providing the contents.
 	 */
-	private boolean omitRoot;
+	private final boolean omitRoot;
 
 	/**
 	 * The root node.

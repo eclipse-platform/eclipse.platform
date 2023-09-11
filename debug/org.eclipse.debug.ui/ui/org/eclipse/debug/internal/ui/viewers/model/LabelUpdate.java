@@ -30,17 +30,17 @@ import org.eclipse.swt.graphics.RGB;
  */
 class LabelUpdate extends Request implements ILabelUpdate, ICheckUpdate {
 
-	private TreePath fElementPath;
-	private String[] fColumnIds;
+	private final TreePath fElementPath;
+	private final String[] fColumnIds;
 	private RGB[] fBackgrounds;
 	private RGB[] fForegrounds;
 	private ImageDescriptor[] fImageDescriptors;
-	private String[] fLabels;
+	private final String[] fLabels;
 	private FontData[] fFontDatas;
-	private TreeModelLabelProvider fProvider;
+	private final TreeModelLabelProvider fProvider;
 	private int fNumColumns;
-	private IPresentationContext fContext;
-	private Object fViewerInput;
+	private final IPresentationContext fContext;
+	private final Object fViewerInput;
 	private boolean fChecked;
 	private boolean fGrayed;
 

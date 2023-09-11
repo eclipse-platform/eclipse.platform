@@ -22,7 +22,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ScrollLockAction extends Action {
 
-	private TestRunnerViewPart fRunnerViewPart;
+	private final TestRunnerViewPart fRunnerViewPart;
 
 	/**
 	 * Constructs a scroll lock toggle action

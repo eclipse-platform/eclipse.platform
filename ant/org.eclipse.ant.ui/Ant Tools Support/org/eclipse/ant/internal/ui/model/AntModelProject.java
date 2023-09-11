@@ -55,7 +55,7 @@ public class AntModelProject extends Project {
 	}
 
 	private AntPropertyNode fCurrentConfiguringPropertyNode;
-	private Map<String, Object> idrefs = Collections.synchronizedMap(new HashMap<>());
+	private final Map<String, Object> idrefs = Collections.synchronizedMap(new HashMap<>());
 	private static Object loaderLock = new Object();
 	private Hashtable<String, AntClassLoader> loaders = null;
 

@@ -26,13 +26,13 @@ import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
 public class IndexedValuePartition implements IIndexedValue {
 
 	// the starting offset of this parition, into the associated collection
-	private int fOffset;
+	private final int fOffset;
 
 	// the length of this partition
-	private int fLength;
+	private final int fLength;
 
 	// the indexed value
-	private IIndexedValue fValue;
+	private final IIndexedValue fValue;
 
 	/**
 	 * Creates a parition for an indexed value.

@@ -45,7 +45,7 @@ import org.eclipse.team.ui.mapping.ITeamStateProvider;
  */
 public class SubscriberTeamStateProvider extends TeamStateProvider implements ISubscriberChangeListener {
 
-	private Subscriber subscriber;
+	private final Subscriber subscriber;
 
 	/**
 	 * Create a provider that determines the synchronization state

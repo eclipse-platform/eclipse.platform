@@ -17,7 +17,7 @@ import java.util.LinkedList;
 
 public class ReusableHelpPartHistory {
 	private static final int CAPACITY = 50;
-	private LinkedList<HistoryEntry> queue;
+	private final LinkedList<HistoryEntry> queue;
 	private int cursor = -1;
 	private boolean blocked;
 

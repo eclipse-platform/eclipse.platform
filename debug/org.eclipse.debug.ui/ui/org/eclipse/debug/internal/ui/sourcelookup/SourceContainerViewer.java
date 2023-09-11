@@ -45,7 +45,7 @@ public class SourceContainerViewer extends TreeViewer {
 	/**
 	 * The parent panel
 	 */
-	private SourceLookupPanel fPanel;
+	private final SourceLookupPanel fPanel;
 	/**
 	 * The source container entries displayed in this viewer
 	 */

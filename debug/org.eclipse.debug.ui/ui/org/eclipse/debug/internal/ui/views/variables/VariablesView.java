@@ -286,13 +286,13 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 	 */
 	private ViewerInputService fInputService;
 
-	private Map<String, IAction> fGlobalActionMap = new HashMap<>();
+	private final Map<String, IAction> fGlobalActionMap = new HashMap<>();
 
 	/**
 	 * Viewer input requester used to update the viewer once the viewer input has been
 	 * resolved.
 	 */
-	private IViewerInputRequestor fRequester = update -> {
+	private final IViewerInputRequestor fRequester = update -> {
 		if (!update.isCanceled()) {
 			viewerInputUpdateComplete(update);
 		}
@@ -366,12 +366,12 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 	/**
 	 * Delta visitor
 	 */
-	private Visitor fVisitor = new Visitor();
+	private final Visitor fVisitor = new Visitor();
 
 	/**
 	 * Job to update details in the UI thread.
 	 */
-	private Job fTriggerDetailsJob = new UIJob("trigger details") { //$NON-NLS-1$
+	private final Job fTriggerDetailsJob = new UIJob("trigger details") { //$NON-NLS-1$
 
 		@Override
 		public IStatus runInUIThread(IProgressMonitor monitor) {

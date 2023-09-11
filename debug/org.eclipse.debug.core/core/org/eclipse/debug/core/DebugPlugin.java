@@ -410,12 +410,12 @@ public class DebugPlugin extends Plugin {
 	/**
 	 * The collection of debug event listeners.
 	 */
-	private ListenerList<IDebugEventSetListener> fEventListeners = new ListenerList<>();
+	private final ListenerList<IDebugEventSetListener> fEventListeners = new ListenerList<>();
 
 	/**
 	 * Event filters, or <code>null</code> if none.
 	 */
-	private ListenerList<IDebugEventFilter> fEventFilters = new ListenerList<>();
+	private final ListenerList<IDebugEventFilter> fEventFilters = new ListenerList<>();
 
 	/**
 	 * Whether this plug-in is in the process of shutting
@@ -448,13 +448,13 @@ public class DebugPlugin extends Plugin {
 	 *
 	 * @since 3.1
 	 */
-	private List<Object> fEventQueue = new ArrayList<>();
+	private final List<Object> fEventQueue = new ArrayList<>();
 
 	/**
 	 * Job to fire events to listeners.
 	 * @since 3.1
 	 */
-	private EventDispatchJob fEventDispatchJob = new EventDispatchJob();
+	private final EventDispatchJob fEventDispatchJob = new EventDispatchJob();
 
 	/**
 	 * Event dispatch job. Processes event queue of debug events and runnables.

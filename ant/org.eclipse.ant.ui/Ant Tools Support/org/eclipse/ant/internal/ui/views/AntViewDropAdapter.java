@@ -27,7 +27,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
  */
 public class AntViewDropAdapter extends DropTargetAdapter {
 
-	private AntView view;
+	private final AntView view;
 
 	/**
 	 * Creates a new drop adapter for the given Ant view.

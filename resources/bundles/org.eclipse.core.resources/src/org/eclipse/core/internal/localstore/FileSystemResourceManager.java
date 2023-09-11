@@ -91,7 +91,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 
 	private volatile boolean lightweightAutoRefreshEnabled;
 
-	private IPreferenceChangeListener lightweightAutoRefreshPrefListener = event -> {
+	private final IPreferenceChangeListener lightweightAutoRefreshPrefListener = event -> {
 		if (ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH.equals(event.getKey())) {
 			lightweightAutoRefreshEnabled = Platform.getPreferencesService().getBoolean(ResourcesPlugin.PI_RESOURCES,
 					ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false, null);

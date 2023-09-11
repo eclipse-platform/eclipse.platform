@@ -31,9 +31,9 @@ import org.eclipse.swt.widgets.Text;
  */
 public class XMLCompareEditOrderedDialog extends StatusDialog {
 	
-	private Mapping fMapping;
-	private ArrayList fIdmapAL;
-	private boolean fEdit;
+	private final Mapping fMapping;
+	private final ArrayList fIdmapAL;
+	private final boolean fEdit;
 	
 	private Text fElementText;
 	private Text fSignatureText;

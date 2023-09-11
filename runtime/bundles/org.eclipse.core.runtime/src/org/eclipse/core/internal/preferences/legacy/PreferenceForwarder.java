@@ -36,10 +36,10 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 
 	private static final byte[] BYTE_ARRAY_DEFAULT_DEFAULT = new byte[0];
 
-	private IEclipsePreferences pluginRoot = (IEclipsePreferences) PreferencesService.getDefault().getRootNode().node(InstanceScope.SCOPE);
-	private DefaultPreferences defaultsRoot = (DefaultPreferences) PreferencesService.getDefault().getRootNode().node(DefaultScope.SCOPE);
-	private String pluginID;
-	private Object plugin;
+	private final IEclipsePreferences pluginRoot = (IEclipsePreferences) PreferencesService.getDefault().getRootNode().node(InstanceScope.SCOPE);
+	private final DefaultPreferences defaultsRoot = (DefaultPreferences) PreferencesService.getDefault().getRootNode().node(DefaultScope.SCOPE);
+	private final String pluginID;
+	private final Object plugin;
 	// boolean to check to see if we should re-wrap and forward change
 	// events coming from the new runtime APIs.
 	private boolean notify = true;

@@ -73,8 +73,8 @@ public class AddCustomDialog extends StatusDialog {
 	private boolean entryChanged = false;
 
 	private Combo sourceNameField;
-	private List<IAntClasspathEntry> libraryEntries;
-	private List<String> existingNames;
+	private final List<IAntClasspathEntry> libraryEntries;
+	private final List<String> existingNames;
 
 	private String noNameErrorMsg;
 	private String alreadyExistsErrorMsg;
@@ -89,7 +89,7 @@ public class AddCustomDialog extends StatusDialog {
 
 	private boolean editing = false;
 
-	private String helpContext;
+	private final String helpContext;
 
 	/**
 	 * Creates a new dialog with the given shell and title.

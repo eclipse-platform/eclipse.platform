@@ -40,9 +40,9 @@ public class ExtensionResolver {
 	private static final String ELEMENT_BODY = "body"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
 
-	private DocumentProcessor processor;
-	private DocumentReader reader;
-	private String locale;
+	private final DocumentProcessor processor;
+	private final DocumentReader reader;
+	private final String locale;
 	private ContentExtensionManager manager;
 
 	/*

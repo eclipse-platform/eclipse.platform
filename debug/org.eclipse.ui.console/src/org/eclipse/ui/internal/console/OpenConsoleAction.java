@@ -132,7 +132,7 @@ public class OpenConsoleAction extends Action implements IMenuCreator {
 
 	private class ConsoleFactoryAction extends Action {
 
-		private ConsoleFactoryExtension fConfig;
+		private final ConsoleFactoryExtension fConfig;
 		private IConsoleFactory fFactory;
 
 		public ConsoleFactoryAction(String label, ImageDescriptor image, ConsoleFactoryExtension extension) {

@@ -78,9 +78,9 @@ public class AddMemoryRenderingDialog extends SelectionDialog {
 	private ISelectionChangedListener fSelectionChangedListener;
 	private SelectionListener fSelectionListener;
 	private SelectionAdapter fAddNewSelectionAdapter;
-	private IMemoryRenderingSite fSite;
+	private final IMemoryRenderingSite fSite;
 
-	private IMemoryBlockListener fMemoryBlockListener = new IMemoryBlockListener() {
+	private final IMemoryBlockListener fMemoryBlockListener = new IMemoryBlockListener() {
 
 		@Override
 		public void memoryBlocksAdded(final IMemoryBlock[] memory) {
@@ -99,7 +99,7 @@ public class AddMemoryRenderingDialog extends SelectionDialog {
 		}
 	};
 
-	private IMemoryRenderingBindingsListener fBindingListener = () -> {
+	private final IMemoryRenderingBindingsListener fBindingListener = () -> {
 		UIJob job = new UIJob("refresh") { //$NON-NLS-1$
 
 			@Override

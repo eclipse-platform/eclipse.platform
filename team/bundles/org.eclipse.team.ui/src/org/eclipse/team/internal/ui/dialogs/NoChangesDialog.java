@@ -27,7 +27,7 @@ import org.eclipse.team.core.mapping.ISynchronizationScope;
 
 public class NoChangesDialog extends DetailsDialog {
 
-	private String message;
+	private final String message;
 	private Label messageLabel;
 	private Label imageLabel;
 	private ResourceMappingHierarchyArea selectedMappingsArea;

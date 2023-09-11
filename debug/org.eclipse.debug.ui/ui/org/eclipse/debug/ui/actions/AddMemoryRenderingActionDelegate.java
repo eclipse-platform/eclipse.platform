@@ -73,11 +73,11 @@ public class AddMemoryRenderingActionDelegate extends Action implements IViewAct
 	private IMenuCreator fMenuCreator;
 	private IAdaptable fDebugContext;
 	private IWorkbenchWindow fWindow;
-	private DebugContextListener fDebugContextListener = new DebugContextListener();
+	private final DebugContextListener fDebugContextListener = new DebugContextListener();
 
 	private class AddMemoryRenderingAction extends Action
 	{
-		private IMemoryRenderingType fRenderingType;			// type of rendering to add
+		private final IMemoryRenderingType fRenderingType;			// type of rendering to add
 		AddMemoryRenderingAction(IMemoryRenderingType renderingType)
 		{
 			super(renderingType.getLabel());

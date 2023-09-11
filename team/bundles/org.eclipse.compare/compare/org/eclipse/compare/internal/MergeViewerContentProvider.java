@@ -33,7 +33,7 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 	public static final char RIGHT_CONTRIBUTOR = 'R';
 	public static final char LEFT_CONTRIBUTOR = 'L';
 
-	private CompareConfiguration fCompareConfiguration;
+	private final CompareConfiguration fCompareConfiguration;
 	private String fAncestorError;
 	private String fLeftError;
 	private String fRightError;

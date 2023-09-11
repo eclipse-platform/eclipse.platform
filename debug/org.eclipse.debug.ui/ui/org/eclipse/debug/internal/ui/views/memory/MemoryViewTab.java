@@ -42,12 +42,12 @@ import org.eclipse.ui.progress.WorkbenchJob;
 public class MemoryViewTab implements IMemoryViewTab, IPropertyChangeListener, Listener {
 
 	private IMemoryRendering fRendering;
-	private CTabItem fTabItem;
+	private final CTabItem fTabItem;
 	private DisposeListener fDisposeListener;
 	private boolean fEnabled;
 	private boolean fIsDisposed = false;
 	private Control fControl;
-	private RenderingViewPane fContainer;
+	private final RenderingViewPane fContainer;
 
 	public MemoryViewTab(CTabItem tabItem, IMemoryRendering rendering, RenderingViewPane container) {
 		fTabItem = tabItem;

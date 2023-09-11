@@ -27,7 +27,7 @@ public class SaveContext implements ISaveContext {
 	protected SafeFileTable fileTable;
 	protected int previousSaveNumber;
 	protected IProject project;
-	private Workspace workspace;
+	private final Workspace workspace;
 
 	protected SaveContext(String pluginId, int kind, IProject project, Workspace workspace) throws CoreException {
 		this.kind = kind;

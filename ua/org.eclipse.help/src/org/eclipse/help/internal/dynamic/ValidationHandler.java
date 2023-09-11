@@ -26,8 +26,8 @@ import org.eclipse.help.internal.UAElement;
  */
 public class ValidationHandler extends ProcessorHandler {
 
-	private Map<String, String[]> requiredAttributes;
-	private Map<String, String> deprecatedElements;
+	private final Map<String, String[]> requiredAttributes;
+	private final Map<String, String> deprecatedElements;
 
 	/*
 	 * Creates a new validator that looks for the given mapping of

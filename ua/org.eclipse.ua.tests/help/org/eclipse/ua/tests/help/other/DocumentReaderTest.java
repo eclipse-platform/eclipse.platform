@@ -67,8 +67,8 @@ public class DocumentReaderTest {
 
 	private class ResourceReader extends Thread {
 
-		private DocumentReader reader;
-		private String file;
+		private final DocumentReader reader;
+		private final String file;
 		ResourceReader(DocumentReader reader, String file) {
 			this.reader = reader;
 			this.file = file;

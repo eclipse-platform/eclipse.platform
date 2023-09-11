@@ -28,8 +28,8 @@ public class IntroStandbyContentPart extends AbstractIntroIdElement {
 	private static final String ATT_PLUGIN_ID = "pluginId"; //$NON-NLS-1$
 	private static final String ATT_CLASS = "class"; //$NON-NLS-1$
 
-	private String pluginId;
-	private String className;
+	private final String pluginId;
+	private final String className;
 
 	/**
 	 * Note: model class with public constructor because it is not instantiated

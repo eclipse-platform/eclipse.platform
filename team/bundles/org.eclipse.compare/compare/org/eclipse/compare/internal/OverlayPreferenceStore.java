@@ -59,9 +59,9 @@ public class OverlayPreferenceStore  implements IPreferenceStore {
 	}
 
 
-	private IPreferenceStore fParent;
-	private IPreferenceStore fStore;
-	private OverlayKey[] fOverlayKeys;
+	private final IPreferenceStore fParent;
+	private final IPreferenceStore fStore;
+	private final OverlayKey[] fOverlayKeys;
 
 	private PropertyListener fPropertyListener;
 

@@ -34,7 +34,7 @@ import org.eclipse.help.internal.standalone.*;
  * </ul>
  */
 public class Help {
-	private StandaloneHelp help;
+	private final StandaloneHelp help;
 
 	/**
 	 * Constructs help system

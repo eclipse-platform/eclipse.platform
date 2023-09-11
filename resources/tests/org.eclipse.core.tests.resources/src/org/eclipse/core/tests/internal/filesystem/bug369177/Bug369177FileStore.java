@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IPath;
  * Special file store implementation used by TestBug369177.
  */
 public class Bug369177FileStore extends NullFileStore {
-	private IPath path;
+	private final IPath path;
 
 	public Bug369177FileStore(IPath path) {
 		super(path);

@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  */
 public class RestartCommandActionDelegate implements IWorkbenchWindowActionDelegate, IActionDelegate2 {
 
-	private DebugCommandAction fDebugAction = new RestartCommandAction();
+	private final DebugCommandAction fDebugAction = new RestartCommandAction();
 
 	@Override
 	public void dispose() {

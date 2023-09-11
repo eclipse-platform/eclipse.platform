@@ -34,11 +34,11 @@ import org.eclipse.core.runtime.Status;
  */
 public class ExceptionCollector {
 
-	private List<IStatus> statuses = new ArrayList<>();
-	private String message;
-	private String pluginId;
-	private int severity;
-	private ILog log;
+	private final List<IStatus> statuses = new ArrayList<>();
+	private final String message;
+	private final String pluginId;
+	private final int severity;
+	private final ILog log;
 
 	/**
 	 * Creates a collector and initializes the parameters for the top-level exception

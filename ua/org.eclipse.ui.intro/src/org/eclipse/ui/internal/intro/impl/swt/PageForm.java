@@ -42,7 +42,7 @@ public class PageForm implements IIntroConstants {
 	protected FormToolkit toolkit;
 	private ScrolledPageBook categoryPageBook;
 	protected IntroModelRoot model;
-	private Form parentForm;
+	private final Form parentForm;
 	protected Form pageForm;
 	// private SharedStyleManager sharedStyleManager;
 

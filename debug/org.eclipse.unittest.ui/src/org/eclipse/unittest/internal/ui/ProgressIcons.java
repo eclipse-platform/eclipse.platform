@@ -54,7 +54,7 @@ public class ProgressIcons {
 	}
 
 	private final Map<ProgressIconKey, Image> progressIcons = new HashMap<>();
-	private Device display;
+	private final Device display;
 
 	/**
 	 * Constructs a progress icons object

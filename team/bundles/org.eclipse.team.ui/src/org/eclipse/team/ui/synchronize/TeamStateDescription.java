@@ -28,8 +28,8 @@ import org.eclipse.team.ui.mapping.ITeamStateDescription;
  */
 public class TeamStateDescription implements ITeamStateDescription {
 
-	private int state;
-	private Map<String, Object> properties = new HashMap<>();
+	private final int state;
+	private final Map<String, Object> properties = new HashMap<>();
 
 	/**
 	 * Create a description with the given state.

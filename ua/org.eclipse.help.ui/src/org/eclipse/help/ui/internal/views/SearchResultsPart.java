@@ -55,11 +55,11 @@ import org.osgi.service.prefs.BackingStoreException;
 public class SearchResultsPart extends AbstractFormPart implements IHelpPart {
 	ReusableHelpPart parent;
 
-	private Composite separator;
+	private final Composite separator;
 
-	private Composite container;
+	private final Composite container;
 
-	private ScrolledForm innerForm;
+	private final ScrolledForm innerForm;
 
 	private String id;
 
@@ -69,11 +69,11 @@ public class SearchResultsPart extends AbstractFormPart implements IHelpPart {
 
 	private Action showDescriptionAction;
 
-	private ArrayList<EngineResultSection> results;
+	private final ArrayList<EngineResultSection> results;
 
 	//private String phrase;
 
-	private FormToolkit innerToolkit;
+	private final FormToolkit innerToolkit;
 
 	/**
 	 * @param parent

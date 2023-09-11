@@ -34,7 +34,7 @@ public class SequencerControlsModelProxy extends EventHandlerModelProxy {
 	/**
 	 * Associated launch
 	 */
-	private MidiLaunch fLaunch;
+	private final MidiLaunch fLaunch;
 
 	/**
 	 * Event handler

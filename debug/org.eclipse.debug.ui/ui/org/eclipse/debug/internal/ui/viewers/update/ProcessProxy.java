@@ -26,7 +26,7 @@ public class ProcessProxy extends EventHandlerModelProxy {
 
 	private IProcess fProcess;
 
-	private DebugEventHandler fProcessEventHandler = new DebugEventHandler(this) {
+	private final DebugEventHandler fProcessEventHandler = new DebugEventHandler(this) {
 		@Override
 		protected boolean handlesEvent(DebugEvent event) {
 			return event.getSource().equals(fProcess);

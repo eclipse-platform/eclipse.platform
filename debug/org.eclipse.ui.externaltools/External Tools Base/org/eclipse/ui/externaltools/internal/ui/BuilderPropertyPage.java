@@ -107,14 +107,14 @@ public final class BuilderPropertyPage extends PropertyPage implements ICheckSta
 	 */
 	private boolean fCanEdit = false;
 
-	private ILabelProvider labelProvider= new BuilderLabelProvider();
+	private final ILabelProvider labelProvider= new BuilderLabelProvider();
 
 	/**
 	 * Error configs are objects representing entries pointing to
 	 * invalid launch configurations
 	 */
 	public static class ErrorConfig {
-		private ICommand command;
+		private final ICommand command;
 		public ErrorConfig(ICommand command) {
 			this.command= command;
 		}
@@ -127,9 +127,9 @@ public final class BuilderPropertyPage extends PropertyPage implements ICheckSta
 	 * Collection of configurations created while the page is open.
 	 * Stored here so they can be deleted if the page is cancelled.
 	 */
-	private List<ILaunchConfiguration> newConfigList = new ArrayList<>();
+	private final List<ILaunchConfiguration> newConfigList = new ArrayList<>();
 
-	private SelectionListener buttonListener= new SelectionAdapter() {
+	private final SelectionListener buttonListener= new SelectionAdapter() {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			handleButtonPressed((Button) e.widget);
@@ -146,7 +146,7 @@ public final class BuilderPropertyPage extends PropertyPage implements ICheckSta
 	 * listener hears when new configurations are created this way and replaces
 	 * the old configuration with the new.
 	 */
-	private ILaunchConfigurationListener configurationListener= new ILaunchConfigurationListener() {
+	private final ILaunchConfigurationListener configurationListener= new ILaunchConfigurationListener() {
 		/**
 		 * A launch configuration has been added. If this config has been
 		 * movedFrom a configuration in the tree, replace the old config with

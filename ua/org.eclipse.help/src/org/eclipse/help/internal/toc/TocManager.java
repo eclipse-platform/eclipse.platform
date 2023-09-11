@@ -52,10 +52,10 @@ public class TocManager {
 	private AbstractTocProvider[] tocProviders;
 	// There are two sets of TOC contributions, one is used for Toc Assembly and is modified from the original
 	// The other is used by the TocServlet and is unprocessed, i.e. anchors are not replaced with the contributions
-	private Map<String, TocContribution[]> tocContributionsByLocale = new HashMap<>();
-	private Map<String, TocContribution[]> tocContributionsForTocByLocale = new HashMap<>();
-	private Map<String, Toc[]> tocsByLocale = new HashMap<>();
-	private Map<String, Toc> tocsById = new HashMap<>();
+	private final Map<String, TocContribution[]> tocContributionsByLocale = new HashMap<>();
+	private final Map<String, TocContribution[]> tocContributionsForTocByLocale = new HashMap<>();
+	private final Map<String, Toc[]> tocsByLocale = new HashMap<>();
+	private final Map<String, Toc> tocsById = new HashMap<>();
 	private Map<String, Toc> tocsByTopic;
 
 	/*

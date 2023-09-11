@@ -20,7 +20,7 @@ import org.eclipse.help.internal.base.IHelpBaseConstants;
 
 public class DefaultPreferenceFileHandler extends PreferenceFileHandler {
 
-	private boolean isRemoteOn, isRemoteHelpPreferred;
+	private final boolean isRemoteOn, isRemoteHelpPreferred;
 	/**
 	 * Class handles the default preferences for the Help Content preference page
 	 */

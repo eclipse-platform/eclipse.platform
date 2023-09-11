@@ -66,7 +66,7 @@ public class IndexFragmentServlet extends HttpServlet {
 	private static final String MODE = "mode"; //$NON-NLS-1$
 	private static final String ENTRY = "entry"; //$NON-NLS-1$
 	private static final String SHOW_ALL = "showAll"; //$NON-NLS-1$
-	private Collator collator = Collator.getInstance();
+	private final Collator collator = Collator.getInstance();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -130,15 +130,15 @@ public class IndexFragmentServlet extends HttpServlet {
 	 */
 	private class Serializer {
 
-		private IIndex index;
-		private StringBuilder buf;
+		private final IIndex index;
+		private final StringBuilder buf;
 		private int count = 0;
-		private String locale;
+		private final String locale;
 		private List<Integer> entryList;
 		private IIndexEntry[] entries;
 		private boolean enablePrevious = true;
 		private boolean enableNext = true;
-		private AbstractHelpScope scope;
+		private final AbstractHelpScope scope;
 
 		public Serializer(String locale, AbstractHelpScope scope) {
 			this.locale = locale;

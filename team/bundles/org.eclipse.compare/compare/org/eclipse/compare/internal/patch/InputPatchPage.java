@@ -96,8 +96,8 @@ public class InputPatchPage extends WizardPage {
 	private boolean fShowError= false;
 	private String fPatchSource;
 	private boolean fPatchRead= false;
-	private PatchWizard fPatchWizard;
-	private ActivationListener fActivationListener= new ActivationListener();
+	private final PatchWizard fPatchWizard;
+	private final ActivationListener fActivationListener= new ActivationListener();
 
 	// SWT widgets
 	private Button fUseClipboardButton;

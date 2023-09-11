@@ -35,12 +35,12 @@ public class PatternMatchEvent extends EventObject {
 	/**
 	 * The offset of the match within the console's document.
 	 */
-	private int offset;
+	private final int offset;
 
 	/**
 	 * The length of the matched string
 	 */
-	private int length;
+	private final int length;
 
 	/**
 	 * Constructs a new pattern match event.

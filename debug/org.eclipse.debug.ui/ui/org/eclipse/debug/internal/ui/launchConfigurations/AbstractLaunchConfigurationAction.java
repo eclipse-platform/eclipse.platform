@@ -29,7 +29,7 @@ public abstract class AbstractLaunchConfigurationAction extends SelectionListene
 	/**
 	 * The mode this action was created in (run, debug, ...)
 	 */
-	private String fMode;
+	private final String fMode;
 
 	/**
 	 * Allows a requestor to abort this action.
@@ -52,7 +52,7 @@ public abstract class AbstractLaunchConfigurationAction extends SelectionListene
 	/**
 	 * The viewer this action is working on
 	 */
-	private Viewer fViewer;
+	private final Viewer fViewer;
 
 	/**
 	 * Constructor for AbstractLaunchConfigurationAction.

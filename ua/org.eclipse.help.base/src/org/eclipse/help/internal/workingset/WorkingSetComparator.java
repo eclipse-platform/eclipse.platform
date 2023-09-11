@@ -20,7 +20,7 @@ import java.util.Comparator;
  * Compares two working sets by name.
  */
 public class WorkingSetComparator implements Comparator<WorkingSet> {
-	private Collator fCollator = Collator.getInstance();
+	private final Collator fCollator = Collator.getInstance();
 
 	@Override
 	public int compare(WorkingSet o1,WorkingSet o2) {

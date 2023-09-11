@@ -27,10 +27,10 @@ import org.eclipse.help.IUAElement;
 
 public class UserTopic implements ITopic {
 
-	private List<ITopic> children = new ArrayList<>();
-	private boolean isEnabled;
-	private String href;
-	private String label;
+	private final List<ITopic> children = new ArrayList<>();
+	private final boolean isEnabled;
+	private final String href;
+	private final String label;
 
 	@Override
 	public ITopic[] getSubtopics() {

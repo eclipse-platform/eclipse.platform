@@ -34,7 +34,7 @@ public class DumperFactory {
 	/**
 	 * This dumper factory mappings configuration.
 	 */
-	private Properties configuration = new Properties();
+	private final Properties configuration = new Properties();
 
 	/**
 	 * Provides access to a DumperFactory instance.

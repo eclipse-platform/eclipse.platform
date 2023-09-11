@@ -26,7 +26,7 @@ import org.eclipse.ui.texteditor.IUpdate;
  */
 public class CollapseAllAction extends Action implements IUpdate {
 
-	private TreeModelViewer fViewer;
+	private final TreeModelViewer fViewer;
 
 	public CollapseAllAction(TreeModelViewer viewer) {
 		super(ActionMessages.CollapseAllAction_0, DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_COLLAPSE_ALL));

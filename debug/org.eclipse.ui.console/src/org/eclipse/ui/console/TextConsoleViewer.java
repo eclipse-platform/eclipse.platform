@@ -98,7 +98,7 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 
 	private IScrollLockStateProvider scrollLockStateProvider;
 
-	private IDocumentListener documentListener = new IDocumentListener() {
+	private final IDocumentListener documentListener = new IDocumentListener() {
 		@Override
 		public void documentAboutToBeChanged(DocumentEvent event) {
 		}
@@ -109,7 +109,7 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 		}
 	};
 	// event listener used to send event to hyperlink for IHyperlink2
-	private Listener mouseUpListener = event -> {
+	private final Listener mouseUpListener = event -> {
 		if (hyperlink != null) {
 			String selection = getTextWidget().getSelectionText();
 			if (selection.length() <= 0) {
@@ -125,7 +125,7 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 	};
 
 	// to store to user scroll lock action
-	private AtomicBoolean userHoldsScrollLock = new AtomicBoolean(false);
+	private final AtomicBoolean userHoldsScrollLock = new AtomicBoolean(false);
 
 	WorkbenchJob revealJob = new WorkbenchJob("Reveal End of Document") {//$NON-NLS-1$
 		@Override
@@ -196,7 +196,7 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 		return false;
 	}
 
-	private IPositionUpdater positionUpdater = event -> {
+	private final IPositionUpdater positionUpdater = event -> {
 		try {
 			IDocument document = getDocument();
 			if (document != null) {

@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager.ISelectionPolicy;
 
 public class SubsetSelectionPolicy implements ISelectionPolicy {
-	private Set<IContentType> subset;
+	private final Set<IContentType> subset;
 
 	public SubsetSelectionPolicy(IContentType[] subset) {
 		this.subset = new HashSet<>(Arrays.asList(subset));

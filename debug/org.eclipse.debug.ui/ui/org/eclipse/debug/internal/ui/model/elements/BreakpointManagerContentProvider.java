@@ -92,7 +92,7 @@ public class BreakpointManagerContentProvider extends ElementContentProvider
 		 * Element comparator, use to compare the ordering of elements for the model
 		 * <br/> Note: We assume that the comparator does not change.
 		 */
-		private ElementComparator fComparator;
+		private final ElementComparator fComparator;
 
 		/**
 		 * The breakpoint root container.<br/>
@@ -108,11 +108,11 @@ public class BreakpointManagerContentProvider extends ElementContentProvider
 
 		private IStructuredSelection fDebugContext = StructuredSelection.EMPTY;
 
-		private IPropertyChangeListener fOrganizersListener = event -> updateContainers();
+		private final IPropertyChangeListener fOrganizersListener = event -> updateContainers();
 
-		private IPropertyChangeListener fPresentationContextListener = this::presentationPropertyChanged;
+		private final IPropertyChangeListener fPresentationContextListener = this::presentationPropertyChanged;
 
-		private IDebugContextListener fDebugContextListener = InputData.this::debugContextChanged;
+		private final IDebugContextListener fDebugContextListener = InputData.this::debugContextChanged;
 
 		/**
 		 * Constructor

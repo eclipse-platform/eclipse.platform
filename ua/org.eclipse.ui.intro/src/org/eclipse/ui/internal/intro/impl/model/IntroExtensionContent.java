@@ -54,17 +54,17 @@ public class IntroExtensionContent extends AbstractIntroElement {
 
 	private static final Element[] EMPTY_ELEMENT_ARRAY = new Element[0];
 
-	private String path;
-	private String content;
+	private final String path;
+	private final String content;
 	private String contentFile;
 	private String contentId;
-	private String anchorId;
+	private final String anchorId;
 
 	private Element element;
 	private String base;
 
-	private Vector<String> styles = new Vector<>();
-	private Map<String, Bundle> altStyles = new HashMap<>();
+	private final Vector<String> styles = new Vector<>();
+	private final Map<String, Bundle> altStyles = new HashMap<>();
 
 	IntroExtensionContent(Element element, Bundle bundle, String base, IConfigurationElement configExtElement) {
 		super(element, bundle);

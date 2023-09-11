@@ -40,13 +40,13 @@ public class ResourceVariantCacheEntry {
 	public static final int READY = 1;
 	public static final int DISPOSED = 2;
 
-	private String id;
-	private String filePath;
-	private ResourceVariantCache cache;
+	private final String id;
+	private final String filePath;
+	private final ResourceVariantCache cache;
 	private int state = UNINITIALIZED;
 	private long lastAccess;
 	private CachedResourceVariant resourceVariant;
-	private ILock lock;
+	private final ILock lock;
 
 	public ResourceVariantCacheEntry(ResourceVariantCache cache, ILock lock, String id, String filePath) {
 		this.lock = lock;

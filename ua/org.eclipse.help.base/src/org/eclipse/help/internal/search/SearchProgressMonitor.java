@@ -207,7 +207,7 @@ public class SearchProgressMonitor implements IProgressMonitor {
 	}
 
 	static class DummySearchQuery implements ISearchQuery {
-		private String l;
+		private final String l;
 
 		DummySearchQuery(String loc) {
 			l = loc;

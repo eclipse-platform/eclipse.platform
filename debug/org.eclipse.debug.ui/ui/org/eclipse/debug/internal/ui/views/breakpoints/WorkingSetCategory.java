@@ -29,7 +29,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter2;
  */
 public class WorkingSetCategory extends PlatformObject implements IWorkbenchAdapter, IWorkbenchAdapter2 {
 
-	private IWorkingSet fWorkingSet;
+	private final IWorkingSet fWorkingSet;
 
 	/**
 	 * Constructs a new workings set category for the given working set.

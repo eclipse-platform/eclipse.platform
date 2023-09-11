@@ -63,7 +63,7 @@ implements ICommonContentProvider, IResourceChangeListener, IPipelinedTreeConten
 	private Viewer viewer;
 	private final boolean updateViewer;
 	private SynchronizationStateTester syncStateTester;
-	private Object saveablesProvider = new ModelSaveablesProvider();
+	private final Object saveablesProvider = new ModelSaveablesProvider();
 
 	public ModelNavigatorContentProvider() {
 		super();

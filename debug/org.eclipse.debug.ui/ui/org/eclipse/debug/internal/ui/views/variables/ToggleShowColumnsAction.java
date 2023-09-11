@@ -32,7 +32,7 @@ import org.eclipse.ui.texteditor.IUpdate;
  */
 public class ToggleShowColumnsAction extends Action implements IUpdate {
 
-	private TreeModelViewer fViewer;
+	private final TreeModelViewer fViewer;
 
 	public ToggleShowColumnsAction(TreeModelViewer viewew) {
 		super(VariablesViewMessages.ToggleShowColumnsAction_0, IAction.AS_CHECK_BOX);

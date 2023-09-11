@@ -24,7 +24,7 @@ import org.eclipse.ui.console.IHyperlink;
  */
 public class FollowHyperlinkAction extends Action {
 
-	private IHyperlink hyperlink;
+	private final IHyperlink hyperlink;
 
 	/**
 	 * Constructs a follow link action.

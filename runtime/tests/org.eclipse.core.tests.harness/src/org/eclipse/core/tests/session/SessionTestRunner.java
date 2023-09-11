@@ -59,11 +59,11 @@ public class SessionTestRunner {
 	class ResultCollector implements Runnable {
 		private boolean finished;
 		private Result newResult;
-		private Map<String, Result> results = new HashMap<>();
+		private final Map<String, Result> results = new HashMap<>();
 		ServerSocket serverSocket;
 		private boolean shouldRun = true;
 		private StringBuilder stack;
-		private TestResult testResult;
+		private final TestResult testResult;
 		// tests completed during this session
 		private int testsRun;
 

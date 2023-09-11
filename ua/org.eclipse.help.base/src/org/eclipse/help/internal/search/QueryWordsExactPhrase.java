@@ -24,7 +24,7 @@ import org.apache.lucene.search.Query;
  * Represents a quoted token in user search query words
  */
 public class QueryWordsExactPhrase extends QueryWordsToken {
-	private List<String> words;
+	private final List<String> words;
 	public QueryWordsExactPhrase() {
 		super(QueryWordsToken.EXACT_PHRASE, ""); //$NON-NLS-1$
 		words = new ArrayList<>();

@@ -37,13 +37,13 @@ import org.osgi.framework.Bundle;
 public abstract class AbstractTask implements ICompositeCheatSheetTask {
 	protected CompositeCheatSheetModel model;
 	protected int state = NOT_STARTED;
-	private String id;
+	private final String id;
 
-	private String name;
+	private final String name;
 
 	protected String kind;
 
-	private Dictionary<String, String> parameters;
+	private final Dictionary<String, String> parameters;
 
 	private String description;
 

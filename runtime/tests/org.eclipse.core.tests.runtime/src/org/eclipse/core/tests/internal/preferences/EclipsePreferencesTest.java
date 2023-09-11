@@ -491,7 +491,7 @@ public class EclipsePreferencesTest extends RuntimeTest {
 		final IEclipsePreferences parent = InstanceScope.INSTANCE.getNode(PI_RUNTIME_TESTS);
 		final Preferences child = parent.node("testFlushDeadlock");
 		class FlushJob extends Job {
-			private Preferences node;
+			private final Preferences node;
 
 			FlushJob(Preferences node) {
 				super("testFlushDeadlock");

@@ -32,9 +32,9 @@ import org.eclipse.ui.IWorkbenchSite;
  */
 public class JobRunnableContext implements ITeamRunnableContext {
 
-	private IJobChangeListener listener;
-	private IWorkbenchSite site;
-	private String jobName;
+	private final IJobChangeListener listener;
+	private final IWorkbenchSite site;
+	private final String jobName;
 	private ISchedulingRule schedulingRule;
 	private boolean postponeBuild;
 

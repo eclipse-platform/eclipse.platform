@@ -29,8 +29,8 @@ public class SearchHit implements ISearchEngineResult2, Comparable<SearchHit> {
 	private float score;
 	private IToc toc;
 	private String summary;
-	private String id;
-	private String participantId;
+	private final String id;
+	private final String participantId;
 	private boolean isPotentialHit;
 
 	/**

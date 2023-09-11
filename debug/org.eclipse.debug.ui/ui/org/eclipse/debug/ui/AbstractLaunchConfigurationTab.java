@@ -104,7 +104,7 @@ public abstract class AbstractLaunchConfigurationTab implements ILaunchConfigura
 	 *
 	 * @since 3.13
 	 */
-	private Map<String, String> fAttributesLabelsForPrototype;
+	private final Map<String, String> fAttributesLabelsForPrototype;
 
 	/**
 	 * Default constructor.

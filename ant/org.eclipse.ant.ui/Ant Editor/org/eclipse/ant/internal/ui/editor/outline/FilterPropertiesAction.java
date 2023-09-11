@@ -23,7 +23,7 @@ import org.eclipse.swt.custom.BusyIndicator;
  */
 public class FilterPropertiesAction extends Action {
 
-	private AntEditorContentOutlinePage fPage;
+	private final AntEditorContentOutlinePage fPage;
 
 	public FilterPropertiesAction(AntEditorContentOutlinePage page) {
 		super(AntOutlineMessages.FilterPropertiesAction_0);

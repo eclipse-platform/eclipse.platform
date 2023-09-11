@@ -33,9 +33,9 @@ public class CheatSheetHistory {
 
 	private static final int DEFAULT_DEPTH = 5;
 
-	private ArrayList<CheatSheetElement> history;
-	private CheatSheetRegistryReader reg;
-	private ListenerList<IPropertyListener> listeners = new ListenerList<>();
+	private final ArrayList<CheatSheetElement> history;
+	private final CheatSheetRegistryReader reg;
+	private final ListenerList<IPropertyListener> listeners = new ListenerList<>();
 
 	public CheatSheetHistory(CheatSheetRegistryReader reg) {
 		this.history = new ArrayList<>(DEFAULT_DEPTH);

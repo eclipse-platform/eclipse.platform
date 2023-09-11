@@ -145,8 +145,8 @@ public class PlatformLogReader {
 		 * All serializable objects should have a stable serialVersionUID
 		 */
 		private static final long serialVersionUID = 1L;
-		private String message;
-		private String stackTrace;
+		private final String message;
+		private final String stackTrace;
 
 		FakeException(String msg, String stack) {
 			this.message = msg;

@@ -42,7 +42,7 @@ public class AntModelCore implements IBreakpointsListener {
 		return inst;
 	}
 
-	private List<IAntModelListener> fModelChangeListeners = new ArrayList<>();
+	private final List<IAntModelListener> fModelChangeListeners = new ArrayList<>();
 
 	private AntModelCore() {
 	}

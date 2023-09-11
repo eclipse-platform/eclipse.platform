@@ -33,12 +33,12 @@ public abstract class AsynchronousRequestMonitor extends AbstractRequestMonitor 
 	/**
 	 * Model node the update is rooted at
 	 */
-	private ModelNode fNode;
+	private final ModelNode fNode;
 
 	/**
 	 * Model the update is being performed for
 	 */
-	private AsynchronousModel fModel;
+	private final AsynchronousModel fModel;
 
 	/**
 	 * Whether this request's 'done' method has been called.

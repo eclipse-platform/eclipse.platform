@@ -36,14 +36,14 @@ public class PluginIndex {
 
 	private static final String COMPLETE_FILENAME = "indexed_complete"; //$NON-NLS-1$
 
-	private String pluginId;
+	private final String pluginId;
 
 	/**
 	 * index path as defined in plugin.xml, e.g. "index"
 	 */
-	private String path;
+	private final String path;
 
-	private SearchIndex targetIndex;
+	private final SearchIndex targetIndex;
 
 	/**
 	 * path prefixes where index is found e.g. "", "nl/en/US", "ws/gtk"

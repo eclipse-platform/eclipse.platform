@@ -25,7 +25,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ReformatAction extends Action {
 
-	private AbstractBaseTableRendering fRendering;
+	private final AbstractBaseTableRendering fRendering;
 
 	public ReformatAction(AbstractBaseTableRendering rendering)
 	{

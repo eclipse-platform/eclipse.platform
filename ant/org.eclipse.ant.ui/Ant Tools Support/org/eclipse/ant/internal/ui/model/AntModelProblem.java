@@ -26,9 +26,9 @@ public class AntModelProblem extends Region implements IProblem {
 	public static final int SEVERITY_ERROR = 1;
 	public static final int SEVERITY_FATAL_ERROR = 2;
 
-	private String fMessage;
-	private String fEscapedMessage;
-	private int fSeverity;
+	private final String fMessage;
+	private final String fEscapedMessage;
+	private final int fSeverity;
 	private int fAdjustedLength = -1;
 	private int fLineNumber = -1;
 

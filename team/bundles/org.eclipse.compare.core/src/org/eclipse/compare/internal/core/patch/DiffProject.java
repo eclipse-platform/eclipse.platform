@@ -22,8 +22,8 @@ import java.util.Set;
  * in the patch file.
  */
 public class DiffProject {
-	private String project;
-	private Set<FilePatch2> fDiffs= new HashSet<>();
+	private final String project;
+	private final Set<FilePatch2> fDiffs= new HashSet<>();
 
 	/**
 	 * Create a diff project for the given workspace project.

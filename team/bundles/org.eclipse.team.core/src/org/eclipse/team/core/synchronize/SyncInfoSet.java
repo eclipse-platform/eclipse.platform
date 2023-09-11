@@ -53,13 +53,13 @@ import org.eclipse.team.internal.core.subscribers.SyncInfoStatistics;
 public class SyncInfoSet {
 	// fields used to hold resources of interest
 	// {IPath -> SyncInfo}
-	private Map<IPath, SyncInfo> resources = Collections.synchronizedMap(new HashMap<>());
+	private final Map<IPath, SyncInfo> resources = Collections.synchronizedMap(new HashMap<>());
 
 	// keep track of number of sync kinds in the set
-	private SyncInfoStatistics statistics = new SyncInfoStatistics();
+	private final SyncInfoStatistics statistics = new SyncInfoStatistics();
 
 	// keep track of errors that occurred while trying to populate the set
-	private Map<IResource, ITeamStatus> errors = new HashMap<>();
+	private final Map<IResource, ITeamStatus> errors = new HashMap<>();
 
 	private boolean lockedForModification;
 
@@ -300,9 +300,9 @@ public class SyncInfoSet {
 		}, monitor);
 	}
 
-	private ILock lock = Job.getJobManager().newLock();
+	private final ILock lock = Job.getJobManager().newLock();
 
-	private Set<ISyncInfoSetChangeListener> listeners = Collections.synchronizedSet(new HashSet<>());
+	private final Set<ISyncInfoSetChangeListener> listeners = Collections.synchronizedSet(new HashSet<>());
 
 	private SyncInfoSetChangeEvent changes = createEmptyChangeEvent();
 

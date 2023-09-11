@@ -42,8 +42,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public class PrintTableRenderingAction extends Action
 {
-	private AbstractBaseTableRendering fRendering;
-	private StructuredViewer fViewer;
+	private final AbstractBaseTableRendering fRendering;
+	private final StructuredViewer fViewer;
 
 	private static final String COLUMN_SEPERATOR = "  "; //$NON-NLS-1$
 

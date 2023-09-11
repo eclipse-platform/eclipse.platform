@@ -60,7 +60,7 @@ public class Bug_478634 extends AbstractJobTest {
 	}
 
 	class RootJob extends Job {
-		private ThreadJobListener listener;
+		private final ThreadJobListener listener;
 
 		public RootJob(ThreadJobListener listener) {
 			super("RootJob");

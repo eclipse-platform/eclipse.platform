@@ -21,9 +21,9 @@ import java.util.Objects;
  */
 public final class FileInfoMatcherDescription {
 
-	private String id;
+	private final String id;
 
-	private Object arguments;
+	private final Object arguments;
 
 	public FileInfoMatcherDescription(String id, Object arguments) {
 		super();

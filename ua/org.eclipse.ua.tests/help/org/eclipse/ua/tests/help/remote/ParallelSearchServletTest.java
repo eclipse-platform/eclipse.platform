@@ -56,8 +56,8 @@ public class ParallelSearchServletTest {
 	}
 
 	private class SearchServletTester implements ParallelTestSupport.ITestCase {
-		private String phrase;
-		private int expectedHits;
+		private final String phrase;
+		private final int expectedHits;
 
 		public SearchServletTester(String phrase, int expectedHits) {
 			this.phrase = phrase;

@@ -27,7 +27,7 @@ import org.eclipse.team.core.variants.ThreeWaySubscriber;
  */
 public final class ThreeWayBaseTree extends ResourceVariantTree {
 
-	private ThreeWaySubscriber subscriber;
+	private final ThreeWaySubscriber subscriber;
 
 	/*
 	 * A resource variant byte store that accesses the base bytes from a three-way
@@ -35,7 +35,7 @@ public final class ThreeWayBaseTree extends ResourceVariantTree {
 	 * only be modified in the synchronizer directly.
 	 */
 	static class BaseResourceVariantByteStore extends ResourceVariantByteStore {
-		private ThreeWaySubscriber subscriber;
+		private final ThreeWaySubscriber subscriber;
 		public BaseResourceVariantByteStore(ThreeWaySubscriber subscriber) {
 			this.subscriber = subscriber;
 		}

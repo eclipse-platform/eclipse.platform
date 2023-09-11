@@ -30,7 +30,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
  */
 public class BreakpointOrganizerExtension implements IBreakpointOrganizer, IBreakpointOrganizerDelegateExtension {
 
-	private IConfigurationElement fElement;
+	private final IConfigurationElement fElement;
 	private IBreakpointOrganizerDelegate fDelegate;
 	private ImageDescriptor fDescriptor;
 

@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.IPath;
 public class SafeFileTable {
 	protected IPath location;
 	protected Properties table;
-	private Workspace workspace;
+	private final Workspace workspace;
 
 	public SafeFileTable(String pluginId, Workspace workspace) throws CoreException {
 		this.workspace = workspace;

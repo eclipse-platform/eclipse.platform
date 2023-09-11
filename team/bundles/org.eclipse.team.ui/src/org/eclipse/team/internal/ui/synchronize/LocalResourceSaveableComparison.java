@@ -58,7 +58,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	private final CompareEditorInput editorInput;
 	private boolean isSaving;
 	private IContentChangeListener contentChangeListener;
-	private ITypedElement fileElement;
+	private final ITypedElement fileElement;
 	private IDocument document;
 
 	/**

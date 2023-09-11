@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 public class LaunchConfigurationSelectionDialog extends AbstractDebugListSelectionDialog {
 
 	private static final String DIALOG_SETTINGS = IDebugUIConstants.PLUGIN_ID + ".SELECT_LAUNCH_CONFIGURATION_DIALOG"; //$NON-NLS-1$;
-	private Object fInput;
+	private final Object fInput;
 
 	/**
 	 * Constructor

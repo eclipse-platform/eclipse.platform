@@ -37,8 +37,8 @@ public final class ContentTypeCatalog {
 	private final Map<String, Pattern> compiledRegexps = new HashMap<>();
 	private final Map<Pattern, String> initialPatternForRegexp = new HashMap<>();
 	private final Map<Pattern, Set<ContentType>> fileRegexps = new HashMap<>();
-	private int generation;
-	private ContentTypeManager manager;
+	private final int generation;
+	private final ContentTypeManager manager;
 
 	/**
 	 * Return true if type1 is an ancestor of type2 or if type2 is an ancestor of
@@ -77,7 +77,7 @@ public final class ContentTypeCatalog {
 	 * A sorting policy where the more specific content type wins. Lexicographical comparison is done
 	 * as a last resort when all other criteria fail.
 	 */
-	private Comparator<IContentType> policyConstantSpecificIsBetter = (IContentType o1, IContentType o2) -> {
+	private final Comparator<IContentType> policyConstantSpecificIsBetter = (IContentType o1, IContentType o2) -> {
 		ContentType type1 = (ContentType) o1;
 		ContentType type2 = (ContentType) o2;
 		if (isAncestor(type1, type2)) {
@@ -97,7 +97,7 @@ public final class ContentTypeCatalog {
 	/**
 	 * A sorting policy where the more general content type wins.
 	 */
-	private Comparator<IContentType> policyGeneralIsBetter = (IContentType o1, IContentType o2) -> {
+	private final Comparator<IContentType> policyGeneralIsBetter = (IContentType o1, IContentType o2) -> {
 		ContentType type1 = (ContentType) o1;
 		ContentType type2 = (ContentType) o2;
 		if (isAncestor(type1, type2)) {
@@ -116,7 +116,7 @@ public final class ContentTypeCatalog {
 	/**
 	 * A sorting policy where content types are sorted by id.
 	 */
-	private Comparator<IContentType> policyLexicographical = (IContentType o1, IContentType o2) -> {
+	private final Comparator<IContentType> policyLexicographical = (IContentType o1, IContentType o2) -> {
 		ContentType type1 = (ContentType) o1;
 		ContentType type2 = (ContentType) o2;
 		return type1.getId().compareTo(type2.getId());
@@ -124,7 +124,7 @@ public final class ContentTypeCatalog {
 	/**
 	 * A sorting policy where the more specific content type wins.
 	 */
-	private Comparator<IContentType> policySpecificIsBetter = (IContentType o1, IContentType o2) -> {
+	private final Comparator<IContentType> policySpecificIsBetter = (IContentType o1, IContentType o2) -> {
 		ContentType type1 = (ContentType) o1;
 		ContentType type2 = (ContentType) o2;
 		if (isAncestor(type1, type2)) {

@@ -28,7 +28,7 @@ import org.eclipse.ui.activities.WorkbenchActivityHelper;
  */
 public class LaunchGroupFilter extends ViewerFilter {
 
-	private ILaunchGroup fGroup;
+	private final ILaunchGroup fGroup;
 
 	/**
 	 * Constructor

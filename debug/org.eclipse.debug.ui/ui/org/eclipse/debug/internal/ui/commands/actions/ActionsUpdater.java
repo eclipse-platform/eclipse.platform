@@ -22,8 +22,8 @@ package org.eclipse.debug.internal.ui.commands.actions;
  */
 public class ActionsUpdater {
 
-	private IEnabledTarget[] fActions;
-	private int fNumVoters;
+	private final IEnabledTarget[] fActions;
+	private final int fNumVoters;
 	private int fNumOfVotes = 0;
 	private boolean fDone = false;
 	private boolean fEnabled = true;

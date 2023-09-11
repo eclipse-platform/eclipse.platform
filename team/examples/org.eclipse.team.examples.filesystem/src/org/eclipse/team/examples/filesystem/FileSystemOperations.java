@@ -43,7 +43,7 @@ import org.eclipse.team.examples.filesystem.subscriber.FileSystemSubscriber;
 public class FileSystemOperations {
 
 	// A reference to the provider
-	private FileSystemProvider provider;
+	private final FileSystemProvider provider;
 
 	FileSystemOperations(FileSystemProvider provider) {
 		this.provider = provider;

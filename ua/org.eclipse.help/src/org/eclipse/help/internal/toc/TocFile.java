@@ -24,12 +24,12 @@ import org.eclipse.help.internal.util.ResourceLocator;
  */
 public class TocFile {
 
-	private String pluginId;
-	private String file;
-	private boolean isPrimary;
-	private String locale;
-	private String extraDir;
-	private String category;
+	private final String pluginId;
+	private final String file;
+	private final boolean isPrimary;
+	private final String locale;
+	private final String extraDir;
+	private final String category;
 
 	public TocFile(String pluginId, String file, boolean isPrimary, String locale, String extradir, String category) {
 		this.pluginId = pluginId;

@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
  */
 public class BasicContainerContentProvider implements ITreeContentProvider {
 
-	private boolean fShowClosedProjects = true;
+	private final boolean fShowClosedProjects = true;
 	/**
 	 * Creates a new ResourceContentProvider.
 	 */

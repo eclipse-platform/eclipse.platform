@@ -21,7 +21,7 @@ import org.eclipse.help.IUAElement;
 
 public class UserIndexSubpath implements IIndexSubpath {
 
-	private String keyword;
+	private final String keyword;
 
 	public UserIndexSubpath(String keyword) {
 		this.keyword = keyword;

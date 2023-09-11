@@ -59,11 +59,11 @@ public abstract class TipProvider {
 
 	private ITipManager fTipManager;
 	private int fTipIndex;
-	private List<Tip> fTips = new ArrayList<>();
+	private final List<Tip> fTips = new ArrayList<>();
 	private Tip fCurrentTip;
 	private boolean fReady;
-	private PropertyChangeSupport fChangeSupport = new PropertyChangeSupport(this);
-	private Tip fFinalTip = new FinalTip(getID());
+	private final PropertyChangeSupport fChangeSupport = new PropertyChangeSupport(this);
+	private final Tip fFinalTip = new FinalTip(getID());
 	private String fExpression;
 
 	/**
@@ -71,7 +71,7 @@ public abstract class TipProvider {
 	 * requirement to only serve read tips. Subclasses may replace this predicate if
 	 * they want to add some additional tests.
 	 */
-	private Predicate<Tip> fUnreadTipPredicate = pTip -> {
+	private final Predicate<Tip> fUnreadTipPredicate = pTip -> {
 		if (getManager().mustServeReadTips()) {
 			return true;
 		}

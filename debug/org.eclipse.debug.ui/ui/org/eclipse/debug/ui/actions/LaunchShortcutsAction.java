@@ -78,7 +78,7 @@ public class LaunchShortcutsAction extends Action implements IMenuCreator, IWork
 	/**
 	 * Launch group
 	 */
-	private ILaunchGroup fGroup;
+	private final ILaunchGroup fGroup;
 
 	/**
 	 * Whether this actions enablement has been initialized

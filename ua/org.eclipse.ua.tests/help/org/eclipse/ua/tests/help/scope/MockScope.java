@@ -28,8 +28,8 @@ public class MockScope extends AbstractHelpScope {
 	// Elements are in scope if they contain the letter specified
 	// in the constructor
 
-	private char letter;
-	private boolean isHierarchical;
+	private final char letter;
+	private final boolean isHierarchical;
 
 	public MockScope(char letter, boolean isHierarchical) {
 		this.letter = letter;

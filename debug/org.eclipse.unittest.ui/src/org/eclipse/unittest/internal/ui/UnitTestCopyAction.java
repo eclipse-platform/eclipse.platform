@@ -38,7 +38,7 @@ import org.eclipse.ui.actions.SelectionListenerAction;
  * Copies a test failure stack trace to the clipboard.
  */
 public class UnitTestCopyAction extends SelectionListenerAction {
-	private FailureTraceUIBlock fView;
+	private final FailureTraceUIBlock fView;
 
 	private final Clipboard fClipboard;
 

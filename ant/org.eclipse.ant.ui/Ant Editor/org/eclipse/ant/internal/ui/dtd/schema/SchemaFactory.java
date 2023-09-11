@@ -37,7 +37,7 @@ public class SchemaFactory implements DeclHandler {
 	private int fPos;
 	private Element fElement;
 
-	private Schema fSchema;
+	private final Schema fSchema;
 	private static HashSet<String> fTypes = new HashSet<>();
 	private Exception fErrorException;
 	static {

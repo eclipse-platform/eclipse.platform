@@ -38,7 +38,7 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class EditAntHomeEntryAction extends RuntimeClasspathAction {
 
-	private AntClasspathTab fTab;
+	private final AntClasspathTab fTab;
 
 	/**
 	 * Constructs an action to edit the Ant Home setting for a launch config.

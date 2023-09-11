@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.IPath;
  * A file system can be rooted on any resource.
  */
 public class FileStoreRoot {
-	private int chop;
+	private final int chop;
 	/**
 	 * When a root is changed, the old root object is marked invalid
 	 * so that other resources with a cache of the root will know they need to update.
@@ -45,14 +45,14 @@ public class FileStoreRoot {
 	 * represents the root location.  This value is null if the root represents
 	 * a non-local file system
 	 */
-	private IPath localRoot;
+	private final IPath localRoot;
 	/**
 	 * Canonicalized version of localRoot. Initialized lazily.
 	 * @see FileUtil#canonicalPath(IPath)
 	 */
 	private IPath canonicalLocalRoot;
 
-	private URI root;
+	private final URI root;
 	/**
 	 * Canonicalized version of root. Initialized lazily.
 	 * @see FileUtil#canonicalURI(URI)

@@ -133,7 +133,7 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 	}
 
 	class WorkingSetLabelProvider extends LabelProvider {
-		private Map<ImageDescriptor, Image> icons;
+		private final Map<ImageDescriptor, Image> icons;
 
 		public WorkingSetLabelProvider() {
 			icons = new Hashtable<>();

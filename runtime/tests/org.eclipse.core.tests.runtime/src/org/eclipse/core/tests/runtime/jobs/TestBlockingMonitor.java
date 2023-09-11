@@ -24,7 +24,7 @@ import org.eclipse.core.tests.harness.TestProgressMonitor;
  * becomes blocked.
  */
 class TestBlockingMonitor extends TestProgressMonitor implements IProgressMonitor {
-	private TestBarrier2 barrier;
+	private final TestBarrier2 barrier;
 	private boolean cancelled;
 
 	public TestBlockingMonitor(AtomicIntegerArray status, int index) {

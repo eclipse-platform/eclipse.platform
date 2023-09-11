@@ -32,8 +32,8 @@ public class MessageLine extends CLabel {
 	private String fMessageText;
 	private String fErrorText;
 
-	private Color fDefaultColor;
-	private RGB fErrorRGB;
+	private final Color fDefaultColor;
+	private final RGB fErrorRGB;
 	private Color fErrorColor;
 
 	/*

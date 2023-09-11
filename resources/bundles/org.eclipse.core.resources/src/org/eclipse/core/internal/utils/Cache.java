@@ -125,9 +125,9 @@ public class Cache {
 
 	KeyedHashSet entries;
 	Entry head;
-	private int maximumCapacity;
+	private final int maximumCapacity;
 	Entry tail;
-	private double threshold;
+	private final double threshold;
 
 	public Cache(int maximumCapacity) {
 		this(Math.min(KeyedHashSet.MINIMUM_SIZE, maximumCapacity), maximumCapacity, 0.25);

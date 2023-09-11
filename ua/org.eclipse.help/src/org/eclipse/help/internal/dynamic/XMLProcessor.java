@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  */
 public class XMLProcessor {
 
-	private DocumentProcessor processor;
+	private final DocumentProcessor processor;
 	private DocumentReader reader;
 	private DocumentWriter writer;
 

@@ -20,7 +20,7 @@ public class PartialDumpException extends DumpException {
 	 * Data read when the error happened. May be
 	 * null.
 	 */
-	private Object partialContents;
+	private final Object partialContents;
 
 	public PartialDumpException(String msg, Object partialContents) {
 		super(msg);

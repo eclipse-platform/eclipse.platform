@@ -26,7 +26,7 @@ import org.eclipse.debug.internal.ui.viewers.provisional.AbstractModelProxy;
  */
 public class VariablesViewEventHandler extends DebugEventHandler {
 
-	private IStackFrame fFrame;
+	private final IStackFrame fFrame;
 
 	public VariablesViewEventHandler(AbstractModelProxy proxy, IStackFrame frame) {
 		super(proxy);

@@ -51,7 +51,7 @@ public class ContentProviderManager {
 	// class on each navigation. Key is the contentProvider id, value
 	// is a wrapper class to hold the actual Intro content provider instance and
 	// the intro page that holds it.
-	private Map<String, ContentProviderWrapper> contentProviders = new HashMap<>();
+	private final Map<String, ContentProviderWrapper> contentProviders = new HashMap<>();
 
 
 	static class ContentProviderWrapper {

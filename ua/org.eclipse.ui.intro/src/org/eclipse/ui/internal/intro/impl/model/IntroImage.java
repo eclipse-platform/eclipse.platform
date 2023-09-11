@@ -29,9 +29,9 @@ public class IntroImage extends AbstractBaseIntroElement {
 	private static final String ATT_ALT = "alt"; //$NON-NLS-1$
 	private static final String ATT_TITLE = "title"; //$NON-NLS-1$
 
-	private Element element;
+	private final Element element;
 	private String src;
-	private String base;
+	private final String base;
 
 	IntroImage(Element element, Bundle bundle, String base) {
 		super(element, bundle);

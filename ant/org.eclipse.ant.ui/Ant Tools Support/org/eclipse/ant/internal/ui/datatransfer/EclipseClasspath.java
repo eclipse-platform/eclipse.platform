@@ -57,7 +57,7 @@ public class EclipseClasspath {
 	protected List<String> rawClassPathEntries = new ArrayList<>();
 	protected List<String> rawClassPathEntriesAbsolute = new ArrayList<>();
 
-	private IJavaProject project;
+	private final IJavaProject project;
 
 	private static Map<String, IClasspathContainer> userLibraryCache = new HashMap<>();
 

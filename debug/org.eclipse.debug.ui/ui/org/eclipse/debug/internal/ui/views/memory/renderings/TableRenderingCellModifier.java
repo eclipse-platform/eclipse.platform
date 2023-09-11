@@ -35,7 +35,7 @@ public class TableRenderingCellModifier implements ICellModifier {
 
 	private boolean editActionInvoked = false;
 
-	private AbstractTableRendering fRendering;
+	private final AbstractTableRendering fRendering;
 
 	public TableRenderingCellModifier(AbstractTableRendering rendering) {
 		fRendering = rendering;

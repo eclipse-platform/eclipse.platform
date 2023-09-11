@@ -30,7 +30,7 @@ import org.eclipse.debug.ui.IBreakpointTypeCategory;
  */
 public class BreakpointTypeOrganizer extends AbstractBreakpointOrganizerDelegate {
 
-	private Map<String, IAdaptable[]> fTypes = new HashMap<>();
+	private final Map<String, IAdaptable[]> fTypes = new HashMap<>();
 
 	@Override
 	public IAdaptable[] getCategories(IBreakpoint breakpoint) {

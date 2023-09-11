@@ -27,8 +27,8 @@ import org.eclipse.jface.text.source.AnnotationModelEvent;
 
 public class AntExternalAnnotationModel extends AnnotationModel implements IProblemRequestor {
 
-	private List<XMLProblemAnnotation> fGeneratedAnnotations = new ArrayList<>();
-	private List<IProblem> fCollectedProblems = new ArrayList<>();
+	private final List<XMLProblemAnnotation> fGeneratedAnnotations = new ArrayList<>();
+	private final List<IProblem> fCollectedProblems = new ArrayList<>();
 
 	@Override
 	public void acceptProblem(IProblem problem) {

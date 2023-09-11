@@ -33,12 +33,12 @@ public class ZipFileStore extends FileStore {
 	/**
 	 * The path of this store within the zip file.
 	 */
-	private IPath path;
+	private final IPath path;
 
 	/**
 	 * The file store that represents the actual zip file.
 	 */
-	private IFileStore rootStore;
+	private final IFileStore rootStore;
 
 	/**
 	 * Creates a new zip file store.

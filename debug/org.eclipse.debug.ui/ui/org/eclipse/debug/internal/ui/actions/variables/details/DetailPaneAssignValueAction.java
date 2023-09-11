@@ -46,9 +46,9 @@ import org.eclipse.ui.handlers.IHandlerService;
  */
 public class DetailPaneAssignValueAction extends Action{
 
-	private IHandlerActivation fHandlerActivation;
-	private IViewSite fViewSite;
-	private ITextViewer fTextViewer;
+	private final IHandlerActivation fHandlerActivation;
+	private final IViewSite fViewSite;
+	private final ITextViewer fTextViewer;
 	private IStructuredSelection fCurrentSelection;
 
 	/**

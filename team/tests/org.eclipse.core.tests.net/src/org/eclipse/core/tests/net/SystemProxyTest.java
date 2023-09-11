@@ -33,7 +33,7 @@ public class SystemProxyTest {
 	private boolean isProxiesDefault;
 	private boolean isSystemProxiesDefault;
 
-	private Map<String, IProxyData> proxyDataMap = new HashMap<>();
+	private final Map<String, IProxyData> proxyDataMap = new HashMap<>();
 
 	@Before
 	public void setUp() throws Exception {

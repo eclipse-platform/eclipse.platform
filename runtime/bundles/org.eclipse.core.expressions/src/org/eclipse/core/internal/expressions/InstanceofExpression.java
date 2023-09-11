@@ -30,7 +30,7 @@ public class InstanceofExpression extends Expression {
 	 */
 	private static final int HASH_INITIAL= InstanceofExpression.class.getName().hashCode();
 
-	private String fTypeName;
+	private final String fTypeName;
 
 	public InstanceofExpression(IConfigurationElement element) throws CoreException {
 		fTypeName= element.getAttribute(ATT_VALUE);

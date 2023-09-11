@@ -62,10 +62,10 @@ public class RunToLineAction extends Action implements IUpdate {
 
 	private IWorkbenchPart fActivePart = null;
 	private IRunToLineTarget fPartTarget = null;
-	private DebugContextListener fContextListener = new DebugContextListener();
+	private final DebugContextListener fContextListener = new DebugContextListener();
 	private ISuspendResume fTargetElement = null;
-	private IDocument fDocument;
-	private IVerticalRulerInfo fRulerInfo;
+	private final IDocument fDocument;
+	private final IVerticalRulerInfo fRulerInfo;
 
 	class DebugContextListener implements IDebugContextListener {
 

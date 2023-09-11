@@ -29,9 +29,9 @@ import org.eclipse.team.ui.mapping.ITeamStateChangeEvent;
  */
 public class TeamStateChangeEvent implements ITeamStateChangeEvent {
 
-	private Set<IResource> changes = new HashSet<>();
-	private Set<IResource> addedRoots = new HashSet<>();
-	private Set<IResource> removedRoots = new HashSet<>();
+	private final Set<IResource> changes = new HashSet<>();
+	private final Set<IResource> addedRoots = new HashSet<>();
+	private final Set<IResource> removedRoots = new HashSet<>();
 
 	public TeamStateChangeEvent() {
 		super();

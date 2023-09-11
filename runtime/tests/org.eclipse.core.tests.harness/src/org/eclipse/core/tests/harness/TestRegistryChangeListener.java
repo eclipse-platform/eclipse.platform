@@ -30,12 +30,12 @@ public class TestRegistryChangeListener implements IRegistryChangeListener {
 	 */
 	public static final int NO_EVENT = -1;
 
-	private List<IRegistryChangeEvent> events = new LinkedList<>();
-	private List<Integer> simpleEvents = new LinkedList<>();
-	private String xpNamespace;
-	private String xpId;
-	private String extNamespace;
-	private String extId;
+	private final List<IRegistryChangeEvent> events = new LinkedList<>();
+	private final List<Integer> simpleEvents = new LinkedList<>();
+	private final String xpNamespace;
+	private final String xpId;
+	private final String extNamespace;
+	private final String extId;
 
 	/**
 	 * Creates a new listener. The parameters allow filtering events based on extension point/extension's

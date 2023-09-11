@@ -28,7 +28,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 
 public class AdapterFactory implements IAdapterFactory {
 
-	private IWorkbenchAdapter modelAdapter = new ModelWorkbenchAdapter();
+	private final IWorkbenchAdapter modelAdapter = new ModelWorkbenchAdapter();
 	private ModelMerger modelMerger;
 	private CompareAdapter compareAdapter;
 	private static Object historyPageSource = new FileSystemHistoryPageSource();

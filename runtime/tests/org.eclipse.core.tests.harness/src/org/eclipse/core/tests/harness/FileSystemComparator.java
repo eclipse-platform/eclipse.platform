@@ -35,9 +35,9 @@ public class FileSystemComparator {
 
 	private static class FileSummary {
 		boolean directory;
-		private String path;
-		private long size;
-		private long timestamp;
+		private final String path;
+		private final long size;
+		private final long timestamp;
 
 		FileSummary(File file) {
 			if (!file.exists()) {

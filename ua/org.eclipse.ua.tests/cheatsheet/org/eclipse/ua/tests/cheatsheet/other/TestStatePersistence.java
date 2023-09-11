@@ -57,7 +57,7 @@ public class TestStatePersistence {
 	}
 
 	private PropertySet propsToSave;
-	private CheatSheetSaveHelper helper = new CheatSheetSaveHelper();
+	private final CheatSheetSaveHelper helper = new CheatSheetSaveHelper();
 	private PropertySet restored;
 
 	/*

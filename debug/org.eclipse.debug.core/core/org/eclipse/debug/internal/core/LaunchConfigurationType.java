@@ -52,7 +52,7 @@ public class LaunchConfigurationType extends PlatformObject implements ILaunchCo
 	/**
 	 * The configuration element of the extension.
 	 */
-	private IConfigurationElement fElement;
+	private final IConfigurationElement fElement;
 
 	/**
 	 *  a listing of modes contributed to this launch configuration type

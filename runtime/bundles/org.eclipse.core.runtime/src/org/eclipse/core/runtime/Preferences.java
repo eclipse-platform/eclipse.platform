@@ -177,19 +177,19 @@ public class Preferences {
 		/**
 		 * The name of the changed property.
 		 */
-		private String propertyName;
+		private final String propertyName;
 
 		/**
 		 * The old value of the changed property, or <code>null</code> if
 		 * not known or not relevant.
 		 */
-		private Object oldValue;
+		private final Object oldValue;
 
 		/**
 		 * The new value of the changed property, or <code>null</code> if
 		 * not known or not relevant.
 		 */
-		private Object newValue;
+		private final Object newValue;
 
 		/**
 		 * Creates a new property change event.
@@ -300,14 +300,14 @@ public class Preferences {
 	 * The mapping from property name to
 	 * property value (represented as strings).
 	 */
-	private Properties properties;
+	private final Properties properties;
 
 	/**
 	 * The mapping from property name to
 	 * default property value (represented as strings);
 	 * <code>null</code> if none.
 	 */
-	private Properties defaultProperties;
+	private final Properties defaultProperties;
 
 	/**
 	 * Indicates whether a value has been changed by <code>setToDefault</code>

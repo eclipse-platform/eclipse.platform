@@ -20,7 +20,7 @@ import org.eclipse.team.core.RepositoryProvider;
 public class RepositoryProviderManager implements IRepositoryProviderListener {
 
 	private static RepositoryProviderManager instance;
-	private ListenerList<IRepositoryProviderListener> listeners = new ListenerList<>();
+	private final ListenerList<IRepositoryProviderListener> listeners = new ListenerList<>();
 
 	public static synchronized RepositoryProviderManager getInstance() {
 		if (instance == null) {

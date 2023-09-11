@@ -19,7 +19,7 @@ import org.eclipse.help.ui.internal.Messages;
 import org.eclipse.jface.wizard.Wizard;
 
 public class NewEngineWizard extends Wizard {
-	private EngineTypeDescriptor[] engineTypes;
+	private final EngineTypeDescriptor[] engineTypes;
 
 	private EngineTypeWizardPage selectionPage;
 

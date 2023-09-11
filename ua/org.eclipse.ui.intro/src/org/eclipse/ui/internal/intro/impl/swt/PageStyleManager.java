@@ -42,9 +42,9 @@ import org.osgi.framework.Bundle;
 
 public class PageStyleManager extends SharedStyleManager {
 
-	private AbstractIntroPage page;
-	private Map<Properties, StyleContext> altStyleContexts = new HashMap<>();
-	private IntroModelRoot root;
+	private final AbstractIntroPage page;
+	private final Map<Properties, StyleContext> altStyleContexts = new HashMap<>();
+	private final IntroModelRoot root;
 
 
 	/**

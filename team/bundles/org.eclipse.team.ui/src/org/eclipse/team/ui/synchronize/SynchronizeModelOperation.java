@@ -38,7 +38,7 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public abstract class SynchronizeModelOperation extends TeamOperation {
 
-	private IDiffElement[] elements;
+	private final IDiffElement[] elements;
 
 	/*
 	 * Helper method for extracting the part safely from a configuration

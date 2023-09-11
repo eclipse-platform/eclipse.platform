@@ -46,8 +46,8 @@ import org.eclipse.ui.IEditorPart;
  */
 public class LaunchShortcutAction extends Action {
 
-	private String fMode;
-	private LaunchShortcutExtension fShortcut;
+	private final String fMode;
+	private final LaunchShortcutExtension fShortcut;
 	private ILaunchConfiguration configuration;
 
 

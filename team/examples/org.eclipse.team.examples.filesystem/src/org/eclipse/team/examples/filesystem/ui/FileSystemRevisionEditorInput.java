@@ -29,7 +29,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 
 public class FileSystemRevisionEditorInput extends PlatformObject implements IWorkbenchAdapter, IStorageEditorInput {
 
-	private IFileRevision fileRevision;
+	private final IFileRevision fileRevision;
 	private IStorage storage;
 
 	public FileSystemRevisionEditorInput(IFileRevision revision) {

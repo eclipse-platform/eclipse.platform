@@ -30,7 +30,7 @@ import org.eclipse.ui.internal.console.IInternalConsoleConstants;
  */
 public class CloseConsoleAction extends Action {
 
-	private IConsole fConsole;
+	private final IConsole fConsole;
 
 	public CloseConsoleAction(IConsole console) {
 		super(ConsoleMessages.CloseConsoleAction_0, ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_ELCL_CLOSE));

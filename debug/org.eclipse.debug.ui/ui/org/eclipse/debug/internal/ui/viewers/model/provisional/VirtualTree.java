@@ -33,7 +33,7 @@ public class VirtualTree extends VirtualItem {
 	 * Lazy virtual tree does not retrieve elements or labels,
 	 * except for the selected elements.
 	 */
-	private boolean fLazy;
+	private final boolean fLazy;
 
 	private IVirtualItemValidator fValidator;
 
@@ -60,7 +60,7 @@ public class VirtualTree extends VirtualItem {
 	/**
 	 * Set of listeners of the virtual tree.
 	 */
-	private Set<IVirtualItemListener> fVirtualItemListeners = new HashSet<>(1);
+	private final Set<IVirtualItemListener> fVirtualItemListeners = new HashSet<>(1);
 
 	/**
 	 * The currently selected items.  This array contains only

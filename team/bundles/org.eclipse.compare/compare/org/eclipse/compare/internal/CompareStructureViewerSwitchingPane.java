@@ -48,7 +48,7 @@ import org.eclipse.swt.widgets.ToolItem;
 public class CompareStructureViewerSwitchingPane extends
 		CompareViewerSwitchingPane {
 
-	private CompareEditorInput fCompareEditorInput;
+	private final CompareEditorInput fCompareEditorInput;
 
 	private ViewerDescriptor fSelectedViewerDescriptor;
 

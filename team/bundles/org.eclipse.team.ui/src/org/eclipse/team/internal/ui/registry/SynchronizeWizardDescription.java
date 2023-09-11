@@ -38,7 +38,7 @@ public class SynchronizeWizardDescription {
 	private String id;
 	private ImageDescriptor imageDescriptor;
 
-	private IConfigurationElement configElement;
+	private final IConfigurationElement configElement;
 
 	public SynchronizeWizardDescription(IConfigurationElement e, String descText) throws CoreException {
 		configElement = e;

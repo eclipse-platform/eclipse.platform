@@ -48,13 +48,13 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 	private Button fEditOrderedButton;
 	private Button fRemoveOrderedButton;
 
-	private HashMap fIdMapsInternal;
+	private final HashMap fIdMapsInternal;
 	private HashMap fIdMaps;// HashMap ( idname -> HashMap (signature -> id) )
-	private HashMap fIdExtensionToName;
+	private final HashMap fIdExtensionToName;
 	
 	//fOrderedElements contains signature of xml element whose children must be compared in ordered fashion
-	private HashMap fOrderedElements;// HashMap ( idname -> ArrayList (signature) )
-	private HashMap fOrderedElementsInternal;
+	private final HashMap fOrderedElements;// HashMap ( idname -> ArrayList (signature) )
+	private final HashMap fOrderedElementsInternal;
 	
 	protected static char[] invalidCharacters;
 	protected static final char SIGN_SEPARATOR = XMLStructureCreator.SIGN_SEPARATOR;

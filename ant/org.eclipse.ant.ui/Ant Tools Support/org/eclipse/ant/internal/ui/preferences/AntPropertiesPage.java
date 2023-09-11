@@ -36,8 +36,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AntPropertiesPage implements IAntBlockContainer {
 
-	private AntPropertiesBlock antPropertiesBlock = new AntPropertiesBlock(this);
-	private AntRuntimePreferencePage preferencePage;
+	private final AntPropertiesBlock antPropertiesBlock = new AntPropertiesBlock(this);
+	private final AntRuntimePreferencePage preferencePage;
 
 	/**
 	 * Creates an instance.

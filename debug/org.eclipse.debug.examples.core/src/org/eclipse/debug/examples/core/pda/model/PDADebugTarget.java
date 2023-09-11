@@ -71,10 +71,10 @@ import org.eclipse.debug.examples.core.pda.protocol.PDAVMTerminatedEvent;
 public class PDADebugTarget extends PDADebugElement implements IDebugTarget, IBreakpointManagerListener, IPDAEventListener {
 
 	// associated system process (VM)
-	private IProcess fProcess;
+	private final IProcess fProcess;
 
 	// containing launch object
-	private ILaunch fLaunch;
+	private final ILaunch fLaunch;
 
 	// sockets to communicate with VM
 	private Socket fRequestSocket;
@@ -90,13 +90,13 @@ public class PDADebugTarget extends PDADebugElement implements IDebugTarget, IBr
 	private boolean fTerminated = false;
 
 	// threads
-	private Map<Integer, PDAThread> fThreads = Collections.synchronizedMap(new LinkedHashMap<>());
+	private final Map<Integer, PDAThread> fThreads = Collections.synchronizedMap(new LinkedHashMap<>());
 
 	// event dispatch job
-	private EventDispatchJob fEventDispatch;
+	private final EventDispatchJob fEventDispatch;
 
 	// event listeners
-	private List<IPDAEventListener> fEventListeners = Collections.synchronizedList(new ArrayList<>());
+	private final List<IPDAEventListener> fEventListeners = Collections.synchronizedList(new ArrayList<>());
 
 	/**
 	 * Listens to events from the PDA VM and fires corresponding

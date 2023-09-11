@@ -24,7 +24,7 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class DebugModelPresentationContext extends PresentationContext {
 
-	private IDebugModelPresentation fPresentation;
+	private final IDebugModelPresentation fPresentation;
 
 	/**
 	 * Constructs a presentation context for the given id using the

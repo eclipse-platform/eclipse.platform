@@ -63,7 +63,7 @@ import org.eclipse.ui.progress.UIJob;
 
 public class AsyncTableRenderingViewer extends AsyncVirtualContentTableViewer {
 
-	private AbstractAsyncTableRendering fRendering;
+	private final AbstractAsyncTableRendering fRendering;
 
 	// selection keys
 	private Object fPendingSelection;
@@ -83,9 +83,9 @@ public class AsyncTableRenderingViewer extends AsyncVirtualContentTableViewer {
 
 	private class CellEditorListener implements ICellEditorListener {
 
-		private CellEditor fEditor;
-		private int fRow;
-		private int fCol;
+		private final CellEditor fEditor;
+		private final int fRow;
+		private final int fCol;
 
 		public CellEditorListener(int row, int col, CellEditor editor) {
 			fEditor = editor;

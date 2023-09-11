@@ -36,15 +36,15 @@ public class HyperlinkHandler implements MouseListener, MouseTrackListener, Pain
 	public static final int UNDERLINE_NEVER = 1;
 	public static final int UNDERLINE_ROLLOVER = 2;
 	public static final int UNDERLINE_ALWAYS = 3;
-	private Cursor hyperlinkCursor;
-	private Cursor busyCursor;
+	private final Cursor hyperlinkCursor;
+	private final Cursor busyCursor;
 	private boolean hyperlinkCursorUsed = true;
 	private int hyperlinkUnderlineMode = UNDERLINE_ALWAYS;
 	private Color background;
 	private Color foreground;
 	private Color activeBackground;
 	private Color activeForeground;
-	private Hashtable<Control, IHyperlinkListener> hyperlinkListeners;
+	private final Hashtable<Control, IHyperlinkListener> hyperlinkListeners;
 	private Control lastLink;
 	/**
 	 * HyperlinkHandler constructor comment.

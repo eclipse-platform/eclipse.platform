@@ -39,7 +39,7 @@ import org.eclipse.team.internal.ui.synchronize.LocalResourceTypedElement;
 // TODO: extend PatchDiffNode, update navigatorContent triggerPoints when done
 public class PatchWorkspace extends DiffNode implements IAdaptable {
 
-	private WorkspacePatcher patcher;
+	private final WorkspacePatcher patcher;
 
 	public PatchWorkspace(WorkspacePatcher patcher) {
 		super(null, Differencer.NO_CHANGE);

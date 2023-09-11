@@ -45,7 +45,7 @@ public class TeamCapabilityHelper {
 	 * Mapping from repository provider id to IPluginContribution.  Used for proper
 	 * activity mapping of natures.
 	 */
-	private Map<String, IPluginContribution> providerIdToPluginId;
+	private final Map<String, IPluginContribution> providerIdToPluginId;
 
 	/**
 	 * Singleton instance.

@@ -63,9 +63,9 @@ public class FilterHTMLHeadAndBodyOutputStream extends FilterOutputStream {
 
 	private int state = STATE_START;
 
-	private byte[] toHead;
+	private final byte[] toHead;
 
-	private String bodyContent;
+	private final String bodyContent;
 
 	private String charset;
 

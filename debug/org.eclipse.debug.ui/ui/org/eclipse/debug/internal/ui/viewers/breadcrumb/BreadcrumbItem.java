@@ -43,10 +43,10 @@ class BreadcrumbItem extends Item {
 	private TreePath fPath;
 
 	private final BreadcrumbViewer fParent;
-	private Composite fContainer;
+	private final Composite fContainer;
 
-	private BreadcrumbItemDropDown fExpandBlock;
-	private BreadcrumbItemDetails fDetailsBlock;
+	private final BreadcrumbItemDropDown fExpandBlock;
+	private final BreadcrumbItemDetails fDetailsBlock;
 
 	private boolean fIsLast;
 

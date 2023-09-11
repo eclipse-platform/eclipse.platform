@@ -29,12 +29,12 @@ public abstract class SequencerControl {
 	/**
 	 * The launch
 	 */
-	private MidiLaunch fLaunch;
+	private final MidiLaunch fLaunch;
 
 	/**
 	 * Control name
 	 */
-	private String fName;
+	private final String fName;
 
 	/**
 	 * Constructs a control with the given name.

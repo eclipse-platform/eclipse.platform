@@ -33,13 +33,13 @@ public class ChangeDescription {
 	public static final String MOVED = "Moved {0}";
 	public static final String REMOVED = "Removed {0}";
 
-	private List<IResource> addedRoots = new ArrayList<>();
-	private List<IResource> changedRoots = new ArrayList<>();
-	private List<IResource> closedProjects = new ArrayList<>();
-	private List<IResource> copiedRoots = new ArrayList<>();
-	private List<Status> errors = new ArrayList<>();
-	private List<IResource> movedRoots = new ArrayList<>();
-	private List<IResource> removedRoots = new ArrayList<>();
+	private final List<IResource> addedRoots = new ArrayList<>();
+	private final List<IResource> changedRoots = new ArrayList<>();
+	private final List<IResource> closedProjects = new ArrayList<>();
+	private final List<IResource> copiedRoots = new ArrayList<>();
+	private final List<Status> errors = new ArrayList<>();
+	private final List<IResource> movedRoots = new ArrayList<>();
+	private final List<IResource> removedRoots = new ArrayList<>();
 
 	public static String getMessageFor(String messageTemplate, IResource resource) {
 		return NLS.bind(messageTemplate, resource.getFullPath().toString());

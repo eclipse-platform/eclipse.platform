@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class WeakRefList {
 
-	private List<WeakReference<?>> userObjects;
+	private final List<WeakReference<?>> userObjects;
 
 	public WeakRefList(int initialSize) {
 		userObjects = new ArrayList<>(initialSize);

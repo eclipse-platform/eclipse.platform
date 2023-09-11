@@ -20,12 +20,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 public class FilterDescriptor implements IFilterMatcherDescriptor {
-	private String id;
-	private String name;
-	private String description;
+	private final String id;
+	private final String name;
+	private final String description;
 	private String argumentType;
 	private boolean isFirst = false;
-	private IConfigurationElement element;
+	private final IConfigurationElement element;
 
 	public FilterDescriptor(IConfigurationElement element) {
 		this(element, true);

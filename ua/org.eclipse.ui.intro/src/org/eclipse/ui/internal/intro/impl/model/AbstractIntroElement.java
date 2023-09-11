@@ -180,7 +180,7 @@ public abstract class AbstractIntroElement implements Cloneable {
 
 
 	private AbstractIntroElement parent;
-	private Object cfgElement;
+	private final Object cfgElement;
 	private Bundle bundle;
 	private String mixinStyle;
 

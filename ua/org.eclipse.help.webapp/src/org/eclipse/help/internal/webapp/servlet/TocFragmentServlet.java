@@ -84,11 +84,11 @@ public class TocFragmentServlet extends HttpServlet {
 	 */
 	private class Serializer {
 
-		private TocData tocData;
-		private StringBuilder buf;
+		private final TocData tocData;
+		private final StringBuilder buf;
 		private int requestKind;
-		private Locale locale;
-		private AbstractHelpScope scope;
+		private final Locale locale;
+		private final AbstractHelpScope scope;
 		private static final int REQUEST_SHOW_IN_TOC = 1;      // Get the path to an element an element based on its href
 		private static final int REQUEST_SHOW_TOCS = 2;        // Show all the tocs but not their children
 		private static final int REQUEST_SHOW_CHILDREN = 3;    // Show the children of a node

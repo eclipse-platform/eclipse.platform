@@ -32,7 +32,7 @@ import org.osgi.framework.Bundle;
 public class CheatSheetElement extends WorkbenchAdapter implements IAdaptable, IPluginContribution {
 	private String contentFile;
 	private String id;
-	private String name;
+	private final String name;
 	private String description;
 	private IConfigurationElement configurationElement;
 	private String listenerClass;

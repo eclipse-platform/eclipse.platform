@@ -22,8 +22,8 @@ import org.eclipse.ui.console.IConsoleView;
  */
 public class ShowConsoleAction extends Action {
 
-	private IConsole fConsole;
-	private IConsoleView fView;
+	private final IConsole fConsole;
+	private final IConsoleView fView;
 
 	@Override
 	public void run() {

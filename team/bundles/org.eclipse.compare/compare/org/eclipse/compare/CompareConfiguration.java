@@ -115,9 +115,9 @@ public class CompareConfiguration {
 		fgImages[16 + Differencer.CONFLICTING + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/confchg_ov.png"); //$NON-NLS-1$
 	}
 
-	private IPreferenceStore fPreferenceStore;
-	private ListenerList<IPropertyChangeListener> fListeners= new ListenerList<>();
-	private HashMap<String, Object> fProperties= new HashMap<>();
+	private final IPreferenceStore fPreferenceStore;
+	private final ListenerList<IPropertyChangeListener> fListeners= new ListenerList<>();
+	private final HashMap<String, Object> fProperties= new HashMap<>();
 	private boolean fLeftEditable= true;
 	private boolean fRightEditable= true;
 	private String fAncestorLabel;
@@ -127,13 +127,13 @@ public class CompareConfiguration {
 	private Image fRightImage;
 	private Image fLeftImage;
 	private ICompareContainer fContainer;
-	private DefaultLabelProvider labelProvider = new DefaultLabelProvider();
+	private final DefaultLabelProvider labelProvider = new DefaultLabelProvider();
 	private boolean fDisposed;
 	private LocalResourceManager fResourceManager;
-	private Set<Integer> fIgnoredChanges = new HashSet<>(6);
+	private final Set<Integer> fIgnoredChanges = new HashSet<>(6);
 
 	private class DefaultLabelProvider extends LabelProvider implements ICompareInputLabelProvider, ILabelProviderListener {
-		private Map<ICompareInput, ICompareInputLabelProvider> labelProviders = new HashMap<>();
+		private final Map<ICompareInput, ICompareInputLabelProvider> labelProviders = new HashMap<>();
 		private ICompareInputLabelProvider defaultLabelProvider;
 
 		@Override

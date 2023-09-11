@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.Assert;
 public class TestCaseElement extends TestElement implements ITestCaseElement {
 
 	private boolean fIgnored;
-	private boolean fIsDynamicTest;
+	private final boolean fIsDynamicTest;
 
 	/**
 	 * Constructs a {@link TestCaseElement} object

@@ -50,10 +50,10 @@ public class MessageFactoryServiceImpl implements IMessageFactoryService {
 	private Logger logger;
 
 	// Cache so when multiple instance use the same message class
-	private Map<Object, Reference<Object>> SOFT_CACHE = Collections
+	private final Map<Object, Reference<Object>> SOFT_CACHE = Collections
 			.synchronizedMap(new HashMap<>());
 
-	private Map<Object, Reference<Object>> WEAK_CACHE = Collections
+	private final Map<Object, Reference<Object>> WEAK_CACHE = Collections
 			.synchronizedMap(new HashMap<>());
 
 	private int CLEANUPCOUNT = 0;

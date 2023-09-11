@@ -24,7 +24,7 @@ public class TextEditorPropertyAction extends Action implements IPropertyChangeL
 
 	private final MergeSourceViewer[] viewers;
 	private final String preferenceKey;
-	private IPreferenceStore store;
+	private final IPreferenceStore store;
 
 	public TextEditorPropertyAction(String label, MergeSourceViewer[] viewers, String preferenceKey) {
 		super(label, IAction.AS_CHECK_BOX);

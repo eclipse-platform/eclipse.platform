@@ -54,19 +54,19 @@ import org.eclipse.tips.ui.internal.util.ImageUtil;
 public class Slider extends Composite {
 
 	private static final int RESIZE_RELOAD_DELAY = 100;
-	private Composite fScroller;
+	private final Composite fScroller;
 	private TipProvider fSelectedProvider;
-	private int fSpacing = 5;
+	private final int fSpacing = 5;
 	private int fSliderIndex = 0;
-	private List<ProviderSelectionListener> fListeners = new ArrayList<>();
+	private final List<ProviderSelectionListener> fListeners = new ArrayList<>();
 	private TipManager fTipManager;
-	private Button fLeftButton;
-	private Button fRightButton;
+	private final Button fLeftButton;
+	private final Button fRightButton;
 	private Composite fSelectedProviderButton;
-	private HashMap<String, Image> fProviderImageCache = new HashMap<>();
+	private final HashMap<String, Image> fProviderImageCache = new HashMap<>();
 	private int fIconSize = 48;
 	private PropertyChangeListener fPropertyChangeListener;
-	private int fLeftRightButtonWidth;
+	private final int fLeftRightButtonWidth;
 	private long fLastResizeEventTime;
 	private boolean fResizeRequestPending;
 	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources(), this);
@@ -405,8 +405,8 @@ public class Slider extends Composite {
 	}
 
 	private static final class CircleNumberDescriptor extends ImageDescriptor {
-		private int number;
-		private int backgroundColor;
+		private final int number;
+		private final int backgroundColor;
 
 		CircleNumberDescriptor(int number, int backgroundColor) {
 			this.number = number;

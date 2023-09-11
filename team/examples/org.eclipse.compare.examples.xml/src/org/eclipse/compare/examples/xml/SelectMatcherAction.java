@@ -17,8 +17,8 @@ import org.eclipse.jface.action.Action;
 
 class SelectMatcherAction extends Action {
 
-	private XMLStructureViewer fViewer;
-	private String fDesc;
+	private final XMLStructureViewer fViewer;
+	private final String fDesc;
 
 	public SelectMatcherAction(String desc, XMLStructureViewer viewer) {
 		fViewer= viewer;

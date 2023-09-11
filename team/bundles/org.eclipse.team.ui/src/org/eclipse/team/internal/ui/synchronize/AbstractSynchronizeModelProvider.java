@@ -87,11 +87,11 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 */
 	public static final String P_VIEWER_CHECKED_STATE = TeamUIPlugin.ID  + ".P_VIEWER_CHECKED_STATE"; //$NON-NLS-1$
 
-	private ISynchronizeModelElement root;
+	private final ISynchronizeModelElement root;
 
-	private ISynchronizePageConfiguration configuration;
+	private final ISynchronizePageConfiguration configuration;
 
-	private SyncInfoSet set;
+	private final SyncInfoSet set;
 
 	private SynchronizeModelUpdateHandler updateHandler;
 

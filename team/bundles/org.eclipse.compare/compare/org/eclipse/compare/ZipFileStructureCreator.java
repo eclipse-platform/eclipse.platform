@@ -47,7 +47,7 @@ public class ZipFileStructureCreator implements IStructureCreator {
 	 */
 	static abstract class ZipResource implements IStructureComparator, ITypedElement {
 
-		private String fName;
+		private final String fName;
 
 		ZipResource(String name) {
 			fName= name;
@@ -82,7 +82,7 @@ public class ZipFileStructureCreator implements IStructureCreator {
 
 	static class ZipFolder extends ZipResource {
 
-		private HashMap<String, ZipResource> fChildren= new HashMap<>(10);
+		private final HashMap<String, ZipResource> fChildren= new HashMap<>(10);
 
 		ZipFolder(String name) {
 			super(name);
@@ -188,7 +188,7 @@ public class ZipFileStructureCreator implements IStructureCreator {
 		}
 	}
 
-	private String fTitle;
+	private final String fTitle;
 
 	/**
 	 * Create a new ZipFileStructureCreator.

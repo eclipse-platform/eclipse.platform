@@ -41,8 +41,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AntClasspathPage implements IAntBlockContainer {
 
-	private AntClasspathBlock fAntClasspathBlock = new AntClasspathBlock();
-	private AntRuntimePreferencePage fPreferencePage;
+	private final AntClasspathBlock fAntClasspathBlock = new AntClasspathBlock();
+	private final AntRuntimePreferencePage fPreferencePage;
 	private ClasspathModel fModel;
 
 	/**

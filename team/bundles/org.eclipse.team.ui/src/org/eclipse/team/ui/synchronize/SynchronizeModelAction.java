@@ -44,7 +44,7 @@ import org.eclipse.ui.ide.IDE;
  */
 public abstract class SynchronizeModelAction extends BaseSelectionListenerAction {
 
-	private ISynchronizePageConfiguration configuration;
+	private final ISynchronizePageConfiguration configuration;
 
 	/**
 	 * Create an action with the given text and configuration. By default,

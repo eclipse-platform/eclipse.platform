@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Tree;
 
 public class TreeTextOperationTarget implements ITextOperationTarget {
 
-	private Tree tree;
+	private final Tree tree;
 
 	public TreeTextOperationTarget(Tree tree) {
 		this.tree = tree;

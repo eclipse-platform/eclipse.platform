@@ -41,7 +41,7 @@ public class MemoryViewSynchronizationService implements IMemoryRenderingSynchro
 
 	private Hashtable<IMemoryBlock, SynchronizeInfo> fSynchronizeInfo;
 	private int fEnableState = ENABLED;
-	private Hashtable<IPropertyChangeListener, PropertyListener> fPropertyListeners;
+	private final Hashtable<IPropertyChangeListener, PropertyListener> fPropertyListeners;
 
 	private IMemoryRendering fLastChangedRendering;
 	private IMemoryRendering fSyncServiceProvider;

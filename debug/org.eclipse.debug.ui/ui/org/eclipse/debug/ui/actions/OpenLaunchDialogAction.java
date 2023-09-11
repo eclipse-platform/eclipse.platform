@@ -50,7 +50,7 @@ public class OpenLaunchDialogAction extends Action implements IActionDelegate2, 
 	/**
 	 * Launch group identifier
 	 */
-	private String fIdentifier;
+	private final String fIdentifier;
 
 	/**
 	 * Constructs an action that opens the launch configuration dialog in

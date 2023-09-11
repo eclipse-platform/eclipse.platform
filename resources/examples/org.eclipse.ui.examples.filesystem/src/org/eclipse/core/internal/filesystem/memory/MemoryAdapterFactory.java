@@ -21,8 +21,8 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * in the UI.
  */
 public class MemoryAdapterFactory implements IAdapterFactory {
-	private Class<?>[] ADAPTER_LIST = new Class[] {IWorkbenchAdapter.class};
-	private WorkbenchMemoryNode memoryAdapter = new WorkbenchMemoryNode();
+	private final Class<?>[] ADAPTER_LIST = new Class[] {IWorkbenchAdapter.class};
+	private final WorkbenchMemoryNode memoryAdapter = new WorkbenchMemoryNode();
 
 	@Override
 	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {

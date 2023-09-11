@@ -51,10 +51,10 @@ import org.eclipse.osgi.util.NLS;
 public class PathVariableManager implements IPathVariableManager, IManager {
 
 	static final String VARIABLE_PREFIX = "pathvariable."; //$NON-NLS-1$
-	private Set<IPathVariableChangeListener> listeners;
-	private Map<IProject, Collection<IPathVariableChangeListener>> projectListeners;
+	private final Set<IPathVariableChangeListener> listeners;
+	private final Map<IProject, Collection<IPathVariableChangeListener>> projectListeners;
 
-	private Preferences preferences;
+	private final Preferences preferences;
 
 	/**
 	 * Constructor for the class.

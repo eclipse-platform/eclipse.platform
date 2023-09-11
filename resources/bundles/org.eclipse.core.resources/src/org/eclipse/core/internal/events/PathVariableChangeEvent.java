@@ -28,15 +28,15 @@ public class PathVariableChangeEvent extends EventObject implements IPathVariabl
 	/**
 	 * The name of the changed variable.
 	 */
-	private String variableName;
+	private final String variableName;
 
 	/**
 	 * The value of the changed variable (may be null).
 	 */
-	private IPath value;
+	private final IPath value;
 
 	/** The event type. */
-	private int type;
+	private final int type;
 
 	/**
 	 * Constructor for this class.

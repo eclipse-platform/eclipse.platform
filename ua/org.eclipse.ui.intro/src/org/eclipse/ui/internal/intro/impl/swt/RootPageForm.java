@@ -52,9 +52,9 @@ import org.eclipse.ui.intro.config.IIntroContentProviderSite;
  */
 public class RootPageForm implements IIntroConstants {
 
-	private FormToolkit toolkit;
-	private IntroHomePage rootPage;
-	private Form parentForm;
+	private final FormToolkit toolkit;
+	private final IntroHomePage rootPage;
+	private final Form parentForm;
 	protected Label descriptionLabel;
 	private PageStyleManager rootPageStyleManager;
 	private IIntroContentProviderSite site;
@@ -78,9 +78,9 @@ public class RootPageForm implements IIntroConstants {
 	static class RootPageLayout extends Layout {
 
 		// gap between link composite and description label.
-		private int VERTICAL_SPACING = 20;
+		private final int VERTICAL_SPACING = 20;
 
-		private int LABEL_MARGIN_WIDTH = 5;
+		private final int LABEL_MARGIN_WIDTH = 5;
 
 		/*
 		 * Custom layout for Root Page Composite.
@@ -117,7 +117,7 @@ public class RootPageForm implements IIntroConstants {
 		}
 	}
 
-	private HyperlinkAdapter hyperlinkAdapter = new HyperlinkAdapter() {
+	private final HyperlinkAdapter hyperlinkAdapter = new HyperlinkAdapter() {
 
 		@Override
 		public void linkActivated(HyperlinkEvent e) {

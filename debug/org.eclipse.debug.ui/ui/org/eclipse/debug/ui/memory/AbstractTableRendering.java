@@ -202,7 +202,7 @@ public abstract class AbstractTableRendering extends AbstractBaseTableRendering 
 	private PrintTableRenderingAction fPrintViewTabAction;
 	private ReformatAction fReformatAction;
 	private ToggleAddressColumnAction fToggleAddressColumnAction;
-	private EventHandleLock fEvtHandleLock = new EventHandleLock();
+	private final EventHandleLock fEvtHandleLock = new EventHandleLock();
 	private TableEditor fCursorEditor;
 	private FocusAdapter fEditorFocusListener;
 	private MouseAdapter fCursorMouseListener;

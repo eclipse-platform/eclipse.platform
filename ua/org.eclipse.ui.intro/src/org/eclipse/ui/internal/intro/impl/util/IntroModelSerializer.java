@@ -40,8 +40,8 @@ import org.osgi.framework.Bundle;
  */
 public class IntroModelSerializer {
 
-	private StringBuilder buffer;
-	private boolean filter;
+	private final StringBuilder buffer;
+	private final boolean filter;
 
 	public IntroModelSerializer(IntroModelRoot root) {
 		this(root, false);

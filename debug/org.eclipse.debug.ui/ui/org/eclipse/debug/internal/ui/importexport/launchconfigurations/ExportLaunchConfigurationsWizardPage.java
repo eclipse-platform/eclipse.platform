@@ -74,7 +74,7 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class ExportLaunchConfigurationsWizardPage extends WizardPage {
 
-	private ILaunchManager lm = DebugPlugin.getDefault().getLaunchManager();
+	private final ILaunchManager lm = DebugPlugin.getDefault().getLaunchManager();
 
 	/**
 	 * The content provider for the tree viewer
@@ -115,8 +115,8 @@ public class ExportLaunchConfigurationsWizardPage extends WizardPage {
 			return getUsedLaunchConfigurationTypes();
 		}
 	}
-	private String OVERWRITE = "overwrite"; //$NON-NLS-1$
-	private String OLD_PATH = "oldpath"; //$NON-NLS-1$
+	private final String OVERWRITE = "overwrite"; //$NON-NLS-1$
+	private final String OLD_PATH = "oldpath"; //$NON-NLS-1$
 	private CheckboxTreeViewer fViewer = null;
 	private Text fFilePath = null;
 	private Button fOverwrite = null;

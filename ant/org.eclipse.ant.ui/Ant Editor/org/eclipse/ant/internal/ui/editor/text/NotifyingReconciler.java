@@ -23,7 +23,7 @@ import org.eclipse.jface.text.reconciler.MonoReconciler;
 
 public class NotifyingReconciler extends MonoReconciler {
 
-	private ArrayList<IReconcilingParticipant> fReconcilingParticipants = new ArrayList<>();
+	private final ArrayList<IReconcilingParticipant> fReconcilingParticipants = new ArrayList<>();
 
 	/**
 	 * Constructor for NotifyingReconciler.

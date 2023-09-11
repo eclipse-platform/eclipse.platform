@@ -38,8 +38,8 @@ import org.eclipse.ui.texteditor.SimpleMarkerAnnotation;
  */
 public abstract class RulerBreakpointAction extends Action {
 
-	private ITextEditor fEditor;
-	private IVerticalRulerInfo fRulerInfo;
+	private final ITextEditor fEditor;
+	private final IVerticalRulerInfo fRulerInfo;
 
 	/**
 	 * Constructs an action to work on breakpoints in the specified

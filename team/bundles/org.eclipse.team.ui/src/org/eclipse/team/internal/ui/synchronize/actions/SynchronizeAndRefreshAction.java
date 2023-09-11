@@ -30,7 +30,7 @@ import org.eclipse.ui.actions.RefreshAction;
  */
 public class SynchronizeAndRefreshAction extends Action {
 
-	private ISynchronizeView fView;
+	private final ISynchronizeView fView;
 
 	public SynchronizeAndRefreshAction(ISynchronizeView view) {
 		fView= view;

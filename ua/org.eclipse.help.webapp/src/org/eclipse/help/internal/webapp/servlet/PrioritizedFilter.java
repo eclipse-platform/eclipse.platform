@@ -22,8 +22,8 @@ import org.eclipse.help.webapp.IFilter;
 
 public class PrioritizedFilter implements IFilter, Comparable<PrioritizedFilter> {
 
-	private IFilter filter;
-	private int priority;
+	private final IFilter filter;
+	private final int priority;
 
 	public PrioritizedFilter(IFilter filter, int priority) {
 		this.priority = priority;

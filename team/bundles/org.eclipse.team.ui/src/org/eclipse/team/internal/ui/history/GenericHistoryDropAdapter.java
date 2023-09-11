@@ -23,7 +23,7 @@ import org.eclipse.ui.part.ResourceTransfer;
 
 public class GenericHistoryDropAdapter extends PluginDropAdapter {
 
-	private GenericHistoryView view;
+	private final GenericHistoryView view;
 
 	public GenericHistoryDropAdapter(GenericHistoryView view) {
 		super(null);

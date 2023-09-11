@@ -43,7 +43,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @since 3.5
  */
 public abstract class SearchParticipantXML extends SearchParticipant {
-	private Stack<String> stack = new Stack<>();
+	private final Stack<String> stack = new Stack<>();
 	private SAXParser parser;
 	private XMLProcessor processor;
 	private boolean hasFilters;
@@ -87,10 +87,10 @@ public abstract class SearchParticipantXML extends SearchParticipant {
 	}
 
 	private static class ParsedXMLContent implements IParsedXMLContent {
-		private StringBuilder buffer = new StringBuilder();
-		private StringBuilder summary = new StringBuilder();
+		private final StringBuilder buffer = new StringBuilder();
+		private final StringBuilder summary = new StringBuilder();
 		private String title;
-		private String locale;
+		private final String locale;
 		private static int SUMMARY_LENGTH = 200;
 
 		public ParsedXMLContent(String locale) {

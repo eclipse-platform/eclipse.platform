@@ -52,7 +52,7 @@ public class FileCache {
 		}
 	}
 
-	private File cacheDir;
+	private final File cacheDir;
 
 	/**
 	 * Public accessor to obtain the singleton file cache instance,

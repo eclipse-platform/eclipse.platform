@@ -69,8 +69,8 @@ public class LaunchShortcutExtension implements ILaunchShortcut2, IPluginContrib
 	 */
 	private static class LaunchCommandHandler extends AbstractHandler {
 		// the shortcut to invoke
-		private LaunchShortcutExtension fShortcut;
-		private String fMode;
+		private final LaunchShortcutExtension fShortcut;
+		private final String fMode;
 
 		/**
 		 * Constructs a new command handler for the given shortcut

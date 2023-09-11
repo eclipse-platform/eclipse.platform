@@ -67,9 +67,9 @@ import org.eclipse.ui.statushandlers.StatusManager;
 public class OpenWithMenu extends ContributionItem {
 	private IStructuredSelection selection;
 
-	private HistoryPage page;
+	private final HistoryPage page;
 
-	private IEditorRegistry registry = PlatformUI.getWorkbench().getEditorRegistry();
+	private final IEditorRegistry registry = PlatformUI.getWorkbench().getEditorRegistry();
 
 	private static Hashtable<ImageDescriptor, Image> imageCache = new Hashtable<>(11);
 
@@ -89,7 +89,7 @@ public class OpenWithMenu extends ContributionItem {
 	 * Compares the labels from two IEditorDescriptor objects
 	 */
 	private static final Comparator<IEditorDescriptor> comparer = new Comparator<IEditorDescriptor>() {
-		private Collator collator = Collator.getInstance();
+		private final Collator collator = Collator.getInstance();
 
 		@Override
 		public int compare(IEditorDescriptor arg0, IEditorDescriptor arg1) {

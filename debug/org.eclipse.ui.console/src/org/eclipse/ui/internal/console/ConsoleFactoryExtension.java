@@ -31,7 +31,7 @@ import org.eclipse.ui.console.IConsoleFactory;
  */
 public class ConsoleFactoryExtension implements IPluginContribution {
 
-	private IConfigurationElement fConfig;
+	private final IConfigurationElement fConfig;
 	private Expression fEnablementExpression;
 	private String fLabel;
 	private ImageDescriptor fImageDescriptor;

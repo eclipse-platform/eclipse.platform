@@ -34,7 +34,7 @@ public class ControlEventHandler extends DebugEventHandler {
 	/**
 	 * Associated launch
 	 */
-	private MidiLaunch fLaunch;
+	private final MidiLaunch fLaunch;
 
 	/**
 	 * Timer used to update clock

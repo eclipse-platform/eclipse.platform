@@ -45,17 +45,17 @@ public class OutputStreamMonitor implements IBinaryStreamMonitor {
 	/**
 	 * The stream being monitored (connected system out or err).
 	 */
-	private InputStream fStream;
+	private final InputStream fStream;
 
 	/**
 	 * A collection of listeners interested in decoded content.
 	 */
-	private ListenerList<IStreamListener> fListeners = new ListenerList<>();
+	private final ListenerList<IStreamListener> fListeners = new ListenerList<>();
 
 	/**
 	 * A collection of listeners interested in the raw content.
 	 */
-	private ListenerList<IBinaryStreamListener> fBinaryListeners = new ListenerList<>();
+	private final ListenerList<IBinaryStreamListener> fBinaryListeners = new ListenerList<>();
 
 	/**
 	 * The buffered stream content since last flush. Value of <code>null</code>
@@ -83,9 +83,9 @@ public class OutputStreamMonitor implements IBinaryStreamMonitor {
 	 */
 	private boolean fKilled = false;
 
-	private Charset fCharset;
+	private final Charset fCharset;
 
-	private StreamDecoder fDecoder;
+	private final StreamDecoder fDecoder;
 
 	private final AtomicBoolean fDone;
 

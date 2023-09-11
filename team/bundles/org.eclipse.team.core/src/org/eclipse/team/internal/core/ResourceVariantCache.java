@@ -40,13 +40,13 @@ public class ResourceVariantCache {
 	// Map of registered caches indexed by local name of a QualifiedName
 	private static Map<String, ResourceVariantCache> caches = new HashMap<>(); // String (local name) > RemoteContentsCache
 
-	private String name;
+	private final String name;
 	private Map<String, ResourceVariantCacheEntry> cacheEntries;
 	private long lastCacheCleanup;
 	private int cacheDirSize;
 
 	// Lock used to serialize the writing of cache contents
-	private ILock lock = Job.getJobManager().newLock();
+	private final ILock lock = Job.getJobManager().newLock();
 
 	/**
 	 * Enables the use of remote contents caching for the given cacheId. The cache ID must be unique.

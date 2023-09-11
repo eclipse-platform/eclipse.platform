@@ -37,7 +37,7 @@ import org.eclipse.ui.actions.ActionFactory;
  */
 public class RefreshUserNotificationPolicy implements IRefreshSubscriberListener {
 
-	private ISynchronizeParticipant participant;
+	private final ISynchronizeParticipant participant;
 
 	public RefreshUserNotificationPolicy(ISynchronizeParticipant participant) {
 		this.participant = participant;

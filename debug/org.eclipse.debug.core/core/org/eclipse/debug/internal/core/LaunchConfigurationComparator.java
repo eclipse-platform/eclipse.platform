@@ -28,7 +28,7 @@ import org.eclipse.debug.core.DebugPlugin;
  */
 public class LaunchConfigurationComparator implements Comparator<Object> {
 
-	private IConfigurationElement fConfigurationElement;
+	private final IConfigurationElement fConfigurationElement;
 
 	private Comparator<Object> fDelegate;
 

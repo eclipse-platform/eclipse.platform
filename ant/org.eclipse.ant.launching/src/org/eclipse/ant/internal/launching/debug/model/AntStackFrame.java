@@ -27,7 +27,7 @@ import org.eclipse.debug.core.model.IVariable;
  */
 public class AntStackFrame extends AntDebugElement implements IStackFrame {
 
-	private AntThread fThread;
+	private final AntThread fThread;
 	private String fName;
 	private int fLineNumber;
 	private String fFilePath;

@@ -51,7 +51,7 @@ import org.xml.sax.*;
  */
 
 public final class InfoCenter implements ISearchEngine {
-	private Hashtable<String, IHelpResource> tocs;
+	private final Hashtable<String, IHelpResource> tocs;
 
 	public static class Scope implements ISearchScope {
 		String url;
@@ -70,9 +70,9 @@ public final class InfoCenter implements ISearchEngine {
 	private class InfoCenterResult implements ISearchEngineResult {
 		private IHelpResource category;
 
-		private Element node;
+		private final Element node;
 
-		private String baseURL;
+		private final String baseURL;
 
 		public InfoCenterResult(String baseURL, Element node) {
 			this.baseURL = baseURL;

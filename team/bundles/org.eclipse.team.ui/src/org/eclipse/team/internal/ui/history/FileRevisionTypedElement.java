@@ -32,7 +32,7 @@ import org.eclipse.ui.IEditorInput;
  */
 public class FileRevisionTypedElement extends StorageTypedElement {
 
-	private IFileRevision fileRevision;
+	private final IFileRevision fileRevision;
 	private String author;
 
 	/**

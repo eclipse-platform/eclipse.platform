@@ -41,11 +41,11 @@ public class TipDialog extends Dialog {
 	 * (SWT.RESIZE | SWT.SHELL_TRIM)
 	 */
 	public static final int DEFAULT_STYLE = -1;
-	private TipManager fTipManager;
+	private final TipManager fTipManager;
 	private TipComposite fTipComposite;
-	private int fShellStyle;
-	private IDialogSettings fDialogSettings;
-	private ResourceManager resourceManager;
+	private final int fShellStyle;
+	private final IDialogSettings fDialogSettings;
+	private final ResourceManager resourceManager;
 
 	public TipDialog(Shell parentShell, TipManager tipManager, int shellStyle, IDialogSettings dialogSettings) {
 		super(parentShell);

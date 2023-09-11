@@ -36,9 +36,9 @@ public class CriteriaManager {
 	private final static String SUPPORTED_CRITERIA = "supportedCriteria"; //$NON-NLS-1$
 	private final static String ENABLE_CRITERIA = "enableCriteria"; //$NON-NLS-1$
 
-	private List<String> supportedCriteria;
-	private boolean criteriaEnabled;
-	private Map<String, Map<String, Set<String>>> allCriteriaValues;
+	private final List<String> supportedCriteria;
+	private final boolean criteriaEnabled;
+	private final Map<String, Map<String, Set<String>>> allCriteriaValues;
 
 	private CriteriaDefinitionManager criteriaDefinitionManager;
 

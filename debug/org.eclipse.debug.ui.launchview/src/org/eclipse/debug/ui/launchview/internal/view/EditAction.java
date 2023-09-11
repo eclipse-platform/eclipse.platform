@@ -23,7 +23,7 @@ import org.eclipse.e4.ui.model.application.ui.menu.MMenuItem;
 
 public class EditAction {
 
-	private LaunchViewImpl view;
+	private final LaunchViewImpl view;
 
 	public EditAction(LaunchViewImpl view) {
 		this.view = view;

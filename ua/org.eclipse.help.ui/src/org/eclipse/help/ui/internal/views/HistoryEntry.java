@@ -16,9 +16,9 @@ package org.eclipse.help.ui.internal.views;
 public class HistoryEntry {
 	public static final int URL = 1;
 	public static final int PAGE = 2;
-	private int type;
-	private String target;
-	private Object data;
+	private final int type;
+	private final String target;
+	private final Object data;
 	/**
 	 *
 	 */

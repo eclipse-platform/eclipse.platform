@@ -29,7 +29,7 @@ import org.eclipse.debug.ui.memory.IMemoryRendering;
  */
 public class TableRenderingContentInput extends PlatformObject {
 
-	private IMemoryRendering fRendering;
+	private final IMemoryRendering fRendering;
 	private int fPreBuffer;					// number of lines before the top visible line
 	private int fPostBuffer;				// number of lines after thes last visible line
 	private BigInteger fLoadAddress;		// Top address to load at the table

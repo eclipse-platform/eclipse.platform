@@ -259,8 +259,8 @@ public class NestedProjectCreator {
 	 */
 	private ILabelProvider getProjectDescriptionLabelProvider() {
 		return new LabelProvider() {
-			private LabelProvider realProvider = new WorkbenchLabelProvider();
-			private IWorkspaceRoot root = workspace.getRoot();
+			private final LabelProvider realProvider = new WorkbenchLabelProvider();
+			private final IWorkspaceRoot root = workspace.getRoot();
 
 			@Override
 			public Image getImage(Object element) {

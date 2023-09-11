@@ -25,9 +25,9 @@ public class ContextLinkSorter {
 
 	private static class TestResource implements IHelpResource {
 
-		private String category;
-		private String href;
-		private String label;
+		private final String category;
+		private final String href;
+		private final String label;
 
 		public TestResource(String label, String category, String href) {
 			this.category = category;

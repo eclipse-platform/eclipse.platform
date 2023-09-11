@@ -36,10 +36,10 @@ public class ChangeCompareFilterPropertyAction extends Action implements
 	public static final String COMPARE_FILTERS_INITIALIZING = "COMPARE_FILTERS_INITIALIZING"; //$NON-NLS-1$
 
 	private CompareConfiguration fCompareConfiguration;
-	private ResourceBundle fBundle;
-	private String fPrefix = "filter."; //$NON-NLS-1$
-	private CompareFilterDescriptor fCompareFilterDescriptor;
-	private ICompareFilter fCompareFilter;
+	private final ResourceBundle fBundle;
+	private final String fPrefix = "filter."; //$NON-NLS-1$
+	private final CompareFilterDescriptor fCompareFilterDescriptor;
+	private final ICompareFilter fCompareFilter;
 
 	public ChangeCompareFilterPropertyAction(
 			CompareFilterDescriptor compareFilterDescriptor,

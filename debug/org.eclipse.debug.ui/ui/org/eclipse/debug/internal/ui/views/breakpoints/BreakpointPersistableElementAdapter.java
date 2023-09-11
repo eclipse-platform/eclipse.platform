@@ -24,7 +24,7 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class BreakpointPersistableElementAdapter implements IPersistableElement {
 
-	private IBreakpoint fBreakpoint;
+	private final IBreakpoint fBreakpoint;
 
 	public static final String TAG_MARKER_ID = "TAG_MARKER_ID"; //$NON-NLS-1$
 	public static final String TAG_RESOURCE_FACTORY_ID = "TAG_RESOURCE_FACTORY_ID"; //$NON-NLS-1$

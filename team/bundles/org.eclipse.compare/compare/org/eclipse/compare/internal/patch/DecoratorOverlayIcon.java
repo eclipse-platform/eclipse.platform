@@ -28,13 +28,13 @@ import org.eclipse.swt.graphics.Point;
  */
 class DecoratorOverlayIcon extends CompositeImageDescriptor {
 	// the base image
-	private Image base;
+	private final Image base;
 
 	// the overlay images
-	private ImageDescriptor[] overlays;
+	private final ImageDescriptor[] overlays;
 
 	// the size
-	private Point size;
+	private final Point size;
 
 
 	/**

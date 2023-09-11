@@ -82,12 +82,12 @@ public class MemoryView extends ViewPart implements IMemoryRenderingSite2 {
 	private MemoryViewPartListener fPartListener;
 
 	private SashForm fSashForm;
-	private Hashtable<String, IMemoryViewPane> fViewPanes = new Hashtable<>();
-	private Hashtable<String, ViewForm> fViewPaneControls = new Hashtable<>();
-	private ArrayList<String> fVisibleViewPanes = new ArrayList<>();
+	private final Hashtable<String, IMemoryViewPane> fViewPanes = new Hashtable<>();
+	private final Hashtable<String, ViewForm> fViewPaneControls = new Hashtable<>();
+	private final ArrayList<String> fVisibleViewPanes = new ArrayList<>();
 	private boolean fVisible;
 
-	private ArrayList<Integer> fWeights = new ArrayList<>();
+	private final ArrayList<Integer> fWeights = new ArrayList<>();
 
 	private static final String VISIBILITY_PREF = IDebugUIConstants.ID_MEMORY_VIEW + ".viewPanesVisibility"; //$NON-NLS-1$
 	private static final String ID_MEMORY_VIEW_CONTEXT = "org.eclipse.debug.ui.memoryview"; //$NON-NLS-1$
@@ -101,7 +101,7 @@ public class MemoryView extends ViewPart implements IMemoryRenderingSite2 {
 	public static final int HORIZONTAL_VIEW_ORIENTATION = 0;
 	public static final int VERTICAL_VIEW_ORIENTATION = 1;
 
-	private String[] defaultVisiblePaneIds = {
+	private final String[] defaultVisiblePaneIds = {
 			MemoryBlocksTreeViewPane.PANE_ID,
 			IDebugUIConstants.ID_RENDERING_VIEW_PANE_1 };
 
@@ -446,7 +446,7 @@ public class MemoryView extends ViewPart implements IMemoryRenderingSite2 {
 	 */
 	private Listener createDeactivateListener(final IMemoryViewPane viewPane) {
 		Listener deactivateListener = new Listener() {
-			private String id = viewPane.getId();
+			private final String id = viewPane.getId();
 
 			@Override
 			public void handleEvent(Event event) {
@@ -463,7 +463,7 @@ public class MemoryView extends ViewPart implements IMemoryRenderingSite2 {
 	 */
 	private Listener createActivateListener(final IMemoryViewPane viewPane) {
 		Listener activateListener = new Listener() {
-			private String id = viewPane.getId();
+			private final String id = viewPane.getId();
 
 			@Override
 			public void handleEvent(Event event) {

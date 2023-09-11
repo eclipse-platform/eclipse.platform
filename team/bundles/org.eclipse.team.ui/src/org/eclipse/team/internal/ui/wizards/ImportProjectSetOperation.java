@@ -31,7 +31,7 @@ public class ImportProjectSetOperation extends TeamOperation {
 	private String psfFileContents;
 	private String urlString;
 	private String psfFile;
-	private IWorkingSet[] workingSets;
+	private final IWorkingSet[] workingSets;
 
 
 	/**

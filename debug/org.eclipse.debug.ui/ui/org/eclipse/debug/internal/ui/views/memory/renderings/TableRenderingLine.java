@@ -25,10 +25,10 @@ import org.eclipse.debug.core.model.MemoryByte;
 public class TableRenderingLine extends PlatformObject {
 	private String fAddress;
 	private String fStrRep;
-	private MemoryByte[] fBytes;
+	private final MemoryByte[] fBytes;
 	private byte[] fByteArray;
 	private int fTableIndex = -1;
-	private String fPaddedString;
+	private final String fPaddedString;
 	public boolean isMonitored;
 
 	public static final String P_ADDRESS = "address"; //$NON-NLS-1$

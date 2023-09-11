@@ -41,7 +41,7 @@ public class ArchiveFilter extends ViewerFilter {
 	/**
 	 * Collection of already existing archives
 	 */
-	private List<ISourceContainer> fExisting;
+	private final List<ISourceContainer> fExisting;
 
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {

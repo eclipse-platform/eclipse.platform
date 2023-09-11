@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Tree;
  */
 public class NullViewer extends AbstractViewer {
 
-	private Control fDummy;
+	private final Control fDummy;
 
 	public NullViewer(Composite parent) {
 

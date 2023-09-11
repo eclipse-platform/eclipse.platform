@@ -37,7 +37,7 @@ public class FilterLaunchConfigurationAction extends Action {
 	/**
 	 * the menu for this drop down style action
 	 */
-	private FilterDropDownMenuCreator fMenuCreator;
+	private final FilterDropDownMenuCreator fMenuCreator;
 
 	/**
 	 * Constructor

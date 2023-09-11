@@ -30,7 +30,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AntClasspathLabelProvider implements ILabelProvider {
 
-	private AntClasspathBlock fBlock;
+	private final AntClasspathBlock fBlock;
 
 	public AntClasspathLabelProvider(AntClasspathBlock block) {
 		fBlock = block;

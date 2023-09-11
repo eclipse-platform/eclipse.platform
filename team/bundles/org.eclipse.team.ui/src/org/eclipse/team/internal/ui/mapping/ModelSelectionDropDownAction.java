@@ -50,10 +50,10 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 
 	private final ISynchronizePageConfiguration configuration;
 	private MenuManager menuManager;
-	private Action showAllAction;
-	private org.eclipse.jface.util.IPropertyChangeListener listener;
-	private MenuCreator menuCreator;
-	private Action showAllFlatAction;
+	private final Action showAllAction;
+	private final org.eclipse.jface.util.IPropertyChangeListener listener;
+	private final MenuCreator menuCreator;
+	private final Action showAllFlatAction;
 
 	private class MenuCreator implements IMenuCreator {
 		@Override

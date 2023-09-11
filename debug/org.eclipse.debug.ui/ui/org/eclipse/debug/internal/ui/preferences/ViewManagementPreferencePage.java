@@ -61,7 +61,7 @@ public class ViewManagementPreferencePage extends PreferencePage implements IWor
 	// This flag indicates whether or not the user has pressed the reset button
 	private boolean fResetPressed= false;
 	private PerspectiveLabelProvider fLabelProvider= null;
-	private SelectionListener fSelectionListener= new SelectionAdapter() {
+	private final SelectionListener fSelectionListener= new SelectionAdapter() {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {

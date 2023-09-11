@@ -37,7 +37,7 @@ import org.eclipse.ui.IViewPart;
 public class ResetMemoryBlockAction implements IViewActionDelegate {
 
 	private IViewPart fView;
-	private ArrayList<Object> fSelectedMB = new ArrayList<>();
+	private final ArrayList<Object> fSelectedMB = new ArrayList<>();
 
 	@Override
 	public void init(IViewPart view) {

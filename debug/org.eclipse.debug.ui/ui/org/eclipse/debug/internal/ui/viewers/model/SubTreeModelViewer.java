@@ -452,7 +452,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 	 */
 	private class SubTreeModelContentProvider implements ITreeModelContentProvider {
 
-		private TreeModelContentProvider fBaseProvider;
+		private final TreeModelContentProvider fBaseProvider;
 
 		public SubTreeModelContentProvider() {
 			fBaseProvider = new TreeModelContentProvider();
@@ -606,7 +606,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 		implements ITreeModelLabelProvider
 	{
 
-		private TreeModelLabelProvider fBaseProvider;
+		private final TreeModelLabelProvider fBaseProvider;
 
 		public SubTreeModelLabelProvider(IInternalTreeModelViewer viewer) {
 			fBaseProvider = new TreeModelLabelProvider(viewer);

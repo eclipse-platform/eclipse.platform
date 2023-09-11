@@ -108,8 +108,8 @@ public class CustomizationContentsArea {
 	private TableViewer bottomLeft;
 	private TableViewer bottomRight;
 	private CheckboxTableViewer rootPages;
-	private ArrayList<String> introRootPages = new ArrayList<>();
-	private ArrayList<IntroTheme> themeList = new ArrayList<>();
+	private final ArrayList<String> introRootPages = new ArrayList<>();
+	private final ArrayList<IntroTheme> themeList = new ArrayList<>();
 	private IntroTheme introTheme;
 	private String introThemeId;
 	private IntroData introData;

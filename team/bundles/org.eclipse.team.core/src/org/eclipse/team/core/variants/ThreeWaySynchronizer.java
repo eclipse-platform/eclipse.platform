@@ -57,7 +57,7 @@ public class ThreeWaySynchronizer {
 	 *
 	 * @see BatchingLock#flush(IProgressMonitor)
 	 */
-	private IFlushOperation flushOperation = (info, monitor) -> {
+	private final IFlushOperation flushOperation = (info, monitor) -> {
 		if (info != null && !info.isEmpty()) {
 			broadcastSyncChanges(info.getChangedResources());
 		}
@@ -65,10 +65,10 @@ public class ThreeWaySynchronizer {
 
 	private static final byte[] IGNORED_BYTES = "i".getBytes(); //$NON-NLS-1$
 
-	private ILock lock = Job.getJobManager().newLock();
-	private BatchingLock batchingLock = new BatchingLock();
-	private ResourceVariantByteStore cache;
-	private Set<ISynchronizerChangeListener> listeners = new HashSet<>();
+	private final ILock lock = Job.getJobManager().newLock();
+	private final BatchingLock batchingLock = new BatchingLock();
+	private final ResourceVariantByteStore cache;
+	private final Set<ISynchronizerChangeListener> listeners = new HashSet<>();
 
 	/**
 	 * Create a three-way synchronizer that uses a persistent

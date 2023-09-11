@@ -23,7 +23,7 @@ import org.eclipse.swt.custom.BusyIndicator;
  */
 public class FilterInternalTargetsAction extends Action {
 
-	private AntEditorContentOutlinePage fPage;
+	private final AntEditorContentOutlinePage fPage;
 
 	public FilterInternalTargetsAction(AntEditorContentOutlinePage page) {
 		super(AntOutlineMessages.FilterInternalTargetsAction_0);

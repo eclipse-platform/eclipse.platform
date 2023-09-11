@@ -59,7 +59,7 @@ public class StringSubstitutionEngine {
 	static class VariableReference {
 
 		// the text inside the variable reference
-		private StringBuilder fText;
+		private final StringBuilder fText;
 
 		public VariableReference() {
 			fText = new StringBuilder();

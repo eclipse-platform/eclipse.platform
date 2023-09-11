@@ -28,8 +28,8 @@ import org.eclipse.ui.IMemento;
  */
 class ElementMementoRequest extends MementoUpdate implements IElementMementoRequest {
 
-	private IElementMementoCollector fManager;
-	private ModelDelta fDelta;
+	private final IElementMementoCollector fManager;
+	private final ModelDelta fDelta;
 
 	/**
 	 * @param provider the content provider to use for the update

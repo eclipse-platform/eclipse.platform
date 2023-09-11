@@ -30,8 +30,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 public class ResolveExpression extends CompositeExpression {
 
-	private String fVariable;
-	private Object[] fArgs;
+	private final String fVariable;
+	private final Object[] fArgs;
 
 	private static final String ATT_VARIABLE= "variable";  //$NON-NLS-1$
 	private static final String ATT_ARGS= "args";  //$NON-NLS-1$

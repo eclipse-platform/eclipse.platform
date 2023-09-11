@@ -35,14 +35,14 @@ public class AddPropertyDialog extends Dialog {
 	private String fName;
 	private String fValue;
 
-	private String fTitle;
+	private final String fTitle;
 
 	private Label fNameLabel;
 	private Text fNameText;
 	private Label fValueLabel;
 	private Text fValueText;
 
-	private String[] fInitialValues;
+	private final String[] fInitialValues;
 
 	public AddPropertyDialog(Shell shell, String title, String[] initialValues) {
 		super(shell);

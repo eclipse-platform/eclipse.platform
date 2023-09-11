@@ -30,7 +30,7 @@ import org.eclipse.ui.internal.provisional.cheatsheets.TaskExplorer;
 
 public class TreeExplorerMenu {
 
-	private TaskExplorer explorer;
+	private final TaskExplorer explorer;
 
 	public TreeExplorerMenu(TaskExplorer explorer) {
 		this.explorer = explorer;

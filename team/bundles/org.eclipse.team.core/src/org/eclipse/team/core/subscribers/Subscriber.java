@@ -78,7 +78,7 @@ import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
  */
 abstract public class Subscriber {
 
-	private List<ISubscriberChangeListener> listeners = new ArrayList<>(1);
+	private final List<ISubscriberChangeListener> listeners = new ArrayList<>(1);
 
 	/**
 	 * Return the name of this subscription, in a format that is

@@ -26,7 +26,7 @@ public class DynamicInstructionPointerAnnotation extends Annotation {
 	 * The frame for this instruction pointer annotation.  This is necessary only so that
 	 * instances of this class can be distinguished by equals().
 	 */
-	private IStackFrame fStackFrame;
+	private final IStackFrame fStackFrame;
 
 	/**
 	 *

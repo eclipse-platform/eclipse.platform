@@ -43,7 +43,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  */
 public class FileSelectionDialog extends MessageDialog {
 	// the root element to populate the viewer with
-	private IAdaptable root;
+	private final IAdaptable root;
 
 	// the visual selection widget group
 	private TreeAndListGroup selectionGroup;

@@ -76,7 +76,7 @@ public class RunDebugPropertiesPage extends PropertyPage {
 	/**
 	 * Set of configurations to be deleted
 	 */
-	private Set<ILaunchConfigurationWorkingCopy> fDeletedConfigurations = new HashSet<>();
+	private final Set<ILaunchConfigurationWorkingCopy> fDeletedConfigurations = new HashSet<>();
 
 	/**
 	 * Set of original default candidates for the resource

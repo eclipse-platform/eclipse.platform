@@ -35,8 +35,8 @@ public class ParallelSearchUsingRemote {
 	}
 
 	private int mode;
-	private String[] searchWords = new String[] {"endfdsadsads", "dedfdsadsads", "jehcyqpfjs" };
-	private String[][] expectedResults = new String[][] {
+	private final String[] searchWords = new String[] {"endfdsadsads", "dedfdsadsads", "jehcyqpfjs" };
+	private final String[][] expectedResults = new String[][] {
 			new String[] { "http://www.eclipse.org" },
 			new String[0],
 			new String[] { "/org.eclipse.ua.tests/data/help/search/test1.xhtml" }

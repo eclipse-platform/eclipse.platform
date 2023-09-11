@@ -19,7 +19,7 @@ import org.eclipse.ui.actions.ActionFactory;
 
 public class SelectAllAction extends GlobalAction {
 
-	private ITextOperationTarget target;
+	private final ITextOperationTarget target;
 
 	public SelectAllAction(ITextOperationTarget target) {
 		super("Select &All"); //$NON-NLS-1$

@@ -51,7 +51,7 @@ public class BucketTree {
 
 	protected Bucket current;
 
-	private Workspace workspace;
+	private final Workspace workspace;
 
 	public BucketTree(Workspace workspace, Bucket bucket) {
 		this.current = bucket;

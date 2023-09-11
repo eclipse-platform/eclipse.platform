@@ -70,7 +70,7 @@ public abstract class RelaunchLastAction implements IWorkbenchWindowActionDelega
 		}
 	}
 
-	private Listener fListener = new Listener();
+	private final Listener fListener = new Listener();
 	private IWorkbenchWindow fWorkbenchWindow;
 	private IAction fAction;
 

@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  */
 public class TerminateAllActionDelegate implements IWorkbenchWindowActionDelegate, IActionDelegate2, IViewActionDelegate {
 
-	private DebugCommandAction fConsoleAction = new TerminateAllAction();
+	private final DebugCommandAction fConsoleAction = new TerminateAllAction();
 
 	@Override
 	public void dispose() {

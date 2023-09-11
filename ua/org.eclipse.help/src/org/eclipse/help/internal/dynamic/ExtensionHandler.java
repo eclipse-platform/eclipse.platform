@@ -29,8 +29,8 @@ public class ExtensionHandler extends ProcessorHandler {
 	private static final String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
 
 	private ExtensionResolver resolver;
-	private DocumentReader reader;
-	private String locale;
+	private final DocumentReader reader;
+	private final String locale;
 
 	/*
 	 * This handler must know the locale since it's pulling content

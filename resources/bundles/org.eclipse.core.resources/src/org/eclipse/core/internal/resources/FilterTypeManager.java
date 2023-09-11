@@ -30,7 +30,7 @@ class FilterTypeManager implements IManager {
 
 	private static final String FILTER_ELEMENT = "filterMatcher"; //$NON-NLS-1$
 
-	private HashMap<String, IFilterMatcherDescriptor> factories = new HashMap<>();
+	private final HashMap<String, IFilterMatcherDescriptor> factories = new HashMap<>();
 
 	public FilterTypeManager() {
 		IExtensionPoint point = RegistryFactory.getRegistry().getExtensionPoint(ResourcesPlugin.PI_RESOURCES, ResourcesPlugin.PT_FILTER_MATCHERS);

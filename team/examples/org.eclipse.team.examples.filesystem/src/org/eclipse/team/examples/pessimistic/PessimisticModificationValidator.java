@@ -52,7 +52,7 @@ extends FileModificationValidator {
 	/*
 	 * The provider for this validator
 	 */
-	private PessimisticFilesystemProvider fProvider;
+	private final PessimisticFilesystemProvider fProvider;
 
 	public PessimisticModificationValidator(PessimisticFilesystemProvider provider) {
 		fProvider= provider;

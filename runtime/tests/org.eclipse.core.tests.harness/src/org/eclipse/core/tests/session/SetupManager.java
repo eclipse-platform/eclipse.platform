@@ -56,8 +56,8 @@ public class SetupManager {
 	private static final String SETUP_OVERRIDE_SYSTEMPROPERTIES = "setup.override.systemProperties";
 	private static final String SETUP_OVERRIDE_VMARGS = "setup.override.vmArgs";
 	private String defaultOptionSetIds = "";
-	private Map<String, Setup> setupById;
-	private Collection<Setup> setups;
+	private final Map<String, Setup> setupById;
+	private final Collection<Setup> setups;
 
 	private static boolean contains(Object[] set, Object element) {
 		for (Object setElement : set) {

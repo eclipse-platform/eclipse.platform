@@ -52,7 +52,7 @@ public class HTMLParser implements HTMLParserConstants {
   boolean afterTag = false;
   boolean afterSpace = false;
 	String eol = System.lineSeparator();
-  private LimitedSizeCharArrayWriter writer = new LimitedSizeCharArrayWriter(1000000);
+  private final LimitedSizeCharArrayWriter writer = new LimitedSizeCharArrayWriter(1000000);
   private Exception exception = null;
 
   /**
@@ -624,10 +624,10 @@ null)
       return (jj_ntk = jj_nt.kind);
   }
 
-	private java.util.Vector<int[]> jj_expentries = new java.util.Vector<>();
+	private final java.util.Vector<int[]> jj_expentries = new java.util.Vector<>();
   private int[] jj_expentry;
   private int jj_kind = -1;
-  private int[] jj_lasttokens = new int[100];
+  private final int[] jj_lasttokens = new int[100];
   private int jj_endpos;
 
   private void jj_add_error_token(int kind, int pos) {

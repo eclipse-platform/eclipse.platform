@@ -46,7 +46,7 @@ import org.eclipse.team.core.mapping.provider.SynchronizationScopeManager;
 public class SubscriberScopeManager extends SynchronizationScopeManager implements ISubscriberChangeListener {
 
 	private final Subscriber subscriber;
-	private Map<ModelProvider, ISynchronizationScopeParticipant> participants = new HashMap<>();
+	private final Map<ModelProvider, ISynchronizationScopeParticipant> participants = new HashMap<>();
 
 	/**
 	 * Create a manager for the given subscriber and input.

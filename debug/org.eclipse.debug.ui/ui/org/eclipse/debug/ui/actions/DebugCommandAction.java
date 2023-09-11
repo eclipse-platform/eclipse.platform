@@ -81,7 +81,7 @@ public abstract class DebugCommandAction extends Action implements IDebugContext
 	 */
 	private IAction fAction;
 
-	private IEnabledTarget fEnabledTarget = DebugCommandAction.this::setEnabled;
+	private final IEnabledTarget fEnabledTarget = DebugCommandAction.this::setEnabled;
 
 	/**
 	 * Constructor

@@ -26,7 +26,7 @@ public class UserCriterionDefinition implements ICriterionDefinition {
 
 	private String id;
 	private String name;
-	private List<ICriterionValueDefinition> children = new ArrayList<>();
+	private final List<ICriterionValueDefinition> children = new ArrayList<>();
 
 	public UserCriterionDefinition(String id, String name) {
 		this.id = id;

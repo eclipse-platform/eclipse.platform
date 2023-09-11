@@ -30,11 +30,11 @@ import com.google.gson.JsonObject;
  */
 public class JsonHTMLTip extends Tip implements IJsonTip, IHtmlTip {
 
-	private String fSubject;
-	private Date fDate;
-	private String fHtml;
+	private final String fSubject;
+	private final Date fDate;
+	private final String fHtml;
 	private TipImage fTipImage;
-	private JsonObject fJsonObject;
+	private final JsonObject fJsonObject;
 
 	/**
 	 * Creates the tip out of the passed Json object.

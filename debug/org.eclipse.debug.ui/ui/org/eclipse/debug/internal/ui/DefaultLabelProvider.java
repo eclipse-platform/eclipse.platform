@@ -63,7 +63,7 @@ public class DefaultLabelProvider implements ILabelProvider {
 	/**
 	 * Maps image descriptors to images.
 	 */
-	private Map<ImageDescriptor, Image> fImages = new HashMap<>();
+	private final Map<ImageDescriptor, Image> fImages = new HashMap<>();
 
 	/**
 	 * @see ILabelProvider#getImage(Object)

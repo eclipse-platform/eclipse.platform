@@ -36,12 +36,12 @@ public class SourceNotFoundEditorInput extends PlatformObject implements IEditor
 	/**
 	 * Associated stack frame
 	 */
-	private IStackFrame fFrame;
+	private final IStackFrame fFrame;
 
 	/**
 	 * Stack frame text (cached on creation)
 	 */
-	private String fFrameText;
+	private final String fFrameText;
 
 	/**
 	 * Constructs an editor input for the given stack frame,

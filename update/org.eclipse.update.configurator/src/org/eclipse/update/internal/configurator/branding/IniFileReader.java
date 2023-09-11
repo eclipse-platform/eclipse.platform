@@ -49,11 +49,11 @@ public class IniFileReader {
 	private static final String KEY_DOUBLE_PREFIX = "%%"; //$NON-NLS-1$
 	private static final String NLS_TAG = "$nl$"; //$NON-NLS-1$
 
-	private String featureId;
-	private String pluginId;
-	private String iniFilename;
-	private String propertiesFilename;
-	private String mappingsFilename;
+	private final String featureId;
+	private final String pluginId;
+	private final String iniFilename;
+	private final String propertiesFilename;
+	private final String mappingsFilename;
 	private Properties ini = null;
 	private PropertyResourceBundle properties = null;
 	private Object[] mappings = null;

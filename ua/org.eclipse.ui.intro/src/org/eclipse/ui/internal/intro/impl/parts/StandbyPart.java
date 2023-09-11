@@ -62,7 +62,7 @@ import org.eclipse.ui.intro.config.IStandbyContentPart;
 public class StandbyPart implements IIntroConstants {
 
 	private FormToolkit toolkit;
-	private IntroModelRoot model;
+	private final IntroModelRoot model;
 	protected ImageHyperlink returnLink;
 	protected Control separator;
 	private Composite container;
@@ -71,16 +71,16 @@ public class StandbyPart implements IIntroConstants {
 	private EmptyStandbyContentPart emptyPart;
 	private IMemento memento;
 
-	private Map<String, ControlKey> cachedContentParts = new HashMap<>();
+	private final Map<String, ControlKey> cachedContentParts = new HashMap<>();
 
 	private ControlKey cachedControlKey;
 
 	class StandbyLayout extends Layout {
 
-		private int VGAP = 9;
-		private int VMARGIN = 5;
-		private int HMARGIN = 5;
-		private int SEPARATOR_HEIGHT = 1;
+		private final int VGAP = 9;
+		private final int VMARGIN = 5;
+		private final int HMARGIN = 5;
+		private final int SEPARATOR_HEIGHT = 1;
 
 		@Override
 		protected Point computeSize(Composite composite, int wHint, int hHint,

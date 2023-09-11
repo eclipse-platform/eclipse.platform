@@ -74,7 +74,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 	private Label description;
 	private WordComparison wordArea;
 	private boolean isDirty;
-	private ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
+	private final ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
 	private Action saveAction;
 	private ResourceBundle resourceBundle;
 	private Action inplaceAction;

@@ -27,10 +27,10 @@ import org.eclipse.jface.text.Position;
 
 public class OccurrencesFinder {
 
-	private AntModel fAntModel;
-	private AntEditor fEditor;
-	private int fOffset;
-	private IDocument fDocument;
+	private final AntModel fAntModel;
+	private final AntEditor fEditor;
+	private final int fOffset;
+	private final IDocument fDocument;
 
 	public OccurrencesFinder(AntEditor editor, AntModel model, IDocument document, int offset) {
 		fAntModel = model;

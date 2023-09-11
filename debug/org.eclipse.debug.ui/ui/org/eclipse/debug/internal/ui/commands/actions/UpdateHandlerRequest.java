@@ -27,7 +27,7 @@ import org.eclipse.debug.internal.core.commands.DebugCommandRequest;
 public class UpdateHandlerRequest extends DebugCommandRequest implements IEnabledStateRequest {
 
 	private boolean fEnabled = false;
-	private ActionsUpdater fUpdater;
+	private final ActionsUpdater fUpdater;
 
 	public UpdateHandlerRequest(Object[] elements, ActionsUpdater updater) {
 		super(elements);

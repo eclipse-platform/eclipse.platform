@@ -60,9 +60,9 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 
 	private ReusableHelpPart parent;
 
-	private FormText searchResults;
+	private final FormText searchResults;
 
-	private SorterByScore resultSorter;
+	private final SorterByScore resultSorter;
 
 	private String id;
 
@@ -71,7 +71,7 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 	private Job runningJob;
 	private IContext context;
 
-	private JobListener jobListener;
+	private final JobListener jobListener;
 	public static final int SHORT_COUNT = 8;
 
 	class JobListener extends JobChangeAdapter {

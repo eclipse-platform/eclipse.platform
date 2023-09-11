@@ -27,7 +27,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class DebugValueCodeMining extends LineEndCodeMining {
 
-	private IVariable variable;
+	private final IVariable variable;
 
 	protected DebugValueCodeMining(IDocument document, int line, IVariable variable, ICodeMiningProvider provider)
 			throws BadLocationException {

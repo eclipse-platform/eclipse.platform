@@ -95,8 +95,8 @@ public class EventObjectSupplier extends ExtendedObjectSupplier implements Event
 
 	// A combo of { IRequestor + topic } used in Map lookups
 	static private class Subscriber {
-		private IRequestor requestor;
-		private String topic;
+		private final IRequestor requestor;
+		private final String topic;
 
 		public Subscriber(IRequestor requestor, String topic) {
 			super();
@@ -130,7 +130,7 @@ public class EventObjectSupplier extends ExtendedObjectSupplier implements Event
 
 	}
 
-	private Map<Subscriber, ServiceRegistration<EventHandler>> registrations = new HashMap<>();
+	private final Map<Subscriber, ServiceRegistration<EventHandler>> registrations = new HashMap<>();
 
 	protected void addCurrentEvent(String topic, Event event) {
 		synchronized (currentEvents) {

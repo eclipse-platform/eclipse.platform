@@ -45,10 +45,10 @@ import org.eclipse.debug.internal.core.sourcelookup.SourceLookupUtils;
 public class ExternalArchiveSourceContainer extends AbstractSourceContainer {
 
 	private boolean fDisposed;
-	private boolean fDetectRoots;
+	private final boolean fDetectRoots;
 	private Set<String> fPotentialRoots;
-	private List<String> fRoots = new ArrayList<>();
-	private String fArchivePath;
+	private final List<String> fRoots = new ArrayList<>();
+	private final String fArchivePath;
 	/**
 	 * Unique identifier for the external archive source container type
 	 * (value <code>org.eclipse.debug.core.containerType.externalArchive</code>).

@@ -25,9 +25,11 @@ import org.eclipse.core.runtime.Assert;
  */
 public class Hunk implements IHunk {
 	private FilePatch2 fParent;
-	private int fOldStart, fOldLength;
-	private int fNewStart, fNewLength;
-	private String[] fLines;
+	private int fOldStart;
+	private final int fOldLength;
+	private int fNewStart;
+	private final int fNewLength;
+	private final String[] fLines;
 	private int hunkType;
 	private String charset = null;
 

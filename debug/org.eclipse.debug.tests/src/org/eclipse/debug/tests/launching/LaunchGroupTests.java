@@ -62,7 +62,7 @@ public class LaunchGroupTests extends AbstractLaunchTest {
 
 	private final AtomicInteger launchCount = new AtomicInteger(0);
 	private ILaunchConfiguration lcToCount = null;
-	private ILaunchListener lcListener = new ILaunchListener() {
+	private final ILaunchListener lcListener = new ILaunchListener() {
 		@Override
 		public void launchRemoved(ILaunch launch) {
 		}
@@ -475,7 +475,7 @@ public class LaunchGroupTests extends AbstractLaunchTest {
 
 	private static final class DummyAttachListener implements ILaunchListener {
 
-		private ILaunchConfiguration cfg;
+		private final ILaunchConfiguration cfg;
 		private DummyStream stream;
 
 		public DummyAttachListener(ILaunchConfiguration cfg) {

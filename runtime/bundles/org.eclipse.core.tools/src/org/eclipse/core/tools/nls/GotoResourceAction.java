@@ -27,7 +27,7 @@ public class GotoResourceAction extends Action {
 	IWorkbenchPart part;
 
 	private static class GotoResourceDialog extends ResourceListSelectionDialog {
-		private IJavaModel fJavaModel;
+		private final IJavaModel fJavaModel;
 
 		public GotoResourceDialog(Shell parentShell, IContainer container) {
 			super(parentShell, container, IResource.FILE | IResource.FOLDER | IResource.PROJECT);

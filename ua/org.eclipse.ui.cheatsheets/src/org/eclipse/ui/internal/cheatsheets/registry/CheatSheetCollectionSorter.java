@@ -27,7 +27,7 @@ import org.eclipse.ui.model.WorkbenchAdapter;
  */
 public class CheatSheetCollectionSorter extends ViewerComparator {
 	public final static CheatSheetCollectionSorter INSTANCE = new CheatSheetCollectionSorter();
-	private Collator collator = Collator.getInstance();
+	private final Collator collator = Collator.getInstance();
 
 	/**
 	 * Creates an instance of <code>NewWizardCollectionSorter</code>.  Since this

@@ -24,9 +24,9 @@ import org.eclipse.help.IUAElement;
 
 public class UserIndexSee implements IIndexSee {
 
-	private List<IIndexSubpath> children = new ArrayList<>();
-	private boolean isEnabled;
-	private String keyword;
+	private final List<IIndexSubpath> children = new ArrayList<>();
+	private final boolean isEnabled;
+	private final String keyword;
 
 	@Override
 	public IUAElement[] getChildren() {

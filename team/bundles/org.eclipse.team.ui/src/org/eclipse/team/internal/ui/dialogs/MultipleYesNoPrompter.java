@@ -31,9 +31,9 @@ public class MultipleYesNoPrompter {
 	private String[] buttons;
 	private int confirmation = ALWAYS_ASK;
 	private String title;
-	private boolean hasMultiple;
-	private boolean allOrNothing;
-	private IShellProvider shellProvider;
+	private final boolean hasMultiple;
+	private final boolean allOrNothing;
+	private final IShellProvider shellProvider;
 
 	/**
 	 * Prompt for the given resources using the specific condition. The prompt dialog will

@@ -125,8 +125,8 @@ public class ImportLaunchConfigurationsWizardPage extends WizardResourceImportPa
 		}
 	}
 
-	private String OVERWRITE = "import_config_overwrite"; //$NON-NLS-1$
-	private String OLD_PATH = "import_config_oldpath"; //$NON-NLS-1$
+	private final String OVERWRITE = "import_config_overwrite"; //$NON-NLS-1$
+	private final String OLD_PATH = "import_config_oldpath"; //$NON-NLS-1$
 
 	private Text fFromDirectory = null;
 	private Button fOverwrite = null;

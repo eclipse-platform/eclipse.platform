@@ -26,7 +26,7 @@ import org.eclipse.swt.graphics.Image;
  * Simple label provider that knows how to load images from a URL.
  */
 public class URLLabelProvider extends LabelProvider {
-	private LocalResourceManager registry;
+	private final LocalResourceManager registry;
 
 	public URLLabelProvider() {
 		this.registry = new LocalResourceManager(JFaceResources.getResources());

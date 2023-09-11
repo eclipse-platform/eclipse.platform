@@ -50,9 +50,9 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 	private static final int EXCEPTION_CANCELED = 1;
 	private static final int EXCEPTION_ERROR = 2;
 
-	private ResourceDiffTree tree;
-	private SubscriberDiffCollector collector;
-	private ISynchronizationScopeManager manager;
+	private final ResourceDiffTree tree;
+	private final SubscriberDiffCollector collector;
+	private final ISynchronizationScopeManager manager;
 	private Object family;
 	private DiffFilter filter;
 	private int state = STATE_NEW;

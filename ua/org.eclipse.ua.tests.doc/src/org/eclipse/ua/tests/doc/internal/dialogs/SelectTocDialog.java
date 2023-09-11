@@ -34,7 +34,7 @@ public class SelectTocDialog extends Dialog {
 
 	private int[] selectedTocs = {};
 	private List tocList;
-	private Toc[] tocs;
+	private final Toc[] tocs;
 	private Button existButton, loadButton, followLinksButton;
 	public static final int PAGES_EXIST = 1;
 	public static final int LOAD_PAGES = 2;

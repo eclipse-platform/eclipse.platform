@@ -108,7 +108,7 @@ public abstract class WorkingDirectoryBlock extends AbstractLaunchConfigurationT
 		}
 	}
 
-	private WidgetListener fListener = new WidgetListener();
+	private final WidgetListener fListener = new WidgetListener();
 
 	/**
 	 * The name of the launch configuration attribute that will be used to save

@@ -30,7 +30,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 public class BookmarkHeaderPart extends AbstractFormPart implements IHelpPart  {
 
-	private Composite container;
+	private final Composite container;
 	private String id;
 
 	public BookmarkHeaderPart(Composite parent, FormToolkit toolkit) {

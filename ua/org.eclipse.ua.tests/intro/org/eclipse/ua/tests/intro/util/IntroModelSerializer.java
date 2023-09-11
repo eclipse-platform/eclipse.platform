@@ -37,7 +37,7 @@ import org.osgi.framework.Bundle;
 
 public class IntroModelSerializer {
 
-	private StringBuilder buffer;
+	private final StringBuilder buffer;
 
 	public IntroModelSerializer(IntroModelRoot root) {
 		this.buffer = new StringBuilder();

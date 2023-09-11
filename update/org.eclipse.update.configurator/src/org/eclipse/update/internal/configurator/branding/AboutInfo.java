@@ -32,7 +32,7 @@ public final class AboutInfo {
 	private final static String PROPERTIES_FILENAME = "about.properties"; //$NON-NLS-1$
 	private final static String MAPPINGS_FILENAME = "about.mappings"; //$NON-NLS-1$
 
-	private String featureId;
+	private final String featureId;
 	private String versionId = ""; //$NON-NLS-1$
 	private String featurePluginLabel;
 	private String providerName;

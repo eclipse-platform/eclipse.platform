@@ -21,8 +21,8 @@ import org.eclipse.debug.core.model.IVariable;
 
 public class PDAArrayEntry extends PDADebugElement implements IVariable {
 
-	private IValue fValue;
-	private int fIndex;
+	private final IValue fValue;
+	private final int fIndex;
 
 	/**
 	 * Constructs a new array entry

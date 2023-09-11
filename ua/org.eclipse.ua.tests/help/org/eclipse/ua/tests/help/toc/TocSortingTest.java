@@ -48,7 +48,7 @@ public class TocSortingTest {
 
 	private static class Toc implements IToc {
 
-		private String label;
+		private final String label;
 
 		public Toc(String label) {
 			this.label = label;
@@ -88,9 +88,9 @@ public class TocSortingTest {
 
 	private static class TC implements ITocContribution {
 
-		private IToc toc;
-		private String categoryId;
-		private String id;
+		private final IToc toc;
+		private final String categoryId;
+		private final String id;
 
 		public TC(String name, String category) {
 			this.categoryId = category;

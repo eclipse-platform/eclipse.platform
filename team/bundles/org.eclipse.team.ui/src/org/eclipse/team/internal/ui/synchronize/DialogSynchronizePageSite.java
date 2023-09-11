@@ -48,7 +48,7 @@ public class DialogSynchronizePageSite implements ISynchronizePageSite {
 	private final boolean isModal;
 	// Keybindings enabled in the dialog, these should be removed
 	// when the dialog is closed.
-	private List<IHandlerActivation> actionHandlers = new ArrayList<>(2);
+	private final List<IHandlerActivation> actionHandlers = new ArrayList<>(2);
 
 	/**
 	 * Create a site for use in a dialog

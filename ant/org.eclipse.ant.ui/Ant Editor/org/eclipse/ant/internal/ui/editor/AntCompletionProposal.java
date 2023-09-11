@@ -32,21 +32,21 @@ public class AntCompletionProposal implements ICompletionProposal, ICompletionPr
 	public static final int PROPERTY_PROPOSAL = 2;
 
 	/** The string to be displayed in the completion proposal popup */
-	private String fDisplayString;
+	private final String fDisplayString;
 	/** The replacement string */
-	private String fReplacementString;
+	private final String fReplacementString;
 	/** The replacement offset */
-	private int fReplacementOffset;
+	private final int fReplacementOffset;
 	/** The replacement length */
 	private int fReplacementLength;
 	/** The cursor position after this proposal has been applied */
-	private int fCursorPosition;
+	private final int fCursorPosition;
 	/** The image to be displayed in the completion proposal popup */
-	private Image fImage;
+	private final Image fImage;
 	/** The additional info of this proposal */
-	private String fAdditionalProposalInfo;
+	private final String fAdditionalProposalInfo;
 
-	private int fType;
+	private final int fType;
 
 	/**
 	 * Creates a new Ant completion proposal. All fields are initialized based on the provided information.

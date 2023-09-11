@@ -64,32 +64,32 @@ public class TreeModelLabelProvider extends ColumnLabelProvider
 	 * use the method <code>getImage(...)</code> to cache images for
 	 * image descriptors. The images are disposed with this label provider.
 	 */
-	private Map<ImageDescriptor, Image> fImageCache = new HashMap<>();
+	private final Map<ImageDescriptor, Image> fImageCache = new HashMap<>();
 
 	/**
 	 * Cache of the fonts used for elements in this label provider. Label updates
 	 * use the method <code>getFont(...)</code> to cache fonts for
 	 * FontData objects. The fonts are disposed with this label provider.
 	 */
-	private Map<FontData, Font> fFontCache = new HashMap<>();
+	private final Map<FontData, Font> fFontCache = new HashMap<>();
 
 	/**
 	 * Cache of the colors used for elements in this label provider. Label updates
 	 * use the method <code>getColor(...)</code> to cache colors for
 	 * RGB values. The colors are disposed with this label provider.
 	 */
-	private Map<RGB, Color> fColorCache = new HashMap<>();
+	private final Map<RGB, Color> fColorCache = new HashMap<>();
 
 	/**
 	 * Label listeners
 	 */
-	private ListenerList<ILabelUpdateListener> fLabelListeners = new ListenerList<>();
+	private final ListenerList<ILabelUpdateListener> fLabelListeners = new ListenerList<>();
 
 	/**
 	 * Updates waiting to be sent to the label provider.  The map contains
 	 * lists of updates, keyed using the provider.
 	 */
-	private Map<IElementLabelProvider, List<ILabelUpdate>> fPendingUpdates = new HashMap<>();
+	private final Map<IElementLabelProvider, List<ILabelUpdate>> fPendingUpdates = new HashMap<>();
 
 	/**
 	 * A runnable that will send the label update requests.
@@ -101,7 +101,7 @@ public class TreeModelLabelProvider extends ColumnLabelProvider
 	/**
 	 * List of updates in progress
 	 */
-	private List<ILabelUpdate> fUpdatesInProgress = new ArrayList<>();
+	private final List<ILabelUpdate> fUpdatesInProgress = new ArrayList<>();
 
 	/**
 	 * Delta visitor actively cancels the outstanding label updates for
@@ -124,7 +124,7 @@ public class TreeModelLabelProvider extends ColumnLabelProvider
 	/**
 	 * Delta visitor
 	 */
-	private CancelPendingUpdatesVisitor fCancelPendingUpdatesVisitor = new CancelPendingUpdatesVisitor();
+	private final CancelPendingUpdatesVisitor fCancelPendingUpdatesVisitor = new CancelPendingUpdatesVisitor();
 
 	/**
 	 * Constructs a new label provider on the given display

@@ -19,7 +19,7 @@ import org.eclipse.debug.core.model.IRegisterGroup;
 
 public class SampleRegister extends SampleVariable implements IRegister {
 
-	private SampleRegisterGroup fGroup;
+	private final SampleRegisterGroup fGroup;
 
 	SampleRegister(SampleStackFrame frame, SampleRegisterGroup group, String name) {
 		super(frame, name);
