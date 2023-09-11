@@ -42,7 +42,7 @@ public class AdaptExpression extends CompositeExpression {
 	 */
 	private static final int HASH_INITIAL= AdaptExpression.class.getName().hashCode();
 
-	private String fTypeName;
+	private final String fTypeName;
 
 	public AdaptExpression(IConfigurationElement configElement) throws CoreException {
 		fTypeName= configElement.getAttribute(ATT_TYPE);

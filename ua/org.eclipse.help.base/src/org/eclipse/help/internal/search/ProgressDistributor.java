@@ -30,7 +30,7 @@ public class ProgressDistributor implements IProgressMonitor {
 	/**
 	 * Map work indexed by montitor
 	 */
-	private Collection<IProgressMonitor> monitors = new ArrayList<>();
+	private final Collection<IProgressMonitor> monitors = new ArrayList<>();
 
 	@Override
 	public synchronized void beginTask(String name, int totalWork) {

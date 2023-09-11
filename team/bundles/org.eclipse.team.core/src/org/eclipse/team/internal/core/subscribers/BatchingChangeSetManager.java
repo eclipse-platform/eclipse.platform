@@ -32,7 +32,7 @@ import org.eclipse.team.internal.core.Policy;
  */
 public class BatchingChangeSetManager extends ChangeSetManager {
 
-	private ILock lock = Job.getJobManager().newLock();
+	private final ILock lock = Job.getJobManager().newLock();
 
 	public static class CollectorChangeEvent {
 

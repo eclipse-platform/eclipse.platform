@@ -19,11 +19,11 @@ import org.eclipse.help.search.*;
  * A participant in the federated search.
  */
 public class FederatedSearchEntry {
-	private String engineId;
-	private String engineName;
-	private ISearchScope scope;
-	private ISearchEngine engine;
-	private ISearchEngineResultCollector collector;
+	private final String engineId;
+	private final String engineName;
+	private final ISearchScope scope;
+	private final ISearchEngine engine;
+	private final ISearchEngineResultCollector collector;
 
 	/**
 	 *

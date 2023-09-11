@@ -24,8 +24,8 @@ import org.eclipse.team.core.synchronize.SyncInfoSetChangeEvent;
 
 public class SyncInfoTreeChangeEvent extends SyncInfoSetChangeEvent implements ISyncInfoTreeChangeEvent {
 
-	private Set<IResource> removedSubtrees = new HashSet<>();
-	private Set<IResource> addedSubtrees = new HashSet<>();
+	private final Set<IResource> removedSubtrees = new HashSet<>();
+	private final Set<IResource> addedSubtrees = new HashSet<>();
 
 	public SyncInfoTreeChangeEvent(SyncInfoSet set) {
 		super(set);

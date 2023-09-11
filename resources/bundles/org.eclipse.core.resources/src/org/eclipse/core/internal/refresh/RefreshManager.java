@@ -40,7 +40,7 @@ public class RefreshManager implements IRefreshResult, IManager, Preferences.IPr
 	/**
 	 * The workspace.
 	 */
-	private Workspace workspace;
+	private final Workspace workspace;
 
 	public RefreshManager(Workspace workspace) {
 		this.workspace = workspace;

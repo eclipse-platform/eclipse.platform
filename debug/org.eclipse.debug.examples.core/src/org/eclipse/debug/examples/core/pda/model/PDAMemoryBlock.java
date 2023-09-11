@@ -26,7 +26,7 @@ public class PDAMemoryBlock extends PDADebugElement implements IMemoryBlock {
 	 * The bytes
 	 */
 	private byte[] fBytes = null;
-	private long fStart, fLength;
+	private final long fStart, fLength;
 
 	/**
 	 * Constructs a new memory block

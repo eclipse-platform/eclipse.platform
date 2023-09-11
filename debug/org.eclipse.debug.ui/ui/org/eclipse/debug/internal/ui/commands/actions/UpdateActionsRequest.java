@@ -27,7 +27,7 @@ import org.eclipse.debug.internal.core.commands.DebugCommandRequest;
  */
 public class UpdateActionsRequest extends DebugCommandRequest implements IEnabledStateRequest {
 
-	private IEnabledTarget[] fActions;
+	private final IEnabledTarget[] fActions;
 	private boolean fEnabled = false;
 
 	public UpdateActionsRequest(Object[] elements, IEnabledTarget[] actions) {

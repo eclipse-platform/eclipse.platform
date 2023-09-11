@@ -40,7 +40,7 @@ import org.eclipse.ui.WorkbenchEncoding;
  */
 public class MessageConsoleStream extends IOConsoleOutputStream {
 
-	private MessageConsole fMessageConsole;
+	private final MessageConsole fMessageConsole;
 
 	/**
 	 * Constructs a new stream connected to the given console with workbench default

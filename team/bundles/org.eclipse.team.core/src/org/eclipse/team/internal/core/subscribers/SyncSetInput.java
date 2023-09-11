@@ -26,7 +26,7 @@ import org.eclipse.team.internal.core.Policy;
  */
 public abstract class SyncSetInput {
 
-	private SubscriberSyncInfoSet syncSet;
+	private final SubscriberSyncInfoSet syncSet;
 	private SyncInfoFilter filter = new FastSyncInfoFilter();
 
 	public SyncSetInput(SubscriberEventHandler handler) {

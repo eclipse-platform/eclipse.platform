@@ -16,7 +16,7 @@ package org.eclipse.help.internal.search;
 import org.eclipse.help.internal.toc.*;
 
 public class SearchIndexWithIndexingProgress extends SearchIndex {
-	private ProgressDistributor progressDistributor;
+	private final ProgressDistributor progressDistributor;
 	/**
 	 * @param locale
 	 * @param analyzerDesc

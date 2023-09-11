@@ -38,7 +38,7 @@ public class ContributedValueVariable extends StringVariable implements IValueVa
 	/**
 	 * Whether this variable is read only.  If true, users cannot change the value.
 	 */
-	private boolean fReadOnly;
+	private final boolean fReadOnly;
 
 	/**
 	 * Constructs a new value variable with the given name, description, read only

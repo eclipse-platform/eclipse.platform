@@ -65,7 +65,7 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 	/**
 	 * The file modification validator for this provider.
 	 */
-	private FileModificationValidator validator;
+	private final FileModificationValidator validator;
 	/**
 	 * The cache of resources that are currently controlled.
 	 * The cache is a map of parent resource -&amp; set of controlled children.

@@ -40,16 +40,16 @@ public class MetadataTreeContentProvider extends AbstractTreeContentProvider {
 	 *
 	 * @see MetadataFileFilter
 	 */
-	private FileFilter fileFilter;
+	private final FileFilter fileFilter;
 
 	/**
 	 * The directory filter.
 	 *
 	 * @see DirectoryFilter
 	 */
-	private FileFilter directoryFilter;
+	private final FileFilter directoryFilter;
 
-	private MetadataTreeRebuilder treeRebuilder;
+	private final MetadataTreeRebuilder treeRebuilder;
 
 	/**
 	 * Constructs a new content provider.

@@ -45,13 +45,13 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
 public class TreeAndListGroup implements ISelectionChangedListener {
 	private Object root;
 	private Object currentTreeSelection;
-	private List<ISelectionChangedListener> selectionChangedListeners = new ArrayList<>();
-	private List<IDoubleClickListener> doubleClickListeners = new ArrayList<>();
+	private final List<ISelectionChangedListener> selectionChangedListeners = new ArrayList<>();
+	private final List<IDoubleClickListener> doubleClickListeners = new ArrayList<>();
 
-	private ITreeContentProvider treeContentProvider;
-	private IStructuredContentProvider listContentProvider;
-	private ILabelProvider treeLabelProvider;
-	private ILabelProvider listLabelProvider;
+	private final ITreeContentProvider treeContentProvider;
+	private final IStructuredContentProvider listContentProvider;
+	private final ILabelProvider treeLabelProvider;
+	private final ILabelProvider listLabelProvider;
 
 	// widgets
 	private TreeViewer treeViewer;

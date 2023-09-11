@@ -39,9 +39,9 @@ import org.xml.sax.SAXParseException;
 
 
 public class IntroData {
-	private String productId;
-	private Map<String, PageData> pages = new HashMap<>();
-	private boolean active;
+	private final String productId;
+	private final Map<String, PageData> pages = new HashMap<>();
+	private final boolean active;
 
 	public IntroData(String productId, String fileNameOrData, boolean active) {
 		this.productId = productId;

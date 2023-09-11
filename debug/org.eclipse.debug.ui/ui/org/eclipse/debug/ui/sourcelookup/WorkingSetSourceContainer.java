@@ -39,7 +39,7 @@ import org.eclipse.ui.IWorkingSet;
  */
 public class WorkingSetSourceContainer extends CompositeSourceContainer{
 
-	private IWorkingSet fWorkingSet;
+	private final IWorkingSet fWorkingSet;
 	/**
 	 * Unique identifier for the working set source container type
 	 * (value <code>org.eclipse.debug.ui.containerType.workingSet</code>.)

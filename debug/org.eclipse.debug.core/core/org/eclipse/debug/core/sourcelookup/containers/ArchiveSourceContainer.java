@@ -30,8 +30,8 @@ import org.eclipse.debug.core.sourcelookup.ISourceLookupDirector;
  */
 public class ArchiveSourceContainer extends AbstractSourceContainer {
 
-	private IFile fFile;
-	private boolean fDetectRoot;
+	private final IFile fFile;
+	private final boolean fDetectRoot;
 	private ExternalArchiveSourceContainer fDelegateContainer;
 
 	/**

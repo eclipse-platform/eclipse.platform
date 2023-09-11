@@ -54,7 +54,7 @@ import org.eclipse.team.internal.ui.TeamUIMessages;
 public abstract class CompareInputChangeNotifier implements
 		IResourceChangeListener {
 
-	private Map<ICompareInput, CompareInputConnecton> inputs = new HashMap<>();
+	private final Map<ICompareInput, CompareInputConnecton> inputs = new HashMap<>();
 	private InputChangeEventHandler eventHandler;
 
 	private static class CompareInputConnecton {

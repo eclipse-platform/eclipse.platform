@@ -24,10 +24,10 @@ import org.eclipse.core.tests.harness.TestBarrier2;
  * at each step to allow synchronization with the thread that is running the test.
  */
 class JobRuleRunner extends Job {
-	private ISchedulingRule rule;
-	private TestBarrier2 barrier;
-	private int numRepeats;
-	private boolean reportBlocking;
+	private final ISchedulingRule rule;
+	private final TestBarrier2 barrier;
+	private final int numRepeats;
+	private final boolean reportBlocking;
 
 	/**
 	 * This job will start applying the given rule in the manager

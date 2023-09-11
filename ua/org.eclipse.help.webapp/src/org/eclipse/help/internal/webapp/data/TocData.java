@@ -60,7 +60,7 @@ public class TocData extends ActivitiesData {
 	private IToc[] tocs;
 
 	// Scope
-	private AbstractHelpScope scope;
+	private final AbstractHelpScope scope;
 	/**
 	 * Constructs the xml data for the contents page.
 	 *

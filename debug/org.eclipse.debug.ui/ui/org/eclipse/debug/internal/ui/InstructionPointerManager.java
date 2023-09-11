@@ -53,12 +53,12 @@ public class InstructionPointerManager{
 	/**
 	 * Set containing all instruction pointer contexts this class manages
 	 */
-	private Set<InstructionPointerContext> fIPCSet = new HashSet<>();
+	private final Set<InstructionPointerContext> fIPCSet = new HashSet<>();
 
 	/**
 	 * Maps ITextEditors to the set of instruction pointer contexts that are displayed in the editor
 	 */
-	private Map<ITextEditor, Set<InstructionPointerContext>> fEditorMap = new HashMap<>();
+	private final Map<ITextEditor, Set<InstructionPointerContext>> fEditorMap = new HashMap<>();
 
 	/**
 	 * Part listener added to editors that contain annotations.  Allows instruction pointer contexts to

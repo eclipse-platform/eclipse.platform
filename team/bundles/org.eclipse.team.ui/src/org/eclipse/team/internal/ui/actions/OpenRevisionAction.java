@@ -32,7 +32,7 @@ import org.eclipse.ui.progress.IProgressService;
 public class OpenRevisionAction extends BaseSelectionListenerAction {
 
 	private IStructuredSelection selection;
-	private HistoryPage page;
+	private final HistoryPage page;
 
 	public OpenRevisionAction(String text, HistoryPage page) {
 		super(text);

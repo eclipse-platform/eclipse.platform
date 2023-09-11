@@ -47,7 +47,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class ProjectPathVariableManager implements IPathVariableManager, IManager {
 
-	private Resource resource;
+	private final Resource resource;
 	private ProjectVariableProviderManager.Descriptor variableProviders[] = null;
 
 	/**

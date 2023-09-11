@@ -38,7 +38,7 @@ import org.eclipse.ui.internal.cheatsheets.views.ViewUtilities;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public final class OpenCheatSheetAction extends Action {
-	private String id;
+	private final String id;
 	private String name;
 	private URL url;
 	private String xml;

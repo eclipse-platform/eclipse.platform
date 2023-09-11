@@ -34,8 +34,8 @@ public class IntroContentProvider extends AbstractTextElement {
 	private static final String ATT_PLUGIN_ID = "pluginId"; //$NON-NLS-1$
 	private static final String ATT_CLASS = "class"; //$NON-NLS-1$
 
-	private String contentProvider;
-	private String pluginId;
+	private final String contentProvider;
+	private final String pluginId;
 
 
 	public IntroContentProvider(Element element, Bundle bundle) {

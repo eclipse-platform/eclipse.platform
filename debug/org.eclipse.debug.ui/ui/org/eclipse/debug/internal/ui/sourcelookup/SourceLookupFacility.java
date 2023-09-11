@@ -123,7 +123,7 @@ public class SourceLookupFacility implements IPageListener, IPartListener2, IPro
 	 * Contains a map of the editor to use for each workbench page, when the
 	 * 'reuse editor' preference is on.
 	 */
-	private Map<IWorkbenchPage, IEditorPart> fEditorsByPage;
+	private final Map<IWorkbenchPage, IEditorPart> fEditorsByPage;
 
 	/**
 	 * Contains a mapping of artifacts to the source element that was computed
@@ -136,7 +136,7 @@ public class SourceLookupFacility implements IPageListener, IPartListener2, IPro
 	/**
 	 * Used to generate annotations for stack frames
 	 */
-	private IInstructionPointerPresentation fPresentation = (IInstructionPointerPresentation) DebugUITools.newDebugModelPresentation();
+	private final IInstructionPointerPresentation fPresentation = (IInstructionPointerPresentation) DebugUITools.newDebugModelPresentation();
 
 	/**
 	 * Whether to re-use editors when displaying source.

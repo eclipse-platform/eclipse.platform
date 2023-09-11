@@ -50,8 +50,8 @@ public class FilterTest {
 	private static final String CSS2 = "<LINK REL=\"STYLESHEET\" HREF=\"book1.css\" TYPE=\"text/css\">";
 	private static final String CONTENT1 = "<p>Content1</p>";
 	private static final String CONTENT2 = "<p>Content2</p>";
-	private String CHINESE_CONTENT = "<p>" + (char)24320 + (char)21457 + (char)29932 + "</p>";
-	private String CHINESE_ENTITY_CONTENT = "<p>&#24320;&#21457;&#29932;</p>";
+	private final String CHINESE_CONTENT = "<p>" + (char)24320 + (char)21457 + (char)29932 + "</p>";
+	private final String CHINESE_ENTITY_CONTENT = "<p>&#24320;&#21457;&#29932;</p>";
 
 	@Test
 	public void testHeadOutputFilter() {

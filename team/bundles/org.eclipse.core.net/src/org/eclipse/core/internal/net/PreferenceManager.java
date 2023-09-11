@@ -38,7 +38,7 @@ public class PreferenceManager {
 
 	private static boolean migrated = false;
 
-	private IEclipsePreferences defaultScope;
+	private final IEclipsePreferences defaultScope;
 	private IEclipsePreferences currentScope;
 
 	private PreferenceManager(String id) {

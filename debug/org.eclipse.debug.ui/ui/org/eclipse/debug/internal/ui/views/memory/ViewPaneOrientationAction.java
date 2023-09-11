@@ -23,8 +23,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PlatformUI;
 
 class ViewPaneOrientationAction extends Action {
-	private MemoryView fView;
-	private int fOrientation;
+	private final MemoryView fView;
+	private final int fOrientation;
 
 	ViewPaneOrientationAction(MemoryView view, int orientation) {
 		super(IInternalDebugCoreConstants.EMPTY_STRING, AS_RADIO_BUTTON);

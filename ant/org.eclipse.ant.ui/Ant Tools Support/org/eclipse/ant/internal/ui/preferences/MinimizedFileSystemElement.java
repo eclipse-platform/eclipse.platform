@@ -30,9 +30,9 @@ class MinimizedFileSystemElement implements IWorkbenchAdapter, IAdaptable {
 	private boolean populated = false;
 	private List<MinimizedFileSystemElement> folders = null;
 	private List<MinimizedFileSystemElement> files = null;
-	private String name;
+	private final String name;
 	private boolean isDirectory = false;
-	private MinimizedFileSystemElement parent;
+	private final MinimizedFileSystemElement parent;
 	private Object fileSystemObject;
 
 	/**

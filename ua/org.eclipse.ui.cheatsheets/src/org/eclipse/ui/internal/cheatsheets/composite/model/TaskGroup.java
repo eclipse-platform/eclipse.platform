@@ -27,11 +27,11 @@ public class TaskGroup extends AbstractTask implements ITaskGroup {
 		public int computeState(TaskGroup taskGroup);
 	}
 
-	private ITaskParseStrategy parserStrategy;
+	private final ITaskParseStrategy parserStrategy;
 
 	private ArrayList<ICompositeCheatSheetTask> subtasks;
 
-	private CompletionStrategy completionStrategy;
+	private final CompletionStrategy completionStrategy;
 
 	public TaskGroup(CompositeCheatSheetModel model, String id, String name, String kind) {
 		super(model, id, name, kind);

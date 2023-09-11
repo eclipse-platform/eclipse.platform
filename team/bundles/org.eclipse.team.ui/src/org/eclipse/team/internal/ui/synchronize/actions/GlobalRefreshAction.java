@@ -69,7 +69,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 	private IHandlerActivation syncLatest;
 
 	class RefreshParticipantAction extends Action {
-		private ISynchronizeParticipantReference participant;
+		private final ISynchronizeParticipantReference participant;
 
 		@Override
 		public void run() {

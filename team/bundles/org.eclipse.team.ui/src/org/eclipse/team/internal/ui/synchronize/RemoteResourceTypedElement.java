@@ -30,7 +30,7 @@ import org.eclipse.ui.IEditorInput;
  */
 public class RemoteResourceTypedElement extends StorageTypedElement {
 
-	private IResourceVariant remote;
+	private final IResourceVariant remote;
 
 	/**
 	 * Creates a new content buffer for the given team node.

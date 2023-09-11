@@ -16,8 +16,8 @@ package org.eclipse.update.internal.configurator;
 import org.osgi.framework.Version;
 
 public class VersionedIdentifier {
-	private String identifier;
-	private Version version;
+	private final String identifier;
+	private final Version version;
 
 	public VersionedIdentifier(String id, String version) {
 		this.identifier = id;

@@ -123,7 +123,7 @@ public class VirtualItem {
 	 * The data held by this item.  It includes the element as well as the item
 	 * display attributes.
 	 */
-	private Map<String, Object> fData = new HashMap<>(1);
+	private final Map<String, Object> fData = new HashMap<>(1);
 
 	/**
 	 * Flag indicating that the item needs to have it's label updated.

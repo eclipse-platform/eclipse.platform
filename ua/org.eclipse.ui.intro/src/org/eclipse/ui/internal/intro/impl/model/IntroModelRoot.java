@@ -127,7 +127,7 @@ public class IntroModelRoot extends AbstractIntroContainer {
 	private String modelStandbyPageId;
 
 	// the config extensions for this model.
-	private IConfigurationElement[] configExtensionElements;
+	private final IConfigurationElement[] configExtensionElements;
 
 	// maintain listener list for model changes.
 	public ListenerList<IPropertyListener> propChangeListeners = new ListenerList<>();

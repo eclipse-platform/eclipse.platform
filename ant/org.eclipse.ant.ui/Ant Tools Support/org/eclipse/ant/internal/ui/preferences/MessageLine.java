@@ -31,7 +31,7 @@ public class MessageLine extends CLabel {
 
 	private static final RGB ERROR_BACKGROUND_RGB = new RGB(230, 226, 221);
 
-	private Color fNormalMsgAreaBackground;
+	private final Color fNormalMsgAreaBackground;
 	private Color fErrorMsgAreaBackground;
 
 	/**

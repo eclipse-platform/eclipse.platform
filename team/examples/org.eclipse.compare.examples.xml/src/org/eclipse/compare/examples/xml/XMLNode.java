@@ -26,10 +26,10 @@ public class XMLNode extends DocumentRangeNode implements ITypedElement {
 
 	private String fValue;
 	private String fName;
-	private String fSignature;
+	private final String fSignature;
 	private String fOrigId;
 	private XMLNode parent;
-	private String fXMLType;
+	private final String fXMLType;
 	private boolean fUsesIDMAP;
 	private boolean fOrderedChild;
 

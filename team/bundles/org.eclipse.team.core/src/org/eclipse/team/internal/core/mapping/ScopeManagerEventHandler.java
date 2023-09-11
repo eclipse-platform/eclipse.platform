@@ -30,8 +30,8 @@ import org.eclipse.team.internal.core.Messages;
 public class ScopeManagerEventHandler extends BackgroundEventHandler {
 
 	public static final int REFRESH = 10;
-	private Set<ResourceMapping> toRefresh = new HashSet<>();
-	private ISynchronizationScopeManager manager;
+	private final Set<ResourceMapping> toRefresh = new HashSet<>();
+	private final ISynchronizationScopeManager manager;
 
 	static class ResourceMappingEvent extends Event {
 		private final ResourceMapping[] mappings;

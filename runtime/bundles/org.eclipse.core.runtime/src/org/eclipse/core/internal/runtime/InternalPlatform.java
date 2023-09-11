@@ -102,7 +102,7 @@ public final class InternalPlatform {
 	private static final String KEYRING = "-keyring"; //$NON-NLS-1$
 	private String keyringFile;
 
-	private ConcurrentMap<Bundle, Log> logs = new ConcurrentHashMap<>(5);
+	private final ConcurrentMap<Bundle, Log> logs = new ConcurrentHashMap<>(5);
 
 	private static final String[] OS_LIST = { Platform.OS_LINUX, Platform.OS_MACOSX, Platform.OS_WIN32 };
 	private String password = ""; //$NON-NLS-1$
@@ -136,7 +136,7 @@ public final class InternalPlatform {
 	private BundleContext context;
 	private FrameworkWiring fwkWiring;
 
-	private Map<IBundleGroupProvider,ServiceRegistration<IBundleGroupProvider>> groupProviders = new HashMap<>(3);
+	private final Map<IBundleGroupProvider,ServiceRegistration<IBundleGroupProvider>> groupProviders = new HashMap<>(3);
 	private ServiceTracker<Location,Location> installLocation = null;
 	private ServiceTracker<Location,Location> instanceLocation = null;
 	private ServiceTracker<Location,Location> userLocation = null;

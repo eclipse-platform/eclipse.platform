@@ -47,9 +47,9 @@ import org.eclipse.debug.ui.IDebugUIConstants;
  */
 public class RunToLineHandler implements IDebugEventSetListener, IBreakpointManagerListener, IWorkspaceRunnable {
 
-	private IDebugTarget fTarget;
-	private ISuspendResume fResumee;
-	private IBreakpoint fBreakpoint;
+	private final IDebugTarget fTarget;
+	private final ISuspendResume fResumee;
+	private final IBreakpoint fBreakpoint;
 	private boolean fAutoSkip = false;
 
 	/**

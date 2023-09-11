@@ -74,9 +74,9 @@ public class PrintData extends RequestData {
 	private boolean confirmed;
 
 	// flag right-to-left direction of text
-	private boolean isRTL;
+	private final boolean isRTL;
 
-	private AbstractHelpScope scope;
+	private final AbstractHelpScope scope;
 
 	/*
 	 * Constructs the print data for the given request.

@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * with another rule if either one is a prefix of the other.
  */
 public class PathRule implements ISchedulingRule {
-	private IPath path;
+	private final IPath path;
 
 	public PathRule(IPath path) {
 		this.path = path;

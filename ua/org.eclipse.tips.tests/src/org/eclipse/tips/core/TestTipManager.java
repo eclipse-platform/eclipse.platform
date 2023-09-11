@@ -23,7 +23,7 @@ import org.eclipse.tips.core.internal.TipManager;
 @SuppressWarnings("restriction")
 public class TestTipManager extends TipManager {
 
-	private List<Integer> fReadList = new ArrayList<>();
+	private final List<Integer> fReadList = new ArrayList<>();
 	private int fStartupBehavior = TipManager.START_DIALOG;
 
 	@Override

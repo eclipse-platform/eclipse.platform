@@ -20,7 +20,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.ILocationProvider;
 
 public class LocationProvider {
-	private IEditorInput fEditorInput;
+	private final IEditorInput fEditorInput;
 
 	public LocationProvider(IEditorInput input) {
 		fEditorInput = input;

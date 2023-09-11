@@ -30,7 +30,7 @@ public class HunkResult {
 	 */
 	private static final int MAXIMUM_FUZZ_FACTOR = 2;
 
-	private Hunk fHunk;
+	private final Hunk fHunk;
 	private boolean fMatches;
 	private int fShift;
 	private int fFuzz = -1; // not set or couldn't be found

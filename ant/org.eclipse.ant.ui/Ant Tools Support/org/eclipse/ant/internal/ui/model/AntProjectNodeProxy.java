@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IPath;
 
 public class AntProjectNodeProxy extends AntProjectNode {
 
-	private String fBuildFileName;
+	private final String fBuildFileName;
 	private String fDefaultTargetName;
 	private boolean fParsed = false;
 

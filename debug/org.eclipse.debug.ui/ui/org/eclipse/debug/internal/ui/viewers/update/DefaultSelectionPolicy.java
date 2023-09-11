@@ -32,7 +32,7 @@ import org.eclipse.jface.viewers.TreeSelection;
  */
 public class DefaultSelectionPolicy implements IModelSelectionPolicy {
 
-	private IDebugElement fDebugElement;
+	private final IDebugElement fDebugElement;
 
 	/**
 	 * Constructs a new selection policy for the given debug

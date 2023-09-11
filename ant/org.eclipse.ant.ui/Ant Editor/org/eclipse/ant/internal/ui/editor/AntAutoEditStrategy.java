@@ -32,7 +32,7 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
  */
 public class AntAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
-	private AntModel fModel;
+	private final AntModel fModel;
 	private int fAccumulatedChange = 0;
 
 	public AntAutoEditStrategy(AntModel model) {

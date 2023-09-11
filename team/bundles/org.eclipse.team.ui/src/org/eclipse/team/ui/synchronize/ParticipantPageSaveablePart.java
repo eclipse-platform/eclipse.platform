@@ -65,8 +65,8 @@ import org.eclipse.ui.part.IPageBookViewPage;
  */
 @Deprecated
 public class ParticipantPageSaveablePart extends PageSaveablePart implements IContentChangeListener {
-	private ISynchronizeParticipant participant;
-	private ISynchronizePageConfiguration pageConfiguration;
+	private final ISynchronizeParticipant participant;
+	private final ISynchronizePageConfiguration pageConfiguration;
 	private Image titleImage;
 
 	private IPageBookViewPage page;

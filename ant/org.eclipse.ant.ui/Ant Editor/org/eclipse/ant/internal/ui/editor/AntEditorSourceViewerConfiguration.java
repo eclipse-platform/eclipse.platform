@@ -61,7 +61,7 @@ import org.eclipse.swt.graphics.Color;
  */
 public class AntEditorSourceViewerConfiguration extends AntSourceViewerConfiguration {
 
-	private AntEditor fEditor;
+	private final AntEditor fEditor;
 
 	private XMLTextHover fTextHover;
 

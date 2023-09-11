@@ -26,7 +26,7 @@ public class EmbeddedBrowserAdapter implements IBrowser, IBrowserCloseListener{
 	private EmbeddedBrowser browser;
 	// Thread to use in workbench mode on Windows
 	private UIThread2 secondThread;
-	private String browserType;
+	private final String browserType;
 	class UIThread2 extends Thread {
 
 		Display d;

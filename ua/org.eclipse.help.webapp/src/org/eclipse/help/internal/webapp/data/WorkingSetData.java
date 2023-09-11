@@ -44,11 +44,11 @@ public class WorkingSetData extends RequestData {
 	public static final short STATE_GRAYED = 1;
 	public static final short STATE_CHECKED = 2;
 
-	private WebappWorkingSetManager wsmgr;
+	private final WebappWorkingSetManager wsmgr;
 
-	private AdaptableToc[] tocs;
-	private boolean isEditMode;
-	private AbstractHelpScope filter;
+	private final AdaptableToc[] tocs;
+	private final boolean isEditMode;
+	private final AbstractHelpScope filter;
 
 	public WorkingSetData(ServletContext context, HttpServletRequest request,
 			HttpServletResponse response) {

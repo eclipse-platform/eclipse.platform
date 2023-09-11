@@ -217,7 +217,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	 *
 	 * @since 3.3
 	 */
-	private Set<ISaveParticipant> fSaveParticipants = new LinkedHashSet<>();
+	private final Set<ISaveParticipant> fSaveParticipants = new LinkedHashSet<>();
 
 	/**
 	 * Theme listener.
@@ -233,7 +233,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	 * allows termination, which equates to cancellation of the launch.
 	 */
 	public static class PendingLaunch extends Launch {
-		private Job fJob;
+		private final Job fJob;
 		public PendingLaunch(ILaunchConfiguration launchConfiguration, String mode, Job job) {
 			super(launchConfiguration, mode, null);
 			fJob= job;

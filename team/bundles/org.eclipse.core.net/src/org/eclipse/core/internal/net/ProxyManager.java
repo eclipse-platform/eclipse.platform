@@ -50,7 +50,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 
 	private AbstractProxyProvider nativeProxyProvider;
 
-	private PreferenceManager preferenceManager;
+	private final PreferenceManager preferenceManager;
 
 	ListenerList<IProxyChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 	private String[] nonProxiedHosts;

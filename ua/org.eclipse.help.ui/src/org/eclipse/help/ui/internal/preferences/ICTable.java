@@ -40,15 +40,15 @@ import org.eclipse.swt.widgets.TableColumn;
 
 public class ICTable {
 
-	private Table table;
-	private TableViewer viewer;
+	private final Table table;
+	private final TableViewer viewer;
 
 	private final String NAME_COLUMN = Messages.RemoteICViewer_Name;
 	private final String LOCATION_COLUMN = Messages.RemoteICViewer_URL;
 	private final String STATUS_COLUMN = Messages.RemoteICViewer_Enabled;
 
 	// Set column names
-	private String[] columnNames = new String[] {NAME_COLUMN,
+	private final String[] columnNames = new String[] {NAME_COLUMN,
 			LOCATION_COLUMN, STATUS_COLUMN};
 
 

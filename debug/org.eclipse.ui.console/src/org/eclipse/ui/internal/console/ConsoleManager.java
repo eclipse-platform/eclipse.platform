@@ -61,12 +61,12 @@ public class ConsoleManager implements IConsoleManager {
 	/**
 	 * Console listeners
 	 */
-	private ListenerList<IConsoleListener> fListeners = new ListenerList<>();
+	private final ListenerList<IConsoleListener> fListeners = new ListenerList<>();
 
 	/**
 	 * List of registered consoles
 	 */
-	private List<IConsole> fConsoles = new ArrayList<>(10);
+	private final List<IConsole> fConsoles = new ArrayList<>(10);
 
 
 	// change notification constants
@@ -79,14 +79,14 @@ public class ConsoleManager implements IConsoleManager {
 
 	private List<ConsoleFactoryExtension> fConsoleFactoryExtensions;
 
-	private List<IConsoleView> fConsoleViews = new ArrayList<>();
+	private final List<IConsoleView> fConsoleViews = new ArrayList<>();
 
 	private boolean fWarnQueued = false;
 
-	private RepaintJob fRepaintJob = new RepaintJob();
+	private final RepaintJob fRepaintJob = new RepaintJob();
 
 	private class RepaintJob extends WorkbenchJob {
-		private Set<IConsole> list = new HashSet<>();
+		private final Set<IConsole> list = new HashSet<>();
 
 		public RepaintJob() {
 			super("schedule redraw() of viewers"); //$NON-NLS-1$
@@ -253,7 +253,7 @@ public class ConsoleManager implements IConsoleManager {
 
 
 	private class ShowConsoleViewJob extends WorkbenchJob {
-		private Set<IConsole> queue = new LinkedHashSet<>();
+		private final Set<IConsole> queue = new LinkedHashSet<>();
 
 		ShowConsoleViewJob() {
 			super("Show Console View"); //$NON-NLS-1$
@@ -324,7 +324,7 @@ public class ConsoleManager implements IConsoleManager {
 		}
 	}
 
-	private ShowConsoleViewJob showJob = new ShowConsoleViewJob();
+	private final ShowConsoleViewJob showJob = new ShowConsoleViewJob();
 	/**
 	 * @see IConsoleManager#showConsoleView(IConsole)
 	 */

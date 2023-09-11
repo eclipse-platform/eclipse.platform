@@ -780,7 +780,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 
 	// copy-pasted from org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart and modified
 
-	private IPartListener2 fLinkWithEditorListener= new IPartListener2() {
+	private final IPartListener2 fLinkWithEditorListener= new IPartListener2() {
 		@Override
 		public void partVisible(IWorkbenchPartReference partRef) {}
 		@Override

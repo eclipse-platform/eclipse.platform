@@ -37,7 +37,7 @@ public class RenameDialog extends SelectionStatusDialog {
 	private String newName;
 	private Text text;
 	private IStatus status;
-	private boolean isCaseSensitive;
+	private final boolean isCaseSensitive;
 
 	/**
 	 * Create a new rename dialog instance for the given window.

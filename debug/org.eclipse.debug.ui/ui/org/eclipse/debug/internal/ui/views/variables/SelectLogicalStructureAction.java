@@ -27,8 +27,8 @@ import org.eclipse.swt.custom.BusyIndicator;
 public class SelectLogicalStructureAction extends Action {
 
 	private VariablesView fView;
-	private ILogicalStructureType fType;
-	private ILogicalStructureType[] fAvailableTypes;
+	private final ILogicalStructureType fType;
+	private final ILogicalStructureType[] fAvailableTypes;
 
 	/**
 	 *

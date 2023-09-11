@@ -256,7 +256,7 @@ public class LaunchView extends AbstractDebugView
 	 *
 	 * @since 3.6
 	 */
-	private Map<String, IHandler2> fHandlers = new HashMap<>();
+	private final Map<String, IHandler2> fHandlers = new HashMap<>();
 
 	private boolean fDebugToolbarInView = true;
 
@@ -315,7 +315,7 @@ public class LaunchView extends AbstractDebugView
 
 		private ISelection fContext = null;
 		private TreeModelViewer fViewer = null;
-		private Visitor fVisitor = new Visitor();
+		private final Visitor fVisitor = new Visitor();
 
 		class Visitor implements IModelDeltaVisitor {
 			@Override
@@ -468,7 +468,7 @@ public class LaunchView extends AbstractDebugView
 	 */
 	private PageRec fDefaultPageRec = null;
 
-	private ISelectionChangedListener fTreeViewerSelectionChangedListener = event -> fTreeViewerDebugContextProvider.activate(event.getSelection());
+	private final ISelectionChangedListener fTreeViewerSelectionChangedListener = event -> fTreeViewerDebugContextProvider.activate(event.getSelection());
 
 	private class ContextProviderProxy extends AbstractDebugContextProvider implements IDebugContextListener {
 		private IDebugContextProvider fActiveProvider;

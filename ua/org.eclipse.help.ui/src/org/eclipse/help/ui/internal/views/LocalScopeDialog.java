@@ -27,10 +27,10 @@ import org.eclipse.swt.widgets.Shell;
 public class LocalScopeDialog extends TrayDialog {
 
 	private static final String ORG_ECLIPSE_HELP_UI_LOCAL_SEARCH = "org.eclipse.help.ui.localSearch"; //$NON-NLS-1$
-	private EngineDescriptorManager descManager;
-	private IPreferenceStore preferenceStore;
+	private final EngineDescriptorManager descManager;
+	private final IPreferenceStore preferenceStore;
 	private PreferencePage localHelpPage;
-	private ScopeSet scopeSet;
+	private final ScopeSet scopeSet;
 
 	public LocalScopeDialog(Shell parentShell, PreferenceManager manager, EngineDescriptorManager descManager,
 			ScopeSet set) {

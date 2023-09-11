@@ -33,7 +33,7 @@ import org.eclipse.swt.graphics.Image;
  * Descriptor for a federated search engine participant.
  */
 public class EngineTypeDescriptor {
-	private IConfigurationElement config;
+	private final IConfigurationElement config;
 	private Image image;
 	private ISearchScopeFactory factory;
 	/**

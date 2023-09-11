@@ -51,11 +51,11 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 	/*
 	 * Set of added resources
 	 */
-	private Set<IResource> fAdded;
+	private final Set<IResource> fAdded;
 	/*
 	 * Set of removed resources
 	 */
-	private Set<IResource> fRemoved;
+	private final Set<IResource> fRemoved;
 
 	public ResourceChangeListener() {
 		fAdded = new HashSet<>(1);

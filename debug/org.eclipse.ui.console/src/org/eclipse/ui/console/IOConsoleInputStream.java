@@ -61,7 +61,7 @@ public class IOConsoleInputStream extends InputStream {
 	/**
 	 * The console that this stream is connected to.
 	 */
-	private IOConsole console;
+	private final IOConsole console;
 
 	/**
 	 * The color used to display input in the console.

@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.jobs.Job;
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=366170
  */
 public class Bug_366170 extends AbstractJobManagerTest {
-	private Semaphore m_jobBStopHint = new Semaphore(1);
+	private final Semaphore m_jobBStopHint = new Semaphore(1);
 
 	public void testBug() throws Exception {
 		System.out.println("--- Running the examle ---");

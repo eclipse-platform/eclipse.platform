@@ -31,8 +31,8 @@ public class IntroInclude extends AbstractIntroElement {
 	 */
 	private static final String ATT_MERGE_STYLE = "merge-style"; //$NON-NLS-1$
 
-	private String configId;
-	private String path;
+	private final String configId;
+	private final String path;
 	private boolean mergeStyle = false;
 
 	IntroInclude(Element element, Bundle bundle) {

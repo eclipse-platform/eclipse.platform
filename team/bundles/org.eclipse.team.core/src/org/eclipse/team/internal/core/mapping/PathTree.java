@@ -66,7 +66,7 @@ public class PathTree {
 		}
 	}
 
-	private Map<IPath, Node> objects = new HashMap<>();
+	private final Map<IPath, Node> objects = new HashMap<>();
 
 	/**
 	 * Return the object at the given path or <code>null</code>

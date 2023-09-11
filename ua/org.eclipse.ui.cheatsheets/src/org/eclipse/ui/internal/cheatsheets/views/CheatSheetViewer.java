@@ -94,7 +94,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 	private CheatSheetParser parser;
 	private ICheatSheet model;
 	private CheatSheetManager manager;
-	private CheatSheetSaveHelper saveHelper;
+	private final CheatSheetSaveHelper saveHelper;
 
 	private CheatSheetExpandRestoreAction expandRestoreAction;
 	private Action copyAction;
@@ -115,7 +115,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 	// or ErrorPage
 	private Page currentPage;
 	private Label howToBegin;
-	private boolean inDialog;
+	private final boolean inDialog;
 	private Listener listener;
 
 	private ICheatSheetStateManager stateManager; // The state manager to use when saving

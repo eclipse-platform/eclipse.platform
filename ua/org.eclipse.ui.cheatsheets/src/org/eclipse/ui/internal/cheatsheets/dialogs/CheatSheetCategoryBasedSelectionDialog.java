@@ -82,7 +82,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 
 	private IDialogSettings settings;
 
-	private CheatSheetCollectionElement cheatsheetCategories;
+	private final CheatSheetCollectionElement cheatsheetCategories;
 
 	private CheatSheetElement currentSelection;
 
@@ -102,7 +102,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 
 	private Combo selectUrlCombo;
 
-	private ActivityViewerFilter activityViewerFilter = new ActivityViewerFilter();
+	private final ActivityViewerFilter activityViewerFilter = new ActivityViewerFilter();
 
 	private boolean okButtonState;
 
@@ -130,7 +130,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 
 	private Button browseFileButton;
 
-	private String title;
+	private final String title;
 
 	private IStatus status = Status.OK_STATUS;
 

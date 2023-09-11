@@ -24,7 +24,7 @@ import org.eclipse.ant.internal.ui.dtd.IElement;
 public class Attribute extends Atom implements IAttribute {
 	private String fType;
 	private String[] fEnum;
-	private IElement fElement;
+	private final IElement fElement;
 	private String fDefault;
 	private boolean fFixed;
 	private boolean fRequired;

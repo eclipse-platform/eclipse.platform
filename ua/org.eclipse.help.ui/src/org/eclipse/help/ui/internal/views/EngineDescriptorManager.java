@@ -45,7 +45,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class EngineDescriptorManager extends Observable implements IHelpUIConstants {
-	private ArrayList<EngineDescriptor> descriptors;
+	private final ArrayList<EngineDescriptor> descriptors;
 
 	private EngineTypeDescriptor[] engineTypes;
 
@@ -53,8 +53,8 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 	private static final String ATT_ENGINE_TYPE_ID = "engineTypeId"; //$NON-NLS-1$
 
 	public static class DescriptorEvent {
-		private EngineDescriptor desc;
-		private int kind;
+		private final EngineDescriptor desc;
+		private final int kind;
 		public DescriptorEvent(EngineDescriptor desc, int kind) {
 			this.desc = desc;
 			this.kind = kind;

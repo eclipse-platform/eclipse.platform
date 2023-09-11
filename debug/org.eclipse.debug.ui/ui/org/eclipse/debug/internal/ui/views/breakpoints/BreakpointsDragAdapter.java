@@ -35,7 +35,7 @@ public class BreakpointsDragAdapter extends DragSourceAdapter implements Transfe
 	/**
 	 * the associated viewer for the adapter
 	 */
-	private AbstractTreeViewer fViewer;
+	private final AbstractTreeViewer fViewer;
 	private Item[] fItems = null;
 
 	private BreakpointsView fView;

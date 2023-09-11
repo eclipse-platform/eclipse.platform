@@ -37,13 +37,13 @@ public class ResourceComparator implements IElementComparator, ICoreConstants {
 	 * a notification. (as opposed to a build) Notifications include extra information
 	 * like marker and sync info changes.
 	 */
-	private boolean notification;
+	private final boolean notification;
 
 	/**
 	 * Boolean indicating whether or not this comparator is to be used for
 	 * snapshot. Snapshots care about extra information such as the used bit.
 	 */
-	private boolean save;
+	private final boolean save;
 
 	/**
 	 * Returns a comparator which compares resource infos, suitable for computing

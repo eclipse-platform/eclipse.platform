@@ -25,7 +25,7 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
  */
 public class AntRunnerWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	private Object fContext;
+	private final Object fContext;
 
 	protected AntRunnerWorkbenchAdvisor(Object context) {
 		fContext = context;

@@ -48,10 +48,10 @@ import org.eclipse.ui.texteditor.ITextEditor;
 @SuppressWarnings("deprecation")
 public class FileLink implements IConsoleHyperlink {
 
-	private IFile fFile;
+	private final IFile fFile;
 	private int fFileOffset;
 	private int fFileLength;
-	private int fFileLineNumber;
+	private final int fFileLineNumber;
 	private String fEditorId;
 
 	/**

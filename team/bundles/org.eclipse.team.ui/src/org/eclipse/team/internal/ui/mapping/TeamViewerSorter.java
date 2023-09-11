@@ -25,8 +25,8 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
 
 public class TeamViewerSorter extends TreePathViewerSorter {
 
-	private CommonViewerSorter sorter;
-	private ResourceComparator resourceComparator;
+	private final CommonViewerSorter sorter;
+	private final ResourceComparator resourceComparator;
 
 	public TeamViewerSorter(CommonViewerSorter sorter) {
 		this.sorter = sorter;

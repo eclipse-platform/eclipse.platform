@@ -42,7 +42,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 public class IndexPart extends HyperlinkTreePart implements IHelpUIConstants {
-	private RoleFilter roleFilter;
+	private final RoleFilter roleFilter;
 
 	class IndexProvider implements ITreeContentProvider {
 

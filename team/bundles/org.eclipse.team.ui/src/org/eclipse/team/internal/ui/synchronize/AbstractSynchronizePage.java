@@ -51,7 +51,7 @@ import org.eclipse.ui.part.ShowInContext;
  */
 public abstract class AbstractSynchronizePage extends Page implements ISynchronizePage, IAdaptable {
 
-	private ISynchronizePageConfiguration configuration;
+	private final ISynchronizePageConfiguration configuration;
 	private ISynchronizePageSite site;
 
 	// Parent composite of this view. It is remembered so that we can dispose of its children when

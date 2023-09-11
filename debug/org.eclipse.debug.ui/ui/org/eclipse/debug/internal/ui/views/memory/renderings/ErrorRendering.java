@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.Control;
 public class ErrorRendering extends AbstractMemoryRendering {
 
 	private TextViewer fTextViewer;
-	private String fRenderingId;
-	private Throwable fException;
+	private final String fRenderingId;
+	private final Throwable fException;
 
 	/**
 	 * @param renderingId - id of rendering that the memory view has failed

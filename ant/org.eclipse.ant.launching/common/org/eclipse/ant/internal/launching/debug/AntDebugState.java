@@ -34,11 +34,11 @@ public class AntDebugState {
 	private static final String fgAntTaskName = "ant"; //$NON-NLS-1$
 	private static final String fgAntCallTaskName = "antcall"; //$NON-NLS-1$
 
-	private IDebugBuildLogger fLogger;
+	private final IDebugBuildLogger fLogger;
 	@SuppressWarnings("unused")
-	private Stack<Task> fTasks = new Stack<Task>();
+	private final Stack<Task> fTasks = new Stack<Task>();
 	@SuppressWarnings("unused")
-	private Map<Task, Object> fTaskToProxies = new HashMap<Task, Object>();
+	private final Map<Task, Object> fTaskToProxies = new HashMap<Task, Object>();
 	private Task fCurrentTask;
 	private Task fStepOverTask;
 	private Task fStepIntoTask;
@@ -51,9 +51,9 @@ public class AntDebugState {
 	private Map<Project, Vector<?>> fProjectToTargetNames = null;
 	private Map<Project, Map<Target, Vector<Target>>> fProjectToMapOfTargetToBuildSequence = null;
 	@SuppressWarnings("unused")
-	private Stack<Target> fTargetsToExecute = new Stack<Target>();
+	private final Stack<Target> fTargetsToExecute = new Stack<Target>();
 	@SuppressWarnings("unused")
-	private Stack<Target> fTargetsExecuting = new Stack<Target>();
+	private final Stack<Target> fTargetsExecuting = new Stack<Target>();
 
 	private boolean fConsiderTargetBreakpoints = false;
 	private boolean fShouldSuspend;

@@ -29,9 +29,9 @@ public class JSchLocation extends PlatformObject implements IJSchLocation{
 
   private String user;
   private String password;
-  private String host;
+  private final String host;
   private int port=DEFAULT_PORT;
-  private boolean userFixed=true;
+  private final boolean userFixed=true;
   private String comment=null;
   private IPasswordStore passwordStore=null;
 

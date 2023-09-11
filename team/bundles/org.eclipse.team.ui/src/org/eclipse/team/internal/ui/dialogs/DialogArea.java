@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Label;
  */
 public abstract class DialogArea {
 	private FontMetrics fontMetrics;
-	private List<IPropertyChangeListener> listeners;
+	private final List<IPropertyChangeListener> listeners;
 
 	/**
 	 * Create a dialog area

@@ -15,11 +15,11 @@ package org.eclipse.ui.internal.cheatsheets.views;
 
 public class StringDelimitedTokenizer {
 
-	private String str;
-	private String delimiter;
-	private int delimiterLength;
+	private final String str;
+	private final String delimiter;
+	private final int delimiterLength;
 	private int currentPosition;
-	private int maxPosition;
+	private final int maxPosition;
 
 	public StringDelimitedTokenizer(String str, String delim) {
 		currentPosition = 0;

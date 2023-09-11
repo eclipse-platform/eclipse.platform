@@ -70,7 +70,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 	}
 
 	class PatcherCompareEditorLabelProvider extends LabelProvider {
-		private ILabelProvider wrappedProvider;
+		private final ILabelProvider wrappedProvider;
 
 		public PatcherCompareEditorLabelProvider(ILabelProvider labelProvider) {
 			wrappedProvider = labelProvider;

@@ -68,7 +68,7 @@ public class TranslationObjectSupplier extends ExtendedObjectSupplier implements
 	 * Map that contains all {@link IRequestor} that requested an instance of a messages class. Used
 	 * to inform all requestor if the instances have changed due to a locale change.
 	 */
-	private Map<Class<?>, Set<IRequestor>> listeners = new ConcurrentHashMap<>();
+	private final Map<Class<?>, Set<IRequestor>> listeners = new ConcurrentHashMap<>();
 
 	@Override
 	public Object get(IObjectDescriptor descriptor, IRequestor requestor, boolean track, boolean group) {

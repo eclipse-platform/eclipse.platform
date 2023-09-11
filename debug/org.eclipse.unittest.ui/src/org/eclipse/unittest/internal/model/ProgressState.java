@@ -26,7 +26,7 @@ public enum ProgressState {
 	/** state that describes that the test element has completed */
 	COMPLETED("Completed"); //$NON-NLS-1$
 
-	private String fName;
+	private final String fName;
 
 	private ProgressState(String name) {
 		fName = name;

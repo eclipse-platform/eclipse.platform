@@ -42,11 +42,11 @@ public class BinaryCompareViewer extends AbstractViewer {
 
 	private static final int EOF = -1;
 	private ICompareInput fInput;
-	private ResourceBundle fBundle;
+	private final ResourceBundle fBundle;
 
-	private Composite fComposite;
-	private Label fMessage;
-	private CompareConfiguration compareConfiguration;
+	private final Composite fComposite;
+	private final Label fMessage;
+	private final CompareConfiguration compareConfiguration;
 
 	public BinaryCompareViewer(Composite parent, final CompareConfiguration cc) {
 

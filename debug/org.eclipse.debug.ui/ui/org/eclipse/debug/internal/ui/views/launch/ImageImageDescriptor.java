@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.ImageData;
  * Image descriptor for an image.
  */
 public class ImageImageDescriptor extends ImageDescriptor {
-	private Image fImage;
+	private final Image fImage;
 
 	/**
 	 * Constructor for ImagImageDescriptor.

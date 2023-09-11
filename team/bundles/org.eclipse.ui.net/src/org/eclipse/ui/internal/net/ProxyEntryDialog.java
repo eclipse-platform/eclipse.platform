@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.*;
 public class ProxyEntryDialog extends StatusDialog {
 
 	private ProxyData data;
-	private String[] addedTypes;
+	private final String[] addedTypes;
 
 	private Label typeLabel;
 	private Text typeText;

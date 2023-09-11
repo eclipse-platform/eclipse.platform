@@ -29,8 +29,8 @@ public class PageData {
 	public static final String P_BOTTOM_LEFT = "page-content/bottom-left"; //$NON-NLS-1$
 	public static final String P_BOTTOM_RIGHT = "page-content/bottom-right"; //$NON-NLS-1$
 
-	private String id;
-	private ArrayList<GroupData> groups = new ArrayList<>();
+	private final String id;
+	private final ArrayList<GroupData> groups = new ArrayList<>();
 	private GroupData hidden=null;
 
 	public PageData(String id) {

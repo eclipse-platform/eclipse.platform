@@ -46,11 +46,11 @@ public class CheatSheetPage extends Page implements IMenuContributor {
 	private Color inactiveColor1;
 	private Color inactiveColor2;
 
-	private CheatSheet cheatSheet;
+	private final CheatSheet cheatSheet;
 
-	private ArrayList<ViewItem> viewItemList;
+	private final ArrayList<ViewItem> viewItemList;
 
-	private CheatSheetViewer viewer;
+	private final CheatSheetViewer viewer;
 
 	public CheatSheetPage(CheatSheet cheatSheet, ArrayList<ViewItem> viewItemList,
 			CheatSheetViewer cheatSheetViewer) {

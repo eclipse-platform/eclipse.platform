@@ -39,7 +39,7 @@ import org.eclipse.team.internal.core.subscribers.SubscriberDiffTreeEventHandler
  */
 public abstract class SubscriberMergeContext extends MergeContext {
 
-	private Subscriber subscriber;
+	private final Subscriber subscriber;
 	private SubscriberDiffTreeEventHandler handler;
 	private final ISynchronizationScopeManager manager;
 

@@ -133,7 +133,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 	ProjectDescription projectDescription = null;
 
 	protected int state = S_INITIAL;
-	private Workspace workspace;
+	private final Workspace workspace;
 
 	/**
 	 * Returns the SAXParser to use when parsing project description files.

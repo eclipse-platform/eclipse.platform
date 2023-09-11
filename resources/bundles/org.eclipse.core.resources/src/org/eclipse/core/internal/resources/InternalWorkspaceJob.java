@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
  * lock.
  */
 public abstract class InternalWorkspaceJob extends Job {
-	private Workspace workspace;
+	private final Workspace workspace;
 
 	public InternalWorkspaceJob(String name, Workspace workspace) {
 		super(name);

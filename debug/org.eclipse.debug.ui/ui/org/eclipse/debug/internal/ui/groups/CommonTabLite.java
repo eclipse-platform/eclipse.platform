@@ -108,7 +108,7 @@ class CommonTabLite extends AbstractLaunchConfigurationTab {
 	/**
 	 * Modify listener that simply updates the owning launch configuration dialog.
 	 */
-	private ModifyListener fBasicModifyListener = evt -> updateLaunchConfigurationDialog();
+	private final ModifyListener fBasicModifyListener = evt -> updateLaunchConfigurationDialog();
 
 	@Override
 	public void createControl(Composite parent) {
@@ -510,7 +510,7 @@ class CommonTabLite extends AbstractLaunchConfigurationTab {
 	 */
 	static class FavoritesLabelProvider implements ITableLabelProvider {
 
-		private Map<Object, Image> fImages = new HashMap<>();
+		private final Map<Object, Image> fImages = new HashMap<>();
 
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {

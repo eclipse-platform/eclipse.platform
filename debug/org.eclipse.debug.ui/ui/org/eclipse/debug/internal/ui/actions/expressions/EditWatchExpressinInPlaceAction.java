@@ -30,9 +30,9 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
  */
 public class EditWatchExpressinInPlaceAction extends Action implements ISelectionChangedListener {
 
-	private ExpressionView fView;
-	private TreeModelViewer fViewer;
-	private EditWatchExpressionAction fEditActionDelegate = new EditWatchExpressionAction();
+	private final ExpressionView fView;
+	private final TreeModelViewer fViewer;
+	private final EditWatchExpressionAction fEditActionDelegate = new EditWatchExpressionAction();
 
 	public EditWatchExpressinInPlaceAction(ExpressionView view) {
 		fView = view;

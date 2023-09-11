@@ -72,7 +72,7 @@ public class DocumentMerger {
 	/** Subset of above: just real differences. */
 	private ArrayList<Diff> fChangeDiffs;
 
-	private IDocumentMergerInput fInput;
+	private final IDocumentMergerInput fInput;
 
 	/**
 	 * Interface that defines that input to the document merge process

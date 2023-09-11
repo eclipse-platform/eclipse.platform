@@ -53,7 +53,7 @@ public class MockProcess extends Process {
 	 * Store number of bytes received which are not buffered anymore (i.e. those
 	 * input was already passed through {@link #getReceivedInput()}).
 	 */
-	private AtomicInteger receivedInput = new AtomicInteger(0);
+	private final AtomicInteger receivedInput = new AtomicInteger(0);
 	/**
 	 * The time (in epoch milliseconds) when the mockup process terminates.
 	 * <p>
@@ -85,7 +85,7 @@ public class MockProcess extends Process {
 		 */
 		LASTREAD('L'), TERMINATED(-1);
 
-		private int code;
+		private final int code;
 
 		ProcessState(int c) {
 			this.code = c;

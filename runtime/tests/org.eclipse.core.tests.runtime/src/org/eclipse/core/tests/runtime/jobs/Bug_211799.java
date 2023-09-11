@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.jobs.Job;
 public class Bug_211799 extends AbstractJobManagerTest {
 
 	public class BugJob extends Job {
-		private long id;
+		private final long id;
 
 		public BugJob(long id) {
 			super("Test Job"); //$NON-NLS-1$

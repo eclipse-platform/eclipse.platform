@@ -27,8 +27,8 @@ import org.eclipse.tips.core.TipProvider;
  */
 public class ProviderLoadJobChangeListener extends JobChangeAdapter {
 
-	private IDETipManager fManager;
-	private TipProvider fProvider;
+	private final IDETipManager fManager;
+	private final TipProvider fProvider;
 
 	public ProviderLoadJobChangeListener(IDETipManager manager, TipProvider provider) {
 		fManager = manager;

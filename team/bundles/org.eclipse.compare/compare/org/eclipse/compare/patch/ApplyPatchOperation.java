@@ -52,22 +52,22 @@ import org.eclipse.ui.ide.IDE;
  */
 public class ApplyPatchOperation implements Runnable {
 
-	private IWorkbenchPart part;
+	private final IWorkbenchPart part;
 
 	/**
 	 * Used for the Preview Patch page.
 	 */
-	private CompareConfiguration configuration;
+	private final CompareConfiguration configuration;
 
 	/**
 	 * The patch to use as an input into the Apply Patch wizard
 	 */
-	private IStorage patch;
+	private final IStorage patch;
 
 	/**
 	 * Specific <code>IResource</code> target to patch.
 	 */
-	private IResource target;
+	private final IResource target;
 
 	/**
 	 * An optional image for the patch wizard

@@ -21,8 +21,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 
 public class ContextHelpSorter extends ViewerComparator {
-	private IContext2 context;
-	private LinkedList<String> list;
+	private final IContext2 context;
+	private final LinkedList<String> list;
 
 	public ContextHelpSorter(IContext2 context) {
 		super(ReusableHelpPart.SHARED_COLLATOR);

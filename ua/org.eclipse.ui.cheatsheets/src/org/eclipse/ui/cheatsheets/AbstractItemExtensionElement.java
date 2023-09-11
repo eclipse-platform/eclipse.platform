@@ -38,7 +38,7 @@ public abstract class AbstractItemExtensionElement {
 	/**
 	 * Name of the XML attribute that this item extension handles.
 	 */
-	private String attributeName;
+	private final String attributeName;
 
 	/**
 	 * Creates a new item element extension for handling the

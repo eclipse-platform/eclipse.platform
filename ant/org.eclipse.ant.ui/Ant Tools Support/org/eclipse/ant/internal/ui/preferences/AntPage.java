@@ -60,10 +60,10 @@ public abstract class AntPage {
 		}
 	};
 
-	private AntRuntimePreferencePage preferencePage;
+	private final AntRuntimePreferencePage preferencePage;
 	private TableViewer tableViewer;
 	private AntContentProvider contentProvider;
-	private AntObjectLabelProvider labelProvider = new AntObjectLabelProvider();
+	private final AntObjectLabelProvider labelProvider = new AntObjectLabelProvider();
 
 	protected Button editButton;
 	protected Button removeButton;

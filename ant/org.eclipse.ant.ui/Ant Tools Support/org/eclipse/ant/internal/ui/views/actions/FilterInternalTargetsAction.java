@@ -23,7 +23,7 @@ import org.eclipse.jface.action.Action;
  */
 public class FilterInternalTargetsAction extends Action {
 
-	private AntView fView;
+	private final AntView fView;
 
 	public FilterInternalTargetsAction(AntView view) {
 		super(AntViewActionMessages.FilterInternalTargetsAction_0);

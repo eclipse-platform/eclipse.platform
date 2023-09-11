@@ -40,8 +40,8 @@ import org.eclipse.help.search.ISearchResult;
  */
 public class SearchManager {
 
-	private LocalSearchManager localManager = new LocalSearchManager();
-	private RemoteSearchManager remoteManager = new RemoteSearchManager();
+	private final LocalSearchManager localManager = new LocalSearchManager();
+	private final RemoteSearchManager remoteManager = new RemoteSearchManager();
 
 	private class SearchState {
 
@@ -252,7 +252,7 @@ public class SearchManager {
 	 * when flush() is called.
 	 */
 	private static class BufferedSearchHitCollector implements ISearchHitCollector {
-		private Set<SearchHit> allHits = new HashSet<>();
+		private final Set<SearchHit> allHits = new HashSet<>();
 		private String wordsSearched = null;
 
 		@Override

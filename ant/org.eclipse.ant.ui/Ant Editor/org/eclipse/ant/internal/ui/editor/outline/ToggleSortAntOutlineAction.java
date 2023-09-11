@@ -22,7 +22,7 @@ import org.eclipse.jface.action.Action;
  */
 public class ToggleSortAntOutlineAction extends Action {
 
-	private AntEditorContentOutlinePage fPage;
+	private final AntEditorContentOutlinePage fPage;
 
 	public ToggleSortAntOutlineAction(AntEditorContentOutlinePage page) {
 		super(AntOutlineMessages.ToggleSortAntOutlineAction_0);

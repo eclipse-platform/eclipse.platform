@@ -177,9 +177,9 @@ public class TextLineLCS extends LCS {
 
 	/* used to store information about a single line of text */
 	public static class TextLine {
-		private int number; // the line number
+		private final int number; // the line number
 
-		private String text; // the actual text
+		private final String text; // the actual text
 
 		public TextLine(int number, String text) {
 			this.number = number;

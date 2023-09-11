@@ -30,8 +30,8 @@ import org.eclipse.osgi.util.NLS;
 public class PluginDependencyGraphNode {
 
 	private BundleDescription descriptor = null;
-	private Set<PluginDependencyGraphNode> children = new HashSet<>();
-	private Set<PluginDependencyGraphNode> ancestors = new HashSet<>();
+	private final Set<PluginDependencyGraphNode> children = new HashSet<>();
+	private final Set<PluginDependencyGraphNode> ancestors = new HashSet<>();
 
 	/**
 	 * Constructor for this class. Each node is associated with a plug-in so

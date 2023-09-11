@@ -26,7 +26,7 @@ import org.eclipse.ui.console.IConsolePageParticipant;
 
 public class ConsolePageParticipantExtension implements IPluginContribution {
 
-	private IConfigurationElement fConfig;
+	private final IConfigurationElement fConfig;
 	private Expression fEnablementExpression;
 
 	public ConsolePageParticipantExtension(IConfigurationElement config) {

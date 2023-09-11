@@ -36,13 +36,13 @@ public class FeatureEntry
 			IBundleGroup,
 			IBundleGroupConstants,
 			IProductConstants {
-	private String id;
-	private String version;
-	private String pluginVersion;
-	private String application;
-	private URL[] root;
-	private boolean primary;
-	private String pluginIdentifier;
+	private final String id;
+	private final String version;
+	private final String pluginVersion;
+	private final String application;
+	private final URL[] root;
+	private final boolean primary;
+	private final String pluginIdentifier;
 	private String url;
 	private String description;
 	private String licenseURL;

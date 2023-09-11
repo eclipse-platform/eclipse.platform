@@ -41,7 +41,7 @@ public class InjectionFilter implements IFilter {
 	private static final String NARROW_CSS = "narrow_css"; //$NON-NLS-1$
 	private static final String DISABLED_CSS = "disabled_css"; //$NON-NLS-1$
 	private static final String REMOTE_CSS = "remote_css"; //$NON-NLS-1$
-	private boolean isRemote;
+	private final boolean isRemote;
 
 	public InjectionFilter( boolean isRemote ) {
 		this.isRemote = isRemote;

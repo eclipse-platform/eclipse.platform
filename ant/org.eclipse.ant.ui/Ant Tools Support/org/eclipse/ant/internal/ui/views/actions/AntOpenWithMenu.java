@@ -46,8 +46,8 @@ import org.eclipse.ui.ide.IDE;
  */
 public class AntOpenWithMenu extends ContributionItem {
 
-	private IWorkbenchPage fPage;
-	private IEditorRegistry fRegistry = PlatformUI.getWorkbench().getEditorRegistry();
+	private final IWorkbenchPage fPage;
+	private final IEditorRegistry fRegistry = PlatformUI.getWorkbench().getEditorRegistry();
 	private static final String SYSTEM_EDITOR_ID = PlatformUI.PLUGIN_ID + ".SystemEditor"; //$NON-NLS-1$
 
 	private static Map<ImageDescriptor, Image> imageCache = new Hashtable<>(11);

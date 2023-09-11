@@ -109,13 +109,13 @@ public class InternalVirtualTreeModelViewer extends Viewer
 	 * The display that this virtual tree viewer is associated with. It is used
 	 * for access to the UI thread.
 	 */
-	private Display fDisplay;
+	private final Display fDisplay;
 
 	/**
 	 * The object that allows the model to identify what this view
 	 * is presenting.
 	 */
-	private IPresentationContext fContext;
+	private final IPresentationContext fContext;
 
 	/**
 	 * Input into the viewer.
@@ -125,14 +125,14 @@ public class InternalVirtualTreeModelViewer extends Viewer
 	/**
 	 * The tree of items in this viewer.
 	 */
-	private VirtualTree fTree;
+	private final VirtualTree fTree;
 
 	/**
 	 * Mapping of data elements in the tree to the items that hold them.  The
 	 * tree may contain the same element in several places, so the map values
 	 * are lists.
 	 */
-	private Map<Object, List<VirtualItem>> fItemsMap = new HashMap<>();
+	private final Map<Object, List<VirtualItem>> fItemsMap = new HashMap<>();
 
 	/**
 	 * Whether to notify the content provider when an element is unmapped.
@@ -177,14 +177,14 @@ public class InternalVirtualTreeModelViewer extends Viewer
 	 * Map of columns presentation id to its visible columns id's (String[])
 	 * When a columns presentation is not in the map, default settings are used.
 	 */
-	private Map<String, String[]> fVisibleColumns = new HashMap<>();
+	private final Map<String, String[]> fVisibleColumns = new HashMap<>();
 
 	/**
 	 * Map of column presentation id to whether columns should be displayed
 	 * for that presentation (the user can toggle columns on/off when a
 	 * presentation is optional.
 	 */
-	private Map<String, Boolean> fShowColumns = new HashMap<>();
+	private final Map<String, Boolean> fShowColumns = new HashMap<>();
 
 	/**
 	 * Runnable for validating the virtual tree.  It is scheduled to run in the

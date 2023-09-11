@@ -36,12 +36,12 @@ public class ViewerInputUpdate extends Request implements IViewerInputUpdate {
 	/**
 	 * Presentation context
 	 */
-	private IPresentationContext fContext;
+	private final IPresentationContext fContext;
 
 	/**
 	 * New viewer input
 	 */
-	private Object fSource;
+	private final Object fSource;
 
 	/**
 	 * Whether this update is done
@@ -56,12 +56,12 @@ public class ViewerInputUpdate extends Request implements IViewerInputUpdate {
 	/**
 	 * Viewer input at the time the request was made
 	 */
-	private Object fViewerInput;
+	private final Object fViewerInput;
 
 	/**
 	 * Client making request
 	 */
-	private IViewerInputRequestor fRequestor;
+	private final IViewerInputRequestor fRequestor;
 
 	/**
 	 * When <code>done()</code> is called, the viewer must be informed that the update is complete in the UI thread.

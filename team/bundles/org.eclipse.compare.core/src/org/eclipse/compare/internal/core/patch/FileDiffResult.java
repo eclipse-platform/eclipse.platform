@@ -22,11 +22,11 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.osgi.util.NLS;
 
 public class FileDiffResult implements IFilePatchResult {
-	private FilePatch2 fDiff;
+	private final FilePatch2 fDiff;
 	private boolean fMatches= false;
 	private boolean fDiffProblem;
 	private String fErrorMessage;
-	private Map<Hunk, HunkResult> fHunkResults = new HashMap<>();
+	private final Map<Hunk, HunkResult> fHunkResults = new HashMap<>();
 	private List<String> fBeforeLines, fAfterLines;
 	private final PatchConfiguration configuration;
 	private String charset;

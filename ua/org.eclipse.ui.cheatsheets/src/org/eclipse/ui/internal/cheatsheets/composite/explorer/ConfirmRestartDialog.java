@@ -74,9 +74,9 @@ public class ConfirmRestartDialog extends Dialog {
 		}
 	}
 
-	private AbstractTask[] tasks;
+	private final AbstractTask[] tasks;
 
-	private TreeLabelProvider treeLabelProvider;
+	private final TreeLabelProvider treeLabelProvider;
 
 	protected ConfirmRestartDialog(Shell parentShell, AbstractTask[] restartTasks,
 								   TreeLabelProvider treeLabelProvider) {

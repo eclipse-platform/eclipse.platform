@@ -22,7 +22,7 @@ import org.eclipse.ui.IWorkbenchCommandConstants;
 
 public class ToggleLinkingAction extends Action {
 
-	private SynchronizeView view;
+	private final SynchronizeView view;
 
 	public ToggleLinkingAction(SynchronizeView view) {
 		super(TeamUIMessages.SynchronizeView_linkWithEditor);

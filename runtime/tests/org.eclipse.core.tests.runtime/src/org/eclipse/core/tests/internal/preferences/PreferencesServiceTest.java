@@ -32,9 +32,9 @@ public class PreferencesServiceTest extends RuntimeTest {
 
 	static class ExportVerifier {
 
-		private IEclipsePreferences node;
+		private final IEclipsePreferences node;
 		private ByteArrayOutputStream output;
-		private Set<String> expected;
+		private final Set<String> expected;
 		private String[] excludes;
 		private IPreferenceFilter[] transfers;
 		private boolean useTransfers;

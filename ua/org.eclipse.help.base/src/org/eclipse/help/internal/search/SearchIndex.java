@@ -96,17 +96,17 @@ public class SearchIndex implements IHelpSearchIndex {
 
 	private IndexWriter iw;
 
-	private File indexDir;
+	private final File indexDir;
 
 	private Directory luceneDirectory;
 
-	private String locale;
+	private final String locale;
 
-	private String relativePath;
+	private final String relativePath;
 
-	private TocManager tocManager;
+	private final TocManager tocManager;
 
-	private AnalyzerDescriptor analyzerDescriptor;
+	private final AnalyzerDescriptor analyzerDescriptor;
 
 	private PluginVersionInfo docPlugins;
 
@@ -129,20 +129,20 @@ public class SearchIndex implements IHelpSearchIndex {
 
 	private static final String FIELD_INDEX_ID = "index_path"; //$NON-NLS-1$
 
-	private File inconsistencyFile;
+	private final File inconsistencyFile;
 
-	private HTMLSearchParticipant htmlSearchParticipant;
+	private final HTMLSearchParticipant htmlSearchParticipant;
 
 	private IndexSearcher searcher;
 
-	private Object searcherCreateLock = new Object();
+	private final Object searcherCreateLock = new Object();
 
 	private HelpProperties dependencies;
 
 	private volatile boolean closed = false;
 
 	// Collection of searches occuring now
-	private Collection<Thread> searches = new ArrayList<>();
+	private final Collection<Thread> searches = new ArrayList<>();
 
 	private FileLock lock;
 	private RandomAccessFile raf =  null;

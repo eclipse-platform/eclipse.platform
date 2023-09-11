@@ -29,7 +29,7 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 
 	// Fix for http://dev.eclipse.org/bugs/show_bug.cgi?id=20106
 	private boolean fNextFirstTime= true;
-	private Object[] fPanes;
+	private final Object[] fPanes;
 
 	/**
 	 * Create a navigator for navigating the given panes

@@ -58,7 +58,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
  */
 public class ExpressionDropAdapter extends ViewerDropAdapter {
 
-	private IWorkbenchPartSite fSite;
+	private final IWorkbenchPartSite fSite;
 	private TransferData fCurrentTransferType = null;
 	private boolean fInsertBefore;
 	private int fDropType;

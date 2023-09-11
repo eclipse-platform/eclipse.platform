@@ -103,7 +103,7 @@ public abstract class AbstractMatching {
 
 	protected class XMLComparator implements IRangeComparator {
 	
-		private Object[] fXML_elements;
+		private final Object[] fXML_elements;
 	
 		public XMLComparator(Object[] xml_elements) {
 			fXML_elements= xml_elements;

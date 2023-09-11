@@ -22,7 +22,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.TextFileChange;
 
 public class NLSFileChange extends TextFileChange {
-	private IFile file;
+	private final IFile file;
 	private String contents;
 
 	public NLSFileChange(IFile file) {

@@ -64,10 +64,10 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 		boolean isAffected(ResourceInfo info, IPathRequestor requestor);
 	}
 
-	private ThreadLocal<Boolean> disabled = new ThreadLocal<>();
+	private final ThreadLocal<Boolean> disabled = new ThreadLocal<>();
 
 	private final Bundle systemBundle = Platform.getBundle("org.eclipse.osgi"); //$NON-NLS-1$
-	private Queue<ICharsetListenerFilter> work = new LinkedList<>();
+	private final Queue<ICharsetListenerFilter> work = new LinkedList<>();
 
 	Workspace workspace;
 

@@ -35,7 +35,7 @@ import org.eclipse.ui.internal.cheatsheets.views.CheatSheetManager;
 
 public class DefaultStateManager implements ICheatSheetStateManager {
 
-	private CheatSheetSaveHelper saveHelper = new CheatSheetSaveHelper();
+	private final CheatSheetSaveHelper saveHelper = new CheatSheetSaveHelper();
 	private Properties props;
 	private CheatSheetElement element;
 	private boolean propertiesRead = false;

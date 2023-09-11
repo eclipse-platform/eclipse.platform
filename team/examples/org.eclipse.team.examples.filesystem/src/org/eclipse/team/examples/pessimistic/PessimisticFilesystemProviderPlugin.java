@@ -38,7 +38,7 @@ public class PessimisticFilesystemProviderPlugin extends AbstractUIPlugin {
 	/*
 	 * The provider listeners
 	 */
-	private List<IResourceStateListener> fListeners;
+	private final List<IResourceStateListener> fListeners;
 
 	/**
 	 * The plugin identifier

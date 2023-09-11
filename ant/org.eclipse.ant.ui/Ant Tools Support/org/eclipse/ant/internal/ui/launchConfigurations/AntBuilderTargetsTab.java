@@ -59,12 +59,12 @@ public class AntBuilderTargetsTab extends AbstractLaunchConfigurationTab {
 	private Text fAutoBuildTargetText;
 	private Text fDuringCleanTargetText;
 
-	private Map<String, String> fAttributeToTargets = new HashMap<>();
+	private final Map<String, String> fAttributeToTargets = new HashMap<>();
 
 	private static final String NOT_ENABLED = AntLaunchConfigurationMessages.AntBuilderTargetsTab_0;
 	private static final String DEFAULT_TARGET_SELECTED = AntLaunchConfigurationMessages.AntBuilderTargetsTab_10;
 
-	private SelectionListener fSelectionListener = new SelectionAdapter() {
+	private final SelectionListener fSelectionListener = new SelectionAdapter() {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			String attribute = null;

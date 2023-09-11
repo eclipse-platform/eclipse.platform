@@ -29,9 +29,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * much of the operation completed; conversely, at what point to resume.
  */
 public abstract class ProgressMonitorInputStream extends FilterInputStream {
-	private IProgressMonitor monitor;
-	private int updateIncrement;
-	private long bytesTotal;
+	private final IProgressMonitor monitor;
+	private final int updateIncrement;
+	private final long bytesTotal;
 	private long bytesRead = 0;
 	private long lastUpdate = -1;
 	private long nextUpdate = 0;

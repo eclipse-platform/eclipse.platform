@@ -22,8 +22,8 @@ public class RemoteTestException extends Exception {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String stackText;
-	private String message;
+	private final String stackText;
+	private final String message;
 
 	public RemoteTestException(String message, String stackText) {
 		this.message = message;

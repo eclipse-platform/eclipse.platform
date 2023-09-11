@@ -19,7 +19,7 @@ import java.io.*;
  * High performance reader. Assumes the input stream is ASCII.
  */
 public class ASCIIReader extends Reader {
-	private InputStream stream;
+	private final InputStream stream;
 	int bufSize;
 	byte[] buf;
 	/**

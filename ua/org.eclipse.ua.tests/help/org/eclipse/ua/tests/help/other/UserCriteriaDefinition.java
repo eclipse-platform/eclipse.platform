@@ -24,7 +24,7 @@ import org.eclipse.help.IUAElement;
 
 public class UserCriteriaDefinition implements ICriteriaDefinition {
 
-	private List<ICriterionDefinition> children = new ArrayList<>();
+	private final List<ICriterionDefinition> children = new ArrayList<>();
 
 	@Override
 	public boolean isEnabled(IEvaluationContext context) {

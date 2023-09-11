@@ -42,10 +42,10 @@ public class WorkingSetScope extends AbstractHelpScope {
 
 	private static final String UNCATEGORIZED = "Uncategorized"; //$NON-NLS-1$
 
-	private WorkingSet workingSet;
-	private AdaptableHelpResource[] elements;
-	private CriterionResource[] criteria;
-	private String name;
+	private final WorkingSet workingSet;
+	private final AdaptableHelpResource[] elements;
+	private final CriterionResource[] criteria;
+	private final String name;
 
 	public WorkingSetScope(String scope, IHelpWorkingSetManager manager, String name) {
 		workingSet = manager.getWorkingSet(scope);

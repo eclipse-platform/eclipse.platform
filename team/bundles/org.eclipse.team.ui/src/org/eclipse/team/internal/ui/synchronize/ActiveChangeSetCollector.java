@@ -59,14 +59,14 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 	/*
 	 * Set which contains those changes that are not part of an active set
 	 */
-	private SyncInfoTree rootSet = new SyncInfoTree();
+	private final SyncInfoTree rootSet = new SyncInfoTree();
 
 	private final ChangeSetModelProvider provider;
 
 	/*
 	 * Listener registered with active change set manager
 	 */
-	private IChangeSetChangeListener activeChangeSetListener = new IChangeSetChangeListener() {
+	private final IChangeSetChangeListener activeChangeSetListener = new IChangeSetChangeListener() {
 
 		@Override
 		public void setAdded(final ChangeSet set) {

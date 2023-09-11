@@ -79,7 +79,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 	/**
 	 * Variable listeners
 	 */
-	private ListenerList<IValueVariableListener> fListeners;
+	private final ListenerList<IValueVariableListener> fListeners;
 
 	// notifications
 	private static final int ADDED = 0;

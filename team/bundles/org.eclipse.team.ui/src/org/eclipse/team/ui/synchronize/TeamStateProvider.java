@@ -47,7 +47,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public abstract class TeamStateProvider implements ITeamStateProvider {
 
-	private ListenerList<ITeamStateChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
+	private final ListenerList<ITeamStateChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	/**
 	 * Determine if the decorator for the element is enabled by consulting the

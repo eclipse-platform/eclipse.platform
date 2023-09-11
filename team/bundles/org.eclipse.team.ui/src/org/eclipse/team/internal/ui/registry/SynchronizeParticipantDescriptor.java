@@ -34,10 +34,10 @@ public class SynchronizeParticipantDescriptor implements ISynchronizeParticipant
 	private String id;
 	private boolean persistent;
 	private ImageDescriptor imageDescriptor;
-	private String description;
+	private final String description;
 	private String helpContextId;
 
-	private IConfigurationElement configElement;
+	private final IConfigurationElement configElement;
 
 	/**
 	 * Create a new ViewDescriptor for an extension.

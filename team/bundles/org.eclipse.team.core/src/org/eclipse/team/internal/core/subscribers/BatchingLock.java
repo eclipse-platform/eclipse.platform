@@ -60,9 +60,9 @@ public class BatchingLock {
 	};
 
 	public static class ThreadInfo {
-		private Set<IResource> changedResources = new HashSet<>();
-		private IFlushOperation operation;
-		private List<ISchedulingRule> rules = new ArrayList<>();
+		private final Set<IResource> changedResources = new HashSet<>();
+		private final IFlushOperation operation;
+		private final List<ISchedulingRule> rules = new ArrayList<>();
 		public ThreadInfo(IFlushOperation operation) {
 			this.operation = operation;
 		}
@@ -236,7 +236,7 @@ public class BatchingLock {
 		public void flush(ThreadInfo info, IProgressMonitor monitor) throws TeamException;
 	}
 
-	private Map<Thread, ThreadInfo> infos = new HashMap<>();
+	private final Map<Thread, ThreadInfo> infos = new HashMap<>();
 
 	/**
 	 * Return the thread info for the current thread

@@ -22,7 +22,7 @@ import org.eclipse.ui.internal.provisional.cheatsheets.ITaskGroup;
 
 public class SuccesorTaskFinder {
 
-	private AbstractTask currentTask;
+	private final AbstractTask currentTask;
 	ICompositeCheatSheetTask bestLaterTask;
 	ICompositeCheatSheetTask bestEarlierTask;
 	private boolean seenThisTask;

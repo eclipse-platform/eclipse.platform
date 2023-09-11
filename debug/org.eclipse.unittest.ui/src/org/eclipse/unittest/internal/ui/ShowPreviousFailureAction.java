@@ -20,7 +20,7 @@ import org.eclipse.jface.action.Action;
  */
 public class ShowPreviousFailureAction extends Action {
 
-	private TestRunnerViewPart fPart;
+	private final TestRunnerViewPart fPart;
 
 	/**
 	 * Constructs a show previous failure action object

@@ -30,8 +30,8 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  */
 public class BreakpointsLabelProvider extends LabelProvider implements IFontProvider {
 
-	private WorkbenchLabelProvider fWorkbenchLabelProvider;
-	private IDebugModelPresentation fPresentation;
+	private final WorkbenchLabelProvider fWorkbenchLabelProvider;
+	private final IDebugModelPresentation fPresentation;
 
 	/**
 	 * Constructs a new label provide for the breakpoints view.

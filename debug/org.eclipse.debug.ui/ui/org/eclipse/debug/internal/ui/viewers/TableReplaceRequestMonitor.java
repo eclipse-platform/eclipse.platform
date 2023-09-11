@@ -20,8 +20,8 @@ package org.eclipse.debug.internal.ui.viewers;
  */
 public class TableReplaceRequestMonitor extends AsynchronousRequestMonitor {
 
-	private Object fOriginal;
-	private Object fReplacement;
+	private final Object fOriginal;
+	private final Object fReplacement;
 
 	/**
 	 * @param node

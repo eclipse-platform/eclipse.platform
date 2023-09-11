@@ -24,9 +24,9 @@ public class XmlTagFormatter {
 
 	public static class AttributePair {
 
-		private String fAttribute;
-		private String fValue;
-		private char fQuote;
+		private final String fAttribute;
+		private final String fValue;
+		private final char fQuote;
 
 		public AttributePair(String attribute, String value, char attributeQuote) {
 			fAttribute = attribute;
@@ -58,7 +58,7 @@ public class XmlTagFormatter {
 
 	protected static class Tag {
 
-		private List<AttributePair> fAttributes = new ArrayList<>();
+		private final List<AttributePair> fAttributes = new ArrayList<>();
 
 		private boolean fClosed;
 

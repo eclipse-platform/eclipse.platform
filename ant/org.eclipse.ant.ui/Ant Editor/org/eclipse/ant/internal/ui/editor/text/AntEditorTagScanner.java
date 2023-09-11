@@ -31,7 +31,7 @@ import org.eclipse.swt.SWT;
  */
 public class AntEditorTagScanner extends AbstractAntEditorScanner {
 
-	private Token fStringToken;
+	private final Token fStringToken;
 
 	public AntEditorTagScanner() {
 		fStringToken = new Token(createTextAttribute(IAntEditorColorConstants.STRING_COLOR, IAntEditorColorConstants.STRING_COLOR

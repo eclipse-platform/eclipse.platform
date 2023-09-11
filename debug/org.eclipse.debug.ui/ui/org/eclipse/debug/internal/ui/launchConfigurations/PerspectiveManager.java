@@ -273,7 +273,7 @@ public class PerspectiveManager implements ILaunchListener, ISuspendTriggerListe
 	 * Maps each launch to its perspective context activation. These
 	 * are disabled when a launch terminates.
 	 */
-	private Map<ILaunch, IContextActivation[]> fLaunchToContextActivations = new HashMap<>();
+	private final Map<ILaunch, IContextActivation[]> fLaunchToContextActivations = new HashMap<>();
 
 	/**
 	 * Called by the debug ui plug-in on startup.

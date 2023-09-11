@@ -50,11 +50,11 @@ public class LaunchAction extends Action {
 	/**
 	 * The configuration to launch.
 	 */
-	private ILaunchConfiguration fConfiguration;
+	private final ILaunchConfiguration fConfiguration;
 	/**
 	 * The mode to launch in
 	 */
-	private String fMode;
+	private final String fMode;
 
 	/**
 	 * Constructs an action that launches the specified launch configuration

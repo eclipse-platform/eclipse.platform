@@ -58,7 +58,7 @@ public class AntEditorMarkerUpdater {
 	}
 
 	private IAntModel fModel = null;
-	private List<IProblem> fCollectedProblems = new ArrayList<>();
+	private final List<IProblem> fCollectedProblems = new ArrayList<>();
 	public static final String BUILDFILE_PROBLEM_MARKER = AntUIPlugin.PI_ANTUI + ".buildFileProblem"; //$NON-NLS-1$
 	private IFile fFile = null;
 

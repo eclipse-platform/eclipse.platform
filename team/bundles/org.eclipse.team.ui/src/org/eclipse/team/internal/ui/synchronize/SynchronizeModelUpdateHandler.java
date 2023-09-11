@@ -65,9 +65,9 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	private static final int RESET = 3;
 	private static final int SYNC_INFO_SET_CHANGED = 4;
 
-	private AbstractSynchronizeModelProvider provider;
+	private final AbstractSynchronizeModelProvider provider;
 
-	private Set<ISynchronizeModelElement> pendingLabelUpdates = Collections.synchronizedSet(new HashSet<>());
+	private final Set<ISynchronizeModelElement> pendingLabelUpdates = Collections.synchronizedSet(new HashSet<>());
 
 	// Flag to indicate the need for an early dispath in order to show
 	// busy for elements involved in an operation
@@ -123,7 +123,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 		}
 	}
 
-	private IPropertyChangeListener listener = event -> {
+	private final IPropertyChangeListener listener = event -> {
 		if (event.getProperty() == ISynchronizeModelElement.BUSY_PROPERTY) {
 			Object source = event.getSource();
 			if (source instanceof ISynchronizeModelElement)

@@ -67,7 +67,7 @@ public class XMLUtil extends Assert {
 
 	private static class Handler extends DefaultHandler {
 
-		private StringBuilder buf = new StringBuilder();
+		private final StringBuilder buf = new StringBuilder();
 
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {

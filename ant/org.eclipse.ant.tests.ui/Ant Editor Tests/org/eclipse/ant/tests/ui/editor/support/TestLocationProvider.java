@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IPath;
 
 public class TestLocationProvider extends LocationProvider {
 
-	private File buildFile;
+	private final File buildFile;
 
 	public TestLocationProvider(File buildFile) {
 		super(null);

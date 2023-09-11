@@ -17,7 +17,7 @@ package org.eclipse.core.tests.harness;
  * The timer class used by performance tests.
  */
 class PerformanceTimer {
-	private String fName;
+	private final String fName;
 	private long fElapsedTime;
 	private long fStartTime;
 

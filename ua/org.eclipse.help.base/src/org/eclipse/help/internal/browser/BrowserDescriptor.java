@@ -15,9 +15,9 @@ package org.eclipse.help.internal.browser;
 import org.eclipse.help.browser.*;
 
 public class BrowserDescriptor {
-	private String browserID;
-	private String browserLabel;
-	private IBrowserFactory factory;
+	private final String browserID;
+	private final String browserLabel;
+	private final IBrowserFactory factory;
 	/**
 	 * @param id
 	 *            ID of a browser as specified in plugin.xml

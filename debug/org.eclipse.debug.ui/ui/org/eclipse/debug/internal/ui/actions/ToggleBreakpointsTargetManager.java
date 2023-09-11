@@ -95,7 +95,7 @@ public class ToggleBreakpointsTargetManager implements IToggleBreakpointsTargetM
 	 */
 	private static class ToggleTargetFactory implements IToggleBreakpointsTargetFactory {
 
-		private IConfigurationElement fConfigElement;
+		private final IConfigurationElement fConfigElement;
 		private IToggleBreakpointsTargetFactory fFactory;
 		private Expression fEnablementExpression;
 
@@ -445,12 +445,12 @@ public class ToggleBreakpointsTargetManager implements IToggleBreakpointsTargetM
 	 * Maps the IDs of toggle targets to the factory that can create them.
 	 * There can currently only be one factory for a given toggle target.
 	 */
-	private Map<String, IToggleBreakpointsTargetFactory> fFactoriesByTargetID = new HashMap<>();
+	private final Map<String, IToggleBreakpointsTargetFactory> fFactoriesByTargetID = new HashMap<>();
 
 	/**
 	 * List of listeners to changes in the preferred toggle targets list.
 	 */
-	private ListenerList<IToggleBreakpointsTargetManagerListener> fChangedListners = new ListenerList<>();
+	private final ListenerList<IToggleBreakpointsTargetManagerListener> fChangedListners = new ListenerList<>();
 
 	/**
 	 * Initializes the collection of known factories from extension point contributions.

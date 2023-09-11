@@ -32,7 +32,7 @@ import org.eclipse.team.core.TeamException;
  */
 public final class FileModificationValidator extends org.eclipse.core.resources.team.FileModificationValidator {
 
-	private FileSystemOperations operations;
+	private final FileSystemOperations operations;
 
 	/**
 	 * Constructor for FileModificationValidator.

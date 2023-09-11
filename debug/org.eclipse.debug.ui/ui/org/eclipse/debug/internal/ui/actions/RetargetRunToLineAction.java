@@ -35,7 +35,7 @@ import org.eclipse.ui.IWorkbenchWindow;
  */
 public class RetargetRunToLineAction extends RetargetAction {
 
-	private DebugContextListener fContextListener = new DebugContextListener();
+	private final DebugContextListener fContextListener = new DebugContextListener();
 	private ISuspendResume fTargetElement = null;
 
 	class DebugContextListener implements IDebugContextListener {

@@ -24,10 +24,10 @@ import org.eclipse.ui.IMemento;
  */
 abstract class MementoUpdate extends Request implements IViewerUpdate {
 
-	private IPresentationContext fContext;
-	private Object fElement;
-	private TreePath fElementPath;
-	private IMemento fMemento;
+	private final IPresentationContext fContext;
+	private final Object fElement;
+	private final TreePath fElementPath;
+	private final IMemento fMemento;
 	protected TreeModelContentProvider fProvider;
 	protected Object fViewerInput;
 

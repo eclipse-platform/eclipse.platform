@@ -33,7 +33,7 @@ public class CommentFilter implements IFilter {
 
 	private class OutFilter extends OutputStream {
 
-		private OutputStream out;
+		private final OutputStream out;
 		private boolean preambleWritten = false;
 
 		public OutFilter(OutputStream out) {

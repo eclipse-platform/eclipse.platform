@@ -69,8 +69,8 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 public class AntEditorPreferencePage extends AbstractAntEditorPreferencePage {
 
 	protected static class ControlData {
-		private String fKey;
-		private String[] fValues;
+		private final String fKey;
+		private final String[] fValues;
 
 		public ControlData(String key, String[] values) {
 			fKey = key;
@@ -109,15 +109,15 @@ public class AntEditorPreferencePage extends AbstractAntEditorPreferencePage {
 	 */
 	private static class HighlightingColorListItem {
 		/** Display name */
-		private String fDisplayName;
+		private final String fDisplayName;
 		/** Color preference key */
-		private String fColorKey;
+		private final String fColorKey;
 		/** Bold preference key */
-		private String fBoldKey;
+		private final String fBoldKey;
 		/** Italic preference key */
-		private String fItalicKey;
+		private final String fItalicKey;
 		/** Item color */
-		private Color fItemColor;
+		private final Color fItemColor;
 
 		/**
 		 * Initialize the item with the given values.

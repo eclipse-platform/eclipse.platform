@@ -176,7 +176,7 @@ class ResourceCompareInput extends CompareEditorInput {
 	}
 
 	static class SelectAncestorDialog extends MessageDialog {
-		private IResource[] theResources;
+		private final IResource[] theResources;
 		IResource ancestorResource;
 		IResource leftResource;
 		IResource rightResource;
@@ -216,7 +216,7 @@ class ResourceCompareInput extends CompareEditorInput {
 			rightResource = theResources[i == 2 ? 1 : 2];
 		}
 
-		private SelectionListener selectionListener = new SelectionAdapter() {
+		private final SelectionListener selectionListener = new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Button selectedButton = (Button) e.widget;

@@ -52,7 +52,7 @@ public class GroupLaunch extends Launch implements ILaunchesListener2 {
 	 * A map of all our sub-launches and the current processes that belong to
 	 * each one.
 	 */
-	private Map<ILaunch, IProcess[]> subLaunches = new HashMap<>();
+	private final Map<ILaunch, IProcess[]> subLaunches = new HashMap<>();
 
 	public GroupLaunch(ILaunchConfiguration launchConfiguration, String mode) {
 		super(launchConfiguration, mode, null);

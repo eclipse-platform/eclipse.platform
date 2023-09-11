@@ -63,7 +63,7 @@ public class BrowserManager {
 
 	private BrowserDescriptor internalBrowserDesc;
 
-	private Collection<IBrowser> browsers = new ArrayList<>();
+	private final Collection<IBrowser> browsers = new ArrayList<>();
 
 	private boolean alwaysUseExternal = false;
 

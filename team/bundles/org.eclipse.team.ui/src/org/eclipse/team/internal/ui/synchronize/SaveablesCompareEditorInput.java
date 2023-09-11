@@ -98,9 +98,9 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	private Saveable fLeftSaveable;
 	private Saveable fRightSaveable;
 
-	private ITypedElement fAncestorElement;
-	private ITypedElement fLeftElement;
-	private ITypedElement fRightElement;
+	private final ITypedElement fAncestorElement;
+	private final ITypedElement fLeftElement;
+	private final ITypedElement fRightElement;
 
 	private final IWorkbenchPage page;
 	private final ListenerList<ICompareInputChangeListener> inputChangeListeners = new ListenerList<>(
@@ -523,7 +523,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 				fRightElement);
 	}
 
-	private CompareInputChangeNotifier notifier = new CompareInputChangeNotifier() {
+	private final CompareInputChangeNotifier notifier = new CompareInputChangeNotifier() {
 		@Override
 		protected IResource[] getResources(ICompareInput input) {
 			IResource leftResource = getResource(fLeftElement);

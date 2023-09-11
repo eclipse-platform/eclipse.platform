@@ -37,7 +37,7 @@ import org.eclipse.team.core.mapping.provider.SynchronizationScopeManager;
  */
 public class ResourceMappingScope extends AbstractResourceMappingScope {
 
-	private ResourceMapping[] inputMappings;
+	private final ResourceMapping[] inputMappings;
 	private final Map<ResourceMapping, ResourceTraversal[]> mappingsToTraversals = Collections.synchronizedMap(new HashMap<>());
 	private boolean hasAdditionalMappings;
 	private boolean hasAdditionalResources;

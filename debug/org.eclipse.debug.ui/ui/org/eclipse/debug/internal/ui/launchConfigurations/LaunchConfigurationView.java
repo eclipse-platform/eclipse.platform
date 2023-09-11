@@ -69,12 +69,12 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 	 *
 	 * @since 3.2
 	 */
-	private ILaunchManager fLaunchManager = DebugPlugin.getDefault().getLaunchManager();
+	private final ILaunchManager fLaunchManager = DebugPlugin.getDefault().getLaunchManager();
 
 	/**
 	 * The launch group to display
 	 */
-	private LaunchGroupExtension fLaunchGroup;
+	private final LaunchGroupExtension fLaunchGroup;
 
 	/**
 	 * Actions

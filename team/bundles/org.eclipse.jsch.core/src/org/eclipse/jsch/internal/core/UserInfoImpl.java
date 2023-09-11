@@ -26,18 +26,18 @@ import com.jcraft.jsch.UIKeyboardInteractive;
  * @since 1.1
  */
 class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
-  private String username;
+  private final String username;
   private String password;
   private String passphrase;
-  private IJSchLocation location;
-  private IUserAuthenticator authenticator;
+  private final IJSchLocation location;
+  private final IUserAuthenticator authenticator;
   private int attemptCount;
   private boolean passwordChanged;
 
   private long startTime;
   private long endTime;
   private boolean prompting;
-  private long timeout;
+  private final long timeout;
   
   private int reuse=0;
   

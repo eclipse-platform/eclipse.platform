@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.*;
  */
 public class TestWorkspaceJob extends WorkspaceJob {
 	private static final int tickLength = 10;
-	private long duration;
+	private final long duration;
 	private boolean touch = false;
 
 	/**

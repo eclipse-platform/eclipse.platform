@@ -111,9 +111,9 @@ import org.eclipse.ui.progress.UIJob;
 public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSetListener, IPropertyChangeListener {
 	private IProcess fProcess = null;
 
-	private List<StreamListener> fStreamListeners = new ArrayList<>();
+	private final List<StreamListener> fStreamListeners = new ArrayList<>();
 
-	private IConsoleColorProvider fColorProvider;
+	private final IConsoleColorProvider fColorProvider;
 
 	/**
 	 * The input stream which can supply user input in console to the system process
@@ -854,7 +854,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 
 	private class InputReadJob extends Job {
 
-		private IStreamsProxy streamsProxy;
+		private final IStreamsProxy streamsProxy;
 
 		/**
 		 * The {@link InputStream} this job is currently reading from or maybe blocking
@@ -1032,8 +1032,8 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	}
 
 	static class StorageEditorInput extends PlatformObject implements IStorageEditorInput {
-		private File fFile;
-		private IStorage fStorage;
+		private final File fFile;
+		private final IStorage fStorage;
 
 		public StorageEditorInput(IStorage storage, File file) {
 			fStorage = storage;

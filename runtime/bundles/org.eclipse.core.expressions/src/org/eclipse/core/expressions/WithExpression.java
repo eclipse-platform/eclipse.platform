@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 public class WithExpression extends CompositeExpression {
 
-	private String fVariable;
+	private final String fVariable;
 	private static final String ATT_VARIABLE= "variable";  //$NON-NLS-1$
 
 	/**

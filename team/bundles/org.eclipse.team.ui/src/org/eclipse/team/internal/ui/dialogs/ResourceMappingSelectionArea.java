@@ -49,13 +49,13 @@ public class ResourceMappingSelectionArea extends DialogArea {
 	 */
 	public static final String CHECKED_MAPPINGS = "CheckedMappings"; //$NON-NLS-1$
 
-	private ResourceMapping[] mappings;
+	private final ResourceMapping[] mappings;
 	private TableViewer viewer;
 	private ResourceMapping[] checkedMappings;
 	private ResourceMapping selectedMapping;
 	private String description;
-	private boolean supportsChecking;
-	private boolean supportsSelection;
+	private final boolean supportsChecking;
+	private final boolean supportsSelection;
 
 	public ResourceMappingSelectionArea(ResourceMapping[] mappings, boolean supportSelection, boolean supportChecking) {
 		this.mappings = mappings;

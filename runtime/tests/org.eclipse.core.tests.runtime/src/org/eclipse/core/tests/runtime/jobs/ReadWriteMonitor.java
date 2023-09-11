@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.jobs.ILock;
  */
 public class ReadWriteMonitor {
 	private final Set<Thread> blockedThreads = Collections.synchronizedSet(new HashSet<>());
-	private ILock lock;
+	private final ILock lock;
 	/**
 	 * &lt;0 : writing (cannot go beyond -1, i.e one concurrent writer)<br>
 	 * =0 : idle<br>

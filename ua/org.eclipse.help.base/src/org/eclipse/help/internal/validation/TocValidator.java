@@ -37,12 +37,12 @@ public class TocValidator {
 
 	private static final boolean DEBUG = false;
 
-	private HashMap<String, Object> processedTocs;
-	private TocFileParser parser;
+	private final HashMap<String, Object> processedTocs;
+	private final TocFileParser parser;
 
 	public static class BrokenLink {
-		private String tocID;
-		private String href;
+		private final String tocID;
+		private final String href;
 		private BrokenLink(String tocID, String href) {
 			this.tocID = tocID;
 			this.href = href;

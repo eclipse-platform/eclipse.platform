@@ -19,7 +19,7 @@ import org.eclipse.debug.core.model.IVariable;
 
 public class AntValue extends AntDebugElement implements IValue {
 
-	private String fValueString;
+	private final String fValueString;
 	protected static final IVariable[] EMPTY = new IVariable[0];
 
 	public AntValue(AntDebugTarget target, String value) {

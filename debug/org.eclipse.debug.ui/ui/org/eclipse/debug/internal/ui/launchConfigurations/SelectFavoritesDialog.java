@@ -70,8 +70,8 @@ public class SelectFavoritesDialog extends AbstractDebugCheckboxSelectionDialog 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 	}
 
-	private LaunchHistory fHistory;
-	private List<ILaunchConfiguration> fCurrentFavoriteSet;
+	private final LaunchHistory fHistory;
+	private final List<ILaunchConfiguration> fCurrentFavoriteSet;
 
 	/**
 	 * Constructor

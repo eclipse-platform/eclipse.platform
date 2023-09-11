@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.content.IContentType;
  */
 class FileSpec {
 	final static int BASIC_TYPE = IContentType.FILE_EXTENSION_SPEC | IContentType.FILE_NAME_SPEC;
-	private String text;
-	private int type;
+	private final String text;
+	private final int type;
 
 	public FileSpec(String text, int type) {
 		this.text = text;

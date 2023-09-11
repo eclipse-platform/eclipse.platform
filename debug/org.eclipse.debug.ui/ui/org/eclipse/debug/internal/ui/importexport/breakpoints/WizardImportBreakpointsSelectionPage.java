@@ -53,7 +53,7 @@ public class WizardImportBreakpointsSelectionPage extends WizardPage implements 
 	private Button fSelectAll = null;
 	private Button fDeselectAll = null;
 
-	private ICheckStateListener fImportCheckListener = event -> updateCheckedState(event.getChecked());
+	private final ICheckStateListener fImportCheckListener = event -> updateCheckedState(event.getChecked());
 	protected WizardImportBreakpointsSelectionPage(String pageName) {
 		super(pageName, ImportExportMessages.WizardImportBreakpointsSelectionPage_2, null);
 	}

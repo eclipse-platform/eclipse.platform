@@ -113,7 +113,7 @@ public abstract class DebugCommandHandler extends AbstractHandler {
 	 * Window listener is used to make sure that the handler enablement
 	 * is updated when the active workbench window is changed.
 	 */
-	private IWindowListener fWindowListener =  new IWindowListener() {
+	private final IWindowListener fWindowListener =  new IWindowListener() {
 
 		@Override
 		public void windowOpened(IWorkbenchWindow w) {
@@ -141,7 +141,7 @@ public abstract class DebugCommandHandler extends AbstractHandler {
 	/**
 	 * Map of enabled targets keyed by workbench window.
 	 */
-	private Map<IWorkbenchWindow, EnabledTarget> fEnabledTargetsMap = new WeakHashMap<>();
+	private final Map<IWorkbenchWindow, EnabledTarget> fEnabledTargetsMap = new WeakHashMap<>();
 
 	/**
 	 * The current enabled target, based on the active

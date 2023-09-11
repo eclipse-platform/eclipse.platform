@@ -31,9 +31,9 @@ public class IncludeResolver {
 
 	private static final String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
 
-	private DocumentProcessor processor;
-	private DocumentReader reader;
-	private String locale;
+	private final DocumentProcessor processor;
+	private final DocumentReader reader;
+	private final String locale;
 
 	public IncludeResolver(DocumentProcessor processor, DocumentReader reader, String locale) {
 		this.processor = processor;

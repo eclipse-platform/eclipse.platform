@@ -103,9 +103,9 @@ public class HelpIndexBuilder {
 
 	private File destination;
 
-	private ArrayList<TocFile> tocFiles = new ArrayList<>();
+	private final ArrayList<TocFile> tocFiles = new ArrayList<>();
 
-	private ArrayList<LocaleDir> localeDirs = new ArrayList<>();
+	private final ArrayList<LocaleDir> localeDirs = new ArrayList<>();
 
 	private static Locale[] legalLocales = Locale.getAvailableLocales();
 	private static HashSet<String> legalLanguages = null;

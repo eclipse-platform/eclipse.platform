@@ -38,7 +38,7 @@ import org.eclipse.debug.core.sourcelookup.ISourceContainerType;
 public class DirectorySourceContainer extends CompositeSourceContainer {
 
 	// root directory
-	private File fDirectory;
+	private final File fDirectory;
 	// whether to search sub-folders
 	private boolean fSubfolders = false;
 	/**

@@ -23,8 +23,8 @@ import org.eclipse.debug.core.model.IBinaryStreamsProxy;
 import org.eclipse.debug.core.model.IStreamMonitor;
 
 public class NullStreamsProxy implements IBinaryStreamsProxy {
-	private NullStreamMonitor outputStreamMonitor;
-	private NullStreamMonitor errorStreamMonitor;
+	private final NullStreamMonitor outputStreamMonitor;
+	private final NullStreamMonitor errorStreamMonitor;
 
 	@SuppressWarnings("resource")
 	public NullStreamsProxy(Process process) {
@@ -65,7 +65,7 @@ public class NullStreamsProxy implements IBinaryStreamsProxy {
 	}
 
 	private static class NullStreamMonitor implements IBinaryStreamMonitor {
-		private InputStream fStream;
+		private final InputStream fStream;
 
 		public NullStreamMonitor(InputStream stream) {
 			fStream = stream;

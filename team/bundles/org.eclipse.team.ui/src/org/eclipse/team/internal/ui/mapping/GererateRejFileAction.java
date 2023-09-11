@@ -22,7 +22,7 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 
 public class GererateRejFileAction extends Action {
 
-	private ApplyPatchSubscriber subscriber;
+	private final ApplyPatchSubscriber subscriber;
 
 	public GererateRejFileAction(ISynchronizePageConfiguration configuration) {
 		super("", AS_CHECK_BOX); //$NON-NLS-1$

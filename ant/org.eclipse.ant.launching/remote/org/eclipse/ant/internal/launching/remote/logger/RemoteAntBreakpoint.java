@@ -19,9 +19,9 @@ import org.eclipse.ant.internal.launching.debug.model.DebugMessageIds;
 
 public class RemoteAntBreakpoint {
 
-	private File fFile;
-	private int fLineNumber;
-	private String fFileName;
+	private final File fFile;
+	private final int fLineNumber;
+	private final String fFileName;
 
 	public RemoteAntBreakpoint(String breakpointRepresentation) {
 		String[] data = breakpointRepresentation.split(DebugMessageIds.MESSAGE_DELIMITER);

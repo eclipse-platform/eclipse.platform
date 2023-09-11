@@ -76,8 +76,8 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	private IAntModelListener fListener;
 	private IAntModel fModel;
-	private AntModelCore fCore;
-	private ListenerList<ISelectionChangedListener> fPostSelectionChangedListeners = new ListenerList<>();
+	private final AntModelCore fCore;
+	private final ListenerList<ISelectionChangedListener> fPostSelectionChangedListeners = new ListenerList<>();
 	private boolean fIsModelEmpty = true;
 	private boolean fFilterInternalTargets;
 	private boolean fFilterImportedElements;
@@ -87,9 +87,9 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	private ViewerComparator fComparator;
 
-	private AntEditor fEditor;
+	private final AntEditor fEditor;
 
-	private TogglePresentationAction fTogglePresentation;
+	private final TogglePresentationAction fTogglePresentation;
 
 	/**
 	 * A viewer filter for the Ant Content Outline

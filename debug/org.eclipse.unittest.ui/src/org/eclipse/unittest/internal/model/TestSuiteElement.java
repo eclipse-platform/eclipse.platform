@@ -31,7 +31,7 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 
 	private final List<TestElement> fChildren;
 	private Status fChildrenStatus;
-	private Integer expectedTestCount;
+	private final Integer expectedTestCount;
 
 	/**
 	 * Constructs a test suite object

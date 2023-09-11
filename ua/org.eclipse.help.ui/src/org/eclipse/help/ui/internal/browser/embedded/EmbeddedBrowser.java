@@ -73,7 +73,7 @@ public class EmbeddedBrowser {
 	private String statusText;
 	private int x, y, w, h;
 	private long modalRequestTime = 0;
-	private Vector<IBrowserCloseListener> closeListeners = new Vector<>(1);
+	private final Vector<IBrowserCloseListener> closeListeners = new Vector<>(1);
 	/**
 	 * Constructor for main help window instance
 	 */

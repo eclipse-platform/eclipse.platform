@@ -39,7 +39,7 @@ import org.eclipse.ui.internal.cheatsheets.Messages;
 public class CheatSheetRegistryReader extends RegistryReader implements IRegistryChangeListener {
 
 	private static class CategoryNode {
-		private Category category;
+		private final Category category;
 		private String path;
 		public CategoryNode(Category cat) {
 			category = cat;
@@ -336,7 +336,7 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 			flatArray[i] = new CategoryNode(deferCategories.get(i));
 		}
 		Sorter sorter = new Sorter() {
-			private Collator collator = Collator.getInstance();
+			private final Collator collator = Collator.getInstance();
 
 			@Override
 			public boolean compare(Object o1, Object o2) {

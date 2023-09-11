@@ -74,9 +74,9 @@ public class ParallelTestSupport {
 
 	private static class TestThread extends Thread {
 
-		private int index;
-		private ITestCase testCase;
-		private int repetitions;
+		private final int index;
+		private final ITestCase testCase;
+		private final int repetitions;
 
 		public TestThread(int index, ITestCase testCase, int repetitions) {
 			this.index = index;

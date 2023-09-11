@@ -42,7 +42,7 @@ public class CompareFilterDescriptor {
 
 	private static class ConfigurationKeysEnumeration implements Enumeration<String> {
 
-		private String[] keySet;
+		private final String[] keySet;
 		private int cursor = 0;
 
 		public ConfigurationKeysEnumeration(IConfigurationElement configuration) {

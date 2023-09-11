@@ -54,7 +54,7 @@ public class TestRunHandler extends DefaultHandler {
 	private TestRunSession fTestRunSession;
 	private TestSuiteElement fTestSuite;
 	private TestCaseElement fTestCase;
-	private Stack<Boolean> fNotRun = new Stack<>();
+	private final Stack<Boolean> fNotRun = new Stack<>();
 
 	private StringBuilder fFailureBuffer;
 	private boolean fInExpected;

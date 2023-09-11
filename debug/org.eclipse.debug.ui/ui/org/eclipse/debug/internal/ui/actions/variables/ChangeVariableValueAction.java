@@ -45,7 +45,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 public class ChangeVariableValueAction extends SelectionProviderAction {
 
 	protected IVariable fVariable;
-	private VariablesView fView;
+	private final VariablesView fView;
 	private boolean fEditing= false;
 	private boolean isApplicable = false;
 

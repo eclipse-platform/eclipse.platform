@@ -35,12 +35,12 @@ public class DebugContextEvent extends EventObject {
 	/**
 	 * The context
 	 */
-	private ISelection fContext;
+	private final ISelection fContext;
 
 	/**
 	 * Change flags.
 	 */
-	private int fFlags;
+	private final int fFlags;
 
 	/**
 	 * Change constant (bit mask) indicating a context has been activated.

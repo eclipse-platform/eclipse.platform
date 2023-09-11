@@ -23,7 +23,7 @@ import org.eclipse.debug.core.model.IVariable;
 public class SampleVariable extends DebugElement implements IVariable {
 
 	private final SampleStackFrame fFrame;
-	private String fName;
+	private final String fName;
 
 	SampleVariable(SampleStackFrame frame, String name) {
 		super(frame.getDebugTarget());

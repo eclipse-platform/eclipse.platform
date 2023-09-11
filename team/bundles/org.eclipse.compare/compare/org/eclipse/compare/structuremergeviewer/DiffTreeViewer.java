@@ -171,7 +171,7 @@ public class DiffTreeViewer extends TreeViewer {
 	private ResourceBundle fBundle;
 	private CompareConfiguration fCompareConfiguration;
 	private IPropertyChangeListener fPropertyChangeListener;
-	private DiffViewerLabelProvider diffViewerLabelProvider = new DiffViewerLabelProvider();
+	private final DiffViewerLabelProvider diffViewerLabelProvider = new DiffViewerLabelProvider();
 
 	private Action fEmptyMenuAction;
 	private Action fExpandAllAction;

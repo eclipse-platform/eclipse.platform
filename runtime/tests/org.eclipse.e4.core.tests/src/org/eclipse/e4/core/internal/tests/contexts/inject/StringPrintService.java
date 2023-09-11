@@ -18,7 +18,7 @@ package org.eclipse.e4.core.internal.tests.contexts.inject;
  *
  */
 public class StringPrintService implements PrintService {
-	private StringBuilder buf = new StringBuilder();
+	private final StringBuilder buf = new StringBuilder();
 
 	@Override
 	public void print(String message) {

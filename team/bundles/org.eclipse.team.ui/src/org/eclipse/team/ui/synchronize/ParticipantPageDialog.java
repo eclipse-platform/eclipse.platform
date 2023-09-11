@@ -40,7 +40,7 @@ import org.eclipse.team.ui.TeamUI;
 @Deprecated
 public class ParticipantPageDialog extends SaveablePartDialog {
 
-	private ISynchronizeParticipant participant;
+	private final ISynchronizeParticipant participant;
 	private Button rememberParticipantButton;
 
 	/**

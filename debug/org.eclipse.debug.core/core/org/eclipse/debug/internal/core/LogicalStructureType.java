@@ -33,7 +33,7 @@ import org.eclipse.debug.core.model.IValue;
  */
 public class LogicalStructureType implements ILogicalStructureType, ILogicalStructureTypeDelegate3 {
 
-	private IConfigurationElement fConfigurationElement;
+	private final IConfigurationElement fConfigurationElement;
 	private ILogicalStructureTypeDelegate fDelegate;
 	private String fModelId;
 	// whether the 'description' attribute has been verified to exist: it is only

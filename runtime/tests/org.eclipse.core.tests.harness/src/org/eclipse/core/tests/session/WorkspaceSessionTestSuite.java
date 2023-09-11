@@ -22,7 +22,7 @@ import org.eclipse.core.tests.session.SetupManager.SetupException;
 
 public class WorkspaceSessionTestSuite extends SessionTestSuite {
 
-	private IPath instanceLocation = FileSystemHelper.getRandomLocation(FileSystemHelper.getTempDir());
+	private final IPath instanceLocation = FileSystemHelper.getRandomLocation(FileSystemHelper.getTempDir());
 	// should the test cases be run in alphabetical order?
 	private boolean shouldSort;
 

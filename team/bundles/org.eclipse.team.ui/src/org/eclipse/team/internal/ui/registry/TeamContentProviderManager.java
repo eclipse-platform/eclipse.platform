@@ -43,7 +43,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 
 	Map<String, ITeamContentProviderDescriptor> descriptors;
 
-	private ListenerList<IPropertyChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
+	private final ListenerList<IPropertyChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	public static ITeamContentProviderManager getInstance() {
 		if (instance == null)

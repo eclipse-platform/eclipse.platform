@@ -85,21 +85,21 @@ public abstract class AsynchronousViewer extends StructuredViewer implements Lis
 	 * use the method <code>getImage(...)</code> to cache images for
 	 * image descriptors. The images are disposed when this viewer is disposed.
 	 */
-	private Map<ImageDescriptor, Image> fImageCache = new HashMap<>();
+	private final Map<ImageDescriptor, Image> fImageCache = new HashMap<>();
 
 	/**
 	 * Cache of the fonts used for elements in this tree viewer. Label updates
 	 * use the method <code>getFont(...)</code> to cache fonts for
 	 * FontData objects. The fonts are disposed with the viewer.
 	 */
-	private Map<FontData, Font> fFontCache = new HashMap<>();
+	private final Map<FontData, Font> fFontCache = new HashMap<>();
 
 	/**
 	 * Cache of the colors used for elements in this tree viewer. Label updates
 	 * use the method <code>getColor(...)</code> to cache colors for
 	 * RGB values. The colors are disposed with the viewer.
 	 */
-	private Map<RGB, Color> fColorCache = new HashMap<>();
+	private final Map<RGB, Color> fColorCache = new HashMap<>();
 
 	/**
 	 * The context in which this viewer is being used - i.e. what part it is contained

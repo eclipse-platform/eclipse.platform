@@ -26,7 +26,7 @@ import org.eclipse.e4.ui.model.application.ui.menu.MMenuItem;
 
 public class TerminateAction {
 
-	private LaunchViewImpl view;
+	private final LaunchViewImpl view;
 
 	public TerminateAction(LaunchViewImpl view) {
 		this.view = view;

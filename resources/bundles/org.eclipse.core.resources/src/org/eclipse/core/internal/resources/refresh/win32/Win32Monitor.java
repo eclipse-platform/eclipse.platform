@@ -74,7 +74,7 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 	}
 
 	protected class FileHandle extends ChainedHandle {
-		private File file;
+		private final File file;
 
 		public FileHandle(File file) {
 			this.file = file;
@@ -229,7 +229,7 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 
 	protected class LinkedResourceHandle extends ChainedHandle {
 		private List<FileHandle> fileHandleChain;
-		private IResource resource;
+		private final IResource resource;
 
 		/**
 		 * @param resource
@@ -303,7 +303,7 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 	}
 
 	protected class ResourceHandle extends Handle {
-		private IResource resource;
+		private final IResource resource;
 
 		public ResourceHandle(IResource resource) {
 			super();

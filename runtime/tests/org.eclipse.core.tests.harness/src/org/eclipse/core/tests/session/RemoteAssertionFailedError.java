@@ -23,8 +23,8 @@ public class RemoteAssertionFailedError extends AssertionFailedError {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Object stackText;
-	private String message;
+	private final Object stackText;
+	private final String message;
 
 	public RemoteAssertionFailedError(String message, String stackText) {
 		this.message = message;

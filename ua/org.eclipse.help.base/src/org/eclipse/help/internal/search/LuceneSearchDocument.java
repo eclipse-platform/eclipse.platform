@@ -30,7 +30,7 @@ import org.eclipse.help.search.ISearchDocument;
 
 public class LuceneSearchDocument implements ISearchDocument {
 
-	private Document doc;
+	private final Document doc;
 
 	public LuceneSearchDocument(Document document) {
 		this.doc = document;

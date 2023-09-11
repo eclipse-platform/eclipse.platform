@@ -26,7 +26,7 @@ import org.eclipse.ui.internal.provisional.cheatsheets.ICompositeCheatSheet;
 
 public class RestartAllAction extends Action {
 
-	private ICompositeCheatSheet model;
+	private final ICompositeCheatSheet model;
 
 	public RestartAllAction(ICompositeCheatSheet model) {
 		this.model = model;

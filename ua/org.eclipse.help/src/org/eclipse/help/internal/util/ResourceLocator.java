@@ -61,7 +61,7 @@ public class ResourceLocator {
 	static class ProducerDescriptor {
 
 		private IHelpContentProducer producer;
-		private IConfigurationElement config;
+		private final IConfigurationElement config;
 
 		public ProducerDescriptor(IConfigurationElement config) {
 			this.config = config;

@@ -85,8 +85,8 @@ public class ApplyPatchSubscriber extends Subscriber {
 		}
 	}
 
-	private WorkspacePatcher patcher;
-	private IResourceVariantComparator comparator;
+	private final WorkspacePatcher patcher;
+	private final IResourceVariantComparator comparator;
 
 	public ApplyPatchSubscriber(WorkspacePatcher patcher) {
 		this.patcher = patcher;

@@ -24,7 +24,7 @@ import org.eclipse.help.internal.UAElement;
  */
 public class FilterHandler extends ProcessorHandler {
 
-	private IEvaluationContext context;
+	private final IEvaluationContext context;
 
 	public FilterHandler(IEvaluationContext context) {
 		this.context = context;

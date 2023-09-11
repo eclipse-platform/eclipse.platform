@@ -30,8 +30,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
  */
 public class RerunAction extends Action {
 
-	private ILaunchConfiguration fLaunchConfiguration;
-	private String fLaunchMode;
+	private final ILaunchConfiguration fLaunchConfiguration;
+	private final String fLaunchMode;
 
 	/**
 	 * Constructs a rerun action

@@ -39,9 +39,9 @@ import org.eclipse.team.internal.core.subscribers.ThreeWayBaseTree;
 public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber implements ISynchronizerChangeListener {
 
 	private ThreeWayResourceComparator comparator;
-	private ThreeWayBaseTree baseTree;
+	private final ThreeWayBaseTree baseTree;
 	private ThreeWayRemoteTree remoteTree;
-	private ThreeWaySynchronizer synchronizer;
+	private final ThreeWaySynchronizer synchronizer;
 
 	/**
 	 * Create a three-way subscriber that uses the given synchronizer

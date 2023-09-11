@@ -144,7 +144,7 @@ public class CompareResultDialog extends TrayDialog {
 	}
 
 	private static class CompareElement implements ITypedElement, IEncodedStreamContentAccessor {
-		private String fContent;
+		private final String fContent;
 
 		public CompareElement(String content) {
 			fContent = content;

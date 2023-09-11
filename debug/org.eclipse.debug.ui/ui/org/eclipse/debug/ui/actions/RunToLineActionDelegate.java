@@ -62,7 +62,7 @@ public class RunToLineActionDelegate implements IEditorActionDelegate, IActionDe
 	private IWorkbenchPart fActivePart = null;
 	private IRunToLineTarget fPartTarget = null;
 	private IAction fAction = null;
-	private DebugContextListener fContextListener = new DebugContextListener();
+	private final DebugContextListener fContextListener = new DebugContextListener();
 	private ISuspendResume fTargetElement = null;
 
 	class DebugContextListener implements IDebugContextListener {

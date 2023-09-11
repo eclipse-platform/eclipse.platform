@@ -55,11 +55,11 @@ import org.eclipse.ui.progress.WorkbenchJob;
  */
 public class AsynchronousTableViewer extends AsynchronousViewer implements Listener {
 
-	private Table fTable;
+	private final Table fTable;
 
-	private TableEditor fTableEditor;
+	private final TableEditor fTableEditor;
 
-	private TableEditorImpl fTableEditorImpl;
+	private final TableEditorImpl fTableEditorImpl;
 
 	public AsynchronousTableViewer(Composite parent) {
 		this(parent, SWT.VIRTUAL);

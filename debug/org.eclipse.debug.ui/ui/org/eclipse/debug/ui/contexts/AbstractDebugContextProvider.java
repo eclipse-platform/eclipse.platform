@@ -31,12 +31,12 @@ public abstract class AbstractDebugContextProvider implements IDebugContextProvi
 	/**
 	 * Event listeners
 	 */
-	private ListenerList<IDebugContextListener> fListeners = new ListenerList<>();
+	private final ListenerList<IDebugContextListener> fListeners = new ListenerList<>();
 
 	/**
 	 * Part or <code>null</code>
 	 */
-	private IWorkbenchPart fPart;
+	private final IWorkbenchPart fPart;
 
 	/**
 	 * Constructs a context provider for the specified part, possibly <code>null</code>.

@@ -36,8 +36,8 @@ public class LaunchQuickAccessElement extends QuickAccessElement {
 	private static final String MODE_PROFILE = "profile"; //$NON-NLS-1$
 	private static final ImageRegistry REGISTRY = DebugPluginImages.getImageRegistry();
 
-	private ILaunchConfiguration launch;
-	private ILaunchMode launchMode;
+	private final ILaunchConfiguration launch;
+	private final ILaunchMode launchMode;
 
 	static {
 		registerImage(MODE_RUN);

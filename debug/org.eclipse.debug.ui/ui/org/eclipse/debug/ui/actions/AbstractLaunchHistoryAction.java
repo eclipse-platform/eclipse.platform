@@ -109,7 +109,7 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 	 * A listener to be notified of launch label updates
 	 * @since 3.3
 	 */
-	private ILaunchLabelChangedListener fLabelListener = new ILaunchLabelChangedListener() {
+	private final ILaunchLabelChangedListener fLabelListener = new ILaunchLabelChangedListener() {
 		@Override
 		public ILaunchGroup getLaunchGroup() {
 			return fLaunchGroup;

@@ -82,7 +82,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	/**
 	 * Stack of consoles in MRU order
 	 */
-	private List<IConsole> fStack = new ArrayList<>();
+	private final List<IConsole> fStack = new ArrayList<>();
 
 	/**
 	 * The console being displayed, or <code>null</code> if none
@@ -92,17 +92,17 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	/**
 	 * Map of consoles to dummy console parts (used to close pages)
 	 */
-	private Map<IConsole, ConsoleWorkbenchPart> fConsoleToPart;
+	private final Map<IConsole, ConsoleWorkbenchPart> fConsoleToPart;
 
 	/**
 	 * Map of consoles to array of page participants
 	 */
-	private Map<IConsole, ListenerList<IConsolePageParticipant>> fConsoleToPageParticipants;
+	private final Map<IConsole, ListenerList<IConsolePageParticipant>> fConsoleToPageParticipants;
 
 	/**
 	 * Map of parts to consoles
 	 */
-	private Map<ConsoleWorkbenchPart, IConsole> fPartToConsole;
+	private final Map<ConsoleWorkbenchPart, IConsole> fPartToConsole;
 
 	/**
 	 * Whether this view is active

@@ -49,7 +49,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 
 	static final String RESOURCE_CHANGE_NOTIFIER_PROPERTY = "org.eclipse.team.ui.ResourceChangeNotifier"; //$NON-NLS-1$
 
-	private ISynchronizationContext context;
+	private final ISynchronizationContext context;
 
 	private class CompareInputLabelProvider extends BaseLabelProvider implements ICompareInputLabelProvider {
 

@@ -33,8 +33,8 @@ public class CheatSheetManager implements ICheatSheetManager {
 	private static final String PARENT_PREFIX = "parent."; //$NON-NLS-1$
 	private static final String VARIABLE_END = "}"; //$NON-NLS-1$
 	private static final String VARIABLE_BEGIN = "${"; //$NON-NLS-1$
-	private String cheatsheetID;
-	private List<CheatSheetListener> listeners;
+	private final String cheatsheetID;
+	private final List<CheatSheetListener> listeners;
 	private Map<String, String> dataTable = null;
 	private ICheatSheetManager parent;
 

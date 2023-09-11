@@ -19,9 +19,9 @@ import java.util.Calendar;
 import org.eclipse.team.core.history.IFileRevision;
 
 public class DateHistoryCategory extends AbstractHistoryCategory {
-	private String name;
-	private Calendar fromDate;
-	private Calendar toDate;
+	private final String name;
+	private final Calendar fromDate;
+	private final Calendar toDate;
 	private IFileRevision[] revisions;
 
 	/**

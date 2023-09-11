@@ -143,7 +143,7 @@ public class MozillaBrowserAdapter implements IBrowser {
 	private class BrowserThread extends Thread {
 		public boolean exitRequested = false;
 
-		private String url;
+		private final String url;
 
 		public BrowserThread(String urlName) {
 			this.url = urlName;

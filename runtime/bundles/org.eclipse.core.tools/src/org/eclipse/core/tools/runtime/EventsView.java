@@ -165,13 +165,13 @@ public class EventsView extends TableWithTotalView {
 	public final static int COLUMN_COUNT = 3;
 	public final static int COLUMN_TIME = 4;
 
-	private String columnHeaders[] = {Messages.stats_eventHeader, //
+	private final String columnHeaders[] = {Messages.stats_eventHeader, //
 			Messages.stats_blameHeader, //
 			Messages.stats_contextHeader, //
 			Messages.stats_countHeader, //
 			Messages.stats_timeHeader, //
 	};
-	private ColumnLayoutData columnLayouts[] = {new ColumnWeightData(80), // event
+	private final ColumnLayoutData columnLayouts[] = {new ColumnWeightData(80), // event
 			new ColumnWeightData(180), // blame
 			new ColumnWeightData(40), // context
 			new ColumnPixelData(65), // count

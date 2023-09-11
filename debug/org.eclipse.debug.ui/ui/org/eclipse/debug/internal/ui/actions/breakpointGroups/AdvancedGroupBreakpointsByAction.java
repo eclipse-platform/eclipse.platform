@@ -26,7 +26,7 @@ import org.eclipse.jface.window.Window;
  */
 public class AdvancedGroupBreakpointsByAction extends Action {
 
-	private BreakpointsView fView;
+	private final BreakpointsView fView;
 
 	public AdvancedGroupBreakpointsByAction(BreakpointsView view) {
 		super(IInternalDebugCoreConstants.EMPTY_STRING, IAction.AS_RADIO_BUTTON);

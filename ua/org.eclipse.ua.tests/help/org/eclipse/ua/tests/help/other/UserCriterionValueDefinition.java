@@ -20,8 +20,8 @@ import org.eclipse.help.IUAElement;
 
 public class UserCriterionValueDefinition implements ICriterionValueDefinition {
 
-	private String id;
-	private String name;
+	private final String id;
+	private final String name;
 
 	public UserCriterionValueDefinition(String id, String name) {
 		this.id = id;

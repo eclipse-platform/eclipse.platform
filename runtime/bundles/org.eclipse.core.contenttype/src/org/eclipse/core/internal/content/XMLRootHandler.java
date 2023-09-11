@@ -56,7 +56,7 @@ public final class XMLRootHandler extends DefaultHandler implements LexicalHandl
 	/**
 	 * Should we check the root element?
 	 */
-	private boolean checkRoot;
+	private final boolean checkRoot;
 	/**
 	 * The system identifier for the DTD that was found while parsing the XML.
 	 * This member variable is <code>null</code> unless the file has been

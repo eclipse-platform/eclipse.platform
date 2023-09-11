@@ -41,7 +41,7 @@ public class JavacMarkerCreator {
 	private final TextConsole fConsole;
 	private IProcess fProcess;
 	private static List<IFile> fgFilesToBeCleaned = new ArrayList<>();
-	private Map<IFile, List<MarkerInfo>> fFileToMarkerInfo = new HashMap<>();
+	private final Map<IFile, List<MarkerInfo>> fFileToMarkerInfo = new HashMap<>();
 	private final boolean fUseCustomMessage;
 
 	private static class MarkerInfo {

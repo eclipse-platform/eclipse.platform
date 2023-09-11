@@ -57,7 +57,7 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 
 	// Used as the base label provider for retreiving image and text from
 	// the workbench adapter.
-	private WorkbenchLabelProvider workbenchLabelProvider = new WorkbenchLabelProvider();
+	private final WorkbenchLabelProvider workbenchLabelProvider = new WorkbenchLabelProvider();
 
 	// Font used to display busy elements
 	private Font busyFont;

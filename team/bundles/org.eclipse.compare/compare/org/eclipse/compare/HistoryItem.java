@@ -35,8 +35,8 @@ import org.eclipse.swt.graphics.Image;
  */
 public class HistoryItem implements IEncodedStreamContentAccessor, ITypedElement, IModificationDate, IResourceProvider {
 
-	private ITypedElement fBase;
-	private IFileState fFileState;
+	private final ITypedElement fBase;
+	private final IFileState fFileState;
 
 	/**
 	 * Creates a <code>HistoryItem</code> object which combines the given <code>IFileState</code>

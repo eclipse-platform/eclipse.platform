@@ -128,7 +128,7 @@ public class ProcessConsoleManager implements ILaunchListener {
 	/**
 	 * Lock for fLineTrackers
 	 */
-	private Object fLineTrackersLock = new Object();
+	private final Object fLineTrackersLock = new Object();
 	/**
 	 * @see ILaunchListener#launchRemoved(ILaunch)
 	 */

@@ -69,8 +69,8 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 	private TextViewer[] fViewers;
 
 	private TextViewer fViewerInFocus;
-	private ListenerList<ISelectionChangedListener> fSelectionChangedListeners;
-	private ListenerList<ISelectionChangedListener> fPostSelectionChangedListeners;
+	private final ListenerList<ISelectionChangedListener> fSelectionChangedListeners;
+	private final ListenerList<ISelectionChangedListener> fPostSelectionChangedListeners;
 
 	public CompareEditorSelectionProvider() {
 		fSelectionChangedListeners = new ListenerList<>();

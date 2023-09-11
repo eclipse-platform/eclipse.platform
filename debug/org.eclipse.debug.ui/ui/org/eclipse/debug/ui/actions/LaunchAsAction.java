@@ -63,7 +63,7 @@ public class LaunchAsAction extends Action implements IMenuCreator, IWorkbenchWi
 	/**
 	 * Launch group identifier
 	 */
-	private String fLaunchGroupIdentifier;
+	private final String fLaunchGroupIdentifier;
 
 	/**
 	 * Presentation wrapper for this action

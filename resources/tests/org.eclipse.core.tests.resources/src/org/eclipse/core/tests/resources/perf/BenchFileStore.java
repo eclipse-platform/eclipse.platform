@@ -30,7 +30,7 @@ public class BenchFileStore extends ResourceTest {
 	private static final int REPEATS = 300;
 
 	class StoreTestRunner extends PerformanceTestRunner {
-		private boolean exits;
+		private final boolean exits;
 		protected IFileStore store;
 
 		public StoreTestRunner(boolean exits) {

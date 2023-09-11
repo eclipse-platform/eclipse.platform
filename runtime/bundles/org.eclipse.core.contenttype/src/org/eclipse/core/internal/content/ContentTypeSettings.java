@@ -24,8 +24,8 @@ import org.osgi.service.prefs.Preferences;
 
 public class ContentTypeSettings implements IContentTypeSettings, IContentTypeInfo {
 
-	private ContentType contentType;
-	private IScopeContext context;
+	private final ContentType contentType;
+	private final IScopeContext context;
 
 	static void addFileSpec(IScopeContext context, String contentTypeId, String fileSpec, int type) throws CoreException {
 		Preferences contentTypeNode = ContentTypeManager.getInstance().getPreferences(context).node(contentTypeId);

@@ -24,7 +24,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
  * Helper class for implementing property change handling
  */
 public class PropertyChangeHandler {
-	private ListenerList<IPropertyChangeListener> fListeners = new ListenerList<>(ListenerList.IDENTITY);
+	private final ListenerList<IPropertyChangeListener> fListeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	/**
 	 * Notifies listeners of property changes, handling any exceptions

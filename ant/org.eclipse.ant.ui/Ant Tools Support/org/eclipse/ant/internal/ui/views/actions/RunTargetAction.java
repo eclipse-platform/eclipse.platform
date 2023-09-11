@@ -38,7 +38,7 @@ import org.eclipse.ui.texteditor.IUpdate;
  */
 public class RunTargetAction extends Action implements IUpdate {
 
-	private AntView fView;
+	private final AntView fView;
 
 	/**
 	 * Creates a new <code>RunTargetAction</code> which will execute targets in the given view.

@@ -48,11 +48,11 @@ import org.eclipse.team.ui.synchronize.ISynchronizeParticipant;
  */
 public class ConfigureSynchronizeScheduleComposite extends Composite {
 
-	private SubscriberRefreshSchedule schedule;
+	private final SubscriberRefreshSchedule schedule;
 	private Button enableBackgroundRefresh;
 	private Text timeInterval;
 	private Combo hoursOrMinutes;
-	private IPageValidator validator;
+	private final IPageValidator validator;
 	private DateTime startTime;
 	private Button repeatEvery;
 	private Label synchronizeAt;

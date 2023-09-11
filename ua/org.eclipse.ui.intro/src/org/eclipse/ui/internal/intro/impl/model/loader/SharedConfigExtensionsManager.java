@@ -32,13 +32,13 @@ import org.eclipse.ui.internal.intro.impl.util.Util;
 
 public class SharedConfigExtensionsManager {
 
-	private IExtensionRegistry registry;
+	private final IExtensionRegistry registry;
 
 	// Holds all standbyPart extensions
-	private Map<String, IntroStandbyContentPart> standbyParts = new HashMap<>();
+	private final Map<String, IntroStandbyContentPart> standbyParts = new HashMap<>();
 
 	// Holds all command extensions
-	private Map<String, IntroURLAction> commands = new HashMap<>();
+	private final Map<String, IntroURLAction> commands = new HashMap<>();
 
 	/*
 	 * Prevent creation.

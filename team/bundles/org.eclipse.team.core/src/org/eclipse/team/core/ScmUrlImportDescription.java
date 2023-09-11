@@ -34,7 +34,7 @@ import java.util.HashMap;
  */
 public class ScmUrlImportDescription {
 	private String url;
-	private String project;
+	private final String project;
 	private HashMap<String, Object> properties;
 
 	public ScmUrlImportDescription(String url, String project) {

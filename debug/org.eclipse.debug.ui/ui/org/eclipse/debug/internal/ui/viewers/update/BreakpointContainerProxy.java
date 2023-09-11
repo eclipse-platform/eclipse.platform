@@ -31,7 +31,7 @@ public class BreakpointContainerProxy extends AbstractModelProxy implements	IChe
 	/**
 	 * The breakpoint container
 	 */
-	private IBreakpointContainer fContainer;
+	private final IBreakpointContainer fContainer;
 
 	/**
 	 * Constructor.

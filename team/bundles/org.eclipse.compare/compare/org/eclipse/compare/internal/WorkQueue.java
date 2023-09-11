@@ -26,7 +26,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
  */
 public class WorkQueue {
 
-	private List<IRunnableWithProgress> runnables = new ArrayList<>();
+	private final List<IRunnableWithProgress> runnables = new ArrayList<>();
 
 	public boolean add(IRunnableWithProgress runnable) {
 		if (runnables.contains(runnable))

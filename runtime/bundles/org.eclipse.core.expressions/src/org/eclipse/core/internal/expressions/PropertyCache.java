@@ -17,7 +17,7 @@ import org.eclipse.core.internal.expressions.util.LRUCache;
 
 /* package */ class PropertyCache {
 
-	private LRUCache fCache;
+	private final LRUCache fCache;
 
 	public PropertyCache(final int cacheSize) {
 		fCache= new LRUCache(100);

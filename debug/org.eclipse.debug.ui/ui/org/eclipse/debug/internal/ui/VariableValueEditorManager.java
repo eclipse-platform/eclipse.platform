@@ -48,7 +48,7 @@ public class VariableValueEditorManager {
 	 * which are replaced by IVariableValueEditors as the editors
 	 * are instantiated (editors are loaded lazily, then cached).
 	 */
-	private Map<String, Object> fEditorMap = new HashMap<>();
+	private final Map<String, Object> fEditorMap = new HashMap<>();
 
 	/**
 	 * The singleton instance of this manager.

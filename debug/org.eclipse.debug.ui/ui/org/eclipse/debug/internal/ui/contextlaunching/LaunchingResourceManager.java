@@ -89,18 +89,18 @@ public class LaunchingResourceManager implements IPropertyChangeListener, IWindo
 	/**
 	 *The set of label update listeners
 	 */
-	private ListenerList<ILaunchLabelChangedListener> fLabelListeners = new ListenerList<>();
+	private final ListenerList<ILaunchLabelChangedListener> fLabelListeners = new ListenerList<>();
 
 	/**
 	 * The map of ToolBars that have mouse tracker listeners associated with them:
 	 * stored as Map<IWorkbenchWindow, ToolBar>
 	 */
-	private HashMap<IWorkbenchWindow, ToolBar> fToolbars = new HashMap<>();
+	private final HashMap<IWorkbenchWindow, ToolBar> fToolbars = new HashMap<>();
 
 	/**
 	 * the map of current labels
 	 */
-	private HashMap<ILaunchGroup, String> fCurrentLabels = new HashMap<>();
+	private final HashMap<ILaunchGroup, String> fCurrentLabels = new HashMap<>();
 
 	/**
 	 * The selection has changed and we need to update the labels
@@ -110,19 +110,19 @@ public class LaunchingResourceManager implements IPropertyChangeListener, IWindo
 	/**
 	 * Set of windows that have been opened and that we have registered selection listeners with
 	 */
-	private HashSet<IWorkbenchWindow> fWindows = new HashSet<>();
+	private final HashSet<IWorkbenchWindow> fWindows = new HashSet<>();
 
 	/**
 	 * Cache of IResource -> ILaunchConfiguration[] used during a tooltip update job.
 	 * The cache is cleared after each tooltip update job is complete.
 	 */
-	private HashMap<IResource, ILaunchConfiguration[]> fConfigCache = new HashMap<>();
+	private final HashMap<IResource, ILaunchConfiguration[]> fConfigCache = new HashMap<>();
 
 	/**
 	 * Cache of IResource -> LaunchShortcutExtension used during a tooltip update job.
 	 * The cache is cleared after each tooltip update job is complete.
 	 */
-	private HashMap<IResource, List<LaunchShortcutExtension>> fExtCache = new HashMap<>();
+	private final HashMap<IResource, List<LaunchShortcutExtension>> fExtCache = new HashMap<>();
 
 	/**
 	 * Constant denoting the empty string;
@@ -132,7 +132,7 @@ public class LaunchingResourceManager implements IPropertyChangeListener, IWindo
 	/**
 	 * Provides a mouse tracker listener for the launching main toolbar
 	 */
-	private MouseTrackAdapter fMouseListener = new MouseTrackAdapter() {
+	private final MouseTrackAdapter fMouseListener = new MouseTrackAdapter() {
 		@Override
 		public void mouseEnter(MouseEvent e) {
 			if(fUpdateLabel) {

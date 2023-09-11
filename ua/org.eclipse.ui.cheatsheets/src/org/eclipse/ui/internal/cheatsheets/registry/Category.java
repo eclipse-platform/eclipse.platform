@@ -43,7 +43,7 @@ public class Category implements IWorkbenchAdapter, IPluginContribution,
 	 */
 	public final static String MISC_ID = "org.eclipse.ui.cheatsheets.otherCategory"; //$NON-NLS-1$
 
-	private String id;
+	private final String id;
 
 	private String name;
 

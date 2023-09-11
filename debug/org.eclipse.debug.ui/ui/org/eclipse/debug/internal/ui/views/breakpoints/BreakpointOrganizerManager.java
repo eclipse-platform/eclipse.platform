@@ -44,7 +44,7 @@ public class BreakpointOrganizerManager {
 	private static BreakpointOrganizerManager fgManager;
 
 	// map for lookup by id
-	private Map<String, IBreakpointOrganizer> fOrganizers = new HashMap<>();
+	private final Map<String, IBreakpointOrganizer> fOrganizers = new HashMap<>();
 	// cached sorted list by label
 	private List<IBreakpointOrganizer> fSorted = null;
 

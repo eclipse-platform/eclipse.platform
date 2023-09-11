@@ -91,7 +91,7 @@ public class LaunchConfigurationTabGroupViewer {
 	/**
 	 * Containing launch dialog
 	 */
-	private ILaunchConfigurationDialog fDialog;
+	private final ILaunchConfigurationDialog fDialog;
 
 	/**
 	 * The launch configuration (original) being edited

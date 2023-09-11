@@ -90,14 +90,14 @@ public class BuildFileCreator {
 	protected static boolean CHECK_SOURCE_CYCLES = true;
 	protected static boolean CREATE_ECLIPSE_COMPILE_TARGET = true;
 
-	private Document doc;
+	private final Document doc;
 	private Element root;
-	private IJavaProject project;
-	private String projectName;
-	private String projectRoot;
-	private Map<String, String> variable2valueMap;
-	private Shell shell;
-	private Set<String> visited = new TreeSet<>(); // record used subclasspaths
+	private final IJavaProject project;
+	private final String projectName;
+	private final String projectRoot;
+	private final Map<String, String> variable2valueMap;
+	private final Shell shell;
+	private final Set<String> visited = new TreeSet<>(); // record used subclasspaths
 	private Node classpathNode;
 
 	/**

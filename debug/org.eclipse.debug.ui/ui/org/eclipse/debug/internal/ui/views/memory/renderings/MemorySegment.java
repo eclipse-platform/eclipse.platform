@@ -22,10 +22,10 @@ import org.eclipse.debug.core.model.MemoryByte;
 
 public class MemorySegment extends PlatformObject {
 
-	private BigInteger fAddress;
+	private final BigInteger fAddress;
 	private BigInteger fEndAddress;
-	private MemoryByte[] fBytes;
-	private int fNumAddressableUnits;
+	private final MemoryByte[] fBytes;
+	private final int fNumAddressableUnits;
 
 	public MemorySegment(BigInteger address, MemoryByte[] bytes, int numAddressableUnits)
 	{

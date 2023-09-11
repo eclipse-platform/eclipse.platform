@@ -57,17 +57,17 @@ import org.eclipse.ui.PlatformUI;
  */
 public class GroupBreakpointsByDialog extends TrayDialog {
 
-	private BreakpointsView fView;
+	private final BreakpointsView fView;
 
 	// Table viewer that presents available containers
 	private TableViewer fAvailableViewer;
-	private AvailableOrganizersProvider fAvailableOrganizersProvider= new AvailableOrganizersProvider();
+	private final AvailableOrganizersProvider fAvailableOrganizersProvider= new AvailableOrganizersProvider();
 
 	// Tree viewer that presents selected containers
 	private TreeViewer fSelectedViewer;
-	private SelectedOrganizerProvider fSelectedOrganizersProvider= new SelectedOrganizerProvider();
+	private final SelectedOrganizerProvider fSelectedOrganizersProvider= new SelectedOrganizerProvider();
 
-	private List<Object> fResult = new ArrayList<>();
+	private final List<Object> fResult = new ArrayList<>();
 
 	private Button fAddButton;
 	private Button fRemoveButton;
@@ -78,7 +78,7 @@ public class GroupBreakpointsByDialog extends TrayDialog {
 	 * Selection listener that listens to selection from all buttons in this
 	 * dialog.
 	 */
-	private SelectionAdapter fSelectionListener= new SelectionAdapter() {
+	private final SelectionAdapter fSelectionListener= new SelectionAdapter() {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			Object source= e.getSource();
@@ -474,7 +474,7 @@ public class GroupBreakpointsByDialog extends TrayDialog {
 	 * Label provider which provides text and images for breakpoint container factories
 	 */
 	private class BreakpointOrganzierLabelProvider extends LabelProvider {
-		private HashMap<ImageDescriptor, Image> fImageCache = new HashMap<>();
+		private final HashMap<ImageDescriptor, Image> fImageCache = new HashMap<>();
 
 		@Override
 		public String getText(Object element) {

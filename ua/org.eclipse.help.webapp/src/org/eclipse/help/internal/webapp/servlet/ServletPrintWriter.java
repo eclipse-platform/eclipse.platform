@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 
 public class ServletPrintWriter extends PrintWriter{
 
-	private StringBuilder buffer;
+	private final StringBuilder buffer;
 
 	public ServletPrintWriter() {
 		super(new ByteArrayOutputStream());

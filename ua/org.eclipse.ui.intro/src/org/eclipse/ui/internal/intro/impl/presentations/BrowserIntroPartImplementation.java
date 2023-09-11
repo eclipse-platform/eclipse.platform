@@ -131,7 +131,7 @@ public class BrowserIntroPartImplementation extends
 
 	private String savedContent = null;
 
-	private Action openBrowserAction = new Action() {
+	private final Action openBrowserAction = new Action() {
 
 		{
 			setToolTipText(Messages.IntroPart_openExternal_tooltip);
@@ -187,7 +187,7 @@ public class BrowserIntroPartImplementation extends
 	// internal performance test hook
 	private boolean isFinishedLoading;
 
-	private boolean resizeActionsAdded = false;
+	private final boolean resizeActionsAdded = false;
 
 	@Override
 	protected void updateNavigationActionsState() {

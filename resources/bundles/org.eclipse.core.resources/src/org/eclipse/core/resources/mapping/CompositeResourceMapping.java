@@ -31,7 +31,7 @@ public final class CompositeResourceMapping extends ResourceMapping {
 	private final ResourceMapping[] mappings;
 	private final Object modelObject;
 	private IProject[] projects;
-	private String providerId;
+	private final String providerId;
 
 	/**
 	 * Create a composite mapping that obtains its traversals from a set of sub-mappings.

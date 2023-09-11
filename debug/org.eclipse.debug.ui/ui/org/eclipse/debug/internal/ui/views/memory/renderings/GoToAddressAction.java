@@ -46,8 +46,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public class GoToAddressAction extends Action
 {
-	private IMemoryRenderingContainer fContainer;
-	private IRepositionableMemoryRendering fRendering;
+	private final IMemoryRenderingContainer fContainer;
+	private final IRepositionableMemoryRendering fRendering;
 
 	public GoToAddressAction(IMemoryRenderingContainer container, IRepositionableMemoryRendering rendering)
 	{

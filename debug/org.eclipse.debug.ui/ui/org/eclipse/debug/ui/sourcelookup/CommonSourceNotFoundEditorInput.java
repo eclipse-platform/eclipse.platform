@@ -42,7 +42,7 @@ public class CommonSourceNotFoundEditorInput extends PlatformObject implements I
 	/**
 	 * the artifact that the editor is being opened for
 	 */
-	private Object fArtifact;
+	private final Object fArtifact;
 
 	/**
 	 * Constructs an editor input for the given artifact associated with source.

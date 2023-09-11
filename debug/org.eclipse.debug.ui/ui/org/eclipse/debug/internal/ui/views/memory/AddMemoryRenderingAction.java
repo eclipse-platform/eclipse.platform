@@ -26,7 +26,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AddMemoryRenderingAction extends AddMemoryBlockAction {
 
-	private IMemoryRenderingContainer fContainer;
+	private final IMemoryRenderingContainer fContainer;
 
 	public AddMemoryRenderingAction(IMemoryRenderingContainer container) {
 		super(DebugUIMessages.AddMemoryRenderingAction_Add_renderings, AS_PUSH_BUTTON, container.getMemoryRenderingSite());

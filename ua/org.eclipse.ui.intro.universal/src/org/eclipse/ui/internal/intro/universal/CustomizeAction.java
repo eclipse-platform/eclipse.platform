@@ -21,7 +21,7 @@ import org.eclipse.ui.intro.IIntroSite;
 
 public class CustomizeAction extends Action {
 
-	private IIntroSite site;
+	private final IIntroSite site;
 
 	public CustomizeAction(IIntroSite site) {
 		this.site = site;

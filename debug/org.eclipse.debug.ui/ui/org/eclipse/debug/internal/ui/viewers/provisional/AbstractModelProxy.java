@@ -44,7 +44,7 @@ public abstract class AbstractModelProxy implements IModelProxy2 {
 	private Job fInstallJob;
 
 
-	private ListenerList<IModelChangedListener> fListeners = new ListenerList<>();
+	private final ListenerList<IModelChangedListener> fListeners = new ListenerList<>();
 
 	protected ListenerList<IModelChangedListener> getListeners() {
 		synchronized (fListeners) {

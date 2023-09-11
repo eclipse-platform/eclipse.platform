@@ -20,7 +20,7 @@ import org.eclipse.debug.core.model.IVariable;
 public class AntProperties extends AntDebugElement implements IVariable {
 
 	private IValue fValue;
-	private String fName;
+	private final String fName;
 	private boolean fValid = true;
 
 	public AntProperties(AntDebugTarget target, String name) {

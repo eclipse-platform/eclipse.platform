@@ -23,7 +23,7 @@ import org.eclipse.ui.IActionBars;
  */
 public abstract class AbstractViewerAdvisor {
 
-	private ISynchronizePageConfiguration configuration;
+	private final ISynchronizePageConfiguration configuration;
 	private StructuredViewer viewer;
 
 	public AbstractViewerAdvisor(ISynchronizePageConfiguration configuration) {

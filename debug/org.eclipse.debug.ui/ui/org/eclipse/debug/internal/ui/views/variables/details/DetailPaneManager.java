@@ -63,7 +63,7 @@ public class DetailPaneManager {
 	 */
 	private static class DetailPaneFactoryExtension implements IDetailPaneFactory{
 
-		private IConfigurationElement fConfigElement;
+		private final IConfigurationElement fConfigElement;
 		private IDetailPaneFactory fFactory;
 		private Expression fEnablementExpression;
 
@@ -246,7 +246,7 @@ public class DetailPaneManager {
 	 * Maps the IDs of types of detail panes to the factory that can create them.
 	 * There can currently only be one factory for a given type of details pane.
 	 */
-	private Map<String, IDetailPaneFactory> fFactoriesByPaneID;
+	private final Map<String, IDetailPaneFactory> fFactoriesByPaneID;
 
 	/**
 	 * Maps a Set of detail pane id's to the one detail pane id that is preferred.

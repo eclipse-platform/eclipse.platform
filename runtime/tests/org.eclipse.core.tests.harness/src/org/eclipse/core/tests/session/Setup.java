@@ -179,7 +179,7 @@ public class Setup implements Cloneable {
 
 	private String id;
 
-	private SetupManager manager;
+	private final SetupManager manager;
 
 	private String name;
 

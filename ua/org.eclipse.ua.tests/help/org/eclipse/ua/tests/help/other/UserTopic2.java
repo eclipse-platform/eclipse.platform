@@ -23,7 +23,7 @@ import org.eclipse.help.IUAElement;
 
 public class UserTopic2 extends UserTopic implements ITopic2 {
 
-	private List<ICriteria> criteria = new ArrayList<>();
+	private final List<ICriteria> criteria = new ArrayList<>();
 
 	@Override
 	public IUAElement[] getChildren() {

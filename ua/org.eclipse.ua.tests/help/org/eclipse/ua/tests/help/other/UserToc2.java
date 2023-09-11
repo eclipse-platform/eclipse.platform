@@ -27,7 +27,7 @@ public class UserToc2 extends UserToc implements IToc2 {
 		super(label, href, isEnabled);
 	}
 
-	private List<ICriteria> criteria = new ArrayList<>();
+	private final List<ICriteria> criteria = new ArrayList<>();
 
 	@Override
 	public IUAElement[] getChildren() {

@@ -209,7 +209,7 @@ public class LaunchPerspectivePreferencePage extends PreferencePage implements I
 	/**
 	 * A default selection listener to be reused by all combo boxes presenting perspective data
 	 */
-	private SelectionListener fSelectionListener = new SelectionListener() {
+	private final SelectionListener fSelectionListener = new SelectionListener() {
 		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {}
 

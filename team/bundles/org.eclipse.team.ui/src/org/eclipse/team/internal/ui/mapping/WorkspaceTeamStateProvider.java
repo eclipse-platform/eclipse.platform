@@ -49,7 +49,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		implements ITeamStateChangeListener, IRepositoryProviderListener,
 		IResourceChangeListener {
 
-	private Map<String, ITeamStateProvider> providers = new HashMap<>();
+	private final Map<String, ITeamStateProvider> providers = new HashMap<>();
 
 	public WorkspaceTeamStateProvider() {
 		RepositoryProviderManager.getInstance().addListener(this);

@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class MockServletResponse implements HttpServletResponse {
 
-	private List<Cookie> cookies = new ArrayList<>();
+	private final List<Cookie> cookies = new ArrayList<>();
 	private String illegalCharactersFound = "";
 
 	@Override

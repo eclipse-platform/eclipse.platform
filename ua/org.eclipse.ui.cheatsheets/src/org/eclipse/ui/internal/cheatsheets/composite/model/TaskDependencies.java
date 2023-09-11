@@ -35,9 +35,9 @@ import org.eclipse.ui.internal.provisional.cheatsheets.ICompositeCheatSheetTask;
 public class TaskDependencies {
 
 	private static class Dependency {
-		private AbstractTask sourceTask;
+		private final AbstractTask sourceTask;
 
-		private String requiredTaskId;
+		private final String requiredTaskId;
 
 		public Dependency(AbstractTask sourceTask, String requiredTaskId) {
 			this.sourceTask = sourceTask;
@@ -53,9 +53,9 @@ public class TaskDependencies {
 		}
 	}
 
-	private List<Dependency> dependencies;
+	private final List<Dependency> dependencies;
 
-	private Map<String, AbstractTask> taskIdMap = new HashMap<>();
+	private final Map<String, AbstractTask> taskIdMap = new HashMap<>();
 
 	public void saveId(AbstractTask task) {
 		String id = task.getId();

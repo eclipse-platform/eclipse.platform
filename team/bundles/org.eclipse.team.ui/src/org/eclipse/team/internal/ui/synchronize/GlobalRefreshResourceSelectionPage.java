@@ -49,7 +49,7 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
  */
 public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSelectionPage {
 
-	private List resources;
+	private final List resources;
 
 	/**
 	 * Content provider that accepts a <code>SubscriberParticipant</code> as input and
@@ -70,7 +70,7 @@ public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSele
 	 * is useful for participants that have non-project roots.
 	 */
 	class MyLabelProvider extends LabelProvider {
-		private LabelProvider workbenchProvider = new WorkbenchLabelProvider();
+		private final LabelProvider workbenchProvider = new WorkbenchLabelProvider();
 		@Override
 		public String getText(Object element) {
 			if(element instanceof IContainer) {

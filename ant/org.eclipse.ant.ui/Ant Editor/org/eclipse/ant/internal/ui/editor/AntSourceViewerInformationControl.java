@@ -45,7 +45,7 @@ public class AntSourceViewerInformationControl implements IInformationControl, I
 	private Shell fShell;
 
 	/** The control's source viewer */
-	private SourceViewer fViewer;
+	private final SourceViewer fViewer;
 
 	/** The control's text widget */
 	private StyledText fText;

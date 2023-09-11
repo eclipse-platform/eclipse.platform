@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.Event;
  */
 public class LaunchConfigurationAction extends Action {
 
-	private ILaunchConfiguration fConfig;
-	private String fMode;
+	private final ILaunchConfiguration fConfig;
+	private final String fMode;
 
 	/**
 	 * Constructor

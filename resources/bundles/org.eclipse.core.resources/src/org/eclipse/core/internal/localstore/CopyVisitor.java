@@ -51,7 +51,7 @@ public class CopyVisitor implements IUnifiedTreeVisitor {
 	/** visitor to refresh unsynchronized nodes */
 	protected RefreshLocalVisitor refreshLocalVisitor;
 
-	private FileSystemResourceManager localManager;
+	private final FileSystemResourceManager localManager;
 
 	public CopyVisitor(IResource rootSource, IResource destination, int updateFlags, IProgressMonitor monitor) {
 		this.localManager = ((Resource) rootSource).getLocalManager();

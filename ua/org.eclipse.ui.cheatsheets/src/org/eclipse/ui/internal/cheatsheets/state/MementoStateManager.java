@@ -33,11 +33,11 @@ import org.eclipse.ui.internal.cheatsheets.views.CheatSheetManager;
 
 public class MementoStateManager implements ICheatSheetStateManager {
 
-	private IMemento memento;
+	private final IMemento memento;
 	private CheatSheetElement element;
-	private CheatSheetSaveHelper saveHelper = new CheatSheetSaveHelper();
+	private final CheatSheetSaveHelper saveHelper = new CheatSheetSaveHelper();
 	private Properties props;
-	private ICheatSheetManager parentCsm;
+	private final ICheatSheetManager parentCsm;
 
 	/**
 	 * @param memento The memento which will be used to initialize the state. May be

@@ -24,7 +24,7 @@ public class AboutParser extends ResultParser {
 
 	private ParseElement element = null;
 	private String currentTag;
-	private long service;
+	private final long service;
 
 	public AboutParser(long service) {
 		super(JSonHelper.TITLE);

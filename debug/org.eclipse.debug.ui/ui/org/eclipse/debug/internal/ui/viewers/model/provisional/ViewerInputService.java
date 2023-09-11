@@ -43,9 +43,9 @@ public class ViewerInputService {
 
 	private IViewerInputRequestor fRequestor = null;
 
-	private ITreeModelViewer fViewer;
+	private final ITreeModelViewer fViewer;
 
-	private IViewerInputRequestor fProxyRequest = update -> {
+	private final IViewerInputRequestor fProxyRequest = update -> {
 		synchronized (ViewerInputService.this) {
 			if (fPendingUpdate == update) {
 				fPendingUpdate = null;

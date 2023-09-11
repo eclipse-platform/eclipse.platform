@@ -24,11 +24,11 @@ import org.eclipse.ui.internal.cheatsheets.Messages;
  * Action used to enable / disable method filter properties
  */
 public class CheatSheetExpandRestoreAction extends Action {
-	private CheatSheetViewer viewer;
+	private final CheatSheetViewer viewer;
 	private boolean collapsed = false;
 
-	private ImageDescriptor collapseImage;
-	private ImageDescriptor disabledImage;
+	private final ImageDescriptor collapseImage;
+	private final ImageDescriptor disabledImage;
 
 	public CheatSheetExpandRestoreAction(String title, boolean initValue, CheatSheetViewer viewer) {
 		super(title);

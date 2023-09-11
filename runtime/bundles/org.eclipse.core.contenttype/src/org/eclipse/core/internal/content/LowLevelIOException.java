@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.Assert;
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private IOException actual;
+	private final IOException actual;
 
 	public LowLevelIOException(IOException actual) {
 		// ensure we don't wrap more than once

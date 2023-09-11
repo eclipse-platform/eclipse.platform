@@ -39,11 +39,11 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 	private StatusLineCLabelContribution conflicting;
 	private StatusLineCLabelContribution totalChanges;
 
-	private Image incomingImage = TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DLG_SYNC_INCOMING).createImage();
-	private Image outgoingImage = TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DLG_SYNC_OUTGOING).createImage();
-	private Image conflictingImage = TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DLG_SYNC_CONFLICTING).createImage();
+	private final Image incomingImage = TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DLG_SYNC_INCOMING).createImage();
+	private final Image outgoingImage = TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DLG_SYNC_OUTGOING).createImage();
+	private final Image conflictingImage = TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DLG_SYNC_CONFLICTING).createImage();
 
-	private ISynchronizePageConfiguration configuration;
+	private final ISynchronizePageConfiguration configuration;
 
 	public StatusLineContributionGroup(final Shell shell, ISynchronizePageConfiguration configuration) {
 		this.configuration = configuration;

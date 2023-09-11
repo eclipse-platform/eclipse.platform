@@ -30,7 +30,7 @@ import org.eclipse.jface.viewers.*;
 public class TreeSelectionProviderDecorator implements ISelectionProvider {
 
 	/** The decorated selection provider. */
-	private ISelectionProvider selectionProvider;
+	private final ISelectionProvider selectionProvider;
 
 	/**
 	 * Constructs a <code>TreeSelectionProviderDecorator</code> having the given

@@ -58,7 +58,7 @@ public class WatchExpressionDialog extends StatusDialog {
 	/**
 	 * The detail formatter to edit.
 	 */
-	private IWatchExpression fWatchExpression;
+	private final IWatchExpression fWatchExpression;
 
 	// widgets
 	private SourceViewer fSnippetViewer;

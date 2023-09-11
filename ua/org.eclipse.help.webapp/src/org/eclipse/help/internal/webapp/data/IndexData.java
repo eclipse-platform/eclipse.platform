@@ -31,22 +31,22 @@ import org.eclipse.help.internal.HelpPlugin;
  * Helper class for Index view initialization
  */
 public class IndexData extends ActivitiesData {
-	private IIndex index;
+	private final IIndex index;
 
 	// images directory
-	private String imagesDirectory;
+	private final String imagesDirectory;
 
 	// plus/minus image file name
-	private String plusMinusImage;
+	private final String plusMinusImage;
 
 	// name of expand/collapse class for IMG, UL tags
-	private String expandedCollapsed;
+	private final String expandedCollapsed;
 
 	// use or not expand/collapse feature
-	private boolean usePlusMinus;
+	private final boolean usePlusMinus;
 
 	// expand all by default flag
-	private boolean expandAll;
+	private final boolean expandAll;
 
 	// global writer for private generate...() methods
 	private Writer out;

@@ -41,7 +41,7 @@ public class TestTaskEvents {
 
 	public static class TaskMap {
 
-		private Map<String, TaskCounter> map = new HashMap<>();
+		private final Map<String, TaskCounter> map = new HashMap<>();
 		private int eventCount = 0;
 
 		public void put(ICompositeCheatSheetTask task) {

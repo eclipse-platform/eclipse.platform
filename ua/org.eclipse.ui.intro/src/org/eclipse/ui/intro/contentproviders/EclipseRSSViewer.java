@@ -395,7 +395,7 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 		private static final String ELEMENT_TITLE = "title"; //$NON-NLS-1$
 		private static final String ELEMENT_LINK = "link"; //$NON-NLS-1$
 
-		private Stack<String> stack = new Stack<>();
+		private final Stack<String> stack = new Stack<>();
 		private StringBuilder buf;
 		private NewsItem item;
 

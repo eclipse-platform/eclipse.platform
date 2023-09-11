@@ -59,8 +59,8 @@ public class CheatSheetMenu extends ContributionItem {
 
 	private IMenuContributor menuContributor;
 
-	private Comparator<CheatSheetElement> comparator = new Comparator<>() {
-		private Collator collator = Collator.getInstance();
+	private final Comparator<CheatSheetElement> comparator = new Comparator<>() {
+		private final Collator collator = Collator.getInstance();
 
 		@Override
 		public int compare(CheatSheetElement ob1, CheatSheetElement ob2) {

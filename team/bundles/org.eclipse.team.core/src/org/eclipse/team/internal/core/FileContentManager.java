@@ -141,7 +141,7 @@ public class FileContentManager implements IFileContentManager {
 	}
 
 	private final UserStringMappings fUserExtensionMappings, fUserNameMappings;
-	private PluginStringMappings fPluginExtensionMappings;//, fPluginNameMappings;
+	private final PluginStringMappings fPluginExtensionMappings;//, fPluginNameMappings;
 	private IContentType textContentType;
 
 	public FileContentManager() {

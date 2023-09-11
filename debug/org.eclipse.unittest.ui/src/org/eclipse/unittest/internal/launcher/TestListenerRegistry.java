@@ -40,7 +40,7 @@ public class TestListenerRegistry {
 	/**
 	 * List storing the registered test run listeners
 	 */
-	private ListenerList<TestRunListener> fUnitTestRunListeners = new ListenerList<>();
+	private final ListenerList<TestRunListener> fUnitTestRunListeners = new ListenerList<>();
 
 	private TestListenerRegistry() {
 	}

@@ -36,7 +36,7 @@ import org.eclipse.ui.progress.UIJob;
 @SuppressWarnings("restriction")
 public class TipSourceProvider extends AbstractSourceProvider {
 	private boolean fNewTips;
-	private ITipManager fManager;
+	private final ITipManager fManager;
 	private UIJob job;
 	private boolean startup = true;
 

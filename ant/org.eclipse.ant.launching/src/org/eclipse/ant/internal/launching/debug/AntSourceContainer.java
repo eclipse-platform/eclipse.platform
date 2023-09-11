@@ -30,7 +30,7 @@ import org.eclipse.debug.core.sourcelookup.containers.LocalFileStorage;
 
 public class AntSourceContainer extends AbstractSourceContainer {
 
-	private IWorkspaceRoot fRoot;
+	private final IWorkspaceRoot fRoot;
 
 	public AntSourceContainer() {
 		fRoot = ResourcesPlugin.getWorkspace().getRoot();

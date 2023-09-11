@@ -63,7 +63,7 @@ public abstract class AbstractMemoryRendering extends PlatformObject implements 
 	private ListenerList<IPropertyChangeListener> fPropertyListeners;
 	private boolean fVisible = true;
 	private MenuManager fPopupMenuMgr;
-	private String fRenderingId;
+	private final String fRenderingId;
 
 	private class ConnectionJob extends Job
 	{

@@ -28,8 +28,8 @@ import org.eclipse.compare.examples.xml.ui.StatusInfo;
  */
 public class XMLCompareEditCopyIdMapDialog extends StatusDialog {
 	
-	private HashMap fIdMaps;
-	private HashMap fIdMapsInternal;
+	private final HashMap fIdMaps;
+	private final HashMap fIdMapsInternal;
 	
 	private Text fIdMapText;
 	private String fResult;

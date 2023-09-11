@@ -35,7 +35,7 @@ public class TimeTriggeredProgressMonitorDialog extends ProgressMonitorDialog {
 	/**
 	 * The time considered to be the long operation time.
 	 */
-	private int longOperationTime;
+	private final int longOperationTime;
 
 	/**
 	 * The time at which the dialog should be opened.

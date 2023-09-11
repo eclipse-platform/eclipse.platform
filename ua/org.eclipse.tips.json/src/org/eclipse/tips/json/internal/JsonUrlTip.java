@@ -28,10 +28,10 @@ import com.google.gson.JsonObject;
  */
 public class JsonUrlTip extends Tip implements IUrlTip, IJsonTip {
 
-	private String fSubject;
-	private Date fDate;
-	private String fUrl;
-	private JsonObject fJsonObject;
+	private final String fSubject;
+	private final Date fDate;
+	private final String fUrl;
+	private final JsonObject fJsonObject;
 
 	/**
 	 * Creates the tip out of the passed Json object.

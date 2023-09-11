@@ -40,7 +40,7 @@ public class DumpContentsView extends SpyView {
 	protected String[] registeredFileNames;
 
 	/** The dumper factory used to instantiate dumpers. */
-	private DumperFactory dumperFactory;
+	private final DumperFactory dumperFactory;
 
 	/** The current selected file. */
 	private File currentFile;

@@ -218,12 +218,12 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
 	 */
 	class OccurrencesFinderJob extends Job {
 
-		private IDocument fDocument;
-		private ISelection fSelection;
+		private final IDocument fDocument;
+		private final ISelection fSelection;
 		private ISelectionValidator fPostSelectionValidator;
 		private boolean fCanceled = false;
 		private IProgressMonitor fProgressMonitor;
-		private List<Position> fPositions;
+		private final List<Position> fPositions;
 
 		public OccurrencesFinderJob(IDocument document, List<Position> positions, ISelection selection) {
 			super("Occurrences Marker"); //$NON-NLS-1$

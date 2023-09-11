@@ -33,19 +33,19 @@ import org.eclipse.debug.ui.IDebugUIConstants;
 public class IndexedVariablePartition extends PlatformObject implements IVariable  {
 
 	// the starting offset of this partition, into the associated collection
-	private int fOffset;
+	private final int fOffset;
 
 	// the length of this partition
-	private int fLength;
+	private final int fLength;
 
 	// the root variable or expression containing the indexed value
-	private IDebugElement fOriginalVariable;
+	private final IDebugElement fOriginalVariable;
 
 	// the indexed value
-	private IIndexedValue fOriginalValue;
+	private final IIndexedValue fOriginalValue;
 
 	// sub-range of values
-	private IIndexedValue fValuePartition;
+	private final IIndexedValue fValuePartition;
 
 	private String fName = null;
 

@@ -20,7 +20,7 @@ public class WrappedRuntimeException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Throwable target;
+	private final Throwable target;
 
 	public WrappedRuntimeException(Throwable target) {
 		super();

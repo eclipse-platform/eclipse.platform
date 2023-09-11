@@ -64,7 +64,7 @@ import org.eclipse.ui.IMemento;
 public class RegisterGroupProxy implements IModelProxyFactory, IColumnPresentationFactory, IElementContentProvider, IElementMementoProvider {
 
 	private IRegisterGroup[] fGroups;
-	private IStackFrame fFrame;
+	private final IStackFrame fFrame;
 
 	private static final String HASH_CODE = "HASH_CODE"; //$NON-NLS-1$
 
@@ -75,7 +75,7 @@ public class RegisterGroupProxy implements IModelProxyFactory, IColumnPresentati
 	 * models do not know or need to know about the proxy).
 	 */
 	private class Update extends Request implements IViewerUpdate {
-		private IViewerUpdate fViewerUpdate;
+		private final IViewerUpdate fViewerUpdate;
 
 		Update(IViewerUpdate update) {
 			fViewerUpdate = update;
@@ -111,7 +111,7 @@ public class RegisterGroupProxy implements IModelProxyFactory, IColumnPresentati
 
 	private class CountUpdate extends Update implements IChildrenCountUpdate {
 
-		private IChildrenCountUpdate fUpdate;
+		private final IChildrenCountUpdate fUpdate;
 
 		CountUpdate(IChildrenCountUpdate delegate) {
 			super(delegate);
@@ -127,7 +127,7 @@ public class RegisterGroupProxy implements IModelProxyFactory, IColumnPresentati
 
 	private class HasUpdate extends Update implements IHasChildrenUpdate {
 
-		private IHasChildrenUpdate fUpdate;
+		private final IHasChildrenUpdate fUpdate;
 
 		HasUpdate(IHasChildrenUpdate delegate) {
 			super(delegate);
@@ -143,7 +143,7 @@ public class RegisterGroupProxy implements IModelProxyFactory, IColumnPresentati
 
 	private class ChildrenUpdate extends Update implements IChildrenUpdate {
 
-		private IChildrenUpdate fUpdate;
+		private final IChildrenUpdate fUpdate;
 
 		ChildrenUpdate(IChildrenUpdate delegate) {
 			super(delegate);
@@ -174,7 +174,7 @@ public class RegisterGroupProxy implements IModelProxyFactory, IColumnPresentati
 	 */
 	private class MementoRequest extends Update implements IElementMementoRequest {
 
-		private IElementMementoRequest fUpdate;
+		private final IElementMementoRequest fUpdate;
 		MementoRequest(IElementMementoRequest request) {
 			super(request);
 			fUpdate = request;
@@ -197,7 +197,7 @@ public class RegisterGroupProxy implements IModelProxyFactory, IColumnPresentati
 
 	private class ElementCompare extends MementoRequest implements IElementCompareRequest {
 
-		private IElementCompareRequest fRequest;
+		private final IElementCompareRequest fRequest;
 		ElementCompare(IElementCompareRequest request) {
 			super(request);
 			fRequest = request;

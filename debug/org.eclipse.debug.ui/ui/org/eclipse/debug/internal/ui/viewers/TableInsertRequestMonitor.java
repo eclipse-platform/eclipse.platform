@@ -20,7 +20,7 @@ package org.eclipse.debug.internal.ui.viewers;
  */
 public class TableInsertRequestMonitor extends TableAddRequestMonitor {
 
-	private int fIndex;
+	private final int fIndex;
 
 	/**
 	 * @param node

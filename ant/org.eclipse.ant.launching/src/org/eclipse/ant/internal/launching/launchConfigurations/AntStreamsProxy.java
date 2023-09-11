@@ -22,16 +22,16 @@ import org.eclipse.debug.core.model.IStreamsProxy;
  */
 public class AntStreamsProxy implements IStreamsProxy {
 
-	private AntStreamMonitor fErrorMonitor = new AntStreamMonitor();
-	private AntStreamMonitor fOutputMonitor = new AntStreamMonitor();
+	private final AntStreamMonitor fErrorMonitor = new AntStreamMonitor();
+	private final AntStreamMonitor fOutputMonitor = new AntStreamMonitor();
 
 	public static final String ANT_DEBUG_STREAM = AntLaunching.PLUGIN_ID + ".ANT_DEBUG_STREAM"; //$NON-NLS-1$
 	public static final String ANT_VERBOSE_STREAM = AntLaunching.PLUGIN_ID + ".ANT_VERBOSE_STREAM"; //$NON-NLS-1$
 	public static final String ANT_WARNING_STREAM = AntLaunching.PLUGIN_ID + ".ANT_WARNING_STREAM"; //$NON-NLS-1$
 
-	private AntStreamMonitor fDebugMonitor = new AntStreamMonitor();
-	private AntStreamMonitor fVerboseMonitor = new AntStreamMonitor();
-	private AntStreamMonitor fWarningMonitor = new AntStreamMonitor();
+	private final AntStreamMonitor fDebugMonitor = new AntStreamMonitor();
+	private final AntStreamMonitor fVerboseMonitor = new AntStreamMonitor();
+	private final AntStreamMonitor fWarningMonitor = new AntStreamMonitor();
 
 	@Override
 	public IStreamMonitor getErrorStreamMonitor() {

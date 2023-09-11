@@ -38,7 +38,7 @@ public class AntThread extends AntDebugElement implements IThread {
 	/**
 	 * The stackframes associated with this thread
 	 */
-	private List<AntStackFrame> fFrames = new ArrayList<>(1);
+	private final List<AntStackFrame> fFrames = new ArrayList<>(1);
 
 	/**
 	 * The stackframes to be reused on suspension
@@ -67,7 +67,7 @@ public class AntThread extends AntDebugElement implements IThread {
 	 */
 	private AntProperties fRuntimeProperties;
 
-	private Object fPropertiesLock = new Object();
+	private final Object fPropertiesLock = new Object();
 
 	/**
 	 * Constructs a new thread for the given target

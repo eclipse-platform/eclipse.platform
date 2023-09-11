@@ -48,8 +48,8 @@ public abstract class AbstractAntEditorPreferencePage extends PreferencePage imp
 	protected List<IStatus> fStatusList;
 	private boolean fInitialized = false;
 
-	private Map<Button, String> fCheckBoxes = new HashMap<>();
-	private SelectionListener fCheckBoxListener = new SelectionListener() {
+	private final Map<Button, String> fCheckBoxes = new HashMap<>();
+	private final SelectionListener fCheckBoxListener = new SelectionListener() {
 		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
 			// do nothing
@@ -62,16 +62,16 @@ public abstract class AbstractAntEditorPreferencePage extends PreferencePage imp
 		}
 	};
 
-	private Map<Text, String> fTextFields = new HashMap<>();
-	private ModifyListener fTextFieldListener = e -> {
+	private final Map<Text, String> fTextFields = new HashMap<>();
+	private final ModifyListener fTextFieldListener = e -> {
 		if (fInitialized) {
 			Text text = (Text) e.widget;
 			fOverlayStore.setValue(fTextFields.get(text), text.getText());
 		}
 	};
 
-	private Map<Text, String[]> fNumberFields = new HashMap<>();
-	private ModifyListener fNumberFieldListener = e -> {
+	private final Map<Text, String[]> fNumberFields = new HashMap<>();
+	private final ModifyListener fNumberFieldListener = e -> {
 		if (fInitialized) {
 			numberFieldChanged((Text) e.widget);
 		}

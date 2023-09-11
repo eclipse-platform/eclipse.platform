@@ -26,7 +26,7 @@ import org.eclipse.compare.rangedifferencer.IRangeComparator;
  */
 class LineComparator implements IRangeComparator {
 
-	private String[] fLines;
+	private final String[] fLines;
 
 	public LineComparator(InputStream is, String encoding) throws IOException {
 

@@ -68,8 +68,8 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 	private int messageType = NONE;
 	private WorkingSetGroup workingSetGroup;
 
-	private PsfFilenameStore psfFilenameStore = PsfFilenameStore.getInstance();
-	private PsfUrlStore psfUrlStore = PsfUrlStore.getInstance();
+	private final PsfFilenameStore psfFilenameStore = PsfFilenameStore.getInstance();
+	private final PsfUrlStore psfUrlStore = PsfUrlStore.getInstance();
 
 	public ImportProjectSetMainPage(String pageName, String title,
 			ImageDescriptor titleImage) {

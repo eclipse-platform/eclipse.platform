@@ -62,7 +62,7 @@ public class CharsetManager implements IManager {
 	 */
 	private class CharsetManagerJob extends Job {
 		private static final int CHARSET_UPDATE_DELAY = 500;
-		private List<Map.Entry<IProject, Boolean>> asyncChanges = new ArrayList<>();
+		private final List<Map.Entry<IProject, Boolean>> asyncChanges = new ArrayList<>();
 
 		public CharsetManagerJob() {
 			super(Messages.resources_charsetUpdating);

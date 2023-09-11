@@ -28,7 +28,7 @@ import org.eclipse.team.core.TeamException;
  */
 public abstract class ResourceVariantTree extends AbstractResourceVariantTree {
 
-	private ResourceVariantByteStore store;
+	private final ResourceVariantByteStore store;
 
 	/**
 	 * Create a resource variant tree that uses the provided byte store to

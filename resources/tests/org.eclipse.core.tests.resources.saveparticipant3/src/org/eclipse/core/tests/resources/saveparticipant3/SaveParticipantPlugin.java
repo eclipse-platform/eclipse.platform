@@ -27,7 +27,7 @@ public class SaveParticipantPlugin extends Plugin implements ISaveParticipant {
 	/** constants */
 	private static final String SAVE_NUMBER_LOCATION = "saveNumber";
 	/** expected values */
-	private ResourceDeltaVerifier deltaVerifier;
+	private final ResourceDeltaVerifier deltaVerifier;
 	private int expectedPreviousSaveNumber;
 
 	private int saveKind;

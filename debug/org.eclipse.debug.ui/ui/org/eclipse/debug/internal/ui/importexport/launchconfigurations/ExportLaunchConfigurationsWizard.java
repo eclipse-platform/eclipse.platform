@@ -31,7 +31,7 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class ExportLaunchConfigurationsWizard extends Wizard implements IExportWizard {
 
-	private String EXPORT_DIALOG_SETTINGS = "ExportLaunchConfigurations"; //$NON-NLS-1$
+	private final String EXPORT_DIALOG_SETTINGS = "ExportLaunchConfigurations"; //$NON-NLS-1$
 	private IStructuredSelection selectedElements;
 
 	/**

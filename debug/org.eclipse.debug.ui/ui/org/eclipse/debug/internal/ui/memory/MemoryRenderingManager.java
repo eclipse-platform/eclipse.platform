@@ -41,10 +41,10 @@ import org.eclipse.debug.ui.memory.IMemoryRenderingType;
 public class MemoryRenderingManager extends AbstractMemoryRenderingBindingsProvider implements IMemoryRenderingManager {
 
 	// map of rendering type ids to valid rendering types
-	private Map<String, MemoryRenderingType> fRenderingTypes = new HashMap<>();
+	private final Map<String, MemoryRenderingType> fRenderingTypes = new HashMap<>();
 
 	// list of renderingBindings
-	private List<RenderingBindings> fBindings = new ArrayList<>();
+	private final List<RenderingBindings> fBindings = new ArrayList<>();
 
 	// singleton manager
 	private static MemoryRenderingManager fgDefault;

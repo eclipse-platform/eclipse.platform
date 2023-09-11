@@ -197,7 +197,7 @@ public class HelpContentPreferencePage extends PreferencePage implements
 	 * Listens for any change in the UI and checks for valid input and correct
 	 * enablement.
 	 */
-	private Listener changeListener = event -> {
+	private final Listener changeListener = event -> {
 
 		boolean isRemoteHelpEnabled = !(searchLocalHelpOnly.getSelection());
 

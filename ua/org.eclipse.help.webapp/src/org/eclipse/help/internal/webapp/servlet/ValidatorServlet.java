@@ -58,7 +58,7 @@ import org.eclipse.help.internal.webapp.utils.Utils;
 public class ValidatorServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -3783758607845176051L;
-	private Hashtable<String, HttpServlet> servletTable = new Hashtable<>();
+	private final Hashtable<String, HttpServlet> servletTable = new Hashtable<>();
 
 	protected void process(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -191,7 +191,7 @@ public class ValidatorServlet extends HttpServlet {
 
 	private class HttpServletResponseAdv extends HttpServletResponseWrapper {
 
-		private HttpServletResponse response;
+		private final HttpServletResponse response;
 		private ServletPrintWriter writer;
 		private ServletOutputStream stream;
 

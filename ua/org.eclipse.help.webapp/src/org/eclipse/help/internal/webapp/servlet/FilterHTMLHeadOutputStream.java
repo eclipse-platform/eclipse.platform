@@ -42,7 +42,7 @@ public class FilterHTMLHeadOutputStream extends FilterOutputStream {
 
 	private int state = STATE_START;
 
-	private byte[] toInsert;
+	private final byte[] toInsert;
 
 	ByteArrayOutputStream buffer = new ByteArrayOutputStream(7);
 

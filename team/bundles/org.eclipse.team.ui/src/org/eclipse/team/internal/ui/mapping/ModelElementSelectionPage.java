@@ -53,7 +53,7 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
 public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage implements INavigatorContentServiceListener {
 
 	private INavigatorContentService service;
-	private ISynchronizationScopeManager manager;
+	private final ISynchronizationScopeManager manager;
 	private ContainerCheckedTreeViewer fViewer;
 	private boolean initialized;
 

@@ -26,9 +26,9 @@ import org.eclipse.core.runtime.CoreException;
  */
 public final class DefaultVariable implements IEvaluationContext {
 
-	private Object fDefaultVariable;
-	private IEvaluationContext fParent;
-	private IEvaluationContext fManagedPool;
+	private final Object fDefaultVariable;
+	private final IEvaluationContext fParent;
+	private final IEvaluationContext fManagedPool;
 
 	/**
 	 * Constructs a new variable pool for a single default variable.

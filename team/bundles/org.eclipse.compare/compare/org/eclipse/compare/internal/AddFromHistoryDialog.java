@@ -101,7 +101,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 	}
 
 	static class FileHistory {
-		private IFile fFile;
+		private final IFile fFile;
 		private IFileState[] fStates;
 		private int fSelected;
 
@@ -147,7 +147,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 	}
 
 	private CompareConfiguration fCompareConfiguration;
-	private ArrayList<FileHistory> fArrayList= new ArrayList<>();
+	private final ArrayList<FileHistory> fArrayList= new ArrayList<>();
 	private FileHistory fCurrentFileHistory;
 
 	// SWT controls

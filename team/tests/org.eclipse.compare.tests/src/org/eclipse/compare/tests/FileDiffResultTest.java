@@ -55,9 +55,9 @@ public class FileDiffResultTest extends WorkspaceTest {
 
 	private static final String NEW_FILE_CONTENT = "Hi There";
 
-	private IProgressMonitor nullProgressMonitor = new NullProgressMonitor();
+	private final IProgressMonitor nullProgressMonitor = new NullProgressMonitor();
 
-	private PatchConfiguration patchConfiguration = new PatchConfiguration();
+	private final PatchConfiguration patchConfiguration = new PatchConfiguration();
 
 	/**
 	 * Tests applying a patch which creates a new file in a project. The file

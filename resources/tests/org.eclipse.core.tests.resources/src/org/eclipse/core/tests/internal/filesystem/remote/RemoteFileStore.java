@@ -34,10 +34,10 @@ public class RemoteFileStore extends MemoryFileStore {
 		return authority;
 	}
 
-	private String userInfo;
-	private String host;
-	private int port;
-	private IPath remotePath;
+	private final String userInfo;
+	private final String host;
+	private final int port;
+	private final IPath remotePath;
 
 	public RemoteFileStore(String userInfo, String host, int port, IPath path) {
 		super(IPath.ROOT.append(createAuthoritySegment(userInfo, host, port)).append(path));

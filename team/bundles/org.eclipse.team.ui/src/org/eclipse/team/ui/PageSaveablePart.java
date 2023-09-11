@@ -65,13 +65,13 @@ import org.eclipse.ui.progress.IProgressService;
 @Deprecated
 public abstract class PageSaveablePart extends SaveablePartAdapter implements IContentChangeListener{
 
-	private CompareConfiguration cc;
+	private final CompareConfiguration cc;
 	Shell shell;
 
 	// Tracking of dirty state
 	private boolean fDirty= false;
-	private ArrayList<Object> fDirtyViewers= new ArrayList<>();
-	private IPropertyChangeListener fDirtyStateListener;
+	private final ArrayList<Object> fDirtyViewers= new ArrayList<>();
+	private final IPropertyChangeListener fDirtyStateListener;
 
 	//	 SWT controls
 	private CompareViewerSwitchingPane fContentPane;

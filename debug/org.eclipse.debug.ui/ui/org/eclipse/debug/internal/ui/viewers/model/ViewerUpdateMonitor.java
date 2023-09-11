@@ -30,22 +30,22 @@ import org.eclipse.swt.widgets.Display;
  */
 public abstract class ViewerUpdateMonitor extends Request implements IViewerUpdate {
 
-	private TreeModelContentProvider fContentProvider;
+	private final TreeModelContentProvider fContentProvider;
 
 	/**
 	 * Element's tree path
 	 */
-	private TreePath fElementPath;
+	private final TreePath fElementPath;
 
 	/**
 	 * Element
 	 */
-	private Object fElement;
+	private final Object fElement;
 
 	/**
 	 * Element content provider
 	 */
-	private IElementContentProvider fElementContentProvider;
+	private final IElementContentProvider fElementContentProvider;
 
 	/**
 	 * Whether this request's 'done' method has been called.
@@ -71,7 +71,7 @@ public abstract class ViewerUpdateMonitor extends Request implements IViewerUpda
 	/**
 	 * Presentation context
 	 */
-	private IPresentationContext fContext;
+	private final IPresentationContext fContext;
 
 	/**
 	 * Constructs an update for the given content provider

@@ -104,16 +104,16 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 
 	private String id;
 
-	private Composite container;
+	private final Composite container;
 
 	private Composite filteringGroup;
 	private FormText searchWordText;
 
-	private ComboPart searchWordCombo;
+	private final ComboPart searchWordCombo;
 
 	private Section scopeSection;
 
-	private Button goButton;
+	private final Button goButton;
 
 	private Button shellDefaultButton;
 
@@ -123,11 +123,11 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 
 	private Observer engineObserver;
 
-	private ScopeSetManager scopeSetManager;
+	private final ScopeSetManager scopeSetManager;
 
 	private static final int COMBO_HISTORY_SIZE = 10;
 
-	private JobListener jobListener;
+	private final JobListener jobListener;
 
 	private boolean searchPending;
 
@@ -135,7 +135,7 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 
 	private Section alternateQuerySection;
 
-	private FormToolkit toolkit;
+	private final FormToolkit toolkit;
 
 	private Composite alternateQueryComposite;
 

@@ -126,8 +126,8 @@ public class VirtualFindAction extends Action implements IUpdate {
 	}
 
 	private static class FindLabelProvider extends LabelProvider {
-		private VirtualTreeModelViewer fVirtualViewer;
-		private Map<VirtualItem, String> fTextCache = new HashMap<>();
+		private final VirtualTreeModelViewer fVirtualViewer;
+		private final Map<VirtualItem, String> fTextCache = new HashMap<>();
 
 		public FindLabelProvider(VirtualTreeModelViewer viewer, List<VirtualItem> items) {
 			fVirtualViewer = viewer;

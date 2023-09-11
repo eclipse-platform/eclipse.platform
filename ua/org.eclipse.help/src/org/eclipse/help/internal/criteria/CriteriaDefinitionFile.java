@@ -21,9 +21,9 @@ import org.eclipse.help.internal.util.ResourceLocator;
 
 public class CriteriaDefinitionFile {
 
-	private String pluginId;
-	private String file;
-	private String locale;
+	private final String pluginId;
+	private final String file;
+	private final String locale;
 
 	public CriteriaDefinitionFile(String pluginId, String file, String locale) {
 		this.pluginId = pluginId;

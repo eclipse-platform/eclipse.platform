@@ -23,8 +23,8 @@ import org.eclipse.help.internal.UAElement;
 public class IncludeHandler extends ProcessorHandler {
 
 	private IncludeResolver resolver;
-	private DocumentReader reader;
-	private String locale;
+	private final DocumentReader reader;
+	private final String locale;
 
 	/*
 	 * Creates the handler. It needs to know which locale the current document

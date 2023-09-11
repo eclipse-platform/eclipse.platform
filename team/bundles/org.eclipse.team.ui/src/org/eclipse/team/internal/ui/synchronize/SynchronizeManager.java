@@ -114,12 +114,12 @@ public class SynchronizeManager implements ISynchronizeManager {
 	/**
 	 * Contains the participant descriptions
 	 */
-	private SynchronizeParticipantRegistry participantRegistry = new SynchronizeParticipantRegistry();
+	private final SynchronizeParticipantRegistry participantRegistry = new SynchronizeParticipantRegistry();
 
 	/**
 	 * Contains the synchronize wizard descriptions
 	 */
-	private SynchronizeWizardRegistry wizardRegistry = new SynchronizeWizardRegistry();
+	private final SynchronizeWizardRegistry wizardRegistry = new SynchronizeWizardRegistry();
 
 	/**
 	 * Contains a table of the state saved between sessions for a participant. The set is keyed
@@ -192,11 +192,11 @@ public class SynchronizeManager implements ISynchronizeManager {
 	 * only when the participant is required.
 	 */
 	private class ParticipantInstance implements ISynchronizeParticipantReference {
-		private Map<String, ISynchronizeParticipant> participants;
+		private final Map<String, ISynchronizeParticipant> participants;
 		private IMemento savedState;
-		private SynchronizeParticipantDescriptor descriptor;
-		private String secondaryId;
-		private String displayName;
+		private final SynchronizeParticipantDescriptor descriptor;
+		private final String secondaryId;
+		private final String displayName;
 		private boolean dead;
 
 		public ParticipantInstance(SynchronizeParticipantDescriptor descriptor, String secondaryId, String displayName, IMemento savedState) {

@@ -43,10 +43,10 @@ import org.eclipse.debug.core.model.IThread;
 public class AntDebugTarget extends AntDebugElement implements IDebugTarget, IDebugEventSetListener, IBreakpointManagerListener {
 
 	// associated system process (Ant Build)
-	private IProcess fProcess;
+	private final IProcess fProcess;
 
 	// containing launch object
-	private ILaunch fLaunch;
+	private final ILaunch fLaunch;
 
 	// Build file name
 	private String fName;
@@ -58,10 +58,10 @@ public class AntDebugTarget extends AntDebugElement implements IDebugTarget, IDe
 	private boolean fTerminated = false;
 
 	// threads
-	private AntThread fThread;
+	private final AntThread fThread;
 	private IThread[] fThreads;
 
-	private IAntDebugController fController;
+	private final IAntDebugController fController;
 
 	private List<IBreakpoint> fRunToLineBreakpoints;
 

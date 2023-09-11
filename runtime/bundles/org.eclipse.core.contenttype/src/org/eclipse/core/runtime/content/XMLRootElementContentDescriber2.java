@@ -90,7 +90,7 @@ public final class XMLRootElementContentDescriber2 extends XMLContentDescriber i
 	 */
 	private static class QualifiedElement {
 		private String namespace;
-		private String element;
+		private final String element;
 		private String dtd;
 
 		public QualifiedElement(String qualifiedElement) {

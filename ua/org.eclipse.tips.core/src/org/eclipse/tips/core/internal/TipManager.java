@@ -35,12 +35,12 @@ import org.eclipse.tips.core.TipProvider;
  */
 public abstract class TipManager implements ITipManager {
 
-	private Map<String, TipProvider> fProviders = new HashMap<>();
-	private Map<Integer, List<String>> fProviderPrio = new TreeMap<>();
+	private final Map<String, TipProvider> fProviders = new HashMap<>();
+	private final Map<Integer, List<String>> fProviderPrio = new TreeMap<>();
 	private boolean fOpen;
 	private boolean fServeReadTips = false;
 	private boolean fIsDiposed;
-	private PropertyChangeSupport fChangeSupport = new PropertyChangeSupport(this);
+	private final PropertyChangeSupport fChangeSupport = new PropertyChangeSupport(this);
 
 	/**
 	 * May start a dialog at startup.

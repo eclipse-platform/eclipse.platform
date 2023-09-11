@@ -35,7 +35,7 @@ class ChildrenRequestMonitor extends AsynchronousRequestMonitor implements IChil
 	/**
 	 * Collection of children retrieved
 	 */
-	private List<Object> fChildren = new ArrayList<>();
+	private final List<Object> fChildren = new ArrayList<>();
 
 	/**
 	 * Constucts a monitor to retrieve and update the children of the given

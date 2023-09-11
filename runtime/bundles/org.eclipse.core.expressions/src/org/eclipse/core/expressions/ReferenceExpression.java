@@ -49,7 +49,7 @@ public class ReferenceExpression extends Expression {
 	 */
 	private static final int HASH_INITIAL= ReferenceExpression.class.getName().hashCode();
 
-	private String fDefinitionId;
+	private final String fDefinitionId;
 
 	public ReferenceExpression(String definitionId) {
 		Assert.isNotNull(definitionId);

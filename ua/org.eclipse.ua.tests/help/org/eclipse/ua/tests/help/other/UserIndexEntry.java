@@ -30,11 +30,11 @@ import org.eclipse.help.IUAElement;
 
 public class UserIndexEntry implements IIndexEntry2 {
 
-	private List<IIndexEntry> subentries = new ArrayList<>();
-	private List<IIndexSee> sees = new ArrayList<>();
-	private List<ITopic> topics = new ArrayList<>();
-	private boolean isEnabled;
-	private String keyword;
+	private final List<IIndexEntry> subentries = new ArrayList<>();
+	private final List<IIndexSee> sees = new ArrayList<>();
+	private final List<ITopic> topics = new ArrayList<>();
+	private final boolean isEnabled;
+	private final String keyword;
 
 	@Override
 	public IUAElement[] getChildren() {

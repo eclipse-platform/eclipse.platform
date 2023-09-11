@@ -33,7 +33,7 @@ import org.eclipse.core.runtime.Platform;
 public class TypeExtensionManager implements IRegistryChangeListener {
 
 	private static final String EXTENSION_NAMESPACE = "org.eclipse.core.expressions"; //$NON-NLS-1$
-	private String fExtensionPoint;
+	private final String fExtensionPoint;
 
 	/**
 	 * Tells whether this class is in debug mode.

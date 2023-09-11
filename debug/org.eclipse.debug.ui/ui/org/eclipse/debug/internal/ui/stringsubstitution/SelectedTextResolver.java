@@ -18,7 +18,7 @@ import org.eclipse.core.variables.IDynamicVariable;
 import org.eclipse.core.variables.IDynamicVariableResolver;
 
 public class SelectedTextResolver implements IDynamicVariableResolver {
-	private SelectedResourceManager selectedResourceManager;
+	private final SelectedResourceManager selectedResourceManager;
 
 	public SelectedTextResolver() {
 		selectedResourceManager = SelectedResourceManager.getDefault();

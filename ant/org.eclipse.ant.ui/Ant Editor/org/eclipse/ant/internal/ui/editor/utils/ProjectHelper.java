@@ -102,7 +102,7 @@ public class ProjectHelper extends ProjectHelper2 {
 		private UnknownElement task = null;
 		private Task currentTask = null;
 
-		private Map<String, String> fNormalizedFileNames = new HashMap<>();
+		private final Map<String, String> fNormalizedFileNames = new HashMap<>();
 
 		@Override
 		public AntHandler onStartChild(String uri, String tag, String qname, Attributes attrs, AntXMLContext context) {

@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class NavigationAction extends Action {
 
-	private boolean fNext;
+	private final boolean fNext;
 	private CompareEditorInput fCompareEditorInput;
 
 

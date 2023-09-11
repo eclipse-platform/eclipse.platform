@@ -28,9 +28,9 @@ import java.util.List;
  */
 public class IntroElement {
 
-	private String name;
+	private final String name;
 	private String value;
-	private Hashtable<String, String> atts = new Hashtable<>();
+	private final Hashtable<String, String> atts = new Hashtable<>();
 	private List<IntroElement> children;
 
 	/**

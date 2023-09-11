@@ -29,7 +29,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  */
 public class BreakpointTypeCategory extends PlatformObject implements IBreakpointTypeCategory, IWorkbenchAdapter {
 
-	private String fName;
+	private final String fName;
 	private ImageDescriptor fImageDescriptor = DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_OBJS_BREAKPOINT_TYPE);
 
 	/**

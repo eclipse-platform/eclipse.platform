@@ -24,7 +24,7 @@ import java.io.InputStream;
 
 public class RemoteHelpInputStream extends InputStream{
 
-	private InputStream is;
+	private final InputStream is;
 
 	public RemoteHelpInputStream(){
 		is=null;

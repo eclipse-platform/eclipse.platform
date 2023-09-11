@@ -61,7 +61,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 public class AntBuildfileExportPage extends WizardPage {
 
 	private CheckboxTableViewer fTableViewer;
-	private List<IJavaProject> fSelectedJavaProjects = new ArrayList<>();
+	private final List<IJavaProject> fSelectedJavaProjects = new ArrayList<>();
 	private Button compatibilityCheckbox;
 	private Button compilerCheckbox;
 	private Text buildfilenameText;

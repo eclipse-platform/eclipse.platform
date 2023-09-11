@@ -43,12 +43,12 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 
 	private IEditorPart fActiveEditorPart= null;
 
-	private ChangePropertyAction fIgnoreWhitespace;
-	private NavigationAction fNext;
-	private NavigationAction fPrevious;
+	private final ChangePropertyAction fIgnoreWhitespace;
+	private final NavigationAction fNext;
+	private final NavigationAction fPrevious;
 
-	private NavigationAction fToolbarNext;
-	private NavigationAction fToolbarPrevious;
+	private final NavigationAction fToolbarNext;
+	private final NavigationAction fToolbarPrevious;
 
 	public CompareEditorContributor() {
 		ResourceBundle bundle= CompareUI.getResourceBundle();

@@ -46,7 +46,7 @@ abstract public class DetailsDialog extends TrayDialog {
 	/**
 	 * The title of the dialog.
 	 */
-	private String title;
+	private final String title;
 
 	/**
 	 * The error message

@@ -62,7 +62,7 @@ import org.eclipse.team.internal.ui.Utils;
 public class PreferencePageContainerDialog extends TrayDialog
 	implements IPreferencePageContainer, IPageChangeProvider {
 
-	private PreferencePage[] pages;
+	private final PreferencePage[] pages;
 	private PreferencePage currentPage;
 
 	private Composite fTitleArea;
@@ -75,7 +75,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 
 	private Button fOkButton;
 
-	private ListenerList<IPageChangedListener> pageChangedListeners = new ListenerList<>();
+	private final ListenerList<IPageChangedListener> pageChangedListeners = new ListenerList<>();
 
 	/**
 	 * The Composite in which a page is shown.
@@ -87,9 +87,9 @@ public class PreferencePageContainerDialog extends TrayDialog
 	 *
 	 * @see #setMinimumPageSize(Point)
 	 */
-	private Point fMinimumPageSize = new Point(200,200);
+	private final Point fMinimumPageSize = new Point(200,200);
 	private CTabFolder tabFolder;
-	private Map<CTabItem, PreferencePage> pageMap = new HashMap<>();
+	private final Map<CTabItem, PreferencePage> pageMap = new HashMap<>();
 
 	/**
 	 * Must declare our own images as the JFaceResource images will not be created unless

@@ -89,10 +89,10 @@ public class Patcher implements IHunkFilter {
 	private FilePatch2[] fDiffs;
 	private IResource fTarget;
 	// patch options
-	private Set<Object> disabledElements = new HashSet<>();
-	private Map<FilePatch2, FileDiffResult> diffResults = new HashMap<>();
+	private final Set<Object> disabledElements = new HashSet<>();
+	private final Map<FilePatch2, FileDiffResult> diffResults = new HashMap<>();
 	private final Map<FilePatch2, byte[]> contentCache = new HashMap<>();
-	private Set<Hunk> mergedHunks = new HashSet<>();
+	private final Set<Hunk> mergedHunks = new HashSet<>();
 
 	private final PatchConfiguration configuration;
 	private boolean fGenerateRejectFile = false;

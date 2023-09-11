@@ -24,7 +24,7 @@ import org.eclipse.ui.views.properties.*;
  * A read-only IPropertySource for Marker attributes.
  */
 public class ReadOnlyMarkerPropertySource implements IPropertySource {
-	private PropertyDescriptor persistentDescriptor = new PropertyDescriptor("persistent", "persistent");
+	private final PropertyDescriptor persistentDescriptor = new PropertyDescriptor("persistent", "persistent");
 	protected MarkerExtensionModel model;
 	protected MarkerView view;
 	protected IMarker marker;

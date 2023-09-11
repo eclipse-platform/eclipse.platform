@@ -49,14 +49,14 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 
 	private ISynchronizeModelProvider modelProvider;
 	private List toggleModelProviderActions;
-	private ISynchronizePageConfiguration configuration;
+	private final ISynchronizePageConfiguration configuration;
 	private TreeViewerAdvisor advisor;
 
 	/**
 	 * Action that allows changing the model providers supported by this advisor.
 	 */
 	private class ToggleModelProviderAction extends Action implements IPropertyChangeListener {
-		private ISynchronizeModelProviderDescriptor descriptor;
+		private final ISynchronizeModelProviderDescriptor descriptor;
 		protected ToggleModelProviderAction(ISynchronizeModelProviderDescriptor descriptor) {
 			super(descriptor.getName(), IAction.AS_RADIO_BUTTON);
 			setImageDescriptor(descriptor.getImageDescriptor());

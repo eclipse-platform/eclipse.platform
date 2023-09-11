@@ -40,7 +40,7 @@ public abstract class SaveableComparison extends Saveable {
 	public static final int PROP_DIRTY = IWorkbenchPartConstants.PROP_DIRTY;
 
 	private boolean dirty;
-	private ListenerList<IPropertyListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
+	private final ListenerList<IPropertyListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	/**
 	 * {@inheritDoc}

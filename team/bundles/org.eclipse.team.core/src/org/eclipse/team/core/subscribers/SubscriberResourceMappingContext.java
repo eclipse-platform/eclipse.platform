@@ -48,8 +48,8 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 	private final Subscriber subscriber;
 
 	// Lists used to keep track of resources that have been refreshed
-	private Set<IResource> shallowRefresh = new HashSet<>();
-	private Set<IResource> deepRefresh = new HashSet<>();
+	private final Set<IResource> shallowRefresh = new HashSet<>();
+	private final Set<IResource> deepRefresh = new HashSet<>();
 	private boolean autoRefresh;
 
 	/**

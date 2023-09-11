@@ -74,8 +74,8 @@ public class ScopeSetDialog extends TrayDialog  {
 		}
 	}
 
-	private ScopeSetManager manager;
-	private EngineDescriptorManager descManager;
+	private final ScopeSetManager manager;
+	private final EngineDescriptorManager descManager;
 	private static final int NEW_ID = IDialogConstants.CLIENT_ID + 1;
 	private static final int EDIT_ID = IDialogConstants.CLIENT_ID + 2;
 	private static final int RENAME_ID = IDialogConstants.CLIENT_ID +3;
@@ -83,21 +83,21 @@ public class ScopeSetDialog extends TrayDialog  {
 	private Button editButton;
 	private Button renameButton;
 	private Button removeButton;
-	private ArrayList<ScopeSet> sets;
+	private final ArrayList<ScopeSet> sets;
 	private ArrayList<PendingOperation> operations;
-	private IStructuredContentProvider contentProvider;
+	private final IStructuredContentProvider contentProvider;
 
 	private Button showAllRadio;
 	private Button showSelectedRadio;
 
-	private ILabelProvider labelProvider;
+	private final ILabelProvider labelProvider;
 	private Object input;
 	private TableViewer viewer;
-	private int widthInChars = 55;
-	private int heightInChars = 15;
+	private final int widthInChars = 55;
+	private final int heightInChars = 15;
 	private ScopeSet initialSelection;
 	private Object[] result;
-	private boolean localOnly;
+	private final boolean localOnly;
 
 	private abstract static class PendingOperation {
 		ScopeSet set;

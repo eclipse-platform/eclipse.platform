@@ -29,7 +29,7 @@ public class StatusLineCLabelContribution extends ContributionItem {
 
 	public final static int DEFAULT_CHAR_WIDTH = 40;
 
-	private int charWidth;
+	private final int charWidth;
 	private CLabel label;
 	private Image image;
 	private String text = ""; //$NON-NLS-1$

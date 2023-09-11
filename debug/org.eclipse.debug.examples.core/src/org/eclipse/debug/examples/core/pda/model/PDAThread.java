@@ -79,7 +79,7 @@ public class PDAThread extends PDADebugElement implements IThread, IPDAEventList
 	/**
 	 * Table mapping stack frames to current variables
 	 */
-	private Map<IStackFrame, IVariable[]> fVariables = Collections.synchronizedMap(new HashMap<IStackFrame, IVariable[]>());
+	private final Map<IStackFrame, IVariable[]> fVariables = Collections.synchronizedMap(new HashMap<IStackFrame, IVariable[]>());
 
 	/**
 	 * Constructs a new thread for the given target

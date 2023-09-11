@@ -25,7 +25,7 @@ import org.eclipse.debug.ui.contexts.ISuspendTrigger;
  */
 public class SuspendTriggerAdapterFactory implements IAdapterFactory {
 
-	private Map<Object, LaunchSuspendTrigger> fSuspendTriggers = new HashMap<>();
+	private final Map<Object, LaunchSuspendTrigger> fSuspendTriggers = new HashMap<>();
 
 	@SuppressWarnings("unchecked")
 	@Override

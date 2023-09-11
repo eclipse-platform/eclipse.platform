@@ -156,7 +156,7 @@ public class QuicklinksViewer implements IIntroContentProvider {
 		private static final String ATT_RESOLUTION = "resolution"; //$NON-NLS-1$
 
 		/** commandSpec/url &rarr; quicklink */
-		private Map<String, Quicklink> quicklinks = new LinkedHashMap<>();
+		private final Map<String, Quicklink> quicklinks = new LinkedHashMap<>();
 		/** bundle symbolic name &rarr; bundle id */
 		private Map<String, Long> bundleIds;
 		private Bundle[] bundles;

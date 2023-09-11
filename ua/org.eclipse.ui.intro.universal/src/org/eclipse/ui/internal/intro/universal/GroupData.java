@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
 public class GroupData {
 	boolean fDefault=false;
 	private String path;
-	private ArrayList<BaseData> children = new ArrayList<>();
+	private final ArrayList<BaseData> children = new ArrayList<>();
 
 	public GroupData(String path, boolean defaultGroup) {
 		fDefault = defaultGroup;

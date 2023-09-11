@@ -38,7 +38,7 @@ public class RunAndTrackTest {
 	private static final class TestRAT extends RunAndTrack {
 
 
-		private String varName;
+		private final String varName;
 		private Object varValue;
 		private int calls = 0;
 
@@ -88,7 +88,7 @@ public class RunAndTrackTest {
 
 	static final String INTERNAL_LOCAL_PART = "localPart";
 
-	private List<IEclipseContext> createdContexts = new ArrayList<>();
+	private final List<IEclipseContext> createdContexts = new ArrayList<>();
 
 	private IEclipseContext createContext(IEclipseContext parentContext, String level) {
 		IEclipseContext childContext = parentContext.createChild(level);

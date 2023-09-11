@@ -35,8 +35,8 @@ import org.eclipse.team.internal.core.TeamPlugin;
  * much of the operation completed; conversely, at what point to resume.
  */
 public class PollingInputStream extends FilterInputStream {
-	private int numAttempts;
-	private IProgressMonitor monitor;
+	private final int numAttempts;
+	private final IProgressMonitor monitor;
 	private boolean cancellable;
 
 	/**

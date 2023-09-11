@@ -63,10 +63,10 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 	private Table table;
 	private Button showAllToggle;
 	private TableViewer viewer;
-	private AdaptableList wizards;
-	private AdaptableList disabledWizards;
+	private final AdaptableList wizards;
+	private final AdaptableList disabledWizards;
 	private IProject[] projects;
-	private String description;
+	private final String description;
 
 	private IWizard selectedWizard;
 

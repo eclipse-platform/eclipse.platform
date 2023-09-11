@@ -29,8 +29,8 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 	 * This runnable will try to end the given rule in the Job Manager
 	 */
 	private class RuleEnder implements Runnable {
-		private ISchedulingRule rule;
-		private AtomicIntegerArray status;
+		private final ISchedulingRule rule;
+		private final AtomicIntegerArray status;
 
 		public RuleEnder(ISchedulingRule rule, AtomicIntegerArray status) {
 			this.rule = rule;

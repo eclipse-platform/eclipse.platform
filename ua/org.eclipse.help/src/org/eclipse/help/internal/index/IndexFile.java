@@ -22,9 +22,9 @@ import org.eclipse.help.internal.util.ResourceLocator;
 
 public class IndexFile {
 
-	private String pluginId;
-	private String file;
-	private String locale;
+	private final String pluginId;
+	private final String file;
+	private final String locale;
 
 	public IndexFile(String pluginId, String file, String locale) {
 		this.pluginId = pluginId;

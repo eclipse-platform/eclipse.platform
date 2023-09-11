@@ -1198,7 +1198,7 @@ public class IntroHTMLGenerator {
 	 */
 	private static class PluginIdParser {
 
-		private BufferedReader reader;
+		private final BufferedReader reader;
 
 		private static final char SUBSTITUTION_BEGIN = '$';
 
@@ -1206,11 +1206,11 @@ public class IntroHTMLGenerator {
 
 		// tokenContent will contain all characters read by the parser, starting
 		// with and including the initial $ token.
-		private StringBuilder tokenContent;
+		private final StringBuilder tokenContent;
 
 		// pluginId will contain the content between the "$plugin:" segment
 		// and the closing "$" token
-		private StringBuilder pluginId;
+		private final StringBuilder pluginId;
 
 		protected PluginIdParser(int tokenBegin, BufferedReader bufferedreader) {
 			reader = bufferedreader;

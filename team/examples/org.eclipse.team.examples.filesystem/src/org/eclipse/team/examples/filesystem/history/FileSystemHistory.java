@@ -28,7 +28,7 @@ import org.eclipse.team.internal.core.history.LocalFileRevision;
 
 public class FileSystemHistory extends FileHistory {
 
-	private IFile file;
+	private final IFile file;
 	protected IFileRevision[] revisions;
 
 	public FileSystemHistory(IFile file) {

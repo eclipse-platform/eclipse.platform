@@ -33,12 +33,12 @@ public class InputStreamMonitor {
 	/**
 	 * The stream which is being written to (connected to system in).
 	 */
-	private OutputStream fStream;
+	private final OutputStream fStream;
 
 	/**
 	 * The queue of output.
 	 */
-	private Vector<byte[]> fQueue;
+	private final Vector<byte[]> fQueue;
 
 	/**
 	 * The thread which writes to the stream.
@@ -48,7 +48,7 @@ public class InputStreamMonitor {
 	/**
 	 * A lock for ensuring that writes to the queue are contiguous
 	 */
-	private Object fLock;
+	private final Object fLock;
 
 	/**
 	 * Whether the underlying output stream has been closed
@@ -58,7 +58,7 @@ public class InputStreamMonitor {
 	/**
 	 * The charset of the input stream.
 	 */
-	private Charset fCharset;
+	private final Charset fCharset;
 
 	/**
 	 * Creates an input stream monitor which writes to system in via the given output stream.

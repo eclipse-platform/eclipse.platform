@@ -57,8 +57,8 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	private ToolBarManager fToolBarManager;
 	private Object fInput;
 	private ListenerList<ISelectionChangedListener> fSelectionListeners= new ListenerList<>();
-	private ListenerList<IDoubleClickListener> fDoubleClickListener= new ListenerList<>();
-	private ListenerList<IOpenListener> fOpenListener= new ListenerList<>();
+	private final ListenerList<IDoubleClickListener> fDoubleClickListener= new ListenerList<>();
+	private final ListenerList<IOpenListener> fOpenListener= new ListenerList<>();
 
 	/**
 	 * Constructs a new instance of this class given its parent

@@ -66,13 +66,13 @@ public class EngineResultSection {
 
 	private static final String CAT_HEADING_PREFIX = "catheading:"; //$NON-NLS-1$
 
-	private SearchResultsPart part;
+	private final SearchResultsPart part;
 
-	private EngineDescriptor desc;
+	private final EngineDescriptor desc;
 
 	private IStatus errorStatus;
 
-	private ArrayList<ISearchEngineResult> hits;
+	private final ArrayList<ISearchEngineResult> hits;
 
 	private Section section;
 
@@ -86,9 +86,9 @@ public class EngineResultSection {
 
 	private boolean needsUpdating;
 
-	private FederatedSearchSorter sorter;
+	private final FederatedSearchSorter sorter;
 
-	private int HITS_PER_PAGE = 10;
+	private final int HITS_PER_PAGE = 10;
 
 	private static final String HREF_PROGRESS = "__progress__"; //$NON-NLS-1$
 

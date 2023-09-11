@@ -47,7 +47,7 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 	private Button checkAllButton;
 	private Button uncheckAllButton;
 
-	private WorkspacePatcher fPatcher;
+	private final WorkspacePatcher fPatcher;
 
 	public final static String PATCH_INACCESSIBLE_PROJECTS_NAME = "PatchInaccessibleProjectsPage"; //$NON-NLS-1$
 

@@ -36,7 +36,7 @@ import org.eclipse.ui.texteditor.IUpdate;
  */
 public class RefreshBuildFilesAction extends Action implements IUpdate {
 
-	private AntView fView;
+	private final AntView fView;
 
 	/**
 	 * Creates a new <code>RefreshBuildFilesAction</code> which will refresh buildfiles in the given Ant view.

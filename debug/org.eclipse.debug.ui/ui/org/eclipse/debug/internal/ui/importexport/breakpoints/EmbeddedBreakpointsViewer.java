@@ -61,7 +61,7 @@ public class EmbeddedBreakpointsViewer {
 	private BreakpointsContentProvider fProvider = null;
 	private Tree fTree = null;
 	private BreakpointsViewer fViewer = null;
-	private ICheckStateListener fCheckListener = event -> updateCheckedState(event.getElement(), event.getChecked());
+	private final ICheckStateListener fCheckListener = event -> updateCheckedState(event.getElement(), event.getChecked());
 
 	/**
 	 * This constructor allows a specific selection to be used in stead of the default

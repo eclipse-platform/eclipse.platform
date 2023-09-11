@@ -29,7 +29,7 @@ import org.eclipse.debug.core.ILaunchMode;
  */
 public class LaunchMode implements ILaunchMode {
 
-	private IConfigurationElement fConfigurationElement;
+	private final IConfigurationElement fConfigurationElement;
 
 	/**
 	 * Constructs a new launch mode.

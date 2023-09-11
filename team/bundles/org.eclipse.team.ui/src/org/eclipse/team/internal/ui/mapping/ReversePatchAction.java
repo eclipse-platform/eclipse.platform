@@ -23,10 +23,10 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 
 public class ReversePatchAction extends Action {
 
-	private ISynchronizePageConfiguration configuration;
-	private ApplyPatchModelSynchronizeParticipant participant;
-	private ApplyPatchSubscriberMergeContext context;
-	private ApplyPatchSubscriber subscriber;
+	private final ISynchronizePageConfiguration configuration;
+	private final ApplyPatchModelSynchronizeParticipant participant;
+	private final ApplyPatchSubscriberMergeContext context;
+	private final ApplyPatchSubscriber subscriber;
 
 	public ReversePatchAction(ISynchronizePageConfiguration configuration) {
 		super("", AS_CHECK_BOX); //$NON-NLS-1$

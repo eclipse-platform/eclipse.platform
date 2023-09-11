@@ -27,7 +27,7 @@ import org.eclipse.ui.internal.intro.impl.model.url.IntroURLParser;
  */
 public class BrowserIntroPartLocationListener implements LocationListener {
 
-	private BrowserIntroPartImplementation implementation;
+	private final BrowserIntroPartImplementation implementation;
 
 	/**
 	 * Takes the implementation as an input.

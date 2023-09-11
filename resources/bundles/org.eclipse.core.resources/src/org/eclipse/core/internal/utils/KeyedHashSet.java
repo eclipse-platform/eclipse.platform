@@ -28,7 +28,7 @@ public class KeyedHashSet {
 	}
 
 	protected static final int MINIMUM_SIZE = 7;
-	private int capacity;
+	private final int capacity;
 	protected int elementCount = 0;
 	protected KeyedElement[] elements;
 	protected boolean replace;

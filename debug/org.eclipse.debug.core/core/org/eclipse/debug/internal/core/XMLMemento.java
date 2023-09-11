@@ -38,9 +38,9 @@ import org.xml.sax.SAXException;
  * An XML memento. Copied from workspace plug-in.
  */
 public final class XMLMemento {
-	private Document factory;
+	private final Document factory;
 
-	private Element element;
+	private final Element element;
 
 	/**
 	 * Creates a <code>Document</code> from the <code>Reader</code>

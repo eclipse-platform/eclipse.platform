@@ -25,7 +25,7 @@ import org.eclipse.ant.internal.ui.dtd.ISchema;
  * @author Bob Foster
  */
 public class Schema implements ISchema {
-	private HashMap<String, IElement> fElementMap = new HashMap<>();
+	private final HashMap<String, IElement> fElementMap = new HashMap<>();
 	private Exception fErrorException;
 
 	@Override

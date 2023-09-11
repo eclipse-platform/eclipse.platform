@@ -62,7 +62,7 @@ public class EditionHistoryPage extends LocalHistoryPage {
 
 	private LocalResourceTypedElement localFileElement;
 	private IStructureCreator structureCreator;
-	private Map<IFileRevision, ITypedElement> editions = new HashMap<>();
+	private final Map<IFileRevision, ITypedElement> editions = new HashMap<>();
 	private ITypedElement localEdition;
 	private String name;
 

@@ -102,12 +102,12 @@ public class SwitchMemoryBlockAction extends Action implements IViewActionDelega
 	private IViewPart fView;
 	private MenuCreator fMenuCreator;
 	private IAction fAction;
-	private UpdateActionEnablementJob fUpdateJob = new UpdateActionEnablementJob();
+	private final UpdateActionEnablementJob fUpdateJob = new UpdateActionEnablementJob();
 
 	/**
 	 * Memoryblock listener to update action delegate enablement
 	 */
-	private IMemoryBlockListener fListener = new IMemoryBlockListener() {
+	private final IMemoryBlockListener fListener = new IMemoryBlockListener() {
 		@Override
 		public void memoryBlocksAdded(IMemoryBlock[] memory) {
 			if (fAction != null) {
@@ -126,7 +126,7 @@ public class SwitchMemoryBlockAction extends Action implements IViewActionDelega
 	/**
 	 * Listens for debug context changes and updates action delegate enablement
 	 */
-	private IDebugContextListener fDebugContextListener = event -> {
+	private final IDebugContextListener fDebugContextListener = event -> {
 		if (fAction != null) {
 			fUpdateJob.schedule();
 		}

@@ -30,11 +30,11 @@ import org.eclipse.core.runtime.IConfigurationElement;
  */
 public class TestExpression extends Expression {
 
-	private String fNamespace;
-	private String fProperty;
-	private Object[] fArgs;
-	private Object fExpectedValue;
-	private boolean fForcePluginActivation;
+	private final String fNamespace;
+	private final String fProperty;
+	private final Object[] fArgs;
+	private final Object fExpectedValue;
+	private final boolean fForcePluginActivation;
 
 	private static final char PROP_SEP = '.';
 	private static final String ATT_PROPERTY= "property"; //$NON-NLS-1$

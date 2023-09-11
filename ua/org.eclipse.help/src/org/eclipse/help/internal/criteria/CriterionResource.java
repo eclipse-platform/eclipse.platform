@@ -29,8 +29,8 @@ import org.eclipse.help.internal.HelpPlugin;
  */
 public class CriterionResource {
 
-	private String criterionName;
-	private List<String> criterionValues;
+	private final String criterionName;
+	private final List<String> criterionValues;
 
 	public CriterionResource(String criterionName){
 		this(criterionName, null);

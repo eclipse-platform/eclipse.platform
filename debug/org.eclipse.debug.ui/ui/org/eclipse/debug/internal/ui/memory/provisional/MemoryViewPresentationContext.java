@@ -29,9 +29,9 @@ import org.eclipse.debug.ui.memory.IMemoryRenderingSite;
  */
 public class MemoryViewPresentationContext extends PresentationContext {
 
-	private IMemoryRenderingContainer fContainer;
-	private IMemoryRendering fRendering;
-	private IMemoryRenderingSite fMemoryView;
+	private final IMemoryRenderingContainer fContainer;
+	private final IMemoryRendering fRendering;
+	private final IMemoryRenderingSite fMemoryView;
 
 	/**
 	 * Constructs MemoryViewPresentationContext

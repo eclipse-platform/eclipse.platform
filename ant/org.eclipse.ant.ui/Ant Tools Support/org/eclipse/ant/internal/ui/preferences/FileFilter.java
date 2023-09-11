@@ -34,14 +34,14 @@ public class FileFilter extends ViewerFilter {
 	/**
 	 * Objects to filter
 	 */
-	private List<?> fFilter;
+	private final List<?> fFilter;
 
 	/**
 	 * Collection of files and containers to display
 	 */
 	private Set<IResource> fFiles;
 
-	private String fExtension;
+	private final String fExtension;
 
 	private Pattern fExtnPattern;
 

@@ -39,15 +39,15 @@ public class QueryBuilder {
 	// Maximum allowed number terms with wild cards
 	private static final int MAX_WILD_TERMS = 2;
 	// Query from user
-	private String searchWords;
+	private final String searchWords;
 	// Descriptor of Analyzer to process the query words
-	private AnalyzerDescriptor analyzerDesc;
+	private final AnalyzerDescriptor analyzerDesc;
 	// Analyzer to process the query words
-	private Analyzer analyzer;
+	private final Analyzer analyzer;
 	// List of QueryWordsToken
 	private List<QueryWordsToken> analyzedTokens;
 	// List of words to highlight
-	private List<String> highlightWords = new ArrayList<>();
+	private final List<String> highlightWords = new ArrayList<>();
 	private Locale locale;
 	/**
 	 * Creates a query builder for the search word. The search word is processed

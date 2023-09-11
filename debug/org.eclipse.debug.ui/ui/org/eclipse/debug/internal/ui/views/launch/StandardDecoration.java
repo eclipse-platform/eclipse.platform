@@ -22,9 +22,9 @@ import org.eclipse.ui.IEditorPart;
  */
 public class StandardDecoration extends Decoration {
 
-	private IThread fThread;
-	private IEditorPart fEditor;
-	private IDebugEditorPresentation fPresentation;
+	private final IThread fThread;
+	private final IEditorPart fEditor;
+	private final IDebugEditorPresentation fPresentation;
 
 	public StandardDecoration(IDebugEditorPresentation presentation, IEditorPart editorPart, IThread thread) {
 		fThread = thread;

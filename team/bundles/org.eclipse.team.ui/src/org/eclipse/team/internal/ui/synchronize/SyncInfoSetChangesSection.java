@@ -55,7 +55,7 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 	 * Register an action contribution in order to receive model
 	 * change notification so that we can update message to user and totals.
 	 */
-	private SynchronizePageActionGroup changedListener = new SynchronizePageActionGroup() {
+	private final SynchronizePageActionGroup changedListener = new SynchronizePageActionGroup() {
 		@Override
 		public void modelChanged(ISynchronizeModelElement root) {
 			calculateDescription();
@@ -66,7 +66,7 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 	 * Listener registered with the subscriber sync info set which contains
 	 * all out-of-sync resources for the subscriber.
 	 */
-	private ISyncInfoSetChangeListener subscriberListener = new ISyncInfoSetChangeListener() {
+	private final ISyncInfoSetChangeListener subscriberListener = new ISyncInfoSetChangeListener() {
 		@Override
 		public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
 			// Handled by output set listener
@@ -85,7 +85,7 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 	 * Listener registered with the output sync info set which contains
 	 * only the visible sync info.
 	 */
-	private ISyncInfoSetChangeListener outputSetListener = new ISyncInfoSetChangeListener() {
+	private final ISyncInfoSetChangeListener outputSetListener = new ISyncInfoSetChangeListener() {
 		@Override
 		public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
 			calculateDescription();

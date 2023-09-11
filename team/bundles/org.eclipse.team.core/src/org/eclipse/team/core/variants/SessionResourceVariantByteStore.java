@@ -33,9 +33,9 @@ import org.eclipse.team.core.TeamException;
 public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 
 	private static final byte[] NO_REMOTE = new byte[0];
-	private Map<IResource, List<IResource>> membersCache = new HashMap<>();
+	private final Map<IResource, List<IResource>> membersCache = new HashMap<>();
 
-	private Map<IResource, byte[]> syncBytesCache = new HashMap<>();
+	private final Map<IResource, byte[]> syncBytesCache = new HashMap<>();
 
 	@Override
 	public boolean deleteBytes(IResource resource) throws TeamException {

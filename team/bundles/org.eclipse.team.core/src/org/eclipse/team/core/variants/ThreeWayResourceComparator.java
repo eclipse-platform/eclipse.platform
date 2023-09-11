@@ -28,7 +28,7 @@ import org.eclipse.team.internal.core.TeamPlugin;
  */
 public class ThreeWayResourceComparator implements IResourceVariantComparator {
 
-	private ThreeWaySynchronizer synchronizer;
+	private final ThreeWaySynchronizer synchronizer;
 
 	/**
 	 * Create a three-way resource comparator that uses the

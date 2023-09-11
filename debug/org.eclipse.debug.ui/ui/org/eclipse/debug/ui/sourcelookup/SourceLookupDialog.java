@@ -48,7 +48,7 @@ import org.osgi.framework.FrameworkUtil;
 public class SourceLookupDialog extends TitleAreaDialog {
 
 	private SourceLookupPanel fPanel;
-	private ISourceLookupDirector fDirector;
+	private final ISourceLookupDirector fDirector;
 
 	/**
 	 * Constructs a dialog to edit the source lookup path managed by the

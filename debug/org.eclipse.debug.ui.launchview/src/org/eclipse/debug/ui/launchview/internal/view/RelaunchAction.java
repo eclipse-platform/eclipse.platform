@@ -26,7 +26,7 @@ import org.eclipse.e4.ui.model.application.ui.menu.MMenuItem;
 
 public class RelaunchAction {
 
-	private LaunchViewImpl view;
+	private final LaunchViewImpl view;
 
 	public RelaunchAction(LaunchViewImpl view) {
 		this.view = view;

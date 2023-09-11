@@ -19,8 +19,8 @@ import org.eclipse.tips.ui.internal.util.DateUtil;
 
 public class TestTip extends Tip implements IHtmlTip {
 
-	private String fSubject;
-	private String fHTML;
+	private final String fSubject;
+	private final String fHTML;
 
 	public TestTip(String providerId, String html, String subject) {
 		super(providerId);

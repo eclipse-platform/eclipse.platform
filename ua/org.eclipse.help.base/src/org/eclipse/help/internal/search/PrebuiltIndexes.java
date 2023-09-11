@@ -23,12 +23,12 @@ import java.util.Set;
  *
  */
 public class PrebuiltIndexes {
-	private SearchIndex targetIndex;
+	private final SearchIndex targetIndex;
 
 	/**
 	 * Set of PluginIndex
 	 */
-	private Set<PluginIndex> set = new HashSet<>();
+	private final Set<PluginIndex> set = new HashSet<>();
 
 	PrebuiltIndexes(SearchIndex targetIndex) {
 		super();

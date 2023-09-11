@@ -54,7 +54,7 @@ import org.eclipse.core.tests.harness.TestJob;
 @SuppressWarnings("restriction")
 public class IJobManagerTest extends AbstractJobManagerTest {
 	class TestJobListener extends JobChangeAdapter {
-		private Set<Job> scheduled = Collections.synchronizedSet(new HashSet<>());
+		private final Set<Job> scheduled = Collections.synchronizedSet(new HashSet<>());
 
 		public void cancelAllJobs() {
 			Job[] jobs = scheduled.toArray(new Job[0]);
@@ -1253,7 +1253,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 					// wait until running job is actually running
 					barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 					manager.setLockListener(new LockListener() {
-						private boolean scheduled = false;
+						private final boolean scheduled = false;
 
 						@Override
 						public boolean aboutToWait(Thread lockOwner) {
@@ -1344,7 +1344,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 					// wait until running job is actually running
 					barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 					manager.setLockListener(new LockListener() {
-						private boolean scheduled = false;
+						private final boolean scheduled = false;
 
 						@Override
 						public boolean aboutToWait(Thread lockOwner) {

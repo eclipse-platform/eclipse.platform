@@ -46,10 +46,10 @@ public class ProcessController {
 	private InputStream forwardStdIn;
 	private OutputStream forwardStdOut;
 	private boolean killed;
-	private String[] params;
+	private final String[] params;
 	private Process process;
 	private long startupTime;
-	private long timeLimit;
+	private final long timeLimit;
 
 	/**
 	 * Constructs an instance of ProcessController. This does not creates an

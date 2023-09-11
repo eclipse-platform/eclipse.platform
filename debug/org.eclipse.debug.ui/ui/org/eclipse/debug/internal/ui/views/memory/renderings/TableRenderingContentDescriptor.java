@@ -21,7 +21,7 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IMemoryBlockExtension;
 
 public class TableRenderingContentDescriptor{
-	private AbstractBaseTableRendering fRendering;
+	private final AbstractBaseTableRendering fRendering;
 	private int fPreBuffer;					// number of lines before the top visible line
 	private int fPostBuffer;				// number of lines after thes last visible line
 	private BigInteger fLoadAddress;		// Top address to load at the table

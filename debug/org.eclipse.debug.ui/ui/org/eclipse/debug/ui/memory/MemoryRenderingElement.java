@@ -30,9 +30,9 @@ import org.eclipse.debug.core.model.MemoryByte;
  * @since 3.1
  */
 public class MemoryRenderingElement {
-	private IMemoryRendering fRendering;
-	private BigInteger fAddress;
-	private MemoryByte[] fBytes;
+	private final IMemoryRendering fRendering;
+	private final BigInteger fAddress;
+	private final MemoryByte[] fBytes;
 
 	/**
 	 * Constructs a new memory rendering element for the given rendering

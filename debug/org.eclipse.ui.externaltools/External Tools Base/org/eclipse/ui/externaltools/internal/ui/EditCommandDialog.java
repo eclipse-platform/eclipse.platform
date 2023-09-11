@@ -33,7 +33,7 @@ public class EditCommandDialog extends Dialog {
 	private Button fAutoButton;
 	private Button fCleanButton;
 
-	private ICommand fCommand;
+	private final ICommand fCommand;
 
 	public EditCommandDialog(Shell parentShell, ICommand command) {
 		super(parentShell);

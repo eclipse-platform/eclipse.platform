@@ -32,7 +32,7 @@ import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 public class CompareOutlinePage extends Page implements IContentOutlinePage, IPropertyChangeListener {
-	private CompareEditor fCompareEditor;
+	private final CompareEditor fCompareEditor;
 	private Control fControl;
 	private CompareViewerSwitchingPane fStructurePane;
 	private OutlineViewerCreator fCreator;

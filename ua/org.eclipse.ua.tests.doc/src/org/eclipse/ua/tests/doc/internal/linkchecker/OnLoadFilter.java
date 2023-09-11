@@ -30,11 +30,11 @@ public class OnLoadFilter implements IFilter {
 
 	private class OutFilter extends OutputStream {
 
-		private OutputStream out;
+		private final OutputStream out;
 
 		private int state = 0;
 
-		private String pathPrefix;
+		private final String pathPrefix;
 
 		public void updateState(int b) throws IOException {
 			if (state == 0 && b == '<') {
@@ -128,7 +128,7 @@ public class OnLoadFilter implements IFilter {
 		}
 	}
 
-	private int testKind;
+	private final int testKind;
 
 	public OnLoadFilter(int testKind) {
 		this.testKind = testKind;

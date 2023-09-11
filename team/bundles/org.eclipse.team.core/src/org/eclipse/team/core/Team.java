@@ -232,8 +232,8 @@ public final class Team {
 			final String pattern = (String) entry.getKey();
 			final boolean enabled = ((Boolean)entry.getValue()).booleanValue();
 			result[i++] = new IIgnoreInfo() {
-				private String p = pattern;
-				private boolean e1 = enabled;
+				private final String p = pattern;
+				private final boolean e1 = enabled;
 				@Override
 				public String getPattern() {
 					return p;

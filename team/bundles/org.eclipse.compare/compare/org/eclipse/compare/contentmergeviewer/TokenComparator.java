@@ -27,10 +27,10 @@ import org.eclipse.core.runtime.Assert;
  */
 public class TokenComparator implements ITokenComparator {
 
-	private String fText;
+	private final String fText;
 	private int fCount;
-	private int[] fStarts;
-	private int[] fLengths;
+	private final int[] fStarts;
+	private final int[] fLengths;
 
 	/**
 	 * Creates a <code>TokenComparator</code> for the given string.

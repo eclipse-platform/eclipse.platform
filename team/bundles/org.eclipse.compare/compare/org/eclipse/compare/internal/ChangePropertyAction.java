@@ -29,9 +29,9 @@ import org.eclipse.swt.events.DisposeListener;
 public class ChangePropertyAction extends Action implements IPropertyChangeListener, DisposeListener {
 
 	private CompareConfiguration fCompareConfiguration;
-	private String fPropertyKey;
-	private ResourceBundle fBundle;
-	private String fPrefix;
+	private final String fPropertyKey;
+	private final ResourceBundle fBundle;
+	private final String fPrefix;
 
 	public static ChangePropertyAction createIgnoreWhiteSpaceAction(ResourceBundle bundle, CompareConfiguration compareConfiguration) {
 		return new ChangePropertyAction(bundle, compareConfiguration, "action.IgnoreWhiteSpace.", CompareConfiguration.IGNORE_WHITESPACE); //$NON-NLS-1$

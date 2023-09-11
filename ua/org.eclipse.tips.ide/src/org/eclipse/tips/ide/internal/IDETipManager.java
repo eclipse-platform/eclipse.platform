@@ -56,9 +56,9 @@ public class IDETipManager extends DefaultTipManager {
 
 	private static final String EMPTY = ""; //$NON-NLS-1$
 
-	private TipSourceProvider fSourceProvider = new TipSourceProvider(this);
+	private final TipSourceProvider fSourceProvider = new TipSourceProvider(this);
 
-	private Map<String, List<Integer>> fReadTips = TipsPreferences.getReadState();
+	private final Map<String, List<Integer>> fReadTips = TipsPreferences.getReadState();
 
 	private boolean fNewTips;
 

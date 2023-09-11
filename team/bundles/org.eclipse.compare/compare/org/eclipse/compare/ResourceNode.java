@@ -46,7 +46,7 @@ public class ResourceNode extends BufferedContent
 			implements IEncodedStreamContentAccessor, IStructureComparator, ITypedElement,
 							IEditableContent, IModificationDate, IResourceProvider, IEditableContentExtension {
 
-	private IResource fResource;
+	private final IResource fResource;
 	private ArrayList<Object> fChildren;
 
 

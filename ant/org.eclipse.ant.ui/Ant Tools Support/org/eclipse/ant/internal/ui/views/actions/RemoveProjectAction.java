@@ -32,7 +32,7 @@ import org.eclipse.ui.texteditor.IUpdate;
  */
 public class RemoveProjectAction extends Action implements IUpdate {
 
-	private AntView view;
+	private final AntView view;
 
 	public RemoveProjectAction(AntView view) {
 		super(AntViewActionMessages.RemoveProjectAction_Remove, AntUIImages.getImageDescriptor(IAntUIConstants.IMG_REMOVE));

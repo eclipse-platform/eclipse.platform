@@ -82,7 +82,7 @@ public class CompositeCheatSheetPage extends Page implements ISelectionChangedLi
 	private TaskExplorer currentExplorer;
 	private DescriptionPanel descriptionPanel;
 
-	private CompositeCheatSheetSaveHelper saveHelper;
+	private final CompositeCheatSheetSaveHelper saveHelper;
 
 	private ICompositeCheatSheetTask selectedTask;
 	private boolean initialized = false;

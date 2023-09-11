@@ -26,7 +26,7 @@ public class SubItemCompositeHolder {
 	private boolean completed;
 	private ImageHyperlink startButton;
 	private String thisValue;
-	private SubItem subItem;
+	private final SubItem subItem;
 	private Control skipButton;
 	private Control completeButton;
 	private Control subitemLabel;

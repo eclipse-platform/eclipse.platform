@@ -62,10 +62,10 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 
 	private IFile file1;
 	private IFile file2;
-	private String appendFileContents = "_append";
-	private String fileContents1 = "FileContents";
-	private String fileContents2 = "FileContents2";
-	private TestLogListener logListener = new TestLogListener();
+	private final String appendFileContents = "_append";
+	private final String fileContents1 = "FileContents";
+	private final String fileContents2 = "FileContents2";
+	private final TestLogListener logListener = new TestLogListener();
 	private IProject project;
 
 	@Override
@@ -94,7 +94,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 
 	private class TestFileElement implements ITypedElement {
 
-		private IFile file;
+		private final IFile file;
 
 		public IFile getFile() {
 			return file;
@@ -131,7 +131,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 
 	private class TestDiffNode extends AbstractCompareInput {
 
-		private CompareInputChangeNotifier notifier = new CompareInputChangeNotifier() {
+		private final CompareInputChangeNotifier notifier = new CompareInputChangeNotifier() {
 
 			private IResource getResource(ITypedElement el) {
 				if (el instanceof LocalResourceTypedElement) {

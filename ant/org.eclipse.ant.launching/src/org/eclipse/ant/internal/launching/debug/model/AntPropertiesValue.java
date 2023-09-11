@@ -23,7 +23,7 @@ import org.eclipse.debug.core.model.IVariable;
 
 public class AntPropertiesValue extends AntDebugElement implements IValue {
 
-	private List<AntProperty> fProperties = new ArrayList<>();
+	private final List<AntProperty> fProperties = new ArrayList<>();
 
 	public AntPropertiesValue(AntDebugTarget target) {
 		super(target);

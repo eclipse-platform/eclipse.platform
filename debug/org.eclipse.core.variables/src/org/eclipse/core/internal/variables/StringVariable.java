@@ -25,7 +25,7 @@ public abstract class StringVariable implements IStringVariable {
 	/**
 	 * Variable name
 	 */
-	private String fName;
+	private final String fName;
 
 	/**
 	 * Variable description, or <code>null</code>
@@ -35,7 +35,7 @@ public abstract class StringVariable implements IStringVariable {
 	/**
 	 * Configuration element associated with this variable, or <code>null</code>
 	 */
-	private IConfigurationElement fConfigurationElement;
+	private final IConfigurationElement fConfigurationElement;
 
 	/**
 	 * Constructs a new variable with the given name, description and configuration element.

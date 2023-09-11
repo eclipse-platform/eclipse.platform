@@ -45,8 +45,8 @@ public class IndexManager {
 	private static final String ELEMENT_NAME_INDEX_PROVIDER = "indexProvider"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_NAME_CLASS = "class"; //$NON-NLS-1$
 
-	private Map<String, IIndexContribution[]> indexContributionsByLocale = new HashMap<>();
-	private Map<String, Index> indexesByLocale = new HashMap<>();
+	private final Map<String, IIndexContribution[]> indexContributionsByLocale = new HashMap<>();
+	private final Map<String, Index> indexesByLocale = new HashMap<>();
 	private AbstractIndexProvider[] indexProviders;
 
 	public synchronized IIndex getIndex(String locale) {

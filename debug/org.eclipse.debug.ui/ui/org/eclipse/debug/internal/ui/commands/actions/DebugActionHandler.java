@@ -29,7 +29,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public abstract class DebugActionHandler implements IHandler2 {
 
-	private String fActionId;
+	private final String fActionId;
 
 	/**
 	 * Constructs a new handler for the given action identifier.

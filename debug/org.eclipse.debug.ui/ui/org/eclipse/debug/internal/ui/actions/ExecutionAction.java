@@ -31,7 +31,7 @@ import org.eclipse.ui.IWorkbenchWindow;
  */
 public abstract class ExecutionAction implements IActionDelegate2 {
 
-	private String fLaunchGroupIdentifier;
+	private final String fLaunchGroupIdentifier;
 
 	public ExecutionAction(String launchGroupIdentifier) {
 		fLaunchGroupIdentifier = launchGroupIdentifier;

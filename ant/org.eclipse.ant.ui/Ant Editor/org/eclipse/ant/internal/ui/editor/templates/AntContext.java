@@ -30,7 +30,7 @@ import org.eclipse.jface.text.templates.TemplateTranslator;
 
 public class AntContext extends DocumentTemplateContext {
 
-	private IAntModel fAntModel;
+	private final IAntModel fAntModel;
 
 	public AntContext(TemplateContextType type, IDocument document, IAntModel model, Position position) {
 		super(type, document, position);

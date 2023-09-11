@@ -139,10 +139,10 @@ public class FileSystemTableProvider {
 	 */
 	class HistoryComparator extends ViewerComparator {
 		private boolean reversed = false;
-		private int columnNumber;
+		private final int columnNumber;
 
 		// column headings:	"Type" "Date"
-		private int[][] SORT_ORDERS_BY_COLUMN = { {COL_DATE, COL_TYPE} /* date */, {COL_TYPE, COL_DATE} /* type */
+		private final int[][] SORT_ORDERS_BY_COLUMN = { {COL_DATE, COL_TYPE} /* date */, {COL_TYPE, COL_DATE} /* type */
 		};
 
 		/**

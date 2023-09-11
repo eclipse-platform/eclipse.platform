@@ -28,7 +28,7 @@ import org.eclipse.ui.activities.WorkbenchActivityHelper;
  */
 public class LaunchCategoryFilter extends ViewerFilter {
 
-	private String fCategory;
+	private final String fCategory;
 
 	/**
 	 * Constructs a filter that hides configurations from a specific

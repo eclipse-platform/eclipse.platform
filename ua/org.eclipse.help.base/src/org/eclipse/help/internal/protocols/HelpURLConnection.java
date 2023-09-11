@@ -76,7 +76,7 @@ public class HelpURLConnection extends URLConnection {
 	protected String file;
 	protected String locale;
 	private static String appserverImplPluginId;
-	private boolean localOnly;
+	private final boolean localOnly;
 
 	/**
 	 * Constructor for HelpURLConnection

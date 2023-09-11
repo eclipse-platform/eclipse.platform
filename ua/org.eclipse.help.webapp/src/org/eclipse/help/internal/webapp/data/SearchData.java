@@ -68,7 +68,7 @@ import org.eclipse.osgi.util.NLS;
 public class SearchData extends ActivitiesData {
 	private static final String SHOW_CATEGORIES = "showSearchCategories"; //$NON-NLS-1$
 
-	private WebappWorkingSetManager wsmgr;
+	private final WebappWorkingSetManager wsmgr;
 
 	// Request parameters
 	private String topicHref;
@@ -89,7 +89,7 @@ public class SearchData extends ActivitiesData {
 	private QueryTooComplexException queryException = null;
 
 	// List of alternate search terms
-	private List<String> altList = new ArrayList<>();
+	private final List<String> altList = new ArrayList<>();
 
 	private boolean showCategories = false;
 

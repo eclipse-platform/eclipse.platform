@@ -23,7 +23,7 @@ import org.eclipse.ui.internal.cheatsheets.composite.model.AbstractTask;
 import org.eclipse.ui.internal.provisional.cheatsheets.ICompositeCheatSheetTask;
 
 public class StartAction extends Action {
-	private AbstractTask task;
+	private final AbstractTask task;
 	private static final String START_CCS_TASK_GIF = "start_ccs_task.png"; //$NON-NLS-1$
 
 	public StartAction(ICompositeCheatSheetTask task) {

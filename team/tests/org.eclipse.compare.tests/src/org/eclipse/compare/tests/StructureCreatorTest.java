@@ -126,7 +126,7 @@ public class StructureCreatorTest {
 		} };
 
 		StructureCreator creator = new StructureCreator() {
-			private Pattern whitespace = Pattern.compile("\\s+");
+			private final Pattern whitespace = Pattern.compile("\\s+");
 			private Matcher matcher = null;
 
 			@Override

@@ -71,11 +71,11 @@ public class ImportBreakpointsOperation implements IRunnableWithProgress {
 
 	private boolean fCreateWorkingSets = false;
 
-	private ArrayList<IBreakpoint> fAdded = new ArrayList<>();
+	private final ArrayList<IBreakpoint> fAdded = new ArrayList<>();
 
 	private String fCurrentWorkingSetProperty = null;
 
-	private BreakpointManager fManager = (BreakpointManager) DebugPlugin.getDefault().getBreakpointManager();
+	private final BreakpointManager fManager = (BreakpointManager) DebugPlugin.getDefault().getBreakpointManager();
 
 	/**
 	 * When a buffer is specified, a file is not used.

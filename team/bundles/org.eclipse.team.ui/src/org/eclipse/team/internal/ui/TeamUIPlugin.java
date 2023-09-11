@@ -83,11 +83,11 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 
 	private static List<IPropertyChangeListener> propertyChangeListeners = new ArrayList<>(5);
 
-	private Hashtable<String, ImageDescriptor> imageDescriptors = new Hashtable<>(20);
+	private final Hashtable<String, ImageDescriptor> imageDescriptors = new Hashtable<>(20);
 
 	private WorkspaceTeamStateProvider provider;
 
-	private Map<String, TeamStateProvider> decoratedStateProviders = new HashMap<>();
+	private final Map<String, TeamStateProvider> decoratedStateProviders = new HashMap<>();
 
 	// manages synchronize participants
 	private SynchronizeManager synchronizeManager;

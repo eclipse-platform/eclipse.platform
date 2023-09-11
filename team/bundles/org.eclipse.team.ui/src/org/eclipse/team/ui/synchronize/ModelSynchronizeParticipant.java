@@ -141,14 +141,14 @@ public class ModelSynchronizeParticipant extends
 	private SubscriberRefreshSchedule refreshSchedule;
 	private String description;
 	private SaveableComparison activeSaveable;
-	private PreferenceStore preferences = new PreferenceStore() {
+	private final PreferenceStore preferences = new PreferenceStore() {
 		@Override
 		public void save() throws IOException {
 			// Nothing to do. Preference will be saved with participant.
 		}
 	};
 
-	private IPropertyListener dirtyListener = (source, propId) -> {
+	private final IPropertyListener dirtyListener = (source, propId) -> {
 		if (source instanceof SaveableComparison && propId == SaveableComparison.PROP_DIRTY) {
 			SaveableComparison scm = (SaveableComparison) source;
 			boolean isDirty = scm.isDirty();

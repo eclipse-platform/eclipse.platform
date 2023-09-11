@@ -27,7 +27,7 @@ import org.eclipse.jface.action.IAction;
  */
 public class SortBreakpointsAction extends Action {
 
-	private BreakpointsView fView;
+	private final BreakpointsView fView;
 	int actionSort;
 
 	/**

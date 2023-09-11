@@ -33,9 +33,9 @@ public class CompareHandlerService {
 
 	private final List<IHandlerActivation> fActivations = new ArrayList<>();
 	private final Expression fExpression;
-	private ICompareContainer fContainer;
+	private final ICompareContainer fContainer;
 	private boolean fDisposed;
-	private List<IHandlerActivation> fPaneActivations = new ArrayList<>();
+	private final List<IHandlerActivation> fPaneActivations = new ArrayList<>();
 	private IHandlerService fHandlerService;
 
 	public static CompareHandlerService createFor(ICompareContainer container, Shell shell) {

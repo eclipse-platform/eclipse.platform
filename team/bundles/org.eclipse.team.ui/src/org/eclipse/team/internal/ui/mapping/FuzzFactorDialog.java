@@ -39,7 +39,7 @@ public class FuzzFactorDialog extends Dialog {
 	private Text valueText;
 	private Text errorMessageText;
 
-	private WorkspacePatcher patcher;
+	private final WorkspacePatcher patcher;
 	private int fuzzFactor;
 
 	public FuzzFactorDialog(Shell parentShell, WorkspacePatcher patcher) {

@@ -92,8 +92,8 @@ public class EclipseContext implements IEclipseContext {
 		}
 	}
 
-	private WeakGroupedListenerList weakListeners = new WeakGroupedListenerList();
-	private Map<String, ValueComputation> localValueComputations = new ConcurrentHashMap<>();
+	private final WeakGroupedListenerList weakListeners = new WeakGroupedListenerList();
+	private final Map<String, ValueComputation> localValueComputations = new ConcurrentHashMap<>();
 
 	final protected ConcurrentNeutralValueMap<String, Object> localValues = // null values allowed
 			new ConcurrentNeutralValueMap<>();
@@ -108,15 +108,15 @@ public class EclipseContext implements IEclipseContext {
 	private WeakReference<EclipseContext> selfRef;
 	private final StrongIterable<EclipseContext> childIterable = new StrongIterable<>(this.children);
 
-	private Set<IContextDisposalListener> notifyOnDisposal = new HashSet<>();
+	private final Set<IContextDisposalListener> notifyOnDisposal = new HashSet<>();
 
 	static private ThreadLocal<Stack<Computation>> currentComputation = new ThreadLocal<>();
 
 	// I don't think we need to sync referenceQueue access
-	private ReferenceQueue<Object> referenceQueue = new ReferenceQueue<>();
+	private final ReferenceQueue<Object> referenceQueue = new ReferenceQueue<>();
 
-	private Map<Reference<?>, TrackableComputationExt> activeComputations = Collections.synchronizedMap(new HashMap<>());
-	private Set<TrackableComputationExt> activeRATs = Collections.synchronizedSet(new HashSet<>());
+	private final Map<Reference<?>, TrackableComputationExt> activeComputations = Collections.synchronizedMap(new HashMap<>());
+	private final Set<TrackableComputationExt> activeRATs = Collections.synchronizedSet(new HashSet<>());
 
 	private final static Object[] nullArgs = new Object[] {null};
 

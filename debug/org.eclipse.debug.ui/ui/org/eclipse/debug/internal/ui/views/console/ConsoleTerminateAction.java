@@ -39,7 +39,7 @@ import org.eclipse.ui.texteditor.IUpdate;
 public class ConsoleTerminateAction extends Action implements IUpdate {
 
 	private ProcessConsole fConsole;
-	private IWorkbenchWindow fWindow;
+	private final IWorkbenchWindow fWindow;
 
 	/**
 	 * Creates a terminate action for the console

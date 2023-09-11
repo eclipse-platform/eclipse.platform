@@ -28,9 +28,9 @@ import org.eclipse.help.ITopic;
 
 public class UserContext implements IContext3 {
 
-	private String title;
-	private String text;
-	private List<ITopic> children = new ArrayList<>();
+	private final String title;
+	private final String text;
+	private final List<ITopic> children = new ArrayList<>();
 
 	public UserContext(String title, String text) {
 		this.title = title;

@@ -32,7 +32,7 @@ import org.eclipse.team.core.variants.IResourceVariantComparator;
 
 public class LocalHistorySubscriber extends Subscriber {
 
-	private LocalHistoryVariantComparator comparator;
+	private final LocalHistoryVariantComparator comparator;
 
 	public LocalHistorySubscriber() {
 		this.comparator = new LocalHistoryVariantComparator();

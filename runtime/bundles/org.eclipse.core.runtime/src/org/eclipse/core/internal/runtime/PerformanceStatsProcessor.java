@@ -49,7 +49,7 @@ public class PerformanceStatsProcessor extends Job {
 	 */
 	private final ListenerList<PerformanceListener> listeners = new ListenerList<>();
 
-	private FrameworkLog log;
+	private final FrameworkLog log;
 
 	/*
 	 * @see PerformanceStats#addListener

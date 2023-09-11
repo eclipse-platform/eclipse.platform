@@ -62,7 +62,7 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 	 */
 	class LabelJob extends Job implements ILabelJob {
 
-		private LabelUpdater fUpdater = new LabelUpdater();
+		private final LabelUpdater fUpdater = new LabelUpdater();
 
 		public LabelJob() {
 			super("Label Job"); //$NON-NLS-1$
@@ -93,7 +93,7 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 	 */
 	class UILabelJob extends UIJob implements ILabelJob {
 
-		private LabelUpdater fUpdater = new LabelUpdater();
+		private final LabelUpdater fUpdater = new LabelUpdater();
 
 		public UILabelJob() {
 			super("Label Job"); //$NON-NLS-1$

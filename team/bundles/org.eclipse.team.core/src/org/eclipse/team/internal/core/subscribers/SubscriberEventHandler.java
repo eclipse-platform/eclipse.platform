@@ -44,7 +44,7 @@ import org.eclipse.team.internal.core.Policy;
 public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 
 	// Changes accumulated by the event handler
-	private List<Event> resultCache = new ArrayList<>();
+	private final List<Event> resultCache = new ArrayList<>();
 
 	private boolean started = false;
 	private boolean initializing = true;
@@ -54,9 +54,9 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 	private int ticks;
 
 	private final Subscriber subscriber;
-	private ISynchronizationScope scope;
+	private final ISynchronizationScope scope;
 
-	private ISynchronizationScopeChangeListener scopeChangeListener;
+	private final ISynchronizationScopeChangeListener scopeChangeListener;
 
 	/**
 	 * Internal resource synchronization event. Can contain a result.

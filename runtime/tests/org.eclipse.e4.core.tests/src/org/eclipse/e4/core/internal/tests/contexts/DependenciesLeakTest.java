@@ -29,7 +29,7 @@ public class DependenciesLeakTest {
 	final static String LEGACY_H_ID = "legacy::handler::"; //$NON-NLS-1$
 
 	static class HandlerSelectionFunction extends ContextFunction {
-		private String commandId;
+		private final String commandId;
 		public HandlerSelectionFunction(String commandId) {
 			this.commandId = commandId;
 		}

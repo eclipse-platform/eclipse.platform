@@ -51,7 +51,7 @@ import org.eclipse.ui.PlatformUI;
 public class AntPropertiesTab extends AbstractLaunchConfigurationTab implements IAntBlockContainer {
 
 	private Button fUseDefaultButton;
-	private AntPropertiesBlock fAntPropertiesBlock = new AntPropertiesBlock(this);
+	private final AntPropertiesBlock fAntPropertiesBlock = new AntPropertiesBlock(this);
 	private boolean fSeparateJRE = true;
 
 	@Override

@@ -22,7 +22,7 @@ import org.eclipse.debug.core.model.IVariable;
 
 public class SampleValue extends DebugElement implements IValue {
 
-	private SampleVariable fVariable;
+	private final SampleVariable fVariable;
 
 	public SampleValue(SampleVariable variable) {
 		super(variable.getDebugTarget());

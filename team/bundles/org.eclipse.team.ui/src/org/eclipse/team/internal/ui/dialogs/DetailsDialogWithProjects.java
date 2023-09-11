@@ -27,12 +27,12 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class DetailsDialogWithProjects extends DetailsDialog {
 
-	private String message;
-	private String detailsTitle;
-	private IProject[] projects;
+	private final String message;
+	private final String detailsTitle;
+	private final IProject[] projects;
 	private org.eclipse.swt.widgets.List detailsList;
 
-	private boolean includeCancelButton;
+	private final boolean includeCancelButton;
 
 	/**
 	 * Constructor for DetailsDialogWithProjects.

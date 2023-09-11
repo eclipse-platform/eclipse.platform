@@ -33,7 +33,7 @@ public class WorkspacePreferences extends WorkspaceDescription {
 
 	public final static String PROJECT_SEPARATOR = "/"; //$NON-NLS-1$
 
-	private Preferences preferences;
+	private final Preferences preferences;
 
 	/**
 	 * Helper method that converts a string string array {"string1","

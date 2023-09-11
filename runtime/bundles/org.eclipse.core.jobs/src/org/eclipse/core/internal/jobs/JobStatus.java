@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.jobs.Job;
  * Standard implementation of the IJobStatus interface.
  */
 public class JobStatus extends Status implements IJobStatus {
-	private Job job;
+	private final Job job;
 
 	/**
 	 * Creates a new job status with no interesting error code or exception.

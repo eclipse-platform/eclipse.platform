@@ -30,8 +30,8 @@ public class PatchConfiguration {
 	private int fFuzz;
 	private boolean fIgnoreWhitespace= false;
 	private boolean fReverse= false;
-	private HashMap<String, Object> properties = new HashMap<>();
-	private List<IHunkFilter> hunkFilters = new ArrayList<>();
+	private final HashMap<String, Object> properties = new HashMap<>();
+	private final List<IHunkFilter> hunkFilters = new ArrayList<>();
 
 	/**
 	 * Return whether the patch should be reversed when applied.

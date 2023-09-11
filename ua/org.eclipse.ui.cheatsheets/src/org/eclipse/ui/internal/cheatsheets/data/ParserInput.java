@@ -24,7 +24,7 @@ import java.net.URL;
 
 public class ParserInput {
 	private URL url;
-	private String xml;
+	private final String xml;
 	private String pluginId;
 	private String errorMessage;
 

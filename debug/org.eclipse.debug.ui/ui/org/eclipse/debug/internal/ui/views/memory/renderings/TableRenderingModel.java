@@ -39,8 +39,8 @@ import org.eclipse.debug.ui.memory.IMemoryRendering;
 
 public class TableRenderingModel extends AbstractVirtualContentTableModel implements IContentChangeComputer {
 
-	private Hashtable<Object, Object> fCache;
-	private Vector<Object> fOrderedCache; // needed to re-organize cache
+	private final Hashtable<Object, Object> fCache;
+	private final Vector<Object> fOrderedCache; // needed to re-organize cache
 
 	private boolean fMBSupportsChangeManagement;
 	private IMemoryBlock fMemoryBlock;

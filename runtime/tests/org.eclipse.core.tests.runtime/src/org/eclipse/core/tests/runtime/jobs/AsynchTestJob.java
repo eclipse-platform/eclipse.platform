@@ -23,8 +23,8 @@ import org.eclipse.core.tests.harness.TestBarrier2;
  * A job that executes asynchronously on a separate thread
  */
 class AsynchTestJob extends Job {
-	private AtomicIntegerArray status;
-	private int index;
+	private final AtomicIntegerArray status;
+	private final int index;
 
 	public AsynchTestJob(String name, AtomicIntegerArray status, int index) {
 		super(name);

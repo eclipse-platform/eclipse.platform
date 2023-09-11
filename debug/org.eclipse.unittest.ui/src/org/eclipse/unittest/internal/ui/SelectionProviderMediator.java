@@ -61,11 +61,11 @@ public class SelectionProviderMediator implements IPostSelectionProvider {
 
 	}
 
-	private StructuredViewer[] fViewers;
+	private final StructuredViewer[] fViewers;
 
 	private StructuredViewer fViewerInFocus;
-	private ListenerList<ISelectionChangedListener> fSelectionChangedListeners;
-	private ListenerList<ISelectionChangedListener> fPostSelectionChangedListeners;
+	private final ListenerList<ISelectionChangedListener> fSelectionChangedListeners;
+	private final ListenerList<ISelectionChangedListener> fPostSelectionChangedListeners;
 
 	/**
 	 * Constructs a selection provider mediator object

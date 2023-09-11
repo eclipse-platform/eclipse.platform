@@ -32,7 +32,7 @@ import org.eclipse.jface.action.Action;
  * @since 3.0
  */
 public class RemoveMemoryRenderingAction extends Action {
-	private IMemoryRenderingContainer fViewPane;
+	private final IMemoryRenderingContainer fViewPane;
 
 	public RemoveMemoryRenderingAction(IMemoryRenderingContainer viewPane) {
 		// create action as drop down

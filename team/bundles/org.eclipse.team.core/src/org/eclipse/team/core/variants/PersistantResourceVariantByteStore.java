@@ -39,7 +39,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 
 	private static final byte[] NO_REMOTE = new byte[0];
 
-	private QualifiedName syncName;
+	private final QualifiedName syncName;
 
 	/**
 	 * Create a persistent tree that uses the given qualified name

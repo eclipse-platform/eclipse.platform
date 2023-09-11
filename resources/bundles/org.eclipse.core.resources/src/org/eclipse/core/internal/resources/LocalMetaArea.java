@@ -68,7 +68,7 @@ public class LocalMetaArea implements ICoreConstants {
 	 * The project location is just stored as an optimization, to avoid recomputing it.
 	 */
 	protected final IPath projectMetaLocation;
-	private Workspace workspace;
+	private final Workspace workspace;
 
 	public LocalMetaArea(Workspace workspace) {
 		this.workspace = workspace;

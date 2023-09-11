@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IPath;
  * Factory for creating a resource delta that describes a proposed change.
  */
 public class ResourceChangeDescriptionFactory implements IResourceChangeDescriptionFactory {
-	private ProposedResourceDelta root = new ProposedResourceDelta(ResourcesPlugin.getWorkspace().getRoot());
+	private final ProposedResourceDelta root = new ProposedResourceDelta(ResourcesPlugin.getWorkspace().getRoot());
 
 
 	/**

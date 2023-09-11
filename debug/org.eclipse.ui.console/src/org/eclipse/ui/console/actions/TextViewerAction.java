@@ -29,7 +29,7 @@ import org.eclipse.ui.texteditor.IUpdate;
 public class TextViewerAction extends Action implements IUpdate {
 
 	private int fOperationCode= -1;
-	private ITextOperationTarget fOperationTarget;
+	private final ITextOperationTarget fOperationTarget;
 
 	/**
 	 * Constructs a new action in the given text viewer with the specified operation

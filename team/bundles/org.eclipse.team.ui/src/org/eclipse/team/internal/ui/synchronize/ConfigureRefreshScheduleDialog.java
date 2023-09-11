@@ -30,7 +30,7 @@ import org.eclipse.team.internal.ui.dialogs.DetailsDialog;
 public class ConfigureRefreshScheduleDialog extends DetailsDialog {
 
 	private ConfigureSynchronizeScheduleComposite scheduleComposite;
-	private SubscriberRefreshSchedule schedule;
+	private final SubscriberRefreshSchedule schedule;
 
 	public ConfigureRefreshScheduleDialog(Shell parentShell, SubscriberRefreshSchedule schedule) {
 		super(parentShell, NLS.bind(TeamUIMessages.ConfigureRefreshScheduleDialog_0, new String[] { Utils.getTypeName(schedule.getParticipant()) }));

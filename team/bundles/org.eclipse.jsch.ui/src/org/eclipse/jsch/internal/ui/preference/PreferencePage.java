@@ -1665,7 +1665,7 @@ protected void performDefaults(){
 	}
 
 	class PassphrasePrompt implements Runnable{
-		private String message;
+		private final String message;
 		private String passphrase;
 
 		PassphrasePrompt(String message){

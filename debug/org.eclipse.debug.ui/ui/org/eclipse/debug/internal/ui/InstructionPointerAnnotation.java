@@ -25,7 +25,7 @@ public class InstructionPointerAnnotation extends DynamicInstructionPointerAnnot
 	/**
 	 * The image for this annotation.
 	 */
-	private Image fImage;
+	private final Image fImage;
 
 	/**
 	 * Constructs an instruction pointer image.

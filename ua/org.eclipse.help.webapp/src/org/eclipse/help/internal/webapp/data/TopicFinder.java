@@ -32,9 +32,9 @@ public class TopicFinder {
 
 	private ITopic[] foundTopicPath;
 	private int selectedToc;
-	private IToc[] tocs;
+	private final IToc[] tocs;
 	private String numericPath = null;
-	private AbstractHelpScope scope;
+	private final AbstractHelpScope scope;
 
 	public TopicFinder(String topicHref, IToc[] tocs, AbstractHelpScope scope) {
 		this.tocs = tocs;

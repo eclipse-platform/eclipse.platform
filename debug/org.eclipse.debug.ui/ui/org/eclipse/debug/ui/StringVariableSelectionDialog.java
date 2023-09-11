@@ -91,7 +91,7 @@ public class StringVariableSelectionDialog extends ElementListSelectionDialog {
 	}
 
 	//no filtering by default
-	private ArrayList<VariableFilter> fFilters = new ArrayList<>();
+	private final ArrayList<VariableFilter> fFilters = new ArrayList<>();
 	//when filtering is on, do not show all by default
 	private boolean fShowAllSelected = false;
 

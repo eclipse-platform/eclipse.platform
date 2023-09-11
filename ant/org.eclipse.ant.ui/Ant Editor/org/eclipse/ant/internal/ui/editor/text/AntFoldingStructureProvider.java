@@ -36,7 +36,7 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 
 public class AntFoldingStructureProvider {
 
-	private AntEditor fEditor;
+	private final AntEditor fEditor;
 	private IDocument fDocument;
 
 	/**

@@ -67,7 +67,7 @@ public class EclipseConnector {
 			new FramesetFilter(), new InjectionFilter(false),
 			new DynamicXHTMLFilter() };
 
-	private ServletContext context;
+	private final ServletContext context;
 	private static INotFoundCallout notFoundCallout = null; // For JUnit Testing
 
 	public EclipseConnector(ServletContext context) {

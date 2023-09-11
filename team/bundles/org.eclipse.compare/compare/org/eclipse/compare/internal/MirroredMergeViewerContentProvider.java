@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Image;
  * We must extend from the class and not the interface, because some implementations expect the class.
  */
 public class MirroredMergeViewerContentProvider extends MergeViewerContentProvider {
-	private MergeViewerContentProvider delegate;
+	private final MergeViewerContentProvider delegate;
 
 	public MirroredMergeViewerContentProvider(CompareConfiguration cc, MergeViewerContentProvider delegate) {
 		super(cc);

@@ -31,12 +31,12 @@ public class TreeContentProviderNode implements Comparable<TreeContentProviderNo
 	/**
 	 * This node's name (may be null).
 	 */
-	private String name;
+	private final String name;
 
 	/**
 	 * This node's value (may be null).
 	 */
-	private Object value;
+	private final Object value;
 
 	/**
 	 * This node's parent node.

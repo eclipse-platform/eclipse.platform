@@ -28,10 +28,10 @@ import org.eclipse.ui.actions.ActionFactory;
 
 public class RefreshUserNotificationPolicyInModalDialog implements IRefreshSubscriberListener {
 
-	private SubscriberParticipant participant;
-	private ISynchronizePageConfiguration configuration;
-	private Shell shell;
-	private String title;
+	private final SubscriberParticipant participant;
+	private final ISynchronizePageConfiguration configuration;
+	private final Shell shell;
+	private final String title;
 
 	public RefreshUserNotificationPolicyInModalDialog(Shell shell, String title, ISynchronizePageConfiguration configuration, SubscriberParticipant participant) {
 		this.title = title;

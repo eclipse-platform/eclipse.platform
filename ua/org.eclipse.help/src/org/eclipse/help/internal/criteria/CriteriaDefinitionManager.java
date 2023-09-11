@@ -39,8 +39,8 @@ public class CriteriaDefinitionManager {
 	private static final String ELEMENT_NAME_CRITERIA_DEFINITION_PROVIDER = "criteriaDefinitionProvider"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_NAME_CLASS = "class"; //$NON-NLS-1$
 
-	private Map<String, CriteriaDefinitionContribution[]> criteriaDefinitionContributionsByLocale = new HashMap<>();
-	private Map<String, CriteriaDefinition> criteriaDefinitionsByLocale = new HashMap<>();
+	private final Map<String, CriteriaDefinitionContribution[]> criteriaDefinitionContributionsByLocale = new HashMap<>();
+	private final Map<String, CriteriaDefinition> criteriaDefinitionsByLocale = new HashMap<>();
 	private AbstractCriteriaDefinitionProvider[] criteriaDefinitionProviders;
 
 	public synchronized ICriteriaDefinition getCriteriaDefinition(String locale) {

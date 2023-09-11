@@ -35,7 +35,7 @@ import org.eclipse.team.internal.ui.TeamUIPlugin;
  */
 public class StorageStreamMerger implements IStorageMerger {
 
-	private IStreamMerger merger;
+	private final IStreamMerger merger;
 
 	public StorageStreamMerger(IStreamMerger merger) {
 		this.merger = merger;

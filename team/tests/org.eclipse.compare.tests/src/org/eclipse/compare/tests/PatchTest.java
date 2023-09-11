@@ -244,7 +244,7 @@ public class PatchTest {
 	}
 
 	// Keeps track of the failures
-	private List<AssertionError> failures = new ArrayList<>();
+	private final List<AssertionError> failures = new ArrayList<>();
 
 	@Test
 	public void testPatchdataSubfolders() throws IOException, CoreException {

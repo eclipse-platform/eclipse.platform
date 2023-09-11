@@ -40,7 +40,7 @@ public class History implements ITestRunSessionListener {
 	}
 
 	private boolean wasRead = false;
-	private List<HistoryItem> items = new ArrayList<>();
+	private final List<HistoryItem> items = new ArrayList<>();
 
 	/**
 	 * Creates and returns a directory to store the History information

@@ -34,16 +34,16 @@ import org.eclipse.ui.part.PageBook;
  */
 public class ChangesSection extends Composite {
 
-	private AbstractSynchronizePage page;
-	private ISynchronizePageConfiguration configuration;
-	private FormToolkit forms;
+	private final AbstractSynchronizePage page;
+	private final ISynchronizePageConfiguration configuration;
+	private final FormToolkit forms;
 
 	/**
 	 * Page book either shows the diff tree viewer if there are changes or
 	 * shows a message to the user if there are no changes that would be
 	 * shown in the tree.
 	 */
-	private PageBook changesSectionContainer;
+	private final PageBook changesSectionContainer;
 
 	/**
 	 * Diff tree viewer that shows synchronization changes. This is created

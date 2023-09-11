@@ -40,7 +40,7 @@ import org.eclipse.team.ui.synchronize.ModelSynchronizeParticipant;
  **/
 public class ModelSynchronizePage extends AbstractSynchronizePage {
 
-	private ModelSynchronizeParticipant participant;
+	private final ModelSynchronizeParticipant participant;
 
 	/**
 	 * Create a page from the given configuration

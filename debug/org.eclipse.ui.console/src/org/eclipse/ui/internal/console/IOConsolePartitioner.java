@@ -164,7 +164,7 @@ public class IOConsolePartitioner
 	private int lowWaterMark = -1;
 
 	/** The partitioned {@link IOConsole}. */
-	private IOConsole console;
+	private final IOConsole console;
 
 	/** Set after console signaled that all streams are closed. */
 	private volatile boolean streamsClosed;

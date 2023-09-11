@@ -24,8 +24,8 @@ import org.eclipse.help.internal.webapp.utils.JSonHelper;
 public class ParseElement {
 
 	private Properties props;
-	private ArrayList<ParseElement> children = new ArrayList<>();
-	private ParseElement parent;
+	private final ArrayList<ParseElement> children = new ArrayList<>();
+	private final ParseElement parent;
 
 	public ParseElement(Properties props, ParseElement parent) {
 		this.props = props;

@@ -49,7 +49,7 @@ import org.eclipse.ui.model.WorkbenchPartLabelProvider;
 public class RemoveSynchronizeParticipantAction extends Action {
 
 	private final ISynchronizeView view;
-	private boolean removeAll;
+	private final boolean removeAll;
 
 	public RemoveSynchronizeParticipantAction(ISynchronizeView view, boolean removeAll) {
 		this.view = view;

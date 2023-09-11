@@ -22,7 +22,7 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.IModelProxyFactor
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
 
 public class CheckboxModelProxyFactory implements IModelProxyFactory {
-	private MidiEventModelProxy fMidiEventProxy = new MidiEventModelProxy();
+	private final MidiEventModelProxy fMidiEventProxy = new MidiEventModelProxy();
 
 	@Override
 	public IModelProxy createModelProxy(Object element, IPresentationContext context) {

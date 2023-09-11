@@ -39,8 +39,8 @@ import org.eclipse.team.ui.synchronize.ISynchronizeView;
 
 public class SynchronizePageDropDownAction extends Action implements IMenuCreator, ISynchronizeParticipantListener {
 
-	private ISynchronizeView fView;
-	private Action synchronizeAction;
+	private final ISynchronizeView fView;
+	private final Action synchronizeAction;
 	private MenuManager menuManager;
 
 	public SynchronizePageDropDownAction(ISynchronizeView view) {

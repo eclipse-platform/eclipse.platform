@@ -71,7 +71,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	 */
 	public static final String MARK_AS_MERGE_ACTION_ID = "org.eclipse.team.ui.markAsMergeAction"; //$NON-NLS-1$
 
-	private Map<String, IHandler> handlers = new HashMap<>();
+	private final Map<String, IHandler> handlers = new HashMap<>();
 	private OpenWithActionGroup openWithActions;
 
 	@Override

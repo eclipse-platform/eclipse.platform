@@ -254,7 +254,7 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 
 	private static final String PROP_ACTION_SERVICE_ACTION_BARS = "org.eclipse.team.ui.actionServiceActionBars"; //$NON-NLS-1$
 
-	private Set<INavigatorContentExtension> extensions = new HashSet<>();
+	private final Set<INavigatorContentExtension> extensions = new HashSet<>();
 
 	private NavigatorActionService actionService;
 
@@ -380,7 +380,7 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 			DecoratingStyledCellLabelProvider implements IStyledLabelProvider,
 			IFontProvider {
 
-		private IStyledLabelProvider slp;
+		private final IStyledLabelProvider slp;
 
 		public MyDecoratingStyledCellLabelProvider(IStyledLabelProvider slp,
 				ILabelDecorator decorator) {

@@ -81,8 +81,8 @@ public class RenderingViewPane extends AbstractMemoryViewPane implements IMemory
 	private ViewPaneRenderingMgr fRenderingMgr;
 
 	private IMemoryRenderingSite fRenderingSite;
-	private Set<IMemoryRendering> fAddedRenderings = new HashSet<>();
-	private Set<IMemoryBlock> fAddedMemoryBlocks = new HashSet<>();
+	private final Set<IMemoryRendering> fAddedRenderings = new HashSet<>();
+	private final Set<IMemoryBlock> fAddedMemoryBlocks = new HashSet<>();
 
 	private boolean fCanAddRendering = true;
 	private boolean fCanRemoveRendering = true;

@@ -34,7 +34,7 @@ import org.eclipse.ui.PlatformUI;
  * This action opens a dialog to search for build files and adds the resulting projects to the ant view.
  */
 public class SearchForBuildFilesAction extends Action {
-	private AntView view;
+	private final AntView view;
 
 	public SearchForBuildFilesAction(AntView view) {
 		super(AntViewActionMessages.SearchForBuildFilesAction_Search_1, AntUIImages.getImageDescriptor(IAntUIConstants.IMG_SEARCH));

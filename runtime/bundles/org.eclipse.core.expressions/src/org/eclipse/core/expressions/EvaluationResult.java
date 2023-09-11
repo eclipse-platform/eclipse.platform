@@ -132,7 +132,7 @@ import org.eclipse.core.runtime.Assert;
  */
 public class EvaluationResult {
 
-	private int fValue;
+	private final int fValue;
 
 	private static final int FALSE_VALUE= 0;
 	private static final int TRUE_VALUE= 1;

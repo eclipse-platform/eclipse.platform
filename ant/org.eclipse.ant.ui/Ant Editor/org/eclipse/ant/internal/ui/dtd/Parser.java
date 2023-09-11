@@ -177,7 +177,7 @@ public class Parser {
 	}
 
 	private static class DTDReader extends Reader {
-		private Reader fDelegate;
+		private final Reader fDelegate;
 
 		public DTDReader(String pub, String sys, String root) {
 			String document = "<!DOCTYPE " + root + " PUBLIC '" + pub + "' '" + sys + "'><" + root + "/>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
@@ -196,7 +196,7 @@ public class Parser {
 	}
 
 	private static class DTDEntityResolver implements EntityResolver {
-		private Reader reader;
+		private final Reader reader;
 
 		public DTDEntityResolver(Reader reader) {
 			this.reader = reader;

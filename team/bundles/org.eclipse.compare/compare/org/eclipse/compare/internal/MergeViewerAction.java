@@ -19,9 +19,9 @@ import org.eclipse.ui.texteditor.IUpdate;
 
 public abstract class MergeViewerAction extends Action implements IUpdate {
 
-	private boolean fMutable;
-	private boolean fSelection;
-	private boolean fContent;
+	private final boolean fMutable;
+	private final boolean fSelection;
+	private final boolean fContent;
 
 	public MergeViewerAction(boolean mutable, boolean selection, boolean content) {
 		fMutable= mutable;

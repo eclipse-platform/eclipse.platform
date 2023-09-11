@@ -24,7 +24,7 @@ public class SynchronizeParticipantRegistry extends RegistryReader {
 
 	public static final String PT_SYNCPARTICIPANTS = "synchronizeParticipants"; //$NON-NLS-1$
 	private static final String TAG_SYNCPARTICIPANT = "participant"; //$NON-NLS-1$
-	private Map<String, SynchronizeParticipantDescriptor> participants = new HashMap<>();
+	private final Map<String, SynchronizeParticipantDescriptor> participants = new HashMap<>();
 
 	public SynchronizeParticipantRegistry() {
 		super();

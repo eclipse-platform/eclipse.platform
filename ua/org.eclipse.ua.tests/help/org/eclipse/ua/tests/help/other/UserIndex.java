@@ -28,8 +28,8 @@ import org.eclipse.help.IUAElement;
 
 public class UserIndex implements IIndex {
 
-	private List<IIndexEntry> entries = new ArrayList<>();
-	private boolean enabled;
+	private final List<IIndexEntry> entries = new ArrayList<>();
+	private final boolean enabled;
 
 	public UserIndex(boolean enabled) {
 		this.enabled = true;

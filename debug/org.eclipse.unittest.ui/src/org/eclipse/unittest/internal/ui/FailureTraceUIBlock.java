@@ -52,14 +52,14 @@ import org.eclipse.jface.util.OpenStrategy;
 public class FailureTraceUIBlock implements IMenuListener {
 
 	private static final int MAX_LABEL_LENGTH = 256;
-	private Table fTable;
-	private TestRunnerViewPart fTestRunner;
+	private final Table fTable;
+	private final TestRunnerViewPart fTestRunner;
 	private String fInputTrace;
 	private final Clipboard fClipboard;
 	private TestElement fFailure;
-	private CompareResultsAction fCompareAction;
+	private final CompareResultsAction fCompareAction;
 	private final FailureTableDisplay fFailureTableDisplay;
-	private ShowStackTraceInConsoleViewAction fShowTraceInConsoleAction;
+	private final ShowStackTraceInConsoleViewAction fShowTraceInConsoleAction;
 
 	/**
 	 * Constructs a {@link FailureTraceUIBlock} object

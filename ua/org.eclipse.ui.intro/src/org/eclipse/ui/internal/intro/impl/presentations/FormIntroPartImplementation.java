@@ -63,8 +63,8 @@ public class FormIntroPartImplementation extends
 	private PageForm pageForm;
 	private PageFormWithNavigation pageFormWithNav;
 	// cache model instance for reuse.
-	private IntroModelRoot model = getModel();
-	private SharedStyleManager sharedStyleManager;
+	private final IntroModelRoot model = getModel();
+	private final SharedStyleManager sharedStyleManager;
 
 	// static SWT Intro. This is the link shown on the center of a page in a
 	// static SWT intro.

@@ -17,10 +17,10 @@ import java.io.IOException;
 import java.io.Reader;
 
 public class LazyReader extends Reader implements ILazySource {
-	private int blockCapacity;
+	private final int blockCapacity;
 	char[][] blocks = {};
 	private int bufferSize;
-	private Reader in;
+	private final Reader in;
 	private int mark;
 	private int offset;
 

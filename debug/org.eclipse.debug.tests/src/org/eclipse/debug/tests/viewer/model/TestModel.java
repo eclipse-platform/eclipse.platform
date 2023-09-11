@@ -178,7 +178,7 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 	private IModelSelectionPolicy fModelSelectionPolicy;
 	private boolean fQueueingUpdates = false;
 	private boolean fDelayUpdates = false;
-	private List<IViewerUpdate> fQueuedUpdates = new LinkedList<>();
+	private final List<IViewerUpdate> fQueuedUpdates = new LinkedList<>();
 
 	/**
 	 * Constructor private.  Use static factory methods instead.

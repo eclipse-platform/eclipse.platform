@@ -46,10 +46,10 @@ public class ScopeSelectPart extends AbstractFormPart implements IHelpPart  {
 
 	}
 
-	private FormText scopeSetLink;
-	private Composite container;
+	private final FormText scopeSetLink;
+	private final Composite container;
 	private String id;
-	private ScopeObserver scopeObserver;
+	private final ScopeObserver scopeObserver;
 
 	public ScopeSelectPart(Composite parent, FormToolkit toolkit) {
 		container = toolkit.createComposite(parent);

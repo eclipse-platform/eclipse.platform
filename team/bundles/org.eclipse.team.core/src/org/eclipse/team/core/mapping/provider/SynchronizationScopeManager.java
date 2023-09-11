@@ -79,7 +79,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	private static final int MAX_ITERATION = 10;
 	private final ResourceMappingContext context;
 	private final boolean consultModels;
-	private ISynchronizationScope scope;
+	private final ISynchronizationScope scope;
 	private boolean initialized;
 	private ScopeManagerEventHandler handler;
 	private final String name;

@@ -16,7 +16,7 @@ package org.eclipse.ant.internal.ui.model;
 
 public class AntModelChangeEvent {
 
-	private IAntModel fModel;
+	private final IAntModel fModel;
 	private boolean fPreferenceChange = false;
 
 	public AntModelChangeEvent(IAntModel model) {

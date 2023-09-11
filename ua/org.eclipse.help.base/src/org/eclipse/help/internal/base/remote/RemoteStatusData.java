@@ -136,7 +136,7 @@ public class RemoteStatusData {
 	{
 		private static ConnectionCache instance;
 
-		private Hashtable<URL, Boolean> cache;
+		private final Hashtable<URL, Boolean> cache;
 		private long start;
 
 		private ConnectionCache(){

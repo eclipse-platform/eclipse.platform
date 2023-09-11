@@ -46,9 +46,9 @@ public class AntEditorActionContributor extends TextEditorActionContributor {
 	private final static String TOGGLE_MARK_OCCURRENCES_ID = "org.eclipse.ant.ui.toggleMarkOccurrences"; //$NON-NLS-1$
 	protected RetargetTextEditorAction fContentAssistProposal;
 	protected RetargetTextEditorAction fContentFormat;
-	private TogglePresentationAction fTogglePresentation;
-	private ToggleMarkOccurrencesAction fToggleMarkOccurrencesAction;
-	private ToggleAutoReconcileAction fToggleAutoReconcileAction;
+	private final TogglePresentationAction fTogglePresentation;
+	private final ToggleMarkOccurrencesAction fToggleMarkOccurrencesAction;
+	private final ToggleAutoReconcileAction fToggleAutoReconcileAction;
 
 	public AntEditorActionContributor() {
 		super();

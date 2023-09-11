@@ -250,12 +250,12 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	private ResourceBundle fResourceBundle;
 
 	private boolean fRegistriesInitialized;
-	private CompareRegistry<StreamMergerDescriptor> fStreamMergers= new CompareRegistry<>();
-	private CompareRegistry<StructureCreatorDescriptor> fStructureCreators= new CompareRegistry<>();
-	private CompareRegistry<ViewerDescriptor> fStructureMergeViewers= new CompareRegistry<>();
-	private CompareRegistry<ViewerDescriptor> fContentViewers= new CompareRegistry<>();
-	private CompareRegistry<ViewerDescriptor> fContentMergeViewers= new CompareRegistry<>();
-	private CompareRegistry<CompareFilterDescriptor> fCompareFilters = new CompareRegistry<>();
+	private final CompareRegistry<StreamMergerDescriptor> fStreamMergers= new CompareRegistry<>();
+	private final CompareRegistry<StructureCreatorDescriptor> fStructureCreators= new CompareRegistry<>();
+	private final CompareRegistry<ViewerDescriptor> fStructureMergeViewers= new CompareRegistry<>();
+	private final CompareRegistry<ViewerDescriptor> fContentViewers= new CompareRegistry<>();
+	private final CompareRegistry<ViewerDescriptor> fContentMergeViewers= new CompareRegistry<>();
+	private final CompareRegistry<CompareFilterDescriptor> fCompareFilters = new CompareRegistry<>();
 
 	private Map<String, String> fStructureViewerAliases;
 	private CompareResourceFilter fFilter;

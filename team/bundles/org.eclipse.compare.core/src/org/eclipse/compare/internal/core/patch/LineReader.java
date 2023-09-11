@@ -99,9 +99,9 @@ public class LineReader {
 	private boolean fHaveChar= false;
 	private int fLastChar;
 	private boolean fSawEOF= false;
-	private BufferedReader fReader;
+	private final BufferedReader fReader;
 	private boolean fIgnoreSingleCR= false;
-	private StringBuilder fBuffer= new StringBuilder();
+	private final StringBuilder fBuffer= new StringBuilder();
 
 	public LineReader(BufferedReader reader) {
 		this.fReader= reader;

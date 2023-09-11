@@ -23,7 +23,7 @@ import org.eclipse.swt.custom.BusyIndicator;
  */
 public class FilterImportedElementsAction extends Action {
 
-	private AntEditorContentOutlinePage fPage;
+	private final AntEditorContentOutlinePage fPage;
 
 	public FilterImportedElementsAction(AntEditorContentOutlinePage page) {
 		super(AntOutlineMessages.FilterImportedElementsAction_0);

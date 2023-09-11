@@ -19,8 +19,8 @@ import java.util.List;
 import org.eclipse.ant.core.IAntClasspathEntry;
 
 public class GlobalClasspathEntries extends AbstractClasspathEntry {
-	private String fName;
-	private int fType;
+	private final String fName;
+	private final int fType;
 	private boolean fCanBeRemoved = true;
 
 	public GlobalClasspathEntries(String name, IClasspathEntry parent, boolean canBeRemoved, int type) {

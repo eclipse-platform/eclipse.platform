@@ -23,8 +23,8 @@ import org.eclipse.debug.internal.ui.launchConfigurations.LaunchShortcutExtensio
  * @since 3.12
  */
 public class TerminateToggleValue {
-	private boolean fIsShift;
-	private LaunchShortcutExtension fShortcut;
+	private final boolean fIsShift;
+	private final LaunchShortcutExtension fShortcut;
 
 	public TerminateToggleValue(boolean isShift, LaunchShortcutExtension shortcut) {
 		fIsShift = isShift;

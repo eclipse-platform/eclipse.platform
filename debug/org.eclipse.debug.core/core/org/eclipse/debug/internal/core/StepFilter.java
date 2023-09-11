@@ -25,9 +25,9 @@ import org.eclipse.debug.core.model.IStepFilter;
  */
 public class StepFilter {
 
-	private IConfigurationElement fConfigurationElement;
+	private final IConfigurationElement fConfigurationElement;
 
-	private String fModelIdentifier;
+	private final String fModelIdentifier;
 
 	private IStepFilter fDelegate;
 

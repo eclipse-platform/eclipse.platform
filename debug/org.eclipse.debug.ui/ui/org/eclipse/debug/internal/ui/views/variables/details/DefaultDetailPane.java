@@ -170,8 +170,8 @@ public class DefaultDetailPane extends AbstractDetailPane implements IDetailPane
 	 */
 	class DetailJob extends Job implements IValueDetailListener {
 
-		private IStructuredSelection fElements;
-		private IDebugModelPresentation fModel;
+		private final IStructuredSelection fElements;
+		private final IDebugModelPresentation fModel;
 		private boolean fFirst = true;
 		// whether a result was collected
 		private boolean fComputed = false;
@@ -1054,7 +1054,7 @@ public class DefaultDetailPane extends AbstractDetailPane implements IDetailPane
 	 */
 	class FindReplaceTargetWrapper implements IFindReplaceTarget{
 
-		private IFindReplaceTarget fTarget;
+		private final IFindReplaceTarget fTarget;
 
 		/**
 		 * Constructor

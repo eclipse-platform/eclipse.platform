@@ -92,7 +92,7 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	// attribute is defined, the base in the model becomes relative to
 	// new xml file. However, in the case of XHTML content, and when
 	// presentation is UI forms, we need to reuse initial content file location.
-	private String initialBase;
+	private final String initialBase;
 
 	/**
 	 * The vectors to hold all inhertied styles and alt styles from included

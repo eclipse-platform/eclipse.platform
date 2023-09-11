@@ -66,7 +66,7 @@ public class AntClasspathBlock {
 	private Button downButton;
 	private Button removeButton;
 
-	private AntClasspathLabelProvider labelProvider = new AntClasspathLabelProvider(this);
+	private final AntClasspathLabelProvider labelProvider = new AntClasspathLabelProvider(this);
 	private Button addFolderButton;
 	private Button addJARButton;
 	private Button addExternalJARButton;
@@ -75,7 +75,7 @@ public class AntClasspathBlock {
 
 	private String antHome;
 
-	private IDialogSettings dialogSettings = PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(AntClasspathBlock.class)).getDialogSettings();
+	private final IDialogSettings dialogSettings = PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(AntClasspathBlock.class)).getDialogSettings();
 
 	private IAntBlockContainer container;
 
@@ -83,7 +83,7 @@ public class AntClasspathBlock {
 
 	private IClasspathEntry currentParent;
 
-	private SelectionListener selectionListener = new SelectionAdapter() {
+	private final SelectionListener selectionListener = new SelectionAdapter() {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			Object source = e.getSource();

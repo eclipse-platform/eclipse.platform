@@ -47,13 +47,13 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 	// The id of the sub-provider
 	private final String subProvierId;
 
-	private Map<ISynchronizeModelElement, ISynchronizeModelProvider> rootToProvider = new HashMap<>();
+	private final Map<ISynchronizeModelElement, ISynchronizeModelProvider> rootToProvider = new HashMap<>();
 
 	private ViewerComparator embeddedSorter;
 
 	private SyncInfoSetChangeSetCollector checkedInCollector;
 
-	private IChangeSetChangeListener changeSetListener = new IChangeSetChangeListener() {
+	private final IChangeSetChangeListener changeSetListener = new IChangeSetChangeListener() {
 
 		@Override
 		public void setAdded(final ChangeSet set) {

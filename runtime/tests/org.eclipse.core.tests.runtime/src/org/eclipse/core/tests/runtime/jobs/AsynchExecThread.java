@@ -23,13 +23,13 @@ import org.eclipse.core.tests.harness.TestBarrier2;
  * A runnable class that executes the given job and calls done when it is finished
  */
 public class AsynchExecThread extends Thread {
-	private IProgressMonitor current;
-	private Job job;
-	private int ticks;
-	private int tickLength;
-	private String jobName;
-	private AtomicIntegerArray status;
-	private int index;
+	private final IProgressMonitor current;
+	private final Job job;
+	private final int ticks;
+	private final int tickLength;
+	private final String jobName;
+	private final AtomicIntegerArray status;
+	private final int index;
 
 	public AsynchExecThread(IProgressMonitor current, Job job, int ticks, int tickLength, String jobName,
 			AtomicIntegerArray status, int index) {

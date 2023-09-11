@@ -23,8 +23,8 @@ import org.eclipse.core.runtime.jobs.Job;
  * by a sleep for a specified amount of milliseconds.
  */
 public class TestJob extends Job {
-	private int ticks;
-	private long tickLength;
+	private final int ticks;
+	private final long tickLength;
 	private int runCount = 0;
 	private volatile boolean terminateOnNextTick = false;
 

@@ -51,7 +51,7 @@ public class MultipleInputDialog extends Dialog {
 	protected List<Validator> validators = new ArrayList<>();
 	protected Map<Object, String> valueMap = new HashMap<>();
 
-	private String title;
+	private final String title;
 
 
 

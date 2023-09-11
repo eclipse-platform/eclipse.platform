@@ -38,12 +38,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 public class SeeAlsoPart extends AbstractFormPart implements IHelpPart {
-	private Composite container;
-	private Composite linkContainer;
+	private final Composite container;
+	private final Composite linkContainer;
 	private ReusableHelpPart helpPart;
 	private String id;
 	private Image bgImage;
-	private HyperlinkGroup hyperlinkGroup;
+	private final HyperlinkGroup hyperlinkGroup;
 
 	/**
 	 * @param parent

@@ -47,12 +47,12 @@ import org.eclipse.ui.services.IEvaluationService;
  */
 public class DebugWindowContextService implements IDebugContextService, IPartListener2, IDebugContextListener {
 
-	private Map<String, ListenerList<IDebugContextListener>> fListenersByPartId = new HashMap<>();
-	private Map<String, IDebugContextProvider> fProvidersByPartId = new HashMap<>();
-	private Map<String, ListenerList<IDebugContextListener>> fPostListenersByPartId = new HashMap<>();
+	private final Map<String, ListenerList<IDebugContextListener>> fListenersByPartId = new HashMap<>();
+	private final Map<String, IDebugContextProvider> fProvidersByPartId = new HashMap<>();
+	private final Map<String, ListenerList<IDebugContextListener>> fPostListenersByPartId = new HashMap<>();
 
 	private IWorkbenchWindow fWindow;
-	private List<IDebugContextProvider> fProviders = new ArrayList<>();
+	private final List<IDebugContextProvider> fProviders = new ArrayList<>();
 
 	private DebugContextSourceProvider fSourceProvider;
 

@@ -42,10 +42,10 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 public class IndexTypeinPart extends AbstractFormPart implements IHelpPart, IHelpUIConstants {
 	private ReusableHelpPart parent;
 	String id;
-	private Composite container;
-	private FormText indexInstructions;
-	private Text indexText;
-	private Button indexButton;
+	private final Composite container;
+	private final FormText indexInstructions;
+	private final Text indexText;
+	private final Button indexButton;
 	private IndexPart indexPart;
 	private Tree indexTree;
 	private String[] rootItems;

@@ -72,7 +72,7 @@ public final class ContextRunner {
 	 * The one instance of <code>LaunchingResourceManager</code> we need
 	 * @since 3.4
 	 */
-	private LaunchingResourceManager fLRM = DebugUIPlugin.getDefault().getLaunchingResourceManager();
+	private final LaunchingResourceManager fLRM = DebugUIPlugin.getDefault().getLaunchingResourceManager();
 
 	/**
 	 * Performs the context launching given the object context and the mode to

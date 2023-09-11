@@ -55,13 +55,13 @@ public class DiffTree implements IDiffTree {
 	 */
 	public static final int START_CLIENT_PROPERTY_RANGE = 1024;
 
-	private ListenerList<IDiffChangeListener> listeners = new ListenerList<>();
+	private final ListenerList<IDiffChangeListener> listeners = new ListenerList<>();
 
-	private PathTree pathTree = new PathTree();
+	private final PathTree pathTree = new PathTree();
 
-	private ILock lock = Job.getJobManager().newLock();
+	private final ILock lock = Job.getJobManager().newLock();
 
-	private DiffTreeStatistics statistics = new DiffTreeStatistics();
+	private final DiffTreeStatistics statistics = new DiffTreeStatistics();
 
 	private DiffChangeEvent changes;
 

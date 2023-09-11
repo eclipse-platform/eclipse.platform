@@ -380,7 +380,7 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 			editorActivated((IEditorPart) part);
 	}
 
-	private ISelectionListener selectionListener = new ISelectionListener() {
+	private final ISelectionListener selectionListener = new ISelectionListener() {
 		private boolean isUpdatingSelection = false;
 
 		@Override

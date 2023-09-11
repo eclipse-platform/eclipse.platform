@@ -65,8 +65,8 @@ import org.eclipse.ui.part.IPageBookViewPage;
  */
 public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 
-	private ISynchronizeParticipant participant;
-	private ISynchronizePageConfiguration pageConfiguration;
+	private final ISynchronizeParticipant participant;
+	private final ISynchronizePageConfiguration pageConfiguration;
 
 	private Image titleImage;
 	private IPageBookViewPage page;

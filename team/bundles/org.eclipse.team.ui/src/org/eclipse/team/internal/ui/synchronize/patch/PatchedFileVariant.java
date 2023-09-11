@@ -27,8 +27,8 @@ import org.eclipse.team.core.variants.IResourceVariant;
 
 public class PatchedFileVariant implements IResourceVariant {
 
-	private FilePatch2 diff;
-	private WorkspacePatcher patcher;
+	private final FilePatch2 diff;
+	private final WorkspacePatcher patcher;
 
 	public PatchedFileVariant(WorkspacePatcher patcher, FilePatch2 diff) {
 		this.diff = diff;

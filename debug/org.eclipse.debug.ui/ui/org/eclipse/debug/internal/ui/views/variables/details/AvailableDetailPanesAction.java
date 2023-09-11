@@ -35,7 +35,7 @@ public class AvailableDetailPanesAction extends Action implements IMenuCreator {
 
 	private Menu fMenu;
 	private Set<String> fAvailableIDs;
-	private IDetailPaneContainer fDetailPaneContainer;
+	private final IDetailPaneContainer fDetailPaneContainer;
 
 	/**
 	 * Each entry in the menu will be of this type.  It represents one possible detail pane
@@ -47,8 +47,8 @@ public class AvailableDetailPanesAction extends Action implements IMenuCreator {
 	 */
 	private class SetDetailPaneAction extends Action {
 
-		private String fPaneID;
-		private Set<String> fPossiblePaneIDs;
+		private final String fPaneID;
+		private final Set<String> fPossiblePaneIDs;
 
 		public SetDetailPaneAction(String name, String paneID, Set<String> possiblePaneIDs) {
 			super(name,AS_RADIO_BUTTON);

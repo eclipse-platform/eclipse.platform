@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.*;
  * empty streams, and modifications such as delete, mkdir, will fail.
  */
 public class NullFileStore extends FileStore {
-	private IPath path;
+	private final IPath path;
 
 	/**
 	 * Creates a null file store

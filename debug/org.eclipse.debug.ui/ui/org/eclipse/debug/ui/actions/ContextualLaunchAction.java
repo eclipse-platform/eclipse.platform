@@ -73,7 +73,7 @@ import org.eclipse.ui.activities.WorkbenchActivityHelper;
 public abstract class ContextualLaunchAction implements IObjectActionDelegate, IMenuCreator {
 
 	private IAction fDelegateAction;
-	private String fMode;
+	private final String fMode;
 	// default launch group for this mode (null category)
 	private ILaunchGroup fGroup = null;
 	// map of launch groups by (non-null) categories, for this mode

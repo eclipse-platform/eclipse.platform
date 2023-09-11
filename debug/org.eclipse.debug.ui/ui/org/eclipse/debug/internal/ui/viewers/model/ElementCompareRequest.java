@@ -27,7 +27,7 @@ public class ElementCompareRequest extends MementoUpdate implements IElementComp
 
 	private boolean fEqual;
 	private final int fModelIndex;
-	private ModelDelta fDelta;
+	private final ModelDelta fDelta;
 	private boolean fKnowsHasChildren;
 	private boolean fKnowsChildCount;
 	private boolean fCheckChildrenRealized;
