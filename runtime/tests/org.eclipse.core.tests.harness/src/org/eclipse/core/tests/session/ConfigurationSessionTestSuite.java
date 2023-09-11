@@ -44,6 +44,7 @@ import org.junit.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.Version;
 
 @SuppressWarnings("restriction")
 public class ConfigurationSessionTestSuite extends SessionTestSuite {
@@ -93,6 +94,28 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		addBundle(org.eclipse.pde.internal.junit.runtime.CoreTestApplication.class); // org.eclipse.pde.junit.runtime
 
 		addBundle(org.hamcrest.CoreMatchers.class); // org.hamcrest.core
+
+		// The org.junit bundle requires an org.hamcrest.core bundle, but as of version
+		// 2.x, the org.hamcrest bundle above provides the actual classes. So we need to
+		// ensure that the actual org.hamcrest.core bundle required by org.junit is
+		// added too.
+		if ("org.hamcrest".equals(FrameworkUtil.getBundle(org.hamcrest.CoreMatchers.class).getSymbolicName())) {
+			Bundle maxHamcrestCoreBundle = null;
+			Version maxHamcrestCoreVersion = null;
+			for (Bundle bundle : FrameworkUtil.getBundle(ConfigurationSessionTestSuite.class).getBundleContext().getBundles()) {
+				if ("org.hamcrest.core".equals(bundle.getSymbolicName())) {
+					Version version = bundle.getVersion();
+					if (maxHamcrestCoreVersion == null || maxHamcrestCoreVersion.compareTo(version) < 0) {
+						maxHamcrestCoreVersion = version;
+						maxHamcrestCoreBundle = bundle;
+					}
+				}
+			}
+			if (maxHamcrestCoreBundle != null) {
+				addBundle(maxHamcrestCoreBundle, null);
+			}
+		}
+
 		addBundle(org.junit.Test.class); // org.junit
 		addBundle(org.junit.jupiter.api.Test.class); // junit-jupiter-api
 		addBundle(org.junit.platform.commons.JUnitException.class); // junit-platform-commons
@@ -127,6 +150,10 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 	public void addBundle(Class<?> classFromBundle, String suffix) {
 		Bundle bundle = FrameworkUtil.getBundle(classFromBundle);
 		Assert.assertNotNull("Class is not from a bundle: " + classFromBundle, bundle);
+		addBundle(bundle, suffix);
+	}
+
+	public void addBundle(Bundle bundle, String suffix) {
 		String url = getBundleReference(bundle, suffix);
 		bundles.add(url);
 	}

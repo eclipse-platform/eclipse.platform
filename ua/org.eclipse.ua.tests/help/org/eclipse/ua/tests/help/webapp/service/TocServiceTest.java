@@ -42,8 +42,7 @@ public class TocServiceTest extends TocServletTest {
 		}
 	}
 
-	/*
-	 * Disabled, see Bug 339274
+	@Test
 	public void testTocServiceXMLSchema()
 			throws Exception {
 		int port = WebappManager.getPort();
@@ -55,7 +54,7 @@ public class TocServiceTest extends TocServletTest {
 
 		assertEquals("URL: \"" + uri + "\" is ", "valid", result);
 	}
-	*/
+
 	@Test
 	public void testTocServiceJSONSchema()
 			throws Exception {

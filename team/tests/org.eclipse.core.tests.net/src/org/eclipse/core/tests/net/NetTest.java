@@ -276,9 +276,8 @@ public class NetTest {
 		assertProxyDataEqual(data);
 	}
 
-	// TODO test disabled, see Bug 403311
 	@Test
-	@Ignore
+	@Ignore("Disabled due to bug 403311")
 	public void _testSimpleHost() throws CoreException {
 
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);

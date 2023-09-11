@@ -1127,6 +1127,7 @@ public abstract class ResourceTest extends CoreTest {
 
 	@Override
 	protected void tearDown() throws Exception {
+		boolean wasSuspended = resumeJobManagerIfNecessary();
 		Platform.removeLogListener(errorLogListener);
 		TestUtil.log(IStatus.INFO, getName(), "tearDown");
 		// Ensure everything is in a clean state for next one.
@@ -1135,6 +1136,17 @@ public abstract class ResourceTest extends CoreTest {
 		cleanup();
 		super.tearDown();
 		FreezeMonitor.done();
+		assertFalse("This test stopped the JobManager, which could have affected other tests.", //
+				wasSuspended);
+	}
+
+	private boolean resumeJobManagerIfNecessary() {
+		if (Job.getJobManager().isSuspended()) {
+			Job.getJobManager().resume();
+			return true;
+		}
+
+		return false;
 	}
 
 	protected void assertNoErrorsLogged() {

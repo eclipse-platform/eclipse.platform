@@ -23,7 +23,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.internal.ui.model.elements.SerialExecutor;
 import org.eclipse.debug.tests.AbstractDebugTest;
-import org.junit.Ignore;
 import org.junit.Test;
 
 @SuppressWarnings("restriction")
@@ -118,7 +117,6 @@ public class SerialExecutorTest extends AbstractDebugTest {
 	}
 
 	@Test
-	@Ignore("See https://bugs.eclipse.org/bugs/show_bug.cgi?id=574883")
 	public void testHeavyScheduling() throws InterruptedException {
 		// Executor has to execute every task. Even when they are scheduled fast
 		// and execute fast

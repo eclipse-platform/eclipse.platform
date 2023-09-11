@@ -939,7 +939,8 @@ public class ConsoleDocumentAdapterTests extends AbstractDebugTest {
 	/**
 	 * Test if invalid arguments produces error log messages.
 	 */
-	public void _testInvalidInvocations() {
+	@Test
+	public void testInvalidInvocations() {
 		final AtomicInteger expectedErrors = new AtomicInteger(0);
 		final ILogListener logListener = new ILogListener() {
 			@Override
