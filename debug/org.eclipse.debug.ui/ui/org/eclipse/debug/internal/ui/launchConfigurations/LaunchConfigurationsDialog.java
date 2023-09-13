@@ -91,6 +91,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.progress.WorkbenchJob;
 import org.osgi.framework.FrameworkUtil;
 
@@ -1374,8 +1375,12 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 			if (cancelable) {
 				fProgressMonitorPart.attachToCancelComponent(null);
 			}
-			fProgressMonitorPart.getParent().setVisible(true);
+
 			fActiveRunningOperations++;
+
+			// only show the progress bar if necessary after a delay
+			UIJob showProgressMonitorPart = createJobToShowProgressMonitorPart();
+			showProgressMonitorPart.schedule(PlatformUI.getWorkbench().getProgressService().getLongOperationTime());
 
 		//do work here collecting enabled states, otherwise to get these states we would need to
 		//perform the validation of the dialog again, which is expensive and would cause flashing of widgets.
@@ -1391,6 +1396,8 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 				ModalContext.run(runnable, fork, fProgressMonitorPart, getShell().getDisplay());
 			}
 			finally {
+				showProgressMonitorPart.cancel();
+
 				fActiveRunningOperations--;
 				updateRunnnableControls(true, prev);
 				if (getShell() != null) {
@@ -1407,6 +1414,17 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 		else {
 			PlatformUI.getWorkbench().getProgressService().run(fork, cancelable, runnable);
 		}
+	}
+
+	private UIJob createJobToShowProgressMonitorPart() {
+		return UIJob.create("", __ -> { //$NON-NLS-1$
+			// only show the progress monitor if there are still active operations by the
+			// time this job is executed
+			if (fActiveRunningOperations > 0) {
+				fProgressMonitorPart.getParent().setVisible(true);
+			}
+			return Status.OK_STATUS;
+		});
 	}
 
 	/**
