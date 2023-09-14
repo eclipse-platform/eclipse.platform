@@ -183,11 +183,11 @@ public class LaunchConfigurationType extends PlatformObject implements ILaunchCo
 	/**
 	 * Internal use method to allow access to the listing of preferred delegates. Delegates are stored in the map by their mode set combinations.
 	 * <p>
-	 * preferred delegates are stored as:
-	 * <pre>
-	 *  Map&lt;modeset, delegate&gt;
-	 * </pre>
+	 * Preferred delegates are stored as:
 	 * </p>
+	 * <pre>
+	 *  {@code Map<modeset, delegate>}
+	 * </pre>
 	 * @return the <code>java.util.Map</code> of preferred delegates or an empty <code>java.util.Map</code> if no preferred delegates are specified, never <code>null</code>
 	 *
 	 * @since 3.3

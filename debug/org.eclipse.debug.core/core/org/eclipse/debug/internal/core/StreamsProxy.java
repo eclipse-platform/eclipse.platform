@@ -76,7 +76,7 @@ public class StreamsProxy implements IBinaryStreamsProxy {
 	 *
 	 * @param process system process to create a streams proxy on
 	 * @param encoding the process's encoding or <code>null</code> if default
-	 * @deprecated use {@link #StreamsProxy(Process, Charset)} instead
+	 * @deprecated use {@link #StreamsProxy(Process, Charset, String)} instead
 	 */
 	@Deprecated
 	public StreamsProxy(Process process, String encoding) {

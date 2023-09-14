@@ -23,13 +23,15 @@ import org.eclipse.debug.core.model.IBreakpointImportParticipant;
  *
  * Example contribution:
  * <pre>
+ * {@code
  * <extension
-         point="org.eclipse.debug.core.breakpointImportParticipant">
-      <ImportParticipant
-            participant="x.y.z.BreakpointImportParticipant"
-            type="org.eclipse.jdt.debug.javaLineBreakpointMarker">
-      </ImportParticipant>
-   </extension>
+ *       point="org.eclipse.debug.core.breakpointImportParticipant">
+ *    <ImportParticipant
+ *          participant="x.y.z.BreakpointImportParticipant"
+ *          type="org.eclipse.jdt.debug.javaLineBreakpointMarker">
+ *    </ImportParticipant>
+ * </extension>
+ * }  
  * </pre>
  *
  * @noextend This class is not intended to be sub-classed by clients.
