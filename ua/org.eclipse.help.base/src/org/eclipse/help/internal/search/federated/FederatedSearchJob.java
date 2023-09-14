@@ -24,9 +24,6 @@ public class FederatedSearchJob extends Job {
 	private final String expression;
 	private final FederatedSearchEntry entry;
 
-	/**
-	 * @param name
-	 */
 	public FederatedSearchJob(String expression, FederatedSearchEntry entry) {
 		super(entry.getEngineName());
 		this.expression = expression;

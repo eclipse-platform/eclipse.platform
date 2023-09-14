@@ -485,12 +485,12 @@ public class SearchIndex implements IHelpSearchIndex {
 	}
 
 	/**
-	 * If
 	 *
-	 * @param dirs
+	 * @param pluginIndexes
 	 * @param monitor
-	 * @return Map. Keys are /pluginid/href of all merged Docs. Values are null for added document,
-	 *         or String[] of indexIds with duplicates of the document
+	 * @return Map. Keys are /pluginid/href of all merged Docs. Values are null for
+	 *         added document, or String[] of indexIds with duplicates of the
+	 *         document
 	 */
 	public Map<String, String[]> merge(PluginIndex[] pluginIndexes, IProgressMonitor monitor) {
 		ArrayList<NIOFSDirectory> dirList = new ArrayList<>(pluginIndexes.length);
