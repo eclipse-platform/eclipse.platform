@@ -148,12 +148,11 @@ public class LocalSearchManager {
 	}
 
 	/**
-	 * Converts the given TopDocs object into a List of raw SearchHits.
-	 * Hits objects are immutable and can't be instantiated from outside
-	 * Lucene.
-	 * @param searcher
+	 * Converts the given TopDocs object into a List of raw SearchHits. Hits objects
+	 * are immutable and can't be instantiated from outside Lucene.
 	 *
-	 * @param hits the TopDocs object to convert
+	 * @param topDocs  the TopDocs object to convert
+	 * @param searcher
 	 * @return a List of raw SearchHits
 	 */
 

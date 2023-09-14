@@ -47,8 +47,6 @@ public interface IHelpWorkingSetManager {
 
 	/**
 	 * Implements IWorkingSetManager.
-	 *
-	 * @see org.eclipse.ui.IWorkingSetManager#getWorkingSets()
 	 */
 	public WorkingSet[] getWorkingSets();
 
