@@ -62,7 +62,7 @@
 	            </requirement>
 				<requirement>
 					<type>eclipse-plugin</type>
-					<id>org.apache.jasper.glassfish</id>
+					<id>org.mortbay.jasper.apache-jsp</id>
 					<versionRange>0.0.0</versionRange>
 				</requirement>
 	          </extraRequirements>
