@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -50,6 +50,7 @@ import org.eclipse.debug.tests.view.memory.TableRenderingTests;
 import org.eclipse.debug.tests.viewer.model.ChildrenUpdateTests;
 import org.eclipse.debug.tests.viewer.model.FilterTransformTests;
 import org.eclipse.debug.tests.viewer.model.PresentationContextTests;
+import org.eclipse.debug.tests.viewer.model.VirtualViewerCheckTests;
 import org.eclipse.debug.tests.viewer.model.VirtualViewerContentTests;
 import org.eclipse.debug.tests.viewer.model.VirtualViewerDeltaTests;
 import org.eclipse.debug.tests.viewer.model.VirtualViewerFilterTests;
@@ -78,6 +79,7 @@ import org.junit.runners.Suite;
 		// (Bug 343308).
 
 		// Virtual viewer tests
+		VirtualViewerCheckTests.class,
 		VirtualViewerDeltaTests.class,
 		VirtualViewerContentTests.class,
 		VirtualViewerLazyModeTests.class,
