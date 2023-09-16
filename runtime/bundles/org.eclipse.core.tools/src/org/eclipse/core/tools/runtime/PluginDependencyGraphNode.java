@@ -16,8 +16,8 @@ package org.eclipse.core.tools.runtime;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.tools.Messages;
-import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.framework.Bundle;
 
 /**
  *  This class is used to build up a dependency graph.  The full dependency
@@ -29,7 +29,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class PluginDependencyGraphNode {
 
-	private BundleDescription descriptor = null;
+	private Bundle descriptor = null;
 	private final Set<PluginDependencyGraphNode> children = new HashSet<>();
 	private final Set<PluginDependencyGraphNode> ancestors = new HashSet<>();
 
@@ -37,7 +37,7 @@ public class PluginDependencyGraphNode {
 	 * Constructor for this class. Each node is associated with a plug-in so
 	 * we accept the plug-in descriptor here and keep it around for later use.
 	 */
-	public PluginDependencyGraphNode(BundleDescription descriptor) {
+	public PluginDependencyGraphNode(Bundle descriptor) {
 		this.descriptor = descriptor;
 	}
 
@@ -102,20 +102,19 @@ public class PluginDependencyGraphNode {
 	 * text the given number of tabs.
 	 */
 	private void writeln(StringBuilder buffer, int indent, String text) {
-		for (int i = 0; i < indent; i++)
+		for (int i = 0; i < indent; i++) {
 			buffer.append('\t');
+		}
 		buffer.append(text);
 		buffer.append('\n');
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (!(obj instanceof PluginDependencyGraphNode))
-			return false;
-		PluginDependencyGraphNode other = (PluginDependencyGraphNode) obj;
-		return this.getId().equals(other.getId());
+		}
+		return obj instanceof PluginDependencyGraphNode other && this.getId().equals(other.getId());
 	}
 
 	@Override
@@ -125,10 +124,6 @@ public class PluginDependencyGraphNode {
 
 	@Override
 	public String toString() {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("PluginDependencyGraphNode("); //$NON-NLS-1$
-		buffer.append(descriptor.getSymbolicName());
-		buffer.append(')');
-		return buffer.toString();
+		return "PluginDependencyGraphNode(" + descriptor.getSymbolicName() + ')';
 	}
 }
