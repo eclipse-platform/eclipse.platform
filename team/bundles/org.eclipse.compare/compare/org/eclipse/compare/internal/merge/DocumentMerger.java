@@ -33,7 +33,6 @@ import org.eclipse.compare.internal.DocLineComparator;
 import org.eclipse.compare.internal.MergeViewerContentProvider;
 import org.eclipse.compare.internal.Utilities;
 import org.eclipse.compare.internal.core.LCS;
-import org.eclipse.compare.rangedifferencer.IRangeComparator;
 import org.eclipse.compare.rangedifferencer.RangeDifference;
 import org.eclipse.compare.rangedifferencer.RangeDifferencer;
 import org.eclipse.compare.structuremergeviewer.Differencer;
@@ -403,7 +402,6 @@ public class DocumentMerger {
 		final Object[] result= new Object[1];
 		final DocLineComparator sa= sancestor, sl= sleft, sr= sright;
 		IRunnableWithProgress runnable= monitor -> {
-			monitor.beginTask(CompareMessages.DocumentMerger_0, maxWork(sa, sl, sr));
 			try {
 				result[0]= RangeDifferencer.findRanges(monitor, sa, sl, sr);
 			} catch (OutOfMemoryError ex) {
@@ -413,7 +411,6 @@ public class DocumentMerger {
 			if (monitor.isCanceled())	{ // canceled
 				throw new InterruptedException();
 			}
-			monitor.done();
 		};
 
 		RangeDifference[] e= null;
@@ -567,7 +564,6 @@ public class DocumentMerger {
 		final Object[] result= new Object[1];
 		final DocLineComparator sa= sancestor, sl= sleft, sr= sright;
 		IRunnableWithProgress runnable= monitor -> {
-			monitor.beginTask(CompareMessages.DocumentMerger_2, maxWork(sa, sl, sr));
 			try {
 				result[0]= RangeDifferencer.findRanges(monitor, sa, sl, sr);
 			} catch (OutOfMemoryError ex) {
@@ -577,7 +573,6 @@ public class DocumentMerger {
 			if (monitor.isCanceled())	{ // canceled
 				throw new InterruptedException();
 			}
-			monitor.done();
 		};
 
 		RangeDifference[] e= null;
@@ -907,16 +902,6 @@ public class DocumentMerger {
 
 	private Optional<IIgnoreWhitespaceContributor> createIgnoreWhitespaceContributor(IDocument document) {
 		return fInput.createIgnoreWhitespaceContributor(document);
-	}
-
-	private static int maxWork(IRangeComparator a, IRangeComparator l, IRangeComparator r) {
-		int ln= l.getRangeCount();
-		int rn= r.getRangeCount();
-		if (a != null) {
-			int an= a.getRangeCount();
-			return (2 * Math.max(an, ln)) + (2 * Math.max(an, rn));
-		}
-		return 2 * Math.max(ln, rn);
 	}
 
 	private void resetPositions(IDocument doc) {
