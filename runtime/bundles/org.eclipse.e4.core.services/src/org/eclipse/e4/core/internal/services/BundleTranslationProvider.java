@@ -14,8 +14,8 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.services;
 
+import jakarta.inject.Inject;
 import java.util.ResourceBundle;
-import javax.inject.Inject;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.services.translation.ResourceBundleProvider;
 import org.eclipse.e4.core.services.translation.TranslationService;

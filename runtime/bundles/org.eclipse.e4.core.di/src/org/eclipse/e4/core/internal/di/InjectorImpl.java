@@ -27,6 +27,7 @@ import java.lang.reflect.Type;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -38,12 +39,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.stream.Stream;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
-import javax.inject.Singleton;
 import org.eclipse.e4.core.di.IBinding;
 import org.eclipse.e4.core.di.IInjector;
 import org.eclipse.e4.core.di.InjectionException;
@@ -137,9 +132,13 @@ public class InjectorImpl implements IInjector {
 		}
 		rememberInjectedObject(object, objectSupplier);
 
-		// We call @PostConstruct after injection. This means that is is called
+		// We call @javax.annotation.PostConstruct after injection. This means that is
+		// is called
 		// as a part of both #make() and #inject().
-		processAnnotated(PostConstruct.class, object, object.getClass(), objectSupplier, tempSupplier, new ArrayList<>(5));
+		processAnnotated(javax.annotation.PostConstruct.class, object, object.getClass(), objectSupplier, tempSupplier,
+				new ArrayList<>(5));
+		processAnnotated(jakarta.annotation.PostConstruct.class, object, object.getClass(), objectSupplier,
+				tempSupplier, new ArrayList<>(5));
 
 		// remove references to the temporary suppliers
 		for (Requestor<?> requestor : requestors) {
@@ -181,7 +180,10 @@ public class InjectorImpl implements IInjector {
 		try {
 			if (!forgetInjectedObject(object, objectSupplier))
 				return; // not injected at this time
-			processAnnotated(PreDestroy.class, object, object.getClass(), objectSupplier, null, new ArrayList<>(5));
+			processAnnotated(javax.annotation.PreDestroy.class, object, object.getClass(), objectSupplier, null,
+					new ArrayList<>(5));
+			processAnnotated(jakarta.annotation.PreDestroy.class, object, object.getClass(), objectSupplier, null,
+					new ArrayList<>(5));
 
 			ArrayList<Requestor<?>> requestors = new ArrayList<>();
 			processClassHierarchy(object, objectSupplier, null, true /* track */, false /* inverse order */, requestors);
@@ -351,7 +353,8 @@ public class InjectorImpl implements IInjector {
 			if (shouldDebug)
 				classesBeingCreated.add(clazz);
 
-			boolean isSingleton = isAnnotationPresent(clazz, Singleton.class);
+			boolean isSingleton = isAnyAnnotationPresent(clazz,
+					List.of(javax.inject.Singleton.class, jakarta.inject.Singleton.class));
 			if (isSingleton) {
 				synchronized (singletonCache) {
 					if (singletonCache.containsKey(clazz))
@@ -372,7 +375,9 @@ public class InjectorImpl implements IInjector {
 					continue;
 
 				// unless this is the default constructor, it has to be tagged
-				if (!isAnnotationPresent(constructor, Inject.class) && constructor.getParameterTypes().length != 0)
+				if (!isAnyAnnotationPresent(constructor,
+						List.of(javax.inject.Inject.class, jakarta.inject.Inject.class))
+						&& constructor.getParameterTypes().length != 0)
 					continue;
 
 				ConstructorRequestor requestor = new ConstructorRequestor(constructor, this, objectSupplier, tempSupplier);
@@ -432,7 +437,10 @@ public class InjectorImpl implements IInjector {
 			Object object = objects[i];
 			if (!forgetInjectedObject(object, objectSupplier))
 				continue; // not injected at this time
-			processAnnotated(PreDestroy.class, object, object.getClass(), objectSupplier, null, new ArrayList<>(5));
+			processAnnotated(javax.annotation.PreDestroy.class, object, object.getClass(), objectSupplier, null,
+					new ArrayList<>(5));
+			processAnnotated(jakarta.annotation.PreDestroy.class, object, object.getClass(), objectSupplier, null,
+					new ArrayList<>(5));
 		}
 		forgetSupplier(objectSupplier);
 	}
@@ -681,8 +689,9 @@ public class InjectorImpl implements IInjector {
 					continue;
 				injectedStatic = true;
 			}
-			if (!isAnnotationPresent(field, Inject.class))
+			if (!isAnyAnnotationPresent(field, List.of(javax.inject.Inject.class, jakarta.inject.Inject.class))) {
 				continue;
+			}
 			requestors.add(new FieldRequestor(field, this, objectSupplier, tempSupplier, userObject, track));
 		}
 		return injectedStatic;
@@ -723,7 +732,7 @@ public class InjectorImpl implements IInjector {
 				}
 				injectedStatic = true;
 			}
-			if (!isAnnotationPresent(method, Inject.class)) {
+			if (!isAnyAnnotationPresent(method, List.of(javax.inject.Inject.class, jakarta.inject.Inject.class))) {
 				continue;
 			}
 			requestors.add(new MethodRequestor(method, this, objectSupplier, tempSupplier, userObject, track));
@@ -839,7 +848,7 @@ public class InjectorImpl implements IInjector {
 		if (!(type instanceof ParameterizedType))
 			return null;
 		Type rawType = ((ParameterizedType) type).getRawType();
-		if (!Provider.class.equals(rawType))
+		if (!javax.inject.Provider.class.equals(rawType) && !jakarta.inject.Provider.class.equals(rawType))
 			return null;
 		Type[] actualTypes = ((ParameterizedType) type).getActualTypeArguments();
 		if (actualTypes.length != 1)
@@ -888,8 +897,11 @@ public class InjectorImpl implements IInjector {
 				return null;
 			Set<Binding> collection = bindings.get(desiredClass);
 			String desiredQualifierName = null;
-			if (descriptor.hasQualifier(Named.class)) {
-				Named namedAnnotation = descriptor.getQualifier(Named.class);
+			if (descriptor.hasQualifier(jakarta.inject.Named.class)) {
+				jakarta.inject.Named namedAnnotation = descriptor.getQualifier(jakarta.inject.Named.class);
+				desiredQualifierName = namedAnnotation.value();
+			} else if (descriptor.hasQualifier(javax.inject.Named.class)) {
+				javax.inject.Named namedAnnotation = descriptor.getQualifier(javax.inject.Named.class);
 				desiredQualifierName = namedAnnotation.value();
 			} else {
 				Annotation[] annotations = descriptor.getQualifiers();
@@ -991,6 +1003,16 @@ public class InjectorImpl implements IInjector {
 	@Override
 	public void setDefaultSupplier(PrimaryObjectSupplier objectSupplier) {
 		defaultSupplier = objectSupplier;
+	}
+
+	private boolean isAnyAnnotationPresent(AnnotatedElement annotatedElement,
+			Collection<Class<? extends Annotation>> annotation) {
+		for (Class<? extends Annotation> a : annotation) {
+			if (isAnnotationPresent(annotatedElement, a)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean isAnnotationPresent(AnnotatedElement annotatedElement,
