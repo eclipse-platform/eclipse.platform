@@ -15,11 +15,11 @@
  ******************************************************************************/
 package org.eclipse.e4.core.services.translation;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Provides localization service.
