@@ -12,6 +12,7 @@
  *     IBM Corporation - initial API and implementation
  *     Lars Vogel <Lars.Vogel@vogella.com> - Bug 473427
  *     Mickael Istria (Red Hat Inc.) - Bug 488937
+ *     Latha Patil (ETAS GmbH) - GitHub Issue 468
  *******************************************************************************/
 package org.eclipse.core.internal.properties;
 
@@ -23,6 +24,7 @@ import org.eclipse.core.internal.localstore.BucketTree;
 import org.eclipse.core.internal.properties.PropertyBucket.PropertyEntry;
 import org.eclipse.core.internal.resources.*;
 import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.runtime.*;
@@ -119,7 +121,8 @@ public class PropertyManager2 implements IPropertyManager {
 
 	@Override
 	public void deleteResource(IResource target) throws CoreException {
-		deleteProperties(target, IResource.DEPTH_INFINITE);
+		deleteProperties(target, ((target instanceof IFile) && (null != target.getProject())) ? IResource.DEPTH_ZERO
+				: IResource.DEPTH_INFINITE);
 	}
 
 	@Override
