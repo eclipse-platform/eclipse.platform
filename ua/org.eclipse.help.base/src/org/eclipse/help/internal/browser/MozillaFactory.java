@@ -44,7 +44,7 @@ public class MozillaFactory implements IBrowserFactory, IExecutableExtension {
 			return false;
 		}
 		try {
-			Process pr = Runtime.getRuntime().exec("which " + executable); //$NON-NLS-1$
+			Process pr = Runtime.getRuntime().exec(new String[] { "which", executable }); //$NON-NLS-1$
 			StreamConsumer outputs = new StreamConsumer(pr.getInputStream());
 			(outputs).start();
 			StreamConsumer errors = new StreamConsumer(pr.getErrorStream());
