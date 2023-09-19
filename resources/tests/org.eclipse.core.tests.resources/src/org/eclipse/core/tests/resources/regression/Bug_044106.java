@@ -34,7 +34,7 @@ public class Bug_044106 extends ResourceTest {
 
 	private void createSymLink(String target, String local) {
 		try {
-			Process p = Runtime.getRuntime().exec("/bin/ln -s " + target + " " + local);
+			Process p = Runtime.getRuntime().exec(new String[] { "/bin/ln", "-s", target, local });
 			p.waitFor();
 		} catch (IOException e) {
 			fail("1.0", e);
