@@ -4,9 +4,9 @@ Bundle-Name: %fragmentName
 Bundle-Vendor: %providerName
 Bundle-Localization: fragment
 Bundle-SymbolicName: org.eclipse.core.net.linux;singleton:=true
-Bundle-Version: 1.0.300.qualifier
+Bundle-Version: 1.1.0.qualifier
 Fragment-Host: org.eclipse.core.net;bundle-version="1.1.0"
 Eclipse-PlatformFilter: (osgi.os=linux)
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.core.net.linux
 Require-Bundle: com.sun.jna
