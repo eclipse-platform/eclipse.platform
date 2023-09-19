@@ -874,13 +874,18 @@ public class SearchIndex implements IHelpSearchIndex {
 		try (ZipInputStream zis = new ZipInputStream(zipIn)) {
 			ZipEntry zEntry;
 			while ((zEntry = zis.getNextEntry()) != null) {
+				String name = zEntry.getName();
+				File file = new File(destDir, name);
+				if (!file.toPath().normalize().startsWith(destDir.toPath().normalize())) {
+					throw new RuntimeException("Bad zip entry: " + name); //$NON-NLS-1$
+				}
 				// if it is empty directory, create it
 				if (zEntry.isDirectory()) {
-					new File(destDir, zEntry.getName()).mkdirs();
+					file.mkdirs();
 					continue;
 				}
 				// if it is a file, extract it
-				String filePath = zEntry.getName();
+				String filePath = name;
 				int lastSeparator = filePath.lastIndexOf("/"); //$NON-NLS-1$
 				String fileDir = ""; //$NON-NLS-1$
 				if (lastSeparator >= 0) {
