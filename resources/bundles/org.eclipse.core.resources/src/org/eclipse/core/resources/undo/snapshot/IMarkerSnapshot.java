@@ -22,8 +22,8 @@ import org.eclipse.core.runtime.CoreException;
  * IMarkerSnapshot is a lightweight snapshot of a marker for the purposes of
  * undoing.
  *
- * This class is not intended to be instantiated by clients.
- *
+ * @noimplement This interface is not intended to be implemented by clients.
+ * @noextend This interface is not intended to be extended by clients.
  * @since 3.20
  */
 public interface IMarkerSnapshot {

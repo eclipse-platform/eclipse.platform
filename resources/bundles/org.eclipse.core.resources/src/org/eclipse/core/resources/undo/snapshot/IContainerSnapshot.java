@@ -21,8 +21,8 @@ import org.eclipse.core.resources.IResourceFilterDescription;
  * IContainerSnapshot is a lightweight description that describes a container to
  * be created.
  *
- * This class is not intended to be instantiated by clients.
- *
+ * @noimplement This interface is not intended to be implemented by clients.
+ * @noextend This interface is not intended to be extended by clients.
  * @since 3.20
  */
 public interface IContainerSnapshot extends IResourceSnapshot {

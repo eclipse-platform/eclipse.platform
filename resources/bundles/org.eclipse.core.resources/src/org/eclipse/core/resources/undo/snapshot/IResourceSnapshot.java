@@ -23,8 +23,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * IResourceSnapshot is a lightweight snapshot that describes the common
  * attributes of a resource to be created.
  *
- * This class is not intended to be extended by clients.
- *
+ * @noimplement This interface is not intended to be implemented by clients.
+ * @noextend This interface is not intended to be extended by clients.
  * @since 3.20
  *
  */
