@@ -574,6 +574,7 @@ public class UrlUtil {
 			// save locale (in session cookie) for later use in a user session
 			if (response != null) {
 				Cookie cookieTest = new Cookie("lang", forcedLocale); //$NON-NLS-1$
+				cookieTest.setSecure(true);
 				response.addCookie(cookieTest);
 			}
 		} else {
