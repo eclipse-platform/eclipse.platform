@@ -65,6 +65,7 @@ public class CookieUtil {
 		if ( needsCookiePath(request)) {
 			cookie.setPath(getCookiePath(request)); // Only set path if necessary
 		}
+		cookie.setSecure(true);
 		response.addCookie(cookie);
 		if (HelpWebappPlugin.DEBUG_WORKINGSETS) {
 			System.out
@@ -77,6 +78,7 @@ public class CookieUtil {
 		Cookie cookie = new Cookie(name, value);
 		cookie.setMaxAge(COOKIE_LIFE);
 
+		cookie.setSecure(true);
 		response.addCookie(cookie);
 		if (HelpWebappPlugin.DEBUG_WORKINGSETS) {
 			System.out
@@ -109,6 +111,7 @@ public class CookieUtil {
 			cookie.setPath(cookiePath);
 		}
 		cookie.setMaxAge(0);
+		cookie.setSecure(true);
 		response.addCookie(cookie);
 	}
 

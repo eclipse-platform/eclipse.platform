@@ -19,6 +19,7 @@
 	if(data.getMode() == LayoutData.MODE_INFOCENTER){
 		Cookie cookieTest=new Cookie("cookiesEnabled", "yes");
 		cookieTest.setMaxAge(365*24*60*60);
+		cookieTest.setSecure(true);
 		response.addCookie(cookieTest);
 	}
 %>
