@@ -31,6 +31,7 @@ import org.eclipse.ant.tests.ui.testplugin.ProjectHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
@@ -42,7 +43,11 @@ import org.eclipse.ui.console.IHyperlink;
 @SuppressWarnings("restriction")
 public class SeparateVMTests extends AbstractAntUIBuildTest {
 
-	protected static final String PLUGIN_VERSION = "org.apache.ant_1.10.12"; //$NON-NLS-1$
+	protected static final String PLUGIN_VERSION;
+
+	static {
+		PLUGIN_VERSION = Platform.getBundle("org.apache.ant").getVersion().toString(); //$NON-NLS-1$
+	}
 
 	public SeparateVMTests(String name) {
 		super(name);

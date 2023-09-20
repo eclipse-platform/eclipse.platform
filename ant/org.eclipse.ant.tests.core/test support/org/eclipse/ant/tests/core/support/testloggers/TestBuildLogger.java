@@ -42,7 +42,7 @@ public class TestBuildLogger implements BuildLogger {
 		fMessageOutputLevel = level;
 	}
 
-	protected int getMessageOutputLevel() {
+	public int getMessageOutputLevel() {
 		return fMessageOutputLevel;
 	}
 
