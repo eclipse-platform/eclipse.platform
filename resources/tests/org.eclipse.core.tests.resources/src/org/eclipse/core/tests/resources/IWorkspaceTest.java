@@ -38,6 +38,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Platform.OS;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -822,7 +823,7 @@ public class IWorkspaceTest extends ResourceTest {
 		/* normal name */
 		assertTrue("1.1", getWorkspace().validateName("abcdef", IResource.FILE).isOK());
 		/* invalid characters (windows only) */
-		if (isWindows()) {
+		if (OS.isWindows()) {
 			assertFalse("2.1", getWorkspace().validateName("dsa:sf", IResource.FILE).isOK());
 			assertFalse("2.2", getWorkspace().validateName("*dsasf", IResource.FILE).isOK());
 			assertFalse("2.3", getWorkspace().validateName("?dsasf", IResource.FILE).isOK());
@@ -903,7 +904,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue("1.1", getWorkspace().validatePath("/one/two/three/four/", IResource.FILE | IResource.FOLDER).isOK());
 
 		/* invalid characters (windows only) */
-		final boolean WINDOWS = isWindows();
+		final boolean WINDOWS = OS.isWindows();
 		if (WINDOWS) {
 			assertFalse("2.1", (getWorkspace().validatePath("\\dsa:sf", IResource.FILE).isOK()));
 			assertFalse("2.2", (getWorkspace().validatePath("/abc/*dsasf", IResource.FILE).isOK()));
@@ -963,7 +964,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue("1.1", workspace.validateProjectLocation(project, IPath.fromOSString("/one/two/three/four/")).isOK());
 
 		/* invalid characters (windows only) */
-		final boolean WINDOWS = isWindows();
+		final boolean WINDOWS = OS.isWindows();
 		if (WINDOWS) {
 			assertFalse("2.1", workspace.validateProjectLocation(project, IPath.fromOSString("d:\\dsa:sf")).isOK());
 			assertFalse("2.2", workspace.validateProjectLocation(project, IPath.fromOSString("/abc/*dsasf")).isOK());

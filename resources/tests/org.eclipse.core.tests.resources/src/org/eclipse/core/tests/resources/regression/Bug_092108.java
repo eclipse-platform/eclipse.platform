@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -22,7 +23,7 @@ import org.eclipse.core.tests.resources.ResourceTest;
  */
 public class Bug_092108 extends ResourceTest {
 	public void testBug() {
-		if (!isWindows()) {
+		if (!OS.isWindows()) {
 			return;
 		}
 		IFileStore root;

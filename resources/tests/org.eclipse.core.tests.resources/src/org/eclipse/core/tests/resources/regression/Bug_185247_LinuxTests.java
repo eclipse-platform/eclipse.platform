@@ -21,6 +21,7 @@ import java.util.*;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 
@@ -29,7 +30,7 @@ import org.eclipse.core.tests.resources.ResourceTest;
  */
 public class Bug_185247_LinuxTests extends ResourceTest {
 
-	private static final boolean IS_LINUX = isLinux();
+	private static final boolean IS_LINUX = OS.isLinux();
 	private final List<IProject> testProjects = new ArrayList<>();
 	private IPath testCasesLocation;
 

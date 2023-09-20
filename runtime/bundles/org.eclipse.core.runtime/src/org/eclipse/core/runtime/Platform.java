@@ -19,8 +19,15 @@ package org.eclipse.core.runtime;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.*;
-import org.eclipse.core.internal.runtime.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import org.eclipse.core.internal.runtime.AuthorizationHandler;
+import org.eclipse.core.internal.runtime.InternalPlatform;
+import org.eclipse.core.internal.runtime.Messages;
+import org.eclipse.core.internal.runtime.MetaDataKeeper;
+import org.eclipse.core.internal.runtime.PlatformActivator;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -51,6 +58,52 @@ import org.osgi.framework.FrameworkUtil;
  */
 public final class Platform {
 
+	/**
+	 * Convenience class to query for the current OS.
+	 *
+	 * @since 3.30
+	 */
+	public static final class OS {
+		private OS() {
+			// avoid instantiation
+		}
+
+		/**
+		 * @param osString the identifier for the OS (use one of the constants that
+		 *                 start with <code>OS_</code> in the <code>Platform</code>
+		 *                 class).
+		 *
+		 * @return <code>true</code> if the current platform is the one specified as a
+		 *         parameter, <code>false</code> in all other cases.
+		 * @see Platform#getOS()
+		 * @since 3.30
+		 */
+		public static boolean is(String osString) {
+			return Platform.getOS().equals(osString);
+		}
+
+		/**
+		 * @return <code>true</code> if the current OS is Windows
+		 */
+		public static boolean isWindows() {
+			return is(OS_WIN32);
+		}
+
+		/**
+		 * @return <code>true</code> if the current OS is Linux
+		 */
+		public static boolean isLinux() {
+			return is(OS_LINUX);
+		}
+
+		/**
+		 * @return <code>true</code> if the current OS is MacOSX
+		 */
+		public static boolean isMac() {
+			return is(OS_MACOSX);
+		}
+
+	}
 	/**
 	 * The unique identifier constant (value "<code>org.eclipse.core.runtime</code>")
 	 * of the Core Runtime (pseudo-) plug-in.

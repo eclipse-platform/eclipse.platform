@@ -43,13 +43,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.xml.sax.InputSource;
 
 public class ModelObjectReaderWriterTest extends ResourceTest {
-	static final IPath LONG_LOCATION = IPath.fromOSString("/eclipse/dev/i0218/eclipse/pffds/fds//fds///fdsfsdfsd///fdsfdsf/fsdfsdfsd/lugi/dsds/fsd//f/ffdsfdsf/fsdfdsfsd/fds//fdsfdsfdsf/fdsfdsfds/fdsfdsfdsf/fdsfdsfdsds/ns/org.eclipse.help.ui_2.1.0/contexts.xml").setDevice(isWindows() ? "D:" : null);
+	static final IPath LONG_LOCATION = IPath.fromOSString("/eclipse/dev/i0218/eclipse/pffds/fds//fds///fdsfsdfsd///fdsfdsf/fsdfsdfsd/lugi/dsds/fsd//f/ffdsfdsf/fsdfdsfsd/fds//fdsfdsfdsf/fdsfdsfds/fdsfdsfdsf/fdsfdsfdsds/ns/org.eclipse.help.ui_2.1.0/contexts.xml").setDevice(OS.isWindows() ? "D:" : null);
 	static final URI LONG_LOCATION_URI = LONG_LOCATION.toFile().toURI();
-	private static final String PATH_STRING = IPath.fromOSString("/abc/def").setDevice(isWindows() ? "D:" : null).toString();
+	private static final String PATH_STRING = IPath.fromOSString("/abc/def").setDevice(OS.isWindows() ? "D:" : null).toString();
 
 	private HashMap<String, ProjectDescription> buildBaselineDescriptors() {
 		HashMap<String, ProjectDescription> result = new HashMap<>();

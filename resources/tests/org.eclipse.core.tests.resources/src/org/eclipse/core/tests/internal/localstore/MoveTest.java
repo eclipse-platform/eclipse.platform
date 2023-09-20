@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.junit.Assume;
 import org.junit.Test;
@@ -49,7 +50,7 @@ public class MoveTest extends LocalStoreTest {
 	 */
 	@Test
 	public void testMoveFileAcrossVolumes() {
-		Assume.assumeTrue(isWindows());
+		Assume.assumeTrue(OS.isWindows());
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
@@ -171,7 +172,7 @@ public class MoveTest extends LocalStoreTest {
 	 */
 	@Test
 	public void testMoveFolderAcrossVolumes() {
-		Assume.assumeTrue(isWindows());
+		Assume.assumeTrue(OS.isWindows());
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();

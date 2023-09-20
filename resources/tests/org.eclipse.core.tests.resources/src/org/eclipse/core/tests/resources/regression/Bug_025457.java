@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -31,7 +32,7 @@ public class Bug_025457 extends ResourceTest {
 
 	public void testFile() {
 		//this test only works on windows
-		if (!isWindows()) {
+		if (!OS.isWindows()) {
 			return;
 		}
 		IProject source = getWorkspace().getRoot().getProject("project");
@@ -77,7 +78,7 @@ public class Bug_025457 extends ResourceTest {
 	public void testFolder() {
 		//this test only works on windows
 		//native code must also be present so move can detect the case change
-		if (!isWindows() || !isReadOnlySupported()) {
+		if (!OS.isWindows() || !isReadOnlySupported()) {
 			return;
 		}
 		IProject source = getWorkspace().getRoot().getProject("SourceProject");
@@ -120,7 +121,7 @@ public class Bug_025457 extends ResourceTest {
 
 	public void testProject() {
 		//this test only works on windows
-		if (!isWindows()) {
+		if (!OS.isWindows()) {
 			return;
 		}
 		IProject source = getWorkspace().getRoot().getProject("project");

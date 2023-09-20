@@ -37,6 +37,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -236,7 +237,7 @@ public class IResourceTest extends ResourceTest {
 
 	public void testBug111821() {
 		//this test only makes sense on Windows
-		if (!isWindows()) {
+		if (!OS.isWindows()) {
 			return;
 		}
 		IProject project = getWorkspace().getRoot().getProject("testBug111821");

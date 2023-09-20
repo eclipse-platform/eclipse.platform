@@ -41,6 +41,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.junit.Assume;
@@ -263,7 +264,7 @@ public class BasicAliasTest extends ResourceTest {
 	 */
 	@Test
 	public void testBug198571() {
-		Assume.assumeTrue(isWindows());
+		Assume.assumeTrue(OS.isWindows());
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();

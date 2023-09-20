@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.regression;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -55,7 +56,7 @@ public class Bug_027271 extends ResourceTest {
 
 	public void testBug() {
 		//this bug is only relevant on Windows
-		if (!isWindows()) {
+		if (!OS.isWindows()) {
 			return;
 		}
 		IPathVariableManager pvm = getWorkspace().getPathVariableManager();

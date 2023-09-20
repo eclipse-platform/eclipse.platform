@@ -19,6 +19,7 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -28,7 +29,7 @@ import org.eclipse.core.tests.resources.ResourceTest;
 public class Bug_032076 extends ResourceTest {
 
 	public void testFileBugOnWindows() {
-		if (!isWindows()) {
+		if (!OS.isWindows()) {
 			return;
 		}
 
@@ -119,7 +120,7 @@ public class Bug_032076 extends ResourceTest {
 	}
 
 	public void testFolderBugOnWindows() {
-		if (!isWindows()) {
+		if (!OS.isWindows()) {
 			return;
 		}
 
@@ -219,7 +220,7 @@ public class Bug_032076 extends ResourceTest {
 	}
 
 	public void testProjectBugOnWindows() {
-		if (!isWindows()) {
+		if (!OS.isWindows()) {
 			return;
 		}
 
@@ -302,7 +303,7 @@ public class Bug_032076 extends ResourceTest {
 	 * TODO: This test is currently failing and needs further investigation (bug 203078)
 	 */
 	public void _testFileBugOnLinux() {
-		if (!(isLinux() && isReadOnlySupported())) {
+		if (!(OS.isLinux() && isReadOnlySupported())) {
 			return;
 		}
 
@@ -388,7 +389,7 @@ public class Bug_032076 extends ResourceTest {
 	 * TODO: This test is currently failing and needs further investigation (bug 203078)
 	 */
 	public void _testFolderBugOnLinux() {
-		if (!(isLinux() && isReadOnlySupported())) {
+		if (!(OS.isLinux() && isReadOnlySupported())) {
 			return;
 		}
 
@@ -492,7 +493,7 @@ public class Bug_032076 extends ResourceTest {
 	 * TODO: This test is currently failing and needs further investigation (bug 203078)
 	 */
 	public void _testProjectBugOnLinux() {
-		if (!(isLinux() && isReadOnlySupported())) {
+		if (!(OS.isLinux() && isReadOnlySupported())) {
 			return;
 		}
 

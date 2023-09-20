@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.junit.Assume;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class IFileTest extends ResourceTest {
 		Assume.assumeTrue(isReadOnlySupported());
 
 		// Don't test this on Windows
-		Assume.assumeFalse(isWindows());
+		Assume.assumeFalse(OS.isWindows());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -78,7 +79,7 @@ public class IFileTest extends ResourceTest {
 
 		// Only run this test on Linux for now since Windows lets you create
 		// a file within a read-only folder.
-		Assume.assumeTrue(isLinux());
+		Assume.assumeTrue(OS.isLinux());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
