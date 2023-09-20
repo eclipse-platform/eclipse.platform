@@ -19,15 +19,23 @@ import org.eclipse.ant.internal.launching.debug.model.AntThread;
 import org.eclipse.ant.internal.launching.debug.model.AntValue;
 import org.eclipse.ant.launching.IAntLaunchConstants;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IVariable;
+import org.osgi.framework.Version;
 
 public class PropertyTests extends AbstractAntDebugTest {
 
-	private static final String ANT_VERSION = "Apache Ant(TM) version 1.10.12"; //$NON-NLS-1$
+	private static final String ANT_VERSION;
+
+	static {
+		Version antVersion = Platform.getBundle("org.apache.ant").getVersion(); //$NON-NLS-1$
+		ANT_VERSION = "Apache Ant(TM) version " + antVersion.getMajor() + '.' + antVersion.getMinor() + '.' //$NON-NLS-1$
+				+ antVersion.getMicro();
+	}
 
 	public PropertyTests(String name) {
 		super(name);

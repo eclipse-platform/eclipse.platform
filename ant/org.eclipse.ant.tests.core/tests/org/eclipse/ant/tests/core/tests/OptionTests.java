@@ -31,14 +31,23 @@ import org.eclipse.ant.tests.core.AbstractAntTest;
 import org.eclipse.ant.tests.core.testplugin.AntTestChecker;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.junit.Test;
+import org.osgi.framework.Version;
 
 public class OptionTests extends AbstractAntTest {
 
 	protected static final String UNKNOWN_ARG = "Unknown argument: "; //$NON-NLS-1$
 	protected static final String START_OF_HELP = "ant [options] [target [target2 [target3] ...]]"; //$NON-NLS-1$
-	protected static final String VERSION = "Apache Ant(TM) version 1.10.12"; //$NON-NLS-1$
-	protected static final String PLUGIN_VERSION = "org.apache.ant_1.10.12"; //$NON-NLS-1$
+	protected static final String VERSION;
+	protected static final String PLUGIN_VERSION;
+
+	static {
+		Version antVersion = Platform.getBundle("org.apache.ant").getVersion(); //$NON-NLS-1$
+		VERSION = "Apache Ant(TM) version " + antVersion.getMajor() + '.' + antVersion.getMinor() + '.' //$NON-NLS-1$
+				+ antVersion.getMicro();
+		PLUGIN_VERSION = antVersion.toString();
+	}
 
 	/**
 	 * Tests the "-help" option
