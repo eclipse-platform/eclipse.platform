@@ -13,40 +13,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.eclipse</groupId>
-    <artifactId>eclipse-platform-parent</artifactId>
+    <groupId>org.eclipse.platform</groupId>
+    <artifactId>eclipse.platform</artifactId>
     <version>4.30.0-SNAPSHOT</version>
-    <relativePath>../../eclipse-platform-parent</relativePath>
   </parent>
   <groupId>eclipse.platform.ua</groupId>
   <artifactId>eclipse.platform.ua</artifactId>
   <packaging>pom</packaging>
-  <properties>
-    <tycho.scmUrl>scm:git:https://github.com/eclipse-platform/eclipse.platform.ua.git</tycho.scmUrl>
-  </properties>
-
-  <!-- 
-    To build individual bundles, we specify a repository where to find parent pom, 
-    in case it is not in local maven cache already
-    and that parent pom also has fuller individual-bundle profile 
-    defined that is combined with this one. --> 
-  <profiles>
-    <profile>
-      <id>build-individual-bundles</id>
-      <repositories>
-        <repository>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-          <id>eclipse-hosted</id>
-          <url>https://repo.eclipse.org/content/repositories/eclipse/</url>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
   
   <modules>
     <module>org.eclipse.help</module>

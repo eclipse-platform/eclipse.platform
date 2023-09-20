@@ -21,10 +21,6 @@
   <artifactId>eclipse.platform.runtime</artifactId>
   <packaging>pom</packaging>
 
-   <properties>
-     <tycho.scmUrl>scm:git:https://github.com/eclipse-platform/eclipse.platform.git</tycho.scmUrl>
-  </properties>
-
   <modules>
     <module>bundles</module>
     <module>features/org.eclipse.core.runtime.feature</module>
