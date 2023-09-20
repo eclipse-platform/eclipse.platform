@@ -39,7 +39,7 @@ import org.eclipse.core.runtime.SubMonitor;
  * @since 3.20
  *
  */
-public class FileSnapshot extends AbstractResourceSnapshot {
+public class FileSnapshot extends AbstractResourceSnapshot<IFile> {
 
 	String name;
 
@@ -94,15 +94,14 @@ public class FileSnapshot extends AbstractResourceSnapshot {
 	}
 
 	@Override
-	public void recordStateFromHistory(IResource resource,
+	public void recordStateFromHistory(IFile resource,
 			IProgressMonitor monitor) throws CoreException {
 		Assert.isLegal(resource.getType() == IResource.FILE);
-
 		if (location != null) {
 			// file is linked, no need to record any history
 			return;
 		}
-		IFileState[] states = ((IFile) resource).getHistory(monitor);
+		IFileState[] states = resource.getHistory(monitor);
 		if (states.length > 0) {
 			final IFileState state = getMatchingFileState(states);
 			this.fileContentDescription = new IFileContentSnapshot() {
@@ -125,20 +124,17 @@ public class FileSnapshot extends AbstractResourceSnapshot {
 	}
 
 	@Override
-	public IResource createResourceHandle() {
+	public IFile createResourceHandle() {
 		IWorkspaceRoot workspaceRoot = parent.getWorkspace().getRoot();
 		IPath fullPath = parent.getFullPath().append(name);
 		return workspaceRoot.getFile(fullPath);
 	}
 
 	@Override
-	public void createExistentResourceFromHandle(IResource resource, IProgressMonitor mon) throws CoreException {
-
-		Assert.isLegal(resource instanceof IFile);
-		if (resource.exists()) {
+	public void createExistentResourceFromHandle(IFile fileHandle, IProgressMonitor mon) throws CoreException {
+		if (fileHandle.exists()) {
 			return;
 		}
-		IFile fileHandle = (IFile) resource;
 		SubMonitor subMonitor = SubMonitor.convert(mon, 200);
 		subMonitor.setTaskName(ResourceSnapshotMessages.FileDescription_NewFileProgress);
 		try {

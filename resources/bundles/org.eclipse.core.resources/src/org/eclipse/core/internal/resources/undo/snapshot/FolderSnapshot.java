@@ -16,11 +16,11 @@
 package org.eclipse.core.internal.resources.undo.snapshot;
 
 import java.net.URI;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceFilterDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.SubMonitor;
  * @since 3.20
  *
  */
-public class FolderSnapshot extends ContainerSnapshot {
+public class FolderSnapshot extends ContainerSnapshot<IFolder> {
 
 	private boolean virtual = false;
 
@@ -67,19 +67,17 @@ public class FolderSnapshot extends ContainerSnapshot {
 	}
 
 	@Override
-	public IResource createResourceHandle() {
+	public IFolder createResourceHandle() {
 		IWorkspaceRoot workspaceRoot = getWorkspace().getRoot();
 		IPath folderPath = parent.getFullPath().append(name);
 		return workspaceRoot.getFolder(folderPath);
 	}
 
 	@Override
-	public void createExistentResourceFromHandle(IResource resource, IProgressMonitor mon) throws CoreException {
-		Assert.isLegal(resource instanceof IFolder);
-		if (resource.exists()) {
+	public void createExistentResourceFromHandle(final IFolder folderHandle, IProgressMonitor mon) throws CoreException {
+		if (folderHandle.exists()) {
 			return;
 		}
-		IFolder folderHandle = (IFolder) resource;
 		SubMonitor subMonitor = SubMonitor.convert(mon, 300);
 		subMonitor.setTaskName(ResourceSnapshotMessages.FolderDescription_NewFolderProgress);
 		if (filters != null) {

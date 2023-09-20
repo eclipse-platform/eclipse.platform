@@ -15,7 +15,11 @@
 
 package org.eclipse.core.internal.resources.undo.snapshot;
 
+import java.lang.reflect.Array;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -40,7 +44,7 @@ import org.eclipse.core.runtime.SubMonitor;
  *
  * @since 3.20
  */
-public abstract class ContainerSnapshot extends AbstractResourceSnapshot implements IContainerSnapshot {
+public abstract class ContainerSnapshot<T extends IContainer> extends AbstractResourceSnapshot<T> implements IContainerSnapshot<T> {
 
 	String name;
 
@@ -50,7 +54,7 @@ public abstract class ContainerSnapshot extends AbstractResourceSnapshot impleme
 
 	String defaultCharSet;
 
-	IResourceSnapshot[] members;
+	final List<IResourceSnapshot<? extends IResource>> members = new ArrayList<>();
 
 	/**
 	 * Create a container snapshot from the specified container handle that can be
@@ -62,7 +66,7 @@ public abstract class ContainerSnapshot extends AbstractResourceSnapshot impleme
 	 *         parents.
 	 */
 
-	public static ContainerSnapshot fromContainer(IContainer container) {
+	public static <R extends IContainer> ContainerSnapshot<? extends R> fromContainer(R container) {
 		return fromContainer(container, false);
 	}
 
@@ -76,22 +80,22 @@ public abstract class ContainerSnapshot extends AbstractResourceSnapshot impleme
 	 *         parents.
 	 */
 
-	public static ContainerSnapshot fromVirtualFolderContainer(IContainer container) {
+	public static <R extends IContainer> ContainerSnapshot<? extends R> fromVirtualFolderContainer(R container) {
 		return fromContainer(container, true);
 	}
 
-	public static ContainerSnapshot fromContainer(IContainer container, boolean usingVirtualFolder) {
+	@SuppressWarnings("unchecked")
+	public static <R extends IContainer> ContainerSnapshot<? extends R> fromContainer(R container, boolean usingVirtualFolder) {
 		IPath fullPath = container.getFullPath();
-		ContainerSnapshot firstCreatedParent = null;
-		ContainerSnapshot currentContainerDescription = null;
+		ContainerSnapshot<? extends IContainer> firstCreatedParent = null;
+		ContainerSnapshot<? extends IContainer> currentContainerDescription = null;
 
 		// Does the container exist already? If so, then the parent exists and
 		// we use the normal creation constructor.
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IContainer currentContainer = (IContainer) root.findMember(fullPath);
 		if (currentContainer != null) {
-			return (ContainerSnapshot) ResourceSnapshotFactory
-					.fromResource(container);
+			return (ContainerSnapshot<R>) ResourceSnapshotFactory.fromResource(container);
 		}
 
 		// Create container descriptions for any uncreated parents in the given
@@ -105,12 +109,11 @@ public abstract class ContainerSnapshot extends AbstractResourceSnapshot impleme
 				currentContainer = (IContainer) resource;
 			} else if (i == 0) {
 				// parent does not exist and it is a project
-				firstCreatedParent = new ProjectSnapshot(root
-						.getProject(currentSegment));
+				firstCreatedParent = new ProjectSnapshot(root.getProject(currentSegment));
 				currentContainerDescription = firstCreatedParent;
 			} else {
 				IFolder folderHandle = currentContainer.getFolder(IPath.fromOSString(currentSegment));
-				ContainerSnapshot currentFolder;
+				FolderSnapshot currentFolder;
 				currentFolder = new FolderSnapshot(folderHandle, usingVirtualFolder);
 				currentContainer = folderHandle;
 				if (currentContainerDescription != null) {
@@ -122,7 +125,7 @@ public abstract class ContainerSnapshot extends AbstractResourceSnapshot impleme
 				}
 			}
 		}
-		return firstCreatedParent;
+		return (ContainerSnapshot<? extends R>)firstCreatedParent;
 	}
 
 	/**
@@ -139,7 +142,7 @@ public abstract class ContainerSnapshot extends AbstractResourceSnapshot impleme
 	 *
 	 * @param container the container to be described
 	 */
-	public ContainerSnapshot(IContainer container) {
+	public ContainerSnapshot(T container) {
 		super(container);
 		this.name = container.getName();
 		if (container.isLinked()) {
@@ -149,10 +152,8 @@ public abstract class ContainerSnapshot extends AbstractResourceSnapshot impleme
 			if (container.isAccessible()) {
 				defaultCharSet = container.getDefaultCharset(false);
 				IResource[] resourceMembers = container.members();
-				members = new AbstractResourceSnapshot[resourceMembers.length];
-				for (int i = 0; i < resourceMembers.length; i++) {
-					members[i] = (AbstractResourceSnapshot) ResourceSnapshotFactory
-							.fromResource(resourceMembers[i]);
+				for (IResource resourceMember : resourceMembers) {
+					members.add(ResourceSnapshotFactory.fromResource(resourceMember));
 				}
 			}
 		} catch (CoreException e) {
@@ -173,31 +174,29 @@ public abstract class ContainerSnapshot extends AbstractResourceSnapshot impleme
 	protected final void createChildResources(IContainer parentHandle,
 			IProgressMonitor monitor) throws CoreException {
 		// restore any children
-		if (members != null && members.length > 0) {
-			SubMonitor subMonitor = SubMonitor.convert(monitor, members.length);
-			for (IResourceSnapshot member : members) {
-				if (member instanceof AbstractResourceSnapshot)
-					((AbstractResourceSnapshot) member).parent = parentHandle;
-				member.createResource(subMonitor.split(1));
-			}
+		SubMonitor subMonitor = SubMonitor.convert(monitor, members.size());
+		for (IResourceSnapshot<? extends IResource> member : members) {
+			if (member instanceof AbstractResourceSnapshot)
+				((AbstractResourceSnapshot<? extends IResource>) member).parent = parentHandle;
+			member.createResource(subMonitor.split(1));
 		}
 	}
 
 	@Override
-	public void recordStateFromHistory(IResource resource, IProgressMonitor mon) throws CoreException {
+	public void recordStateFromHistory(T resource, IProgressMonitor mon) throws CoreException {
 		if (members != null) {
 			SubMonitor subMonitor = SubMonitor.convert(mon, ResourceSnapshotMessages.FolderDescription_SavingUndoInfoProgress,
-					members.length);
-			for (IResourceSnapshot member : members) {
+					members.size());
+			for (IResourceSnapshot<? extends IResource> member : members) {
 				SubMonitor iterationMonitor = subMonitor.split(1);
-				if (member instanceof FileSnapshot) {
-					IPath path = resource.getFullPath().append(((FileSnapshot) member).name);
+				if (member instanceof FileSnapshot fileSnapshot) {
+					IPath path = resource.getFullPath().append(fileSnapshot.name);
 					IFile fileHandle = resource.getWorkspace().getRoot().getFile(path);
-					member.recordStateFromHistory(fileHandle, iterationMonitor);
-				} else if (member instanceof FolderSnapshot) {
-					IPath path = resource.getFullPath().append(((FolderSnapshot) member).name);
+					fileSnapshot.recordStateFromHistory(fileHandle, iterationMonitor);
+				} else if (member instanceof FolderSnapshot folderSnapshot) {
+					IPath path = resource.getFullPath().append(folderSnapshot.name);
 					IFolder folderHandle = resource.getWorkspace().getRoot().getFolder(path);
-					member.recordStateFromHistory(folderHandle, iterationMonitor);
+					folderSnapshot.recordStateFromHistory(folderHandle, iterationMonitor);
 				}
 			}
 		}
@@ -213,11 +212,10 @@ public abstract class ContainerSnapshot extends AbstractResourceSnapshot impleme
 		return name;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public IResourceSnapshot[] getMembers() {
-		AbstractResourceSnapshot[] clone = new AbstractResourceSnapshot[members.length];
-		System.arraycopy(members, 0, clone, 0, members.length);
-		return clone;
+	public IResourceSnapshot<? extends IResource>[] getMembers() {
+		return members.toArray((IResourceSnapshot<? extends IResource>[]) Array.newInstance(IResourceSnapshot.class, members.size()));
 	}
 
 	/**
@@ -226,15 +224,8 @@ public abstract class ContainerSnapshot extends AbstractResourceSnapshot impleme
 	 * @param member the resource snapshot considered a member of this container.
 	 */
 	@Override
-	public void addMember(IResourceSnapshot member) {
-		if (members == null) {
-			members = new IResourceSnapshot[] { member };
-		} else {
-			IResourceSnapshot[] expandedMembers = new AbstractResourceSnapshot[members.length + 1];
-			System.arraycopy(members, 0, expandedMembers, 0, members.length);
-			expandedMembers[members.length] = member;
-			members = expandedMembers;
-		}
+	public void addMember(IResourceSnapshot<? extends IResource> member) {
+		members.add(member);
 	}
 
 	@Override
@@ -274,11 +265,9 @@ public abstract class ContainerSnapshot extends AbstractResourceSnapshot impleme
 		if (existence) {
 			if (checkMembers) {
 				// restore any children
-				if (members != null && members.length > 0) {
-					for (IResourceSnapshot member : members) {
-						if (!member.verifyExistence(checkMembers)) {
-							return false;
-						}
+				for (IResourceSnapshot<? extends IResource> member : members) {
+					if (!member.verifyExistence(checkMembers)) {
+						return false;
 					}
 				}
 			}

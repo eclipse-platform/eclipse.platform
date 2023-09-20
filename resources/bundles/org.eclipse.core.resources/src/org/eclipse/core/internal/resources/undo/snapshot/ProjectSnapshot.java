@@ -33,7 +33,7 @@ import org.eclipse.core.runtime.SubMonitor;
  * @since 3.20
  *
  */
-public class ProjectSnapshot extends ContainerSnapshot {
+public class ProjectSnapshot extends ContainerSnapshot<IProject> {
 
 	private IProjectDescription projectDescription;
 	private boolean openOnCreate = true;
@@ -73,19 +73,16 @@ public class ProjectSnapshot extends ContainerSnapshot {
 	}
 
 	@Override
-	public IResource createResourceHandle() {
+	public IProject createResourceHandle() {
 		return ResourcesPlugin.getWorkspace().getRoot().getProject(getName());
 	}
 
 	@Override
-	public void createExistentResourceFromHandle(IResource resource,
-			IProgressMonitor monitor) throws CoreException {
+	public void createExistentResourceFromHandle(IProject projectHandle, IProgressMonitor monitor) throws CoreException {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 200);
-		Assert.isLegal(resource instanceof IProject);
-		if (resource.exists()) {
+		if (projectHandle.exists()) {
 			return;
 		}
-		IProject projectHandle = (IProject) resource;
 		subMonitor.setTaskName(ResourceSnapshotMessages.FolderDescription_NewFolderProgress);
 		if (projectDescription == null) {
 			projectHandle.create(subMonitor.split(100));
@@ -109,7 +106,7 @@ public class ProjectSnapshot extends ContainerSnapshot {
 	@Override
 	public boolean verifyExistence(boolean checkMembers) {
 		// We can only check members if the project is open.
-		IProject projectHandle = (IProject) createResourceHandle();
+		IProject projectHandle = createResourceHandle();
 		if (projectHandle.isAccessible()) {
 			return super.verifyExistence(checkMembers);
 		}
