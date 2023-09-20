@@ -42,6 +42,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 
@@ -203,7 +204,7 @@ public class LinkedResourceTest extends ResourceTest {
 		}
 
 		//try to create with local path that can never exist
-		if (isWindows()) {
+		if (OS.isWindows()) {
 			location = IPath.fromOSString("b:\\does\\not\\exist");
 		} else {
 			location = IPath.fromOSString("/dev/null/does/not/exist");
@@ -1022,7 +1023,7 @@ public class LinkedResourceTest extends ResourceTest {
 	 */
 	public void testFindFilesForLocationCaseVariant() {
 		//this test only applies to file systems with a device in the path
-		if (!isWindows()) {
+		if (!OS.isWindows()) {
 			return;
 		}
 		IFolder link = nonExistingFolderInExistingProject;
@@ -1455,7 +1456,7 @@ public class LinkedResourceTest extends ResourceTest {
 	 */
 	public void testLocationWithColon() {
 		//windows does not allow a location with colon in the name
-		if (isWindows()) {
+		if (OS.isWindows()) {
 			return;
 		}
 		IFolder folder = nonExistingFolderInExistingProject;

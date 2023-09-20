@@ -40,6 +40,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
@@ -198,7 +199,7 @@ public class IProjectTest extends ResourceTest {
 		}
 		//do some tests with invalid names
 		names = new String[0];
-		if (isWindows()) {
+		if (OS.isWindows()) {
 			//invalid windows names
 			names = new String[] {"foo:bar", "prn", "nul", "con", "aux", "clock$", "com1", "com2", "com3", "com4", "com5", "com6", "com7", "com8", "com9", "lpt1", "lpt2", "lpt3", "lpt4", "lpt5", "lpt6", "lpt7", "lpt8", "lpt9", "AUX", "con.foo", "LPT4.txt", "*", "?", "\"", "<", ">", "|", "::"};
 		}
@@ -221,7 +222,7 @@ public class IProjectTest extends ResourceTest {
 		}
 
 		//do some tests with valid names that are *almost* invalid
-		if (isWindows()) {
+		if (OS.isWindows()) {
 			//these names are valid on windows
 			names = new String[] {"hello.prn.txt", "null", "con3", "foo.aux", "lpt0", "com0", "com10", "lpt10", ",", "'", ";"};
 		} else {
@@ -615,7 +616,7 @@ public class IProjectTest extends ResourceTest {
 	 * Tests creating a project whose location already exists with different case
 	 */
 	public void testProjectCreationLocationExistsWithDifferentCase() {
-		if (isWindows()) {
+		if (OS.isWindows()) {
 			String projectName = getUniqueString() + "a";
 			IProject project = getWorkspace().getRoot().getProject(projectName);
 

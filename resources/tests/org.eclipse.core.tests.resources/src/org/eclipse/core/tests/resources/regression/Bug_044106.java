@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -91,7 +92,7 @@ public class Bug_044106 extends ResourceTest {
 	 * @param deleteFlags The flags to use on the resource deletion call
 	 */
 	public void doTestDeleteLinkedFolder(IFolder linkedFolder, boolean deleteParent, int deleteFlags) {
-		if (!isLinux()) {
+		if (!OS.isLinux()) {
 			return;
 		}
 		IFileStore linkDestLocation = getTempStore();
@@ -139,14 +140,14 @@ public class Bug_044106 extends ResourceTest {
 	}
 
 	public void testDeleteLinkedFile() {
-		if (!isLinux()) {
+		if (!OS.isLinux()) {
 			return;
 		}
 		doTestDeleteLinkedFile(IResource.NONE);
 	}
 
 	public void testDeleteLinkedFolder() {
-		if (!isLinux()) {
+		if (!OS.isLinux()) {
 			return;
 		}
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
@@ -155,7 +156,7 @@ public class Bug_044106 extends ResourceTest {
 	}
 
 	public void testDeleteLinkedResourceInProject() {
-		if (!isLinux()) {
+		if (!OS.isLinux()) {
 			return;
 		}
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
@@ -164,14 +165,14 @@ public class Bug_044106 extends ResourceTest {
 	}
 
 	public void testDeleteLinkedFileKeepHistory() {
-		if (!isLinux()) {
+		if (!OS.isLinux()) {
 			return;
 		}
 		doTestDeleteLinkedFile(IResource.KEEP_HISTORY);
 	}
 
 	public void testDeleteLinkedFolderParentKeepHistory() {
-		if (!isLinux()) {
+		if (!OS.isLinux()) {
 			return;
 		}
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
@@ -181,7 +182,7 @@ public class Bug_044106 extends ResourceTest {
 	}
 
 	public void testDeleteLinkedFolderKeepHistory() {
-		if (!isLinux()) {
+		if (!OS.isLinux()) {
 			return;
 		}
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
@@ -190,7 +191,7 @@ public class Bug_044106 extends ResourceTest {
 	}
 
 	public void testDeleteLinkedResourceInProjectKeepHistory() {
-		if (!isLinux()) {
+		if (!OS.isLinux()) {
 			return;
 		}
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());

@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -37,7 +38,7 @@ public class Bug_026294 extends ResourceTest {
 	 * Works only for Windows.
 	 */
 	public void testDeleteOpenProjectWindows() {
-		if (!(isWindows())) {
+		if (!(OS.isWindows())) {
 			return;
 		}
 
@@ -138,7 +139,7 @@ public class Bug_026294 extends ResourceTest {
 	 * Works only for Linux with natives.
 	 */
 	public void testDeleteOpenProjectLinux() {
-		if (!(isLinux() && isReadOnlySupported())) {
+		if (!(OS.isLinux() && isReadOnlySupported())) {
 			return;
 		}
 
@@ -206,7 +207,7 @@ public class Bug_026294 extends ResourceTest {
 	 * Works only for Windows.
 	 */
 	public void testDeleteClosedProjectWindows() {
-		if (!isWindows()) {
+		if (!OS.isWindows()) {
 			return;
 		}
 
@@ -286,7 +287,7 @@ public class Bug_026294 extends ResourceTest {
 	 * TODO: enable this test once bug 48321 is fixed.
 	 */
 	public void testDeleteClosedProjectLinux() {
-		if (!isLinux()) {
+		if (!OS.isLinux()) {
 			return;
 		}
 
@@ -358,7 +359,7 @@ public class Bug_026294 extends ResourceTest {
 	 * Works only for Windows.
 	 */
 	public void testDeleteFolderWindows() {
-		if (!isWindows()) {
+		if (!OS.isWindows()) {
 			return;
 		}
 
@@ -423,7 +424,7 @@ public class Bug_026294 extends ResourceTest {
 	 * Works only for Linux with natives.
 	 */
 	public void testDeleteFolderLinux() {
-		if (!isLinux()) {
+		if (!OS.isLinux()) {
 			return;
 		}
 
