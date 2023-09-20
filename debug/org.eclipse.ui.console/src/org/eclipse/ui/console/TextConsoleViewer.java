@@ -178,18 +178,6 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 		return false;
 	}
 
-	/*
-	 * Checks if at the start of document
-	 */
-	private boolean isAtStartOfDocument() {
-		StyledText textWidget = getTextWidget();
-		if (textWidget != null && !textWidget.isDisposed()) {
-			ScrollBar scrollBar = textWidget.getVerticalBar();
-			return scrollBar.getSelection() == 0;
-		}
-		return false;
-	}
-
 	private final IPositionUpdater positionUpdater = event -> {
 		try {
 			IDocument document = getDocument();
@@ -285,7 +273,7 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 				// lock the scroll if PAGE_UP ,HOME or TOP selected
 				if (e.keyCode == SWT.HOME || e.keyCode == SWT.TOP) {
 					setScrollLock(true);
-				} else if ((e.keyCode == SWT.PAGE_UP || e.keyCode == SWT.ARROW_UP) && !isAtStartOfDocument()) {
+				} else if ((e.keyCode == SWT.PAGE_UP || e.keyCode == SWT.ARROW_UP)) {
 					setScrollLock(true);
 				} else if ((e.keyCode == SWT.END && (e.stateMask & SWT.CTRL) != 0) || e.keyCode == SWT.BOTTOM) {
 					// pressing CTRL+END reveals the end
