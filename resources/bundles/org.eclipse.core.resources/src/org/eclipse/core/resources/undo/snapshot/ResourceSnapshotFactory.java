@@ -47,13 +47,14 @@ public class ResourceSnapshotFactory {
 	 * @param resource the resource from which a description should be created
 	 * @return the resource description
 	 */
-	public static IResourceSnapshot fromResource(IResource resource) {
+	@SuppressWarnings("unchecked")
+	public static <T extends IResource> IResourceSnapshot<T> fromResource(T resource) {
 		if (resource.getType() == IResource.PROJECT) {
-			return new ProjectSnapshot((IProject) resource);
+			return (IResourceSnapshot<T>) new ProjectSnapshot((IProject) resource);
 		} else if (resource.getType() == IResource.FOLDER) {
-			return new FolderSnapshot((IFolder) resource, resource.isVirtual());
+			return (IResourceSnapshot<T>) new FolderSnapshot((IFolder) resource, resource.isVirtual());
 		} else if (resource.getType() == IResource.FILE) {
-			return new FileSnapshot((IFile) resource);
+			return (IResourceSnapshot<T>) new FileSnapshot((IFile) resource);
 		} else {
 			throw new IllegalArgumentException();
 		}
@@ -65,7 +66,7 @@ public class ResourceSnapshotFactory {
 	 *
 	 * @param projectDescription the project description for the future project
 	 */
-	public static IContainerSnapshot fromProjectDescription(IProjectDescription projectDescription) {
+	public static IContainerSnapshot<IProject> fromProjectDescription(IProjectDescription projectDescription) {
 		return new ProjectSnapshot(projectDescription);
 	}
 
@@ -78,7 +79,7 @@ public class ResourceSnapshotFactory {
 	 * @return a container description describing the container and any non-existing
 	 *         parents.
 	 */
-	public static IContainerSnapshot fromContainer(IContainer container) {
+	public static IContainerSnapshot<? extends IContainer> fromContainer(IContainer container) {
 		return ContainerSnapshot.fromContainer(container);
 	}
 
@@ -91,7 +92,7 @@ public class ResourceSnapshotFactory {
 	 * @return a container description describing the container and any non-existing
 	 *         parents.
 	 */
-	public static IContainerSnapshot fromVirtualFolderContainer(IContainer container) {
+	public static IContainerSnapshot<? extends IContainer> fromVirtualFolderContainer(IContainer container) {
 		return ContainerSnapshot.fromContainer(container, true);
 	}
 
@@ -107,7 +108,7 @@ public class ResourceSnapshotFactory {
 	 *                     the file is not linked
 	 * @param contents     an input stream representing the contents of the file
 	 */
-	public static IResourceSnapshot fromFileDetails(IFile file, URI linkLocation, InputStream contents) {
+	public static IResourceSnapshot<IFile> fromFileDetails(IFile file, URI linkLocation, InputStream contents) {
 		return new FileSnapshot(file, linkLocation, createFileContentDescription(file, contents));
 	}
 

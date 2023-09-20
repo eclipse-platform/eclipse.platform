@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @since 3.20
  *
  */
-abstract class AbstractResourceSnapshot implements IResourceSnapshot {
+abstract class AbstractResourceSnapshot<T extends IResource> implements IResourceSnapshot<T> {
 	IContainer parent;
 
 	long modificationStamp = IResource.NULL_STAMP;
@@ -57,7 +57,7 @@ abstract class AbstractResourceSnapshot implements IResourceSnapshot {
 	 *
 	 * @param resource the resource to be described
 	 */
-	protected AbstractResourceSnapshot(IResource resource) {
+	protected AbstractResourceSnapshot(T resource) {
 		super();
 		parent = resource.getParent();
 		if (resource.isAccessible()) {
@@ -81,9 +81,8 @@ abstract class AbstractResourceSnapshot implements IResourceSnapshot {
 	}
 
 	@Override
-	public IResource createResource(IProgressMonitor monitor)
-			throws CoreException {
-		IResource resource = createResourceHandle();
+	public T createResource(IProgressMonitor monitor) throws CoreException {
+		T resource = createResourceHandle();
 		createExistentResourceFromHandle(resource, monitor);
 		restoreResourceAttributes(resource);
 		return resource;

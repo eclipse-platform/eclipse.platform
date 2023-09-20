@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @since 3.20
  *
  */
-public interface IResourceSnapshot {
+public interface IResourceSnapshot<T extends IResource> {
 
 	/**
 	 * Create a resource handle that can be used to create a resource from this
@@ -38,7 +38,7 @@ public interface IResourceSnapshot {
 	 * @return the resource handle that can be used to create a resource from
 	 *         this description
 	 */
-	public IResource createResourceHandle();
+	public T createResourceHandle();
 
 	/**
 	 * Get the name of this resource.
@@ -55,7 +55,7 @@ public interface IResourceSnapshot {
 	 * @return a resource that has the attributes of this resource description
 	 * @throws CoreException if creation failed
 	 */
-	public IResource createResource(IProgressMonitor monitor) throws CoreException;
+	public T createResource(IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Given a resource handle, create an actual resource with the attributes of
@@ -67,8 +67,7 @@ public interface IResourceSnapshot {
 	 *            the progress monitor to be used when creating the resource
 	 * @throws CoreException if creation failed
 	 */
-	public void createExistentResourceFromHandle(IResource resource,
-			IProgressMonitor monitor) throws CoreException;
+	public void createExistentResourceFromHandle(T resource, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Return a boolean indicating whether this resource description has enough
@@ -89,8 +88,7 @@ public interface IResourceSnapshot {
 	 *            the progress monitor to be used
 	 * @throws CoreException in case of error
 	 */
-	public void recordStateFromHistory(IResource resource,
-			IProgressMonitor monitor) throws CoreException;
+	public void recordStateFromHistory(T resource, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Return a boolean indicating whether this description represents an

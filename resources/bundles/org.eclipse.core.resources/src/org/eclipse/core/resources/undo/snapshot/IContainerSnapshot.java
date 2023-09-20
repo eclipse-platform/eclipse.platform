@@ -15,6 +15,9 @@
 package org.eclipse.core.resources.undo.snapshot;
 
 import java.net.URI;
+
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceFilterDescription;
 
 /**
@@ -25,14 +28,14 @@ import org.eclipse.core.resources.IResourceFilterDescription;
  * @noextend This interface is not intended to be extended by clients.
  * @since 3.20
  */
-public interface IContainerSnapshot extends IResourceSnapshot {
+public interface IContainerSnapshot<T extends IContainer> extends IResourceSnapshot<T> {
 
 	/**
 	 * Get a list of snapshots of members of this container
 	 *
 	 * @return a list of snapshots
 	 */
-	public IResourceSnapshot[] getMembers();
+	public IResourceSnapshot<? extends IResource>[] getMembers();
 
 	/**
 	 * Add the specified resource description as a member of this resource
@@ -40,7 +43,7 @@ public interface IContainerSnapshot extends IResourceSnapshot {
 	 *
 	 * @param member the resource description considered a member of this container.
 	 */
-	public void addMember(IResourceSnapshot member);
+	public void addMember(IResourceSnapshot<? extends IResource> member);
 
 	/**
 	 * Set the location to which this container is linked.
