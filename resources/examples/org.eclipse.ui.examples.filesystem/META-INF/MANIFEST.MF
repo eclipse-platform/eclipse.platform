@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Automatic-Module-Name: org.eclipse.ui.examples.filesystem
 Bundle-Name: Efs Examples Plug-in
 Bundle-SymbolicName: org.eclipse.ui.examples.filesystem;singleton:=true
 Bundle-Version: 1.1.200.qualifier
