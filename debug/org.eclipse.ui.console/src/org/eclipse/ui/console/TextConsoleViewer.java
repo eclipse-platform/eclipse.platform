@@ -150,22 +150,22 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 	}
 
 	/*
-	 * Checks if at the end of document
+	 * Checks if last visible line is same as line count, implying end of the
+	 * document.
 	 */
 	private boolean isAtEndOfDocument() {
 		StyledText textWidget = getTextWidget();
 		if (textWidget != null && !textWidget.isDisposed()) {
-			ScrollBar scrollBar = textWidget.getVerticalBar();
-			int linesInAPage = scrollBar.getPageIncrement() / scrollBar.getIncrement();
-			int partialBottomIndex = JFaceTextUtil.getPartialBottomIndex(textWidget);
-			return textWidget.getLineCount() - partialBottomIndex <= linesInAPage;
+			int lastVisibleLineIndex = JFaceTextUtil.getPartialBottomIndex(textWidget);
+			int lineCount = textWidget.getLineCount();
+			return lineCount == lastVisibleLineIndex + 1;
 		}
 		return false;
 	}
 
 	/*
-	 * Check if user preference is enabled for auto scroll lock and the document is empty or the line count is smaller than each
-	 * vertical scroll
+	 * Checks if user preference is enabled for auto scroll lock. and if the view is
+	 * empty or the content is minimal, implying no need for scrolling.
 	 */
 	private boolean isAutoScrollLockNotApplicable() {
 		if (!consoleAutoScrollLock) {
@@ -173,7 +173,12 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 		}
 		StyledText textWidget = getTextWidget();
 		if (textWidget != null && !textWidget.isDisposed()) {
-			return (textWidget.getLineCount() <= textWidget.getVerticalBar().getIncrement());
+			ScrollBar scrollBar = textWidget.getVerticalBar();
+			/**
+			 * Value for pageIncrement is only set when lines exceed one page, otherwise it
+			 * is 1
+			 */
+			return scrollBar.getPageIncrement() == 1;
 		}
 		return false;
 	}
@@ -314,6 +319,7 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 		document.addDocumentListener(documentListener);
 		document.addPositionUpdater(positionUpdater);
 	}
+
 
 	/**
 	 * Sets the tab width used by this viewer.
