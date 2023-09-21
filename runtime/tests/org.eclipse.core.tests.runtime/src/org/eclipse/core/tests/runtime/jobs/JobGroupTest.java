@@ -16,14 +16,30 @@ package org.eclipse.core.tests.runtime.jobs;
 
 import static org.junit.Assert.assertNotEquals;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLong;
 import junit.framework.AssertionFailedError;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
-import org.eclipse.core.tests.harness.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.core.runtime.jobs.JobGroup;
+import org.eclipse.core.tests.harness.FussyProgressMonitor;
+import org.eclipse.core.tests.harness.TestBarrier2;
+import org.eclipse.core.tests.harness.TestJob;
 
 /**
  * Tests for {@link JobGroup}.
@@ -1291,6 +1307,74 @@ public class JobGroupTest extends AbstractJobTest {
 		// Verify that the group is canceled in a reasonable time,
 		// i.e only 10 jobs are allowed to run after the shouldCancel method returned true.
 		assertTrue("2.0", numShouldCancelCalled[0] < NUM_JOBS_LIMIT + 10);
+	}
+
+	/**
+	 * Tested scenario: - 2 jobs are started in parallel and the first one returns a
+	 * CANCEL_STATUS while the second one is still running. This lets
+	 * <code>JobGroup.shouldCancel</code> return <code>true</code> which triggers
+	 * the cancelation of any running job.
+	 *
+	 * Expected result: The second job is explicitly canceled
+	 *
+	 */
+	public void testShouldCancel_5() {
+		// the job group allows for 2 threads so both jobs will be started in
+		// parallel
+		JobGroup jobGroup = new JobGroup("JobGroup", 2, 2) {
+			@Override
+			protected boolean shouldCancel(IStatus lastCompletedJobResult, int numberOfFailedJobs,
+					int numberOfCanceledJobs) {
+				// cancel the group as soon as one job in it returns the CANCEL_STATUS
+				return numberOfCanceledJobs > 0;
+			}
+		};
+
+		TestBarrier2 returnsCancelStatusBarrier = new TestBarrier2();
+		TestBarrier2 canceledJobBarrier = new TestBarrier2();
+
+		Job returnsCancelStatusJob = Job.create("The one that cancels", __ -> {
+			// This job running. Wait until the other job is running too.
+			returnsCancelStatusBarrier.setStatus(TestBarrier2.STATUS_RUNNING);
+			canceledJobBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
+
+			return Status.CANCEL_STATUS;
+		});
+
+		Job canceledJob = new Job("The one that is explicitly canceled") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				// This job running. Wait until the other job is running too.
+				canceledJobBarrier.setStatus(TestBarrier2.STATUS_RUNNING);
+				returnsCancelStatusBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
+
+				// give it time: this Job needs to be running at the time the other job finishes
+				canceledJobBarrier.waitForStatus(TestBarrier2.STATUS_DONE);
+				return Status.OK_STATUS;
+			}
+
+			@Override
+			protected void canceling() {
+				canceledJobBarrier.setStatus(TestBarrier2.STATUS_DONE);
+			}
+		};
+
+		returnsCancelStatusJob.setJobGroup(jobGroup);
+		returnsCancelStatusJob.schedule();
+
+		canceledJob.setJobGroup(jobGroup);
+		canceledJob.schedule();
+
+		// Wait here also just in case there is an exception. The main thread is the
+		// right place to let tests fail.
+		canceledJobBarrier.waitForStatus(TestBarrier2.STATUS_DONE);
+
+		waitForCompletion(jobGroup);
+
+		/*
+		 * The fact that we reached the end of the method means that the 2nd job was
+		 * successfully canceled i.e. that the test passed.
+		 */
 	}
 
 	public void testDefaultComputeGroupResult() {
