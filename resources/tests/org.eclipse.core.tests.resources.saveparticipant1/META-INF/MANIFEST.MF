@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Automatic-Module-Name: org.eclipse.core.tests.resources.saveparticipant1
 Bundle-Name: Save Participant 1
 Bundle-Activator: org.eclipse.core.tests.resources.saveparticipant1.SaveParticipant1Plugin
 Bundle-SymbolicName: org.eclipse.core.tests.resources.saveparticipant1
