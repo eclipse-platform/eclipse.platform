@@ -415,6 +415,11 @@ public abstract class AsynchronousViewer extends StructuredViewer implements Lis
 	}
 
 	@Override
+	public void refresh() {
+		refresh(getRoot());
+	}
+
+	@Override
 	protected void internalRefresh(Object element) {
 		// get the nodes in the model
 		AsynchronousModel model = getModel();
