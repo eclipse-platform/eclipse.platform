@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -23,7 +23,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.synchronize.SynchronizeView;
 import org.eclipse.team.ui.synchronize.ISynchronizePageSite;
@@ -94,18 +94,18 @@ public class RefactorActionGroup extends ActionGroup {
 	}
 
 	protected void makeActions() {
-		final Shell shell = site.getShell();
+		final IShellProvider shellProvider = site.getWorkbenchSite();
 		final ISharedImages images = PlatformUI.getWorkbench()
 				.getSharedImages();
 
-		copyAction = new CopyToClipboardAction(shell, navigatorContentService);
+		copyAction = new CopyToClipboardAction(site.getShell(), navigatorContentService);
 		copyAction.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_COPY);
 		copyAction.setImageDescriptor(images
 				.getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
 		copyAction.setDisabledImageDescriptor(images
 				.getImageDescriptor(ISharedImages.IMG_TOOL_COPY_DISABLED));
 
-		deleteAction = new DeleteResourceAction(shell) {
+		deleteAction = new DeleteResourceAction(shellProvider) {
 			@Override
 			protected List getSelectedResources() {
 				return getSelection().toList();// Arrays.asList(Utils.getResources(getSelection().toArray()));
@@ -113,7 +113,6 @@ public class RefactorActionGroup extends ActionGroup {
 
 			@Override
 			protected boolean updateSelection(IStructuredSelection selection) {
-				// TODO Auto-generated method stub
 				return super.updateSelection(selection)
 						&& allResourcesAreOfType(selection, IResource.PROJECT
 								| IResource.FOLDER | IResource.FILE);
@@ -126,10 +125,9 @@ public class RefactorActionGroup extends ActionGroup {
 		deleteAction.setDisabledImageDescriptor(images
 				.getImageDescriptor(ISharedImages.IMG_TOOL_DELETE_DISABLED));
 
-		moveAction = new MoveResourceAction(shell) {
+		moveAction = new MoveResourceAction(shellProvider) {
 			@Override
 			protected boolean updateSelection(IStructuredSelection selection) {
-				// TODO Auto-generated method stub
 				return super.updateSelection(selection)
 						&& allResourcesAreOfType(selection, IResource.PROJECT
 								| IResource.FOLDER | IResource.FILE);
@@ -137,10 +135,9 @@ public class RefactorActionGroup extends ActionGroup {
 		};
 		moveAction.setActionDefinitionId(IWorkbenchCommandConstants.FILE_MOVE);
 
-		renameAction = new RenameResourceAction(shell) {
+		renameAction = new RenameResourceAction(shellProvider) {
 			@Override
 			protected boolean updateSelection(IStructuredSelection selection) {
-				// TODO Auto-generated method stub
 				return super.updateSelection(selection)
 						&& allResourcesAreOfType(selection, IResource.PROJECT
 								| IResource.FOLDER | IResource.FILE);
