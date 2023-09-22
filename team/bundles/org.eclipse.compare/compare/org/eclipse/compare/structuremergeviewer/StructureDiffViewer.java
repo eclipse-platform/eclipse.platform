@@ -528,9 +528,11 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			// A null compare configuration indicates that the viewer was disposed
 			if (compareConfiguration != null) {
 				compareConfiguration.getContainer().run(true, true, monitor -> {
-					monitor.beginTask(CompareMessages.StructureDiffViewer_2, 100);
-					diffTask.run(SubMonitor.convert(monitor, 100));
-					monitor.done();
+					try {
+						diffTask.run(SubMonitor.convert(monitor, CompareMessages.StructureDiffViewer_2, 100));
+					} finally {
+						monitor.done();
+					}
 				});
 			}
 		} catch (InvocationTargetException e) {
