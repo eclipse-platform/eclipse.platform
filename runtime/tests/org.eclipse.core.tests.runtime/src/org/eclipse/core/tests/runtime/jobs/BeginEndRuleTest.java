@@ -13,9 +13,27 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import java.util.concurrent.atomic.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.concurrent.atomic.AtomicReference;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.core.runtime.jobs.ProgressProvider;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.junit.Test;
@@ -24,6 +42,8 @@ import org.junit.Test;
  * Tests API methods IJobManager.beginRule and IJobManager.endRule
  */
 public class BeginEndRuleTest extends AbstractJobManagerTest {
+
+	private static final long TIMEOUT_IN_MILLIS = 10_000;
 
 	/**
 	 * This runnable will try to end the given rule in the Job Manager
@@ -628,57 +648,74 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 	}
 
 	public void testIgnoreScheduleThreadJob() throws Exception {
-		final int[] count = new int[1];
-		JobChangeAdapter a = new JobChangeAdapter() {
+		Set<Job> jobsStartedRunning = Collections.synchronizedSet(new HashSet<>());
+		JobChangeAdapter runningThreadStoreListener = new JobChangeAdapter() {
 			@Override
-			public void running(org.eclipse.core.runtime.jobs.IJobChangeEvent event) {
-				count[0]++;
+			public void running(IJobChangeEvent event) {
+				jobsStartedRunning.add(event.getJob());
 			}
 		};
-		Job.getJobManager().addJobChangeListener(a);
+		Job.getJobManager().addJobChangeListener(runningThreadStoreListener);
 		IdentityRule rule = new IdentityRule();
+		Job rescheduledJob = null;
 		try {
 			Job.getJobManager().beginRule(rule, null);
-			Job.getJobManager().currentJob().schedule();
+			rescheduledJob = Job.getJobManager().currentJob();
+			rescheduledJob.schedule();
 		} finally {
 			Job.getJobManager().endRule(rule);
 		}
-		Thread.sleep(250);
-		Job.getJobManager().removeJobChangeListener(a);
-		assertEquals("ThreadJob did not ignore reschedule", 0, count[0]);
+		rescheduledJob.join(TIMEOUT_IN_MILLIS, new NullProgressMonitor());
+		Job.getJobManager().removeJobChangeListener(runningThreadStoreListener);
+		assertThat("ThreadJob did not finish", rescheduledJob.getState(), is(Job.NONE));
+		assertThat("ThreadJob did not ignore reschedule", jobsStartedRunning,
+				not(hasItem(rescheduledJob)));
 	}
 
 	public void testRunThreadJobIsNotRescheduled() throws Exception {
-		final int[] count = new int[1];
-		JobChangeAdapter a = new JobChangeAdapter() {
+		Set<Job> jobsStartedRunning = Collections.synchronizedSet(new HashSet<>());
+		JobChangeAdapter runningThreadStoreListener = new JobChangeAdapter() {
 			@Override
-			public void running(org.eclipse.core.runtime.jobs.IJobChangeEvent event) {
-				count[0]++;
+			public void running(IJobChangeEvent event) {
+				jobsStartedRunning.add(event.getJob());
 			}
 		};
-		Job.getJobManager().addJobChangeListener(a);
+		Job.getJobManager().addJobChangeListener(runningThreadStoreListener);
 		IdentityRule rule = new IdentityRule();
+		Job scheduledJob = null;
 		try {
 			Job.getJobManager().beginRule(rule, null);
+			scheduledJob = Job.getJobManager().currentJob();
 		} finally {
 			Job.getJobManager().endRule(rule);
 		}
-		Thread.sleep(250);
-		Job.getJobManager().removeJobChangeListener(a);
-		assertEquals("ThreadJob did not ignore reschedule", 0, count[0]);
+		scheduledJob.join(TIMEOUT_IN_MILLIS, new NullProgressMonitor());
+		Job.getJobManager().removeJobChangeListener(runningThreadStoreListener);
+		assertThat("ThreadJob did not finish", scheduledJob.getState(), is(Job.NONE));
+		assertThat("ThreadJob was rescheduled", jobsStartedRunning, not(hasItem(scheduledJob)));
 	}
 
 	public void testRunNestedAcquireThreadIsNotRescheduled() throws Exception {
 		final PathRule rule = new PathRule(getName());
 		final PathRule subRule = new PathRule(getName() + "/subRule");
 
-		final int[] count = new int[1];
-
+		Set<Job> jobsStartedRunning = Collections.synchronizedSet(new HashSet<>());
+		JobChangeAdapter runningThreadStoreListener = new JobChangeAdapter() {
+			@Override
+			public void running(IJobChangeEvent event) {
+				jobsStartedRunning.add(event.getJob());
+			}
+		};
+		Job.getJobManager().addJobChangeListener(runningThreadStoreListener);
+		TestBarrier2 waitForThreadJob = new TestBarrier2();
+		AtomicReference<Job> scheduledJob = new AtomicReference<>();
 		final Job job = new Job(getName() + "acquire") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
 					Job.getJobManager().beginRule(subRule, null);
+					scheduledJob.set(Job.getJobManager().currentJob());
+					waitForThreadJob.setStatus(TestBarrier2.STATUS_DONE);
 				} finally {
 					Job.getJobManager().endRule(subRule);
 				}
@@ -686,21 +723,13 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 			}
 		};
 		job.setRule(rule);
-
-		JobChangeAdapter a = new JobChangeAdapter() {
-			@Override
-			public void running(org.eclipse.core.runtime.jobs.IJobChangeEvent event) {
-				if (event.getJob() == job) {
-					return;
-				}
-				count[0]++;
-			}
-		};
-		Job.getJobManager().addJobChangeListener(a);
 		job.schedule();
-		Thread.sleep(250);
-		Job.getJobManager().removeJobChangeListener(a);
-		assertEquals("ThreadJob did not ignore reschedule", 0, count[0]);
+		waitForThreadJob.waitForStatus(TestBarrier2.STATUS_DONE);
+		job.join(TIMEOUT_IN_MILLIS, new NullProgressMonitor());
+		scheduledJob.get().join(TIMEOUT_IN_MILLIS, new NullProgressMonitor());
+		Job.getJobManager().removeJobChangeListener(runningThreadStoreListener);
+		assertThat("Another nested job was created", job, is(scheduledJob.get()));
+		assertThat("Job did not finish", job.getState(), is(Job.NONE));
 	}
 
 }
