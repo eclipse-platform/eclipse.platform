@@ -417,30 +417,6 @@ class ThreadJob extends Job {
 		}
 	}
 
-	/**
-	 * Reset all of this job's fields so it can be reused.  Returns false if
-	 * reuse is not possible
-	 * 	@GuardedBy("JobManager.implicitJobs")
-	 */
-	boolean recycle() {
-		//don't recycle if still running for any reason
-		if (getState() != Job.NONE) {
-			return false;
-		}
-		//clear and reset all fields
-		acquireRule = isRunning = isBlocked = false;
-		realJob = null;
-		setRule(null);
-		setThread(null);
-		if (ruleStack.length != 2) {
-			ruleStack = new ISchedulingRule[2];
-		} else {
-			ruleStack[0] = ruleStack[1] = null;
-		}
-		top = -1;
-		return true;
-	}
-
 	@Override
 	public IStatus run(IProgressMonitor monitor) {
 		synchronized (this) {
