@@ -78,7 +78,8 @@ public class ProjectSnapshot extends ContainerSnapshot<IProject> {
 	}
 
 	@Override
-	public void createExistentResourceFromHandle(IProject projectHandle, IProgressMonitor monitor) throws CoreException {
+	public void createExistentResourceFromHandle(IProgressMonitor monitor) throws CoreException {
+		IProject projectHandle = createResourceHandle();
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 200);
 		if (projectHandle.exists()) {
 			return;

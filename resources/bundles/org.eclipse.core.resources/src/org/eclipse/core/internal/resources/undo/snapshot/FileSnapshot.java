@@ -94,8 +94,8 @@ public class FileSnapshot extends AbstractResourceSnapshot<IFile> {
 	}
 
 	@Override
-	public void recordStateFromHistory(IFile resource,
-			IProgressMonitor monitor) throws CoreException {
+	public void recordStateFromHistory(IProgressMonitor monitor) throws CoreException {
+		IFile resource = createResourceHandle();
 		Assert.isLegal(resource.getType() == IResource.FILE);
 		if (location != null) {
 			// file is linked, no need to record any history
@@ -131,7 +131,8 @@ public class FileSnapshot extends AbstractResourceSnapshot<IFile> {
 	}
 
 	@Override
-	public void createExistentResourceFromHandle(IFile fileHandle, IProgressMonitor mon) throws CoreException {
+	public void createExistentResourceFromHandle(IProgressMonitor mon) throws CoreException {
+		IFile fileHandle = createResourceHandle();
 		if (fileHandle.exists()) {
 			return;
 		}

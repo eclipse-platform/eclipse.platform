@@ -61,13 +61,11 @@ public interface IResourceSnapshot<T extends IResource> {
 	 * Given a resource handle, create an actual resource with the attributes of
 	 * the receiver resource description.
 	 *
-	 * @param resource
-	 *            the resource handle
 	 * @param monitor
 	 *            the progress monitor to be used when creating the resource
 	 * @throws CoreException if creation failed
 	 */
-	public void createExistentResourceFromHandle(T resource, IProgressMonitor monitor) throws CoreException;
+	public void createExistentResourceFromHandle(IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Return a boolean indicating whether this resource description has enough
@@ -82,13 +80,11 @@ public interface IResourceSnapshot<T extends IResource> {
 	 * Record the appropriate state of this resource description using
 	 * any available resource history.
 	 *
-	 * @param resource
-	 *            the resource whose state is to be recorded.
 	 * @param monitor
 	 *            the progress monitor to be used
 	 * @throws CoreException in case of error
 	 */
-	public void recordStateFromHistory(T resource, IProgressMonitor monitor) throws CoreException;
+	public void recordStateFromHistory(IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Return a boolean indicating whether this description represents an

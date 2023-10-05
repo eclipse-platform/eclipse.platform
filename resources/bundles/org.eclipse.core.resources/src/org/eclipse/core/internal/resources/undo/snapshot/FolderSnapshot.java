@@ -16,7 +16,6 @@
 package org.eclipse.core.internal.resources.undo.snapshot;
 
 import java.net.URI;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceFilterDescription;
@@ -74,7 +73,8 @@ public class FolderSnapshot extends ContainerSnapshot<IFolder> {
 	}
 
 	@Override
-	public void createExistentResourceFromHandle(final IFolder folderHandle, IProgressMonitor mon) throws CoreException {
+	public void createExistentResourceFromHandle(IProgressMonitor mon) throws CoreException {
+		IFolder folderHandle = createResourceHandle();
 		if (folderHandle.exists()) {
 			return;
 		}
