@@ -19,9 +19,7 @@ import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceFilterDescription;
@@ -183,20 +181,16 @@ public abstract class ContainerSnapshot<T extends IContainer> extends AbstractRe
 	}
 
 	@Override
-	public void recordStateFromHistory(T resource, IProgressMonitor mon) throws CoreException {
+	public void recordStateFromHistory(IProgressMonitor mon) throws CoreException {
 		if (members != null) {
 			SubMonitor subMonitor = SubMonitor.convert(mon, ResourceSnapshotMessages.FolderDescription_SavingUndoInfoProgress,
 					members.size());
 			for (IResourceSnapshot<? extends IResource> member : members) {
 				SubMonitor iterationMonitor = subMonitor.split(1);
 				if (member instanceof FileSnapshot fileSnapshot) {
-					IPath path = resource.getFullPath().append(fileSnapshot.name);
-					IFile fileHandle = resource.getWorkspace().getRoot().getFile(path);
-					fileSnapshot.recordStateFromHistory(fileHandle, iterationMonitor);
+					fileSnapshot.recordStateFromHistory(iterationMonitor);
 				} else if (member instanceof FolderSnapshot folderSnapshot) {
-					IPath path = resource.getFullPath().append(folderSnapshot.name);
-					IFolder folderHandle = resource.getWorkspace().getRoot().getFolder(path);
-					folderSnapshot.recordStateFromHistory(folderHandle, iterationMonitor);
+					folderSnapshot.recordStateFromHistory(iterationMonitor);
 				}
 			}
 		}

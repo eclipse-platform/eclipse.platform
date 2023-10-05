@@ -83,7 +83,7 @@ abstract class AbstractResourceSnapshot<T extends IResource> implements IResourc
 	@Override
 	public T createResource(IProgressMonitor monitor) throws CoreException {
 		T resource = createResourceHandle();
-		createExistentResourceFromHandle(resource, monitor);
+		createExistentResourceFromHandle(monitor);
 		restoreResourceAttributes(resource);
 		return resource;
 	}
