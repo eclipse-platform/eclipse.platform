@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2018 IBM Corporation and others.
+ * Copyright (c) 2006, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Latha Patil (ETAS GmbH) - Issue #504 Show number of differences in the Compare editor
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
@@ -18,21 +19,46 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.compare.*;
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareViewerPane;
+import org.eclipse.compare.ICompareFilter;
+import org.eclipse.compare.IEditableContent;
+import org.eclipse.compare.IStreamContentAccessor;
+import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.LabelContributionItem;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
-import org.eclipse.compare.internal.*;
+import org.eclipse.compare.internal.ChangeCompareFilterPropertyAction;
+import org.eclipse.compare.internal.IMergeViewerTestAdapter;
+import org.eclipse.compare.internal.MergeViewerContentProvider;
+import org.eclipse.compare.internal.Utilities;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.text.*;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITypedRegion;
+import org.eclipse.jface.text.Region;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.junit.Test;
 
@@ -480,6 +506,59 @@ public class TextMergeViewerTest  {
 		assertNotNull(rightDoc.getDocumentPartitioner());
 	}
 
+	@Test
+	public void testToolbarLabelContribution() throws Exception {
+
+		IPath path = IPath.fromOSString("labelContributionData/" + "file1.java");
+		URL url = new URL(CompareTestPlugin.getDefault().getBundle().getEntry("/"), path.toString());
+
+		IPath path1= IPath.fromOSString("labelContributionData/" + "file2.java");
+		 URL url1 = new URL(CompareTestPlugin.getDefault().getBundle().getEntry("/"), path1.toString());
+
+		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
+		DiffNode testNode = new DiffNode(parentNode, Differencer.CHANGE, null, new EditableTestElement(url.openStream().readAllBytes()), new EditableTestElement(url1.openStream().readAllBytes()));
+
+		runInDialogWithToolbarDiffLabel(testNode);
+	}
+
+	CompareViewerPane fCompareViewerPane;
+	private void runInDialogWithToolbarDiffLabel(DiffNode testNode) throws Exception {
+
+		CompareConfiguration compareConfig = new CompareConfiguration();
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		Dialog dialog = new Dialog(shell) {
+			@Override
+			protected Control createDialogArea(Composite parent) {
+				Composite composite = (Composite) super.createDialogArea(parent);
+				 fCompareViewerPane = new CompareViewerPane(composite, SWT.BORDER | SWT.FLAT);
+				 composite.getChildren();
+				viewer = new TestMergeViewer(fCompareViewerPane,  compareConfig);
+				return composite;
+			}
+		};
+		dialog.setBlockOnOpen(false);
+		dialog.open();
+		viewer.setInput(testNode);
+		fCompareViewerPane.setContent(viewer.getControl());
+		ToolBarManager toolbarManager = CompareViewerPane.getToolBarManager(fCompareViewerPane);
+
+		processQueuedEvents();
+
+			IContributionItem contributionItem = toolbarManager.find("DiffCount");
+				assertNotNull(contributionItem);
+				LabelContributionItem labelContributionItem=(LabelContributionItem) contributionItem;
+				assertTrue(labelContributionItem.getToolbarLabel().getText().equals("7 Differences"));
+
+		dialog.close();
+		viewer = null;
+	}
+
+	private void processQueuedEvents() {
+		while (Display.getCurrent().readAndDispatch()) {
+					// Process all the events in the queue
+		}
+
+	}
 
 	private void runInDialogWithPartioner(Object input, Runnable runnable, final CompareConfiguration cc) throws Exception {
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
