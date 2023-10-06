@@ -10,10 +10,11 @@
  * 
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Sudhindra Kulkarni (ETAS GmbH) - Issue 527
  *******************************************************************************/
 package org.eclipse.ant.internal.ui.launchConfigurations;
 
-public class AntLaunchShortcutWithDialog extends AntLaunchShortcut {
+public class AntLaunchShortcutWithDialog extends AntLaunchShortcutCommon {
 
 	/**
 	 * Creates a new Ant launch shortcut that will open the launch configuration dialog.
