@@ -70,8 +70,8 @@ public class File extends Resource implements IFile {
 			try {
 				workspace.prepareOperation(rule, newChild);
 				ResourceInfo info = getResourceInfo(false, false);
-				checkAccessible(getFlags(info));
 				workspace.beginOperation(true);
+				checkAccessible(getFlags(info));
 				IFileInfo fileInfo = getStore().fetchInfo();
 				internalSetContents(content, fileInfo, updateFlags, true, subMonitor.newChild(99));
 			} catch (OperationCanceledException e) {
@@ -354,8 +354,8 @@ public class File extends Resource implements IFile {
 			try {
 				workspace.prepareOperation(rule, newChild);
 				ResourceInfo info = getResourceInfo(false, false);
-				checkAccessible(getFlags(info));
 				workspace.beginOperation(true);
+				checkAccessible(getFlags(info));
 				IFileInfo fileInfo = getStore().fetchInfo();
 				internalSetContents(content, fileInfo, updateFlags, false, subMonitor.newChild(99));
 			} catch (OperationCanceledException e) {
