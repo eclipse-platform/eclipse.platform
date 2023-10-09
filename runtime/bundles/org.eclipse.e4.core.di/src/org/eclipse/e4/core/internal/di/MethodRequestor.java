@@ -17,6 +17,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -54,6 +55,12 @@ public class MethodRequestor extends Requestor<Method> {
 			primarySupplier.pauseRecording();
 			pausedRecording = true;
 		}
+		ThreadLocal<JfrDiEvent> jfrDIEvent = JfrDiEvent.EVENT;
+		if (jfrDIEvent.get().isEnabled()) {
+			jfrDIEvent.get().target = this.toString();
+			jfrDIEvent.get().arguments = Arrays.toString(actualArgs);
+			jfrDIEvent.get().begin();
+		}
 		try {
 			result = location.invoke(userObject, actualArgs);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -70,6 +77,10 @@ public class MethodRequestor extends Requestor<Method> {
 			if (pausedRecording)
 				primarySupplier.resumeRecording();
 			clearResolvedArgs();
+			if (jfrDIEvent.get().isEnabled()) {
+				jfrDIEvent.get().end();
+				jfrDIEvent.get().commit();
+			}
 		}
 		return result;
 	}
