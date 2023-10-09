@@ -350,6 +350,12 @@
                             });
                         } else {
                             var deleteButton = createButton(scopesPage, '<%js:scopes_scope_delete_button_label%>', '<%js:scopes_scope_delete_button_description%>', function() {
+
+                                // if the scope to be deleted is set, unset it first
+                                if (searchScope.level == SEARCH_SCOPE_LEVEL_CUSTOM && searchScope.customIndex == scopeNr) {
+                                    setSearchScope([SEARCH_SCOPE_LEVEL_ALL]);
+                                }
+
                                 doScopesOperation('remove&workingSet=' + encodeURIComponent(scopeName));
                             });
                             deleteButton.className = 'b br';
