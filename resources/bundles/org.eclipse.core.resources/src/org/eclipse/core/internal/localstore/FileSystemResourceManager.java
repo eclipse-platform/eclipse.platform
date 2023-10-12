@@ -1148,11 +1148,41 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	}
 
 	/**
-	 * The target must exist in the workspace. The content InputStream is
-	 * closed even if the method fails. If the force flag is false we only write
-	 * the file if it does not exist or if it is already local and the timestamp
-	 * has NOT changed since last synchronization, otherwise a CoreException
-	 * is thrown.
+	 * The target must exist in the workspace and must remain existing throughout
+	 * the execution of this method. The {@code content} {@link InputStream} is
+	 * closed even if the method fails. If the {@link IResource#FORCE} flag is not
+	 * set in {@code updateFlags}, we only write the file if it does not exist or if
+	 * it is already local and the timestamp has <b>not</b> changed since last
+	 * synchronization, otherwise a {@link CoreException} is thrown.
+	 *
+	 * @param target      the file to write to
+	 * @param content     a stream with the contents to write to {@code target}
+	 * @param fileInfo    the info object for the {@code target} file
+	 * @param updateFlags update flags as defined in {@link IResource}
+	 * @param append      whether the {@code content} stream shall be appended to
+	 *                    the existing contents of {@code target}
+	 * @param monitor     the progress monitor to report to
+	 *
+	 * @throws CoreException in any of the following cases:
+	 *                       <ul>
+	 *                       <li>the given {@code target} does not exist or was
+	 *                       removed from the workspace concurrently
+	 *                       <li>writing the stream to {@code target} fails
+	 *                       <li>the {@link IResource#FORCE} flag is set in
+	 *                       {@code updateFlags}, {@code append} is {@code true},
+	 *                       and the file is not local or does not exist</li>
+	 *                       <li>the {@link IResource#FORCE} flag is not set in
+	 *                       {@code updateFlags} and
+	 *                       <ul>
+	 *                       <li>{@code target} is local and has been modified since
+	 *                       last synchronization</li>
+	 *                       <li>{@code target} is not local but exists or
+	 *                       {@code append} is {code true}</li>
+	 *                       </ul>
+	 *                       </ul>
+	 *
+	 * @see IResource#FORCE
+	 * @see IResource#KEEP_HISTORY
 	 */
 	public void write(IFile target, InputStream content, IFileInfo fileInfo, int updateFlags, boolean append, IProgressMonitor monitor) throws CoreException {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 4);
