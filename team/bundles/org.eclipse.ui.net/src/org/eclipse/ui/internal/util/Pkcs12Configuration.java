@@ -13,21 +13,21 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.util;
 
-public class Pkcs11Configuration implements PkcsConfigurationIfc {
+public class Pkcs12Configuration implements PkcsConfigurationIfc {
 
 	public String implementationName;
 	public String configurationFilename;
 	public String configurationLocationDir;
 	public String libraryFilename;
 	public String libraryLocationDir;
-	public String pkcs11Vendor;
+	public String pkcs12Vendor;
 
 	public String getPkcs11Vendor() {
-		return pkcs11Vendor;
+		return pkcs12Vendor;
 	}
 
-	public void setPkcs11Vendor(String pkcs11Vendor) {
-		this.pkcs11Vendor = pkcs11Vendor;
+	public void setPkcs12Vendor(String pkcs12Vendor) {
+		this.pkcs12Vendor = pkcs12Vendor;
 	}
 
 	public void setImplementationName(String implementationName) {
