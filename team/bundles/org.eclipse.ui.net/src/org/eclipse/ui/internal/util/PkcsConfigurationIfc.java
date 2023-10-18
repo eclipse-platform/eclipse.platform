@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.util;
 
-public interface Pkcs11ConfigurationIfc {
+public interface PkcsConfigurationIfc {
 
 	public String getImplementationName();
 
