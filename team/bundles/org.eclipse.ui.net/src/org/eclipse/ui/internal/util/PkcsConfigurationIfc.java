@@ -27,4 +27,8 @@ public interface PkcsConfigurationIfc {
 
 	public String getCertPassPhrase();
 
+	public String getTrustStoreLocationDir();
+
+	public String getTrustStorePassPhrase();
+
 }
