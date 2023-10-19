@@ -22,7 +22,7 @@ public class Pkcs12Configuration implements PkcsConfigurationIfc {
 	public String libraryLocationDir;
 	public String pkcs12Vendor;
 
-	public String getPkcs11Vendor() {
+	public String getPkcs12Vendor() {
 		return pkcs12Vendor;
 	}
 
