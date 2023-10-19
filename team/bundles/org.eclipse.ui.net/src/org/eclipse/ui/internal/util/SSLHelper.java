@@ -15,28 +15,28 @@ import javax.net.ssl.TrustManagerFactory;
 /**
  * This class can be used to create an SSLSocketFactory with provided keystore and trustore.
  * You might use this class in the following way:
- *
+ * 
  * KeyStore keystore = KeyStoreUtil.getKeyStore("/path/to/cert/bob.p12", "password", KeyStoreFormat.PKCS12)
  * KeyStore truststore = KeyStoreUtil.getKeyStore("/path/to/trustcert/trust.jks", null, KeyStoreFormat.JKS)
  * SSLSocketFactory sslSocketFactory = getSSLSocketFactory(getKeyManagers(keystore, "password", getTrustManagers(truststore))
  *
  */
 public abstract class SSLHelper {
-
+	
 	public final static String X509_ALGORITHM = "SunX509"; //$NON-NLS-1$
 	public final static String SSL_PROTOCOL = "SSL"; //$NON-NLS-1$
-
+	
 
 	public static SSLSocketFactory getSSLSocketFactory(KeyManager[] keyManagers, TrustManager[] trustManagers) {
 		return getSSLContext(keyManagers, trustManagers).getSocketFactory();
 	}
-
+	
 	private static SSLContext getSSLContext(KeyManager[] keyManagers, TrustManager[] trustManagers) {
 		SSLContext sslContext = null;
 		try {
 			sslContext = SSLContext.getInstance(SSL_PROTOCOL);
-
-
+			
+			
 			sslContext.init(keyManagers, trustManagers, null);
 			return sslContext;
 		} catch (KeyManagementException e) {
@@ -46,22 +46,22 @@ public abstract class SSLHelper {
 		}
 		return null;
 	}
-
+	
 	public static TrustManager[] getTrustManagers(KeyStore trustStore) {
-
+		
 		TrustManagerFactory trustManagerFactory;
 		try {
-
+			
 			trustManagerFactory = TrustManagerFactory.getInstance( X509_ALGORITHM );
 			trustManagerFactory.init( trustStore );
 			return trustManagerFactory.getTrustManagers();
-
+		
 		} catch (NoSuchAlgorithmException e) {
 			LogUtil.logError(e.getMessage(), e);
 		} catch (KeyStoreException e) {
 			LogUtil.logError(e.getMessage(), e);
 		}
-
+		
 		return null;
 	}
 

@@ -97,8 +97,9 @@ public class TrustStoreSecureStorage extends AbstractUIPlugin {
 	 */
 	public boolean clearSavedTrustStore(){
 		boolean cleared = false;
-		node.clear();
+
 		try {
+			node.clear();
 			if ("none".equals(node.get(JKS_LOCATION, "none")) && //$NON-NLS-1$ //$NON-NLS-2$
 					"none".equals(node.get(JKS_PASSPHRASE, "none"))) { //$NON-NLS-1$ //$NON-NLS-2$
 				cleared = true;
