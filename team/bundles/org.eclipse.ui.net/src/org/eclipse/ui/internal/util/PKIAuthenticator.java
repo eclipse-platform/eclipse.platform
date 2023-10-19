@@ -144,17 +144,7 @@ public class PKIAuthenticator extends java.net.Authenticator {
         return keypair.getPublic();
     }
 
-    /**
-     * Returns true if the specified certificate is a digital signature
-     * certificate .
-     *
-     * @param certificate The Certificate to be tested for usage.
-     * @return True if the certificate is a digital signature certificate,
-     *         false otherwise.
-     */
-    private boolean isDigitalSignatureCertificate( X509Certificate certificate) {
-        return (certificate.getKeyUsage()[0]);
-    }
+
 
     /**
 	 * Extracts and returns the user's SID from the DN of the the specified
