@@ -86,4 +86,16 @@ public class Pkcs12Configuration implements PkcsConfigurationIfc {
 		return null;
 	}
 
+	@Override
+	public String getTrustStoreLocationDir() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getTrustStorePassPhrase() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
