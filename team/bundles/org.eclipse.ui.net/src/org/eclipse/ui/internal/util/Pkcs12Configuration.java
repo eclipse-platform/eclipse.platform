@@ -80,4 +80,10 @@ public class Pkcs12Configuration implements PkcsConfigurationIfc {
 		return null;
 	}
 
+	@Override
+	public String getCertPassPhrase() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

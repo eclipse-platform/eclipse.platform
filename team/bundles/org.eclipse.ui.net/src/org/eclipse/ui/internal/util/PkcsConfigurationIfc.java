@@ -25,4 +25,6 @@ public interface PkcsConfigurationIfc {
 
 	public String getLibraryLocationDir();
 
+	public String getCertPassPhrase();
+
 }
