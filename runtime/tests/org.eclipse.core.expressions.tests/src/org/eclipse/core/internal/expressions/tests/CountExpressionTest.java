@@ -13,10 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.internal.expressions.tests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
+import org.junit.Test;
 
 import org.eclipse.core.expressions.CountExpression;
 import org.eclipse.core.expressions.EvaluationContext;
@@ -24,14 +26,7 @@ import org.eclipse.core.expressions.EvaluationResult;
 
 import org.eclipse.core.runtime.CoreException;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-public class CountExpressionTest extends TestCase {
-	public static Test suite() {
-		return new TestSuite(CountExpressionTest.class);
-	}
+public class CountExpressionTest {
 
 	private static EvaluationContext evaluationContext(int size) {
 		List<Integer> variable = new ArrayList<>(size + 1);
@@ -40,56 +35,64 @@ public class CountExpressionTest extends TestCase {
 		return new EvaluationContext(null, variable);
 	}
 
+	@Test
 	public void testNoneExpression() throws CoreException {
 		CountExpression e = new CountExpression("!"); //$NON-NLS-1$
-		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(0)));
-		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(1)));
+		assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(0)));
+		assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(1)));
 	}
 
+	@Test
 	public void testNoneOrOneExpression() throws CoreException {
 		CountExpression e = new CountExpression("?"); //$NON-NLS-1$
-		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(0)));
-		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(1)));
-		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(2)));
+		assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(0)));
+		assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(1)));
+		assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(2)));
 	}
 
+	@Test
 	public void testExactExpression() throws CoreException {
 		CountExpression e = new CountExpression("5"); //$NON-NLS-1$
-		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(5)));
-		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(7)));
+		assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(5)));
+		assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(7)));
 	}
 
+	@Test
 	public void testAnyNumberExpression() throws CoreException {
 		CountExpression e = new CountExpression("*"); //$NON-NLS-1$
-		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(5)));
+		assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(5)));
 	}
 
+	@Test
 	public void testLessThanOrEqualToExpression() throws CoreException {
 		CountExpression e = new CountExpression("-3]"); //$NON-NLS-1$
-		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(1)));
-		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(3)));
-		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(4)));
+		assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(1)));
+		assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(3)));
+		assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(4)));
 	}
 
+	@Test
 	public void testLessThanExpression() throws CoreException {
 		CountExpression e = new CountExpression("-3)"); //$NON-NLS-1$
-		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(1)));
-		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(3)));
-		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(4)));
+		assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(1)));
+		assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(3)));
+		assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(4)));
 	}
 
+	@Test
 	public void testGreaterThanOrEqualToExpression() throws CoreException {
 		CountExpression e = new CountExpression("[3-"); //$NON-NLS-1$
-		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(5)));
-		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(3)));
-		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(2)));
+		assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(5)));
+		assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(3)));
+		assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(2)));
 	}
 
+	@Test
 	public void testGreaterThanExpression() throws CoreException {
 		CountExpression e = new CountExpression("(3-"); //$NON-NLS-1$
-		Assert.assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(5)));
-		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(3)));
-		Assert.assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(2)));
+		assertEquals(EvaluationResult.TRUE, e.evaluate(evaluationContext(5)));
+		assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(3)));
+		assertEquals(EvaluationResult.FALSE, e.evaluate(evaluationContext(2)));
 	}
 
 }
