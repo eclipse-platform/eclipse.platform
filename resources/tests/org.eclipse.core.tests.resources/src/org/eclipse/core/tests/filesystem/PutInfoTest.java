@@ -13,14 +13,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
-import org.eclipse.core.filesystem.*;
-import org.eclipse.core.runtime.CoreException;
+import static org.junit.Assert.assertEquals;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.junit.Test;
 
 /**
  * Black box tests for {@link IFileStore#putInfo(IFileInfo, int, IProgressMonitor)}
  */
 public class PutInfoTest extends FileSystemTest {
-	public void testSetFileLastModified() {
+	@Test
+	public void testSetFileLastModified() throws Exception {
 		IFileStore file = baseStore.getChild("file");
 		ensureExists(file, false);
 		IFileInfo info = file.fetchInfo();
@@ -28,26 +33,19 @@ public class PutInfoTest extends FileSystemTest {
 		long newLastModified = oldLastModified + 100;
 		info = EFS.createFileInfo();
 		info.setLastModified(newLastModified);
-		try {
-			file.putInfo(info, EFS.SET_LAST_MODIFIED, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		file.putInfo(info, EFS.SET_LAST_MODIFIED, getMonitor());
 		info = file.fetchInfo();
 		assertEquals("1.0", newLastModified, info.getLastModified());
 		assertEquals("1.1", file.getName(), info.getName());
 	}
 
-	public void testSetReadOnly() {
+	@Test
+	public void testSetReadOnly() throws Exception {
 		IFileStore file = baseStore.getChild("file");
 		ensureExists(file, false);
 		IFileInfo info = EFS.createFileInfo();
 		info.setAttribute(EFS.ATTRIBUTE_READ_ONLY, true);
-		try {
-			file.putInfo(info, EFS.SET_ATTRIBUTES, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		file.putInfo(info, EFS.SET_ATTRIBUTES, getMonitor());
 		info = file.fetchInfo();
 		assertEquals("1.0", true, info.getAttribute(EFS.ATTRIBUTE_READ_ONLY));
 		assertEquals("1.1", file.getName(), info.getName());
