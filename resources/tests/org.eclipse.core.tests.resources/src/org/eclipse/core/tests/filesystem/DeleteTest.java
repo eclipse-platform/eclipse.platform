@@ -13,42 +13,40 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.runtime.CoreException;
+import org.junit.Test;
 
 /**
  * Black box testing of {@link IFileStore#delete(int, org.eclipse.core.runtime.IProgressMonitor)}.
  */
 public class DeleteTest extends FileSystemTest {
 
-	public void testDeleteFile() {
+	@Test
+	public void testDeleteFile() throws Exception {
 		IFileStore file = baseStore.getChild("child");
 		ensureExists(file, false);
 
 		assertTrue("1.0", file.fetchInfo().exists());
-		try {
-			file.delete(EFS.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		file.delete(EFS.NONE, getMonitor());
 		assertTrue("1.1", !file.fetchInfo().exists());
 	}
 
-	public void testDeleteDirectory() {
+	@Test
+	public void testDeleteDirectory() throws Exception {
 		IFileStore dir = baseStore.getChild("child");
 		ensureExists(dir, true);
 
 		assertTrue("1.0", dir.fetchInfo().exists());
-		try {
-			dir.delete(EFS.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		dir.delete(EFS.NONE, getMonitor());
 		assertTrue("1.1", !dir.fetchInfo().exists());
 	}
 
+	@Test
 	public void testDeleteReadOnlyFile() throws Exception {
 		ensureExists(localFileBaseStore, true);
 		IFileStore file = localFileBaseStore.getChild("child");

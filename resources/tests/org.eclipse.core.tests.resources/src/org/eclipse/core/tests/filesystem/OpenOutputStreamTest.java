@@ -13,12 +13,22 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
-import java.io.*;
-import org.eclipse.core.filesystem.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Test;
 
 public class OpenOutputStreamTest extends FileSystemTest {
-	public void testAppend() {
+	@Test
+	public void testAppend() throws Exception {
 		IFileStore file = baseStore.getChild("file");
 		ensureDoesNotExist(file);
 
@@ -28,40 +38,26 @@ public class OpenOutputStreamTest extends FileSystemTest {
 
 		try (OutputStream out = file.openOutputStream(EFS.APPEND, getMonitor())){
 			out.write(BYTE_ONE);
-		} catch (CoreException e) {
-			fail("1.99", e);
-		} catch (IOException e) {
-			fail("2.99", e);
 		}
 		//append some more content
 		try (OutputStream out = file.openOutputStream(EFS.APPEND, getMonitor())) {
 			out.write(BYTE_TWO);
-		} catch (CoreException e) {
-			fail("3.99", e);
-		} catch (IOException e) {
-			fail("4.99", e);
 		}
 		//file should contain two bytes
 		try (InputStream in = file.openInputStream(EFS.NONE, getMonitor())) {
 			assertEquals("1.0", BYTE_ONE, in.read());
 			assertEquals("1.1", BYTE_TWO, in.read());
 			assertEquals("1.2", EOF, in.read());
-		} catch (CoreException | IOException e) {
-			fail("4.99", e);
 		}
-
 	}
 
-	public void testParentExists() {
+	@Test
+	public void testParentExists() throws Exception {
 		IFileStore file = baseStore.getChild("file");
 		ensureDoesNotExist(file);
 
 		try (OutputStream out = file.openOutputStream(EFS.NONE, getMonitor())) {
 			out.write(1);
-		} catch (CoreException e) {
-			fail("1.99", e);
-		} catch (IOException e) {
-			fail("2.99", e);
 		}
 		final IFileInfo info = file.fetchInfo();
 		assertExists("1.0", file);
@@ -69,17 +65,16 @@ public class OpenOutputStreamTest extends FileSystemTest {
 		assertEquals("1.2", file.getName(), info.getName());
 	}
 
-	public void testParentNotExists() {
+	@Test
+	public void testParentNotExists() throws CoreException {
 		IFileStore dir = baseStore.getChild("dir");
 		IFileStore file = dir.getChild("file");
 		ensureDoesNotExist(dir);
 
-		try {
+		assertThrows(CoreException.class, () -> {
 			file.openOutputStream(EFS.NONE, getMonitor());
 			fail("1.0");
-		} catch (CoreException e) {
-			//should fail
-		}
+		});
 		final IFileInfo info = file.fetchInfo();
 		assertTrue("1.1", !info.exists());
 		assertTrue("1.2", !info.isDirectory());
