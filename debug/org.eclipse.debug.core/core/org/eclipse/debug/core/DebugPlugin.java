@@ -739,7 +739,7 @@ public class DebugPlugin extends Plugin {
 
 			@Override
 			public IWorkspace addingService(ServiceReference<IWorkspace> reference) {
-				IWorkspace workspace = context.getService(reference);
+				IWorkspace workspace = super.addingService(reference);
 				try {
 					workspace.addSaveParticipant(getUniqueIdentifier(), new ISaveParticipant() {
 						@Override
