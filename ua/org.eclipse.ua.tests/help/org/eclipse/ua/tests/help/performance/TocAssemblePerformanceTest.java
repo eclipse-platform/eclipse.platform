@@ -14,6 +14,8 @@
 
 package org.eclipse.ua.tests.help.performance;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +28,12 @@ import org.eclipse.help.internal.toc.TocContribution;
 import org.eclipse.help.internal.toc.TocFile;
 import org.eclipse.help.internal.toc.TocFileParser;
 import org.eclipse.test.performance.Dimension;
-import org.eclipse.test.performance.PerformanceTestCase;
+import org.eclipse.test.performance.PerformanceTestCaseJunit5;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
 
-public class TocAssemblePerformanceTest extends PerformanceTestCase {
+public class TocAssemblePerformanceTest extends PerformanceTestCaseJunit5 {
 
 	private TocContribution parse(TocFileParser parser, String tocFile)
 			throws IOException, SAXException, ParserConfigurationException {
@@ -64,6 +67,7 @@ public class TocAssemblePerformanceTest extends PerformanceTestCase {
 		return result;
 	}
 
+	@Test
 	public void testTocAssemble() throws Exception {
 		tagAsSummary("Assemble TOC", Dimension.ELAPSED_PROCESS);
 

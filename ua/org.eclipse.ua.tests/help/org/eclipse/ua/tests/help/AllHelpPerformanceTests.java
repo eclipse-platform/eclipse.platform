@@ -16,23 +16,22 @@ package org.eclipse.ua.tests.help;
 import org.eclipse.ua.tests.help.performance.BuildHtmlSearchIndex;
 import org.eclipse.ua.tests.help.performance.HelpServerTest;
 import org.eclipse.ua.tests.help.performance.IndexAssemblePerformanceTest;
+import org.eclipse.ua.tests.help.performance.LowIterationHelpServerTest;
 import org.eclipse.ua.tests.help.performance.TocAssemblePerformanceTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests help performance (automated).
  */
-@RunWith(Suite.class)
-@SuiteClasses({ TocAssemblePerformanceTest.class, IndexAssemblePerformanceTest.class, BuildHtmlSearchIndex.class,
-		HelpServerTest.class })
+@Suite
+@SelectClasses({ TocAssemblePerformanceTest.class,
+	IndexAssemblePerformanceTest.class,
+	LowIterationHelpServerTest.class,
+	BuildHtmlSearchIndex.class,
+	HelpServerTest.class,
+	// OpenHelpTest.class // Disabled due to inability to get reliable results. Browser/SWT changes in timing of listener events no longer consistent in 3.3.
+})
 public class AllHelpPerformanceTests {
 
-	/*
-	 * Disabled due to inability to get reliable results. Browser/SWT changes in
-	 * timing of listener events no longer consistent in 3.3.
-	 */
-
-	// addTest(OpenHelpTest.suite());
 }

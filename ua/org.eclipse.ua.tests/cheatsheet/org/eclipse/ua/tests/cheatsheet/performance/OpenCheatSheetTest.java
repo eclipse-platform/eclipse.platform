@@ -15,22 +15,27 @@ package org.eclipse.ua.tests.cheatsheet.performance;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.test.performance.Dimension;
-import org.eclipse.test.performance.PerformanceTestCase;
+import org.eclipse.test.performance.PerformanceTestCaseJunit5;
 import org.eclipse.ua.tests.intro.performance.OpenIntroTest;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.cheatsheets.OpenCheatSheetAction;
 import org.eclipse.ui.internal.cheatsheets.ICheatSheetResource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
-public class OpenCheatSheetTest extends PerformanceTestCase {
+public class OpenCheatSheetTest extends PerformanceTestCaseJunit5 {
 
+	@BeforeEach
 	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	public void setUp(TestInfo testInfo) throws Exception {
+		super.setUp(testInfo);
 		OpenIntroTest.closeIntro();
 	}
 
+	@Test
 	public void testOpenSimpleCheatSheet() throws Exception {
 		tagAsSummary("Open simple cheat sheet", Dimension.ELAPSED_PROCESS);
 
@@ -52,6 +57,7 @@ public class OpenCheatSheetTest extends PerformanceTestCase {
 		assertPerformance();
 	}
 
+	@Test
 	public void testOpenCompositeCheatSheet() throws Exception {
 		tagAsSummary("Open composite cheat sheet", Dimension.ELAPSED_PROCESS);
 
