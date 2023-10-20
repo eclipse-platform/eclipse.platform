@@ -739,7 +739,11 @@ public class DebugPlugin extends Plugin {
 
 			@Override
 			public IWorkspace addingService(ServiceReference<IWorkspace> reference) {
-				IWorkspace workspace = super.addingService(reference);
+				IWorkspace workspace = context.getService(reference);
+				if (workspace == null) {
+					logMessage("Could not add save participant as IWorkspace service is unavailable", null); //$NON-NLS-1$
+					return null;
+				}
 				try {
 					workspace.addSaveParticipant(getUniqueIdentifier(), new ISaveParticipant() {
 						@Override
@@ -764,6 +768,8 @@ public class DebugPlugin extends Plugin {
 					});
 				} catch (CoreException e) {
 					log(e.getStatus());
+					context.ungetService(reference);
+					return null;
 				}
 				return workspace;
 			}
@@ -771,7 +777,7 @@ public class DebugPlugin extends Plugin {
 			@Override
 			public void removedService(ServiceReference<IWorkspace> reference, IWorkspace service) {
 				service.removeSaveParticipant(getUniqueIdentifier());
-				super.removedService(reference, service);
+				context.ungetService(reference);
 			}
 
 		};
