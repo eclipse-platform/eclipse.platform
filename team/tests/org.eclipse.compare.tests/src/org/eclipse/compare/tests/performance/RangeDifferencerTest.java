@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.compare.tests.performance;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
 import org.eclipse.compare.internal.DocLineComparator;
 import org.eclipse.compare.rangedifferencer.RangeDifference;
@@ -21,16 +23,13 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.test.performance.Dimension;
-import org.eclipse.test.performance.PerformanceTestCase;
+import org.eclipse.test.performance.PerformanceTestCaseJunit5;
+import org.junit.jupiter.api.Test;
 
-public class RangeDifferencerTest extends PerformanceTestCase {
+public class RangeDifferencerTest extends PerformanceTestCaseJunit5 {
 
 
 	// static private final String EXPLANATION = "Performance decrease caused by changes in the compare framework, see bug 210688";
-
-	public RangeDifferencerTest(String name) {
-		super(name);
-	}
 
 	/*
 	 * Creates document with 5000 lines.
@@ -62,6 +61,7 @@ public class RangeDifferencerTest extends PerformanceTestCase {
 		return new Document(sb.toString());
 	}
 
+	@Test
 	public void testLargeDocument() {
 
 		tagAsGlobalSummary("3-way compare, 5000 lines", Dimension.ELAPSED_PROCESS); //$NON-NLS-1$
