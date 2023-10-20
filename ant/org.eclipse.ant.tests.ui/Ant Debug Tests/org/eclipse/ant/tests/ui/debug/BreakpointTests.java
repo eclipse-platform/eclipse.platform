@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,20 +31,19 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
+import org.junit.Test;
 
 /**
  * Tests Ant breakpoints.
  */
 public class BreakpointTests extends AbstractAntDebugTest {
 
-	public BreakpointTests(String name) {
-		super(name);
-	}
-
+	@Test
 	public void testDeferredBreakpoints() throws Exception {
 		deferredBreakpoints(false);
 	}
 
+	@Test
 	public void testDeferredBreakpointsSepVM() throws Exception {
 		deferredBreakpoints(true);
 	}
@@ -80,10 +83,12 @@ public class BreakpointTests extends AbstractAntDebugTest {
 		}
 	}
 
+	@Test
 	public void testDisabledBreakpoint() throws Exception {
 		disabledBreakpoint(false);
 	}
 
+	@Test
 	public void testDisabledBreakpointSepVM() throws Exception {
 		disabledBreakpoint(true);
 	}
@@ -102,10 +107,12 @@ public class BreakpointTests extends AbstractAntDebugTest {
 		}
 	}
 
+	@Test
 	public void testEnableDisableBreakpoint() throws Exception {
 		enableDisableBreapoint(false);
 	}
 
+	@Test
 	public void testEnableDisableBreakpointSepVM() throws Exception {
 		enableDisableBreapoint(true);
 	}
@@ -141,10 +148,12 @@ public class BreakpointTests extends AbstractAntDebugTest {
 		wait(1000);
 	}
 
+	@Test
 	public void testSkipLineBreakpoint() throws Exception {
 		skipLineBreakpoint(false);
 	}
 
+	@Test
 	public void testSkipLineBreakpointSepVM() throws Exception {
 		skipLineBreakpoint(true);
 	}
@@ -170,26 +179,32 @@ public class BreakpointTests extends AbstractAntDebugTest {
 		}
 	}
 
+	@Test
 	public void testBreakpoint() throws Exception {
 		breakpoints(false, "default", 5, 15); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testBreakpointSepVM() throws Exception {
 		breakpoints(true, "default", 5, 15); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testTargetBreakpoint() throws Exception {
 		breakpoints(false, "entry2", 4, 24); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testTaskOutOfTargetBreakpoint() throws Exception {
 		breakpoints(false, "entry2", 36, 5); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testTaskOutOfTargetBreakpointSepVm() throws Exception {
 		breakpoints(true, "entry2", 36, 5); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testTargetBreakpointSepVM() throws Exception {
 		breakpoints(true, "entry2", 4, 24); //$NON-NLS-1$
 	}

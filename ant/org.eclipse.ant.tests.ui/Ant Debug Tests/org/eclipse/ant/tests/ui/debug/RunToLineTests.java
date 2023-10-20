@@ -7,11 +7,14 @@
  *  https://www.eclipse.org/legal/epl-2.0/
  *
  *  SPDX-License-Identifier: EPL-2.0
- * 
+ *
  *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.ant.internal.launching.debug.model.AntLineBreakpoint;
 import org.eclipse.ant.internal.launching.debug.model.AntThread;
@@ -35,16 +38,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.junit.Test;
 
 /**
  * Tests run to line debug functionality
  */
 @SuppressWarnings("restriction")
 public class RunToLineTests extends AbstractAntDebugTest {
-
-	public RunToLineTests(String name) {
-		super(name);
-	}
 
 	private final Object fLock = new Object();
 	private IEditorPart fEditor = null;
@@ -79,6 +79,7 @@ public class RunToLineTests extends AbstractAntDebugTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testRunToLine() throws Exception {
 		runToLine(14, 14, true, false);
 	}
@@ -88,6 +89,7 @@ public class RunToLineTests extends AbstractAntDebugTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testRunToLineSepVM() throws Exception {
 		runToLine(14, 14, true, true);
 	}
@@ -97,6 +99,7 @@ public class RunToLineTests extends AbstractAntDebugTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testRunToLineSkipBreakpoint() throws Exception {
 		createLineBreakpoint(6, "breakpoints.xml"); //$NON-NLS-1$
 		runToLine(14, 14, true, false);
@@ -108,6 +111,7 @@ public class RunToLineTests extends AbstractAntDebugTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testRunToLineSkipBreakpointSepVM() throws Exception {
 		createLineBreakpoint(6, "breakpoints.xml"); //$NON-NLS-1$
 		runToLine(14, 14, true, true);
@@ -118,6 +122,7 @@ public class RunToLineTests extends AbstractAntDebugTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testRunToLineHitBreakpoint() throws Exception {
 		createLineBreakpoint(6, "breakpoints.xml"); //$NON-NLS-1$
 		runToLine(14, 6, false, false);
@@ -128,6 +133,7 @@ public class RunToLineTests extends AbstractAntDebugTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testRunToLineHitBreakpointSepVM() throws Exception {
 		createLineBreakpoint(6, "breakpoints.xml"); //$NON-NLS-1$
 		runToLine(14, 6, false, true);

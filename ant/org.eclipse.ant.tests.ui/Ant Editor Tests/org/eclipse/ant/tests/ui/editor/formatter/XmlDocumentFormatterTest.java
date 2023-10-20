@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2004, 2005 John-Mason P. Shackelford and others.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
@@ -13,20 +13,20 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.editor.formatter;
 
+import static org.junit.Assert.assertEquals;
+
 import org.eclipse.ant.internal.ui.editor.formatter.FormattingPreferences;
 import org.eclipse.ant.internal.ui.editor.formatter.XmlDocumentFormatter;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
+import org.junit.Test;
 
 @SuppressWarnings("restriction")
 public class XmlDocumentFormatterTest extends AbstractAntUITest {
 
-	public XmlDocumentFormatterTest(String name) {
-		super(name);
-	}
-
 	/**
 	 * General Test
 	 */
+	@Test
 	public final void testGeneralFormat() throws Exception {
 		FormattingPreferences prefs = new FormattingPreferences() {
 			@Override
@@ -45,6 +45,7 @@ public class XmlDocumentFormatterTest extends AbstractAntUITest {
 	/**
 	 * Insure that tab width is not hard coded
 	 */
+	@Test
 	public final void testTabWidth() throws Exception {
 		FormattingPreferences prefs = new FormattingPreferences() {
 			@Override
@@ -63,6 +64,7 @@ public class XmlDocumentFormatterTest extends AbstractAntUITest {
 	/**
 	 * Test with tab characters instead of spaces.
 	 */
+	@Test
 	public final void testTabsInsteadOfSpaces() throws Exception {
 		FormattingPreferences prefs = new FormattingPreferences() {
 			@Override

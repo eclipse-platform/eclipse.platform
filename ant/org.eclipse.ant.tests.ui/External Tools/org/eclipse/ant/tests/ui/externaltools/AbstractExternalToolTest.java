@@ -16,8 +16,6 @@ package org.eclipse.ant.tests.ui.externaltools;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Test;
-
 import org.eclipse.ant.launching.IAntLaunchConstants;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
@@ -31,6 +29,8 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.ui.externaltools.internal.model.BuilderUtils;
 
+import junit.framework.Test;
+
 /**
  * Abstract {@link Test} class for external tools
  * 
@@ -40,15 +40,6 @@ import org.eclipse.ui.externaltools.internal.model.BuilderUtils;
 public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 
 	static final String EXT_BUILD_FILE_NAME = "ext-builders.xml"; //$NON-NLS-1$
-
-	/**
-	 * Constructor
-	 * 
-	 * @param name
-	 */
-	public AbstractExternalToolTest(String name) {
-		super(name);
-	}
 
 	/**
 	 * Creates a new external tool builder for the given project from the given {@link ILaunchConfiguration}

@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.ant.internal.launching.debug.model.AntProperty;
 import org.eclipse.ant.internal.launching.debug.model.AntStackFrame;
 import org.eclipse.ant.internal.launching.debug.model.AntThread;
@@ -25,6 +29,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IVariable;
+import org.junit.Test;
 import org.osgi.framework.Version;
 
 public class PropertyTests extends AbstractAntDebugTest {
@@ -37,14 +42,12 @@ public class PropertyTests extends AbstractAntDebugTest {
 				+ antVersion.getMicro();
 	}
 
-	public PropertyTests(String name) {
-		super(name);
-	}
-
+	@Test
 	public void testSystemProperties() throws Exception {
 		systemProperties(false);
 	}
 
+	@Test
 	public void testSystemPropertiesSepVM() throws Exception {
 		systemProperties(true);
 	}
@@ -75,10 +78,12 @@ public class PropertyTests extends AbstractAntDebugTest {
 		}
 	}
 
+	@Test
 	public void testUserProperties() throws Exception {
 		userProperties(false);
 	}
 
+	@Test
 	public void testUserPropertiesSepVM() throws Exception {
 		userProperties(true);
 	}
@@ -110,6 +115,7 @@ public class PropertyTests extends AbstractAntDebugTest {
 		}
 	}
 
+	@Test
 	public void testRuntimeProperties() throws Exception {
 		runtimeProperties(false);
 	}
