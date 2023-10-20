@@ -723,7 +723,6 @@ public class DebugPlugin extends Plugin {
 
 			SourceLookupUtils.shutdown();
 			Preferences.savePreferences(DebugPlugin.getUniqueIdentifier());
-			fWorkspaceServiceTracker.getService().removeSaveParticipant(getUniqueIdentifier());
 			fWorkspaceServiceTracker.close();
 		} finally {
 			super.stop(context);
@@ -740,7 +739,7 @@ public class DebugPlugin extends Plugin {
 
 			@Override
 			public IWorkspace addingService(ServiceReference<IWorkspace> reference) {
-				IWorkspace workspace = super.addingService(reference);
+				IWorkspace workspace = context.getService(reference);
 				try {
 					workspace.addSaveParticipant(getUniqueIdentifier(), new ISaveParticipant() {
 						@Override
@@ -767,6 +766,12 @@ public class DebugPlugin extends Plugin {
 					log(e.getStatus());
 				}
 				return workspace;
+			}
+
+			@Override
+			public void removedService(ServiceReference<IWorkspace> reference, IWorkspace service) {
+				service.removeSaveParticipant(getUniqueIdentifier());
+				super.removedService(reference, service);
 			}
 
 		};
