@@ -33,7 +33,7 @@ import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IAdapterManager;
@@ -76,6 +76,8 @@ import org.eclipse.debug.internal.core.groups.GroupMemberChangeListener;
 import org.eclipse.debug.internal.core.sourcelookup.SourceLookupUtils;
 import org.eclipse.osgi.service.environment.Constants;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -437,6 +439,11 @@ public class DebugPlugin extends Plugin {
 	private HashMap<String, IConfigurationElement> fProcessFactories = null;
 
 	/**
+	 * Service tracker for the workspace service
+	 */
+	private ServiceTracker<IWorkspace, IWorkspace> fWorkspaceServiceTracker = null;
+
+	/**
 	 * Mode constants for the event notifier
 	 */
 	private static final int NOTIFY_FILTERS = 0;
@@ -716,7 +723,8 @@ public class DebugPlugin extends Plugin {
 
 			SourceLookupUtils.shutdown();
 			Preferences.savePreferences(DebugPlugin.getUniqueIdentifier());
-			ResourcesPlugin.getWorkspace().removeSaveParticipant(getUniqueIdentifier());
+			fWorkspaceServiceTracker.getService().removeSaveParticipant(getUniqueIdentifier());
+			fWorkspaceServiceTracker.close();
 		} finally {
 			super.stop(context);
 			setDefault(null);
@@ -727,22 +735,43 @@ public class DebugPlugin extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		new DebugOptions(context);
-		ResourcesPlugin.getWorkspace().addSaveParticipant(getUniqueIdentifier(),
-				new ISaveParticipant() {
-					@Override
-					public void saving(ISaveContext saveContext) throws CoreException {
-						if (fExpressionManager != null) {
-							fExpressionManager.storeWatchExpressions();
+
+		fWorkspaceServiceTracker = new ServiceTracker<>(context, IWorkspace.class, null) {
+
+			@Override
+			public IWorkspace addingService(ServiceReference<IWorkspace> reference) {
+				IWorkspace workspace = super.addingService(reference);
+				try {
+					workspace.addSaveParticipant(getUniqueIdentifier(), new ISaveParticipant() {
+						@Override
+						public void saving(ISaveContext saveContext) throws CoreException {
+							if (fExpressionManager != null) {
+								fExpressionManager.storeWatchExpressions();
+							}
+							Preferences.savePreferences(DebugPlugin.getUniqueIdentifier());
 						}
-						Preferences.savePreferences(DebugPlugin.getUniqueIdentifier());
-					}
-					@Override
-					public void rollback(ISaveContext saveContext) {}
-					@Override
-					public void prepareToSave(ISaveContext saveContext) throws CoreException {}
-					@Override
-					public void doneSaving(ISaveContext saveContext) {}
-				});
+
+						@Override
+						public void rollback(ISaveContext saveContext) {
+						}
+
+						@Override
+						public void prepareToSave(ISaveContext saveContext) throws CoreException {
+						}
+
+						@Override
+						public void doneSaving(ISaveContext saveContext) {
+						}
+					});
+				} catch (CoreException e) {
+					log(e.getStatus());
+				}
+				return workspace;
+			}
+
+		};
+		fWorkspaceServiceTracker.open();
+
 		//command adapters
 		IAdapterManager manager= Platform.getAdapterManager();
 		CommandAdapterFactory actionFactory = new CommandAdapterFactory();
