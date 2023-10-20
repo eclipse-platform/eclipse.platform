@@ -13,9 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.internal.expressions.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.junit.Test;
 
 import org.eclipse.core.expressions.AndExpression;
 import org.eclipse.core.expressions.CountExpression;
@@ -30,26 +37,19 @@ import org.eclipse.core.internal.expressions.NotExpression;
 import org.eclipse.core.internal.expressions.ResolveExpression;
 import org.eclipse.core.internal.expressions.SystemTestExpression;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-
 @SuppressWarnings("restriction")
-public class ExpressionInfoTests extends TestCase {
-
-	public static Test suite() {
-		return new TestSuite(ExpressionInfoTests.class);
-	}
+public class ExpressionInfoTests {
 
 	// ---- test merging ------------------------------------------------------------------------
 
+	@Test
 	public void testMergeEmpty() {
 		ExpressionInfo info= new ExpressionInfo();
 		info.merge(new ExpressionInfo());
 		assertNoAccess(info);
 	}
 
+	@Test
 	public void testMergeDefaultVariable() {
 		ExpressionInfo info;
 		ExpressionInfo other;
@@ -73,6 +73,7 @@ public class ExpressionInfoTests extends TestCase {
 		assertDefaultAccessOnly(info);
 	}
 
+	@Test
 	public void testMergeSystemProperty() {
 		ExpressionInfo info;
 		ExpressionInfo other;
@@ -96,6 +97,7 @@ public class ExpressionInfoTests extends TestCase {
 		assertSystemPropertyOnly(info);
 	}
 
+	@Test
 	public void testMergeVariableNames() {
 		ExpressionInfo info;
 		ExpressionInfo other;
@@ -126,6 +128,7 @@ public class ExpressionInfoTests extends TestCase {
 		assertVariableAccess(info, new String[] {"variable_one", "variable_two"});
 	}
 
+	@Test
 	public void testMergePropertyNames() {
 		ExpressionInfo info;
 		ExpressionInfo other;
@@ -156,6 +159,7 @@ public class ExpressionInfoTests extends TestCase {
 		assertPropertyAccess(info, new String[] { "prop1", "prop2" }, false);
 	}
 
+	@Test
 	public void testMergeMisbehavingExpressionTypes() {
 		ExpressionInfo info;
 		ExpressionInfo other;
@@ -188,26 +192,32 @@ public class ExpressionInfoTests extends TestCase {
 
 	// ---- test expression ---------------------------------------------------------------------
 
+	@Test
 	public void testCountExpression() {
 		assertDefaultAccessOnly((new CountExpression("10")).computeExpressionInfo());
 	}
 
+	@Test
 	public void testEqualsExpression() {
 		assertDefaultAccessOnly((new EqualsExpression(new Object())).computeExpressionInfo());
 	}
 
+	@Test
 	public void testInstanceofExpression() {
 		assertDefaultAccessOnly((new InstanceofExpression("java.lang.Object")).computeExpressionInfo());
 	}
 
+	@Test
 	public void testNotExpression() {
 		assertDefaultAccessOnly((new NotExpression(new CountExpression("10"))).computeExpressionInfo());
 	}
 
+	@Test
 	public void testSystemExpression() {
 		assertSystemPropertyOnly((new SystemTestExpression("property", "value")).computeExpressionInfo());
 	}
 
+	@Test
 	public void testTestExpression() {
 		assertPropertyAccess((new TestExpression("namespace", "property", null,
 				new Object())).computeExpressionInfo(), "namespace.property", true);
@@ -215,10 +225,12 @@ public class ExpressionInfoTests extends TestCase {
 
 	// ---- composite expressions ---------------------------------------------------------
 
+	@Test
 	public void testAdaptExpression() throws Exception {
 		assertDefaultAccessOnly(new AdaptExpression("java.lang.Object").computeExpressionInfo());
 	}
 
+	@Test
 	public void testAndExpression() throws Exception {
 		AndExpression and= new AndExpression();
 		assertNoAccess(and.computeExpressionInfo());
@@ -226,10 +238,12 @@ public class ExpressionInfoTests extends TestCase {
 		assertDefaultAccessOnly(and.computeExpressionInfo());
 	}
 
+	@Test
 	public void testIterateExpression() throws Exception {
 		assertDefaultAccessOnly(new IterateExpression("or").computeExpressionInfo());
 	}
 
+	@Test
 	public void testResolveExpression() {
 		ResolveExpression resolve= new ResolveExpression("variable", null);
 		assertNoAccess(resolve.computeExpressionInfo());
@@ -237,6 +251,7 @@ public class ExpressionInfoTests extends TestCase {
 		assertVariableAccess(resolve.computeExpressionInfo(), "variable");
 	}
 
+	@Test
 	public void testWithExpression() {
 		WithExpression with= new WithExpression("variable");
 		assertNoAccess(with.computeExpressionInfo());
