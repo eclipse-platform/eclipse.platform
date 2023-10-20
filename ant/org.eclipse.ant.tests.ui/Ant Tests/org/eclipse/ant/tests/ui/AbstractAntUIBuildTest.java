@@ -19,49 +19,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.IHyperlink;
-
-import junit.framework.TestResult;
+import org.junit.Rule;
 
 public abstract class AbstractAntUIBuildTest extends AbstractAntUITest {
 
-	/**
-	 * Flag that indicates test are in progress
-	 */
-	protected boolean testing = true;
-
-	public AbstractAntUIBuildTest(String name) {
-		super(name);
-	}
-
-	/**
-	 * Runs the test and collects the result in a TestResult without blocking the UI
-	 * thread.
-	 */
-	@Override
-	public void run(final TestResult result) {
-		final Display display = Display.getCurrent();
-		Thread thread = null;
-		try {
-			Runnable r = () -> {
-				AbstractAntUIBuildTest.super.run(result);
-				testing = false;
-				display.wake();
-			};
-			thread = new Thread(r);
-			thread.start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		while (testing) {
-			try {
-				if (!display.readAndDispatch())
-					display.sleep();
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-		}
-	}
+	@Rule
+	public RunInSeparateThreadRule runInSeparateThread = new RunInSeparateThreadRule();
 
 	/**
 	 * Launches the launch configuration Waits for all of the lines to be appended

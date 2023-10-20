@@ -18,6 +18,13 @@
 
 package org.eclipse.ant.tests.ui.editor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -40,6 +47,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.ui.PartInitException;
+import org.junit.Test;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -53,17 +61,9 @@ import org.w3c.dom.Element;
 public class CodeCompletionTest extends AbstractAntUITest {
 
 	/**
-	 * Constructor for CodeCompletionTest.
-	 *
-	 * @param name
-	 */
-	public CodeCompletionTest(String name) {
-		super(name);
-	}
-
-	/**
 	 * Tests the code completion for attributes of tasks.
 	 */
+	@Test
 	public void testAttributeProposals() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor();
 
@@ -117,6 +117,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Test the code completion for properties, including unquoted (bug 40871)
 	 */
+	@Test
 	public void testPropertyProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml")); //$NON-NLS-1$
 
@@ -144,6 +145,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for nested elements that no templates are presented Bug 76414
 	 */
+	@Test
 	public void testPropertyTemplateProposals() throws BadLocationException, PartInitException {
 		try {
 			IFile file = getIFile("buildtest1.xml"); //$NON-NLS-1$
@@ -167,6 +169,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Test the code completion for "system" properties
 	 */
+	@Test
 	public void testSystemPropertyProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml")); //$NON-NLS-1$
 
@@ -184,6 +187,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Test the code completion for "built-in" properties
 	 */
+	@Test
 	public void testBuiltInPropertyProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml")); //$NON-NLS-1$
 
@@ -207,6 +211,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Test the code completion for extension point / preference properties
 	 */
+	@Test
 	public void testPreferencePropertyProposals() throws BadLocationException {
 		AntCorePreferences prefs = AntCorePlugin.getPlugin().getPreferences();
 		try {
@@ -237,6 +242,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Test the code completion for the depend attribute of a target.
 	 */
+	@Test
 	public void testTargetDependProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml")); //$NON-NLS-1$
 		// simple depends
@@ -269,6 +275,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Test the image for a code completion proposal for the depend attribute of a target.
 	 */
+	@Test
 	public void testTargetDependProposalImages() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest3.xml")); //$NON-NLS-1$
 		// simple depends
@@ -301,6 +308,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Test the image for a code completion proposal for the default attribute of a project.
 	 */
+	@Test
 	public void testProjectDefaultProposalImages() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest4.xml")); //$NON-NLS-1$
 		// simple depends
@@ -333,6 +341,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Test the image for a code completion proposal for the target attribute of an antcall task.
 	 */
+	@Test
 	public void testAntcallTargetProposalImages() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest4.xml")); //$NON-NLS-1$
 		int lineNumber = 4;
@@ -361,6 +370,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Test the code completion for the if attribute of a target.
 	 */
+	@Test
 	public void testTargetIfProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml")); //$NON-NLS-1$
 
@@ -379,6 +389,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Test the code completion for the unless attribute of a target.
 	 */
+	@Test
 	public void testTargetUnlessProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml")); //$NON-NLS-1$
 
@@ -398,6 +409,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Test the code completion for the target attribute of antcall.
 	 */
+	@Test
 	public void testAntCallTargetProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("debugAntCall.xml")); //$NON-NLS-1$
 		int lineNumber = 4;
@@ -445,6 +457,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the property proposals for the case that they are defined in a dependent targets.
 	 */
+	@Test
 	public void testPropertyProposalDefinedInDependantTargets() throws FileNotFoundException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("dependencytest.xml")); //$NON-NLS-1$
 
@@ -469,6 +482,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for tasks that have been defined in the buildfile
 	 */
+	@Test
 	public void testCustomTaskProposals() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("taskdef.xml")); //$NON-NLS-1$
 
@@ -482,6 +496,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for tasks that have been defined via the task extension point
 	 */
+	@Test
 	public void testExtensionPointTaskProposals() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("taskdef.xml")); //$NON-NLS-1$
 		ICompletionProposal[] proposals = processor.getTaskProposals(getCurrentDocument(), "target", "cool"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -493,6 +508,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for tasks that have been defined via macrodef in the buildfile
 	 */
+	@Test
 	public void testMacrodefProposals() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("macrodef.xml")); //$NON-NLS-1$
 
@@ -506,6 +522,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for tasks that have been defined via macrodef with uri in the buildfile
 	 */
+	@Test
 	public void testNamespacedMacrodefProposals() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("98853.xml")); //$NON-NLS-1$
 
@@ -519,6 +536,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for nested element attributes
 	 */
+	@Test
 	public void testMacrodefNestedElementAttributeProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("macrodef.xml")); //$NON-NLS-1$
 		int lineNumber = 5;
@@ -538,6 +556,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for tasks that have been defined via macrodef in the buildfile
 	 */
+	@Test
 	public void testMacrodefAttributeProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("macrodef.xml")); //$NON-NLS-1$
 		int lineNumber = 12;
@@ -557,6 +576,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for tasks that have been defined via macrodef in the buildfile
 	 */
+	@Test
 	public void testNamespacedMacrodefAttributeProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("98853.xml")); //$NON-NLS-1$
 		int lineNumber = 16;
@@ -574,6 +594,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for elements that have been defined via macrodef in the buildfile
 	 */
+	@Test
 	public void testMacrodefElementProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("macrodef.xml")); //$NON-NLS-1$
 		int lineNumber = 13;
@@ -592,6 +613,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for tasks having parent tasks.
 	 */
+	@Test
 	public void testTaskProposals() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml")); //$NON-NLS-1$
 
@@ -616,6 +638,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.dispose();
 	}
 
+	@Test
 	public void testTargetTemplateProposals() throws BadLocationException, PartInitException {
 		try {
 			IFile file = getIFile("buildtest1.xml"); //$NON-NLS-1$
@@ -655,6 +678,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for the fail task bug 73637
 	 */
+	@Test
 	public void testFailProposals() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml")); //$NON-NLS-1$
 
@@ -670,6 +694,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Test for bug 40951
 	 */
+	@Test
 	public void testMixedElements() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("mixed.xml")); //$NON-NLS-1$
 		// String string = "<project><target><sql driver=\"\" password=\"\" url=\"\" userid=\"\"></sql><concat></concat>";
@@ -689,6 +714,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the algorithm for finding a child as used by the processor.
 	 */
+	@Test
 	public void testFindChildElement() throws ParserConfigurationException {
 
 		// Create the test data
@@ -718,6 +744,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests that the processor correctly determines the attribute proposal mode
 	 */
+	@Test
 	public void testDeterminingAttributeProposalMode() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor();
 		int mode = processor.determineProposalMode("<project><property ta", 21, "ta"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -737,6 +764,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests that the processor correctly determines the attribute value proposal mode
 	 */
+	@Test
 	public void testDeterminingAttributeValueProposalMode() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor();
 		int mode = processor.determineProposalMode("<project><property take=\"", 25, ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -752,6 +780,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests how the processor determines the proposal mode.
 	 */
+	@Test
 	public void testDeterminingPropertyProposalMode() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor();
 		int mode = processor.determineProposalMode("<project><target name=\"$\"", 24, ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -768,6 +797,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests how the processor determines the proposal mode.
 	 */
+	@Test
 	public void testDeterminingTaskProposalMode() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor();
 
@@ -804,6 +834,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests how the processor determines the proposal mode.
 	 */
+	@Test
 	public void testDeterminingTaskClosingProposalMode() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor();
 
@@ -814,6 +845,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests how the prefix will be determined.
 	 */
+	@Test
 	public void testDeterminingPrefix() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor();
 
@@ -843,6 +875,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests how the processor determines the proposal mode.
 	 */
+	@Test
 	public void testDeterminingNoneProposalMode() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor();
 
@@ -855,6 +888,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for tasks in an empty build file (no parent).
 	 */
+	@Test
 	public void testTaskProposalsForEmptyBuildFile() {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("empty.xml")); //$NON-NLS-1$
 
@@ -873,6 +907,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for refids (Bug 49830)
 	 */
+	@Test
 	public void testRefidProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("refid.xml")); //$NON-NLS-1$
 
@@ -894,6 +929,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for custom task that has a boolean attribute
 	 */
+	@Test
 	public void testCustomBooleanProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("customBoolean.xml")); //$NON-NLS-1$
 
@@ -915,6 +951,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for custom task that has an enumerated attribute
 	 */
+	@Test
 	public void testCustomEnumeratedProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("extensionPointTaskSepVM.xml")); //$NON-NLS-1$
 		int lineNumber = 2;
@@ -934,6 +971,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for custom task that have a reference attribute
 	 */
+	@Test
 	public void testCustomReferenceProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("extensionPointTaskSepVM.xml")); //$NON-NLS-1$
 		int lineNumber = 2;
@@ -952,6 +990,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for nested element attributes of custom tasks
 	 */
+	@Test
 	public void testNestedElementAttributeProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("nestedElementAttributes.xml")); //$NON-NLS-1$
 		int lineNumber = 4;
@@ -969,6 +1008,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for nested elements
 	 */
+	@Test
 	public void testNestedElementProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("nestedElementAttributes.xml")); //$NON-NLS-1$
 		int lineNumber = 4;
@@ -986,6 +1026,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for nested elements that no templates are presented Bug 76414
 	 */
+	@Test
 	public void testNestedElementTemplateProposals() throws BadLocationException, PartInitException {
 		try {
 			IFile file = getIFile("nestedElementAttributes.xml"); //$NON-NLS-1$
@@ -1008,6 +1049,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for nested element attribute values of custom tasks
 	 */
+	@Test
 	public void testNestedElementAttributeValueProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("nestedElementAttributes.xml")); //$NON-NLS-1$
 		int lineNumber = 4;
@@ -1025,6 +1067,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion when a parse error occurs in the project definition bug 63151
 	 */
+	@Test
 	public void testBadProjectProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("badproject.xml")); //$NON-NLS-1$
 		int lineNumber = 0;
@@ -1042,6 +1085,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for attribute value proposals both with and without leading whitespace
 	 */
+	@Test
 	public void testAttributeValueProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("javac.xml")); //$NON-NLS-1$
 		int lineNumber = 2;
@@ -1079,6 +1123,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for an empty buildfile
 	 */
+	@Test
 	public void testEmptyBuildfileProposals() throws PartInitException {
 		try {
 			IFile file = getIFile("empty.xml"); //$NON-NLS-1$
@@ -1101,6 +1146,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for refids (Bug 65480)
 	 */
+	@Test
 	public void testJavacReferencesProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("refid.xml")); //$NON-NLS-1$
 
@@ -1145,6 +1191,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for the default target of a project (Bug 78030)
 	 */
+	@Test
 	public void testProjectDefaultProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml")); //$NON-NLS-1$
 
@@ -1165,6 +1212,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	/**
 	 * Tests the code completion for project attributes (bug 82031)
 	 */
+	@Test
 	public void testProjectAttributeProposals() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml")); //$NON-NLS-1$
 
@@ -1192,6 +1240,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.dispose();
 	}
 
+	@Test
 	public void testExtensionPoint() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("antextpoint1.xml")); //$NON-NLS-1$
 
@@ -1207,6 +1256,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.dispose();
 	}
 
+	@Test
 	public void testExtensionOf() throws BadLocationException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("antextpoint2.xml")); //$NON-NLS-1$
 

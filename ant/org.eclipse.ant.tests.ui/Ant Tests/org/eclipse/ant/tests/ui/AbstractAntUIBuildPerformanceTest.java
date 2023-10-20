@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -18,31 +18,24 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.Performance;
 import org.eclipse.test.performance.PerformanceMeter;
+import org.junit.After;
+import org.junit.Before;
 
 public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 
 	protected PerformanceMeter fPerformanceMeter;
 
 	/**
-	 * Constructs a performance test case with the given name.
-	 * 
-	 * @param name
-	 *            the name of the performance test case
-	 */
-	public AbstractAntUIBuildPerformanceTest(String name) {
-		super(name);
-	}
-
-	/**
 	 * Overridden to create a default performance meter for this test case.
 	 * 
 	 * @throws Exception
 	 */
+	@Before
 	@Override
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		super.setUp();
 		Performance performance = Performance.getDefault();
-		fPerformanceMeter = performance.createPerformanceMeter(performance.getDefaultScenarioId(this));
+		fPerformanceMeter = performance.createPerformanceMeter(performance.getDefaultScenarioId(this.getClass()));
 	}
 
 	/**
@@ -50,8 +43,8 @@ public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 	 * 
 	 * @throws Exception
 	 */
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		fPerformanceMeter.dispose();
 	}
 

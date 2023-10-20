@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.externaltools;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Map;
 
 import org.eclipse.ant.internal.launching.AntLaunchingUtil;
@@ -24,6 +27,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.RefreshTab;
+import org.junit.Test;
 
 /**
  * Tests migration of Ant and External Tool configurations from old formats to the current format.
@@ -31,15 +35,12 @@ import org.eclipse.debug.ui.RefreshTab;
 @SuppressWarnings("restriction")
 public class MigrationTests extends AbstractExternalToolTest {
 
-	public MigrationTests() {
-		super("Migration Tests"); //$NON-NLS-1$
-	}
-
 	/**
 	 * Tests migration of arguments from an Eclipse 2.0 Ant buildfile configuration to a current launch configuration.
 	 * 
 	 * @throws CoreException
 	 */
+	@Test
 	public void test20AntMigration() throws CoreException {
 		Map<String, String> argumentMap = get20AntArgumentMap();
 		ILaunchConfigurationWorkingCopy config = ExternalToolMigration.configFromArgumentMap(argumentMap);
@@ -66,6 +67,7 @@ public class MigrationTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws CoreException
 	 */
+	@Test
 	public void test20ProgramMigration() throws CoreException {
 		Map<String, String> argumentMap = get20ProgramArgumentMap();
 		ILaunchConfigurationWorkingCopy config = ExternalToolMigration.configFromArgumentMap(argumentMap);
@@ -85,6 +87,7 @@ public class MigrationTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws CoreException
 	 */
+	@Test
 	public void test21AntMigration() throws CoreException {
 		Map<String, String> argumentMap = get21AntArgumentMap();
 		ILaunchConfigurationWorkingCopy config = ExternalToolMigration.configFromArgumentMap(argumentMap);
@@ -113,6 +116,7 @@ public class MigrationTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws CoreException
 	 */
+	@Test
 	public void test21ProgramMigration() throws CoreException {
 		Map<String, String> argumentMap = get21ProgramArgumentMap();
 		ILaunchConfigurationWorkingCopy config = ExternalToolMigration.configFromArgumentMap(argumentMap);

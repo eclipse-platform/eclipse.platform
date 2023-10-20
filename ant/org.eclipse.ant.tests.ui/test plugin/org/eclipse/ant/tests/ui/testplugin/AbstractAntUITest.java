@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.testplugin;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,30 +73,24 @@ import org.eclipse.ui.internal.console.IOConsolePartition;
 import org.eclipse.ui.intro.IIntroManager;
 import org.eclipse.ui.intro.IIntroPart;
 import org.eclipse.ui.progress.UIJob;
+import org.junit.Before;
+import org.junit.Rule;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import junit.framework.TestCase;
 
 /**
  * Abstract Ant UI test class
  */
 @SuppressWarnings("restriction")
-public abstract class AbstractAntUITest extends TestCase {
+public abstract class AbstractAntUITest {
 
 	public static String ANT_EDITOR_ID = "org.eclipse.ant.ui.internal.editor.AntEditor"; //$NON-NLS-1$
 	private boolean welcomeClosed = false;
 	private IDocument currentDocument;
 
-	/**
-	 * Constructor
-	 *
-	 * @param name
-	 */
-	public AbstractAntUITest(String name) {
-		super(name);
-	}
+	@Rule
+	public TestAgainExceptionRule testAgainRule = new TestAgainExceptionRule(5);
 
 	/**
 	 * Returns the {@link IFile} for the given build file name
@@ -116,34 +114,8 @@ public abstract class AbstractAntUITest extends TestCase {
 		return file.getLocation().toFile();
 	}
 
-	/**
-	 * When a test throws the 'try again' exception, try it again.
-	 *
-	 * @see junit.framework.TestCase#runBare()
-	 */
-	@Override
-	public void runBare() throws Throwable {
-		boolean tryAgain = true;
-		int attempts = 0;
-		while (tryAgain) {
-			try {
-				attempts++;
-				super.runBare();
-				tryAgain = false;
-			}
-			catch (TestAgainException e) {
-				System.out.println("Test failed attempt " + attempts + ". Re-testing: " + this.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-				e.printStackTrace();
-				if (attempts > 5) {
-					tryAgain = false;
-				}
-			}
-		}
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		assertProject();
 		assertWelcomeScreenClosed();
 	}

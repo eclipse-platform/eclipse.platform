@@ -14,6 +14,8 @@
 
 package org.eclipse.ant.tests.ui.performance;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.eclipse.ant.tests.ui.AbstractAntUIBuildPerformanceTest;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
@@ -21,17 +23,15 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.IDebugUIConstants;
+import org.junit.Test;
 
 @SuppressWarnings("restriction")
 public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
 
-	public SeparateVMTests(String name) {
-		super(name);
-	}
-
 	/**
 	 * Performance test for launching Ant in a separate vm.
 	 */
+	@Test
 	public void testBuild() throws CoreException {
 		// tagAsSummary("Separate JRE Build", Dimension.ELAPSED_PROCESS);
 		ILaunchConfiguration config = getLaunchConfiguration("echoingSepVM"); //$NON-NLS-1$
@@ -48,6 +48,7 @@ public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
 	/**
 	 * Performance test for launching Ant in a separate vm with no console output.
 	 */
+	@Test
 	public void testBuildNoConsole() throws CoreException {
 		// tagAsSummary("Separate JRE Build; capture output off", Dimension.ELAPSED_PROCESS);
 		ILaunchConfiguration config = getLaunchConfiguration("echoingSepVM"); //$NON-NLS-1$
@@ -68,6 +69,7 @@ public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
 	/**
 	 * Performance test for launching Ant in a separate vm with debug information.
 	 */
+	@Test
 	public void testBuildMinusDebug() throws CoreException {
 		// tagAsSummary("Separate JRE Build; -debug", Dimension.ELAPSED_PROCESS);
 		ILaunchConfiguration config = getLaunchConfiguration("echoingSepVM"); //$NON-NLS-1$
@@ -87,6 +89,7 @@ public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
 	/**
 	 * Performance test for launching Ant in a separate vm with lots of links
 	 */
+	@Test
 	public void testBuildWithLotsOfLinks() throws CoreException {
 		// tagAsSummary("Separate JRE Build; links", Dimension.ELAPSED_PROCESS);
 		ILaunchConfiguration config = getLaunchConfiguration("echoPropertiesSepVM"); //$NON-NLS-1$
