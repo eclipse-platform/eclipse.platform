@@ -15,28 +15,34 @@ package org.eclipse.ua.tests.intro.performance;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.test.performance.Dimension;
-import org.eclipse.test.performance.PerformanceTestCase;
+import org.eclipse.test.performance.PerformanceTestCaseJunit5;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.intro.impl.model.loader.ExtensionPointManager;
 import org.eclipse.ui.intro.IIntroManager;
 import org.eclipse.ui.intro.IIntroPart;
 import org.eclipse.ui.intro.config.CustomizableIntroPart;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.osgi.framework.FrameworkUtil;
 
-public class OpenIntroTest extends PerformanceTestCase {
+public class OpenIntroTest extends PerformanceTestCaseJunit5 {
 
+	@BeforeEach
 	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	public void setUp(TestInfo testInfo) throws Exception {
+		super.setUp(testInfo);
 		closeIntro();
 		// test extensions filter by this system property
 		System.setProperty("org.eclipse.ua.tests.property.isTesting", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 		ExtensionPointManager.getInst().setExtensionFilter(FrameworkUtil.getBundle(getClass()).getSymbolicName());
 	}
 
+	@AfterEach
 	@Override
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		super.tearDown();
 		closeIntro();
 		// test extensions filter by this system property
@@ -44,6 +50,7 @@ public class OpenIntroTest extends PerformanceTestCase {
 		ExtensionPointManager.getInst().setExtensionFilter(null);
 	}
 
+	@Test
 	public void testOpenIntro() throws Exception {
 		tagAsSummary("Open welcome", Dimension.ELAPSED_PROCESS);
 
