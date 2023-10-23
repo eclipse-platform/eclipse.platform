@@ -14,6 +14,8 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.services;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -25,8 +27,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.di.suppliers.ExtendedObjectSupplier;

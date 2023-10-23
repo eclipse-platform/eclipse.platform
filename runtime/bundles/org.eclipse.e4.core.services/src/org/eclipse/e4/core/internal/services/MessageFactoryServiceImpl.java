@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.services;
 
+import jakarta.annotation.PostConstruct;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -29,7 +30,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
-import javax.annotation.PostConstruct;
 import org.eclipse.e4.core.services.nls.IMessageFactoryService;
 import org.eclipse.e4.core.services.nls.Message;
 import org.eclipse.e4.core.services.nls.Message.ReferenceType;
@@ -254,7 +254,8 @@ public class MessageFactoryServiceImpl implements IMessageFactoryService {
 		if (messageObject != null) {
 			Method[] methods = messageClass.getDeclaredMethods();
 			for (Method method : methods) {
-				if (!method.isAnnotationPresent(PostConstruct.class)) {
+				if (!method.isAnnotationPresent(javax.annotation.PostConstruct.class)
+						&& !method.isAnnotationPresent(jakarta.annotation.PostConstruct.class)) {
 					continue;
 				} else {
 					try {

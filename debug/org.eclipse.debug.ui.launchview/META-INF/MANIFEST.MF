@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.debug.ui.launchview;singleton:=true
-Bundle-Version: 1.1.200.qualifier
+Bundle-Version: 1.1.300.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -13,8 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.e4.ui.di,
  org.eclipse.e4.ui.services
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Import-Package: javax.annotation;version="[1.0.0,2.0.0)",
- javax.inject;version="[1.0.0,2.0.0)"
+Import-Package: jakarta.annotation;version="[2.0.0,3.0.0)",
+ jakarta.inject;version="[2.0.0,3.0.0)"
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/org.eclipse.debug.ui.launchview.internal.model.LaunchViewModel.xml,
  OSGI-INF/org.eclipse.debug.ui.launchview.internal.impl.DebugCoreProvider.xml

@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.di;
 
+import jakarta.inject.Named;
 import java.lang.reflect.Field;
-import javax.inject.Named;
 import org.eclipse.e4.core.di.IInjector;
 import org.eclipse.e4.core.di.InjectionException;
 import org.eclipse.e4.core.di.annotations.Optional;
