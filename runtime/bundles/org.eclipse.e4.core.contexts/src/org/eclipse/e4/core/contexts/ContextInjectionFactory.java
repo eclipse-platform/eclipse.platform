@@ -14,9 +14,9 @@
  *******************************************************************************/
 package org.eclipse.e4.core.contexts;
 
+import jakarta.inject.Scope;
+import jakarta.inject.Singleton;
 import java.lang.annotation.Annotation;
-import javax.inject.Scope;
-import javax.inject.Singleton;
 import org.eclipse.e4.core.di.IInjector;
 import org.eclipse.e4.core.di.InjectionException;
 import org.eclipse.e4.core.di.InjectorFactory;

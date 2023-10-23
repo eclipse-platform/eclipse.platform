@@ -19,7 +19,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Stack;
-import javax.inject.Named;
 import org.eclipse.e4.core.contexts.Active;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.contexts.RunAndTrack;
@@ -189,8 +188,12 @@ public class ContextObjectSupplier extends PrimaryObjectSupplier {
 	}
 
 	private String getKey(IObjectDescriptor descriptor) {
-		if (descriptor.hasQualifier(Named.class)) {
-			Named namedAnnotation = descriptor.getQualifier(Named.class);
+		if (descriptor.hasQualifier(javax.inject.Named.class)) {
+			javax.inject.Named namedAnnotation = descriptor.getQualifier(javax.inject.Named.class);
+			return namedAnnotation.value();
+		}
+		if (descriptor.hasQualifier(jakarta.inject.Named.class)) {
+			jakarta.inject.Named namedAnnotation = descriptor.getQualifier(jakarta.inject.Named.class);
 			return namedAnnotation.value();
 		}
 		Type elementType = descriptor.getDesiredType();

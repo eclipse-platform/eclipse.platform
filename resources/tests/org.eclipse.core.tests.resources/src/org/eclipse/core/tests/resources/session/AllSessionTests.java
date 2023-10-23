@@ -25,7 +25,7 @@ import org.junit.runners.Suite;
 		TestBug12575.class, WorkspaceDescriptionTest.class, TestBug30015.class,
 		TestMasterTableCleanup.class,
 		ProjectPreferenceSessionTest.class, TestBug113943.class, TestCreateLinkedResourceInHiddenProject.class,
-		Bug_266907.class, TestBug297635.class, TestBug323833.class,
+		Bug_266907.class, TestBug323833.class,
 		org.eclipse.core.tests.resources.regression.TestMultipleBuildersOfSameType.class,
 		org.eclipse.core.tests.resources.usecase.SnapshotTest.class, ProjectDescriptionDynamicTest.class,
 		TestBug202384.class, TestBug369177.class, TestBug316182.class, TestBug294854.class, TestBug426263.class,

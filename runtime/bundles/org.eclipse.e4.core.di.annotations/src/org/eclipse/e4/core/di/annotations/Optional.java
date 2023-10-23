@@ -21,8 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.inject.Qualifier;
-
 /**
  * This annotation can be applied to methods, fields, and parameters to mark
  * them as optional for the dependency injection. Typically, if the injector is
@@ -53,7 +51,8 @@ import javax.inject.Qualifier;
  *
  * @since 1.3
  */
-@Qualifier
+@javax.inject.Qualifier
+@jakarta.inject.Qualifier
 @Documented
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RUNTIME)
