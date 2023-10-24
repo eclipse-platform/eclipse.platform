@@ -18,18 +18,18 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.inject.Inject;
-import javax.inject.Qualifier;
 
 /**
- * This annotation can be added to injectable fields ands methods
- * to indicate that the injected value should come from the active context.
+ * This annotation can be added to injectable fields ands methods to indicate
+ * that the injected value should come from the active context.
  *
- * @see Inject
+ * @see javax.inject.Inject
+ * @see jakarta.inject.Inject
  * @see IEclipseContext#activate
  * @since 1.3
  */
-@Qualifier
+@javax.inject.Qualifier
+@jakarta.inject.Qualifier
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)

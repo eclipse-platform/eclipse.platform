@@ -15,7 +15,6 @@ package org.eclipse.e4.core.di.suppliers;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import javax.inject.Qualifier;
 
 /**
  * This interface describes objects created by the dependency injection.
@@ -24,7 +23,7 @@ import javax.inject.Qualifier;
  * set of optional qualifiers.
  * </p>
  *
- * @see Qualifier
+ * @see javax.inject.Qualifier
  * @noextend This interface is not intended to be extended by clients.
  * @noimplement This interface is not intended to be implemented by clients.
  * @since 1.7

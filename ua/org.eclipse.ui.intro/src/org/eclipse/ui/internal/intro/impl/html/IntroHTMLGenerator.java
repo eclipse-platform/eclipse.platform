@@ -513,13 +513,6 @@ public class IntroHTMLGenerator {
 			anchor2 = generateAnchorElement(element, indentLevel + 1);
 			labelAnchor = anchor2;
 		}
-		// add <IMG src="blank.gif">
-		String blankImageURL = BundleUtil.getResolvedResourceLocation(IIntroHTMLConstants.IMAGE_SRC_BLANK,
-				IIntroConstants.PLUGIN_ID);
-		if (blankImageURL != null) {
-			anchor1.addContent(generateImageElement(blankImageURL, null, null, IIntroHTMLConstants.IMAGE_CLASS_BG,
-					indentBase + 1));
-		}
 		// add link image, if one is specified
 		if (element.getImg() != null) {
 			HTMLElement img = generateIntroElement(element.getImg(), indentBase + 1);

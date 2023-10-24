@@ -333,58 +333,42 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 		if (id.equals(ID_OVERVIEW))
 			return createRootLink(
 					Messages.SharedIntroConfigurer_overview_name,
-					createPageURL(id, standby),
-					id,
-					"overview_img", "$theme$/graphics/root/overview.gif", Messages.SharedIntroConfigurer_overview_alt, //$NON-NLS-1$ //$NON-NLS-2$
+					createPageURL(id, standby), id, "overview_img", Messages.SharedIntroConfigurer_overview_alt, //$NON-NLS-1$
 					Messages.SharedIntroConfigurer_overview_tooltip, "left"); //$NON-NLS-1$
 		if (id.equals(ID_FIRSTSTEPS))
 			return createRootLink(
 					Messages.SharedIntroConfigurer_firststeps_name,
-					createPageURL(id, standby),
-					id,
-					"firststeps_img", "$theme$/graphics/root/firststeps.gif", Messages.SharedIntroConfigurer_firststeps_alt, //$NON-NLS-1$ //$NON-NLS-2$
+					createPageURL(id, standby), id, "firststeps_img", Messages.SharedIntroConfigurer_firststeps_alt, //$NON-NLS-1$
 					Messages.SharedIntroConfigurer_firststeps_tooltip, "left"); //$NON-NLS-1$
 		if (id.equals(ID_TUTORIALS))
 			return createRootLink(
 					Messages.SharedIntroConfigurer_tutorials_name,
-					createPageURL(id, standby),
-					id,
-					"tutorials_img", "$theme$/graphics/root/tutorials.gif", Messages.SharedIntroConfigurer_tutorials_alt, //$NON-NLS-1$ //$NON-NLS-2$
+					createPageURL(id, standby), id, "tutorials_img", Messages.SharedIntroConfigurer_tutorials_alt, //$NON-NLS-1$
 					Messages.SharedIntroConfigurer_tutorials_tooltip, "left"); //$NON-NLS-1$
 		if (id.equals(ID_SAMPLES))
 			return createRootLink(
 					Messages.SharedIntroConfigurer_samples_name,
-					createPageURL(id, standby),
-					id,
-					"samples_img", "$theme$/graphics/root/samples.gif", Messages.SharedIntroConfigurer_samples_alt, Messages.SharedIntroConfigurer_samples_tooltip, "right"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					createPageURL(id, standby), id, "samples_img", Messages.SharedIntroConfigurer_samples_alt, Messages.SharedIntroConfigurer_samples_tooltip, "right"); //$NON-NLS-1$ //$NON-NLS-2$
 		if (id.equals(ID_WHATSNEW))
 			return createRootLink(
 					Messages.SharedIntroConfigurer_whatsnew_name,
-					createPageURL(id, standby),
-					id,
-					"whatsnew_img", "$theme$/graphics/root/whatsnew.gif", Messages.SharedIntroConfigurer_whatsnew_alt, //$NON-NLS-1$ //$NON-NLS-2$
+					createPageURL(id, standby), id, "whatsnew_img", Messages.SharedIntroConfigurer_whatsnew_alt, //$NON-NLS-1$
 					Messages.SharedIntroConfigurer_whatsnew_tooltip, "right"); //$NON-NLS-1$
 		if (id.equals(ID_MIGRATE))
 			return createRootLink(
 					Messages.SharedIntroConfigurer_migrate_name,
-					createPageURL(id, standby),
-					id,
-					"migrate_img", "$theme$/graphics/root/migrate.gif", Messages.SharedIntroConfigurer_migrate_alt, Messages.SharedIntroConfigurer_migrate_tooltip, "right"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					createPageURL(id, standby), id, "migrate_img",  Messages.SharedIntroConfigurer_migrate_alt, Messages.SharedIntroConfigurer_migrate_tooltip, "right"); //$NON-NLS-1$ //$NON-NLS-2$
 		if (id.equals(ID_WEBRESOURCES))
 			return createRootLink(
 					Messages.SharedIntroConfigurer_webresources_name,
-					createPageURL(id, standby),
-					id,
-					"webresources_img", "css/graphics/root/webresources.gif", //$NON-NLS-1$ //$NON-NLS-2$
+					createPageURL(id, standby), id,"webresources_img",  //$NON-NLS-1$
 					Messages.SharedIntroConfigurer_webresources_alt,
 					Messages.SharedIntroConfigurer_webresources_tooltip,
 					"right"); //$NON-NLS-1$
 		if (id.equals(ID_WORKBENCH))
 			return createRootLink(
 					Messages.SharedIntroConfigurer_workbench_name,
-					"http://org.eclipse.ui.intro/switchToLaunchBar", //$NON-NLS-1$
-					id,
-					"workbench_img", "css/graphics/root/workbench.gif", //$NON-NLS-1$ //$NON-NLS-2$
+					"http://org.eclipse.ui.intro/switchToLaunchBar", id, "workbench_img",  //$NON-NLS-1$ //$NON-NLS-2$
 					Messages.SharedIntroConfigurer_workbench_alt,
 					Messages.SharedIntroConfigurer_workbench_tooltip,
 					"right"); //$NON-NLS-1$
@@ -463,7 +447,7 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 	}
 
 	private IntroElement createRootLink(String name, String url, String id,
-			String imgId, String imgSrc, String imgAlt, String imgText,
+			String imgId, String imgAlt, String imgText,
 			String styleId) {
 		IntroElement element = new IntroElement("link"); //$NON-NLS-1$
 		element.setAttribute("label", name); //$NON-NLS-1$
@@ -473,7 +457,6 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 		IntroElement img = new IntroElement("img"); //$NON-NLS-1$
 		img.setAttribute("id", imgId); //$NON-NLS-1$
 		img.setAttribute("style-id", "content-img"); //$NON-NLS-1$ //$NON-NLS-2$
-		// img.setAttribute("src", imgSrc); //$NON-NLS-1$
 		boolean highContrast = ImageUtil.isHighContrast();
 		if (highContrast) {
 			String key = HIGH_CONTRAST_PREFIX+id;
