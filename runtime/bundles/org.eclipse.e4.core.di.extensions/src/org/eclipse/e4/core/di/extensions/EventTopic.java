@@ -19,7 +19,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.inject.Qualifier;
 
 /**
  * This annotation can be applied to arguments and fields that want to receive notifications on the
@@ -46,7 +45,8 @@ import javax.inject.Qualifier;
  *
  * @since 0.16
  */
-@Qualifier
+@jakarta.inject.Qualifier
+@javax.inject.Qualifier
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
