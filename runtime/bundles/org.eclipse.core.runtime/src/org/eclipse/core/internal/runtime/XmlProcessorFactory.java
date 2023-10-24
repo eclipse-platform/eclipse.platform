@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.core.internal.runtime;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +22,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.TransformerFactory;
 import org.w3c.dom.Document;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -77,10 +79,15 @@ public class XmlProcessorFactory {
 	}
 
 	/**
-	 * Creates DocumentBuilderFactory which ignores external entities. It's
-	 * magnitudes faster to call {@link #createDocumentBuilderIgnoringDOCTYPE()}.
+	 * Creates DocumentBuilderFactory which ignores external entities. Beware:
+	 * DocumentBuilder created with this Factory may load DTDs from a remote Host -
+	 * which may be slow and a security risk. It's recommended to call
+	 * DocumentBuilder.setEntityResolver(EntityResolver) with fixed DTDs. <br>
+	 * It's magnitudes faster to call
+	 * {@link #createDocumentBuilderIgnoringDOCTYPE()}.
 	 *
 	 * @return javax.xml.parsers.DocumentBuilderFactory
+	 * @see javax.xml.parsers.DocumentBuilder#setEntityResolver(EntityResolver)
 	 */
 	public static synchronized DocumentBuilderFactory createDocumentBuilderFactoryIgnoringDOCTYPE() {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -107,15 +114,17 @@ public class XmlProcessorFactory {
 	}
 
 	/**
-	 * Creates DocumentBuilder which ignores external entities. The builder is not
-	 * thread safe.
+	 * Creates DocumentBuilder which ignores external entities and does not load
+	 * remote DTDs. The builder is not thread safe.
 	 *
 	 * @return javax.xml.parsers.DocumentBuilder
 	 * @throws ParserConfigurationException
 	 */
 	public static synchronized DocumentBuilder createDocumentBuilderIgnoringDOCTYPE()
 			throws ParserConfigurationException {
-		return DOCUMENT_BUILDER_FACTORY_IGNORING_DOCTYPE.newDocumentBuilder();
+		DocumentBuilder builder = DOCUMENT_BUILDER_FACTORY_IGNORING_DOCTYPE.newDocumentBuilder();
+		builder.setEntityResolver((publicId, systemId) -> new InputSource(new ByteArrayInputStream(new byte[0])));
+		return builder;
 	}
 
 	/**
