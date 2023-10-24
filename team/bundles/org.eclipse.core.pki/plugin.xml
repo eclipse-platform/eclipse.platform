@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin>
+
+	<extension point="org.eclipse.core.pki.authenticate">
+		<authenticator
+			class="org.eclipse.core.pki.Authentication">
+		</authenticator>
+	</extension>
+
+</plugin>

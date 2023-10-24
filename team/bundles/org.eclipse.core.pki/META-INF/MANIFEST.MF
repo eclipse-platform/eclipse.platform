@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %PLUGIN_NAME
+Bundle-Localization: plugin
+Bundle-SymbolicName: org.eclipse.core.pki; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: %PLUGIN_PROVIDER
+Automatic-Module-Name: org.eclipse.core.pki
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-17
