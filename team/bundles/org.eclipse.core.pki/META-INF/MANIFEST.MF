@@ -3,6 +3,14 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %PLUGIN_NAME
 Bundle-Localization: plugin
 Bundle-SymbolicName: org.eclipse.core.pki; singleton:=true
+Require-Bundle: org.eclipse.equinox.security;bundle-version="[1.0.0,2.0.0)",
+ org.eclipse.equinox.common;bundle-version="3.12.0",
+ org.eclipse.equinox.preferences;bundle-version="3.2.200",
+ org.eclipse.osgi;bundle-version="3.4.0",
+ org.eclipse.equinox.registry;bundle-version="3.4.0",
+ org.eclipse.ui;bundle-version="3.203.100",
+ org.eclipse.ui.workbench,
+ org.eclipse.core.runtime
 Bundle-Version: 1.0.0
 Bundle-Vendor: %PLUGIN_PROVIDER
 Automatic-Module-Name: org.eclipse.core.pki
