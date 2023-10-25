@@ -812,14 +812,14 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	}
 
 	/**
-	 * Save & build the workspace according to the user-specified preferences.  Return <code>false</code> if
+	 * Save &amp; build the workspace according to the user-specified preferences.  Return <code>false</code> if
 	 * any problems were encountered, <code>true</code> otherwise.
 	 * @return <code>false</code> if any problems were encountered, <code>true</code> otherwise.
 	 *
 	 * @deprecated this method is no longer to be used. It is an artifact from 2.0, and all saving is now done with the
 	 * launch delegate <code>LaunchConfigurationDelegate</code>
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2023-12")
 	public static boolean saveAndBuild() {
 		boolean status = true;
 		String saveDirty = getDefault().getPreferenceStore().getString(IInternalDebugUIConstants.PREF_SAVE_DIRTY_EDITORS_BEFORE_LAUNCH);
@@ -873,10 +873,12 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	/**
 	 * Returns the a color based on the type of output.
 	 * Valid types:
+	 * <ul>
 	 * <li>CONSOLE_SYS_OUT_RGB</li>
 	 * <li>CONSOLE_SYS_ERR_RGB</li>
 	 * <li>CONSOLE_SYS_IN_RGB</li>
 	 * <li>CHANGED_VARIABLE_RGB</li>
+	 * </ul>
 	 * @param type the name of the type to ask for
 	 * @return the {@link Color}
 	 */

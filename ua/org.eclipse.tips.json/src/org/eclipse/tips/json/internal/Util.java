@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.tips.json.internal;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -127,7 +126,6 @@ public class Util {
 	 *
 	 * @param pUrl
 	 * @return A status indicating the result.
-	 * @throws IOException
 	 */
 	public static IStatus isValidUrl(String pUrl) {
 		String symbolicName = FrameworkUtil.getBundle(Util.class).getSymbolicName();

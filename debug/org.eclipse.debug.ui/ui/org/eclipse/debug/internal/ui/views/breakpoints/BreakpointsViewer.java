@@ -181,11 +181,11 @@ public class BreakpointsViewer extends CheckboxTreeViewer {
 	 * Returns if the selected item in the tree can be dragged
 	 * <p>
 	 * Scheme:
+	 * </p>
 	 * <ul>
 	 * <li>breakpoint containers cannot be dragged</li>
 	 * <li>breakpoints can be dragged iff the container they reside in supports the removal of breakpoints</li>
 	 * </ul>
-	 * </p>
 	 * @param items the items to test if they can be dragged
 	 * @return true if the selected element can be dragged, false otherwise
 	 * @since 3.3
@@ -251,11 +251,11 @@ public class BreakpointsViewer extends CheckboxTreeViewer {
 	 * Determines if the specified element can be dropped into the specified target
 	 * <p>
 	 * Scheme:
+	 * </p>
 	 * <ul>
 	 * <li>Breakpoints can be dropped into working sets</li>
 	 * <li>Breakpoints can be dropped into breakpoints, provided there is a droppable parent of the target breakpoint</li>
 	 * </ul>
-	 * </p>
 	 * @param target the target for the drop
 	 * @param selection the selection we want to drop
 	 * @return true if the specified element can be dropped into the specified target, false otherwise

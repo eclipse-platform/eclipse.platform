@@ -54,11 +54,6 @@ public class CoreItem extends ViewItem {
 
 	private static final int SUBITEM_COLUMNS = 6;
 
-	/**
-	 * Constructor for CoreItem.
-	 * @param parent
-	 * @param contentItem
-	 */
 	public CoreItem(CheatSheetPage page, Item item, Color itemColor, CheatSheetViewer viewer) {
 		super(page, item, itemColor, viewer);
 	}

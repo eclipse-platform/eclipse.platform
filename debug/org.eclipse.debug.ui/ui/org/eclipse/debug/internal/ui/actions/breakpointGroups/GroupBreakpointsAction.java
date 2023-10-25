@@ -31,8 +31,8 @@ public class GroupBreakpointsAction extends Action {
 
 	/**
 	 * Creates a new action which will group breakpoints in the given
-	 * breakpoint view using the given breakpoint container factory
-	 * @param factory the factory that will be applied to the given view
+	 * breakpoint view using the given breakpoint organizer
+	 * @param organizer the organizer that will be applied to the given view
 	 *  when this action is run
 	 * @param view the breakpoints view
 	 */

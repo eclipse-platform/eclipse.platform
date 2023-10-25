@@ -24,7 +24,7 @@ public class FolderPrompt extends PromptingResolver {
 
 	/**
 	 * Prompts the user to choose a folder.
-	 * @see PromptExpanderBase#prompt()
+	 * @see PromptingResolver#prompt()
 	 */
 	@Override
 	public void prompt() {

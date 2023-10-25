@@ -201,7 +201,6 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 	/**
 	 * @param parent
 	 * @param toolkit
-	 * @param style
 	 */
 	public SearchPart(final Composite parent, FormToolkit toolkit) {
 		this.toolkit = toolkit;

@@ -220,14 +220,6 @@ public class MemoryBlockContentAdapter extends AsynchronousContentAdapter {
 		return EMPTY;
 	}
 
-	/**
-	 * Get memory to fit table
-	 *
-	 * @param startingAddress
-	 * @param numberOfLines
-	 * @param updateDelta
-	 * @throws DebugException
-	 */
 	public Object[] getMemoryToFitTable(BigInteger startAddress, long numberOfLines, MemoryViewPresentationContext context) throws DebugException {
 		AbstractAsyncTableRendering tableRendering = getTableRendering(context);
 		if (tableRendering == null) {

@@ -72,18 +72,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * The perspective manager manages the 'perspective' settings
- * defined by launch configurations. Specifically it:
+ * The perspective manager manages the 'perspective' settings defined by launch
+ * configurations. Specifically it:
  * <ul>
  * <li>changes perspectives as launches are registered</li>
  * <li>change perspective when a thread suspends</li>
  * </ul>
  *
- * Since 3.3 the Perspectives Manager is an <code>ISaveParticipant</code>, allowing it to participate in
- * workspace persistence life-cycles.
+ * Since 3.3 the Perspectives Manager is an <code>ISaveParticipant</code>,
+ * allowing it to participate in workspace persistence life-cycles.
  *
- * @see IDebugUIContants.ATTR_RUN_PERSPECTIVE
- * @see IDebugUIContants.ATTR_DEBUG_PERSPECTIVE
+ * @see IDebugUIConstants
  * @see ISaveParticipant
  * @see ISuspendTriggerListener
  * @see ILaunchListener
@@ -417,7 +416,7 @@ public class PerspectiveManager implements ILaunchListener, ISuspendTriggerListe
 	/**
 	 * Reports failure to switch perspectives to the user
 	 *
-	 * @param status exception status describing failure
+	 * @param t Throwable describing failure
 	 * @param launchName the name of the launch that the
 	 *  failure is associated with
 	 */

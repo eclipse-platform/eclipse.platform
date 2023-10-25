@@ -29,7 +29,7 @@ public class DebugTargetEventHandler extends DebugEventHandler {
 	/**
 	 * Constructs an event handler for a debug target on the given viewer.
 	 *
-	 * @param viewer
+	 * @param proxy
 	 */
 	public DebugTargetEventHandler(AbstractModelProxy proxy) {
 		super(proxy);

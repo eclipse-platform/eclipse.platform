@@ -90,7 +90,7 @@ public abstract class DebugEventHandler {
 	}
 
 	/**
-	 * Handles a resume event for which a suspend is expected shortly (<500ms).
+	 * Handles a resume event for which a suspend is expected shortly (&lt;500ms).
 	 *
 	 * @param event the event to handle
 	 */

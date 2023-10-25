@@ -99,14 +99,13 @@ public class TestViewSupportRegistry {
 		fTestViewSupportExtensions = items;
 	}
 
-	/*
-	 * Returns an {@link Optional <ITestViewSupport>} object instance by its
-	 * identifier
+	/**
+	 * Returns {@link ITestViewSupport} object instance by its identifier
 	 *
 	 * @param id an identifier, can be <code>null</code>
 	 *
-	 * @return an {@link Optional <ITestViewSupport>} object instance
-	 */
+	 * @return an {@link Optional} {@link ITestViewSupport} object instance
+	 **/
 	private Optional<ITestViewSupport> findTestViewSupport(String id) {
 		return getAllTestViewSupportExtensions().stream().filter(ext -> ext.getId().equals(id)).findFirst().map(t -> {
 			try {
@@ -122,7 +121,7 @@ public class TestViewSupportRegistry {
 	 * Returns {@link ITestViewSupport} instance from the given launch configuration
 	 *
 	 * @param launchConfiguration a launch configuration
-	 * @return an {@link Optional <ITestViewSupport>} object instance
+	 * @return an {@link Optional} {@link ITestViewSupport} object instance
 	 */
 	public static Optional<ITestViewSupport> newTestRunnerViewSupport(ILaunchConfiguration launchConfiguration) {
 		try {

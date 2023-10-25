@@ -35,7 +35,6 @@ public class DecorationManager {
 	 * Adds the given decoration for the given stack frame.
 	 *
 	 * @param decoration
-	 * @param frame
 	 */
 	public static void addDecoration(Decoration decoration) {
 		synchronized (fDecorations) {

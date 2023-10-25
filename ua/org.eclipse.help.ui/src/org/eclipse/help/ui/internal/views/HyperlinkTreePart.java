@@ -113,7 +113,7 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 	/**
 	 * @param parent
 	 * @param toolkit
-	 * @param style
+	 * @param tbm
 	 */
 	public HyperlinkTreePart(Composite parent, final FormToolkit toolkit,
 			IToolBarManager tbm) {

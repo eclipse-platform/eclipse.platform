@@ -50,7 +50,6 @@ import org.osgi.framework.ServiceRegistration;
 /**
  * <code>TeamPlugin</code> is the plug-in runtime class for the Team
  * resource management plugin.
- * <p>
  *
  * @see Team
  * @see RepositoryProvider

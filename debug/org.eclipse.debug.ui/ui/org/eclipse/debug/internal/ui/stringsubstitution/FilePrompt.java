@@ -24,7 +24,8 @@ public class FilePrompt extends PromptingResolver {
 
 	/**
 	 * Prompts the user to choose a file
-	 * @see PromptExpanderBase#prompt()
+	 *
+	 * @see PromptingResolver#prompt()
 	 */
 	@Override
 	public void prompt() {

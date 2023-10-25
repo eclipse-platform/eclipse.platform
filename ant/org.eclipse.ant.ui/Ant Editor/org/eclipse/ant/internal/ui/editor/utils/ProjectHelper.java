@@ -280,8 +280,8 @@ public class ProjectHelper extends ProjectHelper2 {
 	/**
 	 * Gets the associated project name by the absolute build-file path
 	 *
-	 * @param buildFile
-	 *            The file
+	 * @param absolutePath
+	 *            The file path as String
 	 * @return The project name
 	 */
 	public static String getProjectNameOfBuildFile(String absolutePath) {

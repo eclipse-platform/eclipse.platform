@@ -197,10 +197,6 @@ public class LaunchConfigurationPresentationManager {
 
 	/**
 	 * Returns the tab group for the given launch configuration and the mode the dialog opened in
-	 * @param type the type of the configuration
-	 * @param config
-	 * @param mode
-	 * @return
 	 * @throws CoreException
 	 */
 	public ILaunchConfigurationTabGroup getTabGroup(ILaunchConfiguration config, String mode) throws CoreException {

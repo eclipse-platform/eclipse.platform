@@ -115,7 +115,6 @@ public class NestedProjectCreator {
 	/**
 	 * The given project is about to be created.  Exclude any corresponding
 	 * resources in an overlapping parent project.
-	 * @param project
 	 * @param description
 	 */
 	protected void excludeOverlap(IProjectDescription description) throws CoreException {

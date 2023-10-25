@@ -510,8 +510,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 	 * The user selected either new cheatsheet category(s) or cheatsheet
 	 * element(s). Proceed accordingly.
 	 *
-	 * @param newSelection
-	 *            ISelection
+	 * @param selectionEvent SelectionChangedEvent
 	 */
 	@Override
 	public void selectionChanged(SelectionChangedEvent selectionEvent) {

@@ -34,7 +34,7 @@ public class LaunchCategoryFilter extends ViewerFilter {
 	 * Constructs a filter that hides configurations from a specific
 	 * category.
 	 *
-	 * @param groupExtension
+	 * @param category
 	 */
 	public LaunchCategoryFilter(String category) {
 		fCategory = category;

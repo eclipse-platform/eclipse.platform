@@ -31,7 +31,7 @@ public class PDAStackValue extends PDADebugElement implements IValue {
 	/**
 	 * Constructs a value that appears on the data stack
 	 *
-	 * @param target debug target
+	 * @param thread debug target
 	 * @param value value on the stack
 	 * @param index index on the stack
 	 */
