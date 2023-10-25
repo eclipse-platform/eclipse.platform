@@ -53,7 +53,7 @@ public abstract class DefaultTipManager extends TipManager {
 	 *                       null;
 	 *
 	 * @return this tip manager.
-	 * @see #open()
+	 * @see #open(boolean)
 	 *
 	 */
 	public ITipManager open(boolean startUp, IDialogSettings dialogSettings) {
