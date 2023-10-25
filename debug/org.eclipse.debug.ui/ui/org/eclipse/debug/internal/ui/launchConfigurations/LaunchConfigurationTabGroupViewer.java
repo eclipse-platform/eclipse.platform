@@ -843,8 +843,9 @@ public class LaunchConfigurationTabGroupViewer {
 			fInitializingTabs = false;
 			return;
 		}
+		Class<? extends ILaunchConfigurationTab> lastActiveTabKind = null;
 		if(redrawTabs) {
-			showInstanceTabsFor(type);
+			lastActiveTabKind = showInstanceTabsFor(type);
 		}
 		// show the name area
 		updateVisibleControls(true);
@@ -873,17 +874,25 @@ public class LaunchConfigurationTabGroupViewer {
 		// Turn off initializing flag to update message
 		fInitializingTabs = false;
 
+		// Try to activate the same (type of) tab that was active before.
+		if (!setActiveTab(lastActiveTabKind)) {
+			// The tab with the wanted class wasn't found. Try to activate the first one
+			setActiveTab(0);
+		}
+
 		if (!fViewform.isVisible()) {
 			fViewform.setVisible(true);
 		}
 	}
 
 	/**
-	 * Populate the tabs in the configuration edit area to be appropriate to the current
-	 * launch configuration type.
+	 * Populate the tabs in the configuration edit area to be appropriate to the
+	 * current launch configuration type.
+	 *
 	 * @param configType the type to show tabs for
+	 * @return The class of the last active tab.
 	 */
-	private void showInstanceTabsFor(ILaunchConfigurationType configType) {
+	private Class<? extends ILaunchConfigurationTab> showInstanceTabsFor(ILaunchConfigurationType configType) {
 		// try to keep on same tab
 		Class<? extends ILaunchConfigurationTab> tabKind = null;
 		if (getActiveTab() != null) {
@@ -895,7 +904,7 @@ public class LaunchConfigurationTabGroupViewer {
 			group = createGroup();
 		} catch (CoreException ce) {
 			DebugUIPlugin.errorDialog(getShell(), LaunchConfigurationsMessages.LaunchConfigurationDialog_Error_19, LaunchConfigurationsMessages.LaunchConfigurationDialog_Exception_occurred_creating_launch_configuration_tabs_27,ce); //
-			return;
+			return null;
 		}
 		disposeExistingTabs();
 		fTabGroup = group;
@@ -923,18 +932,8 @@ public class LaunchConfigurationTabGroupViewer {
 				tab.setControl(control.getParent());
 			}
 		}
-		//set the default tab as the first one
-		if (tabs.length > 0) {
-			setActiveTab(tabs[0]);
-		}
-		// select same tab as before, if possible
-		for (ILaunchConfigurationTab t : tabs) {
-			if (t.getClass().equals(tabKind)) {
-				setActiveTab(t);
-				break;
-			}
-		}
 		fDescription = getDescription(configType);
+		return tabKind;
 	}
 
 	/**
@@ -1600,6 +1599,29 @@ public class LaunchConfigurationTabGroupViewer {
 	 */
 	protected void errorDialog(CoreException exception) {
 		ErrorDialog.openError(getShell(), null, null, exception.getStatus());
+	}
+
+	/**
+	 * @param tabKind The class of the tab that has to be activated.
+	 * @return <code>true</code> if a tab was activated, <code>false</code>
+	 *         otherwise.
+	 */
+	private boolean setActiveTab(Class<? extends ILaunchConfigurationTab> tabKind) {
+		if (tabKind == null) {
+			return false;
+		}
+
+		ILaunchConfigurationTab[] tabs = getTabs();
+
+		// select same tab as before, if possible
+		for (ILaunchConfigurationTab t : tabs) {
+			if (t.getClass().equals(tabKind)) {
+				setActiveTab(t);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
