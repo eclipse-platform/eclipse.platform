@@ -50,6 +50,7 @@
   			<configuration>
   				<useUIHarness>false</useUIHarness>
   			 	<useUIThread>false</useUIThread>
+  			 	<argLine>-Xmx2G ${tycho.surefire.argLine}</argLine>
   			 	<appArgLine>-consoleLog</appArgLine>
   			 	<dependencies>
   			 		<dependency>
