@@ -701,7 +701,7 @@ public class InternalAntRunner {
 				System.setSecurityManager(new AntSecurityManager(originalSM, Thread.currentThread()));
 			}
 			catch (UnsupportedOperationException ex) {
-				AntCorePlugin.getPlugin().getLog().log(new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, 0, InternalAntMessages.InternalAntRunner_SecurityManagerError, null));
+				AntCorePlugin.getPlugin().getLog().log(new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, 0, InternalAntMessages.InternalAntRunner_SecurityManagerError, ex));
 			}
 			if (targets == null) {
 				targets = new Vector<>(1);
