@@ -24,7 +24,7 @@ public class StringPrompt extends PromptingResolver {
 
 	/**
 	 * Prompts the user to input a string.
-	 * @see PromptExpanderBase#prompt()
+	 * @see PromptingResolver#prompt()
 	 */
 	@Override
 	public void prompt() {

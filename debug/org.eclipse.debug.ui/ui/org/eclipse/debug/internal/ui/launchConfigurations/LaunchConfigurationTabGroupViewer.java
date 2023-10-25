@@ -697,11 +697,6 @@ public class LaunchConfigurationTabGroupViewer {
 		}
 	}
 
-	/**
-	 * The input has changed to the given object, possibly <code>null</code>.
-	 *
-	 * @param input the new input, possibly <code>null</code>
-	 */
 	protected void refreshTabs0(boolean refreshTabs) {
 		final boolean refresh = refreshTabs;
 		Runnable r = () -> {
@@ -1111,7 +1106,7 @@ public class LaunchConfigurationTabGroupViewer {
 	}
 
 	/**
-	 * Update apply & revert buttons, as well as buttons and message on the
+	 * Update apply and revert buttons, as well as buttons and message on the
 	 * launch config dialog.
 	 */
 	protected void refreshStatus() {

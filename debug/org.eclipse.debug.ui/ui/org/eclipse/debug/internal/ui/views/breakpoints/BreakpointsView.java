@@ -524,12 +524,12 @@ public class BreakpointsView extends VariablesView implements IBreakpointManager
 	 * Returns whether the given selection can be pasted into the given target.
 	 * <p>
 	 * Scheme:
+	 * </p>
 	 * <ul>
 	 * <li>Breakpoints can only be pasted into allowable containers (i..e. like workings sets)</li>
 	 * <li>Breakpoints can only be pasted into containers that they do not already reside in</li>
 	 * <li>Breakpoints can only be pasted into containers, not other breakpoints</li>
 	 * </ul>
-	 * </p>
 	 *
 	 * @param target target of the paste
 	 * @param selection the selection to paste

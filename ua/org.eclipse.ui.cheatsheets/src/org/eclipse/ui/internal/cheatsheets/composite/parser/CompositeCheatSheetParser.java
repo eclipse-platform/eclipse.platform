@@ -129,7 +129,6 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 	 * its input location
 	 * @param document the document to be parse
 	 * @return A valid composite cheat sheet or null if there was an error
-	 * @return
 	 */
 	public CompositeCheatSheetModel parseCompositeCheatSheet(Document document, URL url)   {
 		status = Status.OK_STATUS;

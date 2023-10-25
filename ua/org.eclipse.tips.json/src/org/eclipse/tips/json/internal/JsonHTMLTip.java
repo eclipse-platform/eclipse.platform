@@ -40,7 +40,7 @@ public class JsonHTMLTip extends Tip implements IJsonTip, IHtmlTip {
 	 * Creates the tip out of the passed Json object.
 	 *
 	 * @param jsonObject the json object
-	 * @param provider   the provider
+	 * @param providerId the provider
 	 * @throws ParseException when the json object could not be parsed.
 	 */
 	public JsonHTMLTip(String providerId, JsonObject jsonObject) throws ParseException {

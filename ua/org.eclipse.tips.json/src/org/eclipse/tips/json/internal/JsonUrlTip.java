@@ -37,7 +37,7 @@ public class JsonUrlTip extends Tip implements IUrlTip, IJsonTip {
 	 * Creates the tip out of the passed Json object.
 	 *
 	 * @param jsonObject the json object
-	 * @param provider   the provider
+	 * @param providerId the provider
 	 * @throws ParseException when the json object could not be parsed.
 	 */
 	public JsonUrlTip(String providerId, JsonObject jsonObject) throws ParseException {

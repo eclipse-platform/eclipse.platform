@@ -512,7 +512,7 @@ public class DefaultLabelProvider implements ILabelProvider {
 	/**
 	 * Returns the given string with special chars in escaped sequences.
 	 *
-	 * @param label
+	 * @param string
 	 * @return the given string with special chars in escaped sequences
 	 * @since 3.3
 	 */

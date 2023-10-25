@@ -57,7 +57,7 @@ public class SWTFactory {
 	 * <b>Note:</b> This is a NOP if the button's layout data is not
 	 * an instance of <code>GridData</code>.
 	 *
-	 * @param	the button for which to set the dimension hint
+	 * @param button the button for which to set the dimension hint
 	 */
 	public static void setButtonDimensionHint(Button button) {
 		Assert.isNotNull(button);
@@ -695,7 +695,6 @@ public class SWTFactory {
 	/**
 	 * This method allows us to open the preference dialog on the specific page, in this case the perspective page
 	 * @param id the id of preference page to show
-	 * @param page the actual page to show
 	 * @since 3.2
 	 */
 	public static void showPreferencePage(String id) {

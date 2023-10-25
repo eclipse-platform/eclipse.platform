@@ -96,9 +96,9 @@ public class DebugElementHelper {
 	}
 
 	/**
-	 * Returns a model presentation to use to retrieve lables & images.
+	 * Returns a model presentation to use to retrieve labels &amp; images.
 	 *
-	 * @return a model presentation to use to retrieve lables & images
+	 * @return a model presentation to use to retrieve labels &amp; images
 	 */
 	public static DelegatingModelPresentation getPresentation() {
 		if (fgPresenetation == null) {

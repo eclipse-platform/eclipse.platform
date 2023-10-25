@@ -48,7 +48,6 @@ public class SeeAlsoPart extends AbstractFormPart implements IHelpPart {
 	/**
 	 * @param parent
 	 * @param toolkit
-	 * @param style
 	 */
 	public SeeAlsoPart(Composite parent, FormToolkit toolkit) {
 		container = toolkit.createComposite(parent);

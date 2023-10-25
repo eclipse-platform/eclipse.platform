@@ -27,7 +27,7 @@ import org.eclipse.debug.ui.IDebugUIConstants;
  * stored at the given key. The type indicates type of the stored preferences
  *
  * The preference store is loaded by the plugin (DebugUIPlugin).
- * @see DebugUIPlugin.initializeDefaultPreferences(IPreferenceStore) - for initialization of the store
+ * @see org.eclipse.debug.internal.ui.DebugUIPlugin#internalInitializeDefaultPluginPreferences() - for initialization of the store
  */
 public interface IDebugPreferenceConstants {
 
@@ -290,7 +290,7 @@ public interface IDebugPreferenceConstants {
 
 	/**
 	 * Preference identifier for the row size in a table rendering.
-	 * This preference is expected to be saved by an </code>IPersistableDebugElement</code>.
+	 * This preference is expected to be saved by an <code>IPersistableDebugElement</code>.
 	 * Memory Blocks can optionally provide and save this preference to customize
 	 * the initial format of a table rendering.
 	 *

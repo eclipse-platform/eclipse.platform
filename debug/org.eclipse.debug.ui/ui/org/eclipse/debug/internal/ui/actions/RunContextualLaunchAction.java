@@ -19,7 +19,7 @@ import org.eclipse.debug.ui.actions.ContextualLaunchAction;
 /**
  * Specialization of <code>ContextualLaunchAction</code> for the run mode
  *
- * @see {@link ContextualLaunchAction}
+ * @see ContextualLaunchAction
  */
 public class RunContextualLaunchAction extends ContextualLaunchAction {
 

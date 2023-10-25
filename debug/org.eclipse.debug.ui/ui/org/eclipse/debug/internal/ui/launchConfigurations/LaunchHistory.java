@@ -98,7 +98,7 @@ public class LaunchHistory implements ILaunchListener, ILaunchConfigurationListe
 
 	/**
 	 * Returns if the current history contains the specified <code>ILaunchConfiguration</code>
-	 * @param config the configuration to look for
+	 * @param configuration the configuration to look for
 	 * @return true if the current history contains the specified configuration, false otherwise
 	 * @since 3.3
 	 */
@@ -280,7 +280,6 @@ public class LaunchHistory implements ILaunchListener, ILaunchConfigurationListe
 	/**
 	 * Returns the launch group associated with this history
 	 *
-	 * @return group
 	 */
 	public ILaunchGroup getLaunchGroup() {
 		return fGroup;
@@ -290,8 +289,6 @@ public class LaunchHistory implements ILaunchListener, ILaunchConfigurationListe
 	 * Returns whether the given configuration is included in the group
 	 * associated with this launch history.
 	 *
-	 * @param launch
-	 * @return boolean
 	 */
 	public boolean accepts(ILaunchConfiguration configuration) {
 		try {

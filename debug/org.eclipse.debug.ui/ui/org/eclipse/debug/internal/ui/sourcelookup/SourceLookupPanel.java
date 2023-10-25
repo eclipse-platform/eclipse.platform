@@ -234,7 +234,7 @@ public class SourceLookupPanel extends AbstractLaunchConfigurationTab implements
 	 * Saving the configuration will result in a change event, which will be picked up by the director
 	 * and used to refresh its internal list.
 	 *
-	 * @param workingCopy the working copy of the configuration that these values should be stored in, may be null.
+	 * @param configuration the working copy of the configuration that these values should be stored in, may be null.
 	 * 	If null, will be written into a working copy of the configuration referenced by the director.
 	 */
 	@Override
@@ -286,9 +286,7 @@ public class SourceLookupPanel extends AbstractLaunchConfigurationTab implements
 	}
 
 	/**
-	 * determines of the current source lookup path is the default path
-	 * @param configuration
-	 * @return
+	 * returns if the current source lookup path is the default path
 	 */
 	protected boolean isDefault() {
 		ISourceContainer[] current = getEntries();

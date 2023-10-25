@@ -762,7 +762,7 @@ public class InternalAntRunner {
 	}
 
 	/**
-	 * Re-maps {@link System.in} to the Ant input stream setter
+	 * Re-maps {@link System#in} to the Ant input stream setter
 	 */
 	protected void remapSystemIn() {
 		if (!isVersionCompatible("1.6")) { //$NON-NLS-1$

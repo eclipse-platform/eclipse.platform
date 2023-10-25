@@ -32,11 +32,7 @@ public class SortBreakpointsAction extends Action {
 
 	/**
 	 * Creates a new action which will sort breakpoints in the given breakpoint
-	 * view using the given breakpoint container factory
-	 *
-	 * @param factory the factory that will be applied to the given view when
-	 *            this action is run
-	 * @param view the breakpoints view
+	 * view 
 	 */
 	public SortBreakpointsAction(BreakpointsView view, String name, int sortingBy) {
 		super(name, IAction.AS_RADIO_BUTTON);

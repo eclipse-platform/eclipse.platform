@@ -57,12 +57,12 @@ public class LaunchConfigurationTabGroupExtension {
 	private Map<Set<String>, String> fPerspectives = null;
 
 	/**
-	 * Constructs a launch configuration tab extension based
-	 * on the given configuration element
+	 * Constructs a launch configuration tab extension based on the given
+	 * configuration element
 	 *
-	 * @param element the configuration element defining the
-	 *  attributes of this launch configuration tab extension
-	 * @return a new launch configuration tab extension
+	 * @param element the configuration element defining the attributes of this
+	 *                launch configuration tab extension
+	 * @returns a new launch configuration tab extension
 	 */
 	public LaunchConfigurationTabGroupExtension(IConfigurationElement element) {
 		setConfigurationElement(element);
@@ -79,11 +79,9 @@ public class LaunchConfigurationTabGroupExtension {
 	}
 
 	/**
-	 * Returns the configuration element that defines the attributes
-	 * for this launch configuration tab group extension.
+	 * {@return the configuration element that defines the attributes
+	 * for this launch configuration tab group extension.}
 	 *
-	 * @param configuration element that defines the attributes
-	 *  for this launch configuration tab extension
 	 */
 	protected IConfigurationElement getConfigurationElement() {
 		return fConfig;

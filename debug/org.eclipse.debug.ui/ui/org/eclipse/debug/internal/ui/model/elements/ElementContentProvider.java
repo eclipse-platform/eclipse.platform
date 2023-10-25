@@ -112,10 +112,6 @@ public abstract class ElementContentProvider implements IElementContentProvider 
 
 	/**
 	 * Computes whether the given element is a container.
-	 *
-	 * @param parent potential parent
-	 * @param context presentation context
-	 * @param monitor result to report to
 	 */
 	protected void retrieveChildCount(IChildrenCountUpdate update) {
 		if (!update.isCanceled()) {
@@ -153,7 +149,7 @@ public abstract class ElementContentProvider implements IElementContentProvider 
 	/**
 	 * Returns the number of children for the given element.
 	 *
-	 * @param elementPath element that may have children
+	 * @param element element that may have children
 	 * @param context context element will be presented in
 	 * @return number of children
 	 * @throws CoreException if an exception occurs determining child count

@@ -392,7 +392,7 @@ public class ModelDelta implements IModelDelta {
 	/**
 	 * Sets this delta's flags.
 	 *
-	 * @param flagsnew flags to set
+	 * @param flags new flags to set
 	 */
 	public void setFlags(int flags) {
 		fFlags = flags;

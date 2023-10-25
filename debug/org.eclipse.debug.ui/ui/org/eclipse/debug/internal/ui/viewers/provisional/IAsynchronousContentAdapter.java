@@ -32,7 +32,7 @@ public interface IAsynchronousContentAdapter {
 	 *
 	 * @param parent the element to retrieve children for
 	 * @param context the context in which children have been requested
-	 * @param monitor request monitor to report children to
+	 * @param result request monitor to report children to
 	 */
 	void retrieveChildren(Object parent, IPresentationContext context, IChildrenRequestMonitor result);
 
@@ -44,7 +44,7 @@ public interface IAsynchronousContentAdapter {
 	 *
 	 * @param element the element on which children may exist
 	 * @param context the context in which children may exist
-	 * @param monitor request monitor to report the result to
+	 * @param result request monitor to report the result to
 	 */
 	void isContainer(Object element, IPresentationContext context, IContainerRequestMonitor result);
 

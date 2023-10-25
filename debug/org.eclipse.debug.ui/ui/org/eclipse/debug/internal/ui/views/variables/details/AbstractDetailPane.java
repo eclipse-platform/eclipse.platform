@@ -114,7 +114,7 @@ public abstract class AbstractDetailPane implements IDetailPane {
 	/**
 	 * Calls the update method of the action with the given action ID.
 	 * The action must exist in the action map and must be an instance of
-	 * </code>IUpdate</code>
+	 * <code>IUpdate</code>
 	 *
 	 * @param actionId The ID of the action to update
 	 */

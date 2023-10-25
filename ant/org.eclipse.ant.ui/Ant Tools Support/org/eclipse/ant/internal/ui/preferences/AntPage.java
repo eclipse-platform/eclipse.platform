@@ -121,8 +121,8 @@ public abstract class AntPage {
 	 * 
 	 * @param parent
 	 *            the control to create the button on
-	 * @param labelKey
-	 *            the key to lookup the button's label
+	 * @param buttonText
+	 *            the text for the Button
 	 * @param buttonId
 	 *            the id to assign to this button
 	 * @return a new and initialized button

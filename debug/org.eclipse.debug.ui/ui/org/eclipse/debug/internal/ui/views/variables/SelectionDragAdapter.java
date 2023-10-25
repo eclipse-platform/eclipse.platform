@@ -39,7 +39,8 @@ public class SelectionDragAdapter extends DragSourceAdapter implements TransferD
 
 	/**
 	 * Constructor, takes the viewer that contains the selection provider
-	 * @param view the associated view, <b>must</b> implement <code>ISelectionProvider</code>
+	 *
+	 * @param viewer the associated viewer
 	 */
 	public SelectionDragAdapter(TreeModelViewer viewer) {
 		Assert.isNotNull(viewer);

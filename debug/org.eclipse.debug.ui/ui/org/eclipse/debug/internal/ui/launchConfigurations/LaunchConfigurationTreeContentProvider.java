@@ -32,7 +32,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
 
 /**
- * Content provider for representing launch configuration types & launch configurations in a tree.
+ * Content provider for representing launch configuration types &amp; launch
+ * configurations in a tree.
  *
  * @since 2.1
  */

@@ -16,17 +16,11 @@ package org.eclipse.debug.internal.ui.launchConfigurations;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.jface.action.Action;
 
-/**
- * OrganizeFavoritesAction
- */
 public class OrganizeFavoritesAction extends Action {
 
-	// launch group identifier
+	/** launch group identifier **/
 	private final String fGroupId;
 
-	/**
-	 * @param text
-	 */
 	public OrganizeFavoritesAction(String launchGroupId) {
 		super(LaunchConfigurationsMessages.OrganizeFavoritesAction_0);
 		fGroupId = launchGroupId;
