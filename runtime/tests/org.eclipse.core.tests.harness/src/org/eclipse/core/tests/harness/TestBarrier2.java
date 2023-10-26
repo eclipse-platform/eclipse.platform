@@ -13,13 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
-import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicIntegerArray;
-import java.util.stream.Collectors;
 import org.junit.Assert;
 
 /**
@@ -103,24 +97,7 @@ public class TestBarrier2 {
 	}
 
 	public static String getThreadDump() {
-		StringBuilder out = new StringBuilder();
-		out.append(" [ThreadDump taken from thread '" + Thread.currentThread().getName() + "' at "
-				+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())) + ":\n");
-		Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
-		Comparator<Entry<Thread, StackTraceElement[]>> byId = Comparator.comparing(e -> e.getKey().getId());
-		for (Entry<Thread, StackTraceElement[]> entry : stackTraces.entrySet().stream().sorted(byId)
-				.collect(Collectors.toList())) {
-			Thread thread = entry.getKey();
-			String name = thread.getName();
-			out.append("   Thread \"" + name + "\" #" + thread.getId() + " prio=" + thread.getPriority() + " "
-					+ thread.getState() + "\n");
-			StackTraceElement[] stack = entry.getValue();
-			for (StackTraceElement se : stack) {
-				out.append("     at " + se + "\n");
-			}
-		}
-		out.append(" ] // ThreadDump end\n");
-		return out.toString();
+		return TestUtil.createThreadDump();
 	}
 
 	private static String getStatus(int status) {
