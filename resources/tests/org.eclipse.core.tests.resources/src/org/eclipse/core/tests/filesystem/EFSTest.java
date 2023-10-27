@@ -24,7 +24,7 @@ import org.junit.Test;
  * Tests public API methods of the class EFS.
  * @see EFS
  */
-public class EFSTest extends FileSystemTest {
+public class EFSTest {
 	@Test
 	public void testGetLocalFileSystem() {
 		IFileSystem system = EFS.getLocalFileSystem();

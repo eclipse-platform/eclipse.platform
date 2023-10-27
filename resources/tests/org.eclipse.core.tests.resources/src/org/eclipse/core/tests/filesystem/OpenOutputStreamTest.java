@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureDoesNotExist;
+import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
@@ -20,15 +24,24 @@ import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.filesystem.FileStoreCreationRule.FileSystemType;
+import org.junit.Rule;
 import org.junit.Test;
 
-public class OpenOutputStreamTest extends FileSystemTest {
+public class OpenOutputStreamTest {
+	@Rule
+	public final FileStoreCreationRule fileStoreRule = new FileStoreCreationRule(FileSystemType.IN_MEMORY);
+
 	@Test
 	public void testAppend() throws Exception {
+		IFileStore baseStore = fileStoreRule.getFileStore();
 		IFileStore file = baseStore.getChild("file");
 		ensureDoesNotExist(file);
 
@@ -53,6 +66,7 @@ public class OpenOutputStreamTest extends FileSystemTest {
 
 	@Test
 	public void testParentExists() throws Exception {
+		IFileStore baseStore = fileStoreRule.getFileStore();
 		IFileStore file = baseStore.getChild("file");
 		ensureDoesNotExist(file);
 
@@ -60,13 +74,23 @@ public class OpenOutputStreamTest extends FileSystemTest {
 			out.write(1);
 		}
 		final IFileInfo info = file.fetchInfo();
-		assertExists("1.0", file);
+		assertExists(file);
 		assertTrue("1.1", !info.isDirectory());
 		assertEquals("1.2", file.getName(), info.getName());
 	}
 
+	private static void assertExists(IFileStore store) throws CoreException {
+		IFileInfo info = store.fetchInfo();
+		assertTrue("store has no file info: " + store, info.exists());
+		// check that the parent knows about it
+		IFileInfo[] children = store.getParent().childInfos(EFS.NONE, getMonitor());
+		List<String> childrenNames = Stream.of(children).map(IFileInfo::getName).collect(Collectors.toList());
+		assertThat(childrenNames, hasItem(store.getName()));
+	}
+
 	@Test
 	public void testParentNotExists() throws CoreException {
+		IFileStore baseStore = fileStoreRule.getFileStore();
 		IFileStore dir = baseStore.getChild("dir");
 		IFileStore file = dir.getChild("file");
 		ensureDoesNotExist(dir);
