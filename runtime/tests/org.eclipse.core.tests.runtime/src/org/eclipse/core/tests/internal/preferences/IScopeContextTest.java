@@ -14,37 +14,30 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.preferences;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.core.tests.runtime.RuntimeTest;
+import org.junit.Test;
 import org.osgi.service.prefs.Preferences;
 
 /**
  * @since 3.0
  */
-public class IScopeContextTest extends RuntimeTest {
+public class IScopeContextTest {
 
-	public IScopeContextTest() {
-		super("");
-	}
-
-	public IScopeContextTest(String name) {
-		super(name);
-	}
-
+	@Test
 	public void testGetNode() {
 		IScopeContext context = InstanceScope.INSTANCE;
 
 		// null
-		try {
-			context.getNode(null);
-			fail("1.0");
-		} catch (IllegalArgumentException e) {
-			// expected
-		}
+		assertThrows(IllegalArgumentException.class, () -> context.getNode(null));
 
 		// valid single segment
 		String qualifier = Long.toString(System.currentTimeMillis());
@@ -63,15 +56,12 @@ public class IScopeContextTest extends RuntimeTest {
 		assertEquals("3.1", expected, actual);
 	}
 
+	@Test
 	public void testBadContext() {
 		IScopeContext context = new BadTestScope();
 		IPreferencesService service = Platform.getPreferencesService();
-		try {
-			context.getNode("qualifier");
-			fail("0.5"); // should throw an exception
-		} catch (RuntimeException e) {
-			// expected
-		}
+		assertThrows(RuntimeException.class, () -> context.getNode("qualifier"));
 		assertNull("1.0", service.getString("qualifier", "foo", null, new IScopeContext[] {context}));
 	}
+
 }
