@@ -14,7 +14,9 @@
 package org.eclipse.core.tests.internal.resources;
 
 import org.eclipse.core.internal.resources.BuildConfiguration;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -40,6 +42,7 @@ public class ProjectReferencesTest extends ResourceTest {
 
 	@Override
 	public void setUp() throws Exception {
+		super.setUp();
 		project0 = getWorkspace().getRoot().getProject("ProjectReferencesTest_p0");
 		project1 = getWorkspace().getRoot().getProject("ProjectReferencesTest_p1");
 		project2 = getWorkspace().getRoot().getProject("ProjectReferencesTest_p2");

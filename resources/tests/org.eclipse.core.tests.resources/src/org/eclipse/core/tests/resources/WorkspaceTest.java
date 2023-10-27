@@ -282,6 +282,7 @@ public class WorkspaceTest extends ResourceTest {
 
 	@Override
 	public void setUp() throws Exception {
+		super.setUp();
 		IProject target = getTestProject();
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		target.create(null, monitor);
