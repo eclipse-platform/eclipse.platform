@@ -13,20 +13,25 @@
  *******************************************************************************/
 package org.eclipse.core.internal.content;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
 
 public class LazyReader extends Reader implements ILazySource {
 	private final int blockCapacity;
 	char[][] blocks = {};
-	private int bufferSize;
+	private long bufferSize;
 	private final Reader in;
-	private int mark;
-	private int offset;
+	private long mark;
+	private long offset;
+	private final long maxBufferSize;
 
 	public LazyReader(Reader in, int blockCapacity) {
 		this.in = in;
 		this.blockCapacity = blockCapacity;
+		// Since Arrays in Java are limited in size (to Integer.MAX_VALUE), the size of
+		// the buffer may never exceed ...
+		maxBufferSize = (long) blockCapacity * Integer.MAX_VALUE;
 	}
 
 	@Override
@@ -37,27 +42,52 @@ public class LazyReader extends Reader implements ILazySource {
 	private int computeBlockSize(int blockIndex) {
 		if (blockIndex < blocks.length - 1)
 			return blockCapacity;
-		int blockSize = bufferSize % blockCapacity;
+		int blockSize = (int) (bufferSize % blockCapacity);
 		return blockSize == 0 ? blockCapacity : blockSize;
 	}
 
-	private int copyFromBuffer(char[] userBuffer, int userOffset, int needed) {
+	private int copyFromBuffer(char[] userBuffer, int userOffset, int needed) throws LowLevelIOException {
 		int copied = 0;
-		int current = offset / blockCapacity;
+		int current = getCurrentBlockIndex();
 		while ((needed - copied) > 0 && current < blocks.length) {
 			int blockSize = computeBlockSize(current);
-			int offsetInBlock = offset % blockCapacity;
+			int offsetInBlock = getOffsetInCurrentBlock();
 			int availableInBlock = blockSize - offsetInBlock;
 			int toCopy = Math.min(availableInBlock, needed - copied);
 			System.arraycopy(blocks[current], offsetInBlock, userBuffer, userOffset + copied, toCopy);
 			copied += toCopy;
 			current++;
-			offset += toCopy;
+			increaseOffset(toCopy);
 		}
 		return copied;
 	}
 
+	private int getCurrentBlockIndex() {
+		return Math.toIntExact(offset / blockCapacity);
+	}
+
+	private int getOffsetInCurrentBlock() {
+		return (int) offset % blockCapacity;
+	}
+
+	private void increaseOffset(long inc) throws LowLevelIOException {
+		checkOffsetIncrease(inc);
+		offset += inc;
+	}
+
+	private void checkOffsetIncrease(long inc) throws LowLevelIOException {
+		if (offset + inc >= maxBufferSize) {
+			// Increasing the offset would go over the maximum capacity
+			throw new LowLevelIOException(
+					new EOFException("This would bring the current offset over the limit: " + maxBufferSize)); //$NON-NLS-1$
+		}
+	}
+
 	private void ensureAvailable(long charsToRead) throws IOException {
+		// Make sure that we won't go over the maximum capacity of the buffer
+		// before even trying to load it
+		checkOffsetIncrease(charsToRead);
+
 		int loadedBlockSize = blockCapacity;
 		while (bufferSize < offset + charsToRead && loadedBlockSize == blockCapacity) {
 			try {
@@ -65,6 +95,8 @@ public class LazyReader extends Reader implements ILazySource {
 			} catch (IOException ioe) {
 				throw new LowLevelIOException(ioe);
 			}
+			// no need to check this like we did before by calling "checkOffsetIncrease"
+			// since checkOffsetIncrease already makes sure that there will be no overflow
 			bufferSize += loadedBlockSize;
 		}
 	}
@@ -75,18 +107,28 @@ public class LazyReader extends Reader implements ILazySource {
 	}
 
 	// for testing purposes
-	protected int getBufferSize() {
+	protected long getBufferSize() {
 		return bufferSize;
 	}
 
 	// for testing purposes
-	protected int getMark() {
+	protected void setBufferSize(long bufferSize) {
+		this.bufferSize = bufferSize;
+	}
+
+	// for testing purposes
+	protected long getMark() {
 		return mark;
 	}
 
 	// for testing purposes
-	protected int getOffset() {
+	protected long getOffset() {
 		return offset;
+	}
+
+	// for testing purposes
+	protected void setOffset(long offset) {
+		this.offset = offset;
 	}
 
 	@Override
@@ -123,8 +165,8 @@ public class LazyReader extends Reader implements ILazySource {
 		ensureAvailable(1);
 		if (bufferSize <= offset)
 			return -1;
-		char nextChar = blocks[offset / blockCapacity][offset % blockCapacity];
-		offset++;
+		char nextChar = blocks[getCurrentBlockIndex()][getOffsetInCurrentBlock()];
+		increaseOffset(1);
 		return nextChar;
 	}
 
@@ -166,7 +208,7 @@ public class LazyReader extends Reader implements ILazySource {
 			return 0;
 		ensureAvailable(toSkip);
 		long skipped = Math.min(toSkip, bufferSize - offset);
-		offset += skipped;
+		increaseOffset(skipped);
 		return skipped;
 	}
 }

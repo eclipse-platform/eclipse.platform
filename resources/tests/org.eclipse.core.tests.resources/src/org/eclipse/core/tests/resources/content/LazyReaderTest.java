@@ -17,7 +17,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.*;
+import java.io.CharArrayReader;
+import java.io.IOException;
+import java.io.Reader;
 import org.eclipse.core.internal.content.LazyReader;
 import org.junit.Test;
 
@@ -41,19 +43,30 @@ public class LazyReaderTest {
 		}
 
 		@Override
-		public int getBufferSize() {
+		public long getBufferSize() {
 			return super.getBufferSize();
 		}
 
 		@Override
-		public int getMark() {
+		protected void setBufferSize(long bufferSize) {
+			super.setBufferSize(bufferSize);
+		}
+
+		@Override
+		public long getMark() {
 			return super.getMark();
 		}
 
 		@Override
-		public int getOffset() {
+		public long getOffset() {
 			return super.getOffset();
 		}
+
+		@Override
+		protected void setOffset(long offset) {
+			super.setOffset(offset);
+		}
+
 	}
 
 	private final static String DATA = "012345678901234567890123456789";
@@ -136,5 +149,36 @@ public class LazyReaderTest {
 		stream.rewind();
 		assertEquals("3.0", 0, stream.getOffset());
 		stream.close();
+	}
+
+	@Test
+	public void testEnsureAvailable_BufferSizeDoesNotOverflow() throws IOException {
+		Reader infinitelyEmpty = new Reader() {
+
+			@Override
+			public int read() throws IOException {
+				return 0;
+			}
+
+			@Override
+			public int read(char[] b, int off, int len) throws IOException {
+				return len;
+			}
+
+			@Override
+			public void close() throws IOException {
+				// nothing to close
+			}
+		};
+
+		try (OpenLazyReader objectUnderTest = new OpenLazyReader(infinitelyEmpty, 10)) {
+			// HACK: needed to avoid filling up the RAM with 0's when calling "skip"
+			objectUnderTest.setBufferSize(Integer.MAX_VALUE);
+			objectUnderTest.setOffset(Integer.MAX_VALUE);
+
+			objectUnderTest.skip(1);
+
+			assertTrue("The buffer size suffered an Overflow", objectUnderTest.getBufferSize() > Integer.MAX_VALUE);
+		}
 	}
 }
