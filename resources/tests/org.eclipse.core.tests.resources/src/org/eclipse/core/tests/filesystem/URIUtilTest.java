@@ -27,7 +27,7 @@ import org.junit.Test;
 /**
  * Tests API methods of the class {@link org.eclipse.core.filesystem.URIUtil}.
  */
-public class URIUtilTest extends FileSystemTest {
+public class URIUtilTest {
 	/**
 	 * Tests API method {@link org.eclipse.core.filesystem.URIUtil#equals(java.net.URI, java.net.URI)}.
 	 */

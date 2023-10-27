@@ -20,7 +20,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.filesystem.FileSystemTest;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.junit.After;
 import org.junit.Before;
@@ -29,21 +28,17 @@ import org.junit.Test;
 /**
  * Tests for {@link FileUtil} class.
  */
-public class FileUtilTest extends FileSystemTest {
+public class FileUtilTest {
 	private IPath baseTestDir;
 
 	@Before
-	@Override
 	public void setUp() throws Exception {
-		super.setUp();
 		baseTestDir = FileSystemHelper.getRandomLocation();
 		baseTestDir.toFile().mkdirs();
 	}
 
 	@After
-	@Override
 	public void tearDown() throws Exception {
-		super.tearDown();
 		FileSystemHelper.clear(baseTestDir.toFile());
 	}
 

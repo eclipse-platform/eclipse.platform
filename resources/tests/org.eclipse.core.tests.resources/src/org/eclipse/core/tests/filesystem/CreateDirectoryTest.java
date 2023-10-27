@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureDoesNotExist;
+import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureExists;
+import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
@@ -27,20 +30,28 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.tests.filesystem.FileStoreCreationRule.FileSystemType;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * Black box testing of mkdir method.
  */
-public class CreateDirectoryTest extends FileSystemTest {
+public class CreateDirectoryTest {
 	protected IFileStore topDir, subDir, file, subFile;
 
+	@Rule
+	public final FileStoreCreationRule localFileStoreRule = new FileStoreCreationRule(FileSystemType.LOCAL);
+
+	@Rule
+	public final FileStoreCreationRule inMemoryFileStoreRule = new FileStoreCreationRule(FileSystemType.IN_MEMORY);
+
 	@Before
-	@Override
 	public void setUp() throws Exception {
-		super.setUp();
+		IFileStore baseStore = inMemoryFileStoreRule.getFileStore();
+		baseStore.mkdir(EFS.NONE, null);
 		topDir = baseStore.getChild("topDir");
 		subDir = topDir.getChild("subDir");
 		file = baseStore.getChild("file");
@@ -51,9 +62,7 @@ public class CreateDirectoryTest extends FileSystemTest {
 	}
 
 	@After
-	@Override
 	public void tearDown() throws Exception {
-		super.tearDown();
 		ensureDoesNotExist(topDir);
 		ensureDoesNotExist(file);
 	}
@@ -115,7 +124,9 @@ public class CreateDirectoryTest extends FileSystemTest {
 	}
 
 	@Test
-	public void testParentNotExistsShallowInLocalFile() {
+	public void testParentNotExistsShallowInLocalFile() throws CoreException {
+		IFileStore localFileBaseStore = localFileStoreRule.getFileStore();
+		localFileBaseStore.delete(EFS.NONE, getMonitor());
 		CoreException e = assertThrows(CoreException.class, () -> {
 			IFileStore localFileTopDir = localFileBaseStore.getChild("topDir");
 			localFileTopDir.mkdir(EFS.SHALLOW, getMonitor());
@@ -126,6 +137,8 @@ public class CreateDirectoryTest extends FileSystemTest {
 
 	@Test
 	public void testTargetIsFileInLocalFile() throws Exception {
+		IFileStore localFileBaseStore = localFileStoreRule.getFileStore();
+		localFileBaseStore.delete(EFS.NONE, getMonitor());
 		CoreException e = assertThrows(CoreException.class, () -> {
 			ensureExists(localFileBaseStore, true);
 			IFileStore localFileTopDir = localFileBaseStore.getChild("topDir");

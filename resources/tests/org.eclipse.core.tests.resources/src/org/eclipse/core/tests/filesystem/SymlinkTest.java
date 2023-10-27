@@ -21,6 +21,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureDoesNotExist;
+import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureExists;
+import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -32,18 +35,16 @@ import java.io.OutputStream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.filesystem.IFileSystem;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.tests.filesystem.FileStoreCreationRule.FileSystemType;
 import org.eclipse.core.tests.harness.FileSystemHelper;
-import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-public class SymlinkTest extends FileSystemTest {
+public class SymlinkTest {
 	/**
 	 * Symbolic links on Windows behave differently compared to Unix-based systems. Symbolic links
 	 * on Windows have their own set of attributes independent from the attributes of the link's
@@ -59,12 +60,13 @@ public class SymlinkTest extends FileSystemTest {
 	protected IFileStore lDir, lFile; //symlink to Dir, File
 	protected IFileStore llDir, llFile; //link to link to Dir, File
 
-	public static IFileSystem getFileSystem() throws CoreException {
-		return EFS.getFileSystem(EFS.SCHEME_FILE);
-	}
+	@Rule
+	public final FileStoreCreationRule fileStoreRule = new FileStoreCreationRule(FileSystemType.LOCAL);
 
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
+	@Before
+	public void assumeSymbolicLinksAvailable() throws Exception {
+		assumeTrue("Can't create symbolic links in this platform: " + Platform.getOS(),
+				FileSystemHelper.canCreateSymLinks());
 	}
 
 	protected void fetchFileInfos() {
@@ -81,6 +83,7 @@ public class SymlinkTest extends FileSystemTest {
 	}
 
 	protected void makeLinkStructure() throws CoreException, IOException {
+		IFileStore baseStore = fileStoreRule.getFileStore();
 		aDir = baseStore.getChild("aDir");
 		aFile = baseStore.getChild("aFile");
 		lDir = baseStore.getChild("lDir");
@@ -98,23 +101,6 @@ public class SymlinkTest extends FileSystemTest {
 
 	protected void mkLink(IFileStore dir, String src, String tgt, boolean isDir) throws IOException, CoreException {
 		FileSystemHelper.createSymLink(dir.toLocalFile(EFS.NONE, getMonitor()), src, tgt, isDir);
-	}
-
-	@Before
-	@Override
-	public void setUp() throws Exception {
-		assumeTrue("Can't create symbolic links in this platform: " + Platform.getOS(),
-				FileSystemHelper.canCreateSymLinks());
-		super.setUp();
-		baseStore = getFileSystem().getStore(getWorkspace().getRoot().getLocation().append("temp"));
-		baseStore.mkdir(EFS.NONE, null);
-	}
-
-	@After
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-		baseStore.delete(EFS.NONE, null);
 	}
 
 	@Test
@@ -164,6 +150,7 @@ public class SymlinkTest extends FileSystemTest {
 	// Moving a broken symlink is possible.
 	@Test
 	public void testBrokenSymlinkMove() throws Exception {
+		IFileStore baseStore = fileStoreRule.getFileStore();
 		makeLinkStructure();
 		ensureDoesNotExist(aFile);
 		ensureDoesNotExist(aDir);
@@ -207,6 +194,7 @@ public class SymlinkTest extends FileSystemTest {
 	// Removing a broken symlink is possible.
 	@Test
 	public void testBrokenSymlinkRemove() throws Exception {
+		IFileStore baseStore = fileStoreRule.getFileStore();
 		makeLinkStructure();
 		ensureDoesNotExist(aFile);
 		ensureDoesNotExist(aDir);
@@ -224,6 +212,7 @@ public class SymlinkTest extends FileSystemTest {
 
 	@Test
 	public void testRecursiveSymlink() throws Exception {
+		IFileStore baseStore = fileStoreRule.getFileStore();
 		mkLink(baseStore, "l1", "l2", false);
 		mkLink(baseStore, "l2", "l1", false);
 		IFileStore l1 = baseStore.getChild("l1");
@@ -361,6 +350,7 @@ public class SymlinkTest extends FileSystemTest {
 	 * TODO Fix this test.  See https://bugs.eclipse.org/bugs/show_bug.cgi?id=172346
 	 */
 	public void _testSymlinkExtendedChars() throws Exception {
+		IFileStore baseStore = fileStoreRule.getFileStore();
 		IFileStore childDir = baseStore.getChild(specialCharName);
 		ensureExists(childDir, true);
 		IFileStore childFile = baseStore.getChild("ff" + specialCharName);
@@ -524,6 +514,14 @@ public class SymlinkTest extends FileSystemTest {
 		// Check that the contents of the directory are preserved.
 		IFileInfo iFileInsideDir = childFile.fetchInfo();
 		assertTrue(iFileInsideDir.exists());
+	}
+
+	/**
+	 * Checks whether the local file system supports accessing and modifying the
+	 * given attribute.
+	 */
+	private static boolean isAttributeSupported(int attribute) {
+		return (EFS.getLocalFileSystem().attributes() & attribute) != 0;
 	}
 
 }

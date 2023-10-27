@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,7 +38,7 @@ import org.junit.Test;
 /**
  * Tests the file caching provided by FileStore.toLocalFile.
  */
-public class FileCacheTest extends FileSystemTest {
+public class FileCacheTest {
 
 	/**
 	 * Returns the byte[] contents of the given file.
@@ -49,16 +50,12 @@ public class FileCacheTest extends FileSystemTest {
 	}
 
 	@Before
-	@Override
 	public void setUp() throws Exception {
-		super.setUp();
 		MemoryTree.TREE.deleteAll();
 	}
 
 	@After
-	@Override
 	public void tearDown() throws Exception {
-		super.tearDown();
 		MemoryTree.TREE.deleteAll();
 	}
 
