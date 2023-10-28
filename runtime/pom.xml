@@ -23,7 +23,7 @@
 
   <modules>
     <module>bundles</module>
-    <module>features/org.eclipse.core.runtime.feature</module>
+    <module>features</module>
     <module>tests</module>
   </modules>
 
