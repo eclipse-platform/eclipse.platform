@@ -250,12 +250,12 @@ public class MessageFactoryServiceImpl implements IMessageFactoryService {
 	 * @param messageClass
 	 *            The type of the message class whose instance is requested.
 	 */
+	@SuppressWarnings("restriction")
 	private void processPostConstruct(Object messageObject, Class<?> messageClass) {
 		if (messageObject != null) {
 			Method[] methods = messageClass.getDeclaredMethods();
 			for (Method method : methods) {
-				if (!method.isAnnotationPresent(javax.annotation.PostConstruct.class)
-						&& !method.isAnnotationPresent(jakarta.annotation.PostConstruct.class)) {
+				if (!org.eclipse.e4.core.internal.di.AnnotationLookup.POST_CONSTRUCT.isPresent(method)) {
 					continue;
 				} else {
 					try {

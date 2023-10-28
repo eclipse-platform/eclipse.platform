@@ -34,13 +34,14 @@ import org.eclipse.e4.core.internal.contexts.EclipseContext;
  * <p>
  * If annotations are supported by the runtime, matching of methods and fields
  * to be injected is also performed using the annotations defined in packages
- * javax.inject and org.eclipse.e4.core.di.annotations.
+ * jakarta.inject and org.eclipse.e4.core.di.annotations.
  * </p>
  * <p>
  * The injection of values is generally done as a number of calls. User objects
  * that want to finalize the injected data (for instance, to perform
  * calculations based on multiple injected values) can place such calculations
- * in a method with the <code>javax.annotation.PostConstruct</code> annotation.
+ * in a method with the <code>jakarta.annotation.PostConstruct</code>
+ * annotation.
  * </p>
  * <p>
  * When injecting values, all fields are injected prior to injection of methods.
@@ -55,7 +56,7 @@ import org.eclipse.e4.core.internal.contexts.EclipseContext;
  * <p>
  * When a context is disposed, the injection factory will attempt to notify all
  * injected objects by calling methods with the
- * <code>javax.annotation.PreDestroy</code> annotation.
+ * <code>jakarta.annotation.PreDestroy</code> annotation.
  *
  * This class is not intended to be extended by clients.
  *
