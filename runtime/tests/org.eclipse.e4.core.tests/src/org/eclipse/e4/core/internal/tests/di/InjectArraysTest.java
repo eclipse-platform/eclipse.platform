@@ -17,13 +17,13 @@ package org.eclipse.e4.core.internal.tests.di;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.junit.Test;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * Checks injection of arrays
