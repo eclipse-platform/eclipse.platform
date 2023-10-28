@@ -18,14 +18,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.junit.Test;
 import org.osgi.service.prefs.BackingStoreException;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * This test should be execute without an OSGI runtime running to verfiy BR

@@ -2,9 +2,9 @@ package org.eclipse.e4.core.internal.tests.nls;
 
 import java.text.MessageFormat;
 
-import javax.annotation.PostConstruct;
-
 import org.eclipse.e4.core.services.nls.Message;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * Load messages from a resource folder in the plugin
