@@ -16,6 +16,7 @@
  *******************************************************************************/
 package org.eclipse.e4.core.di.internal.extensions;
 
+import jakarta.annotation.PreDestroy;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -26,7 +27,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import javax.annotation.PreDestroy;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.IInjector;
 import org.eclipse.e4.core.di.InjectionException;

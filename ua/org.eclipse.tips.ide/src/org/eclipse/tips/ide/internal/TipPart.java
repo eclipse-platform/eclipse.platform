@@ -1,11 +1,11 @@
 package org.eclipse.tips.ide.internal;
 
-import javax.annotation.PostConstruct;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.tips.ui.internal.TipComposite;
+
+import jakarta.annotation.PostConstruct;
 
 public class TipPart {
 
