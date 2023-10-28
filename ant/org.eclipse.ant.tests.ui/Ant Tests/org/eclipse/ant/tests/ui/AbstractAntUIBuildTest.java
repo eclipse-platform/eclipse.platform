@@ -68,7 +68,6 @@ public abstract class AbstractAntUIBuildTest extends AbstractAntUITest {
 	 * to the console.
 	 *
 	 * @param config the config to execute
-	 * @return thread in which the first suspend event occurred
 	 */
 	protected void launch(ILaunchConfiguration config) throws CoreException {
 		launchAndTerminate(config, 20000);

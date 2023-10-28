@@ -384,7 +384,6 @@ public abstract class AbstractAntUITest extends TestCase {
 	 *
 	 * @param buildFileName
 	 *            build file to launch
-	 * @return thread in which the first suspend event occurred
 	 */
 	protected void launchWithDebug(String buildFileName) throws CoreException {
 		ILaunchConfiguration config = getLaunchConfiguration(buildFileName);
@@ -483,8 +482,6 @@ public abstract class AbstractAntUITest extends TestCase {
 	 * @param waiter
 	 *            the event waiter to use
 	 * @return Object the source of the event
-	 * @exception Exception
-	 *                if the event is never received.
 	 */
 	protected Object launchAndWait(ILaunchConfiguration configuration, DebugEventWaiter waiter) throws CoreException {
 		ILaunch launch = configuration.launch(ILaunchManager.RUN_MODE, null);

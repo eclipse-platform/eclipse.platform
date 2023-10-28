@@ -227,9 +227,8 @@ public class AntEditorTests extends AbstractAntUITest {
 
 	/**
 	 * Tests that the augment task can open in the Ant editor
-	 * 
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=377075
-	 * @throws Exception
+	 *
+	 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=377075
 	 */
 	public void testAugmentOpenInEditor() throws Exception {
 		IFile file = getIFile("bug377075.ent"); //$NON-NLS-1$
@@ -239,9 +238,8 @@ public class AntEditorTests extends AbstractAntUITest {
 
 	/**
 	 * Tests that the augment task can be shown and has the correct additions
-	 * 
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=377075
-	 * @throws Exception
+	 *
+	 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=377075
 	 */
 	public void testAugmentOpenAndSelect() throws Exception {
 		IFile file = getIFile("bug377075.ent"); //$NON-NLS-1$
@@ -256,9 +254,8 @@ public class AntEditorTests extends AbstractAntUITest {
 
 	/**
 	 * Tests that the element augmented by the augment task properly displays the augmented elements when hovering
-	 * 
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=377075
-	 * @throws Exception
+	 *
+	 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=377075
 	 */
 	public void testAugmentOpenSelectHover() throws Exception {
 		IFile file = getIFile("bug377075.ent"); //$NON-NLS-1$
@@ -279,9 +276,8 @@ public class AntEditorTests extends AbstractAntUITest {
 
 	/**
 	 * Tests that the Ant editor is resilient to using an Augment task that references an unknown id
-	 * 
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=396219
-	 * @throws Exception
+	 *
+	 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=396219
 	 */
 	public void testAugmentMissingId() throws Exception {
 		IFile file = getIFile("bug396219.ent"); //$NON-NLS-1$
