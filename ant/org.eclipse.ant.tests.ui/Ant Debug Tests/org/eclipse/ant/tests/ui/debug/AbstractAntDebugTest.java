@@ -147,8 +147,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 * @param waiter
 	 *            the event waiter to use
 	 * @return Object the source of the event
-	 * @exception Exception
-	 *                if the event is never received.
 	 */
 	@Override
 	protected Object launchAndWait(ILaunchConfiguration configuration, DebugEventWaiter waiter) throws CoreException {
@@ -166,8 +164,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 * @param register
 	 *            whether to register the launch
 	 * @return Object the source of the event
-	 * @exception Exception
-	 *                if the event is never received.
 	 */
 	protected Object launchAndWait(ILaunchConfiguration configuration, DebugEventWaiter waiter, boolean register) throws CoreException {
 		ILaunch launch = configuration.launch(ILaunchManager.DEBUG_MODE, null, false, register);
