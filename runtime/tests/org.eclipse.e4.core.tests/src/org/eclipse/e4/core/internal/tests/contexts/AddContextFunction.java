@@ -15,12 +15,15 @@
 package org.eclipse.e4.core.internal.tests.contexts;
 
 import org.eclipse.e4.core.contexts.ContextFunction;
+import org.eclipse.e4.core.contexts.IContextFunction;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.osgi.service.component.annotations.Component;
 
 
 /**
  * A function provided as a declarative service. See OSGI-INF/adder.xml.
  */
+@Component(service = IContextFunction.class, property = "service.context.key:String=sum")
 public class AddContextFunction extends ContextFunction {
 
 	@Override
