@@ -1,4 +1,4 @@
-package secure.eclipse.authentication.provider;
+package org.eclipse.core.pki;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
