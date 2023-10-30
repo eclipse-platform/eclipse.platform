@@ -1,4 +1,4 @@
-package secure.eclipse.authentication.provider;
+package org.eclipse.core.pki;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;

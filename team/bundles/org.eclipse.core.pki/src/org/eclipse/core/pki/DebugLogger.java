@@ -1,4 +1,4 @@
-package secure.eclipse.authentication.provider.debug;
+package org.eclipse.core.pki;
 
 public class DebugLogger {
 	public static boolean enableDebugLogging = false;

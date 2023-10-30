@@ -1,4 +1,4 @@
-package secure.eclipse.authentication.provider;
+package org.eclipse.core.pki;
 
 import java.net.Socket;
 import java.security.KeyStore;
@@ -17,7 +17,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509ExtendedTrustManager;
 
-import secure.eclipse.authentication.provider.debug.DebugLogger;
 
 public class CustomTrustManager extends X509ExtendedTrustManager implements TrustManager {
 	private KeyStore trustStore;
@@ -29,7 +28,7 @@ public class CustomTrustManager extends X509ExtendedTrustManager implements Trus
 		this.trustStore=trustStore;
 		DebugLogger.printDebug("CustomTrustManager -- CONSTRUCTOR  ALG:"+TrustManagerFactory.getDefaultAlgorithm());
 		try {
-			//Security.getAlgorithms("SunPKCS11-CSPid");
+			
 			//Security.getAlgorithms("SunPKCS11-NSS-FIPS");
 			//Security.getAlgorithms("SunPKCS11");
 			Security.getAlgorithms("PKCS11");
