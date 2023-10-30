@@ -1,4 +1,4 @@
-package secure.eclipse.authentication.provider;
+package org.eclipse.core.pki;
 
 import java.net.InetAddress;
 import java.net.Socket;
@@ -18,8 +18,6 @@ import java.util.HashMap;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.X509ExtendedKeyManager;
 import javax.net.ssl.X509KeyManager;
-
-import secure.eclipse.authentication.provider.debug.DebugLogger;
 
 public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyManager {
 	private static final int KEY_ENCIPHERMENT = 2;
@@ -95,7 +93,7 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 			e.printStackTrace();
 		}
 		if (!(isOK)) {
-			message = (selectedAlias == null) ? "PKI misconfiguration. Please check cspid" : message + selectedAlias;
+			message = (selectedAlias == null) ? "PKI misconfiguration. Please check pkcs11" : message + selectedAlias;
 			System.out.println("KeyManager: "+message);
 		}
 		return selectedAlias;
@@ -139,7 +137,7 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 					if (!(isKeyEncipherment(X509Cert.getKeyUsage()))) {
 						X509Certs[i] = X509Cert;
 					} else {
-						if ((isKeyEncipherment(X509Cert.getKeyUsage())) && alias.contains("IC PKI")) {
+						if ((isKeyEncipherment(X509Cert.getKeyUsage())) && alias.contains("PKI")) {
 							X509Certs[i] = X509Cert;
 						}
 					}
@@ -152,7 +150,7 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 					if (isDigitalSignature(X509Cert.getKeyUsage()) ) {
 						X509Certs[0] = X509Cert;
 					} else {
-						if (alias.contains("IC PKI")) {
+						if (alias.contains("PKI")) {
 							X509Certs[0] = X509Cert;
 						}
 					}
@@ -214,6 +212,5 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 	}
 	public void setSelectedFingerprint(String selectedFingerprint) {
 		CustomKeyManager.selectedFingerprint = selectedFingerprint;
-	}
-	
+	}	
 }
