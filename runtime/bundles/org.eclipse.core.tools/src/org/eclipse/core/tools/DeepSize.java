@@ -14,8 +14,14 @@
 package org.eclipse.core.tools;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * How to use DeepSize:
@@ -111,16 +117,22 @@ public class DeepSize {
 
 	Set<String> getDefaultIgnoreTypeNames() {
 		Set<String> ignored = new HashSet<>();
-		String[] ignore = {"org.eclipse.core.runtime.Plugin", "java.lang.ClassLoader", "org.eclipse.team.internal.ccvs.core.CVSTeamProvider", "org.eclipse.core.internal.events.BuilderPersistentInfo", "org.eclipse.core.internal.resources.Workspace", "org.eclipse.core.internal.events.EventStats", "java.net.URL"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-6$
+		String[] ignore = { "org.eclipse.core.runtime.Plugin", "java.lang.ClassLoader", //$NON-NLS-1$ //$NON-NLS-2$
+				"org.eclipse.team.internal.ccvs.core.CVSTeamProvider",
+				"org.eclipse.core.internal.events.BuilderPersistentInfo",
+				"org.eclipse.core.internal.resources.Workspace", "org.eclipse.core.internal.events.EventStats", //$NON-NLS-2$
+				"java.net.URL" };
 		Collections.addAll(ignored, ignore);
 		return ignored;
 	}
 
 	private Object getFieldObject(Field f, Object o) {
 		try {
-			f.setAccessible(true);
+			if (!f.canAccess(o)) {
+				f.setAccessible(true);
+			}
 			return f.get(o);
-		} catch (IllegalAccessException e) {
+		} catch (IllegalAccessException | IllegalArgumentException e) {
 			throw new Error(e.toString());
 		}
 	}
@@ -167,10 +179,10 @@ public class DeepSize {
 		if (o == null)
 			return 0;
 		if (ignore(o))
-			return 0;
+			return POINTER_SIZE;
 		Class<?> clazz = o.getClass();
 		if (shouldIgnoreType(clazz))
-			return 0;
+			return POINTER_SIZE;
 		return clazz.isArray() ? sizeOfArray(clazz, o) : sizeOfObject(clazz, o);
 	}
 
@@ -229,7 +241,12 @@ public class DeepSize {
 						shallowSize += sizeOfPrimitiveField(fieldType);
 					} else {
 						shallowSize += POINTER_SIZE;
-						internalSize += sizeOf(getFieldObject(f, o));
+						try {
+							internalSize += sizeOf(getFieldObject(f, o));
+						} catch (InaccessibleObjectException e) {
+							// Don't fail on new module borders...
+							internalSize += POINTER_SIZE;
+						}
 					}
 				}
 			}
