@@ -269,46 +269,7 @@ public class LaunchConfigurationTabGroupViewer {
 		gd = new GridData();
 		fOptionsErrorLabel.setLayoutData(gd);
 
-		fOptionsLink = new Link(linkComp, SWT.WRAP);
-		fOptionsLink.setFont(linkComp.getFont());
-		gd = new GridData(SWT.LEFT);
-		gd.grabExcessHorizontalSpace = true;
-		fOptionsLink.setLayoutData(gd);
-		fOptionsLink.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				//collect the options available
-				try {
-					if(!canLaunchWithModes()) {
-						SelectLaunchModesDialog sld = new SelectLaunchModesDialog(getShell(),
-								getLaunchConfigurationDialog().getMode(), getWorkingCopy());
-						if(sld.open() == IDialogConstants.OK_ID) {
-							//set the options to the config
-							Object[] res = sld.getResult();
-							if(res != null) {
-								@SuppressWarnings("unchecked")
-								Set<String> modes = (Set<String>) res[0];
-								modes.remove(getLaunchConfigurationDialog().getMode());
-								ILaunchConfigurationWorkingCopy wc = getWorkingCopy();
-								wc.setModes(modes);
-								refreshStatus();
-							}
-						}
-					}
-					else if(hasMultipleDelegates()) {
-						SelectLaunchersDialog sldd = new SelectLaunchersDialog(getShell(),
-								getWorkingCopy().getType().getDelegates(getCurrentModeSet()),
-								getWorkingCopy(),
-								getLaunchConfigurationDialog().getMode());
-						if(sldd.open() == IDialogConstants.OK_ID) {
-							displayInstanceTabs(true);
-							refreshStatus();
-						}
-					}
-				} catch (CoreException ex) {}
-			}
-		});
-		fOptionsLink.setVisible(false);
+		createOptionsLink(linkComp);
 
 		buttonComp = SWTFactory.createComposite(blComp, 3, 1, GridData.HORIZONTAL_ALIGN_END);
 
@@ -345,6 +306,50 @@ public class LaunchConfigurationTabGroupViewer {
 			}
 		});
 		Dialog.applyDialogFont(parent);
+	}
+
+	private void createOptionsLink(Composite linkComp) {
+		GridData gd;
+		fOptionsLink = new Link(linkComp, SWT.WRAP);
+		fOptionsLink.setFont(linkComp.getFont());
+		gd = new GridData(SWT.LEFT);
+		gd.grabExcessHorizontalSpace = true;
+		fOptionsLink.setLayoutData(gd);
+		fOptionsLink.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// collect the options available
+				try {
+					if (!canLaunchWithModes()) {
+						SelectLaunchModesDialog sld = new SelectLaunchModesDialog(getShell(),
+								getLaunchConfigurationDialog().getMode(), getWorkingCopy());
+						if (sld.open() == IDialogConstants.OK_ID) {
+							// set the options to the config
+							Object[] res = sld.getResult();
+							if (res != null) {
+								@SuppressWarnings("unchecked")
+								Set<String> modes = (Set<String>) res[0];
+								modes.remove(getLaunchConfigurationDialog().getMode());
+								ILaunchConfigurationWorkingCopy wc = getWorkingCopy();
+								wc.setModes(modes);
+								refreshStatus();
+							}
+						}
+					} else if (hasMultipleDelegates()) {
+						SelectLaunchersDialog sldd = new SelectLaunchersDialog(getShell(),
+								getWorkingCopy().getType().getDelegates(getCurrentModeSet()), getWorkingCopy(),
+								getLaunchConfigurationDialog().getMode());
+						if (sldd.open() == IDialogConstants.OK_ID) {
+							displayInstanceTabs(true);
+							refreshStatus();
+						}
+					}
+				} catch (CoreException ex) {
+					// ignore
+				}
+			}
+		});
+		fOptionsLink.setVisible(false);
 	}
 
 	/**
@@ -391,8 +396,8 @@ public class LaunchConfigurationTabGroupViewer {
 	private void createTabFolder(Composite parent) {
 		if (fTabFolder == null) {
 			ColorRegistry reg = JFaceResources.getColorRegistry();
-			Color c1 = reg.get("org.eclipse.ui.workbench.ACTIVE_TAB_BG_START"), //$NON-NLS-1$
-				  c2 = reg.get("org.eclipse.ui.workbench.ACTIVE_TAB_BG_END"); //$NON-NLS-1$
+			Color c1 = reg.get("org.eclipse.ui.workbench.ACTIVE_TAB_BG_START"); //$NON-NLS-1$
+			Color c2 = reg.get("org.eclipse.ui.workbench.ACTIVE_TAB_BG_END"); //$NON-NLS-1$
 			fTabFolder = new CTabFolder(parent, SWT.NO_REDRAW_RESIZE | SWT.FLAT);
 			fTabFolder.setSelectionBackground(new Color[] {c1, c2},	new int[] {100}, true);
 			fTabFolder.setSelectionForeground(reg.get("org.eclipse.ui.workbench.ACTIVE_TAB_TEXT_COLOR")); //$NON-NLS-1$
@@ -513,41 +518,44 @@ public class LaunchConfigurationTabGroupViewer {
 			return;
 		}
 		ILaunchConfigurationTab[] tabs = getTabs();
-		if (tabs != null) {
-			// update the working copy from the active tab
-			boolean newwc = !getWorkingCopy().isDirty();
-			ILaunchConfigurationTab tab = getActiveTab();
-			if (tab != null) {
-				tab.performApply(getWorkingCopy());
-			}
-			if((fOriginal instanceof ILaunchConfigurationWorkingCopy) && newwc) {
-				try {
-					ILaunchConfigurationWorkingCopy copy = getWorkingCopy();
-					if(copy != null) {
-						copy.doSave();
-					}
-				}
-				catch (CoreException e) {DebugUIPlugin.log(e);}
-			}
-			updateButtons();
-			// update error ticks
-			CTabItem item = null;
-			boolean error = false;
-			Image image = null;
-			for (int i = 0; i < tabs.length; i++) {
-				item = fTabFolder.getItem(i);
-				image = tabs[i].getImage();
-				item.setImage(image);
-				if(!tabs[i].isValid(getWorkingCopy())) {
-					error = tabs[i].getErrorMessage() != null;
-					if(error) {
-						item.setImage(DebugUIPlugin.getDefault().getLaunchConfigurationManager().getErrorTabImage(tabs[i]));
-					}
-				}
-			}
-			showLink();
-			getLaunchConfigurationDialog().updateMessage();
+		if (tabs == null) {
+			return;
 		}
+		// update the working copy from the active tab
+		boolean newwc = !getWorkingCopy().isDirty();
+		ILaunchConfigurationTab tab = getActiveTab();
+		if (tab != null) {
+			tab.performApply(getWorkingCopy());
+		}
+		if ((fOriginal instanceof ILaunchConfigurationWorkingCopy) && newwc) {
+			try {
+				ILaunchConfigurationWorkingCopy copy = getWorkingCopy();
+				if (copy != null) {
+					copy.doSave();
+				}
+			}
+			catch (CoreException e) {
+				DebugUIPlugin.log(e);
+			}
+		}
+		updateButtons();
+		// update error ticks
+		CTabItem item = null;
+		boolean error = false;
+		Image image = null;
+		for (int i = 0; i < tabs.length; i++) {
+			item = fTabFolder.getItem(i);
+			image = tabs[i].getImage();
+			item.setImage(image);
+			if (!tabs[i].isValid(getWorkingCopy())) {
+				error = tabs[i].getErrorMessage() != null;
+				if (error) {
+					item.setImage(DebugUIPlugin.getDefault().getLaunchConfigurationManager().getErrorTabImage(tabs[i]));
+				}
+			}
+		}
+		showLink();
+		getLaunchConfigurationDialog().updateMessage();
 	}
 
 	/**
@@ -568,7 +576,8 @@ public class LaunchConfigurationTabGroupViewer {
 					text = LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_15;
 				}
 				else {
-					text = MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_16, new Object[] { name });
+					text = MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_16,
+							name);
 				}
 			}
 			else {
@@ -715,8 +724,7 @@ public class LaunchConfigurationTabGroupViewer {
 		Runnable r = () -> {
 			try {
 				fViewform.setRedraw(false);
-				if (finput instanceof ILaunchConfiguration) {
-					ILaunchConfiguration configuration = (ILaunchConfiguration) finput;
+				if (finput instanceof ILaunchConfiguration configuration) {
 					boolean refreshTabs = true;
 					if (fWorkingCopy != null
 							&& fWorkingCopy.getOriginal().equals(configuration.getWorkingCopy().getOriginal())) {
@@ -726,8 +734,8 @@ public class LaunchConfigurationTabGroupViewer {
 					fWorkingCopy = configuration.getWorkingCopy();
 					// Need to refresh all the time as tabs might have changed
 					displayInstanceTabs(refreshTabs);
-				} else if (finput instanceof ILaunchConfigurationType) {
-					fDescription = getDescription((ILaunchConfigurationType) finput);
+				} else if (finput instanceof ILaunchConfigurationType configuration) {
+					fDescription = getDescription(configuration);
 					setNoInput();
 				} else {
 					setNoInput();
@@ -756,10 +764,8 @@ public class LaunchConfigurationTabGroupViewer {
 		updateVisibleControls(false);
 		updateShowCommandLineVisibility(false);
 		ILaunchConfigurationDialog lcd = getLaunchConfigurationDialog();
-		if(lcd instanceof LaunchConfigurationsDialog) {
-			if(((LaunchConfigurationsDialog)lcd).isTreeSelectionEmpty()) {
-				fDescription = IInternalDebugCoreConstants.EMPTY_STRING;
-			}
+		if (lcd instanceof LaunchConfigurationsDialog dialog && dialog.isTreeSelectionEmpty()) {
+			fDescription = IInternalDebugCoreConstants.EMPTY_STRING;
 		}
 	}
 
@@ -847,17 +853,14 @@ public class LaunchConfigurationTabGroupViewer {
 		}
 		// show the name area
 		updateVisibleControls(true);
-		if (type.supportsCommandLine()) {
-			updateShowCommandLineVisibility(true);
-		}
-		else {
-			updateShowCommandLineVisibility(false);
-		}
+		updateShowCommandLineVisibility(type.supportsCommandLine());
 
 		// Retrieve the current tab group.  If there is none, clean up and leave
 		ILaunchConfigurationTabGroup tabGroup = getTabGroup();
 		if (tabGroup == null) {
-			IStatus status = new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), 0, MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_No_tabs_defined_for_launch_configuration_type__0__1, new Object[] { type.getName() }), null);
+			IStatus status = new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), 0, MessageFormat.format(
+					LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_No_tabs_defined_for_launch_configuration_type__0__1,
+					type.getName()), null);
 			CoreException e = new CoreException(status);
 			errorDialog(e);
 			fInitializingTabs = false;
@@ -903,15 +906,14 @@ public class LaunchConfigurationTabGroupViewer {
 		fTabGroup = group;
 		ILaunchConfigurationTab[] tabs = getTabs();
 		CTabItem tab = null;
-		String name = IInternalDebugCoreConstants.EMPTY_STRING;
 		Control control = null;
 		for (ILaunchConfigurationTab t : tabs) {
 			tab = new CTabItem(fTabFolder, SWT.BORDER);
-			name = t.getName();
-			if (name == null) {
-				name = LaunchConfigurationsMessages.LaunchConfigurationDialog_unspecified_28;
+			String tabName = t.getName();
+			if (tabName == null) {
+				tabName = LaunchConfigurationsMessages.LaunchConfigurationDialog_unspecified_28;
 			}
-			tab.setText(name);
+			tab.setText(tabName);
 			tab.setImage(t.getImage());
 			ScrolledComposite sc = new ScrolledComposite(tab.getParent(), SWT.V_SCROLL | SWT.H_SCROLL);
 			sc.setFont(tab.getParent().getFont());
@@ -1228,6 +1230,7 @@ public class LaunchConfigurationTabGroupViewer {
 				return wc.getType().supportsModeCombination(getCurrentModeSet());
 			}
 		}  catch (CoreException e) {
+			// ignore
 		}
 		return true;
 	}
@@ -1246,10 +1249,8 @@ public class LaunchConfigurationTabGroupViewer {
 			return false;
 		}
 		ILaunchConfiguration config = getWorkingCopy();
-		if(config != null) {
-			if(hasMultipleDelegates()) {
-				return getPreferredDelegate() == null;
-			}
+		if (config != null && hasMultipleDelegates()) {
+			return getPreferredDelegate() == null;
 		}
 		return false;
 	}
@@ -1322,7 +1323,8 @@ public class LaunchConfigurationTabGroupViewer {
 		if(!canLaunchWithModes()) {
 			Set<String> modes = getCurrentModeSet();
 			List<String> names = LaunchConfigurationPresentationManager.getDefault().getLaunchModeNames(modes);
-			return MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_14, new Object[] { names.toString() });
+			return MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_14,
+					names.toString());
 		}
 		return null;
 	}
@@ -1367,8 +1369,8 @@ public class LaunchConfigurationTabGroupViewer {
 		String message = null;
 
 		ILaunchConfigurationTab tab = getActiveTab();
-		if (tab instanceof ILaunchConfigurationTab2) {
-			String tabMessage = ((ILaunchConfigurationTab2)tab).getWarningMessage();
+		if (tab instanceof ILaunchConfigurationTab2 confTab) {
+			String tabMessage = confTab.getWarningMessage();
 			if (tabMessage != null) {
 				message = tabMessage;
 			}
@@ -1382,42 +1384,41 @@ public class LaunchConfigurationTabGroupViewer {
 	 * @throws CoreException if a name conflict occurs
 	 */
 	protected void verifyName() throws CoreException {
-		if (fNameWidget.isVisible()) {
-			ILaunchManager mgr = DebugPlugin.getDefault().getLaunchManager();
-			String currentName = fNameWidget.getText().trim();
+		if (!fNameWidget.isVisible()) {
+			return;
+		}
 
-			// If there is no name, complain
-			if (currentName.length() < 1) {
+		ILaunchManager mgr = DebugPlugin.getDefault().getLaunchManager();
+		String currentName = fNameWidget.getText().trim();
+		// If there is no name, complain
+		if (currentName.length() < 1) {
+			throw new CoreException(new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), 0,
+					LaunchConfigurationsMessages.LaunchConfigurationDialog_Name_required_for_launch_configuration_11,
+					null));
+		}
+		try {
+			mgr.isValidLaunchConfigurationName(currentName);
+		} catch (IllegalArgumentException iae) {
+			throw new CoreException(
+					new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), 0, iae.getMessage(), null));
+		}
+		// Otherwise, if there's already a config with the same name, complain
+		if (fOriginal != null && !fOriginal.getName().equals(currentName)) {
+			Set<String> reservednames = ((LaunchConfigurationsDialog) getLaunchConfigurationDialog())
+					.getReservedNameSet();
+			if (mgr.isExistingLaunchConfigurationName(currentName)
+					|| (reservednames != null && reservednames.contains(currentName))) {
+				ILaunchConfiguration config = ((LaunchManager) mgr).findLaunchConfiguration(currentName);
+				// config can be null if name matches to unsaved
+				// configuration created in Properties dialog
+				String configTypeName = config != null ? config.getType().getName() : fOriginal.getType().getName();
 				throw new CoreException(new Status(IStatus.ERROR,
 													 DebugUIPlugin.getUniqueIdentifier(),
 													 0,
-													 LaunchConfigurationsMessages.LaunchConfigurationDialog_Name_required_for_launch_configuration_11,
+						NLS.bind(
+								LaunchConfigurationsMessages.LaunchConfigurationDialog_Launch_configuration_already_exists_with_this_name_12,
+								configTypeName),
 													 null));
-			}
-			try {
-				mgr.isValidLaunchConfigurationName(currentName);
-			}
-			catch(IllegalArgumentException iae) {
-				throw new CoreException(new Status(IStatus.ERROR,
-						 DebugUIPlugin.getUniqueIdentifier(),
-						 0,
-						 iae.getMessage(),
-						 null));
-			}
-			// Otherwise, if there's already a config with the same name, complain
-			if (fOriginal != null && !fOriginal.getName().equals(currentName)) {
-				Set<String> reservednames = ((LaunchConfigurationsDialog) getLaunchConfigurationDialog()).getReservedNameSet();
-				if (mgr.isExistingLaunchConfigurationName(currentName) || (reservednames != null ? reservednames.contains(currentName) : false)) {
-					ILaunchConfiguration config = ((LaunchManager)mgr).findLaunchConfiguration(currentName);
-					// config can be null if name matches to unsaved
-					// configuration created in Properties dialog
-					String configTypeName = config != null ? config.getType().getName() : fOriginal.getType().getName();
-					throw new CoreException(new Status(IStatus.ERROR,
-														 DebugUIPlugin.getUniqueIdentifier(),
-														 0,
-							NLS.bind(LaunchConfigurationsMessages.LaunchConfigurationDialog_Launch_configuration_already_exists_with_this_name_12, configTypeName),
-														 null));
-				}
 			}
 		}
 	}
@@ -1519,9 +1520,9 @@ public class LaunchConfigurationTabGroupViewer {
 				}
 			}
 		}
-		catch (CoreException e) {exception = e;}
-		catch (InvocationTargetException e) {exception = e;}
-		catch (InterruptedException e) {exception = e;}
+		catch (CoreException | InvocationTargetException | InterruptedException e) {
+			exception = e;
+		}
 		finally { fInitializingTabs = false; }
 
 		updateButtons();
@@ -1575,7 +1576,7 @@ public class LaunchConfigurationTabGroupViewer {
 	private int showSaveChangesDialog() {
 		String message = MessageFormat.format(
 				LaunchConfigurationsMessages.LaunchConfigurationDialog_ShowCommandLine_Apply_Revert_Question,
-				new Object[] { getWorkingCopy().getName() });
+				getWorkingCopy().getName());
 		MessageDialog dialog = new MessageDialog(getShell(),
 				LaunchConfigurationsMessages.LaunchConfigurationDialog_ShowCommandLine_Apply_Revert_Title, null,
 				message,
