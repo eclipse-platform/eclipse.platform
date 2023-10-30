@@ -26,9 +26,7 @@ import org.eclipse.osgi.framework.eventmgr.ListenerQueue;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.widgets.Display;
 
-import sigint.eclipse.pki.cspid.CSPid;
-//import sigint.eclipse.pki.cspid.CSPidLocation;
-//import sigint.eclipse.pki.cspid.CSPidLocationimpl;
+import org.eclipse.pki.pkcs.VendorImplementation;
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.pki.pkiselection.PKCSSelected;
 import org.eclipse.pki.pkiselection.PKCSpick;
@@ -57,7 +55,7 @@ public class PKIController {
 	{
 		createSigintEclipseDir();
 		/*
-		 * Check if .security file exists. If it doesnt, then create one.
+		 * Check if .pki file exists. If it doesnt, then create one.
 		 */
 		
 		/*
@@ -65,16 +63,12 @@ public class PKIController {
 		 */
 		PKCSpick.getInstance().setPKCS11on(false);
 		PKCSpick.getInstance().setPKCS12on(false);
-		//System.out.println("EarlyStartup  -     Constructor starting up, after initializing PKI to NONE");
 		/*
-		 *  CSPID will be the default certificate store, so check it first.
+		 *  PKCS11 will be the default certificate store, so check it first.
 		 */
-		//cspLocation = getCspidLocationInstance();
 		
-		//if (((Pkcs11Provider.getOsInstalledPath().toString().isEmpty())  ||
-		//if (((!(cspLocation.isFound()))  || ( isPreviousPkiSelection() ))) {	
 		
-		if (((!(CSPid.getInstance().isInstalled()))  || ( isPreviousPkiSelection() ))) {		
+		if (((!(VendorImplementation.getInstance().isInstalled()))  || ( isPreviousPkiSelection() ))) {		
 			PKCSpick.getInstance().setPKCS11on(false);
 			PKCSpick.getInstance().setPKCS12on(true);
 			PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
@@ -126,13 +120,14 @@ public class PKIController {
 	}
 
 	public Object eventRunner(int incoming) {
-		final Integer value = new Integer(incoming);
+		
+		final Integer value = Integer.valueOf(incoming);
 		return new Runnable() {
 			public void run() {
 				if (value.equals(EventConstant.DONE.getValue())) {
-					AuthenticationPlugin.getDefault().setUserKeyStore(CSPid.getInstance().getKeyStore());
+					AuthenticationPlugin.getDefault().setUserKeyStore(VendorImplementation.getInstance().getKeyStore());
 				} else if (value.equals(EventConstant.CANCEL.getValue())) {
-					CSPid.getInstance().off();
+					VendorImplementation.getInstance().off();
 					isPkcs11Installed=false;
 					PKCSpick.getInstance().setPKCS11on(false);
 					System.clearProperty("javax.net.ssl.keyStoreType");
@@ -152,7 +147,7 @@ public class PKIController {
 		Display.getDefault().asyncExec(new Runnable() {
 			final boolean is11on=isPkcs11Installed;
 			public void run() {
-				final String SIGINT_SELECTION = "Selection";
+				final String KEYSTORE_SELECTION = "Selection";
 				PKISecureStorage pkiSecureStorage = new PKISecureStorage();
 				TrustStoreSecureStorage truststoreSecureStorage = new TrustStoreSecureStorage();
 				//if (!(pkiSecureStorage.isPkcs11Enabled())) {
@@ -227,12 +222,12 @@ public class PKIController {
 				} else { 
 						AuthenticationPlugin.getDefault().obtainDefaultJKSTrustStore();
 						try {
-							AuthenticationPlugin.getDefault().getUserKeyStore(SIGINT_SELECTION);
+							AuthenticationPlugin.getDefault().getUserKeyStore(KEYSTORE_SELECTION);
 						} catch (UserCanceledException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						if ( CSPid.getInstance().isEnabled() ) {
+						if ( VendorImplementation.getInstance().isEnabled() ) {
 							this.dispatchEvent(eventRunner(EventConstant.DONE.getValue()), queue, 0, queue);
 						}
 					
@@ -327,6 +322,5 @@ public class PKIController {
 		} finally {
 			fsLock.unlock();
 		} 
-	}
-	
+	}	
 }
