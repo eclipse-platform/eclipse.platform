@@ -259,18 +259,15 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 						ChangedPressedFieldEditorStatus.setPkiChangedPressed(true);
 						if ((ChangedPressedFieldEditorStatus.isPkiChangedPressed() ) ) {
 							if ( CheckUpdatedKeystoreValue.isValid( pkcs11Certificate.getStringValue() )) {
-								//pkcs11Certificate.setStringValue( Pkcs11Provider.getConfigurePath() );
-								//pkcs11Certificate.setStringValue( CSPidLocation.getPath().toString() );
 								
-								pkcs11Certificate.setStringValue( "CSPid" );
+								pkcs11Certificate.setStringValue( "pkcs11" );
 								
-								//AuthenticationPlugin.getDefault().setCertificatePath(Pkcs11Provider.getConfigurePath());
-								//AuthenticationPlugin.getDefault().setCertificatePath(CSPidLocation.getPath().toString());
-								AuthenticationPlugin.getDefault().setCertificatePath("CSPid");
+						
+								AuthenticationPlugin.getDefault().setCertificatePath("pkcs11");
 								
-								AuthenticationPlugin.getDefault().setUserKeyStore( CSPid.getInstance().getKeyStore());
-								AuthenticationPlugin.getDefault().setUserKeyStoreSystemProperties( CSPid.getInstance().getKeyStore() );
-								System.setProperty("javax.net.ssl.keyStoreProvider", "SunPKCS11-CSPid");
+								AuthenticationPlugin.getDefault().setUserKeyStore(VendorImplementation.getInstance().getKeyStore());
+								AuthenticationPlugin.getDefault().setUserKeyStoreSystemProperties( VendorImplementation.getInstance().getKeyStore() );
+								System.setProperty("javax.net.ssl.keyStoreProvider", "SunPKCS11");
 								pkcs11Certificate.getTextControl(groups).setEnabled(false);
 							}
 						}
@@ -340,8 +337,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 				 * The USER needs to be able to type in a location. and If its NOT valid, then FAIL this TEST.
 				 */
 				isOK = CheckUpdatedKeystoreValue.isValid( pkcs11Certificate.getStringValue() );
-				//pkcs11Certificate.setStringValue( CSPidLocation.getPath().toString()  );
-				pkcs11Certificate.setStringValue( "CSPid" );
+				
+				pkcs11Certificate.setStringValue( "pkcs11" );
 				PKIProperties.getInstance().setKeyStorePassword(AuthenticationPlugin.getDefault().getCertPassPhrase());
 				PKIProperties.getInstance().restore();
 			} else 	if (( PKCSpick.getInstance().isPKCS12on()) || ( pkiType.equals("pkcs12") )) {
@@ -401,10 +398,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     		if ( previousPKI.getKeyStoreType().equalsIgnoreCase("PKCS11") ) {
     			PKCSpick.getInstance().setPKCS11on(true);
     			PKCSpick.getInstance().setPKCS12on(false);
-    			//AuthenticationPlugin.getDefault().setCertificatePath( CSPidLocation.getDirectory() );
-    			AuthenticationPlugin.getDefault().setCertificatePath("CSPid" );
-    			//pkcs11Certificate.setStringValue(CSPidLocation.getDirectory());
-    			pkcs11Certificate.setStringValue("CSPid");
+    			AuthenticationPlugin.getDefault().setCertificatePath("pkcs11" );
+    			pkcs11Certificate.setStringValue("pkcs11");
     		}
     		if ( previousPKI.getKeyStoreType().equalsIgnoreCase("PKCS12") ) {
     			PKCSpick.getInstance().setPKCS12on(true);
