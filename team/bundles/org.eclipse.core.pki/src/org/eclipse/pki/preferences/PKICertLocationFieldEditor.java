@@ -179,14 +179,7 @@ public class PKICertLocationFieldEditor extends StringButtonFieldEditor {
         	
         	
         	if ( type.equalsIgnoreCase("PKCS11")) { 
-        		if ( path.endsWith(CSPext) ) {
-        			//System.out.println("PKICertLocationFieldEditor --TBD- changepressed  SETTING PKCS11 location");
-            		//CSPidLocation.setUserSpecifiedDirectory( path.substring(0,path.indexOf(CSPext) ) );
-            	} else {
-            		//System.out.println("PKICertLocationFieldEditor --TBD- changepressed  SETTING PKCS11 location");
-            		
-            		//CSPidLocation.setUserSpecifiedDirectory( path );
-            	}
+        		
         	}
         	if ( (this.getStringValue().equals(oldValue) )) {
         		//System.out.println("PKICertLocationFieldEditor --- NO CHANGE IN VALUES");
