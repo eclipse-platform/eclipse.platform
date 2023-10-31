@@ -62,9 +62,9 @@ public class Pkcs11Location extends Pkcs11LocationImpl  {
 		//testing.setUserSpecifiedDirectory(unixcsp);
 		testing.getPkcs11LocationInstance();
 		if ( isFound() ) {
-			System.out.println("Pkcs11Location --- CSPid CFG file FOUND:"+ testing.getDirectory() );
+			System.out.println("Pkcs11Location --- pkcs11 CFG file FOUND:"+ testing.getDirectory() );
 		} else {
-			System.out.println("Pkcs11Location --- CSPid CFG file NOTFOUND:");
+			System.out.println("Pkcs11Location --- pkcs11 CFG file NOTFOUND:");
 		}
 		if ( testing.isPkcs11Found()) {
 			System.out.println("Pkcs11Location --- PKCS11 location:"+ testing.jarLocation.getJarDirectory().toString() );

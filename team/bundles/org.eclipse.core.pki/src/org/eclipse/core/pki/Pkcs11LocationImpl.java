@@ -5,19 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-/*
- *   CSPidLocationimpl -  A best attempt at finding a usable cspid configuration file.
- *   In version 4 of cspid the cfg file call java_pkcs11.cfg contains a reference to the
- *   location of the dll files used to provide cspid manager and pkcs11 interoperability.
- * 	 There is a bug in the version 4.x cspid cfg file and its loading by the sunpkcs11.jar file
- *   where by the file contents cannot be correctly parsed due to spaces and parenthesis inside
- *   the path names.   
- *   WORK AROUND:   copy the java_pkcs11.cfg file into the users appdata dir
- *   location. and during copy edit data as follows;, i.e.  "Program Files (x86) to "Progra~2"  ..  
- * 
- */
 
-import secure.eclipse.authentication.provider.debug.DebugLogger;
 
 
 public class Pkcs11LocationImpl extends Pkcs11LibraryFinder implements Pkcs11LocationIfc {
@@ -36,7 +24,7 @@ public class Pkcs11LocationImpl extends Pkcs11LibraryFinder implements Pkcs11Loc
 					jarLocation = findSunPkcs11JarInstance();
 					if (jarLocation.isPkcs11() ) {
 						pkcs11Found=true;
-						DebugLogger.printDebug("CSPidLocationimp jarDIR:"+ jarLocation.getJarDirectory().toString());
+						DebugLogger.printDebug("PKCS11Locationimp jarDIR:"+ jarLocation.getJarDirectory().toString());
 						setJarDir( Paths.get(jarLocation.getJarDirectory().toString()) );
 					}
 					if ( isUnix() ) {	
@@ -53,7 +41,7 @@ public class Pkcs11LocationImpl extends Pkcs11LibraryFinder implements Pkcs11Loc
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
-		DebugLogger.printDebug("CSPidLocationimpl  OVERRIDE INITIALIZE");
+		DebugLogger.printDebug("PKCS11Locationimpl  OVERRIDE INITIALIZE");
 		
 	}
 	private static boolean isUnix() {
@@ -65,15 +53,15 @@ public class Pkcs11LocationImpl extends Pkcs11LibraryFinder implements Pkcs11Loc
 		return false;
 	}
 	
-	protected static boolean isPath( StringBuilder cspidPath ) {
+	protected static boolean isPath( StringBuilder pkcs11Path ) {
 		
 		try {
-			if (!(cspidPath.toString().endsWith("java_pkcs11.cfg"))) {
-				cspidPath.append(FileSystems.getDefault().getSeparator());
-				cspidPath.append("java_pkcs11.cfg");
+			if (!(pkcs11Path.toString().endsWith("java_pkcs11.cfg"))) {
+				pkcs11Path.append(FileSystems.getDefault().getSeparator());
+				pkcs11Path.append("java_pkcs11.cfg");
 			}
-			if (isDirectory(cspidPath.toString())) {
-				setPath(Paths.get(cspidPath.toString()));
+			if (isDirectory(pkcs11Path.toString())) {
+				setPath(Paths.get(pkcs11Path.toString()));
 				setFound(true);
 				return true;
 			}
