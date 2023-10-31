@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.equinox.security;bundle-version="[1.0.0,2.0.0)",
  org.eclipse.equinox.registry;bundle-version="3.4.0",
  org.eclipse.ui;bundle-version="3.203.100",
  org.eclipse.ui.workbench,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.core.net
 Bundle-Version: 1.0.0
 Bundle-Vendor: %PLUGIN_PROVIDER
 Automatic-Module-Name: org.eclipse.core.pki

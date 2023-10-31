@@ -12,13 +12,18 @@ package org.eclipse.pki.auth;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ProxySelector;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.httpclient.HttpHost;
+//import org.apache.commons.httpclient.HttpHost;
 //import org.apache.commons.lang3.StringUtils;
+import java.net.http.HttpClient;
+import java.net.http.HttpClient.Builder;
+
 import org.eclipse.core.internal.net.ProxyManager;
 import org.eclipse.core.net.proxy.IProxyData;
 
@@ -90,27 +95,31 @@ public final class Proxies {
         return  userName.contains(DOUBLEBACKSLASH) ? 
         		Optional.of(userName.substring(userName.indexOf(DOUBLEBACKSLASH))) : Optional.of(userName);
     }
-
-    public static Optional<HttpHost> getProxyHost(URI target) {
+    //public static Optional<HttpHost> getProxyHost(URI target) {
+    public static Optional<HttpClient> getProxyHost(URI target) {
         //IProxyData proxy = getProxyData(target).orNull();
         IProxyData proxy = getProxyData(target).orElse(null);
         if (proxy == null) {
-            return Optional.<HttpHost>empty();
+            return Optional.empty();
         }
-        return Optional.of(new HttpHost(proxy.getHost(), proxy.getPort()));
+        //return Optional.of(new HttpHost(proxy.getHost(), proxy.getPort()));
+        return Optional.of(HttpClient.newBuilder()
+        		.proxy(ProxySelector.of(
+        				new InetSocketAddress(proxy.getHost(), proxy.getPort()))).build());
     }
 
     public static Executor proxyAuthentication(Executor executor, URI target) throws IOException {
         IProxyData proxy = getProxyData(target).orElse(null);
         if (proxy != null) {
-            HttpHost proxyHost = new HttpHost(proxy.getHost(), proxy.getPort());
+            //HttpHost proxyHost = new HttpHost(proxy.getHost(), proxy.getPort());
+        	HttpClient.newBuilder().proxy(ProxySelector.of(new InetSocketAddress(proxy.getHost(), proxy.getPort())));
             if (proxy.getUserId() != null) {
                 String userId = getUserName(proxy.getUserId()).orElse(null);
                 String pass = proxy.getPassword();
                 String workstation = getWorkstation().orElse(null);
                 String domain = getUserDomain(proxy.getUserId()).orElse(null);
                 
-                System.out.println("Proxies - proxyAuthentication needs to be FIXED, lin 114");
+                System.out.println("Proxies - proxyAuthentication needs to be FIXED");
                 //return executor.auth(proxyHost, userId, pass, workstation, domain);
                 //return executor.  auth(proxyHost, userId, pass, workstation, domain);
             } else {
