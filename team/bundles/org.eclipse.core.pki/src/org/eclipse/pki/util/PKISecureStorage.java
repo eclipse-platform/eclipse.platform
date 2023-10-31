@@ -246,7 +246,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 		if ( PKCSpick.getInstance().isPKCS11on() ) {
 			if( (certPassPhrase != null) && (userKeyStoreLocation != null) &&
 						(!certificateLocation.equals("none"))  && (!certPassPhrase.equals("none"))) {
-				System.setProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY, "CSPid");
+				System.setProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY, "pkcs11");
 				System.setProperty(JAVA_SSL_USER_KEY_STORE_PASS_KEY, certPassPhrase);
 				AuthenticationPlugin.getDefault().setCertificatePath( userKeyStoreLocation );
 			}
