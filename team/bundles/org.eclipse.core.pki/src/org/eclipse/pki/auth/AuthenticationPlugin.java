@@ -488,7 +488,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 		 * @PARAM: operation = { local or update }
 		 * where;
 		 * 	local = During an eclipse start or restart.
-		 *  update = Request to update sigint eclipse pki options
+		 *  update = Request to update eclipse pki options
 		 */
 		userKeyStore = null;
 		if (!( operation.equalsIgnoreCase("update".toString()))) {
