@@ -9,7 +9,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
-import secure.eclipse.authentication.provider.debug.DebugLogger;
 
 public class DynamicFileFinder extends SimpleFileVisitor <Path>  {
 	private boolean found=false;
