@@ -4,7 +4,7 @@
 
 	<extension point="org.eclipse.core.pki.authenticate">
 		<authenticator
-			class="org.eclipse.core.pki.Authentication">
+			class="org.eclipse.core.pki.AuthenticationBase">
 		</authenticator>
 	</extension>
 
