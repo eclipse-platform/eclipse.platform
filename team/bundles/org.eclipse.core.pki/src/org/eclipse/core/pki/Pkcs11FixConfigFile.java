@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import secure.eclipse.authentication.provider.debug.DebugLogger;
 
 public class Pkcs11FixConfigFile {
 	private static final String programFiles="Program Files (x86)";
@@ -31,7 +30,7 @@ public class Pkcs11FixConfigFile {
 				if ( configFile == null ) {
 					configFile = new Pkcs11FixConfigFile();
 					cspidHome = fileLocation;
-					DebugLogger.printDebug("CSPidFixConfigFile --  incoming path:"+ fileLocation);
+					DebugLogger.printDebug("Pkcs11FixConfigFile --  incoming path:"+ fileLocation);
 					sb.append(fileLocation);
 					initialize();
 				}
@@ -75,7 +74,7 @@ public class Pkcs11FixConfigFile {
 			
 			path = Paths.get(sb.toString());
 			//setCfgFilePath( sb.toString());
-			DebugLogger.printDebug("CSPidFixCOnfigFile ----  cspidHome:"+cspidHome );
+			DebugLogger.printDebug("Pkcs11FixCOnfigFile ----  cspidHome:"+cspidHome );
 			setCfgFilePath( CreateCFGfile.initialize( cspidHome ));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -104,9 +103,9 @@ public class Pkcs11FixConfigFile {
 		for ( String s : list) {
 			CharSequence ch = "/";
 			
-			if (( s.contains("library")) && ( System.getenv("CSPID_HOME") != null))  {
+			if (( s.contains("library")) && ( System.getenv("PKCS11_HOME") != null))  {
 				sb.append("library=");
-				sb.append(System.getenv("CSPID_HOME"));
+				sb.append(System.getenv("PKCS11_HOME"));
 				sb.append(ch);
 				sb.append(biT64);
 				s=sb.toString();
@@ -122,8 +121,8 @@ public class Pkcs11FixConfigFile {
 			}
 			
 			if ( s.contains(programFiles)) {
-				if ( System.getenv("CSPID_HOME") != null) {
-					s = System.getenv("CSPID_HOME");
+				if ( System.getenv("PKCS11_HOME") != null) {
+					s = System.getenv("PKCS11_HOME");
 				} else {
 					s = s.replace(programFiles, "Progra~2");
 				}
@@ -152,9 +151,9 @@ public class Pkcs11FixConfigFile {
 		configFile.cfgFilePath = cfgFilePath;
 	}
 	private static void listEditedFile( List <String> list ) {
-		DebugLogger.printDebug("CSPidFixConfigFile ----  ARCH:"+ System.getProperty("os.arch"));
+		DebugLogger.printDebug("PKCS11FixConfigFile ----  ARCH:"+ System.getProperty("os.arch"));
 		for ( String s : list) {
-			DebugLogger.printDebug("CSPidFixConfigFile ----  edited line:"+ s);
+			DebugLogger.printDebug("PKCS11FixConfigFile ----  edited line:"+ s);
 		}
 	}
 	

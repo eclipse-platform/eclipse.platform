@@ -79,11 +79,11 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 						}
 					} catch (CertificateExpiredException e) {
 						// TODO Auto-generated catch block
-						System.err.println("KeyManager: Please remove EXPIRED certificate:"+ alias+" using your CSPid Manager.");
+						System.err.println("KeyManager: Please remove EXPIRED certificate:"+ alias+" using your pkcs11 Manager.");
 						//e.printStackTrace();
 					} catch (CertificateNotYetValidException e) {
 						// TODO Auto-generated catch block
-						System.err.println("KeyManager: Please check invalid certificate:"+ alias+" using your CSPid Manager.");
+						System.err.println("KeyManager: Please check invalid certificate:"+ alias+" using your pkcs11 Manager.");
 						//e.printStackTrace();
 					}
 				}

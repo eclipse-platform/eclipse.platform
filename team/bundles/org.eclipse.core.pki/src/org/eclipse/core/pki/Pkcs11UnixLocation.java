@@ -4,7 +4,7 @@ import java.nio.file.FileSystems;
 import java.util.Properties;
 
 public class Pkcs11UnixLocation extends Pkcs11Location implements Pkcs11LocationIfc {
-	private static final String unixCSPidDirectory = "/opt/pkcs11";
+	private static final String unixPKCS11Directory = "/opt/pkcs11";
 	private static Pkcs11LocationIfc location = null;
 	public static Pkcs11UnixLocation getInstance() {
 		if ( location == null ) {
@@ -32,7 +32,7 @@ public class Pkcs11UnixLocation extends Pkcs11Location implements Pkcs11Location
 				}
 			} else {
 				pkcs11Home = new StringBuilder();
-				pkcs11Home.append(unixCSPidDirectory);
+				pkcs11Home.append(unixPKCS11Directory);
 				if ( (!(isDirectory(pkcs11Home.toString()))) ) {
 					Properties p = System.getProperties();
 					pkcs11Home = new StringBuilder();
