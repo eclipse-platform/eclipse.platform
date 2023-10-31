@@ -14,10 +14,6 @@ import org.eclipse.pki.auth.AuthenticationPlugin;
 import org.eclipse.pki.auth.EventConstant;
 import org.eclipse.pki.auth.EventProcessor;
 
-//import org.eclipse.pki.cspid.CSPid;
-//import org.eclipse.pki.cspid.CSPidLocation;
-
-//import org.eclipse.pki.cspid.SSLPkcs11Provider;
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.pki.pkcs.VendorImplementation;
 import org.eclipse.pki.pkiselection.PKCSSelected;
@@ -112,7 +108,7 @@ public class PKILoginWizard extends Wizard {
 		try {
 			if(PKCSSelected.isPkcs11Selected()) {
 	    		//certSelectionPage.setCertificatePath(Pkcs11Provider.configPath("NONE"));
-	    		System.setProperty("javax.net.ssl.keyStore", "CSPid");
+	    		System.setProperty("javax.net.ssl.keyStore", "PKCS11");
 	    		System.setProperty("javax.net.ssl.keyStoreType", "PKCS11");
 	    		PKCSpick.getInstance().setPKCS11on(true);
 	    		PKCSpick.getInstance().setPKCS12on(false);

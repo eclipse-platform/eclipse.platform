@@ -234,7 +234,6 @@ public class CertificateSelectionPage extends WizardPage  {
             	//System.out.println("CertificateSelectionPage - 11-BUTTON:"+pkcs11Button.getSelection());
             	//System.out.println("CertificateSelectionPage - 11-BUTTON  INCOMING:"+e.toString());
                 if ((pkcs11Button.getSelection()) && ((e.doit==true)) ) {
-                	//if ( CSPidLocation.isFound() ) {
                 	if ( VendorImplementation.getInstance().isInstalled() ) {	
                 		CertificateSelectionPage.this.setMessage("Please enter your PKCS11 PiN.", WizardPage.INFORMATION);
                 		pinText.setEnabled(true);
@@ -595,7 +594,6 @@ public class CertificateSelectionPage extends WizardPage  {
         Group group = new Group(sectionComposite, SWT.NONE);
         group.setLayout(new GridLayout());
         group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-//SWM: 20200306        group.setText("PKCS11 ( default )");
         group.setText("PKCS11 (pki)");
                  
         //Create layout and controls
@@ -630,7 +628,7 @@ public class CertificateSelectionPage extends WizardPage  {
         addPasswordSubsection( pkcs11ButtonComposite );
         
         this.pkcs11PasswordLabel = new Label( pkcs11ButtonComposite, SWT.RIGHT );
-        this.pkcs11PasswordLabel.setText( "CSPid Selection list: " );    
+        this.pkcs11PasswordLabel.setText( "Pkcs11 Selection list: " );    
         
         this.combo = new Combo(pkcs11ButtonComposite, SWT.READ_ONLY);
         this.combo.setItems(INITIAL_SLOT);
@@ -722,7 +720,7 @@ public class CertificateSelectionPage extends WizardPage  {
     private void addFileSelectSubsection( final Composite sectionComposite ) {
         // Create label for selecting the certificate
         pkcs12certificateLabel = new Label( sectionComposite, SWT.RIGHT );
-        pkcs12certificateLabel.setText( "PKI Certificate or CSPid Location: " );
+        pkcs12certificateLabel.setText( "PKI Certificate or Pkcs11 Location: " );
         
         // Create layout and controls for manually selecting certs
         Composite subsectionComposite = new Composite( sectionComposite, SWT.NONE );
@@ -784,7 +782,7 @@ public class CertificateSelectionPage extends WizardPage  {
         subsectionComposite.setLayout( subsectionCompositeLayout );
         subsectionComposite.setLayoutData( new GridData(SWT.FILL, SWT.FILL, true, true  ) );
         passwordLabel = new Label( subsectionComposite, SWT.LEFT );
-        passwordLabel.setText( "Enter your CSPid PiN: " );
+        passwordLabel.setText( "Enter your PiN: " );
         pinText = new Text( subsectionComposite, SWT.LEFT | SWT.PASSWORD | SWT.BORDER );
         pinText.setLayoutData( new GridData(SWT.FILL, SWT.FILL, true, true  ) );
  
