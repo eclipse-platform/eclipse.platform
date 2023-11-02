@@ -126,7 +126,7 @@ public class SystemProxyTest {
 	}
 
 	/**
-	 * This test needs system env set. See {@link #initializeTestProxyData()} for
+	 * This test needs system env set. See {@link #initializeTestProxyData(String)} for
 	 * values.
 	 */
 	@Test
@@ -136,7 +136,7 @@ public class SystemProxyTest {
 	}
 
 	/**
-	 * This test needs system env set. See {@link #initializeTestProxyData()} for
+	 * This test needs system env set. See {@link #initializeTestProxyData(String)} for
 	 * values.
 	 */
 	@Test
@@ -146,7 +146,7 @@ public class SystemProxyTest {
 	}
 
 	/**
-	 * This test needs Gnome settings set. See {@link #initializeTestProxyData()}
+	 * This test needs Gnome settings set. See {@link #initializeTestProxyData(String)}
 	 * for values.
 	 */
 	@Test
@@ -156,7 +156,7 @@ public class SystemProxyTest {
 	}
 
 	/**
-	 * This test needs Gnome settings set. See {@link #initializeTestProxyData()}
+	 * This test needs Gnome settings set. See {@link #initializeTestProxyData(String)}
 	 * for values.
 	 */
 	@Test
@@ -167,7 +167,7 @@ public class SystemProxyTest {
 
 	/**
 	 * This test needs Windows IE settings manually set. See
-	 * {@link #initializeTestProxyData()} for values.
+	 * {@link #initializeTestProxyData(String)} for values.
 	 */
 	@Test
 	public void testGetProxyDataForHost_WindowsIEManualSettings() {
@@ -177,7 +177,7 @@ public class SystemProxyTest {
 
 	/**
 	 * This test needs Windows IE settings manually set. See
-	 * {@link #initializeTestProxyData()} for values.
+	 * {@link #initializeTestProxyData(String)} for values.
 	 */
 	@Test
 	public void testProxySelector_WindowsIEManualSettings() {
@@ -187,7 +187,7 @@ public class SystemProxyTest {
 
 	/**
 	 * This test needs Windows IE settings manually set. See
-	 * {@link #initializeTestProxyData()} for values. Additionally set
+	 * {@link #initializeTestProxyData(String)} for values. Additionally set
 	 * <code>"eclipse.*;nonexisting.com;*.eclipse.org;www.*.com;*.test.*"</code> as
 	 * proxy bypass in the IE settings.
 	 *
