@@ -30,7 +30,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import junit.framework.AssertionFailedError;
 /**
  * Tests for the basic context injection functionality
  */
@@ -153,7 +152,7 @@ public class AnnotationsInjectionTest {
 	 */
 	@Test
 	public void testFieldMethodOrder() {
-		final AssertionFailedError[] error = new AssertionFailedError[1];
+		final AssertionError[] error = new AssertionError[1];
 		class TestData {
 			// empty
 		}
@@ -166,7 +165,7 @@ public class AnnotationsInjectionTest {
 			public void injectedMethod(@Optional @Named("valueMethod") Object arg) {
 				try {
 					assertTrue(injectedField != null);
-				} catch (AssertionFailedError e) {
+				} catch (AssertionError e) {
 					error[0] = e;
 				}
 				methodValue = arg;
