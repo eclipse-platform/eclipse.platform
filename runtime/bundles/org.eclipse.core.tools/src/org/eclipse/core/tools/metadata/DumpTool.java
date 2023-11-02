@@ -159,7 +159,7 @@ public class DumpTool implements IApplication {
 
 			for (File subDir : subDirs) {
 				// Recursive call
-				extractInfo(subDir, fileList, new SubProgressMonitor(monitor, 98 / subDirs.length));
+				extractInfo(subDir, fileList, SubMonitor.convert(monitor, 98 / subDirs.length));
 			}
 		} finally {
 			monitor.done();

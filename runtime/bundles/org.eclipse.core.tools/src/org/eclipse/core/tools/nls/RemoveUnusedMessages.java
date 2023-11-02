@@ -83,7 +83,7 @@ public class RemoveUnusedMessages extends Refactoring {
 				if (!(Flags.isPublic(flags) && Flags.isStatic(flags)))
 					continue;
 				// search for references
-				ICompilationUnit[] affectedUnits = RefactoringSearchEngine.findAffectedCompilationUnits(SearchPattern.createPattern(field, IJavaSearchConstants.REFERENCES), RefactoringScopeFactory.create(accessorClass), new SubProgressMonitor(monitor, 1), result);
+				ICompilationUnit[] affectedUnits = RefactoringSearchEngine.findAffectedCompilationUnits(SearchPattern.createPattern(field, IJavaSearchConstants.REFERENCES), RefactoringScopeFactory.create(accessorClass), SubMonitor.convert(monitor, 1), result);
 				// there are references so go to the next field
 				if (affectedUnits.length > 0)
 					continue;

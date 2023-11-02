@@ -161,7 +161,7 @@ public class MetadataTreeContentProvider extends AbstractTreeContentProvider {
 			for (File subDir : subDirs) {
 				// constructs a node for each subdir...
 				childNode = makeNode(subDir);
-				if (extractInfo(subDir, childNode, new SubProgressMonitor(monitor, 98 / subDirs.length)))
+				if (extractInfo(subDir, childNode, SubMonitor.convert(monitor, 98 / subDirs.length)))
 					// ...but only adds them if they have files of registered types
 					dirNode.addChild(childNode);
 			}
