@@ -87,7 +87,7 @@ public interface IUserAuthenticator{
 
   /**
    * Prompts the user for a number values using text fields. The labels are provided in
-   * the <core>prompt</code> array.  Implementors will return the entered values, or null if
+   * the <code>prompt</code> array.  Implementors will return the entered values, or null if
    * the user cancel the prompt.
    *
    * @param location The repository location to authenticate the user for or <code>null</code>
