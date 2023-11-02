@@ -309,9 +309,6 @@ public class PageWidgetFactory {
 
 	/**
 	 * Creates a forms Text or FormattedText.
-	 *
-	 * @param body
-	 * @param link
 	 */
 	protected Control createText(Composite parent, IntroText text) {
 		Color fg = styleManager.getColor(toolkit, text);

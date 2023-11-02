@@ -14,9 +14,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
-import java.util.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.junit.Assert;
 
@@ -102,8 +109,6 @@ public abstract class TestBuilder extends IncrementalProjectBuilder {
 	/**
 	 * Implements the inherited abstract method in
 	 * <code>InternalBuilder</code>.
-	 *
-	 * @see InternalBuilder#build(IResourceDelta,int,IProgressMonitor)
 	 */
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
@@ -192,12 +197,6 @@ public abstract class TestBuilder extends IncrementalProjectBuilder {
 		ruleCallBack = null;
 	}
 
-	/**
-	 * Part of <code>IExecutableExtensionAdaptor</code> interface.
-	 *
-	 * @see IExecutableExtensionAdaptor
-	 * @see IConfigurationElement#createExecutableExtension(String)
-	 */
 	@Override
 	public void setInitializationData(IConfigurationElement config, String name, Object data) {
 		logPluginLifecycleEvent(SET_INITIALIZATION_DATA);
@@ -206,11 +205,6 @@ public abstract class TestBuilder extends IncrementalProjectBuilder {
 		this.data = data;
 	}
 
-	/**
-	 * Implemented inherited method from <code>BaseBuilder</code>.
-	 *
-	 * @see BaseBuilder#startupOnInitialize
-	 */
 	@Override
 	protected void startupOnInitialize() {
 		logPluginLifecycleEvent(STARTUP_ON_INITIALIZE);

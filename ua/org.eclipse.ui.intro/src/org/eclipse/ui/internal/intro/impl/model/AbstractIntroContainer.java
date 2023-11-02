@@ -266,7 +266,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	 * Adds the given elements as children of this container, before the
 	 * specified element. The element must be a direct child of this container.
 	 *
-	 * @param childElements
 	 */
 	protected void insertElementsBefore(Element[] childElements, Bundle bundle,
 			String base, AbstractIntroElement child, String mixinStyle) {
@@ -283,7 +282,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	 * Adds a child to this container, depending on its type. Subclasses may
 	 * override if there is a child specific to the subclass.
 	 *
-	 * @param childElements
 	 */
 	protected AbstractIntroElement getModelChild(Element childElement,
 			Bundle bundle, String base) {
@@ -409,9 +407,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	 * ps: This method could be a static method, but left as instance for model
 	 * enhancements.
 	 *
-	 * @param model
-	 * @param path
-	 * @return
 	 */
 	public AbstractIntroElement findTarget(AbstractIntroContainer container,
 			String path) {

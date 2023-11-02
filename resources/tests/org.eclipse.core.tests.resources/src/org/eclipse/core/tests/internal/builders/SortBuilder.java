@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.*;
  * The content (bytes) of each sorted file is the content of the
  * unsorted file it mirrors, but sorted in either ascending or
  * descending order depending on the build command.
- * @see SortBuilderPlugin
  */
 public class SortBuilder extends TestBuilder {
 	public static final String BUILDER_NAME = "org.eclipse.core.tests.resources.sortbuilder";

@@ -187,7 +187,7 @@ public abstract class TipProvider {
 	 * <p>
 	 * If you run out of tips and you feel that you should load more tips on your
 	 * own then you can also asynchronously call this method. A good place would be
-	 * to override {@link #getTips(boolean)}, check if the supply of tips is
+	 * to override {@link #getTips(Predicate)}, check if the supply of tips is
 	 * sufficient and then call this method asynchronously.
 	 * <p>
 	 * One strategy is to do a long running fetch in this method and then store the

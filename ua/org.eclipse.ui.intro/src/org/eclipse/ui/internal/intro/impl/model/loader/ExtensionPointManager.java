@@ -95,7 +95,7 @@ public class ExtensionPointManager extends BaseExtensionPointManager {
 	}
 
 	/**
-	 * @param introPartId
+	 * @param introId
 	 *            The introPartId to set.
 	 */
 	public void setIntroId(String introId) {

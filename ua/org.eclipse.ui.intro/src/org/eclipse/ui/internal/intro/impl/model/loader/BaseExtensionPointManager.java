@@ -121,9 +121,6 @@ public class BaseExtensionPointManager {
 	 * that maps to the correct intro part id. If there is more than one config
 	 * thats maps to the same intro part id, log the fact, and return the first
 	 * one. If there are non, return null.
-	 *
-	 * @param configElements
-	 * @return
 	 */
 	protected IConfigurationElement getIntroConfig(String attrributeName,
 			String attributeValue) {
@@ -187,7 +184,7 @@ public class BaseExtensionPointManager {
 	/**
 	 * Gets the given model from the cache.
 	 *
-	 * @param modelId
+	 * @param configId
 	 */
 	protected IntroModelRoot getCachedModel(String configId) {
 		return introModels.get(configId);

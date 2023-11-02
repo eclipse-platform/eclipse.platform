@@ -44,7 +44,7 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
  * implementation of the <code>IFileModificationValidator</code> for the
  * <code>PessimisticFilesystemProvider</code>.
  *
- * @see PessimiticFilesystemProvider
+ * @see PessimisticFilesystemProvider
  * @see IFileModificationValidator
  */
 public class PessimisticModificationValidator

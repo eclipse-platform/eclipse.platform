@@ -95,7 +95,7 @@ public class History {
 	/**
 	 * Updates the UI navigation history with either a real URL, or a page ID.
 	 *
-	 * @param pageId
+	 * @param location
 	 */
 	public void updateHistory(String location) {
 		// quick exit.
@@ -184,8 +184,6 @@ public class History {
 	 * Return the position of the last element in the navigation history. If
 	 * vector is empty, return 0.
 	 *
-	 * @param vector
-	 * @return
 	 */
 	private int getHistoryEndPosition() {
 		if (history.isEmpty())
@@ -202,8 +200,6 @@ public class History {
 
 	/**
 	 * Navigate forward in the history.
-	 *
-	 * @return
 	 */
 	public void navigateHistoryForward() {
 		if (badNavigationLocation(navigationLocation + 1))
