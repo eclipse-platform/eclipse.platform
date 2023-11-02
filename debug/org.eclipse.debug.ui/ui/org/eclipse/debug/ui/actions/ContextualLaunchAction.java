@@ -15,11 +15,13 @@ package org.eclipse.debug.ui.actions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.IEvaluationContext;
@@ -280,9 +282,12 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 			}
 		}
 		// now add collected launches
+		Set<ILaunchConfiguration> added = new HashSet<>();
 		for (Entry<LaunchShortcutExtension, ILaunchConfiguration[]> entry : launchConfigurations.entrySet()) {
 			for (ILaunchConfiguration configuration : entry.getValue()) {
-				populateMenuItem(fMode, entry.getKey(), menu, configuration, accelerator++, null);
+				if (added.add(configuration)) {
+					populateMenuItem(fMode, entry.getKey(), menu, configuration, accelerator++, null);
+				}
 			}
 		}
 
