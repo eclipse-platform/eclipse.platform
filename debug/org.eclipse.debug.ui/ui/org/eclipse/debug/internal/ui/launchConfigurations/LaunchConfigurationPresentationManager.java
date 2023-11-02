@@ -233,12 +233,12 @@ public class LaunchConfigurationPresentationManager {
 	 * from disabled activities
 	 * <p>
 	 * There are thre ways that tabs can be filtered form the launch dialog:
+	 * </p>
 	 * <ol>
 	 * <li>The tabs can belong to tooling that is contributed via a specific type of workbench activity, and is therefore filtered with capabilities</li>
 	 * <li>The tabs can be filtered via the associatedDelegate extension point, if a tab is said to apply only to certain tooling, only show it in the instance when that tooling is used</li>
 	 * <li>A tab is not part of a workbench activity, nor specifies an associated launch delegate -- show the tab</li>
 	 * </ol>
-	 * </p>
 	 * @param tabs the raw listing of tabs to filter
 	 * @return the listing of filtered <code>LaunchConfigurationTabExtension</code>s or an empty array, never <code>null</code>
 	 *
@@ -285,7 +285,7 @@ public class LaunchConfigurationPresentationManager {
 	 * <code>null</code> if none
 	 *
 	 * @param type launch configuration type identifier
-	 * @param mode launch mode identifier
+	 * @param modes launch mode identifiers
 	 * @return launch tab group extension or <code>null</code>
 	 */
 	protected LaunchConfigurationTabGroupExtension getExtension(String type, Set<String> modes) {

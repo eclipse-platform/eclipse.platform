@@ -68,8 +68,8 @@ public class ModelUtil {
 	 * declaring plugin. Return the plugin relative location, fully qualified.
 	 * Returns null if the passed string itself is null.
 	 *
-	 * @param resource
-	 * @param pluginDesc
+	 * @param url
+	 * @param pluginId
 	 * @return returns the URL as is if it had a protocol.
 	 */
 	public static String resolveURL(String url, String pluginId) {
@@ -88,8 +88,8 @@ public class ModelUtil {
 	 * declaring plugin. Return the plugin relative location, fully qualified.
 	 * Returns null if the passed string itself is null.
 	 *
-	 * @param resource
-	 * @param pluginDesc
+	 * @param url
+	 * @param element
 	 * @return returns the URL as is if it had a protocol.
 	 */
 	public static String resolveURL(String url, IConfigurationElement element) {

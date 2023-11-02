@@ -23,8 +23,7 @@ import org.eclipse.core.runtime.IPath;
 
 /**
  * Tests the following API methods:
- *  {@link IContainer#addFilter(String, int, String, int, IProgressMonitor)}
- * 	{@link IContainer#removeFilter(String, int, String, int, IProgressMonitor)}
+ *  {@link IContainer#createFilter(int, FileInfoMatcherDescription, int, org.eclipse.core.runtime.IProgressMonitor)}
  *  {@link IContainer#getFilters()}
  *
  * This test tests resource filters with projects, folders, linked resource folders,

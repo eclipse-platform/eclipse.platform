@@ -354,7 +354,6 @@ public class SampleEngine {
 	 * @param mb
 	 * @return true if this memory block supports value modification, false
 	 *         otherwise
-	 * @throws CoreException
 	 */
 	public boolean supportsValueModification(SampleMemoryBlock mb) {
 		return true;

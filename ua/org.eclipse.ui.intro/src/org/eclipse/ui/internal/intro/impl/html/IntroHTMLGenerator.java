@@ -63,8 +63,7 @@ public class IntroHTMLGenerator {
 	 *
 	 * @param page
 	 *            the page to generate HTML for
-	 * @param presentation
-	 *            the presentation associated with this page.
+	 * @param providerSite
 	 */
 	public HTMLElement generateHTMLforPage(AbstractIntroPage page, IIntroContentProviderSite providerSite) {
 		if (page == null)

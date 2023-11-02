@@ -214,7 +214,7 @@ public class SystemProxyTest {
 		assertEquals(0, proxiesData.length);
 	}
 
-	private void initializeTestProxyData(String proxyDataSource) {
+	void initializeTestProxyData(String proxyDataSource) {
 		proxyDataMap.put(IProxyData.HTTP_PROXY_TYPE,
 				new ProxyData(IProxyData.HTTP_PROXY_TYPE, "127.0.0.1", 8081, false, proxyDataSource));
 		proxyDataMap.put(IProxyData.HTTPS_PROXY_TYPE,

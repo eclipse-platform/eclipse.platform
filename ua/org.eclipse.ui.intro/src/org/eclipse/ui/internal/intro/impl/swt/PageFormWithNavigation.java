@@ -52,8 +52,6 @@ public class PageFormWithNavigation extends PageForm {
 
 	/**
 	 * Extend parent behavior and add navigation.
-	 *
-	 * @param pageBook
 	 */
 	@Override
 	public void createPartControl(ScrolledPageBook mainPageBook,

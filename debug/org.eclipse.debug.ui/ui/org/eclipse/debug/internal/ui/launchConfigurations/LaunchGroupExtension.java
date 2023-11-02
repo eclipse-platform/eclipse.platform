@@ -46,7 +46,7 @@ public class LaunchGroupExtension implements ILaunchGroup {
 	 *
 	 * @param element the configuration element defining the
 	 *  attributes of this launch group extension
-	 * @returns a new launch group extension
+	 * @return a new launch group extension
 	 */
 	public LaunchGroupExtension(IConfigurationElement element) {
 		setConfigurationElement(element);
