@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.e4.core.services.nls;
 
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.AccessController;
@@ -21,8 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.osgi.service.log.Logger;
 import org.osgi.service.log.LoggerFactory;

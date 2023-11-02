@@ -48,9 +48,8 @@ public class LaunchConfigurationPropertiesDialog extends LaunchConfigurationsDia
 	 * parent shell.
 	 *
 	 * @param shell the parent shell
-	 * @param selection the selection used to initialize this dialog, typically the
-	 *  current workbench selection
-	 * @param group launch group
+	 * @param launchConfiguration the ILaunchConfiguration used to initialize this dialog
+	 * @param group LaunchGroupExtension
 	 */
 	public LaunchConfigurationPropertiesDialog(Shell shell, ILaunchConfiguration launchConfiguration, LaunchGroupExtension group) {
 		super(shell, group);
@@ -63,11 +62,10 @@ public class LaunchConfigurationPropertiesDialog extends LaunchConfigurationsDia
 	 * parent shell.
 	 *
 	 * @param shell the parent shell
-	 * @param selection the selection used to initialize this dialog, typically the
-	 *  current workbench selection
+	 * @param launchConfiguration the ILaunchConfiguration used to initialize this dialog
+	 * @param group launch group
 	 * @param reservednames a set of names of virtual launch configurations that need to be considered
 	 *  when configuration names are generated
-	 * @param group launch group
 	 */
 	public LaunchConfigurationPropertiesDialog(Shell shell, ILaunchConfiguration launchConfiguration, LaunchGroupExtension group, Set<String> reservednames) {
 		super(shell, group);

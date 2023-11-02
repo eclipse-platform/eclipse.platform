@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2022 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -12,9 +12,11 @@
  *     IBM - Initial API and implementation
  *     Christoph Läubrich 	- Issue #84 - RefreshManager access ResourcesPlugin.getWorkspace in the init phase
  *     						- Issue #97 - RefreshManager.manageAutoRefresh calls ResourcesPlugin.getWorkspace before the Workspace is fully open
+ *     Latha Patil(ETAS GmbH)	- Issue #497- Get rid of deprecated org.eclipse.core.runtime.Preferences in platform code
  *******************************************************************************/
 package org.eclipse.core.internal.refresh;
 
+import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.internal.resources.IManager;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
@@ -23,7 +25,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.refresh.IRefreshMonitor;
 import org.eclipse.core.resources.refresh.IRefreshResult;
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 
 /**
  * Manages auto-refresh functionality, including maintaining the active
@@ -32,7 +36,7 @@ import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
  *
  * @since 3.0
  */
-public class RefreshManager implements IRefreshResult, IManager, Preferences.IPropertyChangeListener {
+public class RefreshManager implements IRefreshResult, IManager, EclipsePreferences.IPreferenceChangeListener {
 	public static final String DEBUG_PREFIX = "Auto-refresh: "; //$NON-NLS-1$
 	volatile MonitorManager monitors;
 	private volatile RefreshJob refreshJob;
@@ -75,16 +79,15 @@ public class RefreshManager implements IRefreshResult, IManager, Preferences.IPr
 	}
 
 	/**
-	 * Checks for changes to the PREF_AUTO_UPDATE property.
-	 * @see org.eclipse.core.runtime.Preferences.IPropertyChangeListener#propertyChange(Preferences.PropertyChangeEvent)
+	 * Checks for changes to the PREF_AUTO_REFRESH property.
+	 * @see org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener#preferenceChange(IEclipsePreferences.PreferenceChangeEvent)
 	 */
-	@Deprecated
 	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		String property = event.getProperty();
+	public void preferenceChange(PreferenceChangeEvent event) {
+		String property = event.getKey();
 		if (ResourcesPlugin.PREF_AUTO_REFRESH.equals(property)) {
-			Preferences preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
-			final boolean autoRefresh = preferences.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH);
+			final boolean autoRefresh = Platform.getPreferencesService().getBoolean(ResourcesPlugin.PI_RESOURCES,
+					ResourcesPlugin.PREF_AUTO_REFRESH, false, null);
 			String jobName = autoRefresh ? Messages.refresh_installMonitorsOnWorkspace : Messages.refresh_uninstallMonitorsOnWorkspace;
 			MonitorJob.createSystem(jobName, getWorkspace().getRoot(),
 					(ICoreRunnable) monitor -> manageAutoRefresh(autoRefresh, monitor)).schedule();
@@ -109,7 +112,7 @@ public class RefreshManager implements IRefreshResult, IManager, Preferences.IPr
 			// do nothing if we have already shutdown
 			return;
 		}
-		ResourcesPlugin.getPlugin().getPluginPreferences().removePropertyChangeListener(this);
+		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).removePreferenceChangeListener(this);
 		if (monitors != null) {
 			monitors.stop();
 			monitors = null;
@@ -129,9 +132,9 @@ public class RefreshManager implements IRefreshResult, IManager, Preferences.IPr
 		refreshJob = new RefreshJob(workspace);
 		monitors = new MonitorManager(workspace, this);
 
-		Preferences preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
-		preferences.addPropertyChangeListener(this);
-		boolean autoRefresh = preferences.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH);
+		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).addPreferenceChangeListener(this);
+		boolean autoRefresh = Platform.getPreferencesService().getBoolean(ResourcesPlugin.PI_RESOURCES,
+				ResourcesPlugin.PREF_AUTO_REFRESH, false, null);
 		if (autoRefresh) {
 			SubMonitor subMonitor = SubMonitor.convert(monitor, 1);
 			manageAutoRefresh(autoRefresh, subMonitor.split(1));

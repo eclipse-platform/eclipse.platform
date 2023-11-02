@@ -48,9 +48,9 @@ public class ThreadEventHandler extends DebugEventHandler {
 	 */
 	private final Map<IThread, IStackFrame> fLastTopFrame = new HashMap<>();
 	/**
-	 * Constructs and event handler for a threads in the given viewer.
+	 * Constructs and event handler for a threads in the given proxy.
 	 *
-	 * @param viewer
+	 * @param proxy
 	 */
 	public ThreadEventHandler(AbstractModelProxy proxy) {
 		super(proxy);

@@ -2,9 +2,9 @@ package org.eclipse.e4.core.internal.tests.nls;
 
 import java.text.MessageFormat;
 
-import javax.annotation.PostConstruct;
-
 import org.eclipse.e4.core.services.nls.Message;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * Load messages out of a class based resource bundle specified in the annotation.

@@ -37,7 +37,7 @@ public class SubItem extends AbstractSubItem implements IExecutableItem, IPerfor
 
 	/**
 	 * This method sets the label that will be shown for the sub item.
-	 * @param label the label to be shown
+	 * @param string the label to be shown
 	 */
 	public void setLabel(String string) {
 		label = string;

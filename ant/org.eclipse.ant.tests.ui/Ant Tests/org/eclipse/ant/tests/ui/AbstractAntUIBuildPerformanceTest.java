@@ -99,7 +99,7 @@ public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Called from within a test case immediately before the code to measure is run. It starts capturing of performance data. Must be followed by a
-	 * call to {@link PerformanceTestCase#stopMeasuring()} before subsequent calls to this method or {@link PerformanceTestCase#commitMeasurements()}.
+	 * call to {@link #stopMeasuring()} before subsequent calls to this method or {@link #commitMeasurements()}.
 	 */
 	protected void startMeasuring() {
 		fPerformanceMeter.start();

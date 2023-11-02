@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.internal.expressions.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.osgi.framework.Bundle;
 
 import org.eclipse.core.expressions.EvaluationContext;
@@ -25,12 +30,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 @SuppressWarnings("restriction")
-public class PropertyTesterTests extends TestCase {
+public class PropertyTesterTests {
 
 	private A a;
 	private B b;
@@ -41,23 +42,21 @@ public class PropertyTesterTests extends TestCase {
 	// Needs additional local test plug-ins
 	private static final boolean TEST_DYNAMIC_AND_ACTIVATION= false;
 
-	public static Test suite() {
-		return new TestSuite(PropertyTesterTests.class);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		a= new A();
 		b= new B();
 		i= b;
 	}
 
+	@Test
 	public void testSimple() throws Exception {
 		assertTrue(test(a, "simple", null,"simple")); //$NON-NLS-1$ //$NON-NLS-2$
 		// second pass to check if cache is populated correctly
 		assertTrue(test(a, "simple", null,"simple")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
+	@Test
 	public void testInherited() throws Exception {
 		assertTrue(test(b, "simple", null, "simple")); //$NON-NLS-1$ //$NON-NLS-2$
 		assertTrue(test(i, "simple", null, "simple")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -66,6 +65,7 @@ public class PropertyTesterTests extends TestCase {
 		assertTrue(test(i, "simple", null, "simple")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
+	@Test
 	public void testUnknown() throws Exception {
 		try {
 			test(a, "unknown", null, null); //$NON-NLS-1$
@@ -75,6 +75,7 @@ public class PropertyTesterTests extends TestCase {
 		assertTrue(false);
 	}
 
+	@Test
 	public void testOverridden() throws Exception {
 		assertTrue(test(a, "overridden", null, "A")); //$NON-NLS-1$ //$NON-NLS-2$
 		assertTrue(test(b, "overridden", null, "B")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -88,7 +89,8 @@ public class PropertyTesterTests extends TestCase {
 		assertTrue(test(i, "overridden", null, "B")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
-	public void testOdering() throws Exception {
+	@Test
+	public void testOrdering() throws Exception {
 		assertTrue(test(b, "ordering", null, "A")); //$NON-NLS-1$ //$NON-NLS-2$
 		I other= new I() {};
 		assertTrue(test(other, "ordering", null, "I")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -97,6 +99,7 @@ public class PropertyTesterTests extends TestCase {
 		assertTrue(test(other, "ordering", null, "I")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
+	@Test
 	public void testChaining() throws Exception {
 		assertTrue(test(a, "chaining", null, "A2")); //$NON-NLS-1$ //$NON-NLS-2$
 		// second pass to check if cache is populated correctly
@@ -105,12 +108,14 @@ public class PropertyTesterTests extends TestCase {
 
 	// This test is questionable. It depends on if core runtime can
 	// guaratee any ordering in the plug-in registry.
+	@Test
 	public void testChainOrdering() throws Exception {
 		assertTrue(test(a, "chainOrdering", null, "A")); //$NON-NLS-1$ //$NON-NLS-2$
 		// second pass to check if cache is populated correctly
 		assertTrue(test(a, "chainOrdering", null, "A")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
+	@Test
 	public void testWrongNameSpace() throws Exception {
 		try {
 			test(a, "differentNamespace", null, null); //$NON-NLS-1$
@@ -120,6 +125,7 @@ public class PropertyTesterTests extends TestCase {
 		assertTrue(false);
 	}
 
+	@Test
 	public void testDynamicPlugin() throws Exception {
 		if (TEST_DYNAMIC_AND_ACTIVATION) {
 			A receiver= new A();
@@ -144,6 +150,7 @@ public class PropertyTesterTests extends TestCase {
 		}
 	}
 
+	@Test
 	public void testPluginActivation() throws Exception {
 		if (TEST_DYNAMIC_AND_ACTIVATION) {
 			Bundle bundle= Platform.getBundle("org.eclipse.core.expressions.tests.forceActivation"); //$NON-NLS-1$
@@ -166,6 +173,7 @@ public class PropertyTesterTests extends TestCase {
 		}
 	}
 
+	@Test
 	public void testPlatformTester() throws Exception {
 		TestExpression exp = new TestExpression("org.eclipse.core.runtime",
 				"bundleState",
@@ -175,6 +183,7 @@ public class PropertyTesterTests extends TestCase {
 		assertEquals(EvaluationResult.TRUE, result);
 	}
 
+	@Test
 	public void testDifferentNameSpace() throws Exception {
 		assertTrue(test("org.eclipse.core.internal.expressions.tests2", a, "differentNamespace", null, "A3"));		 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}

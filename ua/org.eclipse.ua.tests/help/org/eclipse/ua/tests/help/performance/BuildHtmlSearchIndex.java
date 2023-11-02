@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.performance;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.net.URL;
 
 import org.eclipse.core.runtime.IStatus;
@@ -28,18 +30,23 @@ import org.eclipse.help.internal.toc.TocFile;
 import org.eclipse.help.internal.toc.TocFileProvider;
 import org.eclipse.help.internal.toc.TocManager;
 import org.eclipse.test.performance.Dimension;
-import org.eclipse.test.performance.PerformanceTestCase;
+import org.eclipse.test.performance.PerformanceTestCaseJunit5;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.osgi.framework.FrameworkUtil;
 
-public class BuildHtmlSearchIndex extends PerformanceTestCase {
+public class BuildHtmlSearchIndex extends PerformanceTestCaseJunit5 {
 
 	private AbstractTocProvider[] tocProviders;
 	private AbstractIndexProvider[] indexProviders;
 	private AnalyzerDescriptor analyzerDesc;
 
+	@BeforeEach
 	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	public void setUp(TestInfo testInfo) throws Exception {
+		super.setUp(testInfo);
 		TocManager tocManager = HelpPlugin.getTocManager();
 		tocProviders = tocManager.getTocProviders();
 		tocManager.setTocProviders(new AbstractTocProvider[] { new TestTocFileProvider() });
@@ -52,8 +59,9 @@ public class BuildHtmlSearchIndex extends PerformanceTestCase {
 		analyzerDesc = new AnalyzerDescriptor("en-us");
 	}
 
+	@AfterEach
 	@Override
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		super.tearDown();
 		TocManager tocManager = HelpPlugin.getTocManager();
 		tocManager.setTocProviders(tocProviders);
@@ -67,6 +75,7 @@ public class BuildHtmlSearchIndex extends PerformanceTestCase {
 		indexProviders = null;
 	}
 
+	@Test
 	public void testCreateHtmlSearchIndex() throws Exception {
 		tagAsGlobalSummary("Create HTML Search Index", Dimension.ELAPSED_PROCESS);
 

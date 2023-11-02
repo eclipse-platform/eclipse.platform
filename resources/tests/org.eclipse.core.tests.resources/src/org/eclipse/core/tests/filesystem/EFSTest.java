@@ -13,20 +13,26 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileSystem;
+import org.junit.Test;
 
 /**
  * Tests public API methods of the class EFS.
  * @see EFS
  */
 public class EFSTest extends FileSystemTest {
+	@Test
 	public void testGetLocalFileSystem() {
 		IFileSystem system = EFS.getLocalFileSystem();
 		assertNotNull("1.0", system);
 		assertEquals("1.1", "file", system.getScheme());
 	}
 
+	@Test
 	public void testGetNullFileSystem() {
 		IFileSystem system = EFS.getNullFileSystem();
 		assertNotNull("1.0", system);

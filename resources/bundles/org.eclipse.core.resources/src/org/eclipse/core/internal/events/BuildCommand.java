@@ -22,7 +22,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 
 /**
- * The concrete implementation of <tt>ICommand</tt>.  This object
+ * The concrete implementation of {@link ICommand}.  This object
  * stores information about a particular type of builder.
  *
  *  If the builder has been instantiated, a reference to the builder is held.

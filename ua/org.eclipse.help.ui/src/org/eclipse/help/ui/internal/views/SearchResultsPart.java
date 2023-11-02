@@ -78,7 +78,7 @@ public class SearchResultsPart extends AbstractFormPart implements IHelpPart {
 	/**
 	 * @param parent
 	 * @param toolkit
-	 * @param style
+	 * @param tbm
 	 */
 	public SearchResultsPart(Composite parent, FormToolkit toolkit,
 			IToolBarManager tbm) {

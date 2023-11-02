@@ -7,12 +7,14 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.ant.tests.ui.performance;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.ant.internal.ui.IAntUIConstants;
 import org.eclipse.ant.tests.ui.editor.performance.EditorTestHelper;
@@ -28,14 +30,19 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.test.performance.Dimension;
-import org.eclipse.test.performance.PerformanceTestCase;
+import org.eclipse.test.performance.PerformanceTestCaseJunit5;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 @SuppressWarnings("restriction")
-public class OpenLaunchConfigurationDialogTests extends PerformanceTestCase {
+public class OpenLaunchConfigurationDialogTests extends PerformanceTestCaseJunit5 {
 
 	public static String fgIdentifier = IExternalToolConstants.ID_EXTERNAL_TOOLS_LAUNCH_GROUP;
 
+	@Test
 	public void testOpenAntLaunchConfigurationDialog1() {
 		// cold run
 		ILaunchConfiguration configuration = getLaunchConfiguration("big"); //$NON-NLS-1$
@@ -48,6 +55,7 @@ public class OpenLaunchConfigurationDialogTests extends PerformanceTestCase {
 		assertPerformance();
 	}
 
+	@Test
 	public void testOpenAntLaunchConfigurationDialog2() {
 		// warm run
 		ILaunchConfiguration configuration = getLaunchConfiguration("big"); //$NON-NLS-1$
@@ -64,7 +72,7 @@ public class OpenLaunchConfigurationDialogTests extends PerformanceTestCase {
 	private ILaunchConfiguration getLaunchConfiguration(String buildFileName) {
 		IFile file = AbstractAntUITest.getJavaProject().getProject().getFolder("launchConfigurations").getFile(buildFileName + ".launch"); //$NON-NLS-1$ //$NON-NLS-2$
 		ILaunchConfiguration config = AbstractAntUITest.getLaunchManager().getLaunchConfiguration(file);
-		assertTrue("Could not find launch configuration for " + buildFileName, config.exists()); //$NON-NLS-1$
+		assertTrue(config.exists(), "Could not find launch configuration for " + buildFileName); //$NON-NLS-1$
 		return config;
 	}
 
@@ -86,9 +94,10 @@ public class OpenLaunchConfigurationDialogTests extends PerformanceTestCase {
 		stopMeasuring();
 	}
 
+	@BeforeEach
 	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	public void setUp(TestInfo testInfo) throws Exception {
+		super.setUp(testInfo);
 		IPreferenceStore debugPreferenceStore = DebugUIPlugin.getDefault().getPreferenceStore();
 		debugPreferenceStore.setValue(IInternalDebugUIConstants.PREF_FILTER_LAUNCH_CLOSED, false);
 		debugPreferenceStore.setValue(IInternalDebugUIConstants.PREF_FILTER_LAUNCH_DELETED, false);
@@ -97,8 +106,9 @@ public class OpenLaunchConfigurationDialogTests extends PerformanceTestCase {
 		EditorTestHelper.runEventQueue();
 	}
 
+	@AfterEach
 	@Override
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		super.tearDown();
 		IPreferenceStore debugPreferenceStore = DebugUIPlugin.getDefault().getPreferenceStore();
 		debugPreferenceStore.setToDefault(IInternalDebugUIConstants.PREF_FILTER_LAUNCH_CLOSED);

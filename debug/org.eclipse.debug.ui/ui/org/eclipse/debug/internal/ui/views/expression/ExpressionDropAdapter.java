@@ -52,7 +52,6 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * When IVariables or text is dropped new watch expressions are created at the drop location.
  * When IExpressions are dropped, they are moved to the drop location
  *
- * @see org.eclipse.debug.internal.ui.views.variables.VariablesDragAdapter
  * @see ExpressionManager
  * @since 3.4
  */

@@ -22,16 +22,14 @@ package org.eclipse.debug.internal.ui.viewers.model.provisional;
  * as its model changes in order to update views displaying that model.
  * <p>
  * Each node in a model delta describes the following:
+ * </p>
  * <ul>
  * <li>the type of change - for example, whether an element was added, removed,
  *  or whether its content or state changed</li>
  * <li>action to consider - for example, select or reveal the element</li>
  * </ul>
- * </p>
- * <p>
  * @noimplement Clients are not intended to implement this interface directly. Instead, clients
  * creating and firing model deltas should create instances of {@link ModelDelta}.
- * </p>
  * @since 3.2
  */
 public interface IModelDelta {

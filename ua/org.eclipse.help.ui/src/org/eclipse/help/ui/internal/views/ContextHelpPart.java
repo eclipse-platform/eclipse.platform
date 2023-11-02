@@ -110,7 +110,6 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 	/**
 	 * @param parent
 	 * @param toolkit
-	 * @param style
 	 */
 	public ContextHelpPart(Composite parent, FormToolkit toolkit) {
 		super(parent, toolkit, getSectionStyle());

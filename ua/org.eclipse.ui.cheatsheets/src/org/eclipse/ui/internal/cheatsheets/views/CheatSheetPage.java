@@ -104,13 +104,6 @@ public class CheatSheetPage extends Page implements IMenuContributor {
 		return inactiveColor1;
 	}
 
-	/**
-	 * Creates the cheatsheet's title area which will consists of a title and
-	 * image.
-	 *
-	 * @param parent
-	 *            the SWT parent for the title area composite
-	 */
 	@Override
 	protected String getTitle() {
 		if (cheatSheet != null && cheatSheet.getTitle() != null)

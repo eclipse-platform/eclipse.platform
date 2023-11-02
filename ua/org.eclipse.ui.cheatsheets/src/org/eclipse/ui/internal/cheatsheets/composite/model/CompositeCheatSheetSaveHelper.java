@@ -121,7 +121,6 @@ public class CompositeCheatSheetSaveHelper {
 	/**
 	 * Save the state of a composite cheat sheet model
 	 * @param model
-	 * @param selectedTask
 	 * @param layoutData Will contain pairs of name/value Strings used to save and restore layout
 	 * @return
 	 */

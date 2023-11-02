@@ -79,7 +79,6 @@ public class DirectorySourceContainerDialog extends TitleAreaDialog {
 	 * @param shell shell
 	 * @param directory directory to edit or empty string
 	 * @param searchSubfolders whether the search sub-folders button should be checked
-	 * @param newContainer
 	 */
 	public DirectorySourceContainerDialog(Shell shell, String directory, boolean searchSubfolders) {
 		super(shell);

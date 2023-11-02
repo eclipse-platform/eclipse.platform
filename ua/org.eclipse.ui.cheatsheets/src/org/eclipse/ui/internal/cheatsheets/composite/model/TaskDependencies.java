@@ -83,7 +83,6 @@ public class TaskDependencies {
 
 	/**
 	 * Resolve all of the dependencies updating the individual tasks
-	 * @param model The composite cheat sheet
 	 * @param status An object used to add error status
 	 */
 	public void resolveDependencies(IStatusContainer status) {

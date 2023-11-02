@@ -98,7 +98,7 @@ public class HelpUIResources {
 	}
 	/**
 	 * Returns an icon image from a property file
-	 * @param name simple image file name
+	 * @param key simple image file name
 	 * @return the new image or <code>null</code> if image
 	 * could not be created
 	 */

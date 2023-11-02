@@ -276,10 +276,6 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 
 	/**
 	 * Returns the label for the path in the given column with the current presentation
-	 * @param element
-	 * @param presentationContext
-	 * @param columnId
-	 * @return label
 	 */
 	protected abstract String getLabel(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException;
 
@@ -300,10 +296,11 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 	/**
 	 * Returns the checked state for the given path.
 	 *
-	 * @param path Path of the element to retrieve the grayed state for.
+	 * @param path                Path of the element to retrieve the grayed state
+	 *                            for.
 	 * @param presentationContext Presentation context where the element is
-	 * displayed.
-	 * @return <code>true<code> if the element check box should be checked
+	 *                            displayed.
+	 * @return <code>true</code> if the element check box should be checked
 	 * @throws CoreException
 	 *
 	 * @since 3.6
@@ -315,10 +312,11 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 	/**
 	 * Returns the grayed state for the given path.
 	 *
-	 * @param path Path of the element to retrieve the grayed state for.
+	 * @param path                Path of the element to retrieve the grayed state
+	 *                            for.
 	 * @param presentationContext Presentation context where the element is
-	 * displayed.
-	 * @return <code>true<code> if the element check box should be grayed
+	 *                            displayed.
+	 * @return <code>true</code> if the element check box should be grayed
 	 * @throws CoreException
 	 *
 	 * @since 3.6

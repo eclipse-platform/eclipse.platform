@@ -17,9 +17,6 @@ package org.eclipse.e4.core.internal.tests.contexts.inject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
@@ -27,6 +24,9 @@ import org.eclipse.e4.core.di.IInjector;
 import org.eclipse.e4.core.di.InjectorFactory;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.junit.Test;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 
 /**

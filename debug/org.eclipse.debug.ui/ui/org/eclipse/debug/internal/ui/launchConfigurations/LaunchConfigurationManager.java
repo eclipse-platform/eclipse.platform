@@ -443,7 +443,7 @@ public class LaunchConfigurationManager implements ILaunchListener, ISavePartici
 	}
 
 	/**
-	 * Write out an XML file indicating the entries on the run & debug history lists and
+	 * Write out an XML file indicating the entries on the run &amp; debug history lists and
 	 * the most recent launch.
 	 * @throws IOException if writing the history file fails
 	 * @throws CoreException is an exception occurs
@@ -1188,7 +1188,7 @@ public class LaunchConfigurationManager implements ILaunchListener, ISavePartici
 	/**
 	 * Sets the given launch to be the most recent launch in the launch
 	 * history (for applicable histories).
-	 * <p>
+	 * 
 	 * @param launch the launch to prepend to its associated histories
 	 * @since 3.3
 	 */

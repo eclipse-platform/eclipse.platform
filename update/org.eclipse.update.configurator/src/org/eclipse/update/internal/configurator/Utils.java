@@ -197,7 +197,7 @@ public class Utils {
 	 * the set of currently installed plug-ins. (e.g. extensions)
 	 * 
 	 * @see PlatformAdmin#getState()
-	 * @see State#getTimeStamp()
+	 * @see org.eclipse.osgi.service.resolver.State#getTimeStamp()
 	 */
 	public static long getStateStamp() {
 		ServiceReference<PlatformAdmin> platformAdminReference = getContext().getServiceReference(PlatformAdmin.class);

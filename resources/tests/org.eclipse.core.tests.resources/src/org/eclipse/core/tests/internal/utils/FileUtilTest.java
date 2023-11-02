@@ -13,12 +13,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.utils;
 
+import static org.junit.Assert.assertEquals;
+
 import java.net.URI;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.filesystem.FileSystemTest;
+import org.eclipse.core.tests.harness.FileSystemHelper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for {@link FileUtil} class.
@@ -26,19 +32,22 @@ import org.eclipse.core.tests.filesystem.FileSystemTest;
 public class FileUtilTest extends FileSystemTest {
 	private IPath baseTestDir;
 
+	@Before
 	@Override
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		super.setUp();
-		baseTestDir = getRandomLocation();
+		baseTestDir = FileSystemHelper.getRandomLocation();
 		baseTestDir.toFile().mkdirs();
 	}
 
+	@After
 	@Override
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		super.tearDown();
-		ensureDoesNotExistInFileSystem(baseTestDir.toFile());
+		FileSystemHelper.clear(baseTestDir.toFile());
 	}
 
+	@Test
 	public void testRealPath() throws Exception {
 		IPath realPath = baseTestDir.append("Test.TXT");
 		realPath.toFile().createNewFile();
@@ -51,6 +60,7 @@ public class FileUtilTest extends FileSystemTest {
 		assertEquals(realPath, FileUtil.realPath(testPath));
 	}
 
+	@Test
 	public void testRealPathOfNonexistingFile() throws Exception {
 		IPath realPath = baseTestDir.append("ExistingDir");
 		realPath.toFile().mkdirs();
@@ -64,6 +74,7 @@ public class FileUtilTest extends FileSystemTest {
 		assertEquals(realPath.append(suffix), FileUtil.realPath(testPath.append(suffix)));
 	}
 
+	@Test
 	public void testRealURI() throws Exception {
 		IPath realPath = baseTestDir.append("Test.TXT");
 		realPath.toFile().createNewFile();

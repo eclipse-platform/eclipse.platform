@@ -18,14 +18,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.contexts.RunAndTrack;
 import org.junit.Test;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 
 /**
  * Tests for the basic context injection functionality

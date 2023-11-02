@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
@@ -20,8 +22,9 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.harness.CoreTest;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.harness.FileSystemHelper;
+import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryTree;
 import org.junit.After;
 import org.junit.Before;
@@ -29,48 +32,16 @@ import org.junit.Before;
 /**
  * Abstract superclass for all generic file system tests.
  */
-public abstract class FileSystemTest extends CoreTest {
+public abstract class FileSystemTest {
 	protected IFileStore baseStore, localFileBaseStore;
 
-	public FileSystemTest() {
-		super();
+	protected IProgressMonitor getMonitor() {
+		return new FussyProgressMonitor();
 	}
 
-	public FileSystemTest(String name) {
-		super(name);
-	}
-
-	/**
-	 * Bridge method to be able to run subclasses with JUnit4 as well as with
-	 * JUnit3.
-	 *
-	 * @throws Exception
-	 *             comes from {@link #setUp()}
-	 */
-	@Before
-	public final void before() throws Exception {
-		setUp();
-	}
-
-	/**
-	 * Bridge method to be able to run subclasses with JUnit4 as well as with
-	 * JUnit3.
-	 *
-	 * @throws Exception
-	 *             comes from {@link #tearDown()}
-	 */
-	@After
-	public final void after() throws Exception {
-		tearDown();
-	}
-
-	protected void ensureDoesNotExist(IFileStore store) {
-		try {
-			store.delete(EFS.NONE, getMonitor());
-			assertTrue("1.0", !store.fetchInfo().exists());
-		} catch (CoreException e) {
-			fail("ensureDoesNotExist", e);
-		}
+	protected void ensureDoesNotExist(IFileStore store) throws CoreException {
+		store.delete(EFS.NONE, getMonitor());
+		assertTrue("1.0", !store.fetchInfo().exists());
 	}
 
 	/**
@@ -79,45 +50,36 @@ public abstract class FileSystemTest extends CoreTest {
 	 * @param message The failure message if the assertion fails
 	 * @param store The store to check for existence
 	 */
-	protected void assertExists(String message, IFileStore store) {
+	protected void assertExists(String message, IFileStore store) throws CoreException {
 		IFileInfo info = store.fetchInfo();
 		assertTrue(message, info.exists());
 		//check that the parent knows about it
-		try {
-			IFileInfo[] children = store.getParent().childInfos(EFS.NONE, getMonitor());
-			for (IFileInfo element : children) {
-				if (element.getName().equals(store.getName())) {
-					return;
-				}
+		IFileInfo[] children = store.getParent().childInfos(EFS.NONE, getMonitor());
+		for (IFileInfo element : children) {
+			if (element.getName().equals(store.getName())) {
+				return;
 			}
-			assertTrue(message, false);
-		} catch (CoreException e) {
-			fail(message, e);
 		}
+		assertTrue(message, false);
 	}
 
 	/**
 	 * Ensures that the provided store exists, as either a file or directory.
 	 */
-	protected void ensureExists(IFileStore store, boolean directory) {
-		try {
-			if (directory) {
-				store.mkdir(EFS.NONE, getMonitor());
-				final IFileInfo info = store.fetchInfo();
-				assertTrue("1.0", info.exists());
-				assertTrue("1.1", info.isDirectory());
-			} else {
-				try (OutputStream out = store.openOutputStream(EFS.NONE, getMonitor())) {
-					out.write(5);
-				}
-				final IFileInfo info = store.fetchInfo();
-				assertTrue("1.5", info.exists());
-				assertTrue("1.6", !info.isDirectory());
+	protected void ensureExists(IFileStore store, boolean directory) throws CoreException, IOException {
+		if (directory) {
+			store.mkdir(EFS.NONE, getMonitor());
+			final IFileInfo info = store.fetchInfo();
+			assertTrue("1.0", info.exists());
+			assertTrue("1.1", info.isDirectory());
+		} else {
+			try (OutputStream out = store.openOutputStream(EFS.NONE, getMonitor())) {
+				out.write(5);
 			}
-		} catch (CoreException | IOException e) {
-			fail("ensureExists", e);
+			final IFileInfo info = store.fetchInfo();
+			assertTrue("1.5", info.exists());
+			assertTrue("1.6", !info.isDirectory());
 		}
-
 	}
 
 	/**
@@ -127,16 +89,15 @@ public abstract class FileSystemTest extends CoreTest {
 		return (EFS.getLocalFileSystem().attributes() & attribute) != 0;
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		doFSSetUp();
-		localFileBaseStore = EFS.getLocalFileSystem().getStore(FileSystemHelper.getRandomLocation(getTempDir()));
+		localFileBaseStore = EFS.getLocalFileSystem()
+				.getStore(FileSystemHelper.getRandomLocation(FileSystemHelper.getTempDir()));
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		localFileBaseStore.delete(EFS.NONE, null);
 		doFSTearDown();
 	}

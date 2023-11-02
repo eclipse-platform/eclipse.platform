@@ -13,11 +13,11 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.tests.contexts.inject;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-
 import org.eclipse.e4.core.contexts.IEclipseContext;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
 
 /**
  * Test class to check injection mechanism into classes with inheritance

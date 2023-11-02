@@ -14,6 +14,8 @@
 
 package org.eclipse.ant.tests.ui.editor.performance;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 
 import org.eclipse.ant.internal.ui.AntUIPlugin;
@@ -26,22 +28,28 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.ui.PartInitException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 @SuppressWarnings("restriction")
 public class OpenAntEditorTest extends AbstractAntPerformanceTest {
 
+	@BeforeEach
 	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	public void setUp(TestInfo testInfo) throws Exception {
+		super.setUp(testInfo);
 		EditorTestHelper.runEventQueue();
 	}
 
+	@Test
 	public void testOpenAntEditor1() throws Exception {
 		// cold run
 		IFile file = getIFile("build.xml"); //$NON-NLS-1$
 		measureOpenInEditor(file);
 	}
 
+	@Test
 	public void testOpenAntEditor2() throws Exception {
 		// warm run
 		IFile file = getIFile("build.xml"); //$NON-NLS-1$
@@ -49,6 +57,7 @@ public class OpenAntEditorTest extends AbstractAntPerformanceTest {
 		measureOpenInEditor(file);
 	}
 
+	@Test
 	public void testOpenAntEditorNoFolding() throws Exception {
 		IPreferenceStore store = AntUIPlugin.getDefault().getPreferenceStore();
 		try {
@@ -68,13 +77,13 @@ public class OpenAntEditorTest extends AbstractAntPerformanceTest {
 
 	protected File getBuildFile(String buildFileName) {
 		IFile file = getIFile(buildFileName);
-		assertTrue("Could not find build file named: " + buildFileName, file.exists()); //$NON-NLS-1$
+		assertTrue(file.exists(), "Could not find build file named: " + buildFileName); //$NON-NLS-1$
 		return file.getLocation().toFile();
 	}
 
 	/**
 	 * Returns the 'AntUITests' project.
-	 * 
+	 *
 	 * @return the test project
 	 */
 	protected IProject getProject() {

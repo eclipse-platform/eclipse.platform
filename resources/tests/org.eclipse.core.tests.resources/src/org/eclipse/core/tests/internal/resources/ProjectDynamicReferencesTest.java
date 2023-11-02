@@ -13,9 +13,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
-import java.util.*;
-import org.eclipse.core.resources.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IDynamicReferenceProvider;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspace.ProjectOrder;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -37,6 +47,7 @@ public class ProjectDynamicReferencesTest extends ResourceTest {
 
 	@Override
 	public void setUp() throws Exception {
+		super.setUp();
 		project0 = getWorkspace().getRoot().getProject(PROJECT_0_NAME);
 		project1 = getWorkspace().getRoot().getProject("ProjectDynamicReferencesTest_p1");
 		project2 = getWorkspace().getRoot().getProject("ProjectDynamicReferencesTest_p2");

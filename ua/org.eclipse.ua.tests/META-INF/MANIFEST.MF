@@ -17,7 +17,9 @@ Require-Bundle: org.junit,
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: javax.servlet;version="3.1.0",
- javax.servlet.http;version="3.1.0"
+ javax.servlet.http;version="3.1.0",
+ org.junit.jupiter.api,
+ org.junit.platform.suite.api
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.eclipse.ua.tests,
  org.eclipse.ua.tests.browser.servlet,

@@ -111,7 +111,6 @@ public class LaunchProxy extends AbstractModelProxy implements ILaunchesListener
 	/**
 	 * Installs model proxies for any new children in the given launch.
 	 *
-	 * @param launch
 	 */
 	protected void installModelProxies() {
 		boolean changes = false;

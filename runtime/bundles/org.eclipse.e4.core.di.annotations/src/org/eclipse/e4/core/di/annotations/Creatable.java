@@ -18,13 +18,13 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.inject.Qualifier;
 
 /**
  * Specifies that the target class can be created by an injector as needed.
  * @since 1.3
  */
-@Qualifier
+@javax.inject.Qualifier
+@jakarta.inject.Qualifier
 @Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

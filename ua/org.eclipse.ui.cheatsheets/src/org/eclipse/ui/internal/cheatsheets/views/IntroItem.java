@@ -30,17 +30,11 @@ import org.eclipse.ui.internal.cheatsheets.data.Item;
 public class IntroItem extends ViewItem {
 	private ImageHyperlink startButton;
 
-	/**
-	 * Constructor for IntroItem.
-	 * @param parent
-	 * @param contentItem
-	 */
 	public IntroItem(CheatSheetPage page, Item contentItem, Color itemColor, CheatSheetViewer viewer) {
 		super(page, contentItem, itemColor, viewer);
 	}
 
-
-	/*package*/ @Override
+	@Override
 	void setStartImage() {
 		startButton.setImage(CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.COMPOSITE_TASK_START));
 		startButton.setText(Messages.START_CHEATSHEET_TOOLTIP);
@@ -48,7 +42,7 @@ public class IntroItem extends ViewItem {
 //		startButton.setFAccessibleName(startButton.getToolTipText());
 	}
 
-	/*package*/ @Override
+	@Override
 	void setRestartImage() {
 		startButton.setImage(CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.CHEATSHEET_RETURN));
 		startButton.setText(Messages.RESTART_CHEATSHEET_TOOLTIP);
@@ -57,7 +51,7 @@ public class IntroItem extends ViewItem {
 	}
 
 	@Override
-	/*package*/ void handleButtons() {
+	void handleButtons() {
 		buttonComposite = page.getToolkit().createComposite(bodyWrapperComposite);
 		GridLayout buttonlayout = new GridLayout(4, false);
 		buttonlayout.marginHeight = 2;

@@ -18,7 +18,9 @@ import java.nio.file.FileSystems;
 import java.util.Set;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
-import org.eclipse.core.internal.filesystem.local.nio.*;
+import org.eclipse.core.internal.filesystem.local.nio.DefaultHandler;
+import org.eclipse.core.internal.filesystem.local.nio.DosHandler;
+import org.eclipse.core.internal.filesystem.local.nio.PosixHandler;
 import org.eclipse.core.internal.filesystem.local.unix.UnixFileHandler;
 import org.eclipse.core.internal.filesystem.local.unix.UnixFileNatives;
 import org.eclipse.osgi.service.environment.Constants;
@@ -29,7 +31,7 @@ import org.eclipse.osgi.service.environment.Constants;
  * to use Java 7 NIO/2 API's.</p>
  * 
  * <p>Use of native libraries can be disabled by adding -Declipse.filesystem.useNatives=false 
- * to VM arguments.<p>
+ * to VM arguments.</p>
  * 
  * <p>Please notice that the native implementation is significantly faster than the non-native
  * one. The BenchFileStore test runs 3.1 times faster on Linux with the native code than 

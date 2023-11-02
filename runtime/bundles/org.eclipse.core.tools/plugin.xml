@@ -4,11 +4,6 @@
 
    <extension-point id="metadataDumpers" name="Metadata Dumpers"/>
    
-<!-- Metadata dumpers -->
-   <extension point="org.eclipse.core.tools.metadataDumpers">
-      <dumper file-name=".state" class="org.eclipse.core.tools.metadata.StateDumper"/>
-   </extension>
-   
 <!-- The DumpTool headless application -->
    <extension point="org.eclipse.core.runtime.applications" id="dumptool">
     <application> 

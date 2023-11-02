@@ -18,8 +18,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.inject.Inject;
-import javax.inject.Qualifier;
 
 /**
  * <p>
@@ -38,7 +36,8 @@ import javax.inject.Qualifier;
  *
  * @since 1.2
  */
-@Qualifier
+@javax.inject.Qualifier
+@jakarta.inject.Qualifier
 @Documented
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)

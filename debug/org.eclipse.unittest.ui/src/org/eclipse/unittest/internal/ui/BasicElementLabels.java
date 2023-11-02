@@ -122,8 +122,10 @@ public class BasicElementLabels {
 	}
 
 	/**
-	 * Returns a label for Java element name. Example is 'new Test<? extends List>()
-	 * { ...}'. This method should only be used for simple element names. Use
+	 * Returns a label for Java element name. Example is: <br>
+	 * <code>new Test&lt;? extends
+	 * List&gt;() { ...}</code><br>
+	 * This method should only be used for simple element names. Use
 	 * JavaElementLabels to create a label from a Java element.
 	 *
 	 * @param name the Java element name.

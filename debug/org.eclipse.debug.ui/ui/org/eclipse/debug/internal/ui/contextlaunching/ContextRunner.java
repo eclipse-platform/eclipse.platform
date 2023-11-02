@@ -304,16 +304,15 @@ public final class ContextRunner {
 	}
 
 	/**
-	 * Presents the user with a dialog to pick the launch configuration to
-	 * launch and launches that configuration.
+	 * Presents the user with a dialog to pick the launch configuration to launch
+	 * and launches that configuration.
 	 *
 	 * @param configurations the listing of applicable configurations to present
-	 * @param mode the mode
-	 * @deprecated use
-	 *             showConfigurationSelectionDialog(List<ILaunchConfiguration>,
-	 *             String, boolean)
+	 * @param mode           the mode
+	 * @deprecated use the 3 argument variant of showConfigurationSelectionDialog()
+	 * @see #showConfigurationSelectionDialog(List, String, boolean)
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2023-12")
 	protected void showConfigurationSelectionDialog(List<ILaunchConfiguration> configurations, String mode) {
 		showConfigurationSelectionDialog(configurations, mode, false);
 	}
@@ -343,11 +342,10 @@ public final class ContextRunner {
 	 * @param shortcuts the list of applicable shortcuts
 	 * @param mode the mode
 	 * @param selection the current selection
-	 * @deprecated use showShortcutSelectionDialog(IResource,
-	 *             List<LaunchShortcutExtension>, String,IStructuredSelection,
-	 *             boolean)
+	 * @deprecated use the 3 argument variant of showShortcutSelectionDialog()
+	 * @see #showShortcutSelectionDialog(IResource, List, String, IStructuredSelection, boolean)
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2023-12")
 	protected void showShortcutSelectionDialog(IResource resource, List<LaunchShortcutExtension> shortcuts, String mode, IStructuredSelection selection) {
 		showShortcutSelectionDialog(resource, shortcuts, mode, selection, false);
 	}

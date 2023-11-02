@@ -194,11 +194,6 @@ public class CheatSheetSaveHelper {
 		return null;
 	}
 
-	/**
-	 * @param saveProperties
-	 * @param contentPath
-	 * @param csm
-	 */
 	public IStatus saveState(Properties properties, CheatSheetManager csm) {
 		String csID = (String) properties.get(IParserTags.ID);
 		XMLMemento writeMemento = XMLMemento.createWriteRoot(IParserTags.CHEATSHEET_STATE);

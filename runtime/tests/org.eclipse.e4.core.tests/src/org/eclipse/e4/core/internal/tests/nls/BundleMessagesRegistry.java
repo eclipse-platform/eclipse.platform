@@ -1,10 +1,10 @@
 package org.eclipse.e4.core.internal.tests.nls;
 
-import javax.inject.Inject;
-
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.e4.core.services.nls.BaseMessageRegistry;
 import org.eclipse.e4.core.services.nls.Translation;
+
+import jakarta.inject.Inject;
 
 @Creatable
 public class BundleMessagesRegistry extends BaseMessageRegistry<BundleMessages> {

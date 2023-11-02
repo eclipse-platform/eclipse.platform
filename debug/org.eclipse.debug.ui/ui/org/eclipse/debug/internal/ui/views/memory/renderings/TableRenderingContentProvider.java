@@ -68,10 +68,6 @@ public class TableRenderingContentProvider extends BasicDebugViewContentProvider
 
 	private boolean fDynamicLoad;
 
-	/**
-	 * @param memoryBlock
-	 * @param newTab
-	 */
 	public TableRenderingContentProvider()
 	{
 		lineCache = new Vector<>();

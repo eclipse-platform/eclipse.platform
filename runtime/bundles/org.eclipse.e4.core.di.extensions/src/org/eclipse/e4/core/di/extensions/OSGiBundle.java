@@ -18,7 +18,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.inject.Qualifier;
 
 /**
  * A method or field of type {@link org.osgi.framework.BundleContext} and
@@ -53,7 +52,8 @@ import javax.inject.Qualifier;
  *
  * @since 0.16
  */
-@Qualifier
+@javax.inject.Qualifier
+@jakarta.inject.Qualifier
 @Documented
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

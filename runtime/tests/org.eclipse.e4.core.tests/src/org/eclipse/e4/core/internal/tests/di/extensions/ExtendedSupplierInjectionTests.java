@@ -20,9 +20,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
@@ -39,6 +36,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
 
 @SuppressWarnings("restriction")
 public class ExtendedSupplierInjectionTests {

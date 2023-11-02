@@ -17,7 +17,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Qualifier;
 import org.eclipse.e4.core.di.suppliers.IObjectDescriptor;
 
 public class ObjectDescriptor implements IObjectDescriptor {
@@ -97,7 +96,8 @@ public class ObjectDescriptor implements IObjectDescriptor {
 		Annotation[] result;
 		List<Annotation> qualifiers = new ArrayList<>();
 		for (Annotation annotation : allAnnotations) {
-			if (annotation.annotationType().isAnnotationPresent(Qualifier.class))
+			if (annotation.annotationType().isAnnotationPresent(javax.inject.Qualifier.class)
+					|| annotation.annotationType().isAnnotationPresent(jakarta.inject.Qualifier.class))
 				qualifiers.add(annotation);
 		}
 		if (qualifiers.isEmpty())

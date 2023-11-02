@@ -70,6 +70,8 @@ import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 
 /**
  * Superclass for tests that use the Eclipse Platform workspace.
@@ -114,6 +116,12 @@ public abstract class ResourceTest extends CoreTest {
 	 * test method.
 	 */
 	private final Queue<IStatus> loggedErrors = new ConcurrentLinkedQueue<>();
+
+	/**
+	 * For retrieving the test name when executing test class with JUnit 4.
+	 */
+	@Rule
+	public final TestName testName = new TestName();
 
 	/** Listener to count error messages while testing. */
 	private final ILogListener errorLogListener = (IStatus status, String plugin) -> {
@@ -190,6 +198,17 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	public ResourceTest(String name) {
 		super(name);
+	}
+
+	@Override
+	public String getName() {
+		String name = super.getName();
+		// Ensure that in case this test class is executed with JUnit 4 the test name
+		// will not be null but retrieved via a TestName rule.
+		if (name == null) {
+			name = testName.getMethodName();
+		}
+		return name;
 	}
 
 	/**

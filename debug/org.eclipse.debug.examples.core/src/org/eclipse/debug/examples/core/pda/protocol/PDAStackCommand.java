@@ -17,9 +17,9 @@ package org.eclipse.debug.examples.core.pda.protocol;
 
 /**
  * Return the contents of the control stack (program counters, function and
- * variable names). The reply is control stack from oldest to newest as a single string
- * <code>frame#frame#frame...#frame</code>, where each frame is a string
- * <code>"filename|pc|function name|variable name|variable name|...|variable name"</code></li>.
+ * variable names). The reply is control stack from oldest to newest as a single
+ * string <code>frame#frame#frame...#frame</code>, where each frame is a string
+ * <code>"filename|pc|function name|variable name|variable name|...|variable name"</code>.
  *
  * <pre>
  *    C: stack {thread_id}
