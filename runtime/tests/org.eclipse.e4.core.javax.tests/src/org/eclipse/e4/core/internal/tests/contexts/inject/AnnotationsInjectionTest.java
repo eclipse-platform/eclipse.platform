@@ -30,8 +30,6 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.junit.Test;
-
-import junit.framework.AssertionFailedError;
 /**
  * Tests for the basic context injection functionality
  */
@@ -154,7 +152,7 @@ public class AnnotationsInjectionTest {
 	 */
 	@Test
 	public void testFieldMethodOrder() {
-		final AssertionFailedError[] error = new AssertionFailedError[1];
+		final AssertionError[] error = new AssertionError[1];
 		class TestData {
 			// empty
 		}
@@ -167,7 +165,7 @@ public class AnnotationsInjectionTest {
 			public void injectedMethod(@Optional @Named("valueMethod") Object arg) {
 				try {
 					assertTrue(injectedField != null);
-				} catch (AssertionFailedError e) {
+				} catch (AssertionError e) {
 					error[0] = e;
 				}
 				methodValue = arg;
