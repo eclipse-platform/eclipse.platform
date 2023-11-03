@@ -33,7 +33,7 @@ public class HiddenResourceTest extends ResourceTest {
 		listener.addExpectedChange(subFile, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
 		addResourceChangeListener(listener);
 		try {
-			setHidden("3.0", folder, true, IResource.DEPTH_ZERO);
+			setHidden(folder, true, IResource.DEPTH_ZERO);
 			ensureOutOfSync(subFile);
 			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
@@ -45,7 +45,7 @@ public class HiddenResourceTest extends ResourceTest {
 	/**
 	 * Resources which are marked as hidden resources should always be found.
 	 */
-	public void testFindMember() {
+	public void testFindMember() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(getUniqueString());
 		IFolder folder = project.getFolder("folder");
@@ -61,14 +61,14 @@ public class HiddenResourceTest extends ResourceTest {
 		assertEquals("1.3", subFile, root.findMember(subFile.getFullPath()));
 
 		// the folder is hidden
-		setHidden("2.0", folder, true, IResource.DEPTH_ZERO);
+		setHidden(folder, true, IResource.DEPTH_ZERO);
 		assertEquals("2.1", project, root.findMember(project.getFullPath()));
 		assertEquals("2.2", folder, root.findMember(folder.getFullPath()));
 		assertEquals("2.3", file, root.findMember(file.getFullPath()));
 		assertEquals("2.4", subFile, root.findMember(subFile.getFullPath()));
 
 		// all are hidden
-		setHidden("3.0", project, true, IResource.DEPTH_INFINITE);
+		setHidden(project, true, IResource.DEPTH_INFINITE);
 		assertEquals("3.1", project, root.findMember(project.getFullPath()));
 		assertEquals("3.2", folder, root.findMember(folder.getFullPath()));
 		assertEquals("3.3", file, root.findMember(file.getFullPath()));
@@ -89,7 +89,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 
 		// Initial values should be false.
-		assertHidden("1.0", project, false, IResource.DEPTH_INFINITE);
+		assertHidden(project, false, IResource.DEPTH_INFINITE);
 
 		// Check the calls to #members
 		members = project.members();
@@ -100,11 +100,11 @@ public class HiddenResourceTest extends ResourceTest {
 		assertEquals("2.3", 1, members.length);
 
 		// Set the values.
-		setHidden("3.0", project, true, IResource.DEPTH_INFINITE);
-		assertHidden("3.1", project, true, IResource.DEPTH_INFINITE);
+		setHidden(project, true, IResource.DEPTH_INFINITE);
+		assertHidden(project, true, IResource.DEPTH_INFINITE);
 
 		// Check the values
-		assertHidden("4.0", project, true, IResource.DEPTH_INFINITE);
+		assertHidden(project, true, IResource.DEPTH_INFINITE);
 
 		// Check the calls to #members
 		members = project.members();
@@ -115,8 +115,8 @@ public class HiddenResourceTest extends ResourceTest {
 		// FIXME: add the tests for #members(int)
 
 		// reset to false
-		setHidden("6.0", project, false, IResource.DEPTH_INFINITE);
-		assertHidden("6.1", project, false, IResource.DEPTH_INFINITE);
+		setHidden(project, false, IResource.DEPTH_INFINITE);
+		assertHidden(project, false, IResource.DEPTH_INFINITE);
 
 		// Check the calls to members(IResource.NONE);
 		members = project.members(IResource.NONE);
@@ -129,7 +129,7 @@ public class HiddenResourceTest extends ResourceTest {
 		assertEquals("7.5", 1, members.length);
 
 		// Set one of the children to be HIDDEN and try again
-		setHidden("8.0", folder, true, IResource.DEPTH_ZERO);
+		setHidden(folder, true, IResource.DEPTH_ZERO);
 		members = project.members();
 
 		// +1 for project description, -1 for hidden folder
@@ -148,8 +148,8 @@ public class HiddenResourceTest extends ResourceTest {
 		assertEquals("8.12", 1, members.length);
 
 		// Set all the resources to be hidden
-		setHidden("9.0", project, true, IResource.DEPTH_INFINITE);
-		assertHidden("9.1", project, true, IResource.DEPTH_INFINITE);
+		setHidden(project, true, IResource.DEPTH_INFINITE);
+		assertHidden(project, true, IResource.DEPTH_INFINITE);
 		members = project.members(IResource.NONE);
 		assertEquals("9.3", 0, members.length);
 		members = folder.members(IResource.NONE);
@@ -181,24 +181,24 @@ public class HiddenResourceTest extends ResourceTest {
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
 		project.accept(visitor);
-		assertTrue("1.1." + visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.getMessage(), visitor.isValid());
 
 		visitor.reset();
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
 		project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-		assertTrue("1.3." + visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.getMessage(), visitor.isValid());
 
 		visitor.reset();
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
 		project.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_HIDDEN);
 
-		assertTrue("1.5." + visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.getMessage(), visitor.isValid());
 
 		// set the folder to be hidden. It and its children should
 		// be ignored by the visitor
-		setHidden("2.0", folder, true, IResource.DEPTH_ZERO);
+		setHidden(folder, true, IResource.DEPTH_ZERO);
 		visitor.reset();
 		visitor.addExpected(project);
 		visitor.addExpected(file);
@@ -206,7 +206,7 @@ public class HiddenResourceTest extends ResourceTest {
 		visitor.addExpected(settings);
 		visitor.addExpected(prefs);
 		project.accept(visitor);
-		assertTrue("2.2." + visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.getMessage(), visitor.isValid());
 
 		visitor.reset();
 		visitor.addExpected(project);
@@ -215,27 +215,27 @@ public class HiddenResourceTest extends ResourceTest {
 		visitor.addExpected(settings);
 		visitor.addExpected(prefs);
 		project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-		assertTrue("2.4." + visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.getMessage(), visitor.isValid());
 		// should see all resources if we include the flag
 		visitor.reset();
 		visitor.addExpected(resources);
 		visitor.addExpected(description);
 		project.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_HIDDEN);
-		assertTrue("2.6." + visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.getMessage(), visitor.isValid());
 		// should NOT visit the folder and its members if we call accept on it directly
 		visitor.reset();
 		folder.accept(visitor);
-		assertTrue("2.8." + visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.getMessage(), visitor.isValid());
 
 		visitor.reset();
 		folder.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-		assertTrue("2.10." + visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.getMessage(), visitor.isValid());
 
 		visitor.reset();
 		visitor.addExpected(folder);
 		visitor.addExpected(subFile);
 		folder.accept(visitor, IResource.DEPTH_INFINITE, IContainer.INCLUDE_HIDDEN);
-		assertTrue("2.11." + visitor.getMessage(), visitor.isValid());
+		assertTrue(visitor.getMessage(), visitor.isValid());
 	}
 
 	public void testCopy() throws CoreException {
@@ -256,7 +256,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(destResources);
 
 		// set a folder to be hidden
-		setHidden("1.0", folder, true, IResource.DEPTH_ZERO);
+		setHidden(folder, true, IResource.DEPTH_ZERO);
 		// copy the project
 		int flags = IResource.FORCE;
 		project.copy(destProject.getFullPath(), flags, getMonitor());
@@ -267,7 +267,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(destResources);
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
-		setHidden("2.0", folder, true, IResource.DEPTH_ZERO);
+		setHidden(folder, true, IResource.DEPTH_ZERO);
 		folder.copy(destFolder.getFullPath(), flags, getMonitor());
 		assertExistsInWorkspace("2.2", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("2.3", new IResource[] {destFolder, destSubFile});
@@ -276,7 +276,7 @@ public class HiddenResourceTest extends ResourceTest {
 		// copy the project
 		ensureDoesNotExistInWorkspace(destResources);
 		ensureExistsInWorkspace(resources, true);
-		setHidden("3.0", project, true, IResource.DEPTH_INFINITE);
+		setHidden(project, true, IResource.DEPTH_INFINITE);
 		project.copy(destProject.getFullPath(), flags, getMonitor());
 		assertExistsInWorkspace("3.2", resources);
 		assertExistsInWorkspace("3.3", destResources);
@@ -285,7 +285,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(destResources);
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
-		setHidden("4.0", project, true, IResource.DEPTH_INFINITE);
+		setHidden(project, true, IResource.DEPTH_INFINITE);
 		folder.copy(destFolder.getFullPath(), flags, getMonitor());
 		assertExistsInWorkspace("4.2", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("4.3", new IResource[] {destFolder, destSubFile});
@@ -309,7 +309,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(destResources);
 
 		// set a folder to be hidden
-		setHidden("1.0", folder, true, IResource.DEPTH_ZERO);
+		setHidden(folder, true, IResource.DEPTH_ZERO);
 		// move the project
 		int flags = IResource.FORCE;
 		project.move(destProject.getFullPath(), flags, getMonitor());
@@ -320,7 +320,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(destResources);
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
-		setHidden("2.0", folder, true, IResource.DEPTH_ZERO);
+		setHidden(folder, true, IResource.DEPTH_ZERO);
 		folder.move(destFolder.getFullPath(), flags, getMonitor());
 		assertDoesNotExistInWorkspace("2.2", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("2.3", new IResource[] {destFolder, destSubFile});
@@ -329,7 +329,7 @@ public class HiddenResourceTest extends ResourceTest {
 		// move the project
 		ensureDoesNotExistInWorkspace(destResources);
 		ensureExistsInWorkspace(resources, true);
-		setHidden("3.0", project, true, IResource.DEPTH_INFINITE);
+		setHidden(project, true, IResource.DEPTH_INFINITE);
 		project.move(destProject.getFullPath(), flags, getMonitor());
 		assertDoesNotExistInWorkspace("3.2", resources);
 		assertExistsInWorkspace("3.3", destResources);
@@ -338,7 +338,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(destResources);
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
-		setHidden("4.0", project, true, IResource.DEPTH_INFINITE);
+		setHidden(project, true, IResource.DEPTH_INFINITE);
 		folder.move(destFolder.getFullPath(), flags, getMonitor());
 		assertDoesNotExistInWorkspace("4.2", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("4.3", new IResource[] {destFolder, destSubFile});
@@ -371,32 +371,32 @@ public class HiddenResourceTest extends ResourceTest {
 
 		// set one child to be hidden
 		ensureExistsInWorkspace(resources, true);
-		setHidden("2.0", folder, true, IResource.DEPTH_ZERO);
+		setHidden(folder, true, IResource.DEPTH_ZERO);
 		// delete the project
 		project.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("2.2", resources);
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
-		setHidden("2.3", folder, true, IResource.DEPTH_ZERO);
+		setHidden(folder, true, IResource.DEPTH_ZERO);
 		folder.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("2.5", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("2.6", new IResource[] {project, file});
 
 		// set all resources to be hidden
 		ensureExistsInWorkspace(resources, true);
-		setHidden("3.0", project, true, IResource.DEPTH_INFINITE);
+		setHidden(project, true, IResource.DEPTH_INFINITE);
 		// delete the project
 		project.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("3.2", resources);
 		// delete a file
 		ensureExistsInWorkspace(resources, true);
-		setHidden("3.3", project, true, IResource.DEPTH_INFINITE);
+		setHidden(project, true, IResource.DEPTH_INFINITE);
 		file.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("3.5", file);
 		assertExistsInWorkspace("3.6", new IResource[] {project, folder, subFile});
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
-		setHidden("3.7", project, true, IResource.DEPTH_INFINITE);
+		setHidden(project, true, IResource.DEPTH_INFINITE);
 		folder.delete(flags, getMonitor());
 		assertDoesNotExistInWorkspace("3.9", new IResource[] {folder, subFile});
 		assertExistsInWorkspace("3.10", new IResource[] {project, file});
@@ -424,7 +424,7 @@ public class HiddenResourceTest extends ResourceTest {
 			waitForEncodingRelatedJobs();
 			// FIXME sometimes fails with "Verifier has not yet been given a resource
 			// delta":
-			assertTrue("1.0." + listener.getMessage(), listener.isDeltaValid());
+			assertTrue(listener.getMessage(), listener.isDeltaValid());
 			ensureDoesNotExistInWorkspace(resources);
 		} finally {
 			removeResourceChangeListener(listener);
@@ -433,7 +433,7 @@ public class HiddenResourceTest extends ResourceTest {
 		try {
 			IWorkspaceRunnable body = monitor -> {
 				ensureExistsInWorkspace(resources, true);
-				setHidden("2.0", folder, true, IResource.DEPTH_ZERO);
+				setHidden(folder, true, IResource.DEPTH_ZERO);
 			};
 			listener.reset();
 			listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
@@ -443,7 +443,7 @@ public class HiddenResourceTest extends ResourceTest {
 			getWorkspace().run(body, getMonitor());
 			// FIXME sometimes fails with "Verifier has not yet been given a resource
 			// delta":
-			assertTrue("2.1." + listener.getMessage(), listener.isDeltaValid());
+			assertTrue(listener.getMessage(), listener.isDeltaValid());
 			ensureDoesNotExistInWorkspace(resources);
 		} finally {
 			removeResourceChangeListener(listener);
@@ -452,7 +452,7 @@ public class HiddenResourceTest extends ResourceTest {
 		try {
 			IWorkspaceRunnable body = monitor -> {
 				ensureExistsInWorkspace(resources, true);
-				setHidden("3.0", project, true, IResource.DEPTH_INFINITE);
+				setHidden(project, true, IResource.DEPTH_INFINITE);
 			};
 			listener.reset();
 			listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
@@ -492,7 +492,7 @@ public class HiddenResourceTest extends ResourceTest {
 	 * Resources which are marked as hidden resources return TRUE
 	 * in all calls to #exists.
 	 */
-	public void testExists() {
+	public void testExists() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
@@ -504,20 +504,20 @@ public class HiddenResourceTest extends ResourceTest {
 		assertExistsInWorkspace("1.0", resources);
 
 		// set a folder to be hidden
-		setHidden("2.0", folder, true, IResource.DEPTH_ZERO);
-		assertHidden("2.1", folder, true, IResource.DEPTH_ZERO);
+		setHidden(folder, true, IResource.DEPTH_ZERO);
+		assertHidden(folder, true, IResource.DEPTH_ZERO);
 		assertExistsInWorkspace("2.2", resources);
 
 		// set all resources to be hidden
-		setHidden("3.0", project, true, IResource.DEPTH_INFINITE);
-		assertHidden("3.1", project, true, IResource.DEPTH_INFINITE);
+		setHidden(project, true, IResource.DEPTH_INFINITE);
+		assertHidden(project, true, IResource.DEPTH_INFINITE);
 		assertExistsInWorkspace("3.2", resources);
 	}
 
 	/**
 	 * Test the set and get methods for hidden resources.
 	 */
-	public void testSetGet() {
+	public void testSetGet() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
@@ -540,11 +540,7 @@ public class HiddenResourceTest extends ResourceTest {
 
 		// now set the values
 		for (IResource resource : resources) {
-			try {
-				resource.setHidden(true);
-			} catch (CoreException e) {
-				fail("2.0: " + resource.getFullPath(), e);
-			}
+			resource.setHidden(true);
 		}
 
 		// the values should be true for projects only
@@ -564,11 +560,7 @@ public class HiddenResourceTest extends ResourceTest {
 
 		// clear the values
 		for (IResource resource : resources) {
-			try {
-				resource.setHidden(false);
-			} catch (CoreException e) {
-				fail("4.0: " + resource.getFullPath(), e);
-			}
+			resource.setHidden(false);
 		}
 
 		// values should be false again
@@ -593,47 +585,37 @@ public class HiddenResourceTest extends ResourceTest {
 		folder.create(IResource.HIDDEN, true, getMonitor());
 		file.create(getRandomContents(), IResource.HIDDEN, getMonitor());
 
-		assertHidden("2.0", project, false, IResource.DEPTH_ZERO);
-		assertHidden("3.0", folder, true, IResource.DEPTH_ZERO);
-		assertHidden("4.0", file, true, IResource.DEPTH_ZERO);
+		assertHidden(project, false, IResource.DEPTH_ZERO);
+		assertHidden(folder, true, IResource.DEPTH_ZERO);
+		assertHidden(file, true, IResource.DEPTH_ZERO);
 
 		IProject project2 = getWorkspace().getRoot().getProject(getUniqueString());
 
 		project2.create(null, IResource.HIDDEN, getMonitor());
 		project2.open(getMonitor());
 
-		assertHidden("6.0", project2, true, IResource.DEPTH_ZERO);
+		assertHidden(project2, true, IResource.DEPTH_ZERO);
 	}
 
-	protected void assertHidden(final String message, IResource root, final boolean value, int depth) {
+	protected void assertHidden(IResource root, final boolean value, int depth)
+			throws CoreException {
 		IResourceVisitor visitor = resource -> {
 			boolean expected = false;
 			if (resource.getType() == IResource.PROJECT || resource.getType() == IResource.FILE || resource.getType() == IResource.FOLDER) {
 				expected = value;
 			}
-			assertEquals(message + resource.getFullPath(), expected, resource.isHidden());
+			assertEquals(resource.getFullPath() + "", expected, resource.isHidden());
 			return true;
 		};
-		try {
-			root.accept(visitor, depth, IContainer.INCLUDE_HIDDEN);
-		} catch (CoreException e) {
-			fail(message + "resource.accept", e);
-		}
+		root.accept(visitor, depth, IContainer.INCLUDE_HIDDEN);
 	}
 
-	protected void setHidden(final String message, IResource root, final boolean value, int depth) {
+	protected void setHidden(IResource root, final boolean value, int depth)
+			throws CoreException {
 		IResourceVisitor visitor = resource -> {
-			try {
-				resource.setHidden(value);
-			} catch (CoreException e) {
-				fail(message + resource.getFullPath(), e);
-			}
+			resource.setHidden(value);
 			return true;
 		};
-		try {
-			root.accept(visitor, depth, IContainer.INCLUDE_HIDDEN);
-		} catch (CoreException e) {
-			fail(message + "resource.accept", e);
-		}
+		root.accept(visitor, depth, IContainer.INCLUDE_HIDDEN);
 	}
 }

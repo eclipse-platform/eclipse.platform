@@ -14,9 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.junit.Assert.assertThrows;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,12 +49,8 @@ public class IPathVariableTest extends ResourceTest {
 	protected void setUp() throws Exception {
 		super.setUp();
 		project = getWorkspace().getRoot().getProject("MyProject");
-		try {
-			project.create(getMonitor());
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("1.3", e);
-		}
+		project.create(getMonitor());
+		project.open(getMonitor());
 		assertTrue("1.4", project.exists());
 		manager = project.getPathVariableManager();
 	}
@@ -170,47 +167,31 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#getPathVariableNames
 	 */
-	public void testGetPathVariableNames() {
+	public void testGetPathVariableNames() throws CoreException {
 		String[] names = null;
 
 		// add one
-		try {
-			manager.setValue("one", getRandomLocation());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		manager.setValue("one", getRandomLocation());
 		names = manager.getPathVariableNames();
 		List<String> list = Arrays.asList(names);
 		assertTrue("1.2", list.contains("one"));
 
 		// add another
-		try {
-			manager.setValue("two", IPath.ROOT);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		manager.setValue("two", IPath.ROOT);
 		names = manager.getPathVariableNames();
 		list = Arrays.asList(names);
 		assertTrue("2.2", list.contains("one"));
 		assertTrue("2.3", list.contains("two"));
 
 		// remove one
-		try {
-			manager.setValue("one", (IPath) null);
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		manager.setValue("one", (IPath) null);
 		names = manager.getPathVariableNames();
 		list = Arrays.asList(names);
 		assertTrue("3.2", list.contains("two"));
 		assertTrue("3.3", !list.contains("one"));
 
 		// remove the last one
-		try {
-			manager.setValue("two", (IPath) null);
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		manager.setValue("two", (IPath) null);
 		names = manager.getPathVariableNames();
 		list = Arrays.asList(names);
 		assertTrue("4.2", !list.contains("two"));
@@ -220,7 +201,7 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#getValue and IPathVariableManager#setValue
 	 */
-	public void testGetSetValue() {
+	public void testGetSetValue() throws CoreException {
 		boolean WINDOWS = java.io.File.separatorChar == '\\';
 		IPath pathOne = WINDOWS ? IPath.fromOSString("C:\\testGetSetValue") : IPath.fromOSString("/testGetSetValue");
 		IPath pathTwo = IPath.fromOSString("/blort/backup");
@@ -232,57 +213,33 @@ public class IPathVariableTest extends ResourceTest {
 		assertNull("0.0", manager.getValue("one"));
 
 		// add a value to the table
-		try {
-			manager.setValue("one", pathOne);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		manager.setValue("one", pathOne);
 		IPath value = manager.getValue("one");
 		assertNotNull("1.1", value);
 		assertEquals("1.2", pathOne, value);
 
 		// add another value
-		try {
-			manager.setValue("two", pathTwo);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		manager.setValue("two", pathTwo);
 		value = manager.getValue("two");
 		assertNotNull("2.1", value);
 		assertEquals("2.2", pathTwo, value);
 
 		// edit the first value
-		try {
-			manager.setValue("one", pathOneEdit);
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		manager.setValue("one", pathOneEdit);
 		value = manager.getValue("one");
 		assertNotNull("3.1", value);
 		assertTrue("3.2", pathOneEdit.equals(value));
 
 		// setting with value == null will remove
-		try {
-			manager.setValue("one", (IPath) null);
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		manager.setValue("one", (IPath) null);
 		assertNull("4.1", manager.getValue("one"));
 
 		// set values with bogus names
-		try {
-			manager.setValue("ECLIPSE$HOME", IPath.ROOT);
-			fail("5.0 Accepted invalid variable name in setValue()");
-		} catch (CoreException ce) {
-			// success
-		}
+		assertThrows("Accepted invalid variable name in setValue()", CoreException.class,
+				() -> manager.setValue("ECLIPSE$HOME", IPath.ROOT));
 
 		// set value with relative path
-		try {
-			manager.setValue("one", IPath.fromOSString("foo/bar"));
-		} catch (CoreException ce) {
-			fail("5.0 Did not Accepted invalid variable value in setValue()");
-		}
+		manager.setValue("one", IPath.fromOSString("foo/bar"));
 
 		// set invalid value (with invalid segment)
 		if (WINDOWS) {
@@ -291,11 +248,7 @@ public class IPathVariableTest extends ResourceTest {
 			assertTrue("6.0", invalidPath.isAbsolute());
 			assertTrue("6.1", !IPath.EMPTY.isValidPath(invalidPathString));
 			assertTrue("6.2", manager.validateValue(invalidPath).isOK());
-			try {
-				manager.setValue("one", invalidPath);
-			} catch (CoreException ce) {
-				fail("6.3 Fail to accept invalid variable value in setValue()");
-			}
+			manager.setValue("one", invalidPath);
 		}
 
 	}
@@ -303,48 +256,27 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#isDefined
 	 */
-	public void testIsDefined() {
+	public void testIsDefined() throws CoreException {
 		assertTrue("0.0", !manager.isDefined("one"));
-		try {
-			manager.setValue("one", IPath.ROOT);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		manager.setValue("one", IPath.ROOT);
 		assertTrue("1.1", manager.isDefined("one"));
-		try {
-			manager.setValue("one", (IPath) null);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		manager.setValue("one", (IPath) null);
 		assertTrue("2.1", !manager.isDefined("one"));
 	}
 
 	/**
 	 * Test IPathVariableManager#resolvePath
 	 */
-	public void testResolvePathWithMacro() {
+	public void testResolvePathWithMacro() throws CoreException {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
 		IPath pathOne = WINDOWS ? IPath.fromOSString("c:/testGetSetValue/foo") : IPath.fromOSString("/testGetSetValue/foo");
 		IPath pathTwo = WINDOWS ? IPath.fromOSString("c:/tmp/backup") : IPath.fromOSString("/tmp/backup");
 		// add device if neccessary
 		pathTwo = IPath.fromOSString(pathTwo.toFile().getAbsolutePath());
 
-		try {
-			manager.setValue("one", pathOne);
-		} catch (CoreException e) {
-			fail("0.1", e);
-		}
-		try {
-			manager.setValue("two", pathTwo);
-		} catch (CoreException e) {
-			fail("0.2", e);
-		}
-
-		try {
-			manager.setValue("three", IPath.fromOSString("${two}/extra"));
-		} catch (CoreException e) {
-			fail("0.3", e);
-		}
+		manager.setValue("one", pathOne);
+		manager.setValue("two", pathTwo);
+		manager.setValue("three", IPath.fromOSString("${two}/extra"));
 
 		IPath path = IPath.fromOSString("three/bar");
 		IPath expected = IPath.fromOSString("/tmp/backup/extra/bar").setDevice(WINDOWS ? "c:" : null);
@@ -419,25 +351,17 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#resolvePath
 	 */
-	public void testResolvePath() {
+	public void testResolvePath() throws CoreException {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
 		IPath pathOne = WINDOWS ? IPath.fromOSString("C:/testGetSetValue/foo") : IPath.fromOSString("/testGetSetValue/foo");
 		IPath pathTwo = IPath.fromOSString("/blort/backup");
 		//add device if necessary
 		pathTwo = IPath.fromOSString(pathTwo.toFile().getAbsolutePath());
 
-		try {
-			// for WINDOWS - the device id for windows will be changed to upper case
-			// in the variable stored in the manager
-			manager.setValue("one", pathOne);
-		} catch (CoreException e) {
-			fail("0.1", e);
-		}
-		try {
-			manager.setValue("two", pathTwo);
-		} catch (CoreException e) {
-			fail("0.2", e);
-		}
+		// for WINDOWS - the device id for windows will be changed to upper case
+		// in the variable stored in the manager
+		manager.setValue("one", pathOne);
+		manager.setValue("two", pathTwo);
 
 		// one substitution
 		IPath path = IPath.fromOSString("one/bar");
@@ -500,113 +424,60 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#convertToRelative()
 	 */
-	public void testConvertToRelative() {
+	public void testConvertToRelative() throws CoreException {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
 		IPath pathOne = WINDOWS ? IPath.fromOSString("c:/foo/bar") : IPath.fromOSString("/foo/bar");
 		IPath pathTwo = WINDOWS ? IPath.fromOSString("c:/foo/other") : IPath.fromOSString("/foo/other");
 		IPath pathThree = WINDOWS ? IPath.fromOSString("c:/random/other/subpath") : IPath.fromOSString("/random/other/subpath");
 		IPath file = WINDOWS ? IPath.fromOSString("c:/foo/other/file.txt") : IPath.fromOSString("/foo/other/file.txt");
 
-		try {
-			manager.setValue("ONE", pathOne);
-			manager.setValue("THREE", pathThree);
-		} catch (CoreException e) {
-			fail("0.1", e);
-		}
+		manager.setValue("ONE", pathOne);
+		manager.setValue("THREE", pathThree);
 
-		IPath actual = null;
-		try {
-			actual = convertToRelative(manager, file, false, "ONE");
-		} catch (CoreException e) {
-			fail("0.2", e);
-		}
+		IPath actual = convertToRelative(manager, file, false, "ONE");
 		IPath expected = file;
 		assertEquals("1.0", expected, actual);
 
-		try {
-			manager.setValue("TWO", pathTwo);
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
+		manager.setValue("TWO", pathTwo);
+		actual = convertToRelative(manager, file, false, "ONE");
 
-		try {
-			actual = convertToRelative(manager, file, false, "ONE");
-		} catch (CoreException e) {
-			fail("1.2", e);
-		}
 		expected = file;
 		assertEquals("2.0", expected, actual);
 
-		try {
-			actual = convertToRelative(manager, file, false, "TWO");
-		} catch (CoreException e) {
-			fail("2.1", e);
-		}
+		actual = convertToRelative(manager, file, false, "TWO");
 		expected = IPath.fromOSString("TWO/file.txt");
 		assertEquals("3.0", expected, actual);
 
 		// force the path to be relative to "ONE"
-		try {
-			actual = convertToRelative(manager, file, true, "ONE");
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
+		actual = convertToRelative(manager, file, true, "ONE");
 		expected = IPath.fromOSString("PARENT-1-ONE/other/file.txt");
 		assertEquals("4.0", expected, actual);
 
 		// the second time should be re-using "FOO"
-		try {
-			actual = convertToRelative(manager, file, true, "ONE");
-		} catch (CoreException e) {
-			fail("4.3", e);
-		}
+		actual = convertToRelative(manager, file, true, "ONE");
 		expected = IPath.fromOSString("PARENT-1-ONE/other/file.txt");
 		assertEquals("5.0", expected, actual);
 
-		try {
-			actual = convertToRelative(manager, file, true, "TWO");
-		} catch (CoreException e) {
-			fail("5.4", e);
-		}
+		actual = convertToRelative(manager, file, true, "TWO");
 		expected = IPath.fromOSString("TWO/file.txt");
 		assertEquals("6.0", expected, actual);
 
-		try {
-			actual = convertToRelative(manager, file, true, "TWO");
-		} catch (CoreException e) {
-			fail("6.1", e);
-		}
+		actual = convertToRelative(manager, file, true, "TWO");
 		expected = IPath.fromOSString("TWO/file.txt");
 		assertEquals("7.0", expected, actual);
 
-		try {
-			actual = convertToRelative(manager, file, false, null);
-		} catch (CoreException e) {
-			fail("7.1", e);
-		}
+		actual = convertToRelative(manager, file, false, null);
 		expected = IPath.fromOSString("TWO/file.txt");
 		assertEquals("8.0", expected, actual);
 
-		try {
-			manager.setValue("TWO", (IPath) null);
-		} catch (CoreException e) {
-			fail("8.1", e);
-		}
+		manager.setValue("TWO", (IPath) null);
 
 		// now without any direct reference
-		try {
-			actual = convertToRelative(manager, file, false, null);
-		} catch (CoreException e) {
-			fail("8.2", e);
-		}
+		actual = convertToRelative(manager, file, false, null);
 		expected = file;
 		assertEquals("9.0", expected, actual);
 
-		try {
-			actual = convertToRelative(manager, file, true, null);
-		} catch (CoreException e) {
-			fail("9.1", e);
-		}
+		actual = convertToRelative(manager, file, true, null);
 		expected = IPath.fromOSString("PARENT-1-ONE/other/file.txt");
 		assertEquals("10.0", expected, actual);
 	}
@@ -637,22 +508,14 @@ public class IPathVariableTest extends ResourceTest {
 	public void testEmptyURIResolution() {
 		IPath path = IPath.fromOSString(new String());
 		URI uri = URIUtil.toURI(path);
-		try {
-			manager.resolveURI(uri);
-		} catch (Throwable e) {
-			fail("1.2", e);
-		}
-		try {
-			getWorkspace().getPathVariableManager().resolveURI(uri);
-		} catch (Throwable e) {
-			fail("1.2", e);
-		}
+		manager.resolveURI(uri);
+		getWorkspace().getPathVariableManager().resolveURI(uri);
 	}
 
 	/**
 	 * Test IPathVariableManager#addChangeListener and IPathVariableManager#removeChangeListener
 	 */
-	public void testListeners() {
+	public void testListeners() throws Exception {
 		PathVariableChangeVerifier listener = new PathVariableChangeVerifier();
 		manager.addChangeListener(listener);
 		IPath pathOne = IPath.fromOSString("/blort/foobar");
@@ -661,48 +524,22 @@ public class IPathVariableTest extends ResourceTest {
 		IPath pathOneEdit = pathOne.append("myworld");
 
 		try {
-
 			// add a variable
-			try {
-				manager.setValue("one", pathOne);
-			} catch (CoreException e) {
-				fail("1.0", e);
-			}
+			manager.setValue("one", pathOne);
 			listener.addExpectedEvent(IPathVariableChangeEvent.VARIABLE_CREATED, "one", pathOne);
-			try {
-				listener.verify();
-			} catch (PathVariableChangeVerifier.VerificationFailedException e) {
-				fail("1.1", e);
-			}
+			listener.verify();
 
 			// change a variable
 			listener.reset();
-			try {
-				manager.setValue("one", pathOneEdit);
-			} catch (CoreException e) {
-				fail("2.0", e);
-			}
+			manager.setValue("one", pathOneEdit);
 			listener.addExpectedEvent(IPathVariableChangeEvent.VARIABLE_CHANGED, "one", pathOneEdit);
-			try {
-				listener.verify();
-			} catch (PathVariableChangeVerifier.VerificationFailedException e) {
-				fail("2.1", e);
-			}
+			listener.verify();
 
 			// remove a variable
 			listener.reset();
-			try {
-				manager.setValue("one", (IPath) null);
-			} catch (CoreException e) {
-				fail("3.0", e);
-			}
+			manager.setValue("one", (IPath) null);
 			listener.addExpectedEvent(IPathVariableChangeEvent.VARIABLE_DELETED, "one", null);
-			try {
-				listener.verify();
-			} catch (PathVariableChangeVerifier.VerificationFailedException e) {
-				fail("3.1", e);
-			}
-
+			listener.verify();
 		} finally {
 			manager.removeChangeListener(listener);
 		}
@@ -732,7 +569,7 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Regression for Bug 308975 - Can't recover from 'invalid' path variable
 	 */
-	public void testLinkExistInProjectDescriptionButNotInWorkspace() {
+	public void testLinkExistInProjectDescriptionButNotInWorkspace() throws Exception {
 		String dorProjectContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + //
 				"<projectDescription>" + //
 				"<name>ExistingProject</name>" + //
@@ -755,29 +592,21 @@ public class IPathVariableTest extends ResourceTest {
 
 		ensureExistsInWorkspace(new IResource[] {existingProject}, true);
 
-		try {
-			existingProject.close(getMonitor());
-			ProjectInfo info = (ProjectInfo) ((Project) existingProject).getResourceInfo(false, false);
-			info.clear(ICoreConstants.M_USED);
-			String dotProjectPath = existingProject.getLocation().append(".project").toOSString();
-			FileWriter fstream = new FileWriter(dotProjectPath);
-			try (BufferedWriter out = new BufferedWriter(fstream)) {
-				out.write(dorProjectContent);
-			}
-			existingProject.open(getMonitor());
-		} catch (CoreException | IOException e) {
-			fail("1.99", e);
+		existingProject.close(getMonitor());
+		ProjectInfo info = (ProjectInfo) ((Project) existingProject).getResourceInfo(false, false);
+		info.clear(ICoreConstants.M_USED);
+		String dotProjectPath = existingProject.getLocation().append(".project").toOSString();
+		FileWriter fstream = new FileWriter(dotProjectPath);
+		try (BufferedWriter out = new BufferedWriter(fstream)) {
+			out.write(dorProjectContent);
 		}
+		existingProject.open(getMonitor());
 
 		IPathVariableManager pathVariableManager = existingProject.getPathVariableManager();
 		String[] varNames = pathVariableManager.getPathVariableNames();
 
 		for (String varName : varNames) {
-			try {
-				pathVariableManager.getURIValue(varName);
-			} catch (Exception e) {
-				fail("3.99", e);
-			}
+			pathVariableManager.getURIValue(varName);
 		}
 	}
 
