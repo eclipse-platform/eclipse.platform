@@ -37,8 +37,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 		//						return new ProjectPreferenceSessionTest("testDeleteFileBeforeLoad2");
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	private void saveWorkspace() throws Exception {
 		getWorkspace().save(true, getMonitor());
 	}
 
@@ -62,6 +61,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 		IFile file = project.getFile(IPath.fromOSString(DIR_NAME).append(qualifier).addFileExtension(FILE_EXTENSION));
 		assertTrue("2.0", file.exists());
 		assertTrue("2.1", file.getLocation().toFile().exists());
+		saveWorkspace();
 	}
 
 	public void testDeleteFileBeforeLoad2() throws Exception {
@@ -85,6 +85,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 		} finally {
 			Platform.removeLogListener(listener);
 		}
+		saveWorkspace();
 	}
 
 	/*
@@ -98,13 +99,15 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 		Preferences node = context.getNode("test.save.load");
 		node.put("key", "value");
 		node.flush();
+		saveWorkspace();
 	}
 
-	public void testSaveLoad2() {
+	public void testSaveLoad2() throws Exception {
 		IProject project = getProject("testSaveLoad");
 		IScopeContext context = new ProjectScope(project);
 		Preferences node = context.getNode("test.save.load");
 		assertEquals("1.0", "value", node.get("key", null));
+		saveWorkspace();
 	}
 
 	private static IProject getProject(String name) {

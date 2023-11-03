@@ -35,8 +35,6 @@ package org.eclipse.core.tests.resources;
  * @see org.eclipse.core.tests.session.WorkspaceSessionTestSuite
  */
 public class WorkspaceSessionTest extends ResourceTest {
-	protected String testName;
-
 	/**
 	 * Constructor for WorkspaceSessionTest.
 	 */
@@ -54,9 +52,27 @@ public class WorkspaceSessionTest extends ResourceTest {
 		super(name);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		// We should not run super.tearDown() on session tests.
-		// If needed, we should call it explicitly.
+	/**
+	 * Executes the cleanup functionality in {@link ResourceTest#tearDown()} after
+	 * the last of the session of this test class (i.e., the last <code>test*</code>
+	 * method) has finished.
+	 * <p>
+	 * The test methods are executed in lexicographic order of their names, e.g.,
+	 * <code>test1</code> before <code>test2</code>. The name of this method is
+	 * chosen so that it comes lexicographically rather safely after all other
+	 * actual test methods.
+	 */
+	public void test___cleanup() throws Exception {
+		super.tearDown();
 	}
+
+	/**
+	 * Cleanup is done after all sessions of this test class in
+	 * {@link #test___cleanup()}. This method is overwritten to do nothing in order
+	 * to not cleanup between the sessions.
+	 */
+	@Override
+	protected final void tearDown() throws Exception {
+	}
+
 }

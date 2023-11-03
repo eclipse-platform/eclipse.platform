@@ -43,16 +43,14 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		workspace.setDescription(Workspace.defaultWorkspaceDescription());
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	private void setDefaultWorkspaceDescription() throws CoreException {
 		workspace.setDescription(Workspace.defaultWorkspaceDescription());
 	}
 
 	/**
 	 * Tests properties state in a brand new workspace (must match defaults).
 	 */
-	public void testDefaults() {
+	public void testDefaults() throws CoreException {
 		IWorkspaceDescription description = Workspace.defaultWorkspaceDescription();
 
 		assertEquals("1.0", description, preferences);
@@ -66,13 +64,15 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		for (String property : descriptionProperties) {
 			assertTrue("2.0 - Description property is not default: " + property, defaultPropertiesList.contains(property));
 		}
+		
+		setDefaultWorkspaceDescription();
 	}
 
 	/**
 	 * Makes changes in the preferences and ensure they are reflected in the
 	 * workspace description.
 	 */
-	public void testSetPreferences() {
+	public void testSetPreferences() throws CoreException {
 		preferences.setValue(ResourcesPlugin.PREF_AUTO_BUILDING, true);
 		assertTrue("1.0", workspace.getDescription().isAutoBuilding());
 
@@ -110,6 +110,8 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 
 		preferences.setValue(ResourcesPlugin.PREF_KEEP_DERIVED_STATE, true);
 		assertTrue("4.1", workspace.getDescription().isKeepDerivedState());
+
+		setDefaultWorkspaceDescription();
 	}
 
 	/**
@@ -152,6 +154,8 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		} finally {
 			preferences.removePropertyChangeListener(listener);
 		}
+
+		setDefaultWorkspaceDescription();
 	}
 
 	/**
@@ -204,6 +208,8 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 			ensureDoesNotExistInFileSystem(originalPreferencesFile.removeLastSegments(1).toFile());
 			ensureDoesNotExistInFileSystem(modifiedPreferencesFile.removeLastSegments(1).toFile());
 		}
+
+		setDefaultWorkspaceDescription();
 	}
 
 	/**
@@ -234,6 +240,8 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		// the original value should remain set
 		assertEquals("3.1", 90000, workspace.getDescription().getFileStateLongevity());
 		assertEquals("3.2", 90000, preferences.getLong(ResourcesPlugin.PREF_FILE_STATE_LONGEVITY));
+
+		setDefaultWorkspaceDescription();
 	}
 
 	/**

@@ -26,7 +26,6 @@ import org.eclipse.core.tests.resources.regression.SimpleBuilder;
 import org.eclipse.core.tests.resources.saveparticipant1.SaveParticipant1Plugin;
 import org.eclipse.core.tests.resources.saveparticipant3.SaveParticipant3Plugin;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

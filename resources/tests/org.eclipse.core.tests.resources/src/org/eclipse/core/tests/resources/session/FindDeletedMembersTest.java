@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
@@ -58,8 +59,7 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	private void saveWorkspace() throws CoreException {
 		getWorkspace().save(true, getMonitor());
 	}
 
@@ -74,6 +74,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		// create and delete a file
 		pfile.create(getRandomContents(), true, getMonitor());
 		pfile.delete(true, true, getMonitor());
+
+		saveWorkspace();
 	}
 
 	public void test2() throws Exception {
@@ -102,6 +104,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 
 		// recreate the file
 		pfile.create(getRandomContents(), true, getMonitor());
+
+		saveWorkspace();
 	}
 
 	public void test3() throws Exception {
@@ -138,6 +142,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		folder.create(true, true, getMonitor());
 		file.create(getRandomContents(), true, getMonitor());
 		file.delete(true, true, getMonitor());
+
+		saveWorkspace();
 	}
 
 	public void test4() throws Exception {
@@ -167,6 +173,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 
 		// deleting the folder should bring it back into history
 		folder.delete(true, true, getMonitor());
+
+		saveWorkspace();
 	}
 
 	public void test5() throws Exception {
@@ -219,6 +227,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		file2.create(getRandomContents(), true, getMonitor());
 		file3.create(getRandomContents(), true, getMonitor());
 		folder.delete(true, true, getMonitor());
+
+		saveWorkspace();
 	}
 
 	public void test6() throws Exception {
@@ -271,6 +281,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		assertEquals("3.12", 1, df.length);
 
 		project.delete(true, getMonitor());
+
+		saveWorkspace();
 	}
 
 	public void test7() throws Exception {
@@ -314,6 +326,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 
 		df = folder2.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, getMonitor());
 		assertEquals("4.12", 0, df.length);
+
+		saveWorkspace();
 	}
 
 	public static Test suite() {
