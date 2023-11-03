@@ -80,104 +80,59 @@ public class SaveManager1Test extends SaveManagerTest {
 		return suite;
 	}
 
-	public void testAddSaveParticipant() {
+	public void testAddSaveParticipant() throws Exception {
 		// get plugin
 		Bundle bundle = Platform.getBundle(PI_SAVE_PARTICIPANT_1);
 		assertTrue("0.1", bundle != null);
-		try {
-			bundle.start();
-		} catch (BundleException e) {
-			fail("0.0", e);
-		}
+		bundle.start();
 		SaveParticipant1Plugin plugin1 = SaveParticipant1Plugin.getInstance();
 
 		//	prepare plugin to the save operation
 		plugin1.resetDeltaVerifier();
 		IStatus status;
-		try {
-			status = plugin1.registerAsSaveParticipant();
-			if (!status.isOK()) {
-				System.out.println(status.getMessage());
-				fail("1.0");
-			}
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
+		status = plugin1.registerAsSaveParticipant();
+		assertTrue("Registering save participant failed with message: " + status.getMessage(), status.isOK());
 		plugin1.setExpectedSaveKind(ISaveContext.FULL_SAVE);
 
 		// SaveParticipant2Plugin
 		bundle = Platform.getBundle(PI_SAVE_PARTICIPANT_2);
 		assertTrue("5.1", bundle != null);
-		try {
-			bundle.start();
-		} catch (BundleException e) {
-			fail("5.0", e);
-		}
+		bundle.start();
 		SaveParticipant2Plugin plugin2 = SaveParticipant2Plugin.getInstance();
 
 		//	prepare plugin to the save operation
 		plugin2.getDeltaVerifier().reset();
-		try {
-			status = plugin2.registerAsSaveParticipant();
-			if (!status.isOK()) {
-				System.out.println(status.getMessage());
-				fail("6.0");
-			}
-		} catch (CoreException e) {
-			fail("6.1", e);
-		}
+		status = plugin2.registerAsSaveParticipant();
+		assertTrue("Registering save participant failed with message: " + status.getMessage(), status.isOK());
 		plugin1.setExpectedSaveKind(ISaveContext.FULL_SAVE);
 
 		// SaveParticipant3Plugin
 		bundle = Platform.getBundle(PI_SAVE_PARTICIPANT_3);
 		assertTrue("7.1", bundle != null);
-		try {
-			bundle.start();
-		} catch (BundleException e) {
-			fail("7.0", e);
-		}
+		bundle.start();
 		SaveParticipant3Plugin plugin3 = SaveParticipant3Plugin.getInstance();
 
-		try {
-			status = plugin3.registerAsSaveParticipant();
-			if (!status.isOK()) {
-				System.out.println(status.getMessage());
-				fail("7.2");
-			}
-		} catch (CoreException e) {
-			fail("7.3", e);
-		}
+		status = plugin3.registerAsSaveParticipant();
+		assertTrue("Registering save participant failed with message: " + status.getMessage(), status.isOK());
 	}
 
 	/**
 	 * Create another project and leave it closed for next session.
 	 */
-	public void testAnotherProject() {
+	public void testAnotherProject() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
-		try {
-			project.create(null);
-			project.open(null);
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		project.create(null);
+		project.open(null);
 		assertTrue("0.1", project.exists());
 		assertTrue("0.2", project.isOpen());
 
-		try {
-			project.close(null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.close(null);
 		assertTrue("1.1", project.exists());
 		assertTrue("1.2", !project.isOpen());
 
 		// when closing and opening the project again, it should still exist
 		project = getWorkspace().getRoot().getProject(PROJECT_1);
-		try {
-			project.open(null);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		project.open(null);
 		assertTrue("2.1", project.exists());
 		assertTrue("2.2", project.isOpen());
 
@@ -187,101 +142,60 @@ public class SaveManager1Test extends SaveManagerTest {
 		assertExistsInFileSystem("3.1", resources);
 		assertExistsInWorkspace("3.2", resources);
 
-		try {
-			project.close(null);
-			project.open(null);
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		project.close(null);
+		project.open(null);
 		assertExistsInFileSystem("4.1", resources);
 		assertExistsInWorkspace("4.2", resources);
 
-		try {
-			getWorkspace().save(true, null);
-		} catch (CoreException e) {
-			fail("5.0", e);
-		}
+		getWorkspace().save(true, null);
 	}
 
-	public void testBuilder() {
+	public void testBuilder() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
 		assertTrue("0.0", project.isAccessible());
 
-		try {
-			// Make sure autobuild is on
-			if (!getWorkspace().isAutoBuilding()) {
-				IWorkspaceDescription wsDesc = getWorkspace().getDescription();
-				wsDesc.setAutoBuilding(true);
-				getWorkspace().setDescription(wsDesc);
-			}
-			// Create and set a build spec for the project
-			IProjectDescription description = project.getDescription();
-			ICommand command = description.newCommand();
-			command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
-			description.setBuildSpec(new ICommand[] {command});
-			project.setDescription(description, null);
-			project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		setAutoBuilding(true);
+		// Create and set a build spec for the project
+		IProjectDescription description = project.getDescription();
+		ICommand command = description.newCommand();
+		command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
+		description.setBuildSpec(new ICommand[] {command});
+		project.setDescription(description, null);
+		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 
 		// close and open the project and see if the builder gets a good delta
-		try {
-			project.close(null);
-			project.open(null);
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		project.close(null);
+		project.open(null);
 		IFile added = project.getFile("added file");
 		waitForBuild();
 		DeltaVerifierBuilder verifier = DeltaVerifierBuilder.getInstance();
 		verifier.reset();
 		verifier.addExpectedChange(added, project, IResourceDelta.ADDED, 0);
-		try {
-			added.create(getRandomContents(), true, null);
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
+		added.create(getRandomContents(), true, null);
 		waitForBuild();
 		assertTrue("3.2", verifier.wasAutoBuild());
 		assertTrue("3.3", verifier.isDeltaValid());
 		// remove the file because we don't want it to affect any other delta in the test
-		try {
-			added.delete(true, false, null);
-		} catch (CoreException e) {
-			fail("3.4", e);
-		}
+		added.delete(true, false, null);
 	}
 
 	/**
 	 * Create some resources and save the workspace.
 	 */
-	public void testCreateMyProject() {
+	public void testCreateMyProject() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
-		try {
-			project.create(null);
-			project.open(null);
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		project.create(null);
+		project.open(null);
 		assertTrue("0.1", project.exists());
 		assertTrue("0.2", project.isOpen());
 
-		try {
-			project.close(null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.close(null);
 		assertTrue("1.1", project.exists());
 		assertTrue("1.2", !project.isOpen());
 
 		// when closing and opening the project again, it should still exist
 		project = getWorkspace().getRoot().getProject(PROJECT_1);
-		try {
-			project.open(null);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		project.open(null);
 		assertTrue("2.1", project.exists());
 		assertTrue("2.2", project.isOpen());
 
@@ -291,12 +205,8 @@ public class SaveManager1Test extends SaveManagerTest {
 		assertExistsInFileSystem("3.1", resources);
 		assertExistsInWorkspace("3.2", resources);
 
-		try {
-			project.close(null);
-			project.open(null);
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		project.close(null);
+		project.open(null);
 		assertExistsInFileSystem("4.1", resources);
 		assertExistsInWorkspace("4.2", resources);
 	}
@@ -304,14 +214,10 @@ public class SaveManager1Test extends SaveManagerTest {
 	/**
 	 * Create another project and leave it closed for next session.
 	 */
-	public void testCreateProject2() {
+	public void testCreateProject2() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_2);
-		try {
-			project.create(null);
-			project.open(null);
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		project.create(null);
+		project.open(null);
 		assertTrue("0.1", project.exists());
 		assertTrue("0.2", project.isOpen());
 
@@ -322,42 +228,27 @@ public class SaveManager1Test extends SaveManagerTest {
 		assertExistsInWorkspace("3.2", resources);
 
 		// add a builder to this project
-		try {
-			IProjectDescription description = project.getDescription();
-			ICommand command = description.newCommand();
-			command.setBuilderName(SimpleBuilder.BUILDER_ID);
-			description.setBuildSpec(new ICommand[] {command});
-			project.setDescription(description, null);
-			project.build(IncrementalProjectBuilder.FULL_BUILD, null);
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		IProjectDescription description = project.getDescription();
+		ICommand command = description.newCommand();
+		command.setBuilderName(SimpleBuilder.BUILDER_ID);
+		description.setBuildSpec(new ICommand[] {command});
+		project.setDescription(description, null);
+		project.build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-		try {
-			project.close(null);
-		} catch (CoreException e) {
-			fail("5.0", e);
-		}
+		project.close(null);
 		assertTrue("5.1", project.exists());
 		assertTrue("5.2", !project.isOpen());
 	}
 
-	public void testPostSave() {
+	public void testPostSave() throws BundleException {
 		// get plugin
 		Bundle bundle = Platform.getBundle(PI_SAVE_PARTICIPANT_1);
 		assertTrue("0.1", bundle != null);
-		try {
-			bundle.start();
-		} catch (BundleException e) {
-			fail("0.0", e);
-		}
+		bundle.start();
 		SaveParticipant1Plugin plugin = SaveParticipant1Plugin.getInstance();
 
 		// look at the plugin save lifecycle
 		IStatus status = plugin.getSaveLifecycleLog();
-		if (!status.isOK()) {
-			System.out.println(status.getMessage());
-			assertTrue("1.0", false);
-		}
+		assertTrue("Getting lifecycle log failed with message: " + status.getMessage(), status.isOK());
 	}
 }

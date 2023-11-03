@@ -58,12 +58,8 @@ public class SaveManagerTest extends WorkspaceSessionTest {
 		return new String[] {"/file110", "/folder110/", "/folder110/file120", "/folder111/", "/folder111/folder120/", "/folder111/file121"};
 	}
 
-	public void saveWorkspace() {
-		try {
-			getWorkspace().save(true, null);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+	public void saveWorkspace() throws CoreException {
+		getWorkspace().save(true, null);
 	}
 
 	/**
@@ -78,7 +74,7 @@ public class SaveManagerTest extends WorkspaceSessionTest {
 		workspace.setDescription(desc);
 	}
 
-	public void test1() {
+	public void test1() throws Exception {
 		SaveManager1Test test = new SaveManager1Test();
 		test.saveWorkspace();
 		test.testCreateMyProject();
@@ -90,7 +86,7 @@ public class SaveManagerTest extends WorkspaceSessionTest {
 
 	}
 
-	public void test2() {
+	public void test2() throws Exception {
 		SaveManager2Test test = new SaveManager2Test();
 		test.testVerifyRestoredWorkspace();
 		test.testBuilder();
@@ -99,11 +95,10 @@ public class SaveManagerTest extends WorkspaceSessionTest {
 		test.saveWorkspace();
 	}
 
-	public void test3() {
+	public void test3() throws Exception {
 		SaveManager3Test test = new SaveManager3Test();
 		test.testSaveParticipant();
 		test.testBuilder();
-		test.cleanUp();
 	}
 
 	protected void touch(IProject project) throws CoreException {

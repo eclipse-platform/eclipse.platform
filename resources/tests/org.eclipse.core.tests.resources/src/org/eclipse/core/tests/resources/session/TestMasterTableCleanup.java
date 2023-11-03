@@ -23,8 +23,8 @@ import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
- * This is an internal test that makes sure the workspace master table does
- * not contain any stable entries after restart
+ * This is an internal test that makes sure the workspace master table does not
+ * contain any stale entries after restart
  */
 public class TestMasterTableCleanup extends WorkspaceSerializationTest {
 	private static final String CLOSE_OPEN = "CloseOpen";
@@ -35,24 +35,20 @@ public class TestMasterTableCleanup extends WorkspaceSerializationTest {
 	 *  1) Project that was closed and then opened
 	 *  2) Project that was closed and then deleted
 	 */
-	public void test1() {
+	public void test1() throws CoreException {
 		IProject closeOpen = getWorkspace().getRoot().getProject(CLOSE_OPEN);
-		try {
-			closeOpen.create(null);
-			closeOpen.open(null);
-			closeOpen.close(null);
-			closeOpen.open(null);
+		closeOpen.create(null);
+		closeOpen.open(null);
+		closeOpen.close(null);
+		closeOpen.open(null);
 
-			IProject closeDelete = getWorkspace().getRoot().getProject(CLOSE_DELETE);
-			closeDelete.create(null);
-			closeDelete.open(null);
-			closeDelete.close(null);
-			closeDelete.delete(IResource.NONE, null);
+		IProject closeDelete = getWorkspace().getRoot().getProject(CLOSE_DELETE);
+		closeDelete.create(null);
+		closeDelete.open(null);
+		closeDelete.close(null);
+		closeDelete.delete(IResource.NONE, null);
 
-			getWorkspace().save(true, null);
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		getWorkspace().save(true, null);
 	}
 
 	/**

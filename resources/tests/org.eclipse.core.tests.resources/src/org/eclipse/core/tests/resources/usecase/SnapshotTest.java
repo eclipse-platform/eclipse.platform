@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.usecase;
 
 import junit.framework.Test;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
@@ -43,7 +44,7 @@ public class SnapshotTest extends WorkspaceSessionTest {
 		return OS.isMac();
 	}
 
-	public void test1() {
+	public void test1() throws CoreException {
 		if (skipTest()) {
 			return;
 		}
@@ -53,7 +54,7 @@ public class SnapshotTest extends WorkspaceSessionTest {
 		test.testSnapshotWorkspace();
 	}
 
-	public void test2() {
+	public void test2() throws CoreException {
 		if (skipTest()) {
 			return;
 		}
@@ -64,7 +65,7 @@ public class SnapshotTest extends WorkspaceSessionTest {
 		test.testSnapshotWorkspace();
 	}
 
-	public void test3() {
+	public void test3() throws CoreException {
 		if (skipTest()) {
 			return;
 		}
@@ -73,7 +74,7 @@ public class SnapshotTest extends WorkspaceSessionTest {
 		test.testSaveWorkspace();
 	}
 
-	public void test4() {
+	public void test4() throws CoreException {
 		if (skipTest()) {
 			return;
 		}
@@ -89,7 +90,6 @@ public class SnapshotTest extends WorkspaceSessionTest {
 		}
 		Snapshot5Test test = new Snapshot5Test();
 		test.testVerifyPreviousSession();
-		test.cleanUp();
 	}
 
 }

@@ -23,7 +23,6 @@ import org.eclipse.core.tests.resources.saveparticipant1.SaveParticipant1Plugin;
 import org.eclipse.core.tests.resources.saveparticipant2.SaveParticipant2Plugin;
 import org.eclipse.core.tests.resources.saveparticipant3.SaveParticipant3Plugin;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
 
 /**
  * @see SaveManager1Test
@@ -51,72 +50,45 @@ public class SaveManager3Test extends SaveManagerTest {
 		return suite;
 	}
 
-	public void testBuilder() {
+	public void testBuilder() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
 		assertTrue("0.0", project.isAccessible());
 
-		try {
-			setAutoBuilding(false);
-			touch(project);
-			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-			setAutoBuilding(true);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		setAutoBuilding(false);
+		touch(project);
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+		setAutoBuilding(true);
 		waitForBuild();
 		DeltaVerifierBuilder verifier = DeltaVerifierBuilder.getInstance();
 		assertTrue("1.1", verifier.wasIncrementalBuild());
 
 		IFile added = project.getFile("added file");
 		verifier.addExpectedChange(added, project, IResourceDelta.ADDED, 0);
-		try {
-			added.create(getRandomContents(), true, null);
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
+		added.create(getRandomContents(), true, null);
 		waitForBuild();
 		assertTrue("3.2", verifier.wasAutoBuild());
 		assertTrue("3.3", verifier.isDeltaValid());
 		// remove the file because we don't want it to affect any other delta in the test
-		try {
-			added.delete(true, false, null);
-		} catch (CoreException e) {
-			fail("3.4", e);
-		}
+		added.delete(true, false, null);
 	}
 
-	public void testSaveParticipant() {
+	public void testSaveParticipant() throws Exception {
 		// SaveParticipant1Plugin
 		Bundle bundle = Platform.getBundle(PI_SAVE_PARTICIPANT_1);
 		assertTrue("0.1", bundle != null);
-		try {
-			bundle.start();
-		} catch (BundleException e) {
-			fail("0.0", e);
-		}
+		bundle.start();
 		SaveParticipant1Plugin plugin1 = SaveParticipant1Plugin.getInstance();
 
 		// check saved state and delta
 		plugin1.resetDeltaVerifier();
 		IStatus status;
-		try {
-			status = plugin1.registerAsSaveParticipant();
-			if (!status.isOK()) {
-				System.out.println(status.getMessage());
-				assertTrue("1.0", false);
-			}
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
+		status = plugin1.registerAsSaveParticipant();
+		assertTrue("Registering save participant failed with message: " + status.getMessage(), status.isOK());
 
 		// SaveParticipant2Plugin
 		bundle = Platform.getBundle(PI_SAVE_PARTICIPANT_2);
 		assertTrue("5.1", bundle != null);
-		try {
-			bundle.start();
-		} catch (BundleException e) {
-			fail("5.0", e);
-		}
+		bundle.start();
 		SaveParticipant2Plugin plugin2 = SaveParticipant2Plugin.getInstance();
 
 		// check saved state and delta
@@ -138,43 +110,17 @@ public class SaveManager3Test extends SaveManagerTest {
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_2));
 		plugin2.addExpectedChange(resources, IResourceDelta.ADDED, 0);
 		//
-		try {
-			status = plugin2.registerAsSaveParticipant();
-			if (!status.isOK()) {
-				System.out.println(status.getMessage());
-				fail("6.0");
-			}
-		} catch (CoreException e) {
-			fail("6.1", e);
-		}
+		status = plugin2.registerAsSaveParticipant();
+		assertTrue("Status is not okay with message: " + status.getMessage(), status.isOK());
 
 		// SaveParticipant3Plugin
 		bundle = Platform.getBundle(PI_SAVE_PARTICIPANT_3);
 		assertTrue("7.1", bundle != null);
-		try {
-			bundle.start();
-		} catch (BundleException e) {
-			fail("7.0", e);
-		}
+		bundle.start();
 		SaveParticipant3Plugin plugin3 = SaveParticipant3Plugin.getInstance();
 
-		try {
-			status = plugin3.registerAsSaveParticipant();
-			if (!status.isOK()) {
-				System.out.println(status.getMessage());
-				fail("7.2");
-			}
-		} catch (CoreException e) {
-			fail("7.3", e);
-		}
+		status = plugin3.registerAsSaveParticipant();
+		assertTrue("Registering save participant failed with message: " + status.getMessage(), status.isOK());
 	}
 
-	public void cleanUp() {
-		try {
-			ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
-			getWorkspace().save(true, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
-	}
 }

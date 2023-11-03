@@ -44,7 +44,7 @@ public class Snapshot4Test extends SnapshotTest {
 		return new String[0];
 	}
 
-	public void testChangeMyProject() {
+	public void testChangeMyProject() throws CoreException {
 		// MyProject
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
 		assertTrue("0.1", project.exists());
@@ -52,78 +52,46 @@ public class Snapshot4Test extends SnapshotTest {
 
 		// remove resources
 		IFile file = project.getFile("added file");
-		try {
-			file.delete(true, true, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		file.delete(true, true, null);
 		assertDoesNotExistInFileSystem("1.1", file);
 		assertDoesNotExistInWorkspace("1.2", file);
 
 		// full save
-		try {
-			getWorkspace().save(true, null);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		getWorkspace().save(true, null);
 
 		// remove resources
 		file = project.getFile("yet another file");
-		try {
-			file.delete(true, true, null);
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		file.delete(true, true, null);
 		assertDoesNotExistInFileSystem("3.1", file);
 		assertDoesNotExistInWorkspace("3.2", file);
 
 		// snapshot
-		try {
-			getWorkspace().save(false, null);
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		getWorkspace().save(false, null);
 
 		// remove resources
 		IFolder folder = project.getFolder("a folder");
-		try {
-			folder.delete(true, true, null);
-		} catch (CoreException e) {
-			fail("5.0", e);
-		}
+		folder.delete(true, true, null);
 		assertDoesNotExistInFileSystem("5.1", folder);
 		assertDoesNotExistInWorkspace("5.2", folder);
 
 		// snapshot
-		try {
-			getWorkspace().save(false, null);
-		} catch (CoreException e) {
-			fail("6.0", e);
-		}
+		getWorkspace().save(false, null);
 	}
 
-	public void testChangeProject2() {
+	public void testChangeProject2() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_2);
 		assertTrue("0.1", project.exists());
 		assertTrue("0.2", project.isOpen());
 
 		// remove project
-		try {
-			project.delete(true, true, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.delete(true, true, null);
 		assertTrue("1.1", !project.exists());
 
 		// snapshot
-		try {
-			getWorkspace().save(false, null);
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		getWorkspace().save(false, null);
 	}
 
-	public void testVerifyPreviousSession() {
+	public void testVerifyPreviousSession() throws CoreException {
 		// MyProject
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
 		assertTrue("0.0", project.exists());
@@ -139,12 +107,8 @@ public class Snapshot4Test extends SnapshotTest {
 		assertTrue("3.0", project.exists());
 		assertTrue("3.1", project.isOpen());
 
-		try {
-			assertEquals("4.0", 4, project.members().length);
-			assertNotNull("4.1", project.findMember(IProjectDescription.DESCRIPTION_FILE_NAME));
-		} catch (CoreException e) {
-			fail("4.2", e);
-		}
+		assertEquals("4.0", 4, project.members().length);
+		assertNotNull("4.1", project.findMember(IProjectDescription.DESCRIPTION_FILE_NAME));
 
 		// verify existence of children
 		resources = buildResources(project, Snapshot3Test.defineHierarchy2());

@@ -16,7 +16,9 @@ package org.eclipse.core.tests.resources.session;
 
 import java.io.File;
 import junit.framework.Test;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.filesystem.FileCache;
 import org.eclipse.core.internal.filesystem.local.LocalFile;
 import org.eclipse.core.runtime.CoreException;
@@ -29,7 +31,7 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  * Test for bug 323833
  */
 public class TestBug323833 extends WorkspaceSessionTest {
-	public void test1() {
+	public void test1() throws CoreException {
 		if (!Platform.getOS().equals(Platform.OS_MACOSX)) {
 			return;
 		}
@@ -40,19 +42,11 @@ public class TestBug323833 extends WorkspaceSessionTest {
 		// set EFS.ATTRIBUTE_READ_ONLY which also sets EFS.IMMUTABLE on Mac
 		IFileInfo info = fileStore.fetchInfo();
 		info.setAttribute(EFS.ATTRIBUTE_READ_ONLY, true);
-		try {
-			fileStore.putInfo(info, EFS.SET_ATTRIBUTES, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		fileStore.putInfo(info, EFS.SET_ATTRIBUTES, getMonitor());
 
 		// create a cached file
 		File cachedFile = null;
-		try {
-			cachedFile = fileStore.toLocalFile(EFS.CACHE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		cachedFile = fileStore.toLocalFile(EFS.CACHE, getMonitor());
 
 		IFileInfo cachedFileInfo = new LocalFile(cachedFile).fetchInfo();
 
@@ -61,16 +55,12 @@ public class TestBug323833 extends WorkspaceSessionTest {
 		assertTrue("4.0", cachedFileInfo.getAttribute(EFS.ATTRIBUTE_IMMUTABLE));
 	}
 
-	public void test2() {
+	public void test2() throws CoreException {
 		if (!Platform.getOS().equals(Platform.OS_MACOSX)) {
 			return;
 		}
 
-		try {
-			FileCache.getCache();
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		FileCache.getCache();
 	}
 
 	public static Test suite() {

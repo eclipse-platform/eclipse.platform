@@ -36,31 +36,19 @@ public class TestBug30015 extends WorkspaceSessionTest {
 	/**
 	 * Create and open the project
 	 */
-	public void test1() {
+	public void test1() throws CoreException {
 		varValue = Platform.getLocation().removeLastSegments(1);
 		rawLocation = IPath.fromOSString(VAR_NAME).append("ProjectLocation");
 		//define the variable
-		try {
-			getWorkspace().getPathVariableManager().setValue(VAR_NAME, varValue);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		getWorkspace().getPathVariableManager().setValue(VAR_NAME, varValue);
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_NAME);
 		IProjectDescription description = getWorkspace().newProjectDescription(PROJECT_NAME);
 		description.setLocation(rawLocation);
 		//create the project
-		try {
-			project.create(description, getMonitor());
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("9.99", e);
-		}
+		project.create(description, getMonitor());
+		project.open(getMonitor());
 		//save and shutdown
-		try {
-			getWorkspace().save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("9.99", e);
-		}
+		getWorkspace().save(true, getMonitor());
 	}
 
 	/**

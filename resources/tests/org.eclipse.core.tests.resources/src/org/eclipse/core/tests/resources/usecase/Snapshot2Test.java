@@ -57,18 +57,14 @@ public class Snapshot2Test extends SnapshotTest {
 		assertExistsInWorkspace("1.2", resources);
 	}
 
-	public void testChangeProject2() {
+	public void testChangeProject2() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project2");
 		assertTrue("0.1", project.exists());
 		assertTrue("0.2", project.isOpen());
 
 		// remove all resources
-		try {
-			IResource[] children = project.members();
-			getWorkspace().delete(children, true, null);
-		} catch (CoreException e) {
-			fail("0.5", e);
-		}
+		IResource[] children = project.members();
+		getWorkspace().delete(children, true, null);
 
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy2());
@@ -77,25 +73,17 @@ public class Snapshot2Test extends SnapshotTest {
 		assertExistsInWorkspace("1.2", resources);
 	}
 
-	public void testSnapshotWorkspace() {
-		try {
-			getWorkspace().save(false, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+	public void testSnapshotWorkspace() throws CoreException {
+		getWorkspace().save(false, null);
 	}
 
-	public void testVerifyPreviousSession() {
+	public void testVerifyPreviousSession() throws CoreException {
 		// MyProject
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
 		assertTrue("0.0", project.exists());
 		assertTrue("0.1", !project.isOpen());
 
-		try {
-			project.open(null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.open(null);
 		assertTrue("1.2", project.isOpen());
 
 		// verify existence of children
