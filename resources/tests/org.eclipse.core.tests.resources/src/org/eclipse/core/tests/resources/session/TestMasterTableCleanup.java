@@ -46,7 +46,7 @@ public class TestMasterTableCleanup extends WorkspaceSerializationTest {
 		closeDelete.create(null);
 		closeDelete.open(null);
 		closeDelete.close(null);
-		closeDelete.delete(IResource.NONE, null);
+		closeDelete.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, null);
 
 		getWorkspace().save(true, null);
 	}
