@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.core.tests.harness;singleton:=true
 Bundle-Version: 3.15.200.qualifier
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.core.tests.harness;version="2.0",
+ org.eclipse.core.tests.harness.rules;version="1.0",
  org.eclipse.core.tests.session;version="2.0"
 Require-Bundle: org.junit,
  org.eclipse.test.performance,

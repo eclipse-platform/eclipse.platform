@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -68,6 +69,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.harness.FileSystemHelper;
+import org.eclipse.core.tests.harness.rules.HangingTestRule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -77,6 +79,8 @@ import org.junit.rules.TestName;
  * Superclass for tests that use the Eclipse Platform workspace.
  */
 public abstract class ResourceTest extends CoreTest {
+	private static final Duration TIMEOUT = Duration.ofSeconds(60);
+
 	//nature that installs and runs a builder (regression test for bug 29116)
 	protected static final String NATURE_29116 = "org.eclipse.core.tests.resources.nature29116";
 
@@ -122,6 +126,9 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	@Rule
 	public final TestName testName = new TestName();
+
+	@Rule
+	public final HangingTestRule hangingTestRule = new HangingTestRule(TIMEOUT);
 
 	/** Listener to count error messages while testing. */
 	private final ILogListener errorLogListener = (IStatus status, String plugin) -> {
