@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+
 import java.io.ByteArrayInputStream;
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
