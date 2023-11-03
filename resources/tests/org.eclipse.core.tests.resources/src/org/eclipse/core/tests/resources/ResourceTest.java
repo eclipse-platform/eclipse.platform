@@ -1040,17 +1040,6 @@ public abstract class ResourceTest extends CoreTest {
 		return new String(readBytesInWorkspace(file), StandardCharsets.UTF_8);
 	}
 
-	protected void setAttribute(IFileStore target, int attribute, boolean value) {
-		assertTrue("setAttribute.1", isAttributeSupported(attribute));
-		IFileInfo fileInfo = target.fetchInfo();
-		fileInfo.setAttribute(attribute, value);
-		try {
-			target.putInfo(fileInfo, EFS.SET_ATTRIBUTES, null);
-		} catch (CoreException e) {
-			fail("ResourceTest#setAttribute", e);
-		}
-	}
-
 	protected void setReadOnly(IFileStore target, boolean value) {
 		assertTrue("setReadOnly.1", isReadOnlySupported());
 		IFileInfo fileInfo = target.fetchInfo();
