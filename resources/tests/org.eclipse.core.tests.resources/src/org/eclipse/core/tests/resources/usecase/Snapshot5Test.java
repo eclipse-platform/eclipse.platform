@@ -13,8 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 
 /**
  * Only verifies previous session.
@@ -45,12 +47,4 @@ public class Snapshot5Test extends SnapshotTest {
 		assertTrue("3.0", !project.exists());
 	}
 
-	public void cleanUp() {
-		try {
-			ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
-			getWorkspace().save(true, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
-	}
 }

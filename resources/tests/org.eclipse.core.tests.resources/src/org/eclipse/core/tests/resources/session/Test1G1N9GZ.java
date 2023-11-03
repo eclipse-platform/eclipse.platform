@@ -15,7 +15,9 @@ package org.eclipse.core.tests.resources.session;
 
 import java.io.ByteArrayInputStream;
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
@@ -61,24 +63,19 @@ public class Test1G1N9GZ extends WorkspaceSerializationTest {
 		workspace.save(true, getMonitor());
 	}
 
-	public void test3() {
+	public void test3() throws Exception {
 		/* get new handles */
 		IProject p1 = workspace.getRoot().getProject("p1");
 		IProject p2 = workspace.getRoot().getProject("p2");
 
 		/* try to create other files */
-		try {
-			ByteArrayInputStream source = new ByteArrayInputStream("file's content".getBytes());
+		try (ByteArrayInputStream source = new ByteArrayInputStream("file's content".getBytes())) {
 			p1.getFile("file2").create(source, true, null);
-		} catch (Exception e) {
-			fail("1.0", e);
 		}
-		try {
-			ByteArrayInputStream source = new ByteArrayInputStream("file's content".getBytes());
+		try (ByteArrayInputStream source = new ByteArrayInputStream("file's content".getBytes())) {
 			p2.getFile("file2").create(source, true, null);
-		} catch (Exception e) {
-			fail("1.1", e);
 		}
+
 	}
 
 	public static Test suite() {

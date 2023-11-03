@@ -14,7 +14,10 @@
 package org.eclipse.core.tests.resources.session;
 
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
@@ -24,32 +27,24 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  */
 public class TestSave extends WorkspaceSerializationTest {
 
-	public void test1() {
+	public void test1() throws CoreException {
 		/* create some resource handles */
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
-		try {
-			project.create(getMonitor());
-			project.open(getMonitor());
+		project.create(getMonitor());
+		project.open(getMonitor());
 
-			workspace.save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		workspace.save(true, getMonitor());
 	}
 
-	public void test2() {
+	public void test2() throws CoreException {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		assertTrue("1.0", root.exists());
-		try {
-			IResource[] children = root.members();
-			assertEquals("1.2", 1, children.length);
-			IProject project = (IProject) children[0];
-			assertTrue("1.3", project.exists());
-			assertTrue("1.4", project.isOpen());
-			assertEquals("1.5", PROJECT, project.getName());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		IResource[] children = root.members();
+		assertEquals("1.2", 1, children.length);
+		IProject project = (IProject) children[0];
+		assertTrue("1.3", project.exists());
+		assertTrue("1.4", project.isOpen());
+		assertEquals("1.5", PROJECT, project.getName());
 	}
 
 	public static Test suite() {

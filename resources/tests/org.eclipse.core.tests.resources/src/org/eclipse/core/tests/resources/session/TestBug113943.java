@@ -13,12 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
-import java.io.IOException;
 import junit.framework.Test;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -36,42 +40,33 @@ public class TestBug113943 extends WorkspaceSerializationTest {
 	/**
 	 * Setup.  Creates a project with a linked resource.
 	 */
-	public void test1() {
+	public void test1() throws Exception {
 		IProject project = workspace.getRoot().getProject("Project1");
 		IFolder link = project.getFolder("link");
 		IFile linkChild = link.getFile("child.txt");
 		ensureExistsInWorkspace(project, true);
-		try {
-			IFileStore parent = EFS.getStore(location.toFile().toURI());
-			IFileStore child = parent.getChild(linkChild.getName());
-			parent.mkdir(EFS.NONE, getMonitor());
-			child.openOutputStream(EFS.NONE, getMonitor()).close();
-			link.createLink(location, IResource.NONE, getMonitor());
+		IFileStore parent = EFS.getStore(location.toFile().toURI());
+		IFileStore child = parent.getChild(linkChild.getName());
+		parent.mkdir(EFS.NONE, getMonitor());
+		child.openOutputStream(EFS.NONE, getMonitor()).close();
+		link.createLink(location, IResource.NONE, getMonitor());
 
-			assertTrue("1.0", link.exists());
-			assertTrue("1.1", linkChild.exists());
+		assertTrue("1.0", link.exists());
+		assertTrue("1.1", linkChild.exists());
 
-			getWorkspace().save(true, getMonitor());
-		} catch (CoreException | IOException e) {
-			fail("1.99", e);
-		}
+		getWorkspace().save(true, getMonitor());
 	}
 
 	/**
 	 * Refresh the linked resource and check that its content is intact
 	 */
-	public void test2() {
+	public void test2() throws CoreException {
 		IProject project = workspace.getRoot().getProject("Project1");
 		IFolder link = project.getFolder("link");
 		IFile linkChild = link.getFile("child.txt");
-		try {
-			link.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		link.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 
-			assertTrue("1.0", link.exists());
-			assertTrue("1.1", linkChild.exists());
-			cleanup();
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		assertTrue("1.0", link.exists());
+		assertTrue("1.1", linkChild.exists());
 	}
 }

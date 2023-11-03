@@ -14,13 +14,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import junit.framework.ComparisonFailure;
 import junit.framework.Test;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.resources.WorkspacePreferences;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
@@ -109,7 +115,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 	/**
 	 * Ensures property change events are properly fired when setting workspace description.
 	 */
-	public void testEvents() {
+	public void testEvents() throws CoreException {
 		IWorkspaceDescription original = workspace.getDescription();
 
 		IWorkspaceDescription modified = workspace.getDescription();
@@ -136,18 +142,11 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		Preferences.IPropertyChangeListener listener = event -> changedProperties.add(event.getProperty());
 		try {
 			preferences.addPropertyChangeListener(listener);
-			try {
-				workspace.setDescription(original);
-			} catch (CoreException e) {
-				fail("1.0", e);
-			}
+			workspace.setDescription(original);
+
 			// no events should have been fired
 			assertEquals("1.1 - wrong number of properties changed ", 0, changedProperties.size());
-			try {
-				workspace.setDescription(modified);
-			} catch (CoreException e) {
-				fail("2.0", e);
-			}
+			workspace.setDescription(modified);
 			// the right number of events should have been fired
 			assertEquals("2.1 - wrong number of properties changed ", 10, changedProperties.size());
 		} finally {
@@ -158,7 +157,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 	/**
 	 * Ensures preferences with both default/non-default values are properly exported/imported.
 	 */
-	public void testImportExport() {
+	public void testImportExport() throws CoreException {
 		IPath originalPreferencesFile = getRandomLocation().append("original.epf");
 		IPath modifiedPreferencesFile = getRandomLocation().append("modified.epf");
 		try {
@@ -170,11 +169,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 			preferences.setValue("foo.bar", getRandomString());
 
 			// exports original preferences (only default values - except for bogus preference above)
-			try {
-				Preferences.exportPreferences(originalPreferencesFile);
-			} catch (CoreException e) {
-				fail("1.0", e);
-			}
+			Preferences.exportPreferences(originalPreferencesFile);
 
 			// creates a modified description
 			IWorkspaceDescription modified = workspace.getDescription();
@@ -189,49 +184,33 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 			modified.setKeepDerivedState(!original.isKeepDerivedState());
 
 			// sets modified description
-			try {
-				workspace.setDescription(modified);
-			} catch (CoreException ce) {
-				fail("2.0", ce);
-			}
+			workspace.setDescription(modified);
 			assertEquals("2.1", modified, workspace.getDescription());
 
 			// exports modified preferences
-			try {
-				Preferences.exportPreferences(modifiedPreferencesFile);
-			} catch (CoreException e) {
-				fail("3.0", e);
-			}
+			Preferences.exportPreferences(modifiedPreferencesFile);
 
 			// imports original preferences
-			try {
-				Preferences.importPreferences(originalPreferencesFile);
-			} catch (CoreException e) {
-				fail("4.0", e);
-			}
+			Preferences.importPreferences(originalPreferencesFile);
 			// ensures preferences exported match the imported ones
 			assertEquals("4.1", original, workspace.getDescription());
 
 			// imports modified preferences
-			try {
-				Preferences.importPreferences(modifiedPreferencesFile);
-			} catch (CoreException e) {
-				fail("5.0", e);
-			}
+			Preferences.importPreferences(modifiedPreferencesFile);
+
 			// ensures preferences exported match the imported ones
 			assertEquals("5.1", modified, workspace.getDescription());
 		} finally {
 			ensureDoesNotExistInFileSystem(originalPreferencesFile.removeLastSegments(1).toFile());
 			ensureDoesNotExistInFileSystem(modifiedPreferencesFile.removeLastSegments(1).toFile());
 		}
-
 	}
 
 	/**
 	 * Makes changes through IWorkspace#setDescription and checks if the changes
 	 * are reflected in the preferences.
 	 */
-	public void testSetDescription() {
+	public void testSetDescription() throws CoreException {
 		IWorkspaceDescription description = workspace.getDescription();
 		description.setAutoBuilding(false);
 		description.setBuildOrder(new String[] {"a", "b,c", "c"});
@@ -241,22 +220,15 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		description.setMaxFileStateSize(100050);
 		description.setSnapshotInterval(1234567);
 		description.setKeepDerivedState(true);
-		try {
-			workspace.setDescription(description);
-		} catch (CoreException ce) {
-			fail("2.0", ce);
-		}
+		workspace.setDescription(description);
 		assertEquals("2.1 - Preferences not synchronized", description, preferences);
 
 		// try to make changes without committing them
 
 		// sets current state to a known value
 		description.setFileStateLongevity(90000);
-		try {
-			workspace.setDescription(description);
-		} catch (CoreException ce) {
-			fail("3.0", ce);
-		}
+		workspace.setDescription(description);
+
 		// try to make a change
 		description.setFileStateLongevity(100000);
 		// the original value should remain set

@@ -15,7 +15,11 @@ package org.eclipse.core.tests.resources.session;
 
 import junit.framework.Test;
 import org.eclipse.core.internal.resources.ProjectDescription;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
@@ -26,33 +30,25 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  */
 public class TestCreateLinkedResourceInHiddenProject extends WorkspaceSerializationTest {
 
-	public void test1() {
+	public void test1() throws CoreException {
 		/* create some resource handles */
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
-		try {
-			IProjectDescription desc = new ProjectDescription();
-			desc.setName(PROJECT);
-			project.create(desc, IResource.HIDDEN, getMonitor());
-			project.open(getMonitor());
+		IProjectDescription desc = new ProjectDescription();
+		desc.setName(PROJECT);
+		project.create(desc, IResource.HIDDEN, getMonitor());
+		project.open(getMonitor());
 
-			workspace.save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		workspace.save(true, getMonitor());
 	}
 
-	public void test2() {
+	public void test2() throws CoreException {
 		IPath path = getTempDir().addTrailingSeparator().append(getUniqueString());
 		path.toFile().mkdir();
 
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
 		IFolder folder = project.getFolder(getUniqueString());
 
-		try {
-			folder.createLink(path, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		folder.createLink(path, IResource.NONE, getMonitor());
 	}
 
 	public static Test suite() {

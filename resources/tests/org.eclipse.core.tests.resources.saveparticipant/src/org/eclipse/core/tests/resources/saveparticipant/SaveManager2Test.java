@@ -59,7 +59,7 @@ public class SaveManager2Test extends SaveManagerTest {
 		return suite;
 	}
 
-	public void testBuilder() {
+	public void testBuilder() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
 		assertTrue("0.0", project.isAccessible());
 
@@ -68,31 +68,19 @@ public class SaveManager2Test extends SaveManagerTest {
 		DeltaVerifierBuilder verifier = DeltaVerifierBuilder.getInstance();
 		verifier.reset();
 		verifier.addExpectedChange(added, project, IResourceDelta.ADDED, 0);
-		try {
-			added.create(getRandomContents(), true, null);
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
+		added.create(getRandomContents(), true, null);
 		waitForBuild();
 		assertTrue("3.2", verifier.wasAutoBuild());
 		assertTrue("3.3", verifier.isDeltaValid());
 		// remove the file because we don't want it to affect any other delta in the test
-		try {
-			added.delete(true, false, null);
-		} catch (CoreException e) {
-			fail("3.4", e);
-		}
+		added.delete(true, false, null);
 	}
 
-	public void testSaveParticipant() {
+	public void testSaveParticipant() throws Exception {
 		// get plugin
 		Bundle bundle = Platform.getBundle(PI_SAVE_PARTICIPANT_1);
 		assertTrue("0.1", bundle != null);
-		try {
-			bundle.start();
-		} catch (BundleException e) {
-			fail("0.0", e);
-		}
+		bundle.start();
 		SaveParticipant1Plugin plugin1 = SaveParticipant1Plugin.getInstance();
 
 		// prepare plugin to the save operation
@@ -100,38 +88,20 @@ public class SaveManager2Test extends SaveManagerTest {
 		IResource added1 = getWorkspace().getRoot().getFile(IPath.fromOSString(PROJECT_1).append("addedFile"));
 		plugin1.addExpectedChange(added1, IResourceDelta.ADDED, 0);
 		IStatus status;
-		try {
-			status = plugin1.registerAsSaveParticipant();
-			if (!status.isOK()) {
-				System.out.println(status.getMessage());
-				assertTrue("1.0", false);
-			}
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
+		status = plugin1.registerAsSaveParticipant();
+		assertTrue("Registering save participant failed with message: " + status.getMessage(), status.isOK());
 
 		// SaveParticipant3Plugin
 		bundle = Platform.getBundle(PI_SAVE_PARTICIPANT_3);
 		assertTrue("7.1", bundle != null);
-		try {
-			bundle.start();
-		} catch (BundleException e) {
-			fail("7.0", e);
-		}
+		bundle.start();
 		SaveParticipant3Plugin plugin3 = SaveParticipant3Plugin.getInstance();
 
-		try {
-			status = plugin3.registerAsSaveParticipant();
-			if (!status.isOK()) {
-				System.out.println(status.getMessage());
-				fail("7.2");
-			}
-		} catch (CoreException e) {
-			fail("7.3", e);
-		}
+		status = plugin3.registerAsSaveParticipant();
+		assertTrue("Registering save participant failed with message: " + status.getMessage(), status.isOK());
 	}
 
-	public void testVerifyProject2() {
+	public void testVerifyProject2() throws CoreException {
 		// project2 should be closed
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_2);
 		assertTrue("0.0", project.exists());
@@ -142,36 +112,24 @@ public class SaveManager2Test extends SaveManagerTest {
 		assertExistsInFileSystem("1.0", resources);
 		assertDoesNotExistInWorkspace("1.1", resources);
 
-		try {
-			project.open(null);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		project.open(null);
 		assertTrue("2.1", project.exists());
 		assertTrue("2.2", project.isOpen());
 		assertExistsInFileSystem("2.3", resources);
 		assertExistsInWorkspace("2.4", resources);
 
 		// verify builder -- cause an incremental build
-		try {
-			touch(project);
-		} catch (CoreException e) {
-			fail("2.5", e);
-		}
+		touch(project);
 		waitForBuild();
 		SimpleBuilder builder = SimpleBuilder.getInstance();
 		assertTrue("2.6", builder.wasAutoBuild());
 
 		// add a file to test save participant delta
 		IFile file = project.getFile("addedFile");
-		try {
-			file.create(getRandomContents(), true, null);
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		file.create(getRandomContents(), true, null);
 	}
 
-	public void testVerifyRestoredWorkspace() {
+	public void testVerifyRestoredWorkspace() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
 		assertTrue("0.0", project.exists());
 		assertTrue("0.1", project.isOpen());
@@ -183,10 +141,6 @@ public class SaveManager2Test extends SaveManagerTest {
 
 		// add a file to test save participant delta
 		IFile file = project.getFile("addedFile");
-		try {
-			file.create(getRandomContents(), true, null);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		file.create(getRandomContents(), true, null);
 	}
 }

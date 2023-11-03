@@ -13,8 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import java.io.ByteArrayInputStream;
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
@@ -24,34 +28,31 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  */
 public class TestSnapSaveSnap extends WorkspaceSerializationTest {
 
-	public void test1() {
+	public void test1() throws Exception {
 		/* create some resource handles */
 		IProject project = getWorkspace().getRoot().getProject(PROJECT);
 		IFolder folder = project.getFolder(FOLDER);
 		IFile file = folder.getFile(FILE);
-		try {
-			project.create(getMonitor());
-			project.open(getMonitor());
+		project.create(getMonitor());
+		project.open(getMonitor());
 
-			//snapshot
-			workspace.save(false, getMonitor());
+		// snapshot
+		workspace.save(false, getMonitor());
 
-			/* do more stuff */
-			folder.create(true, true, getMonitor());
+		/* do more stuff */
+		folder.create(true, true, getMonitor());
 
-			//full save
-			workspace.save(true, getMonitor());
+		// full save
+		workspace.save(true, getMonitor());
 
-			/* do even more stuff */
-			byte[] bytes = "Test bytes".getBytes();
-			java.io.ByteArrayInputStream in = new java.io.ByteArrayInputStream(bytes);
+		/* do even more stuff */
+		byte[] bytes = "Test bytes".getBytes();
+		try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
 			file.create(in, true, getMonitor());
-
-			//snapshot
-			workspace.save(false, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
 		}
+
+		// snapshot
+		workspace.save(false, getMonitor());
 		//exit without saving
 	}
 
