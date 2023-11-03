@@ -19,6 +19,7 @@ import static org.junit.Assert.assertThrows;
 import java.io.ByteArrayInputStream;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.Workspace;
@@ -758,7 +759,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("3.14", fileStore.fetchInfo().exists());
 		assertTrue("3.15", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -790,7 +791,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("4.14", fileStore.fetchInfo().exists());
 		assertTrue("4.15", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -822,7 +823,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("5.14", fileStore.fetchInfo().exists());
 		assertTrue("5.15", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -854,7 +855,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("6.14", fileStore.fetchInfo().exists());
 		assertTrue("6.15", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 	}
 
 	/**
@@ -964,7 +965,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("3.16", fileStore.fetchInfo().exists());
 		assertTrue("3.17", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -997,7 +998,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("4.16", fileStore.fetchInfo().exists());
 		assertTrue("4.17", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1030,7 +1031,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("5.16", fileStore.fetchInfo().exists());
 		assertTrue("5.17", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1063,7 +1064,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("6.16", fileStore.fetchInfo().exists());
 		assertTrue("6.17", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 	}
 
 	/**
@@ -1102,7 +1103,7 @@ public class IProjectTest extends ResourceTest {
 		// ensure the project directory and files no longer exist
 		assertFalse("1.8", projectStore.fetchInfo().exists());
 		assertFalse("1.9", fileStore.fetchInfo().exists());
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1126,7 +1127,7 @@ public class IProjectTest extends ResourceTest {
 		// ensure the project directory and files no longer exist
 		assertFalse("2.8", projectStore.fetchInfo().exists());
 		assertFalse("2.9", fileStore.fetchInfo().exists());
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1150,7 +1151,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("3.8", projectStore.fetchInfo().exists());
 		assertTrue("3.9", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1174,7 +1175,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("4.8", projectStore.fetchInfo().exists());
 		assertTrue("4.9", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1198,7 +1199,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("5.8", projectStore.fetchInfo().exists());
 		assertTrue("5.9", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1222,7 +1223,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("6.8", projectStore.fetchInfo().exists());
 		assertTrue("6.9", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 	}
 
 	/**
@@ -1267,7 +1268,7 @@ public class IProjectTest extends ResourceTest {
 		assertFalse("1.8", projectStore.fetchInfo().exists());
 		assertFalse("1.9", fileStore.fetchInfo().exists());
 		assertFalse("1.10", otherFileStore.fetchInfo().exists());
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1296,7 +1297,7 @@ public class IProjectTest extends ResourceTest {
 		assertFalse("2.8", projectStore.fetchInfo().exists());
 		assertFalse("2.9", fileStore.fetchInfo().exists());
 		assertFalse("2.10", otherFileStore.fetchInfo().exists());
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1412,7 +1413,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("6.9", fileStore.fetchInfo().exists());
 		assertTrue("6.10", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 	}
 
 	/**
@@ -1597,7 +1598,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("3.5", projectStore.fetchInfo().exists());
 		assertTrue("3.6", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1617,7 +1618,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("4.5", projectStore.fetchInfo().exists());
 		assertTrue("4.6", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1750,7 +1751,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("4.7", projectStore.fetchInfo().exists());
 		assertTrue("4.8", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1832,7 +1833,7 @@ public class IProjectTest extends ResourceTest {
 		assertFalse("1.7", projectStore.fetchInfo().exists());
 		assertFalse("1.8", fileStore.fetchInfo().exists());
 		assertFalse("1.9", otherFileStore.fetchInfo().exists());
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1858,7 +1859,7 @@ public class IProjectTest extends ResourceTest {
 		assertFalse("2.7", projectStore.fetchInfo().exists());
 		assertFalse("2.8", fileStore.fetchInfo().exists());
 		assertFalse("2.9", otherFileStore.fetchInfo().exists());
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1884,7 +1885,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("3.8", fileStore.fetchInfo().exists());
 		assertTrue("3.9", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE

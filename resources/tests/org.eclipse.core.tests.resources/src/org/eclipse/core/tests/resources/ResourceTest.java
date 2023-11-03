@@ -440,8 +440,8 @@ public abstract class ResourceTest extends CoreTest {
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			getWorkspace().getRoot().delete(true, true, getMonitor());
 			//clear stores in workspace runnable to avoid interaction with resource jobs
-			for (IFileStore element : toDelete) {
-				clear(element);
+			for (IFileStore store : toDelete) {
+				store.delete(EFS.NONE, null);
 			}
 		}, null);
 		getWorkspace().save(true, null);
@@ -457,14 +457,6 @@ public abstract class ResourceTest extends CoreTest {
 				.listFiles(file -> !file.getName().equals(metadataDirectoryName));
 		assertArrayEquals("There are unexpected contents in the workspace folder", new File[0],
 				remainingFilesInWorkspace);
-	}
-
-	protected void clear(IFileStore store) {
-		try {
-			store.delete(EFS.NONE, null);
-		} catch (CoreException e) {
-			fail("IResourceTest#clear.99", e);
-		}
 	}
 
 	/**
