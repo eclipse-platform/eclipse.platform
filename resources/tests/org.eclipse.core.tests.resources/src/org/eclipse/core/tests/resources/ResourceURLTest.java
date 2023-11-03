@@ -14,9 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.junit.Assert.assertThrows;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import org.eclipse.core.internal.resources.PlatformURLResourceConnection;
 import org.eclipse.core.resources.IFile;
@@ -107,31 +108,20 @@ public class ResourceURLTest extends ResourceTest {
 	public void testNonExistantURLs() throws Throwable {
 		IResource[] resources = buildResources();
 		for (int i = 1; i < resources.length; i++) {
-			try {
-				checkURL(resources[i]);
-				fail("1.0");
-			} catch (IOException e) {
-				// expected
-			}
+			final int index = i;
+			assertThrows(IOException.class, () -> checkURL(resources[index]));
 		}
 	}
 
 	/**
 	 * Tests decoding of normalized URLs containing spaces
 	 */
-	public void testSpaces() {
+	public void testSpaces() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("My Project");
 		IFile file = project.getFile("a.txt");
 		ensureExistsInWorkspace(file, CONTENT);
-		try {
-			URL url = new URL(PlatformURLResourceConnection.RESOURCE_URL_STRING + "My%20Project/a.txt");
-			InputStream stream = url.openStream();
-			assertTrue("1.0", compareContent(stream, getContents(CONTENT)));
-		} catch (MalformedURLException e) {
-			fail("0.99", e);
-		} catch (IOException e) {
-			fail("1.99", e);
-		}
-
+		URL url = new URL(PlatformURLResourceConnection.RESOURCE_URL_STRING + "My%20Project/a.txt");
+		InputStream stream = url.openStream();
+		assertTrue("1.0", compareContent(stream, getContents(CONTENT)));
 	}
 }

@@ -16,10 +16,10 @@
 package org.eclipse.core.tests.resources;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertThrows;
 
 import java.io.File;
 import java.io.InputStream;
-import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -122,15 +122,10 @@ public class WorkspaceTest extends ResourceTest {
 		IFolder existing = getWorkspace().getRoot().getFolder(path);
 		assertTrue(existing.exists());
 		IFile target = getWorkspace().getRoot().getFile(path);
-		try {
-			FussyProgressMonitor monitor = new FussyProgressMonitor();
-			target.create(null, true, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			assertTrue(existing.exists());
-			return;
-		}
-		fail("Should not be able to create file over folder");
+		FussyProgressMonitor monitor = new FussyProgressMonitor();
+		assertThrows(CoreException.class, () -> target.create(null, true, monitor));
+		monitor.assertUsedUp();
+		assertTrue(existing.exists());
 	}
 
 	public void testFolderDeletion() throws Throwable {
@@ -176,16 +171,11 @@ public class WorkspaceTest extends ResourceTest {
 		IFile existing = getWorkspace().getRoot().getFile(path);
 		assertTrue(existing.exists());
 		IFolder target = getWorkspace().getRoot().getFolder(path);
-		try {
-			FussyProgressMonitor monitor = new FussyProgressMonitor();
-			monitor.prepare();
-			target.create(true, true, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			assertTrue(existing.exists());
-			return;
-		}
-		fail("Should not be able to create folder over a file");
+		FussyProgressMonitor monitor = new FussyProgressMonitor();
+		monitor.prepare();
+		assertThrows(CoreException.class, () -> target.create(true, true, monitor));
+		monitor.assertUsedUp();
+		assertTrue(existing.exists());
 	}
 
 	public void testLeafFolderMove() throws Throwable {
@@ -330,22 +320,20 @@ public class WorkspaceTest extends ResourceTest {
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		IPath workingLocation = project.getWorkingLocation("org.eclipse.core.tests.resources");
 		IPath linkTarget = getRandomLocation();
-		try {
-			linkTarget.toFile().mkdirs();
-			File file = linkTarget.append("aFile").toFile();
-			assertTrue(file.createNewFile());
-			assertTrue(file.exists());
-			// Create a symlink in the working location of the project pointing to linkTarget.
-			createSymLink(workingLocation.toFile(), "link", linkTarget.toOSString(), true);
-			monitor.prepare();
-			project.delete(true, monitor);
-			monitor.assertUsedUp();
-			assertTrue("Project deletion failed", !project.exists());
-			assertTrue("Working location was not deleted", !workingLocation.toFile().exists());
-			assertTrue("File inside a symlinked directory got deleted", file.exists());
-		} finally {
-			Workspace.clear(linkTarget.toFile());
-		}
+		deleteOnTearDown(linkTarget);
+		linkTarget.toFile().mkdirs();
+		File file = linkTarget.append("aFile").toFile();
+		assertTrue(file.createNewFile());
+		assertTrue(file.exists());
+		// Create a symlink in the working location of the project pointing to
+		// linkTarget.
+		createSymLink(workingLocation.toFile(), "link", linkTarget.toOSString(), true);
+		monitor.prepare();
+		project.delete(true, monitor);
+		monitor.assertUsedUp();
+		assertTrue("Project deletion failed", !project.exists());
+		assertTrue("Working location was not deleted", !workingLocation.toFile().exists());
+		assertTrue("File inside a symlinked directory got deleted", file.exists());
 	}
 
 	public void testProjectReferences() throws Throwable {
