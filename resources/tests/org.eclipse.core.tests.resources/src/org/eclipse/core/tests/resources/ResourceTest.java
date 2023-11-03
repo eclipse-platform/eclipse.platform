@@ -27,14 +27,9 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -57,7 +52,6 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -111,24 +105,12 @@ public abstract class ResourceTest extends CoreTest {
 	protected static final String SET_OTHER = "org.eclipse.core.tests.resources.otherSet";
 	//constants for nature sets
 	protected static final String SET_STATE = "org.eclipse.core.tests.resources.stateSet";
-	/**
-	 * Number of received log messages with severity error while running a single
-	 * test method.
-	 */
-	private final Queue<IStatus> loggedErrors = new ConcurrentLinkedQueue<>();
 
 	/**
 	 * For retrieving the test name when executing test class with JUnit 4.
 	 */
 	@Rule
 	public final TestName testName = new TestName();
-
-	/** Listener to count error messages while testing. */
-	private final ILogListener errorLogListener = (IStatus status, String plugin) -> {
-		if (status.matches(IStatus.ERROR)) {
-			loggedErrors.add(status);
-		}
-	};
 
 	/**
 	 * Set of FileStore instances that must be deleted when the
@@ -1110,15 +1092,12 @@ public abstract class ResourceTest extends CoreTest {
 		TestUtil.log(IStatus.INFO, getName(), "setUp");
 		FreezeMonitor.expectCompletionInAMinute();
 		assertNotNull("Workspace was not setup", getWorkspace());
-		loggedErrors.clear();
-		Platform.addLogListener(errorLogListener);
 		storeWorkspaceDescription();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
 		boolean wasSuspended = resumeJobManagerIfNecessary();
-		Platform.removeLogListener(errorLogListener);
 		TestUtil.log(IStatus.INFO, getName(), "tearDown");
 		// Ensure everything is in a clean state for next one.
 		// Session tests should overwrite it.
@@ -1137,20 +1116,6 @@ public abstract class ResourceTest extends CoreTest {
 		}
 
 		return false;
-	}
-
-	protected void assertNoErrorsLogged() {
-		List<IStatus> errorlist = new ArrayList<>();
-		loggedErrors.removeIf(errorlist::add);
-		errorlist.forEach(status -> {
-			if (status.getException() != null) {
-				throw new AssertionError("Test logged exception", status.getException());
-			}
-		});
-		assertTrue(
-				"Test logged errors: "
-						+ errorlist.stream().map(IStatus::toString).collect(Collectors.joining(", ")),
-				errorlist.isEmpty());
 	}
 
 	/**
