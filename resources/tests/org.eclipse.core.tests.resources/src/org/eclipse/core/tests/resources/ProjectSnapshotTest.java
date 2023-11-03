@@ -16,6 +16,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.junit.Assert.assertThrows;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
@@ -79,13 +81,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 	 * Trying to save a null Snapshot throws CoreException.
 	 */
 	public void testSaveNullSnapshot() throws Throwable {
-		boolean exceptionThrown = false;
-		try {
-			projects[0].saveSnapshot(IProject.SNAPSHOT_TREE, null, null);
-		} catch (CoreException ce) {
-			exceptionThrown = true;
-		}
-		assertTrue("1.0", exceptionThrown);
+		assertThrows(CoreException.class, () -> projects[0].saveSnapshot(IProject.SNAPSHOT_TREE, null, null));
 	}
 
 	/*
@@ -264,13 +260,8 @@ public class ProjectSnapshotTest extends ResourceTest {
 		project.open(null);
 		assertTrue("1.1", project.isOpen());
 		assertTrue("1.2", project.getFolder("foo").exists());
-		boolean errorReported = false;
-		try {
-			project.saveSnapshot(Project.SNAPSHOT_SET_AUTOLOAD, URI.create("NON_EXISTING/foo/bar.zip"), null);
-		} catch (CoreException ce) {
-			errorReported = true;
-		}
-		assertTrue("1.4", errorReported);
+		assertThrows(CoreException.class, () -> project.saveSnapshot(Project.SNAPSHOT_SET_AUTOLOAD,
+				URI.create("NON_EXISTING/foo/bar.zip"), null));
 	}
 
 	public void testAutoLoadMissingSnapshot() throws Throwable {
@@ -370,13 +361,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 
 		// setting snapshot while project is closed is forbidden
 		project.close(null);
-		boolean exceptionThrown = false;
-		try {
-			project.saveSnapshot(Project.SNAPSHOT_SET_AUTOLOAD, tempURI, null);
-		} catch (CoreException e) {
-			exceptionThrown = true;
-		}
-		assertTrue("4.0", exceptionThrown);
+		assertThrows(CoreException.class, () -> project.saveSnapshot(Project.SNAPSHOT_SET_AUTOLOAD, tempURI, null));
 	}
 
 }
