@@ -80,9 +80,9 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 * @throws Exception
 	 */
 	public void testBasicRelaxedSchedulingRules() throws Exception {
-		String name = "TestRelaxed";
+		String projectName = "TestRelaxed";
 		setAutoBuilding(false);
-		final IProject project = getWorkspace().getRoot().getProject(name);
+		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		create(project, false);
 		addBuilder(project, EmptyDeltaBuilder.BUILDER_NAME);
 
@@ -95,7 +95,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		EmptyDeltaBuilder builder = EmptyDeltaBuilder.getInstance();
 		builder.setRuleCallback(new BuilderRuleCallback() {
 			@Override
-			public ISchedulingRule getRule(String name, IncrementalProjectBuilder builder, int trigger, Map<String, String> args) {
+			public ISchedulingRule getRule(String name, IncrementalProjectBuilder projectBuilder, int trigger,
+					Map<String, String> args) {
 				return null;
 			}
 
@@ -149,9 +150,9 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 * @throws Exception
 	 */
 	public void testTwoBuildersRunInOneBuild() throws Exception {
-		String name = "testTwoBuildersRunInOneBuild";
+		String projectName = "testTwoBuildersRunInOneBuild";
 		setAutoBuilding(false);
-		final IProject project = getWorkspace().getRoot().getProject(name);
+		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		create(project, false);
 
 		IProjectDescription desc = project.getDescription();
@@ -171,7 +172,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		// Set the rule call-back
 		builder.setRuleCallback(new BuilderRuleCallback() {
 			@Override
-			public ISchedulingRule getRule(String name, IncrementalProjectBuilder builder, int trigger, Map<String, String> args) {
+			public ISchedulingRule getRule(String name, IncrementalProjectBuilder projectBuilder, int trigger,
+					Map<String, String> args) {
 				tb1.setStatus(TestBarrier2.STATUS_START);
 				return project;
 			}
@@ -189,7 +191,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		// Set the rule call-back
 		builder2.setRuleCallback(new BuilderRuleCallback() {
 			@Override
-			public ISchedulingRule getRule(String name, IncrementalProjectBuilder builder, int trigger, Map<String, String> args) {
+			public ISchedulingRule getRule(String name, IncrementalProjectBuilder projectBuilder, int trigger,
+					Map<String, String> args) {
 				// get rule is called before starting
 				tb2.setStatus(TestBarrier2.STATUS_START);
 				return null;
@@ -254,9 +257,9 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 */
 	public void testBuilderDeltaUsingRelaxedRuleBug343256() throws Exception {
 		final int timeout = 10000;
-		String name = "testBuildDeltaUsingRelaxedRuleBug343256";
+		String projectName = "testBuildDeltaUsingRelaxedRuleBug343256";
 		setAutoBuilding(false);
-		final IProject project = getWorkspace().getRoot().getProject(name);
+		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		final IFile foo = project.getFile("foo");
 		create(project, false);
 
@@ -312,7 +315,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 			boolean called = false;
 
 			@Override
-			public ISchedulingRule getRule(String name, IncrementalProjectBuilder builder, int trigger, Map<String, String> args) {
+			public ISchedulingRule getRule(String name, IncrementalProjectBuilder projectBuilder, int trigger,
+					Map<String, String> args) {
 				// Remove once Bug 331187 is fixed.
 				// Currently #getRule is called twice when building a specific build configuration (so as to minimized change in
 				// 3.7 end-game.  As this test is trying to provoke a bug in the window between fetching a rule and applying it
@@ -382,9 +386,9 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 * @throws Exception
 	 */
 	public void testBug343256() throws Exception {
-		String name = "testBug343256";
+		String projectName = "testBug343256";
 		setAutoBuilding(false);
-		final IProject project = getWorkspace().getRoot().getProject(name);
+		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		create(project, false);
 
 		IProjectDescription desc = project.getDescription();
@@ -408,7 +412,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		// Set the rule call-back
 		builder.setRuleCallback(new BuilderRuleCallback() {
 			@Override
-			public ISchedulingRule getRule(String name, IncrementalProjectBuilder builder, int trigger, Map<String, String> args) {
+			public ISchedulingRule getRule(String name, IncrementalProjectBuilder projectBuilder, int trigger,
+					Map<String, String> args) {
 				tb1.waitForStatus(TestBarrier2.STATUS_START);
 				return getRules[0];
 			}
@@ -426,7 +431,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		// Set the rule call-back
 		builder2.setRuleCallback(new BuilderRuleCallback() {
 			@Override
-			public ISchedulingRule getRule(String name, IncrementalProjectBuilder builder, int trigger, Map<String, String> args) {
+			public ISchedulingRule getRule(String name, IncrementalProjectBuilder projectBuilder, int trigger,
+					Map<String, String> args) {
 				tb2.waitForStatus(TestBarrier2.STATUS_START);
 				return getRules[1];
 			}
