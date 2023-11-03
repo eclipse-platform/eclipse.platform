@@ -14,6 +14,7 @@
 package org.eclipse.compare.tests;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

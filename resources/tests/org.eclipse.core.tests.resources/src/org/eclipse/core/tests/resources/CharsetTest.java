@@ -16,6 +16,8 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -188,7 +190,7 @@ public class CharsetTest extends ResourceTest {
 				assertEquals("1.0", "BAR", file.getCharset());
 				file.move(project.getFullPath().append("file2.txt"), IResource.NONE, monitor);
 				IFile file2 = project.getFile("file2.txt");
-				assertExistsInWorkspace(file2, false);
+				assertExistsInWorkspace(file2);
 				assertEquals("2.0", "BAR", file.getCharset());
 			}, null);
 		} finally {
@@ -209,7 +211,7 @@ public class CharsetTest extends ResourceTest {
 			assertEquals("Setting up file's explicit charset was successful", "BAR", file.getCharset());
 			file.move(project.getFullPath().append("file2.txt"), IResource.NONE, getMonitor());
 			IFile file2 = project.getFile("file2.txt");
-			assertExistsInWorkspace(file2, false);
+			assertExistsInWorkspace(file2);
 			assertEquals("The file's charset was correctly copied while coying the file", "BAR", file2.getCharset());
 		} finally {
 			ensureDoesNotExistInWorkspace(project);

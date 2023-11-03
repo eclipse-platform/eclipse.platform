@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.mapping;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 
 import java.util.ArrayList;
 import java.util.List;

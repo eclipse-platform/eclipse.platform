@@ -26,6 +26,8 @@ import org.eclipse.core.tests.resources.saveparticipant3.SaveParticipant3Plugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 
 /**
  * This class needs to be used with SaveManager2Test. Basically this
