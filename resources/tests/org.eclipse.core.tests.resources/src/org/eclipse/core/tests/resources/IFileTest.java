@@ -15,6 +15,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.junit.Assert.assertThrows;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,8 +76,7 @@ public class IFileTest extends ResourceTest {
 		if (container instanceof IProject project) {
 			return project.isOpen();
 		}
-		fail("Should not get here in FileTest.existsAndOpen");
-		return false;
+		throw new IllegalArgumentException("Unhandled container type: " + container);
 	}
 
 	/**
@@ -251,12 +252,7 @@ public class IFileTest extends ResourceTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-
-		try {
-			generateInterestingFiles();
-		} catch (CoreException e) {
-			fail("Failed in setup for FileTest", e);
-		}
+		generateInterestingFiles();
 	}
 
 	@Override
@@ -266,31 +262,18 @@ public class IFileTest extends ResourceTest {
 	}
 
 	@Test
-	public void testAppendContents() {
+	public void testAppendContents() throws Exception {
 		IFile target = projects[0].getFile("file1");
-		try {
-			target.create(getContents("abc"), false, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		target.create(getContents("abc"), false, null);
+		target.appendContents(getContents("def"), false, false, null);
 
-		try {
-			target.appendContents(getContents("def"), false, false, null);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
-
-		InputStream content = null;
-		try {
-			content = target.getContents(false);
+		try (InputStream content = target.getContents(false)) {
 			assertTrue("3.0", compareContent(content, getContents("abcdef")));
-		} catch (CoreException e) {
-			fail("3.1", e);
 		}
 	}
 
 	@Test
-	public void testAppendContents2() {
+	public void testAppendContents2() throws CoreException {
 		IFile file = projects[0].getFile("file1");
 		ensureDoesNotExistInWorkspace(file);
 
@@ -299,24 +282,18 @@ public class IFileTest extends ResourceTest {
 		// though marked non-local, was in fact local awaiting discovery; so
 		// force=true says we it is ok to make file local and proceed as per normal)
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		try {
-			// setup
-			file.create(null, false, monitor);
-			monitor.assertUsedUp();
-			assertTrue("1.0", !file.isLocal(IResource.DEPTH_ZERO));
-			assertTrue("1.1", !file.getLocation().toFile().exists());
-			ensureExistsInFileSystem(file);
-			assertTrue("1.2", !file.isLocal(IResource.DEPTH_ZERO));
-		} catch (CoreException e) {
-			fail("1.3", e);
-		}
-		try {
-			monitor.prepare();
-			file.appendContents(getRandomContents(), IResource.FORCE, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("1.4", e);
-		}
+		// setup
+		file.create(null, false, monitor);
+		monitor.assertUsedUp();
+		assertTrue("1.0", !file.isLocal(IResource.DEPTH_ZERO));
+		assertTrue("1.1", !file.getLocation().toFile().exists());
+		ensureExistsInFileSystem(file);
+		assertTrue("1.2", !file.isLocal(IResource.DEPTH_ZERO));
+
+		monitor.prepare();
+		file.appendContents(getRandomContents(), IResource.FORCE, monitor);
+		monitor.assertUsedUp();
+
 		assertTrue("1.5", file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("1.6", file.getLocation().toFile().exists());
 		// cleanup
@@ -325,74 +302,50 @@ public class IFileTest extends ResourceTest {
 		// If force=true, IFile is non-local, file does not exist in local file system:
 		// fail - file not local (this file is not local for real - cannot append
 		// something to a file that you don't have)
-		try {
-			// setup
-			monitor.prepare();
-			file.create(null, false, monitor);
-			monitor.assertUsedUp();
-			assertTrue("2.0", !file.isLocal(IResource.DEPTH_ZERO));
-			assertTrue("2.1", !file.getLocation().toFile().exists());
-		} catch (CoreException e) {
-			fail("2.2", e);
-		}
-		try {
-			monitor.prepare();
-			file.appendContents(getRandomContents(), IResource.FORCE, monitor);
-			fail("2.3");
-		} catch (CoreException e) {
-			// should fail
-			monitor.sanityCheck();
-		}
+		// setup
+		monitor.prepare();
+		file.create(null, false, monitor);
+		monitor.assertUsedUp();
+		assertTrue("2.0", !file.isLocal(IResource.DEPTH_ZERO));
+		assertTrue("2.1", !file.getLocation().toFile().exists());
+
+		monitor.prepare();
+		assertThrows(CoreException.class, () -> file.appendContents(getRandomContents(), IResource.FORCE, monitor));
+		monitor.sanityCheck();
 		assertTrue("2.4", !file.isLocal(IResource.DEPTH_ZERO));
 		// cleanup
 		ensureDoesNotExistInWorkspace(file);
 
 		// If force=false, IFile is non-local, file exists in local file system:
 		// fail - file not local
-		try {
-			// setup
-			monitor.prepare();
-			file.create(null, false, monitor);
-			monitor.assertUsedUp();
-			assertTrue("3.0", !file.isLocal(IResource.DEPTH_ZERO));
-			assertTrue("3.1", !file.getLocation().toFile().exists());
-			ensureExistsInFileSystem(file);
-			assertTrue("3.2", !file.isLocal(IResource.DEPTH_ZERO));
-		} catch (CoreException e) {
-			fail("3.3", e);
-		}
-		try {
-			monitor.prepare();
-			file.appendContents(getRandomContents(), IResource.NONE, monitor);
-			monitor.assertUsedUp();
-			fail("3.4");
-		} catch (CoreException e) {
-			// should fail
-		}
+		// setup
+		monitor.prepare();
+		file.create(null, false, monitor);
+		monitor.assertUsedUp();
+		assertTrue("3.0", !file.isLocal(IResource.DEPTH_ZERO));
+		assertTrue("3.1", !file.getLocation().toFile().exists());
+		ensureExistsInFileSystem(file);
+		assertTrue("3.2", !file.isLocal(IResource.DEPTH_ZERO));
+
+		monitor.prepare();
+		assertThrows(CoreException.class, () -> file.appendContents(getRandomContents(), IResource.NONE, monitor));
+		monitor.assertUsedUp();
 		assertTrue("3.5", !file.isLocal(IResource.DEPTH_ZERO));
 		// cleanup
 		ensureDoesNotExistInWorkspace(file);
 
 		// If force=false, IFile is non-local, file does not exist in local file system:
 		// fail - file not local
-		try {
-			// setup
-			monitor.prepare();
-			file.create(null, false, monitor);
-			monitor.assertUsedUp();
-			assertTrue("4.0", !file.isLocal(IResource.DEPTH_ZERO));
-			assertTrue("4.1", !file.getLocation().toFile().exists());
-		} catch (CoreException e) {
-			fail("4.2", e);
-		}
-		try {
-			monitor.prepare();
-			file.appendContents(getRandomContents(), IResource.NONE, monitor);
-			fail("4.3");
-		} catch (CoreException e) {
-			// should fail
-			monitor.sanityCheck();
-		}
+		// setup
+		monitor.prepare();
+		file.create(null, false, monitor);
+		monitor.assertUsedUp();
+		assertTrue("4.0", !file.isLocal(IResource.DEPTH_ZERO));
+		assertTrue("4.1", !file.getLocation().toFile().exists());
+
+		monitor.prepare();
+		assertThrows(CoreException.class, () -> file.appendContents(getRandomContents(), IResource.NONE, monitor));
+		monitor.sanityCheck();
 		assertTrue("4.4", !file.isLocal(IResource.DEPTH_ZERO));
 		// cleanup
 		ensureDoesNotExistInWorkspace(file);
@@ -403,7 +356,7 @@ public class IFileTest extends ResourceTest {
 	 *     void create(InputStream, boolean, IProgressMonitor)
 	 */
 	@Test
-	public void testCreate() {
+	public void testCreate() throws Exception {
 		Object[][] inputs = new Object[][] {interestingFiles(), interestingStreams(), TRUE_AND_FALSE, PROGRESS_MONITORS};
 		new TestPerformer("IFileTest.testCreate") {
 			@Override
@@ -464,36 +417,29 @@ public class IFileTest extends ResourceTest {
 	}
 
 	@Test
-	public void testCreateDerived() {
+	public void testCreateDerived() throws CoreException {
 		IFile derived = projects[0].getFile("derived.txt");
 		ensureExistsInWorkspace(projects[0], true);
 		ensureDoesNotExistInWorkspace(derived);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		try {
-			derived.create(getRandomContents(), IResource.DERIVED, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		derived.create(getRandomContents(), IResource.DERIVED, monitor);
+		monitor.assertUsedUp();
 		assertTrue("1.0", derived.isDerived());
 		assertTrue("1.1", !derived.isTeamPrivateMember());
-		try {
-			monitor.prepare();
-			derived.delete(false, monitor);
-			monitor.assertUsedUp();
-			monitor.prepare();
-			derived.create(getRandomContents(), IResource.NONE, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+
+		monitor.prepare();
+		derived.delete(false, monitor);
+		monitor.assertUsedUp();
+		monitor.prepare();
+		derived.create(getRandomContents(), IResource.NONE, monitor);
+		monitor.assertUsedUp();
 		assertTrue("2.0", !derived.isDerived());
 		assertTrue("2.1", !derived.isTeamPrivateMember());
 	}
 
 	@Test
-	public void testDeltaOnCreateDerived() {
+	public void testDeltaOnCreateDerived() throws CoreException {
 		IFile derived = projects[0].getFile("derived.txt");
 		ensureExistsInWorkspace(projects[0], true);
 
@@ -502,183 +448,119 @@ public class IFileTest extends ResourceTest {
 
 		verifier.addExpectedChange(derived, IResourceDelta.ADDED, IResource.NONE);
 
-		try {
-			FussyProgressMonitor monitor = new FussyProgressMonitor();
-			derived.create(getRandomContents(), IResource.FORCE | IResource.DERIVED, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		FussyProgressMonitor monitor = new FussyProgressMonitor();
+		derived.create(getRandomContents(), IResource.FORCE | IResource.DERIVED, monitor);
+		monitor.assertUsedUp();
 
 		assertTrue("2.0", verifier.isDeltaValid());
 	}
 
 	@Test
-	public void testCreateDerivedTeamPrivate() {
+	public void testCreateDerivedTeamPrivate() throws CoreException {
 		IFile teamPrivate = projects[0].getFile("teamPrivateDerived.txt");
 		ensureExistsInWorkspace(projects[0], true);
 		ensureDoesNotExistInWorkspace(teamPrivate);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		try {
-			teamPrivate.create(getRandomContents(), IResource.TEAM_PRIVATE | IResource.DERIVED, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		teamPrivate.create(getRandomContents(), IResource.TEAM_PRIVATE | IResource.DERIVED, monitor);
+		monitor.assertUsedUp();
+
 		assertTrue("1.0", teamPrivate.isTeamPrivateMember());
 		assertTrue("1.1", teamPrivate.isDerived());
-		try {
-			monitor.prepare();
-			teamPrivate.delete(false, monitor);
-			monitor.assertUsedUp();
-			monitor.prepare();
-			teamPrivate.create(getRandomContents(), IResource.NONE, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+
+		monitor.prepare();
+		teamPrivate.delete(false, monitor);
+		monitor.assertUsedUp();
+		monitor.prepare();
+		teamPrivate.create(getRandomContents(), IResource.NONE, monitor);
+		monitor.assertUsedUp();
 		assertTrue("2.0", !teamPrivate.isTeamPrivateMember());
 		assertTrue("2.1", !teamPrivate.isDerived());
 	}
 
 	@Test
-	public void testCreateTeamPrivate() {
+	public void testCreateTeamPrivate() throws CoreException {
 		IFile teamPrivate = projects[0].getFile("teamPrivate.txt");
 		ensureExistsInWorkspace(projects[0], true);
 		ensureDoesNotExistInWorkspace(teamPrivate);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		try {
-			teamPrivate.create(getRandomContents(), IResource.TEAM_PRIVATE, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
-
+		teamPrivate.create(getRandomContents(), IResource.TEAM_PRIVATE, monitor);
+		monitor.assertUsedUp();
 		assertTrue("1.0", teamPrivate.isTeamPrivateMember());
 		assertTrue("1.1", !teamPrivate.isDerived());
-		try {
-			monitor.prepare();
-			teamPrivate.delete(false, monitor);
-			monitor.assertUsedUp();
-			monitor.prepare();
-			teamPrivate.create(getRandomContents(), IResource.NONE, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+
+		monitor.prepare();
+		teamPrivate.delete(false, monitor);
+		monitor.assertUsedUp();
+		monitor.prepare();
+		teamPrivate.create(getRandomContents(), IResource.NONE, monitor);
+		monitor.assertUsedUp();
 		assertTrue("2.0", !teamPrivate.isTeamPrivateMember());
 		assertTrue("2.1", !teamPrivate.isDerived());
 	}
 
 	@Test
-	public void testFileCreation() {
-		IFile target = projects[0].getFile("file1");
+	public void testFileCreation() throws Exception {
+		IFile fileWithoutInput = projects[0].getFile("file1");
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		assertTrue("1.0", !target.exists());
-		try {
-			monitor.prepare();
-			target.create(null, true, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
-		assertTrue("1.2", target.exists());
+		assertTrue("1.0", !fileWithoutInput.exists());
+		monitor.prepare();
+		fileWithoutInput.create(null, true, monitor);
+		monitor.assertUsedUp();
+		assertTrue("1.2", fileWithoutInput.exists());
 
 		// creation with empty content
-		target = projects[0].getFile("file2");
-		assertTrue("2.0", !target.exists());
+		IFile emptyFile = projects[0].getFile("file2");
+		assertTrue("2.0", !emptyFile.exists());
 		String contents = "";
-		try {
-			monitor.prepare();
-			target.create(getContents(contents), true, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("2.1", e);
-		}
-		assertTrue("2.2", target.exists());
-		InputStream stream = null;
-		try {
-			stream = target.getContents(false);
-		} catch (CoreException e) {
-			fail("2.3", e);
-		}
-		try {
+		monitor.prepare();
+		emptyFile.create(getContents(contents), true, monitor);
+		monitor.assertUsedUp();
+		assertTrue("2.2", emptyFile.exists());
+		try (InputStream stream = emptyFile.getContents(false)) {
 			assertTrue("2.4", stream.available() == 0);
-		} catch (IOException e) {
-			fail("2.5", e);
 		}
-		try {
-			stream.close();
-		} catch (IOException e) {
-			fail("2.55", e);
-		}
-		try {
-			assertTrue("2.6", compareContent(target.getContents(false), getContents(contents)));
-		} catch (CoreException e) {
-			fail("2.7", e);
-		}
+		assertTrue("2.6", compareContent(emptyFile.getContents(false), getContents(contents)));
 
 		// creation with random content
-		target = projects[0].getFile("file3");
-		assertTrue("3.0", !target.exists());
+		IFile fileWithRandomContent = projects[0].getFile("file3");
+		assertTrue("3.0", !fileWithRandomContent.exists());
 		contents = getRandomString();
-		try {
-			monitor.prepare();
-			target.create(getContents(contents), true, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
-		assertTrue("3.2", target.exists());
-		try {
-			assertTrue("3.2", compareContent(target.getContents(false), getContents(contents)));
-		} catch (CoreException e) {
-			fail("3.3", e);
-		}
+		monitor.prepare();
+		fileWithRandomContent.create(getContents(contents), true, monitor);
+		monitor.assertUsedUp();
+		assertTrue("3.2", fileWithRandomContent.exists());
+		assertTrue("3.2", compareContent(fileWithRandomContent.getContents(false), getContents(contents)));
 
 		// try to create a file over a folder that exists
 		IFolder folder = projects[0].getFolder("folder1");
-		try {
-			monitor.prepare();
-			folder.create(true, true, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		monitor.prepare();
+		folder.create(true, true, monitor);
+		monitor.assertUsedUp();
 		assertTrue("4.1", folder.exists());
-		target = projects[0].getFile("folder1");
-		try {
-			monitor.prepare();
-			target.create(null, true, monitor);
-			monitor.assertUsedUp();
-			fail("4.2");
-		} catch (CoreException e) {
-			// expected
-		}
+
+		IFile fileOnFolder = projects[0].getFile("folder1");
+		monitor.prepare();
+		assertThrows(CoreException.class, () -> fileOnFolder.create(null, true, monitor));
+		monitor.assertUsedUp();
 		assertTrue("4.3", folder.exists());
-		assertTrue("4.4", !target.exists());
+		assertTrue("4.4", !fileOnFolder.exists());
 
 		// try to create a file under a non-existent parent
 		folder = projects[0].getFolder("folder2");
 		assertTrue("5.0", !folder.exists());
-		target = folder.getFile("file4");
-		try {
-			monitor.prepare();
-			target.create(null, true, monitor);
-			monitor.assertUsedUp();
-			fail("5.1");
-		} catch (CoreException e) {
-			// expected
-		}
+		IFile fileUnderNonExistentParent = folder.getFile("file4");
+		monitor.prepare();
+		assertThrows(CoreException.class, () -> fileUnderNonExistentParent.create(null, true, monitor));
+		monitor.assertUsedUp();
 		assertTrue("5.2", !folder.exists());
-		assertTrue("5.3", !target.exists());
+		assertTrue("5.3", !fileUnderNonExistentParent.exists());
 
 		//create from stream that throws exceptions
-		target = projects[0].getFile("file2");
-		ensureDoesNotExistInWorkspace(target);
-		ensureDoesNotExistInFileSystem(target);
+		IFile fileFromStream = projects[0].getFile("file2");
+		ensureDoesNotExistInWorkspace(fileFromStream);
+		ensureDoesNotExistInFileSystem(fileFromStream);
 
 		InputStream content = new InputStream() {
 			@Override
@@ -686,50 +568,32 @@ public class IFileTest extends ResourceTest {
 				throw new IOException();
 			}
 		};
-		try {
-			monitor.prepare();
-			target.create(content, false, monitor);
-			monitor.assertUsedUp();
-			fail("6.1");
-		} catch (CoreException e) {
-			// expected
-		}
-		assertDoesNotExistInWorkspace("6.2", target);
-		assertDoesNotExistInFileSystem("6.3", target);
+		monitor.prepare();
+		assertThrows(CoreException.class, () -> fileFromStream.create(content, false, monitor));
+		monitor.assertUsedUp();
+		assertDoesNotExistInWorkspace("6.2", fileFromStream);
+		assertDoesNotExistInFileSystem("6.3", fileFromStream);
 
 		// cleanup
 		folder = projects[0].getFolder("folder1");
-		try {
-			monitor.prepare();
-			folder.delete(false, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("7.0", e);
-		}
+		monitor.prepare();
+		folder.delete(false, monitor);
+		monitor.assertUsedUp();
+
 		IFile file = projects[0].getFile("file1");
-		try {
-			monitor.prepare();
-			file.delete(false, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("7.1", e);
-		}
+		monitor.prepare();
+		file.delete(false, monitor);
+		monitor.assertUsedUp();
+
 		file = projects[0].getFile("file2");
-		try {
-			monitor.prepare();
-			file.delete(false, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("7.2", e);
-		}
+		monitor.prepare();
+		file.delete(false, monitor);
+		monitor.assertUsedUp();
+
 		file = projects[0].getFile("file3");
-		try {
-			monitor.prepare();
-			file.delete(false, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("7.3", e);
-		}
+		monitor.prepare();
+		file.delete(false, monitor);
+		monitor.assertUsedUp();
 	}
 
 	@Test
@@ -745,16 +609,9 @@ public class IFileTest extends ResourceTest {
 				throw new OperationCanceledException();
 			}
 		};
-		try {
-			FussyProgressMonitor monitor = new FussyProgressMonitor();
-			target.create(content, false, monitor);
-			monitor.assertUsedUp();
-			fail("1.0");
-		} catch (OperationCanceledException e) {
-			// expected
-		} catch (CoreException e) {
-			fail("2.0");
-		}
+		FussyProgressMonitor monitor = new FussyProgressMonitor();
+		assertThrows(OperationCanceledException.class, () -> target.create(content, false, monitor));
+		monitor.assertUsedUp();
 		assertDoesNotExistInWorkspace("3.0", target);
 		assertDoesNotExistInFileSystem("4.0", target);
 	}
@@ -786,25 +643,17 @@ public class IFileTest extends ResourceTest {
 	}
 
 	@Test
-	public void testFileInFolderCreation() {
+	public void testFileInFolderCreation() throws CoreException {
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		IFolder folder = projects[0].getFolder("folder1");
-		try {
-			folder.create(false, true, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		folder.create(false, true, monitor);
+		monitor.assertUsedUp();
 
 		IFile target = folder.getFile("file1");
-		try {
-			monitor.prepare();
-			target.create(getRandomContents(), true, monitor);
-			monitor.assertUsedUp();
-			assertTrue("1.1", target.exists());
-		} catch (CoreException e) {
-			fail("1.2", e);
-		}
+		monitor.prepare();
+		target.create(getRandomContents(), true, monitor);
+		monitor.assertUsedUp();
+		assertTrue("1.1", target.exists());
 	}
 
 	@Test
@@ -820,26 +669,17 @@ public class IFileTest extends ResourceTest {
 	}
 
 	@Test
-	public void testFileInFolderCreation2() {
-
+	public void testFileInFolderCreation2() throws CoreException {
 		IFolder folder = projects[0].getFolder("folder1");
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		try {
-			folder.create(false, true, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		folder.create(false, true, monitor);
+		monitor.assertUsedUp();
 
 		IFile target = folder.getFile("file1");
-		try {
-			monitor.prepare();
-			target.create(getRandomContents(), true, monitor);
-			monitor.assertUsedUp();
-			assertTrue("1.1", target.exists());
-		} catch (CoreException e) {
-			fail("1.2", e);
-		}
+		monitor.prepare();
+		target.create(getRandomContents(), true, monitor);
+		monitor.assertUsedUp();
+		assertTrue("1.1", target.exists());
 	}
 
 	@Test
@@ -863,14 +703,10 @@ public class IFileTest extends ResourceTest {
 		IFolder existing = projects[0].getFolder("ExistingFolder");
 		IFile target = projects[0].getFile("ExistingFolder");
 
-		try {
-			FussyProgressMonitor monitor = new FussyProgressMonitor();
-			target.create(null, true, monitor);
-			monitor.assertUsedUp();
-			fail("Should not be able to create file over folder");
-		} catch (CoreException e) {
-			assertTrue("1.1", existing.exists());
-		}
+		FussyProgressMonitor monitor = new FussyProgressMonitor();
+		assertThrows(CoreException.class, () -> target.create(null, true, monitor));
+		monitor.assertUsedUp();
+		assertTrue("1.1", existing.exists());
 	}
 
 	/**
@@ -878,7 +714,7 @@ public class IFileTest extends ResourceTest {
 	 *     InputStream getContents()
 	 */
 	@Test
-	public void testGetContents() {
+	public void testGetContents() throws Exception {
 		Object[][] inputs = new Object[][] {interestingFiles()};
 		new TestPerformer("IFileTest.testGetContents") {
 			@Override
@@ -927,72 +763,38 @@ public class IFileTest extends ResourceTest {
 	}
 
 	@Test
-	public void testGetContents2() throws IOException {
+	public void testGetContents2() throws IOException, CoreException {
 		IFile target = projects[0].getFile("file1");
 		String testString = getRandomString();
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		try {
-			target.create(null, false, null);
-			target.setContents(getContents(testString), true, false, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
-
+		target.create(null, false, null);
+		target.setContents(getContents(testString), true, false, monitor);
+		monitor.assertUsedUp();
 		ensureOutOfSync(target);
 
-		InputStream content = null;
-		try {
-			try {
-				content = target.getContents(false);
-			} finally {
-				if (content != null) {
-					content.close();
-				}
+		CoreException firstException = assertThrows(CoreException.class, () -> {
+			try (InputStream content = target.getContents(false)) {
 			}
-			fail("1.0");
-		} catch (CoreException e) {
-			// Ok, the file is out is sync.
-			assertEquals("1.1", IResourceStatus.OUT_OF_SYNC_LOCAL, e.getStatus().getCode());
+		});
+		assertEquals(IResourceStatus.OUT_OF_SYNC_LOCAL, firstException.getStatus().getCode());
+
+		try (InputStream content = target.getContents(true)) {
 		}
 
-		try {
-			try {
-				content = target.getContents(true);
-			} finally {
-				if (content != null) {
-					content.close();
-				}
+		CoreException secondException = assertThrows(CoreException.class, () -> {
+			try (InputStream content = target.getContents(false)) {
 			}
-		} catch (CoreException e) {
-			fail("2.1", e);
-		}
-
-		try {
-			try {
-				content = target.getContents(false);
-			} finally {
-				if (content != null) {
-					content.close();
-				}
-			}
-			fail("3.0");
-		} catch (CoreException e) {
-			// Ok, the file is out is sync.
-			assertEquals("3.1", IResourceStatus.OUT_OF_SYNC_LOCAL, e.getStatus().getCode());
-		}
-		content = new InputStream() {
+		});
+		assertEquals(IResourceStatus.OUT_OF_SYNC_LOCAL, secondException.getStatus().getCode());
+		InputStream content = new InputStream() {
 			@Override
 			public int read() throws IOException {
 				throw new IOException();
 			}
 		};
-		try {
+		try (content) {
 			monitor.prepare();
-			target.setContents(content, IResource.NONE, monitor);
-			fail("4.1");
-		} catch (CoreException e) {
-			// expected
+			assertThrows(CoreException.class, () -> target.setContents(content, IResource.NONE, monitor));
 			monitor.sanityCheck();
 		}
 		assertExistsInWorkspace("4.2", target);
@@ -1003,19 +805,14 @@ public class IFileTest extends ResourceTest {
 	 * Tests creation and manipulation of file names that are reserved on some platforms.
 	 */
 	@Test
-	public void testInvalidFileNames() {
+	public void testInvalidFileNames() throws CoreException {
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		IProject project = projects[0];
 
 		//should not be able to create a file with invalid path on any platform
 		String[] names = new String[] {"", "/"};
-		for (int i = 0; i < names.length; i++) {
-			try {
-				project.getFile(names[i]);
-				fail("0.1." + i);
-			} catch (RuntimeException e) {
-				//should fail
-			}
+		for (String name : names) {
+			assertThrows(RuntimeException.class, () -> project.getFile(name));
 		}
 
 		//do some tests with invalid names
@@ -1031,13 +828,8 @@ public class IFileTest extends ResourceTest {
 			monitor.prepare();
 			IFile file = project.getFile(IPath.fromPortableString(name));
 			assertTrue("1.0 " + name, !file.exists());
-			try {
-				file.create(getRandomContents(), true, monitor);
-				fail("1.1 " + name);
-			} catch (CoreException e) {
-				// expected
-				monitor.sanityCheck();
-			}
+			assertThrows(CoreException.class, () -> file.create(getRandomContents(), true, monitor));
+			monitor.sanityCheck();
 			assertTrue("1.2 " + name, !file.exists());
 		}
 
@@ -1052,13 +844,9 @@ public class IFileTest extends ResourceTest {
 		for (String name : names) {
 			IFile file = project.getFile(name);
 			assertTrue("2.0 " + name, !file.exists());
-			try {
-				monitor.prepare();
-				file.create(getRandomContents(), true, monitor);
-				monitor.assertUsedUp();
-			} catch (CoreException e) {
-				fail("2.1 " + name, e);
-			}
+			monitor.prepare();
+			file.create(getRandomContents(), true, monitor);
+			monitor.assertUsedUp();
 			assertTrue("2.2 " + name, file.exists());
 		}
 	}
@@ -1068,7 +856,7 @@ public class IFileTest extends ResourceTest {
 	 *     void setContents(InputStream, boolean, IProgressMonitor)
 	 */
 	@Test
-	public void testSetContents1() {
+	public void testSetContents1() throws Exception {
 		Object[][] inputs = new Object[][] {interestingFiles(), interestingStreams(), TRUE_AND_FALSE, PROGRESS_MONITORS};
 		new TestPerformer("IFileTest.testSetContents1") {
 			@Override
@@ -1124,35 +912,17 @@ public class IFileTest extends ResourceTest {
 	}
 
 	@Test
-	public void testSetContents2() {
+	public void testSetContents2() throws IOException, CoreException {
 		IFile target = projects[0].getFile("file1");
-		try {
-			target.create(null, false, null);
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		target.create(null, false, null);
 
 		String testString = getRandomString();
-		try {
-			FussyProgressMonitor monitor = new FussyProgressMonitor();
-			target.setContents(getContents(testString), true, false, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		FussyProgressMonitor monitor = new FussyProgressMonitor();
+		target.setContents(getContents(testString), true, false, monitor);
+		monitor.assertUsedUp();
 
-		InputStream content = null;
-		try {
-			content = target.getContents(false);
+		try (InputStream content = target.getContents(false)) {
 			assertTrue("get not equal set", compareContent(content, getContents(testString)));
-		} catch (CoreException e) {
-			fail("2.0", e);
-		} finally {
-			try {
-				content.close();
-			} catch (IOException e) {
-				// ignore
-			}
 		}
 	}
 
@@ -1163,34 +933,19 @@ public class IFileTest extends ResourceTest {
 		QualifiedName name = new QualifiedName("itp-test", "testProperty");
 		// getting/setting persistent properties on non-existent resources should throw an exception
 		ensureDoesNotExistInWorkspace(target);
-		try {
-			target.getPersistentProperty(name);
-			fail("1.0");
-		} catch (CoreException e) {
-			//this should happen
-		}
-		try {
-			target.setPersistentProperty(name, value);
-			fail("1.1");
-		} catch (CoreException e) {
-			//this should happen
-		}
+		assertThrows(CoreException.class, () -> target.getPersistentProperty(name));
+		assertThrows(CoreException.class, () -> target.setPersistentProperty(name, value));
 
 		ensureExistsInWorkspace(target, true);
 		target.setPersistentProperty(name, value);
 		// see if we can get the property
 		assertTrue("2.0", target.getPersistentProperty(name).equals(value));
 		// see what happens if we get a non-existant property
-		name = new QualifiedName("itp-test", "testNonProperty");
-		assertNull("2.1", target.getPersistentProperty(name));
+		QualifiedName nonExistentPropertyName = new QualifiedName("itp-test", "testNonProperty");
+		assertNull("2.1", target.getPersistentProperty(nonExistentPropertyName));
 
 		//set a persistent property with null qualifier
-		name = new QualifiedName(null, "foo");
-		try {
-			target.setPersistentProperty(name, value);
-			fail("3.0");
-		} catch (CoreException e) {
-			//expect an exception
-		}
+		QualifiedName nullQualifierName = new QualifiedName(null, "foo");
+		assertThrows(CoreException.class, () -> target.setPersistentProperty(nullQualifierName, value));
 	}
 }
