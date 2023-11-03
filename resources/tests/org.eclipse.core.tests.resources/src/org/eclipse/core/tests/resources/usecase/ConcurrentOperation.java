@@ -106,9 +106,6 @@ public abstract class ConcurrentOperation implements Runnable, IWorkspaceRunnabl
 		}
 	}
 
-	/**
-	 * @see #waitNotification
-	 */
 	public synchronized void proceed() {
 		go = true;
 		notify();

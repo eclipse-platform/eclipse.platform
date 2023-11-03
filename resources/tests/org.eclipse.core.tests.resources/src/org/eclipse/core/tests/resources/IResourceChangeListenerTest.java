@@ -134,9 +134,6 @@ public class IResourceChangeListenerTest extends ResourceTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 *
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void assertDelta() {
 		assertTrue(verifier.getMessage(), verifier.isDeltaValid());

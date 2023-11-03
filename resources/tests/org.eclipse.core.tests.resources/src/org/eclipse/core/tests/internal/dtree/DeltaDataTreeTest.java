@@ -393,7 +393,7 @@ public class DeltaDataTreeTest {
 	/**
 	 * Delete the child with the specified local name from the specified
 	 * node.  Note: this method requires both parentKey and localName,
-	 * making it impossible to delete the root node.<p>
+	 * making it impossible to delete the root node.
 	 *
 	 * @exception ObjectNotFoundException
 	 *	a child of parentKey with name localName does not exist in the receiver
@@ -612,9 +612,6 @@ public class DeltaDataTreeTest {
 	/**
 	 * Answer the key of the child with the given index of the
 	 * specified node.<p>
-	 *
-	 * @param NodeKey, int
-	 * @return NodeKey
 	 *
 	 * @exception ObjectNotFoundException
 	 * 	parentKey does not exist in the receiver

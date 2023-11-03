@@ -130,11 +130,6 @@ public class SortBuilder extends TestBuilder {
 		sortedFile.setContents(bis, true, false, null);
 	}
 
-	/**
-	 * Implements the inherited abstract method in
-	 * <code>BaseBuilder</code>.
-	 * @see BaseBuilder#build(IResourceDelta,int,IProgressMonitor)
-	 */
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		arguments = args;

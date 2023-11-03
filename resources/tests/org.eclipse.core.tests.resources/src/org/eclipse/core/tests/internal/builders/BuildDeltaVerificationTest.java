@@ -51,8 +51,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void assertDelta() {
 		if (!verifier.isDeltaValid()) {
@@ -134,8 +132,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testAddAndRemoveFile() {
 		try {
@@ -155,8 +151,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testAddAndRemoveFolder() {
 		try {
@@ -175,8 +169,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testAddFile() {
 		try {
@@ -192,8 +184,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testAddFileAndFolder() {
 		try {
@@ -211,8 +201,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testAddFolder() {
 		try {
@@ -227,8 +215,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testAddProject() {
 		try {
@@ -244,8 +230,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testChangeFile() {
 		try {
@@ -262,8 +246,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testChangeFileToFolder() {
 		try {
@@ -281,8 +263,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testChangeFolderToFile() {
 		try {
@@ -305,8 +285,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testCloseOpenReplaceFile() {
 		try {
@@ -331,8 +309,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testMoveFile() {
 		try {
@@ -351,8 +327,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testRemoveFile() {
 		try {
@@ -367,8 +341,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testRemoveFileAndFolder() {
 		try {
@@ -384,8 +356,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testReplaceFile() {
 		try {
@@ -403,8 +373,6 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
-	 * @see SortBuilderPlugin
-	 * @see SortBuilder
 	 */
 	public void testTwoFileChanges() {
 		try {

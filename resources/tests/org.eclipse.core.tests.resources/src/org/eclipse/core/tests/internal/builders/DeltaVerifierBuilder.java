@@ -94,9 +94,6 @@ public class DeltaVerifierBuilder extends TestBuilder {
 	 *                  the type of change (ADDED, REMOVED, CHANGED)
 	 * @param changeFlags
 	 *                  the type of change (CONTENT, SYNC, etc)
-	 * @param movedPath
-	 *                  or null
-	 * @see IResourceConstants
 	 */
 	public void addExpectedChange(IResource resource, IResource topLevelParent, int status, int changeFlags) {
 		verifier.addExpectedChange(resource, topLevelParent, status, changeFlags, null, null);
@@ -115,7 +112,9 @@ public class DeltaVerifierBuilder extends TestBuilder {
 	 *                  the type of change (ADDED, REMOVED, CHANGED)
 	 * @param changeFlags
 	 *                  the type of change (CONTENT, SYNC, etc)
-	 * @param movedPath
+	 * @param movedFromPath
+	 *                  or null
+	 * @param movedToPath
 	 *                  or null
 	 * @see IResourceConstants
 	 */

@@ -29,9 +29,6 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 	private IWorkspace workspace;
 	private Preferences preferences;
 
-	/**
-	 * @see TestCase#setUp()
-	 */
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -40,9 +37,6 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		workspace.setDescription(Workspace.defaultWorkspaceDescription());
 	}
 
-	/**
-	 * @see TestCase#tearDown()
-	 */
 	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
