@@ -14,6 +14,8 @@
 package org.eclipse.core.tests.resources.usecase;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;

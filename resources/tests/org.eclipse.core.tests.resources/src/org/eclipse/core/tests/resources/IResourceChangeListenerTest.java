@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SIMPLE;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.ByteArrayInputStream;

@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;

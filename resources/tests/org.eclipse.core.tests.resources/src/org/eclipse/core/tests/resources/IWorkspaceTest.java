@@ -28,6 +28,9 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.SET_O
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.SET_STATE;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getInvalidNatureSets;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getValidNatureSets;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 
