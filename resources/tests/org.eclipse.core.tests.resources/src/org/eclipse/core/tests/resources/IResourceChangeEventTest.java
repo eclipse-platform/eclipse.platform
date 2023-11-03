@@ -13,7 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -60,17 +68,13 @@ public class IResourceChangeEventTest extends ResourceTest {
 			marker2 = file2.createMarker(IMarker.BOOKMARK);
 			marker3 = file3.createMarker(IMarker.BOOKMARK);
 		};
-		try {
-			getWorkspace().run(body, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		getWorkspace().run(body, getMonitor());
 	}
 
 	/**
 	 * Tests the IResourceChangeEvent#findMarkerDeltas method.
 	 */
-	public void testFindMarkerDeltas() {
+	public void testFindMarkerDeltas() throws CoreException {
 		/*
 		 * The following changes will occur:
 		 * - add marker1
@@ -118,14 +122,12 @@ public class IResourceChangeEventTest extends ResourceTest {
 		};
 		try {
 			getWorkspace().run(body, getMonitor());
-		} catch (CoreException e) {
-			fail("Exception1", e);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
 	}
 
-	public void testFindMarkerDeltasInEmptyDelta() {
+	public void testFindMarkerDeltasInEmptyDelta() throws CoreException {
 		/*
 		 * The following changes will occur:
 		 * - change file1
@@ -171,8 +173,6 @@ public class IResourceChangeEventTest extends ResourceTest {
 		//do the work
 		try {
 			file1.setContents(getRandomContents(), true, true, getMonitor());
-		} catch (CoreException e) {
-			fail("Exception2", e);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
