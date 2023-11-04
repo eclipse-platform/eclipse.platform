@@ -163,23 +163,33 @@ public class AnnotationLookup {
 
 	private static void loadJavaxClass(Runnable run) {
 		try {
-			run.run();
-			if (!javaxWarningPrinted) {
-				if (Boolean.parseBoolean(System.getProperty("eclipse.e4.inject.javax.warning", "true"))) { //$NON-NLS-1$//$NON-NLS-2$
-					@SuppressWarnings("nls")
-					String message = """
-							WARNING: Annotation classes from the 'javax.inject' or 'javax.annotation' package found.
-							It is recommended to migrate to the corresponding replacements in the jakarta namespace.
-							The Eclipse E4 Platform will remove support for those javax-annotations in a future release.
-							To suppress this warning set the VM property: -Declipse.e4.inject.javax.warning=false
-							""";
-					System.err.println(message);
+			if (!getSystemPropertyFlag("eclipse.e4.inject.javax.disabled", false)) { //$NON-NLS-1$
+				run.run();
+				if (!javaxWarningPrinted) {
+					if (getSystemPropertyFlag("eclipse.e4.inject.javax.warning", true)) { //$NON-NLS-1$
+						@SuppressWarnings("nls")
+						String message = """
+								WARNING: Annotation classes from the 'javax.inject' or 'javax.annotation' package found.
+								It is recommended to migrate to the corresponding replacements in the jakarta namespace.
+								The Eclipse E4 Platform will remove support for those javax-annotations in a future release.
+								To suppress this warning, set the VM property: -Declipse.e4.inject.javax.warning=false
+								To disable processing of 'javax' annotations entirely, set the VM property: -Declipse.e4.inject.javax.disabled=true
+								""";
+						System.err.println(message);
+					}
+					javaxWarningPrinted = true;
 				}
-				javaxWarningPrinted = true;
 			}
 		} catch (NoClassDefFoundError e) {
 			// Ignore exception: javax-annotation seems to be unavailable in the runtime
 		}
+	}
+
+	private static boolean getSystemPropertyFlag(String key, boolean defaultValue) {
+		String value = System.getProperty(key);
+		return value == null // assume "true" if value is empty (to allow -Dkey as shorthand for -Dkey=true)
+				? defaultValue
+				: (value.isEmpty() || Boolean.parseBoolean(value));
 	}
 
 }
