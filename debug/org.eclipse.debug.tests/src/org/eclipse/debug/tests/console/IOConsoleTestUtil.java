@@ -778,7 +778,8 @@ public final class IOConsoleTestUtil {
 	}
 
 	/**
-	 * Get identifier for output {@code IOConsolePartition}s.
+	 * Get identifier for output
+	 * {@code org.eclipse.ui.internal.console.IOConsolePartition}s.
 	 *
 	 * @return output partition identifier
 	 */
@@ -788,7 +789,8 @@ public final class IOConsoleTestUtil {
 	}
 
 	/**
-	 * Get identifier for input {@code IOConsolePartition}s.
+	 * Get identifier for input
+	 * {@code org.eclipse.ui.internal.console.IOConsolePartition}s.
 	 *
 	 * @return input partition identifier
 	 */
