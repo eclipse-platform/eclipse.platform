@@ -1388,7 +1388,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * Tests that a launch is properly registered for notifications before a
 	 * process is spawned and may already propagate a termination event.
 	 *
-	 * see <a href="https://github.com/eclipse-platform/eclipse.platform/issues/598">598</a>
+	 * @see <a href="https://github.com/eclipse-platform/eclipse.platform/issues/598">598</a>
 	 */
 	@Test
 	public void testTerminateLaunchListener_Issue598() throws Exception {
@@ -1453,8 +1453,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Tests that attributes in a nested map are persisted in alphabetical
 	 * order.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testMapAttributePersistence() throws CoreException, IOException {
@@ -1536,8 +1534,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Tests that attributes in a nested set are persisted in alphabetical
 	 * order.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testSetAttributePersistence() throws CoreException, IOException {
@@ -1662,8 +1658,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Test that moving and renaming a shared configuration at the same time
 	 * works.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testRenameAndMoveShared() throws CoreException {
@@ -1691,8 +1685,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 *
 	 * Bug 381175 - [patch] launchConfigurationTypeImage to support platform:
 	 * style icons
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testGetTypeImageFromURI() throws Exception {
@@ -1703,8 +1695,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Test support for a declared launch configuration type image
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testGetTyeImage() throws Exception {
@@ -1716,10 +1706,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Tests that we can get a project handle from a project name
 	 *
-	 * see
-	 * <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441">395441</a>
-	 *
-	 * @throws Exception
+	 * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441">395441</a>
 	 * @since 3.9.0
 	 */
 	@Test
@@ -1741,10 +1728,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Tests that we cannot get a project handle from a bogus project name
 	 *
-	 * see
-	 * <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441">395441</a>
-	 *
-	 * @throws Exception
+	 * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441">395441</a>
 	 * @since 3.9.0
 	 */
 	@Test
@@ -1765,10 +1749,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Tests that we cannot get a project handle from a bogus project name
 	 *
-	 * see
-	 * <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441">395441</a>
-	 *
-	 * @throws Exception
+	 * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441">395441</a>
 	 * @since 3.9.0
 	 */
 	@Test
@@ -1794,10 +1775,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Tests that we can get a project handle from an absolute project name
 	 *
-	 * see
-	 * <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441">395441</a>
-	 *
-	 * @throws Exception
+	 * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441">395441</a>
 	 * @since 3.9.0
 	 */
 	@Test
@@ -1819,10 +1797,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * Tests that a launch created without a backing
 	 * {@link ILaunchConfiguration} does not cause {@link NullPointerException}s
 	 *
-	 * see
-	 * <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=416691">416691</a>
-	 *
-	 * @throws Exception
+	 * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=416691">416691</a>
 	 * @since 3.9.0
 	 */
 	@Test
@@ -1865,8 +1840,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Test copying attributes from one configuration to another.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testCopyAttributes() throws CoreException {
@@ -1881,8 +1854,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Tests that creation from a prototype works.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testCreationFromPrototype() throws CoreException {
@@ -1899,8 +1870,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Tests setting the 'isPrototype' attribute.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testIsPrototype() throws CoreException {
@@ -1916,8 +1885,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Tests finding references to a prototype.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testPrototypeChildren() throws CoreException {
@@ -1946,8 +1913,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Tests that when an attribute is removed from a working copy, it does not
 	 * get inherited from its prototype.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testPrototypeRemoveBehavior() throws CoreException {
@@ -1971,8 +1936,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Tests that setting a configuration's prototype to null cleans its
 	 * prototype association.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testUnPrototype() throws CoreException {
@@ -1995,8 +1958,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Tests that nested prototypes are not allowed.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testNestedPrototypes() throws CoreException {
@@ -2013,8 +1974,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Test that you cannot set a config's prototype to be a non-prototype.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testIllegalPrototype() throws CoreException {
@@ -2032,8 +1991,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Test that a prototype can be duplicated (and results in a prototype).
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testCopyPrototype() throws CoreException {
