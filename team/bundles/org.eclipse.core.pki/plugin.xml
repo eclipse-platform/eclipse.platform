@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin>
-
-	<extension point="org.eclipse.core.pki.authenticate">
+	<extension point="org.eclipse.ui.preferencePages">
+		<page
+			category="org.eclipse.ui.net.NetPreferences"
+            class="org.eclipse.pki.preferences.PreferencePage"
+            id="org.eclipse.preferences.pkcs"
+            name="PKCS Selection">
+		</page>
+	</extension>
+	
+	<extension point="org.eclipse.pki.auth.AuthenticationPlugin">
 		<authenticator
 			class="org.eclipse.core.pki.AuthenticationBase">
 		</authenticator>
