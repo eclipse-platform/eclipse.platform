@@ -73,11 +73,11 @@ public class ServiceSupplierTestCase {
 		@Inject
 		@Optional
 		@Service(filterExpression = "(component=disabled)")
-		TestService disabledService;
+		volatile TestService disabledService;
 
 		@Inject
 		@Service(filterExpression = "(component=disabled)")
-		List<TestService> services;
+		volatile List<TestService> services;
 	}
 
 	private final List<ServiceRegistration<?>> registrations = new ArrayList<>();
@@ -250,7 +250,7 @@ public class ServiceSupplierTestCase {
 		try {
 			enabler.enableDisabledServiceA();
 			// wait for asynchronous service registry and injection to finish
-			waitForCondition(() -> bean.services.size() == 1, timeoutInMillis);
+			waitForCondition(() -> bean.services.size() == 1 && bean.disabledService != null, timeoutInMillis);
 			assertNotNull(bean.disabledService);
 			assertEquals(1, bean.services.size());
 			assertSame(DisabledServiceA.class, bean.disabledService.getClass());
@@ -271,7 +271,7 @@ public class ServiceSupplierTestCase {
 
 			enabler.disableDisabledServiceA();
 			// wait for asynchronous service registry and injection to finish
-			waitForCondition(() -> bean.services.size() == 0, timeoutInMillis);
+			waitForCondition(() -> bean.services.size() == 0 && bean.disabledService == null, timeoutInMillis);
 			assertNull(bean.disabledService);
 			assertEquals(0, bean.services.size());
 		} finally {
