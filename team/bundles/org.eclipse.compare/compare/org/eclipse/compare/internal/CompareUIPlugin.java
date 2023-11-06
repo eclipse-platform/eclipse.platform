@@ -1402,7 +1402,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	//---- more utilities
 
 	protected void handleNoDifference() {
-		Runnable runnable = () -> MessageDialog.openInformation(getShell(), Utilities.getString("CompareUIPlugin.dialogTitle"), Utilities.getString("CompareUIPlugin.noDifferences"));
+		Runnable runnable = () -> MessageDialog.openInformation(getShell(), Utilities.getString("CompareUIPlugin.dialogTitle"), Utilities.getString("CompareUIPlugin.noDifferences")); //$NON-NLS-1$ //$NON-NLS-2$
 		syncExec(runnable);
 	}
 
