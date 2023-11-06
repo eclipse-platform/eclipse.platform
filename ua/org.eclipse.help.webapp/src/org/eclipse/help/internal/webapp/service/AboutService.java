@@ -35,7 +35,7 @@ import org.eclipse.help.internal.webapp.utils.Utils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
-/**
+/*
  * Generates either xml, json or html page having informations about either
  * <code>User-Agent</code>, Help system <code>preferences</code> or the available
  * plug-ins in Help system like Provider, Plugin name, Version and PluginId.
@@ -59,10 +59,7 @@ import org.osgi.framework.FrameworkUtil;
  * @return		Informations about either <code>User-Agent</code>, <code>preferences</code>
  * 				or the available plug-ins, either as <code>xml</code> (default) or
  * 				<code>html</code> or <code>json</code>
- *
- * @version	$Version$
- *
- **/
+ */
 public class AboutService extends AboutServlet {
 
 	private static final long serialVersionUID = 1L;

@@ -15,7 +15,7 @@ package org.eclipse.help.internal.webapp.service;
 
 import org.eclipse.help.internal.webapp.servlet.ControlServlet;
 
-/**
+/*
  * Controls Eclipse help application from standalone application. This
  * service do not allow remote clients to control Eclipse help application.
  *
@@ -27,9 +27,6 @@ import org.eclipse.help.internal.webapp.servlet.ControlServlet;
  * 						| install | update | enable | disable | uninstall
  * 						| search | listFeatures | addSite | removeSite
  * 						| apply
- *
- * @version	$Version$
- *
  **/
 public class ControlService extends ControlServlet {
 

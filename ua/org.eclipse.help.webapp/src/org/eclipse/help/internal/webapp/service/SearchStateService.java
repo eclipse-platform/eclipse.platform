@@ -24,7 +24,7 @@ import org.eclipse.help.internal.search.SearchProgressMonitor;
 import org.eclipse.help.internal.webapp.data.UrlUtil;
 import org.eclipse.help.internal.webapp.utils.Utils;
 
-/**
+/*
  * Returns <code>xml</code> or <code>String</code> representing search progress monitor
  *
  * @param lang			- (optional) specifies the locale
@@ -34,9 +34,6 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  *
  * @return		Search progress monitor state, either as <code>xml</code>
  * or <code>String</code> (default)
- *
- * @version	$Version$
- *
  **/
 public class SearchStateService extends HttpServlet {
 
