@@ -13,9 +13,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -41,113 +51,85 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 
-	public void testBasic() {
+	public void testBasic() throws CoreException {
 		//add the water and snow natures to the project, and ensure
 		//the snow builder gets run
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
 		ensureExistsInWorkspace(project, true);
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.reset();
-		try {
-			setAutoBuilding(true);
-			IProjectDescription desc = project.getDescription();
-			desc.setNatureIds(new String[] {NATURE_WATER, NATURE_SNOW});
-			project.setDescription(desc, IResource.FORCE, getMonitor());
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		setAutoBuilding(true);
+		IProjectDescription desc = project.getDescription();
+		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
+		project.setDescription(desc, IResource.FORCE, getMonitor());
+		waitForBuild();
 		builder.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 		builder.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);
 		builder.addExpectedLifecycleEvent(SnowBuilder.SNOW_BUILD_EVENT);
-		builder.assertLifecycleEvents("1.0");
+		builder.assertLifecycleEvents();
 	}
 
 	/**
 	 * Get the project in a state where the snow nature is disabled,
 	 * then ensure the snow builder is not run but remains on the build spec
 	 */
-	public void testDisabledNature() {
+	public void testDisabledNature() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
 		ensureExistsInWorkspace(project, true);
-		try {
-			setAutoBuilding(true);
-			IProjectDescription desc = project.getDescription();
-			desc.setNatureIds(new String[] {NATURE_WATER, NATURE_SNOW});
-			project.setDescription(desc, IResource.FORCE, getMonitor());
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		setAutoBuilding(true);
+		IProjectDescription desc = project.getDescription();
+		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
+		project.setDescription(desc, IResource.FORCE, getMonitor());
+		waitForBuild();
+
 		//remove the water nature, thus invalidating snow nature
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.reset();
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		try {
-			//setting description file will also trigger build
-			descFile.setContents(projectFileWithoutWater(), IResource.FORCE, getMonitor());
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		// setting description file will also trigger build
+		descFile.setContents(projectFileWithoutWater(), IResource.FORCE, getMonitor());
+		waitForBuild();
 		//assert that builder was skipped
-		builder.assertLifecycleEvents("1.0");
+		builder.assertLifecycleEvents();
 
 		//now re-enable the nature and ensure that the delta was null
 		builder.reset();
 		builder.addExpectedLifecycleEvent(SnowBuilder.SNOW_BUILD_EVENT);
-		try {
-			IProjectDescription desc = project.getDescription();
-			desc.setNatureIds(new String[] {NATURE_WATER, NATURE_SNOW});
-			project.setDescription(desc, IResource.FORCE, getMonitor());
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
-		builder.assertLifecycleEvents("2.0");
-		assertTrue("2.1", builder.wasDeltaNull());
+		desc = project.getDescription();
+		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
+		project.setDescription(desc, IResource.FORCE, getMonitor());
+		waitForBuild();
+		builder.assertLifecycleEvents();
+		assertTrue(builder.wasDeltaNull());
 	}
 
 	/**
 	 * Get the project in a state where the snow nature is missing,
 	 * then ensure the snow builder is removed from the build spec.
 	 */
-	public void testMissingNature() {
+	public void testMissingNature() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
 		ensureExistsInWorkspace(project, true);
-		try {
-			setAutoBuilding(true);
-			IProjectDescription desc = project.getDescription();
-			desc.setNatureIds(new String[] {NATURE_WATER, NATURE_SNOW});
-			project.setDescription(desc, IResource.FORCE, getMonitor());
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		setAutoBuilding(true);
+		IProjectDescription desc = project.getDescription();
+		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
+		project.setDescription(desc, IResource.FORCE, getMonitor());
+		waitForBuild();
+
 		//remove the snow nature through normal API
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.reset();
-		try {
-			IProjectDescription desc = project.getDescription();
-			desc.setNatureIds(new String[] {NATURE_WATER});
-			project.setDescription(desc, IResource.NONE, getMonitor());
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		desc = project.getDescription();
+		desc.setNatureIds(new String[] { NATURE_WATER });
+		project.setDescription(desc, IResource.NONE, getMonitor());
+		waitForBuild();
 		//make sure the snow builder wasn't run
-		builder.assertLifecycleEvents("2.0");
+		builder.assertLifecycleEvents();
 
 		//make sure the build spec doesn't include snow builder
-		try {
-			ICommand[] commands = project.getDescription().getBuildSpec();
-			for (ICommand command : commands) {
-				if (command.getBuilderName().equals(SnowBuilder.BUILDER_NAME)) {
-					assertTrue("2.1", false);
-				}
-			}
-		} catch (CoreException e) {
-			fail("2.99", e);
+		ICommand[] commands = project.getDescription().getBuildSpec();
+		for (ICommand command : commands) {
+			assertThat(command.getBuilderName(), not(is(SnowBuilder.BUILDER_NAME)));
 		}
 
 		//now add the snow nature back and ensure snow builder runs
@@ -155,40 +137,26 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		builder.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 		builder.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);
 		builder.addExpectedLifecycleEvent(SnowBuilder.SNOW_BUILD_EVENT);
-		try {
-			IProjectDescription desc = project.getDescription();
-			desc.setNatureIds(new String[] {NATURE_WATER, NATURE_SNOW});
-			project.setDescription(desc, IResource.KEEP_HISTORY, getMonitor());
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("3.99", e);
-		}
-		builder.assertLifecycleEvents("3.0");
+		desc = project.getDescription();
+		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
+		project.setDescription(desc, IResource.KEEP_HISTORY, getMonitor());
+		waitForBuild();
+		builder.assertLifecycleEvents();
 
 		//now remove the snow nature by hacking .project
 		//the deconfigure method won't run, but the builder should still be removed.
 		builder.reset();
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		try {
-			//setting description file will also trigger build
-			descFile.setContents(projectFileWithoutSnow(), IResource.FORCE, getMonitor());
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("4.99", e);
-		}
+		// setting description file will also trigger build
+		descFile.setContents(projectFileWithoutSnow(), IResource.FORCE, getMonitor());
+		waitForBuild();
 		//assert that builder was skipped
-		builder.assertLifecycleEvents("4.0");
+		builder.assertLifecycleEvents();
 
 		//make sure the build spec doesn't include snow builder
-		try {
-			ICommand[] commands = project.getDescription().getBuildSpec();
-			for (ICommand command : commands) {
-				if (command.getBuilderName().equals(SnowBuilder.BUILDER_NAME)) {
-					assertTrue("4.1", false);
-				}
-			}
-		} catch (CoreException e) {
-			fail("5.99", e);
+		commands = project.getDescription().getBuildSpec();
+		for (ICommand command : commands) {
+			assertThat(command.getBuilderName(), not(is(SnowBuilder.BUILDER_NAME)));
 		}
 
 		//now re-enable the nature and ensure that the delta was null
@@ -196,15 +164,11 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		builder.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 		builder.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);
 		builder.addExpectedLifecycleEvent(SnowBuilder.SNOW_BUILD_EVENT);
-		try {
-			IProjectDescription desc = project.getDescription();
-			desc.setNatureIds(new String[] {NATURE_WATER, NATURE_SNOW});
-			project.setDescription(desc, IResource.FORCE, getMonitor());
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("6.99", e);
-		}
-		builder.assertLifecycleEvents("5.0");
+		desc = project.getDescription();
+		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
+		project.setDescription(desc, IResource.FORCE, getMonitor());
+		waitForBuild();
+		builder.assertLifecycleEvents();
 		assertTrue("5.1", builder.wasDeltaNull());
 	}
 }
