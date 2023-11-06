@@ -611,7 +611,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 
 	/**
 	 * This method returns the trust {@link KeyStore} set by the user through the preference page, or
-	 * the default allTrustedPartnersKS.jks trust store.
+	 * the default cacert jks trust store.
 	 * @return a valid {@link KeyStore}, or null on error
 	 * @throws IOException 
 	 * @throws CertificateException 
