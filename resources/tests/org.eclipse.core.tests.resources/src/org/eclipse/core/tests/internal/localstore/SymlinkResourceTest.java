@@ -30,12 +30,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class SymlinkResourceTest extends LocalStoreTest {
 
-	protected void mkLink(IFileStore dir, String src, String tgt, boolean isDir) {
-		try {
-			createSymLink(dir.toLocalFile(EFS.NONE, getMonitor()), src, tgt, isDir);
-		} catch (CoreException e) {
-			fail("mkLink", e);
-		}
+	protected void mkLink(IFileStore dir, String src, String tgt, boolean isDir) throws CoreException {
+		createSymLink(dir.toLocalFile(EFS.NONE, getMonitor()), src, tgt, isDir);
 	}
 
 	protected void createBug232426Structure(IFileStore rootDir) throws CoreException {

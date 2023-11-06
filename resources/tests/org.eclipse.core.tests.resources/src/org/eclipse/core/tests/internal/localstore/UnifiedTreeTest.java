@@ -43,18 +43,8 @@ public class UnifiedTreeTest extends LocalStoreTest {
 	protected void createFiles(IFileStore folder, Hashtable<String, String> set) throws Exception {
 		for (int i = 0; i < limit; i++) {
 			IFileStore child = folder.getChild("fsFile" + i);
-			OutputStream out = null;
-			try {
-				out = child.openOutputStream(EFS.NONE, null);
+			try (OutputStream out = child.openOutputStream(EFS.NONE, null)) {
 				out.write("contents".getBytes());
-			} finally {
-				try {
-					if (out != null) {
-						out.close();
-					}
-				} catch (IOException e) {
-					//ignore
-				}
 			}
 			set.put(child.toString(), "");
 		}
@@ -171,9 +161,9 @@ public class UnifiedTreeTest extends LocalStoreTest {
 			IFileStore store = ((Resource) resource).getStore();
 			String key = store.fetchInfo().getName();
 			if (node.existsInFileSystem()) {
-				assertEquals("1.0", key, node.getLocalName());
+				assertEquals(key, node.getLocalName());
 			}
-			assertEquals("1.1", store, node.getStore());
+			assertEquals(store, node.getStore());
 
 			/* force children to be added to the queue */
 			node.getChildren();
@@ -196,8 +186,8 @@ public class UnifiedTreeTest extends LocalStoreTest {
 		tree.accept(visitor);
 
 		/* if the hash table is empty, we walked through all resources */
-		assertTrue("2.0", !set.isEmpty());
-		assertTrue("2.1", set.size() != initialSize);
+		assertFalse(set.isEmpty());
+		assertTrue(set.size() != initialSize);
 	}
 
 	/**
@@ -225,9 +215,9 @@ public class UnifiedTreeTest extends LocalStoreTest {
 			final IResource resource = node.getResource();
 			IFileStore store = ((Resource) resource).getStore();
 			if (node.existsInFileSystem()) {
-				assertEquals("1.0", store.fetchInfo().getName(), node.getLocalName());
+				assertEquals(store.fetchInfo().getName(), node.getLocalName());
 			}
-			assertEquals("1.1", store, node.getStore());
+			assertEquals(store, node.getStore());
 			/* remove from the hash table the resource we're visiting */
 			set.remove(resource.getLocation().toOSString());
 			return true;
@@ -238,7 +228,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 		tree.accept(visitor);
 
 		/* if the hash table is empty, we walked through all resources */
-		assertTrue("2.0", set.isEmpty());
+		assertTrue(set.isEmpty());
 	}
 
 	/**
