@@ -1602,6 +1602,8 @@ public class LaunchConfigurationTabGroupViewer {
 	}
 
 	/**
+	 * Activate the first tab of the requested kind.
+	 *
 	 * @param tabKind The class of the tab that has to be activated.
 	 * @return <code>true</code> if a tab was activated, <code>false</code>
 	 *         otherwise.
