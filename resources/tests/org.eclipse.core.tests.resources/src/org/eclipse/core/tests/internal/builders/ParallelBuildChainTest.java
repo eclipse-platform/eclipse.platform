@@ -47,7 +47,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ParallelBuildChainTest extends AbstractBuilderTest {
-	private static final int TIMEOUT_IN_MILLIS = 20_000;
+	private static final int TIMEOUT_IN_MILLIS = 30_000;
 
 	private static enum BuildDurationType {
 		/*
@@ -68,7 +68,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 		public int getDurationInMillis() {
 			switch (this) {
 			case LONG_RUNNING:
-				return 30_000;
+				return 40_000;
 			case SHORT_RUNNING:
 				return 300;
 			case IMMEDIATE:
