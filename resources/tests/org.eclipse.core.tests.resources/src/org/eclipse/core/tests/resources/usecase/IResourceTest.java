@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
+import static org.junit.Assert.assertThrows;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
@@ -46,17 +48,15 @@ public abstract class IResourceTest extends ResourceTest {
 		}
 
 		/* Session properties */
-		try {
-			resource.getSessionProperty(Q_NAME_SESSION);
-			fail(method + "2.1");
-		} catch (CoreException e) {
-			// expected
-		}
-		try {
-			resource.setSessionProperty(Q_NAME_SESSION, STRING_VALUE);
-			fail(method + "2.2");
-		} catch (CoreException e) {
-			// expected
-		}
+		assertThrows(CoreException.class, () -> resource.getSessionProperty(Q_NAME_SESSION));
+		assertThrows(CoreException.class, () -> resource.setSessionProperty(Q_NAME_SESSION, STRING_VALUE));
+	}
+
+	/**
+	 * Wrapper for deprecated method {@link IResource#isLocal(int)} to reduce
+	 * warnings.
+	 */
+	protected boolean isLocal(IResource resource, int depth) {
+		return resource.isLocal(depth);
 	}
 }

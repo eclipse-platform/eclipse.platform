@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -29,29 +34,13 @@ public class IFileTest extends IResourceTest {
 	 * Get methods either throw an exception or return null (abnormally).
 	 * Set methods throw an exception.
 	 */
-	protected void nonexistentFileFailureTests(IFile file, IFolder parent, IWorkspace wb) {
-		String method = "nonexistentFileFailureTests(IFolder,IWorkspace)";
-
+	protected void nonexistentFileFailureTests(IFile file, IWorkspace wb) {
 		/* Tests for failure in get/set methods in IResource. */
-
-		try {
-			if (file.isLocal(IResource.DEPTH_ZERO)) {
-				fail(method + "1.1");
-			}
-		} catch (RuntimeException e) {
-		}
-		try {
-			if (file.isLocal(IResource.DEPTH_ONE)) {
-				fail(method + "1.2");
-			}
-		} catch (RuntimeException e) {
-		}
-		try {
-			if (file.isLocal(IResource.DEPTH_INFINITE)) {
-				fail(method + "1.3");
-			}
-		} catch (RuntimeException e) {
-		}
+		assertThat("file is unexpectedly available locally: " + file, !isLocal(file, IResource.DEPTH_ZERO));
+		assertThat("file and its direct children are unexpectedly available locally: " + file,
+				!isLocal(file, IResource.DEPTH_ONE));
+		assertThat("file and all its children are unexpectedly available locally: " + file,
+				!isLocal(file, IResource.DEPTH_INFINITE));
 		commonFailureTestsForResource(file, false);
 
 	}
@@ -69,22 +58,14 @@ public class IFileTest extends IResourceTest {
 	 * Test deleting file that doesn't exist (failure?).
 	 * Finish testing IResource API
 	 */
-	public void testFile() {
+	public void testFile() throws CoreException {
 		IProgressMonitor monitor = null;
 		IWorkspace workspace = getWorkspace();
 
 		// Create & open a project
 		IProject proj = workspace.getRoot().getProject(PROJECT);
-		try {
-			proj.create(monitor);
-		} catch (CoreException e) {
-			fail("2.1", e);
-		}
-		try {
-			proj.open(monitor);
-		} catch (CoreException e) {
-			fail("2.2", e);
-		}
+		proj.create(monitor);
+		proj.open(monitor);
 
 		// Construct a folder handle without creating the folder.
 		IFolder folder = proj.getFolder(IPath.fromOSString(FOLDER));
@@ -93,114 +74,78 @@ public class IFileTest extends IResourceTest {
 		IFile file = folder.getFile(IPath.fromOSString(FILE));
 
 		// Inspection methods with meaninful results invoked on a handle for a nonexistent folder.
-		assertTrue("3.1", !file.exists());
-		assertTrue("3.2", file.getWorkspace().equals(workspace));
-		assertTrue("3.4", file.getProject().equals(proj));
-		assertTrue("3.5", file.getParent().equals(folder));
-		assertTrue("3.5", file.getType() == IResource.FILE);
-		assertTrue("3.6", file.getFullPath().equals(IPath.fromOSString("/" + PROJECT + "/" + FOLDER + "/" + FILE)));
-		assertTrue("3.7", file.getName().equals(FILE));
-		assertTrue("3.8", proj.getFolder(IPath.fromOSString(FOLDER)).equals(folder));
-		assertTrue("3.9", workspace.getRoot().getFile(file.getFullPath()).equals(file));
+		assertThat("file does not exist: " + file, !file.exists());
+		assertThat(file.getWorkspace(), is(workspace));
+		assertThat(file.getProject(), is(proj));
+		assertThat(file.getParent(), is(folder));
+		assertThat(file.getType(), is(IResource.FILE));
+		assertThat(file.getFullPath(), is(IPath.fromOSString("/" + PROJECT + "/" + FOLDER + "/" + FILE)));
+		assertThat(file.getName(), is(FILE));
+		assertThat(proj.getFolder(IPath.fromOSString(FOLDER)), is(folder));
+		assertThat(workspace.getRoot().getFile(file.getFullPath()), is(file));
 		IPath projRelativePath = IPath.fromOSString(FOLDER + "/" + FILE);
-		assertTrue("3.11", proj.getFile(projRelativePath).equals(file));
-		assertTrue("3.12", folder.getFile(IPath.fromOSString(FILE)).equals(file));
-		assertTrue("3.13", !workspace.getRoot().exists(file.getFullPath()));
+		assertThat(proj.getFile(projRelativePath), is(file));
+		assertThat(folder.getFile(IPath.fromOSString(FILE)), is(file));
+		assertThat("file at path '" + file.getFullPath() + "' unexpectedly exists in workspace",
+				!workspace.getRoot().exists(file.getFullPath()));
 		IPath absolutePath = IPath.fromOSString(proj.getLocation().toOSString() + "/" + FOLDER + "/" + FILE);
-		assertTrue("3.14", file.getLocation().equals(absolutePath));
-		assertTrue("3.15", file.getProjectRelativePath().equals(IPath.fromOSString(FOLDER + "/" + FILE)));
+		assertThat(file.getLocation(), is(absolutePath));
+		assertThat(file.getProjectRelativePath(), is(IPath.fromOSString(FOLDER + "/" + FILE)));
 
 		// Create a folder.
-		try {
-			folder.create(false, true, monitor);
-		} catch (CoreException e) {
-			fail("4", e);
-		}
+		folder.create(false, true, monitor);
 
 		// Parent folder must exist for this.
-		assertTrue("5", workspace.getRoot().findMember(file.getFullPath()) == null);
+		assertThat(workspace.getRoot().findMember(file.getFullPath()), is(nullValue()));
 
 		// These tests produce failure because the file does not exist yet.
-		nonexistentFileFailureTests(file, folder, workspace);
+		nonexistentFileFailureTests(file, workspace);
 
 		// Create the file
-		try {
-			file.create(getContents("0123456789"), false, monitor);
-		} catch (CoreException e) {
-			fail("6", e);
-		}
+		file.create(getContents("0123456789"), false, monitor);
 
 		// Now tests pass that require that the file exists.
-		assertTrue("7.0", file.exists());
-		assertTrue("7.1", folder.findMember(file.getName()).exists());
-		assertTrue("7.3", workspace.getRoot().findMember(file.getFullPath()).equals(file));
-		assertTrue("7.4", workspace.getRoot().exists(file.getFullPath()));
-		assertTrue("7.5", file.getLocation().equals(absolutePath));
+		assertThat("file does not exist: " + file, file.exists());
+		assertThat("no member with name '" + file.getName() + "' exists in folder: " + folder,
+				folder.findMember(file.getName()).exists());
+		assertThat(workspace.getRoot().findMember(file.getFullPath()), is(file));
+		assertThat("no member at path '" + file.getFullPath() + "' exists in workspace",
+				workspace.getRoot().exists(file.getFullPath()));
+		assertThat(file.getLocation(), is(absolutePath));
 
 		/* Session Property */
-
-		try {
-			assertTrue("8.0", file.getSessionProperty(Q_NAME_SESSION) == null);
-		} catch (CoreException e) {
-			assertTrue("8.1", false);
-		}
-		try {
-			file.setSessionProperty(Q_NAME_SESSION, STRING_VALUE);
-		} catch (CoreException e) {
-			assertTrue("8.2", false);
-		}
-		try {
-			assertTrue("8.2", file.getSessionProperty(Q_NAME_SESSION).equals(STRING_VALUE));
-		} catch (CoreException e) {
-			assertTrue("8.3", false);
-		}
-
-		try {
-			file.setSessionProperty(Q_NAME_SESSION, null);
-		} catch (CoreException e) {
-			assertTrue("8.4", false);
-		}
-		try {
-			assertTrue("8.5", file.getSessionProperty(Q_NAME_SESSION) == null);
-		} catch (CoreException e) {
-			assertTrue("8.6", false);
-		}
+		assertThat(file.getSessionProperty(Q_NAME_SESSION), is(nullValue()));
+		file.setSessionProperty(Q_NAME_SESSION, STRING_VALUE);
+		assertThat(file.getSessionProperty(Q_NAME_SESSION), is(STRING_VALUE));
+		file.setSessionProperty(Q_NAME_SESSION, null);
+		assertThat(file.getSessionProperty(Q_NAME_SESSION), is(nullValue()));
 
 		// IResource.isLocal(int)
 		// There is no server (yet) so everything should be local.
-		assertTrue("9.0", file.isLocal(IResource.DEPTH_ZERO));
+		assertThat("file is not available locally: " + file, isLocal(file, IResource.DEPTH_ZERO));
 		// No kids, but it should still answer yes.
-		assertTrue("9.1", file.isLocal(IResource.DEPTH_ONE));
-		assertTrue("9.2", file.isLocal(IResource.DEPTH_INFINITE));
+		assertThat("file and its direct children are not available locally: " + file,
+				isLocal(file, IResource.DEPTH_ONE));
+		assertThat("file and all its children are not available locally: " + file,
+				isLocal(file, IResource.DEPTH_INFINITE));
 		// These guys have kids.
-		assertTrue("9.3", proj.isLocal(IResource.DEPTH_INFINITE));
-		assertTrue("9.5", folder.isLocal(IResource.DEPTH_ONE));
-		assertTrue("9.6", folder.isLocal(IResource.DEPTH_INFINITE));
+		assertThat("project and all its children are not available locally: " + proj,
+				isLocal(proj, IResource.DEPTH_INFINITE));
+		assertThat("folder and direct children are not available locally: " + folder,
+				isLocal(folder, IResource.DEPTH_ONE));
+		assertThat("folder and all its children are not available locally: " + folder,
+				isLocal(folder, IResource.DEPTH_INFINITE));
 
 		// Delete the file
-		try {
-			file.delete(false, monitor);
-		} catch (CoreException e) {
-			fail("10.0", e);
-		}
-		assertTrue("11.1", !file.exists());
-		try {
-			assertTrue("11.2", folder.members().length == 0);
-		} catch (CoreException e) {
-			assertTrue("11.3", false);
-		}
-		assertTrue("11.4", workspace.getRoot().findMember(file.getFullPath()) == null);
-		assertTrue("11.5", !workspace.getRoot().exists(file.getFullPath()));
-		assertTrue("11.6", file.getLocation().equals(absolutePath));
+		file.delete(false, monitor);
+		assertThat("file exists unexpectedly: " + file, !file.exists());
+		assertThat(folder.members(), arrayWithSize(0));
+		assertThat(workspace.getRoot().findMember(file.getFullPath()), is(nullValue()));
+		assertThat("file at path '" + file.getFullPath() + "' unexpectedly exists in workspace",
+				!workspace.getRoot().exists(file.getFullPath()));
+		assertThat(file.getLocation(), is(absolutePath));
 
 		// These tests produce failure because the file no longer exists.
-		nonexistentFileFailureTests(file, folder, workspace);
-
-		/* remove garbage */
-		try {
-			proj.delete(true, getMonitor());
-		} catch (CoreException e) {
-			fail("12.0", e);
-		}
+		nonexistentFileFailureTests(file, workspace);
 	}
 }
