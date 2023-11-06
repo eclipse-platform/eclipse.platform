@@ -14,8 +14,20 @@
 package org.eclipse.core.tests.resources.regression;
 
 import java.util.concurrent.Semaphore;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.usecase.SignaledBuilder;
 
@@ -49,7 +61,8 @@ public class Bug_378156 extends ResourceTest {
 			try {
 				jobFlag.acquire();
 			} catch (InterruptedException e) {
-				fail("0.99", e);
+				throw new CoreException(
+						new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "Failed to acquire job flag log", e));
 			}
 			return Status.OK_STATUS;
 		}

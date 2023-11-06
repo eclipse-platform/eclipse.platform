@@ -17,11 +17,19 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.core.internal.resources.ProjectDescription;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 
@@ -52,17 +60,6 @@ public class Bug_185247_LinuxTests extends ResourceTest {
 			File archive = URIUtil.toFile(archiveLocation.toURI());
 			assertNotNull("cannot find archive with test cases", archive);
 			unzip(archive, outputLocation.toFile());
-		}
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		try {
-			for (IProject testProject : testProjects) {
-				testProject.delete(false, true, getMonitor());
-			}
-		} finally {
-			super.tearDown();
 		}
 	}
 

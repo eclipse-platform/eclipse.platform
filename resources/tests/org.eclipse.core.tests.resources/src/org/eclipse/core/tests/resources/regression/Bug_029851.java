@@ -50,7 +50,7 @@ public class Bug_029851 extends ResourceTest {
 		return result.toArray(new String[0]);
 	}
 
-	public void test() {
+	public void test() throws CoreException {
 		createHierarchy();
 		final QualifiedName key = new QualifiedName("local", getUniqueString());
 		final String value = getUniqueString();
@@ -58,10 +58,6 @@ public class Bug_029851 extends ResourceTest {
 			resource.setPersistentProperty(key, value);
 			return true;
 		};
-		try {
-			getWorkspace().getRoot().accept(visitor);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		getWorkspace().getRoot().accept(visitor);
 	}
 }
