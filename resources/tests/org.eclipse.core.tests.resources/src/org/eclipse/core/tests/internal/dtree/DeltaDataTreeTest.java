@@ -611,7 +611,7 @@ public class DeltaDataTreeTest {
 
 	/**
 	 * Answer the key of the child with the given index of the
-	 * specified node.<p>
+	 * specified node.
 	 *
 	 * @exception ObjectNotFoundException
 	 * 	parentKey does not exist in the receiver

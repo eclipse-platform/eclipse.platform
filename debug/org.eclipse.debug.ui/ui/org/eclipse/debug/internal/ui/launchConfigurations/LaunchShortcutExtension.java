@@ -101,11 +101,11 @@ public class LaunchShortcutExtension implements ILaunchShortcut2, IPluginContrib
 	private/* <Pair> */List<Pair> fContextLabels;
 
 	/**
-	 * {@return a launch configuration tab extension based
-	 * on the given configuration element}
+	 * Creates a launch configuration tab extension based on the given configuration
+	 * element
 	 *
-	 * @param element the configuration element defining the
-	 *  attributes of this launch configuration tab extension
+	 * @param element the configuration element defining the attributes of this
+	 *                launch configuration tab extension
 	 */
 	public LaunchShortcutExtension(IConfigurationElement element) {
 		setConfigurationElement(element);
