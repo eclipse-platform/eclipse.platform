@@ -13,7 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import org.eclipse.core.resources.*;
+import static org.junit.Assert.assertThrows;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -24,26 +28,12 @@ import org.eclipse.core.tests.resources.ResourceTest;
  */
 public class Bug_098740 extends ResourceTest {
 
-	public void testBug() {
+	public void testBug() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Bug98740");
 		ensureExistsInWorkspace(project, true);
-		try {
-			project.close(getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
-		try {
-			project.members();
-			fail("1.0");
-		} catch (CoreException e) {
-			//should fail
-		}
-		try {
-			IResourceVisitor visitor = resource -> true;
-			project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE);
-			fail("2.0");
-		} catch (CoreException e) {
-			//should fail
-		}
+		project.close(getMonitor());
+		assertThrows(CoreException.class, () -> project.members());
+		IResourceVisitor visitor = resource -> true;
+		assertThrows(CoreException.class, () -> project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE));
 	}
 }

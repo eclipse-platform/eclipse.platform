@@ -23,26 +23,17 @@ import org.eclipse.core.tests.resources.ResourceTest;
  * installation of a nature caused an assertion failure.
  */
 public class Bug_029116 extends ResourceTest {
-	public void testBug() {
+	public void testBug() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
-
-		try {
-			// Create and open a project
-			project.create(getMonitor());
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		// Create and open a project
+		project.create(getMonitor());
+		project.open(getMonitor());
 
 		// Create and set a build spec for the project
-		try {
-			IProjectDescription desc = project.getDescription();
-			desc.setNatureIds(new String[] {NATURE_29116});
-			project.setDescription(desc, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		IProjectDescription desc = project.getDescription();
+		desc.setNatureIds(new String[] { NATURE_29116 });
+		project.setDescription(desc, getMonitor());
 	}
 
 }

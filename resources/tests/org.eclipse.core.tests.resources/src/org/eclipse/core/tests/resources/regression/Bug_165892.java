@@ -13,7 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -28,7 +31,7 @@ public class Bug_165892 extends ResourceTest {
 	/**
 	 * Tests copying a file
 	 */
-	public void testCopyFile() {
+	public void testCopyFile() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFolder sourceFolder = source.getFolder("folder");
 		IFile sourceFile = sourceFolder.getFile("source");
@@ -37,99 +40,59 @@ public class Bug_165892 extends ResourceTest {
 
 		final String sourceValue = "SourceValue";
 		QualifiedName name = new QualifiedName("Bug_165892", "Property");
-		try {
-			//add a persistent property to each source resource
-			sourceFile.setPersistentProperty(name, sourceValue);
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		// add a persistent property to each source resource
+		sourceFile.setPersistentProperty(name, sourceValue);
 
 		//copy the file
-		try {
-			sourceFile.copy(destinationFile.getFullPath(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		sourceFile.copy(destinationFile.getFullPath(), IResource.NONE, getMonitor());
 
 		//make sure the persistent properties were copied
-		try {
-			assertEquals("2.0", sourceValue, sourceFile.getPersistentProperty(name));
-			assertEquals("2.1", sourceValue, destinationFile.getPersistentProperty(name));
-		} catch (CoreException e) {
-			fail("2.98", e);
-		}
+		assertEquals("2.0", sourceValue, sourceFile.getPersistentProperty(name));
+		assertEquals("2.1", sourceValue, destinationFile.getPersistentProperty(name));
 
 		//change the values of the persistent property on the copied resource
 		final String destinationValue = "DestinationValue";
-		try {
-			destinationFile.setPersistentProperty(name, destinationValue);
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		destinationFile.setPersistentProperty(name, destinationValue);
 
 		//make sure the persistent property values are correct
-		try {
-			assertEquals("3.0", sourceValue, sourceFile.getPersistentProperty(name));
-			assertEquals("3.1", destinationValue, destinationFile.getPersistentProperty(name));
-		} catch (CoreException e) {
-			fail("3.99", e);
-		}
+		assertEquals("3.0", sourceValue, sourceFile.getPersistentProperty(name));
+		assertEquals("3.1", destinationValue, destinationFile.getPersistentProperty(name));
 	}
 
 	/**
 	 * Tests that history of source file isn't affected by a copy
 	 */
-	public void testCopyFileHistory() {
+	public void testCopyFileHistory() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFolder sourceFolder = source.getFolder("folder");
 		IFile sourceFile = sourceFolder.getFile("source");
 		IFile destinationFile = sourceFolder.getFile("destination");
 		ensureExistsInWorkspace(sourceFile, true);
 
-		try {
-			//modify the source file so it has some history
-			sourceFile.setContents(getRandomContents(), IResource.KEEP_HISTORY, getMonitor());
-			//check that the source file has the expected history
-			assertEquals("1.0", 1, sourceFile.getHistory(getMonitor()).length);
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		// modify the source file so it has some history
+		sourceFile.setContents(getRandomContents(), IResource.KEEP_HISTORY, getMonitor());
+		// check that the source file has the expected history
+		assertEquals("1.0", 1, sourceFile.getHistory(getMonitor()).length);
 
 		//copy the file
-		try {
-			sourceFile.copy(destinationFile.getFullPath(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		sourceFile.copy(destinationFile.getFullPath(), IResource.NONE, getMonitor());
 
 		//make sure the history was copied
-		try {
-			assertEquals("2.0", 1, sourceFile.getHistory(getMonitor()).length);
-			assertEquals("2.1", 1, destinationFile.getHistory(getMonitor()).length);
-		} catch (CoreException e) {
-			fail("2.98", e);
-		}
+		assertEquals("2.0", 1, sourceFile.getHistory(getMonitor()).length);
+		assertEquals("2.1", 1, destinationFile.getHistory(getMonitor()).length);
 
 		//modify the destination to change its history
-		try {
-			destinationFile.setContents(getRandomContents(), IResource.KEEP_HISTORY, getMonitor());
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		destinationFile.setContents(getRandomContents(), IResource.KEEP_HISTORY, getMonitor());
 
 		//make sure the history is correct
-		try {
-			assertEquals("2.0", 1, sourceFile.getHistory(getMonitor()).length);
-			assertEquals("2.1", 2, destinationFile.getHistory(getMonitor()).length);
-		} catch (CoreException e) {
-			fail("3.99", e);
-		}
+		assertEquals("2.0", 1, sourceFile.getHistory(getMonitor()).length);
+		assertEquals("2.1", 2, destinationFile.getHistory(getMonitor()).length);
 	}
 
 	/**
 	 * Tests copying a folder
 	 */
-	public void testCopyFolder() {
+	public void testCopyFolder() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFolder sourceFolder = source.getFolder("source");
 		IFile sourceFile = sourceFolder.getFile("Important.txt");
@@ -140,58 +103,37 @@ public class Bug_165892 extends ResourceTest {
 		//add a persistent property to each source resource
 		final String sourceValue = "SourceValue";
 		QualifiedName name = new QualifiedName("Bug_165892", "Property");
-		try {
-			source.setPersistentProperty(name, sourceValue);
-			sourceFolder.setPersistentProperty(name, sourceValue);
-			sourceFile.setPersistentProperty(name, sourceValue);
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		source.setPersistentProperty(name, sourceValue);
+		sourceFolder.setPersistentProperty(name, sourceValue);
+		sourceFile.setPersistentProperty(name, sourceValue);
 
 		//copy the folder
-		try {
-			sourceFolder.copy(destinationFolder.getFullPath(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		sourceFolder.copy(destinationFolder.getFullPath(), IResource.NONE, getMonitor());
 
 		//make sure the persistent properties were copied
-		try {
-			assertEquals("2.0", sourceValue, source.getPersistentProperty(name));
-			assertEquals("2.1", sourceValue, sourceFolder.getPersistentProperty(name));
-			assertEquals("2.2", sourceValue, sourceFile.getPersistentProperty(name));
-			assertEquals("2.3", sourceValue, destinationFolder.getPersistentProperty(name));
-			assertEquals("2.4", sourceValue, destinationFile.getPersistentProperty(name));
-		} catch (CoreException e) {
-			fail("2.98", e);
-		}
+		assertEquals("2.0", sourceValue, source.getPersistentProperty(name));
+		assertEquals("2.1", sourceValue, sourceFolder.getPersistentProperty(name));
+		assertEquals("2.2", sourceValue, sourceFile.getPersistentProperty(name));
+		assertEquals("2.3", sourceValue, destinationFolder.getPersistentProperty(name));
+		assertEquals("2.4", sourceValue, destinationFile.getPersistentProperty(name));
 
 		//change the values of the persistent property on the copied resource
 		final String destinationValue = "DestinationValue";
-		try {
-			destinationFolder.setPersistentProperty(name, destinationValue);
-			destinationFile.setPersistentProperty(name, destinationValue);
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		destinationFolder.setPersistentProperty(name, destinationValue);
+		destinationFile.setPersistentProperty(name, destinationValue);
 
 		//make sure the persistent property values are correct
-		try {
-			assertEquals("3.0", sourceValue, source.getPersistentProperty(name));
-			assertEquals("3.1", sourceValue, sourceFolder.getPersistentProperty(name));
-			assertEquals("3.2", sourceValue, sourceFile.getPersistentProperty(name));
-			assertEquals("3.3", destinationValue, destinationFolder.getPersistentProperty(name));
-			assertEquals("3.4", destinationValue, destinationFile.getPersistentProperty(name));
-		} catch (CoreException e) {
-			fail("3.99", e);
-		}
-
+		assertEquals("3.0", sourceValue, source.getPersistentProperty(name));
+		assertEquals("3.1", sourceValue, sourceFolder.getPersistentProperty(name));
+		assertEquals("3.2", sourceValue, sourceFile.getPersistentProperty(name));
+		assertEquals("3.3", destinationValue, destinationFolder.getPersistentProperty(name));
+		assertEquals("3.4", destinationValue, destinationFile.getPersistentProperty(name));
 	}
 
 	/**
 	 * Tests copying a project
 	 */
-	public void testCopyProject() {
+	public void testCopyProject() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("source");
 		IFolder sourceFolder = source.getFolder("folder");
 		IFile sourceFile = sourceFolder.getFile("Important.txt");
@@ -203,53 +145,33 @@ public class Bug_165892 extends ResourceTest {
 		//add a persistent property to each source resource
 		final String sourceValue = "SourceValue";
 		QualifiedName name = new QualifiedName("Bug_165892", "Property");
-		try {
-			source.setPersistentProperty(name, sourceValue);
-			sourceFolder.setPersistentProperty(name, sourceValue);
-			sourceFile.setPersistentProperty(name, sourceValue);
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		source.setPersistentProperty(name, sourceValue);
+		sourceFolder.setPersistentProperty(name, sourceValue);
+		sourceFile.setPersistentProperty(name, sourceValue);
 
 		//copy the project
-		try {
-			source.copy(destination.getFullPath(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		source.copy(destination.getFullPath(), IResource.NONE, getMonitor());
 
 		//make sure the persistent properties were copied
-		try {
-			assertEquals("2.0", sourceValue, source.getPersistentProperty(name));
-			assertEquals("2.1", sourceValue, sourceFolder.getPersistentProperty(name));
-			assertEquals("2.2", sourceValue, sourceFile.getPersistentProperty(name));
-			assertEquals("2.3", sourceValue, destination.getPersistentProperty(name));
-			assertEquals("2.4", sourceValue, destinationFolder.getPersistentProperty(name));
-			assertEquals("2.5", sourceValue, destinationFile.getPersistentProperty(name));
-		} catch (CoreException e) {
-			fail("2.98", e);
-		}
+		assertEquals("2.0", sourceValue, source.getPersistentProperty(name));
+		assertEquals("2.1", sourceValue, sourceFolder.getPersistentProperty(name));
+		assertEquals("2.2", sourceValue, sourceFile.getPersistentProperty(name));
+		assertEquals("2.3", sourceValue, destination.getPersistentProperty(name));
+		assertEquals("2.4", sourceValue, destinationFolder.getPersistentProperty(name));
+		assertEquals("2.5", sourceValue, destinationFile.getPersistentProperty(name));
 
 		//change the values of the persistent property on the copied resource
 		final String destinationValue = "DestinationValue";
-		try {
-			destination.setPersistentProperty(name, destinationValue);
-			destinationFolder.setPersistentProperty(name, destinationValue);
-			destinationFile.setPersistentProperty(name, destinationValue);
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		destination.setPersistentProperty(name, destinationValue);
+		destinationFolder.setPersistentProperty(name, destinationValue);
+		destinationFile.setPersistentProperty(name, destinationValue);
 
 		//make sure the persistent property values are correct
-		try {
-			assertEquals("3.0", sourceValue, source.getPersistentProperty(name));
-			assertEquals("3.1", sourceValue, sourceFolder.getPersistentProperty(name));
-			assertEquals("3.2", sourceValue, sourceFile.getPersistentProperty(name));
-			assertEquals("3.3", destinationValue, destination.getPersistentProperty(name));
-			assertEquals("3.4", destinationValue, destinationFolder.getPersistentProperty(name));
-			assertEquals("3.5", destinationValue, destinationFile.getPersistentProperty(name));
-		} catch (CoreException e) {
-			fail("3.99", e);
-		}
+		assertEquals("3.0", sourceValue, source.getPersistentProperty(name));
+		assertEquals("3.1", sourceValue, sourceFolder.getPersistentProperty(name));
+		assertEquals("3.2", sourceValue, sourceFile.getPersistentProperty(name));
+		assertEquals("3.3", destinationValue, destination.getPersistentProperty(name));
+		assertEquals("3.4", destinationValue, destinationFolder.getPersistentProperty(name));
+		assertEquals("3.5", destinationValue, destinationFile.getPersistentProperty(name));
 	}
 }

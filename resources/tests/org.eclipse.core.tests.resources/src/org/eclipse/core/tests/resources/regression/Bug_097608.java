@@ -14,7 +14,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import java.util.*;
+import static org.junit.Assert.assertThrows;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -28,45 +32,26 @@ public class Bug_097608 extends ResourceTest {
 	/**
 	 * Tests that creating a marker with very long value causes failure.
 	 */
-	public void testBug() {
+	public void testBug() throws CoreException {
 		char[] chars = new char[40000];
 		Arrays.fill(chars, 'a');
-		String value = new String(chars);
-		IMarker marker = null;
-		try {
-			marker = ResourcesPlugin.getWorkspace().getRoot().createMarker(IMarker.PROBLEM);
-			//first try a long value under the limit
-			marker.setAttribute(IMarker.MESSAGE, value);
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		String originalValue = new String(chars);
+		IMarker marker = ResourcesPlugin.getWorkspace().getRoot().createMarker(IMarker.PROBLEM);
+		// first try a long value under the limit
+		marker.setAttribute(IMarker.MESSAGE, originalValue);
 		//now create a marker with illegal length attribute
-		value = value + value;
-		try {
-			marker.setAttribute(IMarker.MESSAGE, value);
-			fail("1.0");
-		} catch (RuntimeException e) {
-			//expected
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		String firstChangedValue = originalValue + originalValue;
+		assertThrows(RuntimeException.class, () -> marker.setAttribute(IMarker.MESSAGE, firstChangedValue));
 		//try a string with less than 65536 characters whose UTF encoding exceeds the limit
 		Arrays.fill(chars, (char) 0x0800);
-		value = new String(chars);
-		try {
-			marker.setAttribute(IMarker.MESSAGE, value);
-			fail("2.0");
-		} catch (RuntimeException e) {
-			//expected
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		String secondChangedValue = new String(chars);
+		assertThrows(RuntimeException.class, () -> marker.setAttribute(IMarker.MESSAGE, secondChangedValue));
 	}
 
 	/**
 	 * Tests that creating a marker with very long value causes failure.
 	 */
-	public void testBug2() {
+	public void testBug2() throws CoreException {
 		char[] chars = new char[40000];
 		Arrays.fill(chars, 'a');
 		String value = new String(chars);
@@ -74,36 +59,17 @@ public class Bug_097608 extends ResourceTest {
 		Map<String, String> markerAttributes = new HashMap<>();
 		markerAttributes.put(IMarker.MESSAGE, value);
 
-		IMarker marker = null;
-		try {
-			marker = ResourcesPlugin.getWorkspace().getRoot().createMarker(IMarker.PROBLEM);
-			//first try a long value under the limit
-			marker.setAttributes(markerAttributes);
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		IMarker marker = ResourcesPlugin.getWorkspace().getRoot().createMarker(IMarker.PROBLEM);
+		// first try a long value under the limit
+		marker.setAttributes(markerAttributes);
 		//now create a marker with illegal length attribute
 		value = value + value;
 		markerAttributes.put(IMarker.MESSAGE, value);
-		try {
-			marker.setAttributes(markerAttributes);
-			fail("1.0");
-		} catch (RuntimeException e) {
-			//expected
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		assertThrows(RuntimeException.class, () -> marker.setAttributes(markerAttributes));
 		//try a string with less than 65536 characters whose UTF encoding exceeds the limit
 		Arrays.fill(chars, (char) 0x0800);
 		value = new String(chars);
 		markerAttributes.put(IMarker.MESSAGE, value);
-		try {
-			marker.setAttributes(markerAttributes);
-			fail("2.0");
-		} catch (RuntimeException e) {
-			//expected
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		assertThrows(RuntimeException.class, () -> marker.setAttributes(markerAttributes));
 	}
 }

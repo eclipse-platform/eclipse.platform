@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -22,19 +24,14 @@ import org.eclipse.core.tests.resources.ResourceTest;
  * Tests that obtaining file info works on the root directory on windows.
  */
 public class Bug_092108 extends ResourceTest {
-	public void testBug() {
+	public void testBug() throws CoreException {
 		if (!OS.isWindows()) {
 			return;
 		}
-		IFileStore root;
-		try {
-			root = EFS.getStore(new java.io.File("c:\\").toURI());
-			IFileInfo info = root.fetchInfo();
-			assertTrue("1.0", info.exists());
-			assertTrue("1.1", info.isDirectory());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		IFileStore root = EFS.getStore(new java.io.File("c:\\").toURI());
+		IFileInfo info = root.fetchInfo();
+		assertTrue("1.0", info.exists());
+		assertTrue("1.1", info.isDirectory());
 	}
 
 }

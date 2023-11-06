@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.junit.Assert.assertThrows;
+
 import java.io.File;
 import java.io.InputStream;
 import org.eclipse.core.resources.IFile;
@@ -71,13 +73,9 @@ public class Bug_303517 extends ResourceTest {
 		f.getLocation().toFile().delete();
 		// Core.resources still thinks the file exists
 		assertTrue("1.2", f.exists());
-		try {
-			InputStream in = f.getContents();
-			in.close();
-			assertTrue("1.3", false);
-		} catch (CoreException e) {
-			// File doesn't exist - expected
-		}
+		assertThrows(CoreException.class, () -> {
+			try(InputStream in = f.getContents()) {}
+		});
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
@@ -98,26 +96,19 @@ public class Bug_303517 extends ResourceTest {
 
 		// Touch on file-system
 		touchInFilesystem(f);
-		try {
-			InputStream in = f.getContents(false);
-			in.close();
-			assertTrue("2.0", false);
-		} catch (CoreException e) {
-			// File is out-of-sync, so this is good.
-			assertEquals("2.1", IResourceStatus.OUT_OF_SYNC_LOCAL, e.getStatus().getCode());
-		}
+		CoreException exception = assertThrows(CoreException.class, () -> {
+			try (InputStream in = f.getContents(false)) {
+			}
+		});
+		// File is out-of-sync, so this is good.
+		assertEquals("2.1", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
 
 		// File is now in sync.
-		try {
-			InputStream in = f.getContents(false);
-			in.close();
-		} catch (CoreException e) {
-			// Bad, file shouldn't be out-of-sync
-			fail("3.0", e);
+		try (InputStream in = f.getContents(false)) {
 		}
 	}
 
@@ -133,9 +124,6 @@ public class Bug_303517 extends ResourceTest {
 		// Touch on file-system
 		touchInFilesystem(f);
 		try (InputStream in = f.getContents(true)) {
-		} catch (CoreException e) {
-			// Bad, getContents(true) should succeed.
-			fail("1.2", e);
 		}
 
 		// Wait for auto-refresh to happen
@@ -144,20 +132,16 @@ public class Bug_303517 extends ResourceTest {
 
 		// File is now in sync.
 		try (InputStream in = f.getContents()) {
-		} catch (CoreException e) {
-			// Bad, file shouldn't be out-of-sync.
-			fail("1.3", e);
 		}
 
 		// Test that getContent(true) on an out-if-sync deleted file throws a CoreException
 		// with IResourceStatus.RESOURCE_NOT_FOUND error code.
 		f.getLocation().toFile().delete();
-		try (InputStream in = f.getContents(true)) {
-			fail("2.0");
-		} catch (CoreException e) {
-			// Expected.
-			assertEquals("2.1", IResourceStatus.RESOURCE_NOT_FOUND, e.getStatus().getCode());
-		}
+		CoreException exception = assertThrows(CoreException.class, () -> {
+			try (InputStream in = f.getContents(true)) {
+			}
+		});
+		assertEquals("2.1", IResourceStatus.RESOURCE_NOT_FOUND, exception.getStatus().getCode());
 	}
 
 	/**

@@ -13,8 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import org.eclipse.core.filesystem.*;
-import org.eclipse.core.resources.*;
+import static org.junit.Assert.assertThrows;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -27,7 +34,7 @@ public class Bug_160251 extends ResourceTest {
 	/**
 	 * The destination directory does not exist.
 	 */
-	public void testNonExistentDestination() {
+	public void testNonExistentDestination() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("Important.txt");
 		IFileStore destination = getTempStore();
@@ -36,13 +43,10 @@ public class Bug_160251 extends ResourceTest {
 		ensureExistsInWorkspace(sourceFile, true);
 
 		//move the project (should succeed)
-		try {
-			IProjectDescription description = source.getDescription();
-			description.setLocationURI(destination.toURI());
-			source.move(description, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		IProjectDescription description = source.getDescription();
+		description.setLocationURI(destination.toURI());
+		source.move(description, IResource.NONE, getMonitor());
+
 		//ensure project still exists
 		assertTrue("2.0", source.exists());
 		assertTrue("2.1", sourceFile.exists());
@@ -54,27 +58,20 @@ public class Bug_160251 extends ResourceTest {
 	/**
 	 * The destination directory exists, but is empty
 	 */
-	public void testEmptyDestination() {
+	public void testEmptyDestination() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("Important.txt");
 		IFileStore destination = getTempStore();
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
 		ensureExistsInWorkspace(source, true);
 		ensureExistsInWorkspace(sourceFile, true);
-		try {
-			destination.mkdir(EFS.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		destination.mkdir(EFS.NONE, getMonitor());
 
 		//move the project (should succeed)
-		try {
-			IProjectDescription description = source.getDescription();
-			description.setLocationURI(destination.toURI());
-			source.move(description, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		IProjectDescription description = source.getDescription();
+		description.setLocationURI(destination.toURI());
+		source.move(description, IResource.NONE, getMonitor());
+
 		//ensure project still exists
 		assertTrue("2.0", source.exists());
 		assertTrue("2.1", sourceFile.exists());
@@ -86,29 +83,21 @@ public class Bug_160251 extends ResourceTest {
 	/**
 	 * The destination directory exists, and contains an overlapping file. This should fail.
 	 */
-	public void testOccupiedDestination() {
+	public void testOccupiedDestination() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("Important.txt");
 		IFileStore destination = getTempStore();
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
 		ensureExistsInWorkspace(source, true);
 		ensureExistsInWorkspace(sourceFile, true);
-		try {
-			destination.mkdir(EFS.NONE, getMonitor());
-			createFileInFileSystem(destinationFile, getRandomContents());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		destination.mkdir(EFS.NONE, getMonitor());
+		createFileInFileSystem(destinationFile, getRandomContents());
 
 		//move the project (should fail)
-		try {
-			IProjectDescription description = source.getDescription();
-			description.setLocationURI(destination.toURI());
-			source.move(description, IResource.NONE, getMonitor());
-			fail("1.0");
-		} catch (CoreException e) {
-			//should fail
-		}
+		IProjectDescription description = source.getDescription();
+		description.setLocationURI(destination.toURI());
+		assertThrows(CoreException.class, () -> source.move(description, IResource.NONE, getMonitor()));
+
 		//ensure project still exists in old location
 		assertTrue("2.0", source.exists());
 		assertTrue("2.1", sourceFile.exists());
