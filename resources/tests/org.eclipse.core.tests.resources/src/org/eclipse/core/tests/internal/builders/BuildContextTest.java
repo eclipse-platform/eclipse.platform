@@ -15,7 +15,14 @@ package org.eclipse.core.tests.internal.builders;
 
 import org.eclipse.core.internal.events.BuildContext;
 import org.eclipse.core.internal.resources.BuildConfiguration;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.IBuildContext;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -48,16 +55,6 @@ public class BuildContextTest extends AbstractBuilderTest {
 		setupProject(project0);
 		setupProject(project1);
 		setupProject(project2);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-
-		// Cleanup
-		project0.delete(true, null);
-		project1.delete(true, null);
-		project2.delete(true, null);
 	}
 
 	/**

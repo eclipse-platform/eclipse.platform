@@ -22,7 +22,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ org.eclipse.core.tests.filesystem.AllFileSystemTests.class,
-		org.eclipse.core.tests.internal.alias.AllAliasTests.class, org.eclipse.core.tests.internal.builders.AllBuildderTests.class,
+		org.eclipse.core.tests.internal.alias.AllAliasTests.class, org.eclipse.core.tests.internal.builders.AllBuilderTests.class,
 		org.eclipse.core.tests.internal.dtree.AllDtreeTests.class,
 		org.eclipse.core.tests.internal.localstore.AllLocalStoreTests.class,
 		org.eclipse.core.tests.internal.mapping.AllMappingTests.class,

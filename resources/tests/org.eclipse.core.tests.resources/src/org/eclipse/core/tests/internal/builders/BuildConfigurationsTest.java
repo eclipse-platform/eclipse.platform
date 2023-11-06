@@ -15,7 +15,15 @@
 package org.eclipse.core.tests.internal.builders;
 
 import java.util.Map;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
@@ -125,50 +133,47 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		ensureExistsInWorkspace(resources, true);
 		setupProject(tempProject);
 
-		try {
-			ConfigurationBuilder.clearStats();
+		ConfigurationBuilder.clearStats();
 
-			tempFile0.setContents(getRandomContents(), true, true, getMonitor());
-			tempFile1.setContents(getRandomContents(), true, true, getMonitor());
-			incrementalBuild(1, tempProject, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
-			incrementalBuild(2, tempProject, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
-			incrementalBuild(3, tempProject, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
+		tempFile0.setContents(getRandomContents(), true, true, getMonitor());
+		tempFile1.setContents(getRandomContents(), true, true, getMonitor());
+		incrementalBuild(1, tempProject, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
+		incrementalBuild(2, tempProject, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
+		incrementalBuild(3, tempProject, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 
-			tempFile0.setContents(getRandomContents(), true, true, getMonitor());
-			incrementalBuild(4, tempProject, variant1, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		tempFile0.setContents(getRandomContents(), true, true, getMonitor());
+		incrementalBuild(4, tempProject, variant1, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 
-			tempFile1.setContents(getRandomContents(), true, true, getMonitor());
-			incrementalBuild(5, tempProject, variant2, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		tempFile1.setContents(getRandomContents(), true, true, getMonitor());
+		incrementalBuild(5, tempProject, variant2, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 
-			tempProject.close(getMonitor());
-			ConfigurationBuilder.clearStats();
-			tempProject.open(getMonitor());
+		tempProject.close(getMonitor());
+		ConfigurationBuilder.clearStats();
+		tempProject.open(getMonitor());
 
-			// verify variant0 - both File0 and File1 are expected to have changed since it was last built
-			incrementalBuild(6, tempProject, variant0, true, 1, IncrementalProjectBuilder.INCREMENTAL_BUILD);
-			ConfigurationBuilder builder0 = ConfigurationBuilder.getBuilder(tempProject.getBuildConfig(variant0));
-			assertNotNull("6.10", builder0);
-			ResourceDeltaVerifier verifier0 = new ResourceDeltaVerifier();
-			verifier0.addExpectedChange(tempFile0, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			verifier0.addExpectedChange(tempFile1, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			verifier0.verifyDelta(builder0.deltaForLastBuild);
-			assertTrue("6.11: " + verifier0.getMessage(), verifier0.isDeltaValid());
+		// verify variant0 - both File0 and File1 are expected to have changed since it
+		// was last built
+		incrementalBuild(6, tempProject, variant0, true, 1, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		ConfigurationBuilder builder0 = ConfigurationBuilder.getBuilder(tempProject.getBuildConfig(variant0));
+		assertNotNull("6.10", builder0);
+		ResourceDeltaVerifier verifier0 = new ResourceDeltaVerifier();
+		verifier0.addExpectedChange(tempFile0, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
+		verifier0.addExpectedChange(tempFile1, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
+		verifier0.verifyDelta(builder0.deltaForLastBuild);
+		assertTrue("6.11: " + verifier0.getMessage(), verifier0.isDeltaValid());
 
-			// verify variant1 - only File1 is expected to have changed since it was last built
-			incrementalBuild(7, tempProject, variant1, true, 1, IncrementalProjectBuilder.INCREMENTAL_BUILD);
-			ConfigurationBuilder builder1 = ConfigurationBuilder.getBuilder(tempProject.getBuildConfig(variant1));
-			assertNotNull("7.10", builder1);
-			ResourceDeltaVerifier verifier1 = new ResourceDeltaVerifier();
-			verifier1.addExpectedChange(tempFile1, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			verifier1.verifyDelta(builder1.deltaForLastBuild);
-			assertTrue("7.11: " + verifier1.getMessage(), verifier1.isDeltaValid());
+		// verify variant1 - only File1 is expected to have changed since it was last
+		// built
+		incrementalBuild(7, tempProject, variant1, true, 1, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		ConfigurationBuilder builder1 = ConfigurationBuilder.getBuilder(tempProject.getBuildConfig(variant1));
+		assertNotNull("7.10", builder1);
+		ResourceDeltaVerifier verifier1 = new ResourceDeltaVerifier();
+		verifier1.addExpectedChange(tempFile1, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
+		verifier1.verifyDelta(builder1.deltaForLastBuild);
+		assertTrue("7.11: " + verifier1.getMessage(), verifier1.isDeltaValid());
 
-			// verify variant2 - no changes are expected since it was last built
-			incrementalBuild(8, tempProject, variant2, false, 0, 0);
-
-		} finally {
-			tempProject.delete(true, getMonitor());
-		}
+		// verify variant2 - no changes are expected since it was last built
+		incrementalBuild(8, tempProject, variant2, false, 0, 0);
 	}
 
 	/**
@@ -312,11 +317,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 * Check the behaviour of a build
 	 */
 	private void checkBuild(int testId, IProject project, String variant, boolean shouldBuild, int expectedCount, int expectedTrigger) throws CoreException {
-		try {
-			project.getBuildConfig(variant);
-		} catch (CoreException e) {
-			fail(testId + ".0");
-		}
+		project.getBuildConfig(variant);
 		ConfigurationBuilder builder = ConfigurationBuilder.getBuilder(project.getBuildConfig(variant));
 		if (builder == null) {
 			assertFalse(testId + ".1", shouldBuild);
