@@ -13,7 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import org.eclipse.core.resources.*;
+import static org.junit.Assert.assertThrows;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -53,13 +60,10 @@ public class IFileTest extends ResourceTest {
 
 		try {
 			folder.setReadOnly(true);
-			assertTrue("0.0", folder.isReadOnly());
-			try {
-				file.create(getRandomContents(), true, getMonitor());
-				fail("0.1");
-			} catch (CoreException e) {
-				assertEquals("0.2", IResourceStatus.FAILED_WRITE_LOCAL, e.getStatus().getCode());
-			}
+			assertTrue(folder.isReadOnly());
+			CoreException exception = assertThrows(CoreException.class,
+					() -> file.create(getRandomContents(), true, getMonitor()));
+			assertEquals(IResourceStatus.FAILED_WRITE_LOCAL, exception.getStatus().getCode());
 		} finally {
 			folder.setReadOnly(false);
 		}
@@ -88,13 +92,10 @@ public class IFileTest extends ResourceTest {
 
 		try {
 			folder.setReadOnly(true);
-			assertTrue("0.0", folder.isReadOnly());
-			try {
-				file.create(getRandomContents(), true, getMonitor());
-				fail("0.1");
-			} catch (CoreException e) {
-				assertEquals("0.2", IResourceStatus.PARENT_READ_ONLY, e.getStatus().getCode());
-			}
+			assertTrue(folder.isReadOnly());
+			CoreException exception = assertThrows(CoreException.class,
+					() -> file.create(getRandomContents(), true, getMonitor()));
+			assertEquals(IResourceStatus.PARENT_READ_ONLY, exception.getStatus().getCode());
 		} finally {
 			folder.setReadOnly(false);
 		}
@@ -104,33 +105,21 @@ public class IFileTest extends ResourceTest {
 	 * Tests setting local timestamp of project description file
 	 */
 	@Test
-	public void testBug43936() {
+	public void testBug43936() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		ensureExistsInWorkspace(project, true);
 		assertTrue("1.0", descFile.exists());
 
-		IProjectDescription desc = null;
-		try {
-			desc = project.getDescription();
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		IProjectDescription desc = project.getDescription();
+
 		//change the local file timestamp
 		long newTime = System.currentTimeMillis() + 10000;
-		try {
-			descFile.setLocalTimeStamp(newTime);
-		} catch (CoreException e1) {
-			fail("2.99", e1);
-		}
+		descFile.setLocalTimeStamp(newTime);
 
 		assertTrue("2.0", descFile.isSynchronized(IResource.DEPTH_ZERO));
 
-		try {
-			//try setting the description -- shouldn't fail
-			project.setDescription(desc, getMonitor());
-		} catch (CoreException e2) {
-			fail("3.99", e2);
-		}
+		// try setting the description -- shouldn't fail
+		project.setDescription(desc, getMonitor());
 	}
 }
