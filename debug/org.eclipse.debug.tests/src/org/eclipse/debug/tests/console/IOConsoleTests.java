@@ -164,7 +164,7 @@ public class IOConsoleTests extends AbstractDebugTest {
 	 * </p>
 	 *
 	 * @param c the test util containing the console to close
-	 * @param expected content this {@link IOConsole} input stream has received
+	 * @param expectedInputLines content this {@link IOConsole} input stream has received
 	 */
 	protected void closeConsole(IOConsoleTestUtil c, String... expectedInputLines) throws IOException {
 		if (consoleFinished.get()) {

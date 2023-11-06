@@ -116,7 +116,7 @@ public class DeltaVerifierBuilder extends TestBuilder {
 	 *                  or null
 	 * @param movedToPath
 	 *                  or null
-	 * @see IResourceConstants
+	 * @see IResourceDelta
 	 */
 	public void addExpectedChange(IResource resource, IResource topLevelParent, int status, int changeFlags, IPath movedFromPath, IPath movedToPath) {
 		verifier.addExpectedChange(resource, topLevelParent, status, changeFlags, movedFromPath, movedToPath);
