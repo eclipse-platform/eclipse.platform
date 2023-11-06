@@ -26,7 +26,7 @@ import org.eclipse.help.internal.webapp.parser.IndexFragmentParser;
 import org.eclipse.help.internal.webapp.servlet.IndexFragmentServlet;
 import org.eclipse.help.internal.webapp.utils.Utils;
 
-/**
+/*
  * Returns <code>xml</code> or <code>json</code> representing selected parts
  * of the index.
  *
@@ -58,9 +58,6 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  *
  * @return		Selected parts of the index, either as <code>xml</code>
  * 				(default) or <code>json</code>
- *
- * @version	$Version$
- *
  **/
 public class IndexFragmentService extends IndexFragmentServlet {
 

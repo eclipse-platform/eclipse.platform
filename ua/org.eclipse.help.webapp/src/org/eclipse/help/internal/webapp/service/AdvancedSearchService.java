@@ -32,7 +32,7 @@ import org.eclipse.help.internal.webapp.parser.SearchParser;
 import org.eclipse.help.internal.webapp.utils.SearchXMLGenerator;
 import org.eclipse.help.internal.webapp.utils.Utils;
 
-/**
+/*
  * Returns the search hits in <code>xml</code> or <code>json</code>
  * form for the query provided in the <code>searchWord</code> parameter.
  *
@@ -60,9 +60,6 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  *
  * @return		The search hits, either as <code>xml</code> (default) or
  * 				<code>json</code>
- *
- * @version	$Version$
- *
  **/
 public class AdvancedSearchService extends HttpServlet {
 

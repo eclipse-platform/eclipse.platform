@@ -26,7 +26,7 @@ import org.eclipse.help.internal.webapp.parser.IndexParser;
 import org.eclipse.help.internal.webapp.servlet.IndexServlet;
 import org.eclipse.help.internal.webapp.utils.Utils;
 
-/**
+/*
  * Returns all available keyword index data in <code>xml</code>
  * or <code>json</code> form. The data is sent as one large index
  * contribution that includes all merged contributions from the system.
@@ -45,9 +45,6 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  *
  * @return		All available keyword index data, either as <code>xml</code>
  * 				(default) or <code>json</code>
- *
- * @version	$Version$
- *
  **/
 public class IndexService extends IndexServlet {
 

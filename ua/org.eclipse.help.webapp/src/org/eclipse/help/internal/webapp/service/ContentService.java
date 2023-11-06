@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.help.internal.base.util.ProxyUtil;
 import org.eclipse.help.internal.webapp.utils.Utils;
 
-/**
+/*
  * Returns an HTML page for the selected topic passed as request path info.
  *
  * <p>Passes the request to {@link org.eclipse.help.internal.webapp.servlet.ContentServlet}
@@ -40,9 +40,6 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  * @param lang	- (optional) specifies the locale
  *
  * @return		An html page for the selected topic
- *
- * @version	$Version$
- *
  **/
 public class ContentService extends HttpServlet {
 
