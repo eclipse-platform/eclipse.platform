@@ -220,7 +220,7 @@ public class ProjectDynamicReferencesTest extends ResourceTest {
 		assertFalse("No cycles", projectOrder.hasCycles);
 	}
 
-	public void testBug543776() throws CoreException {
+	public void testBug543776() throws Exception {
 		IFile projectFile = project0.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		String projectDescription = readStringInFileSystem(projectFile);
 		projectDescription = projectDescription.replace(PROJECT_0_NAME, "anotherName");

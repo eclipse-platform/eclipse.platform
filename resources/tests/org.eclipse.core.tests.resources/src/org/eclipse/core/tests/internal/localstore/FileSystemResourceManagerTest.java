@@ -320,7 +320,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 	}
 
 	@Test
-	public void testWriteFileNotInWorkspace() {
+	public void testWriteFileNotInWorkspace() throws CoreException {
 		// Bug 571133
 		IProject project = projects[0];
 		IFile file = project.getFile("testWriteFile2");

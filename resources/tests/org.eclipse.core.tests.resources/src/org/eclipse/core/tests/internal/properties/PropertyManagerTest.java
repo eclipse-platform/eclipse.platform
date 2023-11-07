@@ -160,7 +160,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 	 * Tests concurrent access to the property store while the project is being
 	 * deleted.
 	 */
-	public void testConcurrentDelete() {
+	public void testConcurrentDelete() throws CoreException {
 		Thread[] threads;
 		final IFile target = projects[0].getFile("target");
 		final int REPEAT = 8;
@@ -403,7 +403,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 	/**
 	 * See bug 93849.
 	 */
-	public void testFileRename() {
+	public void testFileRename() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("proj");
 		IFolder folder = project.getFolder("folder");
@@ -442,7 +442,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 	/**
 	 * See bug 93849.
 	 */
-	public void testFolderRename() {
+	public void testFolderRename() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("proj");
 		IFolder folder1a = project.getFolder("folder1");
@@ -515,7 +515,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 	/**
 	 * See bug 93849.
 	 */
-	public void testProjectRename() {
+	public void testProjectRename() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project1a = root.getProject("proj1");
 		ensureExistsInWorkspace(project1a, true);

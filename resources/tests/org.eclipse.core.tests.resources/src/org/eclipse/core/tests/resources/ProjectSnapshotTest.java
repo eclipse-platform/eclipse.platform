@@ -59,7 +59,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 		ensureExistsInWorkspace(projects, true);
 	}
 
-	private void populateProject(IProject project) {
+	private void populateProject(IProject project) throws CoreException {
 		// add files and folders to project
 		IFile file = project.getFile("file");
 		ensureExistsInFileSystem(file);

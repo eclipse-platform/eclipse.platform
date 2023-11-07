@@ -57,7 +57,7 @@ public class IFolderTest extends ResourceTest {
 		assertExistsInWorkspace("1.1", afterFile);
 	}
 
-	public void testCopyMissingFolder() {
+	public void testCopyMissingFolder() throws CoreException {
 		//tests copying a folder that is missing from the file system
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder before = project.getFolder("OldFolder");

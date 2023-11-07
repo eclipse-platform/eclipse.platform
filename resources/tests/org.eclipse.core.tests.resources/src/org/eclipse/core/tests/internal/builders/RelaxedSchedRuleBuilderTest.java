@@ -305,13 +305,18 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 
 		final TestBarrier2 tb = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
-		AtomicReference<Throwable> error = new AtomicReference<>();
+		AtomicReference<Throwable> errorInBuildTriggeringJob = new AtomicReference<>();
+		AtomicReference<Throwable> errorInWorkspaceChangingJob = new AtomicReference<>();
 
 		Job workspaceChangingJob = new Job("Workspace Changing Job") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				tb.setStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
-				ensureExistsInWorkspace(foo, new ByteArrayInputStream(new byte[0]));
+				try {
+					ensureExistsInWorkspace(foo, new ByteArrayInputStream(new byte[0]));
+				} catch (CoreException e) {
+					errorInWorkspaceChangingJob.set(e);
+				}
 				return Status.OK_STATUS;
 			}
 		};
@@ -326,9 +331,9 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 					IStatus status = e.getStatus();
 					IStatus[] children = status.getChildren();
 					if (children.length > 0) {
-						error.set(children[0].getException());
+						errorInBuildTriggeringJob.set(children[0].getException());
 					} else {
-						error.set(e);
+						errorInBuildTriggeringJob.set(e);
 					}
 				}
 				return Status.OK_STATUS;
@@ -403,8 +408,11 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 
 		workspaceChangingJob.join(timeout, null);
 		buildTriggeringJob.join(timeout, null);
-		if (error.get() != null) {
-			throw error.get();
+		if (errorInBuildTriggeringJob.get() != null) {
+			throw errorInBuildTriggeringJob.get();
+		}
+		if (errorInWorkspaceChangingJob.get() != null) {
+			throw errorInWorkspaceChangingJob.get();
 		}
 		tb.waitForStatus(TestBarrier2.STATUS_DONE);
 		errorLogging.assertNoErrorsLogged();

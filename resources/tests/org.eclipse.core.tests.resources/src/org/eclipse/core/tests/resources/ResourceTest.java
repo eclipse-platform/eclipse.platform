@@ -131,13 +131,9 @@ public abstract class ResourceTest extends CoreTest {
 		this.storedWorkspaceDescription = getWorkspace().getDescription();
 	}
 
-	private final void restoreWorkspaceDescription() {
+	private final void restoreWorkspaceDescription() throws CoreException {
 		if (storedWorkspaceDescription != null) {
-			try {
-				getWorkspace().setDescription(storedWorkspaceDescription);
-			} catch (CoreException e) {
-				fail("Failed restoring workspace description", e);
-			}
+			getWorkspace().setDescription(storedWorkspaceDescription);
 		}
 		storedWorkspaceDescription = null;
 	}
@@ -154,11 +150,9 @@ public abstract class ResourceTest extends CoreTest {
 	/**
 	 * Convenience method to copy contents from one stream to another.
 	 */
-	public static void transferStreams(InputStream source, OutputStream destination, String path) {
+	public static void transferStreams(InputStream source, OutputStream destination, String path) throws IOException {
 		try {
 			source.transferTo(destination);
-		}  catch (IOException e) {
-			fail("Failed to write during transferStreams", e);
 		}finally {
 			FileUtil.safeClose(source);
 			FileUtil.safeClose(destination);
@@ -523,45 +517,43 @@ public abstract class ResourceTest extends CoreTest {
 	/**
 	 * Create the given file in the local store.
 	 */
-	public void createFileInFileSystem(IFileStore file) {
+	public void createFileInFileSystem(IFileStore file) throws CoreException {
 		createFileInFileSystem(file, getRandomContents());
 	}
 
 	/**
 	 * Create the given file in the local store.
 	 */
-	public void createFileInFileSystem(IFileStore file, InputStream contents) {
-		OutputStream output = null;
-		try {
-			file.getParent().mkdir(EFS.NONE, null);
-			output = file.openOutputStream(EFS.NONE, null);
+	public void createFileInFileSystem(IFileStore file, InputStream contents) throws CoreException {
+		file.getParent().mkdir(EFS.NONE, null);
+		try (OutputStream output = file.openOutputStream(EFS.NONE, null)) {
 			transferData(contents, output);
-		} catch (CoreException e) {
-			fail("ResourceTest#createFileInFileSystem.2", e);
-		} finally {
-			assertClose(output);
+		} catch (IOException e) {
+			throw new CoreException(
+					new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed creating file in file system", e));
 		}
 	}
 
 	/**
 	 * Create the given file in the file system.
 	 */
-	public void createFileInFileSystem(IPath path) {
+	public void createFileInFileSystem(IPath path) throws CoreException {
 		createFileInFileSystem(path, getRandomContents());
 	}
 
 	/**
 	 * Create the given file in the file system.
 	 */
-	public void createFileInFileSystem(IPath path, InputStream contents) {
+	public void createFileInFileSystem(IPath path, InputStream contents) throws CoreException {
 		try {
 			createFileInFileSystem(path.toFile(), contents);
 		} catch (IOException e) {
-			fail("ResourceTest#createFileInFileSystem", e);
+			throw new CoreException(
+					new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed creating file in file system", e));
 		}
 	}
 
-	public IResource[] createHierarchy() {
+	public IResource[] createHierarchy() throws CoreException {
 		IResource[] result = buildResources();
 		ensureExistsInWorkspace(result, true);
 		return result;
@@ -605,13 +597,9 @@ public abstract class ResourceTest extends CoreTest {
 	/**
 	 * Delete the given resource from the workspace resource tree.
 	 */
-	public void ensureDoesNotExistInWorkspace(IResource resource) {
-		try {
-			if (resource.exists()) {
-				resource.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
-			}
-		} catch (CoreException e) {
-			fail("#ensureDoesNotExistInWorkspace(IResource): " + resource.getFullPath(), e);
+	public void ensureDoesNotExistInWorkspace(IResource resource) throws CoreException {
+		if (resource.exists()) {
+			resource.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
 		}
 	}
 
@@ -619,24 +607,20 @@ public abstract class ResourceTest extends CoreTest {
 	 * Delete each element of the resource array from the workspace
 	 * resource info tree.
 	 */
-	public void ensureDoesNotExistInWorkspace(final IResource[] resources) {
+	public void ensureDoesNotExistInWorkspace(final IResource[] resources) throws CoreException {
 		IWorkspaceRunnable body = monitor -> {
 			for (IResource resource : resources) {
 				ensureDoesNotExistInWorkspace(resource);
 			}
 		};
-		try {
-			getWorkspace().run(body, null);
-		} catch (CoreException e) {
-			fail("#ensureDoesNotExistInWorkspace(IResource[])", e);
-		}
+		getWorkspace().run(body, null);
 	}
 
 	/**
 	 * Create the given file in the local store. Use the resource manager
 	 * to ensure that we have a correct Path -&gt; File mapping.
 	 */
-	public void ensureExistsInFileSystem(IFile file) {
+	public void ensureExistsInFileSystem(IFile file) throws CoreException {
 		createFileInFileSystem(((Resource) file).getStore());
 	}
 
@@ -644,22 +628,18 @@ public abstract class ResourceTest extends CoreTest {
 	 * Create the given folder in the local store. Use the resource
 	 * manager to ensure that we have a correct Path -&gt; File mapping.
 	 */
-	public void ensureExistsInFileSystem(IResource resource) {
+	public void ensureExistsInFileSystem(IResource resource) throws CoreException {
 		if (resource instanceof IFile file) {
 			ensureExistsInFileSystem(file);
 		} else {
-			try {
-				((Resource) resource).getStore().mkdir(EFS.NONE, null);
-			} catch (CoreException e) {
-				fail("ensureExistsInFileSystem.1", e);
-			}
+			((Resource) resource).getStore().mkdir(EFS.NONE, null);
 		}
 	}
 
 	/**
 	 * Create the each resource of the array in the local store.
 	 */
-	public void ensureExistsInFileSystem(IResource[] resources) {
+	public void ensureExistsInFileSystem(IResource[] resources) throws CoreException {
 		for (IResource resource : resources) {
 			ensureExistsInFileSystem(resource);
 		}
@@ -668,7 +648,7 @@ public abstract class ResourceTest extends CoreTest {
 	/**
 	 * Create the given file in the workspace resource info tree.
 	 */
-	public void ensureExistsInWorkspace(final IFile resource, final InputStream contents) {
+	public void ensureExistsInWorkspace(final IFile resource, final InputStream contents) throws CoreException {
 		if (resource == null) {
 			return;
 		}
@@ -681,54 +661,42 @@ public abstract class ResourceTest extends CoreTest {
 				resource.create(contents, true, null);
 			};
 		}
-		try {
-			getWorkspace().run(body, null);
-		} catch (CoreException e) {
-			fail("#ensureExistsInWorkspace(IFile, InputStream): " + resource.getFullPath(), e);
-		}
+		getWorkspace().run(body, null);
 	}
 
 	/**
 	 * Create the given file in the workspace resource info tree.
 	 */
-	public void ensureExistsInWorkspace(IFile resource, String contents) {
+	public void ensureExistsInWorkspace(IFile resource, String contents) throws CoreException {
 		ensureExistsInWorkspace(resource, new ByteArrayInputStream(contents.getBytes()));
 	}
 
 	/**
 	 * Create the given resource in the workspace resource info tree.
 	 */
-	public void ensureExistsInWorkspace(final IResource resource, final boolean local) {
+	public void ensureExistsInWorkspace(final IResource resource, final boolean local) throws CoreException {
 		IWorkspaceRunnable body = monitor -> create(resource, local);
-		try {
-			getWorkspace().run(body, null);
-		} catch (CoreException e) {
-			fail("#ensureExistsInWorkspace(IResource): " + resource.getFullPath(), e);
-		}
+		getWorkspace().run(body, null);
 	}
 
 	/**
 	 * Create each element of the resource array in the workspace resource
 	 * info tree.
 	 */
-	public void ensureExistsInWorkspace(final IResource[] resources, final boolean local) {
+	public void ensureExistsInWorkspace(final IResource[] resources, final boolean local) throws CoreException {
 		IWorkspaceRunnable body = monitor -> {
 			for (IResource resource : resources) {
 				create(resource, local);
 			}
 		};
-		try {
-			getWorkspace().run(body, null);
-		} catch (CoreException e) {
-			fail("#ensureExistsInWorkspace(IResource[])", e);
-		}
+		getWorkspace().run(body, null);
 	}
 
 	/**
 	 * Modifies the passed in IFile in the file system so that it is out of sync
 	 * with the workspace.
 	 */
-	public void ensureOutOfSync(final IFile file) {
+	public void ensureOutOfSync(final IFile file) throws CoreException {
 		modifyInFileSystem(file);
 		waitForRefresh();
 		touchInFilesystem(file);
@@ -768,7 +736,7 @@ public abstract class ResourceTest extends CoreTest {
 	 * Touch (but don't modify) the resource in the filesystem so that it's modification stamp is newer than
 	 * the cached value in the Workspace.
 	 */
-	public void touchInFilesystem(IResource resource) {
+	public void touchInFilesystem(IResource resource) throws CoreException {
 		// Ensure the resource exists in the filesystem
 		IPath location = resource.getLocation();
 		if (!location.toFile().exists()) {
@@ -782,7 +750,8 @@ public abstract class ResourceTest extends CoreTest {
 			try {
 				Files.setLastModifiedTime(location.toFile().toPath(), now);
 			} catch (IOException e) {
-				fail("#touchInFilesystem(IResource)", e);
+				throw new CoreException(
+						new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed setting modification time", e));
 			}
 			if (count > 1) {
 				try {
@@ -792,7 +761,8 @@ public abstract class ResourceTest extends CoreTest {
 				}
 			}
 		}
-		assertTrue("File not out of sync: " + location.toOSString(), getLastModifiedTime(location) != resource.getLocalTimeStamp());
+		assertThat("File not out of sync: " + location.toOSString(), resource.getLocalTimeStamp(),
+				not(is(getLastModifiedTime(location))));
 	}
 
 	private boolean isInSync(IResource resource) {
@@ -849,8 +819,8 @@ public abstract class ResourceTest extends CoreTest {
 		checkIfResourceExistsJob.schedule();
 		try {
 			checkIfResourceExistsJob.join(30_000, getMonitor());
-		} catch (Exception e) {
-			fail("Joining job to check whether resource exists in workspace failed with exception", e);
+		} catch (OperationCanceledException | InterruptedException e) {
+			throw new IllegalStateException("failed when joining resource-existence-checking job", e);
 		}
 
 		return checkIfResourceExistsJob.resourceExists();
@@ -972,26 +942,18 @@ public abstract class ResourceTest extends CoreTest {
 		return isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY);
 	}
 
-	protected void setReadOnly(IFileStore target, boolean value) {
-		assertTrue("setReadOnly.1", isReadOnlySupported());
+	protected void setReadOnly(IFileStore target, boolean value) throws CoreException {
+		assertThat("Setting read only is not supported by local file system", isReadOnlySupported());
 		IFileInfo fileInfo = target.fetchInfo();
 		fileInfo.setAttribute(EFS.ATTRIBUTE_READ_ONLY, value);
-		try {
-			target.putInfo(fileInfo, EFS.SET_ATTRIBUTES, null);
-		} catch (CoreException e) {
-			fail("ResourceTest#setReadOnly", e);
-		}
+		target.putInfo(fileInfo, EFS.SET_ATTRIBUTES, null);
 	}
 
-	protected void setReadOnly(IResource target, boolean value) {
+	protected void setReadOnly(IResource target, boolean value) throws CoreException {
 		ResourceAttributes attributes = target.getResourceAttributes();
-		assertNotNull("setReadOnly for null attributes", attributes);
+		assertNotNull("tried to set read only for null attributes", attributes);
 		attributes.setReadOnly(value);
-		try {
-			target.setResourceAttributes(attributes);
-		} catch (CoreException e) {
-			fail("ResourceTest#setReadOnly", e);
-		}
+		target.setResourceAttributes(attributes);
 	}
 
 	/**

@@ -21,7 +21,7 @@ import org.eclipse.core.tests.resources.OldCorePerformanceTest;
 public class BenchCopyFile extends OldCorePerformanceTest {
 	private static final int COUNT = 5000;
 
-	public void testCopyFile() {
+	public void testCopyFile() throws CoreException {
 		IFileStore input = getTempStore();
 		createFileInFileSystem(input, getRandomContents());
 		IFileStore[] output = new IFileStore[COUNT];
