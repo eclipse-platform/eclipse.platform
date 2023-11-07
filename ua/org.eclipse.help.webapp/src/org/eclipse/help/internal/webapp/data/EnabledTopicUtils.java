@@ -34,8 +34,6 @@ public class EnabledTopicUtils {
 
 	/**
 	 * Test whether a topic is enabled
-	 * @param topic
-	 * @return
 	 */
 	public static boolean isEnabled(ITopic topic) {
 		if (!topic.isEnabled(HelpEvaluationContext.getContext())) {
@@ -59,8 +57,6 @@ public class EnabledTopicUtils {
 
 	/**
 	 * Test whether a toc is enabled
-	 * @param topic
-	 * @return
 	 */
 	public static boolean isEnabled(IToc toc) {
 		if (!HelpBasePlugin.getActivitySupport().isEnabled(toc.getHref()) ||
@@ -79,8 +75,6 @@ public class EnabledTopicUtils {
 
 	/**
 	 * Test whether an entry is enabled
-	 * @param entry
-	 * @return
 	 */
 	public static boolean isEnabled(IIndexEntry entry) {
 		if (UAContentFilter.isFiltered(entry, HelpEvaluationContext.getContext())) {

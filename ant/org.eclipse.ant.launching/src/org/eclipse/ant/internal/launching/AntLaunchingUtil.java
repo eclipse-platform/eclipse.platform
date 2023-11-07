@@ -285,8 +285,6 @@ public final class AntLaunchingUtil {
 	 *
 	 * Attempts to handle linked files; the first found linked file with the correct path is returned.
 	 *
-	 * @param path
-	 * @param buildFileParent
 	 * @return file or <code>null</code>
 	 * @see org.eclipse.core.resources.IWorkspaceRoot#findFilesForLocation(IPath)
 	 */

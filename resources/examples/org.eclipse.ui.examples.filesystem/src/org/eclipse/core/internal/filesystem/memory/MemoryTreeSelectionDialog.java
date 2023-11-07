@@ -107,7 +107,6 @@ public class MemoryTreeSelectionDialog extends SelectionDialog {
 
 	/**
 	 * Creates the dialog region that allows the user to specify a new element name
-	 * @param parent
 	 */
 	private void createNewElementArea(Composite parent) {
 		Composite area = new Composite(parent, SWT.NONE);
@@ -128,7 +127,6 @@ public class MemoryTreeSelectionDialog extends SelectionDialog {
 
 	/**
 	 * Returns the currently selected file store, or null if there is no select.
-	 * @return
 	 */
 	private IFileStore getSelectedFileStore() {
 		ISelection selection = tree.getSelection();

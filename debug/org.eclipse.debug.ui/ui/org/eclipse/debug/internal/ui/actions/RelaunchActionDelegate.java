@@ -38,7 +38,6 @@ public class RelaunchActionDelegate extends AbstractDebugActionDelegate {
 
 	/**
 	 * Re-launches the given configuration in the specified mode.
-	 *
 	 */
 	public static void relaunch(ILaunchConfiguration config, String mode) {
 		DebugUITools.launch(config, mode);

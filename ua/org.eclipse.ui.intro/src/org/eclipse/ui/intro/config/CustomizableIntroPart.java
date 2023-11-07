@@ -221,7 +221,6 @@ public final class CustomizableIntroPart extends IntroPart implements
 	 * standby part memento that is not for the empty part AND stangby memento
 	 * has been tagged for restore, ie: it was open when workbench closed.
 	 *
-	 * @param memento
 	 * @return <code>true</code> if we need to recreate a standby part
 	 */
 	private boolean needToRestoreStandby(IMemento memento) {

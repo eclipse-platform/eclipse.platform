@@ -48,7 +48,6 @@ public interface IIntroURL {
 	/**
 	 * Executes whatever valid Intro command is embedded in this Intro URL.
 	 * Returns true if action succeeded, and false otherwise.
-	 *
 	 */
 	public boolean execute();
 

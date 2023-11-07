@@ -66,37 +66,22 @@ public class Bug_185247_LinuxTests extends ResourceTest {
 		}
 	}
 
-	/**
-	 *
-	 */
 	public void test1_trivial() throws Exception {
 		runProjectTestCase();
 	}
 
-	/**
-	 *
-	 */
 	public void test2_mutual() throws Exception {
 		runProjectTestCase();
 	}
 
-	/**
-	 *
-	 */
 	public void test3_outside_tree() throws Exception {
 		runProjectTestCase();
 	}
 
-	/**
-	 *
-	 */
 	public void test5_transitive_mutual() throws Exception {
 		runProjectTestCase();
 	}
 
-	/**
-	 *
-	 */
 	public void test6_nonrecursive() throws Exception {
 		runProjectTestCase();
 	}

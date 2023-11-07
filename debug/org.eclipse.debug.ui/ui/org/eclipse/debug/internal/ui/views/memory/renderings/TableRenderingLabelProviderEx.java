@@ -32,7 +32,6 @@ import org.eclipse.swt.graphics.Image;
  * This label provider is used by AbstractTableRendering if clients decide to
  * provide customized decorations in the rendering. Otherwise the table
  * rendering uses TableRenderingLabelProvider.
- *
  */
 public class TableRenderingLabelProviderEx extends TableRenderingLabelProvider implements ITableColorProvider, ITableFontProvider {
 

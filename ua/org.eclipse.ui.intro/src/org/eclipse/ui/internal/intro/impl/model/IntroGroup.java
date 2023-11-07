@@ -35,9 +35,6 @@ public class IntroGroup extends AbstractIntroContainer {
 	private static final String ATT_EXPANDED = "expanded"; //$NON-NLS-1$
 	private static final String P_UPPERCASE = "capitalizeTitles"; //$NON-NLS-1$
 	private String label;
-	/**
-	 * @param element
-	 */
 	IntroGroup(Element element, Bundle bundle, String base) {
 		super(element, bundle, base);
 	}

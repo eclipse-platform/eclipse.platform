@@ -49,8 +49,6 @@ public class ThreadEventHandler extends DebugEventHandler {
 	private final Map<IThread, IStackFrame> fLastTopFrame = new HashMap<>();
 	/**
 	 * Constructs and event handler for a threads in the given proxy.
-	 *
-	 * @param proxy
 	 */
 	public ThreadEventHandler(AbstractModelProxy proxy) {
 		super(proxy);
@@ -216,7 +214,6 @@ public class ThreadEventHandler extends DebugEventHandler {
 	 *
 	 * @param delta root delta for the view (includes viewer input)
 	 * @param thread thread for which path is requested
-	 * @return
 	 */
 	protected ModelDelta addPathToThread(ModelDelta delta, IThread thread) {
 		ILaunch launch = thread.getLaunch();

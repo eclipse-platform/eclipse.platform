@@ -229,9 +229,6 @@ public class IWorkspaceRootTest extends ResourceTest {
 
 	/**
 	 * Asserts that the given result array contains only the given resource.
-	 * @param string
-	 * @param file1
-	 * @param result
 	 */
 	private void assertResources(String message, IResource expected, IResource[] actual) {
 		assertEquals(message, 1, actual.length);

@@ -36,7 +36,6 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
  *
  * @see IViewActionDelegate
  * @see IActionDelegate2
- *
  */
 public abstract class AbstractSelectionActionDelegate implements IViewActionDelegate, IActionDelegate2 {
 

@@ -578,9 +578,6 @@ public class LaunchView extends AbstractDebugView
 
 	/**
 	 * Initializes the action and associates it with the given id.
-	 *
-	 * @param capability
-	 * @param actionID
 	 */
 	private void addCapabilityAction(DebugCommandAction capability, String actionID) {
 		capability.init(this);
@@ -589,8 +586,6 @@ public class LaunchView extends AbstractDebugView
 
 	/**
 	 * Disposes the given action.
-	 *
-	 * @param actionID
 	 */
 	private void disposeCommandAction(String actionID) {
 		DebugCommandAction action = (DebugCommandAction) getAction(actionID);
@@ -998,7 +993,6 @@ public class LaunchView extends AbstractDebugView
 	/**
 	* Removes the toolbar actions contributed by this view from the toolbar
 	* manager.
-	* @param tbm
 	*/
 	protected void removeDebugToolbarActions(IToolBarManager tbm) {
 		tbm.remove(new ActionContributionItem(getAction(RESUME)));

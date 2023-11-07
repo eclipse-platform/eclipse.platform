@@ -40,8 +40,6 @@ public class ErrorUtil {
 	/**
 	 * Shows the provided message using a MessageDialog.
 	 *
-	 * @param message
-	 * @param title
 	 * @see org.eclipse.jface.dialogs.MessageDialog#openError(Shell,String,String)
 	 */
 	public static void showErrorMessage(String message, String title) {

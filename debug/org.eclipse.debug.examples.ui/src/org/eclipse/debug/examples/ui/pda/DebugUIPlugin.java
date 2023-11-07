@@ -196,7 +196,6 @@ public class DebugUIPlugin extends AbstractUIPlugin {
 	/**
 	 * Returns the color described by the given RGB.
 	 *
-	 * @param rgb
 	 * @return color
 	 */
 	public Color getColor(RGB rgb) {

@@ -351,7 +351,6 @@ public class InternalJobGroup {
 
 	/**
 	 * Implementation of joining a job group.
-	 * @param remainingTime
 	 * @return <code>true</code> if the join completed, and false otherwise (still waiting).
 	 */
 	boolean doJoin(long remainingTime) throws InterruptedException {

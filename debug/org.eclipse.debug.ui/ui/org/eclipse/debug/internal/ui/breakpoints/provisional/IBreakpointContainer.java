@@ -35,7 +35,6 @@ public interface IBreakpointContainer {
 
 	/**
 	 * Returns the breakpoint category that this container is based on.
-	 * @return
 	 */
 	IAdaptable getCategory();
 

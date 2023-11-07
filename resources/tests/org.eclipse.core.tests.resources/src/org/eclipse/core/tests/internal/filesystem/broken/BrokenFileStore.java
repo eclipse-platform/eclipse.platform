@@ -26,9 +26,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.junit.Assert;
 
-/**
- *
- */
 public class BrokenFileStore extends FileStore {
 
 	private URI uri;

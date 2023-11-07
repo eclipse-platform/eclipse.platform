@@ -95,16 +95,10 @@ public abstract class PerformanceTestRunner {
 		}
 	}
 
-	/**
-	 * @throws CoreException
-	 */
 	protected void setUp() throws CoreException {
 		// subclasses to override
 	}
 
-	/**
-	 * @throws CoreException
-	 */
 	protected void tearDown() throws CoreException {
 		// subclasses to override
 	}
@@ -113,7 +107,6 @@ public abstract class PerformanceTestRunner {
 	 * Sets the finger print name. Setting this value will make the test part
 	 * of the component finger print results.  A value of null indicates that the
 	 * test is not a finger print test.
-	 * @param fingerprintName
 	 */
 	public void setFingerprintName(String fingerprintName) {
 		this.fingerprintName = fingerprintName;

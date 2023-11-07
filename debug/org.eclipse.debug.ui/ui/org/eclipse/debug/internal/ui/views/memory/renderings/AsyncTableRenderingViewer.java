@@ -744,7 +744,6 @@ public class AsyncTableRenderingViewer extends AsyncVirtualContentTableViewer {
 	}
 
 	/*
-	 * @param editor
 	 */
 	private void addListeners(Control control) {
 
@@ -951,9 +950,6 @@ public class AsyncTableRenderingViewer extends AsyncVirtualContentTableViewer {
 		}
 	}
 
-	/**
-	 *
-	 */
 	private void doFormatViewer() {
 		fPendingFormatViewer = false;
 		preservingSelection(() -> {

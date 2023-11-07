@@ -150,7 +150,6 @@ import org.eclipse.debug.internal.core.DebugCoreMessages;
  * variables are unavailable.</li>
  * <li><code>IValue</code> - no events are specified for values.</li>
  * </ul>
- *
  */
 public final class DebugEvent extends EventObject {
 

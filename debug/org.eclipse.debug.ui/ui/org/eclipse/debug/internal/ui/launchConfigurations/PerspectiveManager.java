@@ -105,9 +105,6 @@ public class PerspectiveManager implements ILaunchListener, ISuspendTriggerListe
 
 		/**
 		 * Constructor
-		 * @param type
-		 * @param delegate
-		 * @param modes
 		 */
 		public PerspectiveContext(ILaunchConfigurationType type, ILaunchDelegate delegate, Set<String> modes) {
 			fType = type;
@@ -957,8 +954,6 @@ public class PerspectiveManager implements ILaunchListener, ISuspendTriggerListe
 	/**
 	 * Resolves the <code>ILaunchDelegate</code> from the given <code>ILaunch</code>
 	 * @param launch the launch
-	 * @return
-	 * @throws CoreException
 	 */
 	private ILaunchDelegate resolveLaunchDelegate(ILaunch launch) throws CoreException {
 		Set<String> modes = launch.getLaunchConfiguration().getModes();

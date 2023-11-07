@@ -24,7 +24,6 @@ import org.eclipse.tips.core.internal.ImageUtil;
 /**
  * Provides more information about the image to be used in the tip. The image
  * aspect ratio must be around 3:2 to be comfortably displayed in the Tip UI.
- *
  */
 public class TipImage {
 
@@ -52,7 +51,6 @@ public class TipImage {
 	 *            the image URL which may not be null
 	 * @throws IOException
 	 *             in case the stream of the passed URL could not be opened or read.
-	 *
 	 */
 	public TipImage(URL url) throws IOException {
 		Assert.isNotNull(url);
@@ -88,7 +86,6 @@ public class TipImage {
 	 * @see TipImage
 	 * @see <a href="https://tools.ietf.org/search/rfc2397">RFC-2397
 	 *      (https://tools.ietf.org/search/rfc2397)</a>
-	 *
 	 */
 	public TipImage(String base64Image) {
 		Assert.isNotNull(base64Image);

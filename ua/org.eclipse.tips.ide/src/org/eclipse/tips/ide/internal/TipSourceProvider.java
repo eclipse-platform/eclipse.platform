@@ -31,7 +31,6 @@ import org.eclipse.ui.progress.UIJob;
 
 /**
  * Internal class to source a new boolean variable in the IDE called "newtips".
- *
  */
 @SuppressWarnings("restriction")
 public class TipSourceProvider extends AbstractSourceProvider {

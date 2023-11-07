@@ -232,7 +232,6 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 *     p0,v0 depends on p1,v0
 	 * p1 is closed.
 	 * p0v0 should still be built.
-	 * @throws CoreException
 	 */
 	public void testBuildReferencesOfClosedProject() throws CoreException {
 		ConfigurationBuilder.clearStats();

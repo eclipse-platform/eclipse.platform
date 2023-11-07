@@ -46,8 +46,6 @@ public class SharedStyleManager {
 	/**
 	 * Constructor used when shared styles need to be loaded. The bundle is
 	 * retrieved from the model root.
-	 *
-	 * @param modelRoot
 	 */
 	public SharedStyleManager(IntroModelRoot modelRoot) {
 		context = new StyleContext();
@@ -81,9 +79,6 @@ public class SharedStyleManager {
 
 	/**
 	 * Get the property from the shared properties.
-	 *
-	 * @param key
-	 * @return
 	 */
 	public String getProperty(String key) {
 		return doGetProperty(properties, key);
@@ -112,9 +107,6 @@ public class SharedStyleManager {
 	 * A utility method that creates RGB object from a value encoded in the
 	 * following format: #rrggbb, where r, g and b are hex color values in the
 	 * range from 00 to ff.
-	 *
-	 * @param value
-	 * @return
 	 */
 
 	public static RGB parseRGB(String value) {
@@ -137,9 +129,6 @@ public class SharedStyleManager {
 	/**
 	 * Finds the bundle from which this key was loaded. This is the bundle from
 	 * which shared styles where loaded.
-	 *
-	 * @param key
-	 * @return
 	 */
 	protected Bundle getAssociatedBundle(String key) {
 		return context.bundle;
@@ -162,8 +151,6 @@ public class SharedStyleManager {
 	/**
 	 *
 	 *
-	 * @param toolkit
-	 * @param key
 	 * @return color. May return null.
 	 */
 	public Color getColor(FormToolkit toolkit, String key) {
@@ -181,11 +168,6 @@ public class SharedStyleManager {
 
 	/**
 	 * Retrieve an image from this page's properties, given a key.
-	 *
-	 * @param key
-	 * @param defaultPageKey
-	 * @param defaultKey
-	 * @return
 	 */
 	public Image getImage(String key, String defaultPageKey, String defaultKey) {
 		String currentKey = key;

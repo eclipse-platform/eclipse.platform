@@ -731,7 +731,6 @@ public class CustomizationContentsArea {
 
 	/**
 	 * Remember the current page, close intro, reopen it and show the saved page.
-	 *
 	 */
 	private void restartIntro() {
 		IIntroManager manager = PlatformUI.getWorkbench().getIntroManager();

@@ -56,7 +56,6 @@ public class FussyProgressMonitor extends TestProgressMonitor {
 	/**
 	 * Creates a fussy progress monitor that is associated with a particular job.
 	 * On assertion failure the job name will be included in the failure message.
-	 * @param job
 	 */
 	public FussyProgressMonitor(Job job) {
 		this();

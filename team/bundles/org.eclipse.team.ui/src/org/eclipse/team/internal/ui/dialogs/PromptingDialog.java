@@ -30,10 +30,6 @@ public class PromptingDialog extends MultipleYesNoPrompter {
 	/**
 	 * Prompt for the given resources using the specific condition. The prompt dialog will
 	 * have the title specified.
-	 * @param shell
-	 * @param resources
-	 * @param condition
-	 * @param title
 	 */
 	public PromptingDialog(Shell shell, IResource[] resources, IPromptCondition condition, String title) {
 		this(shell, resources, condition, title, false /* all or nothing */);

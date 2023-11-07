@@ -177,7 +177,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * @param stream the stream to get as a byte array
 	 * @param length the length to read from the stream or -1 for unknown
 	 * @return the given input stream as a byte array
-	 * @throws IOException
 	 */
 	public static byte[] getInputStreamAsByteArray(InputStream stream, int length) throws IOException {
 		byte[] contents;
@@ -224,8 +223,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Returns a scratch project for launch configurations
-	 *
-	 * @return
 	 */
 	protected IProject getProject() throws CoreException {
 		return TestsPlugin.createProject("LaunchConfigurationTests"); //$NON-NLS-1$
@@ -311,8 +308,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Creates a local working copy configuration, sets some attributes, and
 	 * saves the working copy, and retrieves the attributes.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testCreateLocalConfiguration() throws CoreException {
@@ -339,8 +334,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Creates a local working copy configuration and tests its name.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testLocalName() throws CoreException {
@@ -375,8 +368,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Ensures that a launch configuration returns a complete attribute map
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testGetAttributes() throws CoreException {
@@ -400,8 +391,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Ensures that set attributes works
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testSetAttributes() throws CoreException {
@@ -428,8 +417,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Ensures that set attributes to <code>null</code> works
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testSetNullAttributes() throws CoreException {
@@ -451,8 +438,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * Creates a local working copy configuration, sets some attributes, and
 	 * saves the working copy, and retrieves the attributes. Copy the
 	 * configuration and ensure the original still exists.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testLocalCopy() throws CoreException {
@@ -494,8 +479,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Create a config and save it twice, ensuring it only ends up in the index
 	 * once.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testDoubleSave() throws CoreException {
@@ -534,8 +517,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * Creates a local working copy configuration, sets some attributes, and
 	 * saves the working copy, and retrieves the attributes. Deletes the
 	 * configuration and ensures it no longer exists.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testDeleteLocalConfiguration() throws CoreException {
@@ -564,8 +545,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * saves the working copy, and retrieves the attributes. Renames the
 	 * configuration and ensures it's old config no longer exists, and that
 	 * attributes are retrievable from the new (renamed) config.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testRenameLocalConfiguration() throws CoreException {
@@ -609,8 +588,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Moves a local configuration to a shared location
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testMoveLocalToSharedConfiguration() throws CoreException {
@@ -654,8 +631,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Moves a local configuration to a shared location
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testMoveSharedToLocalConfiguration() throws CoreException {
@@ -700,8 +675,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Creates a shared working copy configuration, sets some attributes, and
 	 * saves the working copy, and retrieves the attributes.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testCreateSharedConfiguration() throws CoreException {
@@ -818,8 +791,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * Creates a shared working copy configuration, sets some attributes, and
 	 * saves the working copy, and retrieves the attributes. Copies the
 	 * configuration and ensures the original still exists.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testSharedCopy() throws CoreException {
@@ -861,8 +832,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * Creates a shared working copy configuration, sets some attributes, and
 	 * saves the working copy, and retrieves the attributes. Deletes the
 	 * configuration and ensures it no longer exists.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testDeleteSharedConfiguration() throws CoreException {
@@ -890,8 +859,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * saves the working copy, and retrieves the attributes. Renames the
 	 * configuration and ensures it's old config no longer exists, and that
 	 * attributes are retrievable from the new (renamed) config.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testRenameSharedConfiguration() throws CoreException {
@@ -942,8 +909,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Creates a few configs, closes the project and re-opens the project to
 	 * ensure the config index is persisted properly
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testPersistIndex() throws CoreException {
@@ -1027,8 +992,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Ensures that a removal notification is sent for a shared config in a
 	 * project that is deleted.
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testDeleteProjectWithSharedConfig() throws Exception {
@@ -1063,8 +1026,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Tests a nested working copy.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testNestedWorkingCopyLocalConfiguration() throws CoreException {
@@ -1120,9 +1081,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Creates a configuration in an EFS linked folder. Deletes configuration
 	 * directly.
-	 *
-	 * @throws CoreException
-	 * @throws URISyntaxException
 	 */
 	@Test
 	public void testCreateDeleteEFS() throws CoreException, URISyntaxException {
@@ -1155,9 +1113,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Creates a configuration in an EFS linked folder. Deletes the folder to
 	 * ensure the configuration is also deleted.
-	 *
-	 * @throws CoreException
-	 * @throws URISyntaxException
 	 */
 	@Test
 	public void testCreateDeleteEFSLink() throws CoreException, URISyntaxException {
@@ -1187,8 +1142,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Test that renaming a project with a linked EFS folder containing a shared
 	 * launch configuration is properly updated.
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testEFSProjectRename() throws Exception {
@@ -1251,8 +1204,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Tests launch configuration import.
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testImport() throws Exception {
@@ -1305,8 +1256,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 
 	/**
 	 * Tests the location of a local working copy.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testWorkingCopyGetLocation() throws CoreException {
@@ -1819,7 +1768,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Proxy to set resource paths, allowing invalid resource paths to be set
 	 *
-	 * @param resources
 	 * @since 3.9.0
 	 */
 	protected void setResourceMappings(ILaunchConfigurationWorkingCopy config, ResourceItem[] resources) {

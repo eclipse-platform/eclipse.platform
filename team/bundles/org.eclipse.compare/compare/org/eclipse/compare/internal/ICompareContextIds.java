@@ -21,7 +21,6 @@ import org.eclipse.compare.CompareUI;
  * This interface contains constants only; it is not intended to be implemented
  * or extended.
  * </p>
- *
  */
 public interface ICompareContextIds {
 

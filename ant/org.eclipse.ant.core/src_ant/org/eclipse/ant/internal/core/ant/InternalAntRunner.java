@@ -285,8 +285,6 @@ public class InternalAntRunner {
 
 	/**
 	 * Sets the default <code>ant.file</code> and <code>ant.version</code> properties in the given {@link Project}
-	 *
-	 * @param project
 	 */
 	protected void setBuiltInProperties(Project project) {
 		// note also see processAntHome for system properties that are set
@@ -847,9 +845,6 @@ public class InternalAntRunner {
 
 	/**
 	 * Sends the the event to the backing project that the build has completed
-	 *
-	 * @param project
-	 * @param error
 	 */
 	protected void fireBuildFinished(Project project, Throwable error) {
 		if (usingXmlLogger()) {
@@ -1377,8 +1372,6 @@ public class InternalAntRunner {
 
 	/**
 	 * Process properties specified using <code>-D</code>
-	 *
-	 * @param commands
 	 */
 	protected void processMinusDProperties(List<String> commands) {
 		if (!commands.isEmpty() && userProperties == null) {

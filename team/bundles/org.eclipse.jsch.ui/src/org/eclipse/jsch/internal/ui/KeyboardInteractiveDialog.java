@@ -62,10 +62,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
 	 * Creates a new KeyboardInteractiveDialog.
 	 *
 	 * @param parentShell the parent shell
-	 * @param location
-	 * @param destination
 	 * @param name the name
-	 * @param userName
 	 * @param instruction the instruction
 	 * @param prompt the titles for text fields
 	 * @param echo '*' should be used or not

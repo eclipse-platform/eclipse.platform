@@ -100,7 +100,6 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 	/**
 	 * p0 --&gt; p1 --&gt; p2
-	 * @throws CoreException
 	 */
 	private void setupSimpleReferences() throws CoreException {
 		setReferences(project0.getActiveBuildConfig(), new IBuildConfiguration[] {project1.getActiveBuildConfig()});
@@ -175,7 +174,6 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests building a single project with and without references
-	 * @throws CoreException
 	 */
 	public void testWorkspaceBuildProject() throws CoreException {
 		setupSimpleReferences();
@@ -209,7 +207,6 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 	/**
 	 * Builds a couple configurations, including references
-	 * @throws CoreException
 	 */
 	public void testWorkspaceBuildProjects() throws CoreException {
 		setupSimpleReferences();
@@ -233,7 +230,6 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 	/**
 	 * Sets references to the 'active' project build configuration
-	 * @throws CoreException
 	 */
 	public void testReferenceActiveVariant() throws CoreException {
 		setReferences(project0.getActiveBuildConfig(), new IBuildConfiguration[] {getWorkspace().newBuildConfig(project1.getName(), null)});

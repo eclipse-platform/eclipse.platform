@@ -150,7 +150,6 @@ public class MozillaBrowserAdapter implements IBrowser {
 		}
 
 		/**
-		 * @param browserCmd
 		 * @return int 0 if success
 		 */
 		@SuppressWarnings("resource")
@@ -183,10 +182,6 @@ public class MozillaBrowserAdapter implements IBrowser {
 		/**
 		 * On some OSes 0 is always returned by netscape -remote. It is
 		 * necessary to examine output to find out failure
-		 *
-		 * @param outputs
-		 * @param errors
-		 * @return
 		 */
 		private boolean errorsInOutput(StreamConsumer outputs, StreamConsumer errors) {
 			try {

@@ -29,9 +29,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-/**
- *
- */
 public class DoNothingMainTab extends AbstractLaunchConfigurationTab implements ILaunchConfigurationListener {
 
 	protected Button fButton = null;
@@ -128,16 +125,10 @@ public class DoNothingMainTab extends AbstractLaunchConfigurationTab implements 
 		}
 	}
 
-	/**
-	 * @param configuration
-	 */
 	@Override
 	public void launchConfigurationAdded(ILaunchConfiguration configuration) {
 	}
 
-	/**
-	 * @param configuration
-	 */
 	@Override
 	public void launchConfigurationRemoved(ILaunchConfiguration configuration) {
 	}

@@ -128,7 +128,6 @@ public final class XMLRootElementContentDescriber2 extends XMLContentDescriber i
 	 * <li><code>INVALID</code></li>,
 	 * <li><code>INDETERMINATE</code></li>
 	 * </ul>
-	 * @throws IOException
 	 */
 	private int checkCriteria(InputSource contents, Map<String, Object> properties) throws IOException {
 		if (!isProcessed(properties))

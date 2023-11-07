@@ -65,7 +65,6 @@ public class HighlightFilter implements IFilter {
 	/**
 	 * Creates Java Script that does highlighting
 	 *
-	 * @param keywords
 	 * @return byte[]
 	 */
 	private byte[] createJScript(HttpServletRequest req, Collection<String> keywords) {

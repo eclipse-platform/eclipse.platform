@@ -16,9 +16,6 @@ package org.eclipse.ui.internal.cheatsheets.data;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- *
- */
 public class CheatSheet implements ICheatSheet {
 
 	protected String title;
@@ -28,7 +25,6 @@ public class CheatSheet implements ICheatSheet {
 
 	/**
 	 * Creates a new cheat sheet.
-	 *
 	 */
 	public CheatSheet() {
 	}

@@ -228,9 +228,6 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 
 	/**
 	 * bug 89115
-	 * 
-	 * @throws PartInitException
-	 * @throws BadLocationException
 	 */
 	@Test
 	public void testTargetFromTargetDepends() throws PartInitException, BadLocationException {
@@ -268,9 +265,6 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 
 	/**
 	 * bug 94128
-	 * 
-	 * @throws PartInitException
-	 * @throws BadLocationException
 	 */
 	@Test
 	public void testTargetFromTargetIf() throws PartInitException, BadLocationException {
@@ -378,13 +372,11 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 
 	/**
 	 * 
-	 * @param editor
 	 * @param lineNumber
 	 *            zero based
 	 * @param offsetInLine
 	 *            zero based
 	 * @return the offset within the document of the editor based on the line number and offset within line
-	 * @throws BadLocationException
 	 */
 	private int getOffsetWithinLine(AntEditor editor, int lineNumber, int offsetInLine) throws BadLocationException {
 		IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());

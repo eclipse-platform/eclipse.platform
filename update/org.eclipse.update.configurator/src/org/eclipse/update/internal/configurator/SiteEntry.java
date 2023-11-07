@@ -624,7 +624,6 @@ public class SiteEntry implements IPlatformConfiguration.ISiteEntry, IConfigurat
 	
 	/**
 	 * Saves state as xml content in a given parent element
-	 * @param doc
 	 */
 	public Element toXML(Document doc) {
 

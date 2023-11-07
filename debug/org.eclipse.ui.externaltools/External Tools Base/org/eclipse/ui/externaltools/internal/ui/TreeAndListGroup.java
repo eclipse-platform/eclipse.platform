@@ -40,7 +40,6 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
 
 /**
  * This class was derived from org.eclipse.ui.internal.misc.CheckboxTreeAndListGroup
- *
  */
 public class TreeAndListGroup implements ISelectionChangedListener {
 	private Object root;
@@ -274,7 +273,6 @@ public class TreeAndListGroup implements ISelectionChangedListener {
 	/**
 	 * Set the root of the widget to be new Root. Regenerate all of the tables and lists from this
 	 * value.
-	 * @param newRoot
 	 */
 	public void setRoot(Object newRoot) {
 		root = newRoot;

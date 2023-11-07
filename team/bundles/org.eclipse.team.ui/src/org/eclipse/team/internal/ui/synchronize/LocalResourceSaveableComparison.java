@@ -161,7 +161,6 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	/**
 	 * Flush the contents of any viewers into the compare input.
 	 * @param monitor a progress monitor
-	 * @throws CoreException
 	 */
 	protected void flushViewers(IProgressMonitor monitor) throws CoreException {
 		if (editorInput instanceof SaveablesCompareEditorInput) {

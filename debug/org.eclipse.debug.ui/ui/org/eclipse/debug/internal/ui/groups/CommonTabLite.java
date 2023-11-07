@@ -506,7 +506,6 @@ class CommonTabLite extends AbstractLaunchConfigurationTab {
 
 	/**
 	 * Provides the labels for the favorites table
-	 *
 	 */
 	static class FavoritesLabelProvider implements ITableLabelProvider {
 

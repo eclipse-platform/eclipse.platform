@@ -53,9 +53,6 @@ public class LinkRenderingPanesAction implements IViewActionDelegate {
 		updateActionState(action);
 	}
 
-	/**
-	 * @param action
-	 */
 	private void updateActionState(IAction action) {
 
 		if (fMemSyncService == null) {

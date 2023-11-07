@@ -308,7 +308,6 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 	 * @param mode          the id of the mode
 	 * @param ext           the extension to get label and help info from
 	 * @param menu          the menu to add to
-	 * @param configuration
 	 * @param accelerator   the accelerator to use with the new menu item, <code>-1</code> to skip
 	 * @param indent an optional string to add as indentation before the label
 	 */

@@ -94,7 +94,6 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 
 	/**
 	 * Test a simple builder with a relaxed scheduling rule
-	 * @throws Exception
 	 */
 	public void testBasicRelaxedSchedulingRules() throws Exception {
 		String projectName = "TestRelaxed";
@@ -164,7 +163,6 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 * Tests:
 	 *     Bug 306824 - null scheduling rule and non-null scheduling rule don't work together
 	 *     Builders should have separate scheduling rules
-	 * @throws Exception
 	 */
 	public void testTwoBuildersRunInOneBuild() throws Exception {
 		String projectName = "testTwoBuildersRunInOneBuild";
@@ -270,7 +268,6 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 * Acquiring the scheduling rule must be done outside of the WS lock, so this tests that
 	 * a change which sneaks in during the window or the build thread acquiring its scheduling
 	 * rule, is correctly present in the builder's delta.
-	 * @throws Exception
 	 */
 	public void testBuilderDeltaUsingRelaxedRuleBug343256() throws Exception {
 		final int timeout = 10000;
@@ -400,7 +397,6 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests for regression in running the build with reduced scheduling rules.
-	 * @throws Exception
 	 */
 	public void testBug343256() throws Exception {
 		String projectName = "testBug343256";

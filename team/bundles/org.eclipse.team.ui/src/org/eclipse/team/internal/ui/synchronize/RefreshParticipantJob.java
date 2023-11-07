@@ -192,7 +192,6 @@ public abstract class RefreshParticipantJob extends Job {
 		}
 		/**
 		 * Subclasses override this method to send an event safely to a listener
-		 * @param listener
 		 */
 		protected abstract void notify(IRefreshSubscriberListener listener);
 	}
@@ -242,9 +241,6 @@ public abstract class RefreshParticipantJob extends Job {
 	 * Create a job to refresh the specified resources with the subscriber.
 	 *
 	 * @param participant the subscriber participant
-	 * @param jobName
-	 * @param taskName
-	 * @param listener
 	 */
 	public RefreshParticipantJob(ISynchronizeParticipant participant, String jobName, String taskName, IRefreshSubscriberListener listener) {
 		super(jobName);

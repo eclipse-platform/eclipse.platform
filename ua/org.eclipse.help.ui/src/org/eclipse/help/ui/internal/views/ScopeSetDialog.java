@@ -208,9 +208,6 @@ public class ScopeSetDialog extends TrayDialog  {
 		}
 	}
 
-	/**
-	 * @param parent
-	 */
 	public ScopeSetDialog(Shell parent, ScopeSetManager manager, EngineDescriptorManager descManager, boolean localOnly) {
 		super(parent);
 		this.manager = manager;

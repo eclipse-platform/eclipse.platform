@@ -24,9 +24,6 @@ import org.eclipse.help.internal.base.HelpBasePlugin;
 public class ActivitiesData extends RequestData {
 	/**
 	 * Constructs the data for a request.
-	 *
-	 * @param context
-	 * @param request
 	 */
 	public ActivitiesData(ServletContext context, HttpServletRequest request,
 			HttpServletResponse response) {

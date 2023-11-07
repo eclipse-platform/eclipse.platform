@@ -48,7 +48,6 @@ public class TocZipTest {
 
 	/**
 	 * Verify that loose files override those in doc.zip
-	 * @throws IOException
 	 */
 	@Test
 	public void testDocInZipAndBundle() throws IOException {

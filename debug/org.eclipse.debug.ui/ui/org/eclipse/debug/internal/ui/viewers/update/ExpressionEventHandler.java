@@ -27,7 +27,6 @@ import org.eclipse.debug.internal.ui.viewers.provisional.AbstractModelProxy;
  * Event handler for an expression.
  *
  * @since 3.2
- *
  */
 public class ExpressionEventHandler extends DebugEventHandler {
 

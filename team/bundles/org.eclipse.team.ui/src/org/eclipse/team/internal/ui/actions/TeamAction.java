@@ -140,8 +140,6 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 * Creates an array of the given class type containing all the
 	 * objects in the selection that adapt to the given class.
 	 *
-	 * @param selection
-	 * @param c
 	 * @return the selected adaptables
 	 */
 	@SuppressWarnings("unchecked")
@@ -168,8 +166,6 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 * the provided class. Null is returned if the given object does not adapt
 	 * to the given class
 	 *
-	 * @param adaptable
-	 * @param c
 	 * @return Object
 	 */
 	@SuppressWarnings("unchecked")
@@ -209,7 +205,6 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 * instances of c that are either contained in the selection or
 	 * are adapted from objects contained in the selection.
 	 *
-	 * @param c
 	 * @return the selection adapted to the given class
 	 */
 	protected <T> T[] getAdaptedSelection(Class<T> c) {
@@ -447,7 +442,6 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 * Show the view with the given ID in the perspective from which the action
 	 * was executed. Returns null if the view is not registered.
 	 *
-	 * @param viewId
 	 * @return IViewPart
 	 */
 	protected IViewPart showView(String viewId) {
@@ -512,7 +506,6 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 * <code>selectionChanged</code> and <code>run</code> should support passing
 	 * <code>null</code> as the IAction parameter.
 	 * </p>
-	 * @throws ExecutionException
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {

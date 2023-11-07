@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.ICellModifier;
 
 /**
  * @since 3.2
- *
  */
 @SuppressWarnings("deprecation")
 public class DefaultVariableCellModifier implements ICellModifier {

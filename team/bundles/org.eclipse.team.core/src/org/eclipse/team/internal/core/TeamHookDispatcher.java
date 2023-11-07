@@ -88,7 +88,6 @@ public class TeamHookDispatcher extends TeamHook {
 
 	/**
 	 * Method getProvider.
-	 * @param folder
 	 * @return RepositoryProvider
 	 */
 	private RepositoryProvider getProvider(IResource resource) {

@@ -21,7 +21,6 @@ import java.util.Objects;
 /**
  * This is the base Tip class of the UI agnostic Tip framework. You might want
  * to check specializations of this class that may make your life easier.
- *
  */
 public abstract class Tip {
 
@@ -32,7 +31,6 @@ public abstract class Tip {
 	/**
 	 * Constructor for a Tip. For the best user experience, Tips should be created
 	 * really fast.
-	 *
 	 */
 	public Tip(String providerId) {
 		this.providerId = providerId;

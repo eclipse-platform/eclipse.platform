@@ -104,9 +104,6 @@ public class IntroExtensionContent extends AbstractIntroElement {
 	 * Initialize styles. Take first style in style attribute and make it the
 	 * page style. Then put other styles in styles vectors. Make sure to resolve
 	 * each style.
-	 *
-	 * @param element
-	 * @param bundle
 	 */
 	private void init(Element element, Bundle bundle, String base) {
 		String[] styleValues = getAttributeList(element, ATT_STYLE);
@@ -133,8 +130,6 @@ public class IntroExtensionContent extends AbstractIntroElement {
 	/**
 	 * Adds the given style to the list. Style is not added if it already exists
 	 * in the list.
-	 *
-	 * @param style
 	 */
 	protected void addStyle(String style) {
 		if (styles.contains(style))
@@ -146,8 +141,6 @@ public class IntroExtensionContent extends AbstractIntroElement {
 	/**
 	 * Adds the given style to the list.Style is not added if it already exists
 	 * in the list.
-	 *
-	 * @param altStyle
 	 */
 	protected void addAltStyle(String altStyle, Bundle bundle) {
 		if (altStyles.containsKey(altStyle))

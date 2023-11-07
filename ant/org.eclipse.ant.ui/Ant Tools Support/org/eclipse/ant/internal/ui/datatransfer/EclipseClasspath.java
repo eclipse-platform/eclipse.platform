@@ -399,7 +399,6 @@ public class EclipseClasspath {
 
 	/**
 	 * Check if given string is a library reference. e.g. Plug-in dependencies are library references.
-	 * 
 	 */
 	public static boolean isLibraryReference(String s) {
 		return s.startsWith("${") && s.endsWith(".libraryclasspath}"); //$NON-NLS-1$ //$NON-NLS-2$ 
@@ -427,7 +426,6 @@ public class EclipseClasspath {
 
 	/**
 	 * Check if given string is a linked resource.
-	 * 
 	 */
 	public static boolean isLinkedResource(String s) {
 		return s.startsWith("${") && s.endsWith(".link}"); //$NON-NLS-1$ //$NON-NLS-2$ 

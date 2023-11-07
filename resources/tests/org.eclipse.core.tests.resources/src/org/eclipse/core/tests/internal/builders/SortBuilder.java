@@ -99,7 +99,6 @@ public class SortBuilder extends TestBuilder {
 	 * Sort the given unsorted file in either ascending or descending
 	 * order (depending on the build command) and update its corresponding
 	 * sorted file with the result.
-	 * @param unsortedFile
 	 * @exception Exception if the build can't proceed
 	 */
 	private void build(IFile unsortedFile) throws CoreException {
@@ -164,7 +163,6 @@ public class SortBuilder extends TestBuilder {
 	 * Converts the given unsorted resource handle to its corresponding
 	 * sorted resource handle.  Neither resources need exist, but their
 	 * types must be a folder (FOLDER) or a file (FILE).
-	 * @param IResource
 	 * @exception Exception if the resource is not a folder or a file
 	 */
 	private IResource convertToSortedResource(IResource unsortedResource) throws CoreException {
@@ -184,7 +182,6 @@ public class SortBuilder extends TestBuilder {
 	/**
 	 * Creates the given resource, and its parent if necessary.  The
 	 * resource must not be a solution and its project must exist.
-	 * @param resource
 	 * @exception Exception if the resource is not a folder or a file
 	 */
 	private void createResource(IResource resource) throws CoreException {
@@ -208,7 +205,6 @@ public class SortBuilder extends TestBuilder {
 	/**
 	 * Deletes the given resource, and its children if necessary.  The
 	 * resource must not be a solution and its project must exist.
-	 * @param resource
 	 * @exception CoreException if the resource is not a folder or a file
 	 */
 	private void deleteResource(IResource resource) throws CoreException {
@@ -361,7 +357,6 @@ public class SortBuilder extends TestBuilder {
 
 	/**
 	 * Sorts the specified bytes in either ascending or descending order.
-	 * @param bytes
 	 * @param start position of first byte
 	 * @param end position of last byte
 	 * @param ascendingOrder true if the bytes are to be sorted in
@@ -413,7 +408,6 @@ public class SortBuilder extends TestBuilder {
 
 	/**
 	 * Swaps the specified bytes in the given byte array.
-	 * @param bytes
 	 * @param pos1 the position of the first byte
 	 * @param pos2 the position of the second byte
 	 */

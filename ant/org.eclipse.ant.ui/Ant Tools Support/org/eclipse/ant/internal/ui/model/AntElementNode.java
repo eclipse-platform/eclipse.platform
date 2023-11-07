@@ -47,7 +47,6 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * General representation of an Ant buildfile element.
- * 
  */
 public class AntElementNode implements IAdaptable, IAntElement {
 
@@ -439,9 +438,6 @@ public class AntElementNode implements IAdaptable, IAntElement {
 		fProblem = problem;
 	}
 
-	/**
-	 * @return
-	 */
 	public IProblem getProblem() {
 		return fProblem;
 	}

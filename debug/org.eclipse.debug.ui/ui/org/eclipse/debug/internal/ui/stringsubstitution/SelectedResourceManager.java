@@ -260,7 +260,6 @@ public class SelectedResourceManager  {
 	 *
 	 * @param timeout to wait for the UI lock
 	 * @return may return null
-	 * @throws Exception
 	 */
 	static <V> V runInUIThreadWithTimeout(Callable<V> callable, long timeout, TimeUnit units) throws Exception {
 		FutureTask<V> task = new FutureTask<>(() -> syncExec(callable));

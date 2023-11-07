@@ -313,7 +313,6 @@ public class OptionTests extends AbstractAntTest {
 	/**
 	 * Tests specifying both a non-existent target and an existent target in the
 	 * command line
-	 * 
 	 */
 	@Test
 	public void testSpecifyBothBadAndGoodTargetsAsArg() throws CoreException {

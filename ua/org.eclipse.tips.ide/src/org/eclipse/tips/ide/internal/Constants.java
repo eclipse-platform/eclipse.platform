@@ -15,7 +15,6 @@ package org.eclipse.tips.ide.internal;
 
 /**
  * Shared constants.
- *
  */
 public class Constants {
 

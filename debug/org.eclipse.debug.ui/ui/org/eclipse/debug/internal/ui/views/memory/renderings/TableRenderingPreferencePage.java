@@ -104,9 +104,6 @@ public class TableRenderingPreferencePage extends PreferencePage implements
 		return fComposite;
 	}
 
-	/**
-	 *
-	 */
 	private void loadLoadingModeFromPreference() {
 		boolean isAuto = getPreferenceStore().getBoolean(IDebugPreferenceConstants.PREF_DYNAMIC_LOAD_MEM);
 		fAuto.setSelection(isAuto);
@@ -218,9 +215,6 @@ public class TableRenderingPreferencePage extends PreferencePage implements
 		super.performDefaults();
 	}
 
-	/**
-	 *
-	 */
 	private void updateTextEditorsEnablement() {
 		boolean auto = fAuto.getSelection();
 		fPreBufferSize.setEnabled(auto, fGroup);

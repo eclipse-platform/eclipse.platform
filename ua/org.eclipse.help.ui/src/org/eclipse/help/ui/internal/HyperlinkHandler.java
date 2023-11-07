@@ -202,8 +202,6 @@ public class HyperlinkHandler implements MouseListener, MouseTrackListener, Pain
 			}
 		}
 	}
-	/**
-	 */
 	public void reset() {
 		hyperlinkListeners.clear();
 	}

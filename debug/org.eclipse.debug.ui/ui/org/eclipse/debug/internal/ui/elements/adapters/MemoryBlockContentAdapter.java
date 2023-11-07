@@ -92,9 +92,6 @@ public class MemoryBlockContentAdapter extends AsynchronousContentAdapter {
 
 	}
 
-	/**
-	 * @throws DebugException
-	 */
 	public Object[] loadContentForSimpleMemoryBlock(MemoryViewPresentationContext context) throws DebugException {
 		AbstractAsyncTableRendering rendering = getTableRendering(context);
 		if (rendering != null) {
@@ -108,9 +105,6 @@ public class MemoryBlockContentAdapter extends AsynchronousContentAdapter {
 		return EMPTY;
 	}
 
-	/**
-	 * @throws DebugException
-	 */
 	public Object[] loadContentForExtendedMemoryBlock(MemoryViewPresentationContext context) throws DebugException {
 
 		AbstractAsyncTableRendering rendering = getTableRendering(context);
@@ -428,7 +422,6 @@ public class MemoryBlockContentAdapter extends AsynchronousContentAdapter {
 	}
 
 	/**
-	 * @param numberOfLines
 	 * @return an array of dummy MemoryByte
 	 */
 	private MemoryByte[] makeDummyContent(long numberOfLines, int bytesPerLine) {

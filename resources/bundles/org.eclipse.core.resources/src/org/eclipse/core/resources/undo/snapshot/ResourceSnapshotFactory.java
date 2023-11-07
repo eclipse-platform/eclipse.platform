@@ -117,7 +117,6 @@ public class ResourceSnapshotFactory {
 	 * Create a marker snapshot from the specified marker.
 	 *
 	 * @param marker the marker to be described
-	 * @throws CoreException
 	 */
 	public static IMarkerSnapshot fromMarker(IMarker marker) throws CoreException {
 		return new MarkerSnapshot(marker);

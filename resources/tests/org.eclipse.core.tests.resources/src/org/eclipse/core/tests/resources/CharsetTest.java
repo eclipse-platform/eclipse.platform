@@ -1184,7 +1184,6 @@ public class CharsetTest extends ResourceTest {
 	/**
 	 * Check that we are broadcasting the correct resource deltas when
 	 * making encoding changes.
-	 *
 	 */
 	public void testDeltasFile() throws CoreException {
 		IWorkspace workspace = getWorkspace();

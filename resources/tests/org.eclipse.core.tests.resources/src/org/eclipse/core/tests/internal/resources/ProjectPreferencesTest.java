@@ -1059,7 +1059,6 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 * @param node the node to check
 	 * @param childrenNames the names of children to check
 	 * @return true, if the node and its children have no associated values
-	 * @throws BackingStoreException
 	 */
 	private boolean isNodeCleared(Preferences node, String[] childrenNames) throws BackingStoreException {
 		// check if the node has associate values

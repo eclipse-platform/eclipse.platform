@@ -62,8 +62,6 @@ public class FileDiffResultTest extends WorkspaceTest {
 	/**
 	 * Tests applying a patch which creates a new file in a project. The file
 	 * doesn't exist in the project.
-	 *
-	 * @throws CoreException
 	 */
 	public void testPatchAddsNewFile() throws CoreException {
 		IProject project = createProject("FileDiffResultTest",
@@ -99,8 +97,6 @@ public class FileDiffResultTest extends WorkspaceTest {
 	/**
 	 * Tests applying a patch which creates a new file in a project. The file
 	 * already exists in the project.
-	 *
-	 * @throws CoreException
 	 */
 	public void testPatchAddsExistingFileWithSameContents()
 			throws CoreException {
@@ -144,8 +140,6 @@ public class FileDiffResultTest extends WorkspaceTest {
 	/**
 	 * Tests applying a patch which creates a new file in a project. The file
 	 * already exists in the project, but has different contents.
-	 *
-	 * @throws CoreException
 	 */
 	public void testPatchAddsExistingFileWithDifferentContents()
 			throws CoreException {
@@ -237,8 +231,6 @@ public class FileDiffResultTest extends WorkspaceTest {
 	 *            existing one. Enter <code>false</code>, if the file doesn't
 	 *            exist.
 	 * @return Content of the patch.
-	 * @throws IOException
-	 * @throws CoreException
 	 */
 	private String createPatchAddingFile(IProject project, String filename,
 			boolean sameContents) throws IOException, CoreException {
@@ -269,7 +261,6 @@ public class FileDiffResultTest extends WorkspaceTest {
 	 * @param in
 	 *            Input stream.
 	 * @return String read from the stream.
-	 * @throws IOException
 	 */
 	private static String getStringFromStream(InputStream in)
 			throws IOException {
@@ -282,8 +273,6 @@ public class FileDiffResultTest extends WorkspaceTest {
 	 * @param file
 	 *            A file.
 	 * @return Content of the file.
-	 * @throws IOException
-	 * @throws CoreException
 	 */
 	private static String getStringFromIFile(IFile file) throws IOException,
 			CoreException {
@@ -298,7 +287,6 @@ public class FileDiffResultTest extends WorkspaceTest {
 	 *            First stream to check.
 	 * @param inputStream2
 	 *            Second stream to check.
-	 * @throws IOException
 	 */
 	private static void assertEquals(InputStream inputStream1,
 			InputStream inputStream2) throws IOException {

@@ -617,7 +617,6 @@ public class Utils {
 
 	/**
 	 * Returns the list of resources contained in the given elements.
-	 * @param elements
 	 * @return the list of resources contained in the given elements.
 	 */
 	private static IResource[] getResources(Object[] elements, List<Object> nonResources,
@@ -1020,9 +1019,7 @@ public class Utils {
 	 * Return whether the editor associated with a descriptor is a text editor
 	 * (i.e. an instance of AbstractDecoratedTextEditor).
 	 * See bug 99568 for a request to move the createEditor method to IEditorDescriptor.
-	 * @param descriptor
 	 * @return whether the editor associated with a descriptor is a text editor
-	 * @throws CoreException
 	 */
 	public static boolean isTextEditor(IEditorDescriptor descriptor) throws CoreException {
 		if (!(descriptor instanceof EditorDescriptor))
@@ -1174,8 +1171,6 @@ public class Utils {
 	 *
 	 * @param input
 	 *            the input being opened
-	 * @param page
-	 * @param editorInputClasses
 	 * @return an EditorPart or <code>null</code> if none can be found
 	 */
 	public static IEditorPart findReusableCompareEditor(
