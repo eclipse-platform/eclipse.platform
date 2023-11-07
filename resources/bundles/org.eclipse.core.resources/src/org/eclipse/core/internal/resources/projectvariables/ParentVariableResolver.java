@@ -24,7 +24,6 @@ import org.eclipse.core.resources.variableresolvers.PathVariableResolver;
  * in argument, following the syntax:
  *
  * "${PARENT-COUNT-MyVariable}"
- *
  */
 public class ParentVariableResolver extends PathVariableResolver {
 

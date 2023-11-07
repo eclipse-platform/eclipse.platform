@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.URIUtil;
 
 /**
  * ECLIPSE_HOME project variable, pointing to the location of the eclipse install directory.
- *
  */
 public class EclipseHomeProjectVariable extends PathVariableResolver {
 

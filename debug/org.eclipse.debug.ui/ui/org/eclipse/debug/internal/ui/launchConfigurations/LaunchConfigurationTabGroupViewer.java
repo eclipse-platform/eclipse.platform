@@ -226,7 +226,6 @@ public class LaunchConfigurationTabGroupViewer {
 	 * configuration currently being edited, as well as a tab folder of tabs
 	 * that are applicable to the launch configuration.
 	 * @param parent the parent {@link Composite}
-	 *
 	 */
 	private void createControl(Composite parent) {
 		fViewerControl = parent;

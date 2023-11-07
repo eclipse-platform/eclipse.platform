@@ -152,7 +152,6 @@ public class LocalSearchManager {
 	 * are immutable and can't be instantiated from outside Lucene.
 	 *
 	 * @param topDocs  the TopDocs object to convert
-	 * @param searcher
 	 * @return a List of raw SearchHits
 	 */
 
@@ -316,8 +315,6 @@ public class LocalSearchManager {
 	/**
 	 * Returns a TOC file participant for the provided plug-in and file name.
 	 *
-	 * @param pluginId
-	 * @param fileName
 	 * @return The matching participant, or <code>null</code>
 	 */
 	public SearchParticipant getParticipant(String pluginId, String fileName) {
@@ -450,10 +447,6 @@ public class LocalSearchManager {
 
 	/**
 	 * Locates the
-	 *
-	 * @param list
-	 * @param binding
-	 * @return
 	 */
 
 	private ArrayList<ParticipantDescriptor> addBoundDescriptors(ArrayList<ParticipantDescriptor> list, ArrayList<IConfigurationElement> binding) {

@@ -522,7 +522,6 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 
 	/**
 	 * Sets the current view pinned
-	 * @param b
 	 */
 	void setViewPinned(boolean pinned) {
 		this.viewPinned = pinned;

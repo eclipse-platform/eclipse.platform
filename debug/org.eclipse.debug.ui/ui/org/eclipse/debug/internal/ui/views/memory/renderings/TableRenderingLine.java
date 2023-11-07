@@ -116,8 +116,6 @@ public class TableRenderingLine extends PlatformObject {
 	}
 
 	/**
-	 * @param start
-	 * @param end
 	 * @return is the bytes between start and end are all valid
 	 */
 	public boolean isAvailable(int start, int end) {
@@ -252,8 +250,6 @@ public class TableRenderingLine extends PlatformObject {
 	}
 
 	/**
-	 * @param offset
-	 * @param endOffset
 	 * @return true if the specified range of memory has changed, false otherwise
 	 * */
 

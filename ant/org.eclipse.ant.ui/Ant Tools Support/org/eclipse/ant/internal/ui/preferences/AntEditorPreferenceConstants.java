@@ -115,7 +115,6 @@ public class AntEditorPreferenceConstants {
 
 	/**
 	 * Preference key suffix for bold text style preference keys.
-	 * 
 	 */
 	public static final String EDITOR_BOLD_SUFFIX = "_bold"; //$NON-NLS-1$
 

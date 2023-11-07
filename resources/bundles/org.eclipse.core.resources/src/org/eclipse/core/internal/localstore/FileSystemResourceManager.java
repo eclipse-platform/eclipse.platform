@@ -111,7 +111,6 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	 * The workspace paths of {@link IResource#HIDDEN} project and resources
 	 * located in {@link IResource#HIDDEN} projects won't be added to the result.
 	 * </p>
-	 *
 	 */
 	protected ArrayList<IPath> allPathsForLocation(URI inputLocation) {
 		URI canonicalLocation = FileUtil.canonicalURI(inputLocation);
@@ -188,7 +187,6 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 
 	/**
 	 * Asynchronously auto-refresh the requested resource if {@link ResourcesPlugin#PREF_LIGHTWEIGHT_AUTO_REFRESH} is enabled.
-	 * @param target
 	 */
 	private void asyncRefresh(IResource target) {
 		if (lightweightAutoRefreshEnabled) {

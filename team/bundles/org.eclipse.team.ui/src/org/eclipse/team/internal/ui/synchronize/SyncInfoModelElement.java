@@ -48,9 +48,6 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 
 	/**
 	 * Construct a <code>SyncInfoModelElement</code> for the given resource.
-	 *
-	 * @param parent
-	 * @param info
 	 */
 	public SyncInfoModelElement(IDiffContainer parent, SyncInfo info) {
 		super(parent);
@@ -170,7 +167,6 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 
 	/**
 	 * Cache the contents for the base and remote.
-	 * @param monitor
 	 */
 	public void cacheContents(IProgressMonitor monitor) throws TeamException {
 		ITypedElement base = getAncestor();

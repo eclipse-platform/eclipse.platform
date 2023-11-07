@@ -90,7 +90,6 @@ public class WorkspaceTest extends ResourceTest {
 	 * @param hierarchy A list of files &amp; folder names to use as resources
 	 * @param includeContainer A flag that controls whether the container is included in the list of resources.
 	 * @return IResource[] An array of resources filled with variable amounts of random text
-	 * @throws CoreException
 	 */
 	public IResource[] buildResources(IContainer container, String[] hierarchy, boolean includeContainer) throws CoreException {
 		List<IResource> resources = new ArrayList<>(hierarchy.length + 1);

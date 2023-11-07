@@ -113,7 +113,6 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 	 * @param resource the local resource
 	 * @return <code>true</code> if the variant associated with the given local
 	 * resource has been cached.
-	 * @throws TeamException
 	 */
 	public abstract boolean isVariantKnown(IResource resource) throws TeamException;
 

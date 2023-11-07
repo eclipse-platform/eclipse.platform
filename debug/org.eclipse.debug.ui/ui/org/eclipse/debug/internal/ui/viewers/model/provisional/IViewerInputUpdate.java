@@ -22,7 +22,6 @@ package org.eclipse.debug.internal.ui.viewers.model.provisional;
  * Clients requesting a viewer input update may implement this interface.
  * </p>
  * @since 3.4
- *
  */
 public interface IViewerInputUpdate extends IViewerUpdate {
 

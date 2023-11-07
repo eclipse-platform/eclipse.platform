@@ -151,7 +151,6 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
 	 * updated properly.
 	 * <p>
 	 * Subclasses may override this method.
-	 * @param seedSet
 	 */
 	public void reset(SyncInfoSet seedSet) {
 		// First, remove all the sets

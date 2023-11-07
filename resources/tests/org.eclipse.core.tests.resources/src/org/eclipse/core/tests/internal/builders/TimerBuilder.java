@@ -28,9 +28,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
-/**
- *
- */
 public class TimerBuilder extends IncrementalProjectBuilder {
 	public static final String BUILDER_NAME = "org.eclipse.core.tests.resources.timerbuilder";
 	public static final String DURATION_ARG = "duration";

@@ -281,8 +281,6 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 	 * @param viewer
 	 *
 	 * @param next if <code>true</code> the next node is selected, otherwise the previous node
-	 * @param fireOpen
-	 * @param expandOnly
 	 * @return <code>true</code> if at end (or beginning)
 	 */
 	public static boolean navigate(TreeViewer viewer, boolean next, boolean fireOpen, boolean expandOnly) {

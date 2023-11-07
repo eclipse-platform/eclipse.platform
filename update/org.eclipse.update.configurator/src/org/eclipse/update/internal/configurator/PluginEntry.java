@@ -134,7 +134,6 @@ public class PluginEntry {
 
 	/**
 	 * Sets the identifier of this plugin entry. 
-	 * 
 	 */
 	void setVersionedIdentifier(VersionedIdentifier identifier) {
 		setPluginIdentifier(identifier.getIdentifier());

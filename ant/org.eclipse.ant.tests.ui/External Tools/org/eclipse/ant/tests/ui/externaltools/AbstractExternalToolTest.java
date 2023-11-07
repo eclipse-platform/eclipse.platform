@@ -51,7 +51,6 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	 * @param args
 	 *            the argument map to set in the new configuration
 	 * @return a new Ant build {@link ILaunchConfiguration} or <code>null</code>
-	 * @throws Exception
 	 */
 	protected ILaunchConfiguration createExternalToolBuilder(IProject project, String name, Map<String, ? extends Object> args) throws Exception {
 		IFolder dir = getProject().getFolder(BuilderCoreUtils.BUILDER_FOLDER_NAME);
@@ -69,12 +68,6 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 
 	/**
 	 * Creates a new external tool Ant build configuration that has never been saved
-	 * 
-	 * @param project
-	 * @param name
-	 * @param args
-	 * @return
-	 * @throws Exception
 	 */
 	protected ILaunchConfigurationWorkingCopy createExternalToolBuilderWorkingCopy(IProject project, String name, Map<String, Object> args) throws Exception {
 		IFolder dir = getProject().getFolder(BuilderCoreUtils.BUILDER_FOLDER_NAME);
@@ -94,7 +87,6 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	 * Creates a new empty {@link ICommand}
 	 * 
 	 * @return the new build {@link ICommand}
-	 * @throws Exception
 	 */
 	protected ICommand createEmptyBuildCommand() throws Exception {
 		return getProject().getDescription().newCommand();
@@ -103,9 +95,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	/**
 	 * Creates a new builder {@link ICommand}
 	 * 
-	 * @param config
 	 * @return the new builder {@link ICommand}
-	 * @throws Exception
 	 */
 	protected ICommand createBuildCommand(ILaunchConfiguration config) throws Exception {
 		return BuilderUtils.commandFromLaunchConfig(getProject(), config);

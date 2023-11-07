@@ -59,7 +59,6 @@ public class CommandRunner {
 	/**
 	 * Attempt to execute a command
 	 * @param command a CheatSheetCommand created by the parser
-	 * @param csm
 	 * @return OK_STATUS if the command completes withour error, otherwise
 	 * an error status
 	 */

@@ -56,7 +56,6 @@ public final class ProposedResourceDelta extends PlatformObject implements IReso
 
 	/**
 	 * Adds a child delta to the list of children for this delta node.
-	 * @param delta
 	 */
 	protected void add(ProposedResourceDelta delta) {
 		if (children.isEmpty() && status == 0)

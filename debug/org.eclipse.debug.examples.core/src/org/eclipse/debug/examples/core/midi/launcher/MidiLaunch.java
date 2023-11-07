@@ -52,8 +52,6 @@ public class MidiLaunch extends Launch implements ISuspendResume {
 
 	/**
 	 * Sets the sequencer used to play MIDI files.
-	 *
-	 * @param sequencer
 	 */
 	public void setSequencer(Sequencer sequencer) {
 		fSequencer = sequencer;
@@ -62,7 +60,6 @@ public class MidiLaunch extends Launch implements ISuspendResume {
 
 	/**
 	 * Sets the format of the sequence
-	 * @param format
 	 */
 	public void setFormat(MidiFileFormat format) {
 		fFormat = format;

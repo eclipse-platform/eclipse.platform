@@ -267,8 +267,6 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 
 	/**
 	 * Adds content to the dialog area
-	 *
-	 * @param dialogComp
 	 */
 	protected void addContent(Composite dialogComp) {
 		GridData gd;
@@ -422,10 +420,6 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 		return composite;
 	}
 
-	/**
-	 *
-	 * @param buttonId
-	 */
 	protected void launchButtonPressed(int buttonId) {
 		if (buttonId == ID_LAUNCH_BUTTON) {
 			handleLaunchPressed();
@@ -501,7 +495,6 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 
 	/**
 	 * Creates all of the actions for the ToolBarManager
-	 * @param tmanager
 	 * @since 3.2
 	 */
 	protected void createToolbarActions(ToolBarManager tmanager) {
@@ -909,7 +902,6 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 	 * Returns the reserved name set (if there is one), <code>null</code> otherwise
 	 * @return the reserved name set or <code>null</code>
 	 * @since 3.3
-	 *
 	 */
 	public Set<String> getReservedNameSet() {
 		return fReservedNames;
@@ -1066,7 +1058,6 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 
 	/**
 	 * Notification the 'launch' button has been pressed. Save and launch.
-	 *
 	 */
 	protected void handleLaunchPressed() {
 		ILaunchConfiguration config = fTabViewer.getOriginal();
@@ -1148,7 +1139,6 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 
 	/**
 	 * Sets the default values for the given {@link LaunchConfigurationWorkingCopy}
-	 * @param wc
 	 * @since 3.6
 	 */
 	protected void doSetDefaults(ILaunchConfigurationWorkingCopy wc) {

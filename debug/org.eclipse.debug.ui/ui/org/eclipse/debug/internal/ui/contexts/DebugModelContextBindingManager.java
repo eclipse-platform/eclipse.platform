@@ -254,9 +254,6 @@ public class DebugModelContextBindingManager implements IDebugContextListener, I
 
 	/**
 	 * Activates the given context and all its parent contexts.
-	 *
-	 * @param contextId
-	 * @param launch
 	 */
 	private void activateContext(String contextId, ILaunch launch) {
 		while (contextId != null) {
@@ -278,9 +275,6 @@ public class DebugModelContextBindingManager implements IDebugContextListener, I
 
 	/**
 	 * Notes the activation for a context and launch so we can de-activate later.
-	 *
-	 * @param launch
-	 * @param activation
 	 */
 	private synchronized void addActivation(ILaunch launch, IContextActivation activation) {
 		List<IContextActivation> activations = fLanuchToContextActivations.get(launch);
@@ -295,7 +289,6 @@ public class DebugModelContextBindingManager implements IDebugContextListener, I
 	 * Returns the debug model identifiers associated with the given object or <code>null</code>
 	 * if none.
 	 *
-	 * @param object
 	 * @return debug model identifiers associated with the given object or <code>null</code>
 	 */
 	private String[] getDebugModelIds(Object object) {

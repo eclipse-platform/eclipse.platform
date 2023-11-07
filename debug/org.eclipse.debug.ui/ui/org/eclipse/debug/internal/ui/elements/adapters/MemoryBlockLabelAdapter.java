@@ -32,10 +32,6 @@ public class MemoryBlockLabelAdapter extends AsynchronousDebugLabelAdapter {
 		return new ImageDescriptor[0];
 	}
 
-	/**
-	 * @param memoryBlockLabel
-	 * @return
-	 */
 	private String getLabel(IMemoryBlock memoryBlock) {
 
 		String memoryBlockLabel = " "; //$NON-NLS-1$

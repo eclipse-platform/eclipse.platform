@@ -318,9 +318,6 @@ public class MemoryBlocksTreeViewPane implements ISelectionListener, ISelectionC
 		return fTreeViewer.getControl();
 	}
 
-	/**
-	 *
-	 */
 	private void updateRetrieval() {
 
 		Object context = DebugUITools.getPartDebugContext(fParent.getSite());

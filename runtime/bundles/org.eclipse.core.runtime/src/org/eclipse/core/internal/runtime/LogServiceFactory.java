@@ -16,9 +16,6 @@ package org.eclipse.core.internal.runtime;
 import org.eclipse.core.runtime.ILog;
 import org.osgi.framework.*;
 
-/**
- *
- */
 public class LogServiceFactory implements ServiceFactory<ILog> {
 
 	@Override

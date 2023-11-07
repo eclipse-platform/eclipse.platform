@@ -58,7 +58,6 @@ import org.eclipse.ui.ide.IDE;
  * </p>
  *
  * @since 3.3
- *
  */
 public class ApplyPatchOperation implements Runnable {
 

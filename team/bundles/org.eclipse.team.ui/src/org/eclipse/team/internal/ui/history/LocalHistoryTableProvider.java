@@ -186,7 +186,6 @@ public class LocalHistoryTableProvider {
 
 		/**
 		 * The constructor.
-		 * @param columnNumber
 		 */
 		public HistoryComparator(int columnNumber) {
 			this.columnNumber = columnNumber;
@@ -253,7 +252,6 @@ public class LocalHistoryTableProvider {
 
 		/**
 		 * Sets the sorting order.
-		 * @param newReversed
 		 */
 		public void setReversed(boolean newReversed) {
 			reversed = newReversed;
@@ -290,7 +288,6 @@ public class LocalHistoryTableProvider {
 	 * Create a TreeViewer that can be used to display a list of IFile instances.
 	 * This method provides the labels and sorter but does not provide a content provider
 	 *
-	 * @param parent
 	 * @return TableViewer
 	 */
 	public TreeViewer createTree(Composite parent) {

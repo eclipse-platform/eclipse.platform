@@ -32,7 +32,6 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
  * providers. A composite provider is one that breaks up the displayed
  * {@link SyncInfoSet} into subsets that may be displayed using one
  * or more synchronize model providers.
- *
  */
 public abstract class CompositeModelProvider extends AbstractSynchronizeModelProvider {
 
@@ -118,7 +117,6 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 	/**
 	 * Handle the resource additions by adding them to any existing
 	 * sub-providers or by creating addition sub-providers as needed.
-	 * @param resources
 	 */
 	protected void handleAdditions(SyncInfo[] resources) {
 		for (SyncInfo info : resources) {

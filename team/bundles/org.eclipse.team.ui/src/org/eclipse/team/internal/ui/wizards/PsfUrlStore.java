@@ -15,7 +15,6 @@ package org.eclipse.team.internal.ui.wizards;
 
 /**
  * Stores URL history for importing project sets window.
- *
  */
 public class PsfUrlStore extends PsfStore {
 

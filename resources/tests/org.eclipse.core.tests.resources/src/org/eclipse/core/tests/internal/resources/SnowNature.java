@@ -20,8 +20,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SnowBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
 
-/**
- */
 public class SnowNature extends TestNature {
 	/**
 	 * Constructor for SnowNature.

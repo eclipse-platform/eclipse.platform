@@ -91,7 +91,6 @@ public class ExternalToolsBuilderTab extends AbstractLaunchConfigurationTab {
 
 	/**
 	 * Constructor
-	 * @param createBuildScheduleComponent
 	 */
 	public ExternalToolsBuilderTab(boolean createBuildScheduleComponent) {
 		fCreateBuildScheduleComponent= createBuildScheduleComponent;

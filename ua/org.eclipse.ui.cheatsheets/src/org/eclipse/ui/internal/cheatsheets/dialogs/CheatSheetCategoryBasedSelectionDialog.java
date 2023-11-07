@@ -428,8 +428,6 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 	 * Method enableOKButton enables/diables the OK button for the dialog and
 	 * saves the state, allowing the enabling/disabling to occur even if the
 	 * button has not been created yet.
-	 *
-	 * @param value
 	 */
 	private void enableOKButton(boolean value) {
 		Button button = getButton(IDialogConstants.OK_ID);
@@ -705,7 +703,6 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 	/**
 	 * Store the current values of self's widgets so that they can be restored
 	 * in the next instance of self
-	 *
 	 */
 	public void saveWidgetValues() {
 		storeExpandedCategories();

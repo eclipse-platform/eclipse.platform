@@ -1983,7 +1983,6 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 * @param additionalTrees remaining trees to be persisted for other configurations
 	 * @param additionalBuilderInfos remaining builder infos for other configurations
 	 * @param additionalConfigNames configuration names of the remaining per-configuration trees
-	 * @throws CoreException
 	 */
 	private void getTreesToSave(IProject project, List<ElementTree> trees, List<BuilderPersistentInfo> builderInfos, List<String> configNames, List<ElementTree> additionalTrees, List<BuilderPersistentInfo> additionalBuilderInfos, List<String> additionalConfigNames) throws CoreException {
 		if (project.isOpen()) {

@@ -15,9 +15,6 @@ package org.eclipse.core.internal.expressions.tests;
 
 import org.eclipse.core.runtime.IAdaptable;
 
-/**
- *
- */
 public class AdaptableAdaptee implements IAdaptable {
 
 	private final Adapter fAdapter = new Adapter();

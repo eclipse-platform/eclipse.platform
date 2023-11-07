@@ -30,7 +30,6 @@ public class Util {
 	/**
 	 * Parses the passed json or returns a default value.
 	 *
-	 * @param jsonObject
 	 * @param element      the value to return in case the jsonObject does not
 	 *                     contain the specified value.
 	 * @param defaultValue the value to return in case the jsonObject does not
@@ -47,7 +46,6 @@ public class Util {
 	/**
 	 * Parses the passed json or returns a default value.
 	 *
-	 * @param jsonObject
 	 * @param element      the value to return in case the jsonObject does not
 	 *                     contain the specified value.
 	 * @param defaultValue the value to return in case the jsonObject does not
@@ -64,7 +62,6 @@ public class Util {
 	/**
 	 * Parses the passed json or returns a default value.
 	 *
-	 * @param jsonObject
 	 * @param element      the value to return in case the jsonObject does not
 	 *                     contain the specified value.
 	 * @param defaultValue the value to return in case the jsonObject does not
@@ -124,7 +121,6 @@ public class Util {
 	/**
 	 * Checks if the URL is valid.
 	 *
-	 * @param pUrl
 	 * @return A status indicating the result.
 	 */
 	public static IStatus isValidUrl(String pUrl) {

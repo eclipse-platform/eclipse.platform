@@ -61,8 +61,6 @@ public class CheatSheetSaveHelper {
 	 * Create the properties used to save the state of a cheatsheet
 	 * @param currentItemNum the current item
 	 * @param items a list of the items in this cheatsheet
-	 * @param buttonIsDown
-	 * @param expandRestoreStates
 	 * @param csID the cheatsheet id
 	 * @param contentPath will be null if the cheatsheet was launched using information from
 	 * the registry, otherwise it is the url of the cheatsheet content file.

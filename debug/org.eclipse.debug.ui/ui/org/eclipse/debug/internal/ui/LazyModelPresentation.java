@@ -152,7 +152,6 @@ public class LazyModelPresentation implements IDebugModelPresentation, IDebugEdi
 	/**
 	 * Computes and return common adornment flags for the given element.
 	 *
-	 * @param element
 	 * @return adornment flags defined in CompositeDebugImageDescriptor
 	 */
 	private int computeAdornmentFlags(Object element) {

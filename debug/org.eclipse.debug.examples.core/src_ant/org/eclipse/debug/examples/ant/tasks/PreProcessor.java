@@ -180,7 +180,6 @@ public class PreProcessor extends Task {
 	 *
 	 * @param srcFile the file to process
 	 * @param strip chars to strip off lines in a true condition, or <code>null</code>
-	 * @return
 	 */
 	public String preProcessFile(File srcFile, String strip) {
 		try {

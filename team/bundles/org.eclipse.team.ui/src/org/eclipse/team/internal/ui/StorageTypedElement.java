@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.team.core.TeamException;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
@@ -59,7 +58,6 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 	 * This method should be invoked before {@link #getContents()}
 	 * to ensure that a round trip is not made in that method.
 	 * @param monitor a progress monitor.
-	 * @throws CoreException
 	 */
 	public void cacheContents(IProgressMonitor monitor) throws CoreException {
 		bufferedContents = fetchContents(monitor);
@@ -67,9 +65,7 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 
 	/**
 	 * Returns an IStorage for the element.
-	 * @param monitor
 	 * @return a storage
-	 * @throws TeamException
 	 */
 	abstract protected IStorage fetchContents(IProgressMonitor monitor) throws CoreException;
 

@@ -126,8 +126,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * different from the bundle for all the other pages. Only pages do this
 	 * logic and so other model objects might have the wrong bundle cached if
 	 * the resource was loaded from an nl directory.
-	 *
-	 * @param element
 	 */
 	AbstractIntroPage(Element element, Bundle bundle, String base) {
 		super(element, bundle, base);
@@ -190,9 +188,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * Initialize styles. Take first style in style attribute and make it the
 	 * page style. Then put other styles in styles vectors. Make sure to resolve
 	 * each style.
-	 *
-	 * @param element
-	 * @param bundle
 	 */
 	private void init(Element element, Bundle bundle, String base) {
 		String[] styleValues = getAttributeList(element, ATT_STYLE);
@@ -307,8 +302,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	/**
 	 * Adds the given style to the list. Style is not added if it already exists
 	 * in the list.
-	 *
-	 * @param style
 	 */
 	protected void addStyle(String style) {
 		if (!initStyles(style))
@@ -331,8 +324,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	/**
 	 * Adds the given style to the list.Style is not added if it already exists
 	 * in the list.
-	 *
-	 * @param altStyle
 	 */
 	protected void addAltStyle(String altStyle, Bundle bundle) {
 		if (!initAltStyles(altStyle))
@@ -345,7 +336,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 
 	/**
 	 * Util method to add given styles to the list.
-	 *
 	 */
 	protected void addStyles(String[] styles) {
 		if (styles == null)
@@ -435,8 +425,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	/**
 	 * Returns all head contributions in this page. There can be more than one
 	 * head contribution in the page;
-	 *
-	 * @return
 	 */
 	public IntroHead[] getHTMLHeads() {
 		return (IntroHead[]) getChildrenOfType(AbstractIntroElement.HEAD);
@@ -500,8 +488,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * Load the xml content from the introContent.xml file pointed to by the
 	 * content attribute, and loaded into the passed DOM. Load the first page
 	 * with correct id from this content file.
-	 *
-	 * @param dom
 	 */
 	private void loadXMLContent(Document dom) {
 		Element[] pages = ModelUtil.getElementsByTagName(dom,
@@ -562,8 +548,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * Returns the DOM representing an external XHTML file. May return null if
 	 * extension content is 3.0 format. The page is resolved before returning,
 	 * meaning includes are resolved, and the base of the page is defined.
-	 *
-	 * @return
 	 */
 	public Document getResolvedDocument() {
 		// we need to force a getChildren to resolve the page.
@@ -576,8 +560,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * Returns the DOM representing an external XHTML file. May return null if
 	 * extension content is 3.0 format. The page is NOT resolved before
 	 * returning. It is retruned as given by the dom parser.
-	 *
-	 * @return
 	 */
 	public Document getDocument() {
 		// we only need to load children here.
@@ -591,8 +573,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * Returns whether or not we have an XHTML page as the content for this
 	 * page. The XHTML page is defined through the content attribute. This
 	 * method forces the content file to be parsed and loaded in memory.
-	 *
-	 * @return
 	 */
 	public boolean isXHTMLPage() {
 		// we need to force loading of children since we need to determine
@@ -613,7 +593,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * whether or not an xmlns was used in the xml. note: could not have used
 	 * inheritance from parent container because return type for parent is intro
 	 * legacy model.
-	 *
 	 */
 	public Element findDomChild(String id, String localElementName) {
 		if (!loaded)
@@ -625,9 +604,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 
 	/**
 	 * Search for any element with the given id.
-	 *
-	 * @param id
-	 * @return
 	 */
 	public Element findDomChild(String id) {
 		return findDomChild(id, "*"); //$NON-NLS-1$
@@ -725,10 +701,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * Find the target Element pointed to by the path in the include. It is
 	 * assumed that configId always points to an external config, and not the
 	 * same config of the include.
-	 *
-	 * @param include
-	 * @param path
-	 * @return
 	 */
 	private Object[] findDOMIncludeTarget(IntroInclude include) {
 		String path = include.getPath();
@@ -811,8 +783,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	/**
 	 * Used when cloning pages to assign a unique id. Cache original id before
 	 * setting.
-	 *
-	 * @param id
 	 */
 	public void setId(String id) {
 		this.originalId = this.id;
@@ -843,8 +813,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 
 	/**
 	 * Return true if this page is a cloned page that has an IFrame.
-	 *
-	 * @return
 	 */
 	public boolean isIFramePage() {
 		return (iframe != null) ? true : false;
@@ -860,8 +828,6 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 
 	/**
 	 * Set the url of the embedded IFrame, if this page is an IFrame page.
-	 *
-	 * @param url
 	 */
 	public void setIFrameURL(String url) {
 		if (!isIFramePage())

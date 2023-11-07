@@ -20,13 +20,9 @@ import org.eclipse.debug.internal.ui.viewers.update.DebugTargetProxy;
 
 /**
  * @since 3.2
- *
  */
 public class PDADebugTargetProxy extends DebugTargetProxy {
 
-	/**
-	 * @param target
-	 */
 	public PDADebugTargetProxy(IDebugTarget target) {
 		super(target);
 	}

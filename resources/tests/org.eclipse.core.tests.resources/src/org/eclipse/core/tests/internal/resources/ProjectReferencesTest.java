@@ -74,8 +74,6 @@ public class ProjectReferencesTest extends ResourceTest {
 
 	/**
 	 * Returns a reference to the active build configuration
-	 * @param project
-	 * @return
 	 */
 	private IBuildConfiguration getRef(IProject project) {
 		return new BuildConfiguration(project, null);
@@ -83,8 +81,6 @@ public class ProjectReferencesTest extends ResourceTest {
 
 	/**
 	 * Create 2 build configurations bc0 and bc1 on each project
-	 * @param project
-	 * @throws CoreException
 	 */
 	private void setUpVariants(IProject project) throws CoreException {
 		IProjectDescription desc = project.getDescription();
@@ -115,7 +111,6 @@ public class ProjectReferencesTest extends ResourceTest {
 	 * configuration level references.
 	 *
 	 * Removing a build configuration removes associated build configuration references
-	 * @throws CoreException
 	 */
 	public void testChangingBuildConfigurations() throws CoreException {
 		IProjectDescription desc = project0.getDescription();
@@ -157,7 +152,6 @@ public class ProjectReferencesTest extends ResourceTest {
 	/**
 	 * Tests that setting build configuration level dynamic references
 	 * trumps the project level dynamic references when it comes to order.
-	 * @throws CoreException
 	 */
 	public void testMixedProjectAndBuildConfigRefs() throws CoreException {
 		// Set project variant references

@@ -222,7 +222,6 @@ public class PatchWizard extends Wizard {
 
 	/**
 	 * Used to report that the patch has
-	 *
 	 */
 	protected void patchReadIn() {
 		patchReadIn = true;

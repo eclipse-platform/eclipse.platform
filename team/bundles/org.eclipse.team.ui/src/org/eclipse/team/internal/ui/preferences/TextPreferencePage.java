@@ -70,7 +70,6 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		}
 
 		/**
-		 * @param newText
 		 * @return the text
 		 */
 		public String strip(String newText) {

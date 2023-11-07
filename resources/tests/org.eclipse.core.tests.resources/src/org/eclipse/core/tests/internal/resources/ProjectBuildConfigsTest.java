@@ -115,7 +115,6 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 
 	/**
 	 * Tests that build configuration references are correct after moving a project
-	 * @throws CoreException
 	 */
 	public void testProjectMove() throws CoreException {
 		IProjectDescription desc = project.getDescription();

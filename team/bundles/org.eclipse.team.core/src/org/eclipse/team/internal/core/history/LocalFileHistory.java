@@ -101,7 +101,6 @@ public class LocalFileHistory extends FileHistory {
 	 * Refreshes the revisions for this local file.
 	 *
 	 * @param monitor	a progress monitor
-	 * @throws TeamException
 	 */
 	public void refresh(IProgressMonitor monitor) throws TeamException {
 		monitor.beginTask(Messages.LocalFileHistory_RefreshLocalHistory/*, file.getProjectRelativePath().toString())*/, 300);

@@ -49,8 +49,6 @@ public class GithubBug_193 extends TestCase {
 	 * This test relies on proper job event order reported to job listeners to
 	 * succeed. Listener expects that for any job, "scheduled" event is always sent
 	 * before "done". If that is not the case, test will fail.
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testDoneEventReceivedBeforeSchedule() throws Exception {

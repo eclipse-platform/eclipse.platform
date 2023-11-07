@@ -52,9 +52,6 @@ public class HyperlinkLabel extends Canvas {
 
 	/**
 	 * Constructor for Hyperlink.
-	 *
-	 * @param parent
-	 * @param style
 	 */
 	public HyperlinkLabel(Composite parent, int style) {
 		super(parent, style);

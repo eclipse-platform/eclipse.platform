@@ -197,9 +197,6 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 
 	/**
 	 * Trigger an auto-build and wait for it to start.
-	 *
-	 * @throws CoreException
-	 * @throws InterruptedException
 	 */
 	private void triggerAutoBuildAndWait() throws CoreException, InterruptedException {
 		project.touch(getMonitor());

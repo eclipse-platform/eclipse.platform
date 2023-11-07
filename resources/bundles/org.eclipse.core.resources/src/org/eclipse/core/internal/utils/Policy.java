@@ -169,7 +169,6 @@ public class Policy {
 
 	/**
 	 * Logs a throwable, assuming severity of error
-	 * @param t
 	 */
 	public static void log(Throwable t) {
 		log(IStatus.ERROR, "Internal Error", t); //$NON-NLS-1$

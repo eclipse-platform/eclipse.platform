@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * @since 3.0
- *
  */
 public abstract class BasicDebugViewContentProvider implements IStructuredContentProvider, IDebugEventSetListener {
 

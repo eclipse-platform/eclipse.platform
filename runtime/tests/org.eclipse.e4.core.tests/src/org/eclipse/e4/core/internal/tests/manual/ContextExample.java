@@ -27,9 +27,6 @@ import org.osgi.framework.ServiceRegistration;
 
 import jakarta.inject.Inject;
 
-/**
- *
- */
 public class ContextExample {
 	static class Crayon {
 		@Inject
@@ -97,9 +94,6 @@ public class ContextExample {
 		new ContextExample().price();
 	}
 
-	/**
-	 *
-	 */
 	public void run() {
 		IEclipseContext parent = EclipseContextFactory.create();
 		parent.set("complement", new ComplementaryColor());

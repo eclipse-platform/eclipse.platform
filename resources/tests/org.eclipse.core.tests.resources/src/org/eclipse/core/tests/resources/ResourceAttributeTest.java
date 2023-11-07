@@ -24,9 +24,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 
-/**
- *
- */
 public class ResourceAttributeTest extends ResourceTest {
 
 	private void setArchive(IResource resource, boolean value) throws CoreException {

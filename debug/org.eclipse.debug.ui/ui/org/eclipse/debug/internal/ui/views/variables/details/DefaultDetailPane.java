@@ -117,7 +117,6 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
  *
  * @see DefaultDetailPaneFactory
  * @since 3.3
- *
  */
 public class DefaultDetailPane extends AbstractDetailPane implements IDetailPane2, IAdaptable, IPropertyChangeListener{
 

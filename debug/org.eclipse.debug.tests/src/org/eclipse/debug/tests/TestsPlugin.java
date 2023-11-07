@@ -39,7 +39,6 @@ public class TestsPlugin {
 
 	/**
 	 * Returns the file corresponding to the specified path from within this bundle
-	 * @param path
 	 * @return the file corresponding to the specified path from within this bundle, or
 	 * <code>null</code> if not found
 	 */
@@ -56,9 +55,7 @@ public class TestsPlugin {
 
 	/**
 	 * Creates a new project with the specified name
-	 * @param projectName
 	 * @return a new project with the specified name
-	 * @throws CoreException
 	 */
 	public static IProject createProject(String projectName) throws CoreException {
 		IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();

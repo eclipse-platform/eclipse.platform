@@ -292,7 +292,6 @@ public class ProcessPropertyPage extends PropertyPage {
 
 	/**
 	 * Initializes the text to be displayed in the environment text widget
-	 * @param proc
 	 * @return the environment path or a default string never <code>null</code>
 	 *
 	 * @see DebugPlugin#ATTR_ENVIRONMENT
@@ -312,7 +311,6 @@ public class ProcessPropertyPage extends PropertyPage {
 	/**
 	 * Initializes the text to be displayed in the working directory text widget
 	 *
-	 * @param proc
 	 * @return the text to display or a default {@link String} never <code>null</code>
 	 *
 	 * @see DebugPlugin#ATTR_WORKING_DIRECTORY

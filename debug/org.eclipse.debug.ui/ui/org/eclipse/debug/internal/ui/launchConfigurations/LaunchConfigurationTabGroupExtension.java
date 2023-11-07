@@ -80,7 +80,6 @@ public class LaunchConfigurationTabGroupExtension {
 	/**
 	 * {@return the configuration element that defines the attributes
 	 * for this launch configuration tab group extension.}
-	 *
 	 */
 	protected IConfigurationElement getConfigurationElement() {
 		return fConfig;

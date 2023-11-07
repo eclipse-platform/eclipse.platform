@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Content type Spy view. This view shows detailed information about the currently
  * the content type registry .
- *
  */
 @SuppressWarnings("restriction")
 public class ContentTypeView extends SpyView {

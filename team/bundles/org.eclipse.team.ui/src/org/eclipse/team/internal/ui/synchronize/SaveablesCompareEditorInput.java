@@ -472,8 +472,6 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	 *
 	 * @param monitor a progress monitor
 	 * @return the compare input
-	 * @throws InvocationTargetException
-	 * @throws InterruptedException
 	 */
 	protected ICompareInput prepareCompareInput(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException {

@@ -43,8 +43,6 @@ public class AntStreamMonitor implements IFlushableStreamMonitor {
 
 	/**
 	 * Appends the given message to this stream, and notifies listeners.
-	 *
-	 * @param message
 	 */
 	public void append(String message) {
 		if (isBuffered()) {

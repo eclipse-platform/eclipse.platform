@@ -23,7 +23,6 @@ import java.net.UnknownHostException;
  * Information Center (IC) - stores URL info.
  *
  * @author chaustin
- *
  */
 public class IC {
 
@@ -136,7 +135,6 @@ public class IC {
 	/**
 	 * Tests to see if 2 ICs are equal.  The state (enabled or disabled) is ignored
 	 * during this operation.
-	 *
 	 */
 	@Override
 	public boolean equals(Object o)

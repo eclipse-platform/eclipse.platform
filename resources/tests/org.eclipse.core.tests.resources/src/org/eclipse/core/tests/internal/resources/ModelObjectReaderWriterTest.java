@@ -282,10 +282,6 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 
 	/**
 	 * Reads and returns the project description stored in the given file store.
-	 * @param store
-	 * @return
-	 * @throws CoreException
-	 * @throws IOException
 	 */
 	private ProjectDescription readDescription(IFileStore store) throws CoreException {
 		InputStream input = null;
@@ -667,10 +663,6 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 
 	/**
 	 * Writes a project description to a file store
-	 * @param store
-	 * @param description
-	 * @throws IOException
-	 * @throws CoreException
 	 */
 	private void writeDescription(IFileStore store, ProjectDescription description) throws IOException, CoreException {
 		OutputStream output = null;

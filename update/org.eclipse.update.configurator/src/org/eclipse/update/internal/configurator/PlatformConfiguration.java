@@ -231,7 +231,6 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 	 *
 	 * @param url site url
 	 * @param checkPlatformURL if true, check for url format that is platform:/...
-	 * @return
 	 */
 	public SiteEntry findConfiguredSite(URL url, boolean checkPlatformURL) {
 		if (url == null)

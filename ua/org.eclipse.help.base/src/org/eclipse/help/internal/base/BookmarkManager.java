@@ -195,7 +195,6 @@ public class BookmarkManager extends Observable {
 	/**
 	 * Ensures that string does not contains ',' or '|' characters.
 	 *
-	 * @param s
 	 * @return String
 	 */
 	private static String encode(String s) {

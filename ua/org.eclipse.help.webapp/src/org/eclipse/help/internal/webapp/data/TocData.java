@@ -63,9 +63,6 @@ public class TocData extends ActivitiesData {
 	private final AbstractHelpScope scope;
 	/**
 	 * Constructs the xml data for the contents page.
-	 *
-	 * @param context
-	 * @param request
 	 */
 	public TocData(ServletContext context, HttpServletRequest request,
 			HttpServletResponse response) {
@@ -199,7 +196,6 @@ public class TocData extends ActivitiesData {
 	/**
 	 * Check if given TOC is visible
 	 *
-	 * @param toc
 	 * @return true if TOC should be visible
 	 */
 	public boolean isEnabled(int toc) {
@@ -208,7 +204,6 @@ public class TocData extends ActivitiesData {
 	/**
 	 * Check if given TOC is visible
 	 *
-	 * @param toc
 	 * @return true if TOC should be visible
 	 */
 	private boolean isEnabled(IToc toc) {
@@ -299,7 +294,6 @@ public class TocData extends ActivitiesData {
 	 * Obtains children topics for a given navigation element. Topics from TOCs
 	 * not matching enabled activities are filtered out.
 	 *
-	 * @param navigationElement
 	 * @return List of ITopic
 	 */
 	private List<ITopic> getEnabledSubtopicList(Object element) {

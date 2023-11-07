@@ -82,8 +82,6 @@ public class Bug_311863 extends AbstractJobManagerTest {
 	 * t3 in the queue to acquire the lock.
 	 *
 	 * Particularly insidious as the UI thread is interrupted frequently
-	 *
-	 * @throws Exception
 	 */
 	public void testInterruptDuringLockRelease() throws Exception {
 		final TestBarrier2 tb1 = new TestBarrier2(-1);

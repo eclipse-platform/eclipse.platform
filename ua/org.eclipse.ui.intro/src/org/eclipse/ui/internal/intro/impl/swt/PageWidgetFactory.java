@@ -241,9 +241,6 @@ public class PageWidgetFactory {
 
 	/**
 	 * Creates an Image Hyperlink from an IntroLink. Model object is NOT cached.
-	 *
-	 * @param body
-	 * @param link
 	 */
 	private Control createImageHyperlink(Composite parent, IntroLink link) {
 		Control control;
@@ -462,9 +459,6 @@ public class PageWidgetFactory {
 
 	/**
 	 * Will be only called for non formatted text.
-	 *
-	 * @param text
-	 * @return
 	 */
 	private String generateBoldFormText(String text) {
 		StringBuilder sbuf = new StringBuilder();
@@ -481,9 +475,6 @@ public class PageWidgetFactory {
 	/**
 	 * Check the filter state of the element. Only base elements have the filter
 	 * attribute.
-	 *
-	 * @param element
-	 * @return
 	 */
 	private boolean getFilterState(AbstractIntroElement element) {
 		if (element.isOfType(AbstractIntroElement.BASE_ELEMENT))

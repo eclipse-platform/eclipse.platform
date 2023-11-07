@@ -26,7 +26,6 @@ public class TestWorkspaceJob extends WorkspaceJob {
 
 	/**
 	 * Creates a workspace job that will run for the specified duration in milliseconds.
-	 * @param duration
 	 */
 	public TestWorkspaceJob(long duration) {
 		super("TestWorkspaceJob");

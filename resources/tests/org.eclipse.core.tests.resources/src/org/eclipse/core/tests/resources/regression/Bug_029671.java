@@ -20,7 +20,6 @@ import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
  * When a container was moved, its children were not added to phantom space.
- *
  */
 public class Bug_029671 extends ResourceTest {
 
