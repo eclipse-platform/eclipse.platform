@@ -791,7 +791,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue("4.1", first || second || third);
 	}
 
-	public void testValidateEdit() {
+	public void testValidateEdit() throws CoreException {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
 		if (!isReadOnlySupported()) {

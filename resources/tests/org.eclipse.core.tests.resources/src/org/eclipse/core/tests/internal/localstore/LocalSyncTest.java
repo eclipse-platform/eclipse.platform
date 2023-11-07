@@ -40,7 +40,7 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		return path.toFile().exists() && path.toFile().length() == 0;
 	}
 
-	public void testProjectDeletion() {
+	public void testProjectDeletion() throws CoreException {
 		/* initialize common objects */
 		Project project = (Project) projects[0];
 

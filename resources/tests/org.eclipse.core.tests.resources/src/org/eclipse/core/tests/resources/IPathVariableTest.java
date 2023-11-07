@@ -609,7 +609,7 @@ public class IPathVariableTest extends ResourceTest {
 	 * attempting to get the location of a resource that would live under an
 	 * existing IFile.
 	 */
-	public void testDiscoverLocationOfInvalidFile() {
+	public void testDiscoverLocationOfInvalidFile() throws CoreException {
 		IPath filep = IPath.fromOSString("someFile");
 		IPath invalidChild = filep.append("invalidChild");
 

@@ -197,7 +197,7 @@ public class IResourceTest extends ResourceTest {
 
 	/**
 	 * Returns interesting resources for refresh local / sync tests. */
-	protected IResource[] buildInterestingResources() {
+	protected IResource[] buildInterestingResources() throws CoreException {
 		IProject emptyProject = getWorkspace().getRoot().getProject("EmptyProject");
 		IProject fullProject = getWorkspace().getRoot().getProject("FullProject");
 		//resource pattern is: empty file, empty folder, full folder, repeat
@@ -213,7 +213,7 @@ public class IResourceTest extends ResourceTest {
 		return result;
 	}
 
-	private IResource[] buildSampleResources(IContainer root) {
+	private IResource[] buildSampleResources(IContainer root) throws CoreException {
 		// do not change the example resources unless you change references to
 		// specific indices in setUp()
 		IResource[] result = buildResources(root, new String[] {"1/", "1/1/", "1/1/1/", "1/1/1/1", "1/1/2/", "1/1/2/1/", "1/1/2/2/", "1/1/2/3/", "1/2/", "1/2/1", "1/2/2", "1/2/3/", "1/2/3/1", "1/2/3/2", "1/2/3/3", "1/2/3/4", "2", "2"});
@@ -482,7 +482,7 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * Sets up the workspace and file system for this test. */
 	protected void setupBeforeState(IResource receiver, IResource target, int state, int depth, boolean addVerifier)
-			throws OperationCanceledException, InterruptedException {
+			throws OperationCanceledException, InterruptedException, CoreException {
 		// Wait for any outstanding refresh to finish
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());

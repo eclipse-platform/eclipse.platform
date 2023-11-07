@@ -45,7 +45,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	 * Tests findFilesForLocation when non-canonical paths are used (bug 155101).
 	 */
 	@Test
-	public void testFindFilesNonCanonicalPath() {
+	public void testFindFilesNonCanonicalPath() throws CoreException {
 		// this test is for windows only
 		Assume.assumeTrue(OS.isWindows());
 
@@ -60,11 +60,8 @@ public class IWorkspaceRootTest extends ResourceTest {
 		fileLocationLower = fileLocationLower.setDevice(fileLocationLower.getDevice().toLowerCase());
 		IPath fileLocationUpper = fileLocationLower.setDevice(fileLocationLower.getDevice().toUpperCase());
 		//create the link with lower case device
-		try {
-			link.createLink(fileLocationLower, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		link.createLink(fileLocationLower, IResource.NONE, getMonitor());
+
 		//try to find the file using the upper case device
 		IFile[] files = getWorkspace().getRoot().findFilesForLocation(fileLocationUpper);
 		assertEquals("1.0", 1, files.length);
