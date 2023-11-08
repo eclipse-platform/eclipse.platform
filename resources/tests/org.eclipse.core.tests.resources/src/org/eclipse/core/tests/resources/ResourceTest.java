@@ -964,18 +964,6 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Modifies the content of the given file in the workspace by appending a 'w'.
-	 *
-	 * @param file
-	 *            the workspace file to extend
-	 */
-	protected void modifyInWorkspace(IFile file) throws CoreException {
-		String newContent = readStringInWorkspace(file) + "w";
-		ByteArrayInputStream is = new ByteArrayInputStream(newContent.getBytes(StandardCharsets.UTF_8));
-		file.setContents(is, false, false, null);
-	}
-
-	/**
 	 * Returns the content of the given file in the file system as a byte array.
 	 *
 	 * @param file
@@ -1001,25 +989,6 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Returns the content of the given file in the workspace as a byte array.
-	 *
-	 * @param file
-	 *            workspace file to read
-	 */
-	protected byte[] readBytesInWorkspace(IFile file) {
-		String m = getClassName() + ".readBytesInWorkspace(IFile): ";
-		try {
-			InputStream is = file.getContents(false);
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			transferData(is, os);
-			return os.toByteArray();
-		} catch (CoreException e) {
-			fail(m + "0.0", e);
-		}
-		return null;
-	}
-
-	/**
 	 * Returns the content of the given file in the file system as a String (UTF8).
 	 *
 	 * @param file
@@ -1027,16 +996,6 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	protected String readStringInFileSystem(IFile file) {
 		return new String(readBytesInFileSystem(file), StandardCharsets.UTF_8);
-	}
-
-	/**
-	 * Returns the content of the given file in the workspace as a String (UTF8).
-	 *
-	 * @param file
-	 *            workspace file to read
-	 */
-	protected String readStringInWorkspace(IFile file) {
-		return new String(readBytesInWorkspace(file), StandardCharsets.UTF_8);
 	}
 
 	protected void setReadOnly(IFileStore target, boolean value) {
