@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertArrayEquals;
 
 import java.io.ByteArrayInputStream;
@@ -729,7 +732,36 @@ public abstract class ResourceTest extends CoreTest {
 		modifyInFileSystem(file);
 		waitForRefresh();
 		touchInFilesystem(file);
-		assertTrue("File not out of sync: " + file.getLocation().toOSString(), file.getLocation().toFile().lastModified() != file.getLocalTimeStamp());
+		assertThat("file not out of sync: " + file.getLocation().toOSString(), file.getLocalTimeStamp(),
+				not(is(file.getLocation().toFile().lastModified())));
+	}
+
+	private void modifyInFileSystem(IFile file) {
+		String originalContent = readStringInFileSystem(file);
+		String newContent = originalContent + "f";
+		try (FileOutputStream outputStream = new FileOutputStream(file.getLocation().toFile())) {
+			outputStream.write(newContent.getBytes("UTF8"));
+		} catch (IOException e) {
+			throw new IllegalStateException("could not write to location:" + file.getLocation(), e);
+		}
+	}
+
+	/**
+	 * Returns the content of the given file in the file system as a String (UTF8).
+	 *
+	 * @param file
+	 *            file system file to read
+	 */
+	protected String readStringInFileSystem(IFile file) {
+		IPath location = file.getLocation();
+		assertNotNull("location was null for file: " + file, location);
+		try (FileInputStream inputStream = new FileInputStream(location.toFile())) {
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			transferData(inputStream, outputStream);
+			return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			throw new IllegalStateException("could not read from location:" + location, e);
+		}
 	}
 
 	/**
@@ -938,64 +970,6 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	protected boolean isReadOnlySupported() {
 		return isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY);
-	}
-
-	/**
-	 * Modifies the content of the given file in the file system by appending an
-	 * 'f'.
-	 *
-	 * @param file
-	 *            the file system file to extend
-	 */
-	protected void modifyInFileSystem(IFile file) {
-		String m = getClassName() + ".modifyInFileSystem(IFile): ";
-		String newContent = readStringInFileSystem(file) + "f";
-		IPath location = file.getLocation();
-		if (location == null) {
-			fail("0.1 - null location for file: " + file);
-			return;
-		}
-		java.io.File osFile = location.toFile();
-		try (FileOutputStream os = new FileOutputStream(osFile)) {
-			os.write(newContent.getBytes("UTF8"));
-		} catch (IOException e) {
-			fail(m + "0.0", e);
-		}
-	}
-
-	/**
-	 * Returns the content of the given file in the file system as a byte array.
-	 *
-	 * @param file
-	 *            file system file to read
-	 */
-	protected byte[] readBytesInFileSystem(IFile file) {
-		String m = getClassName() + ".readBytesInFileSystem(IFile): ";
-		try {
-			IPath location = file.getLocation();
-			if (location == null) {
-				fail("0.1 - null location for file: " + file);
-				return null;
-			}
-			java.io.File osFile = location.toFile();
-			FileInputStream is = new FileInputStream(osFile);
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			transferData(is, os);
-			return os.toByteArray();
-		} catch (IOException e) {
-			fail(m + "0.0", e);
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the content of the given file in the file system as a String (UTF8).
-	 *
-	 * @param file
-	 *            file system file to read
-	 */
-	protected String readStringInFileSystem(IFile file) {
-		return new String(readBytesInFileSystem(file), StandardCharsets.UTF_8);
 	}
 
 	protected void setReadOnly(IFileStore target, boolean value) {
