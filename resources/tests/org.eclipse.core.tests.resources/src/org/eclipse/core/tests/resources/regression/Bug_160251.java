@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.filesystem.EFS;
@@ -91,7 +93,7 @@ public class Bug_160251 extends ResourceTest {
 		ensureExistsInWorkspace(source, true);
 		ensureExistsInWorkspace(sourceFile, true);
 		destination.mkdir(EFS.NONE, getMonitor());
-		createFileInFileSystem(destinationFile, getRandomContents());
+		createFile(destinationFile, getRandomContents());
 
 		//move the project (should fail)
 		IProjectDescription description = source.getDescription();

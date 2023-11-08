@@ -13,11 +13,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.refresh;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+
 import java.util.HashMap;
 import java.util.Map;
 import junit.framework.AssertionFailedError;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.Job;
@@ -73,7 +80,7 @@ public class RefreshProviderTest extends ResourceTest {
 			link.delete(IResource.FORCE, getMonitor());
 			joinAutoRefreshJobs();
 			assertEquals("1.2", 1, provider.getMonitoredResources().length);
-			ensureDoesNotExistInWorkspace(project);
+			removeFromWorkspace(project);
 			joinAutoRefreshJobs();
 			assertEquals("1.3", 0, provider.getMonitoredResources().length);
 			//check provider for other errors
@@ -109,7 +116,7 @@ public class RefreshProviderTest extends ResourceTest {
 			project.open(getMonitor());
 			joinAutoRefreshJobs();
 			assertEquals("1.2", 1, provider.getMonitoredResources().length);
-			ensureDoesNotExistInWorkspace(project);
+			removeFromWorkspace(project);
 			joinAutoRefreshJobs();
 			assertEquals("1.3", 0, provider.getMonitoredResources().length);
 			//check provider for other errors

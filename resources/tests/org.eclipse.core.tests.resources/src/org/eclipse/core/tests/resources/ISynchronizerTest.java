@@ -15,6 +15,8 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.DataInputStream;
@@ -761,6 +763,6 @@ public class ISynchronizerTest extends ResourceTest {
 
 		// clean-up
 		synchronizer.remove(partner);
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 	}
 }

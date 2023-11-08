@@ -20,6 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 
 import java.io.File;
 import java.io.IOException;
@@ -1153,7 +1154,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		}
 
 		// clean-up
-		ensureDoesNotExistInFileSystem(file);
+		removeFromFileSystem(file);
 
 		// restore the previous value
 		try {
@@ -1249,7 +1250,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		}
 
 		// clean-up
-		ensureDoesNotExistInFileSystem(file);
+		removeFromFileSystem(file);
 
 		// restore the previous value
 		try {

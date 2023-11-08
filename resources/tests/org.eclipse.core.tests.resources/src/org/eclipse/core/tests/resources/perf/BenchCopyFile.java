@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
@@ -23,7 +25,7 @@ public class BenchCopyFile extends OldCorePerformanceTest {
 
 	public void testCopyFile() throws CoreException {
 		IFileStore input = getTempStore();
-		createFileInFileSystem(input, getRandomContents());
+		createFile(input, getRandomContents());
 		IFileStore[] output = new IFileStore[COUNT];
 		for (int i = 0; i < output.length; i++) {
 			output[i] = getTempStore();

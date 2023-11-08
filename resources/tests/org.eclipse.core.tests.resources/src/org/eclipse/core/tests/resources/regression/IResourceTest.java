@@ -14,6 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.InputStream;
@@ -356,7 +360,7 @@ public class IResourceTest extends ResourceTest {
 		attributes.setReadOnly(false);
 		file.setResourceAttributes(attributes);
 		assertTrue("4.0", !file.isReadOnly());
-		ensureDoesNotExistInWorkspace(new IResource[] {project, file});
+		removeFromWorkspace(new IResource[] {project, file});
 	}
 
 	public void testDelete_Bug8754() throws CoreException {
@@ -380,7 +384,7 @@ public class IResourceTest extends ResourceTest {
 		}
 		assertEquals("1.2", IResourceStatus.OUT_OF_SYNC_LOCAL, status.getCode());
 		//cleanup
-		ensureDoesNotExistInWorkspace(new IResource[] {project, file});
+		removeFromWorkspace(new IResource[] {project, file});
 	}
 
 	public void testEquals_1FUOU25() {
@@ -441,7 +445,7 @@ public class IResourceTest extends ResourceTest {
 
 		final String newContents = "some other contents";
 		Thread.sleep(5000);
-		createFileInFileSystem(target.getLocation(), getContents(newContents));
+		createFile(target.getLocation(), getContents(newContents));
 
 		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(() -> {
 		});

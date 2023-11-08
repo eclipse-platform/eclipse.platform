@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -393,7 +395,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		IProject project = getProject(getUniqueString());
 		IProject destProject = getProject(getUniqueString());
 		ensureExistsInWorkspace(project, true);
-		ensureDoesNotExistInWorkspace(destProject);
+		removeFromWorkspace(destProject);
 		IScopeContext context = new ProjectScope(project);
 		String qualifier = getUniqueString();
 		Preferences node = context.getNode(qualifier);
@@ -529,7 +531,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		assertTrue("1.2", getFileInWorkspace(project, ResourcesPlugin.PI_RESOURCES).exists());
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		assertEquals("1.3", value, node.get(key, null));
-		ensureDoesNotExistInWorkspace(project.getFolder(DIR_NAME));
+		removeFromWorkspace(project.getFolder(DIR_NAME));
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		assertNull("2.0", node.get(key, null));
 	}

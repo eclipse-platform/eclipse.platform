@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.filesystem.EFS;
@@ -74,7 +76,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		//copy to local destination should succeed
 		sourceFile.copy(localFile.getFullPath(), IResource.NONE, getMonitor());
 		//copy from local to non local
-		ensureDoesNotExistInWorkspace(destinationFile);
+		removeFromWorkspace(destinationFile);
 		//copy from local to non local
 		localFile.copy(destinationFile.getFullPath(), IResource.NONE, getMonitor());
 

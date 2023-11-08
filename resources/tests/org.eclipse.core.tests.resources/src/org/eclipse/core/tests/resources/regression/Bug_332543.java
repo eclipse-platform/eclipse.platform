@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
 import static org.junit.Assert.assertThrows;
 
 import java.io.BufferedOutputStream;

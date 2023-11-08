@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.create;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -72,9 +76,9 @@ public class FilteredResourceTest extends ResourceTest {
 	protected void doCleanup() throws Exception {
 		ensureExistsInWorkspace(new IResource[] {existingProject, otherExistingProject, closedProject, existingFolderInExistingProject, existingFolderInExistingFolder, existingFileInExistingProject}, true);
 		closedProject.close(getMonitor());
-		ensureDoesNotExistInWorkspace(new IResource[] {nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolder2InOtherExistingProject, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder});
+		removeFromWorkspace(new IResource[] {nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolder2InOtherExistingProject, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder});
 		resolve(localFolder).toFile().mkdirs();
-		createFileInFileSystem(resolve(localFile), getRandomContents());
+		ResourceTestUtil.createFile(resolve(localFile), getRandomContents());
 	}
 
 	/**
@@ -509,7 +513,7 @@ public class FilteredResourceTest extends ResourceTest {
 		project.close(getMonitor());
 		assertTrue("3.1", !project.isOpen());
 		// Create a file under existingFolderInExistingFolder
-		createFileInFileSystem(childLoc.append("foo"));
+		createFile(childLoc.append("foo"));
 		// Reopen the project
 		project.open(IResource.NONE, getMonitor());
 

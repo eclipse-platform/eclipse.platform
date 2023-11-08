@@ -20,14 +20,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
@@ -41,11 +39,9 @@ import org.eclipse.core.internal.resources.CharsetDeltaJob;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.ValidateProjectEncoding;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -108,18 +104,6 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	protected static boolean isCaseSensitive(IResource resource) {
 		return ((Resource) resource).getStore().getFileSystem().isCaseSensitive();
-	}
-
-	/**
-	 * Convenience method to copy contents from one stream to another.
-	 */
-	public static void transferStreams(InputStream source, OutputStream destination, String path) throws IOException {
-		try {
-			source.transferTo(destination);
-		}finally {
-			FileUtil.safeClose(source);
-			FileUtil.safeClose(destination);
-		}
 	}
 
 	/**
@@ -263,69 +247,9 @@ public abstract class ResourceTest extends CoreTest {
 		}
 	}
 
-	protected void create(final IResource resource, boolean local) throws CoreException {
-		if (resource == null || resource.exists()) {
-			return;
-		}
-		if (!resource.getParent().exists()) {
-			create(resource.getParent(), local);
-		}
-		switch (resource.getType()) {
-			case IResource.FILE :
-				((IFile) resource).create(local ? new ByteArrayInputStream(new byte[0]) : null, true, getMonitor());
-				break;
-			case IResource.FOLDER :
-				((IFolder) resource).create(true, local, getMonitor());
-				break;
-			case IResource.PROJECT :
-				((IProject) resource).create(getMonitor());
-				((IProject) resource).open(getMonitor());
-				break;
-		}
-	}
-
-	/**
-	 * Create the given file in the local store.
-	 */
-	public void createFileInFileSystem(IFileStore file) throws CoreException {
-		createFileInFileSystem(file, getRandomContents());
-	}
-
-	/**
-	 * Create the given file in the local store.
-	 */
-	public void createFileInFileSystem(IFileStore file, InputStream contents) throws CoreException {
-		file.getParent().mkdir(EFS.NONE, null);
-		try (OutputStream output = file.openOutputStream(EFS.NONE, null)) {
-			transferData(contents, output);
-		} catch (IOException e) {
-			throw new CoreException(
-					new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed creating file in file system", e));
-		}
-	}
-
-	/**
-	 * Create the given file in the file system.
-	 */
-	public void createFileInFileSystem(IPath path) throws CoreException {
-		createFileInFileSystem(path, getRandomContents());
-	}
-
-	/**
-	 * Create the given file in the file system.
-	 */
-	public void createFileInFileSystem(IPath path, InputStream contents) throws CoreException {
-		try {
-			createFileInFileSystem(path.toFile(), contents);
-		} catch (IOException e) {
-			throw new CoreException(
-					new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed creating file in file system", e));
-		}
-	}
-
 	public IResource[] createHierarchy() throws CoreException {
 		IResource[] result = buildResources();
-		ensureExistsInWorkspace(result, true);
+		ResourceTestUtil.ensureExistsInWorkspace(result, true);
 		return result;
 	}
 
@@ -342,124 +266,6 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	public String[] defineHierarchy() {
 		return new String[0];
-	}
-
-	/**
-	 * Delete the given resource from the local store. Use the resource
-	 * manager to ensure that we have a correct Path -&gt; File mapping.
-	 */
-	public void ensureDoesNotExistInFileSystem(IResource resource) {
-		IPath path = resource.getLocation();
-		if (path != null) {
-			ensureDoesNotExistInFileSystem(path.toFile());
-		}
-	}
-
-	/**
-	 * Delete the resources in the array from the local store.
-	 */
-	public void ensureDoesNotExistInFileSystem(IResource[] resources) {
-		for (IResource resource : resources) {
-			ensureDoesNotExistInFileSystem(resource);
-		}
-	}
-
-	/**
-	 * Delete the given resource from the workspace resource tree.
-	 */
-	public void ensureDoesNotExistInWorkspace(IResource resource) throws CoreException {
-		if (resource.exists()) {
-			resource.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
-		}
-	}
-
-	/**
-	 * Delete each element of the resource array from the workspace
-	 * resource info tree.
-	 */
-	public void ensureDoesNotExistInWorkspace(final IResource[] resources) throws CoreException {
-		IWorkspaceRunnable body = monitor -> {
-			for (IResource resource : resources) {
-				ensureDoesNotExistInWorkspace(resource);
-			}
-		};
-		getWorkspace().run(body, null);
-	}
-
-	/**
-	 * Create the given file in the local store. Use the resource manager
-	 * to ensure that we have a correct Path -&gt; File mapping.
-	 */
-	public void ensureExistsInFileSystem(IFile file) throws CoreException {
-		createFileInFileSystem(((Resource) file).getStore());
-	}
-
-	/**
-	 * Create the given folder in the local store. Use the resource
-	 * manager to ensure that we have a correct Path -&gt; File mapping.
-	 */
-	public void ensureExistsInFileSystem(IResource resource) throws CoreException {
-		if (resource instanceof IFile file) {
-			ensureExistsInFileSystem(file);
-		} else {
-			((Resource) resource).getStore().mkdir(EFS.NONE, null);
-		}
-	}
-
-	/**
-	 * Create the each resource of the array in the local store.
-	 */
-	public void ensureExistsInFileSystem(IResource[] resources) throws CoreException {
-		for (IResource resource : resources) {
-			ensureExistsInFileSystem(resource);
-		}
-	}
-
-	/**
-	 * Create the given file in the workspace resource info tree.
-	 */
-	public void ensureExistsInWorkspace(final IFile resource, final InputStream contents) throws CoreException {
-		if (resource == null) {
-			return;
-		}
-		IWorkspaceRunnable body;
-		if (resource.exists()) {
-			body = monitor -> resource.setContents(contents, true, false, null);
-		} else {
-			body = monitor -> {
-				create(resource.getParent(), true);
-				resource.create(contents, true, null);
-			};
-		}
-		getWorkspace().run(body, null);
-	}
-
-	/**
-	 * Create the given file in the workspace resource info tree.
-	 */
-	public void ensureExistsInWorkspace(IFile resource, String contents) throws CoreException {
-		ensureExistsInWorkspace(resource, new ByteArrayInputStream(contents.getBytes()));
-	}
-
-	/**
-	 * Create the given resource in the workspace resource info tree.
-	 */
-	public void ensureExistsInWorkspace(final IResource resource, final boolean local) throws CoreException {
-		IWorkspaceRunnable body = monitor -> create(resource, local);
-		getWorkspace().run(body, null);
-	}
-
-	/**
-	 * Create each element of the resource array in the workspace resource
-	 * info tree.
-	 */
-	public void ensureExistsInWorkspace(final IResource[] resources, final boolean local) throws CoreException {
-		IWorkspaceRunnable body = monitor -> {
-			for (IResource resource : resources) {
-				create(resource, local);
-			}
-		};
-		getWorkspace().run(body, null);
 	}
 
 	/**
@@ -510,7 +316,7 @@ public abstract class ResourceTest extends CoreTest {
 		// Ensure the resource exists in the filesystem
 		IPath location = resource.getLocation();
 		if (!location.toFile().exists()) {
-			ensureExistsInFileSystem(resource);
+			ResourceTestUtil.ensureExistsInFileSystem(resource);
 		}
 		// Manually check that the core.resource time-stamp is out-of-sync
 		// with the java.io.File last modified. #isSynchronized() will schedule

@@ -16,6 +16,8 @@ package org.eclipse.core.tests.resources.regression;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
 
 import java.io.IOException;
 import org.eclipse.core.filesystem.IFileStore;
@@ -48,7 +50,7 @@ public class Bug_044106 extends ResourceTest {
 	public void doTestDeleteLinkedFile(int deleteFlags) throws Exception {
 		// create the file/folder that we are going to link to
 		IFileStore linkDestFile = getTempStore();
-		createFileInFileSystem(linkDestFile);
+		createFile(linkDestFile);
 		assertTrue("0.1", linkDestFile.fetchInfo().exists());
 
 		// create some resources in the workspace
@@ -86,7 +88,7 @@ public class Bug_044106 extends ResourceTest {
 		}
 		IFileStore linkDestLocation = getTempStore();
 		IFileStore linkDestFile = linkDestLocation.getChild(getUniqueString());
-		createFileInFileSystem(linkDestFile);
+		createFile(linkDestFile);
 		assertTrue("0.1", linkDestLocation.fetchInfo().exists());
 		assertTrue("0.2", linkDestFile.fetchInfo().exists());
 

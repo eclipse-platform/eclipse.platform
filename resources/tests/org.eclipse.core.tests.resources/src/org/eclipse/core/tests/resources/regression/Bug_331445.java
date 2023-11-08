@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.eclipse.core.resources.IFolder;

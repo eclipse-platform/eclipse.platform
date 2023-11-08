@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+
 import java.io.File;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.ICoreConstants;
@@ -120,7 +125,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		IResource[] both = new IResource[] {folder, file};
 
 		ensureExistsInFileSystem(both);
-		ensureDoesNotExistInWorkspace(both);
+		removeFromWorkspace(both);
 
 		assertFalse(file.exists());
 		assertFalse(folder.exists());
@@ -134,7 +139,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		project.delete(IResource.FORCE, getMonitor());
 
 		ensureExistsInFileSystem(both);
-		ensureDoesNotExistInWorkspace(both);
+		removeFromWorkspace(both);
 
 		assertFalse(file.exists());
 		assertFalse(folder.exists());
@@ -150,7 +155,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		/* */
 		IFile file = project.getFile("file");
 		file.create(null, true, null);
-		ensureDoesNotExistInFileSystem(file);
+		removeFromFileSystem(file);
 		//
 		File target = file.getLocation().toFile();
 		target.mkdirs();
@@ -170,7 +175,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		/* test folder to file */
 		IFolder folder = project.getFolder("folder");
 		folder.create(true, true, null);
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromFileSystem(folder);
 		//
 		IFile file = project.getFile("folder");
 		ensureExistsInFileSystem(file);
@@ -208,8 +213,8 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		assertTrue(file.isLocal(IResource.DEPTH_ZERO));
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertFalse(file.exists());
-		ensureDoesNotExistInWorkspace(file);
-		ensureDoesNotExistInFileSystem(file);
+		removeFromWorkspace(file);
+		removeFromFileSystem(file);
 
 		/* test creation of a child */
 		file = project.getFile("file");
@@ -217,8 +222,8 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		assertFalse(file.exists());
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertTrue(file.exists());
-		ensureDoesNotExistInWorkspace(file);
-		ensureDoesNotExistInFileSystem(file);
+		removeFromWorkspace(file);
+		removeFromFileSystem(file);
 
 		/* test changes of a child (child is folder) */
 		IFolder folder = project.getFolder("folder");
@@ -236,8 +241,8 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		assertTrue(folder.exists());
 		assertTrue(folder.isLocal(IResource.DEPTH_ZERO));
 		assertTrue(file.exists());
-		ensureDoesNotExistInWorkspace(folder);
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromWorkspace(folder);
+		removeFromFileSystem(folder);
 
 		/* test changes of a child (child is file) */
 		file = project.getFile("file");
@@ -254,8 +259,8 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertEquals(fileStore.fetchInfo().getLastModified(),
 				((Resource) file).getResourceInfo(false, false).getLocalSyncInfo());
-		ensureDoesNotExistInWorkspace(file);
-		ensureDoesNotExistInFileSystem(file);
+		removeFromWorkspace(file);
+		removeFromFileSystem(file);
 	}
 
 	public void testSimpleRefresh() throws Throwable {
@@ -265,7 +270,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		/* test root deletion */
 		IFile file = project.getFile("file");
 		ensureExistsInWorkspace(file, true);
-		ensureDoesNotExistInFileSystem(file);
+		removeFromFileSystem(file);
 		assertTrue(file.exists());
 		file.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertFalse(file.exists());

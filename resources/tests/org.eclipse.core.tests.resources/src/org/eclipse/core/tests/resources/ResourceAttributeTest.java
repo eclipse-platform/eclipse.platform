@@ -15,6 +15,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+
 import java.io.File;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
@@ -166,7 +170,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("testNonExistingResource");
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file");
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 		assertNull("1.0", project.getResourceAttributes());
 		assertNull("1.1", folder.getResourceAttributes());
 		assertNull("1.2", file.getResourceAttributes());
@@ -235,7 +239,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		setSymlink(link, false);
 		assertTrue("3.0", !link.getResourceAttributes().isSymbolicLink());
 
-		ensureDoesNotExistInWorkspace(link);
+		removeFromWorkspace(link);
 
 		// create the target file in the filesystem
 		IFile target = project.getFile("target");

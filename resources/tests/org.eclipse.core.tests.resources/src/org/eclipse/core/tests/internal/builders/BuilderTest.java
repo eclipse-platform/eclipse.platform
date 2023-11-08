@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.transferStreams;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -628,7 +631,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		// Create some resources
 		proj1.create(getMonitor());
 		proj1.open(getMonitor());
-		ensureDoesNotExistInWorkspace(proj2);
+		removeFromWorkspace(proj2);
 
 		// Create and set a build spec for project one
 		IProjectDescription desc = proj1.getDescription();

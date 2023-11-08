@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
@@ -56,7 +60,7 @@ public class CopyTest extends LocalStoreTest {
 
 		/* copy to absolute path */
 		IResource destination = testProjects[0].getFile("copy of file.txt");
-		ensureDoesNotExistInFileSystem(destination);
+		removeFromFileSystem(destination);
 		file.copy(destination.getFullPath(), true, null);
 		assertTrue(destination.exists());
 		/* assert properties were properly copied */
@@ -66,13 +70,13 @@ public class CopyTest extends LocalStoreTest {
 			assertThat(propValues[i], is(persistentValue));
 			assertThat(propValues[i], is(not((sessionValue))));
 		}
-		ensureDoesNotExistInWorkspace(destination);
-		ensureDoesNotExistInFileSystem(destination);
+		removeFromWorkspace(destination);
+		removeFromFileSystem(destination);
 
 		/* copy to relative path */
 		IPath path = IPath.fromOSString("copy of file.txt");
 		IFile destinationInFolder = folder.getFile(path);
-		ensureDoesNotExistInFileSystem(destinationInFolder);
+		removeFromFileSystem(destinationInFolder);
 		file.copy(path, true, null);
 		assertTrue(destinationInFolder.exists());
 		/* assert properties were properly copied */
@@ -82,8 +86,8 @@ public class CopyTest extends LocalStoreTest {
 			assertThat(propValues[i], is(persistentValue));
 			assertThat(propValues[i], is(not(sessionValue)));
 		}
-		ensureDoesNotExistInWorkspace(destinationInFolder);
-		ensureDoesNotExistInFileSystem(destinationInFolder);
+		removeFromWorkspace(destinationInFolder);
+		removeFromFileSystem(destinationInFolder);
 
 		/* copy folder to destination under its hierarchy */
 		IFolder destinationInSubfolder = folder.getFolder("subfolder");
@@ -111,13 +115,13 @@ public class CopyTest extends LocalStoreTest {
 			assertThat(propValues[i], is(persistentValue));
 			assertThat(propValues[i], is(not(sessionValue)));
 		}
-		ensureDoesNotExistInWorkspace(destinationFolder);
-		ensureDoesNotExistInFileSystem(destinationFolder);
+		removeFromWorkspace(destinationFolder);
+		removeFromFileSystem(destinationFolder);
 
 		/* copy a file that is not local but exists in the workspace */
 		IFile ghostFile = testProjects[0].getFile("ghost");
 		ghostFile.create(null, true, null);
-		ensureDoesNotExistInFileSystem(file);
+		removeFromFileSystem(file);
 		IFile destinationFile = testProjects[0].getFile("destination");
 		assertThrows(CoreException.class, () -> ghostFile.copy(destinationFile.getFullPath(), true, null));
 	}

@@ -14,6 +14,7 @@
 package org.eclipse.compare.tests;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

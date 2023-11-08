@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
@@ -345,7 +347,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		IFile herringRouge = project.getFile(name);
 
 		// create a file in the local file system with the same name but different casing
-		ensureDoesNotExistInFileSystem(file);
+		removeFromFileSystem(file);
 		ensureExistsInFileSystem(herringRouge);
 
 		// do a refresh, which should cause a problem
@@ -368,7 +370,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		IFile herringRouge = project.getFile(name);
 
 		// create a file in the local file system with the same name but different casing
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromFileSystem(folder);
 		ensureExistsInFileSystem(herringRouge);
 
 		// do a refresh, which should cause a problem

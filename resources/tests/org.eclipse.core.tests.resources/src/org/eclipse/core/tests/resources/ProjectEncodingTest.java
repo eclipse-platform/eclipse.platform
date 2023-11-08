@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.eclipse.core.internal.resources.PreferenceInitializer;

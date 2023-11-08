@@ -18,6 +18,12 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.create;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
@@ -226,7 +232,7 @@ public class IResourceTest extends ResourceTest {
 		nonExistingResources.add(result[result.length - 1]);
 
 		IResource[] deleted = buildResources(root, new String[] {"1/1/2/1/", "1/2/3/1"});
-		ensureDoesNotExistInWorkspace(deleted);
+		removeFromWorkspace(deleted);
 		nonExistingResources.addAll(Arrays.asList(deleted));
 		//out of sync
 		IResource[] unsynchronized = buildResources(root, new String[] {"1/2/3/3"});
@@ -235,7 +241,7 @@ public class IResourceTest extends ResourceTest {
 
 		//file system only
 		unsynchronized = buildResources(root, new String[] {"1/1/2/2/1"});
-		ensureDoesNotExistInWorkspace(unsynchronized);
+		removeFromWorkspace(unsynchronized);
 		ensureExistsInFileSystem(unsynchronized);
 		unsynchronizedResources.add(unsynchronized[0]);
 		return result;
@@ -311,7 +317,7 @@ public class IResourceTest extends ResourceTest {
 		//target may have changed gender
 		IResource changedTarget = getWorkspace().getRoot().findMember(target.getFullPath());
 		if (changedTarget != null && changedTarget.getType() != target.getType()) {
-			ensureDoesNotExistInWorkspace(changedTarget);
+			removeFromWorkspace(changedTarget);
 		}
 		ensureExistsInWorkspace(interestingResources, true);
 	}
@@ -505,7 +511,7 @@ public class IResourceTest extends ResourceTest {
 		switch (state) {
 			case S_WORKSPACE_ONLY :
 				ensureExistsInWorkspace(target, true);
-				ensureDoesNotExistInFileSystem(target);
+				removeFromFileSystem(target);
 				if (addVerifier) {
 					verifier.reset();
 					// we only get a delta if the receiver of refreshLocal
@@ -517,7 +523,7 @@ public class IResourceTest extends ResourceTest {
 				}
 				break;
 			case S_FILESYSTEM_ONLY :
-				ensureDoesNotExistInWorkspace(target);
+				removeFromWorkspace(target);
 				ensureExistsInFileSystem(target);
 				if (addVerifier) {
 					verifier.reset();
@@ -549,15 +555,15 @@ public class IResourceTest extends ResourceTest {
 				}
 				break;
 			case S_DOES_NOT_EXIST :
-				ensureDoesNotExistInWorkspace(target);
-				ensureDoesNotExistInFileSystem(target);
+				removeFromWorkspace(target);
+				removeFromFileSystem(target);
 				if (addVerifier) {
 					verifier.reset();
 				}
 				break;
 			case S_FOLDER_TO_FILE :
 				ensureExistsInWorkspace(target, true);
-				ensureDoesNotExistInFileSystem(target);
+				removeFromFileSystem(target);
 				ensureExistsInFileSystem(target);
 				if (addVerifier) {
 					verifier.reset();
@@ -571,7 +577,7 @@ public class IResourceTest extends ResourceTest {
 				break;
 			case S_FILE_TO_FOLDER :
 				ensureExistsInWorkspace(target, true);
-				ensureDoesNotExistInFileSystem(target);
+				removeFromFileSystem(target);
 				target.getLocation().toFile().mkdirs();
 				if (addVerifier) {
 					verifier.reset();
@@ -1049,7 +1055,7 @@ public class IResourceTest extends ResourceTest {
 
 	private IProjectDescription prepareDestProjDesc(IProject sourceProj, IProject destProj, IPath destLocation)
 			throws CoreException {
-		ensureDoesNotExistInWorkspace(destProj);
+		removeFromWorkspace(destProj);
 		IProjectDescription desc = sourceProj.getDescription();
 		desc.setName(destProj.getName());
 		desc.setLocation(destLocation);
@@ -1826,9 +1832,9 @@ public class IResourceTest extends ResourceTest {
 			assertEquals("5.3", projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
 
 			project.open(getMonitor());
-			ensureDoesNotExistInWorkspace(topFolder);
-			ensureDoesNotExistInWorkspace(topFile);
-			createFileInFileSystem(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(fileLocation));
+			removeFromWorkspace(topFolder);
+			removeFromWorkspace(topFile);
+			createFile(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(fileLocation));
 			folderLocation.toFile().mkdirs();
 			topFolder.createLink(folderLocation, IResource.NONE, getMonitor());
 			topFile.createLink(fileLocation, IResource.NONE, getMonitor());
@@ -1854,9 +1860,9 @@ public class IResourceTest extends ResourceTest {
 			project.open(getMonitor());
 			IPath variableFolderLocation = IPath.fromOSString(variableName).append("/VarFolderName");
 			IPath variableFileLocation = IPath.fromOSString(variableName).append("/VarFileName");
-			ensureDoesNotExistInWorkspace(topFolder);
-			ensureDoesNotExistInWorkspace(topFile);
-			createFileInFileSystem(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(varMan.resolvePath(variableFileLocation)));
+			removeFromWorkspace(topFolder);
+			removeFromWorkspace(topFile);
+			createFile(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(varMan.resolvePath(variableFileLocation)));
 			varMan.resolvePath(variableFolderLocation).toFile().mkdirs();
 			topFolder.createLink(variableFolderLocation, IResource.NONE, getMonitor());
 			topFile.createLink(variableFileLocation, IResource.NONE, getMonitor());

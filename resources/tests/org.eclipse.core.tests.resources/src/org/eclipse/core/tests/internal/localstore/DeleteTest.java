@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.internal.resources.Workspace;
@@ -298,7 +301,7 @@ public class DeleteTest extends LocalStoreTest {
 
 		/* make some resources "unsync" with the workspace */
 		ensureOutOfSync(fileUnsync);
-		ensureDoesNotExistInFileSystem(deletedfolderSync);
+		removeFromFileSystem(deletedfolderSync);
 		ensureOutOfSync(subsubfileUnsync);
 
 		/* delete */
@@ -344,7 +347,7 @@ public class DeleteTest extends LocalStoreTest {
 
 		/* make some resources "unsync" with the workspace */
 		ensureOutOfSync(fileUnsync);
-		ensureDoesNotExistInFileSystem(deletedfolderSync);
+		removeFromFileSystem(deletedfolderSync);
 		ensureOutOfSync(subsubfileUnsync);
 
 		/* delete */

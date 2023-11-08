@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,7 +66,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		for (String property : descriptionProperties) {
 			assertTrue("2.0 - Description property is not default: " + property, defaultPropertiesList.contains(property));
 		}
-		
+
 		setDefaultWorkspaceDescription();
 	}
 
@@ -205,8 +207,8 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 			// ensures preferences exported match the imported ones
 			assertEquals("5.1", modified, workspace.getDescription());
 		} finally {
-			ensureDoesNotExistInFileSystem(originalPreferencesFile.removeLastSegments(1).toFile());
-			ensureDoesNotExistInFileSystem(modifiedPreferencesFile.removeLastSegments(1).toFile());
+			removeFromFileSystem(originalPreferencesFile.removeLastSegments(1).toFile());
+			removeFromFileSystem(modifiedPreferencesFile.removeLastSegments(1).toFile());
 		}
 
 		setDefaultWorkspaceDescription();

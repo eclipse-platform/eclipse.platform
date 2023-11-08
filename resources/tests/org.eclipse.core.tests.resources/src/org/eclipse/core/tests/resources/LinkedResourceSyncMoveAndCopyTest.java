@@ -15,6 +15,8 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -96,7 +98,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		assertTrue("2.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(fileLink, IResource.NONE, false);
 
-		createFileInFileSystem(fileLocation);
+		createFile(fileLocation);
 		deleteOnTearDown(fileLocation);
 
 		exception = assertThrows(CoreException.class, () -> fileLink
@@ -120,7 +122,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		assertTrue("2.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(fileLink, IResource.SHALLOW, true);
 
-		createFileInFileSystem(fileLocation);
+		createFile(fileLocation);
 		deleteOnTearDown(fileLocation);
 
 		assertFalse("3.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
@@ -239,7 +241,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		assertTrue(folder.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folder, IResource.NONE, false);
 
-		createFileInFileSystem(fileLocation);
+		createFile(fileLocation);
 		deleteOnTearDown(fileLocation);
 
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));
@@ -263,7 +265,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		assertTrue(folder.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folder, IResource.SHALLOW, true);
 
-		createFileInFileSystem(fileLocation);
+		createFile(fileLocation);
 		deleteOnTearDown(fileLocation);
 
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));

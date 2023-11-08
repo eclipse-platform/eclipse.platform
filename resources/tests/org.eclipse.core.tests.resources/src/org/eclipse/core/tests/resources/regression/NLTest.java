@@ -16,6 +16,8 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +87,7 @@ public class NLTest extends ResourceTest {
 		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 		assertExistsInFileSystem("2.1", resources);
 		assertExistsInWorkspace("2.2", resources);
-		ensureDoesNotExistInWorkspace(resources);
+		removeFromWorkspace(resources);
 
 		files = getFileNames(Locale.getDefault().getLanguage());
 		resources = buildResources(project, files);

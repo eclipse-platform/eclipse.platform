@@ -17,6 +17,12 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SIMPLE;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.create;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.BufferedInputStream;
@@ -95,10 +101,10 @@ public class LinkedResourceTest extends ResourceTest {
 		waitForRefresh();
 		ensureExistsInWorkspace(new IResource[] {existingProject, otherExistingProject, closedProject, existingFolderInExistingProject, existingFolderInExistingFolder, existingFileInExistingProject}, true);
 		closedProject.close(getMonitor());
-		ensureDoesNotExistInWorkspace(new IResource[] { nonExistingProject, nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolderInNonExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder });
-		ensureDoesNotExistInFileSystem(resolve(nonExistingLocation).toFile());
+		removeFromWorkspace(new IResource[] { nonExistingProject, nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolderInNonExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder });
+		removeFromFileSystem(resolve(nonExistingLocation).toFile());
 		resolve(localFolder).toFile().mkdirs();
-		createFileInFileSystem(resolve(localFile), getRandomContents());
+		createFile(resolve(localFile), getRandomContents());
 	}
 
 	private byte[] getFileContents(IFile file) throws CoreException {
@@ -219,7 +225,7 @@ public class LinkedResourceTest extends ResourceTest {
 		//create local folder that will be blocked
 		ensureExistsInFileSystem(nonExistingFolderInExistingProject);
 		IFile blockedFile = nonExistingFolderInExistingProject.getFile("BlockedFile");
-		createFileInFileSystem(blockedFile.getLocation(), getRandomContents());
+		createFile(blockedFile.getLocation(), getRandomContents());
 
 		// link the folder elsewhere
 		nonExistingFolderInExistingProject.createLink(localFolder, IResource.NONE, getMonitor());
@@ -266,8 +272,8 @@ public class LinkedResourceTest extends ResourceTest {
 		IPath resolvedLocation = resolve(localFolder);
 		folder.createLink(localFolder, IResource.NONE, getMonitor());
 
-		ensureDoesNotExistInFileSystem(resolvedLocation.toFile());
-		createFileInFileSystem(resolvedLocation, getRandomContents());
+		removeFromFileSystem(resolvedLocation.toFile());
+		createFile(resolvedLocation, getRandomContents());
 		folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 
 		assertTrue("3.0", !folder.exists());
@@ -276,7 +282,7 @@ public class LinkedResourceTest extends ResourceTest {
 		assertEquals("3.3", resolvedLocation, file.getLocation());
 
 		//change back to folder
-		ensureDoesNotExistInFileSystem(resolvedLocation.toFile());
+		removeFromFileSystem(resolvedLocation.toFile());
 		resolvedLocation.toFile().mkdirs();
 
 		folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
@@ -540,7 +546,7 @@ public class LinkedResourceTest extends ResourceTest {
 		deleteOnTearDown(fileLocation);
 		IFile linkedFile = nonExistingFileInExistingProject;
 		IFolder linkedFolder = nonExistingFolderInExistingProject;
-		createFileInFileSystem(resolve(fileLocation), getRandomContents());
+		createFile(resolve(fileLocation), getRandomContents());
 		linkedFolder.createLink(localFolder, IResource.NONE, getMonitor());
 		linkedFile.createLink(fileLocation, IResource.NONE, getMonitor());
 
@@ -604,7 +610,7 @@ public class LinkedResourceTest extends ResourceTest {
 		final IFileStore rootStore = getTempStore();
 		rootStore.mkdir(IResource.NONE, getMonitor());
 		IFileStore childStore = rootStore.getChild("file.txt");
-		createFileInFileSystem(childStore);
+		createFile(childStore);
 
 		IFolder link = nonExistingFolderInExistingProject;
 		link.createLink(rootStore.toURI(), IResource.BACKGROUND_REFRESH, getMonitor());
@@ -697,7 +703,7 @@ public class LinkedResourceTest extends ResourceTest {
 		IFolder folder = nonExistingFolderInExistingProject;
 		IFile childFile = folder.getFile(childName);
 		IResource[] oldResources = new IResource[] {file, folder, existingProject, childFile};
-		createFileInFileSystem(resolve(fileLocation));
+		createFile(resolve(fileLocation));
 		folder.createLink(localFolder, IResource.NONE, getMonitor());
 		file.createLink(fileLocation, IResource.NONE, getMonitor());
 
@@ -1257,7 +1263,7 @@ public class LinkedResourceTest extends ResourceTest {
 		assertTrue("2.0", linkedFile.getModificationStamp() >= 0);
 
 		// delete local file
-		ensureDoesNotExistInFileSystem(resolve(location).toFile());
+		removeFromFileSystem(resolve(location).toFile());
 		linkedFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 		assertEquals("4.0", IResource.NULL_STAMP, linkedFile.getModificationStamp());
 	}
@@ -1495,7 +1501,7 @@ public class LinkedResourceTest extends ResourceTest {
 		IFolder folder = nonExistingFolderInExistingProject;
 		IFile childFile = folder.getFile(childName);
 		IResource[] oldResources = new IResource[] {file, folder, existingProject, childFile};
-		createFileInFileSystem(resolve(fileLocation));
+		createFile(resolve(fileLocation));
 		folder.createLink(localFolder, IResource.NONE, getMonitor());
 		file.createLink(fileLocation, IResource.NONE, getMonitor());
 
@@ -1540,7 +1546,7 @@ public class LinkedResourceTest extends ResourceTest {
 		IPath fileLocation = getRandomLocation();
 		deleteOnTearDown(fileLocation);
 		IFile linkedFile = existingProject.getFile("(test)");
-		createFileInFileSystem(resolve(fileLocation), getRandomContents());
+		createFile(resolve(fileLocation), getRandomContents());
 		linkedFile.createLink(fileLocation, IResource.NONE, getMonitor());
 
 		// move the project
@@ -1562,7 +1568,7 @@ public class LinkedResourceTest extends ResourceTest {
 
 		IPath fileLocation = getRandomLocation();
 		deleteOnTearDown(fileLocation);
-		createFileInFileSystem(resolve(fileLocation), getRandomContents());
+		createFile(resolve(fileLocation), getRandomContents());
 
 		// create a linked file in the folder
 		IFile linkedFile = folderWithLinks.getFile(getUniqueString());
@@ -1658,7 +1664,7 @@ public class LinkedResourceTest extends ResourceTest {
 		IPath linkLocation = localFolder;
 		IPath localChild = linkLocation.append("Child");
 		IFile linkChild = link.getFile(localChild.lastSegment());
-		createFileInFileSystem(resolve(localChild));
+		createFile(resolve(localChild));
 		link.createLink(linkLocation, IResource.NONE, getMonitor());
 		assertTrue("1.0", link.exists());
 		assertTrue("1.1", linkChild.exists());

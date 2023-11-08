@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.resources.ICommand;
@@ -29,7 +32,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.internal.builders.AbstractBuilderTest;
 import org.eclipse.core.tests.resources.usecase.SignaledBuilder;
-
 public class IProjectTest extends AbstractBuilderTest {
 	public IProjectTest(String name) {
 		super(name);
@@ -147,8 +149,8 @@ public class IProjectTest extends AbstractBuilderTest {
 
 		// create in file-system
 		location.append(folder.getName()).toFile().mkdirs();
-		createFileInFileSystem(location.append(folder.getName()).append(file2.getName()));
-		createFileInFileSystem(location.append(file1.getName()));
+		createFile(location.append(folder.getName()).append(file2.getName()));
+		createFile(location.append(file1.getName()));
 
 		// create
 		project.create(getMonitor());

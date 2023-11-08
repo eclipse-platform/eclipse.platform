@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,11 +28,9 @@ import org.junit.Assert;
 
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;

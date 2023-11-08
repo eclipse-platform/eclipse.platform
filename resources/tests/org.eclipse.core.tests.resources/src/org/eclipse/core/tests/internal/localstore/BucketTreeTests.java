@@ -15,6 +15,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

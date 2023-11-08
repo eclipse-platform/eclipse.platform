@@ -15,6 +15,8 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.create;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
 
 import java.net.URI;
 import org.eclipse.core.filesystem.IFileStore;
@@ -69,7 +71,7 @@ public class Bug_233939 extends ResourceTest {
 
 		// create a file: getTempStore() will be cleaned up in tearDown()
 		IFileStore tempFileStore = getTempStore().getChild(fileName);
-		createFileInFileSystem(tempFileStore);
+		createFile(tempFileStore);
 		IPath fileInTempDirPath = URIUtil.toPath(tempFileStore.toURI());
 
 		// create a link to the file in the temp dir and refresh
@@ -92,7 +94,7 @@ public class Bug_233939 extends ResourceTest {
 		}
 		// create a folder: getTempStore() will be cleaned up in tearDown()
 		IFileStore tempStore = getTempStore();
-		createFileInFileSystem(tempStore.getChild("foo.txt"));
+		createFile(tempStore.getChild("foo.txt"));
 		IPath tempFolderPath = URIUtil.toPath(tempStore.toURI());
 
 		// create two projects with a symlink to the folder each

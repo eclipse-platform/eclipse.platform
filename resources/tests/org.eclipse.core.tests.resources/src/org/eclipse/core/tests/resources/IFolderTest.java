@@ -15,6 +15,9 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.resources.IFile;
@@ -66,7 +69,7 @@ public class IFolderTest extends ResourceTest {
 		IFolder after = project.getFolder("NewFolder");
 		ensureExistsInWorkspace(project, true);
 		ensureExistsInWorkspace(before, true);
-		ensureDoesNotExistInFileSystem(before);
+		removeFromFileSystem(before);
 
 		// should fail because 'before' does not exist in the filesystem
 		assertThrows(CoreException.class, () -> before.copy(after.getFullPath(), IResource.FORCE, getMonitor()));
@@ -80,7 +83,7 @@ public class IFolderTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder derived = project.getFolder("derived");
 		ensureExistsInWorkspace(project, true);
-		ensureDoesNotExistInWorkspace(derived);
+		removeFromWorkspace(derived);
 
 		derived.create(IResource.DERIVED, true, getMonitor());
 		assertTrue("1.0", derived.isDerived());
@@ -110,7 +113,7 @@ public class IFolderTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder teamPrivate = project.getFolder("teamPrivate");
 		ensureExistsInWorkspace(project, true);
-		ensureDoesNotExistInWorkspace(teamPrivate);
+		removeFromWorkspace(teamPrivate);
 
 		teamPrivate.create(IResource.TEAM_PRIVATE | IResource.DERIVED, true, getMonitor());
 		assertTrue("1.0", teamPrivate.isTeamPrivateMember());
@@ -126,7 +129,7 @@ public class IFolderTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder teamPrivate = project.getFolder("teamPrivate");
 		ensureExistsInWorkspace(project, true);
-		ensureDoesNotExistInWorkspace(teamPrivate);
+		removeFromWorkspace(teamPrivate);
 
 		teamPrivate.create(IResource.TEAM_PRIVATE, true, getMonitor());
 		assertTrue("1.0", teamPrivate.isTeamPrivateMember());
@@ -314,7 +317,7 @@ public class IFolderTest extends ResourceTest {
 		String value = "this is a test property value";
 		QualifiedName name = new QualifiedName("itp-test", "testProperty");
 		// getting/setting persistent properties on non-existent resources should throw an exception
-		ensureDoesNotExistInWorkspace(target);
+		removeFromWorkspace(target);
 		assertThrows(CoreException.class, () -> target.getPersistentProperty(name));
 		assertThrows(CoreException.class, () -> target.setPersistentProperty(name, value));
 

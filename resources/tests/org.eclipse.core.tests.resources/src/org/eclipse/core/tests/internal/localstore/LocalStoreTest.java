@@ -82,7 +82,7 @@ public abstract class LocalStoreTest extends ResourceTest {
 	 * Create a file with random content. If a resource exists in the same path,
 	 * the resource is deleted.
 	 */
-	protected void createFile(IFileStore target, String content) throws CoreException {
+	protected void createOrOverwriteFile(IFileStore target, String content) throws CoreException {
 		target.delete(EFS.NONE, null);
 		InputStream input = new ByteArrayInputStream(content.getBytes());
 		transferData(input, target.openOutputStream(EFS.NONE, null));

@@ -30,6 +30,10 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getVa
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -179,8 +183,8 @@ public class IWorkspaceTest extends ResourceTest {
 			file2Copy.create(getRandomContents(), false, getMonitor());
 			getWorkspace().copy(new IResource[] { file, file2 }, folder2.getFullPath(), false, getMonitor());
 		});
-		ensureDoesNotExistInWorkspace(file2Copy);
-		ensureDoesNotExistInFileSystem(file2Copy);
+		removeFromWorkspace(file2Copy);
+		removeFromFileSystem(file2Copy);
 
 		//make sure the first copy worked
 		fileCopy = folder2.getFile("File");
@@ -216,8 +220,8 @@ public class IWorkspaceTest extends ResourceTest {
 			fail("3.1", e);
 		}
 		assertTrue("3.2", fileCopy.exists());
-		ensureDoesNotExistInWorkspace(fileCopy);
-		ensureDoesNotExistInFileSystem(fileCopy);
+		removeFromWorkspace(fileCopy);
+		removeFromFileSystem(fileCopy);
 
 		//copy two files
 		try {
@@ -227,10 +231,10 @@ public class IWorkspaceTest extends ResourceTest {
 		}
 		assertTrue("3.4", fileCopy.exists());
 		assertTrue("3.5", file2Copy.exists());
-		ensureDoesNotExistInWorkspace(fileCopy);
-		ensureDoesNotExistInWorkspace(file2Copy);
-		ensureDoesNotExistInFileSystem(fileCopy);
-		ensureDoesNotExistInFileSystem(file2Copy);
+		removeFromWorkspace(fileCopy);
+		removeFromWorkspace(file2Copy);
+		removeFromFileSystem(fileCopy);
+		removeFromFileSystem(file2Copy);
 
 		//copy a folder
 		try {
@@ -244,8 +248,8 @@ public class IWorkspaceTest extends ResourceTest {
 		} catch (CoreException e) {
 			fail("3.9", e);
 		}
-		ensureDoesNotExistInWorkspace(folderCopy);
-		ensureDoesNotExistInFileSystem(folderCopy);
+		removeFromWorkspace(folderCopy);
+		removeFromFileSystem(folderCopy);
 	}
 
 	/**
@@ -613,12 +617,12 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue("1.4", folder.getFile(file1.getName()).exists());
 		assertTrue("1.5", folder.getFile(anotherFile.getName()).exists());
 		assertTrue("1.6", folder.getFile(oneMoreFile.getName()).exists());
-		ensureDoesNotExistInWorkspace(folder.getFile(file1.getName()));
-		ensureDoesNotExistInWorkspace(folder.getFile(anotherFile.getName()));
-		ensureDoesNotExistInWorkspace(folder.getFile(oneMoreFile.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(file1.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(anotherFile.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(oneMoreFile.getName()));
+		removeFromWorkspace(folder.getFile(file1.getName()));
+		removeFromWorkspace(folder.getFile(anotherFile.getName()));
+		removeFromWorkspace(folder.getFile(oneMoreFile.getName()));
+		removeFromFileSystem(folder.getFile(file1.getName()));
+		removeFromFileSystem(folder.getFile(anotherFile.getName()));
+		removeFromFileSystem(folder.getFile(oneMoreFile.getName()));
 
 		/* test duplicates */
 		resources = new IResource[] {file1, anotherFile, oneMoreFile, file1};
@@ -629,12 +633,12 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue("2.5", folder.getFile(file1.getName()).exists());
 		assertTrue("2.6", folder.getFile(anotherFile.getName()).exists());
 		assertTrue("2.7", folder.getFile(oneMoreFile.getName()).exists());
-		ensureDoesNotExistInWorkspace(folder.getFile(file1.getName()));
-		ensureDoesNotExistInWorkspace(folder.getFile(anotherFile.getName()));
-		ensureDoesNotExistInWorkspace(folder.getFile(oneMoreFile.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(file1.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(anotherFile.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(oneMoreFile.getName()));
+		removeFromWorkspace(folder.getFile(file1.getName()));
+		removeFromWorkspace(folder.getFile(anotherFile.getName()));
+		removeFromWorkspace(folder.getFile(oneMoreFile.getName()));
+		removeFromFileSystem(folder.getFile(file1.getName()));
+		removeFromFileSystem(folder.getFile(anotherFile.getName()));
+		removeFromFileSystem(folder.getFile(oneMoreFile.getName()));
 
 		/* test no siblings */
 		IResource[] resources2 = new IResource[] { file1, anotherFile, oneMoreFile, project };
@@ -649,12 +653,12 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue("3.6", folder.getFile(file1.getName()).exists());
 		assertTrue("3.7", folder.getFile(anotherFile.getName()).exists());
 		assertTrue("3.8", folder.getFile(oneMoreFile.getName()).exists());
-		ensureDoesNotExistInWorkspace(folder.getFile(file1.getName()));
-		ensureDoesNotExistInWorkspace(folder.getFile(anotherFile.getName()));
-		ensureDoesNotExistInWorkspace(folder.getFile(oneMoreFile.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(file1.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(anotherFile.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(oneMoreFile.getName()));
+		removeFromWorkspace(folder.getFile(file1.getName()));
+		removeFromWorkspace(folder.getFile(anotherFile.getName()));
+		removeFromWorkspace(folder.getFile(oneMoreFile.getName()));
+		removeFromFileSystem(folder.getFile(file1.getName()));
+		removeFromFileSystem(folder.getFile(anotherFile.getName()));
+		removeFromFileSystem(folder.getFile(oneMoreFile.getName()));
 
 		/* inexisting resource */
 		IResource[] resources3 = new IResource[] { file1, anotherFile, project.getFile("inexisting"), oneMoreFile };
@@ -1111,8 +1115,8 @@ public class IWorkspaceTest extends ResourceTest {
 				open.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
 			} catch (CoreException e) {
 			}
-			ensureDoesNotExistInFileSystem(openProjectLocation.toFile());
-			ensureDoesNotExistInFileSystem(closedProjectLocation.toFile());
+			removeFromFileSystem(openProjectLocation.toFile());
+			removeFromFileSystem(closedProjectLocation.toFile());
 		}
 
 		// cannot overlap .metadata folder from the current workspace

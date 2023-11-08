@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -54,7 +57,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 
 		IFile link = project.getFile("file.txt");
 		IFileStore fileStore = getTempStore();
-		createFileInFileSystem(fileStore);
+		createFile(fileStore);
 		assertEquals("0.1", EFS.SCHEME_FILE, fileStore.getFileSystem().getScheme());
 		IPath fileLocationLower = URIUtil.toPath(fileStore.toURI());
 		fileLocationLower = fileLocationLower.setDevice(fileLocationLower.getDevice().toLowerCase());
@@ -327,7 +330,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	public void testBug234343_folderInHiddenProject() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject hiddenProject = root.getProject(getUniqueString());
-		ensureDoesNotExistInWorkspace(hiddenProject);
+		removeFromWorkspace(hiddenProject);
 		hiddenProject.create(null, IResource.HIDDEN, getMonitor());
 		hiddenProject.open(getMonitor());
 
@@ -345,7 +348,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	public void testBug234343_fileInHiddenProject() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject hiddenProject = root.getProject(getUniqueString());
-		ensureDoesNotExistInWorkspace(hiddenProject);
+		removeFromWorkspace(hiddenProject);
 		hiddenProject.create(null, IResource.HIDDEN, getMonitor());
 		hiddenProject.open(getMonitor());
 
@@ -417,7 +420,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	public void checkFindMethods(int updateFlags, int[][] results) throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(getUniqueString());
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 
 		project.create(null, IResource.NONE, getMonitor());
 		project.open(getMonitor());
@@ -425,8 +428,8 @@ public class IWorkspaceRootTest extends ResourceTest {
 		// a team private folder
 		IFolder teamFolder = createFolder(project, IResource.TEAM_PRIVATE, false);
 
-		IFile mFileInTeamFolder = createFile(teamFolder, updateFlags, false);
-		IFile mLinkedFileInTeamFolder = createFile(teamFolder, updateFlags, true);
+		IFile mFileInTeamFolder = createFileWithRandomName(teamFolder, updateFlags, false);
+		IFile mLinkedFileInTeamFolder = createFileWithRandomName(teamFolder, updateFlags, true);
 
 		IFolder mFolderInTeamFolder = createFolder(teamFolder, updateFlags, false);
 		IFolder mLinkedFolderInTeamFolder = createFolder(teamFolder, updateFlags, true);
@@ -434,8 +437,8 @@ public class IWorkspaceRootTest extends ResourceTest {
 		// a hidden folder
 		IFolder hiddenFolder = createFolder(project, IResource.HIDDEN, false);
 
-		IFile mFileInHiddenFolder = createFile(hiddenFolder, updateFlags, false);
-		IFile mLinkedFileInHiddenFolder = createFile(hiddenFolder, updateFlags, true);
+		IFile mFileInHiddenFolder = createFileWithRandomName(hiddenFolder, updateFlags, false);
+		IFile mLinkedFileInHiddenFolder = createFileWithRandomName(hiddenFolder, updateFlags, true);
 
 		IFolder mFolderInHiddenFolder = createFolder(hiddenFolder, updateFlags, false);
 		IFolder mLinkedFolderInHiddenFolder = createFolder(hiddenFolder, updateFlags, true);
@@ -443,8 +446,8 @@ public class IWorkspaceRootTest extends ResourceTest {
 		// a regular folder
 		IFolder folder = createFolder(project, IResource.NONE, false);
 
-		IFile mFileInFolder = createFile(folder, updateFlags, false);
-		IFile mLinkedFileInFolder = createFile(folder, updateFlags, true);
+		IFile mFileInFolder = createFileWithRandomName(folder, updateFlags, false);
+		IFile mLinkedFileInFolder = createFileWithRandomName(folder, updateFlags, true);
 
 		IFolder mFolderInFolder = createFolder(folder, updateFlags, false);
 		IFolder mLinkedFolderInFolder = createFolder(folder, updateFlags, true);
@@ -480,7 +483,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		assertEquals(foundResources, containers.length);
 	}
 
-	private IFile createFile(IContainer parent, int updateFlags, boolean linked) throws Exception {
+	private IFile createFileWithRandomName(IContainer parent, int updateFlags, boolean linked) throws Exception {
 		IFile file = parent.getFile(IPath.fromOSString(getUniqueString()));
 		if (linked) {
 			IPath path = getTempDir().append(getUniqueString());

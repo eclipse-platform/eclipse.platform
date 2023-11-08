@@ -52,7 +52,7 @@ public class FileSystemPerformanceTest extends LocalStoreTest {
 			dir.mkdir(EFS.SHALLOW, null);
 			for (int j = 0; j < FILE_COUNT; j++) {
 				IFileStore file = dir.getChild(createString(16));
-				createFile(file, createString(16));
+				createOrOverwriteFile(file, createString(16));
 			}
 		}
 	}

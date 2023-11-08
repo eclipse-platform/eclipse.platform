@@ -16,6 +16,8 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SIMPLE;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.create;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -926,7 +928,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		};
 		workspace.addResourceChangeListener(listener);
 		workspace.getSynchronizer().add(partner);
-		ensureDoesNotExistInWorkspace(phantomResources);
+		removeFromWorkspace(phantomResources);
 		try {
 			//create a phantom folder
 			workspace.run((IWorkspaceRunnable) monitor -> workspace.getSynchronizer().setSyncInfo(partner, phantomFolder, new byte[] {1}), getMonitor());

@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.InputStream;
@@ -170,7 +174,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		// create resources
 		IResource[] resources = buildResources(project, defineHierarchy());
 		ensureExistsInWorkspace(resources, true);
-		ensureDoesNotExistInFileSystem(resources);
+		removeFromFileSystem(resources);
 
 		// exists
 		assertTrue(project.isLocal(IResource.DEPTH_INFINITE)); // test
@@ -189,7 +193,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		assertFalse(folder.isLocal(IResource.DEPTH_INFINITE));
 
 		// remove the trash
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 	}
 
 	/**
@@ -292,14 +296,14 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		file.setContents(another, true, false, null);
 
 		/* test the overwrite parameter (false) */
-		ensureDoesNotExistInFileSystem(file); // FIXME Race Condition with asynchronous workplace refresh see Bug 571133
+		removeFromFileSystem(file); // FIXME Race Condition with asynchronous workplace refresh see Bug 571133
 		InputStream another3 = getContents(anotherContent);
 		waitForRefresh(); // wait for refresh to ensure that file is not present in workspace
 		assertThrows("Should fail writing non existing file", CoreException.class,
 				() -> write(file, another3, false, null));
 
 		/* remove trash */
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 	}
 
 	// See https://github.com/eclipse-platform/eclipse.platform/issues/103
@@ -333,7 +337,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		assertThrows(CoreException.class, () -> write(file, another, false, null));
 
 		/* remove trash */
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 	}
 
 	@Test
@@ -344,14 +348,14 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		ensureExistsInWorkspace(folder, true);
 
 		/* existing file on destination */
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromFileSystem(folder);
 		IFile file = project.getFile("testWriteFolder");
 		ensureExistsInFileSystem(file);
 		/* force = true */
 		assertThrows(CoreException.class, () -> write(folder, true, null));
 		/* force = false */
 		assertThrows(CoreException.class, () -> write(folder, false, null));
-		ensureDoesNotExistInFileSystem(file);
+		removeFromFileSystem(file);
 
 		/* existing folder on destination */
 		ensureExistsInFileSystem(folder);
@@ -360,13 +364,13 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		assertTrue(folder.getLocation().toFile().isDirectory());
 		/* force = false */
 		assertThrows(CoreException.class, () -> write(folder, false, null));
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromFileSystem(folder);
 
 		/* inexisting resource on destination */
 		/* force = true */
 		write(folder, true, null);
 		assertTrue(folder.getLocation().toFile().isDirectory());
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromFileSystem(folder);
 		/* force = false */
 		write(folder, false, null);
 		assertTrue(folder.getLocation().toFile().isDirectory());
@@ -385,7 +389,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		// create project and then delete from file system
 		// wrap in runnable to prevent snapshot from occurring in the middle.
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
-			ensureDoesNotExistInFileSystem(project);
+			removeFromFileSystem(project);
 			assertFalse("2.1", fileStore.fetchInfo().isDirectory());
 			//write project in a runnable, otherwise tree will be locked
 			((Project) project).writeDescription(IResource.FORCE);

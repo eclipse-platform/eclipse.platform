@@ -71,7 +71,7 @@ public class BlobStoreTest extends LocalStoreTest {
 
 		/* delete existing blob */
 		IFileStore target = root.getChild("target");
-		createFile(target, "bla bla bla");
+		createOrOverwriteFile(target, "bla bla bla");
 		uuid = store.addBlob(target, true);
 		assertTrue(store.fileFor(uuid).fetchInfo().exists());
 		store.deleteBlob(uuid);
@@ -90,7 +90,7 @@ public class BlobStoreTest extends LocalStoreTest {
 		IFileStore target = root.getChild("target");
 		UniversalUniqueIdentifier uuid = null;
 		String content = "nothing important........tnatropmi gnihton";
-		createFile(target, content);
+		createOrOverwriteFile(target, content);
 		uuid = store.addBlob(target, true);
 		InputStream input = store.getBlob(uuid);
 		assertTrue(compareContent(getContents(content), input));
@@ -105,7 +105,7 @@ public class BlobStoreTest extends LocalStoreTest {
 		IFileStore target = root.getChild("target");
 		UniversalUniqueIdentifier uuid = null;
 		String content = "nothing important........tnatropmi gnihton";
-		createFile(target, content);
+		createOrOverwriteFile(target, content);
 		uuid = store.addBlob(target, true);
 		InputStream input = store.getBlob(uuid);
 		assertTrue(compareContent(getContents(content), input));

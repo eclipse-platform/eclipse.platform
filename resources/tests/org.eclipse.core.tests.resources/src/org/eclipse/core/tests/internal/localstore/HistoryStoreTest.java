@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -308,7 +310,7 @@ public class HistoryStoreTest extends ResourceTest {
 
 		// location of the data on disk
 		IFileStore fileStore = getTempStore();
-		createFileInFileSystem(fileStore);
+		createFile(fileStore);
 		assertEquals("1.0" + " file already has state", 0, store.getStates(file.getFullPath(), getMonitor()).length);
 
 		// add the data to the history store
@@ -1069,7 +1071,7 @@ public class HistoryStoreTest extends ResourceTest {
 			historyStore.addState(file.getFullPath(), ((Resource) file).getStore(), fileInfo, true);
 			contents = "This file has some contents in testGetContents.";
 			try (InputStream is = new ByteArrayInputStream(contents.getBytes())) {
-				createFileInFileSystem(file.getLocation(), is);
+				createFile(file.getLocation(), is);
 			}
 			file.refreshLocal(IResource.DEPTH_INFINITE, null);
 		}
@@ -1081,7 +1083,7 @@ public class HistoryStoreTest extends ResourceTest {
 			historyStore.addState(secondValidFile.getFullPath(), ((Resource) secondValidFile).getStore(), fileInfo, true);
 			contents = "A file with some other contents in testGetContents.";
 			try (InputStream is = new ByteArrayInputStream(contents.getBytes())) {
-				createFileInFileSystem(secondValidFile.getLocation(), is);
+				createFile(secondValidFile.getLocation(), is);
 			}
 			secondValidFile.refreshLocal(IResource.DEPTH_INFINITE, null);
 		}

@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -60,7 +63,7 @@ public class TestClosedProjectLocation extends WorkspaceSerializationTest {
 			assertTrue("1.2", !file.exists());
 			assertEquals("1.3", location, project.getLocation());
 		} finally {
-			ensureDoesNotExistInFileSystem(location.toFile());
+			removeFromFileSystem(location.toFile());
 		}
 	}
 

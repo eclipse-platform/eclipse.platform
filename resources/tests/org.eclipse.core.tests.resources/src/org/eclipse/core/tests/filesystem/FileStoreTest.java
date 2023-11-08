@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
 import static org.junit.Assert.assertThrows;
 
 import java.io.File;
@@ -156,7 +157,7 @@ public class FileStoreTest extends LocalStoreTest {
 		destination = tempDest.getChild(subfolderName);
 		deleteOnTearDown(destination);
 		String anotherContent = "nothing..................gnihton";
-		createFile(destination, anotherContent);
+		createOrOverwriteFile(destination, anotherContent);
 		assertTrue("5.1", !destination.fetchInfo().isDirectory());
 		final IFileStore immutableDestination = destination;
 		assertThrows(CoreException.class, () -> target.copy(immutableDestination, EFS.NONE, null));
@@ -195,7 +196,7 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore parent = getTempStore();
 		IFileStore child = parent.getChild("child");
 		IFileStore existing = getTempStore();
-		createFile(existing, getRandomString());
+		createOrOverwriteFile(existing, getRandomString());
 		// try to copy when parent of destination does not exist
 		assertThrows(CoreException.class, () -> existing.copy(child, EFS.NONE, getMonitor()));
 		// destination should not exist
@@ -212,7 +213,7 @@ public class FileStoreTest extends LocalStoreTest {
 		String content = "this is just a simple content \n to a simple file \n to test a 'simple' copy";
 		IFileStore fileWithSmallName = temp.getChild("filename");
 		fileWithSmallName.delete(EFS.NONE, null);
-		createFile(fileWithSmallName, content);
+		createOrOverwriteFile(fileWithSmallName, content);
 		System.out.println(fileWithSmallName.fetchInfo().getName());
 		assertTrue("1.3", fileWithSmallName.fetchInfo().exists());
 		assertTrue("1.4", compareContent(getContents(content), fileWithSmallName.openInputStream(EFS.NONE, null)));
@@ -243,7 +244,7 @@ public class FileStoreTest extends LocalStoreTest {
 		String content = "this is just a simple content \n to a simple file \n to test a 'simple' copy";
 		IFileStore target = temp.getChild("target");
 		target.delete(EFS.NONE, null);
-		createFile(target, content);
+		createOrOverwriteFile(target, content);
 		assertTrue("1.3", target.fetchInfo().exists());
 		assertTrue("1.4", compareContent(getContents(content), target.openInputStream(EFS.NONE, null)));
 
@@ -276,7 +277,7 @@ public class FileStoreTest extends LocalStoreTest {
 			sb.append("asdjhasldhaslkfjhasldkfjhasdlkfjhasdlfkjhasdflkjhsdaf");
 		}
 		IFileStore bigFile = temp.getChild("bigFile");
-		createFile(bigFile, sb.toString());
+		createOrOverwriteFile(bigFile, sb.toString());
 		assertTrue("7.1", bigFile.fetchInfo().exists());
 		assertTrue("7.2", compareContent(getContents(sb.toString()), bigFile.openInputStream(EFS.NONE, null)));
 		IFileStore destination = temp.getChild("copy of bigFile");
@@ -309,7 +310,7 @@ public class FileStoreTest extends LocalStoreTest {
 
 		IFileStore target = tempSrc.getChild(subfolderName);
 		target.delete(EFS.NONE, null);
-		createFile(target, content);
+		createOrOverwriteFile(target, content);
 		deleteOnTearDown(target);
 		assertTrue("1.3", target.fetchInfo().exists());
 		assertTrue("1.4", compareContent(getContents(content), target.openInputStream(EFS.NONE, null)));
@@ -333,7 +334,7 @@ public class FileStoreTest extends LocalStoreTest {
 		destination = tempDest.getChild(subfolderName);
 		deleteOnTearDown(destination);
 		String anotherContent = "nothing..................gnihton";
-		createFile(destination, anotherContent);
+		createOrOverwriteFile(destination, anotherContent);
 		assertTrue("5.1", !destination.fetchInfo().isDirectory());
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
 		assertTrue("5.2", compareContent(getContents(content), destination.openInputStream(EFS.NONE, null)));
@@ -347,7 +348,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertThrows(CoreException.class, () -> target.copy(immutableDestination, EFS.NONE, null));
 		/* test if the input stream inside the copy method was closed */
 		target.delete(EFS.NONE, null);
-		createFile(target, content);
+		createOrOverwriteFile(target, content);
 		assertTrue("6.3", destination.fetchInfo().isDirectory());
 		destination.delete(EFS.NONE, null);
 	}
@@ -401,7 +402,7 @@ public class FileStoreTest extends LocalStoreTest {
 		// create target file
 		IFileStore target = tempC.getChild("target");
 		String content = "just a content.....tnetnoc a tsuj";
-		createFile(target, content);
+		createOrOverwriteFile(target, content);
 		assertTrue("1.3", target.fetchInfo().exists());
 		// create target tree
 		IFileStore tree = tempC.getChild("tree");
@@ -419,7 +420,7 @@ public class FileStoreTest extends LocalStoreTest {
 
 		/* rename file (but destination is already a file) */
 		String anotherContent = "another content";
-		createFile(destination, anotherContent);
+		createOrOverwriteFile(destination, anotherContent);
 		final IFileStore immutableFileDestination = destination;
 		assertThrows(CoreException.class, () -> target.move(immutableFileDestination, EFS.NONE, null));
 		assertTrue("3.2", !target.fetchInfo().isDirectory());
@@ -463,7 +464,7 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore target = tempSrc.getChild(subfolderName);
 		deleteOnTearDown(target);
 		String content = "just a content.....tnetnoc a tsuj";
-		createFile(target, content);
+		createOrOverwriteFile(target, content);
 		assertTrue("1.3", target.fetchInfo().exists());
 		// create target tree
 		IFileStore tree = tempSrc.getChild("tree");
@@ -496,7 +497,7 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore parent = getTempStore();
 		IFileStore child = parent.getChild("child");
 		IFileStore existing = getTempStore();
-		createFile(existing, getRandomString());
+		createOrOverwriteFile(existing, getRandomString());
 		// try to move when parent of destination does not exist
 		assertThrows(CoreException.class, () -> existing.move(child, EFS.NONE, getMonitor()));
 		// destination should not exist
@@ -571,7 +572,7 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore targetFolder = createDir(root.toString(), true);
 		deleteOnTearDown(targetFolder);
 		IFileStore targetFile = targetFolder.getChild("targetFile");
-		createFileInFileSystem(targetFile);
+		createFile(targetFile);
 
 		// file
 		boolean init = targetFile.fetchInfo().getAttribute(attribute);

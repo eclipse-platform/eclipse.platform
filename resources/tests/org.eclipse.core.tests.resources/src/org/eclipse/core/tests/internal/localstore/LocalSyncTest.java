@@ -17,6 +17,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.internal.resources.ICoreConstants;
@@ -122,10 +125,10 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 
 		// make some modifications in the local resources
 		// index stays the same
-		ensureDoesNotExistInFileSystem(toc);
+		removeFromFileSystem(toc);
 		//
-		ensureDoesNotExistInFileSystem(file);
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromFileSystem(file);
+		removeFromFileSystem(folder);
 
 		Thread.sleep(5000);
 

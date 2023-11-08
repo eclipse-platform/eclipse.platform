@@ -17,6 +17,9 @@ package org.eclipse.core.tests.internal.alias;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -433,7 +436,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertTrue("3.0", dirStore.fetchInfo().isDirectory());
 
 		IFileStore childStore = dirStore.getChild("child");
-		createFileInFileSystem(childStore);
+		createFile(childStore);
 		assertTrue("4.0", childStore.fetchInfo().exists());
 
 		// Create and open the first project. Project links to the directory.
@@ -704,7 +707,7 @@ public class BasicAliasTest extends ResourceTest {
 
 		// delete the project that contains the links
 		IFile fileInLinkedProject = pLinked.getFile("fileInLinkedProject.txt");
-		createFileInFileSystem(((Resource) fileInLinkedProject).getStore(), getRandomContents());
+		createFile(((Resource) fileInLinkedProject).getStore(), getRandomContents());
 		// failure expected here because it is out of sync
 		assertThrows(CoreException.class, () -> getWorkspace().getRoot().delete(IResource.NONE, getMonitor()));
 		waitForRefresh();

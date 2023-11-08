@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.junit.Assert.assertThrows;
 
 import java.io.DataInputStream;
@@ -69,7 +70,7 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 				// ignore
 			}
 		}
-		ensureDoesNotExistInFileSystem(temp.getParentFile());
+		removeFromFileSystem(temp.getParentFile());
 		super.tearDown();
 	}
 

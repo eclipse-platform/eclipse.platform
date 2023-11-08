@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -66,6 +68,6 @@ public class ConcurrencyTest extends ResourceTest {
 		assertTrue("2.2", op2.getStatus().isOK());
 
 		/* remove trash */
-		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
+		removeFromWorkspace(getWorkspace().getRoot());
 	}
 }

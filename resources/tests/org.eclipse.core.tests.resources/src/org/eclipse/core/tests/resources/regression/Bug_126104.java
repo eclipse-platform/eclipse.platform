@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -39,7 +42,7 @@ public class Bug_126104 extends ResourceTest {
 		assertTrue("1.0", destination.exists());
 
 		//try the same thing with move
-		ensureDoesNotExistInWorkspace(destination);
+		removeFromWorkspace(destination);
 		location.delete(EFS.NONE, getMonitor());
 		source.move(destination.getFullPath(), IResource.NONE, getMonitor());
 		assertTrue("3.0", !source.exists());
