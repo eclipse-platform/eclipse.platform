@@ -13,9 +13,25 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.junit.Assert.assertThrows;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicIntegerArray;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import java.util.concurrent.atomic.AtomicReference;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
@@ -36,36 +52,30 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 	}
 
 	public void testEndRuleInWorkspaceOperation() {
-		try {
-			final IProject project = getWorkspace().getRoot().getProject("testEndRuleInWorkspaceOperation");
-			getWorkspace().run((IWorkspaceRunnable) monitor -> Job.getJobManager().endRule(project), project, IResource.NONE, getMonitor());
-			//should have failed
-			fail("1.0");
-		} catch (CoreException e) {
-			fail("1.99", e);
-		} catch (RuntimeException e) {
-			//expected
-		}
+		final IProject project = getWorkspace().getRoot().getProject("testEndRuleInWorkspaceOperation");
+		assertThrows(RuntimeException.class,
+				() -> getWorkspace().run((IWorkspaceRunnable) monitor -> Job.getJobManager().endRule(project), project,
+						IResource.NONE, getMonitor()));
 	}
 
 	/**
 	 * Tests that it is possible to cancel a workspace operation when it is blocked
 	 * by activity in another thread. This is a regression test for bug 56118.
 	 */
-	public void testCancelOnBlocked() {
+	public void testCancelOnBlocked() throws Throwable {
 		//create a dummy project
 		ensureExistsInWorkspace(getWorkspace().getRoot().getProject("P1"), true);
 		//add a resource change listener that blocks forever, thus
 		//simulating a scenario where workspace lock is held indefinitely
 		final AtomicIntegerArray barrier = new AtomicIntegerArray(new int[1]);
-		final Throwable[] error = new Throwable[1];
+		final AtomicReference<Throwable> errorInListener = new AtomicReference<>();
 		IResourceChangeListener listener = event -> {
 			//block until we are told to do otherwise
 			barrier.set(0, TestBarrier2.STATUS_START);
 			try {
 				TestBarrier2.waitForStatus(barrier, TestBarrier2.STATUS_DONE);
 			} catch (Throwable e) {
-				error[0] = e;
+				errorInListener.set(e);
 			}
 		};
 		getWorkspace().addResourceChangeListener(listener);
@@ -82,36 +92,32 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 
 			//create a second thread that attempts to modify the workspace, but immediately
 			//cancels itself. This thread should terminate immediately with a cancelation exception
-			final boolean[] canceled = new boolean[] {false};
+			AtomicBoolean canceled = new AtomicBoolean();
+			final AtomicReference<Throwable> errorInThread = new AtomicReference<>();
 			Thread t2 = new Thread(() -> {
 				try {
 					getWorkspace().run((IWorkspaceRunnable) monitor -> {
 						//no-op
 					}, new CancelingProgressMonitor());
 				} catch (CoreException e1) {
-					fail("1.99", e1);
+					errorInThread.set(e1);
 				} catch (OperationCanceledException e2) {
-					canceled[0] = true;
+					canceled.set(true);
 				}
 			});
 			t2.start();
-			try {
-				t2.join();
-			} catch (InterruptedException e) {
-				fail("1.88", e);
-			}
+			t2.join();
 			//should have canceled
-			assertTrue("2.0", canceled[0]);
+			assertTrue("thread was not canceled", canceled.get());
 
 			//finally release the listener and ensure the first thread completes
 			barrier.set(0, TestBarrier2.STATUS_DONE);
-			try {
-				testJob.join();
-			} catch (InterruptedException e1) {
-				//ignore
+			testJob.join();
+			if (errorInListener.get() != null) {
+				throw errorInListener.get();
 			}
-			if (error[0] != null) {
-				fail("3.0", error[0]);
+			if (errorInThread.get() != null) {
+				throw errorInThread.get();
 			}
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
@@ -122,25 +128,21 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 	 * Tests calling IWorkspace.run with a non-workspace rule.  This should be
 	 * allowed. This is a regression test for bug 60114.
 	 */
-	public void testRunnableWithOtherRule() {
+	public void testRunnableWithOtherRule() throws CoreException {
 		ISchedulingRule rule = new ISchedulingRule() {
 			@Override
-			public boolean contains(ISchedulingRule rule) {
-				return rule == this;
+			public boolean contains(ISchedulingRule schedulingRule) {
+				return schedulingRule == this;
 			}
 
 			@Override
-			public boolean isConflicting(ISchedulingRule rule) {
-				return rule == this;
+			public boolean isConflicting(ISchedulingRule schedulingRule) {
+				return schedulingRule == this;
 			}
 		};
-		try {
-			getWorkspace().run((IWorkspaceRunnable) monitor -> {
-				//noop
-			}, rule, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+			// noop
+		}, rule, IResource.NONE, getMonitor());
 	}
 
 	/**
@@ -154,7 +156,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 	 * will not be available and it will fail.
 	 * This is a regression test for bug 	62927.
 	 */
-	public void testRunWhileBuilding() {
+	public void testRunWhileBuilding() throws Throwable {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		//create a POST_BUILD listener that will touch a project
 		final IProject touch = workspace.getRoot().getProject("ToTouch");
@@ -163,12 +165,12 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 		ensureExistsInWorkspace(rule, true);
 		ensureExistsInWorkspace(touch, true);
 		ensureExistsInWorkspace(ruleFile, true);
-		final Throwable[] failure = new Throwable[1];
+		AtomicReference<Throwable> failure = new AtomicReference<>();
 		IResourceChangeListener listener = event -> {
 			try {
 				touch.touch(null);
 			} catch (CoreException | RuntimeException e2) {
-				failure[0] = e2;
+				failure.set(e2);
 			}
 		};
 		workspace.addResourceChangeListener(listener, IResourceChangeEvent.POST_BUILD);
@@ -251,19 +253,19 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 			//ensure no jobs failed
 			IStatus result = jobOne.getResult();
 			if (!result.isOK()) {
-				fail("1.0", new CoreException(result));
+				throw new CoreException(result);
 			}
 			result = jobTwo.getResult();
 			if (!result.isOK()) {
-				fail("1.1", new CoreException(result));
+				throw new CoreException(result);
 			}
 			result = jobThree.getResult();
 			if (!result.isOK()) {
-				fail("1.2", new CoreException(result));
+				throw new CoreException(result);
 			}
 
-			if (failure[0] != null) {
-				fail("1.3", failure[0]);
+			if (failure.get() != null) {
+				throw failure.get();
 			}
 		} finally {
 			//ensure listener is removed
