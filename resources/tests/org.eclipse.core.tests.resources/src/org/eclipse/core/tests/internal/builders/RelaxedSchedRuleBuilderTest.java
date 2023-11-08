@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import org.eclipse.core.internal.events.ResourceDelta;
+import org.eclipse.core.internal.resources.ContentDescriptionManager;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.ICommand;
@@ -50,6 +51,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
+import org.eclipse.core.tests.resources.TestUtil;
 
 /**
  * This class tests extended functionality (since 3.6) which allows
@@ -396,6 +398,10 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		}
 		tb.waitForStatus(TestBarrier2.STATUS_DONE);
 		errorLogging.assertNoErrorsLogged();
+	}
+
+	private void waitForContentDescriptionUpdate() {
+		TestUtil.waitForJobs(getName(), 10, 5_000, ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH);
 	}
 
 	/**
