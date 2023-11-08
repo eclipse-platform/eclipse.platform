@@ -33,7 +33,6 @@ import org.eclipse.core.internal.resources.ModelObjectWriter;
 import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.internal.resources.ProjectDescriptionReader;
-import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -283,14 +282,10 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 	/**
 	 * Reads and returns the project description stored in the given file store.
 	 */
-	private ProjectDescription readDescription(IFileStore store) throws CoreException {
-		InputStream input = null;
-		try {
-			input = store.openInputStream(EFS.NONE, getMonitor());
+	private ProjectDescription readDescription(IFileStore store) throws CoreException, IOException {
+		try (InputStream input = store.openInputStream(EFS.NONE, getMonitor())) {
 			InputSource in = new InputSource(input);
 			return new ProjectDescriptionReader(getWorkspace()).read(in);
-		} finally {
-			assertClose(input);
 		}
 	}
 
@@ -342,17 +337,15 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		IWorkspace workspace = getWorkspace();
 		IPath root = workspace.getRoot().getLocation();
 		IPath location = root.append("ModelObjectReaderWriterTest.txt");
+		deleteOnTearDown(location);
+
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(workspace);
 		// Write out the project description file
 		ensureDoesNotExistInFileSystem(location.toFile());
 		InputStream stream = new ByteArrayInputStream(invalidProjectDescription.getBytes());
 		createFileInFileSystem(location, stream);
-		try {
-			ProjectDescription projDesc = reader.read(location);
-			assertNull("1.0", projDesc);
-		} finally {
-			Workspace.clear(location.toFile());
-		}
+		ProjectDescription projDesc = reader.read(location);
+		assertNull(projDesc);
 	}
 
 	public void testInvalidProjectDescription2() throws Throwable {
@@ -419,19 +412,17 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		String longProjectDescription = getLongDescription();
 
 		IPath location = getRandomLocation();
-		try {
-			ProjectDescriptionReader reader = new ProjectDescriptionReader(getWorkspace());
-			// Write out the project description file
-			ensureDoesNotExistInFileSystem(location.toFile());
-			InputStream stream = new ByteArrayInputStream(longProjectDescription.getBytes());
-			createFileInFileSystem(location, stream);
-			ProjectDescription projDesc = reader.read(location);
-			ensureDoesNotExistInFileSystem(location.toFile());
-			for (LinkDescription link : projDesc.getLinks().values()) {
-				assertEquals("1.0." + link.getProjectRelativePath(), LONG_LOCATION_URI, link.getLocationURI());
-			}
-		} finally {
-			Workspace.clear(location.toFile());
+		deleteOnTearDown(location);
+
+		ProjectDescriptionReader reader = new ProjectDescriptionReader(getWorkspace());
+		// Write out the project description file
+		ensureDoesNotExistInFileSystem(location.toFile());
+		InputStream stream = new ByteArrayInputStream(longProjectDescription.getBytes());
+		createFileInFileSystem(location, stream);
+		ProjectDescription projDesc = reader.read(location);
+		ensureDoesNotExistInFileSystem(location.toFile());
+		for (LinkDescription link : projDesc.getLinks().values()) {
+			assertEquals("1.0." + link.getProjectRelativePath(), LONG_LOCATION_URI, link.getLocationURI());
 		}
 	}
 
@@ -441,19 +432,17 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 	public void testLongProjectDescriptionURI() throws Throwable {
 		String longProjectDescription = getLongDescriptionURI();
 		IPath location = getRandomLocation();
-		try {
-			ProjectDescriptionReader reader = new ProjectDescriptionReader(ResourcesPlugin.getWorkspace());
-			// Write out the project description file
-			ensureDoesNotExistInFileSystem(location.toFile());
-			InputStream stream = new ByteArrayInputStream(longProjectDescription.getBytes());
-			createFileInFileSystem(location, stream);
-			ProjectDescription projDesc = reader.read(location);
-			ensureDoesNotExistInFileSystem(location.toFile());
-			for (LinkDescription link : projDesc.getLinks().values()) {
-				assertEquals("1.0." + link.getProjectRelativePath(), LONG_LOCATION_URI, link.getLocationURI());
-			}
-		} finally {
-			Workspace.clear(location.toFile());
+		deleteOnTearDown(location);
+
+		ProjectDescriptionReader reader = new ProjectDescriptionReader(ResourcesPlugin.getWorkspace());
+		// Write out the project description file
+		ensureDoesNotExistInFileSystem(location.toFile());
+		InputStream stream = new ByteArrayInputStream(longProjectDescription.getBytes());
+		createFileInFileSystem(location, stream);
+		ProjectDescription projDesc = reader.read(location);
+		ensureDoesNotExistInFileSystem(location.toFile());
+		for (LinkDescription link : projDesc.getLinks().values()) {
+			assertEquals("1.0." + link.getProjectRelativePath(), LONG_LOCATION_URI, link.getLocationURI());
 		}
 	}
 
@@ -467,23 +456,22 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		IWorkspace workspace = getWorkspace();
 		IPath root = workspace.getRoot().getLocation();
 		IPath multiLocation = root.append("multiLineTest.txt");
+		deleteOnTearDown(multiLocation);
 		IPath singleLocation = root.append("singleLineTest.txt");
+		deleteOnTearDown(singleLocation);
+
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(workspace);
 		// Write out the project description file
 		ensureDoesNotExistInFileSystem(multiLocation.toFile());
 		ensureDoesNotExistInFileSystem(singleLocation.toFile());
 		InputStream multiStream = new ByteArrayInputStream(multiLineProjectDescription.getBytes());
 		InputStream singleStream = new ByteArrayInputStream(singleLineProjectDescription.getBytes());
-		try {
-			createFileInFileSystem(multiLocation, multiStream);
-			createFileInFileSystem(singleLocation, singleStream);
-			ProjectDescription multiDesc = reader.read(multiLocation);
-			ProjectDescription singleDesc = reader.read(singleLocation);
-			compareProjectDescriptions(1, multiDesc, singleDesc);
-		} finally {
-			Workspace.clear(multiLocation.toFile());
-			Workspace.clear(singleLocation.toFile());
-		}
+
+		createFileInFileSystem(multiLocation, multiStream);
+		createFileInFileSystem(singleLocation, singleStream);
+		ProjectDescription multiDesc = reader.read(multiLocation);
+		ProjectDescription singleDesc = reader.read(singleLocation);
+		compareProjectDescriptions(1, multiDesc, singleDesc);
 	}
 
 	public void testMultipleProjectDescriptions() throws Throwable {
@@ -495,16 +483,11 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		for (int i = 0; i < members.length; i++) {
 			URL currentURL = null;
 			currentURL = new URL(whereToLook, members[i]);
-			InputStream is = null;
-			try {
-				is = currentURL.openStream();
-			} catch (IOException e) {
-				fail("0.5");
+			try (InputStream is = currentURL.openStream()) {
+				InputSource in = new InputSource(is);
+				ProjectDescription description = reader.read(in);
+				compareProjectDescriptions(i + 1, description, baselines.get(members[i]));
 			}
-			InputSource in = new InputSource(is);
-			ProjectDescription description = reader.read(in);
-
-			compareProjectDescriptions(i + 1, description, baselines.get(members[i]));
 		}
 	}
 
@@ -583,14 +566,12 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		}
 
 		/* test read */
-		InputStream input = tempStore.openInputStream(EFS.NONE, getMonitor());
 		ProjectDescription description2;
-		try {
+		try (InputStream input = tempStore.openInputStream(EFS.NONE, getMonitor())) {
 			InputSource in = new InputSource(input);
 			description2 = reader.read(in);
-		} finally {
-			input.close();
 		}
+
 		assertTrue("1.1", description.getName().equals(description2.getName()));
 		assertTrue("1.2", location.equals(description.getLocationURI()));
 
@@ -665,18 +646,13 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 	 * Writes a project description to a file store
 	 */
 	private void writeDescription(IFileStore store, ProjectDescription description) throws IOException, CoreException {
-		OutputStream output = null;
-		try {
-			output = store.openOutputStream(EFS.NONE, getMonitor());
+		try (OutputStream output = store.openOutputStream(EFS.NONE, getMonitor())) {
 			new ModelObjectWriter().write(description, output, System.lineSeparator());
-		} finally {
-			assertClose(output);
 		}
-
 	}
 
 	// Regression for Bug 300669
-	public void testProjectDescriptionWithFiltersAndNullProject() {
+	public void testProjectDescriptionWithFiltersAndNullProject() throws Exception {
 		String projectDescription = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + //
 				"<projectDescription>\n" + //
 				"	<name>rome_dfw</name>\n" + //
@@ -705,18 +681,14 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 
 		IPath root = getWorkspace().getRoot().getLocation();
 		IPath location = root.append("ModelObjectReaderWriterTest.txt");
+		deleteOnTearDown(location);
+
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(getWorkspace());
 		// Write out the project description file
 		ensureDoesNotExistInFileSystem(location.toFile());
 		InputStream stream = new ByteArrayInputStream(projectDescription.getBytes());
 		createFileInFileSystem(location, stream);
-		try {
-			ProjectDescription projDesc = reader.read(location);
-			assertNotNull("1.0", projDesc);
-		} catch (IOException e) {
-			fail("1.1", e);
-		} finally {
-			Workspace.clear(location.toFile());
-		}
+		ProjectDescription projDesc = reader.read(location);
+		assertNotNull(projDesc);
 	}
 }
