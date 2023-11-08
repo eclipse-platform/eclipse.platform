@@ -35,7 +35,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.CharsetDeltaJob;
-import org.eclipse.core.internal.resources.ContentDescriptionManager;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.ValidateProjectEncoding;
 import org.eclipse.core.internal.resources.Workspace;
@@ -1174,7 +1173,4 @@ public abstract class ResourceTest extends CoreTest {
 		TestUtil.waitForJobs(getName(), 10, 5_000, CharsetDeltaJob.FAMILY_CHARSET_DELTA);
 	}
 
-	protected void waitForContentDescriptionUpdate() {
-		TestUtil.waitForJobs(getName(), 10, 5_000, ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH);
-	}
 }
