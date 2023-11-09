@@ -6,11 +6,11 @@
 			category="org.eclipse.ui.net.NetPreferences"
             class="org.eclipse.pki.preferences.PreferencePage"
             id="org.eclipse.preferences.pkcs"
-            name="PKCS Selection">
+            name="X.509 PKI Setup">
 		</page>
 	</extension>
 	
-	<extension point="org.eclipse.pki.auth.AuthenticationPlugin">
+	<extension point="org.eclipse.ui.startup">
 		<authenticator
 			class="org.eclipse.core.pki.AuthenticationBase">
 		</authenticator>
