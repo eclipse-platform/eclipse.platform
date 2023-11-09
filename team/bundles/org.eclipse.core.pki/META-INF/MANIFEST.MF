@@ -13,7 +13,22 @@ Require-Bundle: org.eclipse.equinox.security;bundle-version="[1.0.0,2.0.0)",
  org.eclipse.core.runtime,
  org.eclipse.core.net
 Bundle-Version: 1.0.0
+Export-Package: org.eclipse.core.pki,
+ org.eclipse.pki.auth,
+ org.eclipse.pki.dialog,
+ org.eclipse.pki.exception,
+ org.eclipse.pki.interfaces,
+ org.eclipse.pki.jsse,
+ org.eclipse.pki.pkcs,
+ org.eclipse.pki.pkiselection,
+ org.eclipse.pki.preferences,
+ org.eclipse.pki.ui,
+ org.eclipse.pki.util,
+ org.eclipse.pki.wizard,
+ target.classes.org.eclipse.core.pki
 Bundle-Vendor: %PLUGIN_PROVIDER
 Automatic-Module-Name: org.eclipse.core.pki
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: target/org.eclipse.core.pki-1.0.0.jar,
+ .
 Bundle-RequiredExecutionEnvironment: JavaSE-17
