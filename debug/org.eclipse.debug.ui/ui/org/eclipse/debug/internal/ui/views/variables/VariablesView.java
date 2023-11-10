@@ -606,9 +606,10 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 	public void partDeactivated(IWorkbenchPart part) {
 		String id = part.getSite().getId();
 		if (id.equals(getSite().getId())) {
-			try (StringWriter writer = new StringWriter()) {
-				XMLMemento memento = XMLMemento.createWriteRoot("VariablesViewMemento"); //$NON-NLS-1$
-				saveViewerState(memento);
+			StringWriter writer = new StringWriter();
+			XMLMemento memento = XMLMemento.createWriteRoot("VariablesViewMemento"); //$NON-NLS-1$
+			saveViewerState(memento);
+			try {
 				memento.save(writer);
 
 				IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
