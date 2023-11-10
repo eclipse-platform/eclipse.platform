@@ -1118,22 +1118,15 @@ public class Utils {
 	}
 
 	private static IContentType getContentType(FileRevisionEditorInput editorInput) {
-		IContentType type = null;
-		try {
-			InputStream contents = editorInput.getStorage().getContents();
-			try {
-				type = getContentType(editorInput.getFileRevision().getName(), contents);
-			} finally {
-				try {
-					contents.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
+		try (InputStream contents = editorInput.getStorage().getContents()) {
+			return getContentType(editorInput.getFileRevision().getName(), contents);
+		} catch (IOException e) {
+			// ignore
 		} catch (CoreException e) {
-			TeamUIPlugin.log(IStatus.ERROR, NLS.bind("An error occurred reading the contents of file {0}", new String[] { editorInput.getName() }), e); //$NON-NLS-1$
+			TeamUIPlugin.log(IStatus.ERROR, NLS.bind("An error occurred reading the contents of file {0}", //$NON-NLS-1$
+					new String[] { editorInput.getName() }), e);
 		}
-		return type;
+		return null;
 	}
 
 	private static IContentType getContentType(String fileName, InputStream contents) {
