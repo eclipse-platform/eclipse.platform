@@ -107,7 +107,7 @@ public class AnsiConsolePreferencePage extends FieldEditorPreferencePage impleme
 		IHandlerService handlerService = PlatformUI.getWorkbench().getService(IHandlerService.class);
 		try {
 			handlerService.executeCommand(EnableDisableHandler.COMMAND_ID, new Event());
-		} catch (@SuppressWarnings("unused") Exception ex) {
+		} catch (Exception ex) {
 			System.out.println("AnsiConsole: Command '" + EnableDisableHandler.COMMAND_ID + "' not found"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return result;
