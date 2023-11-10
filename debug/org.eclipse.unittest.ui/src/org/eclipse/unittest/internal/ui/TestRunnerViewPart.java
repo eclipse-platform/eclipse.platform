@@ -286,26 +286,32 @@ public class TestRunnerViewPart extends ViewPart {
 	private final IPartListener2 fPartListener = new IPartListener2() {
 		@Override
 		public void partActivated(IWorkbenchPartReference ref) {
+			// do nothing
 		}
 
 		@Override
 		public void partBroughtToTop(IWorkbenchPartReference ref) {
+			// do nothing
 		}
 
 		@Override
 		public void partInputChanged(IWorkbenchPartReference ref) {
+			// do nothing
 		}
 
 		@Override
 		public void partClosed(IWorkbenchPartReference ref) {
+			// do nothing
 		}
 
 		@Override
 		public void partDeactivated(IWorkbenchPartReference ref) {
+			// do nothing
 		}
 
 		@Override
 		public void partOpened(IWorkbenchPartReference ref) {
+			// do nothing
 		}
 
 		@Override
@@ -1321,6 +1327,7 @@ public class TestRunnerViewPart extends ViewPart {
 
 			@Override
 			protected void layout(Composite composite, boolean flushCache) {
+				// do nothing
 			}
 		});
 		top.setTopLeft(empty); // makes ViewForm draw the horizontal separator line ...
