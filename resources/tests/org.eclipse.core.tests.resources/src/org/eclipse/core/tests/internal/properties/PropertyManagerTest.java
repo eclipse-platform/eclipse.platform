@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -43,11 +43,15 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 public class PropertyManagerTest {
 
@@ -550,4 +554,39 @@ public class PropertyManagerTest {
 		}
 	}
 
+	/**
+	 * Whenever a delete operation is called on an IFile it's properties also
+	 * deleted from .index file. This Test case validates for given IFile resource
+	 * Zero depth is calculated to traverse through folders for loading right index
+	 * file and delete its properties, because the required index file is present
+	 * under corresponding bucket of the folder same as the IFile and no need to
+	 * traverse to Infinite depth.
+	 */
+	@Test
+	public void testFileDeleteTraversalDepth() throws CoreException {
+		Workspace ws;
+		PropertyManager2 manager;
+
+		ArgumentCaptor<IResource> resourceArgCaptor = ArgumentCaptor.forClass(IResource.class);
+		ArgumentCaptor<Integer> depthArgCapture = ArgumentCaptor.forClass(Integer.class);
+
+		IFolder tempFolder = project.getFolder("temp");
+		tempFolder.create(true, true, new NullProgressMonitor());
+
+		IFile fileToBeDeleted = tempFolder.getFile("testfile" + 0);
+		fileToBeDeleted.create(createRandomContentsStream(), true, createTestMonitor());
+		fileToBeDeleted.setPersistentProperty(new QualifiedName(this.getClass().getName(), fileToBeDeleted.getName()),
+				fileToBeDeleted.getName());
+
+		MockitoAnnotations.openMocks(this);
+		ws = Mockito.spy(new Workspace());
+		manager = Mockito.spy(new PropertyManager2(ws));
+
+		manager.deleteResource(fileToBeDeleted);
+
+		Mockito.verify(manager).deleteProperties(resourceArgCaptor.capture(), depthArgCapture.capture());
+		Integer expectedDepth = 0;
+		assertEquals(expectedDepth, depthArgCapture.getValue());
+
+	}
 }
