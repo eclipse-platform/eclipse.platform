@@ -11,9 +11,9 @@
 	</extension>
 	
 	<extension point="org.eclipse.ui.startup">
-		<authenticator
+		<startup
 			class="org.eclipse.core.pki.AuthenticationBase">
-		</authenticator>
+		</startup>
 	</extension>
 
 </plugin>
