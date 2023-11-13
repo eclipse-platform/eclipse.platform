@@ -13,11 +13,12 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.di;
 
+import jakarta.inject.Provider;
 import org.eclipse.e4.core.di.IInjector;
 import org.eclipse.e4.core.di.suppliers.IObjectDescriptor;
 import org.eclipse.e4.core.di.suppliers.PrimaryObjectSupplier;
 
-public class ProviderImpl<T> implements javax.inject.Provider<T>, jakarta.inject.Provider<T> {
+public class ProviderImpl<T> implements Provider<T> {
 
 	final private PrimaryObjectSupplier objectProvider;
 	final private IObjectDescriptor objectDescriptor;

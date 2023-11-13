@@ -16,8 +16,13 @@
 
 package org.eclipse.ant.tests.ui.editor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.ant.internal.ui.editor.TaskDescriptionProvider;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
+import org.junit.Test;
 
 /**
  * Tests the tasks description provider.
@@ -26,13 +31,10 @@ import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 @SuppressWarnings("restriction")
 public class TaskDescriptionProviderTest extends AbstractAntUITest {
 
-	public TaskDescriptionProviderTest(String name) {
-		super(name);
-	}
-
 	/**
 	 * Tests getting the description of a task.
 	 */
+	@Test
 	public void testGettingTaskDescription() {
 		TaskDescriptionProvider provider = TaskDescriptionProvider.getDefault();
 		String description = provider.getDescriptionForTask("apply"); //$NON-NLS-1$
@@ -43,6 +45,7 @@ public class TaskDescriptionProviderTest extends AbstractAntUITest {
 	/**
 	 * Tests getting the description of an attribute.
 	 */
+	@Test
 	public void testGettingAttribute() {
 		TaskDescriptionProvider provider = TaskDescriptionProvider.getDefault();
 		String description = provider.getDescriptionForTaskAttribute("apply", "executable"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -53,6 +56,7 @@ public class TaskDescriptionProviderTest extends AbstractAntUITest {
 	/**
 	 * Tests getting the required value of an attribute.
 	 */
+	@Test
 	public void testGettingRequired() {
 		TaskDescriptionProvider provider = TaskDescriptionProvider.getDefault();
 		String required = provider.getRequiredAttributeForTaskAttribute("apply", "executable"); //$NON-NLS-1$ //$NON-NLS-2$

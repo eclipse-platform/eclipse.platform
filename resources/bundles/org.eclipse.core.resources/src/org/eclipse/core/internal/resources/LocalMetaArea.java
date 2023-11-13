@@ -415,8 +415,8 @@ public class LocalMetaArea implements ICoreConstants {
 	}
 
 	/**
-	 * Write the private project description information, including the location
-	 * and the dynamic project references.  See <tt>readPrivateDescription</tt>
+	 * Write the private project description information, including the location and
+	 * the dynamic project references.  See {@link #readPrivateDescription(IProject, ProjectDescription)}
 	 * for details on the file format.
 	 */
 	public void writePrivateDescription(IProject target) throws CoreException {

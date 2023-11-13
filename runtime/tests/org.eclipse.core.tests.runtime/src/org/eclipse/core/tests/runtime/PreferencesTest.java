@@ -13,9 +13,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime;
 
-import java.io.*;
-import java.util.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.core.runtime.Preferences;
+import org.junit.Test;
 
 /**
  * Test suite for API class org.eclipse.core.runtime.Preferences
@@ -23,7 +33,7 @@ import org.eclipse.core.runtime.Preferences;
  * added to hide deprecation reference warnings.
  */
 @Deprecated
-public class PreferencesTest extends RuntimeTest {
+public class PreferencesTest {
 
 	static class Tracer implements Preferences.IPropertyChangeListener {
 		public StringBuilder log = new StringBuilder();
@@ -68,30 +78,18 @@ public class PreferencesTest extends RuntimeTest {
 		}
 	}
 
-	public PreferencesTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() {
-		// do nothing
-	}
-
-	@Override
-	protected void tearDown() {
-		// do nothing
-	}
-
+	@Test
 	public void testConstants() {
 		// make sure that the preference store constants are defined properly
-		assertSame("Different values", Preferences.BOOLEAN_DEFAULT_DEFAULT, false);
-		assertSame("Different values", Preferences.INT_DEFAULT_DEFAULT, 0);
-		assertSame("Different values", Preferences.LONG_DEFAULT_DEFAULT, 0L);
-		assertSame("Different values", Preferences.FLOAT_DEFAULT_DEFAULT, 0.0f);
-		assertSame("Different values", Preferences.DOUBLE_DEFAULT_DEFAULT, 0.0);
+		assertEquals("Different values", Preferences.BOOLEAN_DEFAULT_DEFAULT, false);
+		assertEquals("Different values", Preferences.INT_DEFAULT_DEFAULT, 0);
+		assertEquals("Different values", Preferences.LONG_DEFAULT_DEFAULT, 0L);
+		assertEquals("Different values", Preferences.FLOAT_DEFAULT_DEFAULT, 0.0f, 0.0f);
+		assertEquals("Different values", Preferences.DOUBLE_DEFAULT_DEFAULT, 0.0, 0.0f);
 		assertTrue(Preferences.STRING_DEFAULT_DEFAULT.isEmpty());
 	}
 
+	@Test
 	public void testBasics() {
 
 		Preferences ps = new Preferences();
@@ -106,15 +104,15 @@ public class PreferencesTest extends RuntimeTest {
 		assertEquals("1.1", ps.getBoolean(k1), Preferences.BOOLEAN_DEFAULT_DEFAULT);
 		assertEquals("1.2", ps.getInt(k1), Preferences.INT_DEFAULT_DEFAULT);
 		assertEquals("1.3", ps.getLong(k1), Preferences.LONG_DEFAULT_DEFAULT);
-		assertEquals("1.4", ps.getFloat(k1), Preferences.FLOAT_DEFAULT_DEFAULT);
-		assertEquals("1.5", ps.getDouble(k1), Preferences.DOUBLE_DEFAULT_DEFAULT);
+		assertEquals("1.4", ps.getFloat(k1), Preferences.FLOAT_DEFAULT_DEFAULT, 0.0f);
+		assertEquals("1.5", ps.getDouble(k1), Preferences.DOUBLE_DEFAULT_DEFAULT, 0.0f);
 		assertTrue("1.6", ps.getString(k1).equals(Preferences.STRING_DEFAULT_DEFAULT));
 
 		assertEquals("1.7", ps.getDefaultBoolean(k1), Preferences.BOOLEAN_DEFAULT_DEFAULT);
 		assertEquals("1.8", ps.getDefaultInt(k1), Preferences.INT_DEFAULT_DEFAULT);
 		assertEquals("1.9", ps.getDefaultLong(k1), Preferences.LONG_DEFAULT_DEFAULT);
-		assertEquals("1.10", ps.getDefaultFloat(k1), Preferences.FLOAT_DEFAULT_DEFAULT);
-		assertEquals("1.11", ps.getDefaultDouble(k1), Preferences.DOUBLE_DEFAULT_DEFAULT);
+		assertEquals("1.10", ps.getDefaultFloat(k1), Preferences.FLOAT_DEFAULT_DEFAULT, 0.0f);
+		assertEquals("1.11", ps.getDefaultDouble(k1), Preferences.DOUBLE_DEFAULT_DEFAULT, 0.0f);
 		assertTrue("1.12", ps.getDefaultString(k1).equals(Preferences.STRING_DEFAULT_DEFAULT));
 
 		// test set/getString
@@ -168,6 +166,7 @@ public class PreferencesTest extends RuntimeTest {
 
 	}
 
+	@Test
 	public void testBoolean() {
 
 		Preferences ps = new Preferences();
@@ -188,6 +187,7 @@ public class PreferencesTest extends RuntimeTest {
 
 	}
 
+	@Test
 	public void testInteger() {
 
 		Preferences ps = new Preferences();
@@ -206,6 +206,7 @@ public class PreferencesTest extends RuntimeTest {
 		}
 	}
 
+	@Test
 	public void testLong() {
 
 		Preferences ps = new Preferences();
@@ -224,6 +225,7 @@ public class PreferencesTest extends RuntimeTest {
 		}
 	}
 
+	@Test
 	public void testFloat() {
 
 		Preferences ps = new Preferences();
@@ -242,15 +244,10 @@ public class PreferencesTest extends RuntimeTest {
 			assertEquals("1.3", v2, ps.getDefaultFloat(k1), tol);
 		}
 
-		try {
-			ps.setValue(k1, Float.NaN);
-			assertTrue("1.4", false);
-		} catch (IllegalArgumentException e) {
-			// NaNs should be rejected
-		}
-
+		assertThrows("NaNs should be rejected", IllegalArgumentException.class, () -> ps.setValue(k1, Float.NaN));
 	}
 
+	@Test
 	public void testDouble() {
 
 		Preferences ps = new Preferences();
@@ -269,15 +266,10 @@ public class PreferencesTest extends RuntimeTest {
 			assertEquals("1.3", v2, ps.getDefaultDouble(k1), tol);
 		}
 
-		try {
-			ps.setValue(k1, Float.NaN);
-			assertTrue("1.4", false);
-		} catch (IllegalArgumentException e) {
-			// NaNs should be rejected
-		}
-
+		assertThrows("NaNs should be rejected", IllegalArgumentException.class, () -> ps.setValue(k1, Float.NaN));
 	}
 
+	@Test
 	public void testString() {
 
 		Preferences ps = new Preferences();
@@ -296,6 +288,7 @@ public class PreferencesTest extends RuntimeTest {
 		}
 	}
 
+	@Test
 	public void testPropertyNames() {
 
 		Preferences ps = new Preferences();
@@ -330,6 +323,7 @@ public class PreferencesTest extends RuntimeTest {
 		assertEquals("1.5", 0, ps.propertyNames().length);
 	}
 
+	@Test
 	public void testContains() {
 
 		Preferences ps = new Preferences();
@@ -364,6 +358,7 @@ public class PreferencesTest extends RuntimeTest {
 		assertTrue("2.1", ps.contains("c"));
 	}
 
+	@Test
 	public void testDefaultPropertyNames() {
 
 		Preferences ps = new Preferences();
@@ -426,6 +421,7 @@ public class PreferencesTest extends RuntimeTest {
 		assertEquals("1.7", keys.length, ps.defaultPropertyNames().length);
 	}
 
+	@Test
 	public void testListeners2() {
 
 		final Preferences ps = new Preferences();
@@ -462,6 +458,7 @@ public class PreferencesTest extends RuntimeTest {
 		assertEquals("1.4", "[a:I2->I0]", tracer.log.toString());
 	}
 
+	@Test
 	public void testListeners() {
 
 		final Preferences ps = new Preferences();
@@ -582,7 +579,8 @@ public class PreferencesTest extends RuntimeTest {
 
 	}
 
-	public void testLoadStore() {
+	@Test
+	public void testLoadStore() throws IOException {
 
 		final Preferences ps = new Preferences();
 
@@ -594,20 +592,15 @@ public class PreferencesTest extends RuntimeTest {
 		ps.setValue("s1", "x");
 		String[] keys = {"b1", "i1", "l1", "f1", "d1", "s1",};
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
+		byte[] bytes;
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			ps.store(out, "test header");
-		} catch (IOException e) {
-			assertTrue("0.1", false);
+			bytes = out.toByteArray();
 		}
 
-		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-
 		final Preferences ps2 = new Preferences();
-		try {
+		try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
 			ps2.load(in);
-		} catch (IOException e) {
-			assertTrue("0.2", false);
 		}
 
 		assertEquals("1.1", true, ps2.getBoolean("b1"));
@@ -622,22 +615,19 @@ public class PreferencesTest extends RuntimeTest {
 		assertEquals("1.7", s1, s2);
 
 		// load discards current values
-		in = new ByteArrayInputStream(out.toByteArray());
 		final Preferences ps3 = new Preferences();
 		ps3.setValue("s1", "y");
-		try {
+		try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
 			ps3.load(in);
-			assertEquals("1.8", "x", ps3.getString("s1"));
-			Set<String> k1 = new HashSet<>(Arrays.asList(keys));
-			Set<String> k2 = new HashSet<>(Arrays.asList(ps3.propertyNames()));
-			assertEquals("1.9", k1, k2);
-		} catch (IOException e) {
-			assertTrue("1.10", false);
 		}
-
+		assertEquals("1.8", "x", ps3.getString("s1"));
+		Set<String> k1 = new HashSet<>(Arrays.asList(keys));
+		Set<String> k2 = new HashSet<>(Arrays.asList(ps3.propertyNames()));
+		assertEquals("1.9", k1, k2);
 	}
 
-	public void testNeedsSaving() {
+	@Test
+	public void testNeedsSaving() throws IOException {
 
 		Preferences ps = new Preferences();
 
@@ -679,20 +669,19 @@ public class PreferencesTest extends RuntimeTest {
 		assertEquals("7.1", false, ps.needsSaving());
 
 		// setToDefault dirties if value was set
-		try {
-			ps = new Preferences();
-			assertEquals("7.2", false, ps.needsSaving());
-			ps.setValue("any", "x");
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ps = new Preferences();
+		assertEquals("7.2", false, ps.needsSaving());
+		ps.setValue("any", "x");
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			ps.store(out, "test header");
-			ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-			ps.load(in);
-			assertEquals("7.3", false, ps.needsSaving());
-			ps.setToDefault("any");
-			assertEquals("7.4", true, ps.needsSaving());
-		} catch (IOException e) {
-			assertTrue("7.5", false);
+			try (ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray())) {
+				ps.load(in);
+			}
 		}
+		assertEquals("7.3", false, ps.needsSaving());
+		ps.setToDefault("any");
+		assertEquals("7.4", true, ps.needsSaving());
+
 
 		// setDefault, getT, getDefaultT do not dirty
 		ps = new Preferences();
@@ -717,13 +706,11 @@ public class PreferencesTest extends RuntimeTest {
 		ps.getDefaultString("s1");
 		assertEquals("8.1", false, ps.needsSaving());
 
-		try {
-			ps = new Preferences();
-			assertEquals("9.1", false, ps.needsSaving());
-			ps.setValue("b1", true);
-			assertEquals("9.2", true, ps.needsSaving());
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-
+		ps = new Preferences();
+		assertEquals("9.1", false, ps.needsSaving());
+		ps.setValue("b1", true);
+		assertEquals("9.2", true, ps.needsSaving());
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			// store makes not dirty
 			ps.store(out, "test header");
 			assertEquals("9.3", false, ps.needsSaving());
@@ -731,11 +718,10 @@ public class PreferencesTest extends RuntimeTest {
 			// load comes in not dirty
 			ps.setValue("b1", false);
 			assertEquals("9.4", true, ps.needsSaving());
-			ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-			ps.load(in);
+			try (ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray())) {
+				ps.load(in);
+			}
 			assertEquals("9.5", false, ps.needsSaving());
-		} catch (IOException e) {
-			assertTrue("9.0", false);
 		}
 	}
 

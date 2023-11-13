@@ -112,9 +112,6 @@ public class StandbyPart implements IIntroConstants {
 		}
 	}
 
-	/**
-	 * @param parent
-	 */
 	public StandbyPart(IntroModelRoot model) {
 		this.model = model;
 	}

@@ -13,19 +13,16 @@
  *******************************************************************************/
 package org.eclipse.compare.tests.performance;
 
-import junit.framework.Test;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import junit.framework.TestSuite;
 
 /**
  * @since 3.1
  */
+@Suite
+@SelectClasses({RangeDifferencerTest.class})
 public class PerformanceTestSuite extends TestSuite {
-
-	public static Test suite() {
-		TestSuite suite= new TestSuite("Compare performance tests"); //$NON-NLS-1$
-		//$JUnit-BEGIN$
-		suite.addTestSuite(RangeDifferencerTest.class);
-		//$JUnit-END$
-		return suite;
-	}
+	//
 }

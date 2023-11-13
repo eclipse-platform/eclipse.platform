@@ -15,7 +15,9 @@ package org.eclipse.core.tests.resources.session;
 
 import java.io.File;
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
@@ -29,7 +31,7 @@ public class TestBug208833 extends WorkspaceSessionTest {
 	/**
 	 * Setup.  Creates a project with a file.
 	 */
-	public void test1() {
+	public void test1() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 
 		IProject project = workspace.getRoot().getProject("Project1");
@@ -40,11 +42,7 @@ public class TestBug208833 extends WorkspaceSessionTest {
 		ensureExistsInWorkspace(file, getRandomContents());
 
 		// save the workspace
-		try {
-			workspace.save(true, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		workspace.save(true, null);
 
 		// move the project to another location, before the workbench is started again
 		// to emulate disconnection of a device (e.g. USB key) or a remote file system
@@ -54,7 +52,7 @@ public class TestBug208833 extends WorkspaceSessionTest {
 	/**
 	 * Eclipse started again.
 	 */
-	public void test2() {
+	public void test2() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 
 		IProject p1 = workspace.getRoot().getProject("Project1");
@@ -67,11 +65,7 @@ public class TestBug208833 extends WorkspaceSessionTest {
 		assertTrue("3.0", new File(p1.getLocation().toFile().getAbsolutePath() + "_temp").renameTo(p1.getLocation().toFile()));
 
 		// now the project should be opened without any problems
-		try {
-			p1.open(null);
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		p1.open(null);
 
 		// the project should be opened and the file should exist
 		assertTrue("5.0", p1.isOpen());

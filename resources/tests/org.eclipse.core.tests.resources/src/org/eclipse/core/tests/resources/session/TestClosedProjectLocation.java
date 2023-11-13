@@ -14,8 +14,12 @@
 package org.eclipse.core.tests.resources.session;
 
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -30,26 +34,18 @@ public class TestClosedProjectLocation extends WorkspaceSerializationTest {
 	/**
 	 * Create a project at a non-default location, and close it.
 	 */
-	public void test1() {
+	public void test1() throws CoreException {
 		IProject project = workspace.getRoot().getProject(PROJECT);
 		IFile file = project.getFile(FILE);
-		try {
-			IProjectDescription desc = workspace.newProjectDescription(PROJECT);
-			desc.setLocation(location);
-			project.create(desc, getMonitor());
-			project.open(getMonitor());
-			ensureExistsInWorkspace(file, true);
-			project.close(getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		IProjectDescription desc = workspace.newProjectDescription(PROJECT);
+		desc.setLocation(location);
+		project.create(desc, getMonitor());
+		project.open(getMonitor());
+		ensureExistsInWorkspace(file, true);
+		project.close(getMonitor());
 		assertEquals("1.1", location, project.getLocation());
 
-		try {
-			workspace.save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.2", e);
-		}
+		workspace.save(true, getMonitor());
 	}
 
 	/**

@@ -26,7 +26,7 @@ import org.eclipse.help.internal.webapp.parser.ContextParser;
 import org.eclipse.help.internal.webapp.servlet.ContextServlet;
 import org.eclipse.help.internal.webapp.utils.Utils;
 
-/**
+/*
  * Returns a context help entry with the id specified in the
  * <code>id</code> parameter in <code>xml</code> or <code>json</code> form.
  *
@@ -49,9 +49,6 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  *
  * @exception	400 Error - If context <code>id</code> parameter is missing
  * @exception	404 Error - If wrong context <code>id</code> parameter
- *
- * @version	$Version$
- *
  **/
 public class ContextService extends ContextServlet {
 

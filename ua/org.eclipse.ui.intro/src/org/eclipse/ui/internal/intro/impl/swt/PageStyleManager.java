@@ -52,8 +52,6 @@ public class PageStyleManager extends SharedStyleManager {
 	 * is retrieved from the page model class. The default properties are
 	 * assumed to be the presentation shared properties. The inherrited
 	 * properties are properties that we got from included and extension styles.
-	 *
-	 * @param modelRoot
 	 */
 	public PageStyleManager(AbstractIntroPage page, Properties sharedProperties) {
 		this.page = page;
@@ -268,9 +266,6 @@ public class PageStyleManager extends SharedStyleManager {
 	 * If not found, use the default description style.
 	 *
 	 * Returns null if no default style found, or any id in path is null.
-	 *
-	 * @param group
-	 * @return
 	 */
 	public String getPageDescription() {
 		if (page.getId() == null)
@@ -301,9 +296,6 @@ public class PageStyleManager extends SharedStyleManager {
 	 * <pageId>.description-id= <id of child description Text element>
 	 * }</pre>
 	 * If not found, use the default description style.
-	 *
-	 * @param group
-	 * @return
 	 */
 	public String getPageSubTitle() {
 		String key = page.getId() + ".subtitle-id"; //$NON-NLS-1$

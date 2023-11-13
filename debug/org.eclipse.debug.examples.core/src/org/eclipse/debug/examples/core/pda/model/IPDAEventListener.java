@@ -18,17 +18,17 @@ package org.eclipse.debug.examples.core.pda.model;
 import org.eclipse.debug.examples.core.pda.protocol.PDAEvent;
 
 /**
- * Listeners are notified of events occurring in a PDA program
- * being interpreted.
+ * Listeners are notified of events occurring in a PDA program being
+ * interpreted.
  *
- * @see org.eclipse.debug.examples.core.protocol.PDAVMStarted
- * @see org.eclipse.debug.examples.core.protocol.PDAVMTerminated
- * @see org.eclipse.debug.examples.core.protocol.PDAVMSuspneded
- * @see org.eclipse.debug.examples.core.protocol.PDAVMResumed
- * @see org.eclipse.debug.examples.core.protocol.PDAStarted
- * @see org.eclipse.debug.examples.core.protocol.PDAExited
- * @see org.eclipse.debug.examples.core.protocol.PDASuspended
- * @see org.eclipse.debug.examples.core.protocol.PDAResumed
+ * @see org.eclipse.debug.examples.core.pda.protocol.PDAVMStartedEvent
+ * @see org.eclipse.debug.examples.core.pda.protocol.PDAVMTerminatedEvent
+ * @see org.eclipse.debug.examples.core.pda.protocol.PDAVMSuspendedEvent
+ * @see org.eclipse.debug.examples.core.pda.protocol.PDAVMResumedEvent
+ * @see org.eclipse.debug.examples.core.pda.protocol.PDAStartedEvent
+ * @see org.eclipse.debug.examples.core.pda.protocol.PDAExitedEvent
+ * @see org.eclipse.debug.examples.core.pda.protocol.PDASuspendedEvent
+ * @see org.eclipse.debug.examples.core.pda.protocol.PDAResumedEvent
  * @see org.eclipse.debug.examples.core.pda.protocol.PDAUnimplementedInstructionEvent
  * @see org.eclipse.debug.examples.core.pda.protocol.PDARegisterData
  * @see org.eclipse.debug.examples.core.pda.protocol.PDANoSuchLabelEvent

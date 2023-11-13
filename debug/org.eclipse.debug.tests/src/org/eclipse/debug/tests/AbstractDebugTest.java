@@ -100,8 +100,8 @@ public class AbstractDebugTest {
 	/**
 	 * Waits while given condition is {@code true} for a given amount of
 	 * milliseconds. If the actual wait time exceeds given timeout and condition
-	 * will be still {@code true}, throws {@link AssertionFailedError} with
-	 * given message.
+	 * will be still {@code true}, throws
+	 * {@link junit.framework.AssertionFailedError} with given message.
 	 * <p>
 	 * Will process UI events while waiting in UI thread, if called from
 	 * background thread, just waits.
@@ -119,7 +119,8 @@ public class AbstractDebugTest {
 	/**
 	 * Waits while given condition is {@code true} for some time. If the actual
 	 * wait time exceeds {@link #testTimeout} and condition will be still
-	 * {@code true}, throws {@link AssertionFailedError} with given message.
+	 * {@code true}, throws {@link junit.framework.AssertionFailedError} with
+	 * given message.
 	 * <p>
 	 * Will process UI events while waiting in UI thread, if called from
 	 * background thread, just waits.

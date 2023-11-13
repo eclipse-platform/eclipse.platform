@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.editor;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
 import org.eclipse.ant.internal.ui.editor.AntEditor;
@@ -24,14 +27,12 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.ui.PartInitException;
+import org.junit.Test;
 
 @SuppressWarnings("restriction")
 public class OccurrencesFinderTests extends AbstractAntUITest {
 
-	public OccurrencesFinderTests(String name) {
-		super(name);
-	}
-
+	@Test
 	public void testFromPropertyName() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("occurrencesTest.xml"); //$NON-NLS-1$
@@ -56,6 +57,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 		assertContainsPosition(positions, newoffset, 8);
 	}
 
+	@Test
 	public void testFromPropertyLocation() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("occurrencesTest.xml"); //$NON-NLS-1$
@@ -70,6 +72,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 		}
 	}
 
+	@Test
 	public void testFromPropertyValue() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("occurrencesTest.xml"); //$NON-NLS-1$
@@ -84,6 +87,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 		}
 	}
 
+	@Test
 	public void testPropertyRefFromTaskText() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("occurrencesTest.xml"); //$NON-NLS-1$
@@ -115,6 +119,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 		}
 	}
 
+	@Test
 	public void testFromMacrodefAttributeDecl() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("occurrencesTest.xml"); //$NON-NLS-1$
@@ -139,6 +144,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 		assertContainsPosition(positions, newoffset, 7);
 	}
 
+	@Test
 	public void testFromMacrodefAttributeRef() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("occurrencesTest.xml"); //$NON-NLS-1$
@@ -153,6 +159,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 		}
 	}
 
+	@Test
 	public void testTargetFromAnt() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("occurrencesTest.xml"); //$NON-NLS-1$
@@ -174,6 +181,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 		}
 	}
 
+	@Test
 	public void testTargetFromAntCall() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("occurrencesTest.xml"); //$NON-NLS-1$
@@ -198,6 +206,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 	/**
 	 * bug 89115
 	 */
+	@Test
 	public void testTargetFromProjectDefault() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("89115.xml"); //$NON-NLS-1$
@@ -223,6 +232,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 	 * @throws PartInitException
 	 * @throws BadLocationException
 	 */
+	@Test
 	public void testTargetFromTargetDepends() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("89115.xml"); //$NON-NLS-1$
@@ -262,6 +272,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 	 * @throws PartInitException
 	 * @throws BadLocationException
 	 */
+	@Test
 	public void testTargetFromTargetIf() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("occurrencesTest.xml"); //$NON-NLS-1$
@@ -276,6 +287,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 		}
 	}
 
+	@Test
 	public void testNoRefFromProjectDefault() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("89115.xml"); //$NON-NLS-1$
@@ -317,6 +329,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 	/**
 	 * Bug 89901
 	 */
+	@Test
 	public void testPropertyAndTargetWithSameName() throws PartInitException, BadLocationException {
 		try {
 			IFile file = getIFile("89901.xml"); //$NON-NLS-1$

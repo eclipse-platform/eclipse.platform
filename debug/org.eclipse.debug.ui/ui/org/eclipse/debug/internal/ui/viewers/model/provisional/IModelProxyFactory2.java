@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.TreePath;
  * This interface is an alternative to the {@link IModelProxyFactory}
  * interface. Unlike its predecessor <code>IModelProxyFactory2</code> allows
  * the full path to the tree element to be specified when creating an
- * <code>IModelProxy<code> instance.  Using the full patch allows models to
+ * <code>IModelProxy</code> instance.  Using the full patch allows models to
  * provide proper model deltas even if the root element of this proxy is at
  * variable or unknown location in the viewer.
  * </p>

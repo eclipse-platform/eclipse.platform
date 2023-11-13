@@ -45,6 +45,7 @@ public class WorkerPoolTest {
 	 * scheduling a large number of concurrent jobs.
 	 * <p>
 	 * This test performs the following steps:
+	 * </p>
 	 * <ul>
 	 * <li>Initializes a cyclic barrier with a count based on a multiplier of the
 	 * defined maximum worker threads.</li>
@@ -54,7 +55,6 @@ public class WorkerPoolTest {
 	 * the count of active worker threads is less than or equal to the defined
 	 * maximum or a timeout occurs.</li>
 	 * </ul>
-	 * </p>
 	 *
 	 * @throws Exception If the barrier timeout runs out
 	 *

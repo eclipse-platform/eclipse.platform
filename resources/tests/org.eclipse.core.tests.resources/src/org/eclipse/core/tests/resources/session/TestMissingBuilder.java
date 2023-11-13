@@ -16,7 +16,13 @@ package org.eclipse.core.tests.resources.session;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SnowBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
@@ -55,86 +61,62 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 	 * Setup.  Create a project that has a disabled builder due to
 	 * missing nature prerequisite.
 	 */
-	public void test1() {
+	public void test1() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
 		ensureExistsInWorkspace(project, true);
-		try {
-			setAutoBuilding(true);
-			IProjectDescription desc = project.getDescription();
-			desc.setNatureIds(new String[] {NATURE_WATER, NATURE_SNOW});
-			project.setDescription(desc, IResource.FORCE, getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		setAutoBuilding(true);
+		IProjectDescription desc = project.getDescription();
+		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
+		project.setDescription(desc, IResource.FORCE, getMonitor());
 		//wait for background build to complete
 		waitForBuild();
 		//remove the water nature, thus invalidating snow nature
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.reset();
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		try {
-			//setting description file will also trigger build
-			descFile.setContents(projectFileWithoutWater(), IResource.FORCE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		// setting description file will also trigger build
+		descFile.setContents(projectFileWithoutWater(), IResource.FORCE, getMonitor());
 		//assert that builder was skipped
 		builder.assertLifecycleEvents("1.0");
 
 		//assert that the builder is still in the build spec
 		assertTrue("1.1", hasBuilder(project, SnowBuilder.BUILDER_NAME));
 
-		try {
-			getWorkspace().save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("99.99", e);
-		}
+		getWorkspace().save(true, getMonitor());
 	}
 
 	/**
 	 * Now assert that the disabled builder was carried forward and that
 	 * it still doesn't build.
 	 */
-	public void test2() {
+	public void test2() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
 
 		//assert that the builder is still in the build spec
 		assertTrue("1.0", hasBuilder(project, SnowBuilder.BUILDER_NAME));
 
 		//perform a build and ensure snow builder isn't called
-		try {
-			getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 		builder.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);
 		builder.assertLifecycleEvents("1.1");
 
-		try {
-			getWorkspace().save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("99.99", e);
-		}
+		getWorkspace().save(true, getMonitor());
 	}
 
 	/**
 	 * Test again in another workspace.  This ensures that disabled builders
 	 * that were never instantiated get carried forward correctly.
 	 */
-	public void test3() {
+	public void test3() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
 
 		//assert that the builder is still in the build spec
 		assertTrue("1.0", hasBuilder(project, SnowBuilder.BUILDER_NAME));
 
 		//perform a build and ensure snow builder isn't called
-		try {
-			getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 		builder.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);
@@ -144,13 +126,9 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		waitForBuild();
 		builder.reset();
 		builder.addExpectedLifecycleEvent(SnowBuilder.SNOW_BUILD_EVENT);
-		try {
-			IProjectDescription desc = project.getDescription();
-			desc.setNatureIds(new String[] {NATURE_WATER, NATURE_SNOW});
-			project.setDescription(desc, IResource.FORCE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		IProjectDescription desc = project.getDescription();
+		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
+		project.setDescription(desc, IResource.FORCE, getMonitor());
 		waitForBuild();
 		builder.assertLifecycleEvents("2.0");
 		assertTrue("2.1", builder.wasDeltaNull());

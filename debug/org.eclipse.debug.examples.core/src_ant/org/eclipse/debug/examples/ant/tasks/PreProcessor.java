@@ -32,12 +32,13 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.util.FileUtils;
 
 /**
- * Java preprocessor for code examples. Used to export source code for
- * example plug-ins with parts of code missing/inserted etc., for
- * various exercises.
+ * Java preprocessor for code examples. Used to export source code for example
+ * plug-ins with parts of code missing/inserted etc., for various exercises.
  * <p>
- * The preprocessor looks for #ifdef statements in java comments, and is
- * run with a set of symbols. For example:
+ * The preprocessor looks for #ifdef statements in java comments, and is run
+ * with a set of symbols. For example:
+ * </p>
+ *
  * <pre>
  * //#ifdef ex1
  * ... code to insert when 'ex1' symbol is on
@@ -45,7 +46,6 @@ import org.apache.tools.ant.util.FileUtils;
  * ... code to insert when not 'ex1'
  * //#endif
  * </pre>
- * </p>
  */
 public class PreProcessor extends Task {
 

@@ -119,6 +119,7 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		addBundle(org.junit.Test.class); // org.junit
 		addBundle(org.junit.jupiter.api.Test.class); // junit-jupiter-api
 		addBundle(org.junit.platform.commons.JUnitException.class); // junit-platform-commons
+		addBundle(org.junit.platform.suite.api.Suite.class); // junit-platform-suite-api
 		addBundle(org.apiguardian.api.API.class); // org.apiguardian.api
 		addBundle(org.opentest4j.AssertionFailedError.class); // org.opentest4j
 	}

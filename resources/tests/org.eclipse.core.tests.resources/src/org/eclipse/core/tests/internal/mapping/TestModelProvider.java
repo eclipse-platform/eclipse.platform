@@ -31,7 +31,7 @@ public class TestModelProvider extends ModelProvider {
 	/**
 	 * Flag to check if the given delta proposes contents deletion. If set to
 	 * {@code true}, the {@link #validateChange(IResourceDelta, IProgressMonitor)}
-	 * will add {@link IStatus.ERROR} to the change description to indicate contents
+	 * will add {@link IStatus#ERROR} to the change description to indicate contents
 	 * deletion proposal.
 	 */
 	public static boolean checkContentsDeletion;

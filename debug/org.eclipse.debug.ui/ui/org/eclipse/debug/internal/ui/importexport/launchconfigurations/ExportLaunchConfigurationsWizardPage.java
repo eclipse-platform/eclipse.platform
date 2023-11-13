@@ -229,7 +229,7 @@ public class ExportLaunchConfigurationsWizardPage extends WizardPage {
 
 	/**
 	 * Updates the checked state of child launch configurations if the parent type is checked
-	 * @param item
+	 * @param element
 	 */
 	protected void updateCheckedState(Object element) {
 		boolean state = fViewer.getChecked(element);
@@ -449,7 +449,8 @@ public class ExportLaunchConfigurationsWizardPage extends WizardPage {
 	 * Copies a file from one location to another
 	 * @param in the file to copy
 	 * @param out the file to be copied out to
-	 * @throws Exception
+	 * @throws CoreException
+	 * @throws IOException
 	 * @since 3.5
 	 */
 	protected void copyFile(IFileStore in, File out) throws CoreException, IOException {

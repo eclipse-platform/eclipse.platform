@@ -16,7 +16,11 @@ package org.eclipse.core.tests.resources.session;
 
 import java.util.Map;
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
@@ -32,61 +36,49 @@ public class TestBug20127 extends WorkspaceSerializationTest {
 	 * Setup.  Creates a project with a builder, with a built state,
 	 * autobuild off.
 	 */
-	public void test1() {
+	public void test1() throws CoreException {
 		IProject project = workspace.getRoot().getProject("Project1");
 		ensureExistsInWorkspace(project, true);
-		try {
-			setAutoBuilding(false);
+		setAutoBuilding(false);
 
-			//create a project and configure builder
-			IProjectDescription description = project.getDescription();
-			ICommand command = description.newCommand();
-			Map<String, String> args = command.getArguments();
-			args.put(TestBuilder.BUILD_ID, "Project1Build1");
-			command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
-			command.setArguments(args);
-			description.setBuildSpec(new ICommand[] {command});
-			project.setDescription(description, getMonitor());
+		//create a project and configure builder
+		IProjectDescription description = project.getDescription();
+		ICommand command = description.newCommand();
+		Map<String, String> args = command.getArguments();
+		args.put(TestBuilder.BUILD_ID, "Project1Build1");
+		command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
+		command.setArguments(args);
+		description.setBuildSpec(new ICommand[] { command });
+		project.setDescription(description, getMonitor());
 
-			//initial build
-			workspace.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		//initial build
+		workspace.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 
-			getWorkspace().save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		getWorkspace().save(true, getMonitor());
 	}
 
 	/**
 	 * Rename the project without invoking any builds.
 	 */
-	public void test2() {
-		try {
-			IProject project = workspace.getRoot().getProject("Project1");
-			IProjectDescription desc = project.getDescription();
-			desc.setName("MovedProject");
-			project.move(desc, IResource.NONE, getMonitor());
-			workspace.save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+	public void test2() throws CoreException {
+		IProject project = workspace.getRoot().getProject("Project1");
+		IProjectDescription desc = project.getDescription();
+		desc.setName("MovedProject");
+		project.move(desc, IResource.NONE, getMonitor());
+		workspace.save(true, getMonitor());
 	}
 
 	/**
 	 * If this session starts correctly then the bug is fixed
 	 */
-	public void test3() {
+	public void test3() throws CoreException {
 		IProject oldLocation = workspace.getRoot().getProject("Project1");
 		IProject newLocation = workspace.getRoot().getProject("MovedProject");
 
 		assertTrue("1.0", !oldLocation.exists());
 		assertTrue("1.0", newLocation.exists());
 		assertTrue("1.1", newLocation.isOpen());
-		try {
-			workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
 	}
 
 	public static Test suite() {

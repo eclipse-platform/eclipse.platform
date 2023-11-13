@@ -65,11 +65,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * Preference page for creating and configuring simple
- * launch variables.
+ * Preference page for creating and configuring simple launch variables.
  *
- * @see org.eclipse.debug.core.variables.IValueVariable
- * @see org.eclipse.debug.core.variables.ISimpleVariableRegistry
+ * @see org.eclipse.core.variables.IValueVariable
  */
 public class StringVariablePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 

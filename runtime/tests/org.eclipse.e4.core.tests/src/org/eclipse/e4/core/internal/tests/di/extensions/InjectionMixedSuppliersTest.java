@@ -18,9 +18,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
@@ -30,6 +27,9 @@ import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.e4.core.internal.tests.CoreTestsActivator;
 import org.junit.Test;
 import org.osgi.service.prefs.BackingStoreException;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 public class InjectionMixedSuppliersTest {
 

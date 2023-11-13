@@ -14,6 +14,11 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.HashMap;
@@ -32,6 +37,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.junit.Assert;
+import org.junit.Test;
 
 @SuppressWarnings("restriction")
 public class AntUtilTests extends AbstractAntUITest {
@@ -39,10 +45,7 @@ public class AntUtilTests extends AbstractAntUITest {
 	private static final long EXECUTION_THRESHOLD_INCLUDE_TASK = 10000;
 	private static final long WINDOWS_EXECUTION_THRESHOLD_INCLUDE_TASK = 15000;
 
-	public AntUtilTests(String name) {
-		super(name);
-	}
-
+	@Test
 	public void testGetTargetsLaunchConfiguration() throws CoreException {
 		String buildFileName = "echoing"; //$NON-NLS-1$
 		File buildFile = getBuildFile(buildFileName + ".xml"); //$NON-NLS-1$
@@ -55,6 +58,7 @@ public class AntUtilTests extends AbstractAntUITest {
 		assertContains("echo3", targets); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testGetTargetsLaunchConfigurationMinusD() throws CoreException {
 		String buildFileName = "importRequiringUserProp"; //$NON-NLS-1$
 		File buildFile = getBuildFile(buildFileName + ".xml"); //$NON-NLS-1$
@@ -67,6 +71,7 @@ public class AntUtilTests extends AbstractAntUITest {
 		assertContains("import-default", targets); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testGetTargetsLaunchConfigurationMinusDAndProperty() throws CoreException {
 		String buildFileName = "importRequiringUserProp"; //$NON-NLS-1$
 		File buildFile = getBuildFile(buildFileName + ".xml"); //$NON-NLS-1$
@@ -81,6 +86,7 @@ public class AntUtilTests extends AbstractAntUITest {
 		assertContains("import-default", targets); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testGetTargetsLaunchConfigurationProperty() throws CoreException {
 		String buildFileName = "importRequiringUserProp"; //$NON-NLS-1$
 		File buildFile = getBuildFile(buildFileName + ".xml"); //$NON-NLS-1$
@@ -94,6 +100,7 @@ public class AntUtilTests extends AbstractAntUITest {
 		assertContains("import-default", targets); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testGetTargetsLaunchConfigurationPropertyFile() throws CoreException {
 		String buildFileName = "importRequiringUserProp"; //$NON-NLS-1$
 		File buildFile = getBuildFile(buildFileName + ".xml"); //$NON-NLS-1$
@@ -107,6 +114,7 @@ public class AntUtilTests extends AbstractAntUITest {
 	}
 
 	// for bugfix of bug 412809: Testing a simple "include-hierarchy" (only two levels setting the "as" property)
+	@Test
 	public void testGetIncludeTargetsSimpleHierarchyAlias() {
 		// The file itself contains one target. The included file contains the other one.
 		String buildFileName = "bug412809/simple/buildFileAlias"; //$NON-NLS-1$
@@ -116,6 +124,7 @@ public class AntUtilTests extends AbstractAntUITest {
 	}
 
 	// for bugfix of bug 412809: Testing a simple "include-hierarchy" (only two levels without the "as" property)
+	@Test
 	public void testGetIncludeTargetsSimpleHierarchyNoAliases() {
 		// The file itself contains one target. The included file contains the other one.
 		String buildFileName = "bug412809/simple/buildFileNoAlias"; //$NON-NLS-1$
@@ -125,6 +134,7 @@ public class AntUtilTests extends AbstractAntUITest {
 	}
 
 	// for bugfix of bug 412809: Testing a complex "include-hierarchy" (three levels, only non-aliases used)
+	@Test
 	public void testGetIncludeTargetsComplexHierarchyNoAlias() {
 		// The file itself contains one target. The included file contains the other one.
 		String buildFileName = "bug412809/complex/noAlias/buildFileHierarchical"; //$NON-NLS-1$
@@ -135,17 +145,19 @@ public class AntUtilTests extends AbstractAntUITest {
 	}
 
 	// for bugfix of bug 412809: Testing a complex "include-hierarchy" (three levels, only aliases used)
+	@Test
 	public void testGetIncludeTargetsComplexHierarchyAlias() {
 		// The file itself contains one target. The included file contains the other one.
 		String buildFileName = "bug412809/complex/alias/buildFileHierarchical"; //$NON-NLS-1$
 		AntTargetNode[] targets = getAntTargetNodesOfBuildFile(buildFileName);
 		String[] expectedTargets = { "deploy", "commonLv1Prefix.deploy", "commonLv1Prefix.commonLv2Prefix.deploySuper", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				"commonLv1Prefix.commonLv2Prefix.commonLv3Prefix.deployLv3", //$NON-NLS-1$
-				"commonLv1Prefix.commonLv2Prefix.commonLv3Prefix.commonLv4Prefix.deployLv4" }; //$NON-NLS-1$
+		"commonLv1Prefix.commonLv2Prefix.commonLv3Prefix.commonLv4Prefix.deployLv4" }; //$NON-NLS-1$
 		assertTargets(targets, expectedTargets);
 	}
 
 	// for bugfix of bug 412809: Testing a complex "include-hierarchy" (three levels, aliases and non-aliases used)
+	@Test
 	public void testGetIncludeTargetsComplexHierarchyMisc() {
 		// The file itself contains one target. The included file contains the other one.
 		String buildFileName = "bug412809/complex/misc/buildFileHierarchical"; //$NON-NLS-1$
@@ -156,6 +168,7 @@ public class AntUtilTests extends AbstractAntUITest {
 	}
 
 	// for bugfix of bug 412809: Assure explicitly that the provided patch works on external as well as non-external build-files
+	@Test
 	public void testGetIncludeTargetsExternalFiles() {
 		// First assure that external and non-external files are included
 		String buildFileName = "bug412809/complex/misc/buildFileHierarchical"; //$NON-NLS-1$
@@ -195,6 +208,7 @@ public class AntUtilTests extends AbstractAntUITest {
 	}
 
 	// for bugfix of bug 412809: Testing the performance by including the huge build file from "/testbuildfiles/performance/build.xml"
+	@Test
 	public void testGetIncludeTargetsPerformance() {
 		/*
 		 * More or less the same files (noAlias-files because the parsing to search the project-name only occurs at includes where the alias-property
@@ -295,6 +309,7 @@ public class AntUtilTests extends AbstractAntUITest {
 		assertEquals("Did not find target: " + targetName, true, found); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testIsKnownAntFileName() throws Exception {
 		assertTrue("The file name 'foo.xml' is a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.xml")); //$NON-NLS-1$ //$NON-NLS-2$
 		assertTrue("The file name 'foo.ant' is a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.ant")); //$NON-NLS-1$ //$NON-NLS-2$

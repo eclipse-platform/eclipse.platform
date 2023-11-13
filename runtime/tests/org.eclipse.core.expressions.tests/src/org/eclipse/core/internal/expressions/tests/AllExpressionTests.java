@@ -13,18 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.internal.expressions.tests;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
+@RunWith(Suite.class)
+@SuiteClasses({ PropertyTesterTests.class, ExpressionTests.class, ExpressionInfoTests.class,
+		CountExpressionTest.class })
 public class AllExpressionTests {
 
-	public static Test suite() {
-		TestSuite suite= new TestSuite("All Expression Language Tests"); //$NON-NLS-1$
-		suite.addTest(PropertyTesterTests.suite());
-		suite.addTest(new JUnit4TestAdapter(ExpressionTests.class));
-		suite.addTest(ExpressionInfoTests.suite());
-		suite.addTest(CountExpressionTest.suite());
-		return suite;
-	}
 }

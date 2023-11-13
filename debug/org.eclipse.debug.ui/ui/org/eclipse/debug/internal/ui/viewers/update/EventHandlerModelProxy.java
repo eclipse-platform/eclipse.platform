@@ -81,11 +81,6 @@ public abstract class EventHandlerModelProxy extends AbstractModelProxy implemen
 
 	}
 
-	/**
-	 * Adds the given handler to this event update policy.
-	 *
-	 * @param handler
-	 */
 	protected abstract DebugEventHandler[] createEventHandlers();
 
 	@Override

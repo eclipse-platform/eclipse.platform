@@ -14,15 +14,14 @@
 package org.eclipse.ua.tests.cheatsheet;
 
 import org.eclipse.ua.tests.cheatsheet.performance.OpenCheatSheetTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests help performance (automated).
  */
-@RunWith(Suite.class)
-@SuiteClasses({ OpenCheatSheetTest.class })
+@Suite
+@SelectClasses({ OpenCheatSheetTest.class })
 public class AllCheatSheetPerformanceTests {
 
 }

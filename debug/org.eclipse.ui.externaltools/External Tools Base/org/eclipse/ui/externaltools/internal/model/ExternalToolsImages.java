@@ -119,7 +119,7 @@ public class ExternalToolsImages {
 	}
 
 	/**
-	 * Returns the <code>Image<code> identified by the given key,
+	 * Returns the <code>Image</code> identified by the given key,
 	 * or <code>null</code> if it does not exist.
 	 */
 	public static Image getImage(String key) {
@@ -127,7 +127,7 @@ public class ExternalToolsImages {
 	}
 
 	/**
-	 * Returns the <code>ImageDescriptor<code> identified by the given key,
+	 * Returns the <code>ImageDescriptor</code> identified by the given key,
 	 * or <code>null</code> if it does not exist.
 	 */
 	public static ImageDescriptor getImageDescriptor(String key) {

@@ -481,11 +481,4 @@ public class Bug_026294 extends ResourceTest {
 		}
 	}
 
-	/**
-	 * @see org.eclipse.core.tests.harness.ResourceTest#tearDown()
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
 }

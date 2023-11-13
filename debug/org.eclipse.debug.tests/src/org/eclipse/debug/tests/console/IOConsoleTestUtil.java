@@ -778,7 +778,7 @@ public final class IOConsoleTestUtil {
 	}
 
 	/**
-	 * Get identifier for output {@link IOConsolePartition}s.
+	 * Get identifier for output {@code IOConsolePartition}s.
 	 *
 	 * @return output partition identifier
 	 */
@@ -788,7 +788,7 @@ public final class IOConsoleTestUtil {
 	}
 
 	/**
-	 * Get identifier for input {@link IOConsolePartition}s.
+	 * Get identifier for input {@code IOConsolePartition}s.
 	 *
 	 * @return input partition identifier
 	 */

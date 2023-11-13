@@ -103,7 +103,7 @@ public class BookmarksPart extends HyperlinkTreePart implements Observer {
 	/**
 	 * @param parent
 	 * @param toolkit
-	 * @param style
+	 * @param tbm
 	 */
 	public BookmarksPart(Composite parent, final FormToolkit toolkit,
 			IToolBarManager tbm) {

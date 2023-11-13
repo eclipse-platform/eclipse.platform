@@ -14,7 +14,10 @@
 package org.eclipse.core.tests.resources.session;
 
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
@@ -27,40 +30,24 @@ public class TestBug12575 extends WorkspaceSerializationTest {
 	 * Setup.  Create a simple project, delete the .project file, shutdown
 	 * cleanly.
 	 */
-	public void test1() {
+	public void test1() throws CoreException {
 		IProject project = workspace.getRoot().getProject(projectName);
-		try {
-			project.create(getMonitor());
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.create(getMonitor());
+		project.open(getMonitor());
 		IFile dotProject = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		try {
-			dotProject.delete(IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
-		try {
-			workspace.save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.2", e);
-		}
+		dotProject.delete(IResource.NONE, getMonitor());
+		workspace.save(true, getMonitor());
 	}
 
 	/**
 	 * Infection.  Modify the .project, cause a snapshot, crash
 	 */
-	public void test2() {
+	public void test2() throws CoreException {
 		IProject project = workspace.getRoot().getProject(projectName);
 		IProject other = workspace.getRoot().getProject("Other");
-		try {
-			IProjectDescription desc = project.getDescription();
-			desc.setReferencedProjects(new IProject[] {other});
-			project.setDescription(desc, IResource.FORCE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		IProjectDescription desc = project.getDescription();
+		desc.setReferencedProjects(new IProject[] { other });
+		project.setDescription(desc, IResource.FORCE, getMonitor());
 		//creating a project will cause a snapshot
 		ensureExistsInWorkspace(other, true);
 

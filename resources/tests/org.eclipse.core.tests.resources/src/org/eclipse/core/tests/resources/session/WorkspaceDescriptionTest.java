@@ -14,7 +14,9 @@
 package org.eclipse.core.tests.resources.session;
 
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
@@ -32,7 +34,7 @@ public class WorkspaceDescriptionTest extends WorkspaceSessionTest {
 	private static final long MAX_FILE_SIZE = 1024 * 53;
 	private static final long SNAPSHOT_INTERVAL = 4321;
 
-	public void test1() {
+	public void test1() throws CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceDescription desc = workspace.getDescription();
 		desc.setAutoBuilding(false);
@@ -42,12 +44,8 @@ public class WorkspaceDescriptionTest extends WorkspaceSessionTest {
 		desc.setMaxFileStates(MAX_STATES);
 		desc.setMaxFileStateSize(MAX_FILE_SIZE);
 		desc.setSnapshotInterval(SNAPSHOT_INTERVAL);
-		try {
-			workspace.setDescription(desc);
-			workspace.save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		workspace.setDescription(desc);
+		workspace.save(true, getMonitor());
 	}
 
 	public void test2() {

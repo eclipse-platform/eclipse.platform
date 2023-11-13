@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.junit.Assert.assertThrows;
+
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
@@ -75,7 +75,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	 * Tests the API method findContainersForLocation.
 	 */
 	@Test
-	public void testFindContainersForLocation() {
+	public void testFindContainersForLocation() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject p1 = root.getProject("p1");
 		IProject p2 = root.getProject("p2");
@@ -89,28 +89,20 @@ public class IWorkspaceRootTest extends ResourceTest {
 	}
 
 	@Test
-	public void testFindContainersForLocationOnWrappedFileSystem() {
+	public void testFindContainersForLocationOnWrappedFileSystem() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject p1 = root.getProject("p1");
 		IProject p2 = root.getProject("p2");
 		ensureExistsInWorkspace(new IResource[] {p1, p2}, true);
-		try {
-			replaceProject(p1, WrapperFileSystem.getWrappedURI(p1.getLocationURI()));
-		} catch (CoreException e) {
-			fail("0.1", e);
-		}
-		try {
-			replaceProject(p2, WrapperFileSystem.getWrappedURI(p2.getLocationURI()));
-		} catch (CoreException e) {
-			fail("0.2", e);
-		}
+		replaceProject(p1, WrapperFileSystem.getWrappedURI(p1.getLocationURI()));
+		replaceProject(p2, WrapperFileSystem.getWrappedURI(p2.getLocationURI()));
 		testFindContainersForLocation(p1, p2);
 	}
 
 	/**
 	 * Tests the API method findContainersForLocation.
 	 */
-	private void testFindContainersForLocation(IProject p1, IProject p2) {
+	private void testFindContainersForLocation(IProject p1, IProject p2) throws Exception {
 		//should find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IContainer[] result = root.findContainersForLocation(root.getLocation());
@@ -121,11 +113,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		IFolder parent = p2.getFolder("parent");
 		IFolder link = parent.getFolder("link");
 		ensureExistsInWorkspace(new IResource[] {p1, p2, parent}, true);
-		try {
-			link.createLink(p1.getLocationURI(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		link.createLink(p1.getLocationURI(), IResource.NONE, getMonitor());
 		assertResources("2.0", p1, link, root.findContainersForLocation(p1.getLocation()));
 
 		//existing folder
@@ -144,29 +132,14 @@ public class IWorkspaceRootTest extends ResourceTest {
 		assertResources("3.5", nonExisting, root.findContainersForLocation(nonExisting.getLocation().makeRelative()));
 
 		//relative URI is illegal
-		URI relative = null;
-		try {
-			relative = new URI(null, "hello", null);
-		} catch (URISyntaxException e) {
-			fail("4.99", e);
-		}
-		try {
-			root.findContainersForLocationURI(relative);
-			//should fail
-			fail("4.1");
-		} catch (RuntimeException e) {
-			//expected
-		}
+		URI relative = new URI(null, "hello", null);
+		assertThrows(RuntimeException.class, () -> root.findContainersForLocationURI(relative));
 		//linked folder that does not overlap a project location
 		IFolder otherLink = p1.getFolder("otherLink");
 		IFileStore linkStore = getTempStore();
 		URI location = linkStore.toURI();
-		try {
-			linkStore.mkdir(EFS.NONE, getMonitor());
-			otherLink.createLink(location, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("5.99", e);
-		}
+		linkStore.mkdir(EFS.NONE, getMonitor());
+		otherLink.createLink(location, IResource.NONE, getMonitor());
 		result = root.findContainersForLocationURI(location);
 		assertResources("5.1", otherLink, result);
 
@@ -182,16 +155,12 @@ public class IWorkspaceRootTest extends ResourceTest {
 	 * Tests the API method findFilesForLocation.
 	 */
 	@Test
-	public void testFindFilesForLocationOnWrappedFileSystem() {
+	public void testFindFilesForLocationOnWrappedFileSystem() throws CoreException {
 		//should not find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("p1");
 		ensureExistsInWorkspace(project, true);
-		try {
-			replaceProject(project, WrapperFileSystem.getWrappedURI(project.getLocationURI()));
-		} catch (CoreException e) {
-			fail("0.1", e);
-		}
+		replaceProject(project, WrapperFileSystem.getWrappedURI(project.getLocationURI()));
 		testFindFilesForLocation(project);
 	}
 
@@ -199,7 +168,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	 * Tests the API method findFilesForLocation on non-default file system.
 	 */
 	@Test
-	public void testFindFilesForLocation() {
+	public void testFindFilesForLocation() throws CoreException {
 		//should not find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		testFindFilesForLocation(root.getProject("p1"));
@@ -208,7 +177,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	/**
 	 * Tests the API method findFilesForLocation.
 	 */
-	private void testFindFilesForLocation(IProject project) {
+	private void testFindFilesForLocation(IProject project) throws CoreException {
 		//should not find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IFile[] result = root.findFilesForLocation(root.getLocation());
@@ -250,12 +219,8 @@ public class IWorkspaceRootTest extends ResourceTest {
 		IFolder link = project.getFolder("link");
 		IFileStore linkStore = getTempStore();
 		URI location = linkStore.toURI();
-		try {
-			linkStore.mkdir(EFS.NONE, getMonitor());
-			link.createLink(location, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("5.99", e);
-		}
+		linkStore.mkdir(EFS.NONE, getMonitor());
+		link.createLink(location, IResource.NONE, getMonitor());
 		IFile child = link.getFile("link-child.txt");
 		URI childLocation = linkStore.getChild(child.getName()).toURI();
 		result = root.findFilesForLocationURI(childLocation);
@@ -316,30 +281,18 @@ public class IWorkspaceRootTest extends ResourceTest {
 	}
 
 	@Test
-	public void testPersistentProperty() {
+	public void testPersistentProperty() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		String value = "this is a test property value";
 		QualifiedName name = new QualifiedName("test", "testProperty");
-		try {
-			root.setPersistentProperty(name, value);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		root.setPersistentProperty(name, value);
 
-		try {
-			String storedValue = root.getPersistentProperty(name);
-			assertEquals("2.0", value, storedValue);
-		} catch (CoreException e) {
-			fail("2.1", e);
-		}
+		String storedValue = root.getPersistentProperty(name);
+		assertEquals("2.0", value, storedValue);
 
-		try {
-			name = new QualifiedName("test", "testNonProperty");
-			String storedValue = root.getPersistentProperty(name);
-			assertEquals("3.0", null, storedValue);
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
+		name = new QualifiedName("test", "testNonProperty");
+		storedValue = root.getPersistentProperty(name);
+		assertEquals("3.0", null, storedValue);
 	}
 
 	/**
@@ -348,70 +301,44 @@ public class IWorkspaceRootTest extends ResourceTest {
 	 * (See bug 14179).
 	 */
 	@Test
-	public void testPersistentPropertyInRunnable() {
+	public void testPersistentPropertyInRunnable() throws CoreException {
 		final IWorkspaceRoot root = getWorkspace().getRoot();
 		final String value = "this is a test property value";
 		final QualifiedName name = new QualifiedName("test", "testProperty");
-		try {
-			getWorkspace().run((IWorkspaceRunnable) monitor -> root.setPersistentProperty(name, value), getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		getWorkspace().run((IWorkspaceRunnable) monitor -> root.setPersistentProperty(name, value), getMonitor());
 
-		try {
-			final String[] storedValue = new String[1];
-			getWorkspace().run((IWorkspaceRunnable) monitor -> storedValue[0] = root.getPersistentProperty(name), getMonitor());
-			assertEquals("2.0", value, storedValue[0]);
-		} catch (CoreException e) {
-			fail("2.1", e);
-		}
+		final String[] storedValue = new String[1];
+		getWorkspace().run((IWorkspaceRunnable) monitor -> storedValue[0] = root.getPersistentProperty(name),
+				getMonitor());
+		assertEquals("2.0", value, storedValue[0]);
 
-		try {
-			final QualifiedName name2 = new QualifiedName("test", "testNonProperty");
-			final String[] storedValue = new String[1];
-			getWorkspace().run((IWorkspaceRunnable) monitor -> storedValue[0] = root.getPersistentProperty(name2), getMonitor());
-			assertEquals("3.0", null, storedValue[0]);
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
+		final QualifiedName name2 = new QualifiedName("test", "testNonProperty");
+		final String[] changedStoredValue = new String[1];
+		getWorkspace().run((IWorkspaceRunnable) monitor -> changedStoredValue[0] = root.getPersistentProperty(name2),
+				getMonitor());
+		assertEquals("3.0", null, changedStoredValue[0]);
 	}
 
 	@Test
-	public void testRefreshLocal() {
+	public void testRefreshLocal() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("Project");
 		ensureExistsInWorkspace(project, true);
-		try {
-			project.close(getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.close(getMonitor());
 		//refreshing the root shouldn't fail
-		try {
-			root.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
+		root.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 	}
 
 	@Test
-	public void testBug234343_folderInHiddenProject() {
+	public void testBug234343_folderInHiddenProject() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject hiddenProject = root.getProject(getUniqueString());
 		ensureDoesNotExistInWorkspace(hiddenProject);
-		try {
-			hiddenProject.create(null, IResource.HIDDEN, getMonitor());
-			hiddenProject.open(getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		hiddenProject.create(null, IResource.HIDDEN, getMonitor());
+		hiddenProject.open(getMonitor());
 
 		IFolder folder = hiddenProject.getFolder("foo");
-		try {
-			folder.create(true, true, getMonitor());
-		} catch (CoreException e) {
-			fail("4.99", e);
-		}
+		folder.create(true, true, getMonitor());
 
 		IContainer[] containers = root.findContainersForLocationURI(folder.getLocationURI());
 		assertEquals("2.0", 0, containers.length);
@@ -421,23 +348,15 @@ public class IWorkspaceRootTest extends ResourceTest {
 	}
 
 	@Test
-	public void testBug234343_fileInHiddenProject() {
+	public void testBug234343_fileInHiddenProject() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject hiddenProject = root.getProject(getUniqueString());
 		ensureDoesNotExistInWorkspace(hiddenProject);
-		try {
-			hiddenProject.create(null, IResource.HIDDEN, getMonitor());
-			hiddenProject.open(getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		hiddenProject.create(null, IResource.HIDDEN, getMonitor());
+		hiddenProject.open(getMonitor());
 
 		IFile file = hiddenProject.getFile("foo");
-		try {
-			file.create(new ByteArrayInputStream("foo".getBytes()), true, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		file.create(new ByteArrayInputStream("foo".getBytes()), true, getMonitor());
 
 		IFile[] files = root.findFilesForLocationURI(file.getLocationURI());
 		assertEquals("3.0", 0, files.length);
@@ -456,7 +375,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	 * Regression test for bug 476585: IWorkspaceRoot#getFileForLocation(IPath) should return IFile in nested project
 	 */
 	@Test
-	public void testBug476585() {
+	public void testBug476585() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("a");
 		ensureExistsInWorkspace(project, true);
@@ -476,11 +395,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		IProjectDescription newProjectDescription = getWorkspace().newProjectDescription(subProjectName);
 		newProjectDescription.setLocation(subProjectLocation);
 
-		try {
-			subProject.create(newProjectDescription, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		subProject.create(newProjectDescription, getMonitor());
 
 		file = root.getFileForLocation(fileLocation);
 		assertNotNull("2.0", file);
@@ -495,7 +410,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	* see bug 232765 for details
 	*/
 	@Test
-	public void testFindMethodsWithHiddenAndTeamPrivateFlags() {
+	public void testFindMethodsWithHiddenAndTeamPrivateFlags() throws Exception {
 		checkFindMethods(IResource.NONE, new int[][] {{IResource.NONE, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0}, {IContainer.INCLUDE_HIDDEN, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0}, {IContainer.INCLUDE_HIDDEN | IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}});
 
 		checkFindMethods(IResource.HIDDEN, new int[][] {{IResource.NONE, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {IContainer.INCLUDE_HIDDEN, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0}, {IContainer.INCLUDE_HIDDEN | IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0}});
@@ -505,17 +420,13 @@ public class IWorkspaceRootTest extends ResourceTest {
 		checkFindMethods(IResource.TEAM_PRIVATE | IResource.HIDDEN, new int[][] {{IResource.NONE, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {IContainer.INCLUDE_HIDDEN, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {IContainer.INCLUDE_HIDDEN | IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0}});
 	}
 
-	public void checkFindMethods(int updateFlags, int[][] results) {
+	public void checkFindMethods(int updateFlags, int[][] results) throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(getUniqueString());
 		ensureDoesNotExistInWorkspace(project);
 
-		try {
-			project.create(null, IResource.NONE, getMonitor());
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.create(null, IResource.NONE, getMonitor());
+		project.open(getMonitor());
 
 		// a team private folder
 		IFolder teamFolder = createFolder(project, IResource.TEAM_PRIVATE, false);
@@ -575,44 +486,34 @@ public class IWorkspaceRootTest extends ResourceTest {
 		assertEquals(foundResources, containers.length);
 	}
 
-	private IFile createFile(IContainer parent, int updateFlags, boolean linked) {
+	private IFile createFile(IContainer parent, int updateFlags, boolean linked) throws Exception {
 		IFile file = parent.getFile(IPath.fromOSString(getUniqueString()));
-		try {
-			if (linked) {
-				try {
-					IPath path = getTempDir().append(getUniqueString());
-					path.toFile().createNewFile();
-					file.createLink(URIUtil.toURI(path), updateFlags, getMonitor());
-					if ((updateFlags & IResource.TEAM_PRIVATE) == IResource.TEAM_PRIVATE) {
-						file.setTeamPrivateMember(true);
-					}
-				} catch (IOException e) {
-					fail("Can't create the file", e);
-				}
-			} else {
-				file.create(new ByteArrayInputStream("content".getBytes()), updateFlags, getMonitor());
+		if (linked) {
+			IPath path = getTempDir().append(getUniqueString());
+			path.toFile().createNewFile();
+			file.createLink(URIUtil.toURI(path), updateFlags, getMonitor());
+			if ((updateFlags & IResource.TEAM_PRIVATE) == IResource.TEAM_PRIVATE) {
+				file.setTeamPrivateMember(true);
 			}
-		} catch (CoreException e) {
-			fail("Can't create the file", e);
+		} else {
+			try (ByteArrayInputStream inputStream = new ByteArrayInputStream("content".getBytes())) {
+				file.create(inputStream, updateFlags, getMonitor());
+			}
 		}
 		return file;
 	}
 
-	private IFolder createFolder(IContainer parent, int updateFlags, boolean linked) {
+	private IFolder createFolder(IContainer parent, int updateFlags, boolean linked) throws CoreException {
 		IFolder folder = parent.getFolder(IPath.fromOSString(getUniqueString()));
-		try {
-			if (linked) {
-				IPath path = getTempDir().append(getUniqueString());
-				path.toFile().mkdir();
-				folder.createLink(URIUtil.toURI(path), updateFlags, getMonitor());
-				if ((updateFlags & IResource.TEAM_PRIVATE) == IResource.TEAM_PRIVATE) {
-					folder.setTeamPrivateMember(true);
-				}
-			} else {
-				folder.create(updateFlags, true, getMonitor());
+		if (linked) {
+			IPath path = getTempDir().append(getUniqueString());
+			path.toFile().mkdir();
+			folder.createLink(URIUtil.toURI(path), updateFlags, getMonitor());
+			if ((updateFlags & IResource.TEAM_PRIVATE) == IResource.TEAM_PRIVATE) {
+				folder.setTeamPrivateMember(true);
 			}
-		} catch (CoreException e) {
-			fail("Can't create the folder", e);
+		} else {
+			folder.create(updateFlags, true, getMonitor());
 		}
 		return folder;
 	}

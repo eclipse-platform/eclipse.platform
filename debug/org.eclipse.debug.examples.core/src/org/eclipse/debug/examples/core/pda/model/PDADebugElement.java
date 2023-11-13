@@ -47,7 +47,7 @@ public class PDADebugElement extends DebugElement {
 	/**
 	 * Sends a request to the PDA interpreter, waits for and returns the reply.
 	 *
-	 * @param request command
+	 * @param command command
 	 * @return reply
 	 * @throws DebugException if the request fails
 	 *

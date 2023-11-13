@@ -22,18 +22,21 @@ public interface IImportExportConstants {
 
 	/**
 	 * <p>
-	 * The name for the top level node in the XMLMemento for storing/restoring breakpoint information.</br>
+	 * The name for the top level node in the XMLMemento for storing/restoring
+	 * breakpoint information.
 	 *
-	 * General formulation of the XMLMemento is as follows:</br>
-	 *
-	 * breakpoints := (breakpoint)*</br>
-	 *
-	 * breakpoint := resource</br>
-	 *
-	 * resource := (marker)+</br>
-	 *
-	 * marker := (attribs)+</br>
+	 * General formulation of the XMLMemento is as follows:
 	 * </p>
+	 * <ul>
+	 * <li>breakpoints := (breakpoint)*</li>
+	 *
+	 * <li>breakpoint := resource</li>
+	 *
+	 * <li>resource := (marker)+</li>
+	 *
+	 * <li>marker := (attribs)+</li>
+	 * </ul>
+	 *
 	 * @see WizardExportBreakpointsPage
 	 * @see WizardImportBreakpointsPage
 	 *

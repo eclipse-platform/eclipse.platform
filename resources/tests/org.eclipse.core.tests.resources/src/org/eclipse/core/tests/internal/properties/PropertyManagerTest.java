@@ -252,12 +252,19 @@ public class PropertyManagerTest extends LocalStoreTest {
 
 		List<byte[]> wastedMemory = new LinkedList<>();
 		try {
-			int quickAllocationSize = 200_000_000; // 200MB, should be smaller then -Xmx, but big to get OOME quick
+			// 200MB, should be smaller then -Xmx, but big to get OOME quick
+			long maxMemory = Runtime.getRuntime().maxMemory();
+			int quickAllocationSize = Math.max(200_000_000,
+					(int) Math.min((long) Integer.MAX_VALUE - 8, maxMemory / 2));
+			System.out.println("Waste memory to force OOME: " + quickAllocationSize + "/" + maxMemory);
 			while (wastedMemory.add(new byte[quickAllocationSize])) {
+				System.out.println("Waste memory to force OOME: " + quickAllocationSize);
 				// force OOME
 			}
 		} catch (OutOfMemoryError e1) {
 			wastedMemory.clear();
+			wastedMemory= null;
+			System.gc(); //try to hint jvm to release memory on parallel tests
 			// it's not allowed to allocate an array at once that is larger then the Heap:
 			assertNotEquals("Requested array size exceeds VM limit", e1.getMessage());
 			// in case the -Xmx is set too low the quickAllocationSize has to be lowered.

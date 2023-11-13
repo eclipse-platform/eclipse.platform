@@ -413,7 +413,7 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * Override parent behavior to add support for HEAD &amp; Title element in pages
 	 * only, and not in divs.
 	 *
-	 * @see org.eclipse.ui.internal.intro.impl.model.AbstractIntroContainer#getModelChild(org.eclipse.core.runtime.IConfigurationElement)
+	 * @see org.eclipse.ui.internal.intro.impl.model.AbstractIntroContainer#getModelChild(Element, Bundle, String)
 	 */
 	@Override
 	protected AbstractIntroElement getModelChild(Element childElement,
@@ -757,11 +757,7 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 *            model containing target path.
 	 * @param path
 	 *            the path to look for
-	 * @param results
-	 *            two object array that will return the target intro page as the
-	 *            first result, and the actual target DOM Element as the second
-	 *            result. It is guaranteed to not be null. Content may be null.
-	 * @return target DOM element
+	 * @return target DOM elements
 	 */
 	public Object[] findDOMTarget(IntroModelRoot model, String path) {
 		Object[] results = new Object[2];
@@ -876,9 +872,7 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	}
 
 	/**
-	 * Return the url of the embedded IFrame, if this page is an IFrame page.
-	 *
-	 * @param url
+	 * Returns the url of the embedded IFrame, if this page is an IFrame page.
 	 */
 	public String getIFrameURL() {
 		if (!isIFramePage())
@@ -894,9 +888,7 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	}
 
 	/**
-	 * Return the url of the embedded IFrame, if this page is an IFrame page.
-	 *
-	 * @param url
+	 * Returns the url of the embedded IFrame, if this page is an IFrame page.
 	 */
 	public boolean injectSharedStyle() {
 		return this.sharedStyle.equals("true") ? true : false; //$NON-NLS-1$

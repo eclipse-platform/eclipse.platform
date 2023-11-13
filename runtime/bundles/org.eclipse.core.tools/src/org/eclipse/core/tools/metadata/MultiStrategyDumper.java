@@ -13,7 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tools.metadata;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PushbackInputStream;
 
 /**
  * Subclasses must provide a concrete
@@ -22,18 +27,21 @@ import java.io.*;
 public abstract class MultiStrategyDumper extends AbstractDumper {
 
 	/**
-	 * <p>Subclasses must implement
+	 * <p>
+	 * Subclasses must implement
 	 * <code>getStringDumpingStrategy(InputStream)</code> in order to select the
 	 * real dumping behaviour. This method will call
-	 * <code>IStringDumpingStrategy#dumpStringContents(DataInputStream)</code> on
-	 * the returned strategy. If, after calling that method,  there are still bytes
-	 * to be read in the input stream,
-	 * <code>getStringDumpingStrategy(InputStream)</code> will be called again in
-	 * order to select another strategy to read the remaining contents, and so on.
+	 * <code>IStringDumpingStrategy#dumpStringContents(DataInputStream)</code>
+	 * on the returned strategy. If, after calling that method, there are still
+	 * bytes to be read in the input stream,
+	 * <code>getStringDumpingStrategy(InputStream)</code> will be called again
+	 * in order to select another strategy to read the remaining contents, and
+	 * so on.
 	 * </p>
 	 *
-	 * @param file the file to be dumped
-	 * @return a dump object representing the contents of the dumped file
+	 * @param input the input to be dumped
+	 * @param contents a StringBuilder representing the contents of the dumped
+	 * file
 	 * @see org.eclipse.core.tools.metadata.IDumper#dump(java.io.File)
 	 * @see #getStringDumpingStrategy(DataInputStream)
 	 * @see IStringDumpingStrategy#dumpStringContents(DataInputStream)

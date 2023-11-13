@@ -26,7 +26,7 @@ import org.eclipse.help.internal.webapp.parser.TocParser;
 import org.eclipse.help.internal.webapp.servlet.TocServlet;
 import org.eclipse.help.internal.webapp.utils.Utils;
 
-/**
+/*
  * Returns <code>xml</code> or <code>json</code> representing all toc contributions
  * available on this host
  *
@@ -44,9 +44,6 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  *
  * @return		Toc contributions available on the host, either as <code>xml</code>
  * (default) or <code>json</code>
- *
- * @version	$Version$
- *
  **/
 public class TocService extends TocServlet {
 

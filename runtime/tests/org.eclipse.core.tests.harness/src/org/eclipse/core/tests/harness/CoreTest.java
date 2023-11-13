@@ -16,14 +16,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import junit.framework.AssertionFailedError;
@@ -41,8 +39,6 @@ import org.junit.Assume;
  * @since 3.1
  */
 public class CoreTest extends TestCase {
-	private static Boolean canCreateSymLinks;
-
 	/** counter for generating unique random file system locations */
 	protected static int nextLocationCounter = 0;
 
@@ -235,39 +231,10 @@ public class CoreTest extends TestCase {
 	 * @throws AssertionFailedError if creation of the symbolic link failed
 	 */
 	protected void createSymLink(File basedir, String linkName, String linkTarget, boolean isDir) {
-		// The following code creates even a link if
-		// Files.createSymbolicLink(new File(basedir, linkName).toPath(), new
-		// File(basedir, linkTarget).toPath());
-		// would throw java.nio.file.FileSystemException "missing rights"
-		//
-		// Deliberately use an empty environment to make the test reproducible.
-		String[] envp = {};
 		try {
-			Process p;
-			if (Platform.getOS().equals(Platform.OS_WIN32)) {
-				// use File.getPath to avoid 'Illegal argument - ".."' for using "../"
-				// instead of "..\"
-				if (isDir) {
-					String[] cmd = { "cmd", "/c", "mklink", "/d", new File(linkName).getPath(),
-							new File(linkTarget).getPath() };
-					p = Runtime.getRuntime().exec(cmd, envp, basedir);
-				} else {
-					String[] cmd = { "cmd", "/c", "mklink", new File(linkName).getPath(),
-							new File(linkTarget).getPath() };
-					p = Runtime.getRuntime().exec(cmd, envp, basedir);
-				}
-			} else {
-				String[] cmd = {"ln", "-s", linkTarget, linkName};
-				p = Runtime.getRuntime().exec(cmd, envp, basedir);
-			}
-			int exitcode = p.waitFor();
-			if (exitcode != 0) {
-				// xxx wrong charset. from jdk17+ we could use Console.charset()
-				String result = new BufferedReader(new InputStreamReader(p.getErrorStream())).readLine();
-				assertEquals("createSymLink: " + result + ", exitcode", 0, exitcode);
-			}
-		} catch (IOException | InterruptedException e) {
-			fail("createSymLink", e);
+			FileSystemHelper.createSymLink(basedir, linkName, linkTarget, isDir);
+		} catch (IOException e) {
+			fail("failed creating symlink", e);
 		}
 	}
 
@@ -281,27 +248,12 @@ public class CoreTest extends TestCase {
 	 * @return <code>true</code> if symbolic links can be created by a test
 	 */
 	protected boolean canCreateSymLinks() {
-		if (canCreateSymLinks == null) {
-			if (Platform.getOS().equals(Platform.OS_WIN32)) {
-				// Creation of a symbolic link on Windows requires administrator privileges,
-				// so it may or may not be possible.
-				IPath tempDir = getTempDir();
-				String linkName = FileSystemHelper.getRandomLocation(tempDir).lastSegment();
-				try {
-					// Try to create a symlink.
-					createSymLink(tempDir.toFile(), linkName, "testTarget", false);
-					// Clean up if the link was created.
-					new File(tempDir.toFile(), linkName).delete();
-					canCreateSymLinks = Boolean.TRUE;
-				} catch (AssertionFailedError e) {
-					// This exception indicates that creation of the symlink failed.
-					canCreateSymLinks = Boolean.FALSE;
-				}
-			} else {
-				canCreateSymLinks = Boolean.TRUE;
-			}
+		try {
+			return FileSystemHelper.canCreateSymLinks();
+		} catch (IOException e) {
+			fail("Exception while checking whether symlinks can be created", e);
 		}
-		return canCreateSymLinks.booleanValue();
+		return false;
 	}
 
 	protected void ensureDoesNotExistInFileSystem(java.io.File file) {
@@ -345,7 +297,7 @@ public class CoreTest extends TestCase {
 	 * deleting it when finished.
 	 */
 	public IPath getRandomLocation() {
-		return FileSystemHelper.getRandomLocation(getTempDir());
+		return FileSystemHelper.getRandomLocation();
 	}
 
 	/**

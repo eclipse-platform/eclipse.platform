@@ -47,7 +47,7 @@ import org.eclipse.ui.internal.cheatsheets.Messages;
  * A cheatsheet url instance is created by parsing the url and retrieving the
  * embedded "command" and parameters. For example, the following urls are valid
  * cheatsheet urls:
- * <p>
+ * </p>
  *
  * <pre>
  *  http://org.eclipse.ui.cheatsheet/showView?id=org.eclipse.pde.runtime.LogView
@@ -60,8 +60,10 @@ import org.eclipse.ui.internal.cheatsheets.Messages;
  * </p>
  * <p>
  * For now it supports two commands:
+ * <ul>
  * <li>showView - to activate given view by its id</li>
  * <li>execute - to execute eclipse command</li>
+ * </ul>
  */
 public class CheatSheetHyperlinkActionFactory {
 

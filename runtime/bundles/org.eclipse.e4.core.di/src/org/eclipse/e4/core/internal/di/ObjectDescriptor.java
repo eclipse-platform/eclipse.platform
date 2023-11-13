@@ -96,9 +96,9 @@ public class ObjectDescriptor implements IObjectDescriptor {
 		Annotation[] result;
 		List<Annotation> qualifiers = new ArrayList<>();
 		for (Annotation annotation : allAnnotations) {
-			if (annotation.annotationType().isAnnotationPresent(javax.inject.Qualifier.class)
-					|| annotation.annotationType().isAnnotationPresent(jakarta.inject.Qualifier.class))
+			if (AnnotationLookup.QUALIFIER.isPresent(annotation.annotationType())) {
 				qualifiers.add(annotation);
+			}
 		}
 		if (qualifiers.isEmpty())
 			return null;

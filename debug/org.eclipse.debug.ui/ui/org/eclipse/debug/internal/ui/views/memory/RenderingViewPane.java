@@ -89,20 +89,6 @@ public class RenderingViewPane extends AbstractMemoryViewPane implements IMemory
 
 	/**
 	 * @param parent is the view hosting this view pane
-	 * @param paneId is the identifier assigned by the Memory View
-	 *
-	 *            Pane id is assigned with the following format. Rendering view
-	 *            pane created has its id assigned to
-	 *            org.eclipse.debug.ui.MemoryView.RenderingViewPane.#. # is a
-	 *            number indicating the order of which the rendering view pane
-	 *            is created. First rendering view pane created will have its id
-	 *            assigned to
-	 *            org.eclipse.debug.ui.MemoryView.RenderingViewPane.1. Second
-	 *            rendering view pane created will have its id assigned to
-	 *            org.eclipse.debug.ui.MemoryView.RenderingViewPane.2. and so
-	 *            on. View pane are created from left to right by the Memory
-	 *            View.
-	 *
 	 */
 	public RenderingViewPane(IViewPart parent) {
 		super(parent);
@@ -535,9 +521,6 @@ public class RenderingViewPane extends AbstractMemoryViewPane implements IMemory
 
 	}
 
-	/**
-	 * @param viewTab
-	 */
 	protected void setRenderingSelection(IMemoryRendering rendering) {
 
 		if (rendering != null) {

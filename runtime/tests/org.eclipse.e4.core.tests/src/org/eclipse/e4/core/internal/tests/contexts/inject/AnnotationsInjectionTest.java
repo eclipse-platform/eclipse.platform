@@ -19,11 +19,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
@@ -31,7 +26,10 @@ import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.junit.Test;
 
-import junit.framework.AssertionFailedError;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 /**
  * Tests for the basic context injection functionality
  */
@@ -154,7 +152,7 @@ public class AnnotationsInjectionTest {
 	 */
 	@Test
 	public void testFieldMethodOrder() {
-		final AssertionFailedError[] error = new AssertionFailedError[1];
+		final AssertionError[] error = new AssertionError[1];
 		class TestData {
 			// empty
 		}
@@ -167,7 +165,7 @@ public class AnnotationsInjectionTest {
 			public void injectedMethod(@Optional @Named("valueMethod") Object arg) {
 				try {
 					assertTrue(injectedField != null);
-				} catch (AssertionFailedError e) {
+				} catch (AssertionError e) {
 					error[0] = e;
 				}
 				methodValue = arg;

@@ -294,8 +294,8 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 * Tests if a launch is properly removed from the launch manager when
 	 * #preLaunchCheck is cancelled
 	 *
-	 * @throws Exception
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=437122
+	 * @throws Exception see <a href=
+	 *             "https://bugs.eclipse.org/bugs/show_bug.cgi?id=437122">437122</a>
 	 * @since 3.9.100
 	 */
 	@Test
@@ -319,8 +319,8 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 * Tests if a launch is properly removed from the launch manager when
 	 * #finalLaunchCheck is cancelled
 	 *
-	 * @throws Exception
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=437122
+	 * @throws Exception see <a
+	 *             href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=437122">437122</a>
 	 * @since 3.9.100
 	 */
 	@Test
@@ -344,8 +344,8 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 * Tests if a launch is properly removed from the launch manager when
 	 * #buildFoLaunch is cancelled
 	 *
-	 * @throws Exception
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=437122
+	 * @throws Exception see <a
+	 *             href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=437122">437122</a>
 	 * @since 3.9.100
 	 */
 	@Test
@@ -444,8 +444,8 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 * Tests if a launch is properly removed from the launch manager when
 	 * <i>throwingEnum</i> method throws exception
 	 *
-	 * @throws Exception
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=578302
+	 * @throws Exception see <a href=
+	 *             "https://bugs.eclipse.org/bugs/show_bug.cgi?id=578302">578302</a>
 	 */
 	private void testThrowingLaunchDelegateMethod(ThrowingEnum throwingEnum) throws Exception {
 		ILaunchConfiguration config = getThrowingConfiguration(throwingEnum);
@@ -468,8 +468,8 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 * Tests if a launch is properly removed from the launch manager when
 	 * #preLaunchCheck throws exception
 	 *
-	 * @throws Exception
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=578302
+	 * @throws Exception see <a href=
+	 *             "https://bugs.eclipse.org/bugs/show_bug.cgi?id=578302">578302</a>
 	 */
 	@Test
 	public void testThrowingPreLaunchCheck() throws Exception {
@@ -480,8 +480,8 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 * Tests if a launch is properly removed from the launch manager when
 	 * #finalLaunchCheck throws exception
 	 *
-	 * @throws Exception
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=578302
+	 * @throws Exception see <a href=
+	 *             "https://bugs.eclipse.org/bugs/show_bug.cgi?id=578302">578302</a>
 	 */
 	@Test
 	public void testThrowingFinalLaunchCheck() throws Exception {
@@ -492,8 +492,8 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 * Tests if a launch is properly removed from the launch manager when
 	 * #buildFoLaunch throws exception
 	 *
-	 * @throws Exception
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=578302
+	 * @throws Exception see <a href=
+	 *             "https://bugs.eclipse.org/bugs/show_bug.cgi?id=578302">578302</a>
 	 */
 	@Test
 	public void testThrowingBuildForLaunch() throws Exception {
@@ -504,8 +504,8 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	 * Tests if a launch is properly removed from the launch manager when
 	 * #buildFoLaunch throws exception
 	 *
-	 * @throws Exception
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=578302
+	 * @throws Exception see <a href=
+	 *             "https://bugs.eclipse.org/bugs/show_bug.cgi?id=578302">578302</a>
 	 */
 	@Test
 	public void testThrowingLaunch() throws Exception {

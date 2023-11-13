@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -30,15 +32,11 @@ public class Snapshot3Test extends SnapshotTest {
 		return Snapshot2Test.defineHierarchy2();
 	}
 
-	public void testSaveWorkspace() {
-		try {
-			getWorkspace().save(true, null);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+	public void testSaveWorkspace() throws CoreException {
+		getWorkspace().save(true, null);
 	}
 
-	public void testVerifyPreviousSession() {
+	public void testVerifyPreviousSession() throws CoreException {
 		// MyProject
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
 		assertTrue("0.0", project.exists());
@@ -54,12 +52,8 @@ public class Snapshot3Test extends SnapshotTest {
 		assertTrue("3.0", project.exists());
 		assertTrue("3.1", project.isOpen());
 
-		try {
-			assertEquals("4.0", 4, project.members().length);
-			assertNotNull("4.1", project.findMember(IProjectDescription.DESCRIPTION_FILE_NAME));
-		} catch (CoreException e) {
-			fail("4.2", e);
-		}
+		assertEquals("4.0", 4, project.members().length);
+		assertNotNull("4.1", project.findMember(IProjectDescription.DESCRIPTION_FILE_NAME));
 
 		// verify existence of children
 		resources = buildResources(project, Snapshot2Test.defineHierarchy2());

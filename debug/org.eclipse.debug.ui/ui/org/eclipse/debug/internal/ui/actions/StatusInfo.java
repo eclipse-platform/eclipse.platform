@@ -84,7 +84,7 @@ public class StatusInfo implements IStatus {
 
 	/**
 	 * Sets the status to ERROR.
-	 * @param The error message (can be empty, but not null)
+	 * @param errorMessage The error message (can be empty, but not null)
 	 */
 	public void setError(String errorMessage) {
 		Assert.isNotNull(errorMessage);
@@ -94,7 +94,7 @@ public class StatusInfo implements IStatus {
 
 	/**
 	 * Sets the status to WARNING.
-	 * @param The warning message (can be empty, but not null)
+	 * @param warningMessage The warning message (can be empty, but not null)
 	 */
 	public void setWarning(String warningMessage) {
 		Assert.isNotNull(warningMessage);
@@ -104,7 +104,7 @@ public class StatusInfo implements IStatus {
 
 	/**
 	 * Sets the status to INFO.
-	 * @param The info message (can be empty, but not null)
+	 * @param infoMessage The info message (can be empty, but not null)
 	 */
 	public void setInfo(String infoMessage) {
 		Assert.isNotNull(infoMessage);

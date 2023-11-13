@@ -13,14 +13,24 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.runtime;
 
-import java.io.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import org.eclipse.core.internal.runtime.RuntimeLog;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.tests.runtime.RuntimeTest;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 @SuppressWarnings("restriction")
-public class LogSerializationTest extends RuntimeTest {
+public class LogSerializationTest {
 
 	static class TestException extends Exception {
 		private static final long serialVersionUID = 1L;
@@ -30,48 +40,38 @@ public class LogSerializationTest extends RuntimeTest {
 		}
 	}
 
-	protected File logFile = null;
+	private File logFile = null;
 
-	public LogSerializationTest(String name) {
-		super(name);
-	}
-
-	public LogSerializationTest() {
-		super("");
-	}
-
-	protected void assertEquals(String msg, IStatus[] expected, IStatus[] actual) {
+	private void assertStatusEqual(String msg, IStatus[] expected, IStatus[] actual) {
 		if (expected == null) {
 			assertNull(msg + " expected null but got: " + Arrays.toString(actual), actual);
 			return;
 		}
 		if (actual == null) {
 			assertNull(msg + " expected " + Arrays.toString(expected) + " but got null", expected);
-			return;
 		}
 		assertEquals(msg + " different number of statuses", expected.length, actual.length);
 		for (int i = 0, imax = expected.length; i < imax; i++) {
-			assertEquals(msg + " differ at status " + i, expected[i], actual[i]);
+			assertStatusEquals(msg + " differ at status " + i, expected[i], actual[i]);
 		}
 	}
 
-	protected void assertEquals(String msg, IStatus expected, IStatus actual) {
+	private void assertStatusEquals(String msg, IStatus expected, IStatus actual) {
 		assertEquals(msg + " severity", expected.getSeverity(), actual.getSeverity());
 		assertEquals(msg + " plugin-id", expected.getPlugin(), actual.getPlugin());
 		assertEquals(msg + " code", expected.getCode(), actual.getCode());
 		assertEquals(msg + " message", expected.getMessage(), actual.getMessage());
-		assertEquals(msg + " exception", expected.getException(), actual.getException());
-		assertEquals(msg + " children", expected.getChildren(), actual.getChildren());
+		assertExceptionEquals(msg + " exception", expected.getException(), actual.getException());
+		assertStatusEqual(msg + " children", expected.getChildren(), actual.getChildren());
 	}
 
-	protected void assertEquals(String msg, Throwable expected, Throwable actual) {
+	private void assertExceptionEquals(String msg, Throwable expected, Throwable actual) {
 		if (expected == null) {
 			assertNull(msg + " expected null but got: " + actual, actual);
 			return;
 		}
 		if (actual == null) {
 			assertNull(msg + " expected " + expected + " but got null", expected);
-			return;
 		}
 		assertEquals(msg + " stack trace", encodeStackTrace(expected), encodeStackTrace(actual));
 		assertEquals(msg + " message", expected.getMessage(), actual.getMessage());
@@ -153,7 +153,7 @@ public class LogSerializationTest extends RuntimeTest {
 	protected void doTest(String msg, IStatus[] oldStats) {
 		writeLog(oldStats);
 		IStatus[] newStats = readLog();
-		assertEquals(msg, oldStats, newStats);
+		assertStatusEqual(msg, oldStats, newStats);
 	}
 
 	protected void doTest(String msg, IStatus status) {
@@ -165,21 +165,20 @@ public class LogSerializationTest extends RuntimeTest {
 		return reader.readLogFile(logFile.getAbsolutePath());
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		//setup the log file
 		if (logFile == null) {
 			logFile = Platform.getLogFileLocation().toFile();
 		}
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		logFile.delete();
 	}
 
+	@Test
 	public void testDeepMultiStatus() {
 		MultiStatus multi = new MultiStatus("id", 1, getInterestingMultiStatuses(), "ok", null);
 		for (int i = 0; i < 5; i++) {
@@ -188,6 +187,7 @@ public class LogSerializationTest extends RuntimeTest {
 		}
 	}
 
+	@Test
 	public void testMultiMultiStatusSerialize() {
 		IStatus[] interesting = getInterestingMultiStatuses();
 		int len = interesting.length;
@@ -198,6 +198,7 @@ public class LogSerializationTest extends RuntimeTest {
 		}
 	}
 
+	@Test
 	public void testMultiSerialize() {
 		IStatus[] interesting = getInterestingStatuses();
 		int len = interesting.length;
@@ -208,6 +209,7 @@ public class LogSerializationTest extends RuntimeTest {
 		}
 	}
 
+	@Test
 	public void testMultiStatus() {
 		IStatus[] interesting = getInterestingMultiStatuses();
 		for (int i = 0; i < interesting.length; i++) {
@@ -215,6 +217,7 @@ public class LogSerializationTest extends RuntimeTest {
 		}
 	}
 
+	@Test
 	public void testSimpleSerialize() {
 		IStatus[] interesting = getInterestingStatuses();
 		for (int i = 0; i < interesting.length; i++) {

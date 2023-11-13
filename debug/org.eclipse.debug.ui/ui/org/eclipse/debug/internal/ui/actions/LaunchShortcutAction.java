@@ -52,8 +52,6 @@ public class LaunchShortcutAction extends Action {
 
 
 	/**
-	 * Constructor
-	 * @param groupid the id of the launch group
 	 * @param mode the mode to launch in
 	 * @param shortcut the underlying shortcut
 	 */

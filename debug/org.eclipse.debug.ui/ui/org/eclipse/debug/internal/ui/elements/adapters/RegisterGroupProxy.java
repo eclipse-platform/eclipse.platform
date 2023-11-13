@@ -52,13 +52,13 @@ import org.eclipse.ui.IMemento;
  * This class delegates to the underlying stack frame for the following adapters. This way,
  * if a standard model provides custom adapters they are still used to present custom content
  * in the view and provide stable register groups while stepping.
+ * </p>
  * <ul>
  * <li>{@link IModelProxyFactory}</li>
  * <li>{@link IColumnPresentationFactory}</li>
  * <li>{@link IElementContentProvider}</li>
  * <li>{@link IElementMementoProvider}</li>
  * </ul>
- * </p>
  * @since 3.4
  */
 public class RegisterGroupProxy implements IModelProxyFactory, IColumnPresentationFactory, IElementContentProvider, IElementMementoProvider {

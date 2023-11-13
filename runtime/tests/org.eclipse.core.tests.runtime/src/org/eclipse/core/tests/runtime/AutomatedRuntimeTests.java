@@ -31,6 +31,7 @@ import org.junit.runners.Suite;
 
 		AllPreferenceTests.class,
 
+		XmlProcessorFactoryTest.class,
 		/*
 		 * Intentional the LAST TEST in the list to let JobEventTest.testNoTimeoutOccured() verify the other
 		 * tests:

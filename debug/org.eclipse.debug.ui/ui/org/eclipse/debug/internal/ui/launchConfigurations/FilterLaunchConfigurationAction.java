@@ -39,12 +39,6 @@ public class FilterLaunchConfigurationAction extends Action {
 	 */
 	private final FilterDropDownMenuCreator fMenuCreator;
 
-	/**
-	 * Constructor
-	 * @param text the text for the action
-	 * @param viewer the viewer the action acts upon
-	 * @param mode the mode
-	 */
 	public FilterLaunchConfigurationAction() {
 		super(LaunchConfigurationsMessages.FilterLaunchConfigurationAction_0, IAction.AS_DROP_DOWN_MENU);
 		fMenuCreator = new FilterDropDownMenuCreator();

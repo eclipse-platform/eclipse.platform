@@ -26,7 +26,7 @@ import org.eclipse.help.internal.webapp.parser.TocFragmentParser;
 import org.eclipse.help.internal.webapp.servlet.TocFragmentServlet;
 import org.eclipse.help.internal.webapp.utils.Utils;
 
-/**
+/*
  * Returns <code>xml</code> or <code>json</code> representing selected parts
  * of one or more TOCs  depending on the parameters.
  *
@@ -50,9 +50,6 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  *
  * @return		The selected parts of one or more TOCs, either as <code>xml</code>
  * (default) or <code>json</code>
- *
- * @version	$Version$
- *
  **/
 public class TocFragmentService extends TocFragmentServlet {
 

@@ -2,7 +2,7 @@ package org.eclipse.e4.core.internal.tests.nls;
 
 import java.text.MessageFormat;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 /**
  * Load messages from the OSGi resource bundle (OSGI-INF/l10n/bundle.properties)

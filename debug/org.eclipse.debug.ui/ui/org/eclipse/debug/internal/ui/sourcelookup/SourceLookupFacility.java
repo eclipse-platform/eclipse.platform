@@ -628,11 +628,11 @@ public class SourceLookupFacility implements IPageListener, IPartListener2, IPro
 	}
 
 	/**
-	 * Sets the editor to use to display source in the given page, or
+	 * Sets the editorPart to use to display source in the given page, or
 	 * <code>null</code> if a new editor should be opened.
 	 *
 	 * @param page workbench page
-	 * @return the editor to use to display source in the given page, or
+	 * @param editorPart the IEditorPart to use to display source in the given page, or
 	 * <code>null</code> if a new editor should be opened
 	 */
 	protected void setEditor(IWorkbenchPage page, IEditorPart editorPart) {

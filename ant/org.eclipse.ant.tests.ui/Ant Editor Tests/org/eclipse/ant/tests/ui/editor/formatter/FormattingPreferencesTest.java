@@ -13,16 +13,16 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.editor.formatter;
 
+import static org.junit.Assert.assertEquals;
+
 import org.eclipse.ant.internal.ui.editor.formatter.FormattingPreferences;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
+import org.junit.Test;
 
 @SuppressWarnings("restriction")
 public class FormattingPreferencesTest extends AbstractAntUITest {
 
-	public FormattingPreferencesTest(String name) {
-		super(name);
-	}
-
+	@Test
 	public final void testGetCanonicalIndent() {
 
 		FormattingPreferences prefs;

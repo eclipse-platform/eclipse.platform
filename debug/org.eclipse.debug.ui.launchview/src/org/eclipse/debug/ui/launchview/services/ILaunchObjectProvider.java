@@ -66,8 +66,8 @@ public interface ILaunchObjectProvider {
 
 	/**
 	 * Contribute per-item context menu items here. Use
-	 * {@link LaunchViewImpl#getSelectedElements()} to retrieve selected
-	 * elements during CanExecute and Execute methods of menu items.
+	 * {@link LaunchViewImpl#get()} to retrieve selected elements during
+	 * CanExecute and Execute methods of menu items.
 	 *
 	 * @param selected supplier for selected elements in the view.
 	 * @param menu the context menu applied to items in the tree.

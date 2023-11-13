@@ -15,21 +15,25 @@
 package org.eclipse.ua.tests.help.performance;
 
 import org.eclipse.test.performance.Dimension;
-import org.eclipse.test.performance.PerformanceTestCase;
+import org.eclipse.test.performance.PerformanceTestCaseJunit5;
 import org.eclipse.ua.tests.help.util.LoadServletUtil;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * A version of the servlet read test with a low iteration count
  */
 
-public class LowIterationHelpServerTest extends PerformanceTestCase {
+public class LowIterationHelpServerTest extends PerformanceTestCaseJunit5 {
 
+	@AfterEach
 	@Override
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		LoadServletUtil.stopServer();
 		super.tearDown();
 	}
 
+	@Test
 	public void testServletRead20x() throws Exception {
 		tagAsSummary("Servlet Read", Dimension.ELAPSED_PROCESS);
 		LoadServletUtil.startServer();
@@ -53,6 +57,7 @@ public class LowIterationHelpServerTest extends PerformanceTestCase {
 		assertPerformance();
 	}
 
+	@Test
 	public void testStartServer() throws Exception {
 		tagAsSummary("Start Server", Dimension.ELAPSED_PROCESS);
 

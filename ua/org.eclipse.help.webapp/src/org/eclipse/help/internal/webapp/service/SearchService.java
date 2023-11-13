@@ -26,7 +26,7 @@ import org.eclipse.help.internal.webapp.parser.SearchParser;
 import org.eclipse.help.internal.webapp.servlet.SearchServlet;
 import org.eclipse.help.internal.webapp.utils.Utils;
 
-/**
+/*
  * Returns the search hits in <code>xml</code> or <code>json</code>
  * form for the query provided in the <code>phrase</code> parameter.
  *
@@ -45,9 +45,6 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  *
  * @return		The search hits, either as <code>xml</code> (default) or
  * 				<code>json</code>
- *
- * @version	$Version$
- *
  **/
 public class SearchService extends SearchServlet {
 

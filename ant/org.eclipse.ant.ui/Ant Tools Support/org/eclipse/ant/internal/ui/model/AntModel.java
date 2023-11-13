@@ -378,7 +378,7 @@ public class AntModel implements IAntModel {
 					// do nothing
 				}
 				catch (UnsupportedOperationException ex) {
-					AntUIPlugin.log(new Status(IStatus.ERROR, AntUIPlugin.getUniqueIdentifier(), 0, AntModelMessages.AntModel_SecurityManagerError, null));
+					AntUIPlugin.log(new Status(IStatus.ERROR, AntUIPlugin.getUniqueIdentifier(), 0, AntModelMessages.AntModel_SecurityManagerError, ex));
 				}
 				finally {
 					Thread.currentThread().setContextClassLoader(originalClassLoader);

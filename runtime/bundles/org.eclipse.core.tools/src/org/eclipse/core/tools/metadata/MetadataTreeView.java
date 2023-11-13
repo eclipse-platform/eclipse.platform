@@ -14,10 +14,21 @@
 package org.eclipse.core.tools.metadata;
 
 import java.io.File;
-import org.eclipse.core.tools.*;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.core.tools.ErrorUtil;
+import org.eclipse.core.tools.SpyView;
+import org.eclipse.core.tools.TreeContentProviderNode;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
@@ -157,7 +168,7 @@ public class MetadataTreeView extends SpyView {
 	 * Rebuilds the viewer content provider.
 	 *
 	 * @param file
-	 * @see WorkspaceContentProvider#inputChanged(Viewer, Object, Object)
+	 * @see IContentProvider#inputChanged(Viewer, Object, Object)
 	 */
 	protected void setMetadataRoot(final File file) {
 		if (file == null)

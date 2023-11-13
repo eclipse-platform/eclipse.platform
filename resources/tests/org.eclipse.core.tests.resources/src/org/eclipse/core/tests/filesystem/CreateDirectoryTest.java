@@ -13,21 +13,45 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureDoesNotExist;
+import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureExists;
+import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.net.URI;
-import org.eclipse.core.filesystem.*;
+import java.util.UUID;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.tests.filesystem.FileStoreCreationRule.FileSystemType;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Black box testing of mkdir method.
  */
-public class CreateDirectoryTest extends FileSystemTest {
+public class CreateDirectoryTest {
 	protected IFileStore topDir, subDir, file, subFile;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Rule
+	public final FileStoreCreationRule localFileStoreRule = new FileStoreCreationRule(FileSystemType.LOCAL);
+
+	@Rule
+	public final FileStoreCreationRule inMemoryFileStoreRule = new FileStoreCreationRule(FileSystemType.IN_MEMORY);
+
+	@Before
+	public void setUp() throws Exception {
+		IFileStore baseStore = inMemoryFileStoreRule.getFileStore();
+		baseStore.mkdir(EFS.NONE, null);
 		topDir = baseStore.getChild("topDir");
 		subDir = topDir.getChild("subDir");
 		file = baseStore.getChild("file");
@@ -37,67 +61,49 @@ public class CreateDirectoryTest extends FileSystemTest {
 		ensureDoesNotExist(file);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		ensureDoesNotExist(topDir);
 		ensureDoesNotExist(file);
 	}
 
-	public void testParentExistsDeep() {
-		try {
-			topDir.mkdir(EFS.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+	@Test
+	public void testParentExistsDeep() throws Exception {
+		topDir.mkdir(EFS.NONE, getMonitor());
 		IFileInfo info = topDir.fetchInfo();
 		assertTrue("1.1", info.exists());
 		assertTrue("1.2", info.isDirectory());
 	}
 
-	public void testParentExistsShallow() {
-		try {
-			topDir.mkdir(EFS.SHALLOW, getMonitor());
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+	@Test
+	public void testParentExistsShallow() throws Exception {
+		topDir.mkdir(EFS.SHALLOW, getMonitor());
 		IFileInfo info = topDir.fetchInfo();
 		assertTrue("2.1", info.exists());
 		assertTrue("2.2", info.isDirectory());
 	}
 
-	public void testParentFileDeep() {
+	@Test
+	public void testParentFileDeep() throws Exception {
 		ensureExists(file, false);
-		try {
-			subFile.mkdir(EFS.NONE, getMonitor());
-			fail("1.99");
-		} catch (CoreException e) {
-			//should fail
-		}
+		assertThrows(CoreException.class, () -> subFile.mkdir(EFS.NONE, getMonitor()));
 		IFileInfo info = subFile.fetchInfo();
 		assertTrue("2.1", !info.exists());
 		assertTrue("2.2", !info.isDirectory());
 	}
 
-	public void testParentFileShallow() {
+	@Test
+	public void testParentFileShallow() throws Exception {
 		ensureExists(file, false);
-		try {
-			subFile.mkdir(EFS.SHALLOW, getMonitor());
-			fail("1.99");
-		} catch (CoreException e) {
-			//should fail
-		}
+		assertThrows(CoreException.class, () -> subFile.mkdir(EFS.SHALLOW, getMonitor()));
 		IFileInfo info = subFile.fetchInfo();
 		assertTrue("2.1", !info.exists());
 		assertTrue("2.2", !info.isDirectory());
 	}
 
-	public void testParentNotExistsDeep() {
-		try {
-			subDir.mkdir(EFS.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+	@Test
+	public void testParentNotExistsDeep() throws Exception {
+		subDir.mkdir(EFS.NONE, getMonitor());
 		IFileInfo info = topDir.fetchInfo();
 		assertTrue("1.1", info.exists());
 		assertTrue("1.2", info.isDirectory());
@@ -106,13 +112,9 @@ public class CreateDirectoryTest extends FileSystemTest {
 		assertTrue("1.4", info.isDirectory());
 	}
 
+	@Test
 	public void testParentNotExistsShallow() {
-		try {
-			subDir.mkdir(EFS.SHALLOW, getMonitor());
-			fail("1.99");
-		} catch (CoreException e) {
-			//expected
-		}
+		assertThrows(CoreException.class, () -> subDir.mkdir(EFS.SHALLOW, getMonitor()));
 		IFileInfo info = topDir.fetchInfo();
 		assertTrue("1.1", !info.exists());
 		assertTrue("1.2", !info.isDirectory());
@@ -121,30 +123,34 @@ public class CreateDirectoryTest extends FileSystemTest {
 		assertTrue("1.4", !info.isDirectory());
 	}
 
-	public void testParentNotExistsShallowInLocalFile() {
-		try {
+	@Test
+	public void testParentNotExistsShallowInLocalFile() throws CoreException {
+		IFileStore localFileBaseStore = localFileStoreRule.getFileStore();
+		localFileBaseStore.delete(EFS.NONE, getMonitor());
+		CoreException e = assertThrows(CoreException.class, () -> {
 			IFileStore localFileTopDir = localFileBaseStore.getChild("topDir");
 			localFileTopDir.mkdir(EFS.SHALLOW, getMonitor());
-			fail("1.99");
-		} catch (CoreException e) {
-			assertNotNull("1.1", e.getStatus());
-			assertEquals("1.2", EFS.ERROR_NOT_EXISTS, e.getStatus().getCode());
-		}
+		});
+		assertNotNull("1.1", e.getStatus());
+		assertEquals("1.2", EFS.ERROR_NOT_EXISTS, e.getStatus().getCode());
 	}
 
-	public void testTargetIsFileInLocalFile() {
-		try {
+	@Test
+	public void testTargetIsFileInLocalFile() throws Exception {
+		IFileStore localFileBaseStore = localFileStoreRule.getFileStore();
+		localFileBaseStore.delete(EFS.NONE, getMonitor());
+		CoreException e = assertThrows(CoreException.class, () -> {
 			ensureExists(localFileBaseStore, true);
 			IFileStore localFileTopDir = localFileBaseStore.getChild("topDir");
 			ensureExists(localFileTopDir, false);
 			localFileTopDir.mkdir(EFS.SHALLOW, getMonitor());
 			fail("1.99");
-		} catch (CoreException e) {
-			assertNotNull("1.1", e.getStatus());
-			assertEquals("1.2", EFS.ERROR_WRONG_TYPE, e.getStatus().getCode());
-		}
+		});
+		assertNotNull("1.1", e.getStatus());
+		assertEquals("1.2", EFS.ERROR_WRONG_TYPE, e.getStatus().getCode());
 	}
 
+	@Test
 	public void testParentDeviceNotExistsInLocalFile() {
 		if (!Platform.getOS().equals(Platform.OS_WIN32)) {
 			return;
@@ -155,7 +161,7 @@ public class CreateDirectoryTest extends FileSystemTest {
 		}
 
 		try {
-			IFileStore localFileTopDir = EFS.getStore(URI.create("file:/" + device + ":" + getUniqueString()));
+			IFileStore localFileTopDir = EFS.getStore(URI.create("file:/" + device + ":" + UUID.randomUUID()));
 			localFileTopDir.mkdir(EFS.SHALLOW, getMonitor());
 			fail("1.99");
 		} catch (CoreException e) {

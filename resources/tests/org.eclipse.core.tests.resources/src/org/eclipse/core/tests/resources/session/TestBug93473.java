@@ -16,7 +16,9 @@ package org.eclipse.core.tests.resources.session;
 import junit.framework.Test;
 import org.eclipse.core.internal.resources.ContentDescriptionManager;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentTypeManager;
@@ -39,7 +41,7 @@ public class TestBug93473 extends WorkspaceSessionTest {
 		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug93473.class);
 	}
 
-	public void test1stSession() {
+	public void test1stSession() throws CoreException {
 		final IWorkspace workspace = getWorkspace();
 
 		// cache is invalid at this point (does not match platform timestamp), no flush job has been scheduled (should not have to wait)
@@ -52,31 +54,19 @@ public class TestBug93473 extends WorkspaceSessionTest {
 		IFile file = project.getFile("foo.txt");
 		assertDoesNotExistInWorkspace("0.2", file);
 		ensureExistsInWorkspace(file, getRandomContents());
-		try {
-			// this will also cause the cache flush job to be scheduled
-			file.getContentDescription();
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		// this will also cause the cache flush job to be scheduled
+		file.getContentDescription();
 		// after waiting cache flushing, cache should be new
 		ContentDescriptionManagerTest.waitForCacheFlush();
 		assertEquals("2.0", ContentDescriptionManager.EMPTY_CACHE, ((Workspace) workspace).getContentDescriptionManager().getCacheState());
 
-		try {
-			// obtains a content description again - should come from cache
-			file.getContentDescription();
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		// obtains a content description again - should come from cache
+		file.getContentDescription();
 		// cache now is not empty anymore (should not have to wait)
 		ContentDescriptionManagerTest.waitForCacheFlush();
 		assertEquals("4.0", ContentDescriptionManager.USED_CACHE, ((Workspace) workspace).getContentDescriptionManager().getCacheState());
 
-		try {
-			workspace.save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("5.0", e);
-		}
+		workspace.save(true, getMonitor());
 	}
 
 	public void test2ndSession() {

@@ -13,10 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.junit.Assert.assertThrows;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -69,26 +70,14 @@ public class FileStoreTest extends LocalStoreTest {
 	 * exceptions.
 	 */
 	@Test
-	public void testBrokenFetchInfo() {
-		IFileStore broken = null;
-		try {
-			broken = EFS.getStore(new URI("broken://a/b/c"));
-		} catch (CoreException e) {
-			fail("0.98", e);
-		} catch (URISyntaxException e) {
-			fail("0.99", e);
-		}
+	public void testBrokenFetchInfo() throws Exception {
+		IFileStore broken = EFS.getStore(new URI("broken://a/b/c"));
 		// no-arg fetch info should return non-existent file
 		IFileInfo info = broken.fetchInfo();
-		assertTrue("1.0", !info.exists());
+		assertTrue("file info does not exist", !info.exists());
 
 		// two-arg fetchInfo should throw exception
-		try {
-			info = broken.fetchInfo(EFS.NONE, getMonitor());
-			fail("2.0");
-		} catch (CoreException e) {
-			// expected
-		}
+		assertThrows(CoreException.class, () -> broken.fetchInfo(EFS.NONE, getMonitor()));
 	}
 
 	private IFileStore getDirFileStore(String path) throws CoreException {
@@ -169,12 +158,8 @@ public class FileStoreTest extends LocalStoreTest {
 		String anotherContent = "nothing..................gnihton";
 		createFile(destination, anotherContent);
 		assertTrue("5.1", !destination.fetchInfo().isDirectory());
-		try {
-			target.copy(destination, EFS.NONE, null);
-			fail("5.2");
-		} catch (CoreException e) {
-			// should fail
-		}
+		final IFileStore immutableDestination = destination;
+		assertThrows(CoreException.class, () -> target.copy(immutableDestination, EFS.NONE, null));
 		assertTrue("5.3", !verifyTree(getTree(destination)));
 		destination.delete(EFS.NONE, null);
 
@@ -212,12 +197,7 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore existing = getTempStore();
 		createFile(existing, getRandomString());
 		// try to copy when parent of destination does not exist
-		try {
-			existing.copy(child, EFS.NONE, getMonitor());
-			fail("1.0");
-		} catch (CoreException e) {
-			// should fail
-		}
+		assertThrows(CoreException.class, () -> existing.copy(child, EFS.NONE, getMonitor()));
 		// destination should not exist
 		assertTrue("1.1", !child.fetchInfo().exists());
 	}
@@ -249,13 +229,10 @@ public class FileStoreTest extends LocalStoreTest {
 		fileWithOtherName.delete(EFS.NONE, null);
 		assertFalse("3.2", fileWithOtherName.fetchInfo().exists());
 		assertFalse("3.3", fileWithSmallName.fetchInfo().exists());
-		try {
-			fileWithSmallName.move(fileWithOtherName, EFS.NONE, null);
-			fail("4.0");
-		} catch (CoreException e) {
-			String message = NLS.bind(Messages.couldNotMove, fileWithSmallName.toString());
-			assertEquals(message, e.getMessage());
-		}
+		CoreException exception = assertThrows(CoreException.class,
+				() -> fileWithSmallName.move(fileWithOtherName, EFS.NONE, null));
+		String message = NLS.bind(Messages.couldNotMove, fileWithSmallName.toString());
+		assertEquals(message, exception.getMessage());
 	}
 
 	@Test
@@ -366,16 +343,11 @@ public class FileStoreTest extends LocalStoreTest {
 		destination = tempDest.getChild(subfolderName);
 		createDir(destination, true);
 		assertTrue("6.1", destination.fetchInfo().isDirectory());
-		boolean ok = false;
-		try {
-			target.copy(destination, EFS.NONE, null);
-		} catch (CoreException e) {
-			/* test if the input stream inside the copy method was closed */
-			target.delete(EFS.NONE, null);
-			createFile(target, content);
-			ok = true;
-		}
-		assertTrue("6.2", ok);
+		final IFileStore immutableDestination = destination;
+		assertThrows(CoreException.class, () -> target.copy(immutableDestination, EFS.NONE, null));
+		/* test if the input stream inside the copy method was closed */
+		target.delete(EFS.NONE, null);
+		createFile(target, content);
 		assertTrue("6.3", destination.fetchInfo().isDirectory());
 		destination.delete(EFS.NONE, null);
 	}
@@ -448,25 +420,16 @@ public class FileStoreTest extends LocalStoreTest {
 		/* rename file (but destination is already a file) */
 		String anotherContent = "another content";
 		createFile(destination, anotherContent);
-		boolean ok = false;
-		try {
-			target.move(destination, EFS.NONE, null);
-		} catch (CoreException e) {
-			ok = true;
-		}
-		assertTrue("3.1", ok);
+		final IFileStore immutableFileDestination = destination;
+		assertThrows(CoreException.class, () -> target.move(immutableFileDestination, EFS.NONE, null));
 		assertTrue("3.2", !target.fetchInfo().isDirectory());
 		destination.delete(EFS.NONE, null);
 		assertTrue("3.3", !destination.fetchInfo().exists());
 
 		/* rename file (but destination is already a folder) */
 		createDir(destination, true);
-		try {
-			target.move(destination, EFS.NONE, null);
-		} catch (CoreException e) {
-			ok = true;
-		}
-		assertTrue("4.1", ok);
+		final IFileStore immutableFolderDestination = destination;
+		assertThrows(CoreException.class, () -> target.move(immutableFolderDestination, EFS.NONE, null));
 		assertTrue("4.2", !target.fetchInfo().isDirectory());
 		destination.delete(EFS.NONE, null);
 		assertTrue("4.3", !destination.fetchInfo().exists());
@@ -535,12 +498,7 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore existing = getTempStore();
 		createFile(existing, getRandomString());
 		// try to move when parent of destination does not exist
-		try {
-			existing.move(child, EFS.NONE, getMonitor());
-			fail("1.0");
-		} catch (CoreException e) {
-			// should fail
-		}
+		assertThrows(CoreException.class, () -> existing.move(child, EFS.NONE, getMonitor()));
 		// destination should not exist
 		assertTrue("1.1", !child.fetchInfo().exists());
 	}
@@ -556,20 +514,10 @@ public class FileStoreTest extends LocalStoreTest {
 		// assert that modifying a non-existing store fails
 		IFileInfo info = nonExisting.fetchInfo();
 		info.setLastModified(System.currentTimeMillis());
-		try {
-			nonExisting.putInfo(info, EFS.SET_LAST_MODIFIED, getMonitor());
-			fail("1.0");
-		} catch (CoreException e) {
-			// expected
-		}
-		info = nonExisting.fetchInfo();
+		assertThrows(CoreException.class, () -> nonExisting.putInfo(info, EFS.SET_LAST_MODIFIED, getMonitor()));
+		IFileInfo refetchedInfo = nonExisting.fetchInfo();
 		info.setAttribute(EFS.ATTRIBUTE_READ_ONLY, false);
-		try {
-			nonExisting.putInfo(info, EFS.SET_ATTRIBUTES, getMonitor());
-			fail("1.1");
-		} catch (CoreException e) {
-			// expected
-		}
+		assertThrows(CoreException.class, () -> nonExisting.putInfo(refetchedInfo, EFS.SET_ATTRIBUTES, getMonitor()));
 	}
 
 	@Test
@@ -621,28 +569,30 @@ public class FileStoreTest extends LocalStoreTest {
 
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
 		IFileStore targetFolder = createDir(root.toString(), true);
-		try {
-			IFileStore targetFile = targetFolder.getChild("targetFile");
-			createFileInFileSystem(targetFile);
+		deleteOnTearDown(targetFolder);
+		IFileStore targetFile = targetFolder.getChild("targetFile");
+		createFileInFileSystem(targetFile);
 
-			// file
-			boolean init = targetFile.fetchInfo().getAttribute(attribute);
-			setAttribute(targetFile, attribute, !init);
-			assertTrue("1.2", targetFile.fetchInfo().getAttribute(attribute) != init);
-			setAttribute(targetFile, attribute, init);
-			assertTrue("1.4", targetFile.fetchInfo().getAttribute(attribute) == init);
+		// file
+		boolean init = targetFile.fetchInfo().getAttribute(attribute);
+		setAttribute(targetFile, attribute, !init);
+		assertTrue("1.2", targetFile.fetchInfo().getAttribute(attribute) != init);
+		setAttribute(targetFile, attribute, init);
+		assertTrue("1.4", targetFile.fetchInfo().getAttribute(attribute) == init);
 
-			// folder
-			init = targetFolder.fetchInfo().getAttribute(attribute);
-			setAttribute(targetFolder, attribute, !init);
-			assertTrue("2.2", targetFolder.fetchInfo().getAttribute(attribute) != init);
-			setAttribute(targetFolder, attribute, init);
-			assertTrue("2.4", targetFolder.fetchInfo().getAttribute(attribute) == init);
+		// folder
+		init = targetFolder.fetchInfo().getAttribute(attribute);
+		setAttribute(targetFolder, attribute, !init);
+		assertTrue("2.2", targetFolder.fetchInfo().getAttribute(attribute) != init);
+		setAttribute(targetFolder, attribute, init);
+		assertTrue("2.4", targetFolder.fetchInfo().getAttribute(attribute) == init);
+	}
 
-		} finally {
-			/* remove trash */
-			targetFolder.delete(EFS.NONE, null);
-		}
+	private void setAttribute(IFileStore target, int attribute, boolean value) throws CoreException {
+		assertTrue("setAttribute.1", isAttributeSupported(attribute));
+		IFileInfo fileInfo = target.fetchInfo();
+		fileInfo.setAttribute(attribute, value);
+		target.putInfo(fileInfo, EFS.SET_ATTRIBUTES, null);
 	}
 
 	@Test

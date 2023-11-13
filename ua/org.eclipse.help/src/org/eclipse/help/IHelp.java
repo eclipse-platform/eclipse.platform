@@ -23,11 +23,10 @@ package org.eclipse.help;
  *             {@link org.eclipse.help.HelpSystem#getTocs HelpSystem.getTocs()}
  *             and {@link org.eclipse.help.HelpSystem#getContext
  *             HelpSystem.getContext(String)} to obtain help resources. Use
- *             various display methods of
- *             {@link org.eclipse.ui.help.IWorkbenchHelpSystem} to display help
+ *             various display methods of org.eclipse.ui.help.IWorkbenchHelpSystem to display help
  *             resources.
  */
-@Deprecated
+@Deprecated(forRemoval = true, since = "2023-12")
 public interface IHelp {
 
 	/**
@@ -126,7 +125,6 @@ public interface IHelp {
 	 * displayed or how they are displayed.
 	 * </p>
 	 *
-	 * @see IHelp#displayHelpResource(String)
 	 * @param helpResource
 	 *            the help resource to display.
 	 * @since 2.0

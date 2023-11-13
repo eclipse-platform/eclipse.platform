@@ -170,8 +170,6 @@ public class RootPageForm implements IIntroConstants {
 	/**
 	 * Create the form for the root page. Number of columns there is equal to
 	 * the number of links.
-	 *
-	 * @param pageBook
 	 */
 	public void createPartControl(ScrolledPageBook mainPageBook,
 			SharedStyleManager shardStyleManager) {

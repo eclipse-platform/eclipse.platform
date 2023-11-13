@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.ant.internal.launching.debug.model.AntStackFrame;
 import org.eclipse.ant.internal.launching.debug.model.AntThread;
 import org.eclipse.core.runtime.CoreException;
@@ -21,16 +24,14 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
+import org.junit.Test;
 
 public class SteppingTests extends AbstractAntDebugTest {
-
-	public SteppingTests(String name) {
-		super(name);
-	}
 
 	/**
 	 * bug 84400
 	 */
+	@Test
 	public void testStepBackFromAntCall() throws Exception {
 		antCallStack(false, 12, DebugEvent.STEP_OVER, "default: echo", 7); //$NON-NLS-1$
 	}
@@ -38,6 +39,7 @@ public class SteppingTests extends AbstractAntDebugTest {
 	/**
 	 * bug 84400
 	 */
+	@Test
 	public void testStepBackFromAntCallSepVM() throws Exception {
 		antCallStack(true, 12, DebugEvent.STEP_OVER, "default: echo", 7); //$NON-NLS-1$
 	}
@@ -45,6 +47,7 @@ public class SteppingTests extends AbstractAntDebugTest {
 	/**
 	 * bug 88218, 85769
 	 */
+	@Test
 	public void testStepIntoAntCall() throws Exception {
 		AntThread thread = null;
 		try {
@@ -61,6 +64,7 @@ public class SteppingTests extends AbstractAntDebugTest {
 	/**
 	 * bug 88218, 85769
 	 */
+	@Test
 	public void testStepIntoAntCallSepVM() throws Exception {
 		AntThread thread = null;
 		try {
@@ -74,10 +78,12 @@ public class SteppingTests extends AbstractAntDebugTest {
 		}
 	}
 
+	@Test
 	public void testStepOverAntCall() throws Exception {
 		antCallStack(false, 5, DebugEvent.STEP_OVER, "default: echo", 7); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testStepOverAntCallSepVM() throws Exception {
 		antCallStack(true, 5, DebugEvent.STEP_OVER, "default: echo", 7); //$NON-NLS-1$
 	}
@@ -85,6 +91,7 @@ public class SteppingTests extends AbstractAntDebugTest {
 	/**
 	 * bug 96022
 	 */
+	@Test
 	public void testStepOverAntCallPastOtherAntCalls() throws Exception {
 		debugStack(false, 7, DebugEvent.STEP_OVER, "default: echo", 9, "96022", true); //$NON-NLS-1$ //$NON-NLS-2$
 	}
@@ -92,16 +99,19 @@ public class SteppingTests extends AbstractAntDebugTest {
 	/**
 	 * bug 96022
 	 */
+	@Test
 	public void testStepOverAntCallPastOtherAntCallsSepVm() throws Exception {
 		debugStack(true, 7, DebugEvent.STEP_OVER, "default: echo", 9, "96022", true); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
+	@Test
 	public void testStepOverAntCallHitBreakpoint() throws Exception {
 		String fileName = "debugAntCall"; //$NON-NLS-1$
 		createLineBreakpoint(12, fileName + ".xml"); //$NON-NLS-1$
 		antCallStack(false, 5, DebugEvent.BREAKPOINT, "call: sleep", 12); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testStepOverAntCallHitBreakpointSepVM() throws Exception {
 		String fileName = "debugAntCall"; //$NON-NLS-1$
 		createLineBreakpoint(12, fileName + ".xml"); //$NON-NLS-1$
@@ -174,6 +184,7 @@ public class SteppingTests extends AbstractAntDebugTest {
 	 * 
 	 * @throws CoreException
 	 */
+	@Test
 	public void testStepOutOfMacrodef() throws CoreException {
 		String fileName = "macrodef"; //$NON-NLS-1$
 		debugStack(false, 8, DebugEvent.STEP_OVER, "type: eclipseMacro", 16, fileName, true); //$NON-NLS-1$
@@ -184,6 +195,7 @@ public class SteppingTests extends AbstractAntDebugTest {
 	 * 
 	 * @throws CoreException
 	 */
+	@Test
 	public void testStepOutOfMacrodefSepVM() throws CoreException {
 		String fileName = "macrodef"; //$NON-NLS-1$
 		debugStack(true, 8, DebugEvent.STEP_OVER, "type: eclipseMacro", 16, fileName, true); //$NON-NLS-1$
@@ -194,6 +206,7 @@ public class SteppingTests extends AbstractAntDebugTest {
 	 * 
 	 * @throws CoreException
 	 */
+	@Test
 	public void testStepIntoMacrodef() throws CoreException {
 		testMacroDef(false);
 	}
@@ -203,6 +216,7 @@ public class SteppingTests extends AbstractAntDebugTest {
 	 * 
 	 * @throws CoreException
 	 */
+	@Test
 	public void testStepIntoMacrodefSepVM() throws CoreException {
 		testMacroDef(true);
 	}

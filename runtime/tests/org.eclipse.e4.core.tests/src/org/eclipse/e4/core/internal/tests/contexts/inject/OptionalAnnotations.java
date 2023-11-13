@@ -14,9 +14,9 @@
 
 package org.eclipse.e4.core.internal.tests.contexts.inject;
 
-import javax.inject.Inject;
-
 import org.eclipse.e4.core.di.annotations.Optional;
+
+import jakarta.inject.Inject;
 
 public class OptionalAnnotations {
 

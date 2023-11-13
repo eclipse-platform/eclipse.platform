@@ -14,23 +14,33 @@
 package org.eclipse.core.tools.runtime;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import org.eclipse.core.runtime.Platform;
 //import org.eclipse.core.runtime.internal.stats.BundleStats;
-import org.eclipse.core.tools.*;
+import org.eclipse.core.tools.ClearTextAction;
+import org.eclipse.core.tools.CopyTextSelectionAction;
+import org.eclipse.core.tools.GlobalAction;
+import org.eclipse.core.tools.Messages;
+import org.eclipse.core.tools.SelectAllAction;
+import org.eclipse.core.tools.SpyView;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osgi.service.resolver.*;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 
 public class PluginDependencyView extends SpyView implements ISelectionListener {
 
@@ -55,13 +65,11 @@ public class PluginDependencyView extends SpyView implements ISelectionListener 
 
 		// Delete action shortcuts are not captured by the workbench
 		// so we need our key binding service to handle Delete keystrokes for us
-		this.viewer.getControl().addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.character == SWT.DEL)
-					clearOutputAction.run();
+		this.viewer.getControl().addKeyListener(KeyListener.keyPressedAdapter(e -> {
+			if (e.character == SWT.DEL) {
+				clearOutputAction.run();
 			}
-		});
+		}));
 
 		GlobalAction copyAction = new CopyTextSelectionAction(viewer);
 		copyAction.registerAsGlobalAction(bars);
@@ -93,38 +101,33 @@ public class PluginDependencyView extends SpyView implements ISelectionListener 
 	 * parent/child relationships in the nodes.
 	 */
 	private Map<Long, PluginDependencyGraphNode> getDependencyGraph() {
-		if (dependencyGraph != null)
+		if (dependencyGraph != null) {
 			return dependencyGraph;
+		}
 		// Build up the dependency graph (see PluginDependencyGraphNode) so
 		// we have the information readily available for any plug-in.
-		State state = Platform.getPlatformAdmin().getState(false);
-		BundleDescription[] plugins = state.getBundles();
+
+		BundleContext bundleContext = FrameworkUtil.getBundle(PluginDependencyView.class).getBundleContext();
+		Bundle[] plugins = bundleContext.getBundles();
 		dependencyGraph = new HashMap<>();
-		for (BundleDescription descriptor : plugins) {
-			PluginDependencyGraphNode node = dependencyGraph.get(Long.valueOf(descriptor.getBundleId()));
-			if (node == null) {
-				node = new PluginDependencyGraphNode(descriptor);
-				dependencyGraph.put(Long.valueOf(descriptor.getBundleId()), node);
-			}
+		for (Bundle bundle : plugins) {
+			PluginDependencyGraphNode node = dependencyGraph.computeIfAbsent(bundle.getBundleId(),
+					i -> new PluginDependencyGraphNode(bundle));
 
 			// Cycle through the prerequisites
-			BundleSpecification[] requires = descriptor.getRequiredBundles();
-			for (BundleSpecification require : requires) {
-				BundleDescription childDesc = (BundleDescription) require.getSupplier();
-				// if the child doesn't exist then move to the next child
-				if (childDesc == null)
-					continue;
-
+			BundleWiring wiring = bundle.adapt(BundleWiring.class);
+			if (wiring == null) {
+				continue;
+			}
+			List<BundleWire> requiredWires = wiring.getRequiredWires(null);
+			for (BundleWire requiredWire : requiredWires) {
+				Bundle capabilityProvider = requiredWire.getCapability().getRevision().getBundle();
 				// if the child entry is not in the table yet then add it
-				PluginDependencyGraphNode childNode = dependencyGraph
-						.get(Long.valueOf(childDesc.getBundleId()));
-				if (childNode == null) {
-					childNode = new PluginDependencyGraphNode(childDesc);
-					dependencyGraph.put(Long.valueOf(childDesc.getBundleId()), childNode);
-				}
+				PluginDependencyGraphNode childNode = dependencyGraph.computeIfAbsent(capabilityProvider.getBundleId(),
+						i -> new PluginDependencyGraphNode(capabilityProvider));
 
-				// Add the child to this node's children and set this node as an ancestor
-				// of the child node
+				// Add the child to this node's children and set this node as an
+				// ancestor of the child node
 				node.addChild(childNode);
 				childNode.addAncestor(node);
 			}
@@ -134,24 +137,14 @@ public class PluginDependencyView extends SpyView implements ISelectionListener 
 
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (!(selection instanceof IStructuredSelection))
+		if (!(selection instanceof IStructuredSelection structuredSelection)) {
 			return;
-		Object element = ((IStructuredSelection) selection).getFirstElement();
-		long id = -1;
-		String name = null;
-		if (element instanceof BundleDescription) {
-			id = ((BundleDescription) element).getBundleId();
-			name = ((BundleDescription) element).getSymbolicName();
 		}
-//		if (element instanceof BundleStats) {
-//			id = ((BundleStats) element).getId();
-//			name = ((BundleStats) element).getSymbolicName();
-//		}
-		if (id == -1)
-			return;
-		PluginDependencyGraphNode node = getDependencyGraph().get(Long.valueOf(id));
-		String text = node == null ? NLS.bind(Messages.depend_noInformation, name) : node.toDeepString();
-		viewer.getDocument().set(text);
-		viewer.refresh();
+		if (structuredSelection.getFirstElement() instanceof Bundle bundle) {
+			PluginDependencyGraphNode node = getDependencyGraph().get(bundle.getBundleId());
+			String text = node == null ? NLS.bind(Messages.depend_noInformation, bundle.getSymbolicName()) : node.toDeepString();
+			viewer.getDocument().set(text);
+			viewer.refresh();
+		}
 	}
 }

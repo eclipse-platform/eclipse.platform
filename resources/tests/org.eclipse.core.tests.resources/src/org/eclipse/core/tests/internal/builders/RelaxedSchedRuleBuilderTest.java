@@ -14,13 +14,22 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+
 import java.io.ByteArrayInputStream;
 import java.lang.Thread.State;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
-
+import java.util.stream.Collectors;
 import org.eclipse.core.internal.events.ResourceDelta;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IBuildConfiguration;
@@ -31,8 +40,10 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
@@ -48,6 +59,7 @@ import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
  * depending on the builder's scheduling rule
  */
 public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
+	private ErrorLogging errorLogging = new ErrorLogging();
 
 	public RelaxedSchedRuleBuilderTest(String name) {
 		super(name);
@@ -56,11 +68,16 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		errorLogging.enable();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		super.tearDown();
+		try {
+			errorLogging.disable();
+		} finally {
+			super.tearDown();
+		}
 		TestBuilder builder = DeltaVerifierBuilder.getInstance();
 		if (builder != null) {
 			builder.reset();
@@ -80,9 +97,9 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 * @throws Exception
 	 */
 	public void testBasicRelaxedSchedulingRules() throws Exception {
-		String name = "TestRelaxed";
+		String projectName = "TestRelaxed";
 		setAutoBuilding(false);
-		final IProject project = getWorkspace().getRoot().getProject(name);
+		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		create(project, false);
 		addBuilder(project, EmptyDeltaBuilder.BUILDER_NAME);
 
@@ -95,7 +112,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		EmptyDeltaBuilder builder = EmptyDeltaBuilder.getInstance();
 		builder.setRuleCallback(new BuilderRuleCallback() {
 			@Override
-			public ISchedulingRule getRule(String name, IncrementalProjectBuilder builder, int trigger, Map<String, String> args) {
+			public ISchedulingRule getRule(String name, IncrementalProjectBuilder projectBuilder, int trigger,
+					Map<String, String> args) {
 				return null;
 			}
 
@@ -149,9 +167,9 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 * @throws Exception
 	 */
 	public void testTwoBuildersRunInOneBuild() throws Exception {
-		String name = "testTwoBuildersRunInOneBuild";
+		String projectName = "testTwoBuildersRunInOneBuild";
 		setAutoBuilding(false);
-		final IProject project = getWorkspace().getRoot().getProject(name);
+		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		create(project, false);
 
 		IProjectDescription desc = project.getDescription();
@@ -171,7 +189,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		// Set the rule call-back
 		builder.setRuleCallback(new BuilderRuleCallback() {
 			@Override
-			public ISchedulingRule getRule(String name, IncrementalProjectBuilder builder, int trigger, Map<String, String> args) {
+			public ISchedulingRule getRule(String name, IncrementalProjectBuilder projectBuilder, int trigger,
+					Map<String, String> args) {
 				tb1.setStatus(TestBarrier2.STATUS_START);
 				return project;
 			}
@@ -189,7 +208,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		// Set the rule call-back
 		builder2.setRuleCallback(new BuilderRuleCallback() {
 			@Override
-			public ISchedulingRule getRule(String name, IncrementalProjectBuilder builder, int trigger, Map<String, String> args) {
+			public ISchedulingRule getRule(String name, IncrementalProjectBuilder projectBuilder, int trigger,
+					Map<String, String> args) {
 				// get rule is called before starting
 				tb2.setStatus(TestBarrier2.STATUS_START);
 				return null;
@@ -254,9 +274,9 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 */
 	public void testBuilderDeltaUsingRelaxedRuleBug343256() throws Exception {
 		final int timeout = 10000;
-		String name = "testBuildDeltaUsingRelaxedRuleBug343256";
+		String projectName = "testBuildDeltaUsingRelaxedRuleBug343256";
 		setAutoBuilding(false);
-		final IProject project = getWorkspace().getRoot().getProject(name);
+		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		final IFile foo = project.getFile("foo");
 		create(project, false);
 
@@ -312,7 +332,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 			boolean called = false;
 
 			@Override
-			public ISchedulingRule getRule(String name, IncrementalProjectBuilder builder, int trigger, Map<String, String> args) {
+			public ISchedulingRule getRule(String name, IncrementalProjectBuilder projectBuilder, int trigger,
+					Map<String, String> args) {
 				// Remove once Bug 331187 is fixed.
 				// Currently #getRule is called twice when building a specific build configuration (so as to minimized change in
 				// 3.7 end-game.  As this test is trying to provoke a bug in the window between fetching a rule and applying it
@@ -374,7 +395,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 			fail("Error observed", error.get());
 		}
 		tb.waitForStatus(TestBarrier2.STATUS_DONE);
-		assertNoErrorsLogged();
+		errorLogging.assertNoErrorsLogged();
 	}
 
 	/**
@@ -382,9 +403,9 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 * @throws Exception
 	 */
 	public void testBug343256() throws Exception {
-		String name = "testBug343256";
+		String projectName = "testBug343256";
 		setAutoBuilding(false);
-		final IProject project = getWorkspace().getRoot().getProject(name);
+		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		create(project, false);
 
 		IProjectDescription desc = project.getDescription();
@@ -408,7 +429,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		// Set the rule call-back
 		builder.setRuleCallback(new BuilderRuleCallback() {
 			@Override
-			public ISchedulingRule getRule(String name, IncrementalProjectBuilder builder, int trigger, Map<String, String> args) {
+			public ISchedulingRule getRule(String name, IncrementalProjectBuilder projectBuilder, int trigger,
+					Map<String, String> args) {
 				tb1.waitForStatus(TestBarrier2.STATUS_START);
 				return getRules[0];
 			}
@@ -426,7 +448,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		// Set the rule call-back
 		builder2.setRuleCallback(new BuilderRuleCallback() {
 			@Override
-			public ISchedulingRule getRule(String name, IncrementalProjectBuilder builder, int trigger, Map<String, String> args) {
+			public ISchedulingRule getRule(String name, IncrementalProjectBuilder projectBuilder, int trigger,
+					Map<String, String> args) {
 				tb2.waitForStatus(TestBarrier2.STATUS_START);
 				return getRules[1];
 			}
@@ -543,4 +566,32 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		tb1.waitForStatus(TestBarrier2.STATUS_DONE);
 		tb2.waitForStatus(TestBarrier2.STATUS_DONE);
 	}
+
+	private static class ErrorLogging {
+		private final Queue<IStatus> loggedErrors = new ConcurrentLinkedQueue<>();
+
+		private final ILogListener errorLogListener = (IStatus status, String plugin) -> {
+			if (status.matches(IStatus.ERROR)) {
+				loggedErrors.add(status);
+			}
+		};
+
+		public void enable() {
+			Platform.addLogListener(errorLogListener);
+		}
+
+		public void disable() {
+			Platform.removeLogListener(errorLogListener);
+		}
+
+		public void assertNoErrorsLogged() {
+			List<IStatus> errors = new ArrayList<>();
+			loggedErrors.removeIf(errors::add);
+			List<Throwable> thrownExceptions = errors.stream().map(IStatus::getException).filter(Objects::nonNull)
+					.collect(Collectors.toList());
+			assertThat("Test logged exceptions", thrownExceptions, is(empty()));
+			assertThat("Test logged errors", errors, is(empty()));
+		}
+	}
+
 }

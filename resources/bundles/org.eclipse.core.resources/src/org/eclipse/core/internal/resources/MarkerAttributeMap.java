@@ -16,15 +16,18 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.core.internal.utils.IStringPoolParticipant;
 import org.eclipse.core.internal.utils.StringPool;
 
 /**
- * A specialized Map<String,Object> implementation that is optimized for a small
- * set of strings as keys. The keys will be interned() on insert.
+ * A specialized Map&lt;String,Object&gt; implementation that is optimized for a
+ * small set of strings as keys. The keys will be interned() on insert.
  *
  * Unlike a java.util.HashMap nulls are neither allowed for key or value.
  */

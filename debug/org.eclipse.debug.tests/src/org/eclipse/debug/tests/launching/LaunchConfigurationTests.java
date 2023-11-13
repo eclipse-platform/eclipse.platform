@@ -1388,7 +1388,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * Tests that a launch is properly registered for notifications before a
 	 * process is spawned and may already propagate a termination event.
 	 *
-	 * @see https://github.com/eclipse-platform/eclipse.platform/issues/598
+	 * see <a href="https://github.com/eclipse-platform/eclipse.platform/issues/598">598</a>
 	 */
 	@Test
 	public void testTerminateLaunchListener_Issue598() throws Exception {
@@ -1619,8 +1619,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Ensures that client does not attempt to nest configurations in a sub
 	 * directory when using local metadata location. See bug 275741.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testIllegalFileSepCharName() {
@@ -1637,8 +1635,6 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * Ensures that client can nest configurations in a sub directory when using
 	 * a workspace location. See bug 275741. For behavior compatibility a client
 	 * should be able to use a slash in the configuration name.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testLegalFileSepCharName() {
@@ -1650,9 +1646,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	}
 
 	/**
-	 * Test that an illegal name with '<' causes an exception
-	 *
-	 * @throws CoreException
+	 * Test that an illegal name with '&lt;' causes an exception
 	 */
 	@Test
 	public void testIllegalCharName() {
@@ -1722,7 +1716,9 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Tests that we can get a project handle from a project name
 	 *
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441
+	 * see
+	 * <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441">395441</a>
+	 *
 	 * @throws Exception
 	 * @since 3.9.0
 	 */
@@ -1745,7 +1741,9 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Tests that we cannot get a project handle from a bogus project name
 	 *
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441
+	 * see
+	 * <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441">395441</a>
+	 *
 	 * @throws Exception
 	 * @since 3.9.0
 	 */
@@ -1767,7 +1765,9 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Tests that we cannot get a project handle from a bogus project name
 	 *
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441
+	 * see
+	 * <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441">395441</a>
+	 *
 	 * @throws Exception
 	 * @since 3.9.0
 	 */
@@ -1794,7 +1794,9 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	/**
 	 * Tests that we can get a project handle from an absolute project name
 	 *
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441
+	 * see
+	 * <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=395441">395441</a>
+	 *
 	 * @throws Exception
 	 * @since 3.9.0
 	 */
@@ -1817,7 +1819,9 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	 * Tests that a launch created without a backing
 	 * {@link ILaunchConfiguration} does not cause {@link NullPointerException}s
 	 *
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=416691
+	 * see
+	 * <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=416691">416691</a>
+	 *
 	 * @throws Exception
 	 * @since 3.9.0
 	 */

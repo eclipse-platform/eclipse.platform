@@ -49,7 +49,8 @@ public class CheatSheetHelpPart extends AbstractFormPart implements IHelpPart {
 	 * @param parent the parent Composite that will contain the widgets
 	 * @param toolkit the form toolkit to use for creating the widgets
 	 * @param tbm the toolbar we will contribute to
-	 * @param id the unique id of the cheatsheet to display in the part
+	 * @param content CheatSheetElement
+	 * @param trayManager ICheatSheetStateManager
 	 */
 	public CheatSheetHelpPart(Composite parent, FormToolkit toolkit, IToolBarManager tbm, CheatSheetElement content, ICheatSheetStateManager trayManager) {
 		id = content.getID();

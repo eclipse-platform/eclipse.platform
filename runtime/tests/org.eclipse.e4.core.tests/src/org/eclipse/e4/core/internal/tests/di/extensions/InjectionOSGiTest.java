@@ -18,9 +18,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-
-import javax.inject.Inject;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
@@ -34,6 +33,8 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+
+import jakarta.inject.Inject;
 
 public class InjectionOSGiTest {
 
@@ -104,6 +105,20 @@ public class InjectionOSGiTest {
 
 		target = ContextInjectionFactory.make(InjectionTarget.class,
 				localContext);
+	}
+
+	@Test
+	public void ensureJavaxIsNotAvailable() {
+		// Ensure that the providing bundles of the following classes are absent of the
+		// test-runtime and thus the mentioned classes cannot be loaded
+		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Inject"));
+		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Singleton"));
+		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Qualifier"));
+		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Provider"));
+		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Named"));
+
+		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.annotation.PreDestroy"));
+		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.annotation.PostConstruct"));
 	}
 
 	@Test

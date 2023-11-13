@@ -40,7 +40,6 @@ public class SuccesorTaskFinder {
 	 * left of this task that is runnable and the best successor
 	 * which is the first task to the
 	 * right of this task which is runnable.
-	 * @param task The task which was just completed
 	 * @return An array of tasks which can be started
 	 */
 	public ICompositeCheatSheetTask[] getRecommendedSuccessors()

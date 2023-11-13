@@ -16,9 +16,12 @@
 package org.eclipse.core.tests.resources;
 
 import java.io.File;
-import java.io.IOException;
 import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -54,7 +57,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		resource.setResourceAttributes(attributes);
 	}
 
-	public void testAttributeArchive() {
+	public void testAttributeArchive() throws CoreException {
 		// only activate this test on platforms that support it
 		if (!isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE)) {
 			return;
@@ -63,33 +66,22 @@ public class ResourceAttributeTest extends ResourceTest {
 		IFile file = project.getFile("target");
 		ensureExistsInWorkspace(file, getRandomContents());
 
-		try {
-			// file bit is set already for a new file
-			assertTrue("1.0", file.getResourceAttributes().isArchive());
-			setArchive(file, false);
-			assertTrue("1.2", !file.getResourceAttributes().isArchive());
-			setArchive(file, true);
-			assertTrue("1.4", file.getResourceAttributes().isArchive());
+		// file bit is set already for a new file
+		assertTrue("1.0", file.getResourceAttributes().isArchive());
+		setArchive(file, false);
+		assertTrue("1.2", !file.getResourceAttributes().isArchive());
+		setArchive(file, true);
+		assertTrue("1.4", file.getResourceAttributes().isArchive());
 
-			// folder bit is not set already for a new folder
-			assertTrue("2.0", !project.getResourceAttributes().isArchive());
-			setArchive(project, true);
-			assertTrue("2.2", project.getResourceAttributes().isArchive());
-			setArchive(project, false);
-			assertTrue("2.4", !project.getResourceAttributes().isArchive());
-		} catch (CoreException e1) {
-			fail("2.99", e1);
-		}
-
-		// remove trash
-		try {
-			project.delete(true, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		// folder bit is not set already for a new folder
+		assertTrue("2.0", !project.getResourceAttributes().isArchive());
+		setArchive(project, true);
+		assertTrue("2.2", project.getResourceAttributes().isArchive());
+		setArchive(project, false);
+		assertTrue("2.4", !project.getResourceAttributes().isArchive());
 	}
 
-	public void testAttributeExecutable() {
+	public void testAttributeExecutable() throws CoreException {
 		// only activate this test on platforms that support it
 		if (!isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE)) {
 			return;
@@ -98,34 +90,23 @@ public class ResourceAttributeTest extends ResourceTest {
 		IFile file = project.getFile("target");
 		ensureExistsInWorkspace(file, getRandomContents());
 
-		try {
-			// file
-			assertTrue("1.0", !file.getResourceAttributes().isExecutable());
-			setExecutable(file, true);
-			assertTrue("1.2", file.getResourceAttributes().isExecutable());
-			setExecutable(file, false);
-			assertTrue("1.4", !file.getResourceAttributes().isExecutable());
+		// file
+		assertTrue("1.0", !file.getResourceAttributes().isExecutable());
+		setExecutable(file, true);
+		assertTrue("1.2", file.getResourceAttributes().isExecutable());
+		setExecutable(file, false);
+		assertTrue("1.4", !file.getResourceAttributes().isExecutable());
 
-			// folder
-			//folder is executable initially
-			assertTrue("2.0", project.getResourceAttributes().isExecutable());
-			setExecutable(project, false);
-			assertTrue("2.2", !project.getResourceAttributes().isExecutable());
-			setExecutable(project, true);
-			assertTrue("2.4", project.getResourceAttributes().isExecutable());
-		} catch (CoreException e1) {
-			fail("2.99", e1);
-		}
-
-		// remove trash
-		try {
-			project.delete(true, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		// folder
+		// folder is executable initially
+		assertTrue("2.0", project.getResourceAttributes().isExecutable());
+		setExecutable(project, false);
+		assertTrue("2.2", !project.getResourceAttributes().isExecutable());
+		setExecutable(project, true);
+		assertTrue("2.4", project.getResourceAttributes().isExecutable());
 	}
 
-	public void testAttributeHidden() {
+	public void testAttributeHidden() throws CoreException {
 		// only activate this test on platforms that support it
 		if (!isAttributeSupported(EFS.ATTRIBUTE_HIDDEN)) {
 			return;
@@ -134,30 +115,19 @@ public class ResourceAttributeTest extends ResourceTest {
 		IFile file = project.getFile("target");
 		ensureExistsInWorkspace(file, getRandomContents());
 
-		try {
-			// file
-			assertTrue("1.0", !file.getResourceAttributes().isHidden());
-			setHidden(file, true);
-			assertTrue("1.2", file.getResourceAttributes().isHidden());
-			setHidden(file, false);
-			assertTrue("1.4", !file.getResourceAttributes().isHidden());
+		// file
+		assertTrue("1.0", !file.getResourceAttributes().isHidden());
+		setHidden(file, true);
+		assertTrue("1.2", file.getResourceAttributes().isHidden());
+		setHidden(file, false);
+		assertTrue("1.4", !file.getResourceAttributes().isHidden());
 
-			// folder
-			assertTrue("2.0", !project.getResourceAttributes().isHidden());
-			setHidden(project, true);
-			assertTrue("2.2", project.getResourceAttributes().isHidden());
-			setHidden(project, false);
-			assertTrue("2.4", !project.getResourceAttributes().isHidden());
-		} catch (CoreException e1) {
-			fail("2.99", e1);
-		}
-
-		/* remove trash */
-		try {
-			project.delete(true, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		// folder
+		assertTrue("2.0", !project.getResourceAttributes().isHidden());
+		setHidden(project, true);
+		assertTrue("2.2", project.getResourceAttributes().isHidden());
+		setHidden(project, false);
+		assertTrue("2.4", !project.getResourceAttributes().isHidden());
 	}
 
 	public void testAttributeReadOnly() {
@@ -182,26 +152,15 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertTrue("2.2", project.getResourceAttributes().isReadOnly());
 		setReadOnly(project, false);
 		assertTrue("2.4", !project.getResourceAttributes().isReadOnly());
-
-		/* remove trash */
-		try {
-			project.delete(true, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
 	}
 
 	/**
 	 * Attributes of a closed project should be null.
 	 */
-	public void testClosedProject() {
+	public void testClosedProject() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		ensureExistsInWorkspace(project, true);
-		try {
-			project.close(getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		project.close(getMonitor());
 		assertNull("1.0", project.getResourceAttributes());
 	}
 
@@ -234,7 +193,7 @@ public class ResourceAttributeTest extends ResourceTest {
 	 * Test commented out because current failing on Hudson.
 	 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=397353
 	 */
-	public void _testRefreshExecutableOnFolder() {
+	public void _testRefreshExecutableOnFolder() throws CoreException {
 		// only test on platforms that implement the executable bit
 		if ((EFS.getLocalFileSystem().attributes() & EFS.ATTRIBUTE_EXECUTABLE) == 0) {
 			return;
@@ -244,36 +203,25 @@ public class ResourceAttributeTest extends ResourceTest {
 		IFile file = folder.getFile("file");
 		ensureExistsInWorkspace(file, getRandomContents());
 
-		try {
-			//folder is executable initially and the file should exist
-			assertTrue("1.0", project.getResourceAttributes().isExecutable());
-			assertTrue("1.1", file.exists());
+		// folder is executable initially and the file should exist
+		assertTrue("1.0", project.getResourceAttributes().isExecutable());
+		assertTrue("1.1", file.exists());
 
-			setExecutable(folder, false);
-			waitForRefresh();
+		setExecutable(folder, false);
+		waitForRefresh();
 
-			boolean wasExecutable = folder.getResourceAttributes().isExecutable();
-			boolean fileExists = file.exists();
+		boolean wasExecutable = folder.getResourceAttributes().isExecutable();
+		boolean fileExists = file.exists();
 
-			//set the folder executable before asserting anything, otherwise cleanup will fail
-			setExecutable(folder, true);
+		// set the folder executable before asserting anything, otherwise cleanup will
+		// fail
+		setExecutable(folder, true);
 
-			assertTrue("2.1", !wasExecutable);
-			assertTrue("2.2", !fileExists);
-
-		} catch (CoreException e1) {
-			fail("2.99", e1);
-		}
-
-		/* remove trash */
-		try {
-			project.delete(true, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		assertTrue("2.1", !wasExecutable);
+		assertTrue("2.2", !fileExists);
 	}
 
-	public void testAttributeSymlink() {
+	public void testAttributeSymlink() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
 		if (!canCreateSymLinks()) {
 			return;
@@ -282,17 +230,13 @@ public class ResourceAttributeTest extends ResourceTest {
 		IFile link = project.getFile("link");
 		ensureExistsInWorkspace(link, getRandomContents());
 
-		try {
-			// attempts to set the symbolic link attribute wont't affect
-			// the resource and the underlying file
-			assertTrue("1.0", !link.getResourceAttributes().isSymbolicLink());
-			setSymlink(link, true);
-			assertTrue("2.0", !link.getResourceAttributes().isSymbolicLink());
-			setSymlink(link, false);
-			assertTrue("3.0", !link.getResourceAttributes().isSymbolicLink());
-		} catch (CoreException e1) {
-			fail("4.0", e1);
-		}
+		// attempts to set the symbolic link attribute wont't affect
+		// the resource and the underlying file
+		assertTrue("1.0", !link.getResourceAttributes().isSymbolicLink());
+		setSymlink(link, true);
+		assertTrue("2.0", !link.getResourceAttributes().isSymbolicLink());
+		setSymlink(link, false);
+		assertTrue("3.0", !link.getResourceAttributes().isSymbolicLink());
 
 		ensureDoesNotExistInWorkspace(link);
 
@@ -308,12 +252,8 @@ public class ResourceAttributeTest extends ResourceTest {
 
 		// attempts to clear the symbolic link attribute shouldn't affect
 		// the resource and the underlying file
-		try {
-			setSymlink(link, false);
-			assertTrue("3.0", link.getResourceAttributes().isSymbolicLink());
-		} catch (CoreException e1) {
-			fail("4.0", e1);
-		}
+		setSymlink(link, false);
+		assertTrue("3.0", link.getResourceAttributes().isSymbolicLink());
 
 		// remove the underlying file and add it again as a local file,
 		// the resource in the workspace should have the symbolic link attribute
@@ -321,57 +261,42 @@ public class ResourceAttributeTest extends ResourceTest {
 		String s = link.getLocation().toOSString();
 
 		link.getLocation().toFile().delete();
-		try {
-			new File(s).createNewFile();
-			assertTrue("3.0", !link.getResourceAttributes().isSymbolicLink());
-		} catch (IOException e) {
-			fail("4.99", e);
-		}
-
-		/* remove trash */
-		try {
-			project.delete(true, getMonitor());
-		} catch (CoreException e) {
-			fail("7.0", e);
-		}
+		new File(s).createNewFile();
+		assertTrue("3.0", !link.getResourceAttributes().isSymbolicLink());
 	}
 
-	public void testAttributes() {
+	public void testAttributes() throws CoreException {
 		int[] attributes = new int[] {EFS.ATTRIBUTE_GROUP_READ, EFS.ATTRIBUTE_GROUP_WRITE, EFS.ATTRIBUTE_GROUP_EXECUTE, EFS.ATTRIBUTE_OTHER_READ, EFS.ATTRIBUTE_OTHER_WRITE, EFS.ATTRIBUTE_OTHER_EXECUTE};
 
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
 		IFile file = project.getFile(getUniqueString());
 		ensureExistsInWorkspace(file, getRandomContents());
 
-		try {
-			for (int attribute : attributes) {
-				// only activate this test on platforms that support it
-				if (!isAttributeSupported(attribute)) {
-					continue;
-				}
-
-				// file
-				ResourceAttributes resAttr = file.getResourceAttributes();
-				resAttr.set(attribute, true);
-				file.setResourceAttributes(resAttr);
-				assertTrue("1.0", file.getResourceAttributes().isSet(attribute));
-
-				resAttr.set(attribute, false);
-				file.setResourceAttributes(resAttr);
-				assertFalse("2.0", file.getResourceAttributes().isSet(attribute));
-
-				// folder
-				resAttr = project.getResourceAttributes();
-				resAttr.set(attribute, true);
-				project.setResourceAttributes(resAttr);
-				assertTrue("3.0", project.getResourceAttributes().isSet(attribute));
-
-				resAttr.set(attribute, false);
-				project.setResourceAttributes(resAttr);
-				assertFalse("4.0", project.getResourceAttributes().isSet(attribute));
+		for (int attribute : attributes) {
+			// only activate this test on platforms that support it
+			if (!isAttributeSupported(attribute)) {
+				continue;
 			}
-		} catch (CoreException e) {
-			fail("5.0", e);
+
+			// file
+			ResourceAttributes resAttr = file.getResourceAttributes();
+			resAttr.set(attribute, true);
+			file.setResourceAttributes(resAttr);
+			assertTrue("1.0", file.getResourceAttributes().isSet(attribute));
+
+			resAttr.set(attribute, false);
+			file.setResourceAttributes(resAttr);
+			assertFalse("2.0", file.getResourceAttributes().isSet(attribute));
+
+			// folder
+			resAttr = project.getResourceAttributes();
+			resAttr.set(attribute, true);
+			project.setResourceAttributes(resAttr);
+			assertTrue("3.0", project.getResourceAttributes().isSet(attribute));
+
+			resAttr.set(attribute, false);
+			project.setResourceAttributes(resAttr);
+			assertFalse("4.0", project.getResourceAttributes().isSet(attribute));
 		}
 	}
 }

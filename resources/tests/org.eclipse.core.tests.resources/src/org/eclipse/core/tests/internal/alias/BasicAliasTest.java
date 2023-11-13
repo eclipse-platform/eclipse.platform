@@ -115,7 +115,7 @@ public class BasicAliasTest extends ResourceTest {
 	 * that both resources are in sync with the file system.  The resource names
 	 * in the tree may be different.  The resources may not necessarily exist.
 	 */
-	public void assertOverlap(String message, IResource resource1, IResource resource2) {
+	public void assertOverlap(String message, IResource resource1, IResource resource2) throws CoreException {
 		String errMsg = message + resource1.getFullPath().toString();
 		assertEquals(errMsg + "(location)", resource1.getLocation(), resource2.getLocation());
 		assertTrue(errMsg + "(sync)", resource1.isSynchronized(IResource.DEPTH_ZERO));
@@ -123,12 +123,8 @@ public class BasicAliasTest extends ResourceTest {
 
 		IResource[] children1 = null;
 		IResource[] children2 = null;
-		try {
-			children1 = getSortedChildren(resource1);
-			children2 = getSortedChildren(resource2);
-		} catch (CoreException e) {
-			fail(errMsg, e);
-		}
+		children1 = getSortedChildren(resource1);
+		children2 = getSortedChildren(resource2);
 		assertEquals(errMsg + "(child count)", children1.length, children2.length);
 		for (int i = 0; i < children2.length; i++) {
 			assertOverlap(message, children1[i], children2[i]);
@@ -186,14 +182,9 @@ public class BasicAliasTest extends ResourceTest {
 
 		linkOverlapLocation = getRandomLocation();
 		linkOverlapLocation.toFile().mkdirs();
+		deleteOnTearDown(linkOverlapLocation);
 		fLinkOverlap1.createLink(linkOverlapLocation, IResource.NONE, null);
 		fLinkOverlap2.createLink(linkOverlapLocation, IResource.NONE, null);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		Workspace.clear(linkOverlapLocation.toFile());
 	}
 
 	/**
@@ -207,30 +198,27 @@ public class BasicAliasTest extends ResourceTest {
 		IFile child = link.getFile("Child.txt");
 		IPath location = getRandomLocation();
 		location.toFile().mkdirs();
-		try {
-			link.createLink(location, IResource.NONE, getMonitor());
-			ensureExistsInWorkspace(child, getRandomContents());
-			//move the link (rename)
-			IFolder movedLink = project.getFolder("MovedLink");
-			link.move(movedLink.getFullPath(), IResource.SHALLOW, getMonitor());
-			assertFalse("3.0", link.exists());
-			assertTrue("3.1", movedLink.exists());
-			assertEquals("3.2", location, movedLink.getLocation());
-			assertTrue("3.3", movedLink.isSynchronized(IResource.DEPTH_INFINITE));
+		deleteOnTearDown(location);
+		link.createLink(location, IResource.NONE, getMonitor());
+		ensureExistsInWorkspace(child, getRandomContents());
+		// move the link (rename)
+		IFolder movedLink = project.getFolder("MovedLink");
+		link.move(movedLink.getFullPath(), IResource.SHALLOW, getMonitor());
+		assertFalse("3.0", link.exists());
+		assertTrue("3.1", movedLink.exists());
+		assertEquals("3.2", location, movedLink.getLocation());
+		assertTrue("3.3", movedLink.isSynchronized(IResource.DEPTH_INFINITE));
 
-			//now copy the moved link
-			IFolder copiedLink = project.getFolder("CopiedLink");
-			movedLink.copy(copiedLink.getFullPath(), IResource.SHALLOW, getMonitor());
-			assertFalse("4.0", link.exists());
-			assertTrue("4.1", movedLink.exists());
-			assertTrue("4.2", copiedLink.exists());
-			assertEquals("4.3", location, movedLink.getLocation());
-			assertEquals("4.4", location, copiedLink.getLocation());
-			assertTrue("4.5", movedLink.isSynchronized(IResource.DEPTH_INFINITE));
-			assertTrue("4.6", copiedLink.isSynchronized(IResource.DEPTH_INFINITE));
-		} finally {
-			Workspace.clear(location.toFile());
-		}
+		// now copy the moved link
+		IFolder copiedLink = project.getFolder("CopiedLink");
+		movedLink.copy(copiedLink.getFullPath(), IResource.SHALLOW, getMonitor());
+		assertFalse("4.0", link.exists());
+		assertTrue("4.1", movedLink.exists());
+		assertTrue("4.2", copiedLink.exists());
+		assertEquals("4.3", location, movedLink.getLocation());
+		assertEquals("4.4", location, copiedLink.getLocation());
+		assertTrue("4.5", movedLink.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue("4.6", copiedLink.isSynchronized(IResource.DEPTH_INFINITE));
 	}
 
 	/**
@@ -263,7 +251,7 @@ public class BasicAliasTest extends ResourceTest {
 	 * used in the locations map of AliasManager.
 	 */
 	@Test
-	public void testBug198571() {
+	public void testBug198571() throws CoreException {
 		Assume.assumeTrue(OS.isWindows());
 
 		/* look for the adequate environment */
@@ -279,41 +267,29 @@ public class BasicAliasTest extends ResourceTest {
 		IPath location1 = IPath.fromOSString(devices[0] + location);
 		assertTrue("0.1", !location1.toFile().exists());
 		desc1.setLocation(location1);
+		deleteOnTearDown(location1);
 		IProjectDescription desc2 = getWorkspace().newProjectDescription(testProject2.getName());
 		IPath location2 = IPath.fromOSString(devices[1] + location);
 		assertTrue("0.2", !location2.toFile().exists());
 		desc2.setLocation(location2);
+		deleteOnTearDown(location2);
 
-		try {
-			try {
-				testProject1.create(desc1, getMonitor());
-				testProject1.open(getMonitor());
-				testProject2.create(desc2, getMonitor());
-				testProject2.open(getMonitor());
-			} catch (CoreException e) {
-				fail("1.0", e);
-			}
+		testProject1.create(desc1, getMonitor());
+		testProject1.open(getMonitor());
+		testProject2.create(desc2, getMonitor());
+		testProject2.open(getMonitor());
 
-			final AliasManager aliasManager = ((Workspace) getWorkspace()).getAliasManager();
-			//force AliasManager to restart (simulates a shutdown/startup)
-			aliasManager.startup(null);
+		final AliasManager aliasManager = ((Workspace) getWorkspace()).getAliasManager();
+		// force AliasManager to restart (simulates a shutdown/startup)
+		aliasManager.startup(null);
 
-			// new folder in one of the projects
-			IFolder folder = testProject2.getFolder("NewFolder");
-			ensureExistsInFileSystem(folder);
+		// new folder in one of the projects
+		IFolder folder = testProject2.getFolder("NewFolder");
+		ensureExistsInFileSystem(folder);
 
-			try {
-				testProject2.refreshLocal(IResource.DEPTH_INFINITE, null);
-				IResource[] resources = aliasManager.computeAliases(folder, ((Folder) folder).getStore());
-				assertNull(resources);
-			} catch (CoreException e) {
-				fail("2.0", e);
-			}
-		} finally {
-			//make sure we don't leave behind a mess on the test machine
-			clear(EFS.getLocalFileSystem().getStore(location1));
-			clear(EFS.getLocalFileSystem().getStore(location2));
-		}
+		testProject2.refreshLocal(IResource.DEPTH_INFINITE, null);
+		IResource[] resources = aliasManager.computeAliases(folder, ((Folder) folder).getStore());
+		assertNull(resources);
 	}
 
 	private void replaceProject(IProject project, URI newLocation) throws CoreException {

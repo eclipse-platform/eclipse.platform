@@ -34,14 +34,10 @@ public class Snapshot1Test extends SnapshotTest {
 	}
 
 	// copy and paste in the scrapbook to run
-	public void testCreateMyProject() {
+	public void testCreateMyProject() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
-		try {
-			project.create(null);
-			project.open(null);
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		project.create(null);
+		project.open(null);
 		assertTrue("0.1", project.exists());
 		assertTrue("0.2", project.isOpen());
 
@@ -51,11 +47,7 @@ public class Snapshot1Test extends SnapshotTest {
 		assertExistsInFileSystem("1.1", resources);
 		assertExistsInWorkspace("1.2", resources);
 
-		try {
-			project.close(null);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		project.close(null);
 		assertTrue("2.1", project.exists());
 		assertTrue("2.2", !project.isOpen());
 	}
@@ -63,14 +55,10 @@ public class Snapshot1Test extends SnapshotTest {
 	/**
 	 * Create another project and leave it closed for next session.
 	 */
-	public void testCreateProject2() {
+	public void testCreateProject2() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_2);
-		try {
-			project.create(null);
-			project.open(null);
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		project.create(null);
+		project.open(null);
 		assertTrue("0.1", project.exists());
 		assertTrue("0.2", project.isOpen());
 
@@ -81,11 +69,7 @@ public class Snapshot1Test extends SnapshotTest {
 		assertExistsInWorkspace("3.2", resources);
 	}
 
-	public void testSnapshotWorkspace() {
-		try {
-			getWorkspace().save(false, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+	public void testSnapshotWorkspace() throws CoreException {
+		getWorkspace().save(false, null);
 	}
 }

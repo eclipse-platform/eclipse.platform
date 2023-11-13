@@ -26,7 +26,7 @@ import org.eclipse.help.internal.webapp.parser.ExtensionParser;
 import org.eclipse.help.internal.webapp.servlet.ExtensionServlet;
 import org.eclipse.help.internal.webapp.utils.Utils;
 
-/**
+/*
  * Returns all topic extensions available on this host in <code>xml</code>
  * or <code>json</code> form.
  *
@@ -44,9 +44,6 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  *
  * @return		All topic extensions available on this host, either as
  * 				<code>xml</code> (default) or <code>json</code>
- *
- * @version	$Version$
- *
  **/
 public class ExtensionService extends ExtensionServlet {
 

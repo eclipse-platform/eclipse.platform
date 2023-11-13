@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.Adapters;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -104,25 +103,6 @@ public class DebugTextHover implements ITextHover, ITextHoverExtension, ITextHov
 			}
 		}
 		return buffer.toString();
-	}
-
-	/**
-	 * Returns the value of this filters preference (on/off) for the given
-	 * view.
-	 *
-	 * @param part
-	 * @return boolean
-	 */
-	public static boolean getBooleanPreferenceValue(String id, String preference) {
-		String compositeKey = id + "." + preference; //$NON-NLS-1$
-		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
-		boolean value = false;
-		if (store.contains(compositeKey)) {
-			value = store.getBoolean(compositeKey);
-		} else {
-			value = store.getBoolean(preference);
-		}
-		return value;
 	}
 
 	@Override

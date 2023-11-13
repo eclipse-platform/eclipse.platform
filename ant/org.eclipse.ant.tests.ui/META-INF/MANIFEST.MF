@@ -39,6 +39,8 @@ Require-Bundle: org.eclipse.ui.ide;resolution:=optional,
  org.eclipse.ant.launching,
  org.eclipse.core.externaltools,
  org.eclipse.pde.core
+Import-Package: org.junit.jupiter.api,
+ org.junit.platform.suite.api
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Eclipse-BundleShape: dir

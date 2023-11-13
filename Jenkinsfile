@@ -5,7 +5,7 @@ pipeline {
 		disableConcurrentBuilds(abortPrevious: true)
 	}
 	agent {
-		label "centos-latest"
+		label "centos-8-8gb"
 	}
 	tools {
 		maven 'apache-maven-latest'
