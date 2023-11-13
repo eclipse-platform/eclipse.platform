@@ -108,7 +108,6 @@ public class CheatSheetManager implements ICheatSheetManager {
 	/**
 	 * Substitute occurences of ${data} with values from the cheatsheetmanager.
 	 * @param input The input string
-	 * @param csm The cheatsheet manager
 	 * @return The input string with substitutions made for any cheatsheet
 	 * variables encountered.
 	 */

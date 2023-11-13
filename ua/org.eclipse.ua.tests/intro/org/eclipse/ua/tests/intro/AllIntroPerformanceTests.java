@@ -14,14 +14,13 @@
 package org.eclipse.ua.tests.intro;
 
 import org.eclipse.ua.tests.intro.performance.OpenIntroTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests help performance (automated).
  */
-@RunWith(Suite.class)
-@SuiteClasses({ OpenIntroTest.class })
+@Suite
+@SelectClasses({ OpenIntroTest.class })
 public class AllIntroPerformanceTests {
 }

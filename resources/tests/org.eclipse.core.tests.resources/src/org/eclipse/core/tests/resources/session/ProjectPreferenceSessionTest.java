@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
@@ -38,8 +37,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 		//						return new ProjectPreferenceSessionTest("testDeleteFileBeforeLoad2");
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	private void saveWorkspace() throws Exception {
 		getWorkspace().save(true, getMonitor());
 	}
 
@@ -51,25 +49,22 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 	 * - startup
 	 * - delete the .prefs file from disk
 	 */
-	public void testDeleteFileBeforeLoad1() {
+	public void testDeleteFileBeforeLoad1() throws Exception {
 		IProject project = getProject("testDeleteFileBeforeLoad");
 		String qualifier = "test.delete.file.before.load";
 		ensureExistsInWorkspace(project, true);
 		IScopeContext context = new ProjectScope(project);
 		Preferences node = context.getNode(qualifier);
 		node.put("key", "value");
-		try {
-			node.flush();
-		} catch (BackingStoreException e) {
-			fail("1.99", e);
-		}
+		node.flush();
 		waitForRefresh();
 		IFile file = project.getFile(IPath.fromOSString(DIR_NAME).append(qualifier).addFileExtension(FILE_EXTENSION));
 		assertTrue("2.0", file.exists());
 		assertTrue("2.1", file.getLocation().toFile().exists());
+		saveWorkspace();
 	}
 
-	public void testDeleteFileBeforeLoad2() {
+	public void testDeleteFileBeforeLoad2() throws Exception {
 		IProject project = getProject("testDeleteFileBeforeLoad");
 		Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE).node(project.getName());
 		ILogListener listener = (status, plugin) -> {
@@ -87,35 +82,32 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 		try {
 			Platform.addLogListener(listener);
 			project.delete(IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
 		} finally {
 			Platform.removeLogListener(listener);
 		}
+		saveWorkspace();
 	}
 
 	/*
 	 * Test saving a key/value pair in one session and then ensure that they exist
 	 * in the next session.
 	 */
-	public void testSaveLoad1() {
+	public void testSaveLoad1() throws Exception {
 		IProject project = getProject("testSaveLoad");
 		ensureExistsInWorkspace(project, true);
 		IScopeContext context = new ProjectScope(project);
 		Preferences node = context.getNode("test.save.load");
 		node.put("key", "value");
-		try {
-			node.flush();
-		} catch (BackingStoreException e) {
-			fail("1.99", e);
-		}
+		node.flush();
+		saveWorkspace();
 	}
 
-	public void testSaveLoad2() {
+	public void testSaveLoad2() throws Exception {
 		IProject project = getProject("testSaveLoad");
 		IScopeContext context = new ProjectScope(project);
 		Preferences node = context.getNode("test.save.load");
 		assertEquals("1.0", "value", node.get("key", null));
+		saveWorkspace();
 	}
 
 	private static IProject getProject(String name) {

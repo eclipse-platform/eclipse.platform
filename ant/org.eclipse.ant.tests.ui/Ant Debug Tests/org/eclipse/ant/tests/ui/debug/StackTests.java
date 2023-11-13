@@ -13,22 +13,23 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.ant.internal.launching.debug.model.AntThread;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
+import org.junit.Test;
 
 public class StackTests extends AbstractAntDebugTest {
 
-	public StackTests(String name) {
-		super(name);
-	}
-
+	@Test
 	public void testStackForAntCall() throws Exception {
 		antCallStack(false);
 	}
 
+	@Test
 	public void testStackForAntCallVM() throws Exception {
 		antCallStack(true);
 	}

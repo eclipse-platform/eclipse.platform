@@ -17,6 +17,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: javax.xml.parsers,
  org.apiguardian.api,
  org.junit.jupiter.api,
+ org.junit.platform.suite.api,
  org.junit.platform.commons,
  org.opentest4j,
  org.w3c.dom,

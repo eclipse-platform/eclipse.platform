@@ -2,7 +2,7 @@ package org.eclipse.e4.core.internal.tests.nls;
 
 import java.text.MessageFormat;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 /**
  * Load messages from a relative positioned resource bundle (./SimpleMessages.properties)

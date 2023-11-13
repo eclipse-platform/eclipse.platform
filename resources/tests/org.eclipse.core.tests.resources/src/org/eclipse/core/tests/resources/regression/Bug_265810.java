@@ -13,12 +13,20 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -45,9 +53,6 @@ public class Bug_265810 extends ResourceTest {
 		super.tearDown();
 	}
 
-	/**
-	 * @see org.eclipse.core.tests.harness.ResourceTest#getRandomLocation()
-	 */
 	@Override
 	public IPath getRandomLocation() {
 		IPath path = FileSystemHelper.computeRandomLocation(getTempDir());

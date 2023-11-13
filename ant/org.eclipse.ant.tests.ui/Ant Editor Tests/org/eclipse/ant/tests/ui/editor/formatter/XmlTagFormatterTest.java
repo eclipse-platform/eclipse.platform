@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2004, 2013 John-Mason P. Shackelford and others.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
@@ -14,7 +14,11 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.editor.formatter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -22,6 +26,7 @@ import org.eclipse.ant.internal.ui.editor.formatter.FormattingPreferences;
 import org.eclipse.ant.internal.ui.editor.formatter.XmlTagFormatter;
 import org.eclipse.ant.internal.ui.editor.formatter.XmlTagFormatter.AttributePair;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
+import org.junit.Test;
 
 @SuppressWarnings("restriction")
 public class XmlTagFormatterTest extends AbstractAntUITest {
@@ -95,10 +100,6 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 		}
 	}
 
-	public XmlTagFormatterTest(String name) {
-		super(name);
-	}
-
 	private FormattingPreferences getPreferences(final boolean wrapLongTags, final boolean alignCloseChar,
 			final int maxLineWidth) {
 
@@ -130,6 +131,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 
 	/* ---------------- Test Methods ---------------- */
 
+	@Test
 	public void testParserGetElementName() throws Exception {
 
 		InnerClassFactory.TagParser tagParser = InnerClassFactory.createTagParser();
@@ -155,6 +157,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 
 	}
 
+	@Test
 	public void testParserGetAttributes() throws Exception {
 		InnerClassFactory.TagParser tagParser = InnerClassFactory.createTagParser();
 
@@ -187,6 +190,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 		assertTrue(e3.getClass().isAssignableFrom(InnerClassFactory.ParseException.class));
 	}
 
+	@Test
 	public void testFormat01() throws Exception {
 		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
 		String indent = "\t"; //$NON-NLS-1$
@@ -198,6 +202,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 		simpleTest(source, target, getPreferences(true, false, 60), indent, lineSep);
 	}
 
+	@Test
 	public void testFormat02() throws Exception {
 		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
 		String indent = "\t"; //$NON-NLS-1$
@@ -210,6 +215,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 		simpleTest(source, target, getPreferences(true, true, 60), indent, lineSep);
 	}
 
+	@Test
 	public void testBug73411() throws Exception {
 		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
 		String indent = "\t"; //$NON-NLS-1$
@@ -222,6 +228,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 		simpleTest(source, target, getPreferences(true, true, 60), indent, lineSep);
 	}
 
+	@Test
 	public void testLineRequiresWrap() throws Exception {
 
 		InnerClassFactory.TagFormatter tagFormatter = InnerClassFactory.createTagFormatter();
@@ -237,6 +244,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 
 	}
 
+	@Test
 	public void testTabExpandedLineWidth() throws Exception {
 
 		InnerClassFactory.TagFormatter tagFormatter = InnerClassFactory.createTagFormatter();
@@ -246,6 +254,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 		assertEquals(19, tagFormatter.tabExpandedLineWidth("\t1\t2	34567890", 3)); //$NON-NLS-1$
 	}
 
+	@Test
 	public void testTabToStringAndMinimumLength() throws Exception {
 		InnerClassFactory.Tag tag = InnerClassFactory.createTag();
 
@@ -270,6 +279,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 		assertEquals(tag.toString().length(), tag.minimumLength());
 	}
 
+	@Test
 	public void testWrapTag() throws Exception {
 
 		InnerClassFactory.Tag tag = InnerClassFactory.createTag();
@@ -318,6 +328,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 
 	}
 
+	@Test
 	public void testBug63558() throws Exception {
 
 		// Ordinarily the double space after the element name would be repaired

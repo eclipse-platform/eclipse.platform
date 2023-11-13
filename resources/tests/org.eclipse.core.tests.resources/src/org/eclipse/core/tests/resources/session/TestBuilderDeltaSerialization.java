@@ -17,7 +17,14 @@ package org.eclipse.core.tests.resources.session;
 import java.io.ByteArrayInputStream;
 import java.util.Map;
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
@@ -51,59 +58,51 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 	/**
 	 * Create projects, setup a builder, and do an initial build.
 	 */
-	public void test1() {
+	public void test1() throws CoreException {
 		IResource[] resources = {project1, project2, unsorted1, unsorted2, sorted1, sorted2, unsortedFile1, unsortedFile2};
 		ensureExistsInWorkspace(resources, true);
 
-		try {
-			//give unsorted files some initial content
-			unsortedFile1.setContents(new ByteArrayInputStream(new byte[] {1, 4, 3}), true, true, null);
-			unsortedFile2.setContents(new ByteArrayInputStream(new byte[] {1, 4, 3}), true, true, null);
+		// give unsorted files some initial content
+		unsortedFile1.setContents(new ByteArrayInputStream(new byte[] { 1, 4, 3 }), true, true, null);
+		unsortedFile2.setContents(new ByteArrayInputStream(new byte[] { 1, 4, 3 }), true, true, null);
 
-			setBuildOrder(project1, project2);
-			setAutoBuilding(false);
+		setBuildOrder(project1, project2);
+		setAutoBuilding(false);
 
-			//configure builder for project1
-			IProjectDescription description = project1.getDescription();
-			ICommand command = description.newCommand();
-			Map<String, String> args = command.getArguments();
-			args.put(TestBuilder.BUILD_ID, "Project1Build1");
-			args.put(TestBuilder.INTERESTING_PROJECT, project2.getName());
-			command.setBuilderName(SortBuilder.BUILDER_NAME);
-			command.setArguments(args);
-			description.setBuildSpec(new ICommand[] {command});
-			project1.setDescription(description, getMonitor());
+		// configure builder for project1
+		IProjectDescription description = project1.getDescription();
+		ICommand command = description.newCommand();
+		Map<String, String> args = command.getArguments();
+		args.put(TestBuilder.BUILD_ID, "Project1Build1");
+		args.put(TestBuilder.INTERESTING_PROJECT, project2.getName());
+		command.setBuilderName(SortBuilder.BUILDER_NAME);
+		command.setArguments(args);
+		description.setBuildSpec(new ICommand[] { command });
+		project1.setDescription(description, getMonitor());
 
-			//configure builder for project2
-			description = project1.getDescription();
-			command = description.newCommand();
-			args = command.getArguments();
-			args.put(TestBuilder.BUILD_ID, "Project2Build1");
-			args.put(TestBuilder.INTERESTING_PROJECT, project1.getName());
-			command.setBuilderName(SortBuilder.BUILDER_NAME);
-			command.setArguments(args);
-			description.setBuildSpec(new ICommand[] {command});
-			project2.setDescription(description, getMonitor());
+		// configure builder for project2
+		description = project1.getDescription();
+		command = description.newCommand();
+		args = command.getArguments();
+		args.put(TestBuilder.BUILD_ID, "Project2Build1");
+		args.put(TestBuilder.INTERESTING_PROJECT, project1.getName());
+		command.setBuilderName(SortBuilder.BUILDER_NAME);
+		command.setArguments(args);
+		description.setBuildSpec(new ICommand[] { command });
+		project2.setDescription(description, getMonitor());
 
-			//initial build -- created sortedFile1 and sortedFile2
-			workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		// initial build -- created sortedFile1 and sortedFile2
+		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
 
-			getWorkspace().save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		getWorkspace().save(true, getMonitor());
 	}
 
 	/**
 	 * Do another build immediately after restart.  Builder1 should be invoked because it cares
 	 * about changes made by Builder2 during the last build phase.
 	 */
-	public void test2() {
-		try {
-			getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+	public void test2() throws CoreException {
+		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
 		//Only builder1 should have been built
 		SortBuilder[] builders = SortBuilder.allInstances();
 		assertEquals("1.0", 2, builders.length);

@@ -30,10 +30,6 @@ public class SignedIntegerRendering extends AbstractIntegerRendering {
 	private BigInteger fMax;
 	private BigInteger fMin;
 
-	/**
-	 * @param memBlock
-	 * @param renderingId
-	 */
 	public SignedIntegerRendering(String renderingId) {
 		super(renderingId);
 	}

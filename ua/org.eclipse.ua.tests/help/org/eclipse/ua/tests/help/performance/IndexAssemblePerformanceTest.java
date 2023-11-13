@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.performance;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,12 +29,14 @@ import org.eclipse.help.internal.index.IndexContribution;
 import org.eclipse.help.internal.index.IndexFile;
 import org.eclipse.help.internal.index.IndexFileParser;
 import org.eclipse.test.performance.Dimension;
-import org.eclipse.test.performance.PerformanceTestCase;
+import org.eclipse.test.performance.PerformanceTestCaseJunit5;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
 
-public class IndexAssemblePerformanceTest extends PerformanceTestCase {
+public class IndexAssemblePerformanceTest extends PerformanceTestCaseJunit5 {
 
+	@Test
 	public void testIndexAssemble() throws Exception {
 		tagAsSummary("Assemble Index", Dimension.ELAPSED_PROCESS);
 

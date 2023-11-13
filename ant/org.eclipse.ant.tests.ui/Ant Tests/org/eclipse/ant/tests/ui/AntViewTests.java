@@ -14,6 +14,10 @@
 
 package org.eclipse.ant.tests.ui;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Method;
 import java.util.Collections;
 
@@ -28,14 +32,12 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PlatformUI;
+import org.junit.Test;
 
 @SuppressWarnings("restriction")
 public class AntViewTests extends AbstractAntUITest {
 
-	public AntViewTests(String name) {
-		super(name);
-	}
-
+	@Test
 	public void testAddBuildFilesAction() throws CoreException {
 		// Ensure that AddBuildFilesAction is present!
 		String viewId = "org.eclipse.ant.ui.views.AntView"; //$NON-NLS-1$
@@ -64,6 +66,7 @@ public class AntViewTests extends AbstractAntUITest {
 		return null;
 	}
 
+	@Test
 	public void testAntBuildFilesExtensionFilter() {
 		// Ensure coverage for the extension filter used by AddBuildFilesAction
 		// Create blocks to scope the vars to catch typos!

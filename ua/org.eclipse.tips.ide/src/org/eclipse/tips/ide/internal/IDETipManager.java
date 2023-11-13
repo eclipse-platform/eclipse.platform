@@ -274,7 +274,7 @@ public class IDETipManager extends DefaultTipManager {
 	 * location will be <b>${user.home}/.eclipse/org.eclipse.tips.state</b>
 	 *
 	 * @return the state location file
-	 * @throws Exception if something went wrong
+	 * @throws IOException if something went wrong
 	 */
 	public static File getStateLocation() throws IOException {
 		String stateLocation = System.getProperty("org.eclipse.tips.statelocation"); //$NON-NLS-1$

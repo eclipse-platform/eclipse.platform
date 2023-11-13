@@ -23,10 +23,6 @@ import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
  */
 public class NonInitialTypingTest extends AbstractAntUITest {
 
-	public NonInitialTypingTest(String name) {
-		super(name);
-	}
-
 	// private ITextEditor fEditor;
 	//
 	// private static final char[] TARGET= ("<target name=\"newTarget\" >\r" +

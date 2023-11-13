@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
 /**
  * Object representing a register in the registers command results.
  *
- * @see PDARCommand
+ * @see PDACommand
  */
 
 public class PDARegisterData {

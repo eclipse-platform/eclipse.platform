@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * A dialog used to edit & launch a single launch configuration.
+ * A dialog used to edit &amp; launch a single launch configuration.
  */
 public class LaunchConfigurationDialog extends LaunchConfigurationPropertiesDialog {
 

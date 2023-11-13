@@ -13,10 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
+import org.junit.After;
+import org.junit.Test;
 
 /**
  * Tests the Preferences import/export feature.
@@ -24,24 +29,10 @@ import org.eclipse.core.runtime.Preferences;
  * added to hide deprecation reference warnings.
  */
 @Deprecated
-public class PreferenceExportTest extends RuntimeTest {
+public class PreferenceExportTest {
 
-	public PreferenceExportTest() {
-		super("");
-	}
-
-	/**
-	 * Constructor for PreferenceExportTest.
-	 * @param name
-	 */
-	public PreferenceExportTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-
+	@After
+	public void tearDown() throws Exception {
 		//remove properties modified by this test
 		Plugin testPlugin = RuntimeTestsPlugin.getPlugin();
 		Preferences prefs = testPlugin.getPluginPreferences();
@@ -53,10 +44,13 @@ public class PreferenceExportTest extends RuntimeTest {
 	}
 
 	/**
-	 * Tests exporting a preference that is different from the default value, but the same
-	 * as the default-default value.  See bug 31458.
+	 * Tests exporting a preference that is different from the default value, but
+	 * the same as the default-default value. See bug 31458.
+	 *
+	 * @throws CoreException
 	 */
-	public void testExportEmptyPreference() {
+	@Test
+	public void testExportEmptyPreference() throws CoreException {
 		final String key1 = "SomeTestKey";
 		final String key2 = "SomeOtherTestKey";
 		final String default1 = "SomeTestValue";
@@ -76,11 +70,7 @@ public class PreferenceExportTest extends RuntimeTest {
 			testPlugin.savePluginPreferences();
 
 			//export preferences
-			try {
-				Preferences.exportPreferences(exportPath);
-			} catch (CoreException e) {
-				fail("1.1", e);
-			}
+			Preferences.exportPreferences(exportPath);
 
 			//change the property value
 			prefs.setToDefault(key1);
@@ -90,11 +80,7 @@ public class PreferenceExportTest extends RuntimeTest {
 			assertEquals("1.1", default2, prefs.getInt(key2));
 
 			//reimport the property
-			try {
-				Preferences.importPreferences(exportPath);
-			} catch (CoreException e) {
-				fail("1.2", e);
-			}
+			Preferences.importPreferences(exportPath);
 
 			//ensure the imported preference is set
 			assertEquals("2.0", Preferences.STRING_DEFAULT_DEFAULT, prefs.getString(key1));
@@ -106,12 +92,14 @@ public class PreferenceExportTest extends RuntimeTest {
 	}
 
 	/**
-	 * Tests that identity tests on preference keys after
-	 * export/import will still work. This is to safeguard
-	 * against programming errors in property change listeners.
-	 * See bug 20193.
+	 * Tests that identity tests on preference keys after export/import will still
+	 * work. This is to safeguard against programming errors in property change
+	 * listeners. See bug 20193.
+	 *
+	 * @throws CoreException
 	 */
-	public void testKeyIdentityAfterExport() {
+	@Test
+	public void testKeyIdentityAfterExport() throws CoreException {
 		final String key = "SomeTestKey";
 		String initialValue = "SomeTestValue";
 		IPath exportPath = IPath.fromOSString(System.getProperty("java.io.tmpdir")).append(Long.toString(System.currentTimeMillis()));
@@ -132,31 +120,19 @@ public class PreferenceExportTest extends RuntimeTest {
 			testPlugin.savePluginPreferences();
 
 			//export preferences
-			try {
-				Preferences.exportPreferences(exportPath);
-			} catch (CoreException e) {
-				fail("1.1", e);
-			}
+			Preferences.exportPreferences(exportPath);
 
 			//change the property value
 			prefs.setValue(key, "SomeOtherValue");
 
 			//reimport the property
-			try {
-				Preferences.importPreferences(exportPath);
-			} catch (CoreException e) {
-				fail("1.2", e);
-			}
+			Preferences.importPreferences(exportPath);
 
 			//set the property to default
 			prefs.setToDefault(key);
 
 			//reimport the property
-			try {
-				Preferences.importPreferences(exportPath);
-			} catch (CoreException e) {
-				fail("1.3", e);
-			}
+			Preferences.importPreferences(exportPath);
 		} finally {
 			exportPath.toFile().delete();
 			if (prefs != null) {

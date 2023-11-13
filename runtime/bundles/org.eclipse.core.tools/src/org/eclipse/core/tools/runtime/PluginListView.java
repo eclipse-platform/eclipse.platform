@@ -13,17 +13,21 @@
  *******************************************************************************/
 package org.eclipse.core.tools.runtime;
 
-import java.util.*;
-import org.eclipse.core.runtime.Platform;
+import java.util.Arrays;
+import java.util.Comparator;
 import org.eclipse.core.tools.Messages;
 import org.eclipse.core.tools.SpyView;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.osgi.service.resolver.BundleDescription;
-import org.eclipse.osgi.service.resolver.State;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 public class PluginListView extends SpyView implements IStructuredContentProvider {
 
@@ -44,9 +48,11 @@ public class PluginListView extends SpyView implements IStructuredContentProvide
 
 		@Override
 		public String getColumnText(Object element, int columnIndex) {
-			return element == null ? Messages.depend_badPluginId : ((BundleDescription) element).getSymbolicName();
+			return element == null ? Messages.depend_badPluginId : ((Bundle) element).getSymbolicName();
 		}
 	}
+
+	private static final Comparator<Bundle> SYMBOLIC_NAME = Comparator.comparing(Bundle::getSymbolicName);
 
 	@Override
 	public Object[] getElements(Object arg0) {
@@ -54,19 +60,8 @@ public class PluginListView extends SpyView implements IStructuredContentProvide
 			// before caching the array of descriptors, sort them.
 			// we have to use a comparator here because plug-in
 			// descriptors cannot be compared against each other
-			// in a tree set.
-			Comparator<BundleDescription> comparator = (obj1, obj2) -> {
-				String id1 = obj1.getSymbolicName();
-				String id2 = obj2.getSymbolicName();
-				return id1.compareTo(id2);
-			};
-			Set<BundleDescription> set = new TreeSet<>(comparator);
 			BundleContext context = FrameworkUtil.getBundle(PluginListView.class).getBundleContext();
-			Bundle[] allBundles = context.getBundles();
-			State state = Platform.getPlatformAdmin().getState(false);
-			for (Bundle allBundle : allBundles)
-				set.add(state.getBundle(allBundle.getBundleId()));
-			bundles = set.toArray();
+			return Arrays.stream(context.getBundles()).sorted(SYMBOLIC_NAME).toArray();
 		}
 		return bundles;
 	}

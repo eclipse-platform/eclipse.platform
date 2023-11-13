@@ -26,13 +26,13 @@ import org.eclipse.ui.IMemento;
  * its public methods.
  * <p>
  * Style flags supported by this viewer are:
+ * </p>
  * <ul>
  * <li>SWT.VIRTUAL - Indicates that the viewer should be in lazy mode:
  * retrieving only elements that are requested.</li>
  * <li>SWT.POP_UP - Indicates that the viewer should ignore requests from the
  * model to select, expand, or collapse tree elements.</li>
  * </ul>
- * </p>
  * @since 3.5
  * @noextend This class is not intended to be sub-classed by clients.
  */

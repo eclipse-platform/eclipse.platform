@@ -37,8 +37,6 @@ import org.eclipse.swt.widgets.Text;
  * Specialized dialog for showing/selecting a specific launch shortcut extension, and allowing it
  * to be marked to be set as the default
  *
- * @see {@link org.eclipse.debug.internal.ui.actions.ContextLaunchingAction}
- *
  * @since 3.3
  */
 public class LaunchShortcutSelectionDialog extends AbstractDebugListSelectionDialog {
@@ -54,12 +52,6 @@ public class LaunchShortcutSelectionDialog extends AbstractDebugListSelectionDia
 	private List<LaunchShortcutExtension> fShortcuts = null;
 	private Text fDescriptionText = null;
 
-	/**
-	 * Constructor
-	 * @param input
-	 * @param resource
-	 * @param mode
-	 */
 	public LaunchShortcutSelectionDialog(List<LaunchShortcutExtension> shortcuts, IResource resource, String mode) {
 		super(DebugUIPlugin.getShell());
 		setShellStyle(getShellStyle() | SWT.RESIZE);

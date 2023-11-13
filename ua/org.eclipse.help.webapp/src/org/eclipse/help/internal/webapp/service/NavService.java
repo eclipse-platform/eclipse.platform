@@ -38,7 +38,7 @@ import org.eclipse.help.internal.webapp.servlet.NavServlet;
 import org.eclipse.help.internal.webapp.servlet.XMLGenerator;
 import org.eclipse.help.internal.webapp.utils.Utils;
 
-/**
+/*
  * Generates either xml, json or html page having navigation informations where topic
  * is not present in the table of contents for the selected toc passed as request
  * path info. Displays links to the direct child topics.
@@ -56,9 +56,6 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  * @return	A navigation information having the links to the direct child topics for
  * 			the selected toc, either as <code>xml</code> (default) or
  * 			<code>html</code> or <code>json</code>
- *
- * @version	$Version$
- *
  **/
 public class NavService extends NavServlet {
 

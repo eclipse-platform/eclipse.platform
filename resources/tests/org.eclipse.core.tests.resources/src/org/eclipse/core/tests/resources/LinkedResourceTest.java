@@ -1070,11 +1070,6 @@ public class LinkedResourceTest extends ResourceTest {
 
 	}
 
-	/**
-	 * Tests the
-	 * {@link org.eclipse.core.resources.IResource#setLinkLocation(URI , int , IProgressMonitor )}
-	 * method.
-	 */
 	public void testsetLinkLocation() {
 		// initially nothing is linked
 		IResource[] toTest = new IResource[] {closedProject, existingFileInExistingProject, existingFolderInExistingFolder, existingFolderInExistingProject, existingProject, nonExistingFileInExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFolderInNonExistingProject, nonExistingFolderInOtherExistingProject, nonExistingProject, otherExistingProject};
@@ -1152,11 +1147,6 @@ public class LinkedResourceTest extends ResourceTest {
 		}
 	}
 
-	/**
-	 * Tests the
-	 * {@link org.eclipse.core.resources.IResource#setLinkLocation(IPath, int , IProgressMonitor )}
-	 * method.
-	 */
 	public void testsetLinkLocationPath() {
 		//initially nothing is linked
 		IResource[] toTest = new IResource[] {closedProject, existingFileInExistingProject, existingFolderInExistingFolder, existingFolderInExistingProject, existingProject, nonExistingFileInExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFolderInNonExistingProject, nonExistingFolderInOtherExistingProject, nonExistingProject, otherExistingProject};

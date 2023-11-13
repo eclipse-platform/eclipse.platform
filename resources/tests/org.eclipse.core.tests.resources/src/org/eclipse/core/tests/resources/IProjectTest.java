@@ -17,8 +17,7 @@ package org.eclipse.core.tests.resources;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
-import java.util.HashSet;
-import java.util.Set;
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.Workspace;
@@ -50,7 +49,8 @@ import org.osgi.service.prefs.Preferences;
 public class IProjectTest extends ResourceTest {
 	private final FussyProgressMonitor monitor = new FussyProgressMonitor();
 
-	public void ensureExistsInWorkspace(final IProject project, final IProjectDescription description) {
+	public void ensureExistsInWorkspace(final IProject project, final IProjectDescription description)
+			throws CoreException {
 		if (project == null) {
 			return;
 		}
@@ -58,13 +58,9 @@ public class IProjectTest extends ResourceTest {
 			project.create(description, mon);
 			project.open(mon);
 		};
-		try {
-			monitor.prepare();
-			getWorkspace().run(body, monitor);
-			monitor.assertUsedUp();
-		} catch (CoreException e) {
-			fail("#ensureExistsInWorkspace(IProject, IProjectDescription): " + project.getFullPath(), e);
-		}
+		monitor.prepare();
+		getWorkspace().run(body, monitor);
+		monitor.assertUsedUp();
 	}
 
 	public void setGetPersistentProperty(IResource target) throws CoreException {
@@ -189,7 +185,7 @@ public class IProjectTest extends ResourceTest {
 	/**
 	 * Tests creation and manipulation of projects names that are reserved on some platforms.
 	 */
-	public void testInvalidProjectNames() {
+	public void testInvalidProjectNames() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 
 		//should not be able to create a project with invalid path on any platform
@@ -206,17 +202,14 @@ public class IProjectTest extends ResourceTest {
 		for (String name : names) {
 			IProject project = root.getProject(name);
 			assertFalse("1.0 " + name, project.exists());
-			try {
+			assertThrows(CoreException.class, () -> {
 				monitor.prepare();
 				project.create(monitor);
 				monitor.assertUsedUp();
 				monitor.prepare();
 				project.open(monitor);
 				monitor.assertUsedUp();
-				fail("1.1 " + name);
-			} catch (CoreException e) {
-				// expected
-			}
+			});
 			assertFalse("1.2 " + name, project.exists());
 			assertFalse("1.3 " + name, project.isOpen());
 		}
@@ -232,16 +225,12 @@ public class IProjectTest extends ResourceTest {
 		for (String name : names) {
 			IProject project = root.getProject(name);
 			assertFalse("2.0 " + name, project.exists());
-			try {
-				monitor.prepare();
-				project.create(monitor);
-				monitor.assertUsedUp();
-				monitor.prepare();
-				project.open(monitor);
-				monitor.assertUsedUp();
-			} catch (CoreException e) {
-				fail("2.1 " + name, e);
-			}
+			monitor.prepare();
+			project.create(monitor);
+			monitor.assertUsedUp();
+			monitor.prepare();
+			project.open(monitor);
+			monitor.assertUsedUp();
 			assertTrue("2.2 " + name, project.exists());
 			assertTrue("2.3 " + name, project.isOpen());
 		}
@@ -409,14 +398,11 @@ public class IProjectTest extends ResourceTest {
 		ensureExistsInWorkspace(new IResource[] {project, destProject}, true);
 		ensureExistsInWorkspace(resources, true);
 		assertDoesNotExistInWorkspace("3.0", destination);
-		try {
-			monitor.prepare();
-			source.copy(destination.getFullPath(), true, monitor);
-			monitor.assertUsedUp();
-			fail("3.1");
-		} catch (CoreException e) {
-			// expected
-		}
+
+		monitor.prepare();
+		IResource projectToCopy = source;
+		IResource destinationFolder = destination;
+		assertThrows(CoreException.class, () -> projectToCopy.copy(destinationFolder.getFullPath(), true, monitor));
 		monitor.prepare();
 		getWorkspace().getRoot().delete(false, monitor);
 		monitor.assertUsedUp();
@@ -431,14 +417,12 @@ public class IProjectTest extends ResourceTest {
 		ensureExistsInWorkspace(project, true);
 		ensureExistsInWorkspace(resources, true);
 		assertDoesNotExistInWorkspace("4.0", destination);
-		try {
-			monitor.prepare();
-			source.copy(destination.getFullPath(), true, monitor);
-			monitor.assertUsedUp();
-			fail("4.1");
-		} catch (CoreException e) {
-			// expected
-		}
+
+		monitor.prepare();
+		IResource folderToCopy = source;
+		IResource destinationProject = destination;
+		assertThrows(CoreException.class, () -> folderToCopy.copy(destinationProject.getFullPath(), true, monitor));
+
 		// cleanup
 		monitor.prepare();
 		getWorkspace().getRoot().delete(true, monitor);
@@ -615,44 +599,35 @@ public class IProjectTest extends ResourceTest {
 	/**
 	 * Tests creating a project whose location already exists with different case
 	 */
-	public void testProjectCreationLocationExistsWithDifferentCase() {
-		if (OS.isWindows()) {
-			String projectName = getUniqueString() + "a";
-			IProject project = getWorkspace().getRoot().getProject(projectName);
-
-			try {
-				project.create(monitor);
-				monitor.assertUsedUp();
-				monitor.prepare();
-				project.delete(false, true, monitor);
-				monitor.assertUsedUp();
-			} catch (CoreException ex) {
-				fail("1.0");
-			}
-
-			// the attempt to create a project in an already existing location with different case
-			project = getWorkspace().getRoot().getProject(projectName.toUpperCase());
-
-			try {
-				monitor.prepare();
-				project.create(monitor);
-				monitor.assertUsedUp();
-				fail("2.0");
-			} catch (CoreException e) {
-				//expected
-			}
-
-			// the attempt to create a project in an already existing location with the same case
-			project = getWorkspace().getRoot().getProject(projectName);
-
-			try {
-				monitor.prepare();
-				project.create(monitor);
-				monitor.assertUsedUp();
-			} catch (CoreException e) {
-				fail("3.0", e);
-			}
+	public void testProjectCreationLocationExistsWithDifferentCase() throws CoreException {
+		if (!OS.isWindows()) {
+			return;
 		}
+
+		String projectName = getUniqueString() + "a";
+		IProject project = getWorkspace().getRoot().getProject(projectName);
+
+		project.create(monitor);
+		monitor.assertUsedUp();
+		monitor.prepare();
+		project.delete(false, true, monitor);
+		monitor.assertUsedUp();
+
+		// the attempt to create a project in an already existing location with
+		// different case
+		IProject uppercaseProject = getWorkspace().getRoot().getProject(projectName.toUpperCase());
+
+		monitor.prepare();
+		assertThrows(CoreException.class, () -> uppercaseProject.create(monitor));
+		monitor.assertUsedUp();
+
+		// the attempt to create a project in an already existing location with the same
+		// case
+		project = getWorkspace().getRoot().getProject(projectName);
+
+		monitor.prepare();
+		project.create(monitor);
+		monitor.assertUsedUp();
 	}
 
 	/**
@@ -758,7 +733,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("3.14", fileStore.fetchInfo().exists());
 		assertTrue("3.15", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -790,7 +765,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("4.14", fileStore.fetchInfo().exists());
 		assertTrue("4.15", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -822,7 +797,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("5.14", fileStore.fetchInfo().exists());
 		assertTrue("5.15", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -854,7 +829,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("6.14", fileStore.fetchInfo().exists());
 		assertTrue("6.15", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 	}
 
 	/**
@@ -964,7 +939,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("3.16", fileStore.fetchInfo().exists());
 		assertTrue("3.17", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -997,7 +972,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("4.16", fileStore.fetchInfo().exists());
 		assertTrue("4.17", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1030,7 +1005,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("5.16", fileStore.fetchInfo().exists());
 		assertTrue("5.17", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1063,7 +1038,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("6.16", fileStore.fetchInfo().exists());
 		assertTrue("6.17", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 	}
 
 	/**
@@ -1102,7 +1077,7 @@ public class IProjectTest extends ResourceTest {
 		// ensure the project directory and files no longer exist
 		assertFalse("1.8", projectStore.fetchInfo().exists());
 		assertFalse("1.9", fileStore.fetchInfo().exists());
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1126,7 +1101,7 @@ public class IProjectTest extends ResourceTest {
 		// ensure the project directory and files no longer exist
 		assertFalse("2.8", projectStore.fetchInfo().exists());
 		assertFalse("2.9", fileStore.fetchInfo().exists());
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1150,7 +1125,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("3.8", projectStore.fetchInfo().exists());
 		assertTrue("3.9", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1174,7 +1149,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("4.8", projectStore.fetchInfo().exists());
 		assertTrue("4.9", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1198,7 +1173,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("5.8", projectStore.fetchInfo().exists());
 		assertTrue("5.9", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1222,7 +1197,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("6.8", projectStore.fetchInfo().exists());
 		assertTrue("6.9", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 	}
 
 	/**
@@ -1267,7 +1242,7 @@ public class IProjectTest extends ResourceTest {
 		assertFalse("1.8", projectStore.fetchInfo().exists());
 		assertFalse("1.9", fileStore.fetchInfo().exists());
 		assertFalse("1.10", otherFileStore.fetchInfo().exists());
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1296,7 +1271,7 @@ public class IProjectTest extends ResourceTest {
 		assertFalse("2.8", projectStore.fetchInfo().exists());
 		assertFalse("2.9", fileStore.fetchInfo().exists());
 		assertFalse("2.10", otherFileStore.fetchInfo().exists());
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1412,7 +1387,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("6.9", fileStore.fetchInfo().exists());
 		assertTrue("6.10", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 	}
 
 	/**
@@ -1597,7 +1572,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("3.5", projectStore.fetchInfo().exists());
 		assertTrue("3.6", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1617,7 +1592,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("4.5", projectStore.fetchInfo().exists());
 		assertTrue("4.6", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1750,7 +1725,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("4.7", projectStore.fetchInfo().exists());
 		assertTrue("4.8", fileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1832,7 +1807,7 @@ public class IProjectTest extends ResourceTest {
 		assertFalse("1.7", projectStore.fetchInfo().exists());
 		assertFalse("1.8", fileStore.fetchInfo().exists());
 		assertFalse("1.9", otherFileStore.fetchInfo().exists());
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -1858,7 +1833,7 @@ public class IProjectTest extends ResourceTest {
 		assertFalse("2.7", projectStore.fetchInfo().exists());
 		assertFalse("2.8", fileStore.fetchInfo().exists());
 		assertFalse("2.9", otherFileStore.fetchInfo().exists());
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = TRUE
@@ -1884,7 +1859,7 @@ public class IProjectTest extends ResourceTest {
 		assertTrue("3.8", fileStore.fetchInfo().exists());
 		assertTrue("3.9", otherFileStore.fetchInfo().exists());
 		// cleanup
-		clear(projectStore);
+		projectStore.delete(EFS.NONE, null);
 
 		/* ======================================================================
 		 * Force = FALSE
@@ -2105,22 +2080,19 @@ public class IProjectTest extends ResourceTest {
 		IPath location = root.append("%20foo bar");
 		IProjectDescription desc = getWorkspace().newProjectDescription(project1.getName());
 		desc.setLocation(location);
-		try {
-			project1.create(desc, monitor);
-			monitor.assertUsedUp();
-			project1.open(null);
+		project1.create(desc, monitor);
+		deleteOnTearDown(location);
+		monitor.assertUsedUp();
+		project1.open(null);
 
-			assertTrue("1.0", project1.exists());
-			assertTrue("1.1", project1.isAccessible());
-			assertEquals("1.2", location, project1.getLocation());
-			assertEquals("1.3", location, project1.getRawLocation());
+		assertTrue("1.0", project1.exists());
+		assertTrue("1.1", project1.isAccessible());
+		assertEquals("1.2", location, project1.getLocation());
+		assertEquals("1.3", location, project1.getRawLocation());
 
-			monitor.prepare();
-			project1.delete(IResource.FORCE, monitor);
-			monitor.assertUsedUp();
-		} finally {
-			Workspace.clear(location.toFile());
-		}
+		monitor.prepare();
+		project1.delete(IResource.FORCE, monitor);
+		monitor.assertUsedUp();
 	}
 
 	public void testProjectMoveContent() throws CoreException {
@@ -2129,35 +2101,28 @@ public class IProjectTest extends ResourceTest {
 		IResource[] resources = buildResources(project, children);
 		ensureExistsInWorkspace(project, true);
 		ensureExistsInWorkspace(resources, true);
-		Set<IPath> pathsToDelete = new HashSet<>(5);
 
-		try {
-			// move the project content
-			IProjectDescription destination = project.getDescription();
-			IPath oldPath = project.getLocation();
-			IPath newPath = getTempDir().append(Long.toString(System.currentTimeMillis()));
-			pathsToDelete.add(newPath);
-			destination.setLocation(newPath);
-			monitor.prepare();
-			project.move(destination, false, monitor);
-			monitor.assertUsedUp();
-			newPath = project.getLocation();
+		// move the project content
+		IProjectDescription destination = project.getDescription();
+		IPath oldPath = project.getLocation();
+		IPath newPath = getTempDir().append(Long.toString(System.currentTimeMillis()));
+		deleteOnTearDown(newPath);
+		destination.setLocation(newPath);
+		monitor.prepare();
+		project.move(destination, false, monitor);
+		monitor.assertUsedUp();
+		newPath = project.getLocation();
 
-			// ensure that the new description was set correctly and the locations
-			// aren't the same
-			assertFalse("2.0", oldPath.equals(newPath));
+		// ensure that the new description was set correctly and the locations
+		// aren't the same
+		assertFalse("2.0", oldPath.equals(newPath));
 
-			// make sure all the resources still exist.
-			IResourceVisitor visitor = resource -> {
-				assertExistsInWorkspace("2.1." + resource.getFullPath(), resource);
-				return true;
-			};
-			getWorkspace().getRoot().accept(visitor);
-		} finally {
-			for (IPath path : pathsToDelete) {
-				Workspace.clear(path.toFile());
-			}
-		}
+		// make sure all the resources still exist.
+		IResourceVisitor visitor = resource -> {
+			assertExistsInWorkspace("2.1." + resource.getFullPath(), resource);
+			return true;
+		};
+		getWorkspace().getRoot().accept(visitor);
 	}
 
 	public void testProjectMoveVariations() throws CoreException {
@@ -2268,63 +2233,56 @@ public class IProjectTest extends ResourceTest {
 
 	public void testProjectMoveVariations_bug307140() throws CoreException {
 		// Test moving project to its subfolder
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
-		IProjectDescription description;
-		project.create(monitor);
+		IProject originalProject = getWorkspace().getRoot().getProject(getUniqueString());
+		originalProject.create(monitor);
 		monitor.assertUsedUp();
 		monitor.prepare();
-		project.open(monitor);
+		originalProject.open(monitor);
 		monitor.assertUsedUp();
 
-		IPath originalLocation = project.getLocation();
-		IFolder subFolder = project.getFolder(getUniqueString());
+		IPath originalLocation = originalProject.getLocation();
+		IFolder originalProjectSubFolder = originalProject.getFolder(getUniqueString());
 
-		try {
-			description = project.getDescription();
-			description.setLocation(subFolder.getLocation());
+		assertThrows(CoreException.class, () -> {
+			IProjectDescription originalDescription = originalProject.getDescription();
+			originalDescription.setLocation(originalProjectSubFolder.getLocation());
 			monitor.prepare();
-			project.move(description, true, monitor);
+			originalProject.move(originalDescription, true, monitor);
 			monitor.assertUsedUp();
-			fail("2.0");
-		} catch (CoreException e) {
-			//should be thrown
-		}
+		});
 
-		assertEquals("3.0", originalLocation, project.getLocation());
+		assertEquals("3.0", originalLocation, originalProject.getLocation());
 
 		//cleanup
-			monitor.prepare();
-			getWorkspace().getRoot().delete(false, monitor);
-			monitor.assertUsedUp();
+		monitor.prepare();
+		getWorkspace().getRoot().delete(false, monitor);
+		monitor.assertUsedUp();
 
 		// Test moving project to its subfolder - project at non-default location
-		project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject destinationProject = getWorkspace().getRoot().getProject(getUniqueString());
 
 		//location outside the workspace
-		description = getWorkspace().newProjectDescription(project.getName());
-		description.setLocation(getRandomLocation());
+		IProjectDescription newDescription = getWorkspace().newProjectDescription(destinationProject.getName());
+		newDescription.setLocation(getRandomLocation());
 		monitor.prepare();
-		project.create(description, monitor);
+		destinationProject.create(newDescription, monitor);
 		monitor.assertUsedUp();
 		monitor.prepare();
-		project.open(monitor);
+		destinationProject.open(monitor);
 		monitor.assertUsedUp();
 
-		originalLocation = project.getLocation();
-		subFolder = project.getFolder(getUniqueString());
+		IPath destinationLocation = destinationProject.getLocation();
+		IFolder destinationProjectSubFolder = destinationProject.getFolder(getUniqueString());
 
-		try {
-			description = project.getDescription();
-			description.setLocation(subFolder.getLocation());
+		assertThrows(CoreException.class, () ->  {
+			IProjectDescription destinationDescription = destinationProject.getDescription();
+			destinationDescription.setLocation(destinationProjectSubFolder.getLocation());
 			monitor.prepare();
-			project.move(description, true, monitor);
+			destinationProject.move(destinationDescription, true, monitor);
 			monitor.assertUsedUp();
-			fail("6.0");
-		} catch (CoreException e) {
-			//should be thrown
-		}
+		});
 
-		assertEquals("7.0", originalLocation, project.getLocation());
+		assertEquals("7.0", destinationLocation, destinationProject.getLocation());
 	}
 
 	/**

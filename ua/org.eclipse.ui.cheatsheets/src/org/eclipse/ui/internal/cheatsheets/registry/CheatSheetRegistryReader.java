@@ -222,12 +222,14 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 	}
 
 	/**
-	 *	Create and answer a new CheatSheetCollectionElement, configured as a
+	 *	Creates and returns a new CheatSheetCollectionElement, configured as a
 	 *	child of <code>parent</code>
 	 *
 	 *	@return org.eclipse.ui.internal.model.CheatSheetCollectionElement
 	 *	@param parent org.eclipse.ui.internal.model.CheatSheetCollectionElement
-	 *	@param childName java.lang.String
+	 *	@param pluginId java.lang.String
+	 *	@param id java.lang.String
+	 *	@param label java.lang.String
 	 */
 	protected CheatSheetCollectionElement createCollectionElement(CheatSheetCollectionElement parent, String pluginId, String id, String label) {
 		CheatSheetCollectionElement newElement = new CheatSheetCollectionElement(pluginId, id, label, parent);
@@ -477,12 +479,14 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 	}
 
 	/**
-	 *	Go through the children of  the passed parent and answer the child
-	 *	with the passed name.  If no such child is found then return null.
+	 * Go through the children of the passed parent and returns the child with
+	 * the passed name. If no such child is found then return null.
 	 *
-	 *	@return org.eclipse.ui.internal.model.CheatSheetCollectionElement
-	 *	@param parent org.eclipse.ui.internal.model.CheatSheetCollectionElement
-	 *	@param childName java.lang.String
+	 * @param parent
+	 *            org.eclipse.ui.internal.model.CheatSheetCollectionElement
+	 * @param id
+	 *            java.lang.String
+	 * @return org.eclipse.ui.internal.model.CheatSheetCollectionElement
 	 */
 	protected CheatSheetCollectionElement getChildWithID(CheatSheetCollectionElement parent, String id) {
 		Object[] children = parent.getChildren();
@@ -496,12 +500,12 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 
 	/**
 	 *	Initialize the passed element's properties based on the contents of
-	 *	the passed registry.  Answer a boolean indicating whether the element
+	 *	the passed registry. Returns a boolean indicating whether the element
 	 *	was able to be adequately initialized.
 	 *
-	 *	@return boolean
 	 *	@param element CheatSheetElement
-	 *	@param extension Extension
+	 *	@param config IConfigurationElement
+	 *	@return boolean
 	 */
 	protected boolean initializeCheatSheet(CheatSheetElement element, IConfigurationElement config) {
 		element.setID(config.getAttribute(ATT_ID));

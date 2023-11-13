@@ -26,6 +26,7 @@ import org.eclipse.e4.core.di.IInjector;
 import org.eclipse.e4.core.di.suppliers.IObjectDescriptor;
 import org.eclipse.e4.core.di.suppliers.IRequestor;
 import org.eclipse.e4.core.di.suppliers.PrimaryObjectSupplier;
+import org.eclipse.e4.core.internal.di.AnnotationLookup;
 import org.eclipse.e4.core.internal.di.Requestor;
 
 public class ContextObjectSupplier extends PrimaryObjectSupplier {
@@ -188,13 +189,9 @@ public class ContextObjectSupplier extends PrimaryObjectSupplier {
 	}
 
 	private String getKey(IObjectDescriptor descriptor) {
-		if (descriptor.hasQualifier(javax.inject.Named.class)) {
-			javax.inject.Named namedAnnotation = descriptor.getQualifier(javax.inject.Named.class);
-			return namedAnnotation.value();
-		}
-		if (descriptor.hasQualifier(jakarta.inject.Named.class)) {
-			jakarta.inject.Named namedAnnotation = descriptor.getQualifier(jakarta.inject.Named.class);
-			return namedAnnotation.value();
+		String value = AnnotationLookup.getQualifierValue(descriptor);
+		if (value != null) {
+			return value;
 		}
 		Type elementType = descriptor.getDesiredType();
 		return typeToString(elementType);

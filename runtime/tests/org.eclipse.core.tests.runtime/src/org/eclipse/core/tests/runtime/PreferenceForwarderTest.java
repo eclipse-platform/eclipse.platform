@@ -13,15 +13,30 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime;
 
-import java.io.*;
-import java.util.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.core.internal.preferences.legacy.PreferenceForwarder;
 import org.eclipse.core.internal.runtime.RuntimeLog;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.junit.Test;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -31,7 +46,7 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 @Deprecated
 @SuppressWarnings("restriction")
-public class PreferenceForwarderTest extends RuntimeTest {
+public class PreferenceForwarderTest {
 
 	static class Tracer implements Preferences.IPropertyChangeListener {
 		public StringBuilder log = new StringBuilder();
@@ -83,20 +98,7 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		}
 	}
 
-	public PreferenceForwarderTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() {
-		// do nothing
-	}
-
-	@Override
-	protected void tearDown() {
-		// do nothing
-	}
-
+	@Test
 	public void testConstants() {
 		// make sure that the preference store constants are defined properly
 		assertEquals("1.0", false, Preferences.BOOLEAN_DEFAULT_DEFAULT);
@@ -107,6 +109,7 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		assertEquals("1.5", "", Preferences.STRING_DEFAULT_DEFAULT);
 	}
 
+	@Test
 	public void testBasics() {
 
 		Preferences ps = new PreferenceForwarder(getUniqueString());
@@ -183,6 +186,7 @@ public class PreferenceForwarderTest extends RuntimeTest {
 
 	}
 
+	@Test
 	public void testBoolean() {
 
 		Preferences ps = new PreferenceForwarder(getUniqueString());
@@ -203,6 +207,7 @@ public class PreferenceForwarderTest extends RuntimeTest {
 
 	}
 
+	@Test
 	public void testInteger() {
 
 		Preferences ps = new PreferenceForwarder(getUniqueString());
@@ -221,6 +226,7 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		}
 	}
 
+	@Test
 	public void testLong() {
 
 		Preferences ps = new PreferenceForwarder(getUniqueString());
@@ -239,6 +245,7 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		}
 	}
 
+	@Test
 	public void testFloat() {
 
 		Preferences ps = new PreferenceForwarder(getUniqueString());
@@ -257,15 +264,10 @@ public class PreferenceForwarderTest extends RuntimeTest {
 			assertEquals("1.3", v2, ps.getDefaultFloat(k1), tol);
 		}
 
-		try {
-			ps.setValue(k1, Float.NaN);
-			assertTrue("1.4", false);
-		} catch (IllegalArgumentException e) {
-			// NaNs should be rejected
-		}
-
+		assertThrows("NaNs should be rejected", IllegalArgumentException.class, () -> ps.setValue(k1, Float.NaN));
 	}
 
+	@Test
 	public void testDouble() {
 
 		Preferences ps = new PreferenceForwarder(getUniqueString());
@@ -284,15 +286,10 @@ public class PreferenceForwarderTest extends RuntimeTest {
 			assertEquals("1.3", v2, ps.getDefaultDouble(k1), tol);
 		}
 
-		try {
-			ps.setValue(k1, Float.NaN);
-			assertTrue("1.4", false);
-		} catch (IllegalArgumentException e) {
-			// NaNs should be rejected
-		}
-
+		assertThrows("NaNs should be rejected", IllegalArgumentException.class, () -> ps.setValue(k1, Float.NaN));
 	}
 
+	@Test
 	public void testString() {
 
 		Preferences ps = new PreferenceForwarder(getUniqueString());
@@ -311,6 +308,7 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		}
 	}
 
+	@Test
 	public void testPropertyNames() {
 
 		Preferences ps = new PreferenceForwarder(getUniqueString());
@@ -345,6 +343,7 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		assertEquals("1.5", 0, ps.propertyNames().length);
 	}
 
+	@Test
 	public void testContains() {
 
 		Preferences ps = new PreferenceForwarder(getUniqueString());
@@ -374,13 +373,10 @@ public class PreferenceForwarderTest extends RuntimeTest {
 
 		// test bug 62586
 		// fail gracefully in PreferenceForwarder.contains(null)
-		try {
-			assertTrue("2.0", !ps.contains(null));
-		} catch (NullPointerException e) {
-			fail("2.1", e);
-		}
+		assertTrue("2.0", !ps.contains(null));
 	}
 
+	@Test
 	public void testDefaultPropertyNames() {
 
 		Preferences ps = new PreferenceForwarder(getUniqueString());
@@ -443,6 +439,7 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		assertEquals("1.7", keys.length, ps.defaultPropertyNames().length);
 	}
 
+	@Test
 	public void test55138() {
 		final Preferences ps = new PreferenceForwarder(getUniqueString());
 
@@ -522,6 +519,7 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		assertEquals("6.2", "[foo:L10->L11][foo:L11->L10]", tracer1.log.toString());
 	}
 
+	@Test
 	public void testListeners() {
 
 		final Preferences ps = new PreferenceForwarder(getUniqueString());
@@ -642,7 +640,8 @@ public class PreferenceForwarderTest extends RuntimeTest {
 
 	}
 
-	public void testLoadStore() {
+	@Test
+	public void testLoadStore() throws IOException {
 
 		final Preferences ps = new PreferenceForwarder(getUniqueString());
 
@@ -654,20 +653,15 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		ps.setValue("s1", "x");
 		String[] keys = {"b1", "i1", "l1", "f1", "d1", "s1",};
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
+		byte[] bytes;
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			ps.store(out, "test header");
-		} catch (IOException e) {
-			assertTrue("0.1", false);
+			bytes = out.toByteArray();
 		}
 
-		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-
 		final Preferences ps2 = new PreferenceForwarder(getUniqueString());
-		try {
+		try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
 			ps2.load(in);
-		} catch (IOException e) {
-			assertTrue("0.2", false);
 		}
 
 		assertEquals("1.1", true, ps2.getBoolean("b1"));
@@ -682,22 +676,19 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		assertEquals("1.7", s1, s2);
 
 		// load discards current values
-		in = new ByteArrayInputStream(out.toByteArray());
 		final Preferences ps3 = new PreferenceForwarder(getUniqueString());
 		ps3.setValue("s1", "y");
-		try {
+		try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
 			ps3.load(in);
-			assertEquals("1.8", "x", ps3.getString("s1"));
-			Set<String> k1 = new HashSet<>(Arrays.asList(keys));
-			Set<String> k2 = new HashSet<>(Arrays.asList(ps3.propertyNames()));
-			assertEquals("1.9", k1, k2);
-		} catch (IOException e) {
-			assertTrue("1.10", false);
 		}
-
+		assertEquals("1.8", "x", ps3.getString("s1"));
+		Set<String> k1 = new HashSet<>(Arrays.asList(keys));
+		Set<String> k2 = new HashSet<>(Arrays.asList(ps3.propertyNames()));
+		assertEquals("1.9", k1, k2);
 	}
 
-	public void testNeedsSaving() {
+	@Test
+	public void testNeedsSaving() throws IOException {
 
 		Preferences ps = new PreferenceForwarder(getUniqueString());
 
@@ -739,20 +730,18 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		assertEquals("7.1", false, ps.needsSaving());
 
 		// setToDefault dirties if value was set
-		try {
-			ps = new PreferenceForwarder(getUniqueString());
-			assertEquals("7.2", false, ps.needsSaving());
-			ps.setValue("any", "x");
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ps = new PreferenceForwarder(getUniqueString());
+		assertEquals("7.2", false, ps.needsSaving());
+		ps.setValue("any", "x");
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			ps.store(out, "test header");
-			ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-			ps.load(in);
-			assertEquals("7.3", false, ps.needsSaving());
-			ps.setToDefault("any");
-			assertEquals("7.4", true, ps.needsSaving());
-		} catch (IOException e) {
-			assertTrue("7.5", false);
+			try (ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray())) {
+				ps.load(in);
+			}
 		}
+		assertEquals("7.3", false, ps.needsSaving());
+		ps.setToDefault("any");
+		assertEquals("7.4", true, ps.needsSaving());
 
 		// setDefault, getT, getDefaultT do not dirty
 		ps = new PreferenceForwarder(getUniqueString());
@@ -777,13 +766,11 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		ps.getDefaultString("s1");
 		assertEquals("8.1", false, ps.needsSaving());
 
-		try {
-			ps = new PreferenceForwarder(getUniqueString());
-			assertEquals("9.1", false, ps.needsSaving());
-			ps.setValue("b1", true);
-			assertEquals("9.2", true, ps.needsSaving());
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-
+		ps = new PreferenceForwarder(getUniqueString());
+		assertEquals("9.1", false, ps.needsSaving());
+		ps.setValue("b1", true);
+		assertEquals("9.2", true, ps.needsSaving());
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			// store makes not dirty
 			ps.store(out, "test header");
 			assertEquals("9.3", false, ps.needsSaving());
@@ -791,12 +778,11 @@ public class PreferenceForwarderTest extends RuntimeTest {
 			// load comes in not dirty
 			ps.setValue("b1", false);
 			assertEquals("9.4", true, ps.needsSaving());
-			ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-			ps.load(in);
-			assertEquals("9.5", false, ps.needsSaving());
-		} catch (IOException e) {
-			assertTrue("9.0", false);
+			try (ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray())) {
+				ps.load(in);
+			}
 		}
+		assertEquals("9.5", false, ps.needsSaving());
 	}
 
 	/* Comment this test out until we are able to use session tests
@@ -830,13 +816,14 @@ public class PreferenceForwarderTest extends RuntimeTest {
 	/*
 	 * Regression test for bug 178815.
 	 */
-	public void testListenerOnRemove() {
+	@Test
+	public void testListenerOnRemove() throws BackingStoreException {
+		AtomicReference<IStatus> logStatus = new AtomicReference<>();
 		// create a new log listener that will fail if anything is written
 		ILogListener logListener = new ILogListener() {
 			@Override
 			public void logging(IStatus status, String plugin) {
-				CoreException ex = new CoreException(status);
-				fail("0.99", ex);
+				logStatus.set(status);
 			}
 		};
 
@@ -860,12 +847,13 @@ public class PreferenceForwarderTest extends RuntimeTest {
 		RuntimeLog.addLogListener(logListener);
 		try {
 			node.removeNode();
-		} catch (BackingStoreException e) {
-			fail("4.99", e);
-		} catch (IllegalStateException e) {
-			fail("5.00", e);
+			assertNull("Log listener should have been called, but logging was called for status", logStatus.get());
 		} finally {
 			RuntimeLog.removeLogListener(logListener);
 		}
+	}
+
+	private static String getUniqueString() {
+		return UUID.randomUUID().toString();
 	}
 }

@@ -51,9 +51,6 @@ public class SnowBuilder extends TestBuilder {
 		return singleton;
 	}
 
-	/**
-	 * @see InternalBuilder#build(int, Map, IProgressMonitor)
-	 */
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		wasDeltaNull = getDelta(getProject()) == null;

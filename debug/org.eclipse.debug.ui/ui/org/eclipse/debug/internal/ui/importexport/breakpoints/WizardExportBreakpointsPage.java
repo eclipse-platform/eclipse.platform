@@ -58,11 +58,11 @@ import org.eclipse.ui.PlatformUI;
  * </p>
  * <p>
  * Possible extensions would include:
+ * </p>
  * <ul>
  * <li> Able to change the views as in the breakpoints view itself
  * <li> Able to reorder groups from within the wizard - easier in the viewer itself though
  * </ul>
- * </p>
  * This class is used by <code>WizardExportBreakpoints</code>
  *
  * @since 3.2

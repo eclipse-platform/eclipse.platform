@@ -16,7 +16,12 @@ package org.eclipse.core.tests.resources.session;
 
 import java.util.Map;
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
@@ -40,59 +45,39 @@ public class TestBug6995 extends WorkspaceSessionTest {
 
 		//create a project and configure builder
 		IProject project = workspace.getRoot().getProject("Project");
-		try {
-			project.create(getMonitor());
-			project.open(getMonitor());
+		project.create(getMonitor());
+		project.open(getMonitor());
 
-			IProjectDescription description = project.getDescription();
-			ICommand command = description.newCommand();
-			Map<String, String> args = command.getArguments();
-			args.put(TestBuilder.BUILD_ID, "Project1Build1");
-			command.setBuilderName(SortBuilder.BUILDER_NAME);
-			command.setArguments(args);
-			description.setBuildSpec(new ICommand[] {command});
-			project.setDescription(description, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		IProjectDescription description = project.getDescription();
+		ICommand command = description.newCommand();
+		Map<String, String> args = command.getArguments();
+		args.put(TestBuilder.BUILD_ID, "Project1Build1");
+		command.setBuilderName(SortBuilder.BUILDER_NAME);
+		command.setArguments(args);
+		description.setBuildSpec(new ICommand[] { command });
+		project.setDescription(description, getMonitor());
 
 		//do an initial build
-		try {
-			project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 
 		//save the workspace
-		try {
-			workspace.save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		workspace.save(true, getMonitor());
 	}
 
 	/**
 	 * After restarted the workspace, do a snapshot, then try to build.
 	 */
-	public void test2() {
+	public void test2() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("Project");
 		//snapshot
-		try {
-			workspace.save(false, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		workspace.save(false, getMonitor());
 
 		//build
-		try {
-			//make a change so build doesn't get short-circuited
-			IFile file = project.getFile("File");
-			file.create(getRandomContents(), true, getMonitor());
-			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		//make a change so build doesn't get short-circuited
+		IFile file = project.getFile("File");
+		file.create(getRandomContents(), true, getMonitor());
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
 
 		//make sure an incremental build occurred
 		SortBuilder builder = SortBuilder.getInstance();

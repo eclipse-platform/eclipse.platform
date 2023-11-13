@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.junit.Assert.assertThrows;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -31,7 +33,7 @@ public class IFolderTest extends ResourceTest {
 		super.tearDown();
 	}
 
-	public void testChangeCase() {
+	public void testChangeCase() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder before = project.getFolder("folder");
 		IFolder after = project.getFolder("Folder");
@@ -40,22 +42,14 @@ public class IFolderTest extends ResourceTest {
 
 		// create the resources and set some content in a file that will be moved.
 		ensureExistsInWorkspace(before, true);
-		try {
-			beforeFile.create(getRandomContents(), false, getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		beforeFile.create(getRandomContents(), false, getMonitor());
 
 		// Be sure the resources exist and then move them.
 		assertExistsInWorkspace("1.0", before);
 		assertExistsInWorkspace("1.1", beforeFile);
 		assertDoesNotExistInWorkspace("1.2", after);
 		assertDoesNotExistInWorkspace("1.3", afterFile);
-		try {
-			before.move(after.getFullPath(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		before.move(after.getFullPath(), IResource.NONE, getMonitor());
 
 		assertDoesNotExistInWorkspace("1.2", before);
 		assertDoesNotExistInWorkspace("1.3", beforeFile);
@@ -72,42 +66,30 @@ public class IFolderTest extends ResourceTest {
 		ensureExistsInWorkspace(before, true);
 		ensureDoesNotExistInFileSystem(before);
 
-		try {
-			//should fail because 'before' does not exist in the filesystem
-			before.copy(after.getFullPath(), IResource.FORCE, getMonitor());
-			fail("1.0");
-		} catch (CoreException e) {
-			//should fail
-		}
+		// should fail because 'before' does not exist in the filesystem
+		assertThrows(CoreException.class, () -> before.copy(after.getFullPath(), IResource.FORCE, getMonitor()));
+
 		//the destination should not exist, because the source does not exist
 		assertTrue("1.1", !before.exists());
 		assertTrue("1.2", !after.exists());
 	}
 
-	public void testCreateDerived() {
+	public void testCreateDerived() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder derived = project.getFolder("derived");
 		ensureExistsInWorkspace(project, true);
 		ensureDoesNotExistInWorkspace(derived);
 
-		try {
-			derived.create(IResource.DERIVED, true, getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		derived.create(IResource.DERIVED, true, getMonitor());
 		assertTrue("1.0", derived.isDerived());
 		assertTrue("1.1", !derived.isTeamPrivateMember());
-		try {
-			derived.delete(false, getMonitor());
-			derived.create(IResource.NONE, true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		derived.delete(false, getMonitor());
+		derived.create(IResource.NONE, true, getMonitor());
 		assertTrue("2.0", !derived.isDerived());
 		assertTrue("2.1", !derived.isTeamPrivateMember());
 	}
 
-	public void testDeltaOnCreateDerived() {
+	public void testDeltaOnCreateDerived() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder derived = project.getFolder("derived");
 		ensureExistsInWorkspace(project, true);
@@ -117,57 +99,39 @@ public class IFolderTest extends ResourceTest {
 
 		verifier.addExpectedChange(derived, IResourceDelta.ADDED, IResource.NONE);
 
-		try {
-			derived.create(IResource.FORCE | IResource.DERIVED, true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		derived.create(IResource.FORCE | IResource.DERIVED, true, getMonitor());
 
 		assertTrue("2.0", verifier.isDeltaValid());
 	}
 
-	public void testCreateDerivedTeamPrivate() {
+	public void testCreateDerivedTeamPrivate() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder teamPrivate = project.getFolder("teamPrivate");
 		ensureExistsInWorkspace(project, true);
 		ensureDoesNotExistInWorkspace(teamPrivate);
 
-		try {
-			teamPrivate.create(IResource.TEAM_PRIVATE | IResource.DERIVED, true, getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		teamPrivate.create(IResource.TEAM_PRIVATE | IResource.DERIVED, true, getMonitor());
 		assertTrue("1.0", teamPrivate.isTeamPrivateMember());
 		assertTrue("1.1", teamPrivate.isDerived());
-		try {
-			teamPrivate.delete(false, getMonitor());
-			teamPrivate.create(IResource.NONE, true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+
+		teamPrivate.delete(false, getMonitor());
+		teamPrivate.create(IResource.NONE, true, getMonitor());
 		assertTrue("2.0", !teamPrivate.isTeamPrivateMember());
 		assertTrue("2.1", !teamPrivate.isDerived());
 	}
 
-	public void testCreateTeamPrivate() {
+	public void testCreateTeamPrivate() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder teamPrivate = project.getFolder("teamPrivate");
 		ensureExistsInWorkspace(project, true);
 		ensureDoesNotExistInWorkspace(teamPrivate);
 
-		try {
-			teamPrivate.create(IResource.TEAM_PRIVATE, true, getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		teamPrivate.create(IResource.TEAM_PRIVATE, true, getMonitor());
 		assertTrue("1.0", teamPrivate.isTeamPrivateMember());
 		assertTrue("1.1", !teamPrivate.isDerived());
-		try {
-			teamPrivate.delete(false, getMonitor());
-			teamPrivate.create(IResource.NONE, true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+
+		teamPrivate.delete(false, getMonitor());
+		teamPrivate.create(IResource.NONE, true, getMonitor());
 		assertTrue("2.0", !teamPrivate.isTeamPrivateMember());
 		assertTrue("2.1", !teamPrivate.isDerived());
 	}
@@ -178,88 +142,56 @@ public class IFolderTest extends ResourceTest {
 		ensureExistsInWorkspace(project, true);
 
 		IFolder target = project.getFolder("Folder1");
-		try {
-			assertTrue("1.0", !target.exists());
-			target.create(true, true, getMonitor());
-			assertTrue("1.1", target.exists());
-		} catch (CoreException e) {
-			fail("1.2", e);
-		}
+		assertTrue("1.0", !target.exists());
+		target.create(true, true, getMonitor());
+		assertTrue("1.1", target.exists());
 
 		// nested folder creation
 		IFolder nestedTarget = target.getFolder("Folder2");
-		try {
-			assertTrue("2.0", !nestedTarget.exists());
-			nestedTarget.create(true, true, getMonitor());
-			assertTrue("2.1", nestedTarget.exists());
-		} catch (CoreException e) {
-			fail("2.2", e);
-		}
+		assertTrue("2.0", !nestedTarget.exists());
+		nestedTarget.create(true, true, getMonitor());
+		assertTrue("2.1", nestedTarget.exists());
 
 		// try to create a folder that already exists
-		try {
-			assertTrue("3.0", target.exists());
-			target.create(true, true, getMonitor());
-			fail("3.1");
-		} catch (CoreException e) {
-			assertTrue("3.2", target.exists());
-		}
+		assertTrue("3.0", target.exists());
+		IFolder folderTarget = target;
+		assertThrows(CoreException.class, () -> folderTarget.create(true, true, getMonitor()));
+		assertTrue("3.2", target.exists());
 
 		// try to create a folder over a file that exists
 		IFile file = target.getFile("File1");
 		target = target.getFolder("File1");
-		try {
-			file.create(getRandomContents(), true, getMonitor());
-			assertTrue("4.0", file.exists());
-		} catch (CoreException e) {
-			fail("4.1", e);
-		}
+		file.create(getRandomContents(), true, getMonitor());
+		assertTrue("4.0", file.exists());
 
-		try {
-			target.create(true, true, getMonitor());
-			fail("5.0");
-		} catch (CoreException e) {
-			assertTrue("5.1", file.exists());
-			assertTrue("5.2", !target.exists());
-		}
+		IFolder subfolderTarget = target;
+		assertThrows(CoreException.class, () -> subfolderTarget.create(true, true, getMonitor()));
+		assertTrue("5.1", file.exists());
+		assertTrue("5.2", !target.exists());
 
 		// try to create a folder on a project (one segment) path
-		try {
-			target = getWorkspace().getRoot().getFolder(IPath.fromOSString("/Folder3"));
-			fail("6.0");
-		} catch (IllegalArgumentException e) {
-			// expected
-		}
+		assertThrows(IllegalArgumentException.class,
+				() -> getWorkspace().getRoot().getFolder(IPath.fromOSString("/Folder3")));
 
 		// try to create a folder as a child of a file
 		file = project.getFile("File2");
-		try {
-			file.create(null, true, getMonitor());
-		} catch (CoreException e) {
-			fail("7.0", e);
-		}
+		file.create(null, true, getMonitor());
 
 		target = project.getFolder("File2/Folder4");
-		try {
-			assertTrue("7.1", !target.exists());
-			target.create(true, true, getMonitor());
-			fail("7.2");
-		} catch (CoreException e) {
-			assertTrue("7.3", file.exists());
-			assertTrue("7.4", !target.exists());
-		}
+		assertTrue("7.1", !target.exists());
+		IFolder nonexistentSubfolderTarget = target;
+		assertThrows(CoreException.class, () -> nonexistentSubfolderTarget.create(true, true, getMonitor()));
+		assertTrue("7.3", file.exists());
+		assertTrue("7.4", !target.exists());
 
 		// try to create a folder under a non-existant parent
 		IFolder folder = project.getFolder("Folder5");
 		target = folder.getFolder("Folder6");
-		try {
-			assertTrue("8.0", !folder.exists());
-			target.create(true, true, getMonitor());
-			fail("8.1");
-		} catch (CoreException e) {
-			assertTrue("8.2", !folder.exists());
-			assertTrue("8.3", !target.exists());
-		}
+		assertTrue("8.0", !folder.exists());
+		IFolder nonexistentFolderTarget = target;
+		assertThrows(CoreException.class, () -> nonexistentFolderTarget.create(true, true, getMonitor()));
+		assertTrue("8.2", !folder.exists());
+		assertTrue("8.3", !target.exists());
 	}
 
 	public void testFolderDeletion() throws Throwable {
@@ -299,18 +231,15 @@ public class IFolderTest extends ResourceTest {
 		IFile existing = getWorkspace().getRoot().getFile(path);
 		ensureExistsInWorkspace(existing, true);
 		IFolder target = getWorkspace().getRoot().getFolder(path);
-		try {
-			target.create(true, true, getMonitor());
-			fail("1.0 Should not be able to create folder over a file");
-		} catch (CoreException e) {
-			assertTrue("2.0", existing.exists());
-		}
+		assertThrows("Should not be able to create folder over a file", CoreException.class,
+				() -> target.create(true, true, getMonitor()));
+		assertTrue("2.0", existing.exists());
 	}
 
 	/**
 	 * Tests creation and manipulation of folder names that are reserved on some platforms.
 	 */
-	public void testInvalidFolderNames() {
+	public void testInvalidFolderNames() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		ensureExistsInWorkspace(project, true);
 
@@ -327,12 +256,7 @@ public class IFolderTest extends ResourceTest {
 		for (String name : names) {
 			IFolder folder = project.getFolder(name);
 			assertTrue("1.0 " + name, !folder.exists());
-			try {
-				folder.create(true, true, getMonitor());
-				fail("1.1 " + name);
-			} catch (CoreException e) {
-				// expected
-			}
+			assertThrows(CoreException.class, () -> folder.create(true, true, getMonitor()));
 			assertTrue("1.2 " + name, !folder.exists());
 		}
 
@@ -347,11 +271,7 @@ public class IFolderTest extends ResourceTest {
 		for (String name : names) {
 			IFolder folder = project.getFolder(name);
 			assertTrue("2.0 " + name, !folder.exists());
-			try {
-				folder.create(true, true, getMonitor());
-			} catch (CoreException e) {
-				fail("2.1 " + name, e);
-			}
+			folder.create(true, true, getMonitor());
 			assertTrue("2.2 " + name, folder.exists());
 		}
 	}
@@ -393,25 +313,15 @@ public class IFolderTest extends ResourceTest {
 		QualifiedName name = new QualifiedName("itp-test", "testProperty");
 		// getting/setting persistent properties on non-existent resources should throw an exception
 		ensureDoesNotExistInWorkspace(target);
-		try {
-			target.getPersistentProperty(name);
-			fail("1.0");
-		} catch (CoreException e) {
-			//this should happen
-		}
-		try {
-			target.setPersistentProperty(name, value);
-			fail("1.1");
-		} catch (CoreException e) {
-			//this should happen
-		}
+		assertThrows(CoreException.class, () -> target.getPersistentProperty(name));
+		assertThrows(CoreException.class, () -> target.setPersistentProperty(name, value));
 
 		ensureExistsInWorkspace(target, true);
 		target.setPersistentProperty(name, value);
 		// see if we can get the property
 		assertTrue("2.0", target.getPersistentProperty(name).equals(value));
 		// see what happens if we get a non-existant property
-		name = new QualifiedName("itp-test", "testNonProperty");
-		assertNull("2.1", target.getPersistentProperty(name));
+		QualifiedName nonExistentPropertyName = new QualifiedName("itp-test", "testNonProperty");
+		assertNull("2.1", target.getPersistentProperty(nonExistentPropertyName));
 	}
 }

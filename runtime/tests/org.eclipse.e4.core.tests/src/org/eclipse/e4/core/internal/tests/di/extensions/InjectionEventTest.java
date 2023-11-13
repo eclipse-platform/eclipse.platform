@@ -23,9 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
@@ -43,6 +40,9 @@ import org.osgi.framework.BundleException;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventConstants;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 // TBD add auto-conversion?
 @SuppressWarnings("restriction")

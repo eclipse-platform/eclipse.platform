@@ -16,13 +16,13 @@ package org.eclipse.e4.core.internal.tests.contexts.inject;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.junit.Test;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * Tests for the generics context injection functionality

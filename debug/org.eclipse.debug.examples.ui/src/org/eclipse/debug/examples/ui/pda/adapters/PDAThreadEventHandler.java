@@ -36,9 +36,7 @@ public class PDAThreadEventHandler extends DebugEventHandler {
 	private IStackFrame fPrev = null;
 
 	/**
-	 * Constructs and event handler for a threads in the given viewer.
-	 *
-	 * @param viewer
+	 * Constructs and event handler for a threads in the given proxy.
 	 */
 	public PDAThreadEventHandler(AbstractModelProxy proxy) {
 		super(proxy);

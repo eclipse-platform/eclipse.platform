@@ -14,6 +14,11 @@
 
 package org.eclipse.ant.tests.ui;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -33,17 +38,15 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.console.IHyperlink;
+import org.junit.Test;
 
 @SuppressWarnings("restriction")
 public class BuildTests extends AbstractAntUIBuildTest {
 
-	public BuildTests(String name) {
-		super(name);
-	}
-
 	/**
 	 * Tests launching Ant and getting messages logged to the console.
 	 */
+	@Test
 	public void testOutput() throws CoreException {
 		launch("echoing"); //$NON-NLS-1$
 		assertEquals("Incorrect number of messages logged for build. Should be 8. Was " //$NON-NLS-1$
@@ -57,6 +60,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	 * This build will fail. With verbose on you should be presented with a full
 	 * stack trace. Bug 82833
 	 */
+	@Test
 	public void testVerboseStackTrace() throws Exception {
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode("org.eclipse.ui.monitoring"); //$NON-NLS-1$
 		if (prefs != null) {
@@ -72,6 +76,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	 * Tests launching Ant and getting the build failed message logged to the
 	 * console with associated link. Bug 42333 and 44565
 	 */
+	@Test
 	public void testBuildFailedMessage() throws CoreException, BadLocationException {
 		launch("bad"); //$NON-NLS-1$
 		assertEquals("Incorrect number of messages logged for build. Should be 10. Was " //$NON-NLS-1$
@@ -89,6 +94,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	/**
 	 * Tests launching Ant and that the correct links are in the console doc
 	 */
+	@Test
 	public void testLinks() throws CoreException, BadLocationException {
 		launch("build"); //$NON-NLS-1$
 		int offset = 25; // buildfile link
@@ -106,6 +112,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	 * Tests launching Ant and that build failed presents links to the failures when
 	 * multi-line.
 	 */
+	@Test
 	public void testBuildFailedLinks() throws CoreException, BadLocationException {
 		launch("102282"); //$NON-NLS-1$
 		IDocument document = ConsoleLineTracker.getDocument();
@@ -118,6 +125,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	/**
 	 * Tests launching Ant and that the correct colors are in the console doc
 	 */
+	@Test
 	public void testColor() throws BadLocationException, CoreException {
 		launch("echoing"); //$NON-NLS-1$
 		ConsoleLineTracker.waitForConsole();
@@ -135,6 +143,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	 * Tests launching Ant in a separate vm and that the correct property
 	 * substitions occur
 	 */
+	@Test
 	public void testPropertySubstitution() throws CoreException {
 		ILaunchConfiguration config = getLaunchConfiguration("74840"); //$NON-NLS-1$
 		assertNotNull("Could not locate launch configuration for " + "74840", config); //$NON-NLS-1$ //$NON-NLS-2$
@@ -156,6 +165,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	 *
 	 * @throws FileNotFoundException
 	 */
+	@Test
 	public void testXmlLoggerListener() throws CoreException, FileNotFoundException {
 		launch("echoing", "-listener org.apache.tools.ant.XmlLogger"); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals("Incorrect number of messages logged for build. Should be 8. Was " //$NON-NLS-1$
@@ -174,6 +184,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	 * Tests launching Ant and getting the build failed message logged to the
 	 * console. Bug 42333.
 	 */
+	// @Test
 	// public void testBuildFailedMessageDebug() throws CoreException {
 	// launchInDebug("bad");
 	// assertTrue("Incorrect number of messages logged for build. Should be 35. Was

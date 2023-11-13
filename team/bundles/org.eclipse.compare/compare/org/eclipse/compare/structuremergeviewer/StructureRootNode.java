@@ -24,11 +24,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.services.IDisposable;
 
 /**
- * A node that acts as the root of the tree returned from a {@link StructureCreator}.
- * This node performs the following tasks tasks:
+ * A node that acts as the root of the tree returned from a
+ * {@link StructureCreator}. This node performs the following tasks tasks:
  * <ol>
  * <li>It adapts to an {@link ISharedDocumentAdapter} that provides the proper
- * document key (@see {@link #getAdapter(Class)}).</li>
+ * document key (see {@link #getAdapter(Class)}).</li>
  * <li>It invokes {@link IStructureCreator#save(IStructureComparator, Object)}
  * when {@link #nodeChanged(DocumentRangeNode)} is called.</li>
  * <li>It disposes of the {@link IDisposable} provided in the constructor when

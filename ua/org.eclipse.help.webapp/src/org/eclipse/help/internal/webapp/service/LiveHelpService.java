@@ -15,7 +15,7 @@ package org.eclipse.help.internal.webapp.service;
 
 import org.eclipse.help.internal.webapp.servlet.LiveHelpServlet;
 
-/**
+/*
  * Handles the live help action requests with the specified
  * <code>pluginID</code>, <code>class</code> and respective <code>args</code>.
  *
@@ -26,9 +26,6 @@ import org.eclipse.help.internal.webapp.servlet.LiveHelpServlet;
  * @param class			- specifying the class
  * @param arg			- (Optional) specifying the arguments for the
  * 						  live help extension
- *
- * @version	$Version$
- *
  **/
 public class LiveHelpService extends LiveHelpServlet {
 

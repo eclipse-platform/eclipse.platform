@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
  * set of optional qualifiers.
  * </p>
  *
- * @see javax.inject.Qualifier
+ * @see jakarta.inject.Qualifier
  * @noextend This interface is not intended to be extended by clients.
  * @noimplement This interface is not intended to be implemented by clients.
  * @since 1.7

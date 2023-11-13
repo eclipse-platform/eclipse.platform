@@ -163,7 +163,6 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 	 * @param resource the resource that is expected to change
 	 * @param status the type of change (ADDED, REMOVED, CHANGED)
 	 * @param changeFlags the type of change (CONTENT, SYNC, etc)
-	 * @see IResourceConstants
 	 */
 	public void addExpectedChange(IResource resource, int status, int changeFlags) {
 		addExpectedChange(resource, null, status, changeFlags, null, null);
@@ -176,8 +175,8 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 	 * @param resource the resource that is expected to change
 	 * @param status the type of change (ADDED, REMOVED, CHANGED)
 	 * @param changeFlags the type of change (CONTENT, SYNC, etc)
-	 * @param movedPath or null
-	 * @see IResourceConstants
+	 * @param movedFromPath or null
+	 * @param movedToPath or null
 	 */
 	public void addExpectedChange(IResource resource, int status, int changeFlags, IPath movedFromPath, IPath movedToPath) {
 		addExpectedChange(resource, null, status, changeFlags, movedFromPath, movedToPath);
@@ -191,8 +190,6 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 	 * @param topLevelParent Do not added expected changes above this parent
 	 * @param status the type of change (ADDED, REMOVED, CHANGED)
 	 * @param changeFlags the type of change (CONTENT, SYNC, etc)
-	 * @param movedPath or null
-	 * @see IResourceConstants
 	 */
 	public void addExpectedChange(IResource resource, IResource topLevelParent, int status, int changeFlags) {
 		addExpectedChange(resource, topLevelParent, status, changeFlags, null, null);
@@ -206,8 +203,8 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 	 * @param topLevelParent Do not added expected changes above this parent
 	 * @param status the type of change (ADDED, REMOVED, CHANGED)
 	 * @param changeFlags the type of change (CONTENT, SYNC, etc)
-	 * @param movedPath or null
-	 * @see IResourceConstants
+	 * @param movedFromPath or null
+	 * @param movedToPath or null
 	 */
 	public void addExpectedChange(IResource resource, IResource topLevelParent, int status, int changeFlags, IPath movedFromPath, IPath movedToPath) {
 		resetIfNecessary();
@@ -800,7 +797,6 @@ public class ResourceDeltaVerifier extends Assert implements IResourceChangeList
 
 	/**
 	 * Part of the <code>IResourceChangedListener</code> interface.
-	 * @see IResourceChangedListener
 	 */
 	@Override
 	public void resourceChanged(IResourceChangeEvent e) {

@@ -63,8 +63,6 @@ public class PageContentForm implements IIntroConstants {
 	 * Create the form for the root page. Number of columns there is equal to
 	 * the number of links. Every image link does not cache a model object for
 	 * data retrieval..
-	 *
-	 * @param pageBook
 	 */
 	public void createPartControl(ScrolledPageBook contentPageBook,
 			PageStyleManager pageStyleManager) {

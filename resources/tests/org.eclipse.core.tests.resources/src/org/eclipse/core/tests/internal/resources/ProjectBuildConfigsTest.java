@@ -14,7 +14,9 @@
 package org.eclipse.core.tests.internal.resources;
 
 import org.eclipse.core.internal.resources.BuildConfiguration;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -34,6 +36,7 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 
 	@Override
 	public void setUp() throws Exception {
+		super.setUp();
 		project = getWorkspace().getRoot().getProject("ProjectBuildConfigsTest_Project");
 		ensureExistsInWorkspace(new IProject[] {project}, true);
 		variant0 = new BuildConfiguration(project, variantId0);

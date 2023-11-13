@@ -14,9 +14,13 @@
 package org.eclipse.core.tests.resources.session;
 
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.*;
+import org.eclipse.core.tests.resources.AutomatedResourceTests;
+import org.eclipse.core.tests.resources.TestUtil;
+import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -24,86 +28,46 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  */
 public class TestBug202384 extends WorkspaceSessionTest {
 
-	public void testInitializeWorkspace() {
+	public void testInitializeWorkspace() throws CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("project");
 		ensureExistsInWorkspace(project, true);
-		try {
-			project.setDefaultCharset("UTF-8", getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
-		try {
-			assertEquals("2.0", "UTF-8", project.getDefaultCharset(false));
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
-		try {
-			project.close(getMonitor());
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
-		try {
-			workspace.save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("5.0", e);
-		}
+		project.setDefaultCharset("UTF-8", getMonitor());
+		assertEquals("2.0", "UTF-8", project.getDefaultCharset(false));
+		project.close(getMonitor());
+		workspace.save(true, getMonitor());
 	}
 
-	public void testStartWithClosedProject() {
+	public void testStartWithClosedProject() throws CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("project");
 		assertFalse("1.0", project.isOpen());
-		try {
-			//project is closed so it is not possible to read correct encoding
-			assertNull("2.0", project.getDefaultCharset(false));
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
-		try {
-			//opening the project should initialize ProjectPreferences
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
-		try {
-			//correct values should be available after initialization
-			assertEquals("5.0", "UTF-8", project.getDefaultCharset(false));
-		} catch (CoreException e) {
-			fail("6.0", e);
-		}
-		try {
-			workspace.save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("7.0", e);
-		}
+		// project is closed so it is not possible to read correct encoding
+		assertNull("2.0", project.getDefaultCharset(false));
+		// opening the project should initialize ProjectPreferences
+		project.open(getMonitor());
+		// correct values should be available after initialization
+		assertEquals("5.0", "UTF-8", project.getDefaultCharset(false));
+		workspace.save(true, getMonitor());
 	}
 
-	public void testStartWithOpenProject() {
+	public void testStartWithOpenProject() throws CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("project");
 		assertTrue("1.0", project.isOpen());
-		try {
-			//correct values should be available if ProjectPreferences got
-			//initialized upon creation
-			String expectedEncoding = "UTF-8";
-			// check with a timeout, in case some initialize operation is slow
-			long timeout = 10_000;
-			long start = System.currentTimeMillis();
-			while (!expectedEncoding.equals(project.getDefaultCharset(false))
-					&& System.currentTimeMillis() - start < timeout) {
-				TestUtil.dumpRunnigOrWaitingJobs(getName());
-				TestUtil.waitForJobs(getName(), 500, 1000);
-			}
-			assertEquals("2.0", expectedEncoding, project.getDefaultCharset(false));
-		} catch (CoreException e) {
-			fail("3.0", e);
+		// correct values should be available if ProjectPreferences got
+		// initialized upon creation
+		String expectedEncoding = "UTF-8";
+		// check with a timeout, in case some initialize operation is slow
+		long timeout = 10_000;
+		long start = System.currentTimeMillis();
+		while (!expectedEncoding.equals(project.getDefaultCharset(false))
+				&& System.currentTimeMillis() - start < timeout) {
+			TestUtil.dumpRunnigOrWaitingJobs(getName());
+			TestUtil.waitForJobs(getName(), 500, 1000);
 		}
-		try {
-			workspace.save(true, getMonitor());
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		assertEquals("2.0", expectedEncoding, project.getDefaultCharset(false));
+		workspace.save(true, getMonitor());
 	}
 
 	public static Test suite() {

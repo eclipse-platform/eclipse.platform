@@ -178,7 +178,7 @@ public abstract class TipManager implements ITipManager {
 	 *
 	 * @return Returns {@link #START_DIALOG}, {@link #START_BACKGROUND} or
 	 *         {@link #START_DISABLE}.
-	 * @see TipManager#setStartUpBehavior(int)
+	 * @see TipManager#setStartupBehavior(int)
 	 */
 	public int getStartupBehavior() {
 		checkDisposed();
@@ -196,7 +196,7 @@ public abstract class TipManager implements ITipManager {
 	 *
 	 * @return this
 	 *
-	 * @see #isRunAtStartup()
+	 * @see #getStartupBehavior()
 	 */
 	public abstract TipManager setStartupBehavior(int startupBehavior);
 

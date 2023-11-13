@@ -131,9 +131,6 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		}
 	}
 
-	/**
-	 * @see org.eclipse.core.tests.harness.ResourceTest#getRandomLocation()
-	 */
 	@Override
 	public IPath getRandomLocation() {
 		IPathVariableManager pathVars = getWorkspace().getPathVariableManager();
@@ -152,9 +149,6 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		return path;
 	}
 
-	/**
-	 * @see org.eclipse.core.tests.harness.ResourceTest#getRandomLocation()
-	 */
 	public IPath getRandomProjectLocation() {
 		IPathVariableManager pathVars = getWorkspace().getPathVariableManager();
 		// low order bits are current time, high order bits are static counter
@@ -172,9 +166,6 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		return path;
 	}
 
-	/**
-	 * @see org.eclipse.core.tests.harness.ResourceTest#getRandomLocation()
-	 */
 	public IPath getRandomRelativeProjectLocation() {
 		IPathVariableManager pathVars = getWorkspace().getPathVariableManager();
 		// low order bits are current time, high order bits are static counter
@@ -192,17 +183,11 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		return path;
 	}
 
-	/**
-	 * @see LinkedResourceTest#resolve(org.eclipse.core.runtime.IPath)
-	 */
 	@Override
 	protected IPath resolve(IPath path) {
 		return getWorkspace().getPathVariableManager().resolvePath(path);
 	}
 
-	/**
-	 * @see LinkedResourceTest#resolve(java.net.URI)
-	 */
 	@Override
 	protected URI resolve(URI uri) {
 		return getWorkspace().getPathVariableManager().resolveURI(uri);

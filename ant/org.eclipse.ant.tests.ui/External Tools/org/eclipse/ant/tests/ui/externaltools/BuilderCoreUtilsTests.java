@@ -13,6 +13,12 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.externaltools;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +32,8 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for {@link BuilderCoreUtils}
@@ -35,12 +43,9 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 @SuppressWarnings("restriction")
 public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 
-	public BuilderCoreUtilsTests() {
-		super("BuilderCoreUtils Tests"); //$NON-NLS-1$
-	}
-
+	@Before
 	@Override
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		super.setUp();
 		// create the external tool builder dir
 		BuilderCoreUtils.getBuilderFolder(getProject(), true);
@@ -53,6 +58,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigFromBuildCommandArgs1() throws Exception {
 		ILaunchConfiguration config = BuilderCoreUtils.configFromBuildCommandArgs(getProject(), new HashMap<>(), new String[] {
 				BuilderCoreUtils.VERSION_1_0 });
@@ -66,6 +72,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigFromBuildCommandArgs2() throws Exception {
 		Map<String, String> args = get20AntArgumentMap();
 		ILaunchConfiguration config = BuilderCoreUtils.configFromBuildCommandArgs(getProject(), args, new String[] { BuilderCoreUtils.VERSION_2_1 });
@@ -79,6 +86,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigFromBuildCommandArgs3() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		args.put(BuilderCoreUtils.LAUNCH_CONFIG_HANDLE, "foo"); //$NON-NLS-1$
@@ -94,6 +102,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigFromBuildCommandArgs4() throws Exception {
 		createExternalToolBuilder(getProject(), "testConfigFromBuildCommandArgs4", null); //$NON-NLS-1$
 		Map<String, String> args = new HashMap<>();
@@ -110,6 +119,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigFromBuildCommandArgs5() throws Exception {
 		createExternalToolBuilder(getProject(), "testConfigFromBuildCommandArgs5", null); //$NON-NLS-1$
 		Map<String, String> args = new HashMap<>();
@@ -126,6 +136,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigFromBuildCommandArgs6() throws Exception {
 		createExternalToolBuilder(getProject(), "testConfigFromBuildCommandArgs6", null); //$NON-NLS-1$
 		Map<String, String> args = new HashMap<>();
@@ -141,6 +152,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigFromBuildCommandArgs7() throws Exception {
 		createExternalToolBuilder(getProject(), "testConfigFromBuildCommandArgs7", null); //$NON-NLS-1$
 		Map<String, String> args = new HashMap<>();
@@ -157,6 +169,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigureTriggers1() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		args.put(IAntLaunchConstants.ATTR_ANT_AFTER_CLEAN_TARGETS, null);
@@ -179,6 +192,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigureTriggers2() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		args.put(IAntLaunchConstants.ATTR_ANT_AFTER_CLEAN_TARGETS, "def,clean"); //$NON-NLS-1$
@@ -203,6 +217,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigureTriggers3() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		args.put(IAntLaunchConstants.ATTR_ANT_MANUAL_TARGETS, null);
@@ -228,6 +243,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigureTriggers4() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		args.put(IAntLaunchConstants.ATTR_ANT_MANUAL_TARGETS, "def,inc"); //$NON-NLS-1$
@@ -251,6 +267,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigureTriggers5() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		args.put(IAntLaunchConstants.ATTR_ANT_AUTO_TARGETS, null);
@@ -273,6 +290,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigureTriggers6() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		args.put(IAntLaunchConstants.ATTR_ANT_AUTO_TARGETS, "def,auto"); //$NON-NLS-1$
@@ -295,6 +313,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigureTriggers7() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		args.put(IAntLaunchConstants.ATTR_ANT_CLEAN_TARGETS, null);
@@ -317,6 +336,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigureTriggers8() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		args.put(IAntLaunchConstants.ATTR_ANT_CLEAN_TARGETS, "def,clean"); //$NON-NLS-1$
@@ -340,6 +360,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigureTriggers9() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		args.put(IAntLaunchConstants.ATTR_ANT_AFTER_CLEAN_TARGETS, "def"); //$NON-NLS-1$
@@ -366,6 +387,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testConfigureTriggers10() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		args.put(IAntLaunchConstants.ATTR_ANT_AFTER_CLEAN_TARGETS, "def"); //$NON-NLS-1$
@@ -395,6 +417,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testIsUnmigratedConfig1() throws Exception {
 		ILaunchConfigurationType type = AbstractAntUITest.getLaunchManager().getLaunchConfigurationType(IAntLaunchConstants.ID_ANT_BUILDER_LAUNCH_CONFIGURATION_TYPE);
 		if (type != null) {
@@ -410,6 +433,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testIsUnmigratedConfig2() throws Exception {
 		ILaunchConfiguration config = createExternalToolBuilder(getProject(), "testIsUnmigratedConfig2", null); //$NON-NLS-1$
 		assertFalse("Shoudl not be considered 'unmigrated'", BuilderCoreUtils.isUnmigratedConfig(config)); //$NON-NLS-1$
@@ -424,6 +448,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testToBuildCommand1() throws Exception {
 		ILaunchConfigurationWorkingCopy copy = createExternalToolBuilderWorkingCopy(getProject(), "testToBuildCommand1", null); //$NON-NLS-1$
 		ICommand command = BuilderCoreUtils.toBuildCommand(getProject(), copy, getProject().getDescription().newCommand());
@@ -439,6 +464,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testToBuildCommand2() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		ILaunchConfiguration copy = createExternalToolBuilder(getProject(), "testToBuildCommand2", args); //$NON-NLS-1$
@@ -455,6 +481,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testToBuildCommand3() throws Exception {
 		Map<String, String> args = new HashMap<>();
 		ILaunchConfiguration copy = createExternalToolBuilder(getProject(), "testToBuildCommand3", args); //$NON-NLS-1$
@@ -467,6 +494,7 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testBuildTypesToArray1() throws Exception {
 		String kinds = IExternalToolConstants.BUILD_TYPE_CLEAN + "," + //$NON-NLS-1$
 				IExternalToolConstants.BUILD_TYPE_INCREMENTAL + "," + //$NON-NLS-1$

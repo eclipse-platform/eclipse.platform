@@ -78,7 +78,7 @@ public class FileSystemOperations {
 	 * files should also be replaced or left alone.
 	 * @param traversals the traversals that cover the resources to get
 	 * @param overrideOutgoing whether locally modified resources should be replaced
-	 * @param progress a progress monitor
+	 * @param monitor a progress monitor
 	 * @throws TeamException
 	 */
 	public void get(ResourceTraversal[] traversals, boolean overrideOutgoing, IProgressMonitor monitor) throws TeamException {
@@ -151,7 +151,7 @@ public class FileSystemOperations {
 	 * contents with the local workspace contents.
 	 * @param traversals the traversals that cover the resources to check in
 	 * @param overrideIncoming indicate whether incoming remote changes should be replaced
-	 * @param progress a progress monitor
+	 * @param monitor a progress monitor
 	 * @throws TeamException
 	 */
 	public void checkin(ResourceTraversal[] traversals, boolean overrideIncoming, IProgressMonitor monitor) throws TeamException {

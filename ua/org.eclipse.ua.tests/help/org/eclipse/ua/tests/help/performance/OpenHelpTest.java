@@ -31,19 +31,24 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.test.performance.Dimension;
-import org.eclipse.test.performance.PerformanceTestCase;
+import org.eclipse.test.performance.PerformanceTestCaseJunit5;
 import org.eclipse.ui.PlatformUI;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.osgi.framework.FrameworkUtil;
 
-public class OpenHelpTest extends PerformanceTestCase {
+public class OpenHelpTest extends PerformanceTestCaseJunit5 {
 
 	private AbstractTocProvider[] tocProviders;
 	private AbstractIndexProvider[] indexProviders;
 	private Shell shell;
 
+	@BeforeEach
 	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	public void setUp(TestInfo testInfo) throws Exception {
+		super.setUp(testInfo);
 		TocManager tocManager = HelpPlugin.getTocManager();
 		tocProviders = tocManager.getTocProviders();
 		tocManager.setTocProviders(new AbstractTocProvider[] { new TestTocFileProvider() });
@@ -55,8 +60,9 @@ public class OpenHelpTest extends PerformanceTestCase {
 		indexManager.clearCache();
 	}
 
+	@AfterEach
 	@Override
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		super.tearDown();
 		TocManager tocManager = HelpPlugin.getTocManager();
 		tocManager.setTocProviders(tocProviders);
@@ -67,6 +73,7 @@ public class OpenHelpTest extends PerformanceTestCase {
 		indexManager.clearCache();
 	}
 
+	@Test
 	public void testOpenHelp() throws Exception {
 		tagAsGlobalSummary("Open help", Dimension.ELAPSED_PROCESS);
 

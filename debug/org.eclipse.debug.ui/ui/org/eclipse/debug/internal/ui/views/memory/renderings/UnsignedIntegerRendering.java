@@ -25,10 +25,6 @@ import org.eclipse.debug.ui.IDebugUIConstants;
  */
 public class UnsignedIntegerRendering extends AbstractIntegerRendering {
 
-	/**
-	 * @param memBlock
-	 * @param renderingId
-	 */
 	public UnsignedIntegerRendering(String renderingId) {
 		super(renderingId);
 	}

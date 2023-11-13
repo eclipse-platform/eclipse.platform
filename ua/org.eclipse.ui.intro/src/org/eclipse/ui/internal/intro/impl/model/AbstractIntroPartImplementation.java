@@ -170,7 +170,7 @@ public abstract class AbstractIntroPartImplementation {
 	/**
 	 * Updates the UI navigation history with a page ID.
 	 *
-	 * @param pageId
+	 * @param  page
 	 */
 	public void updateHistory(AbstractIntroPage page) {
 		history.updateHistory(page);

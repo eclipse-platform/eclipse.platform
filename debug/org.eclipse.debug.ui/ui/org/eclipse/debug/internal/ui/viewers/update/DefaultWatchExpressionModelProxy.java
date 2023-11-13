@@ -38,7 +38,6 @@ import org.eclipse.ui.progress.UIJob;
  *
  * @see org.eclipse.debug.internal.ui.views.expression.ExpressionView
  * @see org.eclipse.debug.internal.ui.model.elements.ExpressionContentProvider
- * @see org.eclipse.debug.internal.ui.model.elements.ExpressionsViewMementoProvider
  *
  * @since 3.2
  */

@@ -311,8 +311,8 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 	}
 
 	/**
-	 * Handle the 'close' & 'launch' buttons here, all others are handled
-	 * in <code>Dialog</code>
+	 * Handle the 'close' &amp; 'launch' buttons here, all others are handled in
+	 * <code>Dialog</code>
 	 *
 	 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
 	 */
@@ -366,7 +366,7 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 	/**
 	 * Sets the title for the dialog, and establishes the help context.
 	 *
-	 * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell);
+	 * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
 	 */
 	@Override
 	protected void configureShell(Shell shell) {
@@ -500,8 +500,8 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 	}
 
 	/**
-	 * Creates all of the actions for the toolbar
-	 * @param toolbar
+	 * Creates all of the actions for the ToolBarManager
+	 * @param tmanager
 	 * @since 3.2
 	 */
 	protected void createToolbarActions(ToolBarManager tmanager) {

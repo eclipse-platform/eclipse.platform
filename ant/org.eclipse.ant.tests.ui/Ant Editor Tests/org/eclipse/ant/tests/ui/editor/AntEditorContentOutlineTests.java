@@ -17,6 +17,11 @@
 
 package org.eclipse.ant.tests.ui.editor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
 import org.eclipse.ant.internal.ui.model.AntElementNode;
@@ -24,20 +29,18 @@ import org.eclipse.ant.internal.ui.model.AntModel;
 import org.eclipse.ant.internal.ui.model.IAntElement;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 import org.eclipse.jface.text.BadLocationException;
+import org.junit.Test;
 
 /**
  * Tests the correct creation of the outline for an xml file.
- * 
+ *
  */
 public class AntEditorContentOutlineTests extends AbstractAntUITest {
-
-	public AntEditorContentOutlineTests(String name) {
-		super(name);
-	}
 
 	/**
 	 * Tests the creation of the AntElementNode, that includes parsing a file and determining the correct location of the tags.
 	 */
+	@Test
 	public void testCreationOfOutlineTree() throws BadLocationException {
 		AntModel model = getAntModel("buildtest1.xml"); //$NON-NLS-1$
 
@@ -125,6 +128,7 @@ public class AntEditorContentOutlineTests extends AbstractAntUITest {
 	/**
 	 * Tests the creation of the AntElementNode, that includes parsing a non-valid file.
 	 */
+	@Test
 	public void testParsingOfNonValidFile() throws BadLocationException {
 		AntModel model = getAntModel("buildtest2.xml"); //$NON-NLS-1$
 
@@ -146,6 +150,7 @@ public class AntEditorContentOutlineTests extends AbstractAntUITest {
 	/**
 	 * Tests whether the outline can handle a build file with only the {@literal <project></project>} tags.
 	 */
+	@Test
 	public void testWithProjectOnlyBuildFile() {
 		AntModel model = getAntModel("projectOnly.xml"); //$NON-NLS-1$
 		AntElementNode rootProject = model.getProjectNode();
@@ -155,6 +160,7 @@ public class AntEditorContentOutlineTests extends AbstractAntUITest {
 	/**
 	 * Tests whether the outline can handle an empty build file.
 	 */
+	@Test
 	public void testWithEmptyBuildFile() {
 		AntModel model = getAntModel("empty.xml"); //$NON-NLS-1$
 		AntElementNode rootProject = model.getProjectNode();
@@ -164,6 +170,7 @@ public class AntEditorContentOutlineTests extends AbstractAntUITest {
 	/**
 	 * Some testing of getting the right location of tags.
 	 */
+	@Test
 	public void testAdvancedTaskLocation() throws BadLocationException {
 		AntModel model = getAntModel("outline_select_test_build.xml"); //$NON-NLS-1$
 
@@ -193,6 +200,7 @@ public class AntEditorContentOutlineTests extends AbstractAntUITest {
 	/**
 	 * Tests if target is internal or not
 	 */
+	@Test
 	public void testInternalTargets() {
 		AntModel model = getAntModel("internalTargets.xml"); //$NON-NLS-1$
 		assertTrue("Target without description should be internal", model.getTargetNode("internal1").isInternal()); //$NON-NLS-1$ //$NON-NLS-2$
