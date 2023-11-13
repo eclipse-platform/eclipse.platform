@@ -3,6 +3,7 @@ package org.eclipse.pki.preferences;
 import java.io.PrintStream;
 import java.security.KeyStore;
 
+
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -43,7 +44,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	private Group groups = null;
 	private String pkcs11Label="Smartcard location Configuration";
 	private String pkcs12Label="PKCS12 Certificate Installation location";
-	PKISecureStorage pkiSecureStorage = null;;
+	PKISecureStorage pkiSecureStorage = null;
 //	Display display = Display.getCurrent();
 //	Color blue = display.getSystemColor(SWT.COLOR_BLUE);
 //	Color red = display.getSystemColor(SWT.COLOR_RED);
@@ -54,7 +55,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	public PreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
 		noDefaultButton();
-		setPreferenceStore(AuthenticationPlugin.getDefault().getPreferenceStore());
+		//Activator.logInfo("SOOOOOOOOOOsosososososososososososososoosOOO", new Throwable());
+		//setPreferenceStore(AuthenticationPlugin.getDefault().getPreferenceStore());
 		setDescription("PKI Preferences:");
 		//printoutStore();
 		previousPKI = this.previousPKI();
