@@ -163,4 +163,20 @@
          priority="-1"
          class="org.eclipse.debug.tests.ui.TestVariableValueEditor3"/>
    </extension>
+   <extension point="org.eclipse.debug.core.launchConfigurationTypes">
+    <launchConfigurationType
+        name="%launchConfigurationType.name.2"
+        modes="run, debug"
+        id="org.eclipse.debug.ui.tests.launchConfigurationType1">
+    </launchConfigurationType>
+	</extension>
+	
+	<extension
+	    point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+	    <launchConfigurationTabGroup
+	        class="org.eclipse.debug.tests.ui.SpyTabGroup"
+	        id="org.eclipse.debug.ui.tests.launchConfigurationTabGroup"
+	        type="org.eclipse.debug.ui.tests.launchConfigurationType1">
+	    </launchConfigurationTabGroup>
+	</extension>
 </plugin>
