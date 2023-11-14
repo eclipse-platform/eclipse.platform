@@ -29,6 +29,7 @@ Export-Package: org.eclipse.core.pki,
 Bundle-Vendor: %PLUGIN_PROVIDER
 Automatic-Module-Name: org.eclipse.core.pki
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.eclipse.pki.auth.AuthenticationPlugin
 Bundle-ClassPath: target/org.eclipse.core.pki-1.0.0.jar,
  .
 Bundle-RequiredExecutionEnvironment: JavaSE-17
