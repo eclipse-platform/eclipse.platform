@@ -23,6 +23,7 @@ public class VendorImplementation extends ProviderImpl implements IProvider{
 	
 	private VendorImplementation() {
 		try {
+			
 			if ( security.isPKCS11Enabled()) {
 				enabled=true;
 			}

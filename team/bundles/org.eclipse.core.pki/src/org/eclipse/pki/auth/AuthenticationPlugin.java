@@ -36,6 +36,7 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
 
 import org.eclipse.core.pki.FingerprintX509;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
@@ -119,14 +120,25 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
      * @return the shared instance
      */
     public static AuthenticationPlugin getDefault() {
+    	if (plugin == null) {
+    		AuthenticationPlugin auth = new AuthenticationPlugin();
+    		try {
+				auth.startup();
+				System.out.println("AuthenticationPlugin JUST RAN START UP MANNUALLY");
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
     	return plugin; 
     }
 
     public static String getPluginId() {
         return getDefault().getBundle().getSymbolicName();
     }
-    
+   
     public ILog getLogger() {
+    	System.out.println("AuthenticationPlugin ------------------------------ WHERE is ILOGG");
     	return  AuthenticationPlugin.getDefault().getLog();
     }
    
@@ -138,6 +150,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
+        System.out.println("AuthenticationPlugin ------------------------------   BUNDLE START");
         initialize();
         snapshotProperties = PKIProperties.getInstance();
     }
@@ -163,9 +176,15 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
      * @return the jks path that is currently set in the system properties or empty string if not in the system property.
      */
     public String obtainSystemPropertyJKSPath(){
-		String currentJKSPath = System.getProperty(JAVA_SSL_TRUST_STORE_PATH_KEY);
-		if(currentJKSPath == null){
-			currentJKSPath ="";
+		String currentJKSPath="";
+		try {
+			currentJKSPath = System.getProperty(JAVA_SSL_TRUST_STORE_PATH_KEY);
+			if(currentJKSPath == null){
+				currentJKSPath ="";
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
 		}
 		return currentJKSPath;
     }
@@ -898,7 +917,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 				/*
 				 * TODO: save the store
 				 */
-				//System.out.println(" AuthenticationPlugin -- Please save the store!");
+				System.out.println(" AuthenticationPlugin -- Please save the store!");
 				try {
 					((IPersistentPreferenceStore)getPreferenceStore()).save();
 				} catch (IOException e) {
