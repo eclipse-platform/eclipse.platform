@@ -2,8 +2,6 @@ package org.eclipse.pki.pkiselection;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
-import java.util.Date;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
@@ -170,6 +168,6 @@ public class PKIProperties extends Authenticator {
 		sb.append("\n");
 		
 		Status status = new Status(IStatus.INFO, sb.toString(), null);
-		//AuthenticationPlugin.getDefault().getLogger().log(status);
+		AuthenticationPlugin.getDefault().getLogger().log(status);
 	}
 }
