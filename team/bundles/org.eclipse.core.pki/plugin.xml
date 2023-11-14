@@ -12,7 +12,7 @@
 	
 	<extension point="org.eclipse.ui.startup">
 		<startup
-			class="org.eclipse.core.pki.AuthenticationBase">
+			class="org.eclipse.pki.auth.PKIController">
 		</startup>
 	</extension>
 
