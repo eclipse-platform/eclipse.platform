@@ -31,6 +31,8 @@ public class AuthenticationPreferences {
     public static final String TRUST_STORE_LOCATION = "trustStoreLocation";
     
     public static final String PKCS11_CONFIGURE_FILE_LOCATION = "pkcs11ConfigureFileLocation";
+    
+    public static final String SECURITY_PROVIDER ="securityProvider";
 
 	public static final String[] FILTER_NAMES = { 
         "PKCS #12 Files (*.p12)", "All Files (*.*)"};

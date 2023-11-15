@@ -2,12 +2,14 @@ package org.eclipse.pki.preferences;
 
 import java.io.PrintStream;
 import java.security.KeyStore;
-
+import java.security.Provider;
+import java.security.Security;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PathEditor;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -38,6 +40,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	private StringFieldEditor pkcs11Certificate;
 	private StringFieldEditor pkiCertificate;
 	private StringFieldEditor trustStoreJKS;
+	private StringFieldEditor securityProvider;
 	private FileFieldEditor configurationLocationFile;
 	private PKI previousPKI;
 	private Composite yourSibling=null;
@@ -61,6 +64,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		setPreferenceStore(AuthenticationPlugin.getDefault().getPreferenceStore());
 		setDescription("PKI Preferences:");
 		//printoutStore();
+		listProviders();
 		previousPKI = this.previousPKI();
 		pkiSecureStorage = new PKISecureStorage();
 	}
@@ -128,7 +132,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	    checkState();
 		
 		yourSibling.layout();
-		
+		securityProvider.setStringValue("SunPKCS11-CSPid");
 		parent.redraw();  
 	    return yourSibling;
 	}
@@ -147,8 +151,11 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	private void addFields(Group group) {
 		
 		configurationLocationFile = new FileFieldEditor(IPreferenceConstants.DEFAULT_EDITORS,
-				"&PKCS11 cfg:", true, group );
+				"&PKCS11 config Selection:", true, group );
 		
+		securityProvider = new PKICertLocationFieldEditor(AuthenticationPreferences.SECURITY_PROVIDER,
+                "Java JDK Security Provider", group, "pkcs11", this);
+				
 		pkcs11Certificate = new PKICertLocationFieldEditor(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION,
                 "Smartcard repository location", group, "pkcs11", this);
 		
@@ -159,15 +166,18 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
                 "Trust Store Location:", group);
 		
 		configurationLocationFile.setEnabled(true, group);
+		securityProvider.getTextControl(group).setEnabled(true);
 		pkcs11Certificate.getTextControl(group).setEnabled(false);
 		pkiCertificate.getTextControl(group).setEnabled(false);
 	    trustStoreJKS.getTextControl(group).setEnabled(false);
 	   
 	    configurationLocationFile.loadDefault();
+	    securityProvider.loadDefault();
 	    pkcs11Certificate.loadDefault();
 	    pkiCertificate.loadDefault();
 	  
 	    addField(configurationLocationFile);
+	    addField(securityProvider);
 	    addField(pkcs11Certificate);
 	    addField(pkiCertificate);
 	    
@@ -181,6 +191,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
      */
     protected void initialize() {
         super.initialize();
+        
     }
     protected void setEditors() {
     	
@@ -204,6 +215,11 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
         	configurationLocationFile.setPreferenceStore(AuthenticationPlugin.getDefault().getPreferenceStore());
         	configurationLocationFile.load();
         }
+        if (securityProvider != null ) {
+        	securityProvider.setPage(this);
+        	securityProvider.setPreferenceStore(AuthenticationPlugin.getDefault().getPreferenceStore());
+        	securityProvider.load();
+        } 
     }
     protected void setPkcs11InVisible() {
     	
@@ -605,6 +621,11 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		pki.setKeyStoreProvider(current.getKeyStoreProvider());
 		pki.setKeyStoreType(current.getKeyStoreType());
 		return pki;	
+	}
+	public static void listProviders() {
+		for ( Provider provider : Security.getProviders() ) {
+	    	System.out.println("BEFORE ADDING ANY Provider NAME:"+ provider.getName() );
+	    }
 	}
 	
 	public void printoutStore() {

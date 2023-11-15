@@ -50,7 +50,7 @@ public class PKICertLocationFieldEditor extends StringButtonFieldEditor {
 	public PKICertLocationFieldEditor(String name, String labelText,
 			Composite parent, String pkiType, PreferencePage preferencePage) {
 		
-;		//System.out.println("PKICertLocationFieldEditor  CONSTRUCTOR open ");
+;		System.out.println("PKICertLocationFieldEditor  CONSTRUCTOR open ");
 		this.preferencePage = preferencePage;
 		init(name, labelText);
 		myName=name;
@@ -203,9 +203,9 @@ public class PKICertLocationFieldEditor extends StringButtonFieldEditor {
     		 * entered the requested security info and successfully pressed finish button.
     		 * 
     		 */
-    		//System.out.println("PKICertLocationFieldEditor   BEFORE");
+    		System.out.println("PKICertLocationFieldEditor   BEFORE");
     		newUserKeyStore = AuthenticationPlugin.getDefault().getUserKeyStore(this.UPDATE_PREFERENCE);
-    		//System.out.println("PKICertLocationFieldEditor   AFTER");
+    		System.out.println("PKICertLocationFieldEditor   AFTER");
     		/*
     		 * 
     		 *  NOTE:  AFTER blocking, code continues here.
