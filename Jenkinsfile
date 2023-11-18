@@ -21,7 +21,7 @@ pipeline {
 						-Dcompare-version-with-baselines.skip=false \
 						-Dmaven.compiler.failOnWarning=true -Dproject.build.sourceEncoding=UTF-8 \
 						-Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss.SSS \
-						-DtrimStackTrace=false 
+						-DtrimStackTrace=false
 					"""
 				}
 			}
@@ -30,7 +30,7 @@ pipeline {
 					archiveArtifacts artifacts: '.*log,*/target/work/data/.metadata/.*log,*/tests/target/work/data/.metadata/.*log,apiAnalyzer-workspace/.metadata/.*log', allowEmptyArchive: true
 					junit '**/target/surefire-reports/TEST-*.xml'
 					discoverGitReferenceBuild referenceJob: 'eclipse.platform/master'
-					recordIssues publishAllIssues: true, tools: [java(), mavenConsole(), javaDoc()]
+					recordIssues publishAllIssues: true, enabledForFailure:true, tools: [java(), eclipse(), mavenConsole(), javaDoc()]
 				}
 			}
 		}
