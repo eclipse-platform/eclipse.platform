@@ -19,9 +19,9 @@ pipeline {
 					mvn clean verify --batch-mode --fail-at-end -Dmaven.repo.local=$WORKSPACE/.m2/repository \
 						-Pbree-libs -Papi-check -Pjavadoc \
 						-Dcompare-version-with-baselines.skip=false \
-						-Dmaven.compiler.failOnWarning=true -Dproject.build.sourceEncoding=UTF-8 \
+						-Dmaven.compiler.failOnWarning=true \
 						-Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss.SSS \
-						-DtrimStackTrace=false 
+						-DtrimStackTrace=false
 					"""
 				}
 			}
