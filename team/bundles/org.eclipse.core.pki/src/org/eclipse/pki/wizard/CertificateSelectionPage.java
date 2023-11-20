@@ -280,7 +280,7 @@ public class CertificateSelectionPage extends WizardPage  {
                     //isPageComplete();
                 } else {
                      
-                	//System.out.println("CertificateSelectionPage ---------------FALSE-----------------  PKCS11 IS TURNED OFF");
+                	System.out.println("CertificateSelectionPage ---------CLEAR------FALSE-----------------  PKCS11 IS TURNED OFF");
                 	pkcs11Button.setSelection(false);
                 	pkcs12Button.setSelection(false);
                 	VendorImplementation.getInstance().off();
