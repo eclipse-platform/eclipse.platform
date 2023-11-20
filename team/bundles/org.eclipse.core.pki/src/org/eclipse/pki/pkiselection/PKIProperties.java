@@ -79,6 +79,7 @@ public class PKIProperties extends Authenticator {
 		this.username = username;
 	}
 	public void restore() {
+		System.out.println("PKIProperties - restore");
 		try {
 			if (( this.getKeyStore() != null ) &&
 				( this.getKeyStoreType() != null ) &&
@@ -150,6 +151,7 @@ public class PKIProperties extends Authenticator {
 		lastPKI = pki;
 	}
 	public void clear() {
+		System.out.println("PKIProperties - CLESAR ALL PROPR");
 		System.clearProperty("javax.net.ssl.keyStoreProvider");
 		System.clearProperty("javax.net.ssl.keyStore");
 		System.clearProperty("javax.net.ssl.keyStoreProvider");

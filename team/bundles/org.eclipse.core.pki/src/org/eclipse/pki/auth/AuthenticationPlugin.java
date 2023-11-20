@@ -123,13 +123,12 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     	System.out.println("AuthenticationPlugin ---getDefault plugin");
     	if (plugin == null) {
     		AuthenticationPlugin auth = new AuthenticationPlugin();
-    		try {
-				auth.startup();
-				System.out.println("AuthenticationPlugin JUST RAN START UP MANNUALLY");
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			/*
+			 * try { auth.startup();
+			 * System.out.println("AuthenticationPlugin JUST RAN START UP MANNUALLY"); }
+			 * catch (CoreException e) { // TODO Auto-generated catch block
+			 * e.printStackTrace(); }
+			 */
     	}
     	return plugin; 
     }
@@ -151,7 +150,6 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-        System.out.println("AuthenticationPlugin ------------------------------   BUNDLE START");
         initialize();
         snapshotProperties = PKIProperties.getInstance();
     }
@@ -899,7 +897,8 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 	
 	public void initialize() {
 		try {
-			System.clearProperty(JAVA_SSL_USER_KEY_STORE_PROVIDER_KEY);
+			System.out.println("AuthenticationPlugin CLEARED PROPERTY PROVIDER TBD");
+			//System.clearProperty(JAVA_SSL_USER_KEY_STORE_PROVIDER_KEY);
 			System.clearProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY);
 			System.clearProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY);
 			System.clearProperty(JAVA_SSL_USER_KEY_STORE_PASS_KEY);

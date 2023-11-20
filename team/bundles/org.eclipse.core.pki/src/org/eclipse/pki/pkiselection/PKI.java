@@ -53,6 +53,7 @@ public class PKI {
 			}
 			
 			if( this.getKeyStoreProvider() != null) {
+				System.out.println("PKI - CLEARING keystoreprovider");
 				if ( this.getKeyStoreProvider().isEmpty()) {
 					System.clearProperty("javax.net.ssl.keyStoreProvider");
 				} else {

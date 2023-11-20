@@ -6,6 +6,9 @@ public class ChangedPressedFieldEditorStatus {
 	
 	private static boolean isPKISaveCertificateChecked = false;
 	private static boolean isJKSSaveTrustStoreChecked = false;
+	private static boolean isSaveConfigurationLocationFileChecked = false;
+	private static boolean isChecked = false;
+	
 	private static boolean ispkiChangedPressed = false;
 	private static boolean isjksChangedPressed = false;
 	
@@ -73,6 +76,15 @@ public class ChangedPressedFieldEditorStatus {
 	 */
 	public static void setJksChangedPressed(boolean jksChangedPressed) {
 		ChangedPressedFieldEditorStatus.isjksChangedPressed = jksChangedPressed;
+	}
+	
+
+	public static boolean isSaveConfigurationLocationFileChecked() {
+		return isSaveConfigurationLocationFileChecked;
+	}
+
+	public static void setSaveConfigurationLocationFileChecked(boolean isSaveConfigurationLocationFileChecked) {
+		ChangedPressedFieldEditorStatus.isSaveConfigurationLocationFileChecked = isSaveConfigurationLocationFileChecked;
 	}
 
 	/**
