@@ -11,6 +11,9 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
+import org.eclipse.pki.auth.AuthenticationPlugin;
+import org.eclipse.pki.preferences.AuthenticationPreferences;
+
 
 public enum AuthenticationBase implements AuthenticationService {
 	INSTANCE;
@@ -29,7 +32,7 @@ public enum AuthenticationBase implements AuthenticationService {
 			
 			DebugLogger.printDebug("Before calls to configure JDK");
 			//keyStore = (javaVersion.startsWith("1."))?configurejdk8():configurejdk9();
-			keyStore = (isJavaModulesBased())?configurejdk9():configurejdk8();
+			keyStore = configure();
 			try {
 				/*
 				 *  Only load the store if the pin is a valuye other than the default setting of "pin"
@@ -64,48 +67,26 @@ public enum AuthenticationBase implements AuthenticationService {
 //		this.sslContext= setSSLContext(keyStore );
 		return keyStore;
 	}
-	private static KeyStore configurejdk8() {
-		KeyStore keyStore=null;
-		Provider provider=null; 
-		try {
-			
-			DebugLogger.printDebug("In configurejdk8");
-			if ( Security.getProvider("SunPKCS11") != null ) {
-				provider = Security.getProvider("SunPKCS11");
-			} else {
-				ClassLoaderPKCS11 p11 = new ClassLoaderPKCS11();
-				try {
-					provider = (Provider) p11.loadClass();
-					Security.addProvider(provider);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
-				}
-			}
-			keyStore = KeyStore.getInstance( "PKCS11", provider);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			//throw new KeyStoreException("You have specified an invalid location, Is pkcs11 installed?");
-		} 
-		
-		return keyStore;
-	}
-	private static KeyStore configurejdk9() {
+	
+	private static KeyStore configure() {
 		
 		KeyStore keyStore=null;
 		is9=true;
-		DebugLogger.printDebug("In configurejdk9");
-		Pkcs11Location location = new Pkcs11Location();
-		location.getPkcs11LocationInstance();
-		String cfgDirectory = location.getDirectory();
+		DebugLogger.printDebug("In configure  CFG STORED FILE LOC:"+
+				AuthenticationPlugin.getDefault().getPreferenceStore()
+				.getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION));
+		
+		//Pkcs11Location location = new Pkcs11Location();
+		//location.getPkcs11LocationInstance();
+		//String cfgDirectory = location.getDirectory();
+		String cfgDirectory = "/opt/cspid/java_pkcs11.cfg";
 		//listProviders();
 		if ( isFips() ) {
 			//PROVIDER="SunPKCS11";
 			PROVIDER="SunPKCS11-NSS-FIPS";
 			//cfgDirectory = "/etc/java/java-17-openjdk/java-17-openjdk-17.0.8.0.7-2.el8.x86_64/conf/nss.fips.cfg";
 		}
-		DebugLogger.printDebug("In configurejdk9  DIR:"+cfgDirectory);
+		DebugLogger.printDebug("In configure  DIR:"+cfgDirectory);
 		try {
 			
 			
@@ -114,7 +95,7 @@ public enum AuthenticationBase implements AuthenticationService {
 			Provider prototype = Security.getProvider(PROVIDER);
 			
 			if (prototype == null) {
-				DebugLogger.printDebug("In configurejdk9  PROVIDER NOT FOUND");
+				DebugLogger.printDebug("In configure  PROVIDER NOT FOUND");
 				Path path = Paths.get(cfgDirectory);
 			}
 			Provider provider = prototype.configure(cfgDirectory);
