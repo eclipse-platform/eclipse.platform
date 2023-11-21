@@ -51,8 +51,6 @@ public class PKIController implements IStartup {
 	public void earlyStartup() {
 		// TODO Auto-generated method stub
 		System.out.println("PKIController EARLY Startup");
-		 String addedProvider = System.getProperty("javax.net.ssl.keyStoreProvider");    	
-		System.out.println("PKIController --------- preference:"+ addedProvider);
 		Startup();
 	}
 
@@ -123,7 +121,6 @@ public class PKIController implements IStartup {
 	}
 
 	public Object eventRunner(int incoming) {
-		System.out.println("EarlyStartup - TURNED OFF ALL PKCS11");
 		final Integer value = Integer.valueOf(incoming);
 		return new Runnable() {
 			public void run() {

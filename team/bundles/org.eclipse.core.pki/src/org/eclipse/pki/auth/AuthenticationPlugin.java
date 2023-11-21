@@ -100,7 +100,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     protected static final String CONFIGURATION_DIR = "configuration";
     
     private static final String DEFAULT_TRUST_STORE_PASSWORD = "changeit";
-    
+    private static final String JAVA_SSL_CFG_PATH_KEY = "java.cfg.file";
     private static final String JAVA_SSL_TRUST_STORE_PATH_KEY = "javax.net.ssl.trustStore";
     private static final String JAVA_SSL_TRUST_STORE_TYPE_KEY = "javax.net.ssl.trustStoreType";
     private static final String JAVA_SSL_TRUST_STORE_PASS_KEY = "javax.net.ssl.trustStorePassword";

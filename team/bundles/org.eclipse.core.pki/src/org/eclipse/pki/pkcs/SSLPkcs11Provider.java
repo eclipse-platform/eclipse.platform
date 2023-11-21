@@ -57,7 +57,7 @@ public class SSLPkcs11Provider {
 		String logMessage="logger message";
 		try {
 			
-			//System.out.println("SSLPkcs11Provider   STARTING PROCESSING");
+			System.out.println("SSLPkcs11Provider   STARTING PROCESSING");
 
 			/*
 			 *  PKCS11 can be dynamic.  So if its already been enabled no PiN is needed and

@@ -46,7 +46,7 @@ public class PKICertLocationFieldEditor extends StringButtonFieldEditor {
 	private FocusAdapter focusAdapter=null;
 	private Button changeButton = null;
 	private static final String UPDATE_PREFERENCE = "Update";
-	private static final String CSPext="java_pkcs11.cfg";
+	//private static final String CSPext="java_pkcs11.cfg";
 	public PKICertLocationFieldEditor(String name, String labelText,
 			Composite parent, String pkiType, PreferencePage preferencePage) {
 		

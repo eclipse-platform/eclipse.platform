@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
@@ -89,6 +90,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		
         yourSibling.setLayoutData( new GridData( GridData.FILL_BOTH ) );
         GridLayout pkiGrid = new GridLayout();
+        pkiGrid.marginTop=10;
         yourSibling.setLayout( pkiGrid );
         groups =  addGroup( yourSibling );
         addFields( groups );
@@ -99,31 +101,33 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
          * When there has been NO pki selection made, then select PKCS11, but ONLY if its been configured by SA's.
          * Otherwise, just make the pkcs12 selection available.
          */
-        boolean failIT=false;
+        boolean failIT=true;
          if ( failIT ) {
         	System.out.println("PreferencePage ---  FAILIT SAYS ITS TRUE");
+        	
 	        if ((!(PKCSpick.getInstance().isPKCS11on())) && 
-	        	(!(PKCSpick.getInstance().isPKCS12on())) &&
-	        	(VendorImplementation.getInstance().isInstalled() )) {
+	        	(!(PKCSpick.getInstance().isPKCS12on())) ) {
+	        	//(VendorImplementation.getInstance().isInstalled() )) {
+	        
 	        	//System.out.println("PreferencePage -------- AVAL:"+VendorImplementation.getInstance().isInstalled() );
-	        	//System.out.println("PreferencePage --------- TURNING ON DEFAULT pkcs11 is on");
+	        	System.out.println("PreferencePage --------- TURNING ON DEFAULT pkcs11 is on");
 	        	setPkcs12InVisible();
 	        	setPkcs11Visible();
 	        	
 	        	setVisible(false);
 	        	
 	        } else if ((!(  PKCSpick.getInstance().isPKCS11on())) && 
-	            		(!(PKCSpick.getInstance().isPKCS12on())) &&
-	            		(!(VendorImplementation.getInstance().isInstalled() ))) {
-	        	//System.out.println("PreferencePage --------- THERE WAS NO DEFAULT  pkcs12 is on");
+	            		(!(PKCSpick.getInstance().isPKCS12on())) ) {
+	            		//(!(VendorImplementation.getInstance().isInstalled() ))) {
+	        	System.out.println("PreferencePage --------- THERE WAS NO DEFAULT  pkcs12 is on");
 	        	setPkcs11InVisible();
 	        	setPkcs12Visible();
 	        } else if ( PKCSpick.getInstance().isPKCS11on()) {
-	        	//System.out.println("PreferencePage ---------  pkcs11 is on");
+	        	System.out.println("PreferencePage ---------  pkcs11 is on");
 	        	setPkcs12InVisible();
 	        	setPkcs11Visible();
 	        } else if ( PKCSpick.getInstance().isPKCS12on()) {
-	        	//System.out.println("PreferencePage --------- pkcs12 is on");
+	        	System.out.println("PreferencePage --------- pkcs12 is on");
 	        	setPkcs11InVisible();
 	        	setPkcs12Visible();
 	        }
@@ -139,6 +143,18 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 				orElse("SunPKCS11");
 		//System.out.println("PreferencePage --------- preference:"+ propertyAddedProvider);
 		securityProvider.setStringValue(propertyAddedProvider);
+		
+		
+		AuthenticationPlugin.getDefault()
+			.getPreferenceStore()
+			.setValue(AuthenticationPreferences.SECURITY_PROVIDER, 
+				securityProvider.getStringValue());
+	
+		AuthenticationPlugin.getDefault()
+			.getPreferenceStore()
+			.setValue(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION,
+				 configurationLocationFile.getStringValue() );
+		
 		parent.redraw();  
 	    return yourSibling;
 	}
@@ -150,7 +166,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		data.horizontalSpan=550;
 		data.verticalSpan=5;
 		data.widthHint=650;
-		data.heightHint = 175;
+		data.heightHint = 225;
 		group.setLayoutData(data); 
 		return group;
 	}
@@ -192,8 +208,6 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 
     /**
      * Initializes all field editors.
-     * This has been overridden so that the preference store from the
-     * GForgeClientPlugin can be retrieved and used for the MADForge URL.
      */
     protected void initialize() {
         super.initialize();
@@ -234,6 +248,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 			groups.getChildren()[0].setVisible(false);
 			groups.getChildren()[1].setVisible(false);
 			groups.getChildren()[2].setVisible(false);
+			groups.getChildren()[3].setVisible(false);
 			groups.setText(pkcs12Label);
 			
 		} catch (Exception e) {
@@ -245,9 +260,13 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     	
     	try {
     		System.out.println("PreferencePage ---------  pkcs11 is on");
-        	groups.getChildren()[3].setVisible(false);
-        	groups.getChildren()[4].setVisible(false);
-        	groups.getChildren()[5].setVisible(false);
+        	//groups.getChildren()[4].setVisible(false);
+        	//groups.getChildren()[5].setVisible(false);
+        	//groups.getChildren()[6].setVisible(false);
+    		//groups.getChildren()[10].setVisible(false);
+        	//groups.getChildren()[11].setVisible(false);
+        	//groups.getChildren()[12].setVisible(false);
+        	
         	groups.setText(pkcs11Label);
 			
 		} catch (Exception e) {
@@ -260,9 +279,18 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     	try {
     		pkiType="pkcs11";
     		groups.setText(pkcs11Label);
-			groups.getChildren()[0].setVisible(true);
-        	groups.getChildren()[1].setVisible(true);
-        	groups.getChildren()[2].setVisible(true);
+    	
+    		
+			//groups.getChildren()[0].setVisible(true);
+        	//groups.getChildren()[1].setVisible(true);
+        	//groups.getChildren()[2].setVisible(true);
+        	//groups.getChildren()[3].setVisible(true);
+        	//groups.getChildren()[4].setVisible(true);
+        	//groups.getChildren()[5].setVisible(true);
+    		for(Control c : groups.getChildren()) {
+    			c.setVisible(true);
+        	}
+        	
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -273,13 +301,26 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     	try {
     		pkiType="pkcs12";
     		groups.setText(pkcs12Label);
-        	groups.getChildren()[3].setVisible(true);
+    		
         	groups.getChildren()[4].setVisible(true);
         	groups.getChildren()[5].setVisible(true);
+        	groups.getChildren()[6].setVisible(true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    }
+    public void findGroups() {
+    	Control[] co = groups.getChildren();
+    	for(Control c : groups.getChildren()) {
+    		
+    	}
+    	for(int i=0; i < co.length; i++)  {
+    		if ( co[i] instanceof Label ) {
+    			System.out.println("PreferencePage GROUP:"+ i+" "+co[i].toString());
+    		}
+    	}
+    	
     }
 
 	@Override
@@ -302,6 +343,13 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 								
 						
 								AuthenticationPlugin.getDefault().setCertificatePath("pkcs11");
+								
+								System.out.println("PreferencePage SECURITYPROVIDER:"+ securityProvider.getStringValue());
+								System.out.println("PreferencePage CFG:"+ configurationLocationFile.getStringValue());
+								
+								
+								//AuthenticationPlugin.getDefault().getPreferenceStore().setValue(AuthenticationPreferences.SECURITY_PROVIDER, defaultTrustStorePath);
+								//AuthenticationPlugin.getDefault().getPreferenceStore().setValue(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION, defaultTrustStorePath);
 								
 								AuthenticationPlugin.getDefault().setUserKeyStore(VendorImplementation.getInstance().getKeyStore());
 								AuthenticationPlugin.getDefault().setUserKeyStoreSystemProperties( VendorImplementation.getInstance().getKeyStore() );
@@ -357,6 +405,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	public boolean performOk() {
 		boolean isOK=true;
 		System.out.println("PreferencePage --------- OK PRESSED REQUEST   TBD:   FIX the stored values. TYPE:"+pkiType);
+		System.out.println("PreferencePage SECURITYPROVIDER:"+ securityProvider.getStringValue());
+		System.out.println("PreferencePage CFG:"+ configurationLocationFile.getStringValue());
 		
 		if(ChangedPressedFieldEditorStatus.isJksChangedPressed()){
 			//System.out.println("PreferencePage --------- OK PRESSED REQUEST changepresed trust");
@@ -371,8 +421,21 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		
 		if ((ChangedPressedFieldEditorStatus.isPkiChangedPressed() ) ) {
 			AuthenticationPlugin.getDefault().setUserKeyStore(ChangedPressedFieldEditorStatus.getPkiUserKeyStore());
-			//System.out.println("PreferencePage --------- PROCESSING A CHANGE OK REQUEST");
+			System.out.println("PreferencePage --------- PROCESSING A PKI CHANGE OK REQUEST");
 			if (( PKCSpick.getInstance().isPKCS11on()) || ( pkiType.equals("pkcs11") )) {
+				System.out.println("PreferencePage SECURITYPROVIDER:"+ securityProvider.getStringValue());
+				System.out.println("PreferencePage CFG:"+ configurationLocationFile.getStringValue());
+				
+				AuthenticationPlugin.getDefault()
+					.getPreferenceStore()
+					.setValue(AuthenticationPreferences.SECURITY_PROVIDER, 
+							securityProvider.getStringValue());
+				
+				AuthenticationPlugin.getDefault()
+					.getPreferenceStore()
+					.setValue(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION,
+							 configurationLocationFile.getStringValue() );
+				
 				/*
 				 * NOTE:
 				 * The USER needs to be able to type in a location. and If its NOT valid, then FAIL this TEST.
@@ -380,6 +443,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 				isOK = CheckUpdatedKeystoreValue.isValid( pkcs11Certificate.getStringValue() );
 				
 				pkcs11Certificate.setStringValue( "pkcs11" );
+				
 				PKIProperties.getInstance().setKeyStorePassword(AuthenticationPlugin.getDefault().getCertPassPhrase());
 				PKIProperties.getInstance().restore();
 			} else 	if (( PKCSpick.getInstance().isPKCS12on()) || ( pkiType.equals("pkcs12") )) {

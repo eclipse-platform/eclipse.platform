@@ -48,7 +48,7 @@ public class CheckUpdatedKeystoreValue  {
 					 * valid and that there is a valid CFG file..
 					 * 
 					 */
-					//System.out.println("CheckUpdatedKeystoreValue ----  ADD a check here to make sure path is good cfg ");
+					System.out.println("CheckUpdatedKeystoreValue ----  ADD a check here to make sure path is good cfg ");
 					VendorImplementation.refresh();
 					newUserKeyStore = VendorImplementation.getInstance().getKeyStore();
 					if ( newUserKeyStore != null ) {
@@ -75,10 +75,12 @@ public class CheckUpdatedKeystoreValue  {
 					newUserKeyStore = AuthenticationPlugin.getDefault().getUserKeyStore("Update");
 				}
 			}
-			if (userSuppliedLocation.isEmpty()) {
-				
-				throw new IllegalArgumentException();
-			} 
+			System.out.println("CheckUpdatedKeystoreValue ----  TBD COMMENTED OUT,, DONT NEED?");
+			/*
+			 * if (userSuppliedLocation.isEmpty()) {
+			 * 
+			 * throw new IllegalArgumentException(); }
+			 */
 			//isFound=true;
 			
 		
