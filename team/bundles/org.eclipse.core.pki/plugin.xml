@@ -6,7 +6,7 @@
 			category="org.eclipse.ui.net.NetPreferences"
             class="org.eclipse.pki.preferences.PreferencePage"
             id="org.eclipse.preferences.pkcs"
-            name="X.509 PKI Setup">
+            name="Java KeyStore Setup">
 		</page>
 	</extension>
 	
