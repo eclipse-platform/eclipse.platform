@@ -74,13 +74,13 @@ public enum AuthenticationBase implements AuthenticationService {
 		is9=true;
 		DebugLogger.printDebug("In configure  CFG STORED FILE LOC:"+
 				AuthenticationPlugin.getDefault().getPreferenceStore()
-				.getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION));
+				.getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION));
 		
 		//Pkcs11Location location = new Pkcs11Location();
 		//location.getPkcs11LocationInstance();
 		//String cfgDirectory = location.getDirectory();
 		String cfgDirectory = AuthenticationPlugin.getDefault().getPreferenceStore()
-							.getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION);
+							.getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION);
 		//listProviders();
 		
 		DebugLogger.printDebug("In configure  DIR:"+cfgDirectory);
@@ -159,7 +159,7 @@ public enum AuthenticationBase implements AuthenticationService {
 	public String findPkcs11CfgLocation() {
 		// TODO Auto-generated method stub
 		AuthenticationPlugin.getDefault().getPreferenceStore()
-			.getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION);
+			.getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION);
 		Pkcs11Location location = new Pkcs11Location();
 		location.getPkcs11LocationInstance();
 		return location.getJavaPkcs11Cfg();
