@@ -26,6 +26,8 @@ public class AuthenticationPreferences {
     
     public static final String PKI_CERTIFICATE_LOCATION = "pkiCertLocation";
     
+    public static final String PKCS11_CFG_FILE_LOCATION = "pkcs11CfgFile";
+    
     public static final String X500_CREDENTIAL = "x500Credential";
     
     public static final String TRUST_STORE_LOCATION = "trustStoreLocation";
