@@ -56,7 +56,7 @@ public class VendorImplementation extends ProviderImpl implements IProvider{
 	public void setSelectedX509Fingerprint( String fingerprint ) {
 		//System.out.println("VendorImplementation--------- setSelectedX509Fingerprint   PRINTE:"+fingerprint);
 		selectedX509Fingerprint=fingerprint;
-		System.out.println("VendorImplementation ---FIX THIS------ setSelectedX509Fingerprint PRINT:"+fingerprint);
+		//System.out.println("VendorImplementation ---FIX THIS------ setSelectedX509Fingerprint PRINT:"+fingerprint);
 		
 		AuthenticationBase.INSTANCE.setFingerprint(selectedX509Fingerprint);
 		AuthenticationBase.INSTANCE.setSSLContext(this.getKeyStore());

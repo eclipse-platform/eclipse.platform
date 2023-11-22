@@ -152,7 +152,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	
 		AuthenticationPlugin.getDefault()
 			.getPreferenceStore()
-			.setValue(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION,
+			.setValue(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION,
 				 configurationLocationFile.getStringValue() );
 		
 		parent.redraw();  
@@ -423,6 +423,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 			AuthenticationPlugin.getDefault().setUserKeyStore(ChangedPressedFieldEditorStatus.getPkiUserKeyStore());
 			System.out.println("PreferencePage --------- PROCESSING A PKI CHANGE OK REQUEST");
 			if (( PKCSpick.getInstance().isPKCS11on()) || ( pkiType.equals("pkcs11") )) {
+				
 				System.out.println("PreferencePage SECURITYPROVIDER:"+ securityProvider.getStringValue());
 				System.out.println("PreferencePage CFG:"+ configurationLocationFile.getStringValue());
 				
@@ -433,7 +434,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 				
 				AuthenticationPlugin.getDefault()
 					.getPreferenceStore()
-					.setValue(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION,
+					.setValue(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION,
 							 configurationLocationFile.getStringValue() );
 				
 				/*

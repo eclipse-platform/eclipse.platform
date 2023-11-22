@@ -470,7 +470,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 		if ( PKCSpick.getInstance().isPKCS11on()) {
 			//System.out.println("AuthenticationPlugin ----setCertificatePath  PKCS11 PATH:"+ path);
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS11");
-			getPreferenceStore().setValue(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION, path);
+			//getPreferenceStore().setValue(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION, path);
 		} else if ( PKCSpick.getInstance().isPKCS12on()) {
 			//System.out.println("AuthenticationPlugin ----setCertificatePath  PKCS12 PATH:"+ path);
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS12");
