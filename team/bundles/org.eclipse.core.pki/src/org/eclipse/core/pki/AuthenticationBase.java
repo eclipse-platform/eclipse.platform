@@ -159,7 +159,7 @@ public enum AuthenticationBase implements AuthenticationService {
 	public String findPkcs11CfgLocation() {
 		// TODO Auto-generated method stub
 		AuthenticationPlugin.getDefault().getPreferenceStore()
-			.getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION));
+			.getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION);
 		Pkcs11Location location = new Pkcs11Location();
 		location.getPkcs11LocationInstance();
 		return location.getJavaPkcs11Cfg();
