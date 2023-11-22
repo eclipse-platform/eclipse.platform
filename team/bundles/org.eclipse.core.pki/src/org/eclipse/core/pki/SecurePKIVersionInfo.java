@@ -21,7 +21,7 @@ public enum SecurePKIVersionInfo {
 			/*
 			 * See if this is a valid path check to see if its eclipse testing
 			 */
-			path = Paths.get("../securePKI/target//SecurePKI.jar");
+			path = Paths.get("PKI.jar");
 
 			if (Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
 				//System.out.println(" GOOD PATH");
@@ -30,7 +30,7 @@ public enum SecurePKIVersionInfo {
 				try {
 					path = Paths.get(AuthenticationBase.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 					if (Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
-						DebugLogger.printDebug("SigintPKIVersionInfo -- PATH:"+path.toAbsolutePath());
+						DebugLogger.printDebug("PKIVersionInfo -- PATH:"+path.toAbsolutePath());
 					} else {
 						path = null;
 					}

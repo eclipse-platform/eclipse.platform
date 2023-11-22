@@ -79,20 +79,17 @@ public enum AuthenticationBase implements AuthenticationService {
 		//Pkcs11Location location = new Pkcs11Location();
 		//location.getPkcs11LocationInstance();
 		//String cfgDirectory = location.getDirectory();
-		String cfgDirectory = "/opt/cspid/java_pkcs11.cfg";
+		String cfgDirectory = AuthenticationPlugin.getDefault().getPreferenceStore()
+							.getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION);
 		//listProviders();
-		if ( isFips() ) {
-			//PROVIDER="SunPKCS11";
-			PROVIDER="SunPKCS11-NSS-FIPS";
-			//cfgDirectory = "/etc/java/java-17-openjdk/java-17-openjdk-17.0.8.0.7-2.el8.x86_64/conf/nss.fips.cfg";
-		}
+		
 		DebugLogger.printDebug("In configure  DIR:"+cfgDirectory);
 		try {
 			
-			
-			
 			//Provider prototype = Security.getProvider("SunPKCS11");
-			Provider prototype = Security.getProvider(PROVIDER);
+			Provider prototype = Security.getProvider
+					(AuthenticationPlugin.getDefault().getPreferenceStore()
+					.getString(AuthenticationPreferences.SECURITY_PROVIDER);
 			
 			if (prototype == null) {
 				DebugLogger.printDebug("In configure  PROVIDER NOT FOUND");
@@ -161,6 +158,8 @@ public enum AuthenticationBase implements AuthenticationService {
 	@Override
 	public String findPkcs11CfgLocation() {
 		// TODO Auto-generated method stub
+		AuthenticationPlugin.getDefault().getPreferenceStore()
+			.getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION));
 		Pkcs11Location location = new Pkcs11Location();
 		location.getPkcs11LocationInstance();
 		return location.getJavaPkcs11Cfg();
