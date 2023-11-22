@@ -89,7 +89,7 @@ public enum AuthenticationBase implements AuthenticationService {
 			//Provider prototype = Security.getProvider("SunPKCS11");
 			Provider prototype = Security.getProvider
 					(AuthenticationPlugin.getDefault().getPreferenceStore()
-					.getString(AuthenticationPreferences.SECURITY_PROVIDER);
+					.getString(AuthenticationPreferences.SECURITY_PROVIDER));
 			
 			if (prototype == null) {
 				DebugLogger.printDebug("In configure  PROVIDER NOT FOUND");
