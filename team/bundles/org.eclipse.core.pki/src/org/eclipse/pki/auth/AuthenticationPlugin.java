@@ -120,7 +120,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
      * @return the shared instance
      */
     public static AuthenticationPlugin getDefault() {
-    	System.out.println("AuthenticationPlugin ---getDefault plugin");
+    	//System.out.println("AuthenticationPlugin ---getDefault plugin");
     	if (plugin == null) {
     		AuthenticationPlugin auth = new AuthenticationPlugin();
 			/*
