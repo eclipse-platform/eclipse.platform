@@ -143,7 +143,7 @@ public class Bug468PerformanceTest extends TestCase {
 	// so, set a limit of 1 minute.
 	@Test
 	@Ignore("See https://github.com/eclipse-platform/eclipse.platform/issues/715")
-	public void test() throws CoreException {
+	public void _test() throws CoreException {
 		IFolder tempFolder = this.project.getFolder(TEMP_FOLDER_NAME);
 		long[] timeTakenForDeletingFiles = new long[1];
 
