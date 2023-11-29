@@ -101,37 +101,35 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
          * When there has been NO pki selection made, then select PKCS11, but ONLY if its been configured by SA's.
          * Otherwise, just make the pkcs12 selection available.
          */
-        boolean failIT=true;
-         if ( failIT ) {
-        	System.out.println("PreferencePage ---  FAILIT SAYS ITS TRUE");
+       
         	
-	        if ((!(PKCSpick.getInstance().isPKCS11on())) && 
-	        	(!(PKCSpick.getInstance().isPKCS12on())) ) {
-	        	//(VendorImplementation.getInstance().isInstalled() )) {
-	        
-	        	//System.out.println("PreferencePage -------- AVAL:"+VendorImplementation.getInstance().isInstalled() );
-	        	System.out.println("PreferencePage --------- TURNING ON DEFAULT pkcs11 is on");
-	        	setPkcs12InVisible();
-	        	setPkcs11Visible();
-	        	
-	        	setVisible(false);
-	        	
-	        } else if ((!(  PKCSpick.getInstance().isPKCS11on())) && 
-	            		(!(PKCSpick.getInstance().isPKCS12on())) ) {
-	            		//(!(VendorImplementation.getInstance().isInstalled() ))) {
-	        	System.out.println("PreferencePage --------- THERE WAS NO DEFAULT  pkcs12 is on");
-	        	setPkcs11InVisible();
-	        	setPkcs12Visible();
-	        } else if ( PKCSpick.getInstance().isPKCS11on()) {
-	        	System.out.println("PreferencePage ---------  pkcs11 is on");
-	        	setPkcs12InVisible();
-	        	setPkcs11Visible();
-	        } else if ( PKCSpick.getInstance().isPKCS12on()) {
-	        	System.out.println("PreferencePage --------- pkcs12 is on");
-	        	setPkcs11InVisible();
-	        	setPkcs12Visible();
-	        }
+        if ((!(PKCSpick.getInstance().isPKCS11on())) && 
+        	(!(PKCSpick.getInstance().isPKCS12on())) ) {
+        	//(VendorImplementation.getInstance().isInstalled() )) {
+        
+        	//System.out.println("PreferencePage -------- AVAL:"+VendorImplementation.getInstance().isInstalled() );
+        	//System.out.println("PreferencePage --------- TURNING ON DEFAULT pkcs11 is on");
+        	setPkcs12InVisible();
+        	setPkcs11Visible();
+        	
+        	setVisible(false);
+        	
+        } else if ((!(  PKCSpick.getInstance().isPKCS11on())) && 
+            		(!(PKCSpick.getInstance().isPKCS12on())) ) {
+            		//(!(VendorImplementation.getInstance().isInstalled() ))) {
+        	System.out.println("PreferencePage --------- THERE WAS NO DEFAULT  pkcs12 is on");
+        	setPkcs11InVisible();
+        	setPkcs12Visible();
+        } else if ( PKCSpick.getInstance().isPKCS11on()) {
+        	System.out.println("PreferencePage ---------  pkcs11 is on");
+        	setPkcs12InVisible();
+        	setPkcs11Visible();
+        } else if ( PKCSpick.getInstance().isPKCS12on()) {
+        	System.out.println("PreferencePage --------- pkcs12 is on");
+        	setPkcs11InVisible();
+        	setPkcs12Visible();
         }
+        
         initialize();
         setEditors();
 	    checkState();
