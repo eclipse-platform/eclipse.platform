@@ -50,7 +50,7 @@ public class PKICertLocationFieldEditor extends StringButtonFieldEditor {
 	public PKICertLocationFieldEditor(String name, String labelText,
 			Composite parent, String pkiType, PreferencePage preferencePage) {
 		
-;		System.out.println("PKICertLocationFieldEditor  CONSTRUCTOR open ");
+		//System.out.println("PKICertLocationFieldEditor  CONSTRUCTOR open ");
 		this.preferencePage = preferencePage;
 		init(name, labelText);
 		myName=name;
