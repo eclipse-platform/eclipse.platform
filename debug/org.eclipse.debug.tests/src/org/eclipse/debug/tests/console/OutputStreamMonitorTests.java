@@ -21,6 +21,7 @@ import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +44,8 @@ import static org.hamcrest.Matchers.empty;
  * Tests the {@link OutputStreamMonitor}.
  */
 public class OutputStreamMonitorTests extends AbstractDebugTest {
+	private static final Duration TIMEOUT = Duration.ofSeconds(10);
+
 	/** The {@link OutputStreamMonitor} used for the test runs. */
 	TestOutputStreamMonitor monitor;
 	/** Stream to simulate an application writing to system out. */
@@ -67,7 +70,7 @@ public class OutputStreamMonitorTests extends AbstractDebugTest {
 		}
 
 		public void waitForBytes(int numberOfBytes) throws Exception {
-			TestUtil.waitWhile(() -> recordedBytes.size() < numberOfBytes, 1000);
+			TestUtil.waitWhile(() -> recordedBytes.size() < numberOfBytes, TIMEOUT.toMillis());
 		}
 
 		public byte[] getRecordedBytes() {
@@ -91,7 +94,7 @@ public class OutputStreamMonitorTests extends AbstractDebugTest {
 		}
 
 		public void waitForBytes(int numberOfChars) throws Exception {
-			TestUtil.waitWhile(() -> recordedChars.length() < numberOfChars, 1000);
+			TestUtil.waitWhile(() -> recordedChars.length() < numberOfChars, TIMEOUT.toMillis());
 		}
 
 		public String getRecordedChars() {
