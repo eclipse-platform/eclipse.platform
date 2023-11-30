@@ -471,7 +471,8 @@ public class IResourceTest extends ResourceTest {
 		public void cleanUp(Object[] args, int countArg) throws Exception {
 			// Reinitialize projects if necessary
 			if (reinitializeOnCleanup) {
-				IResourceTest.this.cleanup();
+				waitForBuild();
+				getWorkspace().getRoot().delete(true, true, getMonitor());
 				IResourceTest.this.initializeProjects();
 				reinitializeOnCleanup = false;
 			}
