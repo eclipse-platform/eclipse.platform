@@ -14,6 +14,8 @@
  ******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SIMPLE;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Dictionary;

@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import junit.framework.Test;
 import org.eclipse.core.internal.resources.ContentDescriptionManager;
 import org.eclipse.core.internal.resources.Workspace;

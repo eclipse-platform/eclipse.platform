@@ -10,12 +10,14 @@
  ******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_EARTH;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_MISSING;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SIMPLE;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 
 import java.io.File;
 import java.nio.file.Files;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;

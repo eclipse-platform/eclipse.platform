@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -73,40 +74,6 @@ import org.junit.rules.TestName;
  * Superclass for tests that use the Eclipse Platform workspace.
  */
 public abstract class ResourceTest extends CoreTest {
-	//nature that installs and runs a builder (regression test for bug 29116)
-	protected static final String NATURE_29116 = "org.eclipse.core.tests.resources.nature29116";
-
-	//cycle1 requires: cycle2
-	protected static final String NATURE_CYCLE1 = "org.eclipse.core.tests.resources.cycle1";
-	//cycle2 requires: cycle3
-	protected static final String NATURE_CYCLE2 = "org.eclipse.core.tests.resources.cycle2";
-
-	//constants for nature ids
-
-	//cycle3 requires: cycle1
-	protected static final String NATURE_CYCLE3 = "org.eclipse.core.tests.resources.cycle3";
-	//earthNature, one-of: stateSet
-	protected static final String NATURE_EARTH = "org.eclipse.core.tests.resources.earthNature";
-	//invalidNature
-	protected static final String NATURE_INVALID = "org.eclipse.core.tests.resources.invalidNature";
-	//missing nature
-	protected static final String NATURE_MISSING = "no.such.nature.Missing";
-	//missing pre-req nature
-	protected static final String NATURE_MISSING_PREREQ = "org.eclipse.core.tests.resources.missingPrerequisiteNature";
-	//mudNature, requires: waterNature, earthNature, one-of: otherSet
-	protected static final String NATURE_MUD = "org.eclipse.core.tests.resources.mudNature";
-	//simpleNature
-	protected static final String NATURE_SIMPLE = "org.eclipse.core.tests.resources.simpleNature";
-	//nature for regression tests of bug 127562
-	protected static final String NATURE_127562 = "org.eclipse.core.tests.resources.bug127562Nature";
-	//snowNature, requires: waterNature, one-of: otherSet
-	protected static final String NATURE_SNOW = "org.eclipse.core.tests.resources.snowNature";
-	//waterNature, one-of: stateSet
-	protected static final String NATURE_WATER = "org.eclipse.core.tests.resources.waterNature";
-	public static final String PI_RESOURCES_TESTS = "org.eclipse.core.tests.resources"; //$NON-NLS-1$
-	protected static final String SET_OTHER = "org.eclipse.core.tests.resources.otherSet";
-	//constants for nature sets
-	protected static final String SET_STATE = "org.eclipse.core.tests.resources.stateSet";
 
 	/**
 	 * For retrieving the test name when executing test class with JUnit 4.
@@ -826,25 +793,6 @@ public abstract class ResourceTest extends CoreTest {
 		return checkIfResourceExistsJob.resourceExists();
 	}
 
-	/**
-	 * Returns invalid sets of natures
-	 */
-	protected String[][] getInvalidNatureSets() {
-		return new String[][] {{NATURE_SNOW}, //missing water pre-req
-				{NATURE_WATER, NATURE_EARTH}, //duplicates from state-set
-				{NATURE_WATER, NATURE_MUD}, //missing earth pre-req
-				{NATURE_WATER, NATURE_EARTH, NATURE_MUD}, //duplicates from state-set
-				{NATURE_SIMPLE, NATURE_SNOW, NATURE_WATER, NATURE_MUD}, //duplicates from other-set, missing pre-req
-				{NATURE_MISSING}, //doesn't exist
-				{NATURE_SIMPLE, NATURE_MISSING}, //missing doesn't exist
-				{NATURE_MISSING_PREREQ}, //requires nature that doesn't exist
-				{NATURE_SIMPLE, NATURE_MISSING_PREREQ}, //requires nature that doesn't exist
-				{NATURE_CYCLE1}, //missing pre-req
-				{NATURE_CYCLE2, NATURE_CYCLE3}, //missing pre-req
-				{NATURE_CYCLE1, NATURE_SIMPLE, NATURE_CYCLE2, NATURE_CYCLE3}, //cycle
-		};
-	}
-
 	protected String getLineSeparatorFromFile(IFile file) {
 		if (file.exists()) {
 			InputStream input = null;
@@ -909,13 +857,6 @@ public abstract class ResourceTest extends CoreTest {
 	@Override
 	public String getUniqueString() {
 		return new UniversalUniqueIdentifier().toString();
-	}
-
-	/**
-	 * Returns valid sets of natures
-	 */
-	protected String[][] getValidNatureSets() {
-		return new String[][] {{}, {NATURE_SIMPLE}, {NATURE_SNOW, NATURE_WATER}, {NATURE_EARTH}, {NATURE_WATER, NATURE_SIMPLE, NATURE_SNOW},};
 	}
 
 	/**

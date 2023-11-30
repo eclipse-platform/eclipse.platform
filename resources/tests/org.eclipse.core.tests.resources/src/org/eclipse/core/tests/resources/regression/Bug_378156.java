@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import java.util.concurrent.Semaphore;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
