@@ -164,7 +164,7 @@ public class InternalVirtualTreeModelViewer extends Viewer
 
 	/**
 	 * Level to which the tree should automatically expand elements.
-	 * <code>-1<code> indicates that all levels shoudl be expanded.
+	 * <code>-1</code> indicates that all levels should be expanded.
 	 */
 	private int fAutoExpandToLevel = 0;
 

@@ -227,7 +227,6 @@ public class InspectPopupDialog extends DebugPopup {
 	/**
 	 * Creates the content for the root element of the tree viewer in the inspect
 	 * popup dialog.  Always has one child, the expression this popup is displaying.
-	 *
 	 */
 	private class TreeRoot extends ElementContentProvider {
 		@Override

@@ -90,8 +90,6 @@ public class ProcessController {
 	 * the process is not time constrained.
 	 *
 	 * @return the process exit value
-	 * @throws InterruptedException
-	 * @throws IOException
 	 * @throws TimeOutException if the process did not complete in time
 	 */
 	public int execute() throws InterruptedException, IOException, TimeOutException {

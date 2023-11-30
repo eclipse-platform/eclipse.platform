@@ -91,9 +91,6 @@ public class IntroPartPresentation extends AbstractIntroElement {
 	private IIntroPart introPart;
 	private IMemento memento;
 
-	/**
-	 *
-	 */
 	IntroPartPresentation(IConfigurationElement element) {
 		super(element);
 		homePageId = element.getAttribute(ATT_HOME_PAGE_ID);
@@ -157,9 +154,6 @@ public class IntroPartPresentation extends AbstractIntroElement {
 	/**
 	 * Returns the model class for the Head element under an implementation. Returns null if there
 	 * is no head contribution.
-	 *
-	 * @param element
-	 * @return
 	 */
 	private IntroHead getHead(IConfigurationElement element) {
 		try {
@@ -183,7 +177,6 @@ public class IntroPartPresentation extends AbstractIntroElement {
 	 * otherwise.
 	 *
 	 * @since 3.1
-	 * @return
 	 */
 
 	public IntroLaunchBarElement getLaunchBarElement() {
@@ -200,9 +193,6 @@ public class IntroPartPresentation extends AbstractIntroElement {
 		return launchBar;
 	}
 
-	/**
-	 * @param introPart
-	 */
 	public void init(IIntroPart introPart, IMemento memento) {
 		// REVISIT: Called when the actual UI needs to be created. Incomplete
 		// separation of model / UI. Will change later. should not get here if
@@ -346,7 +336,6 @@ public class IntroPartPresentation extends AbstractIntroElement {
 	/**
 	 * Util method that searches for the given value in a comma separated list of values. The list
 	 * is retrieved as an attribute value of OS, WS.
-	 *
 	 */
 	private boolean listValueHasValue(String stringValue, String value) {
 		String[] attributeValues = stringValue.split(","); //$NON-NLS-1$
@@ -384,7 +373,6 @@ public class IntroPartPresentation extends AbstractIntroElement {
 
 	/**
 	 * Creates the actual implementation class. Returns null on failure.
-	 *
 	 */
 	private AbstractIntroPartImplementation createIntroPartImplementation(String implementationType) {
 		// quick exits

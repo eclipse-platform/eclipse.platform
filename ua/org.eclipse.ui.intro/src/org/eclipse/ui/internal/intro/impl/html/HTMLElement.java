@@ -48,9 +48,6 @@ public class HTMLElement {
 
 	/**
 	 * Add an attribute with the given name and value to this HTMLElement
-	 *
-	 * @param attributeName
-	 * @param attributeValue
 	 */
 	public void addAttribute(String attributeName, String attributeValue) {
 		if(attributeName != null && attributeValue != null)

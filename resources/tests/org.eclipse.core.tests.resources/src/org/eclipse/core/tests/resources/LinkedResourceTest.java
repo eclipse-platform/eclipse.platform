@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.junit.Assert.assertThrows;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -45,6 +47,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
+import org.junit.function.ThrowingRunnable;
 
 /**
  * Tests the following API methods:
@@ -169,86 +172,56 @@ public class LinkedResourceTest extends ResourceTest {
 	 * path does not exist. This should succeed but no operations will be
 	 * available on the resulting resource.
 	 */
-	public void testAllowMissingLocal() {
+	public void testAllowMissingLocal() throws CoreException {
 		//get a non-existing location
 		IPath location = getRandomLocation();
 		IFolder folder = nonExistingFolderInExistingProject;
 
 		//try to create without the flag (should fail)
-		try {
-			folder.createLink(location, IResource.NONE, getMonitor());
-			fail("1.0");
-		} catch (CoreException e) {
-			//should fail
-		}
+		assertThrows(CoreException.class, () -> folder.createLink(location, IResource.NONE, getMonitor()));
 
 		//now try to create with the flag (should succeed)
-		try {
-			folder.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
+		folder.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
 		assertEquals("1.2", resolve(location), folder.getLocation());
 		assertTrue("1.3", !resolve(location).toFile().exists());
 		//getting children should succeed (and be empty)
-		try {
-			assertEquals("1.4", 0, folder.members().length);
-		} catch (CoreException e) {
-			fail("1.5", e);
-		}
+		assertEquals("1.4", 0, folder.members().length);
+
 		//delete should succeed
-		try {
-			folder.delete(IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.6", e);
-		}
+		folder.delete(IResource.NONE, getMonitor());
 
 		//try to create with local path that can never exist
+		IPath nonExistentLocation;
 		if (OS.isWindows()) {
-			location = IPath.fromOSString("b:\\does\\not\\exist");
+			nonExistentLocation = IPath.fromOSString("b:\\does\\not\\exist");
 		} else {
-			location = IPath.fromOSString("/dev/null/does/not/exist");
+			nonExistentLocation = IPath.fromOSString("/dev/null/does/not/exist");
 		}
-		location = FileUtil.canonicalPath(location);
-		try {
-			folder.createLink(location, IResource.NONE, getMonitor());
-			fail("2.1");
-		} catch (CoreException e) {
-			//should fail
-		}
-		try {
-			folder.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
-		} catch (CoreException e) {
-			fail("2.2", e);
-		}
-		assertEquals("2.3", location, folder.getLocation());
-		assertTrue("2.4", !location.toFile().exists());
+		IPath canonicalPathLocation = FileUtil.canonicalPath(nonExistentLocation);
+		assertThrows(CoreException.class, () -> folder.createLink(canonicalPathLocation, IResource.NONE, getMonitor()));
+		folder.createLink(canonicalPathLocation, IResource.ALLOW_MISSING_LOCAL, getMonitor());
+		assertEquals("2.3", canonicalPathLocation, folder.getLocation());
+		assertTrue("2.4", !canonicalPathLocation.toFile().exists());
+
 		// creating child should fail
-		try {
-			folder.getFile("abc.txt").create(getRandomContents(), IResource.NONE, getMonitor());
-			fail("2.5");
-		} catch (CoreException e) {
-			//should fail
-		}
+		assertThrows(CoreException.class,
+				() -> folder.getFile("abc.txt").create(getRandomContents(), IResource.NONE, getMonitor()));
 	}
 
 	/**
 	 * Tests case where a resource in the file system cannot be added to the workspace
 	 * because it is blocked by a linked resource of the same name.
 	 */
-	public void testBlockedFolder() {
+	public void testBlockedFolder() throws CoreException {
 		//create local folder that will be blocked
 		ensureExistsInFileSystem(nonExistingFolderInExistingProject);
 		IFile blockedFile = nonExistingFolderInExistingProject.getFile("BlockedFile");
 		createFileInFileSystem(blockedFile.getLocation(), getRandomContents());
-		try {
-			//link the folder elsewhere
-			nonExistingFolderInExistingProject.createLink(localFolder, IResource.NONE, getMonitor());
-			//refresh the project
-			existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
+
+		// link the folder elsewhere
+		nonExistingFolderInExistingProject.createLink(localFolder, IResource.NONE, getMonitor());
+		// refresh the project
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 
 		//the blocked file should not exist in the workspace
 		assertTrue("1.2", !blockedFile.exists());
@@ -257,11 +230,7 @@ public class LinkedResourceTest extends ResourceTest {
 		assertEquals("1.5", nonExistingFolderInExistingProject.getLocation(), resolve(localFolder));
 
 		//now delete the link
-		try {
-			nonExistingFolderInExistingProject.delete(IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		nonExistingFolderInExistingProject.delete(IResource.NONE, getMonitor());
 		//the blocked file and the linked folder should not exist in the workspace
 		assertTrue("2.0", !blockedFile.exists());
 		assertTrue("2.1", !nonExistingFolderInExistingProject.exists());
@@ -269,11 +238,7 @@ public class LinkedResourceTest extends ResourceTest {
 		assertEquals("2.3", nonExistingFolderInExistingProject.getLocation(), existingProject.getLocation().append(nonExistingFolderInExistingProject.getName()));
 
 		//now refresh again to discover the blocked resource
-		try {
-			existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 
 		//the blocked file should now exist
 		assertTrue("3.0", blockedFile.exists());
@@ -282,12 +247,8 @@ public class LinkedResourceTest extends ResourceTest {
 		assertEquals("3.3", nonExistingFolderInExistingProject.getLocation(), existingProject.getLocation().append(nonExistingFolderInExistingProject.getName()));
 
 		//attempting to link again will fail because the folder exists in the workspace
-		try {
-			nonExistingFolderInExistingProject.createLink(localFolder, IResource.NONE, getMonitor());
-			fail("3.4");
-		} catch (CoreException e) {
-			//expected
-		}
+		assertThrows(CoreException.class,
+				() -> nonExistingFolderInExistingProject.createLink(localFolder, IResource.NONE, getMonitor()));
 	}
 
 	/**
@@ -296,22 +257,15 @@ public class LinkedResourceTest extends ResourceTest {
 	 * still exist, should have the correct gender, and still be a linked
 	 * resource.
 	 */
-	public void testChangeLinkGender() {
+	public void testChangeLinkGender() throws CoreException {
 		IFolder folder = nonExistingFolderInExistingProject;
 		IFile file = folder.getProject().getFile(folder.getProjectRelativePath());
 		IPath resolvedLocation = resolve(localFolder);
-		try {
-			folder.createLink(localFolder, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		folder.createLink(localFolder, IResource.NONE, getMonitor());
+
 		ensureDoesNotExistInFileSystem(resolvedLocation.toFile());
 		createFileInFileSystem(resolvedLocation, getRandomContents());
-		try {
-			folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 
 		assertTrue("3.0", !folder.exists());
 		assertTrue("3.1", file.exists());
@@ -322,18 +276,14 @@ public class LinkedResourceTest extends ResourceTest {
 		ensureDoesNotExistInFileSystem(resolvedLocation.toFile());
 		resolvedLocation.toFile().mkdirs();
 
-		try {
-			folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("3.99", e);
-		}
+		folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 		assertTrue("4.0", folder.exists());
 		assertTrue("4.1", !file.exists());
 		assertTrue("4.2", folder.isLinked());
 		assertEquals("4.3", resolvedLocation, folder.getLocation());
 	}
 
-	public void testCopyFile() {
+	public void testCopyFile() throws Exception {
 		IResource[] sources = new IResource[] {nonExistingFileInExistingProject, nonExistingFileInExistingFolder};
 		IResource[] destinationResources = new IResource[] {existingProject, closedProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder};
 		Boolean[] deepCopy = new Boolean[] {Boolean.TRUE, Boolean.FALSE};
@@ -343,12 +293,12 @@ public class LinkedResourceTest extends ResourceTest {
 			protected static final String CANCELED = "canceled";
 
 			@Override
-			public void cleanUp(Object[] args, int count) {
+			public void cleanUp(Object[] args, int count) throws Exception {
 				super.cleanUp(args, count);
 				try {
 					doCleanup();
 				} catch (Exception e) {
-					fail("invocation " + count + " failed to cleanup", e);
+					throw new IllegalStateException("invocation " + count + " failed to cleanup", e);
 				}
 			}
 
@@ -441,7 +391,7 @@ public class LinkedResourceTest extends ResourceTest {
 		}.performTest(inputs);
 	}
 
-	public void testCopyFolder() {
+	public void testCopyFolder() throws Exception {
 		IFolder[] sources = new IFolder[] {nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder};
 		IResource[] destinations = new IResource[] {existingProject, closedProject, nonExistingProject, existingFolderInExistingProject, nonExistingFolderInOtherExistingProject, nonExistingFolderInExistingFolder};
 		Boolean[] deepCopy = new Boolean[] {Boolean.TRUE, Boolean.FALSE};
@@ -451,12 +401,12 @@ public class LinkedResourceTest extends ResourceTest {
 			protected static final String CANCELED = "canceled";
 
 			@Override
-			public void cleanUp(Object[] args, int count) {
+			public void cleanUp(Object[] args, int count) throws Exception {
 				super.cleanUp(args, count);
 				try {
 					doCleanup();
 				} catch (Exception e) {
-					fail("invocation " + count + " failed to cleanup", e);
+					throw new IllegalStateException("invocation " + count + " failed to cleanup", e);
 				}
 			}
 
@@ -555,158 +505,92 @@ public class LinkedResourceTest extends ResourceTest {
 	/**
 	 * Tests copying a linked file resource that doesn't exist in the file system
 	 */
-	public void testCopyMissingFile() {
+	public void testCopyMissingFile() throws CoreException {
 		IPath location = getRandomLocation();
 		IFile linkedFile = nonExistingFileInExistingProject;
-		try {
-			linkedFile.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		linkedFile.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
 
 		IFile dest = existingProject.getFile("FailedCopyDest");
-		try {
-			linkedFile.copy(dest.getFullPath(), IResource.NONE, getMonitor());
-			fail("2.0");
-		} catch (CoreException e1) {
-			//should fail
-		}
+		assertThrows(CoreException.class, () -> linkedFile.copy(dest.getFullPath(), IResource.NONE, getMonitor()));
 		assertTrue("2.1", !dest.exists());
-		try {
-			linkedFile.copy(dest.getFullPath(), IResource.FORCE, getMonitor());
-			fail("2.2");
-		} catch (CoreException e1) {
-			//should fail
-		}
+		assertThrows(CoreException.class, () -> linkedFile.copy(dest.getFullPath(), IResource.FORCE, getMonitor()));
 		assertTrue("2.3", !dest.exists());
 	}
 
 	/**
 	 * Tests copying a linked folder that doesn't exist in the file system
 	 */
-	public void testCopyMissingFolder() {
+	public void testCopyMissingFolder() throws CoreException {
 		IPath location = getRandomLocation();
 		IFolder linkedFolder = nonExistingFolderInExistingProject;
-		try {
-			linkedFolder.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		linkedFolder.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
 
 		IFolder dest = existingProject.getFolder("FailedCopyDest");
-		try {
-			linkedFolder.copy(dest.getFullPath(), IResource.NONE, getMonitor());
-			fail("2.0");
-		} catch (CoreException e1) {
-			//should fail
-		}
+		assertThrows(CoreException.class, () -> linkedFolder.copy(dest.getFullPath(), IResource.NONE, getMonitor()));
 		assertTrue("2.1", !dest.exists());
-		try {
-			linkedFolder.copy(dest.getFullPath(), IResource.FORCE, getMonitor());
-			fail("2.2");
-		} catch (CoreException e1) {
-			//should fail
-		}
+		assertThrows(CoreException.class, () -> linkedFolder.copy(dest.getFullPath(), IResource.FORCE, getMonitor()));
 		assertTrue("2.3", !dest.exists());
 	}
 
-	public void testCopyProjectWithLinks() {
+	public void testCopyProjectWithLinks() throws CoreException {
 		IPath fileLocation = getRandomLocation();
+		deleteOnTearDown(fileLocation);
 		IFile linkedFile = nonExistingFileInExistingProject;
 		IFolder linkedFolder = nonExistingFolderInExistingProject;
-		try {
-			try {
-				createFileInFileSystem(resolve(fileLocation), getRandomContents());
-				linkedFolder.createLink(localFolder, IResource.NONE, getMonitor());
-				linkedFile.createLink(fileLocation, IResource.NONE, getMonitor());
-			} catch (CoreException e) {
-				fail("1.0", e);
-			}
+		createFileInFileSystem(resolve(fileLocation), getRandomContents());
+		linkedFolder.createLink(localFolder, IResource.NONE, getMonitor());
+		linkedFile.createLink(fileLocation, IResource.NONE, getMonitor());
 
-			//copy the project
-			IProject destination = getWorkspace().getRoot().getProject("CopyTargetProject");
-			try {
-				existingProject.copy(destination.getFullPath(), IResource.SHALLOW, getMonitor());
-			} catch (CoreException e) {
-				fail("2.0", e);
-			}
+		// copy the project
+		IProject destination = getWorkspace().getRoot().getProject("CopyTargetProject");
+		existingProject.copy(destination.getFullPath(), IResource.SHALLOW, getMonitor());
 
-			IFile newFile = destination.getFile(linkedFile.getProjectRelativePath());
-			assertTrue("3.0", newFile.isLinked());
-			assertEquals("3.1", linkedFile.getLocation(), newFile.getLocation());
+		IFile newFile = destination.getFile(linkedFile.getProjectRelativePath());
+		assertTrue("3.0", newFile.isLinked());
+		assertEquals("3.1", linkedFile.getLocation(), newFile.getLocation());
 
-			IFolder newFolder = destination.getFolder(linkedFolder.getProjectRelativePath());
-			assertTrue("4.0", newFolder.isLinked());
-			assertEquals("4.1", linkedFolder.getLocation(), newFolder.getLocation());
+		IFolder newFolder = destination.getFolder(linkedFolder.getProjectRelativePath());
+		assertTrue("4.0", newFolder.isLinked());
+		assertEquals("4.1", linkedFolder.getLocation(), newFolder.getLocation());
 
-			//test project deep copy
-			try {
-				destination.delete(IResource.NONE, getMonitor());
-				existingProject.copy(destination.getFullPath(), IResource.NONE, getMonitor());
-			} catch (CoreException e) {
-				fail("5.0", e);
-			}
-			assertTrue("5.1", !newFile.isLinked());
-			assertEquals("5.2", destination.getLocation().append(newFile.getProjectRelativePath()), newFile.getLocation());
-			assertTrue("5.3", !newFolder.isLinked());
-			assertEquals("5.4", destination.getLocation().append(newFolder.getProjectRelativePath()), newFolder.getLocation());
+		// test project deep copy
+		destination.delete(IResource.NONE, getMonitor());
+		existingProject.copy(destination.getFullPath(), IResource.NONE, getMonitor());
+		assertTrue("5.1", !newFile.isLinked());
+		assertEquals("5.2", destination.getLocation().append(newFile.getProjectRelativePath()), newFile.getLocation());
+		assertTrue("5.3", !newFolder.isLinked());
+		assertEquals("5.4", destination.getLocation().append(newFolder.getProjectRelativePath()),
+				newFolder.getLocation());
 
-			//test copy project when linked resources don't exist with force=false
-			try {
-				destination.delete(IResource.NONE, getMonitor());
-			} catch (CoreException e) {
-				fail("5.99", e);
-			}
-			assertTrue("6.0", resolve(fileLocation).toFile().delete());
+		// test copy project when linked resources don't exist with force=false
+		destination.delete(IResource.NONE, getMonitor());
+		assertTrue("6.0", resolve(fileLocation).toFile().delete());
 
-			try {
-				existingProject.copy(destination.getFullPath(), IResource.NONE, getMonitor());
-				fail("6.1");
-			} catch (CoreException e) {
-				//should fail
+		assertThrows(CoreException.class,
+				() -> existingProject.copy(destination.getFullPath(), IResource.NONE, getMonitor()));
+		// all members except the missing link should have been copied
+		assertTrue("6.2", destination.exists());
+		assertTrue("6.2.1", !destination.getFile(linkedFile.getName()).exists());
+		IResource[] srcChildren = existingProject.members();
+		for (int i = 0; i < srcChildren.length; i++) {
+			if (!srcChildren[i].equals(linkedFile)) {
+				assertNotNull("6.3." + i, destination.findMember(srcChildren[i].getProjectRelativePath()));
 			}
-			//all members except the missing link should have been copied
-			assertTrue("6.2", destination.exists());
-			assertTrue("6.2.1", !destination.getFile(linkedFile.getName()).exists());
-			try {
-				IResource[] srcChildren = existingProject.members();
-				for (int i = 0; i < srcChildren.length; i++) {
-					if (!srcChildren[i].equals(linkedFile)) {
-						assertNotNull("6.3." + i, destination.findMember(srcChildren[i].getProjectRelativePath()));
-					}
-				}
-			} catch (CoreException e) {
-				fail("6.4", e);
+		}
+		// test copy project when linked resources don't exist with force=true
+		// this should mostly succeed, but still throw an exception indicating
+		// a resource could not be copied because its location was missing
+		destination.delete(IResource.NONE, getMonitor());
+		assertThrows(CoreException.class,
+				() -> existingProject.copy(destination.getFullPath(), IResource.FORCE, getMonitor()));
+		assertTrue("6.7", destination.exists());
+		assertTrue("6.7.1", !destination.getFile(linkedFile.getName()).exists());
+		// all members except the missing link should have been copied
+		srcChildren = existingProject.members();
+		for (int i = 0; i < srcChildren.length; i++) {
+			if (!srcChildren[i].equals(linkedFile)) {
+				assertNotNull("6.8." + i, destination.findMember(srcChildren[i].getProjectRelativePath()));
 			}
-			//test copy project when linked resources don't exist with force=true
-			//this should mostly succeed, but still throw an exception indicating
-			//a resource could not be copied because its location was missing
-			try {
-				destination.delete(IResource.NONE, getMonitor());
-			} catch (CoreException e) {
-				fail("6.5", e);
-			}
-			try {
-				existingProject.copy(destination.getFullPath(), IResource.FORCE, getMonitor());
-				fail("6.6");
-			} catch (CoreException e) {
-				//should fail
-			}
-			assertTrue("6.7", destination.exists());
-			assertTrue("6.7.1", !destination.getFile(linkedFile.getName()).exists());
-			//all members except the missing link should have been copied
-			try {
-				IResource[] srcChildren = existingProject.members();
-				for (int i = 0; i < srcChildren.length; i++) {
-					if (!srcChildren[i].equals(linkedFile)) {
-						assertNotNull("6.8." + i, destination.findMember(srcChildren[i].getProjectRelativePath()));
-					}
-				}
-			} catch (CoreException e) {
-				fail("6.99", e);
-			}
-		} finally {
-			Workspace.clear(resolve(fileLocation).toFile());
 		}
 	}
 
@@ -733,160 +617,123 @@ public class LinkedResourceTest extends ResourceTest {
 	 * Tests creating a linked resource with the same name but different
 	 * case as an existing resource.  On case insensitive platforms this should fail.
 	 */
-	public void testCreateLinkCaseVariant() {
+	public void testCreateLinkCaseVariant() throws Throwable {
 		IFolder link = nonExistingFolderInExistingProject;
 		IFolder variant = link.getParent().getFolder(IPath.fromOSString(link.getName().toUpperCase()));
 		ensureExistsInWorkspace(variant, true);
 
-		try {
-			link.createLink(localFolder, IResource.NONE, getMonitor());
-			//should fail on case insensitive platforms
-			if (!isCaseSensitive(variant)) {
-				fail("1.0");
-			}
-		} catch (CoreException e) {
-			//should not fail on case sensitive platforms
-			if (isCaseSensitive(variant)) {
-				fail("1.1", e);
-			}
+		ThrowingRunnable linkCreation = () -> link.createLink(localFolder, IResource.NONE, getMonitor());
+		// should fail on case insensitive platforms
+		if (isCaseSensitive(variant)) {
+			linkCreation.run();
+		} else {
+			assertThrows(CoreException.class, linkCreation);
 		}
-
 	}
 
 	/**
 	 * Tests creating a linked resource by modifying the .project file directly.
 	 * This is a regression test for bug 63331.
 	 */
-	public void testCreateLinkInDotProject() {
+	public void testCreateLinkInDotProject() throws CoreException {
 		final IFile dotProject = existingProject.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		IFile link = nonExistingFileInExistingProject;
 		byte[] oldContents = null;
-		try {
-			//create a linked file
-			link.createLink(localFile, IResource.NONE, getMonitor());
-			//copy the .project file contents
-			oldContents = getFileContents(dotProject);
-			//delete linked file
-			link.delete(IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		// create a linked file
+		link.createLink(localFile, IResource.NONE, getMonitor());
+		// copy the .project file contents
+		oldContents = getFileContents(dotProject);
+		// delete linked file
+		link.delete(IResource.NONE, getMonitor());
+
 		final byte[] finalContents = oldContents;
-		try {
-			//recreate the link in a workspace runnable with create scheduling rule
-			getWorkspace().run((IWorkspaceRunnable) monitor -> dotProject.setContents(new ByteArrayInputStream(finalContents), IResource.NONE, getMonitor()), getWorkspace().getRuleFactory().modifyRule(dotProject), IResource.NONE, getMonitor());
-		} catch (CoreException e1) {
-			fail("2.99", e1);
-		}
+		// recreate the link in a workspace runnable with create scheduling rule
+		getWorkspace().run(
+				(IWorkspaceRunnable) monitor -> dotProject.setContents(new ByteArrayInputStream(finalContents),
+						IResource.NONE, getMonitor()),
+				getWorkspace().getRuleFactory().modifyRule(dotProject), IResource.NONE, getMonitor());
 	}
 
 	/**
 	 * Tests creating a project whose .project file already defines links at
 	 * depth greater than one. See bug 121322.
 	 */
-	public void testCreateProjectWithDeepLinks() {
+	public void testCreateProjectWithDeepLinks() throws CoreException {
 		IProject project = existingProject;
 		IFolder parent = existingFolderInExistingProject;
 		IFolder folder = nonExistingFolderInExistingFolder;
-		try {
-			folder.createLink(localFolder, IResource.NONE, getMonitor());
-			//delete and recreate the project
-			project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, getMonitor());
-			project.create(getMonitor());
-			project.open(IResource.BACKGROUND_REFRESH, getMonitor());
-			assertTrue("1.0", folder.exists());
-			assertTrue("1.1", parent.exists());
-			assertTrue("1.2", parent.isLocal(IResource.DEPTH_INFINITE));
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		folder.createLink(localFolder, IResource.NONE, getMonitor());
+		// delete and recreate the project
+		project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, getMonitor());
+		project.create(getMonitor());
+		project.open(IResource.BACKGROUND_REFRESH, getMonitor());
+		assertTrue("1.0", folder.exists());
+		assertTrue("1.1", parent.exists());
+		assertTrue("1.2", parent.isLocal(IResource.DEPTH_INFINITE));
 	}
 
 	/**
 	 * Tests whether {@link IFile#createLink} and {@link IFolder#createLink}
 	 * handle {@link IResource#HIDDEN} flag properly.
 	 */
-	public void testCreateHiddenLinkedResources() {
+	public void testCreateHiddenLinkedResources() throws CoreException {
 		IFolder folder = existingProject.getFolder("folder");
 		IFile file = existingProject.getFile("file.txt");
 
-		try {
-			folder.createLink(localFolder, IResource.HIDDEN, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
-
-		try {
-			file.createLink(localFile, IResource.HIDDEN, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		folder.createLink(localFolder, IResource.HIDDEN, getMonitor());
+		file.createLink(localFile, IResource.HIDDEN, getMonitor());
 
 		assertTrue("3.0", folder.isHidden());
 		assertTrue("4.0", file.isHidden());
 	}
 
-	public void testDeepMoveProjectWithLinks() {
+	public void testDeepMoveProjectWithLinks() throws CoreException {
 		IPath fileLocation = getRandomLocation();
+		deleteOnTearDown(fileLocation);
 		IFile file = nonExistingFileInExistingProject;
 		IFolder folder = nonExistingFolderInExistingProject;
 		IFile childFile = folder.getFile(childName);
 		IResource[] oldResources = new IResource[] {file, folder, existingProject, childFile};
-		try {
-			try {
-				createFileInFileSystem(resolve(fileLocation));
-				folder.createLink(localFolder, IResource.NONE, getMonitor());
-				file.createLink(fileLocation, IResource.NONE, getMonitor());
-			} catch (CoreException e) {
-				fail("1.0", e);
-			}
+		createFileInFileSystem(resolve(fileLocation));
+		folder.createLink(localFolder, IResource.NONE, getMonitor());
+		file.createLink(fileLocation, IResource.NONE, getMonitor());
 
-			//move the project
-			IProject destination = getWorkspace().getRoot().getProject("MoveTargetProject");
-			IFile newFile = destination.getFile(file.getProjectRelativePath());
-			IFolder newFolder = destination.getFolder(folder.getProjectRelativePath());
-			IFile newChildFile = newFolder.getFile(childName);
-			IResource[] newResources = new IResource[] {destination, newFile, newFolder, newChildFile};
+		// move the project
+		IProject destination = getWorkspace().getRoot().getProject("MoveTargetProject");
+		IFile newFile = destination.getFile(file.getProjectRelativePath());
+		IFolder newFolder = destination.getFolder(folder.getProjectRelativePath());
+		IFile newChildFile = newFolder.getFile(childName);
+		IResource[] newResources = new IResource[] { destination, newFile, newFolder, newChildFile };
 
-			assertDoesNotExistInWorkspace("2.0", destination);
+		assertDoesNotExistInWorkspace("2.0", destination);
 
-			try {
-				existingProject.move(destination.getFullPath(), IResource.NONE, getMonitor());
-			} catch (CoreException e) {
-				fail("2.1", e);
-			}
-			assertExistsInWorkspace("3.0", newResources);
-			assertDoesNotExistInWorkspace("3.1", oldResources);
-			assertTrue("3.2", existingProject.isSynchronized(IResource.DEPTH_INFINITE));
-			assertTrue("3.3", destination.isSynchronized(IResource.DEPTH_INFINITE));
+		existingProject.move(destination.getFullPath(), IResource.NONE, getMonitor());
+		assertExistsInWorkspace("3.0", newResources);
+		assertDoesNotExistInWorkspace("3.1", oldResources);
+		assertTrue("3.2", existingProject.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue("3.3", destination.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertTrue("3.4", !newFile.isLinked());
-			assertEquals("3.5", destination.getLocation().append(newFile.getProjectRelativePath()), newFile.getLocation());
+		assertTrue("3.4", !newFile.isLinked());
+		assertEquals("3.5", destination.getLocation().append(newFile.getProjectRelativePath()), newFile.getLocation());
 
-			assertTrue("3.6", !newFolder.isLinked());
-			assertEquals("3.7", destination.getLocation().append(newFolder.getProjectRelativePath()), newFolder.getLocation());
+		assertTrue("3.6", !newFolder.isLinked());
+		assertEquals("3.7", destination.getLocation().append(newFolder.getProjectRelativePath()),
+				newFolder.getLocation());
 
-			assertTrue("3.8", destination.isSynchronized(IResource.DEPTH_INFINITE));
-		} finally {
-			Workspace.clear(resolve(fileLocation).toFile());
-		}
+		assertTrue("3.8", destination.isSynchronized(IResource.DEPTH_INFINITE));
 	}
 
 	/**
 	 * Tests deleting the parent of a linked resource.
 	 */
-	public void testDeleteLinkParent() {
+	public void testDeleteLinkParent() throws CoreException {
 		IFolder link = nonExistingFolderInExistingFolder;
 		IFolder linkParent = existingFolderInExistingProject;
 		IFile linkChild = link.getFile("child.txt");
 		IFileStore childStore = null;
-		try {
-			link.createLink(localFolder, IResource.NONE, getMonitor());
-			ensureExistsInWorkspace(linkChild, true);
-			childStore = EFS.getStore(linkChild.getLocationURI());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		link.createLink(localFolder, IResource.NONE, getMonitor());
+		ensureExistsInWorkspace(linkChild, true);
+		childStore = EFS.getStore(linkChild.getLocationURI());
 
 		//everything should exist at this point
 		assertTrue("1.0", linkParent.exists());
@@ -894,11 +741,7 @@ public class LinkedResourceTest extends ResourceTest {
 		assertTrue("1.2", linkChild.exists());
 
 		//delete the parent of the link
-		try {
-			linkParent.delete(IResource.KEEP_HISTORY, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		linkParent.delete(IResource.KEEP_HISTORY, getMonitor());
 
 		//resources should not exist, but link content should exist on disk
 		assertTrue("2.0", !linkParent.exists());
@@ -910,24 +753,16 @@ public class LinkedResourceTest extends ResourceTest {
 	/**
 	 * Tests deleting and then recreating a project
 	 */
-	public void testDeleteProjectWithLinks() {
+	public void testDeleteProjectWithLinks() throws CoreException {
 		IFolder link = nonExistingFolderInExistingProject;
-		try {
-			link.createLink(localFolder, IResource.NONE, getMonitor());
-			existingProject.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, getMonitor());
-			existingProject.create(getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		link.createLink(localFolder, IResource.NONE, getMonitor());
+		existingProject.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, getMonitor());
+		existingProject.create(getMonitor());
 
 		//link should not exist until the project is open
 		assertTrue("1.0", !link.exists());
 
-		try {
-			existingProject.open(getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		existingProject.open(getMonitor());
 
 		//link should now exist
 		assertTrue("2.0", link.exists());
@@ -951,13 +786,7 @@ public class LinkedResourceTest extends ResourceTest {
 		descriptionFile.setResourceAttributes(attrs);
 
 		try {
-			try {
-				link.delete(false, getMonitor());
-				fail("1.0");
-			} catch (CoreException e1) {
-				// should fail
-			}
-
+			assertThrows(CoreException.class, () -> link.delete(false, getMonitor()));
 			assertTrue("2.0", link.exists());
 			assertTrue("3.0", link.isLinked());
 
@@ -970,12 +799,7 @@ public class LinkedResourceTest extends ResourceTest {
 
 			// try to delete again
 			// if the project description in memory is ok, it should fail
-			try {
-				link.delete(false, getMonitor());
-				fail("7.0");
-			} catch (CoreException e1) {
-				// should fail
-			}
+			assertThrows(CoreException.class, () -> link.delete(false, getMonitor()));
 		} finally {
 			// set .project writable
 			attrs = descriptionFile.getResourceAttributes();
@@ -987,41 +811,37 @@ public class LinkedResourceTest extends ResourceTest {
 	/**
 	 * Tests bug 209175.
 	 */
-	public void testDeleteFolderWithLinks() {
+	public void testDeleteFolderWithLinks() throws CoreException {
 		IProject project = existingProject;
 		IFolder folder = existingFolderInExistingProject;
 		IFile file1 = folder.getFile(getUniqueString());
 		IFile file2 = project.getFile(getUniqueString());
-		try {
-			file1.createLink(localFile, IResource.NONE, getMonitor());
-			file2.createLink(localFile, IResource.NONE, getMonitor());
+		file1.createLink(localFile, IResource.NONE, getMonitor());
+		file2.createLink(localFile, IResource.NONE, getMonitor());
 
-			HashMap<IPath, LinkDescription> links = ((Project) project).internalGetDescription().getLinks();
-			LinkDescription linkDescription1 = links.get(file1.getProjectRelativePath());
-			assertNotNull("1.0", linkDescription1);
-			assertEquals("1.1", URIUtil.toURI(localFile), linkDescription1.getLocationURI());
-			LinkDescription linkDescription2 = links.get(file2.getProjectRelativePath());
-			assertNotNull("2.0", linkDescription2);
-			assertEquals("2.1", URIUtil.toURI(localFile), linkDescription2.getLocationURI());
+		HashMap<IPath, LinkDescription> links = ((Project) project).internalGetDescription().getLinks();
+		LinkDescription linkDescription1 = links.get(file1.getProjectRelativePath());
+		assertNotNull("1.0", linkDescription1);
+		assertEquals("1.1", URIUtil.toURI(localFile), linkDescription1.getLocationURI());
+		LinkDescription linkDescription2 = links.get(file2.getProjectRelativePath());
+		assertNotNull("2.0", linkDescription2);
+		assertEquals("2.1", URIUtil.toURI(localFile), linkDescription2.getLocationURI());
 
-			folder.delete(true, getMonitor());
+		folder.delete(true, getMonitor());
 
-			links = ((Project) project).internalGetDescription().getLinks();
-			linkDescription1 = links.get(file1.getProjectRelativePath());
-			assertNull("3.0", linkDescription1);
-			linkDescription2 = links.get(file2.getProjectRelativePath());
-			assertNotNull("4.0", linkDescription2);
-			assertEquals("4.1", URIUtil.toURI(localFile), linkDescription2.getLocationURI());
-		} catch (CoreException e) {
-			fail("5.0", e);
-		}
+		links = ((Project) project).internalGetDescription().getLinks();
+		linkDescription1 = links.get(file1.getProjectRelativePath());
+		assertNull("3.0", linkDescription1);
+		linkDescription2 = links.get(file2.getProjectRelativePath());
+		assertNotNull("4.0", linkDescription2);
+		assertEquals("4.1", URIUtil.toURI(localFile), linkDescription2.getLocationURI());
 	}
 
 	/**
 	 * Tests that IWorkspaceRoot.findFilesForLocation works correctly
 	 * in presence of a linked resource that does not match the case in the file system
 	 */
-	public void testFindFilesForLocationCaseVariant() {
+	public void testFindFilesForLocationCaseVariant() throws CoreException {
 		//this test only applies to file systems with a device in the path
 		if (!OS.isWindows()) {
 			return;
@@ -1031,11 +851,7 @@ public class LinkedResourceTest extends ResourceTest {
 		IPath upperCase = localLocation.setDevice(localLocation.getDevice().toUpperCase());
 		IPath lowerCase = localLocation.setDevice(localLocation.getDevice().toLowerCase());
 
-		try {
-			link.createLink(upperCase, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		link.createLink(upperCase, IResource.NONE, getMonitor());
 		IPath lowerCaseFilePath = lowerCase.append("file.txt");
 		IFile[] files = getWorkspace().getRoot().findFilesForLocation(lowerCaseFilePath);
 		assertEquals("1.0", 1, files.length);
@@ -1044,7 +860,7 @@ public class LinkedResourceTest extends ResourceTest {
 	/**
 	 * Tests the {@link org.eclipse.core.resources.IResource#isLinked(int)} method.
 	 */
-	public void testIsLinked() {
+	public void testIsLinked() throws CoreException {
 		//initially nothing is linked
 		IResource[] toTest = new IResource[] {closedProject, existingFileInExistingProject, existingFolderInExistingFolder, existingFolderInExistingProject, existingProject, nonExistingFileInExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFolderInNonExistingProject, nonExistingFolderInOtherExistingProject, nonExistingProject, otherExistingProject};
 		for (IResource t : toTest) {
@@ -1054,11 +870,7 @@ public class LinkedResourceTest extends ResourceTest {
 		}
 		// create a link
 		IFolder link = nonExistingFolderInExistingProject;
-		try {
-			link.createLink(localFolder, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		link.createLink(localFolder, IResource.NONE, getMonitor());
 		IFile child = link.getFile(childName);
 		assertTrue("2.0", child.exists());
 		assertTrue("2.1", link.isLinked());
@@ -1070,7 +882,7 @@ public class LinkedResourceTest extends ResourceTest {
 
 	}
 
-	public void testsetLinkLocation() {
+	public void testSetLinkLocation() throws CoreException {
 		// initially nothing is linked
 		IResource[] toTest = new IResource[] {closedProject, existingFileInExistingProject, existingFolderInExistingFolder, existingFolderInExistingProject, existingProject, nonExistingFileInExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFolderInNonExistingProject, nonExistingFolderInOtherExistingProject, nonExistingProject, otherExistingProject};
 		for (IResource toTest1 : toTest) {
@@ -1080,11 +892,7 @@ public class LinkedResourceTest extends ResourceTest {
 		}
 		// create a link
 		IFolder link = nonExistingFolderInExistingProject;
-		try {
-			link.createLink(localFolder, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		link.createLink(localFolder, IResource.NONE, getMonitor());
 		IFile child = link.getFile(childName);
 		assertTrue("2.0", child.exists());
 		assertTrue("2.1", link.isLinked());
@@ -1094,11 +902,7 @@ public class LinkedResourceTest extends ResourceTest {
 		assertTrue("2.2", !child.isLinked(IResource.NONE));
 		assertTrue("2.3", child.isLinked(IResource.CHECK_ANCESTORS));
 
-		try {
-			link.createLink(existingFileInExistingProject.getLocationURI(), IResource.REPLACE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		link.createLink(existingFileInExistingProject.getLocationURI(), IResource.REPLACE, getMonitor());
 		assertTrue("3.1", link.isLinked());
 		assertTrue("3.2", link.isLinked(IResource.NONE));
 		assertTrue("3.3", link.isLinked(IResource.CHECK_ANCESTORS));
@@ -1109,45 +913,39 @@ public class LinkedResourceTest extends ResourceTest {
 	 * Tests swapping the link location.
 	 * This is a regression test for bug 268507
 	 */
-	public void testSetLinkLocationSwapLinkedResource() {
+	public void testSetLinkLocationSwapLinkedResource() throws CoreException {
 		final IPath parentLoc = existingFolderInExistingProject.getLocation();
 		final IPath childLoc = existingFolderInExistingFolder.getLocation();
 
-		try {
-			nonExistingFolderInExistingProject.createLink(parentLoc, IResource.NONE, getMonitor());
-			nonExistingFolderInOtherExistingProject.createLink(childLoc, IResource.NONE, getMonitor());
-			create(nonExistingFolderInOtherExistingProject.getFile("foo"), true);
+		nonExistingFolderInExistingProject.createLink(parentLoc, IResource.NONE, getMonitor());
+		nonExistingFolderInOtherExistingProject.createLink(childLoc, IResource.NONE, getMonitor());
+		create(nonExistingFolderInOtherExistingProject.getFile("foo"), true);
 
-			assertTrue("2.0", existingFolderInExistingFolder.members().length == 1);
-			assertTrue("3.0", existingFolderInExistingFolder.members()[0].getName().equals("foo"));
-			assertTrue("2.0", nonExistingFolderInOtherExistingProject.members().length == 1);
-			assertTrue("3.0", nonExistingFolderInOtherExistingProject.members()[0].getName().equals("foo"));
+		assertTrue("2.0", existingFolderInExistingFolder.members().length == 1);
+		assertTrue("3.0", existingFolderInExistingFolder.members()[0].getName().equals("foo"));
+		assertTrue("2.0", nonExistingFolderInOtherExistingProject.members().length == 1);
+		assertTrue("3.0", nonExistingFolderInOtherExistingProject.members()[0].getName().equals("foo"));
 
-			assertTrue("4.0", nonExistingFolderInExistingProject.members().length == 1);
-			assertTrue("5.0", nonExistingFolderInExistingProject.members()[0].getName().equals(existingFolderInExistingFolder.getName()));
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		assertTrue("4.0", nonExistingFolderInExistingProject.members().length == 1);
+		assertTrue("5.0", nonExistingFolderInExistingProject.members()[0].getName()
+				.equals(existingFolderInExistingFolder.getName()));
 
 		// Swap links around
-		try {
-			nonExistingFolderInExistingProject.createLink(childLoc, IResource.REPLACE, getMonitor());
-			nonExistingFolderInOtherExistingProject.createLink(parentLoc, IResource.REPLACE, getMonitor());
+		nonExistingFolderInExistingProject.createLink(childLoc, IResource.REPLACE, getMonitor());
+		nonExistingFolderInOtherExistingProject.createLink(parentLoc, IResource.REPLACE, getMonitor());
 
-			assertTrue("2.0", existingFolderInExistingFolder.members().length == 1);
-			assertTrue("3.0", existingFolderInExistingFolder.members()[0].getName().equals("foo"));
-			assertTrue(nonExistingFolderInExistingProject.getLocation().equals(childLoc));
-			assertTrue("2.0", nonExistingFolderInExistingProject.members().length == 1);
-			assertTrue("3.0", nonExistingFolderInExistingProject.members()[0].getName().equals("foo"));
+		assertTrue("2.0", existingFolderInExistingFolder.members().length == 1);
+		assertTrue("3.0", existingFolderInExistingFolder.members()[0].getName().equals("foo"));
+		assertTrue(nonExistingFolderInExistingProject.getLocation().equals(childLoc));
+		assertTrue("2.0", nonExistingFolderInExistingProject.members().length == 1);
+		assertTrue("3.0", nonExistingFolderInExistingProject.members()[0].getName().equals("foo"));
 
-			assertTrue("4.0", nonExistingFolderInOtherExistingProject.members().length == 1);
-			assertTrue("5.0", nonExistingFolderInOtherExistingProject.members()[0].getName().equals(existingFolderInExistingFolder.getName()));
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		assertTrue("4.0", nonExistingFolderInOtherExistingProject.members().length == 1);
+		assertTrue("5.0", nonExistingFolderInOtherExistingProject.members()[0].getName()
+				.equals(existingFolderInExistingFolder.getName()));
 	}
 
-	public void testsetLinkLocationPath() {
+	public void testSetLinkLocationPath() throws CoreException {
 		//initially nothing is linked
 		IResource[] toTest = new IResource[] {closedProject, existingFileInExistingProject, existingFolderInExistingFolder, existingFolderInExistingProject, existingProject, nonExistingFileInExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFolderInNonExistingProject, nonExistingFolderInOtherExistingProject, nonExistingProject, otherExistingProject};
 		for (IResource toTest1 : toTest) {
@@ -1157,11 +955,7 @@ public class LinkedResourceTest extends ResourceTest {
 		}
 		//create a link
 		IFolder link = nonExistingFolderInExistingProject;
-		try {
-			link.createLink(localFolder, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		link.createLink(localFolder, IResource.NONE, getMonitor());
 		IFile child = link.getFile(childName);
 		assertTrue("2.0", child.exists());
 		assertTrue("2.1", link.isLinked());
@@ -1171,11 +965,7 @@ public class LinkedResourceTest extends ResourceTest {
 		assertTrue("2.2", !child.isLinked(IResource.NONE));
 		assertTrue("2.3", child.isLinked(IResource.CHECK_ANCESTORS));
 
-		try {
-			link.createLink(existingFileInExistingProject.getLocation(), IResource.REPLACE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
+		link.createLink(existingFileInExistingProject.getLocation(), IResource.REPLACE, getMonitor());
 		assertTrue("3.1", link.isLinked());
 		assertTrue("3.2", link.isLinked(IResource.NONE));
 		assertTrue("3.3", link.isLinked(IResource.CHECK_ANCESTORS));
@@ -1185,7 +975,7 @@ public class LinkedResourceTest extends ResourceTest {
 	/**
 	 * Specific testing of links within links.
 	 */
-	public void testLinkedFileInLinkedFolder() {
+	public void testLinkedFileInLinkedFolder() throws CoreException, IOException {
 		//setup handles
 		IProject project = existingProject;
 		IFolder top = project.getFolder("topFolder");
@@ -1198,18 +988,14 @@ public class LinkedResourceTest extends ResourceTest {
 		IPath folderLocation = URIUtil.toPath(folderStore.toURI());
 		IPath fileLocation = URIUtil.toPath(fileStore.toURI());
 
-		try {
-			//create the structure on disk
-			subFolderStore.mkdir(EFS.NONE, getMonitor());
-			fileStore.openOutputStream(EFS.NONE, getMonitor()).close();
+		// create the structure on disk
+		subFolderStore.mkdir(EFS.NONE, getMonitor());
+		fileStore.openOutputStream(EFS.NONE, getMonitor()).close();
 
-			//create the structure in the workspace
-			ensureExistsInWorkspace(top, true);
-			linkedFolder.createLink(folderStore.toURI(), IResource.NONE, getMonitor());
-			linkedFile.createLink(fileStore.toURI(), IResource.NONE, getMonitor());
-		} catch (CoreException | IOException e) {
-			fail("4.99", e);
-		}
+		// create the structure in the workspace
+		ensureExistsInWorkspace(top, true);
+		linkedFolder.createLink(folderStore.toURI(), IResource.NONE, getMonitor());
+		linkedFile.createLink(fileStore.toURI(), IResource.NONE, getMonitor());
 
 		//assert locations
 		assertEquals("1.0", folderLocation, linkedFolder.getLocation());
@@ -1219,13 +1005,12 @@ public class LinkedResourceTest extends ResourceTest {
 		assertEquals("1.0", folderStore.toURI(), linkedFolder.getLocationURI());
 		assertEquals("1.1", subFolderStore.toURI(), subFolder.getLocationURI());
 		assertEquals("1.2", fileStore.toURI(), linkedFile.getLocationURI());
-
 	}
 
 	/**
 	 * Automated test of IFile#createLink
 	 */
-	public void testLinkFile() {
+	public void testLinkFile() throws Exception {
 		IResource[] interestingResources = new IResource[] {existingFileInExistingProject, nonExistingFileInExistingProject, nonExistingFileInExistingFolder};
 		IPath[] interestingLocations = new IPath[] {localFile, localFolder, nonExistingLocation};
 		IProgressMonitor[] monitors = new IProgressMonitor[] {new FussyProgressMonitor(), new CancelingProgressMonitor(), null};
@@ -1234,12 +1019,12 @@ public class LinkedResourceTest extends ResourceTest {
 			protected static final String CANCELED = "canceled";
 
 			@Override
-			public void cleanUp(Object[] args, int count) {
+			public void cleanUp(Object[] args, int count) throws Exception {
 				super.cleanUp(args, count);
 				try {
 					doCleanup();
 				} catch (Exception e) {
-					fail("invocation " + count + " failed to cleanup", e);
+					throw new IllegalStateException("invocation " + count + " failed to cleanup", e);
 				}
 			}
 
@@ -1325,7 +1110,7 @@ public class LinkedResourceTest extends ResourceTest {
 	/**
 	 * Automated test of IFolder#createLink
 	 */
-	public void testLinkFolder() {
+	public void testLinkFolder() throws Exception {
 		IResource[] interestingResources = new IResource[] {existingFolderInExistingProject, existingFolderInExistingFolder, nonExistingFolderInExistingProject, nonExistingFolderInNonExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFolderInExistingFolder};
 		IPath[] interestingLocations = new IPath[] {localFile, localFolder, nonExistingLocation};
 		IProgressMonitor[] monitors = new IProgressMonitor[] {new FussyProgressMonitor(), new CancelingProgressMonitor(), null};
@@ -1334,12 +1119,12 @@ public class LinkedResourceTest extends ResourceTest {
 			protected static final String CANCELED = "canceled";
 
 			@Override
-			public void cleanUp(Object[] args, int count) {
+			public void cleanUp(Object[] args, int count) throws Exception {
 				super.cleanUp(args, count);
 				try {
 					doCleanup();
 				} catch (Exception e) {
-					fail("invocation " + count + " failed to cleanup", e);
+					throw new IllegalStateException("invocation " + count + " failed to cleanup", e);
 				}
 			}
 
@@ -1431,75 +1216,50 @@ public class LinkedResourceTest extends ResourceTest {
 		IFolder folder = nonExistingFolderInExistingProject;
 		IPath newLocation = IPath.fromOSString("");
 		URI newLocationURI = URIUtil.toURI(newLocation);
-		try {
-			IStatus linkedResourceStatus = getWorkspace().validateLinkLocation(folder, newLocation);
-			assertEquals("1.0", IStatus.ERROR, linkedResourceStatus.getSeverity());
-			linkedResourceStatus = getWorkspace().validateLinkLocationURI(folder, newLocationURI);
-			assertEquals("1.1", IStatus.ERROR, linkedResourceStatus.getSeverity());
-		} catch (Exception e) {
-			fail("1.99", e);
-		}
+		IStatus linkedResourceStatus = getWorkspace().validateLinkLocation(folder, newLocation);
+		assertEquals("1.0", IStatus.ERROR, linkedResourceStatus.getSeverity());
+		linkedResourceStatus = getWorkspace().validateLinkLocationURI(folder, newLocationURI);
+		assertEquals("1.1", IStatus.ERROR, linkedResourceStatus.getSeverity());
 	}
 
 	/**
 	 * Tests creating a linked resource whose location contains a colon character.
 	 */
-	public void testLocationWithColon() {
+	public void testLocationWithColon() throws CoreException {
 		//windows does not allow a location with colon in the name
 		if (OS.isWindows()) {
 			return;
 		}
 		IFolder folder = nonExistingFolderInExistingProject;
-		try {
-			//Note that on *nix, "c:/temp" is a relative path with two segments
-			//so this is treated as relative to an undefined path variable called "c:".
-			IPath location = IPath.fromOSString("c:/temp");
-			folder.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
-			assertEquals("1.0", location, folder.getRawLocation());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		// Note that on *nix, "c:/temp" is a relative path with two segments
+		// so this is treated as relative to an undefined path variable called "c:".
+		IPath location = IPath.fromOSString("c:/temp");
+		folder.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
+		assertEquals("1.0", location, folder.getRawLocation());
 	}
 
 	/**
 	 * Tests the timestamp of a linked file when the local file is created or
 	 * deleted. See bug 34150 for more details.
 	 */
-	public void testModificationStamp() {
+	public void testModificationStamp() throws Exception {
 		IPath location = getRandomLocation();
+		deleteOnTearDown(location);
 		IFile linkedFile = nonExistingFileInExistingProject;
-		try {
-			try {
-				linkedFile.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
-			} catch (CoreException e) {
-				fail("1.99", e);
-			}
-			assertEquals("1.0", IResource.NULL_STAMP, linkedFile.getModificationStamp());
-			//create local file
-			try {
-				resolve(location).toFile().createNewFile();
-				linkedFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-			} catch (CoreException e) {
-				fail("2.91", e);
-			} catch (IOException e) {
-				fail("2.92", e);
-			}
-			assertTrue("2.0", linkedFile.getModificationStamp() >= 0);
+		linkedFile.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
+		assertEquals("1.0", IResource.NULL_STAMP, linkedFile.getModificationStamp());
+		// create local file
+		resolve(location).toFile().createNewFile();
+		linkedFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		assertTrue("2.0", linkedFile.getModificationStamp() >= 0);
 
-			//delete local file
-			ensureDoesNotExistInFileSystem(resolve(location).toFile());
-			try {
-				linkedFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-			} catch (CoreException e) {
-				fail("3.99", e);
-			}
-			assertEquals("4.0", IResource.NULL_STAMP, linkedFile.getModificationStamp());
-		} finally {
-			Workspace.clear(resolve(location).toFile());
-		}
+		// delete local file
+		ensureDoesNotExistInFileSystem(resolve(location).toFile());
+		linkedFile.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		assertEquals("4.0", IResource.NULL_STAMP, linkedFile.getModificationStamp());
 	}
 
-	public void testMoveFile() {
+	public void testMoveFile() throws Exception {
 		IResource[] sources = new IResource[] {nonExistingFileInExistingProject, nonExistingFileInExistingFolder};
 		IResource[] destinations = new IResource[] {existingProject, closedProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder};
 		Boolean[] deepCopy = new Boolean[] {Boolean.TRUE, Boolean.FALSE};
@@ -1509,12 +1269,12 @@ public class LinkedResourceTest extends ResourceTest {
 			protected static final String CANCELED = "canceled";
 
 			@Override
-			public void cleanUp(Object[] args, int count) {
+			public void cleanUp(Object[] args, int count) throws Exception {
 				super.cleanUp(args, count);
 				try {
 					doCleanup();
 				} catch (Exception e) {
-					fail("invocation " + count + " failed to cleanup", e);
+					throw new IllegalStateException("invocation " + count + " failed to cleanup", e);
 				}
 			}
 
@@ -1608,7 +1368,7 @@ public class LinkedResourceTest extends ResourceTest {
 		}.performTest(inputs);
 	}
 
-	public void testMoveFolder() {
+	public void testMoveFolder() throws Exception {
 		IResource[] sourceResources = new IResource[] {nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder};
 		IResource[] destinationResources = new IResource[] {existingProject, closedProject, nonExistingProject, existingFolderInExistingProject, nonExistingFolderInOtherExistingProject, nonExistingFolderInExistingFolder};
 		IProgressMonitor[] monitors = new IProgressMonitor[] {new FussyProgressMonitor(), new CancelingProgressMonitor(), null};
@@ -1617,12 +1377,12 @@ public class LinkedResourceTest extends ResourceTest {
 			protected static final String CANCELED = "canceled";
 
 			@Override
-			public void cleanUp(Object[] args, int count) {
+			public void cleanUp(Object[] args, int count) throws Exception {
 				super.cleanUp(args, count);
 				try {
 					doCleanup();
 				} catch (Exception e) {
-					fail("invocation " + count + " failed to cleanup", e);
+					throw new IllegalStateException("invocation " + count + " failed to cleanup", e);
 				}
 			}
 
@@ -1698,254 +1458,164 @@ public class LinkedResourceTest extends ResourceTest {
 	/**
 	 * Tests moving a linked file resource that doesn't exist in the file system
 	 */
-	public void testMoveMissingFile() {
+	public void testMoveMissingFile() throws CoreException {
 		IPath location = getRandomLocation();
 		IFile linkedFile = nonExistingFileInExistingProject;
-		try {
-			linkedFile.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		linkedFile.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
 
 		IFile dest = existingProject.getFile("FailedMoveDest");
-		try {
-			linkedFile.move(dest.getFullPath(), IResource.NONE, getMonitor());
-			fail("2.0");
-		} catch (CoreException e1) {
-			//should fail
-		}
+		assertThrows(CoreException.class, () -> linkedFile.move(dest.getFullPath(), IResource.NONE, getMonitor()));
 		assertTrue("2.1", !dest.exists());
-		try {
-			linkedFile.move(dest.getFullPath(), IResource.FORCE, getMonitor());
-			fail("2.2");
-		} catch (CoreException e1) {
-			//should fail
-		}
+		assertThrows(CoreException.class, () -> linkedFile.move(dest.getFullPath(), IResource.FORCE, getMonitor()));
 		assertTrue("2.3", !dest.exists());
 	}
 
 	/**
 	 * Tests moving a linked folder that doesn't exist in the file system
 	 */
-	public void testMoveMissingFolder() {
+	public void testMoveMissingFolder() throws CoreException {
 		IPath location = getRandomLocation();
 		IFolder linkedFolder = nonExistingFolderInExistingProject;
-		try {
-			linkedFolder.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		linkedFolder.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
 
 		IFolder dest = existingProject.getFolder("FailedMoveDest");
-		try {
-			linkedFolder.move(dest.getFullPath(), IResource.NONE, getMonitor());
-			fail("2.0");
-		} catch (CoreException e1) {
-			//should fail
-		}
+		assertThrows(CoreException.class, () -> linkedFolder.move(dest.getFullPath(), IResource.NONE, getMonitor()));
 		assertTrue("2.1", !dest.exists());
-		try {
-			linkedFolder.move(dest.getFullPath(), IResource.FORCE, getMonitor());
-			fail("2.2");
-		} catch (CoreException e1) {
-			//should fail
-		}
+		assertThrows(CoreException.class, () -> linkedFolder.move(dest.getFullPath(), IResource.FORCE, getMonitor()));
 		assertTrue("2.3", !dest.exists());
 	}
 
-	public void testMoveProjectWithLinks() {
+	public void testMoveProjectWithLinks() throws CoreException {
 		IPath fileLocation = getRandomLocation();
+		deleteOnTearDown(fileLocation);
 		IFile file = nonExistingFileInExistingProject;
 		IFolder folder = nonExistingFolderInExistingProject;
 		IFile childFile = folder.getFile(childName);
 		IResource[] oldResources = new IResource[] {file, folder, existingProject, childFile};
-		try {
-			try {
-				createFileInFileSystem(resolve(fileLocation));
-				folder.createLink(localFolder, IResource.NONE, getMonitor());
-				file.createLink(fileLocation, IResource.NONE, getMonitor());
-			} catch (CoreException e) {
-				fail("1.0", e);
-			}
+		createFileInFileSystem(resolve(fileLocation));
+		folder.createLink(localFolder, IResource.NONE, getMonitor());
+		file.createLink(fileLocation, IResource.NONE, getMonitor());
 
-			//move the project
-			IProject destination = getWorkspace().getRoot().getProject("MoveTargetProject");
-			IFile newFile = destination.getFile(file.getProjectRelativePath());
-			IFolder newFolder = destination.getFolder(folder.getProjectRelativePath());
-			IFile newChildFile = newFolder.getFile(childName);
-			IResource[] newResources = new IResource[] {destination, newFile, newFolder, newChildFile};
+		// move the project
+		IProject destination = getWorkspace().getRoot().getProject("MoveTargetProject");
+		IFile newFile = destination.getFile(file.getProjectRelativePath());
+		IFolder newFolder = destination.getFolder(folder.getProjectRelativePath());
+		IFile newChildFile = newFolder.getFile(childName);
+		IResource[] newResources = new IResource[] { destination, newFile, newFolder, newChildFile };
 
-			assertDoesNotExistInWorkspace("2.0", destination);
+		assertDoesNotExistInWorkspace("2.0", destination);
 
-			try {
-				existingProject.move(destination.getFullPath(), IResource.SHALLOW, getMonitor());
-			} catch (CoreException e) {
-				fail("2.1", e);
-			}
-			assertExistsInWorkspace("3.0", newResources);
-			assertDoesNotExistInWorkspace("3.1", oldResources);
+		existingProject.move(destination.getFullPath(), IResource.SHALLOW, getMonitor());
+		assertExistsInWorkspace("3.0", newResources);
+		assertDoesNotExistInWorkspace("3.1", oldResources);
 
-			assertTrue("3.2", newFile.isLinked());
-			assertEquals("3.3", resolve(fileLocation), newFile.getLocation());
+		assertTrue("3.2", newFile.isLinked());
+		assertEquals("3.3", resolve(fileLocation), newFile.getLocation());
 
-			assertTrue("3.4", newFolder.isLinked());
-			assertEquals("3.5", resolve(localFolder), newFolder.getLocation());
+		assertTrue("3.4", newFolder.isLinked());
+		assertEquals("3.5", resolve(localFolder), newFolder.getLocation());
 
-			assertTrue("3.6", destination.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue("3.6", destination.isSynchronized(IResource.DEPTH_INFINITE));
 
-			//now do a deep move back to the original project
-			try {
-				destination.move(existingProject.getFullPath(), IResource.NONE, getMonitor());
-			} catch (CoreException e) {
-				fail("5.0", e);
-			}
-			assertExistsInWorkspace("5.1", oldResources);
-			assertDoesNotExistInWorkspace("5.2", newResources);
-			assertTrue("5.3", !file.isLinked());
-			assertTrue("5.4", !folder.isLinked());
-			assertEquals("5.5", existingProject.getLocation().append(file.getProjectRelativePath()), file.getLocation());
-			assertEquals("5.6", existingProject.getLocation().append(folder.getProjectRelativePath()), folder.getLocation());
-			assertTrue("5.7", existingProject.isSynchronized(IResource.DEPTH_INFINITE));
-			assertTrue("5.8", destination.isSynchronized(IResource.DEPTH_INFINITE));
-		} finally {
-			Workspace.clear(resolve(fileLocation).toFile());
-		}
+		// now do a deep move back to the original project
+		destination.move(existingProject.getFullPath(), IResource.NONE, getMonitor());
+		assertExistsInWorkspace("5.1", oldResources);
+		assertDoesNotExistInWorkspace("5.2", newResources);
+		assertTrue("5.3", !file.isLinked());
+		assertTrue("5.4", !folder.isLinked());
+		assertEquals("5.5", existingProject.getLocation().append(file.getProjectRelativePath()), file.getLocation());
+		assertEquals("5.6", existingProject.getLocation().append(folder.getProjectRelativePath()),
+				folder.getLocation());
+		assertTrue("5.7", existingProject.isSynchronized(IResource.DEPTH_INFINITE));
+		assertTrue("5.8", destination.isSynchronized(IResource.DEPTH_INFINITE));
 	}
 
 	/**
 	 * Tests bug 117402.
 	 */
-	public void testMoveProjectWithLinks2() {
+	public void testMoveProjectWithLinks2() throws CoreException {
 		IPath fileLocation = getRandomLocation();
+		deleteOnTearDown(fileLocation);
 		IFile linkedFile = existingProject.getFile("(test)");
-		try {
-			try {
-				createFileInFileSystem(resolve(fileLocation), getRandomContents());
-				linkedFile.createLink(fileLocation, IResource.NONE, getMonitor());
-			} catch (CoreException e) {
-				fail("1.0", e);
-			}
+		createFileInFileSystem(resolve(fileLocation), getRandomContents());
+		linkedFile.createLink(fileLocation, IResource.NONE, getMonitor());
 
-			//move the project
-			IProject destination = getWorkspace().getRoot().getProject("CopyTargetProject");
-			try {
-				existingProject.move(destination.getFullPath(), IResource.SHALLOW, getMonitor());
-			} catch (CoreException e) {
-				fail("2.0", e);
-			}
+		// move the project
+		IProject destination = getWorkspace().getRoot().getProject("CopyTargetProject");
+		existingProject.move(destination.getFullPath(), IResource.SHALLOW, getMonitor());
 
-			IFile newFile = destination.getFile(linkedFile.getProjectRelativePath());
-			assertTrue("3.0", newFile.isLinked());
-			assertEquals("3.1", resolve(fileLocation), newFile.getLocation());
-		} finally {
-			Workspace.clear(resolve(fileLocation).toFile());
-		}
+		IFile newFile = destination.getFile(linkedFile.getProjectRelativePath());
+		assertTrue("3.0", newFile.isLinked());
+		assertEquals("3.1", resolve(fileLocation), newFile.getLocation());
 	}
 
 	/**
 	 * Tests bug 298849.
 	 */
-	public void testMoveFolderWithLinks() {
+	public void testMoveFolderWithLinks() throws CoreException {
 		// create a folder
 		IFolder folderWithLinks = existingProject.getFolder(getUniqueString());
-		try {
-			folderWithLinks.create(true, true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		folderWithLinks.create(true, true, getMonitor());
 
 		IPath fileLocation = getRandomLocation();
-		try {
-			createFileInFileSystem(resolve(fileLocation), getRandomContents());
+		deleteOnTearDown(fileLocation);
+		createFileInFileSystem(resolve(fileLocation), getRandomContents());
 
-			// create a linked file in the folder
-			IFile linkedFile = folderWithLinks.getFile(getUniqueString());
-			try {
-				linkedFile.createLink(fileLocation, IResource.NONE, getMonitor());
-			} catch (CoreException e) {
-				fail("2.0", e);
-			}
+		// create a linked file in the folder
+		IFile linkedFile = folderWithLinks.getFile(getUniqueString());
+		linkedFile.createLink(fileLocation, IResource.NONE, getMonitor());
 
-			// there should be an entry in .project for the linked file
-			String string = readStringInFileSystem(existingProject.getFile(".project"));
-			assertTrue("3.0", string.contains(linkedFile.getProjectRelativePath().toString()));
+		// there should be an entry in .project for the linked file
+		String string = readStringInFileSystem(existingProject.getFile(".project"));
+		assertTrue("3.0", string.contains(linkedFile.getProjectRelativePath().toString()));
 
-			// move the folder
-			try {
-				folderWithLinks.move(otherExistingProject.getFolder(getUniqueString()).getFullPath(), IResource.SHALLOW | IResource.ALLOW_MISSING_LOCAL, getMonitor());
-			} catch (CoreException e) {
-				fail("4.0", e);
-			}
+		// move the folder
+		folderWithLinks.move(otherExistingProject.getFolder(getUniqueString()).getFullPath(),
+				IResource.SHALLOW | IResource.ALLOW_MISSING_LOCAL, getMonitor());
 
-			// both the folder and link in the source project should not exist
-			assertFalse("5.0", folderWithLinks.exists());
-			assertFalse("6.0", linkedFile.exists());
+		// both the folder and link in the source project should not exist
+		assertFalse("5.0", folderWithLinks.exists());
+		assertFalse("6.0", linkedFile.exists());
 
-			// the project description should not contain links
-			HashMap<IPath, LinkDescription> links = null;
-			try {
-				links = ((ProjectDescription) existingProject.getDescription()).getLinks();
-			} catch (CoreException e) {
-				fail("7.0", e);
-			}
-			assertNull("8.0", links);
+		// the project description should not contain links
+		HashMap<IPath, LinkDescription> links = ((ProjectDescription) existingProject.getDescription()).getLinks();
+		assertNull("8.0", links);
 
-			// and the entry from .project should be removed
-			string = readStringInFileSystem(existingProject.getFile(".project"));
-			assertEquals("9.0", -1, string.indexOf(linkedFile.getProjectRelativePath().toString()));
-		} finally {
-			Workspace.clear(resolve(fileLocation).toFile());
-		}
+		// and the entry from .project should be removed
+		string = readStringInFileSystem(existingProject.getFile(".project"));
+		assertEquals("9.0", -1, string.indexOf(linkedFile.getProjectRelativePath().toString()));
 	}
 
-	public void testNatureVeto() {
+	public void testNatureVeto() throws CoreException {
 		//note: simpleNature has the link veto turned on.
 
 		//test create link on project with nature veto
-		try {
-			IProjectDescription description = existingProject.getDescription();
-			description.setNatureIds(new String[] {NATURE_SIMPLE});
-			existingProject.setDescription(description, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
-		try {
-			nonExistingFolderInExistingProject.createLink(localFolder, IResource.NONE, getMonitor());
-			fail("1.1");
-		} catch (CoreException e) {
-			//should fail
-		}
-		try {
-			nonExistingFileInExistingProject.createLink(localFile, IResource.NONE, getMonitor());
-			fail("1.2");
-		} catch (CoreException e) {
-			//should fail
-		}
+		IProjectDescription description = existingProject.getDescription();
+		description.setNatureIds(new String[] { NATURE_SIMPLE });
+		existingProject.setDescription(description, IResource.NONE, getMonitor());
+
+		assertThrows(CoreException.class,
+				() -> nonExistingFolderInExistingProject.createLink(localFolder, IResource.NONE, getMonitor()));
+		assertThrows(CoreException.class,
+				() -> nonExistingFileInExistingProject.createLink(localFile, IResource.NONE, getMonitor()));
 
 		//test add nature with veto to project that already has link
-		try {
-			existingProject.delete(IResource.FORCE, getMonitor());
-			existingProject.create(getMonitor());
-			existingProject.open(getMonitor());
-			nonExistingFolderInExistingProject.createLink(localFolder, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
-		try {
-			IProjectDescription description = existingProject.getDescription();
-			description.setNatureIds(new String[] {NATURE_SIMPLE});
-			existingProject.setDescription(description, IResource.NONE, getMonitor());
-			fail("3.0");
-		} catch (CoreException e) {
-			//should fail
-		}
+		existingProject.delete(IResource.FORCE, getMonitor());
+		existingProject.create(getMonitor());
+		existingProject.open(getMonitor());
+		nonExistingFolderInExistingProject.createLink(localFolder, IResource.NONE, getMonitor());
+
+		IProjectDescription descriptionAfterProjectRecreation = existingProject.getDescription();
+		descriptionAfterProjectRecreation.setNatureIds(new String[] { NATURE_SIMPLE });
+		assertThrows(CoreException.class,
+				() -> existingProject.setDescription(descriptionAfterProjectRecreation, IResource.NONE, getMonitor()));
 	}
 
 	/**
 	 * Tests creating a link within a link, and ensuring that both links still
 	 * exist when the project is closed/opened (bug 177367).
 	 */
-	public void testNestedLink() {
+	public void testNestedLink() throws CoreException {
 		final IFileStore store1 = getTempStore();
 		final IFileStore store2 = getTempStore();
 		URI location1 = store1.toURI();
@@ -1953,14 +1623,10 @@ public class LinkedResourceTest extends ResourceTest {
 		//folder names are important here, because we want a certain order in the link hash map
 		IFolder link = existingProject.getFolder("aA");
 		IFolder linkChild = link.getFolder("b");
-		try {
-			store1.mkdir(EFS.NONE, getMonitor());
-			store2.mkdir(EFS.NONE, getMonitor());
-			link.createLink(location1, IResource.NONE, getMonitor());
-			linkChild.createLink(location2, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		store1.mkdir(EFS.NONE, getMonitor());
+		store2.mkdir(EFS.NONE, getMonitor());
+		link.createLink(location1, IResource.NONE, getMonitor());
+		linkChild.createLink(location2, IResource.NONE, getMonitor());
 		assertTrue("1.0", link.exists());
 		assertTrue("1.1", link.isLinked());
 		assertTrue("1.2", linkChild.exists());
@@ -1969,13 +1635,9 @@ public class LinkedResourceTest extends ResourceTest {
 		assertEquals("1.5", location2, linkChild.getLocationURI());
 
 		//now delete and recreate the project
-		try {
-			existingProject.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, getMonitor());
-			existingProject.create(getMonitor());
-			existingProject.open(IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		existingProject.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, getMonitor());
+		existingProject.create(getMonitor());
+		existingProject.open(IResource.NONE, getMonitor());
 
 		assertTrue("2.0", link.exists());
 		assertTrue("2.1", link.isLinked());
@@ -1983,32 +1645,23 @@ public class LinkedResourceTest extends ResourceTest {
 		assertTrue("2.3", linkChild.isLinked());
 		assertEquals("2.4", location1, link.getLocationURI());
 		assertEquals("2.5", location2, linkChild.getLocationURI());
-
 	}
 
 	/**
 	 * Create a project with a linked resource at depth &gt; 2, and refresh it.
 	 */
-	public void testRefreshDeepLink() {
+	public void testRefreshDeepLink() throws CoreException {
 		IFolder link = nonExistingFolderInExistingFolder;
 		IPath linkLocation = localFolder;
 		IPath localChild = linkLocation.append("Child");
 		IFile linkChild = link.getFile(localChild.lastSegment());
 		createFileInFileSystem(resolve(localChild));
-		try {
-			link.createLink(linkLocation, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		link.createLink(linkLocation, IResource.NONE, getMonitor());
 		assertTrue("1.0", link.exists());
 		assertTrue("1.1", linkChild.exists());
 
-		try {
-			IProject project = link.getProject();
-			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		IProject project = link.getProject();
+		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 
 		assertTrue("2.0", link.exists());
 		assertTrue("2.1", linkChild.exists());
@@ -2020,47 +1673,31 @@ public class LinkedResourceTest extends ResourceTest {
 		IPath projectLocation = existingProject.getLocation();
 		IFolder folderByIPath = existingProject.getFolder("overlappingLinkedFolderByIPath");
 		assertTrue("1.1", !workspace.validateLinkLocation(folderByIPath, projectLocation).isOK());
-		try {
-			folderByIPath.createLink(projectLocation, IResource.NONE, getMonitor());
-			fail("1.2");
-		} catch (CoreException e) {
-			// expected to fail
-		}
+		assertThrows(CoreException.class,
+				() -> folderByIPath.createLink(projectLocation, IResource.NONE, getMonitor()));
 
 		URI projectLocationURI = existingProject.getLocationURI();
 		IFolder folderByURI = existingProject.getFolder("overlappingLinkedFolderByURI");
 		assertTrue("2.1", !workspace.validateLinkLocationURI(folderByURI, projectLocationURI).isOK());
-		try {
-			folderByURI.createLink(projectLocationURI, IResource.NONE, getMonitor());
-			fail("2.2");
-		} catch (CoreException e) {
-			// expected to fail just like when creating link by IPath
-		}
+		assertThrows(CoreException.class,
+				() -> folderByURI.createLink(projectLocationURI, IResource.NONE, getMonitor()));
 
 		// device is missing
 
 		IPath projectLocationWithoutDevice = projectLocation.setDevice(null);
 		IFolder folderByUnixLikeIPath = existingProject.getFolder("overlappingLinkedFolderByUnixLikeIPath");
 		assertTrue("3.1", !workspace.validateLinkLocation(folderByUnixLikeIPath, projectLocationWithoutDevice).isOK());
-		try {
-			folderByUnixLikeIPath.createLink(projectLocationWithoutDevice, IResource.NONE, getMonitor());
-			fail("3.2");
-		} catch (CoreException e) {
-			// expected to fail
-		}
+		assertThrows(CoreException.class,
+				() -> folderByUnixLikeIPath.createLink(projectLocationWithoutDevice, IResource.NONE, getMonitor()));
 
 		URI projectLocationURIWithoutDevice = URIUtil.toURI(projectLocationWithoutDevice.toString());
 		IFolder folderByUnixLikeURI = existingProject.getFolder("overlappingLinkedFolderByUnixLikeURI");
 		assertTrue("4.1", !workspace.validateLinkLocationURI(folderByUnixLikeURI, projectLocationURIWithoutDevice).isOK());
-		try {
-			folderByUnixLikeURI.createLink(projectLocationURIWithoutDevice, IResource.NONE, getMonitor());
-			fail("4.2");
-		} catch (CoreException e) {
-			// expected to fail
-		}
+		assertThrows(CoreException.class,
+				() -> folderByUnixLikeURI.createLink(projectLocationURIWithoutDevice, IResource.NONE, getMonitor()));
 	}
 
-	public void testLinkedFolderWithSymlink_Bug338010() {
+	public void testLinkedFolderWithSymlink_Bug338010() throws CoreException {
 		// Only activate this test if testing of symbolic links is possible.
 		if (!canCreateSymLinks()) {
 			return;
@@ -2078,11 +1715,7 @@ public class LinkedResourceTest extends ResourceTest {
 		assertTrue("Could not create link at location: " + linkChild, linkChild.exists());
 
 		IFolder folder = nonExistingFolderInExistingProject;
-		try {
-			folder.createLink(linkChildLocation, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
+		folder.createLink(linkChildLocation, IResource.NONE, getMonitor());
 		// Check that the symlink is preserved.
 		assertEquals("1.2", resolvedLinkChildLocation, folder.getLocation());
 	}

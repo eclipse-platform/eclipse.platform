@@ -932,9 +932,6 @@ public class PDAVirtualMachine {
 		sendCommandResponse(printFrame(frame) + "\n"); //$NON-NLS-1$
 	}
 
-	/**
-	 * @param args
-	 */
 	void debugGroups(Args args) {
 		TreeSet<String> groups = new TreeSet<>();
 		for (Iterator<Register> itr = fRegisters.values().iterator(); itr.hasNext();) {
@@ -1008,9 +1005,6 @@ public class PDAVirtualMachine {
 		sendCommandResponse(response.toString());
 	}
 
-	/**
-	 * @param args
-	 */
 	void debugRestart(Args args) {
 		fSuspendVM = "restart"; //$NON-NLS-1$
 
@@ -1293,10 +1287,6 @@ public class PDAVirtualMachine {
 		sendCommandResponse("ok\n"); //$NON-NLS-1$
 	}
 
-	/**
-	 * @param thread
-	 * @param args
-	 */
 	void iAdd(PDAThread thread, Args args) {
 		Object val1 = thread.fStack.pop();
 		Object val2 = thread.fStack.pop();
@@ -1340,10 +1330,6 @@ public class PDAVirtualMachine {
 		}
 	}
 
-	/**
-	 * @param thread
-	 * @param args
-	 */
 	void iDec(PDAThread thread, Args args) {
 		Object val = thread.fStack.pop();
 		if (val instanceof Integer) {
@@ -1352,10 +1338,6 @@ public class PDAVirtualMachine {
 		thread.fStack.push(val);
 	}
 
-	/**
-	 * @param thread
-	 * @param args
-	 */
 	void iDef(PDAThread thread, Args args) {
 		String type = args.getNextStringArg();
 
@@ -1408,10 +1390,6 @@ public class PDAVirtualMachine {
 		return null;
 	}
 
-	/**
-	 * @param thread
-	 * @param args
-	 */
 	void iDup(PDAThread thread, Args args) {
 		Object val = thread.fStack.pop();
 		thread.fStack.push(val);
@@ -1433,18 +1411,10 @@ public class PDAVirtualMachine {
 		}
 	}
 
-	/**
-	 * @param thread
-	 * @param args
-	 */
 	void iHalt(PDAThread thread, Args args) {
 		thread.fRun = false;
 	}
 
-	/**
-	 * @param thread
-	 * @param args
-	 */
 	void iOutput(PDAThread thread, Args args) {
 		System.out.println(thread.fStack.pop());
 	}
@@ -1497,10 +1467,6 @@ public class PDAVirtualMachine {
 		}
 	}
 
-	/**
-	 * @param thread
-	 * @param args
-	 */
 	void iReturn(PDAThread thread, Args args) {
 		if (!thread.fFrames.isEmpty()) {
 			thread.fCurrentFrame = thread.fFrames.remove(thread.fFrames.size() - 1);
@@ -1516,10 +1482,6 @@ public class PDAVirtualMachine {
 		thread.fCurrentFrame.set(var, Integer.valueOf(0));
 	}
 
-	/**
-	 * @param thread
-	 * @param args
-	 */
 	void iInternalEndEval(PDAThread thread, Args args) {
 		Object result = thread.fStack.pop();
 		thread.fThreadCode = fCode;

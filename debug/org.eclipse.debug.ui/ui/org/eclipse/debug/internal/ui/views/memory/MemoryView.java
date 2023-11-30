@@ -398,9 +398,6 @@ public class MemoryView extends ViewPart implements IMemoryRenderingSite2 {
 		}
 	}
 
-	/**
-	 *
-	 */
 	private void createMemoryBlocksTreeViewPane(Composite parent) {
 
 		fMemBlkViewer = new MemoryBlocksTreeViewPane(this);
@@ -442,7 +439,6 @@ public class MemoryView extends ViewPart implements IMemoryRenderingSite2 {
 
 	/**
 	 * @return an activate listener for the given view pane
-	 *
 	 */
 	private Listener createDeactivateListener(final IMemoryViewPane viewPane) {
 		Listener deactivateListener = new Listener() {
@@ -475,9 +471,6 @@ public class MemoryView extends ViewPart implements IMemoryRenderingSite2 {
 		return activateListener;
 	}
 
-	/**
-	 *
-	 */
 	public void createRenderingViewPane(final String paneId) {
 		final RenderingViewPane renderingPane = new RenderingViewPane(this);
 		fViewPanes.put(paneId, renderingPane);

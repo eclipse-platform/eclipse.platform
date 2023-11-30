@@ -1877,7 +1877,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	 * implementations can overrule which whitespaces can be ignored and which not
 	 * (e.g. whitespaces in literals).
 	 *
-	 * @param document
 	 * @return a IIgnoreWhitespaceContributor which allows to overrule the platform
 	 *         based whitespace ignore logic in the compare view. Default
 	 *         implementation doesn't supply a contributor.
@@ -5216,8 +5215,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 	}
 
-	/**
-	 */
 	private void updateVScrollBar() {
 
 		if (Utilities.okToUse(fVScrollBar) && fSynchronizedScrolling) {

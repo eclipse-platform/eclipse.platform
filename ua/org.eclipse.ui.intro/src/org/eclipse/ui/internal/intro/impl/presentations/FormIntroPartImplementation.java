@@ -151,10 +151,6 @@ public class FormIntroPartImplementation extends
 	 * holds the home page, and one that holds all other pages. If the
 	 * presentation is configured to not show the home page with the Home Page
 	 * layout, then this page book will only have one page.
-	 *
-	 * @param toolkit
-	 * @param form
-	 * @return
 	 */
 	private ScrolledPageBook createMainPageBook(FormToolkit toolkit, Form form) {
 		// get body and create page book in it. Body has GridLayout.

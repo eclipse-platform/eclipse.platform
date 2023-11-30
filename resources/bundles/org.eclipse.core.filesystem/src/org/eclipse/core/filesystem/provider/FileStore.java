@@ -53,7 +53,6 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	 * @param path A path representing the data being transferred for use in error
 	 * messages.
 	 * @param monitor A progress monitor
-	 * @throws CoreException
 	 */
 	private static final void transferStreams(InputStream source, OutputStream destination, long length, String path, IProgressMonitor monitor) throws CoreException {
 		byte[] buffer = new byte[8192];

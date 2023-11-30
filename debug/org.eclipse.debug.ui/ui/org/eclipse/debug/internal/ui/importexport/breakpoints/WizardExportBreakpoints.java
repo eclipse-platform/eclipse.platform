@@ -41,7 +41,6 @@ import org.osgi.framework.FrameworkUtil;
  * This class uses <code>WizardExportBreakpointsPage</code>
  *
  * @since 3.2
- *
  */
 public class WizardExportBreakpoints extends Wizard implements IExportWizard {
 

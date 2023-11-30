@@ -369,7 +369,6 @@ public class HistoryStoreTest extends ResourceTest {
 	 * - do not store files greater than some stated size
 	 * - consider history store information stale after some specified period
 	 *   of time and discard stale data
-	 *
 	 */
 	public void testClean() throws Exception {
 		/* Create common objects. */

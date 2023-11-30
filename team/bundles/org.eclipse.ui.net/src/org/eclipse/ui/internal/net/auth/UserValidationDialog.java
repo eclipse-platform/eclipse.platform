@@ -97,15 +97,11 @@ public class UserValidationDialog extends Dialog {
 		this.message = message;
 		setBlockOnOpen(true);
 	}
-	/**
-	 */
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(NetUIMessages.UserValidationDialog_0);
 	}
-	/**
-	 */
 	@Override
 	public void create() {
 		super.create();
@@ -113,8 +109,6 @@ public class UserValidationDialog extends Dialog {
 		usernameField.selectAll();
 		usernameField.setFocus();
 	}
-	/**
-	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite main = new Composite(parent, SWT.NONE);
@@ -139,8 +133,6 @@ public class UserValidationDialog extends Dialog {
 
 	/**
 	 * Creates the three widgets that represent the user name entry area.
-	 *
-	 * @param parent
 	 */
 	protected void createPasswordFields(Composite parent) {
 		new Label(parent, SWT.NONE).setText(NetUIMessages.UserValidationDialog_2);
@@ -155,8 +147,6 @@ public class UserValidationDialog extends Dialog {
 
 	/**
 	 * Creates the three widgets that represent the user name entry area.
-	 *
-	 * @param parent
 	 */
 	protected void createUsernameFields(Composite parent) {
 		new Label(parent, SWT.NONE).setText(NetUIMessages.UserValidationDialog_3);

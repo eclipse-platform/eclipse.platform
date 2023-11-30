@@ -101,7 +101,6 @@ public class CompositeCheatSheetModel extends Observable implements ICompositeCh
 	/**
 	 * Maintain a set of tasks which have been changed which will
 	 * be used to send events to observers.
-	 * @param task
 	 */
 	void stateChanged(ICompositeCheatSheetTask task) {
 		if (!stateChangedSet.contains(task)) {

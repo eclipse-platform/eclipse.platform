@@ -64,7 +64,6 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	 * Checks that the expected line count has been reached and if not dump out what
 	 * was tracked to System.err
 	 *
-	 * @param expectedLines
 	 * @since 3.8.200
 	 */
 	void assertLines(int expectedLines) {
@@ -250,8 +249,6 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 
 	/**
 	 * Tests specifying the XmlLogger as a listener (bug 80435)
-	 *
-	 * @throws FileNotFoundException
 	 */
 	@Test
 	public void testXmlLoggerListener() throws CoreException, FileNotFoundException {

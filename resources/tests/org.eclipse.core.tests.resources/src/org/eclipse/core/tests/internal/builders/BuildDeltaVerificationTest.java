@@ -14,8 +14,17 @@
 package org.eclipse.core.tests.internal.builders;
 
 import java.io.ByteArrayInputStream;
-import java.util.*;
-import org.eclipse.core.resources.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -98,32 +107,20 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 		file3 = folder2.getFile(FILE1);
 
 		// Create and open a project, folder and file
-		try {
-			project1.create(getMonitor());
-			project1.open(getMonitor());
-			folder1.create(true, true, getMonitor());
-			file1.create(getRandomContents(), true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project1.create(getMonitor());
+		project1.open(getMonitor());
+		folder1.create(true, true, getMonitor());
+		file1.create(getRandomContents(), true, getMonitor());
 
 		// Create and set a build spec for the project
-		try {
-			IProjectDescription desc = project1.getDescription();
-			ICommand command = desc.newCommand();
-			command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
-			desc.setBuildSpec(new ICommand[] {command});
-			project1.setDescription(desc, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		IProjectDescription desc = project1.getDescription();
+		ICommand command = desc.newCommand();
+		command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
+		desc.setBuildSpec(new ICommand[] { command });
+		project1.setDescription(desc, getMonitor());
 
 		// Build the project
-		try {
-			project1.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
-		} catch (CoreException e) {
-			fail("3.3", e);
-		}
+		project1.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 
 		verifier = DeltaVerifierBuilder.getInstance();
 		assertNotNull("Builder was not instantiated", verifier);
@@ -133,300 +130,238 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
-	public void testAddAndRemoveFile() {
-		try {
-			ByteArrayInputStream in = new ByteArrayInputStream(new byte[] {4, 5, 6});
-			file2.create(in, true, getMonitor());
-			file2.delete(true, getMonitor());
-			rebuild();
-			//builder for project1 may not even be called (empty delta)
-			if (verifier.wasFullBuild()) {
-				verifier.emptyBuild();
+	public void testAddAndRemoveFile() throws CoreException {
+		ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
+		file2.create(in, true, getMonitor());
+		file2.delete(true, getMonitor());
+		rebuild();
+		// builder for project1 may not even be called (empty delta)
+		if (verifier.wasFullBuild()) {
+			verifier.emptyBuild();
+		}
+		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testAddAndRemoveFolder() throws CoreException {
+		folder2.create(true, true, getMonitor());
+		folder2.delete(true, getMonitor());
+		rebuild();
+		// builder for project1 may not even be called (empty delta)
+		if (verifier.wasFullBuild()) {
+			verifier.emptyBuild();
+		}
+		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testAddFile() throws CoreException {
+		verifier.addExpectedChange(file2, project1, IResourceDelta.ADDED, 0);
+		ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
+		file2.create(in, true, getMonitor());
+		rebuild();
+		assertDelta();
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testAddFileAndFolder() throws CoreException {
+		verifier.addExpectedChange(folder2, project1, IResourceDelta.ADDED, 0);
+		verifier.addExpectedChange(file3, project1, IResourceDelta.ADDED, 0);
+		folder2.create(true, true, getMonitor());
+		ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
+		file3.create(in, true, getMonitor());
+		rebuild();
+		assertDelta();
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testAddFolder() throws CoreException {
+		verifier.addExpectedChange(folder2, project1, IResourceDelta.ADDED, 0);
+		folder2.create(true, true, getMonitor());
+		rebuild();
+		assertDelta();
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testAddProject() throws CoreException {
+		// should not affect project1's delta
+		project2.create(getMonitor());
+		rebuild();
+		// builder for project1 should not even be called
+		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testChangeFile() throws CoreException {
+		/* change file1's contents */
+		verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
+		ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
+		file1.setContents(in, true, false, getMonitor());
+		rebuild();
+		assertDelta();
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testChangeFileToFolder() throws CoreException {
+		/* change file1 into a folder */
+		verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED,
+				IResourceDelta.CONTENT | IResourceDelta.TYPE | IResourceDelta.REPLACED);
+		file1.delete(true, getMonitor());
+		folder3.create(true, true, getMonitor());
+		rebuild();
+		assertDelta();
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testChangeFolderToFile() throws CoreException {
+		/* change to a folder */
+		file1.delete(true, getMonitor());
+		folder3.create(true, true, getMonitor());
+		rebuild();
+
+		/* now change back to a file and verify */
+		verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED,
+				IResourceDelta.CONTENT | IResourceDelta.TYPE | IResourceDelta.REPLACED);
+		folder3.delete(true, getMonitor());
+		ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { 1, 2 });
+		file1.create(in, true, getMonitor());
+		rebuild();
+		assertDelta();
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testCloseOpenReplaceFile() throws CoreException {
+		rebuild();
+		project1.close(null);
+		project1.open(null);
+
+		/* change file1's contents */
+		verifier = DeltaVerifierBuilder.getInstance();
+		verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED,
+				IResourceDelta.REPLACED | IResourceDelta.CONTENT);
+		file1.delete(true, null);
+		file1.create(getRandomContents(), true, null);
+		rebuild();
+		// new builder gets instantiated so grab a reference to the latest builder
+		verifier = DeltaVerifierBuilder.getInstance();
+		assertDelta();
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testMoveFile() throws CoreException {
+		verifier.addExpectedChange(folder2, project1, IResourceDelta.ADDED, 0);
+		verifier.addExpectedChange(file1, project1, IResourceDelta.REMOVED, IResourceDelta.MOVED_TO, null,
+				file3.getFullPath());
+		verifier.addExpectedChange(file3, project1, IResourceDelta.ADDED, IResourceDelta.MOVED_FROM,
+				file1.getFullPath(), null);
+
+		folder2.create(true, true, getMonitor());
+		file1.move(file3.getFullPath(), true, getMonitor());
+		rebuild();
+		assertDelta();
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testRemoveFile() throws CoreException {
+		verifier.addExpectedChange(file1, project1, IResourceDelta.REMOVED, 0);
+		file1.delete(true, getMonitor());
+		rebuild();
+		assertDelta();
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testRemoveFileAndFolder() throws CoreException {
+		verifier.addExpectedChange(folder1, project1, IResourceDelta.REMOVED, 0);
+		verifier.addExpectedChange(file1, project1, IResourceDelta.REMOVED, 0);
+		folder1.delete(true, getMonitor());
+		rebuild();
+		assertDelta();
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testReplaceFile() throws CoreException {
+		/* change file1's contents */
+		verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED,
+				IResourceDelta.REPLACED | IResourceDelta.CONTENT);
+		ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
+		file1.delete(true, getMonitor());
+		file1.create(in, true, getMonitor());
+		rebuild();
+		assertDelta();
+	}
+
+	/**
+	 * Tests that the builder is receiving an appropriate delta
+	 */
+	public void testTwoFileChanges() throws CoreException {
+		verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
+		verifier.addExpectedChange(file2, project1, IResourceDelta.ADDED, 0);
+
+		ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
+		file1.setContents(in, true, false, getMonitor());
+
+		ByteArrayInputStream in2 = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
+		file2.create(in2, true, getMonitor());
+
+		rebuild();
+		assertDelta();
+	}
+
+	public void testReuseCachedDelta() throws CoreException {
+		IProject project = getWorkspace().getRoot().getProject("delta-cache");
+		create(project, false);
+
+		IProjectDescription description = project.getDescription();
+		description.setBuildSpec(new ICommand[] { createCommand(description, EmptyDeltaBuilder.BUILDER_NAME, null),
+				createCommand(description, EmptyDeltaBuilder2.BUILDER_NAME, null) });
+		project.setDescription(description, getMonitor());
+
+		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+
+		List<IResourceDelta> deltas = new ArrayList<>();
+
+		TestBuilder.BuilderRuleCallback captureDelta = new TestBuilder.BuilderRuleCallback() {
+			@Override
+			public IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+				deltas.add(getDelta(project));
+				return super.build(kind, args, monitor);
 			}
-			assertTrue(verifier.getMessage(), verifier.isDeltaValid());
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
+		};
 
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testAddAndRemoveFolder() {
-		try {
-			folder2.create(true, true, getMonitor());
-			folder2.delete(true, getMonitor());
-			rebuild();
-			//builder for project1 may not even be called (empty delta)
-			if (verifier.wasFullBuild()) {
-				verifier.emptyBuild();
-			}
-			assertTrue(verifier.getMessage(), verifier.isDeltaValid());
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
+		EmptyDeltaBuilder.getInstance().setRuleCallback(captureDelta);
+		EmptyDeltaBuilder2.getInstance().setRuleCallback(captureDelta);
 
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testAddFile() {
-		try {
-			verifier.addExpectedChange(file2, project1, IResourceDelta.ADDED, 0);
-			ByteArrayInputStream in = new ByteArrayInputStream(new byte[] {4, 5, 6});
-			file2.create(in, true, getMonitor());
-			rebuild();
-			assertDelta();
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
+		ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
+		project.getFile("test").create(in, true, getMonitor());
 
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testAddFileAndFolder() {
-		try {
-			verifier.addExpectedChange(folder2, project1, IResourceDelta.ADDED, 0);
-			verifier.addExpectedChange(file3, project1, IResourceDelta.ADDED, 0);
-			folder2.create(true, true, getMonitor());
-			ByteArrayInputStream in = new ByteArrayInputStream(new byte[] {4, 5, 6});
-			file3.create(in, true, getMonitor());
-			rebuild();
-			assertDelta();
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
 
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testAddFolder() {
-		try {
-			verifier.addExpectedChange(folder2, project1, IResourceDelta.ADDED, 0);
-			folder2.create(true, true, getMonitor());
-			rebuild();
-			assertDelta();
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
-
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testAddProject() {
-		try {
-			//should not affect project1's delta
-			project2.create(getMonitor());
-			rebuild();
-			//builder for project1 should not even be called
-			assertTrue(verifier.getMessage(), verifier.isDeltaValid());
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
-
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testChangeFile() {
-		try {
-			/* change file1's contents */
-			verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			ByteArrayInputStream in = new ByteArrayInputStream(new byte[] {4, 5, 6});
-			file1.setContents(in, true, false, getMonitor());
-			rebuild();
-			assertDelta();
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
-
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testChangeFileToFolder() {
-		try {
-			/* change file1 into a folder */
-			verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED, IResourceDelta.CONTENT | IResourceDelta.TYPE | IResourceDelta.REPLACED);
-			file1.delete(true, getMonitor());
-			folder3.create(true, true, getMonitor());
-
-			rebuild();
-			assertDelta();
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
-
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testChangeFolderToFile() {
-		try {
-			/* change to a folder */
-			file1.delete(true, getMonitor());
-			folder3.create(true, true, getMonitor());
-			rebuild();
-
-			/* now change back to a file and verify */
-			verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED, IResourceDelta.CONTENT | IResourceDelta.TYPE | IResourceDelta.REPLACED);
-			folder3.delete(true, getMonitor());
-			ByteArrayInputStream in = new ByteArrayInputStream(new byte[] {1, 2});
-			file1.create(in, true, getMonitor());
-			rebuild();
-			assertDelta();
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
-
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testCloseOpenReplaceFile() {
-		try {
-
-			rebuild();
-			project1.close(null);
-			project1.open(null);
-
-			/* change file1's contents */
-			verifier = DeltaVerifierBuilder.getInstance();
-			verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED, IResourceDelta.REPLACED | IResourceDelta.CONTENT);
-			file1.delete(true, null);
-			file1.create(getRandomContents(), true, null);
-			rebuild();
-			//new builder gets instantiated so grab a reference to the latest builder
-			verifier = DeltaVerifierBuilder.getInstance();
-			assertDelta();
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
-
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testMoveFile() {
-		try {
-			verifier.addExpectedChange(folder2, project1, IResourceDelta.ADDED, 0);
-			verifier.addExpectedChange(file1, project1, IResourceDelta.REMOVED, IResourceDelta.MOVED_TO, null, file3.getFullPath());
-			verifier.addExpectedChange(file3, project1, IResourceDelta.ADDED, IResourceDelta.MOVED_FROM, file1.getFullPath(), null);
-
-			folder2.create(true, true, getMonitor());
-			file1.move(file3.getFullPath(), true, getMonitor());
-			rebuild();
-			assertDelta();
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
-
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testRemoveFile() {
-		try {
-			verifier.addExpectedChange(file1, project1, IResourceDelta.REMOVED, 0);
-			file1.delete(true, getMonitor());
-			rebuild();
-			assertDelta();
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
-
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testRemoveFileAndFolder() {
-		try {
-			verifier.addExpectedChange(folder1, project1, IResourceDelta.REMOVED, 0);
-			verifier.addExpectedChange(file1, project1, IResourceDelta.REMOVED, 0);
-			folder1.delete(true, getMonitor());
-			rebuild();
-			assertDelta();
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
-
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testReplaceFile() {
-		try {
-			/* change file1's contents */
-			verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED, IResourceDelta.REPLACED | IResourceDelta.CONTENT);
-			ByteArrayInputStream in = new ByteArrayInputStream(new byte[] {4, 5, 6});
-			file1.delete(true, getMonitor());
-			file1.create(in, true, getMonitor());
-			rebuild();
-			assertDelta();
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
-
-	/**
-	 * Tests that the builder is receiving an appropriate delta
-	 */
-	public void testTwoFileChanges() {
-		try {
-			verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			verifier.addExpectedChange(file2, project1, IResourceDelta.ADDED, 0);
-
-			ByteArrayInputStream in = new ByteArrayInputStream(new byte[] {4, 5, 6});
-			file1.setContents(in, true, false, getMonitor());
-
-			ByteArrayInputStream in2 = new ByteArrayInputStream(new byte[] {4, 5, 6});
-			file2.create(in2, true, getMonitor());
-
-			rebuild();
-			assertDelta();
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
-	}
-
-	public void testReuseCachedDelta() {
-		try {
-			IProject project = getWorkspace().getRoot().getProject("delta-cache");
-			create(project, false);
-
-			IProjectDescription description = project.getDescription();
-			description.setBuildSpec(new ICommand[] { createCommand(description, EmptyDeltaBuilder.BUILDER_NAME, null),
-					createCommand(description, EmptyDeltaBuilder2.BUILDER_NAME, null) });
-			project.setDescription(description, getMonitor());
-
-			project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
-
-			List<IResourceDelta> deltas = new ArrayList<>();
-
-			TestBuilder.BuilderRuleCallback captureDelta = new TestBuilder.BuilderRuleCallback() {
-				@Override
-				public IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor)
-						throws CoreException {
-					deltas.add(getDelta(project));
-					return super.build(kind, args, monitor);
-				}
-			};
-
-			EmptyDeltaBuilder.getInstance().setRuleCallback(captureDelta);
-			EmptyDeltaBuilder2.getInstance().setRuleCallback(captureDelta);
-
-			ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
-			project.getFile("test").create(in, true, getMonitor());
-
-			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
-
-			assertSame("both builders should receive the same cached delta ", deltas.get(0), deltas.get(1));
-
-		} catch (CoreException e) {
-			handleCoreException(e);
-		}
+		assertSame("both builders should receive the same cached delta ", deltas.get(0), deltas.get(1));
 	}
 }

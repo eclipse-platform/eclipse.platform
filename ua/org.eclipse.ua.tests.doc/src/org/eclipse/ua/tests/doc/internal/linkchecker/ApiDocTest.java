@@ -124,8 +124,6 @@ public class ApiDocTest {
 	 *
 	 * However, the test prints potentially missing extension points / API
 	 * packages to System.out.
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testTopicsReference() throws Exception {

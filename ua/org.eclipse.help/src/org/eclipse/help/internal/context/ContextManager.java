@@ -175,7 +175,6 @@ public class ContextManager {
 	 * sensitive help.
 	 *
 	 * Checks to see if there are any duplicate ids
-	 *
 	 */
 	private void checkContextProviders()
 	{

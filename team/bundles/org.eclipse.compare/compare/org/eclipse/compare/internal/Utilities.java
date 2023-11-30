@@ -147,7 +147,6 @@ public class Utilities {
 	/**
 	 * Returns the active compare filters for the compare configuration
 	 *
-	 * @param cc
 	 * @return the active compare filters
 	 */
 	public static ICompareFilter[] getCompareFilters(CompareConfiguration cc) {
@@ -795,14 +794,10 @@ public class Utilities {
 	 * Loads content of file under <code>url</code> displaying progress on given
 	 * context.
 	 *
-	 * @param url
-	 * @param context
 	 * @return the content of file under given URL, or <code>null</code> if URL
 	 *         could not be loaded
 	 * @throws InvocationTargetException
 	 *             thrown on errors while URL loading
-	 * @throws OperationCanceledException
-	 * @throws InterruptedException
 	 */
 	public static String getURLContents(final URL url, IRunnableContext context)
 			throws InvocationTargetException, OperationCanceledException,
@@ -836,10 +831,6 @@ public class Utilities {
 	 * Applies the compare filters to the lines of text taken from the specified
 	 * contributors
 	 *
-	 * @param thisLine
-	 * @param thisContributor
-	 * @param otherLine
-	 * @param otherContributor
 	 * @param filters
 	 *            may be null
 	 * @return returns the result of applying the filters to the line from the
@@ -886,8 +877,6 @@ public class Utilities {
 	 *
 	 * @param runnable
 	 *            The {@link IRunnableWithProgress} to execute.
-	 * @throws InvocationTargetException
-	 * @throws InterruptedException
 	 */
 	public static void executeRunnable(IRunnableWithProgress runnable) throws InvocationTargetException,
 			InterruptedException {
@@ -902,8 +891,6 @@ public class Utilities {
 	 *            The {@link IRunnableWithProgress} to execute.
 	 * @param fork indicates whether to run within a separate thread.
 	 * @param cancelable indicates whether the operation shall be cancelable
-	 * @throws InvocationTargetException
-	 * @throws InterruptedException
 	 */
 	public static void executeRunnable(IRunnableWithProgress runnable, boolean fork, boolean cancelable) throws InvocationTargetException,
 			InterruptedException {

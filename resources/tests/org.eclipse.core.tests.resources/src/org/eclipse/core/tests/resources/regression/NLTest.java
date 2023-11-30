@@ -14,7 +14,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -69,23 +71,15 @@ public class NLTest extends ResourceTest {
 		return names.toArray(new String[names.size()]);
 	}
 
-	public void testFileNames() {
+	public void testFileNames() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("project");
-		try {
-			project.create(getMonitor());
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.create(getMonitor());
+		project.open(getMonitor());
 
 		String[] files = getFileNames(Locale.ENGLISH.getLanguage());
 		IResource[] resources = buildResources(project, files);
 		ensureExistsInWorkspace(resources, true);
-		try {
-			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 		assertExistsInFileSystem("2.1", resources);
 		assertExistsInWorkspace("2.2", resources);
 		ensureDoesNotExistInWorkspace(resources);
@@ -93,20 +87,9 @@ public class NLTest extends ResourceTest {
 		files = getFileNames(Locale.getDefault().getLanguage());
 		resources = buildResources(project, files);
 		ensureExistsInWorkspace(resources, true);
-		try {
-			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 		assertExistsInFileSystem("3.1", resources);
 		assertExistsInWorkspace("3.2", resources);
-
-		// remove garbage
-		try {
-			project.delete(true, getMonitor());
-		} catch (CoreException e) {
-			fail("20.0", e);
-		}
 	}
 
 }

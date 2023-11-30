@@ -55,7 +55,6 @@ public interface IStreamsProxy {
 	 * @param input the text to be written
 	 * @exception IOException when an error occurs writing to the
 	 *		underlying <code>OutputStream</code>.
-	 *
 	 */
 	void write(String input) throws IOException;
 }

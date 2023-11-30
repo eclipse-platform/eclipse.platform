@@ -144,9 +144,6 @@ public class ModulesView extends VariablesView {
 		}
 	}
 
-	/**
-	 * @param context
-	 */
 	private String getViewName(Object context) {
 		if (context instanceof IAdaptable) {
 			IAdaptable adaptable = (IAdaptable) context;

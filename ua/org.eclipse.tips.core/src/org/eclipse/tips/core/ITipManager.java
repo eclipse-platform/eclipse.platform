@@ -18,7 +18,6 @@ import org.eclipse.tips.core.internal.TipManager;
 
 /**
  * The ITipManager interface.
- *
  */
 public interface ITipManager {
 

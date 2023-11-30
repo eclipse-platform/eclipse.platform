@@ -33,8 +33,6 @@ public class WorkingSetCategory extends PlatformObject implements IWorkbenchAdap
 
 	/**
 	 * Constructs a new workings set category for the given working set.
-	 *
-	 * @param workingSet
 	 */
 	public WorkingSetCategory(IWorkingSet workingSet) {
 		fWorkingSet = workingSet;
@@ -66,8 +64,6 @@ public class WorkingSetCategory extends PlatformObject implements IWorkbenchAdap
 
 	/**
 	 * Returns the working set for this category.
-	 *
-	 * @return
 	 */
 	public IWorkingSet getWorkingSet() {
 		return fWorkingSet;

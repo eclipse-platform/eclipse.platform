@@ -190,7 +190,6 @@ public class HelpActivitySupport implements IHelpActivitySupport {
 	 * Additionally topic may match description topic of a root TOC.
 	 *
 	 * @return true if topic belongs to an enabled TOC
-	 * @param href
 	 * @param locale
 	 *            locale for which TOCs are checked
 	 */

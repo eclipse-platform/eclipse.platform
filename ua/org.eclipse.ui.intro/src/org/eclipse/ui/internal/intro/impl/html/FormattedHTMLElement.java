@@ -89,7 +89,6 @@ public class FormattedHTMLElement extends HTMLElement {
 	 *
 	 * @param indentLevel
 	 *            the number of tabs to insert
-	 * @return
 	 */
 	private StringBuilder getIndent(int indentLevel) {
 		// figure out the tab width

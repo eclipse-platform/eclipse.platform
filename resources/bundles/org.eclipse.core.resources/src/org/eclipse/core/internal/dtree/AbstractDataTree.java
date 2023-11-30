@@ -40,7 +40,6 @@ public abstract class AbstractDataTree {
 
 	/**
 	 * Returns a copy of the node subtree rooted at the given key.
-	 *
 	 */
 	public abstract AbstractDataTreeNode copyCompleteSubtree(IPath key);
 

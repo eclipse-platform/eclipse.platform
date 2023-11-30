@@ -16,9 +16,6 @@ package org.eclipse.ui.examples.filesystem;
 import org.eclipse.core.runtime.*;
 import org.osgi.framework.Bundle;
 
-/**
- * 
- */
 public class Policy {
 	private static Bundle bundle;
 	public static final String PI_FILESYSTEM_EXAMPLE = "org.eclipse.ui.examples.filesystem"; //$NON-NLS-1$

@@ -402,7 +402,6 @@ public abstract class BackgroundEventHandler {
 	 * Dispatch any accumulated events by invoking <code>doDispatchEvents</code>
 	 * and then rest the dispatch counters.
 	 * @param monitor a progress monitor
-	 * @throws TeamException
 	 */
 	protected final void dispatchEvents(IProgressMonitor monitor) throws TeamException {
 		if (doDispatchEvents(monitor)) {
@@ -489,7 +488,6 @@ public abstract class BackgroundEventHandler {
 
 	/**
 	 * Handle the exception by recording it in the errors list.
-	 * @param e
 	 */
 	protected void handleException(CoreException e) {
 		errors.handleException(e);

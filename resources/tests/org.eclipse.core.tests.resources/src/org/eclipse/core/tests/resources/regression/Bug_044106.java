@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -33,22 +32,16 @@ import org.eclipse.core.tests.resources.ResourceTest;
  */
 public class Bug_044106 extends ResourceTest {
 
-	private void createSymLink(String target, String local) {
-		try {
-			Process p = Runtime.getRuntime().exec(new String[] { "/bin/ln", "-s", target, local });
-			p.waitFor();
-		} catch (IOException e) {
-			fail("1.0", e);
-		} catch (InterruptedException e) {
-			fail("1.1", e);
-		}
+	private void createSymLink(String target, String local) throws InterruptedException, IOException {
+		Process p = Runtime.getRuntime().exec(new String[] { "/bin/ln", "-s", target, local });
+		p.waitFor();
 	}
 
 	/**
 	 * Tests various permutations of the bug.
 	 * @param deleteFlags The option flags to use when deleting the resource.
 	 */
-	public void doTestDeleteLinkedFile(int deleteFlags) {
+	public void doTestDeleteLinkedFile(int deleteFlags) throws Exception {
 		// create the file/folder that we are going to link to
 		IFileStore linkDestFile = getTempStore();
 		createFileInFileSystem(linkDestFile);
@@ -66,19 +59,11 @@ public class Bug_044106 extends ResourceTest {
 		assertExistsInFileSystem("1.2", linkedFile);
 
 		// do a refresh and ensure that the resources are in the workspace
-		try {
-			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 		assertExistsInWorkspace("2.1", linkedFile);
 
 		// delete the file
-		try {
-			linkedFile.delete(deleteFlags, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		linkedFile.delete(deleteFlags, getMonitor());
 
 		// ensure that the folder and file weren't deleted in the filesystem
 		assertDoesNotExistInWorkspace("4.0", linkedFile);
@@ -91,7 +76,7 @@ public class Bug_044106 extends ResourceTest {
 	 * is deleted
 	 * @param deleteFlags The flags to use on the resource deletion call
 	 */
-	public void doTestDeleteLinkedFolder(IFolder linkedFolder, boolean deleteParent, int deleteFlags) {
+	public void doTestDeleteLinkedFolder(IFolder linkedFolder, boolean deleteParent, int deleteFlags) throws Exception {
 		if (!OS.isLinux()) {
 			return;
 		}
@@ -113,23 +98,15 @@ public class Bug_044106 extends ResourceTest {
 		assertExistsInFileSystem("1.3", linkedFile);
 
 		// do a refresh and ensure that the resources are in the workspace
-		try {
-			linkedFolder.getProject().refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		linkedFolder.getProject().refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 		assertExistsInWorkspace("2.1", linkedFolder);
 		assertExistsInWorkspace("2.2", linkedFile);
 
 		// delete the folder or project
-		try {
-			if (deleteParent) {
-				linkedFolder.getParent().delete(deleteFlags, getMonitor());
-			} else {
-				linkedFolder.delete(deleteFlags, getMonitor());
-			}
-		} catch (CoreException e) {
-			fail("3.0", e);
+		if (deleteParent) {
+			linkedFolder.getParent().delete(deleteFlags, getMonitor());
+		} else {
+			linkedFolder.delete(deleteFlags, getMonitor());
 		}
 
 		// ensure that the folder and file weren't deleted in the filesystem
@@ -139,14 +116,14 @@ public class Bug_044106 extends ResourceTest {
 		assertTrue("4.3", linkDestFile.fetchInfo().exists());
 	}
 
-	public void testDeleteLinkedFile() {
+	public void testDeleteLinkedFile() throws Exception {
 		if (!OS.isLinux()) {
 			return;
 		}
 		doTestDeleteLinkedFile(IResource.NONE);
 	}
 
-	public void testDeleteLinkedFolder() {
+	public void testDeleteLinkedFolder() throws Exception {
 		if (!OS.isLinux()) {
 			return;
 		}
@@ -155,7 +132,7 @@ public class Bug_044106 extends ResourceTest {
 		doTestDeleteLinkedFolder(linkedFolder, false, IResource.NONE);
 	}
 
-	public void testDeleteLinkedResourceInProject() {
+	public void testDeleteLinkedResourceInProject() throws Exception {
 		if (!OS.isLinux()) {
 			return;
 		}
@@ -164,14 +141,14 @@ public class Bug_044106 extends ResourceTest {
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.NONE);
 	}
 
-	public void testDeleteLinkedFileKeepHistory() {
+	public void testDeleteLinkedFileKeepHistory() throws Exception {
 		if (!OS.isLinux()) {
 			return;
 		}
 		doTestDeleteLinkedFile(IResource.KEEP_HISTORY);
 	}
 
-	public void testDeleteLinkedFolderParentKeepHistory() {
+	public void testDeleteLinkedFolderParentKeepHistory() throws Exception {
 		if (!OS.isLinux()) {
 			return;
 		}
@@ -181,7 +158,7 @@ public class Bug_044106 extends ResourceTest {
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.KEEP_HISTORY);
 	}
 
-	public void testDeleteLinkedFolderKeepHistory() {
+	public void testDeleteLinkedFolderKeepHistory() throws Exception {
 		if (!OS.isLinux()) {
 			return;
 		}
@@ -190,7 +167,7 @@ public class Bug_044106 extends ResourceTest {
 		doTestDeleteLinkedFolder(linkedFolder, false, IResource.KEEP_HISTORY);
 	}
 
-	public void testDeleteLinkedResourceInProjectKeepHistory() {
+	public void testDeleteLinkedResourceInProjectKeepHistory() throws Exception {
 		if (!OS.isLinux()) {
 			return;
 		}

@@ -45,10 +45,7 @@ public class SampleEngine {
 	/**
 	 * Allow debug adapters to get memory from an address
 	 *
-	 * @param address
-	 * @param length
 	 * @return memory byte from an address
-	 * @throws RuntimeException
 	 */
 	synchronized public MemoryByte[] getBytesFromAddress(BigInteger address, long length) throws RuntimeException {
 
@@ -186,8 +183,6 @@ public class SampleEngine {
 	 * Simulates evaluation of an expression. Given an expression, return ad
 	 * address
 	 *
-	 * @param expression
-	 * @param evalContext
 	 * @return the address the expression is evaluated to
 	 */
 	public BigInteger evaluateExpression(String expression, Object evalContext) {
@@ -217,10 +212,6 @@ public class SampleEngine {
 
 	/**
 	 * Simulates modifying memory using BigInteger as the address
-	 *
-	 * @param address
-	 * @param bytes
-	 * @throws RuntimeException
 	 */
 	public void setValue(BigInteger address, byte[] bytes) throws RuntimeException {
 		BigInteger convertedAddress = address;
@@ -246,7 +237,6 @@ public class SampleEngine {
 	}
 
 	/**
-	 * @param address
 	 * @return true if the debuggee is big endian, false otherwise
 	 */
 	public boolean isBigEndian(BigInteger address) {
@@ -261,7 +251,6 @@ public class SampleEngine {
 	}
 
 	/**
-	 * @param address
 	 * @return true if the address is writable, false otherwise Read only
 	 *         segment: 0xab123456 to 0xab123556
 	 */
@@ -282,10 +271,6 @@ public class SampleEngine {
 
 	}
 
-	/**
-	 * @param address
-	 * @return
-	 */
 	public boolean isReadable(BigInteger address) {
 		BigInteger boundary = new BigInteger("cd123456", 16); //$NON-NLS-1$
 		BigInteger boundaryEnd = new BigInteger("cd123576", 16); //$NON-NLS-1$
@@ -295,10 +280,6 @@ public class SampleEngine {
 		return true;
 	}
 
-	/**
-	 * @param target
-	 * @return
-	 */
 	public SampleThread[] getThreads(SampleDebugTarget target) {
 		Object thread = threadTable.get(target);
 		if (thread == null) {
@@ -308,10 +289,6 @@ public class SampleEngine {
 		return new SampleThread[] { (SampleThread) thread };
 	}
 
-	/**
-	 * @param thread
-	 * @return
-	 */
 	public SampleStackFrame[] getStackframes(SampleThread thread) {
 		Object stackframes = stackframeTable.get(thread);
 		if (stackframes == null) {
@@ -321,9 +298,6 @@ public class SampleEngine {
 		return (SampleStackFrame[]) stackframes;
 	}
 
-	/**
-	 *
-	 */
 	private SampleStackFrame[] createStackframes(SampleThread thread) {
 		SampleStackFrame[] stackframes = new SampleStackFrame[2];
 		stackframes[0] = new SampleStackFrame(thread, "Frame1"); //$NON-NLS-1$
@@ -332,7 +306,6 @@ public class SampleEngine {
 	}
 
 	/**
-	 * @param mb
 	 * @return true if memory block is to support base address modification,
 	 *         false otherwise
 	 */
@@ -345,13 +318,11 @@ public class SampleEngine {
 	 *
 	 * @param mb the memory block to change base address
 	 * @param address the new base address of the memory block
-	 * @throws CoreException
 	 */
 	public void setBaseAddress(SampleMemoryBlock mb, BigInteger address) throws CoreException {
 	}
 
 	/**
-	 * @param mb
 	 * @return true if this memory block supports value modification, false
 	 *         otherwise
 	 */
@@ -361,7 +332,6 @@ public class SampleEngine {
 
 	/**
 	 * @return address size of the debuggee
-	 * @throws CoreException
 	 */
 	public int getAddressSize() throws CoreException {
 		return 4;

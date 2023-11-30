@@ -374,7 +374,6 @@ public class PDADebugTarget extends PDADebugElement implements IDebugTarget, IBr
 	/**
 	 * Notification we have connected to the VM and it has started.
 	 * Resume the VM.
-	 * @param event
 	 */
 	private void vmStarted(PDAVMStartedEvent event) {
 		fireCreationEvent();
@@ -536,8 +535,6 @@ public class PDADebugTarget extends PDADebugElement implements IDebugTarget, IBr
 
 	/**
 	 * Restarts the current debug session
-	 *
-	 * @throws DebugException
 	 */
 	public void restart() throws DebugException {
 		sendCommand(new PDARestartCommand());

@@ -16,17 +16,12 @@ package org.eclipse.debug.internal.ui.viewers;
 
 /**
  * @since 3.2
- *
  */
 public class TableReplaceRequestMonitor extends AsynchronousRequestMonitor {
 
 	private final Object fOriginal;
 	private final Object fReplacement;
 
-	/**
-	 * @param node
-	 * @param model
-	 */
 	TableReplaceRequestMonitor(ModelNode node, Object element, Object replacement, AsynchronousModel model) {
 		super(node, model);
 		fReplacement = replacement;

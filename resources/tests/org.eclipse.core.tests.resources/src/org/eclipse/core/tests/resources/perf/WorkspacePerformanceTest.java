@@ -314,7 +314,6 @@ public class WorkspacePerformanceTest extends ResourceTest {
 
 	/**
 	 * Waits until background activity settles down before running a performance test.
-	 *
 	 */
 	public void waitForBackgroundActivity() {
 		waitForSnapshot();

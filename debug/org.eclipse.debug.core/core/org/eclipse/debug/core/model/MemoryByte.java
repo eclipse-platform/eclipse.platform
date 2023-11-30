@@ -97,7 +97,6 @@ public class MemoryByte {
 	 * by default.
 	 *
 	 * @param byteValue value of this memory byte
-	 *
 	 */
 	public MemoryByte(byte byteValue) {
 		this(byteValue, (byte)(WRITABLE | READABLE | ENDIANESS_KNOWN));

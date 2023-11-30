@@ -15,7 +15,6 @@ package org.eclipse.core.tests.resources.regression;
 
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -25,7 +24,6 @@ import org.eclipse.core.tests.resources.ResourceTest;
 public class Bug_380386 extends ResourceTest {
 
 	public void testBug() throws Exception {
-
 		String path = "C:\\temp";
 		java.net.URI value = new java.io.File(path).toURI();
 		IPathVariableManager pathManager = ResourcesPlugin.getWorkspace().getPathVariableManager();
@@ -55,10 +53,6 @@ public class Bug_380386 extends ResourceTest {
 		assertTrue("3.0", statusName.isOK());
 		assertNotNull("4.0", statusValue.isOK());
 
-		try {
-			pathManager.setURIValue(name, value);
-		} catch (CoreException e) {
-			fail("5.0", e);
-		}
+		pathManager.setURIValue(name, value);
 	}
 }

@@ -101,7 +101,6 @@ public abstract class AbstractExecutable {
 
 	/**
 	 * Handle an attribute specific to this type of AbstractExecutable
-	 * @param attribute
 	 * @return true if this parameter is valid for this type of executable
 	 */
 	public abstract boolean handleAttribute(Node attribute);

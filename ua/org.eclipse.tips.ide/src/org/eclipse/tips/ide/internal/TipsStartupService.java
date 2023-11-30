@@ -40,7 +40,6 @@ import org.osgi.service.event.EventHandler;
 
 /**
  * Early startup to run the TipManager in the IDE.
- *
  */
 @Component(property = EventConstants.EVENT_TOPIC + '=' + UIEvents.UILifeCycle.APP_STARTUP_COMPLETE)
 @SuppressWarnings("restriction")

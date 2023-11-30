@@ -44,6 +44,7 @@ import org.eclipse.debug.tests.logicalstructure.LogicalStructureCacheTest;
 import org.eclipse.debug.tests.sourcelookup.SourceLookupFacilityTests;
 import org.eclipse.debug.tests.statushandlers.StatusHandlerTests;
 import org.eclipse.debug.tests.stepfilters.StepFiltersTests;
+import org.eclipse.debug.tests.ui.LaunchConfigurationTabGroupViewerTest;
 import org.eclipse.debug.tests.ui.VariableValueEditorManagerTests;
 import org.eclipse.debug.tests.view.memory.MemoryRenderingTests;
 import org.eclipse.debug.tests.view.memory.TableRenderingTests;
@@ -131,6 +132,7 @@ import org.junit.runners.Suite;
 
 		// Launch Groups
 		LaunchGroupTests.class,
+		LaunchConfigurationTabGroupViewerTest.class,
 
 		// Logical structure
 		LogicalStructureCacheTest.class,

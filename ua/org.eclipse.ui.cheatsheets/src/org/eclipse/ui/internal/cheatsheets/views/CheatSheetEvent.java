@@ -29,17 +29,11 @@ public class CheatSheetEvent implements ICheatSheetEvent {
 		this.cheatsheetID = id;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public int getEventType() {
 		return type;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public String getCheatSheetID() {
 		return cheatsheetID;

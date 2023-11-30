@@ -15,7 +15,14 @@ package org.eclipse.core.tests.internal.builders;
 
 import org.eclipse.core.internal.events.BuildContext;
 import org.eclipse.core.internal.resources.BuildConfiguration;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.IBuildContext;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -48,16 +55,6 @@ public class BuildContextTest extends AbstractBuilderTest {
 		setupProject(project0);
 		setupProject(project1);
 		setupProject(project2);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-
-		// Cleanup
-		project0.delete(true, null);
-		project1.delete(true, null);
-		project2.delete(true, null);
 	}
 
 	/**
@@ -100,7 +97,6 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 	/**
 	 * p0 --&gt; p1 --&gt; p2
-	 * @throws CoreException
 	 */
 	private void setupSimpleReferences() throws CoreException {
 		setReferences(project0.getActiveBuildConfig(), new IBuildConfiguration[] {project1.getActiveBuildConfig()});
@@ -175,7 +171,6 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 	/**
 	 * Tests building a single project with and without references
-	 * @throws CoreException
 	 */
 	public void testWorkspaceBuildProject() throws CoreException {
 		setupSimpleReferences();
@@ -209,7 +204,6 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 	/**
 	 * Builds a couple configurations, including references
-	 * @throws CoreException
 	 */
 	public void testWorkspaceBuildProjects() throws CoreException {
 		setupSimpleReferences();
@@ -233,7 +227,6 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 	/**
 	 * Sets references to the 'active' project build configuration
-	 * @throws CoreException
 	 */
 	public void testReferenceActiveVariant() throws CoreException {
 		setReferences(project0.getActiveBuildConfig(), new IBuildConfiguration[] {getWorkspace().newBuildConfig(project1.getName(), null)});

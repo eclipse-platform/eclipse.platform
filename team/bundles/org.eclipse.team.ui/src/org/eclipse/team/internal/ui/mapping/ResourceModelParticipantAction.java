@@ -45,7 +45,6 @@ public abstract class ResourceModelParticipantAction extends ModelParticipantAct
 	 * @param selection the selection
 	 * @param monitor a progress monitor
 	 * @return the traversals that cover the resources in the current selection
-	 * @throws CoreException
 	 */
 	protected ResourceTraversal[] getResourceTraversals(IStructuredSelection selection, IProgressMonitor monitor) throws CoreException {
 		try {

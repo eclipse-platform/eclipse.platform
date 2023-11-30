@@ -67,10 +67,6 @@ public class HTMLDocParser {
 
 	private HTMLParser htmlParser;
 	private InputStream inputStream = null;
-	/**
-	 * @param url
-	 * @throws IOException
-	 */
 	public void openDocument(URL url) throws IOException {
 		inputStream = ProxyUtil.getStream(url);
 

@@ -622,8 +622,6 @@ public class HelpIndexBuilder {
 	/**
 	 * If the path does not exist, create it. Otherwise, delete all the files in
 	 * it.
-	 *
-	 * @param indexDirectory
 	 */
 
 	private void prepareDirectory(File indexDirectory) throws CoreException {

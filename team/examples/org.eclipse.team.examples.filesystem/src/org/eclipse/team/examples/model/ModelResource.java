@@ -33,7 +33,6 @@ import org.eclipse.core.runtime.CoreException;
  * <li>Model object folders correspond to workspace folders but only show child
  * folders and MOD files when expanded.</li>
  * </ol>
- *
  */
 public abstract class ModelResource extends ModelObject{
 	private final IResource resource;

@@ -68,8 +68,6 @@ public class RefreshTabTests extends AbstractLaunchTest {
 
 	/**
 	 * Tests a refresh scope of the selected resource
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testSelectedResource() throws CoreException {
@@ -84,8 +82,6 @@ public class RefreshTabTests extends AbstractLaunchTest {
 
 	/**
 	 * Tests a refresh scope of the selected resource's container
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testSelectionsFolder() throws CoreException {
@@ -100,8 +96,6 @@ public class RefreshTabTests extends AbstractLaunchTest {
 
 	/**
 	 * Tests a refresh scope of the selected resource's project
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testSelectionsProject() throws CoreException {
@@ -116,8 +110,6 @@ public class RefreshTabTests extends AbstractLaunchTest {
 
 	/**
 	 * Tests a refresh scope of the selected resource's project
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testWorkspaceScope() throws CoreException {
@@ -130,8 +122,6 @@ public class RefreshTabTests extends AbstractLaunchTest {
 
 	/**
 	 * Tests a refresh scope for a specific resource (old format)
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testSpecificResource() throws CoreException {
@@ -145,8 +135,6 @@ public class RefreshTabTests extends AbstractLaunchTest {
 
 	/**
 	 * Tests a refresh scope for a working set
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testWorkingSet() throws CoreException {
@@ -160,8 +148,6 @@ public class RefreshTabTests extends AbstractLaunchTest {
 
 	/**
 	 * Returns a scratch project for launch configurations
-	 *
-	 * @return
 	 */
 	protected IProject getProject() throws CoreException {
 		IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
@@ -179,8 +165,6 @@ public class RefreshTabTests extends AbstractLaunchTest {
 	/**
 	 * Tests the launch configuration attribute comparator extension for
 	 * comparing old/new attribute styles.
-	 *
-	 * @throws CoreException
 	 */
 	@SuppressWarnings("restriction")
 	@Test
@@ -210,8 +194,6 @@ public class RefreshTabTests extends AbstractLaunchTest {
 
 	/**
 	 * Tests persist restore of some resources.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testResourceMemento() throws CoreException {
@@ -227,8 +209,6 @@ public class RefreshTabTests extends AbstractLaunchTest {
 
 	/**
 	 * Tests persist/restore of empty resource collection.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testEmptyResourceSet() throws CoreException {

@@ -26,7 +26,6 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewActionProvid
 /**
  *
  * @since 3.2
- *
  */
 public class AdapterFactory implements IAdapterFactory {
 

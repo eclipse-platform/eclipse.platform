@@ -46,7 +46,6 @@ import org.osgi.framework.FrameworkUtil;
  * <code>WizardImportBreakpointsSelectionPage</code>.
  *
  * @since 3.2
- *
  */
 public class WizardImportBreakpoints extends Wizard implements IImportWizard {
 

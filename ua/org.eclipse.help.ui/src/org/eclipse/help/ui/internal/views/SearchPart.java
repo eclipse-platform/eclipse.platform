@@ -198,10 +198,6 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 		}
 	}
 
-	/**
-	 * @param parent
-	 * @param toolkit
-	 */
 	public SearchPart(final Composite parent, FormToolkit toolkit) {
 		this.toolkit = toolkit;
 		container = toolkit.createComposite(parent);

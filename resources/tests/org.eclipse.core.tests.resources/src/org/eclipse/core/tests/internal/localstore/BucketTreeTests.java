@@ -133,62 +133,66 @@ public class BucketTreeTests extends ResourceTest {
 		}
 	}
 
-	public void testVisitor() {
+	public void testVisitor() throws CoreException {
 		IPath baseLocation = getRandomLocation();
-		try {
-			// keep the reference around - it is the same returned by tree.getCurrent()
-			SimpleBucket bucket = new SimpleBucket();
-			BucketTree tree = new BucketTree((Workspace) getWorkspace(), bucket);
-			IProject proj1 = getWorkspace().getRoot().getProject("proj1");
-			IProject proj2 = getWorkspace().getRoot().getProject("proj2");
-			IFile file1 = proj1.getFile("file1.txt");
-			IFolder folder1 = proj1.getFolder("folder1");
-			IFile file2 = folder1.getFile("file2.txt");
-			ensureExistsInWorkspace(new IResource[] {file1, file2, proj2}, true);
-			IPath[] paths = { IPath.ROOT, proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath(),
-					file2.getFullPath(), proj2.getFullPath() };
-			for (int i = 0; i < paths.length; i++) {
-				try {
-					tree.loadBucketFor(paths[i]);
-				} catch (CoreException e) {
-					fail("0.1." + i, e);
-				}
-				bucket.set(paths[i], "path", paths[i].toString());
-				bucket.set(paths[i], "segments", Integer.toString(paths[i].segmentCount()));
-			}
-			try {
-				bucket.save();
-			} catch (CoreException e) {
-				fail("0.2", e);
-			}
-			verify(tree, "1.1", IPath.ROOT, BucketTree.DEPTH_ZERO, Set.of(IPath.ROOT));
-			verify(tree, "1.2", IPath.ROOT, BucketTree.DEPTH_ONE,
-					Set.of(IPath.ROOT, proj1.getFullPath(), proj2.getFullPath()));
-			verify(tree, "1.3", IPath.ROOT, BucketTree.DEPTH_INFINITE, Set.of(IPath.ROOT, proj1.getFullPath(),
-					file1.getFullPath(), folder1.getFullPath(),
-							file2.getFullPath(), proj2.getFullPath()));
-			verify(tree, "2.1", proj1.getFullPath(), BucketTree.DEPTH_ZERO, Arrays.asList(new IPath[] {proj1.getFullPath()}));
-			verify(tree, "2.2", proj1.getFullPath(), BucketTree.DEPTH_ONE, Arrays.asList(new IPath[] {proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath()}));
-			verify(tree, "2.3", proj1.getFullPath(), BucketTree.DEPTH_INFINITE, Arrays.asList(new IPath[] {proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath(), file2.getFullPath()}));
-			verify(tree, "3.1", file1.getFullPath(), BucketTree.DEPTH_ZERO, Arrays.asList(new IPath[] {file1.getFullPath()}));
-			verify(tree, "3.2", file1.getFullPath(), BucketTree.DEPTH_ONE, Arrays.asList(new IPath[] {file1.getFullPath()}));
-			verify(tree, "3.3", file1.getFullPath(), BucketTree.DEPTH_INFINITE, Arrays.asList(new IPath[] {file1.getFullPath()}));
-			verify(tree, "4.1", folder1.getFullPath(), BucketTree.DEPTH_ZERO, Arrays.asList(new IPath[] {folder1.getFullPath()}));
-			verify(tree, "4.2", folder1.getFullPath(), BucketTree.DEPTH_ONE, Arrays.asList(new IPath[] {folder1.getFullPath(), file2.getFullPath()}));
-			verify(tree, "4.3", folder1.getFullPath(), BucketTree.DEPTH_INFINITE, Arrays.asList(new IPath[] {folder1.getFullPath(), file2.getFullPath()}));
-			verify(tree, "5.1", file2.getFullPath(), BucketTree.DEPTH_ZERO, Arrays.asList(new IPath[] {file2.getFullPath()}));
-			verify(tree, "5.2", file2.getFullPath(), BucketTree.DEPTH_ONE, Arrays.asList(new IPath[] {file2.getFullPath()}));
-			verify(tree, "5.3", file2.getFullPath(), BucketTree.DEPTH_INFINITE, Arrays.asList(new IPath[] {file2.getFullPath()}));
-			verify(tree, "6.1", proj2.getFullPath(), BucketTree.DEPTH_ZERO, Arrays.asList(new IPath[] {proj2.getFullPath()}));
-			verify(tree, "6.2", proj2.getFullPath(), BucketTree.DEPTH_ONE, Arrays.asList(new IPath[] {proj2.getFullPath()}));
-			verify(tree, "6.3", proj2.getFullPath(), BucketTree.DEPTH_INFINITE, Arrays.asList(new IPath[] {proj2.getFullPath()}));
+		deleteOnTearDown(baseLocation);
 
-		} finally {
-			ensureDoesNotExistInFileSystem(baseLocation.toFile());
+		// keep the reference around - it is the same returned by tree.getCurrent()
+		SimpleBucket bucket = new SimpleBucket();
+		BucketTree tree = new BucketTree((Workspace) getWorkspace(), bucket);
+		IProject proj1 = getWorkspace().getRoot().getProject("proj1");
+		IProject proj2 = getWorkspace().getRoot().getProject("proj2");
+		IFile file1 = proj1.getFile("file1.txt");
+		IFolder folder1 = proj1.getFolder("folder1");
+		IFile file2 = folder1.getFile("file2.txt");
+		ensureExistsInWorkspace(new IResource[] { file1, file2, proj2 }, true);
+		IPath[] paths = { IPath.ROOT, proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath(),
+				file2.getFullPath(), proj2.getFullPath() };
+		for (IPath path : paths) {
+			tree.loadBucketFor(path);
+			bucket.set(path, "path", path.toString());
+			bucket.set(path, "segments", Integer.toString(path.segmentCount()));
 		}
+		bucket.save();
+		verify(tree, "1.1", IPath.ROOT, BucketTree.DEPTH_ZERO, Set.of(IPath.ROOT));
+		verify(tree, "1.2", IPath.ROOT, BucketTree.DEPTH_ONE,
+				Set.of(IPath.ROOT, proj1.getFullPath(), proj2.getFullPath()));
+		verify(tree, "1.3", IPath.ROOT, BucketTree.DEPTH_INFINITE, Set.of(IPath.ROOT, proj1.getFullPath(),
+				file1.getFullPath(), folder1.getFullPath(), file2.getFullPath(), proj2.getFullPath()));
+		verify(tree, "2.1", proj1.getFullPath(), BucketTree.DEPTH_ZERO,
+				Arrays.asList(new IPath[] { proj1.getFullPath() }));
+		verify(tree, "2.2", proj1.getFullPath(), BucketTree.DEPTH_ONE,
+				Arrays.asList(new IPath[] { proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath() }));
+		verify(tree, "2.3", proj1.getFullPath(), BucketTree.DEPTH_INFINITE, Arrays.asList(
+				new IPath[] { proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath(), file2.getFullPath() }));
+		verify(tree, "3.1", file1.getFullPath(), BucketTree.DEPTH_ZERO,
+				Arrays.asList(new IPath[] { file1.getFullPath() }));
+		verify(tree, "3.2", file1.getFullPath(), BucketTree.DEPTH_ONE,
+				Arrays.asList(new IPath[] { file1.getFullPath() }));
+		verify(tree, "3.3", file1.getFullPath(), BucketTree.DEPTH_INFINITE,
+				Arrays.asList(new IPath[] { file1.getFullPath() }));
+		verify(tree, "4.1", folder1.getFullPath(), BucketTree.DEPTH_ZERO,
+				Arrays.asList(new IPath[] { folder1.getFullPath() }));
+		verify(tree, "4.2", folder1.getFullPath(), BucketTree.DEPTH_ONE,
+				Arrays.asList(new IPath[] { folder1.getFullPath(), file2.getFullPath() }));
+		verify(tree, "4.3", folder1.getFullPath(), BucketTree.DEPTH_INFINITE,
+				Arrays.asList(new IPath[] { folder1.getFullPath(), file2.getFullPath() }));
+		verify(tree, "5.1", file2.getFullPath(), BucketTree.DEPTH_ZERO,
+				Arrays.asList(new IPath[] { file2.getFullPath() }));
+		verify(tree, "5.2", file2.getFullPath(), BucketTree.DEPTH_ONE,
+				Arrays.asList(new IPath[] { file2.getFullPath() }));
+		verify(tree, "5.3", file2.getFullPath(), BucketTree.DEPTH_INFINITE,
+				Arrays.asList(new IPath[] { file2.getFullPath() }));
+		verify(tree, "6.1", proj2.getFullPath(), BucketTree.DEPTH_ZERO,
+				Arrays.asList(new IPath[] { proj2.getFullPath() }));
+		verify(tree, "6.2", proj2.getFullPath(), BucketTree.DEPTH_ONE,
+				Arrays.asList(new IPath[] { proj2.getFullPath() }));
+		verify(tree, "6.3", proj2.getFullPath(), BucketTree.DEPTH_INFINITE,
+				Arrays.asList(new IPath[] { proj2.getFullPath() }));
 	}
 
-	public void verify(BucketTree tree, final String tag, IPath root, int depth, final Collection<IPath> expected) {
+	public void verify(BucketTree tree, final String tag, IPath root, int depth, final Collection<IPath> expected)
+			throws CoreException {
 		final Set<IPath> visited = new HashSet<>();
 		SimpleBucket.Visitor verifier = new SimpleBucket.Visitor() {
 			@Override
@@ -202,11 +206,7 @@ public class BucketTreeTests extends ResourceTest {
 				return CONTINUE;
 			}
 		};
-		try {
-			tree.accept(verifier, root, depth);
-		} catch (CoreException e) {
-			fail(tag + ".3", e);
-		}
+		tree.accept(verifier, root, depth);
 		assertEquals(tag + ".4", expected.size(), visited.size());
 		for (IPath path : expected) {
 			assertTrue(tag + ".5 " + path, visited.contains(path));

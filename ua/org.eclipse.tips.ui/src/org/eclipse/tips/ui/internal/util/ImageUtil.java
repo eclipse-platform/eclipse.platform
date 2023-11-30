@@ -27,7 +27,6 @@ import org.eclipse.swt.graphics.ImageLoader;
 
 /**
  * Image helper class.
- *
  */
 public class ImageUtil {
 

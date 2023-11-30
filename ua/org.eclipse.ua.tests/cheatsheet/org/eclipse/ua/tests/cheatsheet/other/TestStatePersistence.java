@@ -126,7 +126,6 @@ public class TestStatePersistence {
 
 	/**
 	 * Test save and restore of id, name
-	 *
 	 */
 	@Test
 	public void testBasicProperties() {

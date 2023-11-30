@@ -86,7 +86,6 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	 * {@link #saveDocument(boolean, IProgressMonitor)} to save the buffered contents to
 	 * the underlying resource.
 	 * @param monitor a progress monitor
-	 * @throws CoreException
 	 */
 	public void commit(IProgressMonitor monitor) throws CoreException {
 		if (isDirty()) {
@@ -198,7 +197,6 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	 * 			while saving the given element if necessary
 	 * @param monitor a progress monitor
 	 * @return whether the save succeeded or not
-	 * @throws CoreException
 	 */
 	public boolean saveDocument(boolean overwrite, IProgressMonitor monitor) throws CoreException {
 		if (isConnected()) {

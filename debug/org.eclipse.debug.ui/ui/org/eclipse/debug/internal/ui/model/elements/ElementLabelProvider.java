@@ -181,8 +181,6 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 
 	/**
 	 * Retrieves label attributes for the specified update.
-	 *
-	 * @param update
 	 */
 	protected void retrieveLabel(ILabelUpdate update) throws CoreException {
 		String[] columnIds = update.getColumnIds();
@@ -213,11 +211,7 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 
 	/**
 	 * Returns the <code>FontData</code> for the path in the given column with the current presentation
-	 * @param elementPath
-	 * @param presentationContext
-	 * @param columnId
 	 * @return font information or <code>null</code>
-	 * @throws CoreException
 	 */
 	protected FontData getFontData(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		return null;
@@ -225,11 +219,7 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 
 	/**
 	 * Returns the <code>RGB</code> foreground colour for the path in the given column with the current presentation
-	 * @param elementPath
-	 * @param presentationContext
-	 * @param columnId
 	 * @return color or <code>null</code>
-	 * @throws CoreException
 	 */
 	protected RGB getForeground(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		return null;
@@ -237,11 +227,7 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 
 	/**
 	 * Returns the <code>RGB</code> background colour for the path in the given column with the current presentation
-	 * @param elementPath
-	 * @param presentationContext
-	 * @param columnId
 	 * @return color or <code>null</code>
-	 * @throws CoreException
 	 */
 	protected RGB getBackground(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		return null;
@@ -249,11 +235,7 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 
 	/**
 	 * Returns the <code>ImageDescriptor</code> for the path in the given column with the current presentation
-	 * @param elementPath
-	 * @param presentationContext
-	 * @param columnId
 	 * @return image descriptor or <code>null</code>
-	 * @throws CoreException
 	 */
 	protected ImageDescriptor getImageDescriptor(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		return null;
@@ -261,10 +243,6 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 
 	/**
 	 * Returns the <code>ImageDescriptor</code> for the path in the given column with the current presentation
-	 * @param elementPath
-	 * @param presentationContext
-	 * @param columnId
-	 * @param columnIndex
 	 * @return image descriptor or <code>null</code>
 	 * @throws CoreException
 	 *
@@ -281,10 +259,6 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 
 	/**
 	 * Returns the label for the path in the given column with the current presentation.
-	 * @param elementPath
-	 * @param presentationContext
-	 * @param columnId
-	 * @param columnIndex
 	 * @return label
 	 *
 	 * @since 3.6
@@ -355,7 +329,6 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 
 	/**
 	 * Returns whether a UI job should be used for updates versus a non-UI job.
-	 * @param updates
 	 * @return true if the array of updates requires a UI job to update the labels, false otherwise
 	 */
 	protected boolean requiresUIJob(ILabelUpdate[] updates) {

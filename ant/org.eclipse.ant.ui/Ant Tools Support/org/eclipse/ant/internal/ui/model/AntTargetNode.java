@@ -255,7 +255,6 @@ public class AntTargetNode extends AntElementNode {
 
 	/**
 	 * @return if this node is an extension point
-	 * 
 	 */
 	public boolean isExtensionPoint() {
 		return isExtension;
@@ -264,9 +263,7 @@ public class AntTargetNode extends AntElementNode {
 	/**
 	 * This function should be used to construct the AntTargetNode
 	 * 
-	 * @param newTarget
 	 * @return newly constructed AntTargetNode
-	 * 
 	 */
 	public static AntTargetNode newAntTargetNode(Target newTarget) {
 		AntTargetNode targetNode;

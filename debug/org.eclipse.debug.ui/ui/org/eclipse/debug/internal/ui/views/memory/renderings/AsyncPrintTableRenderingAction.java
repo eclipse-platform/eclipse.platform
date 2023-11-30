@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.TableItem;
 /**
  * Print action for <code>AbstractAsyncTableRendering</code>. Only print what is
  * visible in the view.
- *
  */
 public class AsyncPrintTableRenderingAction extends PrintTableRenderingAction {
 

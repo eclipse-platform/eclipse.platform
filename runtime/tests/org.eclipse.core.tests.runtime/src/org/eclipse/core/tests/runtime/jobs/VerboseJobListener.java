@@ -16,9 +16,6 @@ package org.eclipse.core.tests.runtime.jobs;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 
-/**
- *
- */
 public class VerboseJobListener implements IJobChangeListener {
 	@Override
 	public void aboutToRun(IJobChangeEvent event) {

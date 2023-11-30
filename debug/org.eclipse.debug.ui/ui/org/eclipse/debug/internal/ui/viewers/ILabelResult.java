@@ -26,36 +26,26 @@ public interface ILabelResult {
 
 	/**
 	 * Returns the labels for the element. One for each column.
-	 *
-	 * @return
 	 */
 	String[] getLabels();
 
 	/**
 	 * Returns the images for the element.
-	 *
-	 * @return
 	 */
 	Image[] getImages();
 
 	/**
 	 * Returns the element the label is for.
-	 *
-	 * @return
 	 */
 	Object getElement();
 
 	/**
 	 * Returns the path to the element in the tree.
-	 *
-	 * @return
 	 */
 	TreePath getTreePath();
 
 	/**
 	 * Returns this element's depth in the tree.
-	 *
-	 * @return
 	 */
 	int getDepth();
 }

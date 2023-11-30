@@ -15,7 +15,6 @@ package org.eclipse.tips.core;
 
 /**
  * Provides an action to be executed by a Tip.
- *
  */
 public class TipAction {
 
@@ -36,7 +35,6 @@ public class TipAction {
 	 *            the actual code to run
 	 * @param image
 	 *            the image to be shown when possible.
-	 *
 	 */
 	public TipAction(String text, String tooltip, Runnable runner, TipImage image) {
 		fText = text;

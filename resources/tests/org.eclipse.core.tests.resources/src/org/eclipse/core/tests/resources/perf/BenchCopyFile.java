@@ -18,9 +18,6 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.OldCorePerformanceTest;
 
-/**
- *
- */
 public class BenchCopyFile extends OldCorePerformanceTest {
 	private static final int COUNT = 5000;
 

@@ -37,7 +37,6 @@ public class AntStackFrame extends AntDebugElement implements IStackFrame {
 	/**
 	 * Constructs a stack frame in the given thread with the given id.
 	 *
-	 * @param antThread
 	 * @param id
 	 *            stack frame id (0 is the top of the stack)
 	 */

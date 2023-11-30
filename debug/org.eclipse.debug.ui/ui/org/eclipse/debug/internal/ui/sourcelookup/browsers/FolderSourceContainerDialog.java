@@ -135,7 +135,6 @@ public class FolderSourceContainerDialog extends ElementTreeSelectionDialog {
 	/**
 	 * Sets whether the 'search subfolders' option is selected.
 	 *
-	 * @param subfolders
 	 * @since 3.2
 	 */
 	public void setSearchSubfolders(boolean subfolders) {

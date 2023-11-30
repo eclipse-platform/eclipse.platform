@@ -197,9 +197,6 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 
 	/**
 	 * Trigger an auto-build and wait for it to start.
-	 *
-	 * @throws CoreException
-	 * @throws InterruptedException
 	 */
 	private void triggerAutoBuildAndWait() throws CoreException, InterruptedException {
 		project.touch(getMonitor());
@@ -227,7 +224,8 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 			// inside the ExecutionException
 			throw e.getCause();
 		} catch (TimeoutException e) {
-			fail("This test timed out which means there is no safeguard to avoid waiting indefinitely "
+			throw new IllegalStateException(
+					"This test timed out which means there is no safeguard to avoid waiting indefinitely "
 					+ "for an auto-build job while the JobManager is suspended", e);
 		}
 	}

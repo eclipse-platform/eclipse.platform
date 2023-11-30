@@ -38,8 +38,6 @@ public class AbstractJobTest extends TestCase {
 
 	/**
 	 * Fails the test due to the given exception.
-	 * @param message
-	 * @param e
 	 */
 	public void fail(String message, Throwable e) {
 		// If the exception is a CoreException with a multistatus
@@ -95,7 +93,6 @@ public class AbstractJobTest extends TestCase {
 
 	/**
 	 * Ensures job completes within the given time.
-	 * @param job
 	 * @param waitTime time in milliseconds
 	 */
 	protected void waitForCompletion(Job job, int waitTime) {

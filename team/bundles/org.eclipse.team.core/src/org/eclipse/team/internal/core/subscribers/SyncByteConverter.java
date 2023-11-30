@@ -30,7 +30,6 @@ public class SyncByteConverter {
 	 * @param slot the slot location
 	 * @param newBytes the bytes to be put in the slot
 	 * @return the new sync bytes
-	 * @throws TeamException
 	 */
 	public static byte[] setSlot(byte[] syncBytes, int slot, byte[] newBytes) throws TeamException {
 		int start = startOfSlot(syncBytes, slot);
@@ -56,8 +55,6 @@ public class SyncByteConverter {
 	 * given slot index. The provided index should be &gt;= 1 which assumes that
 	 * slot zero occurs before the first slash.
 	 *
-	 * @param syncBytes
-	 * @param i
 	 * @return int
 	 */
 	private static int startOfSlot(byte[] syncBytes, int slot) {
@@ -73,10 +70,6 @@ public class SyncByteConverter {
 
 	/**
 	 * Return the offset the the Nth delimeter from the given start index.
-	 * @param bytes
-	 * @param delimiter
-	 * @param start
-	 * @param n
 	 * @return int
 	 */
 	private static int getOffsetOfDelimeter(byte[] bytes, byte delimiter, int start, int n) {

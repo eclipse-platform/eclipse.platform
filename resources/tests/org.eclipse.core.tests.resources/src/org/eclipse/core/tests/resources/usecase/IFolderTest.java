@@ -13,6 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -29,22 +36,17 @@ public class IFolderTest extends IResourceTest {
 	 * Get methods either throw an exception or return null (abnormally).
 	 * Set methods throw an exception.
 	 */
-	protected void nonexistentFolderFailureTests(IFolder folder, IContainer parent, IWorkspace wb) {
-		String method = "nonexistentFolderFailureTests(IFolder,IWorkspace)";
-
+	protected void nonexistentFolderFailureTests(IFolder folder, IContainer parent, IWorkspace wb) throws CoreException {
 		/* Tests for failure in get/set methods in IResource. */
 		commonFailureTestsForResource(folder, false);
-		assertTrue(method + "4.0", parent.findMember(folder.getName()) == null);
+		assertThat(parent.findMember(folder.getName()), is(nullValue()));
 
-		try {
-			IResource[] members = parent.members();
-			for (int i = 0; i < members.length; i++) {
-				assertTrue("4.1: i=" + i, !members[i].getName().equals(folder.getName()));
-			}
-		} catch (CoreException e) {
-			assertTrue(method + "4.2", false);
+		IResource[] members = parent.members();
+		for (IResource member : members) {
+			assertThat(member.getName(), not(is(folder.getName())));
 		}
-		assertTrue(method + "5", !wb.getRoot().exists(folder.getFullPath()));
+		assertThat("folder at path '" + folder.getFullPath() + "' unexpectedly exists in workspace",
+				!wb.getRoot().exists(folder.getFullPath()));
 	}
 
 	/**
@@ -67,7 +69,7 @@ public class IFolderTest extends IResourceTest {
 	 * Test IResource API
 	 * Test IFolder API
 	 */
-	public void testFolder() {
+	public void testFolder() throws CoreException {
 		IProgressMonitor monitor = null;
 		IWorkspace workspace = getWorkspace();
 
@@ -76,175 +78,138 @@ public class IFolderTest extends IResourceTest {
 		// Construct a folder handle
 		IPath path = IPath.fromOSString(FOLDER);
 
-		// Inspection methods with meaninful results invoked on a handle for a nonexistent folder
+		// Inspection methods with meaningful results invoked on a handle for a
+		// nonexistent folder
 		// in a nonexistent project.
 		IFolder folder = proj.getFolder(path);
-		assertTrue("2.1", !folder.exists());
-		assertTrue("2.2", folder.getWorkspace().equals(workspace));
-		assertTrue("2.4", folder.getProject().equals(proj));
-		assertTrue("2.5", folder.getType() == IResource.FOLDER);
-		assertTrue("2.6", folder.getFullPath().equals(IPath.fromOSString("/" + PROJECT + "/" + FOLDER)));
-		assertTrue("2.7", folder.getName().equals(FOLDER));
-		assertTrue("2.8", workspace.getRoot().getFolder(folder.getFullPath()).equals(folder));
-		assertTrue("2.10", proj.getFolder(path).equals(folder));
-		assertTrue("2.11", folder.getParent().equals(proj));
-		assertTrue("2.13", folder.getProjectRelativePath().equals(IPath.fromOSString(FOLDER)));
+		assertThat("folder does not exist: " + folder, !folder.exists());
+		assertThat(folder.getWorkspace(), is(workspace));
+		assertThat(folder.getProject(), is(proj));
+		assertThat(folder.getType(), is(IResource.FOLDER));
+		assertThat(folder.getFullPath(), is(IPath.fromOSString("/" + PROJECT + "/" + FOLDER)));
+		assertThat(folder.getName(), is(FOLDER));
+		assertThat(workspace.getRoot().getFolder(folder.getFullPath()), is(folder));
+		assertThat(proj.getFolder(path), is(folder));
+		assertThat(folder.getParent(), is(proj));
+		assertThat(folder.getProjectRelativePath(), is(IPath.fromOSString(FOLDER)));
 
 		// Create a project without opening it.
-		try {
-			proj.create(monitor);
-		} catch (CoreException e) {
-			fail("3", e);
-		}
+		proj.create(monitor);
 
 		// These tests produce failure because the project is not open yet.
 		unopenedProjectFailureTests(folder, proj, workspace);
 
 		// Open project.
-		try {
-			proj.open(monitor);
-		} catch (CoreException e) {
-			fail("4", e);
-		}
+		proj.open(monitor);
 
 		// These tests produce failure because the folder does not exist yet.
 		nonexistentFolderFailureTests(folder, proj, workspace);
 		IPath absolutePath = IPath.fromOSString(proj.getLocation().toOSString() + "/" + FOLDER);
-		assertTrue("5", folder.getLocation().equals(absolutePath));
+		assertThat(folder.getLocation(), is(absolutePath));
 
 		// Now create folder.
-		try {
-			folder.create(false, true, monitor);
-		} catch (CoreException e) {
-			fail("6", e);
-		}
+		folder.create(false, true, monitor);
 
 		// The tests that failed above (becaues the folder must exist) now pass.
-		assertTrue("7.0", folder.exists());
-		assertTrue("7.1", workspace.getRoot().findMember(folder.getFullPath()).exists());
-		assertTrue("7.3", workspace.getRoot().findMember(folder.getFullPath()).equals(folder));
-		assertTrue("7.4", workspace.getRoot().exists(folder.getFullPath()));
-		assertTrue("7.5", folder.getLocation().equals(absolutePath));
+		assertThat("folder does not exist: " + folder, folder.exists());
+		assertThat("no member exists at path '" + folder.getFullPath() + "' in workspace",
+				workspace.getRoot().findMember(folder.getFullPath()).exists());
+		assertThat(workspace.getRoot().findMember(folder.getFullPath()), is(folder));
+		assertThat("folder at path '" + folder.getFullPath() + "' does not exist in workspace",
+				workspace.getRoot().exists(folder.getFullPath()));
+		assertThat(folder.getLocation(), is(absolutePath));
 
 		// Session Property
-		try {
-			assertTrue("8.0", folder.getSessionProperty(Q_NAME_SESSION) == null);
-		} catch (CoreException e) {
-			fail("8.1");
-		}
-		try {
-			folder.setSessionProperty(Q_NAME_SESSION, STRING_VALUE);
-		} catch (CoreException e) {
-			fail("8.2");
-		}
-		try {
-			assertTrue("8.3", folder.getSessionProperty(Q_NAME_SESSION).equals(STRING_VALUE));
-		} catch (CoreException e) {
-			fail("8.4");
-		}
-		try {
-			folder.setSessionProperty(Q_NAME_SESSION, null);
-		} catch (CoreException e) {
-			fail("8.5");
-		}
-		try {
-			assertTrue("8.6", folder.getSessionProperty(Q_NAME_SESSION) == null);
-		} catch (CoreException e) {
-			fail("8.7");
-		}
+		assertThat(folder.getSessionProperty(Q_NAME_SESSION), is(nullValue()));
+		folder.setSessionProperty(Q_NAME_SESSION, STRING_VALUE);
+		assertThat(folder.getSessionProperty(Q_NAME_SESSION), is(STRING_VALUE));
+		folder.setSessionProperty(Q_NAME_SESSION, null);
+		assertThat(folder.getSessionProperty(Q_NAME_SESSION), is(nullValue()));
 
 		// IResource.isLocal(int)
 		// There is no server (yet) so everything should be local.
-		assertTrue("9.1", folder.isLocal(IResource.DEPTH_ZERO));
+		assertThat("folder is not available locally: " + folder, isLocal(folder, IResource.DEPTH_ZERO));
 		// No kids, but it should still answer yes.
-		assertTrue("9.2", folder.isLocal(IResource.DEPTH_ONE));
-		assertTrue("9.3", folder.isLocal(IResource.DEPTH_INFINITE));
+		assertThat("folder and its direct children are not available locally: " + folder,
+				isLocal(folder, IResource.DEPTH_ONE));
+		assertThat("folder and all its children are not available locally: " + folder,
+				isLocal(folder, IResource.DEPTH_INFINITE));
 		// These guys have kids.
-		assertTrue("9.4", proj.isLocal(IResource.DEPTH_ONE));
-		assertTrue("9.5", proj.isLocal(IResource.DEPTH_INFINITE));
+		assertThat("project and direct children are not available locally: " + proj,
+				isLocal(proj, IResource.DEPTH_ONE));
+		assertThat("project and all its children are not available locally: " + proj,
+				isLocal(proj, IResource.DEPTH_INFINITE));
 
 		// Construct a nested folder handle.
 		IFolder nestedFolder = getWorkspace().getRoot().getFolder(folder.getFullPath().append(FOLDER));
 
-		// Inspection methods with meaninful results invoked on a handle for a nonexistent folder.
-		assertTrue("10.0", !nestedFolder.exists());
-		assertTrue("10.1", nestedFolder.getWorkspace().equals(workspace));
-		assertTrue("10.3", nestedFolder.getProject().equals(proj));
-		assertTrue("10.4", nestedFolder.getType() == IResource.FOLDER);
-		assertTrue("10.5", nestedFolder.getFullPath().equals(IPath.fromOSString("/" + PROJECT + "/" + FOLDER + "/" + FOLDER)));
-		assertTrue("10.6", nestedFolder.getName().equals(FOLDER));
-		assertTrue("10.7", workspace.getRoot().getFolder(nestedFolder.getFullPath()).equals(nestedFolder));
+		// Inspection methods with meaningful results invoked on a handle for a
+		// nonexistent folder.
+		assertThat("nested folder exists unexpectedly: " + nestedFolder, !nestedFolder.exists());
+		assertThat(nestedFolder.getWorkspace(), is(workspace));
+		assertThat(nestedFolder.getProject(), is(proj));
+		assertThat(nestedFolder.getType(), is(IResource.FOLDER));
+		assertThat(nestedFolder.getFullPath(), is(IPath.fromOSString("/" + PROJECT + "/" + FOLDER + "/" + FOLDER)));
+		assertThat(nestedFolder.getName(), is(FOLDER));
+		assertThat(workspace.getRoot().getFolder(nestedFolder.getFullPath()), is(nestedFolder));
 		IPath projRelativePath = IPath.fromOSString(FOLDER + "/" + FOLDER);
-		assertTrue("10.9", proj.getFolder(projRelativePath).equals(nestedFolder));
-		assertTrue("10.10", nestedFolder.getParent().equals(folder));
-		assertTrue("10.11", nestedFolder.getProjectRelativePath().equals(IPath.fromOSString(FOLDER + "/" + FOLDER)));
+		assertThat(proj.getFolder(projRelativePath), is(nestedFolder));
+		assertThat(nestedFolder.getParent(), is(folder));
+		assertThat(nestedFolder.getProjectRelativePath(), is(IPath.fromOSString(FOLDER + "/" + FOLDER)));
 		// Now the parent folder has a kid.
-		assertTrue("10.12", folder.isLocal(IResource.DEPTH_ONE));
-		assertTrue("10.13", folder.isLocal(IResource.DEPTH_INFINITE));
+		assertThat("folder and its direct children are not available locally: " + folder,
+				isLocal(folder, IResource.DEPTH_ONE));
+		assertThat("folder and all its children are not available locally: " + folder,
+				isLocal(folder, IResource.DEPTH_INFINITE));
 
 		// These tests produce failure because the nested folder does not exist yet.
 		nonexistentFolderFailureTests(nestedFolder, folder, workspace);
 
 		// Create the nested folder.
-		try {
-			nestedFolder.create(false, true, monitor);
-		} catch (CoreException e) {
-			fail("11", e);
-		}
+		nestedFolder.create(false, true, monitor);
 
 		// The tests that failed above (becaues the folder must exist) now pass.
-		assertTrue("12.0", workspace.getRoot().exists(nestedFolder.getFullPath()));
-		assertTrue("12.1", nestedFolder.exists());
-		assertTrue("12.2", folder.findMember(nestedFolder.getName()).exists());
-		assertTrue("12.4", workspace.getRoot().findMember(nestedFolder.getFullPath()).equals(nestedFolder));
-		assertTrue("12.5", workspace.getRoot().exists(nestedFolder.getFullPath()));
-		assertTrue("12.6", nestedFolder.getLocation().equals(absolutePath.append(FOLDER)));
+		assertThat("nested folder at path '" + nestedFolder.getFullPath() + "' does not exist in workspace",
+				workspace.getRoot().exists(nestedFolder.getFullPath()));
+		assertThat("nested folder does not exist: " + nestedFolder, nestedFolder.exists());
+		assertThat("no folder with name '" + nestedFolder.getName() + "' exists in folder: " + folder,
+				folder.findMember(nestedFolder.getName()).exists());
+		assertThat(workspace.getRoot().findMember(nestedFolder.getFullPath()), is(nestedFolder));
+		assertThat("no nested folder at path '" + nestedFolder.getFullPath() + "' exists in workspace",
+				workspace.getRoot().exists(nestedFolder.getFullPath()));
+		assertThat(nestedFolder.getLocation(), is(absolutePath.append(FOLDER)));
 
 		// Delete the nested folder
-		try {
-			nestedFolder.delete(false, monitor);
-		} catch (CoreException e) {
-			fail("13.0", e);
-		}
-		assertTrue("13.1", !nestedFolder.exists());
-		try {
-			assertTrue("13.2", folder.members().length == 0);
-		} catch (CoreException e) {
-			fail("13.3");
-		}
-		assertTrue("13.4", workspace.getRoot().findMember(nestedFolder.getFullPath()) == null);
-		assertTrue("13.5", !workspace.getRoot().exists(nestedFolder.getFullPath()));
-		assertTrue("13.6", nestedFolder.getLocation().equals(absolutePath.append(FOLDER)));
+		nestedFolder.delete(false, monitor);
+		assertThat("nested folder exists unexpectedly: " + nestedFolder, !nestedFolder.exists());
+		assertThat(folder.members(), arrayWithSize(0));
+		assertThat(workspace.getRoot().findMember(nestedFolder.getFullPath()), is(nullValue()));
+		assertThat("nested folder at path '" + nestedFolder.getFullPath() + "' unexpectedly exists in workspace",
+				!workspace.getRoot().exists(nestedFolder.getFullPath()));
+		assertThat(nestedFolder.getLocation(), is(absolutePath.append(FOLDER)));
 
 		// These tests produce failure because the nested folder no longer exists.
 		nonexistentFolderFailureTests(nestedFolder, folder, workspace);
 
 		// Parent is still there.
-		assertTrue("14.0", folder.exists());
-		assertTrue("14.1", workspace.getRoot().findMember(folder.getFullPath()).exists());
-		assertTrue("14.3", workspace.getRoot().findMember(folder.getFullPath()).equals(folder));
-		assertTrue("14.4", workspace.getRoot().exists(folder.getFullPath()));
-		assertTrue("14.5", folder.getLocation().equals(absolutePath));
+		assertThat("folder does not exist: " + folder, folder.exists());
+		assertThat("no member at path '" + folder.getFullPath() + "' exists in workspace",
+				workspace.getRoot().findMember(folder.getFullPath()).exists());
+		assertThat(workspace.getRoot().findMember(folder.getFullPath()), is(folder));
+		assertThat("no folder at path '" + folder.getFullPath() + "' exists in workspace",
+				workspace.getRoot().exists(folder.getFullPath()));
+		assertThat(folder.getLocation(), is(absolutePath));
 
 		// Delete the parent folder
-		try {
-			folder.delete(false, monitor);
-		} catch (CoreException e) {
-			fail("15.0", e);
-		}
-		assertTrue("15.1", !folder.exists());
-		assertTrue("15.4", workspace.getRoot().findMember(folder.getFullPath()) == null);
-		assertTrue("15.5", !workspace.getRoot().exists(folder.getFullPath()));
-		assertTrue("15.6", folder.getLocation().equals(absolutePath));
+		folder.delete(false, monitor);
+		assertThat("folder exists unexpectedly: " + folder, !folder.exists());
+		assertThat(workspace.getRoot().findMember(folder.getFullPath()), is(nullValue()));
+		assertThat("folder at path '" + folder.getFullPath() + "' unexpectedly exists in workspace",
+				!workspace.getRoot().exists(folder.getFullPath()));
+		assertThat(folder.getLocation(), is(absolutePath));
 
 		// These tests produce failure because the parent folder no longer exists.
 		nonexistentFolderFailureTests(folder, proj, workspace);
-
-		try {
-			proj.delete(true, true, getMonitor());
-		} catch (CoreException e) {
-			fail("20.0", e);
-		}
 	}
 
 	/**
@@ -253,16 +218,9 @@ public class IFolderTest extends IResourceTest {
 	 * Set methods throw an exception.
 	 */
 	protected void unopenedProjectFailureTests(IFolder folder, IContainer parent, IWorkspace wb) {
-		String method = "unopenedProjectFailureTests(IFolder,IWorkspace)";
-		IProgressMonitor monitor = null;
-
 		/* Try creating a folder in a project which is not yet open. */
-		try {
-			folder.create(false, true, monitor);
-			fail(method + "1");
-		} catch (CoreException e) {
-			// expected
-		}
-		assertTrue(method + "2", !wb.getRoot().exists(folder.getFullPath()));
+		assertThrows(CoreException.class, () -> folder.create(false, true, null));
+		assertThat("folder at path '" + folder.getFullPath() + "' unexpectedly exists in workspace",
+				!wb.getRoot().exists(folder.getFullPath()));
 	}
 }

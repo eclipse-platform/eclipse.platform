@@ -78,7 +78,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Shell;
@@ -127,15 +126,8 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 	private class ContentMergeViewerLayout extends Layout {
 		@Override
-		public Point computeSize(Composite composite, int wHint, int hHint, boolean force) {
-			if (hHint > SWT.DEFAULT && wHint > SWT.DEFAULT) {
-				return new Point(wHint, hHint);
-			}
-
-			Rectangle r = composite.getClientArea();
-
-
-			return new Point(r.width, r.height);
+		public Point computeSize(Composite c, int w, int h, boolean force) {
+			return new Point(100, 100);
 		}
 
 		@Override
@@ -805,12 +797,8 @@ public abstract class ContentMergeViewer extends ContentViewer
 				ToolBarManager tbm = (ToolBarManager) getToolBarManager(fComposite.getParent());
 				if (tbm != null ) {
 					updateToolItems();
-					Display.getDefault().asyncExec(() -> {
-						// relayout in next tick
-						tbm.update(true);
-						tbm.getControl().getParent().setRedraw(true);
-					});
-
+					tbm.update(true);
+					tbm.getControl().getParent().layout(true);
 				}
 			}
 		}

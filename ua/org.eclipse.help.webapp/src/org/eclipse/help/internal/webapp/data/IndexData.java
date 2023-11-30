@@ -53,8 +53,6 @@ public class IndexData extends ActivitiesData {
 
 	/**
 	 * Constructs the data for the index page.
-	 * @param context
-	 * @param request
 	 */
 	public IndexData(ServletContext context, HttpServletRequest request,
 			HttpServletResponse response) {
@@ -73,9 +71,6 @@ public class IndexData extends ActivitiesData {
 	 * avaliable to be navigated through typein feature.
 	 *
 	 * Currently only first level items can be navigated.
-	 *
-	 * @param out
-	 * @throws IOException
 	 */
 	public void generateIds(Writer out) throws IOException {
 		boolean first = true;
@@ -96,9 +91,6 @@ public class IndexData extends ActivitiesData {
 
 	/**
 	 * Generates the HTML code (a list) for the index.
-	 *
-	 * @param out
-	 * @throws IOException
 	 */
 	public void generateIndex(Writer out) throws IOException {
 		this.out = out;
@@ -112,10 +104,6 @@ public class IndexData extends ActivitiesData {
 
 	/**
 	 * Generates the HTML code for an index entry.
-	 *
-	 * @param entry
-	 * @param level
-	 * @throws IOException
 	 */
 	/*
 	 * For advanced UI:
@@ -144,9 +132,6 @@ public class IndexData extends ActivitiesData {
 
 	/**
 	 * Generates the HTML code for the plus/minus image.
-	 *
-	 * @param multipleTopics
-	 * @throws IOException
 	 */
 	/*
 	 * <img scr="images/plus.svg" class={ "collapsed" | "expanded" | "h" } alt="...">
@@ -174,11 +159,6 @@ public class IndexData extends ActivitiesData {
 
 	/**
 	 * Generates the HTML code for an index entry anchor tag.
-	 *
-	 * @param singleTopic
-	 * @param entry
-	 * @param level
-	 * @throws IOException
 	 */
 	/*
 	 * For advanced UI:
@@ -205,9 +185,6 @@ public class IndexData extends ActivitiesData {
 
 	/**
 	 * Generates the HTML code for a list of topics.
-	 *
-	 * @param entry
-	 * @throws IOException
 	 */
 	/*
 	 * For advanced UI:
@@ -244,10 +221,6 @@ public class IndexData extends ActivitiesData {
 
 	/**
 	 * Generates the HTML for nested index entries.
-	 *
-	 * @param entry
-	 * @param level
-	 * @throws IOException
 	 */
 	/*
 	 * For advanced UI:

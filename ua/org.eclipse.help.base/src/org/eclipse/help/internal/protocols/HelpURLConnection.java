@@ -240,9 +240,6 @@ public class HelpURLConnection extends URLConnection {
 		return "text/plain"; //$NON-NLS-1$
 	}
 
-	/**
-	 *
-	 */
 	public Vector<String> getMultiValue(String name) {
 		if (arguments != null) {
 			Object value = arguments.get(name);
@@ -256,9 +253,6 @@ public class HelpURLConnection extends URLConnection {
 		return null;
 	}
 
-	/**
-	 *
-	 */
 	public String getValue(String name) {
 		if (arguments == null)
 			return null;

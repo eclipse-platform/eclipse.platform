@@ -38,9 +38,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 
-/**
- *
- */
 public class IntroContentParser {
 
 	private static String TAG_INTRO_CONTENT = "introContent"; //$NON-NLS-1$

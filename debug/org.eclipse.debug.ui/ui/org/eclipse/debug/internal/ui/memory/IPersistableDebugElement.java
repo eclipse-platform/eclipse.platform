@@ -43,7 +43,6 @@ public interface IPersistableDebugElement {
 
 	/**
 	 * @param context is the contex who is asking if this property is supported
-	 * @param propertyId
 	 * @return true if the peristable debug element wishes to handle persistence of
 	 * the specified property.
 	 */
