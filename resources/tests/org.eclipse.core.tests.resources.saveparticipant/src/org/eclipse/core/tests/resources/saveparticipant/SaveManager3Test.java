@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.saveparticipant;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder;

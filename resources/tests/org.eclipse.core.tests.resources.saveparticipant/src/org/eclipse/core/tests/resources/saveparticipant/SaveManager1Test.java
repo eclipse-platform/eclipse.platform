@@ -28,7 +28,8 @@ import org.osgi.framework.BundleException;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.*;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 
 /**
  * This class needs to be used with SaveManager2Test. Basically this

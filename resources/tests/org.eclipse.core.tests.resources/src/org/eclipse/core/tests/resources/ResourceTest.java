@@ -17,6 +17,8 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -38,10 +40,7 @@ import java.util.Set;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.internal.resources.CharsetDeltaJob;
 import org.eclipse.core.internal.resources.Resource;
-import org.eclipse.core.internal.resources.ValidateProjectEncoding;
-import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -52,11 +51,9 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourceAttributes;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.CoreTest;
@@ -617,25 +614,6 @@ public abstract class ResourceTest extends CoreTest {
 		waitForBuild();
 	}
 
-	/**
-	 * Blocks the calling thread until autobuild completes.
-	 */
-	protected void waitForBuild() {
-		((Workspace) getWorkspace()).getBuildManager().waitForAutoBuild();
-	}
-
-	/**
-	 * Blocks the calling thread until refresh job completes.
-	 */
-	protected void waitForRefresh() {
-		try {
-			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, null);
-		} catch (OperationCanceledException | InterruptedException e) {
-			//ignore
-		}
-	}
-
 	public String[] findAvailableDevices() {
 		String[] devices = new String[2];
 		for (int i = 97/*a*/; i < 123/*z*/; i++) {
@@ -661,11 +639,6 @@ public abstract class ResourceTest extends CoreTest {
 			}
 		}
 		return devices;
-	}
-
-	protected void waitForEncodingRelatedJobs() {
-		TestUtil.waitForJobs(getName(), 10, 5_000, ValidateProjectEncoding.class);
-		TestUtil.waitForJobs(getName(), 10, 5_000, CharsetDeltaJob.FAMILY_CHARSET_DELTA);
 	}
 
 }

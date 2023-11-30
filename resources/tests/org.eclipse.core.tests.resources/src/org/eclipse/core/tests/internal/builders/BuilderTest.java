@@ -16,6 +16,8 @@ package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -644,7 +646,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		desc.setName(proj2.getName());
 		proj1.copy(desc, IResource.NONE, createTestMonitor());
 
-		waitForEncodingRelatedJobs();
+		waitForEncodingRelatedJobs(getName());
 		waitForBuild();
 		SortBuilder builder = SortBuilder.getInstance();
 		assertEquals(proj2, builder.getProject());

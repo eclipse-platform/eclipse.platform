@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.session;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 
 import java.util.concurrent.atomic.AtomicReference;
 import junit.framework.Test;
