@@ -16,6 +16,8 @@ package org.eclipse.team.tests.core.regression;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;

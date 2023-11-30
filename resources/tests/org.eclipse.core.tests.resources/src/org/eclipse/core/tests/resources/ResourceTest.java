@@ -50,7 +50,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -526,36 +525,6 @@ public abstract class ResourceTest extends CoreTest {
 	protected void deleteOnTearDown(IFileStore store) {
 		storesToDelete.add(store);
 
-	}
-
-	/**
-	 * Checks whether the local file system supports accessing and modifying
-	 * the given attribute.
-	 */
-	protected boolean isAttributeSupported(int attribute) {
-		return (EFS.getLocalFileSystem().attributes() & attribute) != 0;
-	}
-
-	/**
-	 * Checks whether the local file system supports accessing and modifying
-	 * the read-only flag.
-	 */
-	protected boolean isReadOnlySupported() {
-		return isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY);
-	}
-
-	protected void setReadOnly(IFileStore target, boolean value) throws CoreException {
-		assertThat("Setting read only is not supported by local file system", isReadOnlySupported());
-		IFileInfo fileInfo = target.fetchInfo();
-		fileInfo.setAttribute(EFS.ATTRIBUTE_READ_ONLY, value);
-		target.putInfo(fileInfo, EFS.SET_ATTRIBUTES, null);
-	}
-
-	protected void setReadOnly(IResource target, boolean value) throws CoreException {
-		ResourceAttributes attributes = target.getResourceAttributes();
-		assertNotNull("tried to set read only for null attributes", attributes);
-		attributes.setReadOnly(value);
-		target.setResourceAttributes(attributes);
 	}
 
 	/**
