@@ -14,6 +14,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_CYCLE1;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_CYCLE2;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_CYCLE3;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_EARTH;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_INVALID;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_MUD;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SIMPLE;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SNOW;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.SET_OTHER;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.SET_STATE;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getInvalidNatureSets;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getValidNatureSets;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 

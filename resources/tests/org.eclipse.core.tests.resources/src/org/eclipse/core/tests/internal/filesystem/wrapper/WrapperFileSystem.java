@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.filesystem.wrapper;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.eclipse.core.filesystem.EFS;
@@ -23,7 +25,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.CoreTest;
-import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
  * A simple file system implementation that acts as a wrapper around the
@@ -92,7 +93,7 @@ public class WrapperFileSystem extends FileSystem {
 		try {
 			baseStore = EFS.getStore(getBasicURI(uri));
 		} catch (CoreException e) {
-			CoreTest.log(ResourceTest.PI_RESOURCES_TESTS, e);
+			CoreTest.log(PI_RESOURCES_TESTS, e);
 			return NULL_ROOT;
 		}
 		return WrapperFileStore.newInstance(customFS, baseStore);
