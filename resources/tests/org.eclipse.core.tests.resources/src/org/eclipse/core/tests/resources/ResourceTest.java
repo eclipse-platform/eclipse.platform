@@ -428,7 +428,7 @@ public abstract class ResourceTest extends CoreTest {
 		return result;
 	}
 
-	protected void cleanup() throws CoreException {
+	private void cleanup() throws CoreException {
 		// Wait for any build job that may still be executed
 		waitForBuild();
 		final IFileStore[] toDelete = storesToDelete.toArray(new IFileStore[0]);
