@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 

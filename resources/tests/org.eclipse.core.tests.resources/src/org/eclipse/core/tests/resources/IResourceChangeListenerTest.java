@@ -17,6 +17,7 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SIMPLE;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.create;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 
 import java.io.ByteArrayInputStream;

@@ -19,6 +19,7 @@ import static org.eclipse.core.internal.refresh.RefreshJob.FAST_REFRESH_THRESHOL
 import static org.eclipse.core.internal.refresh.RefreshJob.MAX_RECURSION;
 import static org.eclipse.core.internal.refresh.RefreshJob.SLOW_REFRESH_THRESHOLD;
 import static org.eclipse.core.internal.refresh.RefreshJob.UPDATE_DELAY;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.junit.Assert.assertArrayEquals;
 
 import java.lang.reflect.Field;

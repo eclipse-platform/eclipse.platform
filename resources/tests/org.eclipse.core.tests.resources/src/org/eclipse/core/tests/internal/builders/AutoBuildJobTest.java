@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.util.Map;

@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
+
 import java.util.Arrays;
 import java.util.List;
 import junit.framework.Test;

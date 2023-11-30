@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.saveparticipant;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
+
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;

@@ -18,6 +18,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 
 import java.io.IOException;
 import org.eclipse.core.filesystem.IFileStore;

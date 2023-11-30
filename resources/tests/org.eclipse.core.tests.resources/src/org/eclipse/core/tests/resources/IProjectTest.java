@@ -22,6 +22,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWo
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 

@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

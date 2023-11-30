@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 
 import java.io.ByteArrayInputStream;
 import junit.framework.Test;

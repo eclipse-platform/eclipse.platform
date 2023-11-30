@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.junit.Assert.assertThrows;
 

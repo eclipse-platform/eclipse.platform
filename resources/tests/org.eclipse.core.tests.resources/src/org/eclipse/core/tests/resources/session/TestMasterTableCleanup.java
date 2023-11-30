@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
+
 import java.util.Properties;
 import junit.framework.Test;
 import org.eclipse.core.internal.resources.TestingSupport;

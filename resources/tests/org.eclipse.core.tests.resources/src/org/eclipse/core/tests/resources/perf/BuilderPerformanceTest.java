@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
+
 import java.util.Map;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;

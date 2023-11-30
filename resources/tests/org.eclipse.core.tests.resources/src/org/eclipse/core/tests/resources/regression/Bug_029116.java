@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_29116;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;

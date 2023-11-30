@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

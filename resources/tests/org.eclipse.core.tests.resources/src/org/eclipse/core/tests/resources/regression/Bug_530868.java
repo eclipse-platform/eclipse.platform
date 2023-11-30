@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.junit.Assert.assertNotEquals;
 
 import java.io.ByteArrayInputStream;

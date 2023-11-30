@@ -15,6 +15,7 @@ package org.eclipse.core.tests.internal.mapping;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 
 import org.eclipse.core.resources.IProject;

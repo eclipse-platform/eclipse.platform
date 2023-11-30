@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 

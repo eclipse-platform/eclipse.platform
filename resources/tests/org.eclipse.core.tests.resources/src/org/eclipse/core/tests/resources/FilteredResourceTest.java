@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.create;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 

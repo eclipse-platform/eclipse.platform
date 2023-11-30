@@ -16,6 +16,7 @@
 package org.eclipse.core.tests.internal.resources;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 
 import java.io.ByteArrayInputStream;

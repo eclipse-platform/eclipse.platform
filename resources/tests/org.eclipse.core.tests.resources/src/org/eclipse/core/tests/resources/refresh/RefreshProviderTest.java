@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.refresh;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 
 import java.util.HashMap;

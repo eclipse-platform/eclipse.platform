@@ -19,6 +19,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.internal.resources.File;

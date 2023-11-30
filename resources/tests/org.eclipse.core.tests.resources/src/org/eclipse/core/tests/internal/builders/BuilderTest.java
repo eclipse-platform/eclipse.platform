@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.transferStreams;
 import static org.junit.Assert.assertArrayEquals;

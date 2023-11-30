@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -79,10 +80,6 @@ public abstract class ResourceTest extends CoreTest {
 	 * @see #getTempStore
 	 */
 	private final Set<IFileStore> storesToDelete = new HashSet<>();
-
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
-	}
 
 	private IWorkspaceDescription storedWorkspaceDescription;
 

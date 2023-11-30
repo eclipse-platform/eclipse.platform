@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getWorkspace;
 
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IMarker;
