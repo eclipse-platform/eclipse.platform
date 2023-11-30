@@ -68,10 +68,6 @@ public class NestedProjectCreator {
 		}
 	}
 
-	/**
-	 * @throws InvocationTargetException
-	 * @throws InterruptedException
-	 */
 	private void doCreateNestedProjects(final IProject[] projects, Shell shell) throws InvocationTargetException, InterruptedException {
 		final Object[] result = new Object[1];
 		context.run(true, true, new IRunnableWithProgress() {
@@ -115,7 +111,6 @@ public class NestedProjectCreator {
 	/**
 	 * The given project is about to be created.  Exclude any corresponding
 	 * resources in an overlapping parent project.
-	 * @param description
 	 */
 	protected void excludeOverlap(IProjectDescription description) throws CoreException {
 		URI location = description.getLocationURI();
@@ -162,10 +157,6 @@ public class NestedProjectCreator {
 				continue;
 			try {
 				projects[i].accept(new IResourceProxyVisitor() {
-					/**
-					 * @param descriptions
-					 * @param description
-					 */
 					private void addDescription(final ArrayList<IProjectDescription> descriptions, IProjectDescription description) {
 						IProject project = workspace.getRoot().getProject(description.getName());
 						if (!project.exists())
@@ -176,8 +167,6 @@ public class NestedProjectCreator {
 					 * This linked resource may be blocking resources in the project's
 					 * location from the workspace.  Search for project descriptions
 					 * in the sub-tree of the project location corresponding to this resource.
-					 * @param link
-					 * @param descriptions
 					 */
 					private void searchInLink(IResource link) {
 						IProject project = link.getProject();
@@ -198,8 +187,6 @@ public class NestedProjectCreator {
 					/**
 					 * Searches for project description files within the given store,
 					 * and adds any found descriptions to the supplied list.
-					 * @param store
-					 * @param descriptions
 					 */
 					private void searchInStore(IFileStore store) {
 						try {

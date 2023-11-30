@@ -34,7 +34,6 @@ public interface ITriggerPoint extends IAdaptable {
 	 * breakpoint for the workspace.
 	 *
 	 * @see org.eclipse.core.resources.IMarker#getAttribute(String, boolean)
-	 *
 	 */
 	String TRIGGERPOINT = "org.eclipse.debug.core.triggerpoint"; //$NON-NLS-1$
 

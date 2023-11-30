@@ -21,9 +21,6 @@ package org.eclipse.debug.examples.core.midi.launcher;
  */
 public class LengthControl extends TimeControl {
 
-	/**
-	 * @param launch
-	 */
 	public LengthControl(MidiLaunch launch) {
 		super("Duration" , launch); //$NON-NLS-1$
 	}

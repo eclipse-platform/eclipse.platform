@@ -39,7 +39,6 @@ public class LaunchConfigurationAction extends Action {
 
 	/**
 	 * Constructor
-	 * @param mode
 	 * @param text the text for the action
 	 * @param image the image for the action
 	 */

@@ -64,7 +64,6 @@ import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsU
 
 /**
  * This class provides the Run/Debug As -&gt; Ant Build launch shortcut.
- * 
  */
 public class AntLaunchShortcut implements ILaunchShortcut2 {
 
@@ -357,7 +356,6 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 	/**
 	 * Creates and returns a default launch configuration for the given file.
 	 * 
-	 * @param file
 	 * @return default launch configuration
 	 */
 	public static ILaunchConfiguration createDefaultLaunchConfiguration(IFile file) {
@@ -505,9 +503,6 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 
 	/**
 	 * Opens an error dialog presenting the user with the specified message and throwable
-	 * 
-	 * @param message
-	 * @param throwable
 	 */
 	protected static void reportError(String message, Throwable throwable) {
 		IStatus status = null;

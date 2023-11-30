@@ -37,10 +37,6 @@ public class StaticProxyConfig {
 	private final Map<String, List<IProxyData>> protocolSpecificProxies = new HashMap<>();
 	private final ProxyBypass proxyBypass;
 
-	/**
-	 * @param proxiesString
-	 * @param proxyBypassString
-	 */
 	public StaticProxyConfig(String proxiesString, String proxyBypassString) {
 		ProxyProviderUtil.fillProxyLists(proxiesString, universalProxies,
 				protocolSpecificProxies);
@@ -51,9 +47,6 @@ public class StaticProxyConfig {
 	 * Select the static proxies for the given uri and add it to the given list
 	 * of proxies.<br>
 	 * This respects also the proxy bypass definition.
-	 *
-	 * @param uri
-	 * @param proxies
 	 */
 	public void select(URI uri, List<IProxyData> proxies) {
 		if (proxyBypass.bypassProxyFor(uri))

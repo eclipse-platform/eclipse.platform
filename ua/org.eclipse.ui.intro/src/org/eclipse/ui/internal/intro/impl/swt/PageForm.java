@@ -81,9 +81,6 @@ public class PageForm implements IIntroConstants {
 		}
 	};
 
-	/**
-	 *
-	 */
 	public PageForm(FormToolkit toolkit, IntroModelRoot modelRoot,
 			Form parentForm) {
 		this.toolkit = toolkit;

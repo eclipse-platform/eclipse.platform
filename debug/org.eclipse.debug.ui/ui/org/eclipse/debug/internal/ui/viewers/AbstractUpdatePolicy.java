@@ -18,7 +18,6 @@ package org.eclipse.debug.internal.ui.viewers;
  * An update policy updates a viewer based on deltas reported by a model proxy.
  *
  * @since 3.2
- *
  */
 public abstract class AbstractUpdatePolicy {
 

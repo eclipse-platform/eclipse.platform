@@ -40,7 +40,6 @@ public class StackFrameContentProvider extends ElementContentProvider {
 	 * @param context the context for which to get the children for
 	 * @param monitor the monitor for progress
 	 * @return the collection of children, or an empty collection, never <code>null</code>
-	 * @throws CoreException
 	 */
 	protected Object[] getAllChildren(Object parent, IPresentationContext context, IViewerUpdate monitor) throws CoreException {
 		if (parent instanceof IStackFrame) {

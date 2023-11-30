@@ -13,6 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThrows;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -51,52 +57,37 @@ public class CopyTest extends LocalStoreTest {
 		/* copy to absolute path */
 		IResource destination = testProjects[0].getFile("copy of file.txt");
 		ensureDoesNotExistInFileSystem(destination);
-		try {
-			file.copy(destination.getFullPath(), true, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
-		assertTrue("1.1", destination.exists());
+		file.copy(destination.getFullPath(), true, null);
+		assertTrue(destination.exists());
 		/* assert properties were properly copied */
 		for (int i = 0; i < numberOfProperties; i++) {
 			String persistentValue = destination.getPersistentProperty(propNames[i]);
 			Object sessionValue = destination.getSessionProperty(propNames[i]);
-			assertTrue("1.2", propValues[i].equals(persistentValue));
-			assertTrue("1.4", !propValues[i].equals(sessionValue));
+			assertThat(propValues[i], is(persistentValue));
+			assertThat(propValues[i], is(not((sessionValue))));
 		}
 		ensureDoesNotExistInWorkspace(destination);
 		ensureDoesNotExistInFileSystem(destination);
 
 		/* copy to relative path */
 		IPath path = IPath.fromOSString("copy of file.txt");
-		destination = folder.getFile(path);
-		ensureDoesNotExistInFileSystem(destination);
-		try {
-			file.copy(path, true, null);
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
-		assertTrue("2.1", destination.exists());
+		IFile destinationInFolder = folder.getFile(path);
+		ensureDoesNotExistInFileSystem(destinationInFolder);
+		file.copy(path, true, null);
+		assertTrue(destinationInFolder.exists());
 		/* assert properties were properly copied */
 		for (int i = 0; i < numberOfProperties; i++) {
-			String persistentValue = destination.getPersistentProperty(propNames[i]);
-			Object sessionValue = destination.getSessionProperty(propNames[i]);
-			assertTrue("2.2", propValues[i].equals(persistentValue));
-			assertTrue("2.4", !propValues[i].equals(sessionValue));
+			String persistentValue = destinationInFolder.getPersistentProperty(propNames[i]);
+			Object sessionValue = destinationInFolder.getSessionProperty(propNames[i]);
+			assertThat(propValues[i], is(persistentValue));
+			assertThat(propValues[i], is(not(sessionValue)));
 		}
-		ensureDoesNotExistInWorkspace(destination);
-		ensureDoesNotExistInFileSystem(destination);
+		ensureDoesNotExistInWorkspace(destinationInFolder);
+		ensureDoesNotExistInFileSystem(destinationInFolder);
 
 		/* copy folder to destination under its hierarchy */
-		destination = folder.getFolder("subfolder");
-		try {
-			folder.copy(destination.getFullPath(), true, null);
-			fail("3.1");
-		} catch (RuntimeException e) {
-			// expected
-		} catch (CoreException e) {
-			fail("3.2", e);
-		}
+		IFolder destinationInSubfolder = folder.getFolder("subfolder");
+		assertThrows(RuntimeException.class, () -> folder.copy(destinationInSubfolder.getFullPath(), true, null));
 
 		/* test flag force = false */
 		testProjects[0].refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -104,38 +95,30 @@ public class CopyTest extends LocalStoreTest {
 		ensureExistsInFileSystem(subfolder);
 		IFile anotherFile = folder.getFile("new file");
 		ensureExistsInFileSystem(anotherFile);
-		destination = testProjects[0].getFolder("destination");
-		try {
-			folder.copy(destination.getFullPath(), false, null);
-			fail("4.1");
-		} catch (CoreException e) {
-			assertTrue("4.2", e.getStatus().getChildren().length == 2);
-		}
-		assertTrue("4.3", destination.exists());
-		assertTrue("4.4", ((IContainer) destination).getFile(IPath.fromOSString(file.getName())).exists());
-		assertTrue("4.5", !((IContainer) destination).getFolder(IPath.fromOSString(subfolder.getName())).exists());
-		assertTrue("4.6", !((IContainer) destination).getFile(IPath.fromOSString(anotherFile.getName())).exists());
+		IFolder destinationFolder = testProjects[0].getFolder("destination");
+		CoreException exception = assertThrows(CoreException.class,
+				() -> folder.copy(destinationFolder.getFullPath(), false, null));
+		assertThat(exception.getStatus().getChildren(), arrayWithSize(2));
+		assertTrue(destinationFolder.exists());
+		assertTrue(((IContainer) destinationFolder).getFile(IPath.fromOSString(file.getName())).exists());
+		assertFalse(((IContainer) destinationFolder).getFolder(IPath.fromOSString(subfolder.getName())).exists());
+		assertFalse(((IContainer) destinationFolder).getFile(IPath.fromOSString(anotherFile.getName())).exists());
 		/* assert properties were properly copied */
-		IResource target = ((IContainer) destination).getFile(IPath.fromOSString(file.getName()));
+		IResource target = ((IContainer) destinationFolder).getFile(IPath.fromOSString(file.getName()));
 		for (int i = 0; i < numberOfProperties; i++) {
 			String persistentValue = target.getPersistentProperty(propNames[i]);
 			Object sessionValue = target.getSessionProperty(propNames[i]);
-			assertTrue("4.7", propValues[i].equals(persistentValue));
-			assertTrue("4.9", !propValues[i].equals(sessionValue));
+			assertThat(propValues[i], is(persistentValue));
+			assertThat(propValues[i], is(not(sessionValue)));
 		}
-		ensureDoesNotExistInWorkspace(destination);
-		ensureDoesNotExistInFileSystem(destination);
+		ensureDoesNotExistInWorkspace(destinationFolder);
+		ensureDoesNotExistInFileSystem(destinationFolder);
 
 		/* copy a file that is not local but exists in the workspace */
-		file = testProjects[0].getFile("ghost");
-		file.create(null, true, null);
+		IFile ghostFile = testProjects[0].getFile("ghost");
+		ghostFile.create(null, true, null);
 		ensureDoesNotExistInFileSystem(file);
-		destination = testProjects[0].getFile("destination");
-		try {
-			file.copy(destination.getFullPath(), true, null);
-			fail("5.1");
-		} catch (CoreException e) {
-			// expected
-		}
+		IFile destinationFile = testProjects[0].getFile("destination");
+		assertThrows(CoreException.class, () -> ghostFile.copy(destinationFile.getFullPath(), true, null));
 	}
 }

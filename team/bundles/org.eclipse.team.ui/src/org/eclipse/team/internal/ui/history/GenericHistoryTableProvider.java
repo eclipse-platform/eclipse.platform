@@ -234,7 +234,6 @@ public class GenericHistoryTableProvider {
 	 * Create a TableViewer that can be used to display a list of IFileRevision instances.
 	 * This method provides the labels and sorter but does not provide a content provider
 	 *
-	 * @param parent
 	 * @return TableViewer
 	 */
 	public TableViewer createTable(Composite parent) {

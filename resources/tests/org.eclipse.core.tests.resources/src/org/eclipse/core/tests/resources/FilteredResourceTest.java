@@ -15,8 +15,13 @@ package org.eclipse.core.tests.resources;
 
 import static org.junit.Assert.assertThrows;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import org.eclipse.core.internal.resources.ICoreConstants;
 import org.eclipse.core.internal.resources.ProjectDescriptionReader;
 import org.eclipse.core.internal.resources.RegexFileInfoMatcher;
@@ -376,7 +381,7 @@ public class FilteredResourceTest extends ResourceTest {
 	 * excluded locations.
 	 * Regression for bug 267201
 	 */
-	public void testCreateFilterOnLinkedFolderAndTarget2() throws CoreException {
+	public void testCreateFilterOnLinkedFolderAndTarget2() throws Exception {
 		final IPath location = existingFolderInExistingFolder.getLocation();
 		final IFolder folder = nonExistingFolderInExistingProject;
 
@@ -427,11 +432,23 @@ public class FilteredResourceTest extends ResourceTest {
 		assertEquals("3.1", "foo.cpp", members[0].getName());
 
 		// Check modifying foo.h doesn't make it appear
-		modifyInWorkspace(folder.getFile("foo.h"));
+		modifyFileInWorkspace(folder.getFile("foo.h"));
 		members = existingFolderInExistingFolder.members();
 		assertEquals("2.9", 1, members.length);
 		assertEquals("3.0", IResource.FILE, members[0].getType());
 		assertEquals("3.1", "foo.cpp", members[0].getName());
+	}
+
+	private void modifyFileInWorkspace(final IFile file) throws IOException, CoreException {
+		try (InputStream fileInputStream = file.getContents(false)) {
+			ByteArrayOutputStream originalContentStream = new ByteArrayOutputStream();
+			transferData(fileInputStream, originalContentStream);
+			String originalContent = new String(originalContentStream.toByteArray(), StandardCharsets.UTF_8);
+			String newContent = originalContent + "w";
+			ByteArrayInputStream modifiedContentStream = new ByteArrayInputStream(
+					newContent.getBytes(StandardCharsets.UTF_8));
+			file.setContents(modifiedContentStream, false, false, null);
+		}
 	}
 
 	/**

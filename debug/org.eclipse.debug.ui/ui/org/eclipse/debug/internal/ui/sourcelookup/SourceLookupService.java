@@ -109,10 +109,6 @@ public class SourceLookupService implements IDebugContextListener, ISourceDispla
 	/**
 	 * Displays source for the given selection and part, optionally forcing
 	 * a source lookup.
-	 *
-	 * @param selection
-	 * @param part
-	 * @param force
 	 */
 	protected synchronized void displaySource(ISelection selection, IWorkbenchPart part, boolean force) {
 		if (isDisposed()) {

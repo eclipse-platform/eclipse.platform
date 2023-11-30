@@ -41,7 +41,6 @@ public class DeltaDataTreeTest {
 	/**
 	 * Assert that the given tree is the same as the final delta tree
 	 * created in the string of deltas in testLongDeltaChain and testReroot
-	 *
 	 */
 	public void assertDelta(DeltaDataTree originalTree) {
 

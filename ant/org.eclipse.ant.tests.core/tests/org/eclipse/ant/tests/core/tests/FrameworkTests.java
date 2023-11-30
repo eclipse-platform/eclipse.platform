@@ -44,9 +44,6 @@ public class FrameworkTests extends AbstractAntTest {
 	/**
 	 * Ensures that the deprecated means of setting the class path still works correctly Do not fix deprecations unless the deprecated methods are
 	 * being removed.
-	 * 
-	 * @throws MalformedURLException
-	 * @throws CoreException
 	 */
 	@SuppressWarnings("deprecation")
 	@Test
@@ -141,8 +138,6 @@ public class FrameworkTests extends AbstractAntTest {
 
 	/**
 	 * Regression test for running a specific target from a script that has no default target. Associated with bug 294502.
-	 * 
-	 * @throws CoreException
 	 */
 	@Test
 	public void testSpecificTargetWithNoDefaultTarget() throws CoreException {
@@ -275,8 +270,6 @@ public class FrameworkTests extends AbstractAntTest {
 
 	/**
 	 * Tests bug 389564 for a class path entry as a url representing a remote file system location
-	 * 
-	 * @throws MalformedURLException
 	 */
 	@Test
 	public void testAntClasspathEntryFromUrl() throws MalformedURLException {

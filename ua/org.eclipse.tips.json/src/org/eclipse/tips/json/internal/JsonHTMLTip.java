@@ -26,7 +26,6 @@ import com.google.gson.JsonObject;
 
 /**
  * Internal implementation for a Json generated {@link IHtmlTip}.
- *
  */
 public class JsonHTMLTip extends Tip implements IJsonTip, IHtmlTip {
 

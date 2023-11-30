@@ -114,9 +114,6 @@ public class PageContentForm implements IIntroConstants {
 	/**
 	 * Creates a composite with TableWrapLayout to hold all page children. The
 	 * default number of columns is 1.
-	 *
-	 * @param parent
-	 * @return
 	 */
 	static Composite createPageTableComposite(PageWidgetFactory factory, FormToolkit toolkit,
 			PageStyleManager styleManager, Composite parent) {

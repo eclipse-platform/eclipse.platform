@@ -23,7 +23,6 @@ import org.eclipse.tips.core.TipProvider;
 /**
  *
  * Internal class to listen to async provider load completions.
- *
  */
 public class ProviderLoadJobChangeListener extends JobChangeAdapter {
 

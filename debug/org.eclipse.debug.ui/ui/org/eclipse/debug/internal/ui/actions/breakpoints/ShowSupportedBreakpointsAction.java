@@ -51,7 +51,6 @@ import org.eclipse.ui.PlatformUI;
  * the breakpoints.
  *
  * @see org.eclipse.debug.core.model.IDebugTarget#supportsBreakpoint(IBreakpoint)
- *
  */
 public class ShowSupportedBreakpointsAction extends ToggleFilterAction implements ISelectionListener {
 	/**

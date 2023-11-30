@@ -19,7 +19,6 @@ package org.eclipse.debug.internal.ui.memory;
  * for CHANGE / SUSPEND debug event to trigger an update.
  *
  * This interface is EXPERIMENTAL.
- *
  */
 public interface IMemoryBlockConnection {
 

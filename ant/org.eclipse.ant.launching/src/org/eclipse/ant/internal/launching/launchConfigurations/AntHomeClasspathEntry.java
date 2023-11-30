@@ -159,8 +159,6 @@ public class AntHomeClasspathEntry extends AbstractRuntimeClasspathEntry {
 	/**
 	 * Return whether s1 is equivalent to s2.
 	 *
-	 * @param s1
-	 * @param s2
 	 * @return whether s1 is equivalent to s2
 	 */
 	private boolean equalsOrNull(String s1, String s2) {

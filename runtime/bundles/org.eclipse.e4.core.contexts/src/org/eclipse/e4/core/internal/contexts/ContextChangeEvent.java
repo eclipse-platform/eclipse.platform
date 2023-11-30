@@ -86,11 +86,6 @@ public final class ContextChangeEvent {
 
 	/**
 	 * Creates a new context event.
-	 *
-	 * @param context
-	 * @param eventType
-	 * @param args
-	 * @param name
 	 */
 	ContextChangeEvent(IEclipseContext context, int eventType, Object[] args, String name, Object oldValue) {
 		this.context = context;

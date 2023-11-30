@@ -73,39 +73,22 @@ public class ProjectSetSerializer implements IProjectSetSerializer {
 		return projects.toArray(new IProject[projects.size()]);
 	}
 
-	/**
-	 * @param provider
-	 * @return
-	 */
 	private String asReference(FileSystemProvider provider) {
 		return provider.getProject().getName() + "," + provider.getRoot().toString(); //$NON-NLS-1$
 	}
 
-	/**
-	 * @param string
-	 * @return
-	 */
 	private String getProjectName(String string) {
 		int i = string.indexOf(',');
 		if (i == -1) return null;
 		return string.substring(0, i);
 	}
 
-	/**
-	 * @param string
-	 * @return
-	 */
 	private String getPath(String string) {
 		int i = string.indexOf(',');
 		if (i == -1) return null;
 		return string.substring(i + 1);
 	}
 
-	/**
-	 * @param projectName
-	 * @return
-	 * @throws CoreException
-	 */
 	private IProject createProject(String projectName, IProgressMonitor monitor) throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		if (!project.exists()) {

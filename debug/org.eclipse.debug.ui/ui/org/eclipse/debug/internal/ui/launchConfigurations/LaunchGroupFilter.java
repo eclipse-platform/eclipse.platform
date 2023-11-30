@@ -32,7 +32,6 @@ public class LaunchGroupFilter extends ViewerFilter {
 
 	/**
 	 * Constructor
-	 * @param groupExtension
 	 */
 	public LaunchGroupFilter(ILaunchGroup groupExtension) {
 		super();

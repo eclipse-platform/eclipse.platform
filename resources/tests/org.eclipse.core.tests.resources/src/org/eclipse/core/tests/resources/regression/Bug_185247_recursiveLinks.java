@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.ProjectDescription;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -30,21 +32,6 @@ import org.eclipse.core.tests.resources.ResourceTest;
 public class Bug_185247_recursiveLinks extends ResourceTest {
 
 	private final List<IProject> testProjects = new ArrayList<>();
-
-	@Override
-	protected void tearDown() throws Exception {
-		try {
-			cleanUpTestProjects();
-		} finally {
-			super.tearDown();
-		}
-	}
-
-	private void cleanUpTestProjects() throws CoreException {
-		for (IProject testProject : testProjects) {
-			testProject.delete(false, true, getMonitor());
-		}
-	}
 
 	/**
 	 * Test project structure:

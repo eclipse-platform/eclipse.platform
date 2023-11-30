@@ -261,7 +261,6 @@ public abstract class AntPage {
 	/**
 	 * Restores the column widths from dialog settings
 	 * 
-	 * @param settings
 	 * @since 3.5
 	 */
 	private void restoreColumnWidths(IDialogSettings settings) {
@@ -443,7 +442,6 @@ public abstract class AntPage {
 
 	/**
 	 * Allows the user to add a custom Ant object.
-	 * 
 	 */
 	protected abstract void add();
 

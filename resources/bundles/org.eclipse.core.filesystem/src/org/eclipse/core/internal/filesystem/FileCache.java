@@ -161,7 +161,6 @@ public class FileCache {
 	/**
 	 * Returns a new unique directory in the given parent directory.
 	 *
-	 * @param parent
 	 * @param create <code>true</code> if the directory should
 	 * be created, and false otherwise.
 	 * @return The unique directory

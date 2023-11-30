@@ -18,7 +18,6 @@ package org.eclipse.help.search;
  * This class is a storage container for search processing
  *
  * @since 3.6
- *
  */
 public class SearchProcessorInfo {
 

@@ -57,7 +57,6 @@ public class FileSystemOperations {
 	 * @param depth the depth of the operation
 	 * @param overrideOutgoing whether locally modified resources should be replaced
 	 * @param progress a progress monitor
-	 * @throws TeamException
 	 */
 	public void get(IResource[] resources, int depth, boolean overrideOutgoing, IProgressMonitor progress) throws TeamException {
 		try {
@@ -79,7 +78,6 @@ public class FileSystemOperations {
 	 * @param traversals the traversals that cover the resources to get
 	 * @param overrideOutgoing whether locally modified resources should be replaced
 	 * @param monitor a progress monitor
-	 * @throws TeamException
 	 */
 	public void get(ResourceTraversal[] traversals, boolean overrideOutgoing, IProgressMonitor monitor) throws TeamException {
 		try {
@@ -100,7 +98,6 @@ public class FileSystemOperations {
 	 * @param resources the resources to be checked out
 	 * @param depth the depth of the checkout
 	 * @param progress a progress monitor
-	 * @throws TeamException
 	 */
 	public void checkout(IResource[] resources, int depth, IProgressMonitor progress) throws TeamException {
 		try {
@@ -131,7 +128,6 @@ public class FileSystemOperations {
 	 * @param depth the depth of the operation
 	 * @param overrideIncoming indicate whether incoming remote changes should be replaced
 	 * @param progress a progress monitor
-	 * @throws TeamException
 	 */
 	public void checkin(IResource[] resources, int depth, boolean overrideIncoming, IProgressMonitor progress) throws TeamException {
 		try {
@@ -152,7 +148,6 @@ public class FileSystemOperations {
 	 * @param traversals the traversals that cover the resources to check in
 	 * @param overrideIncoming indicate whether incoming remote changes should be replaced
 	 * @param monitor a progress monitor
-	 * @throws TeamException
 	 */
 	public void checkin(ResourceTraversal[] traversals, boolean overrideIncoming, IProgressMonitor monitor) throws TeamException {
 		try {
@@ -313,7 +308,6 @@ public class FileSystemOperations {
 	 * @param overrideIncoming whether incoming changes should be overwritten
 	 * @param progress a progress monitor
 	 * @return whether the put succeeded (i.e. the local matches the remote)
-	 * @throws TeamException
 	 */
 	private boolean internalPut(IFile localFile, boolean overrideIncoming, IProgressMonitor progress) throws TeamException {
 		ThreeWaySynchronizer synchronizer = FileSystemSubscriber.getInstance().getSynchronizer();

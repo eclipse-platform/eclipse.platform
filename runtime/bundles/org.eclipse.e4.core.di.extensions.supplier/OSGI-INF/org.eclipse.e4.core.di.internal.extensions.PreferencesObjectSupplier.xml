@@ -6,6 +6,6 @@
       <provide interface="org.eclipse.e4.core.di.suppliers.ExtendedObjectSupplier"/>
       <provide interface="org.osgi.service.event.EventHandler"/>
    </service>
-   <reference bind="setPreferencesService" cardinality="1..1" interface="org.eclipse.core.runtime.preferences.IPreferencesService" name="PreferencesService" policy="static"/>
+   <reference bind="setPreferencesService" interface="org.eclipse.core.runtime.preferences.IPreferencesService" name="PreferencesService"/>
    <implementation class="org.eclipse.e4.core.di.internal.extensions.PreferencesObjectSupplier"/>
 </scr:component>

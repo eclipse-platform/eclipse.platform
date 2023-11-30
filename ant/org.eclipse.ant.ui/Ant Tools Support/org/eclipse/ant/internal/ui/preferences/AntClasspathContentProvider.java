@@ -186,9 +186,6 @@ public class AntClasspathContentProvider implements ITreeContentProvider {
 		}
 	}
 
-	/**
-	 * @param currentParent
-	 */
 	public void setEntries(IClasspathEntry currentParent, List<IAntClasspathEntry> entries) {
 		if (currentParent instanceof GlobalClasspathEntries) {
 			GlobalClasspathEntries group = (GlobalClasspathEntries) currentParent;

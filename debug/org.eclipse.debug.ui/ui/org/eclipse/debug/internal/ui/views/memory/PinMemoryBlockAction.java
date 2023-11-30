@@ -23,7 +23,6 @@ import org.eclipse.ui.IViewPart;
  * Action for pinning the display of the memory view to the current memory
  * block. The view would not change selection when a new memory block is added
  * if the diplay is pinned.
- *
  */
 public class PinMemoryBlockAction implements IViewActionDelegate {
 

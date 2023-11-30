@@ -26,7 +26,6 @@ public class BenchWorkspace extends ResourceTest {
 
 	/**
 	 * Creates the given number of problem markers on each resource in the workspace.
-	 * @param i
 	 */
 	private void addProblems(final int problemCount) {
 		IWorkspaceRunnable runnable = monitor -> getWorkspace().getRoot().accept(resource -> {
@@ -146,7 +145,6 @@ public class BenchWorkspace extends ResourceTest {
 
 	/**
 	 * Waits until background activity settles down before running a performance test.
-	 *
 	 */
 	public void waitForBackgroundActivity() {
 		waitForRefresh();

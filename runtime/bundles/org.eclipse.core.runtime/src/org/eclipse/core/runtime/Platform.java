@@ -116,7 +116,6 @@ public final class Platform {
 	 * the existence of runnable applications. A plug-in may define any
 	 * number of applications; however, the platform is only capable
 	 * of running one application at a time.
-	 *
 	 */
 	public static final String PT_APPLICATIONS = "applications"; //$NON-NLS-1$
 
@@ -774,7 +773,6 @@ public final class Platform {
 	/**
 	 * As the org.eclipse.core.runtime.compatibility plug-in has been removed in
 	 * Eclipse 4.6 this method is not supported anymore.
-	 *
 	 */
 	@Deprecated
 	public static Plugin getPlugin(String id) {

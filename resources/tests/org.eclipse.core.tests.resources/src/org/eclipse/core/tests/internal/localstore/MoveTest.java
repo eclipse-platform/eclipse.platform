@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.junit.Assert.assertThrows;
+
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.ResourceInfo;
@@ -49,7 +51,7 @@ public class MoveTest extends LocalStoreTest {
 	 * This test has Windows as the target OS. Drives C: and D: should be available.
 	 */
 	@Test
-	public void testMoveFileAcrossVolumes() {
+	public void testMoveFileAcrossVolumes() throws CoreException {
 		Assume.assumeTrue(OS.isWindows());
 
 		/* look for the adequate environment */
@@ -60,47 +62,31 @@ public class MoveTest extends LocalStoreTest {
 		String location = getUniqueString();
 		IProject source = getWorkspace().getRoot().getProject(location + "1");
 		IProject destination = getWorkspace().getRoot().getProject(location + "2");
-		try {
-			source.create(getMonitor());
-			source.open(getMonitor());
+		source.create(getMonitor());
+		source.open(getMonitor());
 
-			IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
-			description.setLocation(IPath.fromOSString(devices[1] + location));
-			destination.create(description, getMonitor());
-			destination.open(getMonitor());
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
+		description.setLocation(IPath.fromOSString(devices[1] + location));
+		destination.create(description, getMonitor());
+		destination.open(getMonitor());
 
 		String fileName = "fileToBeMoved.txt";
 		IFile file = source.getFile(fileName);
-		try {
-			file.create(getRandomContents(), true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		file.create(getRandomContents(), true, getMonitor());
 
 		// add some properties to file (persistent and session)
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];
 		String[] propValues = new String[numberOfProperties];
-		try {
-			for (int j = 0; j < numberOfProperties; j++) {
-				propNames[j] = new QualifiedName("test", "prop" + j);
-				propValues[j] = "value" + j;
-				file.setPersistentProperty(propNames[j], propValues[j]);
-				file.setSessionProperty(propNames[j], propValues[j]);
-			}
-		} catch (CoreException e) {
-			fail("2.0", e);
+		for (int j = 0; j < numberOfProperties; j++) {
+			propNames[j] = new QualifiedName("test", "prop" + j);
+			propValues[j] = "value" + j;
+			file.setPersistentProperty(propNames[j], propValues[j]);
+			file.setSessionProperty(propNames[j], propValues[j]);
 		}
 
 		// move file
 		IPath dest = destination.getFile(fileName).getFullPath();
-		try {
-			file.move(dest, true, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		file.move(dest, true, getMonitor());
 
 		// assert file was moved
 		IFile newFile = destination.getFile(fileName);
@@ -110,15 +96,11 @@ public class MoveTest extends LocalStoreTest {
 		assertExistsInFileSystem("4.4", newFile);
 
 		// assert properties still exist (server, local and session)
-		try {
-			for (int j = 0; j < numberOfProperties; j++) {
-				String persistentValue = newFile.getPersistentProperty(propNames[j]);
-				Object sessionValue = newFile.getSessionProperty(propNames[j]);
-				assertEquals("5.1", persistentValue, propValues[j]);
-				assertEquals("5.2", sessionValue, propValues[j]);
-			}
-		} catch (CoreException e) {
-			fail("5.3", e);
+		for (int j = 0; j < numberOfProperties; j++) {
+			String persistentValue = newFile.getPersistentProperty(propNames[j]);
+			Object sessionValue = newFile.getSessionProperty(propNames[j]);
+			assertEquals("5.1", persistentValue, propValues[j]);
+			assertEquals("5.2", sessionValue, propValues[j]);
 		}
 	}
 
@@ -128,11 +110,11 @@ public class MoveTest extends LocalStoreTest {
 	@Test
 	public void testMoveFileBetweenProjects() throws Exception {
 		// create common objects
-		IProject[] projects = getWorkspace().getRoot().getProjects();
+		IProject[] testProjects = getWorkspace().getRoot().getProjects();
 
 		// get file instance
 		String fileName = "newFile.txt";
-		IFile file = projects[0].getFile(fileName);
+		IFile file = testProjects[0].getFile(fileName);
 		ensureExistsInWorkspace(file, true);
 
 		// add some properties to file (persistent and session)
@@ -146,11 +128,11 @@ public class MoveTest extends LocalStoreTest {
 		}
 
 		// move file
-		IPath destination = projects[1].getFile(fileName).getFullPath();
+		IPath destination = testProjects[1].getFile(fileName).getFullPath();
 		file.move(destination, true, null);
 
 		// get new file instance
-		IFile newFile = projects[1].getFile(fileName);
+		IFile newFile = testProjects[1].getFile(fileName);
 
 		// assert file was renamed
 		assertDoesNotExistInWorkspace(file);
@@ -162,8 +144,8 @@ public class MoveTest extends LocalStoreTest {
 		for (int j = 0; j < numberOfProperties; j++) {
 			String persistentValue = newFile.getPersistentProperty(propNames[j]);
 			Object sessionValue = newFile.getSessionProperty(propNames[j]);
-			assertTrue("persistent property value is not the same", propValues[j].equals(persistentValue));
-			assertTrue("session property value is not the same", propValues[j].equals(sessionValue));
+			assertEquals("persistent property value is not the same", propValues[j], persistentValue);
+			assertEquals("session property value is not the same", propValues[j], sessionValue);
 		}
 	}
 
@@ -171,7 +153,7 @@ public class MoveTest extends LocalStoreTest {
 	 * This test has Windows as the target OS. Drives C: and D: should be available.
 	 */
 	@Test
-	public void testMoveFolderAcrossVolumes() {
+	public void testMoveFolderAcrossVolumes() throws CoreException {
 		Assume.assumeTrue(OS.isWindows());
 
 		/* look for the adequate environment */
@@ -182,48 +164,32 @@ public class MoveTest extends LocalStoreTest {
 		String location = getUniqueString();
 		IProject source = getWorkspace().getRoot().getProject(location + "1");
 		IProject destination = getWorkspace().getRoot().getProject(location + "2");
-		try {
-			source.create(getMonitor());
-			source.open(getMonitor());
+		source.create(getMonitor());
+		source.open(getMonitor());
 
-			IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
-			description.setLocation(IPath.fromOSString(devices[1] + location));
-			destination.create(description, getMonitor());
-			destination.open(getMonitor());
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
+		description.setLocation(IPath.fromOSString(devices[1] + location));
+		destination.create(description, getMonitor());
+		destination.open(getMonitor());
 
 		// get folder instance
 		String folderName = "folderToBeMoved";
 		IFolder folder = source.getFolder(folderName);
-		try {
-			folder.create(true, true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		folder.create(true, true, getMonitor());
 
 		// add some properties to file (persistent and session)
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];
 		String[] propValues = new String[numberOfProperties];
-		try {
-			for (int j = 0; j < numberOfProperties; j++) {
-				propNames[j] = new QualifiedName("test", "prop" + j);
-				propValues[j] = "value" + j;
-				folder.setPersistentProperty(propNames[j], propValues[j]);
-				folder.setSessionProperty(propNames[j], propValues[j]);
-			}
-		} catch (CoreException e) {
-			fail("2.0", e);
+		for (int j = 0; j < numberOfProperties; j++) {
+			propNames[j] = new QualifiedName("test", "prop" + j);
+			propValues[j] = "value" + j;
+			folder.setPersistentProperty(propNames[j], propValues[j]);
+			folder.setSessionProperty(propNames[j], propValues[j]);
 		}
 
 		// rename folder
 		IPath dest = destination.getFile(folderName).getFullPath();
-		try {
-			folder.move(dest, true, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		folder.move(dest, true, getMonitor());
 
 		// assert folder was renamed
 		IFolder newFolder = destination.getFolder(folderName);
@@ -233,15 +199,11 @@ public class MoveTest extends LocalStoreTest {
 		assertExistsInFileSystem("4.4", newFolder);
 
 		// assert properties still exist (server, local and session)
-		try {
-			for (int j = 0; j < numberOfProperties; j++) {
-				String persistentValue = newFolder.getPersistentProperty(propNames[j]);
-				Object sessionValue = newFolder.getSessionProperty(propNames[j]);
-				assertEquals("5.1", persistentValue, propValues[j]);
-				assertEquals("5.2", sessionValue, propValues[j]);
-			}
-		} catch (CoreException e) {
-			fail("5.3", e);
+		for (int j = 0; j < numberOfProperties; j++) {
+			String persistentValue = newFolder.getPersistentProperty(propNames[j]);
+			Object sessionValue = newFolder.getSessionProperty(propNames[j]);
+			assertEquals(persistentValue, propValues[j]);
+			assertEquals(sessionValue, propValues[j]);
 		}
 	}
 
@@ -251,11 +213,11 @@ public class MoveTest extends LocalStoreTest {
 	@Test
 	public void testMoveFolderBetweenProjects() throws Exception {
 		// create common objects
-		IProject[] projects = getWorkspace().getRoot().getProjects();
+		IProject[] testProjects = getWorkspace().getRoot().getProjects();
 
 		// get folder instance
 		String folderName = "newFolder";
-		IFolder folder = projects[0].getFolder(folderName);
+		IFolder folder = testProjects[0].getFolder(folderName);
 		ensureExistsInWorkspace(folder, true);
 
 		// add some properties to folder (persistent and session)
@@ -269,11 +231,11 @@ public class MoveTest extends LocalStoreTest {
 		}
 
 		// rename folder
-		IPath destination = projects[1].getFolder(folderName).getFullPath();
+		IPath destination = testProjects[1].getFolder(folderName).getFullPath();
 		folder.move(destination, true, null);
 
 		// get new folder instance
-		IFolder newFolder = projects[1].getFolder(folderName);
+		IFolder newFolder = testProjects[1].getFolder(folderName);
 
 		// assert folder was renamed
 		assertDoesNotExistInWorkspace(folder);
@@ -285,8 +247,8 @@ public class MoveTest extends LocalStoreTest {
 		for (int j = 0; j < numberOfProperties; j++) {
 			String persistentValue = newFolder.getPersistentProperty(propNames[j]);
 			Object sessionValue = newFolder.getSessionProperty(propNames[j]);
-			assertTrue("persistent property value is not the same", propValues[j].equals(persistentValue));
-			assertTrue("session property value is not the same", propValues[j].equals(sessionValue));
+			assertEquals("persistent property value is not the same", propValues[j], persistentValue);
+			assertEquals("session property value is not the same", propValues[j], sessionValue);
 		}
 	}
 
@@ -296,11 +258,11 @@ public class MoveTest extends LocalStoreTest {
 	@Test
 	public void testMoveHierarchy() throws Exception {
 		// create common objects
-		IProject[] projects = getWorkspace().getRoot().getProjects();
+		IProject[] testPprojects = getWorkspace().getRoot().getProjects();
 
 		// create the source folder
 		String folderSourceName = "folder source";
-		IFolder folderSource = projects[0].getFolder(folderSourceName);
+		IFolder folderSource = testPprojects[0].getFolder(folderSourceName);
 		ensureExistsInWorkspace(folderSource, true);
 
 		// create hierarchy
@@ -324,7 +286,7 @@ public class MoveTest extends LocalStoreTest {
 
 		// create the destination folder
 		String folderDestinationName = "folder destination";
-		IFolder folderDestination = projects[0].getFolder(folderDestinationName);
+		IFolder folderDestination = testPprojects[0].getFolder(folderDestinationName);
 
 		// move hierarchy
 		//IProgressMonitor monitor = new LoggingProgressMonitor(System.out);
@@ -354,8 +316,8 @@ public class MoveTest extends LocalStoreTest {
 				String propValue = sourceResource.getName() + propValues[j];
 				String persistentValue = destResource.getPersistentProperty(propName);
 				Object sessionValue = destResource.getSessionProperty(propName);
-				assertTrue("persistent property value is not the same", propValue.equals(persistentValue));
-				assertTrue("session property value is not the same", propValue.equals(sessionValue));
+				assertEquals("persistent property value is not the same", propValue, persistentValue);
+				assertEquals("session property value is not the same", propValue, sessionValue);
 			}
 		}
 	}
@@ -367,11 +329,11 @@ public class MoveTest extends LocalStoreTest {
 	@Test
 	public void testMoveHierarchyBetweenProjects() throws Exception {
 		// create common objects
-		IProject[] projects = getWorkspace().getRoot().getProjects();
+		IProject[] testProjects = getWorkspace().getRoot().getProjects();
 
 		// create the source folder
 		String folderSourceName = "source";
-		IFolder folderSource = projects[0].getFolder(folderSourceName);
+		IFolder folderSource = testProjects[0].getFolder(folderSourceName);
 		ensureExistsInWorkspace(folderSource, true);
 
 		// build hierarchy
@@ -395,7 +357,7 @@ public class MoveTest extends LocalStoreTest {
 
 		// create the destination folder
 		String folderDestinationName = "destination";
-		IFolder folderDestination = projects[1].getFolder(folderDestinationName);
+		IFolder folderDestination = testProjects[1].getFolder(folderDestinationName);
 
 		// move hierarchy
 		folderSource.move(folderDestination.getFullPath(), true, null);
@@ -423,8 +385,8 @@ public class MoveTest extends LocalStoreTest {
 				String propValue = sourceResource.getName() + propValues[j];
 				String persistentValue = destResource.getPersistentProperty(propName);
 				Object sessionValue = destResource.getSessionProperty(propName);
-				assertTrue("persistent property value is not the same", propValue.equals(persistentValue));
-				assertTrue("session property value is not the same", propValue.equals(sessionValue));
+				assertEquals("persistent property value is not the same", propValue, persistentValue);
+				assertEquals("session property value is not the same", propValue, sessionValue);
 			}
 		}
 	}
@@ -432,7 +394,7 @@ public class MoveTest extends LocalStoreTest {
 	@Test
 	public void testMoveResource() throws Exception {
 		/* create common objects */
-		IProject[] projects = getWorkspace().getRoot().getProjects();
+		IProject[] testProjects = getWorkspace().getRoot().getProjects();
 
 		/* create folder and file */
 		IFolder folder = projects[0].getFolder("folder");
@@ -441,112 +403,75 @@ public class MoveTest extends LocalStoreTest {
 		ensureExistsInWorkspace(file, true);
 
 		/* move to absolute destination */
-		IResource destination = projects[0].getFile("file.txt");
+		IResource destination = testProjects[0].getFile("file.txt");
 		file.move(destination.getFullPath(), true, null);
-		assertTrue("1.1", !file.exists());
-		assertTrue("1.2", destination.exists());
+		assertFalse(file.exists());
+		assertTrue(destination.exists());
 		destination.move(file.getFullPath(), true, null);
-		assertTrue("1.3", file.exists());
-		assertTrue("1.4", !destination.exists());
+		assertTrue(file.exists());
+		assertFalse(destination.exists());
 
 		/* move to relative destination */
 		IPath path = IPath.fromOSString("destination");
 		destination = folder.getFile(path);
 		file.move(path, true, null);
-		assertTrue("2.1", !file.exists());
-		assertTrue("2.2", destination.exists());
+		assertFalse(file.exists());
+		assertTrue(destination.exists());
 		destination.move(file.getFullPath(), true, null);
-		assertTrue("2.3", file.exists());
-		assertTrue("2.4", !destination.exists());
+		assertTrue(file.exists());
+		assertFalse(destination.exists());
 
 		/* move folder to destination under its hierarchy */
-		destination = folder.getFolder("subfolder");
-		boolean ok = false;
-		try {
-			folder.move(destination.getFullPath(), true, null);
-		} catch (RuntimeException e) {
-			ok = true;
-		}
-		assertTrue("3.1", ok);
+		IFolder subFolderDestination = folder.getFolder("subfolder");
+		assertThrows(RuntimeException.class, () -> folder.move(subFolderDestination.getFullPath(), true, null));
 
 		/* test flag force = false */
-		projects[0].refreshLocal(IResource.DEPTH_INFINITE, null);
+		testProjects[0].refreshLocal(IResource.DEPTH_INFINITE, null);
 		IFolder subfolder = folder.getFolder("aaa");
 		ensureExistsInFileSystem(subfolder);
 		IFile anotherFile = folder.getFile("bbb");
 		ensureExistsInFileSystem(anotherFile);
-		destination = projects[0].getFolder("destination");
-		ok = false;
-		try {
-			folder.move(destination.getFullPath(), false, null);
-		} catch (CoreException e) {
-			ok = true;
-			// FIXME: remove this check?
-			//		assertTrue("4.1", e.getStatus().getChildren().length == 2);
-		}
-		assertTrue("4.2", ok);
-		try {
-			folder.move(destination.getFullPath(), false, null);
-			fail("4.2.1");
-		} catch (CoreException e) {
-			// expected
-		}
-		assertTrue("4.3", folder.exists());
+		IFolder folderDestination = testProjects[0].getFolder("destination");
+		assertThrows(CoreException.class, () -> folder.move(folderDestination.getFullPath(), false, null));
+		assertThrows(CoreException.class, () -> folder.move(folderDestination.getFullPath(), false, null));
+		assertTrue(folder.exists());
 		// FIXME: should #move be a best effort operation?
 		// its ok for the root to be moved but ensure the destination child wasn't moved
-		IResource destChild = ((IContainer) destination).getFile(IPath.fromOSString(anotherFile.getName()));
-		assertTrue("4.4", !destination.exists());
-		assertTrue("4.5", !destChild.exists());
+		IResource destChild = ((IContainer) folderDestination).getFile(IPath.fromOSString(anotherFile.getName()));
+		assertFalse(folderDestination.exists());
+		assertFalse(destChild.exists());
 		// cleanup and delete the destination
-		try {
-			destination.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("4.6", e);
-		}
-		try {
-			destination.delete(true, getMonitor());
-		} catch (CoreException e) {
-			fail("4.7", e);
-		}
+		folderDestination.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		folderDestination.delete(true, getMonitor());
 
 		folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		try {
-			folder.move(destination.getFullPath(), false, getMonitor());
-		} catch (CoreException e) {
-			fail("4.8");
-		}
+		folder.move(folderDestination.getFullPath(), false, getMonitor());
 
-		destination.move(folder.getFullPath(), true, null);
-		assertTrue("4.9", folder.exists());
-		assertTrue("4.10", !destination.exists());
+		folderDestination.move(folder.getFullPath(), true, null);
+		assertTrue(folder.exists());
+		assertFalse(destination.exists());
 
 		/* move a file that is not local but exists in the workspace */
-		file = projects[0].getFile("ghost");
-		final IFile hackFile = file;
+		IFile ghostFile = testProjects[0].getFile("ghost");
+		final IFile hackFile = ghostFile;
 		final Workspace workspace = (Workspace) getWorkspace();
 		IWorkspaceRunnable operation = monitor -> workspace.createResource(hackFile, false);
 		workspace.run(operation, null);
-		destination = projects[0].getFile("destination");
-		ok = false;
-		try {
-			file.move(destination.getFullPath(), true, null);
-		} catch (CoreException e) {
-			ok = true;
-		}
-		assertTrue("5.1", ok);
+		IFile fileDestination = testProjects[0].getFile("destination");
+		assertThrows(CoreException.class, () -> ghostFile.move(fileDestination.getFullPath(), true, null));
 
 		/* move file over a phantom */
-		assertTrue("6.1", file.exists());
+		assertTrue(ghostFile.exists());
 		operation = monitor -> ((Resource) hackFile).convertToPhantom();
 		workspace.run(operation, null);
-		assertTrue("6.2", !file.exists());
-		ResourceInfo info = ((File) file).getResourceInfo(true, false);
-		int flags = ((File) file).getFlags(info);
-		assertTrue("6.3", ((Resource) file).exists(flags, true));
+		assertFalse(ghostFile.exists());
+		ResourceInfo info = ((File) ghostFile).getResourceInfo(true, false);
+		int flags = ((File) ghostFile).getFlags(info);
+		assertTrue(((Resource) ghostFile).exists(flags, true));
 		anotherFile = folder.getFile("anotherFile");
 		ensureExistsInWorkspace(anotherFile, true);
-		anotherFile.move(file.getFullPath(), true, null);
-		assertTrue("6.4", file.exists());
+		anotherFile.move(ghostFile.getFullPath(), true, null);
+		assertTrue(ghostFile.exists());
 	}
 
 	/**
@@ -555,11 +480,11 @@ public class MoveTest extends LocalStoreTest {
 	@Test
 	public void testRenameFile() throws Exception {
 		// create common objects
-		IProject[] projects = getWorkspace().getRoot().getProjects();
+		IProject[] testProjects = getWorkspace().getRoot().getProjects();
 
 		// create a folder
 		String fileName = "file.txt";
-		IFile file = projects[0].getFile(fileName);
+		IFile file = testProjects[0].getFile(fileName);
 		ensureExistsInWorkspace(file, true);
 
 		// add some properties to file (persistent and session)
@@ -574,11 +499,11 @@ public class MoveTest extends LocalStoreTest {
 
 		// rename file
 		String newFileName = "newFile.txt";
-		IPath destination = projects[0].getFile(newFileName).getFullPath();
+		IPath destination = testProjects[0].getFile(newFileName).getFullPath();
 		file.move(destination, true, null);
 
 		// get new folder instance
-		IFile newFile = projects[0].getFile(newFileName);
+		IFile newFile = testProjects[0].getFile(newFileName);
 
 		// assert file was renamed
 		assertDoesNotExistInWorkspace(file);
@@ -590,8 +515,8 @@ public class MoveTest extends LocalStoreTest {
 		for (int j = 0; j < numberOfProperties; j++) {
 			String persistentValue = newFile.getPersistentProperty(propNames[j]);
 			Object sessionValue = newFile.getSessionProperty(propNames[j]);
-			assertTrue("persistent property value is not the same", propValues[j].equals(persistentValue));
-			assertTrue("session property value is not the same", propValues[j].equals(sessionValue));
+			assertEquals("persistent property value is not the same", propValues[j], persistentValue);
+			assertEquals("session property value is not the same", propValues[j], sessionValue);
 		}
 	}
 
@@ -607,11 +532,11 @@ public class MoveTest extends LocalStoreTest {
 	@Test
 	public void testRenameFolder() throws Exception {
 		// create common objects
-		IProject[] projects = getWorkspace().getRoot().getProjects();
+		IProject[] testProjects = getWorkspace().getRoot().getProjects();
 
 		// create a folder
 		String folderName = "folder";
-		IFolder folder = projects[0].getFolder(folderName);
+		IFolder folder = testProjects[0].getFolder(folderName);
 		ensureExistsInWorkspace(folder, true);
 
 		// add some properties to folder (persistent and session)
@@ -626,11 +551,11 @@ public class MoveTest extends LocalStoreTest {
 
 		// rename folder
 		String newFolderName = "newFolder";
-		IPath destination = projects[0].getFolder(newFolderName).getFullPath();
+		IPath destination = testProjects[0].getFolder(newFolderName).getFullPath();
 		folder.move(destination, true, null);
 
 		// get new folder instance
-		IFolder newFolder = projects[0].getFolder(newFolderName);
+		IFolder newFolder = testProjects[0].getFolder(newFolderName);
 
 		// assert folder was renamed
 		assertDoesNotExistInWorkspace(folder);
@@ -642,8 +567,8 @@ public class MoveTest extends LocalStoreTest {
 		for (int j = 0; j < numberOfProperties; j++) {
 			String persistentValue = newFolder.getPersistentProperty(propNames[j]);
 			Object sessionValue = newFolder.getSessionProperty(propNames[j]);
-			assertTrue("persistent property value is not the same", propValues[j].equals(persistentValue));
-			assertTrue("session property value is not the same", propValues[j].equals(sessionValue));
+			assertEquals("persistent property value is not the same", propValues[j], persistentValue);
+			assertEquals("session property value is not the same", propValues[j], sessionValue);
 		}
 	}
 
@@ -658,7 +583,7 @@ public class MoveTest extends LocalStoreTest {
 	@Test
 	public void testRenameProjects() throws Exception {
 		/* create common objects */
-		IProject[] projects = getWorkspace().getRoot().getProjects();
+		IProject[] testProjects = getWorkspace().getRoot().getProjects();
 
 		// add some properties to projects (persistent and session)
 		numberOfProperties = numberOfProjects;
@@ -667,16 +592,16 @@ public class MoveTest extends LocalStoreTest {
 		for (int i = 0; i < numberOfProjects; i++) {
 			propNames[i] = new QualifiedName("test", "prop" + i);
 			propValues[i] = "value" + i;
-			projects[i].setPersistentProperty(propNames[i], propValues[i]);
-			projects[i].setSessionProperty(propNames[i], propValues[i]);
+			testProjects[i].setPersistentProperty(propNames[i], propValues[i]);
+			testProjects[i].setSessionProperty(propNames[i], propValues[i]);
 		}
 
 		// assert properties exist (persistent and session)
 		for (int i = 0; i < numberOfProjects; i++) {
-			String persistentValue = projects[i].getPersistentProperty(propNames[i]);
-			Object sessionValue = projects[i].getSessionProperty(propNames[i]);
-			assertTrue("1.0." + i, propValues[i].equals(persistentValue));
-			assertTrue("1.1." + i, propValues[i].equals(sessionValue));
+			String persistentValue = testProjects[i].getPersistentProperty(propNames[i]);
+			Object sessionValue = testProjects[i].getSessionProperty(propNames[i]);
+			assertEquals("persistent property value is not the same", propValues[i], persistentValue);
+			assertEquals("session property value is not the same", propValues[i], sessionValue);
 		}
 
 		// move (rename) projects
@@ -684,21 +609,21 @@ public class MoveTest extends LocalStoreTest {
 		for (int i = 0; i < numberOfProjects; i++) {
 			String projectName = prefix + i;
 			IPath destination = getWorkspace().getRoot().getProject(projectName).getFullPath();
-			projects[i].move(destination, true, null);
+			testProjects[i].move(destination, true, null);
 			projectNames[i] = projectName;
 		}
 
 		// get new projects instances
 		for (int i = 0; i < numberOfProjects; i++) {
-			projects[i] = getWorkspace().getRoot().getProject(projectNames[i]);
+			testProjects[i] = getWorkspace().getRoot().getProject(projectNames[i]);
 		}
 
 		// assert properties still exist (persistent and session)
 		for (int i = 0; i < numberOfProjects; i++) {
-			String persistentValue = projects[i].getPersistentProperty(propNames[i]);
-			Object sessionValue = projects[i].getSessionProperty(propNames[i]);
-			assertTrue("2.0." + i, propValues[i].equals(persistentValue));
-			assertTrue("2.1." + i, propValues[i].equals(sessionValue));
+			String persistentValue = testProjects[i].getPersistentProperty(propNames[i]);
+			Object sessionValue = testProjects[i].getSessionProperty(propNames[i]);
+			assertEquals("persistent property value is not the same", propValues[i], persistentValue);
+			assertEquals("session property value is not the same", propValues[i], sessionValue);
 		}
 	}
 }

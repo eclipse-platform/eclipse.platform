@@ -15,7 +15,6 @@ package org.eclipse.tips.core.internal;
 
 /**
  * Image helper class.
- *
  */
 public class ImageUtil {
 

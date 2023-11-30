@@ -54,9 +54,6 @@ public class EngineDescriptor implements IEngineDescriptor {
 
 	private boolean userDefined;
 
-	/**
-	 *
-	 */
 	public EngineDescriptor(IConfigurationElement config) {
 		this.config = config;
 	}

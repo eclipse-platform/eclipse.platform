@@ -27,7 +27,6 @@ import org.eclipse.debug.ui.memory.IMemoryRenderingSite;
  * This is the retargettable add memory block action in the Memory View. All
  * AddMemoryBlock actions in the view will use this action to make sure that
  * clients can override the "Add Memory Monitor" dialog.
- *
  */
 public class RetargetAddMemoryBlockAction extends AddMemoryBlockAction {
 

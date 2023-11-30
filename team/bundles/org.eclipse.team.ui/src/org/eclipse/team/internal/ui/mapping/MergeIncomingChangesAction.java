@@ -119,9 +119,6 @@ public class MergeIncomingChangesAction extends ModelParticipantAction implement
 		handler.dispose();
 	}
 
-	/**
-	 * @param handlerEvent
-	 */
 	@Override
 	public void handlerChanged(HandlerEvent handlerEvent) {
 		setEnabled(handler.isEnabled());

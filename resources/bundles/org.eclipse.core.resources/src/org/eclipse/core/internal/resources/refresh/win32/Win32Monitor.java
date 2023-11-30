@@ -231,9 +231,6 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 		private List<FileHandle> fileHandleChain;
 		private final IResource resource;
 
-		/**
-		 * @param resource
-		 */
 		public LinkedResourceHandle(IResource resource) {
 			this.resource = resource;
 			createFileHandleChain();

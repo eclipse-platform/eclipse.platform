@@ -98,9 +98,6 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 
 	/**
 	 * Creates a new CompareFileRevisionEditorInput.
-	 * @param left
-	 * @param right
-	 * @param page
 	 */
 	public CompareFileRevisionEditorInput(ITypedElement left, ITypedElement right, IWorkbenchPage page) {
 		super(new CompareConfiguration(), page);

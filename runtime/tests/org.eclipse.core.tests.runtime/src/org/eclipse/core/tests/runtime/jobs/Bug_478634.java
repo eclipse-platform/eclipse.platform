@@ -17,9 +17,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
 import org.junit.Test;
 
-/**
- *
- */
 public class Bug_478634 extends AbstractJobTest {
 
 	PathRule rootRule = new PathRule("/");

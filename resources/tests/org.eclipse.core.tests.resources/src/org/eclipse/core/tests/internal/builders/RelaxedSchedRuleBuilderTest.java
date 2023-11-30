@@ -29,8 +29,10 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.eclipse.core.internal.events.ResourceDelta;
+import org.eclipse.core.internal.resources.ContentDescriptionManager;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.ICommand;
@@ -50,6 +52,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
+import org.eclipse.core.tests.resources.TestUtil;
+import org.junit.function.ThrowingRunnable;
 
 /**
  * This class tests extended functionality (since 3.6) which allows
@@ -94,9 +98,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 
 	/**
 	 * Test a simple builder with a relaxed scheduling rule
-	 * @throws Exception
 	 */
-	public void testBasicRelaxedSchedulingRules() throws Exception {
+	public void testBasicRelaxedSchedulingRules() throws Throwable {
 		String projectName = "TestRelaxed";
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
@@ -133,13 +136,16 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 			}
 		});
 
+		final AtomicReference<ThrowingRunnable> exceptionInMainThreadCallback = new AtomicReference<>(Function::identity);
 		Job j = new Job("build job") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
 					project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
 				} catch (CoreException e) {
-					fail();
+					exceptionInMainThreadCallback.set(() -> {
+						throw e;
+					});
 				}
 				return Status.OK_STATUS;
 			}
@@ -156,6 +162,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		// Cancel the builder
 		j.cancel();
 		tb.waitForStatus(TestBarrier2.STATUS_DONE);
+
+		exceptionInMainThreadCallback.get().run();
 	}
 
 	/**
@@ -164,9 +172,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 * Tests:
 	 *     Bug 306824 - null scheduling rule and non-null scheduling rule don't work together
 	 *     Builders should have separate scheduling rules
-	 * @throws Exception
 	 */
-	public void testTwoBuildersRunInOneBuild() throws Exception {
+	public void testTwoBuildersRunInOneBuild() throws Throwable {
 		String projectName = "testTwoBuildersRunInOneBuild";
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
@@ -226,6 +233,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 			}
 		});
 
+		final AtomicReference<ThrowingRunnable> exceptionInMainThreadCallback = new AtomicReference<>(
+				Function::identity);
 		// Run the build
 		Job j = new Job("build job1") {
 			@Override
@@ -233,7 +242,9 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 				try {
 					project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
 				} catch (CoreException e) {
-					fail();
+					exceptionInMainThreadCallback.set(() -> {
+						throw e;
+					});
 				}
 				return Status.OK_STATUS;
 			}
@@ -249,6 +260,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		tb2.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		tb2.setStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 		tb2.waitForStatus(TestBarrier2.STATUS_DONE);
+
+		exceptionInMainThreadCallback.get().run();
 	}
 
 	HashSet<ISchedulingRule> getRulesAsSet(ISchedulingRule rule) {
@@ -270,9 +283,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 * Acquiring the scheduling rule must be done outside of the WS lock, so this tests that
 	 * a change which sneaks in during the window or the build thread acquiring its scheduling
 	 * rule, is correctly present in the builder's delta.
-	 * @throws Exception
 	 */
-	public void testBuilderDeltaUsingRelaxedRuleBug343256() throws Exception {
+	public void testBuilderDeltaUsingRelaxedRuleBug343256() throws Throwable {
 		final int timeout = 10000;
 		String projectName = "testBuildDeltaUsingRelaxedRuleBug343256";
 		setAutoBuilding(false);
@@ -392,17 +404,20 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		workspaceChangingJob.join(timeout, null);
 		buildTriggeringJob.join(timeout, null);
 		if (error.get() != null) {
-			fail("Error observed", error.get());
+			throw error.get();
 		}
 		tb.waitForStatus(TestBarrier2.STATUS_DONE);
 		errorLogging.assertNoErrorsLogged();
 	}
 
+	private void waitForContentDescriptionUpdate() {
+		TestUtil.waitForJobs(getName(), 10, 5_000, ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH);
+	}
+
 	/**
 	 * Tests for regression in running the build with reduced scheduling rules.
-	 * @throws Exception
 	 */
-	public void testBug343256() throws Exception {
+	public void testBug343256() throws Throwable {
 		String projectName = "testBug343256";
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
@@ -493,6 +508,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		//		};
 		//		invokeTestBug343256(project, getRules, buildRules, tb1, tb2, j);
 
+		final AtomicReference<ThrowingRunnable> exceptionInMainThreadCallback = new AtomicReference<>(
+				Function::identity);
 		// IWorkspace.build(IBuildConfiguration[],...)
 		j = new Job("IWorkspace.build(IBuildConfiguration[],...)") {
 			@Override
@@ -500,13 +517,16 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 				try {
 					getWorkspace().build(new IBuildConfiguration[] {project.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, monitor);
 				} catch (CoreException e) {
-					fail(e.toString());
+					exceptionInMainThreadCallback.set(() -> {
+						throw e;
+					});
 				}
 				return Status.OK_STATUS;
 			}
 		};
 		invokeTestBug343256(project, getRules, buildRules, tb1, tb2, j);
 
+		exceptionInMainThreadCallback.get().run();
 		// Test Auto-build
 		//		j = new Job("Auto-build") {
 		//			protected IStatus run(IProgressMonitor monitor) {

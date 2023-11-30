@@ -79,8 +79,6 @@ public class ContentDetector extends IntroContentDetector {
 
 	/**
 	 * Test to see if this contribution was newly installed
-	 * @param contributionId
-	 * @return
 	 */
 	public static boolean isNew(String contributionId) {
 		if (!detectorCalled) {

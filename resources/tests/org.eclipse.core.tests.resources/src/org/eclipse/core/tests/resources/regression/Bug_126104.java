@@ -15,7 +15,10 @@ package org.eclipse.core.tests.resources.regression;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -24,37 +27,21 @@ import org.eclipse.core.tests.resources.ResourceTest;
  */
 public class Bug_126104 extends ResourceTest {
 
-	public void testBug() {
+	public void testBug() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("p1");
 		IFile source = project.getFile("source");
 		ensureExistsInWorkspace(source, true);
 		IFolder link = project.getFolder("link");
 		IFileStore location = getTempStore();
-		try {
-			link.createLink(location.toURI(), IResource.ALLOW_MISSING_LOCAL, getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		link.createLink(location.toURI(), IResource.ALLOW_MISSING_LOCAL, getMonitor());
 		IFile destination = link.getFile(source.getName());
-		try {
-			source.copy(destination.getFullPath(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		source.copy(destination.getFullPath(), IResource.NONE, getMonitor());
 		assertTrue("1.0", destination.exists());
 
 		//try the same thing with move
 		ensureDoesNotExistInWorkspace(destination);
-		try {
-			location.delete(EFS.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.99", e);
-		}
-		try {
-			source.move(destination.getFullPath(), IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("3.99", e);
-		}
+		location.delete(EFS.NONE, getMonitor());
+		source.move(destination.getFullPath(), IResource.NONE, getMonitor());
 		assertTrue("3.0", !source.exists());
 		assertTrue("3.1", destination.exists());
 	}

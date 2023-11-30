@@ -53,9 +53,6 @@ public class MonitorMemoryBlockDialog extends TrayDialog implements ModifyListen
 	 */
 	private static final int LABEL_WIDTH = 210;
 
-	/**
-	 * @param parentShell
-	 */
 	public MonitorMemoryBlockDialog(Shell parentShell, IMemoryBlockRetrieval memRetrieval, String prefillExp, String prefillLength) {
 		super(parentShell);
 

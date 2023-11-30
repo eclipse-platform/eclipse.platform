@@ -16,7 +16,11 @@ package org.eclipse.core.tests.internal.builders;
 
 import java.util.List;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
@@ -37,7 +41,6 @@ public class RebuildTest extends AbstractBuilderTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		getWorkspace().getRoot().delete(true, null);
 		// Turn auto-building off
 		setAutoBuilding(false);
 		boolean earlyExitAllowed = ((Workspace) getWorkspace()).getBuildManager()
@@ -47,7 +50,6 @@ public class RebuildTest extends AbstractBuilderTest {
 
 	@Override
 	protected void tearDown() throws Exception {
-		getWorkspace().getRoot().delete(true, null);
 		IWorkspaceDescription description = getWorkspace().getDescription();
 		description.setMaxBuildIterations(maxBuildIterations);
 		getWorkspace().setDescription(description);

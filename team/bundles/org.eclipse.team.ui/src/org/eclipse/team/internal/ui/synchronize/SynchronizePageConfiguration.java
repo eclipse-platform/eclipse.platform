@@ -471,7 +471,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 	}
 
 	/**
-	 * @param group
 	 * @return the group id
 	 */
 	public String getGroupId(String group) {
@@ -542,9 +541,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		return 0;
 	}
 
-	/**
-	 * @param style
-	 */
 	public void setViewerStyle(int style) {
 		setProperty(P_VIEWER_STYLE, Integer.valueOf(style));
 	}

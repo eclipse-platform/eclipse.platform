@@ -134,7 +134,6 @@ public abstract class FileSystemOperation extends ModelOperation {
 	 * @param provider the provider
 	 * @param traversals the traversals to be operated on
 	 * @param monitor a progress monitor
-	 * @throws CoreException
 	 */
 	protected abstract void execute(FileSystemProvider provider, ResourceTraversal[] traversals, IProgressMonitor monitor) throws CoreException;
 

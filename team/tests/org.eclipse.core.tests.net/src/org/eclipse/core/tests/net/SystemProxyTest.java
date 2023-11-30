@@ -190,8 +190,6 @@ public class SystemProxyTest {
 	 * {@link #initializeTestProxyData(String)} for values. Additionally set
 	 * <code>"eclipse.*;nonexisting.com;*.eclipse.org;www.*.com;*.test.*"</code> as
 	 * proxy bypass in the IE settings.
-	 *
-	 * @throws URISyntaxException
 	 */
 	@Test
 	public void testNonProxiedHosts_WindowsIEManualSettings() throws URISyntaxException {

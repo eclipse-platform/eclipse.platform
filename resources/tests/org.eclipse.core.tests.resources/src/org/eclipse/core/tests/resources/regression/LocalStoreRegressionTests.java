@@ -13,12 +13,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import org.eclipse.core.internal.localstore.SafeChunkyInputStream;
 import org.eclipse.core.internal.localstore.SafeChunkyOutputStream;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.internal.localstore.LocalStoreTest;
 
@@ -57,7 +63,7 @@ public class LocalStoreRegressionTests extends LocalStoreTest {
 	/**
 	 * The PR reported a problem with longs, but we are testing more types here.
 	 */
-	public void test_1G65KR1() {
+	public void test_1G65KR1() throws IOException {
 		/* evaluate test environment */
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
 		deleteOnTearDown(root);
@@ -73,16 +79,12 @@ public class LocalStoreRegressionTests extends LocalStoreTest {
 				DataOutputStream dos = new DataOutputStream(output)) {
 			dos.writeLong(1234567890l);
 			output.succeed();
-		} catch (IOException e) {
-			fail("2.0", e);
 		}
 
 		// read chunks
 		try (SafeChunkyInputStream input = new SafeChunkyInputStream(target);
 				DataInputStream dis = new DataInputStream(input)) {
 				assertEquals("3.0", dis.readLong(), 1234567890l);
-		} catch (IOException e) {
-			fail("3.10", e);
 		}
 	}
 }

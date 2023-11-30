@@ -95,7 +95,6 @@ public abstract class AbstractAntUITest {
 	/**
 	 * Returns the {@link IFile} for the given build file name
 	 *
-	 * @param buildFileName
 	 * @return the associated {@link IFile} for the given build file name
 	 */
 	protected IFile getIFile(String buildFileName) {
@@ -105,7 +104,6 @@ public abstract class AbstractAntUITest {
 	/**
 	 * Returns the {@link File} for the given build file name
 	 *
-	 * @param buildFileName
 	 * @return the {@link File} for the given build file name
 	 */
 	protected File getBuildFile(String buildFileName) {
@@ -123,7 +121,6 @@ public abstract class AbstractAntUITest {
 	/**
 	 * Ensure the welcome screen is closed because in 4.x the debug perspective opens a giant fast-view causing issues
 	 *
-	 * @throws Exception
 	 * @since 3.8
 	 */
 	void assertWelcomeScreenClosed() throws Exception {
@@ -207,7 +204,6 @@ public abstract class AbstractAntUITest {
 	/**
 	 * Returns the underlying {@link IDocument} for the given file name
 	 *
-	 * @param fileName
 	 * @return the underlying {@link IDocument} for the given file name
 	 */
 	protected IDocument getDocument(String fileName) {
@@ -226,7 +222,6 @@ public abstract class AbstractAntUITest {
 	/**
 	 * Returns the contents of the given {@link InputStream} as a {@link String}
 	 *
-	 * @param inputStream
 	 * @return the {@link InputStream} as a {@link String}
 	 */
 	protected String getStreamContentAsString(InputStream inputStream) {
@@ -246,7 +241,6 @@ public abstract class AbstractAntUITest {
 	/**
 	 * Returns the contents of the given {@link BufferedReader} as a {@link String}
 	 *
-	 * @param bufferedReader
 	 * @return the contents of the given {@link BufferedReader} as a {@link String}
 	 */
 	protected String getReaderContentAsStringNew(BufferedReader bufferedReader) {
@@ -270,7 +264,6 @@ public abstract class AbstractAntUITest {
 	/**
 	 * Returns the contents of the given {@link BufferedReader} as a {@link String}
 	 *
-	 * @param bufferedReader
 	 * @return the contents of the given {@link BufferedReader} as a {@link String}
 	 */
 	protected String getReaderContentAsString(BufferedReader bufferedReader) {
@@ -297,7 +290,6 @@ public abstract class AbstractAntUITest {
 	/**
 	 * Returns the {@link AntModel} for the given file name
 	 *
-	 * @param fileName
 	 * @return the {@link AntModel} for the given file name
 	 */
 	protected AntModel getAntModel(String fileName) {
@@ -316,8 +308,6 @@ public abstract class AbstractAntUITest {
 
 	/**
 	 * Allows the current {@link IDocument} context to be set. This method accepts <code>null</code>
-	 *
-	 * @param currentDocument
 	 */
 	public void setCurrentDocument(IDocument currentDocument) {
 		this.currentDocument = currentDocument;
@@ -392,13 +382,6 @@ public abstract class AbstractAntUITest {
 
 	/**
 	 * Parses the given input stream with the given parser using the given handler
-	 *
-	 * @param stream
-	 * @param parser
-	 * @param handler
-	 * @param editedFile
-	 * @throws IOException
-	 * @throws SAXException
 	 */
 	protected void parse(InputStream stream, SAXParser parser, DefaultHandler handler, File editedFile) throws SAXException, IOException {
 		InputSource inputSource = new InputSource(stream);
@@ -429,10 +412,6 @@ public abstract class AbstractAntUITest {
 
 	/**
 	 * Launches the given configuration and waits for the terminated event or the length of the given timeout, whichever comes first
-	 *
-	 * @param config
-	 * @param timeout
-	 * @throws CoreException
 	 */
 	protected void launchAndTerminate(ILaunchConfiguration config, int timeout) throws CoreException {
 		DebugEventWaiter waiter = new DebugElementKindEventWaiter(DebugEvent.TERMINATE, IProcess.class);
@@ -480,8 +459,6 @@ public abstract class AbstractAntUITest {
 	 * Returns the {@link IHyperlink} at the given offset on the given document, or <code>null</code> if there is no {@link IHyperlink} at that offset
 	 * on the document.
 	 *
-	 * @param offset
-	 * @param doc
 	 * @return the {@link IHyperlink} at the given offset on the given document or <code>null</code>
 	 */
 	protected IHyperlink getHyperlink(int offset, IDocument doc) {
@@ -507,8 +484,6 @@ public abstract class AbstractAntUITest {
 	 * Returns the {@link Color} at the given offset on the given document, or <code>null</code> if there is no {@link Color} at that offset on the
 	 * document.
 	 *
-	 * @param offset
-	 * @param document
 	 * @return the {@link Color} at the given offset on the given document or <code>null</code>
 	 */
 	protected Color getColorAtOffset(int offset, IDocument document) throws BadLocationException {

@@ -40,9 +40,6 @@ public class MemoryRetrievalContentProvider extends ElementContentProvider {
 	/**
 	 * Returns all children of the given parent in the given context.
 	 *
-	 * @param parent
-	 * @param context
-	 * @param monitor
 	 * @return all children
 	 */
 	protected Object[] getAllChildren(Object parent, IPresentationContext context, IViewerUpdate monitor) {

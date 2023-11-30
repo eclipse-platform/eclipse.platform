@@ -77,10 +77,10 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		// setting description file will also trigger build
 		descFile.setContents(projectFileWithoutWater(), IResource.FORCE, getMonitor());
 		//assert that builder was skipped
-		builder.assertLifecycleEvents("1.0");
+		builder.assertLifecycleEvents();
 
 		//assert that the builder is still in the build spec
-		assertTrue("1.1", hasBuilder(project, SnowBuilder.BUILDER_NAME));
+		assertTrue(hasBuilder(project, SnowBuilder.BUILDER_NAME));
 
 		getWorkspace().save(true, getMonitor());
 	}
@@ -93,14 +93,14 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
 
 		//assert that the builder is still in the build spec
-		assertTrue("1.0", hasBuilder(project, SnowBuilder.BUILDER_NAME));
+		assertTrue(hasBuilder(project, SnowBuilder.BUILDER_NAME));
 
 		//perform a build and ensure snow builder isn't called
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 		builder.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);
-		builder.assertLifecycleEvents("1.1");
+		builder.assertLifecycleEvents();
 
 		getWorkspace().save(true, getMonitor());
 	}
@@ -120,7 +120,7 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 		builder.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);
-		builder.assertLifecycleEvents("1.1");
+		builder.assertLifecycleEvents();
 
 		//now re-enable the nature and ensure that the delta was null
 		waitForBuild();
@@ -130,8 +130,8 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
 		project.setDescription(desc, IResource.FORCE, getMonitor());
 		waitForBuild();
-		builder.assertLifecycleEvents("2.0");
-		assertTrue("2.1", builder.wasDeltaNull());
+		builder.assertLifecycleEvents();
+		assertTrue(builder.wasDeltaNull());
 
 	}
 

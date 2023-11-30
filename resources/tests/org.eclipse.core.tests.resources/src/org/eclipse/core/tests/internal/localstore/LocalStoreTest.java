@@ -13,11 +13,21 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
-import java.io.*;
-import org.eclipse.core.filesystem.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.localstore.FileSystemResourceManager;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -178,18 +188,13 @@ public abstract class LocalStoreTest extends ResourceTest {
 	 * Copy the data from the input stream to the output stream.
 	 * Close just the input stream.
 	 */
-	public void transferDataWithoutCloseStreams(InputStream input, OutputStream output) {
-		try {
-			int c = 0;
-			while ((c = input.read()) != -1) {
-				output.write(c);
-			}
-			//input.close();
-			//output.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue(e.toString(), false);
+	public void transferDataWithoutCloseStreams(InputStream input, OutputStream output) throws IOException {
+		int c = 0;
+		while ((c = input.read()) != -1) {
+			output.write(c);
 		}
+		// input.close();
+		// output.close();
 	}
 
 	protected boolean verifyNode(IFileStore node) {

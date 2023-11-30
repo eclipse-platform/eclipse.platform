@@ -13,7 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.AbstractBuilderTest;
 import org.eclipse.core.tests.internal.builders.ClearMarkersBuilder;
@@ -62,25 +66,17 @@ public class Bug_147232 extends AbstractBuilderTest implements IResourceChangeLi
 		ClearMarkersBuilder.pauseAfterBuild = false;
 	}
 
-	public void testBug() {
+	public void testBug() throws CoreException {
 		project = getWorkspace().getRoot().getProject("Bug_147232");
 		file = project.getFile("file.txt");
 		getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_BUILD | IResourceChangeEvent.POST_BUILD);
-		try {
-			setAutoBuilding(false);
-			project.create(getMonitor());
-			project.open(getMonitor());
-			addBuilder(project, ClearMarkersBuilder.BUILDER_NAME);
-			setAutoBuilding(true);
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		setAutoBuilding(false);
+		project.create(getMonitor());
+		project.open(getMonitor());
+		addBuilder(project, ClearMarkersBuilder.BUILDER_NAME);
+		setAutoBuilding(true);
 		//create a file in the project to trigger a build
-		try {
-			create(file, true);
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		create(file, true);
 		waitForBuild();
 		assertEquals("2.0", 1, deltaSeenCount);
 	}

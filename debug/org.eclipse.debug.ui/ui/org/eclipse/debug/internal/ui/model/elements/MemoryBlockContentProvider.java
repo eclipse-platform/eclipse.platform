@@ -29,7 +29,6 @@ import org.eclipse.debug.ui.IDebugUIConstants;
  * The viewer tries to restore selection again after elements are added to the view.  This is done
  * in the HasChildrenJob.  However, this job will not get scheduled unless the element provides a content
  * provider adapter.  As a result, the job is never scheduled and the selection cannot be maintained.
- *
  */
 public class MemoryBlockContentProvider extends ElementContentProvider {
 

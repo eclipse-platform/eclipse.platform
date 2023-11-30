@@ -157,7 +157,6 @@ public class LaunchConfigurationBuildfileChange extends Change {
 	/**
 	 * Creates a new container name for the given configuration
 	 * 
-	 * @param launchConfiguration
 	 * @return the new container name
 	 * @since 3.5
 	 */

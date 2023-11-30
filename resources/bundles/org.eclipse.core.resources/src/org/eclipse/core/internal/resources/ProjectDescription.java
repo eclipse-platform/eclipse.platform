@@ -186,7 +186,6 @@ public class ProjectDescription extends ModelObject implements IProjectDescripti
 
 	/**
 	 * Helper to fetch projects from an array of build configuration references
-	 * @param refs
 	 * @return {@literal List<IProject>}
 	 */
 	private Collection<IProject> getProjectsFromBuildConfigRefs(IBuildConfiguration[] refs) {
@@ -319,7 +318,6 @@ public class ProjectDescription extends ModelObject implements IProjectDescripti
 
 	/**
 	 * Returns the build configuration references map
-	 * @param makeCopy
 	 */
 	@SuppressWarnings({"unchecked"})
 	public Map<String, IBuildConfiguration[]> getBuildConfigReferences(boolean makeCopy) {

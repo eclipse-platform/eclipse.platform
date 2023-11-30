@@ -56,7 +56,6 @@ public class EnvironmentVariable
 
 	/**
 	 * Sets this variable's value
-	 * @param value
 	 */
 	public void setValue(String value)
 	{
@@ -65,8 +64,6 @@ public class EnvironmentVariable
 
 	/**
 	 * Sets this variable's name
-	 *
-	 * @param name
 	 */
 	public void setName(String name) {
 		this.name = name;

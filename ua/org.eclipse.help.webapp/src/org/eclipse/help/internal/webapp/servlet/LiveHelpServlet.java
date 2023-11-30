@@ -28,8 +28,6 @@ import org.eclipse.help.internal.webapp.data.WebappPreferences;
  */
 public class LiveHelpServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	/**
-	 */
 	@Override
 	public void init() throws ServletException {
 		if (BaseHelpSystem.getMode() == BaseHelpSystem.MODE_INFOCENTER) {
@@ -110,7 +108,6 @@ public class LiveHelpServlet extends HttpServlet {
 	 * servlet to handle a POST request.
 	 *
 	 * Handle the search requests,
-	 *
 	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)

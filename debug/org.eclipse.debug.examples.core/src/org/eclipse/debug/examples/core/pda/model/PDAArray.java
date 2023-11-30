@@ -24,7 +24,6 @@ public class PDAArray extends PDAValue {
 	 * An array splits a value into its words
 	 *
 	 * @param value existing value
-	 * @throws DebugException
 	 */
 	public PDAArray(PDAValue value) throws DebugException {
 		super(value.getVariable(), value.getValueString());

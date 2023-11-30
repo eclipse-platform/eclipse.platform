@@ -33,7 +33,6 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  * starts failing, it might mean bundles are being re-installed unnecessarily
  * in the second session.  For details, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=94859.
  * @since 3.2
- *
  */
 public class TestBug93473 extends WorkspaceSessionTest {
 

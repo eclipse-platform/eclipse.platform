@@ -39,7 +39,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  *
  * @see IDetailPane
  * @since 3.3
- *
  */
 public interface IDetailPaneFactory {
 

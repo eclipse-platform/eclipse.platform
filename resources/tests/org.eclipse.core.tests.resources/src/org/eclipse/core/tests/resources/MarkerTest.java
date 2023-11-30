@@ -14,11 +14,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +37,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.core.internal.resources.MarkerManager;
 import org.eclipse.core.internal.resources.MarkerReader;
 import org.eclipse.core.internal.resources.Resource;
@@ -60,94 +68,27 @@ public class MarkerTest extends ResourceTest {
 	/** The collection of resources used for testing. */
 	IResource[] resources;
 	private boolean originalRefreshSetting;
+	private MarkersChangeListener registeredResourceChangeLister;
 
-	/**
-	 * Tests the appearance of marker changes in the resource delta.
-	 */
-	public void testMarkerChangesInDelta3() {
-		debug("TestMarkerChangesInDelta3");
-
-		// Create and register a listener.
-		final MarkersChangeListener listener = new MarkersChangeListener();
-		addResourceChangeListener(listener);
-
-		try {
-			IResource resource = getWorkspace().getRoot().findMember("1");
-			IResource destinationResource = null;
-			IResource child;
-			IResource destinationChild;
-			IPath destination;
-			IMarker[] markers = new IMarker[4];
-
-			// MOVE the resource
-			try {
-				destination = resource.getFullPath().removeLastSegments(1).append(resource.getFullPath().lastSegment() + "new");
-				markers[0] = resource.createMarker(IMarker.BOOKMARK);
-				child = ((IProject) resource).members()[0];
-				markers[1] = child.createMarker(IMarker.TASK);
-				listener.reset();
-				resource.move(destination, false, getMonitor());
-				destinationResource = getWorkspace().getRoot().findMember(destination);
-				markers[2] = destinationResource.getMarker(markers[0].getId());
-				destinationChild = ((IProject) destinationResource).findMember(child.getName());
-				markers[3] = destinationChild.getMarker(markers[1].getId());
-				assertEquals("1.1." + resource.getFullPath(), 4, listener.numAffectedResources());
-				assertTrue("1.2." + resource.getFullPath(), listener.checkChanges(resource, null, new IMarker[] {markers[0]}, null));
-				assertTrue("1.3." + resource.getFullPath(), listener.checkChanges(child, null, new IMarker[] {markers[1]}, null));
-				assertTrue("1.4." + destinationResource.getFullPath(), listener.checkChanges(destinationResource, new IMarker[] {markers[2]}, null, null));
-				assertTrue("1.5." + destinationResource.getFullPath(), listener.checkChanges(destinationChild, new IMarker[] {markers[3]}, null, null));
-			} catch (CoreException e) {
-				fail("1.99", e);
-			}
-
-			// COPY the resource and look at the deltas -
-			// there should be no changes since markers are not copied
-			try {
-				resource = getWorkspace().getRoot().findMember("2");
-				destination = resource.getFullPath().removeLastSegments(1).append(resource.getFullPath().lastSegment() + "copy");
-				resource.createMarker(IMarker.BOOKMARK);
-				listener.reset();
-				resource.copy(destination, false, getMonitor());
-				assertEquals("2.1." + resource.getFullPath(), 0, listener.numAffectedResources());
-			} catch (CoreException e) {
-				fail("2.99", e);
-			}
-
-			// delete all markers for a clean run next time
-			try {
-				getWorkspace().getRoot().deleteMarkers(null, true, IResource.DEPTH_INFINITE);
-			} catch (CoreException e) {
-				fail("99.99", e);
-			}
-		} finally {
-			removeResourceChangeListener(listener);
-		}
-	}
-
-	private void removeResourceChangeListener(final MarkersChangeListener listener) {
+	private void setResourceChangeListener(MarkersChangeListener listener) throws CoreException {
 		// removeResourceChangeListener need to happen in an atomic workspace operation
 		// otherwise it would be removed while auto refresh is running
 		// and might even get called in another thread after removing in this thread
-		try {
-			// listener.shutDown();
-			getWorkspace().run(p -> getWorkspace().removeResourceChangeListener(listener), null);
-		} catch (CoreException e) {
-			fail("removeResourceChangeListener", e);
+		// listener.shutDown();
+		if (registeredResourceChangeLister != null) {
+			getWorkspace().run(p -> getWorkspace().removeResourceChangeListener(registeredResourceChangeLister), null);
 		}
-	}
-
-	private void addResourceChangeListener(MarkersChangeListener listener) {
+		registeredResourceChangeLister = listener;
+		if (listener == null) {
+			return;
+		}
 		// addResourceChangeListener need to happen in an atomic workspace operation
 		// otherwise it would be added while auto refresh is running
 		// and might get called in another thread before explicit refresh in this thread
-		try {
-			getWorkspace().run(p -> {
-				getWorkspace().addResourceChangeListener(listener);
-				// listener.active();
-			}, null);
-		} catch (CoreException e) {
-			fail("removeResourceChangeListener", e);
-		}
+		getWorkspace().run(p -> {
+			getWorkspace().addResourceChangeListener(listener);
+			// listener.active();
+		}, null);
 	}
 
 	protected void addChildren(ArrayList<String> result, IPath root, int breadth, int depth) {
@@ -163,78 +104,45 @@ public class MarkerTest extends ResourceTest {
 		}
 	}
 
-	protected void assertDoesNotExist(String message, IMarker[] markers) {
+	protected void assertMarkersDoNotExist(IMarker[] markers) {
 		for (IMarker marker : markers) {
-			assertDoesNotExist(message, marker);
+			assertMarkerDoesNotExist(marker);
 		}
 	}
 
-	protected void assertDoesNotExist(String message, IMarker marker) {
-		assertTrue(message, !marker.exists());
+	protected void assertMarkerDoesNotExist(IMarker marker) {
+		assertFalse(String.format("marker '%s' exists unexpectedly for resource '%s'", marker, marker.getResource()),
+				marker.exists());
 	}
 
-	/**
-	 * Asserts that the given collection of expected markers contains
-	 * the same markers as the given collection of actual markers.  The
-	 * markers do not have to be in the same order.
-	 */
-	protected void assertEquals(String message, IMarker[] expectedMarkers, IMarker[] actualMarkers) {
-		int n = expectedMarkers.length;
-		if (n != actualMarkers.length) {
-			fail(message);
-		}
-		boolean[] seen = new boolean[n];
-		for (int i = 0; i < n; ++i) {
-			boolean found = false;
-			for (int j = 0; j < n; ++j) {
-				if (!seen[j] && equals(expectedMarkers[i], actualMarkers[j])) {
-					found = true;
-					seen[j] = true;
-					break;
-				}
-			}
-			if (!found) {
-				fail(message);
-			}
-		}
-	}
-
-	protected void assertEquals(String message, Map<String, ? extends Object> map, Object[] keys, Object[] values) {
-		assertEquals(message, keys.length, values.length);
-		assertEquals(message, keys.length, map.size());
-		for (Map.Entry<String, ? extends Object> entry : map.entrySet()) {
-			Object key = entry.getKey();
-			Object value = entry.getValue();
-			boolean found = false;
-			for (int j = 0; !found && j < keys.length; j++) {
-				if (keys[j].equals(key)) {
-					found = true;
-					if (!values[j].equals(value)) {
-						fail(message);
-					}
-				}
-			}
-			if (!found) {
-				assertTrue(message, false);
-			}
-		}
-	}
-
-	protected void assertExists(String message, IMarker[] markers) {
+	protected void assertMarkersExist(IMarker[] markers) {
 		for (IMarker marker : markers) {
-			assertExists(message, marker);
+			assertMarkerExists(marker);
 		}
 	}
 
-	protected void assertExists(String message, List<IMarker> markers) {
-		for (IMarker marker : markers) {
-			assertExists(message, marker);
-		}
+	protected void assertMarkerExists(IMarker marker) {
+		assertTrue(String.format("marker '%s' does not exist for resource '%s'", marker, marker.getResource()),
+				marker.exists());
 	}
 
+	private void assertMarkerHasAttributeValue(IMarker marker, String attributeName, Object expectedValue)
+			throws CoreException {
+		assertThat("marker has unexpected attribute value: " + marker, marker.getAttribute(attributeName),
+				expectedValue == null ? is(nullValue()) : is(expectedValue));
+	}
 
-	protected void assertExists(String message, IMarker marker) {
-		assertTrue(message, marker.exists());
+	private void assertSingleMarkerWithId(IMarker[] markers, long id) {
+		assertThat(markers, arrayWithSize(1));
+		assertThat("wrong id in marker " + markers[0], markers[0].getId(), is(id));
+	}
+
+	private void assertMarkerIsSubtype(IMarker marker, String superType) throws CoreException {
+		assertTrue(String.format("Marker '%s' is no subtype of %s", marker, superType), marker.isSubtypeOf(superType));
+	}
+
+	private void assertMarkerIsNoSubtype(IMarker marker, String superType) throws CoreException {
+		assertFalse(String.format("Marker '%s' is subtype of %s", marker, superType), marker.isSubtypeOf(superType));
 	}
 
 	public IResource[] createLargeHierarchy() {
@@ -257,13 +165,9 @@ public class MarkerTest extends ResourceTest {
 		return result;
 	}
 
-	public void createProblem(IResource host, int severity) {
-		try {
-			IMarker marker = host.createMarker(IMarker.PROBLEM);
-			marker.setAttribute(IMarker.SEVERITY, severity);
-		} catch (CoreException e) {
-			fail("Failed to create problem on resource: " + host, e);
-		}
+	public void createProblem(IResource host, int severity) throws CoreException {
+		IMarker marker = host.createMarker(IMarker.PROBLEM);
+		marker.setAttribute(IMarker.SEVERITY, severity);
 	}
 
 	/**
@@ -273,40 +177,6 @@ public class MarkerTest extends ResourceTest {
 	@Override
 	public String[] defineHierarchy() {
 		return new String[] {"/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/"};
-	}
-
-	public void display(long start, long stop) {
-		display("Start: " + start);
-		display("Stop: " + stop);
-		display("Duration: " + (stop - start));
-	}
-
-	public void display(String message) {
-		System.out.println(message);
-	}
-
-	/**
-	 * Returns whether the given markers are equal.
-	 */
-	public static boolean equals(IMarker a, IMarker b) {
-		try {
-			if (a.getType() != b.getType()) {
-				return false;
-			}
-			if (a.getId() != b.getId()) {
-				return false;
-			}
-			return true;
-		} catch (CoreException e) {
-			return false;
-		}
-	}
-
-	/**
-	 * Returns whether two object are both null, or both non-null and equal.
-	 */
-	protected static boolean equalsOrNull(Object a, Object b) {
-		return a == b || (a != null && b != null && a.equals(b));
 	}
 
 	@Override
@@ -322,11 +192,60 @@ public class MarkerTest extends ResourceTest {
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, null);
 	}
 
+
 	@Override
 	public void tearDown() throws Exception {
+		if (registeredResourceChangeLister != null) {
+			setResourceChangeListener(null);
+		}
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, originalRefreshSetting);
 		super.tearDown();
+	}
+
+	/**
+	 * Tests the appearance of marker changes in the resource delta.
+	 */
+	public void testMarkerChangesInDelta3() throws CoreException {
+		debug("TestMarkerChangesInDelta3");
+
+		// Create and register a listener.
+		final MarkersChangeListener listener = new MarkersChangeListener();
+		setResourceChangeListener(listener);
+
+		IResource resource = getWorkspace().getRoot().findMember("1");
+		IMarker[] markers = new IMarker[4];
+
+		// MOVE the resource
+		IPath destination = resource.getFullPath().removeLastSegments(1)
+				.append(resource.getFullPath().lastSegment() + "new");
+		markers[0] = resource.createMarker(IMarker.BOOKMARK);
+		IResource child = ((IProject) resource).members()[0];
+		markers[1] = child.createMarker(IMarker.TASK);
+		listener.reset();
+		resource.move(destination, false, getMonitor());
+		IResource destinationResource = getWorkspace().getRoot().findMember(destination);
+		markers[2] = destinationResource.getMarker(markers[0].getId());
+		IResource destinationChild = ((IProject) destinationResource).findMember(child.getName());
+		markers[3] = destinationChild.getMarker(markers[1].getId());
+		listener.assertNumberOfAffectedResources(4);
+		listener.assertChanges(resource, null, new IMarker[] { markers[0] }, null);
+		listener.assertChanges(child, null, new IMarker[] { markers[1] }, null);
+		listener.assertChanges(destinationResource, new IMarker[] { markers[2] }, null, null);
+		listener.assertChanges(destinationChild, new IMarker[] { markers[3] }, null, null);
+
+		// COPY the resource and look at the deltas -
+		// there should be no changes since markers are not copied
+		resource = getWorkspace().getRoot().findMember("2");
+		destination = resource.getFullPath().removeLastSegments(1)
+				.append(resource.getFullPath().lastSegment() + "copy");
+		resource.createMarker(IMarker.BOOKMARK);
+		listener.reset();
+		resource.copy(destination, false, getMonitor());
+		listener.assertNumberOfAffectedResources(0);
+
+		// delete all markers for a clean run next time
+		getWorkspace().getRoot().deleteMarkers(null, true, IResource.DEPTH_INFINITE);
 	}
 
 	/**
@@ -336,107 +255,64 @@ public class MarkerTest extends ResourceTest {
 		debug("TestCopyResource");
 	}
 
-	public void testCreateMarker() {
+	public void testCreateMarker() throws CoreException {
 		debug("TestCreateMarker");
 
 		// create markers on our hierarchy of resources
 		for (IResource resource : resources) {
 			// Create and register a listener.
 			MarkersChangeListener listener = new MarkersChangeListener();
-			addResourceChangeListener(listener);
-			try {
-				IMarker[] markers = new IMarker[3];
-				try {
-					markers[0] = resource.createMarker(IMarker.PROBLEM);
-					markers[1] = resource.createMarker(IMarker.BOOKMARK);
-					markers[2] = resource.createMarker(IMarker.TASK);
-					assertExists("1.0." + resource.getFullPath(), markers);
-				} catch (CoreException e) {
-					fail("1.1." + resource.getFullPath(), e);
-				}
-				assertEquals("1.2." + resource.getFullPath(), 1, listener.numAffectedResources());
-				assertTrue("1.3." + resource.getFullPath(), listener.checkChanges(resource, markers, null, null));
+			setResourceChangeListener(listener);
 
-				// expect an AssertionFailedException from a null type
-				try {
-					resource.createMarker(null);
-					fail("2.0." + resource.getFullPath());
-				} catch (CoreException e) {
-					fail("2.1." + resource.getFullPath(), e);
-				} catch (RuntimeException e) {
-					// expected
-				}
-			} finally {
-				removeResourceChangeListener(listener);
-			}
+			IMarker[] markers = new IMarker[3];
+			markers[0] = resource.createMarker(IMarker.PROBLEM);
+			markers[1] = resource.createMarker(IMarker.BOOKMARK);
+			markers[2] = resource.createMarker(IMarker.TASK);
+			assertMarkersExist(markers);
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, markers, null, null);
+			assertThrows(resource.getFullPath().toString(), RuntimeException.class, () -> resource.createMarker(null));
 		}
 
 		// try creating a marker on a resource which does't exist
 		IResource testResource = getWorkspace().getRoot().getFile(IPath.fromOSString("non/existant/resource"));
-		assertTrue("3.0", !testResource.exists());
-		try {
-			testResource.createMarker(IMarker.PROBLEM);
-			fail("3.1");
-		} catch (CoreException e) {
-			// expected
-		}
+		assertFalse("resource should not exist: " + testResource, testResource.exists());
+		assertThrows(testResource.getFullPath().toString(), CoreException.class,
+				() -> testResource.createMarker(IMarker.PROBLEM));
 	}
 
-	public void testCreateMarkerWithAttributes() {
+	public void testCreateMarkerWithAttributes() throws CoreException {
 		// Create and register a listener.
 		MarkersChangeListener listener = new MarkersChangeListener();
-		addResourceChangeListener(listener);
+		setResourceChangeListener(listener);
 
 		// create markers on our hierarchy of resources
 		for (IResource resource : resources) {
 			listener.reset();
 
-			List<IMarker> markers = new ArrayList<>();
-			try {
-				markers.add(resource.createMarker(IMarker.PROBLEM, null));
-				markers.add(resource.createMarker(IMarker.BOOKMARK, Collections.emptyMap()));
-				markers.add(resource.createMarker(IMarker.TASK, Map.of(IMarker.MESSAGE, "My text")));
-				assertExists("Markers do not exist" + resource.getFullPath(), markers);
-			} catch (CoreException e) {
-				fail("Failed to created markers for resource" + resource.getFullPath(), e);
-			}
-			assertEquals("Not exactly one resource affected by the marker cahnge" + resource.getFullPath(), 1,
-					listener.numAffectedResources());
-			assertTrue("Not exactly the markers created as defined" + resource.getFullPath(),
-					listener.checkChanges(resource, markers.toArray(new IMarker[0]), null, null));
-
+			IMarker[] markers = new IMarker[] { //
+					resource.createMarker(IMarker.PROBLEM, null), //
+					resource.createMarker(IMarker.BOOKMARK, Collections.emptyMap()),
+					resource.createMarker(IMarker.TASK, Map.of(IMarker.MESSAGE, "My text")) };
+			assertMarkersExist(markers);
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, markers, null, null);
 		}
-
-		// cleanup
-		removeResourceChangeListener(listener);
 	}
 
 	public void testCreateNullMarkerWithAttributesShouldFail() {
 		// create markers on our hierarchy of resources
 		for (IResource resource : resources) {
-			try {
-				resource.createMarker(null, null);
-				fail("Creating a null marker should not work" + resource.getFullPath());
-			} catch (CoreException e) {
-				fail("Core exception during the creation of a null marker" + resource.getFullPath(), e);
-			} catch (RuntimeException e) {
-				// expected
-			}
+			assertThrows(RuntimeException.class, () -> resource.createMarker(null, null));
 		}
-
 	}
 
 	public void testCreateMarkerWithAttributesOnAResourceWhichDoesNotExistShouldFail() {
-
 		// try creating a marker on a resource which does't exist
 		IResource testResource = getWorkspace().getRoot().getFile(IPath.fromOSString("non/existant/resource"));
-		assertTrue("Resource should not exist", !testResource.exists());
-		try {
-			testResource.createMarker(IMarker.PROBLEM, Map.of(IMarker.MESSAGE, "My text"));
-			fail("Creating a marker for a non existing resource should not work");
-		} catch (CoreException e) {
-			// expected
-		}
+		assertFalse("resource should not exist: " + testResource, testResource.exists());
+		assertThrows(testResource.getFullPath().toString(), CoreException.class,
+				() -> testResource.createMarker(IMarker.PROBLEM, Map.of(IMarker.MESSAGE, "My text")));
 	}
 
 	// testing that markers creation and calling setAttribute trigger multiple
@@ -444,28 +320,22 @@ public class MarkerTest extends ResourceTest {
 	// events (which is bad for performance hence the better createMarker(String
 	// type, Map<String, Object> attributes) method
 
-	public void testThatSettingAttributesTriggerAdditionalResourceChangeEvent() {
+	public void testThatSettingAttributesTriggerAdditionalResourceChangeEvent() throws CoreException {
 		// Create and register a listener.
 		MarkersNumberOfDeltasChangeListener listener = new MarkersNumberOfDeltasChangeListener();
 		getWorkspace().addResourceChangeListener(listener);
 		for (IResource resource : resources) {
 			listener.reset();
 			// each setAttributes triggers one additional resource change event
-			try {
-				IMarker marker = resource.createMarker(TEST_PROBLEM_MARKER);
-				marker.setAttribute(IMarker.MESSAGE, getRandomString());
-				marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-				assertEquals(3, listener.numberOfChanges());
-			} catch (CoreException e) {
-				fail("Marker creation failed unexpected", e);
-			}
+			IMarker marker = resource.createMarker(TEST_PROBLEM_MARKER);
+			marker.setAttribute(IMarker.MESSAGE, getRandomString());
+			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+			assertThat(listener.numberOfChanges(), is(3));
 		}
-		// cleanup
-		getWorkspace().removeResourceChangeListener(listener);
 	}
 
 	// testing that markers creation with arbiutes
-	public void testThatMarkersWithAttributesOnlyTriggerOnResourceChangeEvent() {
+	public void testThatMarkersWithAttributesOnlyTriggerOnResourceChangeEvent() throws CoreException {
 		// Create and register a listener.
 		MarkersNumberOfDeltasChangeListener listener = new MarkersNumberOfDeltasChangeListener();
 		getWorkspace().addResourceChangeListener(listener);
@@ -474,266 +344,151 @@ public class MarkerTest extends ResourceTest {
 			// createMarker with attributes triggers only one resource change event
 			listener.reset();
 			// each setAttributes triggers one resource change event
-			try {
-				resource.createMarker(TEST_PROBLEM_MARKER,
-						Map.of(IMarker.MESSAGE, getRandomString(), IMarker.PRIORITY, IMarker.PRIORITY_HIGH));
-				assertEquals(1, listener.numberOfChanges());
-			} catch (CoreException e) {
-				fail("Marker creation failed unexpected", e);
-			}
-		}
-		// cleanup
-		getWorkspace().removeResourceChangeListener(listener);
-	}
-	public void testCreationTime() {
-
-		for (int i = 0; i < resources.length; i++) {
-			IMarker marker = null;
-			try {
-				marker = resources[i].createMarker(IMarker.PROBLEM);
-			} catch (CoreException e) {
-				fail("0.0", e);
-			}
-
-			// make sure the marker has a non-zero creation time
-			try {
-				assertTrue("1.0." + i, 0 != marker.getCreationTime());
-			} catch (CoreException e) {
-				fail("1.1", e);
-			}
+			resource.createMarker(TEST_PROBLEM_MARKER,
+					Map.of(IMarker.MESSAGE, getRandomString(), IMarker.PRIORITY, IMarker.PRIORITY_HIGH));
+			assertThat(listener.numberOfChanges(), is(1));
 		}
 	}
 
-	public void testDeleteMarker() {
+	public void testCreationTime() throws CoreException {
+		for (IResource element : resources) {
+			IMarker marker = element.createMarker(IMarker.PROBLEM);
+			assertThat("creation time for marker in resource " + element.getFullPath() + " is not set",
+					marker.getCreationTime(), not(is(0)));
+		}
+	}
+
+	public void testDeleteMarker() throws CoreException {
 		debug("TestDeleteMarker");
 		IMarker marker = null;
 
 		// Create and register a listener.
 		MarkersChangeListener listener = new MarkersChangeListener();
-		addResourceChangeListener(listener);
+		setResourceChangeListener(listener);
 
 		// for each resource in the hierarchy do...
 		for (IResource resource : resources) {
 			// create the marker, assert that it exists, and then remove it
-			try {
-				listener.reset();
-				marker = resource.createMarker(IMarker.PROBLEM);
-				assertEquals("2.0." + resource.getFullPath(), 1, listener.numAffectedResources());
-				assertTrue("2.1." + resource.getFullPath(), listener.checkChanges(resource, new IMarker[] {marker}, null, null));
-			} catch (CoreException e) {
-				fail("2.2." + resource.getFullPath(), e);
-			}
-			assertExists("2.3." + resource.getFullPath(), marker);
-			try {
-				listener.reset();
-				marker.delete();
-				assertDoesNotExist("2.4." + resource.getFullPath(), marker);
-				assertEquals("2.5." + resource.getFullPath(), 1, listener.numAffectedResources());
-				assertTrue("2.6." + resource.getFullPath(), listener.checkChanges(resource, null, new IMarker[] {marker}, null));
-			} catch (CoreException e) {
-				fail("2.7." + resource.getFullPath(), e);
-			}
+			listener.reset();
+			marker = resource.createMarker(IMarker.PROBLEM);
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, new IMarker[] { marker }, null, null);
+			assertMarkerExists(marker);
+
+			listener.reset();
+			marker.delete();
+			assertMarkerDoesNotExist(marker);
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, null, new IMarker[] { marker }, null);
 
 			// Check that a non-existant marker can be removed
-			try {
-				marker.delete();
-			} catch (CoreException e) {
-				fail("3.0." + resource.getFullPath(), e);
-			}
+			marker.delete();
 
 			// create multiple markers, assert they exist, and then remove them.
 			IMarker[] markers = new IMarker[3];
-			try {
-				markers[0] = resource.createMarker(IMarker.BOOKMARK);
-				assertExists("4.0." + resource.getFullPath(), markers[0]);
-				markers[1] = resource.createMarker(IMarker.TASK);
-				assertExists("4.1." + resource.getFullPath(), markers[1]);
-				markers[2] = resource.createMarker(IMarker.PROBLEM);
-				assertExists("4.2." + resource.getFullPath(), markers[2]);
-			} catch (CoreException e) {
-				fail("4.3." + resource.getFullPath(), e);
-			}
-			try {
-				listener.reset();
-				getWorkspace().deleteMarkers(markers);
-				assertEquals("4.4." + resource.getFullPath(), 1, listener.numAffectedResources());
-				assertTrue("4.5." + resource.getFullPath(), listener.checkChanges(resource, null, markers, null));
-			} catch (CoreException e) {
-				fail("4.6." + resource.getFullPath(), e);
-			}
-			assertDoesNotExist("4.7." + resource.getFullPath(), markers);
-		}
+			markers[0] = resource.createMarker(IMarker.BOOKMARK);
+			assertMarkerExists(markers[0]);
+			markers[1] = resource.createMarker(IMarker.TASK);
+			assertMarkerExists(markers[1]);
+			markers[2] = resource.createMarker(IMarker.PROBLEM);
+			assertMarkerExists(markers[2]);
 
-		// cleanup
-		removeResourceChangeListener(listener);
+			listener.reset();
+			getWorkspace().deleteMarkers(markers);
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, null, markers, null);
+			assertMarkersDoNotExist(markers);
+		}
 	}
 
-	public void testDeleteMarkers() {
+	public void testDeleteMarkers() throws CoreException {
 		debug("TestDeleteMarkers");
-		IMarker[] markers = null;
-		try {
-			markers = createMarkers(resources, IMarker.PROBLEM);
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		IMarker[] markers = createMarkers(resources, IMarker.PROBLEM);
 
 		// Check that a collection of markers can be removed.
-		try {
-			getWorkspace().deleteMarkers(markers);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
-		for (IMarker marker : markers) {
-			assertTrue("1.1", !marker.exists());
-		}
+		getWorkspace().deleteMarkers(markers);
+		assertMarkersDoNotExist(markers);
 
 		// Check that an empty collection of markers can be removed.
-		try {
-			getWorkspace().deleteMarkers(new IMarker[0]);
-		} catch (CoreException e) {
-			fail("1.2", e);
-		}
+		getWorkspace().deleteMarkers(new IMarker[0]);
 	}
 
-	public void testFindMarkers() {
+	public void testFindMarkers() throws CoreException {
 		debug("TestFindMarkers");
 
 		// test finding some markers which actually exist
-		IMarker[] markers = null;
-		try {
-			markers = createMarkers(resources, IMarker.PROBLEM);
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
-		try {
-			IMarker[] found = getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, false, IResource.DEPTH_INFINITE);
-			assertEquals("1.0", markers, found);
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
-		try {
-			IMarker[] found = getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-			assertEquals("1.2", markers, found);
-		} catch (CoreException e) {
-			fail("1.3", e);
-		}
-
+		IMarker[] markers = createMarkers(resources, IMarker.PROBLEM);
+		IMarker[] found = getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, false, IResource.DEPTH_INFINITE);
+		assertThat(found, arrayContainingInAnyOrder(markers));
+		found = getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+		assertThat(found, arrayContainingInAnyOrder(markers));
 		// test finding some markers which don't exist
-		try {
-			IMarker[] found = getWorkspace().getRoot().findMarkers(IMarker.BOOKMARK, false, IResource.DEPTH_INFINITE);
-			assertTrue("2.0", found.length == 0);
-		} catch (CoreException e) {
-			fail("2.1", e);
-		}
+		found = getWorkspace().getRoot().findMarkers(IMarker.BOOKMARK, false, IResource.DEPTH_INFINITE);
+		assertThat(found, arrayWithSize(0));
 
 		// add more markers and do a search on all marker types
 		Vector<IMarker> allMarkers = new Vector<>(markers.length * 3);
 		Collections.addAll(allMarkers, markers);
-		try {
-			markers = createMarkers(resources, IMarker.BOOKMARK);
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		markers = createMarkers(resources, IMarker.BOOKMARK);
 		Collections.addAll(allMarkers, markers);
-		try {
-			markers = createMarkers(resources, IMarker.TASK);
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
+		markers = createMarkers(resources, IMarker.TASK);
 		Collections.addAll(allMarkers, markers);
-		try {
-			IMarker[] found = getWorkspace().getRoot().findMarkers(null, false, IResource.DEPTH_INFINITE);
-			assertEquals("3.2", allMarkers.toArray(new IMarker[allMarkers.size()]), found);
-		} catch (CoreException e) {
-			fail("3.3", e);
-		}
-		try {
-			IMarker[] found = getWorkspace().getRoot().findMarkers(IMarker.MARKER, true, IResource.DEPTH_INFINITE);
-			assertEquals("3.4", allMarkers.toArray(new IMarker[allMarkers.size()]), found);
-		} catch (CoreException e) {
-			fail("3.5", e);
-		}
+		found = getWorkspace().getRoot().findMarkers(null, false, IResource.DEPTH_INFINITE);
+		assertThat(found, arrayContainingInAnyOrder(allMarkers.toArray(new IMarker[allMarkers.size()])));
+		found = getWorkspace().getRoot().findMarkers(IMarker.MARKER, true, IResource.DEPTH_INFINITE);
+		assertThat(found, arrayContainingInAnyOrder(allMarkers.toArray(new IMarker[allMarkers.size()])));
 	}
 
 	/*
 	 * Bug 35300 - ClassCastException if marker transient attribute is set to a non-boolean
 	 */
-	public void test_35300() {
+	public void test_35300() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
 		ensureExistsInWorkspace(project, true);
 		String MARKER_ID = "foomarker.example.com";
-		IMarker marker = null;
 		int expected = 4;
 
 		// setup
-		try {
-			marker = project.createMarker(MARKER_ID);
-			marker.setAttribute(IMarker.TRANSIENT, expected);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		} catch (Exception e) {
-			fail("1.1", e);
-		}
+		IMarker marker = project.createMarker(MARKER_ID);
+		marker.setAttribute(IMarker.TRANSIENT, expected);
 
-		try {
-			int actual = marker.getAttribute(IMarker.TRANSIENT, -1);
-			assertEquals("2.1", expected, actual);
-			try {
-				marker.setAttribute(IMarker.MESSAGE, getRandomString());
-			} catch (CoreException e) {
-				fail("2.2", e);
-			}
-		} catch (Exception e) {
-			fail("2.3", e);
-		}
+		int actual = marker.getAttribute(IMarker.TRANSIENT, -1);
+		assertThat(actual, is(expected));
+		marker.setAttribute(IMarker.MESSAGE, getRandomString());
 	}
 
-	public void test_10989() {
+	public void test_10989() throws CoreException {
 		debug("test_10989");
 
-		try {
-			IProject project = getWorkspace().getRoot().getProject("MyProject");
-			create(project, false);
-			IFile file = project.getFile("foo.txt");
-			file.create(getRandomContents(), true, null);
-			file.createMarker(IMarker.PROBLEM);
-			IMarker[] found = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ZERO);
-			assertEquals("1.0", 1, found.length);
-			found = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-			assertEquals("1.1", 1, found.length);
-			project.delete(true, true, null);
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		IProject project = getWorkspace().getRoot().getProject("MyProject");
+		create(project, false);
+		IFile file = project.getFile("foo.txt");
+		file.create(getRandomContents(), true, null);
+		file.createMarker(IMarker.PROBLEM);
+		IMarker[] found = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ZERO);
+		assertThat(found, arrayWithSize(1));
+		found = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+		assertThat(found, arrayWithSize(1));
+		project.delete(true, true, null);
 	}
 
 	/*
 	 * Bug 289811 - ArrayIndexOutOfBoundsException in MarkerAttributeMap
 	 */
-	public void test_289811() {
+	public void test_289811() throws CoreException {
 		debug("test_289811");
 
-		IFile file = null;
 		String testValue = getRandomString();
-		try {
-			IProject project = getWorkspace().getRoot().getProject(getUniqueString());
-			project.create(null);
-			project.open(null);
-			file = project.getFile("foo.txt");
-			file.create(getRandomContents(), true, null);
-			IMarker marker = file.createMarker(IMarker.PROBLEM);
-			marker.setAttributes(new HashMap<>());
-			marker.setAttribute(IMarker.SEVERITY, testValue);
-			Object value = marker.getAttribute(IMarker.SEVERITY);
-			assertEquals("1.0." + file.getFullPath(), value, testValue);
-			project.delete(true, true, null);
-		} catch (CoreException e) {
-			fail("1.1." + file.getFullPath(), e);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			fail("1.2." + file.getFullPath(), e);
-		} catch (RuntimeException e) {
-			fail("1.3." + file.getFullPath(), e);
-		}
+		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		project.create(null);
+		project.open(null);
+		IFile file = project.getFile("foo.txt");
+		file.create(getRandomContents(), true, null);
+		IMarker marker = file.createMarker(IMarker.PROBLEM);
+		marker.setAttributes(new HashMap<>());
+		marker.setAttribute(IMarker.SEVERITY, testValue);
+		assertMarkerHasAttributeValue(marker, IMarker.SEVERITY, testValue);
+		project.delete(true, true, null);
 	}
 
 	/**
@@ -749,212 +504,175 @@ public class MarkerTest extends ResourceTest {
 		IResource[] allResources = new IResource[] {project, folder, sub, topFile, subFile};
 		ensureExistsInWorkspace(allResources, true);
 
-		assertEquals("1.0", -1, root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE));
-		assertEquals("1.1", -1, root.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE));
-		assertEquals("1.2", -1, root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO));
+		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE), is(-1));
+		assertThat(root.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE), is(-1));
+		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO), is(-1));
 
 		createProblem(subFile, IMarker.SEVERITY_INFO);
-		assertEquals("2.0", IMarker.SEVERITY_INFO, root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE));
-		assertEquals("2.1", -1, root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE));
-		assertEquals("2.2", -1, root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO));
-		assertEquals("2.3", -1, root.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE));
+		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE),
+				is(IMarker.SEVERITY_INFO));
+		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE), is(-1));
+		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO), is(-1));
+		assertThat(root.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE), is(-1));
 
-		assertEquals("3.0", IMarker.SEVERITY_INFO, folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE));
-		assertEquals("3.1", -1, folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE));
-		assertEquals("3.2", -1, folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO));
-		assertEquals("3.3", -1, folder.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE));
+		assertThat(folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE),
+				is(IMarker.SEVERITY_INFO));
+		assertThat(folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE), is(-1));
+		assertThat(folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO), is(-1));
+		assertThat(folder.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE), is(-1));
 
-		assertEquals("4.1", IMarker.SEVERITY_INFO, sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE));
-		assertEquals("4.2", IMarker.SEVERITY_INFO, sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE));
-		assertEquals("4.3", -1, sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO));
-		assertEquals("4.4", -1, sub.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE));
+		assertThat(sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE),
+				is(IMarker.SEVERITY_INFO));
+		assertThat(sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE), is(IMarker.SEVERITY_INFO));
+		assertThat(sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO), is(-1));
+		assertThat(sub.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE), is(-1));
 
-		assertEquals("5.1", IMarker.SEVERITY_INFO, subFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE));
-		assertEquals("5.2", IMarker.SEVERITY_INFO, subFile.findMaxProblemSeverity(IMarker.PROBLEM, false, IResource.DEPTH_ONE));
-		assertEquals("5.3", IMarker.SEVERITY_INFO, subFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO));
-		assertEquals("5.4", -1, subFile.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE));
+		assertThat(subFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE),
+				is(IMarker.SEVERITY_INFO));
+		assertThat(subFile.findMaxProblemSeverity(IMarker.PROBLEM, false, IResource.DEPTH_ONE), is(IMarker.SEVERITY_INFO));
+		assertThat(subFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO),
+				is(IMarker.SEVERITY_INFO));
+		assertThat(subFile.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE), is(-1));
 
 		createProblem(topFile, IMarker.SEVERITY_ERROR);
-		assertEquals("6.1", IMarker.SEVERITY_ERROR, root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE));
-		assertEquals("6.2", IMarker.SEVERITY_ERROR, folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE));
-		assertEquals("6.3", IMarker.SEVERITY_ERROR, topFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE));
-		assertEquals("6.4", IMarker.SEVERITY_INFO, sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE));
-		assertEquals("6.5", IMarker.SEVERITY_INFO, subFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO));
-
+		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE),
+				is(IMarker.SEVERITY_ERROR));
+		assertThat(folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE),
+				is(IMarker.SEVERITY_ERROR));
+		assertThat(topFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE),
+				is(IMarker.SEVERITY_ERROR));
+		assertThat(sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE), is(IMarker.SEVERITY_INFO));
+		assertThat(subFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO),
+				is(IMarker.SEVERITY_INFO));
 	}
 
 	/**
 	 * Tests public API method IMarker#isSubTypeOf
 	 */
-	public void testIsSubTypeOf() {
+	public void testIsSubTypeOf() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("testisSubType");
 		IMarker marker, task, problem, testProblem, invalid;
 
 		final String INVALID_MARKER = "does.not.exist.at.AllMarker";
 
-		try {
-			ensureExistsInWorkspace(project, true);
-			marker = project.createMarker(IMarker.MARKER);
-			task = project.createMarker(IMarker.TASK);
-			problem = project.createMarker(IMarker.PROBLEM);
-			testProblem = project.createMarker(TEST_PROBLEM_MARKER);
-			invalid = project.createMarker(INVALID_MARKER);
+		ensureExistsInWorkspace(project, true);
+		marker = project.createMarker(IMarker.MARKER);
+		task = project.createMarker(IMarker.TASK);
+		problem = project.createMarker(IMarker.PROBLEM);
+		testProblem = project.createMarker(TEST_PROBLEM_MARKER);
+		invalid = project.createMarker(INVALID_MARKER);
 
-			assertTrue("1.0", marker.isSubtypeOf(IMarker.MARKER));
-			assertTrue("1.1", !marker.isSubtypeOf(IMarker.TASK));
-			assertTrue("1.2", !marker.isSubtypeOf(IMarker.PROBLEM));
-			assertTrue("1.3", !marker.isSubtypeOf(TEST_PROBLEM_MARKER));
-			assertTrue("1.4", !marker.isSubtypeOf(INVALID_MARKER));
+		assertMarkerIsSubtype(marker, IMarker.MARKER);
+		assertMarkerIsNoSubtype(marker, IMarker.TASK);
+		assertMarkerIsNoSubtype(marker, IMarker.PROBLEM);
+		assertMarkerIsNoSubtype(marker, TEST_PROBLEM_MARKER);
+		assertMarkerIsNoSubtype(marker, INVALID_MARKER);
 
-			assertTrue("2.0", task.isSubtypeOf(IMarker.MARKER));
-			assertTrue("2.1", task.isSubtypeOf(IMarker.TASK));
-			assertTrue("2.2", !task.isSubtypeOf(IMarker.PROBLEM));
-			assertTrue("2.3", !task.isSubtypeOf(TEST_PROBLEM_MARKER));
-			assertTrue("2.4", !task.isSubtypeOf(INVALID_MARKER));
+		assertMarkerIsSubtype(task, IMarker.MARKER);
+		assertMarkerIsSubtype(task, IMarker.TASK);
+		assertMarkerIsNoSubtype(task, IMarker.PROBLEM);
+		assertMarkerIsNoSubtype(task, TEST_PROBLEM_MARKER);
+		assertMarkerIsNoSubtype(task, INVALID_MARKER);
 
-			assertTrue("3.0", problem.isSubtypeOf(IMarker.MARKER));
-			assertTrue("3.1", !problem.isSubtypeOf(IMarker.TASK));
-			assertTrue("3.2", problem.isSubtypeOf(IMarker.PROBLEM));
-			assertTrue("3.3", !problem.isSubtypeOf(TEST_PROBLEM_MARKER));
-			assertTrue("3.4", !problem.isSubtypeOf(INVALID_MARKER));
+		assertMarkerIsSubtype(problem, IMarker.MARKER);
+		assertMarkerIsNoSubtype(problem, IMarker.TASK);
+		assertMarkerIsSubtype(problem, IMarker.PROBLEM);
+		assertMarkerIsNoSubtype(problem, TEST_PROBLEM_MARKER);
+		assertMarkerIsNoSubtype(problem, INVALID_MARKER);
 
-			assertTrue("4.0", testProblem.isSubtypeOf(IMarker.MARKER));
-			assertTrue("4.1", !testProblem.isSubtypeOf(IMarker.TASK));
-			assertTrue("4.2", testProblem.isSubtypeOf(IMarker.PROBLEM));
-			assertTrue("4.3", testProblem.isSubtypeOf(TEST_PROBLEM_MARKER));
-			assertTrue("4.4", !testProblem.isSubtypeOf(INVALID_MARKER));
+		assertMarkerIsSubtype(testProblem, IMarker.MARKER);
+		assertMarkerIsNoSubtype(testProblem, IMarker.TASK);
+		assertMarkerIsSubtype(testProblem, IMarker.PROBLEM);
+		assertMarkerIsSubtype(testProblem, TEST_PROBLEM_MARKER);
+		assertMarkerIsNoSubtype(testProblem, INVALID_MARKER);
 
-			// behaviour with an undefined marker type is not specified, but
-			// test current behaviour to give us advance warning of accidental
-			// behavioural change
-			assertTrue("5.0", !invalid.isSubtypeOf(IMarker.MARKER));
-			assertTrue("5.1", !invalid.isSubtypeOf(IMarker.TASK));
-			assertTrue("5.2", !invalid.isSubtypeOf(IMarker.PROBLEM));
-			assertTrue("5.3", !invalid.isSubtypeOf(TEST_PROBLEM_MARKER));
-			assertTrue("5.4", invalid.isSubtypeOf(INVALID_MARKER));
-
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
-
+		// behaviour with an undefined marker type is not specified, but
+		// test current behaviour to give us advance warning of accidental
+		// behavioural change
+		assertMarkerIsNoSubtype(invalid, IMarker.MARKER);
+		assertMarkerIsNoSubtype(invalid, IMarker.TASK);
+		assertMarkerIsNoSubtype(invalid, IMarker.PROBLEM);
+		assertMarkerIsNoSubtype(invalid, TEST_PROBLEM_MARKER);
+		assertMarkerIsSubtype(invalid, INVALID_MARKER);
 	}
 
 	/**
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
-	public void testMarkerChangesInDelta() {
+	public void testMarkerChangesInDelta() throws CoreException {
 		debug("TestMarkerChangesInDelta");
 
 		// Create and register a listener.
 		MarkersChangeListener listener = new MarkersChangeListener();
-		addResourceChangeListener(listener);
+		setResourceChangeListener(listener);
 
-		try {
-			IResource resource;
-			IMarker[] markers;
-			IMarker marker;
-			for (IResource resource2 : resources) {
-				resource = resource2;
-				markers = new IMarker[3];
+		for (IResource resource : resources) {
+			IMarker[] markers = new IMarker[3];
 
-				// ADD a marker
-				listener.reset();
-				try {
-					markers[0] = resource.createMarker(IMarker.PROBLEM);
-					assertExists("1.0." + resource.getFullPath(), markers[0]);
-					assertEquals("1.1." + resource.getFullPath(), 1, listener.numAffectedResources());
-					assertTrue("1.2." + resource.getFullPath(), listener.checkChanges(resource, new IMarker[] {markers[0]}, null, null));
-				} catch (CoreException e) {
-					fail("1.99." + resource.getFullPath(), e);
-				}
+			// ADD a marker
+			listener.reset();
+			markers[0] = resource.createMarker(IMarker.PROBLEM);
+			assertMarkerExists(markers[0]);
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, new IMarker[] { markers[0] }, null, null);
 
-				// ADD more markers to the same resource
-				listener.reset();
-				try {
-					markers[1] = resource.createMarker(IMarker.BOOKMARK);
-					markers[2] = resource.createMarker(IMarker.TASK);
-					assertExists("2.0." + resource.getFullPath(), new IMarker[] {markers[1], markers[2]});
-					assertEquals("2.1." + resource.getFullPath(), 1, listener.numAffectedResources());
-					assertTrue("2.2." + resource.getFullPath(), listener.checkChanges(resource, new IMarker[] {markers[1], markers[2]}, null, null));
-				} catch (CoreException e) {
-					fail("2.99." + resource.getFullPath(), e);
-				}
+			// ADD more markers to the same resource
+			listener.reset();
+			markers[1] = resource.createMarker(IMarker.BOOKMARK);
+			markers[2] = resource.createMarker(IMarker.TASK);
+			assertMarkersExist(new IMarker[] { markers[1], markers[2] });
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, new IMarker[] { markers[1], markers[2] }, null, null);
 
-				// CHANGE a marker
-				listener.reset();
-				try {
-					markers[0].setAttribute(IMarker.MESSAGE, "My text.");
-					assertEquals("3.0." + resource.getFullPath(), 1, listener.numAffectedResources());
-					assertTrue("3.1." + resource.getFullPath(), listener.checkChanges(resource, null, null, new IMarker[] {markers[0]}));
-				} catch (CoreException e) {
-					fail("3.99." + resource.getFullPath(), e);
-				}
+			// CHANGE a marker
+			listener.reset();
+			markers[0].setAttribute(IMarker.MESSAGE, "My text.");
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, null, null, new IMarker[] { markers[0] });
 
-				// CHANGE more markers
-				listener.reset();
-				try {
-					markers[1].setAttribute(IMarker.SEVERITY, "Low");
-					markers[2].setAttribute(IMarker.PRIORITY, "Normal");
-					assertEquals("4.0." + resource.getFullPath(), 1, listener.numAffectedResources());
-					assertTrue("4.1." + resource.getFullPath(), listener.checkChanges(resource, null, null, new IMarker[] {markers[1], markers[2]}));
-				} catch (CoreException e) {
-					fail("4.99." + resource.getFullPath(), e);
-				}
+			// CHANGE more markers
+			listener.reset();
+			markers[1].setAttribute(IMarker.SEVERITY, "Low");
+			markers[2].setAttribute(IMarker.PRIORITY, "Normal");
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, null, null, new IMarker[] { markers[1], markers[2] });
 
-				// DELETE a marker
-				listener.reset();
-				try {
-					markers[0].delete();
-					assertDoesNotExist("5.0." + resource.getFullPath(), markers[0]);
-					assertEquals("5.1." + resource.getFullPath(), 1, listener.numAffectedResources());
-					assertTrue("5.2." + resource.getFullPath(), listener.checkChanges(resource, null, new IMarker[] {markers[0]}, null));
-				} catch (CoreException e) {
-					fail("5.99." + resource.getFullPath(), e);
-				}
+			// DELETE a marker
+			listener.reset();
+			markers[0].delete();
+			assertMarkerDoesNotExist(markers[0]);
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, null, new IMarker[] { markers[0] }, null);
 
-				// DELETE more markers
-				listener.reset();
-				try {
-					resource.deleteMarkers(null, false, IResource.DEPTH_ZERO);
-					assertDoesNotExist("6.0." + resource.getFullPath(), new IMarker[] {markers[1], markers[2]});
-					assertEquals("6.1." + resource.getFullPath(), 1, listener.numAffectedResources());
-					assertTrue("6.2." + resource.getFullPath(), listener.checkChanges(resource, null, new IMarker[] {markers[1], markers[2]}, null));
-				} catch (CoreException e) {
-					fail("6.99." + resource.getFullPath(), e);
-				}
+			// DELETE more markers
+			listener.reset();
+			resource.deleteMarkers(null, false, IResource.DEPTH_ZERO);
+			assertMarkersDoNotExist(new IMarker[] { markers[1], markers[2] });
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, null, new IMarker[] { markers[1], markers[2] }, null);
 
-				// ADD, REMOVE and CHANGE markers
-				try {
-					markers[0] = resource.createMarker(IMarker.PROBLEM);
-					markers[1] = resource.createMarker(IMarker.BOOKMARK);
-					listener.reset();
-					markers[0].delete();
-					assertDoesNotExist("7.0." + resource.getFullPath(), markers[0]);
-					markers[1].setAttribute(IMarker.MESSAGE, getRandomString());
-					markers[2] = resource.createMarker(IMarker.TASK);
-					assertEquals("7.1." + resource.getFullPath(), 1, listener.numAffectedResources());
-					assertTrue("7.2." + resource.getFullPath(), listener.checkChanges(resource, new IMarker[] {markers[2]}, new IMarker[] {markers[0]}, new IMarker[] {markers[1]}));
-				} catch (CoreException e) {
-					fail("7.99." + resource.getFullPath(), e);
-				}
-			}
+			// ADD, REMOVE and CHANGE markers
+			markers[0] = resource.createMarker(IMarker.PROBLEM);
+			markers[1] = resource.createMarker(IMarker.BOOKMARK);
+			listener.reset();
+			markers[0].delete();
+			assertMarkerDoesNotExist(markers[0]);
+			markers[1].setAttribute(IMarker.MESSAGE, getRandomString());
+			markers[2] = resource.createMarker(IMarker.TASK);
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, new IMarker[] { markers[2] }, new IMarker[] { markers[0] },
+					new IMarker[] { markers[1] });
 
-			// DELETE the resource and see what the marker delta is
-			try {
-				resource = getWorkspace().getRoot();
-				resource.deleteMarkers(null, true, IResource.DEPTH_INFINITE);
-				marker = resource.createMarker(IMarker.BOOKMARK);
-				listener.reset();
-				resource.delete(true, getMonitor());
-				assertDoesNotExist("8.0", marker);
-				assertTrue("8.1", listener.checkChanges(resource, null, new IMarker[] {marker}, null));
-			} catch (CoreException e) {
-				fail("8.99", e);
-			}
-
-		} finally {
-			removeResourceChangeListener(listener);
 		}
+
+		// DELETE the resource and see what the marker delta is
+		IResource resource = getWorkspace().getRoot();
+		resource.deleteMarkers(null, true, IResource.DEPTH_INFINITE);
+		IMarker marker = resource.createMarker(IMarker.BOOKMARK);
+		listener.reset();
+		resource.delete(true, getMonitor());
+		assertMarkerDoesNotExist(marker);
+		listener.assertChanges(resource, null, new IMarker[] { marker }, null);
 	}
 
 	/**
@@ -962,7 +680,7 @@ public class MarkerTest extends ResourceTest {
 	 * Particularly, checks that the MarkerDelta attributes reflect the
 	 * state of the marker before the change occurred.
 	 */
-	public void testMarkerDeltaAttributes() {
+	public void testMarkerDeltaAttributes() throws CoreException {
 		debug("testMarkerDeltaAttributes");
 
 		// create markers on various resources
@@ -976,272 +694,201 @@ public class MarkerTest extends ResourceTest {
 			markers[2].setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 			markers[2].setAttribute(IMarker.MESSAGE, "Hello");
 		};
-		try {
-			getWorkspace().run(body, getMonitor());
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
+		getWorkspace().run(body, getMonitor());
 
 		//create the attribute change listener
 		MarkerAttributeChangeListener listener = new MarkerAttributeChangeListener();
 		getWorkspace().addResourceChangeListener(listener);
-		try {
-			//add a new attribute
-			listener.expectChanges(markers[0]);
-			markers[0].setAttribute(IMarker.MESSAGE, "Message");
-			listener.verifyChanges();
 
-			//change an attribute
-			listener.expectChanges(markers[0]);
-			markers[0].setAttribute(IMarker.MESSAGE, "NewMessage");
-			listener.verifyChanges();
+		// add a new attribute
+		listener.expectChanges(markers[0]);
+		markers[0].setAttribute(IMarker.MESSAGE, "Message");
+		listener.verifyChanges();
 
-			//remove an attribute
-			listener.expectChanges(markers[0]);
-			markers[0].setAttribute(IMarker.MESSAGE, null);
-			listener.verifyChanges();
+		// change an attribute
+		listener.expectChanges(markers[0]);
+		markers[0].setAttribute(IMarker.MESSAGE, "NewMessage");
+		listener.verifyChanges();
 
-			//add attribute to marker that already has attributes
-			listener.expectChanges(markers[2]);
-			markers[2].setAttribute(IMarker.CHAR_END, 5);
-			listener.verifyChanges();
+		// remove an attribute
+		listener.expectChanges(markers[0]);
+		markers[0].setAttribute(IMarker.MESSAGE, null);
+		listener.verifyChanges();
 
-			//add+change
-			listener.expectChanges(markers[1]);
-			getWorkspace().run((IWorkspaceRunnable) monitor -> {
-				markers[1].setAttribute(IMarker.CHAR_START, 5);
-				markers[1].setAttribute(IMarker.CHAR_END, 10);
-			}, getMonitor());
-			listener.verifyChanges();
+		// add attribute to marker that already has attributes
+		listener.expectChanges(markers[2]);
+		markers[2].setAttribute(IMarker.CHAR_END, 5);
+		listener.verifyChanges();
 
-			//change+remove same marker
-			listener.expectChanges(markers[1]);
-			getWorkspace().run((IWorkspaceRunnable) monitor -> {
-				markers[1].setAttribute(IMarker.CHAR_START, 5);
-				markers[1].setAttribute(IMarker.CHAR_START, null);
-			}, getMonitor());
-			listener.verifyChanges();
+		// add+change
+		listener.expectChanges(markers[1]);
+		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+			markers[1].setAttribute(IMarker.CHAR_START, 5);
+			markers[1].setAttribute(IMarker.CHAR_END, 10);
+		}, getMonitor());
+		listener.verifyChanges();
 
-			//change multiple markers
-			listener.expectChanges(markers);
-			getWorkspace().run((IWorkspaceRunnable) monitor -> {
-				markers[0].setAttribute(IMarker.CHAR_START, 5);
-				markers[1].setAttribute(IMarker.CHAR_START, 10);
-				markers[2].setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_LOW);
-			}, getMonitor());
-			listener.verifyChanges();
-		} catch (CoreException e) {
-			fail("1.99", e);
-		} finally {
-			getWorkspace().removeResourceChangeListener(listener);
-		}
+		// change+remove same marker
+		listener.expectChanges(markers[1]);
+		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+			markers[1].setAttribute(IMarker.CHAR_START, 5);
+			markers[1].setAttribute(IMarker.CHAR_START, null);
+		}, getMonitor());
+		listener.verifyChanges();
+
+		// change multiple markers
+		listener.expectChanges(markers);
+		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+			markers[0].setAttribute(IMarker.CHAR_START, 5);
+			markers[1].setAttribute(IMarker.CHAR_START, 10);
+			markers[2].setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_LOW);
+		}, getMonitor());
+		listener.verifyChanges();
 	}
 
 	/**
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
-	public void testMarkerDeltasCopyResource() {
+	public void testMarkerDeltasCopyResource() throws CoreException {
 		debug("testMarkerDeltasCopyResource");
 
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
-		addResourceChangeListener(listener);
+		setResourceChangeListener(listener);
 
-		try {
-			// create markers on all the non-project resources
-			final Hashtable<IResource, IMarker> table = new Hashtable<>(1);
-			final int[] count = new int[1];
-			count[0] = 0;
-			IWorkspaceRunnable body = monitor -> {
-				IResourceVisitor visitor = resource -> {
-					if (resource.getType() == IResource.ROOT || resource.getType() == IResource.PROJECT) {
-						return true;
-					}
-					IMarker marker = resource.createMarker(IMarker.BOOKMARK);
-					table.put(resource, marker);
-					count[0]++;
+		// create markers on all the non-project resources
+		final Hashtable<IResource, IMarker> table = new Hashtable<>(1);
+		final int[] count = new int[1];
+		count[0] = 0;
+		IWorkspaceRunnable body = monitor -> {
+			IResourceVisitor visitor = resource -> {
+				if (resource.getType() == IResource.ROOT || resource.getType() == IResource.PROJECT) {
 					return true;
-				};
-				getWorkspace().getRoot().accept(visitor);
-			};
-			try {
-				getWorkspace().run(body, getMonitor());
-			} catch (CoreException e) {
-				fail("0.99", e);
-			}
-			listener.reset();
-
-			// copy all non-project resources
-			try {
-				IProject[] projects = getWorkspace().getRoot().getProjects();
-				for (IProject project : projects) {
-					IResource[] children = project.members();
-					for (IResource element : children) {
-						IPath destination = IPath.fromOSString(element.getName() + "copy");
-						element.copy(destination, true, getMonitor());
-					}
 				}
-			} catch (CoreException e) {
-				fail("1.99", e);
-			}
+				IMarker marker = resource.createMarker(IMarker.BOOKMARK);
+				table.put(resource, marker);
+				count[0]++;
+				return true;
+			};
+			getWorkspace().getRoot().accept(visitor);
+		};
+		getWorkspace().run(body, getMonitor());
+		listener.reset();
 
-			// TODO
-			// verify marker deltas
-			//		IResourceVisitor visitor = new IResourceVisitor() {
-			//			public boolean visit(IResource resource) throws CoreException {
-			//				if (resource.getType() == IResource.ROOT || resource.getType() == IResource.PROJECT)
-			//					return true;
-			//				if (!resource.getName().endsWith("copy"))
-			//					return false;
-			//				String name = resource.getFullPath().segment(0);
-			//				IPath path = IPath.fromOSString(name.substring(0, name.length() - 4)).makeAbsolute();
-			//				path = path.append(resource.getFullPath().removeFirstSegments(1));
-			//				IResource oldResource = ((Workspace) getWorkspace()).newResource(path, resource.getType());
-			//				IMarker marker = (IMarker) table.get(oldResource);
-			//				assertNotNull("2.1." + oldResource.getFullPath(), marker);
-			//				IMarker[] markers = resource.findMarkers(null, true, IResource.DEPTH_ZERO);
-			//				assertEquals("2.2." + resource.getFullPath(), 1, markers.length);
-			//				assertEquals("2.3." + resource.getFullPath(), marker.getId(), markers[0].getId());
-			//				assertTrue("2.4." + resource.getFullPath(), listener.checkChanges(resource, new IMarker[] { markers[0] }, null, null));
-			//				return true;
-			//			}
-			//		};
-			// marker deltas should not appear after a resource copy
-			//assertEquals("2.5", count[0], listener.numAffectedResources());
-			assertEquals("2.5", 0, listener.numAffectedResources());
-			//try {
-			//getWorkspace().getRoot().accept(visitor);
-			//} catch (CoreException e) {
-			//fail("2.99", e);
-			//}
-		} finally {
-			removeResourceChangeListener(listener);
+		// copy all non-project resources
+		IProject[] projects = getWorkspace().getRoot().getProjects();
+		for (IProject project : projects) {
+			IResource[] children = project.members();
+			for (IResource element : children) {
+				IPath destination = IPath.fromOSString(element.getName() + "copy");
+				element.copy(destination, true, getMonitor());
+			}
 		}
+
+		listener.assertNumberOfAffectedResources(0);
 	}
 
 	/**
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
-	public void testMarkerDeltasMerge() {
+	public void testMarkerDeltasMerge() throws CoreException {
 		debug("testMarkerDeltasMerge");
 
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
-		addResourceChangeListener(listener);
+		setResourceChangeListener(listener);
 
-		try {
-			for (final IResource resource : resources) {
-				// ADD + REMOVE = nothing
-				try {
-					IWorkspaceRunnable body = monitor -> {
-						listener.reset();
-						IMarker marker = resource.createMarker(IMarker.PROBLEM);
-						assertExists("1.0." + resource.getFullPath(), marker);
-						marker.delete();
-						assertDoesNotExist("1.1." + resource.getFullPath(), marker);
-					};
-					getWorkspace().run(body, getMonitor());
-					assertEquals("1.2." + resource.getFullPath(), 0, listener.numAffectedResources());
-					assertTrue("1.3." + resource.getFullPath(), listener.checkChanges(resource, null, null, null));
-				} catch (CoreException e) {
-					fail("1.99." + resource.getFullPath(), e);
-				}
+		for (final IResource resource : resources) {
+			// ADD + REMOVE = nothing
+			IWorkspaceRunnable addAndRemoveOperation = monitor -> {
+				listener.reset();
+				IMarker marker = resource.createMarker(IMarker.PROBLEM);
+				assertMarkerExists(marker);
+				marker.delete();
+				assertMarkerDoesNotExist(marker);
+			};
+			getWorkspace().run(addAndRemoveOperation, getMonitor());
+			listener.assertNumberOfAffectedResources(0);
+			listener.assertChanges(resource, null, null, null);
 
-				// ADD + CHANGE = ADD
-				try {
-					// cannot re-assign variable value within the code below, so must
-					// put our marker value inside an array and set the element.
-					final IMarker[] markers = new IMarker[1];
-					IWorkspaceRunnable body = monitor -> {
-						listener.reset();
-						markers[0] = resource.createMarker(IMarker.PROBLEM);
-						assertExists("2.0." + resource.getFullPath(), markers[0]);
-						markers[0].setAttribute(IMarker.MESSAGE, "my message text");
-						assertEquals("2.1." + resource.getFullPath(), "my message text", markers[0].getAttribute(IMarker.MESSAGE));
-					};
-					getWorkspace().run(body, getMonitor());
-					assertEquals("2.2." + resource.getFullPath(), 1, listener.numAffectedResources());
-					assertTrue("2.3." + resource.getFullPath(), listener.checkChanges(resource, new IMarker[] {markers[0]}, null, null));
-				} catch (CoreException e) {
-					fail("2.99." + resource.getFullPath(), e);
-				}
+			// ADD + CHANGE = ADD
+			// cannot re-assign variable value within the code below, so must
+			// put our marker value inside an array and set the element.
+			AtomicReference<IMarker> addAndChangeMarker = new AtomicReference<>();
+			IWorkspaceRunnable addAndChangeOperation = monitor -> {
+				listener.reset();
+				addAndChangeMarker.set(resource.createMarker(IMarker.PROBLEM));
+				assertMarkerExists(addAndChangeMarker.get());
+				addAndChangeMarker.get().setAttribute(IMarker.MESSAGE, "my message text");
+				assertMarkerHasAttributeValue(addAndChangeMarker.get(), IMarker.MESSAGE, "my message text");
+			};
+			getWorkspace().run(addAndChangeOperation, getMonitor());
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, new IMarker[] { addAndChangeMarker.get() }, null, null);
 
-				// TODO
-				// REMOVE + ADD = CHANGE
-				//try {
-				//final IMarker[] markers = new IMarker[1];
-				//markers[0] = resource.createMarker(IMarker.PROBLEM);
-				//assertExists("3.0." + resource.getFullPath(), markers[0]);
-				//IWorkspaceRunnable body = new IWorkspaceRunnable() {
-				//public void run(IProgressMonitor monitor) throws CoreException {
-				//listener.reset();
-				//markers[0].delete();
-				//assertDoesNotExist("3.1." + resource.getFullPath(), markers[0]);
-				//markers[0] = resource.createMarker(IMarker.PROBLEM);
-				//assertExists("3.2." + resource.getFullPath(), markers[0]);
-				//}
-				//};
-				//getWorkspace().run(body, getMonitor());
-				//assertEquals("3.3." + resource.getFullPath(), 1, listener.numAffectedResources());
-				//assert("3.4." + resource.getFullPath(), listener.checkChanges(resource, null, null, new IMarker[] { markers[0] }));
-				//} catch (CoreException e) {
-				//fail("3.99." + resource.getFullPath(), e);
-				//}
+			// TODO
+			// REMOVE + ADD = CHANGE
+			// try {
+			// final IMarker[] markers = new IMarker[1];
+			// markers[0] = resource.createMarker(IMarker.PROBLEM);
+			// assertExists("3.0." + resource.getFullPath(), markers[0]);
+			// IWorkspaceRunnable body = new IWorkspaceRunnable() {
+			// public void run(IProgressMonitor monitor) throws CoreException {
+			// listener.reset();
+			// markers[0].delete();
+			// assertDoesNotExist("3.1." + resource.getFullPath(), markers[0]);
+			// markers[0] = resource.createMarker(IMarker.PROBLEM);
+			// assertExists("3.2." + resource.getFullPath(), markers[0]);
+			// }
+			// };
+			// getWorkspace().run(body, getMonitor());
+			// assertEquals("3.3." + resource.getFullPath(), 1,
+			// listener.numAffectedResources());
+			// assert("3.4." + resource.getFullPath(), listener.checkChanges(resource, null,
+			// null, new IMarker[] { markers[0] }));
+			// } catch (CoreException e) {
+			// fail("3.99." + resource.getFullPath(), e);
+			// }
 
-				// CHANGE + CHANGE = CHANGE
-				try {
-					final IMarker[] markers = new IMarker[1];
-					markers[0] = resource.createMarker(IMarker.PROBLEM);
-					assertExists("4.0." + resource.getFullPath(), markers[0]);
-					IWorkspaceRunnable body = monitor -> {
-						listener.reset();
-						markers[0].setAttribute(IMarker.MESSAGE, "my message text");
-						assertEquals("4.1." + resource.getFullPath(), "my message text", markers[0].getAttribute(IMarker.MESSAGE));
-						markers[0].setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-						assertEquals("4.2." + resource.getFullPath(), IMarker.PRIORITY_HIGH, ((Integer) markers[0].getAttribute(IMarker.PRIORITY)).intValue());
-					};
-					getWorkspace().run(body, getMonitor());
-					assertEquals("4.3." + resource.getFullPath(), 1, listener.numAffectedResources());
-					assertTrue("4.4." + resource.getFullPath(), listener.checkChanges(resource, null, null, new IMarker[] {markers[0]}));
-				} catch (CoreException e) {
-					fail("4.99." + resource.getFullPath(), e);
-				}
+			// CHANGE + CHANGE = CHANGE
 
-				// CHANGE + REMOVE = REMOVE
-				try {
-					final IMarker[] markers = new IMarker[1];
-					markers[0] = resource.createMarker(IMarker.PROBLEM);
-					assertExists("5.0." + resource.getFullPath(), markers[0]);
-					IWorkspaceRunnable body = monitor -> {
-						listener.reset();
-						markers[0].setAttribute(IMarker.MESSAGE, "my message text");
-						assertEquals("5.1." + resource.getFullPath(), "my message text", markers[0].getAttribute(IMarker.MESSAGE));
-						markers[0].delete();
-						assertDoesNotExist("5.2." + resource.getFullPath(), markers[0]);
-					};
-					getWorkspace().run(body, getMonitor());
-					assertEquals("5.3." + resource.getFullPath(), 1, listener.numAffectedResources());
-					assertTrue("5.4." + resource.getFullPath(), listener.checkChanges(resource, null, new IMarker[] {markers[0]}, null));
-				} catch (CoreException e) {
-					fail("5.99." + resource.getFullPath(), e);
-				}
+			IMarker changeAndChangeMarker = resource.createMarker(IMarker.PROBLEM);
+			assertMarkerExists(changeAndChangeMarker);
+			IWorkspaceRunnable changeAndChangeOperation = monitor -> {
+				listener.reset();
+				changeAndChangeMarker.setAttribute(IMarker.MESSAGE, "my message text");
+				assertMarkerHasAttributeValue(changeAndChangeMarker, IMarker.MESSAGE, "my message text");
+				changeAndChangeMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+				assertMarkerHasAttributeValue(changeAndChangeMarker, IMarker.PRIORITY,
+						IMarker.PRIORITY_HIGH);
+			};
+			getWorkspace().run(changeAndChangeOperation, getMonitor());
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, null, null, new IMarker[] { changeAndChangeMarker });
 
-				// cleanup after each iteration
-				try {
-					resource.deleteMarkers(null, true, IResource.DEPTH_ZERO);
-				} catch (CoreException e) {
-					fail("99.99", e);
-				}
-			}
-		} finally {
-			removeResourceChangeListener(listener);
+			// CHANGE + REMOVE = REMOVE
+			IMarker changeAndRemoveMarker = resource.createMarker(IMarker.PROBLEM);
+			assertMarkerExists(changeAndRemoveMarker);
+			IWorkspaceRunnable changeAndRemoveOperation = monitor -> {
+				listener.reset();
+				changeAndRemoveMarker.setAttribute(IMarker.MESSAGE, "my message text");
+				assertMarkerHasAttributeValue(changeAndRemoveMarker, IMarker.MESSAGE, "my message text");
+				changeAndRemoveMarker.delete();
+				assertMarkerDoesNotExist(changeAndRemoveMarker);
+			};
+			getWorkspace().run(changeAndRemoveOperation, getMonitor());
+			listener.assertNumberOfAffectedResources(1);
+			listener.assertChanges(resource, null, new IMarker[] { changeAndRemoveMarker }, null);
+
+			// cleanup after each iteration
+			resource.deleteMarkers(null, true, IResource.DEPTH_ZERO);
 		}
 	}
 
 	/**
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
-	public void testMarkerDeltasMoveFolder() {
+	public void testMarkerDeltasMoveFolder() throws CoreException {
 		debug("testMarkerDeltasMoveFolder");
 
 		IWorkspaceRoot root = getWorkspace().getRoot();
@@ -1253,69 +900,36 @@ public class MarkerTest extends ResourceTest {
 		waitForEncodingRelatedJobs();
 		IFolder destFolder = project.getFolder("myOtherFolder");
 		IFile destSubFile = destFolder.getFile(subFile.getName());
-		IMarker folderMarker = null;
-		IMarker subFileMarker = null;
-		IMarker[] markers = null;
 
 		// Create and register a listener.
 		MarkersChangeListener listener = new MarkersChangeListener();
-		addResourceChangeListener(listener);
-		try {
-			// create markers on the resources
-			try {
-				folderMarker = folder.createMarker(IMarker.BOOKMARK);
-			} catch (CoreException e) {
-				fail("1.0", e);
-			}
-			try {
-				subFileMarker = subFile.createMarker(IMarker.BOOKMARK);
-			} catch (CoreException e) {
-				fail("1.1", e);
-			}
-		} finally {
-			removeResourceChangeListener(listener);
-		}
+		setResourceChangeListener(listener);
+
+		// create markers on the resources
+		IMarker folderMarker = folder.createMarker(IMarker.BOOKMARK);
+		IMarker subFileMarker = subFile.createMarker(IMarker.BOOKMARK);
 
 		listener = new MarkersChangeListener();
-		addResourceChangeListener(listener);
-		try {
-			// move the files
-			try {
-				folder.move(destFolder.getFullPath(), IResource.FORCE, getMonitor());
-			} catch (CoreException e) {
-				fail("2.0", e);
-			}
+		setResourceChangeListener(listener);
+		// move the files
+		folder.move(destFolder.getFullPath(), IResource.FORCE, getMonitor());
 
-			// verify marker deltas
-			assertTrue("3.1", listener.checkChanges(folder, null, new IMarker[] {folderMarker}, null));
-			try {
-				markers = destFolder.findMarkers(null, true, IResource.DEPTH_ZERO);
-			} catch (CoreException e) {
-				fail("3.2", e);
-			}
-			assertEquals("3.3", 1, markers.length);
-			assertEquals("3.4", folderMarker.getId(), markers[0].getId());
-			assertTrue("3.5", listener.checkChanges(destFolder, new IMarker[] {markers[0]}, null, null));
+		// verify marker deltas
+		listener.assertChanges(folder, null, new IMarker[] { folderMarker }, null);
+		IMarker[] folderMarkers = destFolder.findMarkers(null, true, IResource.DEPTH_ZERO);
+		assertSingleMarkerWithId(folderMarkers, folderMarker.getId());
+		listener.assertChanges(destFolder, new IMarker[] { folderMarkers[0] }, null, null);
 
-			assertTrue("3.7", listener.checkChanges(subFile, null, new IMarker[] {subFileMarker}, null));
-			try {
-				markers = destSubFile.findMarkers(null, true, IResource.DEPTH_ZERO);
-			} catch (CoreException e) {
-				fail("3.8", e);
-			}
-			assertEquals("3.9", 1, markers.length);
-			assertEquals("3.10", subFileMarker.getId(), markers[0].getId());
-			assertTrue("3.11", listener.checkChanges(destSubFile, new IMarker[] {markers[0]}, null, null));
-
-		} finally {
-			removeResourceChangeListener(listener);
-		}
+		listener.assertChanges(subFile, null, new IMarker[] { subFileMarker }, null);
+		IMarker[] subFolderMarkers = destSubFile.findMarkers(null, true, IResource.DEPTH_ZERO);
+		assertSingleMarkerWithId(subFolderMarkers, subFileMarker.getId());
+		listener.assertChanges(destSubFile, new IMarker[] { subFolderMarkers[0] }, null, null);
 	}
 
 	/**
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
-	public void testMarkerDeltasMoveFile() {
+	public void testMarkerDeltasMoveFile() throws CoreException {
 		debug("testMarkerDeltasMoveFile");
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		final IProject project = root.getProject("MyProject");
@@ -1326,252 +940,164 @@ public class MarkerTest extends ResourceTest {
 		waitForEncodingRelatedJobs();
 		IFile destFile = folder.getFile(file.getName());
 		IFile destSubFile = project.getFile(subFile.getName());
-		IMarker fileMarker = null;
-		IMarker subFileMarker = null;
-		IMarker[] markers = null;
 
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
-		addResourceChangeListener(listener);
+		setResourceChangeListener(listener);
 
-		try {
-			// create markers on the resources
-			try {
-				fileMarker = file.createMarker(IMarker.BOOKMARK);
-			} catch (CoreException e) {
-				fail("1.0", e);
-			}
-			try {
-				subFileMarker = subFile.createMarker(IMarker.BOOKMARK);
-			} catch (CoreException e) {
-				fail("1.1", e);
-			}
-			listener.reset();
+		// create markers on the resources
+		IMarker fileMarker = file.createMarker(IMarker.BOOKMARK);
+		IMarker subFileMarker = subFile.createMarker(IMarker.BOOKMARK);
+		listener.reset();
 
-			// move the files
-			try {
-				file.move(destFile.getFullPath(), IResource.FORCE, getMonitor());
-				subFile.move(destSubFile.getFullPath(), IResource.FORCE, getMonitor());
-			} catch (CoreException e) {
-				fail("2.0", e);
-			}
+		// move the files
+		file.move(destFile.getFullPath(), IResource.FORCE, getMonitor());
+		subFile.move(destSubFile.getFullPath(), IResource.FORCE, getMonitor());
 
-			// verify marker deltas
-			assertTrue("3.1", listener.checkChanges(file, null, new IMarker[] {fileMarker}, null));
-			try {
-				markers = destFile.findMarkers(null, true, IResource.DEPTH_ZERO);
-			} catch (CoreException e) {
-				fail("3.2", e);
-			}
-			assertEquals("3.3", 1, markers.length);
-			assertEquals("3.4", fileMarker.getId(), markers[0].getId());
-			assertTrue("3.5", listener.checkChanges(destFile, new IMarker[] {markers[0]}, null, null));
+		// verify marker deltas
+		listener.assertChanges(file, null, new IMarker[] { fileMarker }, null);
+		IMarker[] markers = destFile.findMarkers(null, true, IResource.DEPTH_ZERO);
+		assertSingleMarkerWithId(markers, fileMarker.getId());
+		listener.assertChanges(destFile, new IMarker[] { markers[0] }, null, null);
 
-			assertTrue("3.7", listener.checkChanges(subFile, null, new IMarker[] {subFileMarker}, null));
-			try {
-				markers = destSubFile.findMarkers(null, true, IResource.DEPTH_ZERO);
-			} catch (CoreException e) {
-				fail("3.8", e);
-			}
-			assertEquals("3.9", 1, markers.length);
-			assertEquals("3.10", subFileMarker.getId(), markers[0].getId());
-			assertTrue("3.11", listener.checkChanges(destSubFile, new IMarker[] {markers[0]}, null, null));
-
-		} finally {
-			removeResourceChangeListener(listener);
-		}
+		listener.assertChanges(subFile, null, new IMarker[] { subFileMarker }, null);
+		markers = destSubFile.findMarkers(null, true, IResource.DEPTH_ZERO);
+		assertSingleMarkerWithId(markers, subFileMarker.getId());
+		listener.assertChanges(destSubFile, new IMarker[] { markers[0] }, null, null);
 	}
 
 	/**
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
-	public void testMarkerDeltasMoveProject() {
+	public void testMarkerDeltasMoveProject() throws CoreException {
 		debug("testMarkerDeltasMoveProject");
 
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
-		addResourceChangeListener(listener);
+		setResourceChangeListener(listener);
 
-		try {
-			// create markers on all the resources
-			final Hashtable<IResource, IMarker> table = new Hashtable<>(1);
-			final int[] count = new int[1];
-			count[0] = 0;
-			IWorkspaceRunnable body = monitor -> {
-				IResourceVisitor visitor = resource -> {
-					if (resource.getType() == IResource.ROOT) {
-						return true;
-					}
-					IMarker marker = resource.createMarker(IMarker.BOOKMARK);
-					table.put(resource, marker);
-					count[0]++;
-					return true;
-				};
-				getWorkspace().getRoot().accept(visitor);
-			};
-			try {
-				getWorkspace().run(body, getMonitor());
-			} catch (CoreException e) {
-				fail("0.99", e);
-			}
-			listener.reset();
-
-			// move all resources
-			IProject[] projects = getWorkspace().getRoot().getProjects();
-			for (IProject project : projects) {
-				IPath destination = IPath.fromOSString(project.getName() + "move");
-				try {
-					project.move(destination, true, getMonitor());
-				} catch (CoreException e) {
-					fail("1.99", e);
-				}
-			}
-
-			// verify marker deltas
+		// create markers on all the resources
+		final Hashtable<IResource, IMarker> table = new Hashtable<>(1);
+		final int[] count = new int[1];
+		count[0] = 0;
+		IWorkspaceRunnable body = monitor -> {
 			IResourceVisitor visitor = resource -> {
 				if (resource.getType() == IResource.ROOT) {
 					return true;
 				}
-				String name = resource.getFullPath().segment(0);
-				IPath path = IPath.fromOSString(name.substring(0, name.length() - 4)).makeAbsolute();
-				path = path.append(resource.getFullPath().removeFirstSegments(1));
-				IResource oldResource = ((Workspace) getWorkspace()).newResource(path, resource.getType());
-				IMarker marker = table.get(oldResource);
-				assertNotNull("2.1." + oldResource.getFullPath(), marker);
-				assertTrue("2.2." + oldResource.getFullPath(), listener.checkChanges(oldResource, null, new IMarker[] {marker}, null));
-				IMarker[] markers = resource.findMarkers(null, true, IResource.DEPTH_ZERO);
-				assertEquals("2.3." + resource.getFullPath(), 1, markers.length);
-				assertEquals("2.4." + resource.getFullPath(), marker.getId(), markers[0].getId());
-				assertTrue("2.5." + resource.getFullPath(), listener.checkChanges(resource, new IMarker[] {markers[0]}, null, null));
+				IMarker marker = resource.createMarker(IMarker.BOOKMARK);
+				table.put(resource, marker);
+				count[0]++;
 				return true;
 			};
-			assertEquals("2.6", count[0] * 2, listener.numAffectedResources());
-			try {
-				getWorkspace().getRoot().accept(visitor);
-			} catch (CoreException e) {
-				fail("2.99", e);
-			}
-		} finally {
-			removeResourceChangeListener(listener);
+			getWorkspace().getRoot().accept(visitor);
+		};
+		getWorkspace().run(body, getMonitor());
+		listener.reset();
+
+		// move all resources
+		IProject[] projects = getWorkspace().getRoot().getProjects();
+		for (IProject project : projects) {
+			IPath destination = IPath.fromOSString(project.getName() + "move");
+			project.move(destination, true, getMonitor());
 		}
+
+		// verify marker deltas
+		IResourceVisitor visitor = resource -> {
+			if (resource.getType() == IResource.ROOT) {
+				return true;
+			}
+			String name = resource.getFullPath().segment(0);
+			IPath path = IPath.fromOSString(name.substring(0, name.length() - 4)).makeAbsolute();
+			path = path.append(resource.getFullPath().removeFirstSegments(1));
+			IResource oldResource = ((Workspace) getWorkspace()).newResource(path, resource.getType());
+			IMarker marker = table.get(oldResource);
+			assertThat(marker, not(is(nullValue())));
+			listener.assertChanges(oldResource, null, new IMarker[] { marker }, null);
+			IMarker[] markers = resource.findMarkers(null, true, IResource.DEPTH_ZERO);
+			assertSingleMarkerWithId(markers, marker.getId());
+			listener.assertChanges(resource, new IMarker[] { markers[0] }, null, null);
+			return true;
+		};
+		listener.assertNumberOfAffectedResources(count[0] * 2);
+		getWorkspace().getRoot().accept(visitor);
 	}
 
-	public void testMarkerSave() {
+	public void testMarkerSave() throws Exception {
 		debug("TestMarkerSave");
 
-		IMarker[] newMarkers = null;
-		IMarker[] expected = null;
-		try {
-			newMarkers = createMarkers(resources, IMarker.PROBLEM);
-			expected = new IMarker[newMarkers.length * 3];
-			System.arraycopy(newMarkers, 0, expected, 0, newMarkers.length);
-			newMarkers = createMarkers(resources, IMarker.BOOKMARK);
-			System.arraycopy(newMarkers, 0, expected, newMarkers.length, newMarkers.length);
-			newMarkers = createMarkers(resources, IMarker.TASK);
-			System.arraycopy(newMarkers, 0, expected, newMarkers.length * 2, newMarkers.length);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		IMarker[] newMarkers = createMarkers(resources, IMarker.PROBLEM);
+		IMarker[] expected = new IMarker[newMarkers.length * 3];
+		System.arraycopy(newMarkers, 0, expected, 0, newMarkers.length);
+		newMarkers = createMarkers(resources, IMarker.BOOKMARK);
+		System.arraycopy(newMarkers, 0, expected, newMarkers.length, newMarkers.length);
+		newMarkers = createMarkers(resources, IMarker.TASK);
+		System.arraycopy(newMarkers, 0, expected, newMarkers.length * 2, newMarkers.length);
 
 		final MarkerManager manager = ((Workspace) getWorkspace()).getMarkerManager();
 
 		// write all the markers to the output stream
 		File file = Platform.getLocation().append(".testmarkers").toFile();
-		OutputStream fileOutput = null;
-		DataOutputStream o1 = null;
-		try {
-			fileOutput = new FileOutputStream(file);
-			o1 = new DataOutputStream(fileOutput);
-		} catch (FileNotFoundException e) {
-			fail("2.0", e);
-		}
-		final DataOutputStream output = o1;
-		final List<String> list = new ArrayList<>(5);
-		IResourceVisitor visitor = resource -> {
-			try {
-				ResourceInfo info = ((Resource) resource).getResourceInfo(false, false);
-				if (info == null) {
-					return true;
-				}
-				IPathRequestor requestor = new IPathRequestor() {
-					@Override
-					public IPath requestPath() {
-						return resource.getFullPath();
+		try (OutputStream fileOutput = new FileOutputStream(file)) {
+			try (DataOutputStream output = new DataOutputStream(fileOutput)) {
+				final List<String> list = new ArrayList<>(5);
+				IResourceVisitor visitor = resource -> {
+					ResourceInfo info = ((Resource) resource).getResourceInfo(false, false);
+					if (info == null) {
+						return true;
 					}
+					IPathRequestor requestor = new IPathRequestor() {
+						@Override
+						public IPath requestPath() {
+							return resource.getFullPath();
+						}
 
-					@Override
-					public String requestName() {
-						return resource.getName();
+						@Override
+						public String requestName() {
+							return resource.getName();
+						}
+					};
+					try {
+						manager.save(info, requestor, output, list);
+					} catch (IOException e) {
+						throw new IllegalStateException("saving failed", e);
 					}
+					return true;
 				};
-				manager.save(info, requestor, output, list);
-			} catch (IOException e) {
-				fail("2.1", e);
-			}
-			return true;
-		};
-		try {
-			getWorkspace().getRoot().accept(visitor);
-		} catch (CoreException e) {
-			fail("2.2", e);
-		} finally {
-			try {
-				output.close();
-			} catch (IOException e) {
-				fail("2.3", e);
+				getWorkspace().getRoot().accept(visitor);
 			}
 		}
 
 		// delete all markers resources
-		try {
-			getWorkspace().getRoot().deleteMarkers(null, true, IResource.DEPTH_INFINITE);
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
-		assertDoesNotExist("3.1", expected);
+		getWorkspace().getRoot().deleteMarkers(null, true, IResource.DEPTH_INFINITE);
+		assertMarkersDoNotExist(expected);
 
 		// read in the markers from the file
-		try {
-			InputStream fileInput = new FileInputStream(file);
-			final DataInputStream input = new DataInputStream(fileInput);
-			IWorkspaceRunnable body = monitor -> {
-				MarkerReader reader = new MarkerReader((Workspace) getWorkspace());
-				try {
-					reader.read(input, true);
-				} catch (IOException e) {
-					fail("4.0", e);
-				}
-			};
-			try {
+		try (InputStream fileInput = new FileInputStream(file)) {
+			try (DataInputStream input = new DataInputStream(fileInput)) {
+				IWorkspaceRunnable body = monitor -> {
+					MarkerReader reader = new MarkerReader((Workspace) getWorkspace());
+					try {
+						reader.read(input, true);
+					} catch (IOException e) {
+						throw new IllegalStateException("failed reading markers", e);
+					}
+				};
 				getWorkspace().run(body, getMonitor());
-			} finally {
-				try {
-					input.close();
-				} catch (IOException e) {
-					fail("4.1", e);
-				}
 			}
-		} catch (FileNotFoundException e) {
-			fail("4.2", e);
-		} catch (CoreException e) {
-			fail("4.3", e);
 		}
 
 		// assert that the markers retrieved are the same as the ones we used
 		// to have
-		try {
-			assertExists("5.0", expected);
-			IMarker[] actual = getWorkspace().getRoot().findMarkers(null, false, IResource.DEPTH_INFINITE);
-			assertEquals("5.1", expected, actual);
-		} catch (CoreException e) {
-			fail("5.2", e);
-		}
+		assertMarkersExist(expected);
+		IMarker[] actual = getWorkspace().getRoot().findMarkers(null, false, IResource.DEPTH_INFINITE);
+		assertThat(actual, arrayContainingInAnyOrder(expected));
 
 		// cleanup
-		assertTrue("6.0", file.delete());
+		assertTrue("deleting file failed", file.delete());
 	}
 
-	public void testMarkerSaveTransient() {
+	public void testMarkerSaveTransient() throws Exception {
 		debug("TestMarkerSaveTransient");
 
 		// create the markers on the resources. create both transient
@@ -1595,109 +1121,70 @@ public class MarkerTest extends ResourceTest {
 			marker.setAttribute(IMarker.TRANSIENT, Boolean.FALSE);
 			return true;
 		};
-		try {
-			getWorkspace().getRoot().accept(visitor);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		getWorkspace().getRoot().accept(visitor);
 
 		final MarkerManager manager = ((Workspace) getWorkspace()).getMarkerManager();
 		IMarker[] expected = persistentMarkers.toArray(new IMarker[persistentMarkers.size()]);
 
 		// write all the markers to the output stream
 		File file = Platform.getLocation().append(".testmarkers").toFile();
-		OutputStream fileOutput = null;
-		DataOutputStream o1 = null;
-		try {
-			fileOutput = new FileOutputStream(file);
-			o1 = new DataOutputStream(fileOutput);
-		} catch (FileNotFoundException e) {
-			fail("2.0", e);
-		}
-		final DataOutputStream output = o1;
-		final List<String> list = new ArrayList<>(5);
-		visitor = resource -> {
-			try {
-				ResourceInfo info = ((Resource) resource).getResourceInfo(false, false);
-				if (info == null) {
-					return true;
-				}
-				IPathRequestor requestor = new IPathRequestor() {
-					@Override
-					public IPath requestPath() {
-						return resource.getFullPath();
+		try(OutputStream fileOutput = new FileOutputStream(file)) {
+			try(DataOutputStream output = new DataOutputStream(fileOutput)) {
+				final List<String> list = new ArrayList<>(5);
+				visitor = resource -> {
+					ResourceInfo info = ((Resource) resource).getResourceInfo(false, false);
+					if (info == null) {
+						return true;
 					}
+					IPathRequestor requestor = new IPathRequestor() {
+						@Override
+						public IPath requestPath() {
+							return resource.getFullPath();
+						}
 
-					@Override
-					public String requestName() {
-						return resource.getName();
+						@Override
+						public String requestName() {
+							return resource.getName();
+						}
+					};
+					try {
+						manager.save(info, requestor, output, list);
+					} catch (IOException e) {
+						throw new IllegalStateException("saving failed", e);
 					}
+					return true;
 				};
-				manager.save(info, requestor, output, list);
-			} catch (IOException e) {
-				fail("2.1", e);
-			}
-			return true;
-		};
-		try {
-			getWorkspace().getRoot().accept(visitor);
-		} catch (CoreException e) {
-			fail("2.2", e);
-		} finally {
-			try {
-				output.close();
-			} catch (IOException e) {
-				fail("2.3", e);
+				getWorkspace().getRoot().accept(visitor);
 			}
 		}
 
 		// delete all markers resources
-		try {
-			getWorkspace().getRoot().deleteMarkers(null, true, IResource.DEPTH_INFINITE);
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
-		assertDoesNotExist("3.1", expected);
+		getWorkspace().getRoot().deleteMarkers(null, true, IResource.DEPTH_INFINITE);
+		assertMarkersDoNotExist(expected);
 
 		// read in the markers from the file
-		try {
-			InputStream fileInput = new FileInputStream(file);
-			final DataInputStream input = new DataInputStream(fileInput);
-			IWorkspaceRunnable body = monitor -> {
-				MarkerReader reader = new MarkerReader((Workspace) getWorkspace());
-				try {
-					reader.read(input, true);
-				} catch (IOException e) {
-					fail("4.0", e);
-				}
-			};
-			try {
+		try (InputStream fileInput = new FileInputStream(file)) {
+			try (DataInputStream input = new DataInputStream(fileInput)) {
+				IWorkspaceRunnable body = monitor -> {
+					MarkerReader reader = new MarkerReader((Workspace) getWorkspace());
+					try {
+						reader.read(input, true);
+					} catch (IOException e) {
+						throw new IllegalStateException("Failed reading markers", e);
+					}
+				};
 				getWorkspace().run(body, getMonitor());
-			} finally {
-				try {
-					input.close();
-				} catch (IOException e) {
-					fail("4.1", e);
-				}
 			}
-		} catch (FileNotFoundException e) {
-			fail("4.2", e);
-		} catch (CoreException e) {
-			fail("4.3", e);
 		}
 
 		// assert that the markers retrieved are the same as the ones we used
 		// to have
-		try {
-			assertExists("5.0", expected);
-			IMarker[] actual = getWorkspace().getRoot().findMarkers(null, false, IResource.DEPTH_INFINITE);
-			assertEquals("5.1", expected, actual);
-		} catch (CoreException e) {
-			fail("5.2", e);
-		}
+		assertMarkersExist(expected);
+		IMarker[] actual = getWorkspace().getRoot().findMarkers(null, false, IResource.DEPTH_INFINITE);
+		assertThat(actual, arrayContainingInAnyOrder(expected));
 
 		// cleanup
-		assertTrue("6.0", file.delete());
+		assertTrue("deleting file failed", file.delete());
 	}
 
 	/**
@@ -1710,375 +1197,167 @@ public class MarkerTest extends ResourceTest {
 	/*
 	 * Test for PR: "1FWT3V5: ITPCORE:WINNT - Task view shows entries for closed projects"
 	 */
-	public void testProjectCloseOpen() {
+	public void testProjectCloseOpen() throws CoreException {
 		debug("testProjectCloseOpen");
-		IProject project = null;
-		IMarker marker = null;
 
 		// create a marker on the project
-		project = getWorkspace().getRoot().getProjects()[0];
-		try {
-			marker = project.createMarker(IMarker.BOOKMARK);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		IProject project = getWorkspace().getRoot().getProjects()[0];
+		IMarker marker = project.createMarker(IMarker.BOOKMARK);
+		assertMarkerExists(marker);
 
-		// ensure that the marker was created
-		assertTrue("2.0", marker.exists());
+		project.close(getMonitor());
+		assertMarkerDoesNotExist(marker);
 
-		// close the project
-		try {
-			project.close(getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
-
-		// now the marker should be inaccessible
-		assertTrue("", !marker.exists());
-
-		// open the project
-		try {
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
-
-		// the marker re-appears
-		assertTrue("5.0", marker.exists());
+		project.open(getMonitor());
+		assertMarkerExists(marker);
 	}
 
-	public void testSetGetAttribute() {
+	public void testSetGetAttribute() throws CoreException {
 		debug("testSetGetAttribute");
 
 		for (IResource resource : resources) {
-			IMarker marker = null;
+			String resourcePath = resource.getFullPath().toString();
 
 			// getting a non-existant attribute should return null
-			try {
-				marker = resource.createMarker(IMarker.PROBLEM);
-			} catch (CoreException e) {
-				fail("1.0", e);
-			}
-			try {
-				assertNull("1.1." + resource.getFullPath(), marker.getAttribute(IMarker.MESSAGE));
-			} catch (CoreException e) {
-				fail("1.2." + resource.getFullPath(), e);
-			}
+			IMarker marker = resource.createMarker(IMarker.PROBLEM);
+			assertMarkerHasAttributeValue(marker, IMarker.MESSAGE, null);
 
 			// set an attribute, get its value, then remove it
 			String testMessage = getRandomString();
-			try {
-				marker.setAttribute(IMarker.MESSAGE, testMessage);
-				Object value = marker.getAttribute(IMarker.MESSAGE);
-				assertEquals("2.0." + resource.getFullPath(), testMessage, (String) value);
-				marker.setAttribute(IMarker.MESSAGE, null);
-				value = marker.getAttribute(IMarker.MESSAGE);
-				assertNull("2.1." + resource.getFullPath(), value);
-			} catch (CoreException e) {
-				fail("2.2." + resource.getFullPath(), e);
-			}
+			marker.setAttribute(IMarker.MESSAGE, testMessage);
+			assertMarkerHasAttributeValue(marker, IMarker.MESSAGE, testMessage);
+			marker.setAttribute(IMarker.MESSAGE, null);
+			assertMarkerHasAttributeValue(marker, IMarker.MESSAGE, null);
 
 			// set more attributes, get their values, then remove one
-			try {
-				String[] keys = new String[] {IMarker.LOCATION, IMarker.SEVERITY, IMarker.DONE};
-				Object[] values = new Object[3];
-				values[0] = getRandomString();
-				values[1] = Integer.valueOf(5);
-				values[2] = Boolean.FALSE;
-				marker.setAttributes(keys, values);
-				Object[] found = marker.getAttributes(keys);
-				assertEquals("3.0." + resource.getFullPath(), values, found);
-				marker.setAttribute(IMarker.SEVERITY, null);
-				values[1] = null;
-				found = marker.getAttributes(keys);
-				assertEquals("3.1." + resource.getFullPath(), values, found);
-				values[1] = Integer.valueOf(5);
-				marker.setAttribute(IMarker.SEVERITY, values[1]);
-				Map<String, ? extends Object> all = marker.getAttributes();
-				assertEquals("3.2." + resource.getFullPath(), all, keys, values);
-			} catch (CoreException e) {
-				fail("3.2." + resource.getFullPath(), e);
-			}
+			String[] keys = new String[] { IMarker.LOCATION, IMarker.SEVERITY, IMarker.DONE };
+			Object[] values = new Object[3];
+			values[0] = getRandomString();
+			values[1] = Integer.valueOf(5);
+			values[2] = Boolean.FALSE;
+			Map<String, Object> originalMap = Map.of(keys[0], values[0], keys[1], values[1], keys[2], values[2]);
+			marker.setAttributes(keys, values);
+			Object[] found = marker.getAttributes(keys);
+			assertThat(resourcePath, found, is(values));
+			marker.setAttribute(IMarker.SEVERITY, null);
+			values[1] = null;
+			found = marker.getAttributes(keys);
+			assertThat(resourcePath, found, is(values));
+			values[1] = Integer.valueOf(5);
+			marker.setAttribute(IMarker.SEVERITY, values[1]);
+			assertThat(resourcePath, marker.getAttributes(), is(originalMap));
 
 			// try sending null as args
-			try {
-				marker.getAttribute(null);
-				fail("4.0");
-			} catch (CoreException e) {
-				fail("4.1." + resource.getFullPath(), e);
-			} catch (NullPointerException e) {
-				fail("4.2", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
-			try {
-				marker.getAttributes(null);
-				fail("4.3");
-			} catch (CoreException e) {
-				fail("4.4." + resource.getFullPath(), e);
-			} catch (NullPointerException e) {
-				fail("4.5", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
-			try {
-				marker.setAttribute(null, getRandomString());
-				fail("4.6");
-			} catch (CoreException e) {
-				fail("4.7." + resource.getFullPath(), e);
-			} catch (NullPointerException e) {
-				fail("4.8", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
-			try {
-				marker.setAttributes(null, new String[] {getRandomString()});
-				fail("4.9");
-			} catch (CoreException e) {
-				fail("4.10." + resource.getFullPath(), e);
-			} catch (NullPointerException e) {
-				fail("4.11", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
-			try {
-				marker.setAttributes(new String[] {IMarker.MESSAGE}, null);
-				fail("4.12");
-			} catch (CoreException e) {
-				fail("4.13." + resource.getFullPath(), e);
-			} catch (NullPointerException e) {
-				fail("4.14", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
+			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null));
+			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttributes(null));
+			assertThrows(resourcePath, RuntimeException.class, () -> marker.setAttribute(null, getRandomString()));
+			assertThrows(resourcePath, RuntimeException.class,
+					() -> marker.setAttributes(null, new String[] { getRandomString() }));
+			assertThrows(resourcePath, RuntimeException.class,
+					() -> marker.setAttributes(new String[] { IMarker.MESSAGE }, null));
 			//set attributes on deleted marker
-			try {
-				marker.delete();
-			} catch (CoreException e) {
-				fail("5.0", e);
-			}
-			try {
-				marker.setAttribute(IMarker.MESSAGE, "Hello");
-				fail("5.1");
-			} catch (CoreException e) {
-				// expected
-			}
-			try {
-				marker.setAttributes(new String[] {IMarker.LINE_NUMBER}, new Object[] {Integer.valueOf(4)});
-				fail("5.2");
-			} catch (CoreException e) {
-				// expected
-			}
-			try {
-				HashMap<String, String> attributes = new HashMap<>();
-				attributes.put(IMarker.MESSAGE, "Hello");
-				marker.setAttributes(attributes);
-				fail("5.3");
-			} catch (CoreException e) {
-				// expected
-			}
+			marker.delete();
+			assertThrows(resourcePath, CoreException.class, () -> marker.setAttribute(IMarker.MESSAGE, "Hello"));
+			assertThrows(resourcePath, CoreException.class,
+					() -> marker.setAttributes(new String[] { IMarker.LINE_NUMBER },
+					new Object[] { Integer.valueOf(4) }));
+			HashMap<String, String> attributes = new HashMap<>();
+			attributes.put(IMarker.MESSAGE, "Hello");
+			assertThrows(resourcePath, CoreException.class, () -> marker.setAttributes(attributes));
 		}
 	}
 
 	public void testGetAttributesEquality() throws Exception {
 		final String value = "Some value";
 		for (int i = 0; i < resources.length; i++) {
-			IMarker marker = resources[i].createMarker(IMarker.PROBLEM, Map.of(createNewString(i), value));
+			IMarker marker = resources[i].createMarker(IMarker.PROBLEM, Map.of(String.valueOf(i), value));
 
 			// Check we can get the value by equal key
-			assertEquals(value, marker.getAttribute(createNewString(i)));
+			assertMarkerHasAttributeValue(marker, String.valueOf(i), value);
 
 			// Check the map returned by marker is equal to equal map
 			Map<String, Object> existing = marker.getAttributes();
-			Map<String, Object> otherAttributes = Map.of(createNewString(i), value);
-			assertEquals(existing, otherAttributes);
+			Map<String, Object> otherAttributes = Map.of(String.valueOf(i), value);
+			assertThat(otherAttributes, is(existing));
 		}
 	}
 
-	private String createNewString(int i) {
-		return new StringBuilder().append(i).toString();
-	}
-
-	public void testSetGetAttribute2() {
+	public void testSetGetAttribute2() throws CoreException {
 		debug("testSetGetAttribute2");
 
 		for (IResource resource : resources) {
-			IMarker marker = null;
+			String resourcePath = resource.getFullPath().toString();
 
 			// getting a non-existant attribute should return null or the specified default
-			try {
-				marker = resource.createMarker(IMarker.PROBLEM);
-			} catch (CoreException e) {
-				fail("0.0" + resource.getFullPath(), e);
-			}
-			try {
-				// #getAttribute(Object)
-				assertNull("1.0." + resource.getFullPath(), marker.getAttribute(IMarker.MESSAGE));
-				// #getAttribute(String, String)
-				assertEquals("1.1." + resource.getFullPath(), "default", marker.getAttribute(IMarker.MESSAGE, "default"));
-				// #getAttribute(String, boolean)
-				assertEquals("1.2." + resource.getFullPath(), true, marker.getAttribute(IMarker.MESSAGE, true));
-				// #getAttribute(String, int)
-				assertEquals("1.3." + resource.getFullPath(), 5, marker.getAttribute(IMarker.MESSAGE, 5));
-				// #getAttributes()
-				assertNull("1.4." + resource.getFullPath(), marker.getAttributes());
-				// #getAttributes(String[])
-				assertTrue("1.5." + resource.getFullPath(), marker.getAttributes(new String[] {IMarker.MESSAGE})[0] == null);
-			} catch (CoreException e) {
-				fail("1.99." + resource.getFullPath(), e);
-			}
+			IMarker marker = resource.createMarker(IMarker.PROBLEM);
+			// #getAttribute(Object)
+			assertThat(resourcePath, marker.getAttribute(IMarker.MESSAGE), is(nullValue()));
+			// #getAttribute(String, String)
+			assertThat(resourcePath, marker.getAttribute(IMarker.MESSAGE, "default"), is("default"));
+			// #getAttribute(String, boolean)
+			assertThat(resourcePath, marker.getAttribute(IMarker.MESSAGE, true), is(true));
+			// #getAttribute(String, int)
+			assertThat(resourcePath, marker.getAttribute(IMarker.MESSAGE, 5), is(5));
+			// #getAttributes()
+			assertThat(resourcePath, marker.getAttributes(), is(nullValue()));
+			// #getAttributes(String[])
+			assertThat(resourcePath, marker.getAttributes(new String[] { IMarker.MESSAGE })[0], is(nullValue()));
 
 			// set an attribute, get its value, then remove it
 			String testMessage = getRandomString();
-			try {
-				marker.setAttribute(IMarker.MESSAGE, testMessage);
-				Object value = marker.getAttribute(IMarker.MESSAGE);
-				assertEquals("2.0." + resource.getFullPath(), testMessage, (String) value);
-				marker.setAttribute(IMarker.MESSAGE, null);
-				value = marker.getAttribute(IMarker.MESSAGE);
-				assertNull("2.1." + resource.getFullPath(), value);
-			} catch (CoreException e) {
-				fail("2.2." + resource.getFullPath(), e);
-			}
+			marker.setAttribute(IMarker.MESSAGE, testMessage);
+			assertMarkerHasAttributeValue(marker, IMarker.MESSAGE, testMessage);
+			marker.setAttribute(IMarker.MESSAGE, null);
+			assertMarkerHasAttributeValue(marker, IMarker.MESSAGE, null);
 
 			// set more attributes, get their values, then remove one
-			try {
-				String[] keys = new String[] {IMarker.LOCATION, IMarker.SEVERITY, IMarker.DONE};
-				Object[] values = new Object[3];
-				values[0] = getRandomString();
-				values[1] = Integer.valueOf(5);
-				values[2] = Boolean.FALSE;
-				marker.setAttributes(keys, values);
-				Object[] found = marker.getAttributes(keys);
-				assertEquals("3.0." + resource.getFullPath(), values, found);
-				marker.setAttribute(IMarker.SEVERITY, null);
-				values[1] = null;
-				found = marker.getAttributes(keys);
-				assertEquals("3.1." + resource.getFullPath(), values, found);
-				values[1] = Integer.valueOf(5);
-				marker.setAttribute(IMarker.SEVERITY, values[1]);
-				Map<String, ? extends Object> all = marker.getAttributes();
-				assertEquals("3.2." + resource.getFullPath(), all, keys, values);
-			} catch (CoreException e) {
-				fail("3.2." + resource.getFullPath(), e);
-			}
+			String[] keys = new String[] { IMarker.LOCATION, IMarker.SEVERITY, IMarker.DONE };
+			Object[] values = new Object[3];
+			values[0] = getRandomString();
+			values[1] = Integer.valueOf(5);
+			values[2] = Boolean.FALSE;
+			Map<String, Object> originalMap = Map.of(keys[0], values[0], keys[1], values[1], keys[2], values[2]);
+			marker.setAttributes(keys, values);
+			Object[] found = marker.getAttributes(keys);
+			assertThat(resourcePath, found, is(values));
+			marker.setAttribute(IMarker.SEVERITY, null);
+			values[1] = null;
+			found = marker.getAttributes(keys);
+			assertThat(resourcePath, found, is(values));
+			values[1] = Integer.valueOf(5);
+			marker.setAttribute(IMarker.SEVERITY, values[1]);
+			assertThat(resourcePath, marker.getAttributes(), is(originalMap));
 
 			// try sending null as args
-			try {
-				// #getAttribute(String)
-				marker.getAttribute(null);
-				fail("4.0");
-			} catch (CoreException e) {
-				fail("4.1." + resource.getFullPath(), e);
-			} catch (NullPointerException e) {
-				fail("4.2", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
-			try {
-				// #getAttribute(String, String)
-				marker.getAttribute(null, "default");
-				fail("4.3");
-			} catch (NullPointerException e) {
-				fail("4.5", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
-			try {
-				// #getAttribute(String, boolean)
-				marker.getAttribute(null, true);
-				fail("4.6");
-			} catch (NullPointerException e) {
-				fail("4.8", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
-			try {
-				// #getAttribute(String, int)
-				marker.getAttribute(null, 5);
-				fail("4.9");
-			} catch (NullPointerException e) {
-				fail("4.11", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
-			try {
-				// #getAttributes(String[])
-				marker.getAttributes(null);
-				fail("4.12");
-			} catch (CoreException e) {
-				fail("4.13." + resource.getFullPath(), e);
-			} catch (NullPointerException e) {
-				fail("4.14", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
-			try {
-				// #setAttribute(String, Object)
-				marker.setAttribute(null, getRandomString());
-				fail("4.15");
-			} catch (CoreException e) {
-				fail("4.16." + resource.getFullPath(), e);
-			} catch (NullPointerException e) {
-				fail("4.17", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
-			try {
-				// #setAttributes(String[], Object[])
-				marker.setAttributes(null, new String[] {getRandomString()});
-				fail("4.18");
-			} catch (CoreException e) {
-				fail("4.19." + resource.getFullPath(), e);
-			} catch (NullPointerException e) {
-				fail("4.20", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
-			try {
-				// #setAttributes(String[], Object[])
-				marker.setAttributes(new String[] {IMarker.MESSAGE}, null);
-				fail("4.21");
-			} catch (CoreException e) {
-				fail("4.22." + resource.getFullPath(), e);
-			} catch (NullPointerException e) {
-				fail("4.23", e);
-			} catch (RuntimeException e) {
-				// expected
-			}
-			try {
-				Map<String, Object> map2 = marker.getAttributes();
-				map2.put("1", null); // allowed for clients using IMarker.getAttributes()
-				map2.put("2", 2);
-				marker.setAttributes(map2);
-				assertNull(marker.getAttribute("1"));
-				assertEquals(2, marker.getAttribute("2"));
-				map2.put(null, 1); // allowed for clients using IMarker.getAttributes()
-			} catch (CoreException e) {
-				fail("4.24." + resource.getFullPath(), e);
-			}
-			try {
-				Map<String, Object> map2 = marker.getAttributes();
-				map2.put(null, 1); // allowed for clients using IMarker.getAttributes()
-				try {
-					marker.setAttributes(map2); // not allowed for clients to put null key
-					fail("4.25");
-				} catch (Exception e) {
-					// expected
-				}
-			} catch (CoreException e) {
-				fail("4.26" + resource.getFullPath(), e);
-			}
-			try {
-				assertNotNull(marker.getAttribute("2"));
-				assertNotNull(marker.getAttributes());
-				marker.setAttributes(null);
-				assertNull(marker.getAttribute("1"));
-				assertNull(marker.getAttribute("2"));
-				assertNull(marker.getAttributes());
-			} catch (CoreException e) {
-				fail("4.27" + resource.getFullPath(), e);
-			}
+			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null));
+			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null, "default"));
+			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null, true));
+			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null, 5));
+			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttributes(null));
+			assertThrows(resourcePath, RuntimeException.class, () -> marker.setAttribute(null, getRandomString()));
+			assertThrows(resourcePath, RuntimeException.class,
+					() -> marker.setAttributes(null, new String[] { getRandomString() }));
+			assertThrows(resourcePath, RuntimeException.class,
+					() -> marker.setAttributes(new String[] { IMarker.MESSAGE }, null));
+
+			Map<String, Object> retrievedAttributes = marker.getAttributes();
+			retrievedAttributes.put("1", null); // allowed for clients using IMarker.getAttributes()
+			retrievedAttributes.put("2", 2);
+			marker.setAttributes(retrievedAttributes);
+			assertMarkerHasAttributeValue(marker, "1", null);
+			assertMarkerHasAttributeValue(marker, "2", 2);
+			retrievedAttributes.put(null, 1); // allowed for clients using IMarker.getAttributes()
+
+			Map<String, Object> reretrievedAttributes = marker.getAttributes();
+			reretrievedAttributes.put(null, 1); // allowed for clients using IMarker.getAttributes()
+			// not allowed for clients to put null key
+			assertThrows(resourcePath, RuntimeException.class, () -> marker.setAttributes(reretrievedAttributes));
+			assertThat(resourcePath, marker.getAttribute("2"), not(is(nullValue())));
+			assertThat(resourcePath, marker.getAttributes(), not(is(nullValue())));
+			marker.setAttributes(null);
+			assertThat(resourcePath, marker.getAttribute("1"), is(nullValue()));
+			assertThat(resourcePath, marker.getAttribute("2"), is(nullValue()));
+			assertThat(resourcePath, marker.getAttributes(), is(nullValue()));
 		}
 	}
 }

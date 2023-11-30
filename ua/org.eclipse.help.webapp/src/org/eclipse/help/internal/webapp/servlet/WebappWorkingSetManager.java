@@ -40,8 +40,6 @@ public class WebappWorkingSetManager implements IHelpWorkingSetManager {
 
 	/**
 	 * Constructor
-	 *
-	 * @param locale
 	 */
 	public WebappWorkingSetManager(HttpServletRequest request,
 			HttpServletResponse response, String locale) {
@@ -81,7 +79,6 @@ public class WebappWorkingSetManager implements IHelpWorkingSetManager {
 
 	/**
 	 * Returns a working set by name
-	 *
 	 */
 	@Override
 	public WorkingSet getWorkingSet(String name) {

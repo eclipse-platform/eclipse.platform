@@ -167,7 +167,6 @@ public abstract class ContainerSnapshot<T extends IContainer> extends AbstractRe
 	 *
 	 * @param parentHandle the handle of the created parent
 	 * @param monitor      the progress monitor to be used
-	 * @throws CoreException
 	 */
 	protected final void createChildResources(IContainer parentHandle,
 			IProgressMonitor monitor) throws CoreException {

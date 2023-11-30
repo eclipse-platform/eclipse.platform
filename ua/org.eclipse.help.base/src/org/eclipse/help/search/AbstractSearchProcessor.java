@@ -20,7 +20,6 @@ package org.eclipse.help.search;
  * and output to the search frame.
  *
  * @since 3.6
- *
  */
 public abstract class AbstractSearchProcessor {
 

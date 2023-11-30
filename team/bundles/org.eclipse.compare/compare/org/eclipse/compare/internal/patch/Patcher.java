@@ -474,7 +474,6 @@ public class Patcher implements IHunkFilter {
 	/**
 	 * Iterates through all of the resources contained in the Patch Wizard target
 	 * and looks to for a match to the passed in file
-	 * @param path
 	 * @return IFile which matches the passed in path or null if none found
 	 */
 	public IFile existsInTarget(IPath path) {
@@ -492,8 +491,6 @@ public class Patcher implements IHunkFilter {
 
 	/**
 	 * Returns true if path completely matches the end of fullpath
-	 * @param fullpath
-	 * @param path
 	 * @return true if path matches, false otherwise
 	 */
 	private boolean matches(IPath fullpath, IPath path) {

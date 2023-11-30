@@ -22,7 +22,6 @@ import org.w3c.dom.Element;
  * An Intro Config component that has an id attribute. It is used as a base
  * class for all config elements that can take an id, and hence are valid
  * targets for includes and finds.
- *
  */
 public abstract class AbstractIntroIdElement extends AbstractIntroElement {
 

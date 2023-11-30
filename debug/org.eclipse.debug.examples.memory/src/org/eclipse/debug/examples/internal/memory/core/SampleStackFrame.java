@@ -23,10 +23,6 @@ import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.osgi.util.NLS;
 
-/**
- *
- *
- */
 public class SampleStackFrame extends DebugElement implements IStackFrame {
 
 	private final SampleThread fThread;
@@ -36,9 +32,6 @@ public class SampleStackFrame extends DebugElement implements IStackFrame {
 
 	/**
 	 * Constructs a SampleStackFrame
-	 *
-	 * @param thread
-	 * @param name
 	 */
 	public SampleStackFrame(SampleThread thread, String name) {
 		super(thread.getDebugTarget());

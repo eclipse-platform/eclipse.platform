@@ -115,7 +115,6 @@ public class ElementTreeIteratorTest {
 
 	/**
 	 * Method deleteChild.
-	 * @param path
 	 */
 	void recursiveDelete(ElementTree tree, IPath path) {
 		IPath[] children = tree.getChildren(path);

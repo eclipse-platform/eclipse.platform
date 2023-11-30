@@ -33,8 +33,6 @@ public class Bug_307282 extends AbstractJobManagerTest {
 	 * main interrupt()s t2
 	 * t1 release l1
 	 * main attempt acquire() l1
-	 *
-	 * @throws Exception
 	 */
 	public void testInterruptDuringLockAcquireint() throws Exception {
 

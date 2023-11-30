@@ -134,8 +134,6 @@ public class WorkingSetData extends RequestData {
 	 * here for performance reasons. In the JSP, by the time one looks at the
 	 * topic, the parent toc has already been processed.
 	 *
-	 * @param toc
-	 * @param topic
 	 * @return short
 	 */
 	public short getTopicState(int toc, int topic) {

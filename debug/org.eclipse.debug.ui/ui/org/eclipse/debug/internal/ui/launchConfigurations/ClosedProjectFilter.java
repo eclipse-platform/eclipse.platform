@@ -28,7 +28,6 @@ import org.eclipse.jface.viewers.ViewerFilter;
  * provided to fix bug 19521.
  *
  * @since 3.2
- *
  */
 public class ClosedProjectFilter extends ViewerFilter {
 

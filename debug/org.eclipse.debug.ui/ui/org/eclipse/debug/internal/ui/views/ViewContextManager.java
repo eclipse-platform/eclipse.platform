@@ -88,7 +88,6 @@ public class ViewContextManager implements IWindowListener {
 	/**
 	 * Returns the service for the given window, or <code>null</code> if none.
 	 *
-	 * @param window
 	 * @return view context service or <code>null</code>
 	 */
 	public ViewContextService getService(IWorkbenchWindow window) {

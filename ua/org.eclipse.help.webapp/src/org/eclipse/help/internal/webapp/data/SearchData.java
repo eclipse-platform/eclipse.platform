@@ -95,9 +95,6 @@ public class SearchData extends ActivitiesData {
 
 	/**
 	 * Constructs the xml data for the search results page.
-	 *
-	 * @param context
-	 * @param request
 	 */
 	public SearchData(ServletContext context, HttpServletRequest request,
 			HttpServletResponse response) {
@@ -301,7 +298,6 @@ public class SearchData extends ActivitiesData {
 	}
 
 	/**
-	 * @param i
 	 * @return true of result belong to an enabled TOC
 	 */
 	public boolean isEnabled(int i) {

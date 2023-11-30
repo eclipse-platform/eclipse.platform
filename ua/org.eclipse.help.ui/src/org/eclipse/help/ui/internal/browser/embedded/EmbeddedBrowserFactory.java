@@ -63,8 +63,6 @@ public class EmbeddedBrowserFactory implements IBrowserFactory {
 
 	/**
 	 * Must run on UI thread
-	 *
-	 * @return
 	 */
 	private boolean test() {
 		if (!Constants.OS_WIN32.equalsIgnoreCase(Platform.getOS())

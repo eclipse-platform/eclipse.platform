@@ -511,8 +511,6 @@ public class BrowserIntroPartImplementation extends
 
 	/**
 	 * Return the cached IntroHTMLGenerator
-	 *
-	 * @return
 	 */
 	private IntroHTMLGenerator getHTMLGenerator() {
 		if (htmlGenerator == null)

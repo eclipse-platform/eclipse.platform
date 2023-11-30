@@ -28,8 +28,6 @@ public class ContentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private EclipseConnector connector;
 
-	/**
-	 */
 	@Override
 	public void init() throws ServletException {
 		try {
@@ -58,7 +56,6 @@ public class ContentServlet extends HttpServlet {
 	 * servlet to handle a POST request.
 	 *
 	 * Handle the search requests,
-	 *
 	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)

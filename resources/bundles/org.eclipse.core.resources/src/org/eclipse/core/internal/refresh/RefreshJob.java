@@ -109,7 +109,6 @@ public class RefreshJob extends InternalWorkspaceJob {
 	/**
 	 * Adds the given resource to the set of resources that need refreshing.
 	 * Synchronized in order to protect the collection during add.
-	 * @param resource
 	 */
 	private synchronized void addRequest(IResource resource) {
 		IPath toAdd = resource.getFullPath();

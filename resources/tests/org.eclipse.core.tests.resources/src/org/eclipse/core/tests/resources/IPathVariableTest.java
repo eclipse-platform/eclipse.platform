@@ -284,8 +284,6 @@ public class IPathVariableTest extends ResourceTest {
 		assertEquals("1.0", expected, actual);
 	}
 
-	/**
-	 */
 	public void testProjectLoc() {
 		IPath path = IPath.fromOSString("${PROJECT_LOC}/bar");
 		IPath projectLocation = project.getLocation();
@@ -295,8 +293,6 @@ public class IPathVariableTest extends ResourceTest {
 		assertEquals("1.0", expected, actual);
 	}
 
-	/**
-	 */
 	public void testEclipseHome() {
 		IPath path = IPath.fromOSString("${ECLIPSE_HOME}/bar");
 		IPath expected = IPath.fromOSString(Platform.getInstallLocation().getURL().getPath()).append("bar");
@@ -304,8 +300,6 @@ public class IPathVariableTest extends ResourceTest {
 		assertEquals("1.0", expected, actual);
 	}
 
-	/**
-	 */
 	public void testWorkspaceLocation() {
 		IPath path = IPath.fromOSString("${WORKSPACE_LOC}/bar");
 		IPath expected = project.getWorkspace().getRoot().getLocation().append("bar");

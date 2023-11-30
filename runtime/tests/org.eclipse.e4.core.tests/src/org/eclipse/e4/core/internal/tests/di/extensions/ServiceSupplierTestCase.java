@@ -257,14 +257,16 @@ public class ServiceSupplierTestCase {
 
 			enabler.enableDisabledServiceB();
 			// wait for asynchronous service registry and injection to finish
-			waitForCondition(() -> bean.services.size() == 2, timeoutInMillis);
+			waitForCondition(() -> bean.services.size() == 2 && bean.disabledService instanceof DisabledServiceB,
+					timeoutInMillis);
 			assertNotNull(bean.disabledService);
 			assertEquals(2, bean.services.size());
 			assertSame(DisabledServiceB.class, bean.disabledService.getClass());
 
 			enabler.disableDisabledServiceB();
 			// wait for asynchronous service registry and injection to finish
-			waitForCondition(() -> bean.services.size() == 1, timeoutInMillis);
+			waitForCondition(() -> bean.services.size() == 1 && bean.disabledService instanceof DisabledServiceA,
+					timeoutInMillis);
 			assertNotNull(bean.disabledService);
 			assertEquals(1, bean.services.size());
 			assertSame(DisabledServiceA.class, bean.disabledService.getClass());
@@ -279,7 +281,7 @@ public class ServiceSupplierTestCase {
 			enabler.disableDisabledServiceB();
 			// wait for asynchronous service registry and injection to ensure
 			// clear state after this test
-			waitForCondition(() -> bean.services.size() == 0, timeoutInMillis);
+			waitForCondition(() -> bean.services.size() == 0 && bean.disabledService == null, timeoutInMillis);
 		}
 	}
 
