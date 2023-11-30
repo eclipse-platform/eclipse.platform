@@ -827,14 +827,6 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Returns the unqualified class name of the receiver (i.e. without the package prefix).
-	 */
-	protected String getClassName() {
-		String fullClassName = getClass().getName();
-		return fullClassName.substring(fullClassName.lastIndexOf('.') + 1);
-	}
-
-	/**
 	 * Returns invalid sets of natures
 	 */
 	protected String[][] getInvalidNatureSets() {
