@@ -13,10 +13,20 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileTime;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -26,6 +36,7 @@ import org.eclipse.core.internal.resources.ValidateProjectEncoding;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourceAttributes;
@@ -281,6 +292,74 @@ public final class ResourceTestUtil {
 			}
 		}
 		return result;
+	}
+
+	/*
+	 * Modifies the passed in IFile in the file system so that it is out of sync
+	 * with the workspace.
+	 */
+	public static void ensureOutOfSync(final IFile file) throws CoreException, IOException {
+		modifyInFileSystem(file);
+		waitForRefresh();
+		touchInFilesystem(file);
+		assertThat("file not out of sync: " + file.getLocation().toOSString(), file.getLocalTimeStamp(),
+				not(is(file.getLocation().toFile().lastModified())));
+	}
+
+	private static void modifyInFileSystem(IFile file) throws FileNotFoundException, IOException {
+		String originalContent = readStringInFileSystem(file);
+		String newContent = originalContent + "f";
+		try (FileOutputStream outputStream = new FileOutputStream(file.getLocation().toFile())) {
+			outputStream.write(newContent.getBytes("UTF8"));
+		}
+	}
+
+	/**
+	 * Returns the content of the given file in the file system as a String (UTF8).
+	 */
+	public static String readStringInFileSystem(IFile file) throws IOException {
+		IPath location = file.getLocation();
+		assertNotNull("location was null for file: " + file, location);
+		try (FileInputStream inputStream = new FileInputStream(location.toFile())) {
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			inputStream.transferTo(outputStream);
+			return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
+		}
+	}
+
+	/**
+	 * Touch (but don't modify) the resource in the filesystem so that it's
+	 * modification stamp is newer than the cached value in the Workspace.
+	 */
+	public static void touchInFilesystem(IResource resource) throws CoreException, IOException {
+		IPath location = resource.getLocation();
+		// Manually check that the core.resource time-stamp is out-of-sync
+		// with the java.io.File last modified. #isSynchronized() will schedule
+		// out-of-sync resources for refresh, so we don't use that here.
+		for (int count = 0; count < 3000 && isInSync(resource); count++) {
+			FileTime now = FileTime.fromMillis(resource.getLocalTimeStamp() + 1000);
+			Files.setLastModifiedTime(location.toFile().toPath(), now);
+			if (count > 1) {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					// ignore
+				}
+			}
+		}
+		assertThat("File not out of sync: " + location.toOSString(), resource.getLocalTimeStamp(),
+				not(is(getLastModifiedTime(location))));
+	}
+
+	private static boolean isInSync(IResource resource) {
+		IPath location = resource.getLocation();
+		long localTimeStamp = resource.getLocalTimeStamp();
+		return getLastModifiedTime(location) == localTimeStamp || location.toFile().lastModified() == localTimeStamp;
+	}
+
+	private static long getLastModifiedTime(IPath fileLocation) {
+		IFileInfo fileInfo = EFS.getLocalFileSystem().getStore(fileLocation).fetchInfo();
+		return fileInfo.getLastModified();
 	}
 
 }

@@ -20,26 +20,16 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.attribute.FileTime;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.resources.IFile;
@@ -335,77 +325,6 @@ public abstract class ResourceTest extends CoreTest {
 			((IProject) resource).open(monitor);
 			break;
 		}
-	}
-
-	/**
-	 * Modifies the passed in IFile in the file system so that it is out of sync
-	 * with the workspace.
-	 */
-	public void ensureOutOfSync(final IFile file) throws CoreException, IOException {
-		modifyInFileSystem(file);
-		waitForRefresh();
-		touchInFilesystem(file);
-		assertThat("file not out of sync: " + file.getLocation().toOSString(), file.getLocalTimeStamp(),
-				not(is(file.getLocation().toFile().lastModified())));
-	}
-
-	private void modifyInFileSystem(IFile file) throws FileNotFoundException, IOException {
-		String originalContent = readStringInFileSystem(file);
-		String newContent = originalContent + "f";
-		try (FileOutputStream outputStream = new FileOutputStream(file.getLocation().toFile())) {
-			outputStream.write(newContent.getBytes("UTF8"));
-		}
-	}
-
-	/**
-	 * Returns the content of the given file in the file system as a String (UTF8).
-	 *
-	 * @param file
-	 *            file system file to read
-	 */
-	protected String readStringInFileSystem(IFile file) throws IOException {
-		IPath location = file.getLocation();
-		assertNotNull("location was null for file: " + file, location);
-		try (FileInputStream inputStream = new FileInputStream(location.toFile())) {
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			inputStream.transferTo(outputStream);
-			return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
-		}
-	}
-
-	/**
-	 * Touch (but don't modify) the resource in the filesystem so that it's modification stamp is newer than
-	 * the cached value in the Workspace.
-	 */
-	public void touchInFilesystem(IResource resource) throws CoreException, IOException {
-		IPath location = resource.getLocation();
-		// Manually check that the core.resource time-stamp is out-of-sync
-		// with the java.io.File last modified. #isSynchronized() will schedule
-		// out-of-sync resources for refresh, so we don't use that here.
-		for (int count = 0; count < 3000 && isInSync(resource); count++) {
-			FileTime now = FileTime.fromMillis(resource.getLocalTimeStamp() + 1000);
-			Files.setLastModifiedTime(location.toFile().toPath(), now);
-			if (count > 1) {
-				try {
-					Thread.sleep(1);
-				} catch (InterruptedException e) {
-					// ignore
-				}
-			}
-		}
-		assertThat("File not out of sync: " + location.toOSString(), resource.getLocalTimeStamp(),
-				not(is(getLastModifiedTime(location))));
-	}
-
-	private boolean isInSync(IResource resource) {
-		IPath location = resource.getLocation();
-		long localTimeStamp = resource.getLocalTimeStamp();
-		return getLastModifiedTime(location) == localTimeStamp || location.toFile().lastModified() == localTimeStamp;
-	}
-
-	private long getLastModifiedTime(IPath fileLocation) {
-		IFileInfo fileInfo = EFS.getLocalFileSystem().getStore(fileLocation).fetchInfo();
-		return fileInfo.getLastModified();
 	}
 
 	protected String getLineSeparatorFromFile(IFile file) {
