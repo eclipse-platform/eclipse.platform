@@ -12,17 +12,24 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.CharsetDeltaJob;
 import org.eclipse.core.internal.resources.ValidateProjectEncoding;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -209,6 +216,42 @@ public final class ResourceTestUtil {
 	public static void waitForEncodingRelatedJobs(String testName) {
 		TestUtil.waitForJobs(testName, 10, 5_000, ValidateProjectEncoding.class);
 		TestUtil.waitForJobs(testName, 10, 5_000, CharsetDeltaJob.FAMILY_CHARSET_DELTA);
+	}
+
+	/**
+	 * Checks whether the local file system supports accessing and modifying
+	 * the given attribute.
+	 */
+	public static boolean isAttributeSupported(int attribute) {
+		return (EFS.getLocalFileSystem().attributes() & attribute) != 0;
+	}
+
+	/**
+	 * Checks whether the local file system supports accessing and modifying
+	 * the read-only flag.
+	 */
+	public static boolean isReadOnlySupported() {
+		return isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY);
+	}
+
+	/**
+	 * Sets the read-only state of the given file store to {@code value}.
+	 */
+	public static void setReadOnly(IFileStore target, boolean value) throws CoreException {
+		assertThat("Setting read only is not supported by local file system", isReadOnlySupported());
+		IFileInfo fileInfo = target.fetchInfo();
+		fileInfo.setAttribute(EFS.ATTRIBUTE_READ_ONLY, value);
+		target.putInfo(fileInfo, EFS.SET_ATTRIBUTES, null);
+	}
+
+	/**
+	 * Sets the read-only state of the given resource to {@code value}.
+	 */
+	public static void setReadOnly(IResource target, boolean value) throws CoreException {
+		ResourceAttributes attributes = target.getResourceAttributes();
+		assertNotNull("tried to set read only for null attributes", attributes);
+		attributes.setReadOnly(value);
+		target.setResourceAttributes(attributes);
 	}
 
 }
