@@ -16,6 +16,7 @@ package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
@@ -294,7 +295,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		final IFile foo = project.getFile("foo");
 		create(project, false);
 
-		waitForEncodingRelatedJobs();
+		waitForEncodingRelatedJobs(getName());
 		waitForContentDescriptionUpdate();
 		// wait for noBuildJob so POST_BUILD will fire
 		((Workspace) getWorkspace()).getBuildManager().waitForAutoBuildOff();

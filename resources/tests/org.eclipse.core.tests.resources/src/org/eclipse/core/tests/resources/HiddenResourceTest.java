@@ -17,6 +17,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.resources.IContainer;
@@ -40,7 +41,7 @@ public class HiddenResourceTest extends ResourceTest {
 		IFile subFile = folder.getFile("subfile.txt");
 		IResource[] resources = new IResource[] {project, folder, file, subFile};
 		ensureExistsInWorkspace(resources, true);
-		waitForEncodingRelatedJobs();
+		ResourceTestUtil.waitForEncodingRelatedJobs(getName());
 
 		ResourceDeltaVerifier listener = new ResourceDeltaVerifier();
 		listener.addExpectedChange(subFile, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
@@ -434,7 +435,7 @@ public class HiddenResourceTest extends ResourceTest {
 			addResourceChangeListener(listener);
 			getWorkspace().run(body, createTestMonitor());
 			waitForBuild();
-			waitForEncodingRelatedJobs();
+			ResourceTestUtil.waitForEncodingRelatedJobs(getName());
 			// FIXME sometimes fails with "Verifier has not yet been given a resource
 			// delta":
 			assertTrue(listener.getMessage(), listener.isDeltaValid());

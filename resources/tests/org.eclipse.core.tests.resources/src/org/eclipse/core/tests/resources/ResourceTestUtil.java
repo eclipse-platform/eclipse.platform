@@ -16,8 +16,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.eclipse.core.internal.resources.CharsetDeltaJob;
+import org.eclipse.core.internal.resources.ValidateProjectEncoding;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -172,6 +176,34 @@ public final class ResourceTestUtil {
 		for (IResource resource : resources) {
 			assertDoesNotExistInFileSystem(resource);
 		}
+	}
+
+	/**
+	 * Blocks the calling thread until autobuild completes.
+	 */
+	public static void waitForBuild() {
+		((Workspace) getWorkspace()).getBuildManager().waitForAutoBuild();
+	}
+
+	/**
+	 * Blocks the calling thread until refresh job completes.
+	 */
+	public static void waitForRefresh() {
+		try {
+			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
+			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, null);
+		} catch (OperationCanceledException | InterruptedException e) {
+			//ignore
+		}
+	}
+
+	/**
+	 * Waits for at most 5 seconds for encoding-related jobs (project encoding
+	 * validation and charset delta) to finish.
+	 */
+	public static void waitForEncodingRelatedJobs(String testName) {
+		TestUtil.waitForJobs(testName, 10, 5_000, ValidateProjectEncoding.class);
+		TestUtil.waitForJobs(testName, 10, 5_000, CharsetDeltaJob.FAMILY_CHARSET_DELTA);
 	}
 
 }
