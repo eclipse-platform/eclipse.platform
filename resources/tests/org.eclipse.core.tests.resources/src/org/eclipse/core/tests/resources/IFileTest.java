@@ -142,7 +142,7 @@ public class IFileTest extends ResourceTest {
 	 * Returns some interesting files.  These files are created
 	 * during setup.
 	 */
-	public IFile[] interestingFiles() {
+	public IFile[] interestingFiles() throws CoreException {
 		refreshFiles();
 		IFile[] result = new IFile[allFiles.size()];
 		allFiles.toArray(result);
@@ -207,7 +207,7 @@ public class IFileTest extends ResourceTest {
 	/**
 	 * Makes sure file requirements are met (out of sync, workspace only, etc).
 	 */
-	public void refreshFile(IFile file) {
+	public void refreshFile(IFile file) throws CoreException {
 		if (file.getName().equals(LOCAL_ONLY)) {
 			ensureDoesNotExistInWorkspace(file);
 			//project must exist to access file system store.
@@ -243,7 +243,7 @@ public class IFileTest extends ResourceTest {
 	/**
 	 * Makes sure file requirements are met (out of sync, workspace only, etc).
 	 */
-	public void refreshFiles() {
+	public void refreshFiles() throws CoreException {
 		for (IFile file : allFiles) {
 			refreshFile(file);
 		}
@@ -360,7 +360,7 @@ public class IFileTest extends ResourceTest {
 		Object[][] inputs = new Object[][] {interestingFiles(), interestingStreams(), TRUE_AND_FALSE, PROGRESS_MONITORS};
 		new TestPerformer("IFileTest.testCreate") {
 			@Override
-			public void cleanUp(Object[] args, int count) {
+			public void cleanUp(Object[] args, int count) throws CoreException {
 				IFile file = (IFile) args[0];
 				refreshFile(file);
 			}
@@ -597,7 +597,7 @@ public class IFileTest extends ResourceTest {
 	}
 
 	@Test
-	public void testFileCreation_Bug107188() {
+	public void testFileCreation_Bug107188() throws CoreException {
 		//create from stream that is canceled
 		IFile target = projects[0].getFile("file1");
 		ensureDoesNotExistInWorkspace(target);
@@ -718,7 +718,7 @@ public class IFileTest extends ResourceTest {
 		Object[][] inputs = new Object[][] {interestingFiles()};
 		new TestPerformer("IFileTest.testGetContents") {
 			@Override
-			public void cleanUp(Object[] args, int count) {
+			public void cleanUp(Object[] args, int count) throws CoreException {
 				IFile file = (IFile) args[0];
 				refreshFile(file);
 			}
@@ -860,7 +860,7 @@ public class IFileTest extends ResourceTest {
 		Object[][] inputs = new Object[][] {interestingFiles(), interestingStreams(), TRUE_AND_FALSE, PROGRESS_MONITORS};
 		new TestPerformer("IFileTest.testSetContents1") {
 			@Override
-			public void cleanUp(Object[] args, int count) {
+			public void cleanUp(Object[] args, int count) throws CoreException {
 				IFile file = (IFile) args[0];
 				refreshFile(file);
 			}

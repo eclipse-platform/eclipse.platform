@@ -19,6 +19,7 @@ import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -834,7 +835,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	 * Tests that a client invoking a manual incremental build before autobuild has had
 	 * a chance to run will block until the build completes. See bug 275879.
 	 */
-	public void testIncrementalBuildBeforeAutobuild() throws CoreException {
+	public void testIncrementalBuildBeforeAutobuild() throws Exception {
 		// Create some resource handles
 		final IProject project = getWorkspace().getRoot().getProject("PROJECT");
 		final IFile input = project.getFolder(SortBuilder.DEFAULT_UNSORTED_FOLDER).getFile("File.txt");
@@ -856,11 +857,19 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		//change the file and then immediately perform build
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+		AtomicReference<IOException> exception = new AtomicReference<>();
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			input.setContents(new ByteArrayInputStream(new byte[] { 5, 4, 3, 2, 1 }), IResource.NONE, getMonitor());
 			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
-			transferStreams(output.getContents(), out, null);
+			try {
+				transferStreams(output.getContents(), out, null);
+			} catch (IOException e) {
+				exception.set(e);
+			}
 		}, getMonitor());
+		if (exception.get() != null) {
+			throw exception.get();
+		}
 
 		byte[] result = out.toByteArray();
 		byte[] expected = new byte[] {1, 2, 3, 4, 5};

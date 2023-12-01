@@ -44,7 +44,7 @@ public class Snapshot2Test extends SnapshotTest {
 		return new String[] {"/added file", "/yet another file", "/a folder/"};
 	}
 
-	public void testChangeMyProject() {
+	public void testChangeMyProject() throws CoreException {
 		// MyProject
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
 		assertTrue("0.1", project.exists());

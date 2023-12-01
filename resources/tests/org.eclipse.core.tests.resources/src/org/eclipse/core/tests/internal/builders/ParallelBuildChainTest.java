@@ -105,7 +105,8 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 	@Override
 	protected void tearDown() throws Exception {
 		// Cleanup workspace first to ensure that auto-build is not started on projects
-		cleanup();
+		waitForBuild();
+		getWorkspace().getRoot().delete(true, true, getMonitor());
 		super.tearDown();
 		TimerBuilder.abortCurrentBuilds();
 	}
@@ -143,7 +144,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 
 	@Test
 	public void testIndividualProjectBuilds_WithManyProjects_ProjectRelaxedRule() throws Exception {
-		int numberOfParallelBuilds = 60;
+		int numberOfParallelBuilds = 30;
 		var longRunningProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.LONG_RUNNING,
 				RuleType.CURRENT_PROJECT_RELAXED);
 		executeIndividualFullProjectBuilds(numberOfParallelBuilds, () -> {

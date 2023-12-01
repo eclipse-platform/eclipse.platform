@@ -39,7 +39,7 @@ public class IFolderTest extends ResourceTest {
 	 * error code and message to the user.
 	 */
 	@Test
-	public void testBug25662() {
+	public void testBug25662() throws CoreException {
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.

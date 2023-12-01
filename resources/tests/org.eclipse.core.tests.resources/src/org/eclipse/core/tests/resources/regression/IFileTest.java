@@ -39,7 +39,7 @@ public class IFileTest extends ResourceTest {
 	 * ERROR_WRITE.
 	 */
 	@Test
-	public void testBug25658() {
+	public void testBug25658() throws CoreException {
 
 		// This test is no longer valid since the error code is dependent on whether
 		// or not the parent folder is marked as read-only. We need to write a different
@@ -75,7 +75,7 @@ public class IFileTest extends ResourceTest {
 	 * to the user.
 	 */
 	@Test
-	public void testBug25662() {
+	public void testBug25662() throws CoreException {
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.

@@ -112,7 +112,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		}
 	}
 
-	public void testSimple() {
+	public void testSimple() throws CoreException {
 		IProject project = getProject("foo");
 		String qualifier = "org.eclipse.core.tests.resources";
 		String key = "key" + getUniqueString();

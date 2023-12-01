@@ -86,24 +86,17 @@ public class ModelObjectDefinitionFile extends ModelFile {
 	}
 
 	private static String[] readLines(IStorage file) throws CoreException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
-		String line = null;
-		List<String> result = new ArrayList<>();
-		try {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()))) {
+			String line = null;
+			List<String> result = new ArrayList<>();
 			while ((line = reader.readLine()) != null) {
 				result.add(line.trim());
 			}
+			return result.toArray(new String[result.size()]);
 		} catch (IOException e) {
 			throw new CoreException(new Status(IStatus.ERROR, FileSystemPlugin.ID, 0,
 					NLS.bind("Error reading from file {0}", file.getFullPath()), e));
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) {
-				// Ignore
-			}
 		}
-		return result.toArray(new String[result.size()]);
 	}
 
 	private void writeLines(String[] strings) throws CoreException {

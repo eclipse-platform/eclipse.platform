@@ -111,22 +111,13 @@ public class ProductPreferencesService implements IProductPreferencesService {
 		Properties result = new Properties();
 		if (url == null)
 			return result;
-		InputStream input = null;
-		try {
-			input = url.openStream();
+		try (InputStream input = url.openStream()) {
 			result.load(input);
 		} catch (IOException e) {
 			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES) {
 				InternalPlatform.message("Problem opening stream to preference customization file: " + url); //$NON-NLS-1$
 				e.printStackTrace();
 			}
-		} finally {
-			if (input != null)
-				try {
-					input.close();
-				} catch (IOException e) {
-					// ignore
-				}
 		}
 		return result;
 	}

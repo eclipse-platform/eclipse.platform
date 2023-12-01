@@ -1552,7 +1552,7 @@ public class LinkedResourceTest extends ResourceTest {
 	/**
 	 * Tests bug 298849.
 	 */
-	public void testMoveFolderWithLinks() throws CoreException {
+	public void testMoveFolderWithLinks() throws Exception {
 		// create a folder
 		IFolder folderWithLinks = existingProject.getFolder(getUniqueString());
 		folderWithLinks.create(true, true, getMonitor());

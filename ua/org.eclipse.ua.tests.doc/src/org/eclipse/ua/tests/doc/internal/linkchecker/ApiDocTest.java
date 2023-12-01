@@ -53,7 +53,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-@SuppressWarnings("restriction")
 public class ApiDocTest {
 
 	static class InternalExtensionFoundException extends SAXException {
