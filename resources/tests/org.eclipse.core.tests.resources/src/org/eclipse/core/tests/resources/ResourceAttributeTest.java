@@ -127,7 +127,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertTrue("2.4", !project.getResourceAttributes().isHidden());
 	}
 
-	public void testAttributeReadOnly() {
+	public void testAttributeReadOnly() throws CoreException {
 		// only activate this test on platforms that support it
 		if (!isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY)) {
 			return;
@@ -161,7 +161,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertNull("1.0", project.getResourceAttributes());
 	}
 
-	public void testNonExistingResource() {
+	public void testNonExistingResource() throws CoreException {
 		//asking for attributes of a non-existent resource should return null
 		IProject project = getWorkspace().getRoot().getProject("testNonExistingResource");
 		IFolder folder = project.getFolder("folder");

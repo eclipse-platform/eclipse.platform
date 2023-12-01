@@ -98,18 +98,11 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 		}
 		@Override
 		public String getCharset() throws CoreException {
-			InputStream contents = getContents();
-			try {
+			try (InputStream contents = getContents()) {
 				String charSet = TeamPlugin.getCharset(getName(), contents);
 				return charSet;
 			} catch (IOException e) {
 				throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.FAILED_DESCRIBING_CONTENTS, NLS.bind(Messages.CachedResourceVariant_1, new String[] { getFullPath().toString() }), e));
-			} finally {
-				try {
-					contents.close();
-				} catch (IOException e1) {
-					// Ignore
-				}
 			}
 		}
 	}

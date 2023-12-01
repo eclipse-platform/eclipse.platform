@@ -48,7 +48,7 @@ public class TipsTipProvider extends org.eclipse.tips.core.TipProvider {
 	@Override
 	public synchronized IStatus loadNewTips(IProgressMonitor pMonitor) {
 		SubMonitor subMonitor = SubMonitor.convert(pMonitor);
-		subMonitor.beginTask("Loading Tips", -1);
+		subMonitor.beginTask("Loading Tips", -1); //$NON-NLS-1$
 		List<Tip> tips = new ArrayList<>();
 		tips.add(new Tip1_Welcome(getID()));
 		tips.add(new Tip2_StartingTips(getID()));

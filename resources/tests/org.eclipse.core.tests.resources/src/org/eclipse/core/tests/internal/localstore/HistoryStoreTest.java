@@ -296,7 +296,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("3.5", 0, states.length);
 	}
 
-	public void testBug28238() {
+	public void testBug28238() throws CoreException {
 		// paths to mimic files in the workspace
 		IProject project = getWorkspace().getRoot().getProject("myproject28238");
 		IFolder folder = project.getFolder("myfolder");

@@ -145,7 +145,7 @@ public class MarkerTest extends ResourceTest {
 		assertFalse(String.format("Marker '%s' is subtype of %s", marker, superType), marker.isSubtypeOf(superType));
 	}
 
-	public IResource[] createLargeHierarchy() {
+	public IResource[] createLargeHierarchy() throws CoreException {
 		ArrayList<String> result = new ArrayList<>();
 		result.add("/");
 		new MarkerTest().addChildren(result, IPath.ROOT, 3, 4);
