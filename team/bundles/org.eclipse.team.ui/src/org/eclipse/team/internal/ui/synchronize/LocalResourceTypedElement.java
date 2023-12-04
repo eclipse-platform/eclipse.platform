@@ -119,7 +119,6 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ISharedDocumentAdapter.class) {

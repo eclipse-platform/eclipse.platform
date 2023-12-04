@@ -142,7 +142,6 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 *
 	 * @return the selected adaptables
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T[] getSelectedAdaptables(ISelection selection, Class<T> c) {
 		ArrayList<T> result = null;
 		if (selection != null && !selection.isEmpty()) {
@@ -168,7 +167,6 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 *
 	 * @return Object
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T getAdapter(Object adaptable, Class<T> c) {
 		if (c.isInstance(adaptable)) {
 			return (T) adaptable;
