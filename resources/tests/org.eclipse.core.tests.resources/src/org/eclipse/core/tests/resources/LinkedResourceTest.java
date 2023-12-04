@@ -625,7 +625,7 @@ public class LinkedResourceTest extends ResourceTest {
 
 		ThrowingRunnable linkCreation = () -> link.createLink(localFolder, IResource.NONE, getMonitor());
 		// should fail on case insensitive platforms
-		if (isCaseSensitive(variant)) {
+		if (Workspace.caseSensitive) {
 			linkCreation.run();
 		} else {
 			assertThrows(CoreException.class, linkCreation);

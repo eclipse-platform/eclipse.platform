@@ -20,6 +20,7 @@ import java.net.URI;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -204,7 +205,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		assertResources("4.1", nonExisting, result);
 
 		//existing file with different case
-		if (!isCaseSensitive(existing)) {
+		if (!Workspace.caseSensitive) {
 			IPath differentCase = IPath.fromOSString(existingFileLocation.toOSString().toUpperCase());
 			result = root.findFilesForLocation(differentCase);
 			assertResources("5.0", existing, result);

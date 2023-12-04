@@ -105,15 +105,6 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Returns whether the file system in which the provided resource
-	 * is stored is case sensitive. This succeeds whether or not the resource
-	 * exists.
-	 */
-	protected static boolean isCaseSensitive(IResource resource) {
-		return ((Resource) resource).getStore().getFileSystem().isCaseSensitive();
-	}
-
-	/**
 	 * Convenience method to copy contents from one stream to another.
 	 */
 	public static void transferStreams(InputStream source, OutputStream destination, String path) throws IOException {
