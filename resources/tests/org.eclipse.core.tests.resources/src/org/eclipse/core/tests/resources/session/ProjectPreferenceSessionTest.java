@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import java.util.concurrent.atomic.AtomicReference;
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
@@ -23,7 +25,6 @@ import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 import org.osgi.service.prefs.BackingStoreException;
@@ -34,7 +35,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 	private static final String FILE_EXTENSION = "prefs";
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, ProjectPreferenceSessionTest.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, ProjectPreferenceSessionTest.class);
 		//						return new ProjectPreferenceSessionTest("testDeleteFileBeforeLoad2");
 	}
 

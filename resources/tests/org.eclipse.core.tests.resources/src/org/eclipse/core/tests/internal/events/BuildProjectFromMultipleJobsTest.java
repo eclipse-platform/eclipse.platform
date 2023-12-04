@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.events;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,7 +36,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.internal.builders.ConfigurationBuilder;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.regression.SimpleBuilder;
 
@@ -199,7 +200,7 @@ public class BuildProjectFromMultipleJobsTest extends ResourceTest {
 			} catch (CoreException e) {
 				return e.getStatus();
 			}
-			return new Status(IStatus.OK, AutomatedResourceTests.PI_RESOURCES_TESTS, getName() + " finished");
+			return new Status(IStatus.OK, PI_RESOURCES_TESTS, getName() + " finished");
 		}
 
 		@Override

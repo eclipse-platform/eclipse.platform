@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import java.io.ByteArrayInputStream;
 import java.util.Map;
 import junit.framework.Test;
@@ -29,7 +31,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -116,7 +117,7 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBuilderDeltaSerialization.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBuilderDeltaSerialization.class);
 	}
 
 }

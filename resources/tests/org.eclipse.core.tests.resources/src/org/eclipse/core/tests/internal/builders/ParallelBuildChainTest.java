@@ -442,7 +442,8 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 						project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 						return Status.OK_STATUS;
 					} catch (CoreException e) {
-						return new Status(IStatus.ERROR, PI_RESOURCES_TESTS, e.getMessage(), e);
+						return new Status(IStatus.ERROR, PI_RESOURCES_TESTS, e.getMessage(),
+								e);
 					}
 
 				}
