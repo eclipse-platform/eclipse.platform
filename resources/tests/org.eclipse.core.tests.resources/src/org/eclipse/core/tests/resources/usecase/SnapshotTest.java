@@ -84,7 +84,7 @@ public class SnapshotTest extends WorkspaceSessionTest {
 		test.testChangeProject2();
 	}
 
-	public void test5() {
+	public void test5() throws CoreException {
 		if (skipTest()) {
 			return;
 		}

@@ -30,11 +30,6 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		assertTrue(existsInFileSystemWithNoContent(target));
 	}
 
-	@Override
-	public String[] defineHierarchy() {
-		return new String[] {"/File1", "/Folder1/", "/Folder1/File1", "/Folder1/Folder2/"};
-	}
-
 	private boolean existsInFileSystemWithNoContent(IResource resource) {
 		IPath path = resource.getLocation();
 		return path.toFile().exists() && path.toFile().length() == 0;
@@ -48,7 +43,8 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		TestingSupport.waitForSnapshot();
 
 		// create resources
-		IResource[] resources = buildResources(project, defineHierarchy());
+		IResource[] resources = buildResources(project,
+				new String[] { "/File1", "/Folder1/", "/Folder1/File1", "/Folder1/Folder2/" });
 		ensureExistsInWorkspace(resources, true);
 
 		// delete project's default directory

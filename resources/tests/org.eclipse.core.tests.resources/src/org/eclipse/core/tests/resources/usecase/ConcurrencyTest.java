@@ -41,8 +41,6 @@ public class ConcurrencyTest extends ResourceTest {
 		project.create(null);
 		project.open(null);
 
-		buildResources(project, defineHierarchy());
-
 		ConcurrentOperation01 op1 = new ConcurrentOperation01(getWorkspace());
 		ConcurrentOperation01 op2 = new ConcurrentOperation01(getWorkspace());
 

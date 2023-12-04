@@ -32,6 +32,9 @@ import org.eclipse.core.runtime.Platform;
  * Test suites for {@link org.eclipse.core.internal.resources.PlatformURLResourceConnection}
  */
 public class ResourceURLTest extends ResourceTest {
+	private final String[] resourcePaths = new String[] { "/", "/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1", "/2/2",
+			"/2/3", "/3/", "/3/1", "/3/2", "/3/3", "/4/", "/5" };
+
 	private static final String CONTENT = "content";
 	protected static IPath[] interestingPaths;
 	protected static IResource[] interestingResources;
@@ -56,18 +59,6 @@ public class ResourceURLTest extends ResourceTest {
 		assertEquals(metric, file);
 	}
 
-	/**
-	 * Returns a collection of string paths describing the standard
-	 * resource hierarchy for this test.  In the string forms, folders are
-	 * represented as having trailing separators ('/').  All other resources
-	 * are files.  It is generally assumed that this hierarchy will be
-	 * inserted under some solution and project structure.
-	 */
-	@Override
-	public String[] defineHierarchy() {
-		return new String[] {"/", "/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1", "/2/2", "/2/3", "/3/", "/3/1", "/3/2", "/3/3", "/4/", "/5"};
-	}
-
 	protected IProject getTestProject() {
 		return getWorkspace().getRoot().getProject("testProject");
 	}
@@ -85,7 +76,7 @@ public class ResourceURLTest extends ResourceTest {
 	}
 
 	public void testBasicURLs() throws Throwable {
-		IResource[] resources = buildResources();
+		IResource[] resources = buildResources(getWorkspace().getRoot(), resourcePaths);
 		ensureExistsInWorkspace(resources, true);
 		for (IResource resource : resources) {
 			checkURL(resource);
@@ -98,7 +89,7 @@ public class ResourceURLTest extends ResourceTest {
 		desc.setLocation(Platform.getLocation().append("../testproject"));
 		project.create(desc, null);
 		project.open(null);
-		IResource[] resources = buildResources(project, defineHierarchy());
+		IResource[] resources = buildResources(project, resourcePaths);
 		ensureExistsInWorkspace(resources, true);
 		for (IResource resource : resources) {
 			checkURL(resource);
@@ -106,7 +97,7 @@ public class ResourceURLTest extends ResourceTest {
 	}
 
 	public void testNonExistantURLs() throws Throwable {
-		IResource[] resources = buildResources();
+		IResource[] resources = buildResources(getWorkspace().getRoot(), resourcePaths);
 		for (int i = 1; i < resources.length; i++) {
 			final int index = i;
 			assertThrows(IOException.class, () -> checkURL(resources[index]));

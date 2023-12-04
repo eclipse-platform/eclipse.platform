@@ -235,7 +235,6 @@ public class ProjectEncodingTest extends ResourceTest {
 	}
 
 	private void buildAndWaitForBuildFinish() {
-		buildResources();
 		waitForBuild();
 	}
 

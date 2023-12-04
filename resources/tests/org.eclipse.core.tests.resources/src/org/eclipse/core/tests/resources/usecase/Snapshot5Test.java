@@ -17,12 +17,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 
 /**
  * Only verifies previous session.
  */
 public class Snapshot5Test extends SnapshotTest {
-	public void testVerifyPreviousSession() {
+	public void testVerifyPreviousSession() throws CoreException {
 		// MyProject
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
 		assertTrue("0.0", project.exists());

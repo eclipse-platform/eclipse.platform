@@ -13,11 +13,23 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 import junit.framework.Test;
@@ -103,15 +115,6 @@ public class WorkspaceTest extends ResourceTest {
 				((IFile) r).setContents(getRandomContents(100), true, false, null);
 			}
 		}
-		return result;
-	}
-	public IResource[] buildEmptyResources(IContainer container, String[] hierarchy, boolean includeContainer) throws CoreException {
-		List<IResource> resources = new ArrayList<>(hierarchy.length + 1);
-		resources.addAll(Arrays.asList(buildResources(container, hierarchy)));
-		if (includeContainer)
-			resources.add(container);
-		IResource[] result = resources.toArray(new IResource[resources.size()]);
-		ensureExistsInWorkspace(result, true);
 		return result;
 	}
 	/**
