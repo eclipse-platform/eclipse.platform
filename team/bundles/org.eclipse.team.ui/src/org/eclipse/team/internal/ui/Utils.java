@@ -441,7 +441,6 @@ public class Utils {
 	 * @deprecated As of 3.5, replaced by
 	 *             {@link #updateLabels(SyncInfo, CompareConfiguration, IProgressMonitor)}
 	 */
-	@SuppressWarnings("javadoc")
 	@Deprecated
 	public static void updateLabels(SyncInfo sync, CompareConfiguration config) {
 		updateLabels(sync, config, null);
