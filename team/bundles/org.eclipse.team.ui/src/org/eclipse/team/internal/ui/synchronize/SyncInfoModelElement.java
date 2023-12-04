@@ -140,7 +140,6 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if(adapter == SyncInfo.class) {

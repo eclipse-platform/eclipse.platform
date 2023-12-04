@@ -189,7 +189,6 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IWorkbenchAdapter.class)
 			return (T) this;

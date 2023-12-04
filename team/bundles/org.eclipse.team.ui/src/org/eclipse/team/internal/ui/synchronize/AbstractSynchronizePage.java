@@ -227,7 +227,6 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	 *
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> key) {
 		if (key.equals(ISelectionProvider.class))
