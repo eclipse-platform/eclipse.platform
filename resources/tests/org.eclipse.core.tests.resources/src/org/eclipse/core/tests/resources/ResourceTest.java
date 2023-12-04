@@ -34,7 +34,6 @@ import java.nio.file.attribute.FileTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Stream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -938,16 +937,6 @@ public abstract class ResourceTest extends CoreTest {
 			workspace.setDescription(description);
 		}
 		waitForBuild();
-	}
-
-	/**
-	 * Sets the workspace build order to just contain the given projects.
-	 */
-	protected void setBuildOrder(IProject... projects) throws CoreException {
-		IWorkspace workspace = getWorkspace();
-		IWorkspaceDescription desc = workspace.getDescription();
-		desc.setBuildOrder(Stream.of(projects).map(IProject::getName).toArray(String[]::new));
-		workspace.setDescription(desc);
 	}
 
 	/**
