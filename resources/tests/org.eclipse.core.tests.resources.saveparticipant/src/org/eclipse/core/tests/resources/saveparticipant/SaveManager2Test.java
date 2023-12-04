@@ -108,14 +108,14 @@ public class SaveManager2Test extends SaveManagerTest {
 
 		// verify its children
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_2));
-		assertExistsInFileSystem("1.0", resources);
-		assertDoesNotExistInWorkspace("1.1", resources);
+		assertExistsInFileSystem(resources);
+		assertDoesNotExistInWorkspace(resources);
 
 		project.open(null);
 		assertTrue("2.1", project.exists());
 		assertTrue("2.2", project.isOpen());
-		assertExistsInFileSystem("2.3", resources);
-		assertExistsInWorkspace("2.4", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 
 		// verify builder -- cause an incremental build
 		touch(project);
@@ -135,8 +135,8 @@ public class SaveManager2Test extends SaveManagerTest {
 
 		// verify children still exist
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_1));
-		assertExistsInFileSystem("1.0", resources);
-		assertExistsInWorkspace("1.1", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 
 		// add a file to test save participant delta
 		IFile file = project.getFile("addedFile");

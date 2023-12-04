@@ -51,10 +51,10 @@ public class Bug_029671 extends ResourceTest {
 			assertTrue("3.0", folder.isPhantom());
 			assertTrue("4.0", file.isPhantom());
 
-			assertExistsInWorkspace("5.0", targetFolder);
+			assertExistsInWorkspace(targetFolder);
 			assertTrue("5.1", !targetFolder.isPhantom());
 
-			assertExistsInWorkspace("6.0", targetFile);
+			assertExistsInWorkspace(targetFile);
 			assertTrue("6.1", !targetFile.isPhantom());
 		} finally {
 			synchronizer.remove(partner);

@@ -772,7 +772,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, null);
 
 			assertTrue("deletion did unexpectedly not succeed", listener1.deletePerformed);
-			assertDoesNotExistInWorkspace("5.0", f);
+			assertDoesNotExistInWorkspace(f);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener1);
 		}

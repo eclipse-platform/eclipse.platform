@@ -15,7 +15,16 @@ package org.eclipse.core.tests.resources;
 
 import static org.junit.Assert.assertThrows;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 
 public class HiddenResourceTest extends ResourceTest {
@@ -260,8 +269,8 @@ public class HiddenResourceTest extends ResourceTest {
 		// copy the project
 		int flags = IResource.FORCE;
 		project.copy(destProject.getFullPath(), flags, getMonitor());
-		assertExistsInWorkspace("1.2", resources);
-		assertExistsInWorkspace("1.3", destResources);
+		assertExistsInWorkspace(resources);
+		assertExistsInWorkspace(destResources);
 
 		// do it again and but just copy the folder
 		ensureDoesNotExistInWorkspace(destResources);
@@ -269,8 +278,8 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(destProject, true);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
 		folder.copy(destFolder.getFullPath(), flags, getMonitor());
-		assertExistsInWorkspace("2.2", new IResource[] {folder, subFile});
-		assertExistsInWorkspace("2.3", new IResource[] {destFolder, destSubFile});
+		assertExistsInWorkspace(new IResource[] { folder, subFile });
+		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 
 		// set all the resources to be hidden
 		// copy the project
@@ -278,8 +287,8 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		project.copy(destProject.getFullPath(), flags, getMonitor());
-		assertExistsInWorkspace("3.2", resources);
-		assertExistsInWorkspace("3.3", destResources);
+		assertExistsInWorkspace(resources);
+		assertExistsInWorkspace(destResources);
 
 		// do it again but only copy the folder
 		ensureDoesNotExistInWorkspace(destResources);
@@ -287,8 +296,8 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(destProject, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		folder.copy(destFolder.getFullPath(), flags, getMonitor());
-		assertExistsInWorkspace("4.2", new IResource[] {folder, subFile});
-		assertExistsInWorkspace("4.3", new IResource[] {destFolder, destSubFile});
+		assertExistsInWorkspace(new IResource[] { folder, subFile });
+		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 	}
 
 	public void testMove() throws CoreException {
@@ -313,8 +322,8 @@ public class HiddenResourceTest extends ResourceTest {
 		// move the project
 		int flags = IResource.FORCE;
 		project.move(destProject.getFullPath(), flags, getMonitor());
-		assertDoesNotExistInWorkspace("1.2", resources);
-		assertExistsInWorkspace("1.3", destResources);
+		assertDoesNotExistInWorkspace(resources);
+		assertExistsInWorkspace(destResources);
 
 		// do it again and but just move the folder
 		ensureDoesNotExistInWorkspace(destResources);
@@ -322,8 +331,8 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(destProject, true);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
 		folder.move(destFolder.getFullPath(), flags, getMonitor());
-		assertDoesNotExistInWorkspace("2.2", new IResource[] {folder, subFile});
-		assertExistsInWorkspace("2.3", new IResource[] {destFolder, destSubFile});
+		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
+		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 
 		// set all the resources to be hidden
 		// move the project
@@ -331,8 +340,8 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		project.move(destProject.getFullPath(), flags, getMonitor());
-		assertDoesNotExistInWorkspace("3.2", resources);
-		assertExistsInWorkspace("3.3", destResources);
+		assertDoesNotExistInWorkspace(resources);
+		assertExistsInWorkspace(destResources);
 
 		// do it again but only move the folder
 		ensureDoesNotExistInWorkspace(destResources);
@@ -340,8 +349,8 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(destProject, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		folder.move(destFolder.getFullPath(), flags, getMonitor());
-		assertDoesNotExistInWorkspace("4.2", new IResource[] {folder, subFile});
-		assertExistsInWorkspace("4.3", new IResource[] {destFolder, destSubFile});
+		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
+		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 	}
 
 	public void testDelete() throws CoreException {
@@ -357,49 +366,49 @@ public class HiddenResourceTest extends ResourceTest {
 		int flags = IResource.ALWAYS_DELETE_PROJECT_CONTENT | IResource.FORCE;
 		// delete the project
 		project.delete(flags, getMonitor());
-		assertDoesNotExistInWorkspace("1.1", resources);
+		assertDoesNotExistInWorkspace(resources);
 		// delete a file
 		ensureExistsInWorkspace(resources, true);
 		file.delete(flags, getMonitor());
-		assertDoesNotExistInWorkspace("1.3", file);
-		assertExistsInWorkspace("1.4", new IResource[] {project, folder, subFile});
+		assertDoesNotExistInWorkspace(file);
+		assertExistsInWorkspace(new IResource[] { project, folder, subFile });
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
 		folder.delete(flags, getMonitor());
-		assertDoesNotExistInWorkspace("1.6", new IResource[] {folder, subFile});
-		assertExistsInWorkspace("1.7", new IResource[] {project, file});
+		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
+		assertExistsInWorkspace(new IResource[] { project, file });
 
 		// set one child to be hidden
 		ensureExistsInWorkspace(resources, true);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
 		// delete the project
 		project.delete(flags, getMonitor());
-		assertDoesNotExistInWorkspace("2.2", resources);
+		assertDoesNotExistInWorkspace(resources);
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
 		folder.delete(flags, getMonitor());
-		assertDoesNotExistInWorkspace("2.5", new IResource[] {folder, subFile});
-		assertExistsInWorkspace("2.6", new IResource[] {project, file});
+		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
+		assertExistsInWorkspace(new IResource[] { project, file });
 
 		// set all resources to be hidden
 		ensureExistsInWorkspace(resources, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		// delete the project
 		project.delete(flags, getMonitor());
-		assertDoesNotExistInWorkspace("3.2", resources);
+		assertDoesNotExistInWorkspace(resources);
 		// delete a file
 		ensureExistsInWorkspace(resources, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		file.delete(flags, getMonitor());
-		assertDoesNotExistInWorkspace("3.5", file);
-		assertExistsInWorkspace("3.6", new IResource[] {project, folder, subFile});
+		assertDoesNotExistInWorkspace(file);
+		assertExistsInWorkspace(new IResource[] { project, folder, subFile });
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		folder.delete(flags, getMonitor());
-		assertDoesNotExistInWorkspace("3.9", new IResource[] {folder, subFile});
-		assertExistsInWorkspace("3.10", new IResource[] {project, file});
+		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
+		assertExistsInWorkspace(new IResource[] { project, file });
 	}
 
 	public void testDeltas() throws CoreException {
@@ -501,17 +510,17 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 
 		// check to see if all the resources exist in the workspace tree.
-		assertExistsInWorkspace("1.0", resources);
+		assertExistsInWorkspace(resources);
 
 		// set a folder to be hidden
 		setHidden(folder, true, IResource.DEPTH_ZERO);
 		assertHidden(folder, true, IResource.DEPTH_ZERO);
-		assertExistsInWorkspace("2.2", resources);
+		assertExistsInWorkspace(resources);
 
 		// set all resources to be hidden
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		assertHidden(project, true, IResource.DEPTH_INFINITE);
-		assertExistsInWorkspace("3.2", resources);
+		assertExistsInWorkspace(resources);
 	}
 
 	/**

@@ -53,8 +53,8 @@ public class Snapshot4Test extends SnapshotTest {
 		// remove resources
 		IFile file = project.getFile("added file");
 		file.delete(true, true, null);
-		assertDoesNotExistInFileSystem("1.1", file);
-		assertDoesNotExistInWorkspace("1.2", file);
+		assertDoesNotExistInFileSystem(file);
+		assertDoesNotExistInWorkspace(file);
 
 		// full save
 		getWorkspace().save(true, null);
@@ -62,8 +62,8 @@ public class Snapshot4Test extends SnapshotTest {
 		// remove resources
 		file = project.getFile("yet another file");
 		file.delete(true, true, null);
-		assertDoesNotExistInFileSystem("3.1", file);
-		assertDoesNotExistInWorkspace("3.2", file);
+		assertDoesNotExistInFileSystem(file);
+		assertDoesNotExistInWorkspace(file);
 
 		// snapshot
 		getWorkspace().save(false, null);
@@ -71,8 +71,8 @@ public class Snapshot4Test extends SnapshotTest {
 		// remove resources
 		IFolder folder = project.getFolder("a folder");
 		folder.delete(true, true, null);
-		assertDoesNotExistInFileSystem("5.1", folder);
-		assertDoesNotExistInWorkspace("5.2", folder);
+		assertDoesNotExistInFileSystem(folder);
+		assertDoesNotExistInWorkspace(folder);
 
 		// snapshot
 		getWorkspace().save(false, null);
@@ -99,8 +99,8 @@ public class Snapshot4Test extends SnapshotTest {
 
 		// verify existence of children
 		IResource[] resources = buildResources(project, Snapshot3Test.defineHierarchy1());
-		assertExistsInFileSystem("2.1", resources);
-		assertExistsInWorkspace("2.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 
 		// Project2
 		project = getWorkspace().getRoot().getProject(PROJECT_2);
@@ -112,7 +112,7 @@ public class Snapshot4Test extends SnapshotTest {
 
 		// verify existence of children
 		resources = buildResources(project, Snapshot3Test.defineHierarchy2());
-		assertExistsInFileSystem("5.1", resources);
-		assertExistsInWorkspace("5.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 	}
 }

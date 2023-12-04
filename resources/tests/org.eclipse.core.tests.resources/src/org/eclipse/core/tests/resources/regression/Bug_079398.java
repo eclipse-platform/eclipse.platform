@@ -56,7 +56,7 @@ public class Bug_079398 extends ResourceTest {
 		// will conform to the policy
 		file1.copy(file2.getFullPath(), true, getMonitor());
 
-		assertExistsInWorkspace("1.0", file2);
+		assertExistsInWorkspace(file2);
 		sourceStates = file1.getHistory(getMonitor());
 		// the source is unaffected so far
 		assertEquals("1.2", 10, sourceStates.length);

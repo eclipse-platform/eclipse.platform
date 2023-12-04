@@ -90,10 +90,10 @@ public class MoveTest extends LocalStoreTest {
 
 		// assert file was moved
 		IFile newFile = destination.getFile(fileName);
-		assertDoesNotExistInWorkspace("4.1", file);
-		assertDoesNotExistInFileSystem("4.2", file);
-		assertExistsInWorkspace("4.3", newFile);
-		assertExistsInFileSystem("4.4", newFile);
+		assertDoesNotExistInWorkspace(file);
+		assertDoesNotExistInFileSystem(file);
+		assertExistsInWorkspace(newFile);
+		assertExistsInFileSystem(newFile);
 
 		// assert properties still exist (server, local and session)
 		for (int j = 0; j < numberOfProperties; j++) {
@@ -193,10 +193,10 @@ public class MoveTest extends LocalStoreTest {
 
 		// assert folder was renamed
 		IFolder newFolder = destination.getFolder(folderName);
-		assertDoesNotExistInWorkspace("4.1", folder);
-		assertDoesNotExistInFileSystem("4.2", folder);
-		assertExistsInWorkspace("4.3", newFolder);
-		assertExistsInFileSystem("4.4", newFolder);
+		assertDoesNotExistInWorkspace(folder);
+		assertDoesNotExistInFileSystem(folder);
+		assertExistsInWorkspace(newFolder);
+		assertExistsInFileSystem(newFolder);
 
 		// assert properties still exist (server, local and session)
 		for (int j = 0; j < numberOfProperties; j++) {

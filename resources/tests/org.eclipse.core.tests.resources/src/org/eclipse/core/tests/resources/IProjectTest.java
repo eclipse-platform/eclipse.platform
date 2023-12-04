@@ -338,17 +338,17 @@ public class IProjectTest extends ResourceTest {
 		ensureExistsInWorkspace(project, true);
 		ensureExistsInWorkspace(resources, true);
 		destination = getWorkspace().getRoot().getProject("DestProject");
-		assertDoesNotExistInWorkspace("1.0", destination);
+		assertDoesNotExistInWorkspace(destination);
 		// set a property to copy
 		sourceChild = resources[1];
 		sourceChild.setPersistentProperty(qname, value);
 		source.copy(destination.getFullPath(), false, monitor);
 		monitor.assertUsedUp();
-		assertExistsInWorkspace("1.3", project);
-		assertExistsInWorkspace("1.4", resources);
+		assertExistsInWorkspace(project);
+		assertExistsInWorkspace(resources);
 		resources = buildResources((IProject) destination, children);
-		assertExistsInWorkspace("1.5", destination);
-		assertExistsInWorkspace("1.6", resources);
+		assertExistsInWorkspace(destination);
+		assertExistsInWorkspace(resources);
 		// ensure the properties were copied ok
 		destChild = resources[1];
 		actual = destChild.getPersistentProperty(qname);
@@ -368,18 +368,18 @@ public class IProjectTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		destination = getWorkspace().getRoot().getProject("DestProject");
 		IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
-		assertDoesNotExistInWorkspace("2.0", destination);
+		assertDoesNotExistInWorkspace(destination);
 		// set a property to copy
 		sourceChild = resources[1];
 		sourceChild.setPersistentProperty(qname, value);
 		monitor.prepare();
 		((IProject) source).copy(description, false, monitor);
 		monitor.assertUsedUp();
-		assertExistsInWorkspace("2.3", project);
-		assertExistsInWorkspace("2.4", resources);
+		assertExistsInWorkspace(project);
+		assertExistsInWorkspace(resources);
 		resources = buildResources((IProject) destination, children);
-		assertExistsInWorkspace("2.5", destination);
-		assertExistsInWorkspace("2.6", resources);
+		assertExistsInWorkspace(destination);
+		assertExistsInWorkspace(resources);
 		// ensure the properties were copied ok
 		destChild = resources[1];
 		actual = destChild.getPersistentProperty(qname);
@@ -400,7 +400,7 @@ public class IProjectTest extends ResourceTest {
 		destination = destProject.getFolder("MyFolder");
 		ensureExistsInWorkspace(new IResource[] {project, destProject}, true);
 		ensureExistsInWorkspace(resources, true);
-		assertDoesNotExistInWorkspace("3.0", destination);
+		assertDoesNotExistInWorkspace(destination);
 
 		monitor.prepare();
 		IResource projectToCopy = source;
@@ -419,7 +419,7 @@ public class IProjectTest extends ResourceTest {
 		destination = getWorkspace().getRoot().getProject("DestProject");
 		ensureExistsInWorkspace(project, true);
 		ensureExistsInWorkspace(resources, true);
-		assertDoesNotExistInWorkspace("4.0", destination);
+		assertDoesNotExistInWorkspace(destination);
 
 		monitor.prepare();
 		IResource folderToCopy = source;
@@ -2122,7 +2122,7 @@ public class IProjectTest extends ResourceTest {
 
 		// make sure all the resources still exist.
 		IResourceVisitor visitor = resource -> {
-			assertExistsInWorkspace("2.1." + resource.getFullPath(), resource);
+			assertExistsInWorkspace(resource);
 			return true;
 		};
 		getWorkspace().getRoot().accept(visitor);
@@ -2146,7 +2146,7 @@ public class IProjectTest extends ResourceTest {
 		ensureExistsInWorkspace(project, true);
 		ensureExistsInWorkspace(resources, true);
 		destination = getWorkspace().getRoot().getProject("DestProject");
-		assertDoesNotExistInWorkspace("1.0", destination);
+		assertDoesNotExistInWorkspace(destination);
 		// set a property to move
 		sourceChild = resources[1];
 		sourceChild.setPersistentProperty(qname, value);
@@ -2155,11 +2155,11 @@ public class IProjectTest extends ResourceTest {
 		monitor.prepare();
 		source.move(destination.getFullPath(), false, monitor);
 		monitor.assertUsedUp();
-		assertDoesNotExistInWorkspace("1.4", project);
-		assertDoesNotExistInWorkspace("1.5", resources);
+		assertDoesNotExistInWorkspace(project);
+		assertDoesNotExistInWorkspace(resources);
 		resources = buildResources((IProject) destination, children);
-		assertExistsInWorkspace("1.6", destination);
-		assertExistsInWorkspace("1.7", resources);
+		assertExistsInWorkspace(destination);
+		assertExistsInWorkspace(resources);
 		// ensure properties are moved too
 		destChild = resources[1];
 		actual = destChild.getPersistentProperty(qname);
@@ -2187,15 +2187,15 @@ public class IProjectTest extends ResourceTest {
 		sourceChild.createMarker(IMarker.PROBLEM);
 		destination = getWorkspace().getRoot().getProject("DestProject");
 		IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
-		assertDoesNotExistInWorkspace("2.3", destination);
+		assertDoesNotExistInWorkspace(destination);
 		monitor.prepare();
 		((IProject) source).move(description, false, monitor);
 		monitor.assertUsedUp();
-		assertDoesNotExistInWorkspace("2.5", project);
-		assertDoesNotExistInWorkspace("2.6", resources);
+		assertDoesNotExistInWorkspace(project);
+		assertDoesNotExistInWorkspace(resources);
 		resources = buildResources((IProject) destination, children);
-		assertExistsInWorkspace("2.7", destination);
-		assertExistsInWorkspace("2.8", resources);
+		assertExistsInWorkspace(destination);
+		assertExistsInWorkspace(resources);
 		// ensure properties are moved too
 		destChild = resources[1];
 		actual = destChild.getPersistentProperty(qname);
@@ -2317,15 +2317,15 @@ public class IProjectTest extends ResourceTest {
 		sourceChild.createMarker(IMarker.PROBLEM);
 		IProject destination = getWorkspace().getRoot().getProject("DestProject");
 		description.setName(destination.getName());
-		assertDoesNotExistInWorkspace("2.3", destination);
+		assertDoesNotExistInWorkspace(destination);
 		monitor.prepare();
 		project.move(description, false, monitor);
 		monitor.assertUsedUp();
-		assertDoesNotExistInWorkspace("2.5", project);
-		assertDoesNotExistInWorkspace("2.6", resources);
+		assertDoesNotExistInWorkspace(project);
+		assertDoesNotExistInWorkspace(resources);
 		resources = buildResources(destination, children);
-		assertExistsInWorkspace("2.7", destination);
-		assertExistsInWorkspace("2.8", resources);
+		assertExistsInWorkspace(destination);
+		assertExistsInWorkspace(resources);
 		// ensure properties are moved too
 		IResource destChild = resources[1];
 		actualPropertyValue = destChild.getPersistentProperty(qname);

@@ -51,7 +51,7 @@ public class Bug_265810 extends ResourceTest {
 		// create a linked resource
 		final IFile file = project.getFile(getUniqueString());
 		// the file should not exist yet
-		assertDoesNotExistInWorkspace("2.0", file);
+		assertDoesNotExistInWorkspace(file);
 		file.createLink(createFolderAtRandomLocation(), IResource.NONE, new NullProgressMonitor());
 		file.setContents(getContents("contents for a file"), IResource.NONE, new NullProgressMonitor());
 
@@ -61,7 +61,7 @@ public class Bug_265810 extends ResourceTest {
 		// create a new linked file
 		final IFile newFile = project.getFile("newFile");
 		// the file should not exist yet
-		assertDoesNotExistInWorkspace("5.0", newFile);
+		assertDoesNotExistInWorkspace(newFile);
 		newFile.createLink(createFolderAtRandomLocation(), IResource.NONE, new NullProgressMonitor());
 
 		// save the .project [2] content

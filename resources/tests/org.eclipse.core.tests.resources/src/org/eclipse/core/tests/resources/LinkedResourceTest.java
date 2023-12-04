@@ -706,11 +706,11 @@ public class LinkedResourceTest extends ResourceTest {
 		IFile newChildFile = newFolder.getFile(childName);
 		IResource[] newResources = new IResource[] { destination, newFile, newFolder, newChildFile };
 
-		assertDoesNotExistInWorkspace("2.0", destination);
+		assertDoesNotExistInWorkspace(destination);
 
 		existingProject.move(destination.getFullPath(), IResource.NONE, getMonitor());
-		assertExistsInWorkspace("3.0", newResources);
-		assertDoesNotExistInWorkspace("3.1", oldResources);
+		assertExistsInWorkspace(newResources);
+		assertDoesNotExistInWorkspace(oldResources);
 		assertTrue("3.2", existingProject.isSynchronized(IResource.DEPTH_INFINITE));
 		assertTrue("3.3", destination.isSynchronized(IResource.DEPTH_INFINITE));
 
@@ -1504,11 +1504,11 @@ public class LinkedResourceTest extends ResourceTest {
 		IFile newChildFile = newFolder.getFile(childName);
 		IResource[] newResources = new IResource[] { destination, newFile, newFolder, newChildFile };
 
-		assertDoesNotExistInWorkspace("2.0", destination);
+		assertDoesNotExistInWorkspace(destination);
 
 		existingProject.move(destination.getFullPath(), IResource.SHALLOW, getMonitor());
-		assertExistsInWorkspace("3.0", newResources);
-		assertDoesNotExistInWorkspace("3.1", oldResources);
+		assertExistsInWorkspace(newResources);
+		assertDoesNotExistInWorkspace(oldResources);
 
 		assertTrue("3.2", newFile.isLinked());
 		assertEquals("3.3", resolve(fileLocation), newFile.getLocation());
@@ -1520,8 +1520,8 @@ public class LinkedResourceTest extends ResourceTest {
 
 		// now do a deep move back to the original project
 		destination.move(existingProject.getFullPath(), IResource.NONE, getMonitor());
-		assertExistsInWorkspace("5.1", oldResources);
-		assertDoesNotExistInWorkspace("5.2", newResources);
+		assertExistsInWorkspace(oldResources);
+		assertDoesNotExistInWorkspace(newResources);
 		assertTrue("5.3", !file.isLinked());
 		assertTrue("5.4", !folder.isLinked());
 		assertEquals("5.5", existingProject.getLocation().append(file.getProjectRelativePath()), file.getLocation());

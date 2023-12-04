@@ -80,16 +80,16 @@ public class NLTest extends ResourceTest {
 		IResource[] resources = buildResources(project, files);
 		ensureExistsInWorkspace(resources, true);
 		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		assertExistsInFileSystem("2.1", resources);
-		assertExistsInWorkspace("2.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 		ensureDoesNotExistInWorkspace(resources);
 
 		files = getFileNames(Locale.getDefault().getLanguage());
 		resources = buildResources(project, files);
 		ensureExistsInWorkspace(resources, true);
 		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		assertExistsInFileSystem("3.1", resources);
-		assertExistsInWorkspace("3.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 	}
 
 }

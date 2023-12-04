@@ -45,16 +45,16 @@ public class IFolderTest extends ResourceTest {
 		beforeFile.create(getRandomContents(), false, getMonitor());
 
 		// Be sure the resources exist and then move them.
-		assertExistsInWorkspace("1.0", before);
-		assertExistsInWorkspace("1.1", beforeFile);
-		assertDoesNotExistInWorkspace("1.2", after);
-		assertDoesNotExistInWorkspace("1.3", afterFile);
+		assertExistsInWorkspace(before);
+		assertExistsInWorkspace(beforeFile);
+		assertDoesNotExistInWorkspace(after);
+		assertDoesNotExistInWorkspace(afterFile);
 		before.move(after.getFullPath(), IResource.NONE, getMonitor());
 
-		assertDoesNotExistInWorkspace("1.2", before);
-		assertDoesNotExistInWorkspace("1.3", beforeFile);
-		assertExistsInWorkspace("1.0", after);
-		assertExistsInWorkspace("1.1", afterFile);
+		assertDoesNotExistInWorkspace(before);
+		assertDoesNotExistInWorkspace(beforeFile);
+		assertExistsInWorkspace(after);
+		assertExistsInWorkspace(afterFile);
 	}
 
 	public void testCopyMissingFolder() throws CoreException {
@@ -201,7 +201,7 @@ public class IFolderTest extends ResourceTest {
 		//
 		assertExistsInWorkspace(before);
 		project.getFolder("c").delete(true, getMonitor());
-		assertDoesNotExistInWorkspace("1.0", before);
+		assertDoesNotExistInWorkspace(before);
 	}
 
 	public void testFolderMove() throws Throwable {
@@ -216,11 +216,11 @@ public class IFolderTest extends ResourceTest {
 		file.setContents(getContents(content), true, false, getMonitor());
 
 		// Be sure the resources exist and then move them.
-		assertExistsInWorkspace("1.0", before);
+		assertExistsInWorkspace(before);
 		project.getFolder("b").move(project.getFullPath().append("a"), true, getMonitor());
 
 		//
-		assertDoesNotExistInWorkspace("2.0", before);
+		assertDoesNotExistInWorkspace(before);
 		assertExistsInWorkspace(after);
 		file = project.getFile(IPath.fromOSString("a/b/z"));
 		assertTrue("2.1", compareContent(getContents(content), file.getContents(false)));
@@ -282,8 +282,8 @@ public class IFolderTest extends ResourceTest {
 		ensureExistsInWorkspace(source, true);
 		IFolder dest = project.getFolder("Folder2");
 		source.move(dest.getFullPath(), true, getMonitor());
-		assertExistsInWorkspace("1.0", dest);
-		assertDoesNotExistInWorkspace("1.1", source);
+		assertExistsInWorkspace(dest);
+		assertDoesNotExistInWorkspace(source);
 	}
 
 	public void testReadOnlyFolderCopy() throws Exception {
@@ -298,8 +298,8 @@ public class IFolderTest extends ResourceTest {
 		source.setReadOnly(true);
 		IFolder dest = project.getFolder("Folder2");
 		source.copy(dest.getFullPath(), true, getMonitor());
-		assertExistsInWorkspace("1.0", dest);
-		assertExistsInWorkspace("1.1", source);
+		assertExistsInWorkspace(dest);
+		assertExistsInWorkspace(source);
 		assertTrue("1.2", dest.isReadOnly());
 
 		// cleanup - ensure that the files can be deleted.

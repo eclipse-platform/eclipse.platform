@@ -174,24 +174,8 @@ public abstract class ResourceTest extends CoreTest {
 	 * Assert that the given resource does not exist in the local store.
 	 */
 	public void assertDoesNotExistInFileSystem(IResource resource) {
-		assertDoesNotExistInFileSystem("", resource); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert that each element of the resource array does not exist in the
-	 * local store.
-	 */
-	public void assertDoesNotExistInFileSystem(IResource[] resources) {
-		assertDoesNotExistInFileSystem("", resources); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert that the given resource does not exist in the local store.
-	 */
-	public void assertDoesNotExistInFileSystem(String message, IResource resource) {
 		if (existsInFileSystem(resource)) {
-			String formatted = message == null ? "" : message + " ";
-			fail(formatted + resource.getFullPath() + " unexpectedly exists in the file system");
+			fail(resource.getFullPath() + " unexpectedly exists in the file system");
 		}
 	}
 
@@ -199,9 +183,9 @@ public abstract class ResourceTest extends CoreTest {
 	 * Assert that each element of the resource array does not exist in the
 	 * local store.
 	 */
-	public void assertDoesNotExistInFileSystem(String message, IResource[] resources) {
+	public void assertDoesNotExistInFileSystem(IResource[] resources) {
 		for (IResource resource : resources) {
-			assertDoesNotExistInFileSystem(message, resource);
+			assertDoesNotExistInFileSystem(resource);
 		}
 	}
 
@@ -210,25 +194,8 @@ public abstract class ResourceTest extends CoreTest {
 	 * resource info tree.
 	 */
 	public void assertDoesNotExistInWorkspace(IResource resource) {
-		assertDoesNotExistInWorkspace("", resource); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert that each element of the resource array does not exist
-	 * in the workspace resource info tree.
-	 */
-	public void assertDoesNotExistInWorkspace(IResource[] resources) {
-		assertDoesNotExistInWorkspace("", resources); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert that the given resource does not exist in the workspace
-	 * resource info tree.
-	 */
-	public void assertDoesNotExistInWorkspace(String message, IResource resource) {
 		if (existsInWorkspace(resource, false)) {
-			String formatted = message == null ? "" : message + " ";
-			fail(formatted + resource.getFullPath().toString() + " unexpectedly exists in the workspace");
+			fail(resource.getFullPath().toString() + " unexpectedly exists in the workspace");
 		}
 	}
 
@@ -236,9 +203,9 @@ public abstract class ResourceTest extends CoreTest {
 	 * Assert that each element of the resource array does not exist
 	 * in the workspace resource info tree.
 	 */
-	public void assertDoesNotExistInWorkspace(String message, IResource[] resources) {
+	public void assertDoesNotExistInWorkspace(IResource[] resources) {
 		for (IResource resource : resources) {
-			assertDoesNotExistInWorkspace(message, resource);
+			assertDoesNotExistInWorkspace(resource);
 		}
 	}
 
@@ -248,51 +215,26 @@ public abstract class ResourceTest extends CoreTest {
 	 * correct Path -&gt; File mapping.
 	 */
 	public void assertExistsInFileSystem(IResource resource) {
-		assertExistsInFileSystem("", resource); //$NON-NLS-1$
+		if (!existsInFileSystem(resource)) {
+			fail(resource.getFullPath() + " unexpectedly does not exist in the file system");
+		}
 	}
 
 	/**
-	 * Assert that each element in the resource array  exists in the local store.
+	 * Assert that each element in the resource array exists in the local store.
 	 */
 	public void assertExistsInFileSystem(IResource[] resources) {
-		assertExistsInFileSystem("", resources); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert whether or not the given resource exists in the local
-	 * store. Use the resource manager to ensure that we have a
-	 * correct Path -&gt; File mapping.
-	 */
-	public void assertExistsInFileSystem(String message, IResource resource) {
-		if (!existsInFileSystem(resource)) {
-			String formatted = message == null ? "" : message + " ";
-			fail(formatted + resource.getFullPath() + " unexpectedly does not exist in the file system");
-		}
-	}
-
-	/**
-	 * Assert that each element in the resource array  exists in the local store.
-	 */
-	public void assertExistsInFileSystem(String message, IResource[] resources) {
 		for (IResource resource : resources) {
-			assertExistsInFileSystem(message, resource);
+			assertExistsInFileSystem(resource);
 		}
 	}
 
-	/**
-	 * Assert whether or not the given resource exists in the workspace
-	 * resource info tree.
+	/*
+	 * Assert whether or not the given resource exists in the workspace resource
+	 * info tree.
 	 */
 	public void assertExistsInWorkspace(IResource resource) {
-		assertExistsInWorkspace("", resource, false); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert whether or not the given resource exists in the workspace
-	 * resource info tree.
-	 */
-	public void assertExistsInWorkspace(IResource resource, boolean phantom) {
-		assertExistsInWorkspace("", resource, phantom); //$NON-NLS-1$
+		assertExistsInWorkspace(resource, false); // $NON-NLS-1$
 	}
 
 	/**
@@ -300,7 +242,17 @@ public abstract class ResourceTest extends CoreTest {
 	 * workspace resource info tree.
 	 */
 	public void assertExistsInWorkspace(IResource[] resources) {
-		assertExistsInWorkspace("", resources, false); //$NON-NLS-1$
+		assertExistsInWorkspace(resources, false); // $NON-NLS-1$
+	}
+
+	/**
+	 * Assert that each element of the resource array exists in the workspace
+	 * resource info tree.
+	 */
+	public void assertExistsInWorkspace(IResource resource, boolean phantom) {
+		if (!existsInWorkspace(resource, phantom)) {
+			fail(resource.getFullPath().toString() + " unexpectedly does not exist in the workspace");
+		}
 	}
 
 	/**
@@ -308,45 +260,8 @@ public abstract class ResourceTest extends CoreTest {
 	 * workspace resource info tree.
 	 */
 	public void assertExistsInWorkspace(IResource[] resources, boolean phantom) {
-		assertExistsInWorkspace("", resources, phantom); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert whether or not the given resource exists in the workspace
-	 * resource info tree.
-	 */
-	public void assertExistsInWorkspace(String message, IResource resource) {
-		assertExistsInWorkspace(message, resource, false);
-	}
-
-	/**
-	 * Assert whether or not the given resource exists in the workspace
-	 * resource info tree.
-	 */
-	public void assertExistsInWorkspace(String message, IResource resource, boolean phantom) {
-		if (!existsInWorkspace(resource, phantom)) {
-			String formatted = message == null ? "" : message + " ";
-			fail(formatted + resource.getFullPath().toString() + " unexpectedly does not exist in the workspace");
-		}
-	}
-
-	/**
-	 * Assert that each element of the resource array exists in the
-	 * workspace resource info tree.
-	 */
-	public void assertExistsInWorkspace(String message, IResource[] resources) {
 		for (IResource resource : resources) {
-			assertExistsInWorkspace(message, resource, false);
-		}
-	}
-
-	/**
-	 * Assert that each element of the resource array exists in the
-	 * workspace resource info tree.
-	 */
-	public void assertExistsInWorkspace(String message, IResource[] resources, boolean phantom) {
-		for (IResource resource : resources) {
-			assertExistsInWorkspace(message, resource, phantom);
+			assertExistsInWorkspace(resource, phantom);
 		}
 	}
 

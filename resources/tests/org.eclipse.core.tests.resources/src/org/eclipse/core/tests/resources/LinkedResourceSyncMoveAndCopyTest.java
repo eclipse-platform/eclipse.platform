@@ -337,13 +337,13 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		IProject destination = getWorkspace().getRoot().getProject("DestProject");
 		IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
 
-		assertDoesNotExistInWorkspace("1.1", destination);
+		assertDoesNotExistInWorkspace(destination);
 		// without the fix, this call will cause an infinite loop in
 		// PathVariableUtil.getUniqueVariableName()
 		existingProject.move(description, IResource.SHALLOW, getMonitor());
 		IProject destProject = ResourcesPlugin.getWorkspace().getRoot().getProject("DestProject");
-		assertExistsInWorkspace("2.0", destProject);
-		assertExistsInWorkspace("2.1", destProject.getFile(linkName));
+		assertExistsInWorkspace(destProject);
+		assertExistsInWorkspace(destProject.getFile(linkName));
 
 	}
 }
