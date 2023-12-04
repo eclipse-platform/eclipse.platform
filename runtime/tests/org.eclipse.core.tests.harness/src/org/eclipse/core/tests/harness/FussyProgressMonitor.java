@@ -13,10 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 import junit.framework.AssertionFailedError;
 import org.eclipse.core.runtime.jobs.Job;
+import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 
 /**
  * This class can be used for testing progress monitoring.
@@ -62,40 +68,56 @@ public class FussyProgressMonitor extends TestProgressMonitor {
 		this.job = job;
 	}
 
-	/**
-	 *
-	 * @param reason java.lang.String
-	 * @param condition boolean
-	 */
-	private void assertTrue(String reason, boolean condition) {
+	private <T> void assertThat(String reason, T actual, Matcher<T> matcher) {
 		// silently ignore follow-up failures
 		if (hasFailed) {
 			return;
 		}
-		if (!condition) {
-			hasFailed = true;
-			if (job != null) {
-				reason += " in job: " + job.getName();
-			}
-			throw new FussyProgressAssertionFailed(reason);
+		try {
+			MatcherAssert.assertThat(reason, actual, matcher);
+		} catch (AssertionError error) {
+			processFailedAssertion(error);
 		}
-		//Assert.assert(reason, condition);
+	}
+
+	private <T> void assertThat(String reason, boolean condition) {
+		// silently ignore follow-up failures
+		if (hasFailed) {
+			return;
+		}
+		try {
+			MatcherAssert.assertThat(reason, condition);
+		} catch (AssertionError error) {
+			processFailedAssertion(error);
+		}
+	}
+
+	public void processFailedAssertion(AssertionError assertionError) throws FussyProgressAssertionFailed {
+		hasFailed = true;
+		String jobSuffix = "";
+		if (job != null) {
+			jobSuffix += " in job: " + job.getName();
+		}
+		FussyProgressAssertionFailed failure = new FussyProgressAssertionFailed(
+				"Progress monitor assertion failed" + jobSuffix);
+		failure.initCause(assertionError);
+		throw failure;
 	}
 
 	/**
 	 * Asserts that this progress monitor is all used up
 	 */
 	public void assertUsedUp() {
-		assertTrue("beginTask has not been called on ProgressMonitor", beginTaskCalled);
-		assertTrue("ProgressMonitor not used up", Math.round(workedSoFar) >= totalWork);
+		assertThat("beginTask has not been called on ProgressMonitor", beginTaskCalled);
+		assertThat("ProgressMonitor not used up", Math.round(workedSoFar), greaterThanOrEqualTo((long) totalWork));
 	}
 
 	@Override
 	public void beginTask(String name, int newTotalWork) {
-		assertFalse("beginTask may only be called once (old name=" + taskName + ")", beginTaskCalled);
+		assertThat("beginTask may only be called once (old name=" + taskName + ")", !beginTaskCalled);
 		beginTaskCalled = true;
 		taskName = name;
-		assertTrue("total work must be positive or UNKNOWN", newTotalWork > 0 || newTotalWork == UNKNOWN);
+		assertThat("total work must be positive or UNKNOWN", newTotalWork, anyOf(is(UNKNOWN), greaterThan(0)));
 		this.totalWork = newTotalWork;
 		beginTime = System.currentTimeMillis();
 	}
@@ -108,14 +130,14 @@ public class FussyProgressMonitor extends TestProgressMonitor {
 
 	@Override
 	public void internalWorked(double work) {
-		assertTrue("can accept calls to worked/internalWorked only after beginTask", beginTaskCalled);
-		assertTrue("can accept calls to worked/internalWorked only before done is called", doneCalls == 0);
-		assertTrue("amount worked should be positive, not " + work, work >= 0);
-		if (work == 0) {
-			CoreTest.debug("INFO: amount worked should be positive, not " + work);
-		}
+		assertThat("can accept calls to worked/internalWorked only after beginTask", beginTaskCalled);
+		assertThat("can accept calls to worked/internalWorked only before done is called", doneCalls, is(0));
+		assertThat("amount worked should be positive", work, greaterThan(0.0));
 		workedSoFar += work;
-		assertTrue("worked " + (workedSoFar - totalWork) + " more than totalWork", totalWork == UNKNOWN || workedSoFar <= totalWork + (totalWork * EPS_FACTOR));
+		if (totalWork != UNKNOWN) {
+			assertThat("worked more than totalWork", workedSoFar,
+					lessThanOrEqualTo(totalWork + (totalWork * EPS_FACTOR)));
+		}
 	}
 
 	@Override
@@ -140,13 +162,12 @@ public class FussyProgressMonitor extends TestProgressMonitor {
 	 *  should be called after every use of a FussyProgressMonitor
 	 */
 	public void sanityCheck() {
-		if (sanityCheckCalled) {
-			CoreTest.debug("sanityCheck has already been called");
-		}
+		assertThat("sanityCheck has already been called", !sanityCheckCalled);
 		sanityCheckCalled = true;
 		long duration = System.currentTimeMillis() - beginTime;
 		if (duration > NOTICEABLE_DELAY && beginTaskCalled) {
-			assertTrue("this operation took: " + duration + "ms, it should report progress", workedSoFar > 0);
+			assertThat("this operation took: " + duration + "ms, it should report progress", workedSoFar,
+					greaterThan(0.0));
 		}
 	}
 
