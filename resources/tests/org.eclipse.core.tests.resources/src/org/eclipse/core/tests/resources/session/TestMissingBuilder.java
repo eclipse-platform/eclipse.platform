@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SNOW;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -29,7 +30,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SnowBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -135,6 +135,6 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestMissingBuilder.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestMissingBuilder.class);
 	}
 }

@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import junit.framework.Test;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IFolder;
@@ -22,7 +24,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -52,6 +53,6 @@ public class TestCreateLinkedResourceInHiddenProject extends WorkspaceSerializat
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestCreateLinkedResourceInHiddenProject.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestCreateLinkedResourceInHiddenProject.class);
 	}
 }
