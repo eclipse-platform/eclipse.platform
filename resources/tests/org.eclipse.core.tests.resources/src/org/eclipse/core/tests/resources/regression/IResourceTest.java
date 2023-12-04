@@ -235,7 +235,6 @@ public class IResourceTest extends ResourceTest {
 		// FIXME: remove when fix this PR
 		String os = Platform.getOS();
 		if (!os.equals(Platform.OS_LINUX)) {
-			debug("Skipping testCreate_1FW87XF because it is still not supported by the platform.");
 			return;
 		}
 
