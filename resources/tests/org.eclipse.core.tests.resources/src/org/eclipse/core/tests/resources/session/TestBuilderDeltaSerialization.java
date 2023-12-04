@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
@@ -66,7 +67,10 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 		unsortedFile1.setContents(new ByteArrayInputStream(new byte[] { 1, 4, 3 }), true, true, null);
 		unsortedFile2.setContents(new ByteArrayInputStream(new byte[] { 1, 4, 3 }), true, true, null);
 
-		setBuildOrder(project1, project2);
+		// set build order
+		IWorkspaceDescription workspaceDescription = workspace.getDescription();
+		workspaceDescription.setBuildOrder(new String[] { project1.getName(), project2.getName() });
+		workspace.setDescription(workspaceDescription);
 		setAutoBuilding(false);
 
 		// configure builder for project1
