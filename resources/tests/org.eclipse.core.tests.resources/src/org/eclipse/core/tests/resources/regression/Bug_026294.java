@@ -54,11 +54,11 @@ public class Bug_026294 extends ResourceTest {
 		IPath projectRoot = project.getLocation();
 		deleteOnTearDown(projectRoot);
 
-		assertExistsInFileSystem("0.0", file1);
-		assertExistsInFileSystem("0.1", file2);
-		assertExistsInFileSystem("0.2", file3);
-		assertExistsInFileSystem("0.3", folder);
-		assertExistsInFileSystem("0.4", projectFile);
+		assertExistsInFileSystem(file1);
+		assertExistsInFileSystem(file2);
+		assertExistsInFileSystem(file3);
+		assertExistsInFileSystem(folder);
+		assertExistsInFileSystem(projectFile);
 
 		// opens a file so it cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
@@ -69,27 +69,27 @@ public class Bug_026294 extends ResourceTest {
 
 			// Delete is best-case so check all the files.
 			// Do a check on disk and in the workspace in case something is out of sync.
-			assertExistsInWorkspace("2.1.1", project);
-			assertExistsInFileSystem("2.1.2", project);
+			assertExistsInWorkspace(project);
+			assertExistsInFileSystem(project);
 
-			assertExistsInWorkspace("2.2.1", file1);
-			assertExistsInFileSystem("2.2.2", file1);
+			assertExistsInWorkspace(file1);
+			assertExistsInFileSystem(file1);
 			assertTrue("2.2.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertDoesNotExistInWorkspace("2.3.1", file2);
-			assertDoesNotExistInFileSystem("2.3.2", file2);
+			assertDoesNotExistInWorkspace(file2);
+			assertDoesNotExistInFileSystem(file2);
 			assertTrue("2.3.3", file2.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertDoesNotExistInWorkspace("2.4.1", file3);
-			assertDoesNotExistInFileSystem("2.4.2", file3);
+			assertDoesNotExistInWorkspace(file3);
+			assertDoesNotExistInFileSystem(file3);
 			assertTrue("2.4.3", file3.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertExistsInWorkspace("2.5.1", folder);
-			assertExistsInFileSystem("2.5.2", folder);
+			assertExistsInWorkspace(folder);
+			assertExistsInFileSystem(folder);
 			assertTrue("2.5.3", folder.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertExistsInWorkspace("2.6.1", projectFile);
-			assertExistsInFileSystem("2.6.2", projectFile);
+			assertExistsInWorkspace(projectFile);
+			assertExistsInFileSystem(projectFile);
 			assertTrue("2.6.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
 
 			assertTrue("2.7.0", project.isSynchronized(IResource.DEPTH_ZERO));
@@ -182,7 +182,7 @@ public class Bug_026294 extends ResourceTest {
 					() -> project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor()));
 			assertTrue("2.1", project.exists());
 			assertTrue("2.7", project.isSynchronized(IResource.DEPTH_INFINITE));
-			assertExistsInFileSystem("2.8", projectFile);
+			assertExistsInFileSystem(projectFile);
 
 		}
 		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
@@ -190,7 +190,7 @@ public class Bug_026294 extends ResourceTest {
 		assertTrue("5.1", !project.exists());
 		assertTrue("5.3", project.isSynchronized(IResource.DEPTH_INFINITE));
 		assertTrue("6.0", !projectRoot.toFile().exists());
-		assertDoesNotExistInFileSystem("7.0", projectFile);
+		assertDoesNotExistInFileSystem(projectFile);
 	}
 
 	/**
@@ -225,7 +225,7 @@ public class Bug_026294 extends ResourceTest {
 
 			assertTrue("3.0", project.exists());
 			assertTrue("3.1", project.isSynchronized(IResource.DEPTH_INFINITE));
-			assertExistsInFileSystem("3.2", projectFile);
+			assertExistsInFileSystem(projectFile);
 
 			project.open(getMonitor());
 		} finally {
@@ -238,7 +238,7 @@ public class Bug_026294 extends ResourceTest {
 		assertTrue("6.0", !project.exists());
 		assertTrue("6.1", project.isSynchronized(IResource.DEPTH_INFINITE));
 		assertTrue("6.2", !projectRoot.toFile().exists());
-		assertDoesNotExistInFileSystem("6.3", projectFile);
+		assertDoesNotExistInFileSystem(projectFile);
 	}
 
 	/**

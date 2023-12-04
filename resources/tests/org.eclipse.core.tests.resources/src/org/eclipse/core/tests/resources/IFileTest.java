@@ -571,8 +571,8 @@ public class IFileTest extends ResourceTest {
 		monitor.prepare();
 		assertThrows(CoreException.class, () -> fileFromStream.create(content, false, monitor));
 		monitor.assertUsedUp();
-		assertDoesNotExistInWorkspace("6.2", fileFromStream);
-		assertDoesNotExistInFileSystem("6.3", fileFromStream);
+		assertDoesNotExistInWorkspace(fileFromStream);
+		assertDoesNotExistInFileSystem(fileFromStream);
 
 		// cleanup
 		folder = projects[0].getFolder("folder1");
@@ -612,8 +612,8 @@ public class IFileTest extends ResourceTest {
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		assertThrows(OperationCanceledException.class, () -> target.create(content, false, monitor));
 		monitor.assertUsedUp();
-		assertDoesNotExistInWorkspace("3.0", target);
-		assertDoesNotExistInFileSystem("4.0", target);
+		assertDoesNotExistInWorkspace(target);
+		assertDoesNotExistInFileSystem(target);
 	}
 
 	@Test
@@ -797,8 +797,8 @@ public class IFileTest extends ResourceTest {
 			assertThrows(CoreException.class, () -> target.setContents(content, IResource.NONE, monitor));
 			monitor.sanityCheck();
 		}
-		assertExistsInWorkspace("4.2", target);
-		assertExistsInFileSystem("4.3", target);
+		assertExistsInWorkspace(target);
+		assertExistsInFileSystem(target);
 	}
 
 	/**

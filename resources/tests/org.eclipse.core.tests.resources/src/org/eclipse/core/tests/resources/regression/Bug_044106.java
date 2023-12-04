@@ -56,17 +56,17 @@ public class Bug_044106 extends ResourceTest {
 		IFile linkedFile = project.getFile("linkedFile");
 		String local = linkedFile.getLocation().toOSString();
 		createSymLink(target, local);
-		assertExistsInFileSystem("1.2", linkedFile);
+		assertExistsInFileSystem(linkedFile);
 
 		// do a refresh and ensure that the resources are in the workspace
 		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		assertExistsInWorkspace("2.1", linkedFile);
+		assertExistsInWorkspace(linkedFile);
 
 		// delete the file
 		linkedFile.delete(deleteFlags, getMonitor());
 
 		// ensure that the folder and file weren't deleted in the filesystem
-		assertDoesNotExistInWorkspace("4.0", linkedFile);
+		assertDoesNotExistInWorkspace(linkedFile);
 		assertTrue("4.1", linkDestFile.fetchInfo().exists());
 	}
 
@@ -94,13 +94,13 @@ public class Bug_044106 extends ResourceTest {
 		IFile linkedFile = linkedFolder.getFile(linkDestFile.getName());
 		String local = linkedFolder.getLocation().toOSString();
 		createSymLink(target, local);
-		assertExistsInFileSystem("1.2", linkedFolder);
-		assertExistsInFileSystem("1.3", linkedFile);
+		assertExistsInFileSystem(linkedFolder);
+		assertExistsInFileSystem(linkedFile);
 
 		// do a refresh and ensure that the resources are in the workspace
 		linkedFolder.getProject().refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		assertExistsInWorkspace("2.1", linkedFolder);
-		assertExistsInWorkspace("2.2", linkedFile);
+		assertExistsInWorkspace(linkedFolder);
+		assertExistsInWorkspace(linkedFile);
 
 		// delete the folder or project
 		if (deleteParent) {
@@ -110,8 +110,8 @@ public class Bug_044106 extends ResourceTest {
 		}
 
 		// ensure that the folder and file weren't deleted in the filesystem
-		assertDoesNotExistInWorkspace("4.0", linkedFolder);
-		assertDoesNotExistInWorkspace("4.1", linkedFile);
+		assertDoesNotExistInWorkspace(linkedFolder);
+		assertDoesNotExistInWorkspace(linkedFile);
 		assertTrue("4.2", linkDestLocation.fetchInfo().exists());
 		assertTrue("4.3", linkDestFile.fetchInfo().exists());
 	}

@@ -2069,7 +2069,7 @@ public class IResourceTest extends ResourceTest {
 		// listener)
 		project.create(null);
 		project.open(null);
-		assertExistsInWorkspace("1.3", project);
+		assertExistsInWorkspace(project);
 		// define an operation which will create a bunch of resources including
 		// a project.
 		for (IResource resource : resources) {
@@ -2085,7 +2085,7 @@ public class IResourceTest extends ResourceTest {
 				break;
 			}
 		}
-		assertExistsInWorkspace("1.5", resources);
+		assertExistsInWorkspace(resources);
 		project.delete(true, false, getMonitor());
 	}
 
@@ -2273,12 +2273,12 @@ public class IResourceTest extends ResourceTest {
 		String[] hierarchy = {"Folder/", "Folder/Folder/", "Folder/Folder/Folder/", "Folder/Folder/Folder/Folder/"};
 		IResource[] resources = buildResources(folder, hierarchy);
 		ensureExistsInFileSystem(resources);
-		assertDoesNotExistInWorkspace("3.0", resources);
+		assertDoesNotExistInWorkspace(resources);
 
 		folder.refreshLocal(IResource.DEPTH_ONE, getMonitor());
 
-		assertExistsInWorkspace("5.0", folder.getFolder("Folder"));
-		assertDoesNotExistInWorkspace("5.1", folder.getFolder("Folder/Folder"));
+		assertExistsInWorkspace(folder.getFolder("Folder"));
+		assertDoesNotExistInWorkspace(folder.getFolder("Folder/Folder"));
 	}
 
 	/**

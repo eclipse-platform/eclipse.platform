@@ -50,10 +50,10 @@ public class TestBug93473 extends WorkspaceSessionTest {
 		assertEquals("0.0", ContentDescriptionManager.INVALID_CACHE, ((Workspace) workspace).getContentDescriptionManager().getCacheState());
 
 		IProject project = workspace.getRoot().getProject("proj1");
-		assertDoesNotExistInWorkspace("0.1", project);
+		assertDoesNotExistInWorkspace(project);
 		Platform.getContentTypeManager().getContentType(IContentTypeManager.CT_TEXT);
 		IFile file = project.getFile("foo.txt");
-		assertDoesNotExistInWorkspace("0.2", file);
+		assertDoesNotExistInWorkspace(file);
 		ensureExistsInWorkspace(file, getRandomContents());
 		// this will also cause the cache flush job to be scheduled
 		file.getContentDescription();

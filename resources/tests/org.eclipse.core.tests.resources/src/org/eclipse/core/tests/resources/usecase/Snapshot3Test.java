@@ -44,8 +44,8 @@ public class Snapshot3Test extends SnapshotTest {
 
 		// verify existence of children
 		IResource[] resources = buildResources(project, Snapshot2Test.defineHierarchy1());
-		assertExistsInFileSystem("2.1", resources);
-		assertExistsInWorkspace("2.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 
 		// Project2
 		project = getWorkspace().getRoot().getProject(PROJECT_2);
@@ -57,7 +57,7 @@ public class Snapshot3Test extends SnapshotTest {
 
 		// verify existence of children
 		resources = buildResources(project, Snapshot2Test.defineHierarchy2());
-		assertExistsInFileSystem("5.1", resources);
-		assertExistsInWorkspace("5.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 	}
 }

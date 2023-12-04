@@ -37,7 +37,7 @@ public class Bug_233939 extends ResourceTest {
 		createSymLink(container.getLocation().toFile(), linkName, linkTarget.toOSString(), false);
 		container.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
 		IResource theLink = container.findMember(linkName);
-		assertExistsInWorkspace("2.1", theLink);
+		assertExistsInWorkspace(theLink);
 		assertTrue("2.2", theLink.getResourceAttributes().isSymbolicLink());
 	}
 

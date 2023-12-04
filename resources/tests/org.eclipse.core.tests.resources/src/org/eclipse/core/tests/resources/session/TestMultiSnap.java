@@ -14,7 +14,10 @@
 package org.eclipse.core.tests.resources.session;
 
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
@@ -64,7 +67,7 @@ public class TestMultiSnap extends WorkspaceSerializationTest {
 		assertTrue("1.2", project.exists());
 		assertTrue("1.3", project.isOpen());
 
-		assertExistsInWorkspace("1.4", new IResource[] {project, folder, file});
+		assertExistsInWorkspace(new IResource[] { project, folder, file });
 	}
 
 	public static Test suite() {

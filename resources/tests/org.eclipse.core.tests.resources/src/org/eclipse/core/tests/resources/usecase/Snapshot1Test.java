@@ -44,8 +44,8 @@ public class Snapshot1Test extends SnapshotTest {
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy1());
 		ensureExistsInWorkspace(resources, true);
-		assertExistsInFileSystem("1.1", resources);
-		assertExistsInWorkspace("1.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 
 		project.close(null);
 		assertTrue("2.1", project.exists());
@@ -65,8 +65,8 @@ public class Snapshot1Test extends SnapshotTest {
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy2());
 		ensureExistsInWorkspace(resources, true);
-		assertExistsInFileSystem("3.1", resources);
-		assertExistsInWorkspace("3.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 	}
 
 	public void testSnapshotWorkspace() throws CoreException {

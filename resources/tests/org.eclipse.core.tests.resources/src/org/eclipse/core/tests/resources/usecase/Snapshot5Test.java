@@ -30,17 +30,17 @@ public class Snapshot5Test extends SnapshotTest {
 
 		// verify existence of children
 		IResource[] resources = buildResources(project, Snapshot4Test.defineHierarchy1());
-		assertExistsInFileSystem("2.1", resources);
-		assertExistsInWorkspace("2.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 		IFile file = project.getFile("added file");
-		assertDoesNotExistInFileSystem("2.3", file);
-		assertDoesNotExistInWorkspace("2.4", file);
+		assertDoesNotExistInFileSystem(file);
+		assertDoesNotExistInWorkspace(file);
 		file = project.getFile("yet another file");
-		assertDoesNotExistInFileSystem("2.5", file);
-		assertDoesNotExistInWorkspace("2.6", file);
+		assertDoesNotExistInFileSystem(file);
+		assertDoesNotExistInWorkspace(file);
 		IFolder folder = project.getFolder("a folder");
-		assertDoesNotExistInFileSystem("2.7", folder);
-		assertDoesNotExistInWorkspace("2.8", folder);
+		assertDoesNotExistInFileSystem(folder);
+		assertDoesNotExistInWorkspace(folder);
 
 		// Project2
 		project = getWorkspace().getRoot().getProject(PROJECT_2);

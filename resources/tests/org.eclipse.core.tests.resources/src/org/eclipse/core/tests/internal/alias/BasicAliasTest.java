@@ -533,17 +533,17 @@ public class BasicAliasTest extends ResourceTest {
 		IFolder destFolder1 = fLinkOverlap1.getFolder(source.getName());
 		IFolder destFolder2 = fLinkOverlap2.getFolder(source.getName());
 		IResource[] allDest = new IResource[] {destFolder1, destFolder2};
-		assertDoesNotExistInWorkspace("1.0", allDest);
+		assertDoesNotExistInWorkspace(allDest);
 
 		//copy to dest 1
 		source.copy(destFolder1.getFullPath(), IResource.NONE, getMonitor());
-		assertExistsInWorkspace("1.2", allDest);
+		assertExistsInWorkspace(allDest);
 
 		destFolder2.delete(IResource.NONE, getMonitor());
 
 		//copy to dest 2
 		source.copy(destFolder2.getFullPath(), IResource.NONE, getMonitor());
-		assertExistsInWorkspace("1.5", allDest);
+		assertExistsInWorkspace(allDest);
 
 		destFolder1.delete(IResource.NONE, getMonitor());
 	}
@@ -786,9 +786,10 @@ public class BasicAliasTest extends ResourceTest {
 		//delete the overlapping project - it should delete the children of the linked folder
 		//but leave the actual links intact in the resource tree
 		pOverlap.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
-		assertDoesNotExistInWorkspace("1.1", new IResource[] {pOverlap, fOverlap, lOverlap, lChildOverlap, lChildLinked});
-		assertDoesNotExistInFileSystem("1.2", new IResource[] {pOverlap, fOverlap, lOverlap, lChildOverlap, lChildLinked, lLinked, fLinked});
-		assertExistsInWorkspace("1.3", new IResource[] {pLinked, fLinked, lLinked});
+		assertDoesNotExistInWorkspace(new IResource[] { pOverlap, fOverlap, lOverlap, lChildOverlap, lChildLinked });
+		assertDoesNotExistInFileSystem(
+				new IResource[] { pOverlap, fOverlap, lOverlap, lChildOverlap, lChildLinked, lLinked, fLinked });
+		assertExistsInWorkspace(new IResource[] { pLinked, fLinked, lLinked });
 	}
 
 	@Test
@@ -834,43 +835,43 @@ public class BasicAliasTest extends ResourceTest {
 		IFile destination = pNoOverlap.getFile("MoveDestination");
 		//file in linked folder
 		lChildLinked.move(destination.getFullPath(), IResource.NONE, getMonitor());
-		assertDoesNotExistInWorkspace("1.1", lChildLinked);
-		assertDoesNotExistInWorkspace("1.2", lChildOverlap);
-		assertExistsInWorkspace("1.3", destination);
+		assertDoesNotExistInWorkspace(lChildLinked);
+		assertDoesNotExistInWorkspace(lChildOverlap);
+		assertExistsInWorkspace(destination);
 		assertOverlap("1.4", lChildLinked, lChildOverlap);
 		assertTrue("1.5", lChildLinked.isSynchronized(IResource.DEPTH_INFINITE));
 		assertTrue("1.6", destination.isSynchronized(IResource.DEPTH_INFINITE));
 
 		destination.move(lChildLinked.getFullPath(), IResource.NONE, getMonitor());
-		assertExistsInWorkspace("2.1", lChildLinked);
-		assertExistsInWorkspace("2.2", lChildOverlap);
-		assertDoesNotExistInWorkspace("2.3", destination);
+		assertExistsInWorkspace(lChildLinked);
+		assertExistsInWorkspace(lChildOverlap);
+		assertDoesNotExistInWorkspace(destination);
 		assertOverlap("2.4", lChildLinked, lChildOverlap);
 		//duplicate file
 		lOverlap.move(destination.getFullPath(), IResource.NONE, getMonitor());
-		assertDoesNotExistInWorkspace("3.1", lOverlap);
-		assertExistsInWorkspace("3.2", lLinked);
-		assertDoesNotExistInFileSystem("3.25", lLinked);
-		assertExistsInWorkspace("3.3", destination);
+		assertDoesNotExistInWorkspace(lOverlap);
+		assertExistsInWorkspace(lLinked);
+		assertDoesNotExistInFileSystem(lLinked);
+		assertExistsInWorkspace(destination);
 		assertEquals("3.4", lLinked.getLocation(), lOverlap.getLocation());
 		assertTrue("3.4.1", lLinked.isSynchronized(IResource.DEPTH_INFINITE));
 
 		destination.move(lOverlap.getFullPath(), IResource.NONE, getMonitor());
-		assertExistsInWorkspace("3.5", lLinked);
-		assertExistsInWorkspace("3.6", lOverlap);
-		assertDoesNotExistInWorkspace("3.7", destination);
+		assertExistsInWorkspace(lLinked);
+		assertExistsInWorkspace(lOverlap);
+		assertDoesNotExistInWorkspace(destination);
 		assertOverlap("3.8", lLinked, lOverlap);
 		//file in duplicate folder
 		lChildOverlap.move(destination.getFullPath(), IResource.NONE, getMonitor());
-		assertDoesNotExistInWorkspace("3.1", lChildLinked);
-		assertDoesNotExistInWorkspace("3.2", lChildOverlap);
-		assertExistsInWorkspace("3.3", destination);
+		assertDoesNotExistInWorkspace(lChildLinked);
+		assertDoesNotExistInWorkspace(lChildOverlap);
+		assertExistsInWorkspace(destination);
 		assertOverlap("3.4", lChildLinked, lChildOverlap);
 
 		destination.move(lChildOverlap.getFullPath(), IResource.NONE, getMonitor());
-		assertExistsInWorkspace("3.5", lChildLinked);
-		assertExistsInWorkspace("3.6", lChildOverlap);
-		assertDoesNotExistInWorkspace("3.7", destination);
+		assertExistsInWorkspace(lChildLinked);
+		assertExistsInWorkspace(lChildOverlap);
+		assertDoesNotExistInWorkspace(destination);
 		assertOverlap("3.8", lChildLinked, lChildOverlap);
 	}
 }
