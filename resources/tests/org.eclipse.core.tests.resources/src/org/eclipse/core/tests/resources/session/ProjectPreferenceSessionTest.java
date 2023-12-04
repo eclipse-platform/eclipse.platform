@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import java.util.concurrent.atomic.AtomicReference;
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -67,16 +68,14 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 	public void testDeleteFileBeforeLoad2() throws Exception {
 		IProject project = getProject("testDeleteFileBeforeLoad");
 		Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE).node(project.getName());
+		AtomicReference<BackingStoreException> exceptionInListener = new AtomicReference<>();
 		ILogListener listener = (status, plugin) -> {
 			if (!Platform.PI_RUNTIME.equals(plugin)) {
 				return;
 			}
 			Throwable t = status.getException();
-			if (t == null) {
-				return;
-			}
-			if (t instanceof BackingStoreException) {
-				fail("1.0", t);
+			if (t instanceof BackingStoreException backingStoreException) {
+				exceptionInListener.set(backingStoreException);
 			}
 		};
 		try {
@@ -84,6 +83,9 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 			project.delete(IResource.NONE, getMonitor());
 		} finally {
 			Platform.removeLogListener(listener);
+		}
+		if (exceptionInListener.get() != null) {
+			throw exceptionInListener.get();
 		}
 		saveWorkspace();
 	}

@@ -30,11 +30,7 @@ public class BenchCopyFile extends OldCorePerformanceTest {
 		}
 		startBench();
 		for (IFileStore element : output) {
-			try {
-				input.copy(element, EFS.NONE, null);
-			} catch (CoreException e) {
-				fail("4.99", e);
-			}
+			input.copy(element, EFS.NONE, null);
 		}
 		stopBench("copyFile", COUNT);
 

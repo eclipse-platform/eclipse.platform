@@ -14,7 +14,12 @@
 package org.eclipse.core.tests.resources.perf;
 
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -119,11 +124,7 @@ public class BenchWorkspace extends ResourceTest {
 			IResource[] resources = buildResources(project, defineHierarchy());
 			ensureExistsInWorkspace(resources, true);
 		};
-		try {
-			getWorkspace().run(runnable, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		getWorkspace().run(runnable, null);
 	}
 
 	public void testCountResources() {
@@ -151,7 +152,7 @@ public class BenchWorkspace extends ResourceTest {
 		waitForBuild();
 	}
 
-	public void testCountResourcesDuringOperation() {
+	public void testCountResourcesDuringOperation() throws CoreException {
 		final Workspace workspace = (Workspace) getWorkspace();
 		IWorkspaceRunnable runnable = monitor -> {
 			//touch all files
@@ -166,11 +167,7 @@ public class BenchWorkspace extends ResourceTest {
 				}
 			}.run(BenchWorkspace.this, 10, 10);
 		};
-		try {
-			workspace.run(runnable, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		workspace.run(runnable, getMonitor());
 	}
 
 	/**

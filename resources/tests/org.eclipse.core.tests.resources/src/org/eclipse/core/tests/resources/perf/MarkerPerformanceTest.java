@@ -96,11 +96,7 @@ public class MarkerPerformanceTest extends ResourceTest {
 			}
 		};
 
-		try {
-			getWorkspace().run(runnable, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		getWorkspace().run(runnable, null);
 		markers = createdMarkers;
 	}
 

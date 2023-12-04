@@ -13,11 +13,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.refresh;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anEmptyMap;
+import static org.hamcrest.Matchers.emptyArray;
+
 import java.util.HashMap;
 import java.util.Map;
 import junit.framework.AssertionFailedError;
-import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.Job;
@@ -58,36 +65,27 @@ public class RefreshProviderTest extends ResourceTest {
 	 */
 	public void testLinkedFile() throws Exception {
 		IPath location = getRandomLocation();
+		deleteOnTearDown(location);
 		String name = "testUnmonitorLinkedResource";
-		try {
-			IProject project = getWorkspace().getRoot().getProject(name);
-			ensureExistsInWorkspace(project, true);
-			joinAutoRefreshJobs();
-			IFile link = project.getFile("Link");
-			//ensure we currently have just the project being monitored
-			TestRefreshProvider provider = TestRefreshProvider.getInstance();
-			assertEquals("1.0", 1, provider.getMonitoredResources().length);
-			link.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
-			joinAutoRefreshJobs();
-			assertEquals("1.1", 2, provider.getMonitoredResources().length);
-			link.delete(IResource.FORCE, getMonitor());
-			joinAutoRefreshJobs();
-			assertEquals("1.2", 1, provider.getMonitoredResources().length);
-			ensureDoesNotExistInWorkspace(project);
-			joinAutoRefreshJobs();
-			assertEquals("1.3", 0, provider.getMonitoredResources().length);
-			//check provider for other errors
-			AssertionFailedError[] failures = provider.getFailures();
-			if (failures.length > 0) {
-				fail("" + failures.length + " failures", failures[0]);
-			}
-		} catch (CoreException e) {
-			fail("1.99", e);
-		} finally {
-			//cleanup
-			Workspace.clear(location.toFile());
-			deleteProject(name);
-		}
+		IProject project = getWorkspace().getRoot().getProject(name);
+		ensureExistsInWorkspace(project, true);
+		joinAutoRefreshJobs();
+		IFile link = project.getFile("Link");
+		// ensure we currently have just the project being monitored
+		TestRefreshProvider provider = TestRefreshProvider.getInstance();
+		assertEquals("1.0", 1, provider.getMonitoredResources().length);
+		link.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
+		joinAutoRefreshJobs();
+		assertEquals("1.1", 2, provider.getMonitoredResources().length);
+		link.delete(IResource.FORCE, getMonitor());
+		joinAutoRefreshJobs();
+		assertEquals("1.2", 1, provider.getMonitoredResources().length);
+		ensureDoesNotExistInWorkspace(project);
+		joinAutoRefreshJobs();
+		assertEquals("1.3", 0, provider.getMonitoredResources().length);
+		// check provider for other errors
+		AssertionFailedError[] failures = provider.getFailures();
+		assertThat(failures, emptyArray());
 	}
 
 	/**
@@ -97,31 +95,23 @@ public class RefreshProviderTest extends ResourceTest {
 	public void testProjectCloseOpen() throws Exception {
 		String name = "testProjectCloseOpen";
 		IProject project = getWorkspace().getRoot().getProject(name);
-		try {
-			ensureExistsInWorkspace(project, true);
-			joinAutoRefreshJobs();
-			//ensure we currently have just the project being monitored
-			TestRefreshProvider provider = TestRefreshProvider.getInstance();
-			assertEquals("1.0", 1, provider.getMonitoredResources().length);
-			project.close(getMonitor());
-			joinAutoRefreshJobs();
-			assertEquals("1.1", 0, provider.getMonitoredResources().length);
-			project.open(getMonitor());
-			joinAutoRefreshJobs();
-			assertEquals("1.2", 1, provider.getMonitoredResources().length);
-			ensureDoesNotExistInWorkspace(project);
-			joinAutoRefreshJobs();
-			assertEquals("1.3", 0, provider.getMonitoredResources().length);
-			//check provider for other errors
-			AssertionFailedError[] failures = provider.getFailures();
-			if (failures.length > 0) {
-				fail("" + failures.length + " failures", failures[0]);
-			}
-		} catch (CoreException e) {
-			fail("1.99", e);
-		} finally {
-			deleteProject(name);
-		}
+		ensureExistsInWorkspace(project, true);
+		joinAutoRefreshJobs();
+		// ensure we currently have just the project being monitored
+		TestRefreshProvider provider = TestRefreshProvider.getInstance();
+		assertEquals("1.0", 1, provider.getMonitoredResources().length);
+		project.close(getMonitor());
+		joinAutoRefreshJobs();
+		assertEquals("1.1", 0, provider.getMonitoredResources().length);
+		project.open(getMonitor());
+		joinAutoRefreshJobs();
+		assertEquals("1.2", 1, provider.getMonitoredResources().length);
+		ensureDoesNotExistInWorkspace(project);
+		joinAutoRefreshJobs();
+		assertEquals("1.3", 0, provider.getMonitoredResources().length);
+		// check provider for other errors
+		AssertionFailedError[] failures = provider.getFailures();
+		assertThat(failures, emptyArray());
 	}
 
 	/**
@@ -133,24 +123,18 @@ public class RefreshProviderTest extends ResourceTest {
 		final int maxRuns = 1000;
 		int i = 0;
 		Map<Integer, Throwable> fails = new HashMap<>();
-		try {
-			for (; i < maxRuns; i++) {
-				if (i % 50 == 0) {
-					TestUtil.waitForJobs(getName(), 5, 100);
-				}
-				try {
-					assertTrue(createProject(name).isAccessible());
-					assertFalse(deleteProject(name).exists());
-				} catch (CoreException e) {
-					fails.put(i, e);
-				}
+		for (; i < maxRuns; i++) {
+			if (i % 50 == 0) {
+				TestUtil.waitForJobs(getName(), 5, 100);
 			}
-		} finally {
-			deleteProject(name);
+			try {
+				assertTrue(createProject(name).isAccessible());
+				assertFalse(deleteProject(name).exists());
+			} catch (CoreException e) {
+				fails.put(i, e);
+			}
 		}
-		if (!fails.isEmpty()) {
-			fail("Failed " + fails.size() + " times out of " + i, fails.values().iterator().next());
-		}
+		assertThat(fails, anEmptyMap());
 	}
 
 	private IProject createProject(String name) throws Exception {

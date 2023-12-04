@@ -72,15 +72,11 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 		}
 	}
 
-	IWorkspaceDescription setMaxFileStates(String failureMessage, int maxFileStates) {
+	IWorkspaceDescription setMaxFileStates(int maxFileStates) throws CoreException {
 		IWorkspaceDescription currentDescription = getWorkspace().getDescription();
 		IWorkspaceDescription testDescription = getWorkspace().getDescription();
 		testDescription.setMaxFileStates(maxFileStates);
-		try {
-			getWorkspace().setDescription(testDescription);
-		} catch (CoreException e) {
-			fail(failureMessage, e);
-		}
+		getWorkspace().setDescription(testDescription);
 		return currentDescription;
 	}
 
@@ -90,8 +86,8 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 		HistoryStoreTest.wipeHistoryStore(getMonitor());
 	}
 
-	public void testAddState() {
-		setMaxFileStates("0.01", 100);
+	public void testAddState() throws CoreException {
+		setMaxFileStates(100);
 		final IFile file = getWorkspace().getRoot().getProject("proj1").getFile("file.txt");
 		new PerformanceTestRunner() {
 
@@ -179,7 +175,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 
 			@Override
 			protected void setUp() throws CoreException {
-				original = setMaxFileStates("0.1", 1);
+				original = setMaxFileStates(1);
 				// make sure we start with no garbage
 				cleanHistory();
 				// create our own garbage
@@ -285,12 +281,8 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		final IFile file = project.getFile("file.txt");
 		ensureExistsInWorkspace(file, getRandomContents());
-		try {
-			for (int i = 0; i < 100; i++) {
-				file.setContents(getRandomContents(), IResource.KEEP_HISTORY, getMonitor());
-			}
-		} catch (CoreException ce) {
-			fail("0.5", ce);
+		for (int i = 0; i < 100; i++) {
+			file.setContents(getRandomContents(), IResource.KEEP_HISTORY, getMonitor());
 		}
 		new PerformanceTestRunner() {
 			@Override
@@ -313,7 +305,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 
 			@Override
 			protected void setUp() throws CoreException {
-				original = setMaxFileStates("0.1", 1);
+				original = setMaxFileStates(1);
 				// make sure we start with no garbage
 				cleanHistory();
 				// create our own garbage

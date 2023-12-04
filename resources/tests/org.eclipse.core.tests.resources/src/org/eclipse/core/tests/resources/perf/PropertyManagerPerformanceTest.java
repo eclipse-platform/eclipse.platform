@@ -69,11 +69,8 @@ public class PropertyManagerPerformanceTest extends ResourceTest {
 		final List<IResource> allResources = createTree(folder1, filesPerFolder);
 		for (IResource resource : allResources) {
 			for (int j = 0; j < properties; j++) {
-				try {
-					resource.setPersistentProperty(new QualifiedName(PI_RESOURCES_TESTS, "prop" + j), getPropertyValue(200));
-				} catch (CoreException ce) {
-					fail("0.2", ce);
-				}
+				resource.setPersistentProperty(new QualifiedName(PI_RESOURCES_TESTS, "prop" + j),
+						getPropertyValue(200));
 			}
 		}
 
@@ -91,11 +88,7 @@ public class PropertyManagerPerformanceTest extends ResourceTest {
 				}
 			}
 		}.run(this, measurements, repetitions);
-		try {
-			((Workspace) getWorkspace()).getPropertyManager().deleteProperties(folder1, IResource.DEPTH_INFINITE);
-		} catch (CoreException e) {
-			fail("0.1", e);
-		}
+		((Workspace) getWorkspace()).getPropertyManager().deleteProperties(folder1, IResource.DEPTH_INFINITE);
 
 	}
 

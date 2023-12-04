@@ -299,18 +299,15 @@ public class CharsetTest extends ResourceTest {
 		}
 	}
 
-	private void setDerivedEncodingStoredSeparately(String tag, IProject project, boolean value) {
+	private void setDerivedEncodingStoredSeparately(IProject project, boolean value)
+			throws BackingStoreException {
 		org.osgi.service.prefs.Preferences prefs = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		if (!value) {
 			prefs.remove(ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS);
 		} else {
 			prefs.putBoolean(ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS, true);
 		}
-		try {
-			prefs.flush();
-		} catch (BackingStoreException e) {
-			fail(tag, e);
-		}
+		prefs.flush();
 	}
 
 	private static IEclipsePreferences getResourcesPreferences() {
@@ -399,7 +396,7 @@ public class CharsetTest extends ResourceTest {
 		}
 	}
 
-	public void testBug333056() throws CoreException {
+	public void testBug333056() throws Exception {
 		IProject project = null;
 		try {
 			IWorkspace workspace = getWorkspace();
@@ -417,7 +414,7 @@ public class CharsetTest extends ResourceTest {
 			folder.setDerived(true, getMonitor());
 			assertEquals("3.0", "BAR", file.getCharset(true));
 
-			setDerivedEncodingStoredSeparately("4.0", project, true);
+			setDerivedEncodingStoredSeparately(project, true);
 			assertEquals("5.0", "BAR", file.getCharset(true));
 		} finally {
 			clearAllEncodings(project);
@@ -508,7 +505,7 @@ public class CharsetTest extends ResourceTest {
 		assertTrue("6.9", file.getCharset().equals("ascii"));
 	}
 
-	public void testBug207510() throws CoreException, InterruptedException {
+	public void testBug207510() throws CoreException, InterruptedException, BackingStoreException {
 		IWorkspace workspace = getWorkspace();
 		CharsetVerifier verifier = new CharsetVerifierWithExtraInfo(CharsetVerifier.IGNORE_BACKGROUND_THREAD);
 		MultipleDeltasCharsetVerifier backgroundVerifier = new MultipleDeltasCharsetVerifier(CharsetVerifier.IGNORE_CREATION_THREAD);
@@ -534,7 +531,7 @@ public class CharsetTest extends ResourceTest {
 			verifier.reset();
 			verifier.addExpectedChange(regularPrefs.getParent(), IResourceDelta.CHANGED, 0);
 			verifier.addExpectedChange(regularPrefs, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			setDerivedEncodingStoredSeparately("1.0", project1, true);
+			setDerivedEncodingStoredSeparately(project1, true);
 			assertTrue("1.1", verifier.waitForEvent(10000));
 			assertTrue("1.2 " + verifier.getMessage(), verifier.isDeltaValid());
 			assertExistsInWorkspace("1.3", regularPrefs);
@@ -593,7 +590,7 @@ public class CharsetTest extends ResourceTest {
 			backgroundVerifier.reset();
 			verifier.addExpectedChange(regularPrefs, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
 			backgroundVerifier.addExpectedChange(derivedPrefs, IResourceDelta.REMOVED, 0);
-			setDerivedEncodingStoredSeparately("6.0", project1, false);
+			setDerivedEncodingStoredSeparately(project1, false);
 			assertTrue("6.1.1", verifier.waitForEvent(10000));
 			assertTrue("6.1.2", backgroundVerifier.waitForFirstDelta(10000));
 			assertTrue("6.2.1 " + verifier.getMessage(), verifier.isDeltaValid());
@@ -606,7 +603,7 @@ public class CharsetTest extends ResourceTest {
 			backgroundVerifier.reset();
 			verifier.addExpectedChange(regularPrefs, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
 			backgroundVerifier.addExpectedChange(derivedPrefs, IResourceDelta.ADDED, 0);
-			setDerivedEncodingStoredSeparately("7.0", project1, true);
+			setDerivedEncodingStoredSeparately(project1, true);
 			assertTrue("7.1.1", verifier.waitForEvent(10000));
 			assertTrue("7.1.2", backgroundVerifier.waitForFirstDelta(10000));
 			assertTrue("7.2.1 " + verifier.getMessage(), verifier.isDeltaValid());

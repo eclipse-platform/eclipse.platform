@@ -41,16 +41,12 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 	 * Returns true if this project's build spec has the given builder,
 	 * and false otherwise.
 	 */
-	protected boolean hasBuilder(IProject project, String builderId) {
-		try {
-			ICommand[] commands = project.getDescription().getBuildSpec();
-			for (ICommand command : commands) {
-				if (command.getBuilderName().equals(builderId)) {
-					return true;
-				}
+	protected boolean hasBuilder(IProject project, String builderId) throws CoreException {
+		ICommand[] commands = project.getDescription().getBuildSpec();
+		for (ICommand command : commands) {
+			if (command.getBuilderName().equals(builderId)) {
+				return true;
 			}
-		} catch (CoreException e) {
-			fail("Failed in hasBuilder(" + project.getName() + ", " + builderId + ")", e);
 		}
 		return false;
 	}
