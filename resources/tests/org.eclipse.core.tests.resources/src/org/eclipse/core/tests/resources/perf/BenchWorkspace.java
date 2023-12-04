@@ -47,7 +47,6 @@ public class BenchWorkspace extends ResourceTest {
 		}
 	}
 
-	@Override
 	public String[] defineHierarchy() {
 		//define a hierarchy with NUM_FOLDERS folders, NUM_FILES files.
 		String[] names = new String[NUM_FOLDERS * (FILES_PER_FOLDER + 1)];

@@ -58,9 +58,13 @@ import org.osgi.framework.ServiceReference;
 
 public class IWorkspaceTest extends ResourceTest {
 
-	@Override
-	public String[] defineHierarchy() {
-		return new String[] {"/", "/Project/", "/Project/Folder/", "/Project/Folder/File",};
+	private IResource[] buildResourceHierarchy() throws CoreException {
+		return buildResources(getWorkspace().getRoot(),
+				new String[] { "/", "/Project/", "/Project/Folder/", "/Project/Folder/File", });
+	}
+
+	private void ensureResourceHierarchyExist() throws CoreException {
+		ensureExistsInWorkspace(buildResourceHierarchy(), true);
 	}
 
 	/**
@@ -96,7 +100,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * See also testMultiCopy()
 	 */
 	public void testCopy() throws CoreException {
-		IResource[] resources = buildResources();
+		IResource[] resources = buildResourceHierarchy();
 		IProject project = (IProject) resources[1];
 		IFolder folder = (IFolder) resources[2];
 		IFile file = (IFile) resources[3];
@@ -113,7 +117,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertThrows(CoreException.class,
 				() -> getWorkspace().copy(new IResource[] { file }, folder.getFullPath(), false, getMonitor()));
 
-		createHierarchy();
+		ensureResourceHierarchyExist();
 
 		//copy to bogus destination
 		assertThrows(CoreException.class, () -> getWorkspace().copy(new IResource[] { file },
@@ -212,7 +216,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * 		IStatus delete([IResource, boolean, IProgressMonitor)
 	 */
 	public void testDelete() throws CoreException {
-		IResource[] resources = buildResources();
+		IResource[] resources = buildResourceHierarchy();
 		IProject project = (IProject) resources[1];
 		IFolder folder = (IFolder) resources[2];
 		IFile file = (IFile) resources[3];
@@ -221,14 +225,14 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue(getWorkspace().delete(new IResource[] {project, folder, file}, false, getMonitor()).isOK());
 		assertTrue(getWorkspace().delete(new IResource[] {file}, false, getMonitor()).isOK());
 		assertTrue(getWorkspace().delete(new IResource[] {}, false, getMonitor()).isOK());
-		createHierarchy();
+		ensureResourceHierarchyExist();
 
 		//delete existing resources
 		resources = new IResource[] {file, project, folder};
 		assertTrue(getWorkspace().delete(resources, false, getMonitor()).isOK());
 		//	assertDoesNotExistInFileSystem(resources);
 		assertDoesNotExistInWorkspace(resources);
-		createHierarchy();
+		ensureResourceHierarchyExist();
 		resources = new IResource[] {file};
 		assertTrue(getWorkspace().delete(resources, false, getMonitor()).isOK());
 		assertDoesNotExistInFileSystem(resources);
@@ -238,7 +242,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue(getWorkspace().delete(resources, false, getMonitor()).isOK());
 		assertDoesNotExistInFileSystem(resources);
 		assertDoesNotExistInWorkspace(resources);
-		createHierarchy();
+		ensureResourceHierarchyExist();
 
 		//delete a combination of existing and non-existent resources
 		IProject fakeProject = getWorkspace().getRoot().getProject("pigment");
@@ -247,7 +251,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue(getWorkspace().delete(resources, false, getMonitor()).isOK());
 		//	assertDoesNotExistInFileSystem(resources);
 		assertDoesNotExistInWorkspace(resources);
-		createHierarchy();
+		ensureResourceHierarchyExist();
 		resources = new IResource[] {fakeProject, file};
 		assertTrue(getWorkspace().delete(resources, false, getMonitor()).isOK());
 		assertDoesNotExistInFileSystem(resources);
@@ -257,7 +261,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue(getWorkspace().delete(resources, false, getMonitor()).isOK());
 		//	assertDoesNotExistInFileSystem(resources);
 		assertDoesNotExistInWorkspace(resources);
-		createHierarchy();
+		ensureResourceHierarchyExist();
 	}
 
 	/**
@@ -542,7 +546,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 */
 	public void testMultiCopy() throws CoreException {
 		/* create common objects */
-		IResource[] resources = buildResources();
+		IResource[] resources = buildResourceHierarchy();
 		IProject project = (IProject) resources[1];
 		IFolder folder = (IFolder) resources[2];
 

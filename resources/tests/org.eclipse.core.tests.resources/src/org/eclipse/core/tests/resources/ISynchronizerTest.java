@@ -63,15 +63,6 @@ public class ISynchronizerTest extends ResourceTest {
 		}
 	}
 
-	/**
-	 * Return a string array which defines the hierarchy of a tree.
-	 * Folder resources must have a trailing slash.
-	 */
-	@Override
-	public String[] defineHierarchy() {
-		return new String[] {"/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/"};
-	}
-
 	/*
 	 * Internal method used for flushing all sync information for a particular resource
 	 * and its children.
@@ -96,7 +87,9 @@ public class ISynchronizerTest extends ResourceTest {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		resources = createHierarchy();
+		resources = buildResources(getWorkspace().getRoot(),
+				new String[] { "/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/" });
+		ensureExistsInWorkspace(resources, true);
 	}
 
 	@Override

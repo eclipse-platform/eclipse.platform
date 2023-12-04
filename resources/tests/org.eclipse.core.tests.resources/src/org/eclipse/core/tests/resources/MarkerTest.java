@@ -170,19 +170,12 @@ public class MarkerTest extends ResourceTest {
 		marker.setAttribute(IMarker.SEVERITY, severity);
 	}
 
-	/**
-	 * Return a string array which defines the hierarchy of a tree.
-	 * Folder resources must have a trailing slash.
-	 */
-	@Override
-	public String[] defineHierarchy() {
-		return new String[] {"/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/"};
-	}
-
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		resources = createHierarchy();
+		resources = buildResources(getWorkspace().getRoot(),
+				new String[] { "/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/" });
+		ensureExistsInWorkspace(resources, true);
 
 		// disable autorefresh an wait till that is finished
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);

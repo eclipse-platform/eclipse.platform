@@ -42,11 +42,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class MoveTest extends LocalStoreTest {
 
-	@Override
-	public String[] defineHierarchy() {
-		return new String[] {"/", "/file1", "/file2", "/folder1/", "/folder1/file3", "/folder1/file4", "/folder2/", "/folder2/file5", "/folder2/file6", "/folder1/folder3/", "/folder1/folder3/file7", "/folder1/folder3/file8"};
-	}
-
 	/**
 	 * This test has Windows as the target OS. Drives C: and D: should be available.
 	 */
@@ -266,7 +261,9 @@ public class MoveTest extends LocalStoreTest {
 		ensureExistsInWorkspace(folderSource, true);
 
 		// create hierarchy
-		String[] hierarchy = defineHierarchy();
+		String[] hierarchy = new String[] { "/", "/file1", "/file2", "/folder1/", "/folder1/file3",
+				"/folder1/file4", "/folder2/", "/folder2/file5", "/folder2/file6", "/folder1/folder3/",
+				"/folder1/folder3/file7", "/folder1/folder3/file8" };
 		IResource[] resources = buildResources(folderSource, hierarchy);
 		ensureExistsInWorkspace(resources, true);
 
@@ -337,7 +334,9 @@ public class MoveTest extends LocalStoreTest {
 		ensureExistsInWorkspace(folderSource, true);
 
 		// build hierarchy
-		String[] hierarchy = defineHierarchy();
+		String[] hierarchy = new String[] { "/", "/file1", "/file2", "/folder1/", "/folder1/file3", "/folder1/file4",
+				"/folder2/", "/folder2/file5", "/folder2/file6", "/folder1/folder3/", "/folder1/folder3/file7",
+				"/folder1/folder3/file8" };
 		IResource[] resources = buildResources(folderSource, hierarchy);
 		ensureExistsInWorkspace(resources, true);
 

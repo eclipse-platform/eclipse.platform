@@ -266,17 +266,10 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Return a collection of resources the hierarchy defined by defineHeirarchy().
-	 */
-	public IResource[] buildResources() {
-		return buildResources(getWorkspace().getRoot(), defineHierarchy());
-	}
-
-	/**
 	 * Return a collection of resources for the given hierarchy at
 	 * the given root.
 	 */
-	public IResource[] buildResources(IContainer root, String[] hierarchy) {
+	public IResource[] buildResources(IContainer root, String[] hierarchy) throws CoreException {
 		IResource[] result = new IResource[hierarchy.length];
 		for (int i = 0; i < hierarchy.length; i++) {
 			IPath path = IPath.fromOSString(hierarchy[i]);
@@ -423,27 +416,6 @@ public abstract class ResourceTest extends CoreTest {
 			throw new CoreException(
 					new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed creating file in file system", e));
 		}
-	}
-
-	public IResource[] createHierarchy() throws CoreException {
-		IResource[] result = buildResources();
-		ensureExistsInWorkspace(result, true);
-		return result;
-	}
-
-	/**
-	 * Returns a collection of string paths describing the standard
-	 * resource hierarchy for this test.  In the string forms, folders are
-	 * represented as having trailing separators ('/').  All other resources
-	 * are files.  It is generally assumed that this hierarchy will be
-	 * inserted under some project structure.
-	 * For example,
-	 * <pre>
-	 *    return new String[] {"/", "/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1"};
-	 * </pre>
-	 */
-	public String[] defineHierarchy() {
-		return new String[0];
 	}
 
 	/**

@@ -44,11 +44,6 @@ import org.junit.Test;
 
 public class FileSystemResourceManagerTest extends LocalStoreTest implements ICoreConstants {
 
-	@Override
-	public String[] defineHierarchy() {
-		return new String[] {"/Folder1/", "/Folder1/File1", "/Folder1/Folder2/", "/Folder1/Folder2/File2", "/Folder1/Folder2/Folder3/"};
-	}
-
 	@Test
 	public void testBug440110() throws Exception {
 		String projectName = getUniqueString();
@@ -168,7 +163,8 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		final IProject project = projects[0];
 
 		// create resources
-		IResource[] resources = buildResources(project, defineHierarchy());
+		IResource[] resources = buildResources(project, new String[] { "/Folder1/", "/Folder1/File1",
+				"/Folder1/Folder2/", "/Folder1/Folder2/File2", "/Folder1/Folder2/Folder3/" });
 		ensureExistsInWorkspace(resources, true);
 		ensureDoesNotExistInFileSystem(resources);
 
