@@ -21,6 +21,8 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATUR
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getInvalidNatureSets;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getValidNatureSets;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -206,11 +208,15 @@ public class NatureTest extends ResourceTest {
 		String[][] invalid = getInvalidNatureSets();
 		for (int i = 0; i < invalid.length; i++) {
 			setNatures("invalid: " + i, project, invalid[i], true);
-			assertTrue("2.0", project.hasNature(NATURE_SIMPLE));
-			assertTrue("2.1", !project.hasNature(NATURE_EARTH));
-			assertTrue("2.2", project.isNatureEnabled(NATURE_SIMPLE));
-			assertTrue("2.3", !project.isNatureEnabled(NATURE_EARTH));
-			assertEquals("2.4", project.getDescription().getNatureIds(), currentSet);
+			assertThat("project '" + project + "' is expected to have nature: " + NATURE_SIMPLE,
+					project.hasNature(NATURE_SIMPLE));
+			assertThat("project '" + project + "' is not expected to have nature: " + NATURE_EARTH,
+					!project.hasNature(NATURE_EARTH));
+			assertThat("project '" + project + "' is expected to have nature enabled: " + NATURE_SIMPLE,
+					project.isNatureEnabled(NATURE_SIMPLE));
+			assertThat("project '" + project + "' is not expected to have nature enabled: " + NATURE_EARTH,
+					!project.isNatureEnabled(NATURE_EARTH));
+			assertThat(currentSet, is(project.getDescription().getNatureIds()));
 		}
 	}
 
