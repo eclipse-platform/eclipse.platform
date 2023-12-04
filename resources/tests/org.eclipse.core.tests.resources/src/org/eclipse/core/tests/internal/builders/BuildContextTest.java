@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.emptyArray;
+
 import org.eclipse.core.internal.events.BuildContext;
 import org.eclipse.core.internal.resources.BuildConfiguration;
 import org.eclipse.core.resources.IBuildConfiguration;
@@ -91,8 +95,8 @@ public class BuildContextTest extends AbstractBuilderTest {
 				return config;
 			}
 		}
-		assertTrue(false);
-		return null;
+		throw new IllegalStateException(
+				"No build config other than the active one could be found for project: " + project);
 	}
 
 	/**
@@ -129,22 +133,22 @@ public class BuildContextTest extends AbstractBuilderTest {
 		IBuildContext context;
 
 		context = new BuildContext(p0v0, new IBuildConfiguration[] {p0v0, p1v0}, buildOrder);
-		assertEquals("1.0", new IBuildConfiguration[] {}, context.getAllReferencedBuildConfigs());
-		assertEquals("1.1", new IBuildConfiguration[] {p0v1, p1v0}, context.getAllReferencingBuildConfigs());
-		assertEquals("1.2", new IBuildConfiguration[] {p0v0, p1v0}, context.getRequestedConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencingBuildConfigs(), arrayContaining(p0v1, p1v0));
+		assertThat(context.getRequestedConfigs(), arrayContaining(p0v0, p1v0));
 
 		context = new BuildContext(p0v1, buildOrder, buildOrder);
-		assertEquals("2.0", new IBuildConfiguration[] {p0v0}, context.getAllReferencedBuildConfigs());
-		assertEquals("2.1", new IBuildConfiguration[] {p1v0}, context.getAllReferencingBuildConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(p0v0));
+		assertThat(context.getAllReferencingBuildConfigs(), arrayContaining(p1v0));
 
 		context = new BuildContext(p1v0, buildOrder, buildOrder);
-		assertEquals("3.0", new IBuildConfiguration[] {p0v0, p0v1}, context.getAllReferencedBuildConfigs());
-		assertEquals("3.1", new IBuildConfiguration[] {}, context.getAllReferencingBuildConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(p0v0, p0v1));
+		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
 
 		// And it works with no build context too
 		context = new BuildContext(p1v0);
-		assertEquals("4.0", new IBuildConfiguration[] {}, context.getAllReferencedBuildConfigs());
-		assertEquals("4.1", new IBuildConfiguration[] {}, context.getAllReferencingBuildConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
 	}
 
 	public void testSingleProjectBuild() throws CoreException {
@@ -153,20 +157,20 @@ public class BuildContextTest extends AbstractBuilderTest {
 		setupSimpleReferences();
 		ContextBuilder.clearStats();
 		project0.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
-		assertTrue("1.0", ContextBuilder.checkValid());
+		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertEquals("2.0", 0, context.getAllReferencedBuildConfigs().length);
-		assertEquals("2.1", 0, context.getAllReferencingBuildConfigs().length);
+		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
 
 		// Change the active build configuration will cause the project to be rebuilt
 		ContextBuilder.clearStats();
 		IBuildConfiguration newActive = changeActiveBuildConfig(project0);
 		waitForBuild();
-		assertTrue("3.0", ContextBuilder.checkValid());
+		ContextBuilder.assertValid();
 
 		context = ContextBuilder.getContext(newActive);
-		assertEquals("3.1", 0, context.getAllReferencedBuildConfigs().length);
+		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
 	}
 
 	/**
@@ -178,28 +182,30 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 		// Build project and resolve references
 		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, getMonitor());
-		assertTrue("1.0", ContextBuilder.checkValid());
+		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertEquals("2.0", new IBuildConfiguration[] {project2.getActiveBuildConfig(), project1.getActiveBuildConfig()}, context.getAllReferencedBuildConfigs());
-		assertEquals("2.1", 0, context.getAllReferencingBuildConfigs().length);
+		assertThat(context.getAllReferencedBuildConfigs(),
+				arrayContaining(project2.getActiveBuildConfig(), project1.getActiveBuildConfig()));
+		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
 
 		context = ContextBuilder.getBuilder(project1.getActiveBuildConfig()).contextForLastBuild;
-		assertEquals("3.0", new IBuildConfiguration[] {project2.getActiveBuildConfig()}, context.getAllReferencedBuildConfigs());
-		assertEquals("3.1", new IBuildConfiguration[] {project0.getActiveBuildConfig()}, context.getAllReferencingBuildConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(project2.getActiveBuildConfig()));
+		assertThat(context.getAllReferencingBuildConfigs(), arrayContaining(project0.getActiveBuildConfig()));
 
 		context = ContextBuilder.getBuilder(project2.getActiveBuildConfig()).contextForLastBuild;
-		assertEquals("4.0", 0, context.getAllReferencedBuildConfigs().length);
-		assertEquals("4.1", new IBuildConfiguration[] {project1.getActiveBuildConfig(), project0.getActiveBuildConfig()}, context.getAllReferencingBuildConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencingBuildConfigs(),
+				arrayContaining(project1.getActiveBuildConfig(), project0.getActiveBuildConfig()));
 
 		// Build just project0
 		ContextBuilder.clearStats();
 		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, false, getMonitor());
-		assertTrue("5.0", ContextBuilder.checkValid());
+		ContextBuilder.assertValid();
 
 		context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertTrue("5.1", context.getAllReferencedBuildConfigs().length == 0);
-		assertTrue("5.2", context.getAllReferencingBuildConfigs().length == 0);
+		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
 	}
 
 	/**
@@ -210,19 +216,21 @@ public class BuildContextTest extends AbstractBuilderTest {
 		ContextBuilder.clearStats();
 		// build project0 & project2 ; project1 will end up being built too.
 		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig(), project2.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, getMonitor());
-		assertTrue("1.0", ContextBuilder.checkValid());
+		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertEquals("2.0", new IBuildConfiguration[] {project2.getActiveBuildConfig(), project1.getActiveBuildConfig()}, context.getAllReferencedBuildConfigs());
-		assertEquals("2.1", 0, context.getAllReferencingBuildConfigs().length);
+		assertThat(context.getAllReferencedBuildConfigs(),
+				arrayContaining(project2.getActiveBuildConfig(), project1.getActiveBuildConfig()));
+		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
 
 		context = ContextBuilder.getBuilder(project1.getActiveBuildConfig()).contextForLastBuild;
-		assertEquals("3.0", new IBuildConfiguration[] {project2.getActiveBuildConfig()}, context.getAllReferencedBuildConfigs());
-		assertEquals("3.1", new IBuildConfiguration[] {project0.getActiveBuildConfig()}, context.getAllReferencingBuildConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(project2.getActiveBuildConfig()));
+		assertThat(context.getAllReferencingBuildConfigs(), arrayContaining(project0.getActiveBuildConfig()));
 
 		context = ContextBuilder.getBuilder(project2.getActiveBuildConfig()).contextForLastBuild;
-		assertEquals("4.0", 0, context.getAllReferencedBuildConfigs().length);
-		assertEquals("4.1", new IBuildConfiguration[] {project1.getActiveBuildConfig(), project0.getActiveBuildConfig()}, context.getAllReferencingBuildConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencingBuildConfigs(),
+				arrayContaining(project1.getActiveBuildConfig(), project0.getActiveBuildConfig()));
 	}
 
 	/**
@@ -235,19 +243,21 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 		ContextBuilder.clearStats();
 		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, getMonitor());
-		assertTrue("1.0", ContextBuilder.checkValid());
+		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertEquals("2.0", new IBuildConfiguration[] {project2.getActiveBuildConfig(), project1.getActiveBuildConfig()}, context.getAllReferencedBuildConfigs());
-		assertEquals("2.1", 0, context.getAllReferencingBuildConfigs().length);
+		assertThat(context.getAllReferencedBuildConfigs(),
+				arrayContaining(project2.getActiveBuildConfig(), project1.getActiveBuildConfig()));
+		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
 
 		context = ContextBuilder.getBuilder(project1.getActiveBuildConfig()).contextForLastBuild;
-		assertEquals("3.0", new IBuildConfiguration[] {project2.getActiveBuildConfig()}, context.getAllReferencedBuildConfigs());
-		assertEquals("3.1", new IBuildConfiguration[] {project0.getActiveBuildConfig()}, context.getAllReferencingBuildConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(project2.getActiveBuildConfig()));
+		assertThat(context.getAllReferencingBuildConfigs(), arrayContaining(project0.getActiveBuildConfig()));
 
 		context = ContextBuilder.getBuilder(project2.getActiveBuildConfig()).contextForLastBuild;
-		assertEquals("4.0", 0, context.getAllReferencedBuildConfigs().length);
-		assertEquals("4.1", new IBuildConfiguration[] {project1.getActiveBuildConfig(), project0.getActiveBuildConfig()}, context.getAllReferencingBuildConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencingBuildConfigs(),
+				arrayContaining(project1.getActiveBuildConfig(), project0.getActiveBuildConfig()));
 	}
 
 	/**
@@ -262,27 +272,27 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 		ContextBuilder.clearStats();
 		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, getMonitor());
-		assertTrue("1.0", ContextBuilder.checkValid());
+		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertEquals("2.0", new IBuildConfiguration[] {project1.getActiveBuildConfig()}, context.getAllReferencedBuildConfigs());
-		assertEquals("2.1", 0, context.getAllReferencingBuildConfigs().length);
-		assertEquals("2.2", new IBuildConfiguration[] {project0.getActiveBuildConfig()}, context.getRequestedConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(project1.getActiveBuildConfig()));
+		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
+		assertThat(context.getRequestedConfigs(), arrayContaining(project0.getActiveBuildConfig()));
 
 		context = ContextBuilder.getBuilder(project1.getActiveBuildConfig()).contextForLastBuild;
-		assertEquals("3.0", 0, context.getAllReferencedBuildConfigs().length);
-		assertEquals("3.1", new IBuildConfiguration[] {project0.getActiveBuildConfig()}, context.getAllReferencingBuildConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencingBuildConfigs(), arrayContaining(project0.getActiveBuildConfig()));
 
 		// Change the active configuration of project1, and test that two configurations are built
 		ContextBuilder.clearStats();
 		IBuildConfiguration project1PreviousActive = project1.getActiveBuildConfig();
 		IBuildConfiguration project1NewActive = changeActiveBuildConfig(project1);
 		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, getMonitor());
-		assertTrue("4.0", ContextBuilder.checkValid());
+		ContextBuilder.assertValid();
 
 		context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertEquals("4.1", new IBuildConfiguration[] {project1PreviousActive, project1NewActive}, context.getAllReferencedBuildConfigs());
-		assertEquals("4.2", 0, context.getAllReferencingBuildConfigs().length);
-		assertEquals("4.3", new IBuildConfiguration[] {project0.getActiveBuildConfig()}, context.getRequestedConfigs());
+		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(project1PreviousActive, project1NewActive));
+		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
+		assertThat(context.getRequestedConfigs(), arrayContaining(project0.getActiveBuildConfig()));
 	}
 }

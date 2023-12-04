@@ -15,6 +15,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anEmptyMap;
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.emptyArray;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -160,88 +170,63 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		return result;
 	}
 
-	private void compareBuildSpecs(int errorTag, ICommand[] commands, ICommand[] commands2) {
+	private void compareBuildSpecs(ICommand[] commands, ICommand[] commands2) {
 		// ASSUMPTION:  commands and commands2 are non-null
-		assertEquals(errorTag + ".2.0", commands.length, commands2.length);
+		assertThat("different number of commands", commands, arrayWithSize(commands2.length));
 		for (int i = 0; i < commands.length; i++) {
-			assertTrue(errorTag + ".2." + (i + 1) + "0", commands[i].getBuilderName().equals(commands2[i].getBuilderName()));
+			assertThat("names of builders at index " + i + " are different", commands[i].getBuilderName(),
+					is(commands2[i].getBuilderName()));
 			Map<String, String> args = commands[i].getArguments();
 			Map<String, String> args2 = commands2[i].getArguments();
-			assertEquals(errorTag + ".2." + (i + 1) + "0", args.size(), args2.size());
-			int x = 1;
+			assertThat("different number of arguments for builder at index " + i, args.entrySet(),
+					hasSize(args2.size()));
 			for (Entry<String, String> entry : args.entrySet()) {
 				String key = entry.getKey();
 				String value = entry.getValue();
 				String value2 = args2.get(key);
 				if (value == null) {
-					assertNull(errorTag + ".2." + (i + 1) + x, value2);
+					assertThat("value for key '" + key + "' should be null", value2, nullValue());
 				} else {
-					assertTrue(errorTag + ".3." + (i + 1) + x, args.get(key).equals((args2.get(key))));
+					assertThat("unequal values for key: " + key, args.get(key), is(args2.get(key)));
 				}
-				x++;
 			}
 		}
 	}
 
-	private void compareLinks(int errorTag, HashMap<IPath, LinkDescription> links, HashMap<IPath, LinkDescription> links2) {
-		if (links == null) {
-			assertNull(errorTag + ".4.0", links2);
-			return;
-		}
-		assertEquals(errorTag + ".4.01", links.size(), links2.size());
-		int x = 1;
-		for (Entry<IPath, LinkDescription> entry : links.entrySet()) {
-			IPath key = entry.getKey();
-			LinkDescription value = entry.getValue();
-			LinkDescription value2 = links2.get(key);
-			assertTrue(errorTag + ".4." + x, value.getProjectRelativePath().equals(value2.getProjectRelativePath()));
-			assertEquals(errorTag + ".5." + x, value.getType(), value2.getType());
-			assertEquals(errorTag + ".6." + x, value.getLocationURI(), value2.getLocationURI());
-			x++;
-		}
-	}
-
-	private void compareNatures(int errorTag, String[] natures, String[] natures2) {
-		// ASSUMPTION:  natures and natures2 are non-null
-		assertEquals(errorTag + ".3.0", natures.length, natures2.length);
-		for (int i = 0; i < natures.length; i++) {
-			assertTrue(errorTag + ".3." + (i + 1), natures[i].equals(natures2[i]));
-		}
-	}
-
 	private void compareProjectDescriptions(int errorTag, ProjectDescription description, ProjectDescription description2) {
-		assertTrue(errorTag + ".0", description.getName().equals(description2.getName()));
+		assertThat(description.getName(), is(description2.getName()));
 		String comment = description.getComment();
 		if (comment == null) {
 			// The old reader previously returned null for an empty comment.  We
 			// are changing this so it now returns an empty string.
-			assertEquals(errorTag + ".1", 0, description2.getComment().length());
+			assertThat(description2.getComment(), emptyString());
 		} else {
-			assertTrue(errorTag + ".2", description.getComment().equals(description2.getComment()));
+			assertThat(description.getComment(), is(description2.getComment()));
 		}
 
 		IProject[] projects = description.getReferencedProjects();
 		IProject[] projects2 = description2.getReferencedProjects();
-		compareProjects(errorTag, projects, projects2);
+		compareProjects(projects, projects2);
 
 		ICommand[] commands = description.getBuildSpec();
 		ICommand[] commands2 = description2.getBuildSpec();
-		compareBuildSpecs(errorTag, commands, commands2);
+		compareBuildSpecs(commands, commands2);
 
 		String[] natures = description.getNatureIds();
 		String[] natures2 = description2.getNatureIds();
-		compareNatures(errorTag, natures, natures2);
+		assertThat(natures, is(natures2));
 
 		HashMap<IPath, LinkDescription> links = description.getLinks();
 		HashMap<IPath, LinkDescription> links2 = description2.getLinks();
-		compareLinks(errorTag, links, links2);
+		assertThat(links, is(links2));
 	}
 
-	private void compareProjects(int errorTag, IProject[] projects, IProject[] projects2) {
+	private void compareProjects(IProject[] projects, IProject[] projects2) {
 		// ASSUMPTION:  projects and projects2 are non-null
-		assertEquals(errorTag + ".1.0", projects.length, projects2.length);
+		assertThat("different number of projects", projects, arrayWithSize(projects2.length));
 		for (int i = 0; i < projects.length; i++) {
-			assertTrue(errorTag + ".1." + (i + 1), projects[i].getName().equals(projects2[i].getName()));
+			assertThat("names of projects at index " + i + " are different", projects[i].getName(),
+					is(projects2[i].getName()));
 		}
 	}
 
@@ -328,7 +313,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		String result = buffer.toString();
 
 		// order of keys in serialized file should be exactly the same as expected
-		assertEquals("1.0", expected, result);
+		assertThat(result, is(expected));
 	}
 
 	public void testInvalidProjectDescription1() throws Throwable {
@@ -345,7 +330,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		InputStream stream = new ByteArrayInputStream(invalidProjectDescription.getBytes());
 		createFileInFileSystem(location, stream);
 		ProjectDescription projDesc = reader.read(location);
-		assertNull(projDesc);
+		assertThat(projDesc, nullValue());
 	}
 
 	public void testInvalidProjectDescription2() throws Throwable {
@@ -356,14 +341,14 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		InputStream stream = new ByteArrayInputStream(invalidProjectDescription.getBytes());
 		createFileInFileSystem(store, stream);
 		ProjectDescription projDesc = readDescription(store);
-		assertNotNull("2.0", projDesc);
-		assertNull("2.1", projDesc.getName());
-		assertEquals("2.2", 0, projDesc.getComment().length());
-		assertNull("2.3", projDesc.getLocationURI());
-		assertEquals("2.4", new IProject[0], projDesc.getReferencedProjects());
-		assertEquals("2.5", new String[0], projDesc.getNatureIds());
-		assertEquals("2.6", new ICommand[0], projDesc.getBuildSpec());
-		assertNull("2.7", projDesc.getLinks());
+		assertThat(projDesc, not(nullValue()));
+		assertThat(projDesc.getName(), nullValue());
+		assertThat(projDesc.getComment(), emptyString());
+		assertThat(projDesc.getLocationURI(), nullValue());
+		assertThat(projDesc.getReferencedProjects(), emptyArray());
+		assertThat(projDesc.getNatureIds(), emptyArray());
+		assertThat(projDesc.getBuildSpec(), emptyArray());
+		assertThat(projDesc.getLinks(), nullValue());
 	}
 
 	public void testInvalidProjectDescription3() throws Throwable {
@@ -375,14 +360,14 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		createFileInFileSystem(store, stream);
 
 		ProjectDescription projDesc = readDescription(store);
-		assertNotNull("3.0", projDesc);
-		assertTrue("3.1", projDesc.getName().equals("abc"));
-		assertEquals("3.2", 0, projDesc.getComment().length());
-		assertNull("3.3", projDesc.getLocationURI());
-		assertEquals("3.4", new IProject[0], projDesc.getReferencedProjects());
-		assertEquals("3.5", new String[0], projDesc.getNatureIds());
-		assertEquals("3.6", new ICommand[0], projDesc.getBuildSpec());
-		assertNull("3.7", projDesc.getLinks());
+		assertThat(projDesc, not(nullValue()));
+		assertThat(projDesc.getName(), is("abc"));
+		assertThat(projDesc.getComment(), emptyString());
+		assertThat(projDesc.getLocationURI(), nullValue());
+		assertThat(projDesc.getReferencedProjects(), emptyArray());
+		assertThat(projDesc.getNatureIds(), emptyArray());
+		assertThat(projDesc.getBuildSpec(), emptyArray());
+		assertThat(projDesc.getLinks(), nullValue());
 	}
 
 	public void testInvalidProjectDescription4() throws Throwable {
@@ -393,16 +378,16 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		InputStream stream = new ByteArrayInputStream(invalidProjectDescription.getBytes());
 		createFileInFileSystem(store, stream);
 		ProjectDescription projDesc = readDescription(store);
-		assertNotNull("3.0", projDesc);
-		assertTrue("3.1", projDesc.getName().equals("abc"));
-		assertEquals("3.2", 0, projDesc.getComment().length());
-		assertNull("3.3", projDesc.getLocationURI());
-		assertEquals("3.4", new IProject[0], projDesc.getReferencedProjects());
-		assertEquals("3.5", new String[0], projDesc.getNatureIds());
-		assertEquals("3.6", new ICommand[0], projDesc.getBuildSpec());
+		assertThat(projDesc, not(nullValue()));
+		assertThat(projDesc.getName(), is("abc"));
+		assertThat(projDesc.getComment(), emptyString());
+		assertThat(projDesc.getLocationURI(), nullValue());
+		assertThat(projDesc.getReferencedProjects(), emptyArray());
+		assertThat(projDesc.getNatureIds(), emptyArray());
+		assertThat(projDesc.getBuildSpec(), emptyArray());
 		LinkDescription link = projDesc.getLinks().values().iterator().next();
-		assertEquals("3.7", IPath.fromOSString("newLink"), link.getProjectRelativePath());
-		assertEquals("3.8", PATH_STRING, URIUtil.toPath(link.getLocationURI()).toString());
+		assertThat(link.getProjectRelativePath(), is(IPath.fromOSString("newLink")));
+		assertThat(URIUtil.toPath(link.getLocationURI()).toString(), is(PATH_STRING));
 	}
 
 	/**
@@ -422,7 +407,8 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		ProjectDescription projDesc = reader.read(location);
 		ensureDoesNotExistInFileSystem(location.toFile());
 		for (LinkDescription link : projDesc.getLinks().values()) {
-			assertEquals("1.0." + link.getProjectRelativePath(), LONG_LOCATION_URI, link.getLocationURI());
+			assertThat("Unexpected location URI for link with relative path: " + link.getProjectRelativePath(),
+					link.getLocationURI(), is(LONG_LOCATION_URI));
 		}
 	}
 
@@ -442,7 +428,8 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		ProjectDescription projDesc = reader.read(location);
 		ensureDoesNotExistInFileSystem(location.toFile());
 		for (LinkDescription link : projDesc.getLinks().values()) {
-			assertEquals("1.0." + link.getProjectRelativePath(), LONG_LOCATION_URI, link.getLocationURI());
+			assertThat("Unexpected location URI for link with relative path: " + link.getProjectRelativePath(),
+					link.getLocationURI(), is(LONG_LOCATION_URI));
 		}
 	}
 
@@ -517,21 +504,21 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 
 		/* test read */
 		ProjectDescription description2 = readDescription(tempStore);
-		assertTrue("1.1", description.getName().equals(description2.getName()));
-		assertEquals("1.2", location, description.getLocationURI());
+		assertThat(description.getName(), is(description2.getName()));
+		assertThat(location, is(description.getLocationURI()));
 
 		ICommand[] commands2 = description2.getBuildSpec();
-		assertEquals("2.00", 2, commands2.length);
-		assertEquals("2.01", "MyCommand", commands2[0].getBuilderName());
-		assertEquals("2.02", "ARGH!", commands2[0].getArguments().get("ArgOne"));
-		assertEquals("2.03", "2 x ARGH!", commands2[0].getArguments().get("ArgTwo"));
-		assertEquals("2.04", "", commands2[0].getArguments().get("NullArg"));
-		assertEquals("2.05", "", commands2[0].getArguments().get("EmptyArg"));
-		assertEquals("2.06", "MyOtherCommand", commands2[1].getBuilderName());
-		assertEquals("2.07", "ARGH!", commands2[1].getArguments().get("ArgOne"));
-		assertEquals("2.08", "2 x ARGH!", commands2[1].getArguments().get("ArgTwo"));
-		assertEquals("2.09", "", commands2[0].getArguments().get("NullArg"));
-		assertEquals("2.10", "", commands2[0].getArguments().get("EmptyArg"));
+		assertThat(commands2, arrayWithSize(2));
+		assertThat(commands2[0].getBuilderName(), is("MyCommand"));
+		assertThat(commands2[0].getArguments().get("ArgOne"), is("ARGH!"));
+		assertThat(commands2[0].getArguments().get("ArgTwo"), is("2 x ARGH!"));
+		assertThat(commands2[0].getArguments().get("NullArg"), emptyString());
+		assertThat(commands2[0].getArguments().get("EmptyArg"), emptyString());
+		assertThat(commands2[1].getBuilderName(), is("MyOtherCommand"));
+		assertThat(commands2[1].getArguments().get("ArgOne"), is("ARGH!"));
+		assertThat(commands2[1].getArguments().get("ArgTwo"), is("2 x ARGH!"));
+		assertThat(commands2[0].getArguments().get("NullArg"), emptyString());
+		assertThat(commands2[0].getArguments().get("EmptyArg"), emptyString());
 	}
 
 	public void testProjectDescription2() throws Throwable {
@@ -572,22 +559,22 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 			description2 = reader.read(in);
 		}
 
-		assertTrue("1.1", description.getName().equals(description2.getName()));
-		assertTrue("1.2", location.equals(description.getLocationURI()));
+		assertThat(description.getName(), is(description2.getName()));
+		assertThat(location, is(description.getLocationURI()));
 
 		ICommand[] commands2 = description2.getBuildSpec();
-		assertEquals("2.00", 1, commands2.length);
-		assertEquals("2.01", "MyCommand", commands2[0].getBuilderName());
-		assertEquals("2.02", "ARGH!", commands2[0].getArguments().get("ArgOne"));
+		assertThat(commands2, arrayWithSize(1));
+		assertThat(commands2[0].getBuilderName(), is("MyCommand"));
+		assertThat(commands2[0].getArguments().get("ArgOne"), is("ARGH!"));
 
-		assertTrue("3.0", description.getComment().equals(description2.getComment()));
+		assertThat(description.getComment(), is(description2.getComment()));
 
 		IProject[] ref = description.getReferencedProjects();
 		IProject[] ref2 = description2.getReferencedProjects();
-		assertEquals("4.0", 3, ref2.length);
-		assertTrue("4.1", ref[0].getName().equals(ref2[0].getName()));
-		assertTrue("4.2", ref[1].getName().equals(ref2[1].getName()));
-		assertTrue("4.3", ref[2].getName().equals(ref2[2].getName()));
+		assertThat(ref2, arrayWithSize(3));
+		assertThat(ref[0].getName(), is(ref2[0].getName()));
+		assertThat(ref[1].getName(), is(ref2[1].getName()));
+		assertThat(ref[2].getName(), is(ref2[2].getName()));
 	}
 
 	// see bug 274437
@@ -608,13 +595,13 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 
 		/* test read */
 		ProjectDescription description2 = readDescription(tempStore);
-		assertTrue("1.0", description.getName().equals(description2.getName()));
-		assertEquals("2.0", location, description.getLocationURI());
+		assertThat(description.getName(), is(description2.getName()));
+		assertThat(description.getLocationURI(), is(location));
 
 		ICommand[] commands2 = description2.getBuildSpec();
-		assertEquals("3.0", 1, commands2.length);
-		assertEquals("4.0", "MyCommand", commands2[0].getBuilderName());
-		assertEquals("5.0", 0, commands2[0].getArguments().size());
+		assertThat(commands2, arrayWithSize(1));
+		assertThat(commands2[0].getBuilderName(), is("MyCommand"));
+		assertThat(commands2[0].getArguments(), anEmptyMap());
 	}
 
 	public void testProjectDescriptionWithSpaces() throws Throwable {
@@ -633,9 +620,9 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 
 		/* test read */
 		ProjectDescription description2 = readDescription(store);
-		assertTrue("1.1", description.getName().equals(description2.getName()));
-		assertEquals("1.2", location, description.getLocationURI());
-		assertEquals("1.3", locationWithSpaces, description2.getLinkLocationURI(path));
+		assertThat(description.getName(), is(description2.getName()));
+		assertThat(description.getLocationURI(), is(location));
+		assertThat(description2.getLinkLocationURI(path), is(locationWithSpaces));
 	}
 
 	protected URI uriFromPortableString(String pathString) {
@@ -689,6 +676,6 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		InputStream stream = new ByteArrayInputStream(projectDescription.getBytes());
 		createFileInFileSystem(location, stream);
 		ProjectDescription projDesc = reader.read(location);
-		assertNotNull(projDesc);
+		assertThat(projDesc, not(nullValue()));
 	}
 }
