@@ -15,6 +15,7 @@ package org.eclipse.compare.tests;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -84,7 +85,7 @@ public class WorkspaceTest extends ResourceTest {
 	 */
 	protected IProject createProject(String prefix, String[] resources) throws CoreException {
 		IProject project = getUniqueTestProject(prefix);
-		buildResources(project, resources, true);
+		buildResourcesWithContainer(project, resources);
 		return project;
 	}
 
@@ -103,13 +104,11 @@ public class WorkspaceTest extends ResourceTest {
 	 * Creates filesystem 'resources' with the given names and fills them with random text.
 	 * @param container An object that can hold the newly created resources.
 	 * @param hierarchy A list of files &amp; folder names to use as resources
-	 * @param includeContainer A flag that controls whether the container is included in the list of resources.
 	 * @return IResource[] An array of resources filled with variable amounts of random text
 	 */
-	public IResource[] buildResources(IContainer container, String[] hierarchy, boolean includeContainer) throws CoreException {
+	public IResource[] buildResourcesWithContainer(IContainer container, String[] hierarchy) throws CoreException {
 		List<IResource> resources = new ArrayList<>(hierarchy.length + 1);
-		if (includeContainer)
-			resources.add(container);
+		resources.add(container);
 		resources.addAll(Arrays.asList(buildResources(container, hierarchy)));
 		IResource[] result = resources.toArray(new IResource[resources.size()]);
 		createInWorkspace(result);
