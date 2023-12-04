@@ -17,6 +17,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.internal.resources.ICoreConstants;
@@ -128,7 +129,7 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		file = project.getFolder(IPath.fromOSString("file"));
 		folder = project.getFile(IPath.fromOSString("folder"));
 		createInFileSystem(file);
-		createInFileSystem((IFile) folder);
+		createInFileSystem(folder);
 
 		// run synchronize
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);

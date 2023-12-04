@@ -25,6 +25,7 @@ import org.eclipse.core.internal.resources.CharsetDeltaJob;
 import org.eclipse.core.internal.resources.ValidateProjectEncoding;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourceAttributes;
@@ -252,6 +253,34 @@ public final class ResourceTestUtil {
 		assertNotNull("tried to set read only for null attributes", attributes);
 		attributes.setReadOnly(value);
 		target.setResourceAttributes(attributes);
+	}
+
+	/**
+	 * Return a collection of resources for the given hierarchy at
+	 * the given root.
+	 */
+	public static IResource[] buildResources(IContainer root, String[] hierarchy) throws CoreException {
+		IResource[] result = new IResource[hierarchy.length];
+		for (int i = 0; i < hierarchy.length; i++) {
+			IPath path = IPath.fromOSString(hierarchy[i]);
+			IPath fullPath = root.getFullPath().append(path);
+			switch (fullPath.segmentCount()) {
+				case 0 :
+					result[i] = getWorkspace().getRoot();
+					break;
+				case 1 :
+					result[i] = getWorkspace().getRoot().getProject(fullPath.segment(0));
+					break;
+				default :
+					if (hierarchy[i].charAt(hierarchy[i].length() - 1) == IPath.SEPARATOR) {
+						result[i] = root.getFolder(path);
+					} else {
+						result[i] = root.getFile(path);
+					}
+					break;
+			}
+		}
+		return result;
 	}
 
 }

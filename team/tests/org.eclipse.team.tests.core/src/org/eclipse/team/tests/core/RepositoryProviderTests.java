@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -347,7 +349,7 @@ public class RepositoryProviderTests extends TeamTest {
 
 	public void testMapSuccess() throws CoreException, TeamException {
 		IProject project = getUniqueTestProject("testLinkSuccess");
-		buildResources(project, new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" }, true);
+		buildResourcesWithContainer(project, new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
 
 		// Test shallow link when URI not allowed
 		IFolder folder = project.getFolder("link");
@@ -377,7 +379,7 @@ public class RepositoryProviderTests extends TeamTest {
 
 	public void testLinkSuccess() throws CoreException, TeamException {
 		IProject project = getUniqueTestProject("testLinkSuccess");
-		buildResources(project, new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" }, true);
+		buildResourcesWithContainer(project, new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
 		RepositoryProviderWithLinking.setCanHandleLinking(true);
 		RepositoryProviderWithLinking.setCanHandleLinkedURI(false);
 		RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID);
@@ -397,7 +399,7 @@ public class RepositoryProviderTests extends TeamTest {
 
 	public void testMapFailure() throws CoreException, TeamException {
 		IProject project = getUniqueTestProject("testMapFailure");
-		buildResources(project, new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" }, true);
+		buildResourcesWithContainer(project, new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
 		IFolder folder = project.getFolder("link");
 		folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null);
 		RepositoryProviderWithLinking.setCanHandleLinking(false);
@@ -451,7 +453,7 @@ public class RepositoryProviderTests extends TeamTest {
 
 	public void testLinkFailure() throws CoreException, TeamException {
 		IProject project = getUniqueTestProject("testLinkFailure");
-		buildResources(project, new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" }, true);
+		buildResourcesWithContainer(project, new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
 		RepositoryProviderWithLinking.setCanHandleLinking(false);
 		RepositoryProviderWithLinking.setCanHandleLinkedURI(false);
 		RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID);

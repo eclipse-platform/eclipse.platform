@@ -42,7 +42,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Resource;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -145,34 +144,6 @@ public abstract class ResourceTest extends CoreTest {
 	@After
 	public final void after() throws Exception {
 		tearDown();
-	}
-
-	/**
-	 * Return a collection of resources for the given hierarchy at
-	 * the given root.
-	 */
-	public IResource[] buildResources(IContainer root, String[] hierarchy) throws CoreException {
-		IResource[] result = new IResource[hierarchy.length];
-		for (int i = 0; i < hierarchy.length; i++) {
-			IPath path = IPath.fromOSString(hierarchy[i]);
-			IPath fullPath = root.getFullPath().append(path);
-			switch (fullPath.segmentCount()) {
-				case 0 :
-					result[i] = getWorkspace().getRoot();
-					break;
-				case 1 :
-					result[i] = getWorkspace().getRoot().getProject(fullPath.segment(0));
-					break;
-				default :
-					if (hierarchy[i].charAt(hierarchy[i].length() - 1) == IPath.SEPARATOR) {
-						result[i] = root.getFolder(path);
-					} else {
-						result[i] = root.getFile(path);
-					}
-					break;
-			}
-		}
-		return result;
 	}
 
 	private void cleanup() throws CoreException {
