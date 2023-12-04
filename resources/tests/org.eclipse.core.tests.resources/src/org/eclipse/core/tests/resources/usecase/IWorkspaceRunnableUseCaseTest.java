@@ -13,10 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
+import static org.junit.Assert.assertThrows;
+
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -45,85 +46,64 @@ public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
 		};
 	}
 
-	public void testNestedOperationsAndBuilds() {
-		IWorkspaceDescription original = getWorkspace().getDescription();
+	public void testNestedOperationsAndBuilds() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
-		try {
-			setAutoBuilding(true);
-			IProjectDescription prjDescription = getWorkspace().newProjectDescription("MyProject");
-			ICommand command = prjDescription.newCommand();
-			command.setBuilderName(SignaledBuilder.BUILDER_ID);
-			prjDescription.setBuildSpec(new ICommand[] {command});
-			project.create(prjDescription, getMonitor());
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		setAutoBuilding(true);
+		IProjectDescription prjDescription = getWorkspace().newProjectDescription("MyProject");
+		ICommand command = prjDescription.newCommand();
+		command.setBuilderName(SignaledBuilder.BUILDER_ID);
+		prjDescription.setBuildSpec(new ICommand[] { command });
+		project.create(prjDescription, getMonitor());
+		project.open(getMonitor());
 		waitForBuild();
 		SignaledBuilder builder = SignaledBuilder.getInstance(project);
 
-		/* should trigger a build */
-		IWorkspaceRunnable op1 = createRunnable(project, null, true, null);
-		IWorkspaceRunnable op2 = createRunnable(project, op1, false, null);
-		IWorkspaceRunnable op3 = createRunnable(project, op2, false, null);
-		builder.reset();
-		try {
+		{
+			/* should trigger a build */
+			IWorkspaceRunnable op1 = createRunnable(project, null, true, null);
+			IWorkspaceRunnable op2 = createRunnable(project, op1, false, null);
+			IWorkspaceRunnable op3 = createRunnable(project, op2, false, null);
+			builder.reset();
 			getWorkspace().run(op3, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
+			waitForBuild();
+			assertTrue("1.1", builder.wasExecuted());
 		}
-		waitForBuild();
-		assertTrue("1.1", builder.wasExecuted());
 
+		{
 		/* should not trigger a build */
-		op1 = createRunnable(project, null, true, new OperationCanceledException());
-		op2 = createRunnable(project, op1, true, null);
-		op3 = createRunnable(project, op2, true, null);
-		builder.reset();
-		try {
-			getWorkspace().run(op3, getMonitor());
-			fail("2.0");
-		} catch (CoreException e) {
-			fail("2.1", e);
-		} catch (OperationCanceledException e) {
-			// expected
+			IWorkspaceRunnable op1 = createRunnable(project, null, true, new OperationCanceledException());
+			IWorkspaceRunnable op2 = createRunnable(project, op1, true, null);
+			IWorkspaceRunnable op3 = createRunnable(project, op2, true, null);
+			builder.reset();
+			assertThrows(OperationCanceledException.class, () -> getWorkspace().run(op3, getMonitor()));
+			// waitForBuild(); // TODO: The test is invalid since it fails if this line is
+			// uncommented.
+			assertTrue("2.2", !builder.wasExecuted());
 		}
-		//waitForBuild();  // TODO: The test is invalid since it fails if this line is uncommented.
-		assertTrue("2.2", !builder.wasExecuted());
 
-		/* should not trigger a build */
-		op1 = createRunnable(project, null, true, new CoreException(Status.CANCEL_STATUS));
-		op2 = createRunnable(project, op1, true, null);
-		op3 = createRunnable(project, op2, true, null);
-		builder.reset();
-		try {
-			getWorkspace().run(op3, getMonitor());
-			fail("3.0");
-		} catch (CoreException e) {
-			assertEquals(Status.CANCEL_STATUS, e.getStatus());
+		{
+			/* should not trigger a build */
+			IWorkspaceRunnable op1 = createRunnable(project, null, true, new CoreException(Status.CANCEL_STATUS));
+			IWorkspaceRunnable op2 = createRunnable(project, op1, true, null);
+			IWorkspaceRunnable op3 = createRunnable(project, op2, true, null);
+			builder.reset();
+			CoreException exception = assertThrows(CoreException.class, () -> getWorkspace().run(op3, getMonitor()));
+			assertEquals(Status.CANCEL_STATUS, exception.getStatus());
+			// waitForBuild(); // TODO: The test is invalid since it fails if this line is
+			// uncommented.
+			assertTrue("3.1", !builder.wasExecuted());
 		}
-		//waitForBuild();  // TODO: The test is invalid since it fails if this line is uncommented.
-		assertTrue("3.1", !builder.wasExecuted());
 
-		/* should not trigger a build */
-		op1 = createRunnable(project, null, false, null);
-		op2 = createRunnable(project, op1, false, null);
-		op3 = createRunnable(project, op2, false, null);
-		builder.reset();
-		try {
+		{
+			/* should not trigger a build */
+			IWorkspaceRunnable op1 = createRunnable(project, null, false, null);
+			IWorkspaceRunnable op2 = createRunnable(project, op1, false, null);
+			IWorkspaceRunnable op3 = createRunnable(project, op2, false, null);
+			builder.reset();
 			getWorkspace().run(op3, getMonitor());
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
-		//waitForBuild();  // TODO: The test is invalid since it fails if this line is uncommented.
-		assertTrue("4.1", !builder.wasExecuted());
-
-		/* remove trash */
-		try {
-			project.delete(true, getMonitor());
-			getWorkspace().setDescription(original);
-		} catch (CoreException e) {
-			fail("20.0", e);
+			// waitForBuild(); // TODO: The test is invalid since it fails if this line is
+			// uncommented.
+			assertTrue("4.1", !builder.wasExecuted());
 		}
 	}
 }

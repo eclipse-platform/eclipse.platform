@@ -124,11 +124,7 @@ public class IWorkspaceTest extends ResourceTest {
 				() -> getWorkspace().copy(new IResource[] { file }, folder2.getFullPath(), false, getMonitor()));
 
 		//create the destination
-		try {
-			folder2.create(false, true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.2", e);
-		}
+		folder2.create(false, true, getMonitor());
 
 		//source file doesn't exist
 		assertThrows(CoreException.class,
@@ -140,21 +136,13 @@ public class IWorkspaceTest extends ResourceTest {
 
 		//make sure the first copy worked
 		assertTrue("1.5", fileCopy.exists());
-		try {
-			fileCopy.delete(true, getMonitor());
-		} catch (CoreException e) {
-			fail("1.6", e);
-		}
+		fileCopy.delete(true, getMonitor());
 
 		// create the files
 		IFile projectFile = project.getFile("ProjectPhile");
-		try {
-			file2.create(getRandomContents(), false, getMonitor());
-			file3.create(getRandomContents(), false, getMonitor());
-			projectFile.create(getRandomContents(), false, getMonitor());
-		} catch (CoreException e) {
-			fail("1.7", e);
-		}
+		file2.create(getRandomContents(), false, getMonitor());
+		file3.create(getRandomContents(), false, getMonitor());
+		projectFile.create(getRandomContents(), false, getMonitor());
 
 		//source files aren't siblings
 		assertThrows(CoreException.class, () -> getWorkspace().copy(new IResource[] { file, projectFile },
@@ -182,11 +170,7 @@ public class IWorkspaceTest extends ResourceTest {
 		//make sure the first copy worked
 		fileCopy = folder2.getFile("File");
 		assertTrue("2.2", fileCopy.exists());
-		try {
-			fileCopy.delete(true, getMonitor());
-		} catch (CoreException e) {
-			fail("2.3", e);
-		}
+		fileCopy.delete(true, getMonitor());
 
 		//resource out of sync with filesystem
 		ensureOutOfSync(file);
@@ -198,30 +182,16 @@ public class IWorkspaceTest extends ResourceTest {
 		/********** NON FAILURE CASES ***********/
 
 		//empty resource list
-		try {
-			getWorkspace().copy(new IResource[] {}, folder2.getFullPath(), false, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			fail("Fails because of 1FTXL69", e);
-		}
+		getWorkspace().copy(new IResource[] {}, folder2.getFullPath(), false, getMonitor());
 
 		//copy single file
-		try {
-			getWorkspace().copy(new IResource[] {file}, folder2.getFullPath(), false, getMonitor());
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
+		getWorkspace().copy(new IResource[] { file }, folder2.getFullPath(), false, getMonitor());
 		assertTrue("3.2", fileCopy.exists());
 		ensureDoesNotExistInWorkspace(fileCopy);
 		ensureDoesNotExistInFileSystem(fileCopy);
 
 		//copy two files
-		try {
-			getWorkspace().copy(new IResource[] {file, file2}, folder2.getFullPath(), false, getMonitor());
-		} catch (CoreException e) {
-			fail("3.3", e);
-		}
+		getWorkspace().copy(new IResource[] { file, file2 }, folder2.getFullPath(), false, getMonitor());
 		assertTrue("3.4", fileCopy.exists());
 		assertTrue("3.5", file2Copy.exists());
 		ensureDoesNotExistInWorkspace(fileCopy);
@@ -230,17 +200,9 @@ public class IWorkspaceTest extends ResourceTest {
 		ensureDoesNotExistInFileSystem(file2Copy);
 
 		//copy a folder
-		try {
-			getWorkspace().copy(new IResource[] {folder}, folder2.getFullPath(), false, getMonitor());
-		} catch (CoreException e) {
-			fail("3.6", e);
-		}
+		getWorkspace().copy(new IResource[] { folder }, folder2.getFullPath(), false, getMonitor());
 		assertTrue("3.7", folderCopy.exists());
-		try {
-			assertTrue("3.8", folderCopy.members().length > 0);
-		} catch (CoreException e) {
-			fail("3.9", e);
-		}
+		assertTrue("3.8", folderCopy.members().length > 0);
 		ensureDoesNotExistInWorkspace(folderCopy);
 		ensureDoesNotExistInFileSystem(folderCopy);
 	}
@@ -303,12 +265,8 @@ public class IWorkspaceTest extends ResourceTest {
 	 * 	{@link IWorkspace#forgetSavedTree(String)}.
 	 */
 	public void testForgetSavedTree() {
-		try {
-			//according to javadoc spec, null means forget all plugin trees
-			getWorkspace().forgetSavedTree(null);
-		} catch (RuntimeException e) {
-			fail("4.99", e);
-		}
+		// according to javadoc spec, null means forget all plugin trees
+		getWorkspace().forgetSavedTree(null);
 	}
 
 	/**
@@ -714,7 +672,7 @@ public class IWorkspaceTest extends ResourceTest {
 	/**
 	 * Test thread safety of the API method IWorkspace.setDescription.
 	 */
-	public void testMultiSetDescription() {
+	public void testMultiSetDescription() throws CoreException {
 		final int THREAD_COUNT = 2;
 		final CoreException[] errorPointer = new CoreException[1];
 		Thread[] threads = new Thread[THREAD_COUNT];
@@ -748,7 +706,7 @@ public class IWorkspaceTest extends ResourceTest {
 			}
 		}
 		if (errorPointer[0] != null) {
-			fail("1.0", errorPointer[0]);
+			throw errorPointer[0];
 		}
 	}
 
@@ -969,7 +927,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus validateProjectLocation(IProject, IPath)
 	 */
-	public void testValidateProjectLocation() {
+	public void testValidateProjectLocation() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("Project");
 
@@ -1039,17 +997,13 @@ public class IWorkspaceTest extends ResourceTest {
 		final String PATH_VAR_NAME = "FOOVAR";
 		final IPath PATH_VAR_VALUE = getRandomLocation();
 		try {
-			try {
-				IPath varPath = IPath.fromOSString(PATH_VAR_NAME);
-				workspace.getPathVariableManager().setValue(PATH_VAR_NAME, PATH_VAR_VALUE);
-				assertTrue("8.1", workspace.validateProjectLocation(project, varPath).isOK());
-				assertTrue("8.2", workspace.validateProjectLocation(project, varPath.append("test")).isOK());
-				assertTrue("8.3", workspace.validateProjectLocation(project, varPath.append("test/ing")).isOK());
-			} finally {
-				workspace.getPathVariableManager().setValue(PATH_VAR_NAME, null);
-			}
-		} catch (CoreException e) {
-			fail("8.99", e);
+			IPath varPath = IPath.fromOSString(PATH_VAR_NAME);
+			workspace.getPathVariableManager().setValue(PATH_VAR_NAME, PATH_VAR_VALUE);
+			assertTrue("8.1", workspace.validateProjectLocation(project, varPath).isOK());
+			assertTrue("8.2", workspace.validateProjectLocation(project, varPath.append("test")).isOK());
+			assertTrue("8.3", workspace.validateProjectLocation(project, varPath.append("test/ing")).isOK());
+		} finally {
+			workspace.getPathVariableManager().setValue(PATH_VAR_NAME, null);
 		}
 
 		//cannot overlap with another project's location
@@ -1061,13 +1015,9 @@ public class IWorkspaceTest extends ResourceTest {
 		IProject closed = workspace.getRoot().getProject("ClosedProject");
 		IProjectDescription closedDesc = workspace.newProjectDescription(closed.getName());
 		closedDesc.setLocation(closedProjectLocation);
-		try {
-			open.create(openDesc, null);
-			open.open(null);
-			closed.create(closedDesc, null);
-		} catch (CoreException e) {
-			fail("9.99", e);
-		}
+		open.create(openDesc, null);
+		open.open(null);
+		closed.create(closedDesc, null);
 		IPath linkLocation = getRandomLocation();
 		try {
 			//indirect test: setting the project description may validate location, which shouldn't complain
@@ -1098,8 +1048,6 @@ public class IWorkspaceTest extends ResourceTest {
 			assertTrue("11.1", workspace.validateProjectLocation(project, defaultProjectLocation.append(project.getName())).isOK());
 			assertFalse("11.2",
 					workspace.validateProjectLocation(project, defaultProjectLocation.append("foo")).isOK());
-		} catch (CoreException e) {
-			fail("11.99", e);
 		} finally {
 			Workspace.clear(linkLocation.toFile());
 			//make sure we clean up project directories
@@ -1130,19 +1078,15 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus validateProjectLocationURI(IProject, URI)
 	 */
-	public void testValidateProjectLocationURI() {
+	public void testValidateProjectLocationURI() throws URISyntaxException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("Project");
-		try {
-			//URI with no scheme
-			URI uri = new URI("eferfsdfwer");
-			assertFalse("1.0", workspace.validateProjectLocationURI(project, uri).isOK());
-			//URI with unknown scheme
-			uri = new URI("blorts://foo.com?bad");
-			assertFalse("1.1", workspace.validateProjectLocationURI(project, uri).isOK());
-		} catch (URISyntaxException e) {
-			fail("1.99", e);
-		}
+		// URI with no scheme
+		URI uri = new URI("eferfsdfwer");
+		assertFalse("1.0", workspace.validateProjectLocationURI(project, uri).isOK());
+		// URI with unknown scheme
+		uri = new URI("blorts://foo.com?bad");
+		assertFalse("1.1", workspace.validateProjectLocationURI(project, uri).isOK());
 	}
 
 	public void testWorkspaceService() {

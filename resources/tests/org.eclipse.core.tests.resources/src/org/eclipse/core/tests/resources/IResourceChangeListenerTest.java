@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SIMPLE;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -99,7 +100,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		getWorkspace().removeResourceChangeListener(verifier);
 		getWorkspace().getRoot().delete(false, getMonitor());
 
-		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
+		final AtomicReference<CoreException> exceptionInListener = new AtomicReference<>();
 		// create the listener
 		IResourceChangeListener listener = new IResourceChangeListener() {
 			private int fCounter;
@@ -121,7 +122,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 					}
 					System.out.println("End");
 				} catch (CoreException e) {
-					listenerInMainThreadCallback.set(() -> fail("1.0", e));
+					exceptionInListener.set(e);
 				}
 			}
 		};
@@ -153,7 +154,9 @@ public class IResourceChangeListenerTest extends ResourceTest {
 
 		// un-register our listener
 		getWorkspace().removeResourceChangeListener(listener);
-		listenerInMainThreadCallback.get().run();
+		if (exceptionInListener.get() != null) {
+			throw exceptionInListener.get();
+		}
 	}
 
 	/**
@@ -615,7 +618,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	}
 
 	public void testDeleteInPostBuildListener() throws Throwable {
-		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
+		final AtomicReference<CoreException> exceptionInListener = new AtomicReference<>();
 		// create the resource change listener
 		IResourceChangeListener listener = event -> {
 			try {
@@ -631,7 +634,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 					return true;
 				});
 			} catch (CoreException e) {
-				listenerInMainThreadCallback.set(() -> fail("1.0", e));
+				exceptionInListener.set(e);
 			}
 		};
 		// register the listener with the workspace.
@@ -645,7 +648,9 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			// cleanup: ensure that the listener is removed
 			getWorkspace().removeResourceChangeListener(listener);
 		}
-		listenerInMainThreadCallback.get().run();
+		if (exceptionInListener.get() != null) {
+			throw exceptionInListener.get();
+		}
 	}
 
 	/**
@@ -728,11 +733,11 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		final IFolder f = project1.getFolder(getUniqueString());
 		f.create(true, true, getMonitor());
 
-		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// the listener checks if an attempt to modify the tree succeeds if made in a job
 		// that belongs to FAMILY_MANUAL_REFRESH
 		class Listener1 implements IResourceChangeListener {
-			public boolean wasPerformed = false;
+			public volatile boolean deletePerformed = false;
+			public volatile Exception exception;
 
 			@Override
 			public void resourceChanged(IResourceChangeEvent event) {
@@ -746,9 +751,9 @@ public class IResourceChangeListenerTest extends ResourceTest {
 					protected IStatus run(IProgressMonitor monitor) {
 						try {
 							f.delete(true, getMonitor());
-							wasPerformed = true;
+							deletePerformed = true;
 						} catch (Exception e) {
-							listenerInMainThreadCallback.set(() -> fail("3.0", e));
+							exception = e;
 						}
 						return Status.OK_STATUS;
 					}
@@ -766,12 +771,14 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, null);
 
-			assertTrue("4.0", listener1.wasPerformed);
+			assertTrue("deletion did unexpectedly not succeed", listener1.deletePerformed);
 			assertDoesNotExistInWorkspace("5.0", f);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener1);
 		}
-		listenerInMainThreadCallback.get().run();
+		if (listener1.exception != null) {
+			throw listener1.exception;
+		}
 	}
 
 	public void testRefreshOtherProjectDuringRefresh() throws Throwable {
@@ -786,11 +793,11 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertTrue("1.0", p.isOpen());
 		assertTrue("2.0", project1.isOpen());
 
-		final AtomicReference<ThrowingRunnable> listener1InMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// the listener checks if an attempt to modify the tree succeeds if made in a job
 		// that belongs to FAMILY_MANUAL_REFRESH
 		class Listener1 implements IResourceChangeListener {
-			public boolean wasPerformed = false;
+			public volatile boolean refreshPerformed = false;
+			public volatile Exception exception;
 
 			@Override
 			public void resourceChanged(final IResourceChangeEvent event) {
@@ -806,34 +813,33 @@ public class IResourceChangeListenerTest extends ResourceTest {
 							if (event.getResource() != p) {
 								p.refreshLocal(IResource.DEPTH_INFINITE, null);
 							}
-							wasPerformed = true;
+							refreshPerformed = true;
 						} catch (Exception e) {
-							listener1InMainThreadCallback.set(() -> fail("3.0", e));
+							exception = e;
 						}
 						return Status.OK_STATUS;
 					}
 				}.schedule();
 			}
 		}
-
 		Listener1 listener1 = new Listener1();
 
-		final AtomicReference<ThrowingRunnable> listener2InMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// the listener checks if an attempt to modify the tree in the refresh thread fails
 		class Listener2 implements IResourceChangeListener {
+			public volatile boolean refreshSucceeded = false;
+
 			@Override
 			public void resourceChanged(IResourceChangeEvent event) {
 				try {
 					if (event.getResource() != p) {
 						p.refreshLocal(IResource.DEPTH_INFINITE, null);
-						listener2InMainThreadCallback.set(() -> fail("4.0"));
+						refreshSucceeded = true;
 					}
 				} catch (Exception e) {
 					// should fail
 				}
 			}
 		}
-
 		Listener2 listener2 = new Listener2();
 
 		// perform a refresh to test the added listeners
@@ -845,9 +851,14 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, null);
 
-			listener1InMainThreadCallback.get().run();
-			listener2InMainThreadCallback.get().run();
-			assertTrue("5.0", listener1.wasPerformed);
+			assertThat("Refreshing resource in first resource change listener did not succeed",
+					listener1.refreshPerformed);
+			if (listener1.exception != null) {
+				throw listener1.exception;
+			}
+			assertThat("Refreshing resource in second resource change listener unexpectedly succeeded",
+					!listener2.refreshSucceeded);
+
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener1);
 			getWorkspace().removeResourceChangeListener(listener2);
@@ -864,9 +875,9 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertTrue("1.0", project1.isOpen());
 
 		class Listener1 implements IResourceChangeListener {
-			public boolean wasPerformed = false;
-			public Object eventSource;
-			public Object eventResource;
+			public volatile boolean wasPerformed = false;
+			public volatile Object eventSource;
+			public volatile Object eventResource;
 
 			@Override
 			public void resourceChanged(final IResourceChangeEvent event) {
