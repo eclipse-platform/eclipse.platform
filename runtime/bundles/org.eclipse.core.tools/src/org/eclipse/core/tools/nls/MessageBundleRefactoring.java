@@ -16,6 +16,7 @@ package org.eclipse.core.tools.nls;
 import java.io.IOException;
 import java.util.List;
 import org.eclipse.core.filebuffers.*;
+import org.eclipse.core.internal.deprecated.SubProgressMonitor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jdt.core.*;
@@ -58,20 +59,20 @@ public class MessageBundleRefactoring extends Refactoring {
 	@Override
 	public RefactoringStatus checkFinalConditions(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
 		RefactoringStatus result = new RefactoringStatus();
-		fAccessorTypeBinding = computeAccessorClassBinding(new SubProgressMonitor(monitor, 1));
+		fAccessorTypeBinding = computeAccessorClassBinding(SubProgressMonitor.create(monitor, 1));
 		if (fAccessorTypeBinding == null) {
 			result.addFatalError("Couldn't resolve accessor class");
 			return result;
 		}
 		fChange = new CompositeChange("Accessor Class Changes");
-		ICompilationUnit[] affectedUnits = RefactoringSearchEngine.findAffectedCompilationUnits(SearchPattern.createPattern(fAccessorClass, IJavaSearchConstants.REFERENCES), RefactoringScopeFactory.create(fAccessorClass), new SubProgressMonitor(monitor, 5), result);
+		ICompilationUnit[] affectedUnits = RefactoringSearchEngine.findAffectedCompilationUnits(SearchPattern.createPattern(fAccessorClass, IJavaSearchConstants.REFERENCES), RefactoringScopeFactory.create(fAccessorClass), SubProgressMonitor.create(monitor, 5), result);
 		monitor.beginTask("", affectedUnits.length + 1);
 		for (ICompilationUnit unit : affectedUnits) {
 			if (unit.equals(fAccessorClass.getCompilationUnit()))
 				continue;
-			processCompilationUnit(result, unit, new SubProgressMonitor(monitor, 1));
+			processCompilationUnit(result, unit, SubProgressMonitor.create(monitor, 1));
 		}
-		processPropertiesFile(result, new SubProgressMonitor(monitor, 1));
+		processPropertiesFile(result, SubProgressMonitor.create(monitor, 1));
 		return result;
 	}
 
@@ -99,10 +100,10 @@ public class MessageBundleRefactoring extends Refactoring {
 	private void processCompilationUnit(RefactoringStatus result, ICompilationUnit unit, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask("", 2);
 		CompilationUnit root = new RefactoringASTParser(AST.getJLSLatest()).parse(unit, true,
-				new SubProgressMonitor(monitor, 1));
+				SubProgressMonitor.create(monitor, 1));
 		ASTRewrite rewriter = ASTRewrite.create(root.getAST());
 
-		processAST(result, root, rewriter, new SubProgressMonitor(monitor, 1));
+		processAST(result, root, rewriter, SubProgressMonitor.create(monitor, 1));
 
 		TextFileChange change = new TextFileChange(unit.getElementName(), (IFile)unit.getResource());
 		try {

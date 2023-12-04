@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.internal.deprecated.SubProgressMonitor;
 import org.eclipse.team.core.ITeamStatus;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.TeamStatus;
@@ -35,6 +35,7 @@ import org.eclipse.team.internal.core.TeamPlugin;
 /**
  * An event handler that collects {@link SyncInfo} in a {@link SyncInfoTree}.
  */
+@SuppressWarnings("deprecation")
 public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 
 	// The set that receives notification when the resource synchronization state

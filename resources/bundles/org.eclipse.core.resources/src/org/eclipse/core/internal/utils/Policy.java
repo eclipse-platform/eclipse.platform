@@ -15,6 +15,7 @@ package org.eclipse.core.internal.utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import org.eclipse.core.internal.deprecated.SubProgressMonitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
@@ -183,6 +184,6 @@ public class Policy {
 			return new NullProgressMonitor();
 		if (monitor instanceof NullProgressMonitor)
 			return monitor;
-		return new SubProgressMonitor(monitor, ticks);
+		return SubProgressMonitor.create(monitor, ticks);
 	}
 }

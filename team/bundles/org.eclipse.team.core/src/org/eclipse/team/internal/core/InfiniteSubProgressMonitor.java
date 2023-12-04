@@ -14,8 +14,8 @@
 package org.eclipse.team.internal.core;
 
 
+import org.eclipse.core.internal.deprecated.SubProgressMonitor;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 
 /**
  * Provides an infinite progress monitor by subdividing by half repeatedly.

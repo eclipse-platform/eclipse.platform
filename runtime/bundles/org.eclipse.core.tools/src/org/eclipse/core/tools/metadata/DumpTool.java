@@ -16,6 +16,7 @@ package org.eclipse.core.tools.metadata;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.*;
+import org.eclipse.core.internal.deprecated.SubProgressMonitor;
 import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -159,7 +160,7 @@ public class DumpTool implements IApplication {
 
 			for (File subDir : subDirs) {
 				// Recursive call
-				extractInfo(subDir, fileList, new SubProgressMonitor(monitor, 98 / subDirs.length));
+				extractInfo(subDir, fileList, SubProgressMonitor.create(monitor, 98 / subDirs.length));
 			}
 		} finally {
 			monitor.done();
