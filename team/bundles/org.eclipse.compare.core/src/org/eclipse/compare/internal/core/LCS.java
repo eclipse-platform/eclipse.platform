@@ -44,7 +44,6 @@ public abstract class LCS {
 	 * After this method is called, the longest common subsequence is available
 	 * by calling getResult() where result[0] is composed of
 	 * entries from l1 and result[1] is composed of entries from l2
-	 * @param subMonitor
 	 */
 	public void longestCommonSubsequence(SubMonitor subMonitor) {
 		int length1 = getLength1();
@@ -116,7 +115,6 @@ public abstract class LCS {
 	 *            to store furthest reaching D-paths
 	 * @param snake should be allocated as int[3], used to store the beginning
 	 *            x, y coordinates and the length of the latest snake traversed
-	 * @param subMonitor
 	 * @param lcs should be allocated as TextLine[2][l1.length], used to store
 	 *            the common points found to be part of the LCS where lcs[0]
 	 *            references lines of l1 and lcs[1] references lines of l2.

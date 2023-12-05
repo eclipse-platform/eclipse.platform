@@ -65,9 +65,6 @@ public class DebugModePromptStatusHandler implements IStatusHandler {
 			return Boolean.TRUE; // stops the launch
 		}
 	}
-	/**
-	 * @param configuration
-	 */
 	private void relaunchInDebugMode(ILaunchConfiguration configuration) {
 		DebugUITools.launch(configuration, ILaunchManager.DEBUG_MODE);
 	}

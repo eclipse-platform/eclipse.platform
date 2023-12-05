@@ -39,10 +39,6 @@ public class CssUtil {
 		return replaceParameters(result);
 	}
 
-	/**
-	 * @param filenames
-	 * @return
-	 */
 	public static String[] getCssFilenames(String filenames ) {
 		if (filenames  == null) {
 			return new String[0];

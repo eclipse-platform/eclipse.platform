@@ -173,7 +173,6 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 		tableViewer.setCheckedElements(previosulyEnabled.toArray());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean performOk() {
 		Object[] checked = tableViewer.getCheckedElements();

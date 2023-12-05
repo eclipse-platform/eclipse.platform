@@ -180,7 +180,6 @@ public class WorkspacePatcher extends Patcher {
 	/**
 	 * Returns the target files of all the Diffs contained by this
 	 * DiffProject.
-	 * @param project
 	 * @return An array of IFiles that are targeted by the Diffs
 	 */
 	public IFile[] getTargetFiles(DiffProject project) {

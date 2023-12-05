@@ -75,11 +75,6 @@ public class SearchResultsPart extends AbstractFormPart implements IHelpPart {
 
 	private final FormToolkit innerToolkit;
 
-	/**
-	 * @param parent
-	 * @param toolkit
-	 * @param tbm
-	 */
 	public SearchResultsPart(Composite parent, FormToolkit toolkit,
 			IToolBarManager tbm) {
 		GridLayout layout = new GridLayout();

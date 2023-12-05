@@ -32,8 +32,6 @@ public class Policy {
 	/**
 	 * Print a debug message to the console. Pre-pend the message with the
 	 * current date and the name of the current thread.
-	 *
-	 * @param message
 	 */
 	public static void debug(String message) {
 		StringBuilder buffer = new StringBuilder();

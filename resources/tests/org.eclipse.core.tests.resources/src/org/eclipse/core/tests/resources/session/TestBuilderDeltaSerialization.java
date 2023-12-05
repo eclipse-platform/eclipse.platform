@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import java.io.ByteArrayInputStream;
 import java.util.Map;
 import junit.framework.Test;
@@ -23,12 +26,12 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -66,7 +69,10 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 		unsortedFile1.setContents(new ByteArrayInputStream(new byte[] { 1, 4, 3 }), true, true, null);
 		unsortedFile2.setContents(new ByteArrayInputStream(new byte[] { 1, 4, 3 }), true, true, null);
 
-		setBuildOrder(project1, project2);
+		// set build order
+		IWorkspaceDescription workspaceDescription = workspace.getDescription();
+		workspaceDescription.setBuildOrder(new String[] { project1.getName(), project2.getName() });
+		workspace.setDescription(workspaceDescription);
 		setAutoBuilding(false);
 
 		// configure builder for project1
@@ -112,7 +118,7 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBuilderDeltaSerialization.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBuilderDeltaSerialization.class);
 	}
 
 }

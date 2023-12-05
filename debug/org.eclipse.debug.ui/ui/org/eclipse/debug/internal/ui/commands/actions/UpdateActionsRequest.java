@@ -23,7 +23,6 @@ import org.eclipse.debug.internal.core.commands.DebugCommandRequest;
  * Request is cancelled when one voter votes false.
  *
  * @since 3.3
- *
  */
 public class UpdateActionsRequest extends DebugCommandRequest implements IEnabledStateRequest {
 

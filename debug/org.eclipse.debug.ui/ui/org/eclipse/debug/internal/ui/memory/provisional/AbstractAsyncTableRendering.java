@@ -1718,7 +1718,6 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 	 * @return the cell editor for editing memory
 	 *
 	 * @since 3.3
-	 *
 	 */
 	protected CellEditor createCellEditor(Composite composite, int column) {
 
@@ -1737,7 +1736,6 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 	 *         default cell modifier is to be used.
 	 *
 	 * @since 3.3
-	 *
 	 */
 	protected ICellModifier createCellModifier() {
 		return null;
@@ -3067,9 +3065,6 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 		}
 	}
 
-	/**
-	 *
-	 */
 	private void doGoToAddress() {
 		try {
 			BigInteger address = fGoToAddressComposite.getGoToAddress(fContentDescriptor.getContentBaseAddress(), getSelectedAddress());

@@ -160,7 +160,6 @@ public class Slider extends Composite {
 	 * Loads or reloads the provider list. If you want to update the read count of
 	 * the current button or all buttons then check the {@link #updateButton()} and
 	 * {@link #updateButtons()} methods.
-	 *
 	 */
 	public void load() {
 		if (isDisposed() || fScroller.isDisposed() || fTipManager == null) {

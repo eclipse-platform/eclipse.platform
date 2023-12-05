@@ -25,7 +25,6 @@ import org.eclipse.debug.ui.memory.IMemoryRenderingSite;
  * Clients may reference or subclass from this class.
  *
  * @since 3.2
- *
  */
 public class MemoryViewPresentationContext extends PresentationContext {
 

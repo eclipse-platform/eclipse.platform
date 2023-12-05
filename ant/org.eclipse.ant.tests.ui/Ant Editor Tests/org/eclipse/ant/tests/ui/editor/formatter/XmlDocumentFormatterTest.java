@@ -87,7 +87,6 @@ public class XmlDocumentFormatterTest extends AbstractAntUITest {
 	 *            - the source file after a properly executed format
 	 * @param prefs
 	 *            - given the included preference instructions
-	 * @throws Exception
 	 */
 	private void simpleTest(String sourceFileName, String targetFileName, FormattingPreferences prefs) throws Exception {
 

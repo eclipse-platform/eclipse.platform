@@ -22,7 +22,6 @@ import org.eclipse.ui.console.IConsoleConstants;
  * This interface contains constants only; it is not intended to be implemented
  * or extended.
  * </p>
- *
  */
 public interface IConsoleHelpContextIds {
 

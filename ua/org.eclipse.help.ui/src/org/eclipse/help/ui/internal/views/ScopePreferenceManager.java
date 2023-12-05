@@ -67,9 +67,6 @@ public class ScopePreferenceManager extends PreferenceManager implements IHelpUI
 			page.setDescription(desc.getDescription());
 		}
 	}
-	/**
-	 *
-	 */
 	public ScopePreferenceManager(EngineDescriptorManager descManager, ScopeSet set) {
 		this.set = set;
 		load(descManager.getDescriptors());

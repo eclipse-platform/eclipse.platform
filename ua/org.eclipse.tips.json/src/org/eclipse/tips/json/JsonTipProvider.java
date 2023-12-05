@@ -45,7 +45,6 @@ import com.google.gson.stream.JsonReader;
 
 /**
  * A special TipProvider that gets instantiated from a JSon file.
- *
  */
 @SuppressWarnings("restriction")
 public abstract class JsonTipProvider extends TipProvider {
@@ -75,7 +74,6 @@ public abstract class JsonTipProvider extends TipProvider {
 	 * <b>Implementation Details</b><br>
 	 * The implementation of this method in this provider will parse the json file
 	 * which was set with {@link #setJsonUrl(String)}.
-	 *
 	 */
 	@Override
 	public synchronized IStatus loadNewTips(IProgressMonitor monitor) {

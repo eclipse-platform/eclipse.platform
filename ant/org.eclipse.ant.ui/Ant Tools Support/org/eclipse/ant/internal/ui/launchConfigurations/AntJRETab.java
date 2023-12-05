@@ -212,7 +212,6 @@ public class AntJRETab extends JavaJRETab {
 	 * {@link IJavaProject} as specified by the project attribute in the configuration. If there is no project attribute the workspace default
 	 * {@link IVMInstall} is returned.
 	 * 
-	 * @param config
 	 * @return the default {@link IVMInstall} for the given {@link ILaunchConfiguration}
 	 */
 	private IVMInstall getDefaultVMInstall(ILaunchConfiguration config) {

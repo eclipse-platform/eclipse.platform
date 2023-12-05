@@ -21,9 +21,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryFileStore;
 
-/**
- *
- */
 public class BogusFileStore extends MemoryFileStore {
 
 	public BogusFileStore(IPath path) {

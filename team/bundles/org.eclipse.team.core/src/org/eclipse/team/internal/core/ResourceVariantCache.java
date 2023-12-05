@@ -90,7 +90,6 @@ public class ResourceVariantCache {
 
 	/**
 	 * Return the cache for the given id or null if caching is not enabled for the given id.
-	 * @param cacheId
 	 * @return the cache
 	 */
 	public static synchronized ResourceVariantCache getCache(String cacheId) {
@@ -208,7 +207,6 @@ public class ResourceVariantCache {
 	/**
 	 * Purge the given cache entry from the cache. This method should only be invoked from
 	 * an instance of ResourceVariantCacheEntry after it has set it's state to DISPOSED.
-	 * @param entry
 	 */
 	protected void purgeFromCache(ResourceVariantCacheEntry entry) {
 		purgeFromCache(entry.getId());

@@ -91,7 +91,6 @@ public abstract class StatusReporter {
 	 *            any number of additional objects to pass along with the status in order to help
 	 *            with diagnosing the problem. One possible use of these objects would be to call
 	 *            their toString() methods.
-	 *
 	 */
 	public abstract void report(IStatus status, int style, Object... information);
 
@@ -129,7 +128,6 @@ public abstract class StatusReporter {
 	 *            any number of additional objects to pass along in order to help with diagnosing
 	 *            the problem. One possible use of these objects may be that their toString()
 	 *            methods will be called.
-	 *
 	 */
 	final public void show(int severity, String message, Throwable exception, Object... information) {
 		report(newStatus(severity, message, exception), SHOW, information);

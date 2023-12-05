@@ -162,8 +162,6 @@ public class BuildTests extends AbstractAntUIBuildTest {
 
 	/**
 	 * Tests specifying the XmlLogger as a listener (bug 80435)
-	 *
-	 * @throws FileNotFoundException
 	 */
 	@Test
 	public void testXmlLoggerListener() throws CoreException, FileNotFoundException {

@@ -189,7 +189,6 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 	 * @deprecated As of 3.5, replaced by
 	 *             {@link Utils#findReusableCompareEditor(CompareEditorInput, IWorkbenchPage, Class[])}
 	 */
-	@SuppressWarnings("javadoc")
 	@Deprecated
 	public static IEditorPart findReusableCompareEditor(IWorkbenchPage workbenchPage) {
 		return Utils.findReusableCompareEditor(null, workbenchPage,

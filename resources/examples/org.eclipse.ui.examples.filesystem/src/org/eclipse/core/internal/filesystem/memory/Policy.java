@@ -15,9 +15,6 @@ package org.eclipse.core.internal.filesystem.memory;
 
 import org.eclipse.core.runtime.*;
 
-/**
- * 
- */
 public class Policy {
 	public static final String PI_FILESYSTEM_EXAMPLE = "org.eclipse.ui.examples.filesystem"; //$NON-NLS-1$
 

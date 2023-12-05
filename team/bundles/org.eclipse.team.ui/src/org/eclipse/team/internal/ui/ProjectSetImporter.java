@@ -67,10 +67,7 @@ public class ProjectSetImporter {
 	 * @param filename
 	 *            the name of the source file. This is included in case the
 	 *            provider needs to deduce relative paths
-	 * @param shell
-	 * @param monitor
 	 * @return list of new projects
-	 * @throws InvocationTargetException
 	 */
 	public static IProject[] importProjectSetFromString(String psfContents,
 			String filename, Shell shell, IProgressMonitor monitor)
@@ -82,11 +79,7 @@ public class ProjectSetImporter {
 	/**
 	 * Imports a psf file.
 	 *
-	 * @param filename
-	 * @param shell
-	 * @param monitor
 	 * @return list of new projects
-	 * @throws InvocationTargetException
 	 */
 	public static IProject[] importProjectSet(String filename, Shell shell,
 			IProgressMonitor monitor) throws InvocationTargetException {
@@ -237,7 +230,6 @@ public class ProjectSetImporter {
 	/**
 	 * Check if given file is a valid psf file
 	 *
-	 * @param filename
 	 * @return <code>true</code> is file is a valid psf file
 	 */
 	public static boolean isValidProjectSetFile(String filename) {
@@ -251,7 +243,6 @@ public class ProjectSetImporter {
 	/**
 	 * Check if given string is a valid project set
 	 *
-	 * @param psfContent
 	 * @return <code>true</code> if psfContent is a valid project set
 	 */
 	public static boolean isValidProjectSetString(String psfContent) {

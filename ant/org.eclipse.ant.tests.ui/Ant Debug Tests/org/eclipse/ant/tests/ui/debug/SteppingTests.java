@@ -181,8 +181,6 @@ public class SteppingTests extends AbstractAntDebugTest {
 
 	/**
 	 * bug 85309
-	 * 
-	 * @throws CoreException
 	 */
 	@Test
 	public void testStepOutOfMacrodef() throws CoreException {
@@ -192,8 +190,6 @@ public class SteppingTests extends AbstractAntDebugTest {
 
 	/**
 	 * bug 85309
-	 * 
-	 * @throws CoreException
 	 */
 	@Test
 	public void testStepOutOfMacrodefSepVM() throws CoreException {
@@ -203,8 +199,6 @@ public class SteppingTests extends AbstractAntDebugTest {
 
 	/**
 	 * bug 94769
-	 * 
-	 * @throws CoreException
 	 */
 	@Test
 	public void testStepIntoMacrodef() throws CoreException {
@@ -213,8 +207,6 @@ public class SteppingTests extends AbstractAntDebugTest {
 
 	/**
 	 * bug 94769
-	 * 
-	 * @throws CoreException
 	 */
 	@Test
 	public void testStepIntoMacrodefSepVM() throws CoreException {

@@ -645,7 +645,6 @@ class ViewerStateTracker {
 	 * Encodes delta elements into mementos using the given provider.
 	 * @param rootDelta the {@link ModelDelta} to encode
 	 * @param defaultProvider the default provider to use when processing the given delta
-	 *
 	 */
 	protected void encodeDelta(final ModelDelta rootDelta, final IElementMementoProvider defaultProvider) {
 		final Object input = rootDelta.getElement();

@@ -516,8 +516,6 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 
 	/**
 	 * Tests concurrent access to expressions.
-	 *
-	 * @throws InterruptedException
 	 */
 	@Test
 	public void testConcurrentAccess() throws InterruptedException {

@@ -55,8 +55,6 @@ public class AntContentProvider implements IStructuredContentProvider {
 
 	/**
 	 * Add an element to the current listing of elements and to the underlying viewer. Does nothing if the listing already contains the given element
-	 * 
-	 * @param o
 	 */
 	public void add(Object o) {
 		if (elements.contains(o)) {
@@ -97,8 +95,6 @@ public class AntContentProvider implements IStructuredContentProvider {
 
 	/**
 	 * Removes the given element from the listing of elements and from the backing viewer.
-	 * 
-	 * @param o
 	 */
 	public void remove(Object o) {
 		elements.remove(o);
@@ -107,8 +103,6 @@ public class AntContentProvider implements IStructuredContentProvider {
 
 	/**
 	 * Removes the given selection of the listing of elements and from the backing viewer
-	 * 
-	 * @param selection
 	 */
 	public void remove(IStructuredSelection selection) {
 		Object[] array = selection.toArray();

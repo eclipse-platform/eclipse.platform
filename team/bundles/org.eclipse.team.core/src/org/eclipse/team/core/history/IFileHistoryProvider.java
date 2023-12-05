@@ -24,7 +24,6 @@ import org.eclipse.team.core.history.provider.FileHistoryProvider;
  * @since 3.2
  * @noimplement This interface is not intended to be implemented by clients.
  *              Clients can instead subclass {@link FileHistoryProvider}.
- *
  */
 public interface IFileHistoryProvider {
 

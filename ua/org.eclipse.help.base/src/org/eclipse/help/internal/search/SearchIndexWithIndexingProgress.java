@@ -17,11 +17,6 @@ import org.eclipse.help.internal.toc.*;
 
 public class SearchIndexWithIndexingProgress extends SearchIndex {
 	private final ProgressDistributor progressDistributor;
-	/**
-	 * @param locale
-	 * @param analyzerDesc
-	 * @param tocManager
-	 */
 	public SearchIndexWithIndexingProgress(String locale,
 			AnalyzerDescriptor analyzerDesc, TocManager tocManager) {
 		super(locale, analyzerDesc, tocManager);

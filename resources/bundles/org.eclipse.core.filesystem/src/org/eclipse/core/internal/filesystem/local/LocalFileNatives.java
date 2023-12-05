@@ -94,9 +94,6 @@ abstract class LocalFileNatives {
 	/**
 	 * Copies file attributes from source to destination. The copyLastModified attribute
 	 * indicates whether the lastModified attribute should be copied.
-	 * @param source
-	 * @param destination
-	 * @param copyLastModified
 	 * @return <code>true</code> for success, and <code>false</code> otherwise.
 	 */
 	public static boolean copyAttributes(String source, String destination, boolean copyLastModified) {
@@ -107,7 +104,6 @@ abstract class LocalFileNatives {
 	}
 
 	/**
-	 * @param fileName
 	 * @return The file info
 	 */
 	public static FileInfo fetchFileInfo(String fileName) {
@@ -160,11 +156,6 @@ abstract class LocalFileNatives {
 	 * be called if <code>isUnicode</code> is <code>false</code>). */
 	private static final native boolean internalSetFileInfoW(char[] fileName, IFileInfo attribute, int options);
 
-	/**
-	 * @param fileName
-	 * @param info
-	 * @param options
-	 */
 	public static boolean putFileInfo(String fileName, IFileInfo info, int options) {
 		if (isUnicode)
 			return internalSetFileInfoW(Convert.toPlatformChars(fileName), info, options);

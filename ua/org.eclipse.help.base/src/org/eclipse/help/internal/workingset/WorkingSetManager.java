@@ -141,7 +141,6 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 
 	/**
 	 * Returns a working set by name
-	 *
 	 */
 	@Override
 	public WorkingSet getWorkingSet(String name) {

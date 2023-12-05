@@ -323,15 +323,12 @@ public class PatchTest {
 	}
 
 	/**
-	 * @param patchdataUrl
 	 * @return A map with subfolder name as a key and an array of objects as a
 	 *         value. The first object in the array is another array (of Strings)
 	 *         containing file names for the test. The last value in this array can
 	 *         be <code>null</code> as testing against actual result is optional.
 	 *         The second object is an instance of <code>PatchConfiguration</code>
 	 *         class.
-	 * @throws IOException
-	 * @throws CoreException
 	 */
 	private Map<String, PatchTestConfiguration> extractNamesForJarProtocol(URL patchdataUrl)
 			throws IOException, CoreException {
@@ -513,10 +510,6 @@ public class PatchTest {
 	/**
 	 * Parses a workspace patch and applies the diffs to the appropriate files
 	 *
-	 * @param msg
-	 * @param originalFiles
-	 * @param patch
-	 * @param expectedOutcomeFiles
 	 * @param patchConfiguration   The patch configuration to use. One of its
 	 *                             parameters is fuzz factor. If it equals
 	 *                             <code>-1</code> it means that the fuzz should be

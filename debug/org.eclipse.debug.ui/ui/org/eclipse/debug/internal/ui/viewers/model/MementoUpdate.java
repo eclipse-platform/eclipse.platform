@@ -39,7 +39,6 @@ abstract class MementoUpdate extends Request implements IViewerUpdate {
 	 * @param element the element to update
 	 * @param memento Memento to update
 	 * @param context the presentation context
-	 *
 	 */
 	public MementoUpdate(TreeModelContentProvider provider, Object viewerInput, IPresentationContext context, Object element, TreePath elementPath, IMemento memento) {
 		fContext = context;

@@ -33,7 +33,6 @@ public class AntProjectNodeProxy extends AntProjectNode {
 	 * @param name
 	 *            the project's name or <code>null</code> if the project's name is not known. If this value is <code>null</code>, the file will be
 	 *            parsed the first time a value is requested that requires it.
-	 * @param buildFileName
 	 */
 	public AntProjectNodeProxy(String name, String buildFileName) {
 		super(null, null);

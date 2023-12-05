@@ -206,7 +206,6 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 
 	/**
 	 * Allow the finish button to be pressed if there are checked resources.
-	 *
 	 */
 	protected void updateOKStatus() {
 		if(fViewer != null) {

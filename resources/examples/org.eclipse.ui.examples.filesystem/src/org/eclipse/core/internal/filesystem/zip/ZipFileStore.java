@@ -42,8 +42,6 @@ public class ZipFileStore extends FileStore {
 
 	/**
 	 * Creates a new zip file store.
-	 * @param rootStore
-	 * @param path
 	 */
 	public ZipFileStore(IFileStore rootStore, IPath path) {
 		this.rootStore = rootStore;

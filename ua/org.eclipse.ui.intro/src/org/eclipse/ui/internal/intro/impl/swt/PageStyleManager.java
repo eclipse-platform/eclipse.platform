@@ -116,9 +116,6 @@ public class PageStyleManager extends SharedStyleManager {
 	 * current pages style. If the given key is not found, the pageId is trimmed
 	 * from the begining of the key, and the key is looked up again. If key does
 	 * not start with a pageId, lookup only the key as is.
-	 *
-	 * @param key
-	 * @return
 	 */
 	private Properties findPropertyOwner(String key) {
 		// search for the key in this page's properties first.
@@ -139,9 +136,6 @@ public class PageStyleManager extends SharedStyleManager {
 	/**
 	 * Finds the context from which this key was loaded. If the key is not from
 	 * an inherited alt style, then use the context corresponding to this page.
-	 *
-	 * @param key
-	 * @return
 	 */
 
 	@Override
@@ -244,9 +238,6 @@ public class PageStyleManager extends SharedStyleManager {
 	 * If not found, use the default description style.
 	 *
 	 * Returns null if no default style found, or any id in path is null.
-	 *
-	 * @param group
-	 * @return
 	 */
 	public String getDescription(IntroGroup group) {
 		StringBuilder buff = ModelLoaderUtil.createPathToElementKey(group, true);
@@ -324,8 +315,6 @@ public class PageStyleManager extends SharedStyleManager {
 
 	/**
 	 * Returns the first direct child text element with the given style-id.
-	 *
-	 * @return
 	 */
 	private String findTextFromStyleId(AbstractIntroContainer parent,
 			String styleId) {
@@ -346,8 +335,6 @@ public class PageStyleManager extends SharedStyleManager {
 	/**
 	 * Util method to check model type, and filter model element out if it is of
 	 * the correct type.
-	 *
-	 * @param element
 	 */
 	private AbstractIntroElement makeFiltered(AbstractIntroElement element) {
 		if (element.isOfType(AbstractIntroElement.BASE_ELEMENT))
@@ -448,10 +435,6 @@ public class PageStyleManager extends SharedStyleManager {
 	/**
 	 * Retrieves an image for a link in a page. If not found, uses the page's
 	 * default link image. If still not found, uses the passed default.
-	 *
-	 * @param link
-	 * @param qualifier
-	 * @return
 	 */
 	public Image getImage(IntroLink link, String qualifier, String defaultKey) {
 		// try the Id first

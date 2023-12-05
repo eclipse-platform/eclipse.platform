@@ -51,7 +51,6 @@ public abstract class AbstractLaunchTest extends AbstractDebugTest {
 	 *
 	 * @param configurationName configuration name
 	 * @return launch configuration
-	 * @throws CoreException
 	 */
 	protected ILaunchConfiguration getLaunchConfiguration(String configurationName) throws CoreException {
 		ILaunchManager manager = getLaunchManager();

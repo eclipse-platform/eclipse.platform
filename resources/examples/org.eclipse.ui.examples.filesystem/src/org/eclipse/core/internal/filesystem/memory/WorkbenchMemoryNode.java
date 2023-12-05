@@ -18,9 +18,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
-/**
- * 
- */
 public class WorkbenchMemoryNode implements IWorkbenchAdapter {
 
 	@Override

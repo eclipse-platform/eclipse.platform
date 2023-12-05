@@ -63,7 +63,6 @@ import org.xml.sax.SAXParseException;
  * <code>getIntroItem()</code> and <code>getItemsList()</code>.
  * The title of the cheatsheet can be retrieved by calling
  * <code>getTitle()</code>.
- *
  */
 public class CheatSheetParser implements IStatusContainer {
 

@@ -422,7 +422,6 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 
 	/**
 	 * Sets the next entry in this linked list of jobs.
-	 * @param entry
 	 */
 	final void setNext(InternalJob entry) {
 		this.next = entry;
@@ -430,7 +429,6 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 
 	/**
 	 * Sets the previous entry in this linked list of jobs.
-	 * @param entry
 	 */
 	final void setPrevious(InternalJob entry) {
 		this.previous = entry;

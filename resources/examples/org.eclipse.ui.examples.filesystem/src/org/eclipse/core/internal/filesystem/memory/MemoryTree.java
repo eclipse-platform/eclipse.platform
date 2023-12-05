@@ -46,8 +46,6 @@ public class MemoryTree {
 
 		/**
 		 * Returns the child with the given name, or null if not found.
-		 * @param name
-		 * @return
 		 */
 		Node getChild(String name) {
 			for (int i = 0, imax = children.size(); i < imax; i++) {
@@ -204,8 +202,6 @@ public class MemoryTree {
 
 	/**
 	 * Returns the file info for the given path. Never returns null.
-	 * @param path
-	 * @return
 	 */
 	public synchronized IFileInfo fetchInfo(IPath path) {
 		Node node = findNode(path);
@@ -216,9 +212,6 @@ public class MemoryTree {
 
 	/**
 	 * Returns the node at the given path, or null if not found.
-	 * 
-	 * @param path
-	 * @return
 	 */
 	private Node findNode(IPath path) {
 		Node current = root;

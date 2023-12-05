@@ -338,9 +338,6 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		getSite().getPage().removePartListener(fLinkWithEditorListener);
 	}
 
-	/**
-	 *
-	 */
 	private void rememberCurrentParticipant() {
 		IDialogSettings section = getDialogSettings();
 		section.put(KEY_LAST_ACTIVE_PARTICIPANT_ID, activeParticipantRef.getId());

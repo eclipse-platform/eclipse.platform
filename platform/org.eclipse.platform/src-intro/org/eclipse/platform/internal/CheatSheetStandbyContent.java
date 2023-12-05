@@ -80,9 +80,6 @@ public final class CheatSheetStandbyContent implements IStandbyContentPart {
 
 	/**
 	 * Tries to create the last content part viewed, based on content part id..
-	 * 
-	 * @param memento
-	 * @return
 	 */
 	private String getCachedInput(IMemento memento) {
 		if (memento == null)

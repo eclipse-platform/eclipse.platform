@@ -310,7 +310,6 @@ public class ExportUtil {
 	 * @param javaProject
 	 *            project for which cyclic dependency marker should be found
 	 * @return cyclic dependency marker for a given project or <code>null</code> if there is no such marker
-	 * @throws CoreException
 	 */
 	public static IMarker getCyclicDependencyMarker(IJavaProject javaProject) throws CoreException {
 		for (IMarker marker : javaProject.getProject().findMarkers(IJavaModelMarker.BUILDPATH_PROBLEM_MARKER, false, IResource.DEPTH_ONE)) {

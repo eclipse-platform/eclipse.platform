@@ -395,7 +395,6 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 	 *            the file spec string
 	 * @param typeMask
 	 *            FILE_NAME_SPEC or FILE_EXTENSION_SPEC or FILE_REGEXP_SPEC
-	 * @param strict
 	 * @return true if this file spec has already been added, false otherwise
 	 */
 	boolean hasFileSpec(String text, int typeMask, boolean strict) {

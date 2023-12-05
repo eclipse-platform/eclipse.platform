@@ -53,8 +53,6 @@ public class IntroLaunchBarElement extends AbstractIntroElement {
 	 * Returns the desired launch bar orientation that results from the desired
 	 * location. Valid values are <code>SWT.VERTICAL</code> and
 	 * <code>SWT.HORIZONTAL</code>.
-	 *
-	 * @return
 	 */
 	public int getOrientation() {
 		int location = getLocation();
@@ -66,8 +64,6 @@ public class IntroLaunchBarElement extends AbstractIntroElement {
 	 * Returns the location of the launch bar in the workbench window. Valid
 	 * values are <code>SWT.RIGHT</code>,<code>SWT.LEFT</code> and
 	 * <code>SWT.BOTTOM</code>.
-	 *
-	 * @return
 	 */
 	public int getLocation() {
 		String location = getCfgElement().getAttribute("location"); //$NON-NLS-1$
@@ -116,8 +112,6 @@ public class IntroLaunchBarElement extends AbstractIntroElement {
 
 	/**
 	 * Returns the relative icon path of the handle image.
-	 *
-	 * @return
 	 */
 	private String getHandleImage() {
 		IConfigurationElement handle = getHandleElement();
@@ -129,8 +123,6 @@ public class IntroLaunchBarElement extends AbstractIntroElement {
 	/**
 	 * Returns the icon image of the handle, or <code>null</code> if not
 	 * defined or found.
-	 *
-	 * @return
 	 */
 	public ImageDescriptor getHandleImageDescriptor() {
 		String path = getHandleImage();
@@ -149,8 +141,6 @@ public class IntroLaunchBarElement extends AbstractIntroElement {
 
 	/**
 	 * Returns an array of shorcut elements.
-	 *
-	 * @return
 	 */
 	public IntroLaunchBarShortcut[] getShortcuts() {
 		if (shortcuts == null) {
@@ -161,7 +151,6 @@ public class IntroLaunchBarElement extends AbstractIntroElement {
 
 	/**
 	 * Creates an array of shortcut elements
-	 *
 	 */
 	private void createShortcuts() {
 		shortcuts = new ArrayList<>();

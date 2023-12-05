@@ -163,8 +163,6 @@ public class QuicklinksViewer implements IIntroContentProvider {
 
 		/**
 		 * Return the list of configured {@link Quicklink} that can be found.
-		 *
-		 * @return
 		 */
 		@Override
 		public List<Quicklink> get() {
@@ -399,7 +397,6 @@ public class QuicklinksViewer implements IIntroContentProvider {
 	 * that can be embedded in HTML and rendered in a browser. May create
 	 * temporary files that will be cleaned up on exit.
 	 *
-	 * @param iconURL
 	 * @return stable URL
 	 */
 	private String asBrowserURL(String iconURL) {
@@ -428,7 +425,6 @@ public class QuicklinksViewer implements IIntroContentProvider {
 	/**
 	 * Write out the image as a data: URL if possible or to the file-system.
 	 *
-	 * @param descriptor
 	 * @return URL with the resulting image
 	 */
 	private String asDataURL(ImageDescriptor descriptor) {

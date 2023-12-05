@@ -19,7 +19,6 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * @since 3.2
- *
  */
 class LabelResult extends LabelRequestMonitor implements ILabelResult {
 

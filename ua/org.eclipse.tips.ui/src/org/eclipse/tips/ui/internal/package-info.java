@@ -14,6 +14,5 @@
 /**
  * Internal classes of the SWT Tip Dialog. You can use these classes as an
  * example on how to build your own Tip Dialog.
- *
  */
 package org.eclipse.tips.ui.internal;

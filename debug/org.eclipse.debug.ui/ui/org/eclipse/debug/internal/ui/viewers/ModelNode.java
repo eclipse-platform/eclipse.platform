@@ -92,8 +92,6 @@ public class ModelNode {
 
 	/**
 	 * Returns a tree path corresponding to this node.
-	 *
-	 * @return
 	 */
 	public synchronized TreePath getTreePath() {
 		List<Object> path = new ArrayList<>();
@@ -107,8 +105,6 @@ public class ModelNode {
 
 	/**
 	 * Adds the given child to this node.
-	 *
-	 * @param child
 	 */
 	public synchronized void addChild(ModelNode child) {
 		if (fChildren == null) {
@@ -123,8 +119,6 @@ public class ModelNode {
 
 	/**
 	 * Removes the given child from this node.
-	 *
-	 * @param child
 	 */
 	public synchronized void removeChild(ModelNode child) {
 		if (fChildren != null) {
@@ -145,8 +139,6 @@ public class ModelNode {
 
 	/**
 	 * Sets the children for this node
-	 *
-	 * @param children
 	 */
 	public synchronized void setChildren(ModelNode[] children) {
 		if (children != null && children.length == 0) {
@@ -159,8 +151,6 @@ public class ModelNode {
 
 	/**
 	 * Returns the number of children for this node.
-	 *
-	 * @return
 	 */
 	public synchronized int getChildCount() {
 		if (fChildren == null) {
@@ -174,8 +164,6 @@ public class ModelNode {
 
 	/**
 	 * Returns the index of the given child in this parent, or -1
-	 *
-	 * @param child
 	 */
 	public synchronized int getChildIndex(ModelNode child) {
 		if (fChildren != null) {
@@ -190,8 +178,6 @@ public class ModelNode {
 
 	/**
 	 * Sets whether this node has children.
-	 *
-	 * @param container
 	 */
 	public synchronized void setIsContainer(boolean container) {
 		fIsContainer = container;

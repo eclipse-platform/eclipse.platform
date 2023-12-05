@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.console;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,13 +29,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -440,7 +444,21 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 					sysout.println(lines[4]);
 					mockProcess.destroy();
 					sysout.close();
-					TestUtil.processUIEvents(200);
+
+					Predicate<AbstractDebugTest> waitForLastLineWritten = __ -> {
+						try {
+							TestUtil.processUIEvents(50);
+						} catch (Exception e) {
+							// try again
+						}
+						return console.getDocument().getNumberOfLines() < lines.length;
+					};
+					Function<AbstractDebugTest, String> errorMessageProvider = __ -> {
+						String expected = String.join(System.lineSeparator(), lines);
+						String actual = console.getDocument().get();
+						return "Not all lines have been written, expected: " + expected + ", was: " + actual;
+					};
+					waitWhile(waitForLastLineWritten, testTimeout, errorMessageProvider);
 
 					for (int i = 0; i < lines.length; i++) {
 						IRegion lineInfo = console.getDocument().getLineInformation(i);
@@ -478,7 +496,26 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 			final org.eclipse.debug.internal.ui.views.console.ProcessConsole console = new org.eclipse.debug.internal.ui.views.console.ProcessConsole(process, new ConsoleColorProvider(), consoleEncoding);
 			try {
 				console.initialize();
-				mockProcess.waitFor(100, TimeUnit.MILLISECONDS);
+
+				Predicate<AbstractDebugTest> waitForFileWritten = __ -> {
+					try {
+						TestUtil.processUIEvents(20);
+						return Files.readAllBytes(outFile.toPath()).length < output.length;
+					} catch (Exception e) {
+						// try again
+					}
+					return false;
+				};
+				Function<AbstractDebugTest, String> errorMessageProvider = __ -> {
+					byte[] actualOutput = new byte[0];
+					try {
+						actualOutput = Files.readAllBytes(outFile.toPath());
+					} catch (IOException e) {
+						// Proceed as if output was empty
+					}
+					return "File has not been written, expected: " + Arrays.toString(output) + ", was: " + Arrays.toString(actualOutput);
+				};
+				waitWhile(waitForFileWritten, testTimeout, errorMessageProvider);
 				mockProcess.destroy();
 			} finally {
 				console.destroy();
@@ -488,7 +525,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		}
 
 		byte[] receivedOutput = Files.readAllBytes(outFile.toPath());
-		assertArrayEquals(output, receivedOutput);
+		assertThat("unexpected output", receivedOutput, is(output));
 	}
 
 	/**

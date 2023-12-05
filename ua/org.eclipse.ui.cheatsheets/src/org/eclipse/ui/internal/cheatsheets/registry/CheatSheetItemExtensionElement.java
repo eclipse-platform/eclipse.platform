@@ -39,7 +39,6 @@ public class CheatSheetItemExtensionElement extends WorkbenchAdapter implements 
 
 	/**
 	 *	Create a new instance of this class
-	 *
 	 */
 	public CheatSheetItemExtensionElement() {
 	}

@@ -38,7 +38,6 @@ public class PDAStackFrame extends PDADebugElement implements IStackFrame {
 	 * Constructs a stack frame in the given thread with the given
 	 * frame data.
 	 *
-	 * @param thread
 	 * @param data frame data
 	 * @param id stack frame id (0 is the bottom of the stack)
 	 */
@@ -51,8 +50,6 @@ public class PDAStackFrame extends PDADebugElement implements IStackFrame {
 
 	/**
 	 * Initializes this frame based on its data
-	 *
-	 * @param data
 	 */
 	private void init(PDAFrameData data) {
 		fFilePath = data.fFilePath;

@@ -29,9 +29,6 @@ public interface IVirtualContentListener {
 	 */
 	void handleAtBufferEnd();
 
-	/**
-	 * @return
-	 */
 	int getThreshold(int bufferEndOrStart);
 
 }

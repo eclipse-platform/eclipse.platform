@@ -114,7 +114,6 @@ public class ResourceLocator {
 	/**
 	 * Obtains content provider for a documentation plug-in, creates one if necessary.
 	 *
-	 * @param pluginId
 	 * @return ITopicContentProvider or null
 	 */
 	private static IHelpContentProducer getContentProducer(String pluginId) {
@@ -143,7 +142,6 @@ public class ResourceLocator {
 	/**
 	 * Creates content proivider for a documentation plug-in
 	 *
-	 * @param pluginId
 	 * @return ITopicContentProvider or null
 	 */
 	private static ProducerDescriptor createContentProducer(String pluginId) {
@@ -433,12 +431,6 @@ public class ResourceLocator {
 		return ret;
 	}
 
-	/**
-	 * @param pluginDesc
-	 * @param directory
-	 * @param locale
-	 * @param paths
-	 */
 	private static void findTopicPaths(Bundle pluginDesc, String directory, String locale, Set<String> paths) {
 		if (directory.endsWith("/")) //$NON-NLS-1$
 			directory = directory.substring(0, directory.length() - 1);

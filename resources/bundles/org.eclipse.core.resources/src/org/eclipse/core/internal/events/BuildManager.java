@@ -702,7 +702,6 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	 * builder_2,  null,     2
 	 * builder_3,  config_1, 3
 	 * builder_3,  config_1, 3
-	 *
 	 */
 	public ArrayList<BuilderPersistentInfo> createBuildersPersistentInfo(IProject project) throws CoreException {
 		/* get the old builders (those not yet instantiated) */
@@ -1041,7 +1040,6 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 
 	/**
 	 * Returns the safe runnable instance for invoking a builder
-	 * @param currentBuilder
 	 */
 	private ISafeRunnable getSafeRunnable(final InternalBuilder currentBuilder, final int trigger, final Map<String, String> args, final MultiStatus status, final IProgressMonitor monitor) {
 		return new ISafeRunnable() {

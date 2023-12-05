@@ -33,7 +33,6 @@ import org.junit.Test;
 
 /**
  * Tests the correct creation of the outline for an xml file.
- *
  */
 public class AntEditorContentOutlineTests extends AbstractAntUITest {
 

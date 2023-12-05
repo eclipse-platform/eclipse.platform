@@ -116,7 +116,6 @@ public class PDALaunchDelegate extends LaunchConfigurationDelegate {
 	 *
 	 * @param message error message
 	 * @param e underlying exception
-	 * @throws CoreException
 	 */
 	private void abort(String message, Throwable e) throws CoreException {
 		throw new CoreException(new Status(IStatus.ERROR, DebugCorePlugin.PLUGIN_ID, 0, message, e));

@@ -44,8 +44,6 @@ public final class ContentTypeCatalog {
 	 * Return true if type1 is an ancestor of type2 or if type2 is an ancestor of
 	 * type1
 	 *
-	 * @param type1
-	 * @param type2
 	 * @return true type1 is ancestor or type2, or vice versa. false otherwise
 	 */
 	private static boolean isAncestor(ContentType type1, ContentType type2) {

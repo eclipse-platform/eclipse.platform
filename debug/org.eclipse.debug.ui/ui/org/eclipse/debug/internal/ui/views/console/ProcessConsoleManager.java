@@ -163,7 +163,6 @@ public class ProcessConsoleManager implements ILaunchListener {
 	/**
 	 * Returns the console for the given process, or <code>null</code> if none.
 	 *
-	 * @param process
 	 * @return the console for the given process, or <code>null</code> if none
 	 */
 	public IConsole getConsole(IProcess process) {

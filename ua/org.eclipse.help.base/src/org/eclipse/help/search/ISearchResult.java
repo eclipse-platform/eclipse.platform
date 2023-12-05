@@ -21,7 +21,6 @@ import org.eclipse.help.IToc;
 /**
  * This class holds information for a single Search Result
  * @since 3.6
- *
  */
 public interface ISearchResult {
 

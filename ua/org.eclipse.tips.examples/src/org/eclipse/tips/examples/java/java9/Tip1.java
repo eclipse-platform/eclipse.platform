@@ -31,7 +31,6 @@ import org.osgi.framework.FrameworkUtil;
 
 /**
  * This is an example Tip class.
- *
  */
 public class Tip1 extends Tip implements IHtmlTip {
 

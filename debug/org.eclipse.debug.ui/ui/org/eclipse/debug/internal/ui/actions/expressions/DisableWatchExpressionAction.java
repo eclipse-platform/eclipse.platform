@@ -14,9 +14,6 @@
 package org.eclipse.debug.internal.ui.actions.expressions;
 
 
-/**
- *
- */
 public class DisableWatchExpressionAction extends EnableWatchExpressionAction {
 
 	public DisableWatchExpressionAction() {

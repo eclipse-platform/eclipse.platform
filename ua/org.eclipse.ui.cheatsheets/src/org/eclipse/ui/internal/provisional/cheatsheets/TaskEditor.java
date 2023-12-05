@@ -23,15 +23,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * An editor which provides the UI for a task within a composite cheat sheet.
  * A task editor is responsible for saving the state of the task whenever
  * it changes.
- *
  */
 
 public abstract class TaskEditor {
 
 	/**
 	 * Creates the widget
-	 * @param parent
-	 * @param toolkit
 	 */
 	public abstract void createControl(Composite parent, FormToolkit toolkit);
 

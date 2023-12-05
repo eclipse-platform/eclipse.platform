@@ -29,9 +29,6 @@ import org.eclipse.ui.IActionDelegate2;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 
-/**
- *
- */
 public class EnableWatchExpressionAction implements IViewActionDelegate, IActionDelegate2, IDebugEventSetListener {
 
 	private ISelection fSelection;

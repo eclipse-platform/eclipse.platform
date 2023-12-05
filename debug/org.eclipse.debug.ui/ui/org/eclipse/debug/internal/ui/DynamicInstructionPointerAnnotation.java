@@ -28,12 +28,6 @@ public class DynamicInstructionPointerAnnotation extends Annotation {
 	 */
 	private final IStackFrame fStackFrame;
 
-	/**
-	 *
-	 * @param frame
-	 * @param markerAnnotationSpecificationId
-	 * @param text
-	 */
 	public DynamicInstructionPointerAnnotation(IStackFrame frame, String markerAnnotationSpecificationId, String text) {
 		super(markerAnnotationSpecificationId, false, text);
 		fStackFrame = frame;

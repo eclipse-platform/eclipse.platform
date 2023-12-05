@@ -67,11 +67,7 @@ public class DebugTargetContentProvider extends ElementContentProvider {
 	/**
 	 * Returns all children of the given parent object.
 	 *
-	 * @param parent
-	 * @param context
-	 * @param monitor
 	 * @return all children
-	 * @throws CoreException
 	 */
 	protected Object[] getAllChildren(Object parent, IPresentationContext context, IViewerUpdate monitor) throws CoreException {
 		String id = context.getId();

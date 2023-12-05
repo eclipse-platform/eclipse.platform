@@ -280,8 +280,6 @@ public abstract class AbstractDataTreeNode {
 		return result;
 	}
 
-	/**
-	 */
 	protected static AbstractDataTreeNode[] compareWith(AbstractDataTreeNode[] oldNodes, AbstractDataTreeNode[] newNodes, IComparator comparator) {
 
 		int oldLen = oldNodes.length;
@@ -349,8 +347,6 @@ public abstract class AbstractDataTreeNode {
 		return comparedNodes;
 	}
 
-	/**
-	 */
 	protected static AbstractDataTreeNode[] compareWithParent(AbstractDataTreeNode[] nodes, IPath key, DeltaDataTree parent, IComparator comparator) {
 
 		AbstractDataTreeNode[] comparedNodes = new AbstractDataTreeNode[nodes.length];

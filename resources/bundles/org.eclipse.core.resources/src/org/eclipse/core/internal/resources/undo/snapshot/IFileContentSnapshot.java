@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
  * This class is not intended to be instantiated or used by clients.
  *
  * @since 3.20
- *
  */
 public interface IFileContentSnapshot {
 	/**
@@ -54,7 +53,6 @@ public interface IFileContentSnapshot {
 	 * @throws CoreException
 	 *             any CoreException encountered while determining the character
 	 *             set
-	 *
 	 */
 	String getCharset() throws CoreException;
 }

@@ -92,7 +92,6 @@ public class AntThread extends AntDebugElement implements IThread {
 
 	/**
 	 * Retrieves the current stack frames in the thread possibly waiting until the frames are populated
-	 *
 	 */
 	private void getStackFrames0() throws DebugException {
 		synchronized (fFrames) {

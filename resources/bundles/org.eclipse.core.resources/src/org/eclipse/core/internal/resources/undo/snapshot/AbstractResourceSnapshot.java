@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * This class is not intended to be instantiated or used by clients.
  *
  * @since 3.20
- *
  */
 abstract class AbstractResourceSnapshot<T extends IResource> implements IResourceSnapshot<T> {
 	IContainer parent;
@@ -100,7 +99,6 @@ abstract class AbstractResourceSnapshot<T extends IResource> implements IResourc
 	 *
 	 * @param resource
 	 *            the newly created resource
-	 * @throws CoreException
 	 */
 	protected void restoreResourceAttributes(IResource resource)
 			throws CoreException {

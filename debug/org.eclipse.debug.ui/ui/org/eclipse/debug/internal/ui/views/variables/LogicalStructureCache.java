@@ -34,7 +34,6 @@ import org.eclipse.debug.internal.ui.DebugUIPlugin;
  * reevaluated for new values.
  *
  * @since 3.3
- *
  */
 public class LogicalStructureCache {
 

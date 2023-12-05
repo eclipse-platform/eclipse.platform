@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -20,6 +21,7 @@ import java.net.URI;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -45,7 +47,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	 * Tests findFilesForLocation when non-canonical paths are used (bug 155101).
 	 */
 	@Test
-	public void testFindFilesNonCanonicalPath() {
+	public void testFindFilesNonCanonicalPath() throws CoreException {
 		// this test is for windows only
 		Assume.assumeTrue(OS.isWindows());
 
@@ -60,11 +62,8 @@ public class IWorkspaceRootTest extends ResourceTest {
 		fileLocationLower = fileLocationLower.setDevice(fileLocationLower.getDevice().toLowerCase());
 		IPath fileLocationUpper = fileLocationLower.setDevice(fileLocationLower.getDevice().toUpperCase());
 		//create the link with lower case device
-		try {
-			link.createLink(fileLocationLower, IResource.NONE, getMonitor());
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		link.createLink(fileLocationLower, IResource.NONE, getMonitor());
+
 		//try to find the file using the upper case device
 		IFile[] files = getWorkspace().getRoot().findFilesForLocation(fileLocationUpper);
 		assertEquals("1.0", 1, files.length);
@@ -207,7 +206,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		assertResources("4.1", nonExisting, result);
 
 		//existing file with different case
-		if (!isCaseSensitive(existing)) {
+		if (!Workspace.caseSensitive) {
 			IPath differentCase = IPath.fromOSString(existingFileLocation.toOSString().toUpperCase());
 			result = root.findFilesForLocation(differentCase);
 			assertResources("5.0", existing, result);
@@ -229,9 +228,6 @@ public class IWorkspaceRootTest extends ResourceTest {
 
 	/**
 	 * Asserts that the given result array contains only the given resource.
-	 * @param string
-	 * @param file1
-	 * @param result
 	 */
 	private void assertResources(String message, IResource expected, IResource[] actual) {
 		assertEquals(message, 1, actual.length);

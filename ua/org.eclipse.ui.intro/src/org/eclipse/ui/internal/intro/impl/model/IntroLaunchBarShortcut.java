@@ -59,8 +59,6 @@ public class IntroLaunchBarShortcut extends AbstractIntroElement {
 
 	/**
 	 * Returns the URL of this shortcut.
-	 *
-	 * @return
 	 */
 	public String getURL() {
 		return getAttribute(ATT_URL);
@@ -68,8 +66,6 @@ public class IntroLaunchBarShortcut extends AbstractIntroElement {
 
 	/**
 	 * Returns the tooltip of this shortcut.
-	 *
-	 * @return
 	 */
 	public String getToolTip() {
 		return getAttribute(ATT_TOOLTIP);
@@ -77,8 +73,6 @@ public class IntroLaunchBarShortcut extends AbstractIntroElement {
 
 	/**
 	 * Returns the relative icon path of this shortcut.
-	 *
-	 * @return
 	 */
 	private String getIcon() {
 		return getAttribute(ATT_ICON);
@@ -87,8 +81,6 @@ public class IntroLaunchBarShortcut extends AbstractIntroElement {
 	/**
 	 * Returns the icon image of this shortcut, or <code>null</code> if not
 	 * found.
-	 *
-	 * @return
 	 */
 	public ImageDescriptor getImageDescriptor() {
 		String icon = getIcon();

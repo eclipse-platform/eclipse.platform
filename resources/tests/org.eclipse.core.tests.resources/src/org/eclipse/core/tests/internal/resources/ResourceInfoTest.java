@@ -20,7 +20,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Map;
-
 import org.eclipse.core.internal.resources.ResourceInfo;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -82,25 +81,17 @@ public class ResourceInfoTest extends ResourceTest {
 		}
 	}
 
-	public void testSerialization() {
+	public void testSerialization() throws IOException {
 		ByteArrayInputStream input = null;
 		ByteArrayOutputStream output = null;
 		ResourceInfo info = new ResourceInfo();
 		ResourceInfo newInfo = new ResourceInfo();
 
 		// write out an empty info
-		try {
-			output = new ByteArrayOutputStream();
-			info.writeTo(new DataOutputStream(output));
-		} catch (IOException e) {
-			fail("1.0", e);
-		}
-		try {
-			input = new ByteArrayInputStream(output.toByteArray());
-			newInfo.readFrom(0, new DataInputStream(input));
-		} catch (IOException e) {
-			fail("1.1", e);
-		}
+		output = new ByteArrayOutputStream();
+		info.writeTo(new DataOutputStream(output));
+		input = new ByteArrayInputStream(output.toByteArray());
+		newInfo.readFrom(0, new DataInputStream(input));
 		assertEquals("1.2", info, newInfo);
 
 		// write and info with syncinfo set
@@ -113,19 +104,11 @@ public class ResourceInfoTest extends ResourceTest {
 		qname = new QualifiedName("org.eclipse.core.tests", "myTest2");
 		bytes = new byte[] {0, 1, 2, 3, 4, 5};
 		info.setSyncInfo(qname, bytes);
-		try {
-			output = new ByteArrayOutputStream();
-			info.writeTo(new DataOutputStream(output));
-		} catch (IOException e) {
-			fail("2.0", e);
-		}
-		try {
-			newInfo = new ResourceInfo();
-			input = new ByteArrayInputStream(output.toByteArray());
-			newInfo.readFrom(0, new DataInputStream(input));
-		} catch (IOException e) {
-			fail("2.1", e);
-		}
+		output = new ByteArrayOutputStream();
+		info.writeTo(new DataOutputStream(output));
+		newInfo = new ResourceInfo();
+		input = new ByteArrayInputStream(output.toByteArray());
+		newInfo.readFrom(0, new DataInputStream(input));
 		assertEquals("2.2", info, newInfo);
 	}
 }

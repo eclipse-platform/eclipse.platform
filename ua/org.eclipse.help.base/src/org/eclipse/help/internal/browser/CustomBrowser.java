@@ -78,8 +78,6 @@ public class CustomBrowser implements IBrowser {
 	/**
 	 * Creates the final command to launch.
 	 *
-	 * @param path
-	 * @param url
 	 * @return String[]
 	 */
 	private String[] prepareCommand(String path, String url) {

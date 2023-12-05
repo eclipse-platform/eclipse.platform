@@ -43,7 +43,6 @@ import org.eclipse.core.runtime.IPath;
  *
  * <p>Element tree writers are thread-safe; several
  * threads may share a single writer.
- *
  */
 public class ElementTreeWriter {
 	/**

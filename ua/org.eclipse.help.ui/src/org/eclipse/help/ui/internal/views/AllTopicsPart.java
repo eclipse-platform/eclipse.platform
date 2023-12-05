@@ -167,11 +167,6 @@ public class AllTopicsPart extends HyperlinkTreePart {
 		}
 	}
 
-	/**
-	 * @param parent
-	 * @param toolkit
-	 * @param tbm
-	 */
 	public AllTopicsPart(Composite parent, final FormToolkit toolkit,
 			IToolBarManager tbm) {
 		super(parent, toolkit, tbm);

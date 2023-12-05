@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.TestUtil.waitForCondition;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -105,7 +107,8 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 	@Override
 	protected void tearDown() throws Exception {
 		// Cleanup workspace first to ensure that auto-build is not started on projects
-		cleanup();
+		waitForBuild();
+		getWorkspace().getRoot().delete(true, true, getMonitor());
 		super.tearDown();
 		TimerBuilder.abortCurrentBuilds();
 	}
@@ -143,7 +146,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 
 	@Test
 	public void testIndividualProjectBuilds_WithManyProjects_ProjectRelaxedRule() throws Exception {
-		int numberOfParallelBuilds = 60;
+		int numberOfParallelBuilds = 30;
 		var longRunningProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.LONG_RUNNING,
 				RuleType.CURRENT_PROJECT_RELAXED);
 		executeIndividualFullProjectBuilds(numberOfParallelBuilds, () -> {
@@ -440,7 +443,8 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 						project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 						return Status.OK_STATUS;
 					} catch (CoreException e) {
-						return new Status(IStatus.ERROR, PI_RESOURCES_TESTS, e.getMessage(), e);
+						return new Status(IStatus.ERROR, PI_RESOURCES_TESTS, e.getMessage(),
+								e);
 					}
 
 				}

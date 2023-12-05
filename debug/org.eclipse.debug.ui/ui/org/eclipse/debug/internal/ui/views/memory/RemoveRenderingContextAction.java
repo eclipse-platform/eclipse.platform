@@ -22,7 +22,6 @@ import org.eclipse.ui.IViewPart;
 
 /**
  * @since 3.0
- *
  */
 public class RemoveRenderingContextAction implements IViewActionDelegate {
 
@@ -60,10 +59,6 @@ public class RemoveRenderingContextAction implements IViewActionDelegate {
 		}
 	}
 
-	/**
-	 * @param action
-	 * @return
-	 */
 	private IMemoryRenderingContainer getRenderingContainer(IAction action) {
 		IMemoryRenderingContainer[] viewPanes = fMemoryView.getMemoryRenderingContainers();
 		String actionId = action.getId();

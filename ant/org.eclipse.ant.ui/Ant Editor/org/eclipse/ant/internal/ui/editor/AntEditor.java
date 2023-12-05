@@ -133,8 +133,6 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
 		/**
 		 * Installs this selection changed listener with the given selection provider. If the selection provider is a post selection provider, post
 		 * selection changed events are the preferred choice, otherwise normal selection changed events are requested.
-		 * 
-		 * @param selectionProvider
 		 */
 		public void install(ISelectionProvider selectionProvider) {
 			if (selectionProvider == null || getAntModel() == null) {
@@ -151,8 +149,6 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
 
 		/**
 		 * Removes this selection changed listener from the given selection provider.
-		 * 
-		 * @param selectionProvider
 		 */
 		public void uninstall(ISelectionProvider selectionProvider) {
 			if (selectionProvider == null || getAntModel() == null) {

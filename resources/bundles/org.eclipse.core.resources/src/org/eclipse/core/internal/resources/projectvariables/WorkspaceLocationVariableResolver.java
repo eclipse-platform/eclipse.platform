@@ -16,9 +16,6 @@ package org.eclipse.core.internal.resources.projectvariables;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.variableresolvers.PathVariableResolver;
 
-/**
- *
- */
 public class WorkspaceLocationVariableResolver extends PathVariableResolver {
 
 	public static String NAME = "WORKSPACE_LOC"; //$NON-NLS-1$

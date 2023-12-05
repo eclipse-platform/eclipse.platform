@@ -18,7 +18,6 @@ import org.eclipse.tips.core.Tip;
 /**
  * Decorator of {@link Tip} to mark that this it is constructed from a Json
  * structure.
- *
  */
 public interface IJsonTip {
 

@@ -37,9 +37,6 @@ public abstract class TaskExplorer {
 	/**
 	 * Create a control which will display the structure of the composite cheat
 	 * sheet and allow tasks within the composite cheat sheet to be selected.
-	 *
-	 * @param parent
-	 * @param toolkit
 	 */
 	public abstract void createControl(Composite parent, FormToolkit toolkit);
 
@@ -66,8 +63,6 @@ public abstract class TaskExplorer {
 	/**
 	 * Sets the composite cheat sheet to be displayed. createControl will
 	 * already have been called.
-	 *
-	 * @param compositeCheatSheet
 	 */
 	public abstract void setCompositeCheatSheet(ICompositeCheatSheet compositeCheatSheet);
 
@@ -80,8 +75,6 @@ public abstract class TaskExplorer {
 	/**
 	 * Called when the state of a task changes and the representation of the
 	 * task may need to be redrawn.
-	 *
-	 * @param task
 	 */
 	public abstract void taskUpdated(ICompositeCheatSheetTask task);
 

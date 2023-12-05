@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 

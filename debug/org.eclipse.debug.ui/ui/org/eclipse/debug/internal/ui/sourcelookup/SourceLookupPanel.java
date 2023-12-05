@@ -343,7 +343,6 @@ public class SourceLookupPanel extends AbstractLaunchConfigurationTab implements
 
 	/**
 	 * Listen to working set changes
-	 * @param event
 	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {

@@ -284,7 +284,6 @@ public class PrototypeTab extends AbstractLaunchConfigurationTab {
 	 * tab.
 	 *
 	 * @return an {@link ILaunchConfigurationWorkingCopy}.
-	 * @throws CoreException
 	 */
 	private ILaunchConfigurationWorkingCopy getWorkingCopy() throws CoreException {
 		ILaunchConfigurationWorkingCopy workingCopy;
@@ -499,7 +498,6 @@ public class PrototypeTab extends AbstractLaunchConfigurationTab {
 
 	/**
 	 * @see org.eclipse.debug.ui.AbstractLaunchConfigurationTab#getId()
-	 *
 	 */
 	@Override
 	public String getId() {

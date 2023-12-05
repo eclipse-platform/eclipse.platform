@@ -30,7 +30,6 @@ import org.eclipse.team.internal.core.Policy;
  * while processing change events.
  *
  * TODO: Override modification methods to enforce use with handler
- *
  */
 public class SubscriberSyncInfoSet extends SyncInfoTree {
 
@@ -53,7 +52,6 @@ public class SubscriberSyncInfoSet extends SyncInfoTree {
 	 * Variation of connect that does not need progress and does not throw an exception.
 	 * Progress is provided by the background event handler and errors are passed through
 	 * the chain to the view.
-	 * @param listener
 	 */
 	public void connect(final ISyncInfoSetChangeListener listener) {
 		if (handler == null) {

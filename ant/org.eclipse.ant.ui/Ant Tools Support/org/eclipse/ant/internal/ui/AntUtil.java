@@ -449,8 +449,6 @@ public final class AntUtil {
 	 * 
 	 * Attempts to handle linked files; the first found linked file with the correct path is returned.
 	 * 
-	 * @param path
-	 * @param buildFileParent
 	 * @return file or <code>null</code>
 	 * @see org.eclipse.core.resources.IWorkspaceRoot#findFilesForLocation(IPath)
 	 */
@@ -612,7 +610,6 @@ public final class AntUtil {
 	/**
 	 * Returns if the given extension is a known extension to Ant i.e. a supported content type extension.
 	 *
-	 * @param resource
 	 * @return true if the file extension is supported false otherwise
 	 *
 	 * @since 3.6
@@ -643,7 +640,6 @@ public final class AntUtil {
 	/**
 	 * Returns if the given extension is a known extension to Ant i.e. a supported content type extension.
 	 * 
-	 * @param file
 	 * @return true if the file extension is supported false otherwise
 	 * 
 	 * @since 3.8
@@ -687,7 +683,6 @@ public final class AntUtil {
 	/**
 	 * Returns if the given file is a known build file name, based on the given names from the Ant &gt; Names preference
 	 * 
-	 * @param filename
 	 * @return true if the name of the file is given in the Ant &gt; Names preference, false otherwise
 	 * @since 3.6
 	 */
@@ -740,7 +735,6 @@ public final class AntUtil {
 	 * Returns if the given file name is known as a build file. This method consults all of the known file extensions from the Ant-defined content
 	 * types
 	 * 
-	 * @param name
 	 * @return <code>true</code> if the file name matches an Ant build file pattern <code>false</code> otherwise
 	 * @since 3.8
 	 */

@@ -429,7 +429,7 @@ public class WordComparison {
 		// Swap the file and window menus.
 		MenuItem[] windowMenu = new MenuItem[1];
 		MenuItem[] fileMenu = new MenuItem[1];
-		Vector containerItems = new Vector();
+		Vector<MenuItem> containerItems = new Vector<>();
 
 		for (int i = 0; i < menuBar.getItemCount(); i++) {
 			MenuItem item = menuBar.getItem(i);

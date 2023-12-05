@@ -19,7 +19,6 @@ import java.util.List;
 
 /**
  * @since 3.2
- *
  */
 public class AsynchronousTableModel extends AsynchronousModel {
 

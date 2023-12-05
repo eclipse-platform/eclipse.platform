@@ -254,7 +254,6 @@ public class ExternalToolsCoreUtil {
 	 * Whether referenced projects should be considered when building. Only valid
 	 * when a set of projects is to be built.
 	 *
-	 * @param configuration
 	 * @return whether referenced projects should be considerd when building
 	 * @throws CoreException if unable to access the associated attribute
 	 */

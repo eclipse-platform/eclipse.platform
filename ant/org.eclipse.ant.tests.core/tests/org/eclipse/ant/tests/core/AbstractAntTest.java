@@ -69,7 +69,6 @@ public abstract class AbstractAntTest {
 	/**
 	 * Ensure the welcome screen is closed because in 4.x the debug perspective opens a giant fast-view causing issues
 	 * 
-	 * @throws Exception
 	 * @since 3.8
 	 */
 	void assertWelcomeScreenClosed() throws Exception {
@@ -100,7 +99,6 @@ public abstract class AbstractAntTest {
 	/**
 	 * Asserts that the test project has been created and all testing resources have been loaded each time the {@link #setUp()} method is called
 	 * 
-	 * @throws Exception
 	 * @since 3.5
 	 */
 	protected void assertProject() throws Exception {

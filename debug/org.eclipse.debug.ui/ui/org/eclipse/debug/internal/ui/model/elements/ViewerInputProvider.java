@@ -88,7 +88,6 @@ public abstract class ViewerInputProvider implements IViewerInputProvider {
 	/**
 	 * Returns whether this adapter supports the given context.
 	 *
-	 * @param context
 	 * @return whether this adapter supports the given context
 	 */
 	protected boolean supportsContext(IPresentationContext context) {
@@ -107,7 +106,6 @@ public abstract class ViewerInputProvider implements IViewerInputProvider {
 	 * Returns a scheduling rule to use when performing the given updates or
 	 * <code>null</code> if none.
 	 *
-	 * @param update
 	 * @return scheduling rule or <code>null</code> if none
 	 */
 	protected ISchedulingRule getRule(IViewerInputUpdate update) {

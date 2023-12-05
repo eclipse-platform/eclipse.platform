@@ -279,7 +279,6 @@ public class DefaultLabelProvider implements ILabelProvider {
 	/**
 	 * Returns default label for a breakpoint.
 	 *
-	 * @param breakpoint
 	 * @return default label for a breakpoint
 	 */
 	private String getBreakpointText(IBreakpoint breakpoint) {
@@ -349,10 +348,6 @@ public class DefaultLabelProvider implements ILabelProvider {
 		return buffer.toString();
 	}
 
-	/**
-	 * @param expression
-	 * @return
-	 */
 	protected String getWatchExpressionText(IWatchExpression expression) {
 		StringBuilder result= new StringBuilder();
 
@@ -512,7 +507,6 @@ public class DefaultLabelProvider implements ILabelProvider {
 	/**
 	 * Returns the given string with special chars in escaped sequences.
 	 *
-	 * @param string
 	 * @return the given string with special chars in escaped sequences
 	 * @since 3.3
 	 */
@@ -553,7 +547,6 @@ public class DefaultLabelProvider implements ILabelProvider {
 	/**
 	 * Returns the string with escaped sequences replaced with single chars.
 	 *
-	 * @param string
 	 * @return the string with escaped sequences replaced with single chars
 	 * @since 3.3
 	 */

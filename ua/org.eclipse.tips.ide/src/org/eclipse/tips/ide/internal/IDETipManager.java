@@ -119,7 +119,6 @@ public class IDETipManager extends DefaultTipManager {
 	 * Saves the tip read status to disk.
 	 *
 	 * @param pReadTips the tips to save
-	 *
 	 */
 	private void saveReadState(Map<String, List<Integer>> pReadTips) {
 		Job job = Job.create(Messages.IDETipManager_3, monitor -> {
@@ -132,8 +131,6 @@ public class IDETipManager extends DefaultTipManager {
 	/**
 	 * Calculates the new tip count to find if we need to expose the status trim
 	 * tool item.
-	 *
-	 * @param newTips
 	 */
 	private void refreshUI() {
 		boolean newTips = hasNewTips();

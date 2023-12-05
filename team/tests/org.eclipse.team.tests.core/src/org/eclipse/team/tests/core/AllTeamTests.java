@@ -30,7 +30,6 @@ public class AllTeamTests extends ResourceTest {
 
 	/**
 	 * Constructor for CVSClientTest.
-	 * @param name
 	 */
 	public AllTeamTests(String name) {
 		super(name);

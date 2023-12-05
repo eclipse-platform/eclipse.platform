@@ -100,7 +100,6 @@ public class IntroURLParser {
 	 * URL that has the intro plugin id as a host. eg:
 	 * "http://org.eclipse.ui.intro/test".
 	 *
-	 * @param url
 	 * @return true if url is an intro URL.
 	 */
 	private boolean isIntroUrl(URL url) {
@@ -138,9 +137,6 @@ public class IntroURLParser {
 	/**
 	 * Retruns the path attribute of the passed URL, stripped out of the leading
 	 * "/". Returns null if the url does not have a path.
-	 *
-	 * @param url
-	 * @return
 	 */
 	private String getPathAsAction(URL url) {
 		// get possible action.
@@ -153,9 +149,6 @@ public class IntroURLParser {
 
 	/**
 	 * Retruns the Query part of the URL as an instance of a Properties class.
-	 *
-	 * @param url
-	 * @return
 	 */
 	public Properties getQueryParameters(URL url) {
 		// parser all query parameters.

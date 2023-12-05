@@ -30,7 +30,6 @@ import org.eclipse.tips.core.internal.TipManager;
 
 /**
  * The dialog containing the tips.
- *
  */
 @SuppressWarnings("restriction")
 public class TipDialog extends Dialog {

@@ -72,12 +72,6 @@ public abstract class AbstractDumper implements IDumper {
 	 * Does the actual  work. Subclasses must implement this method to define
 	 * dumping behavior. The results are added to the <code>contents</code>
 	 * string buffer.
-	 *
-	 * @param input
-	 * @param contents
-	 * @throws IOException
-	 * @throws Exception
-	 * @throws DumpException
 	 */
 	protected abstract void dumpContents(PushbackInputStream input, StringBuilder contents)
 			throws IOException, Exception, DumpException;

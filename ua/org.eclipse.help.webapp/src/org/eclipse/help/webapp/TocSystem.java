@@ -26,7 +26,6 @@ public class TocSystem {
 	 * Use this method to invalidate the currently cached Toc.
 	 * The next call for a Toc will result in a newly generated
 	 * table of contents.
-	 *
 	 */
 	public static void clearCache()
 	{

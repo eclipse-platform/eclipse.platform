@@ -32,8 +32,6 @@ public class DefaultVariableViewModelProxy extends EventHandlerModelProxy {
 
 	/**
 	 * Constructs an update policy on the given frame.
-	 *
-	 * @param frame
 	 */
 	public DefaultVariableViewModelProxy(IStackFrame frame) {
 		super();

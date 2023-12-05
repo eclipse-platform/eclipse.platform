@@ -95,7 +95,7 @@ public class AnsiConsolePreferenceUtils {
 
 		try {
 			return Integer.parseInt(text);
-		} catch (@SuppressWarnings("unused") NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			return -1;
 		}
 	}

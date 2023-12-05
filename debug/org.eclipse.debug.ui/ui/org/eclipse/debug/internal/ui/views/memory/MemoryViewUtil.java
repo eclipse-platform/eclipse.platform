@@ -54,7 +54,6 @@ public class MemoryViewUtil {
 	public static ArrayList<String> MEMORY_BLOCKS_HISTORY = new ArrayList<>();
 
 	/**
-	 * @param selection
 	 * @return true if the given selection is valid for creating a memory block
 	 */
 	static public boolean isValidSelection(ISelection selection) {
@@ -73,10 +72,6 @@ public class MemoryViewUtil {
 		return isValidContext(elem);
 	}
 
-	/**
-	 * @param elem
-	 * @return
-	 */
 	public static boolean isValidContext(Object elem) {
 		// if not debug element
 		if (!(elem instanceof IAdaptable)) {
@@ -112,10 +107,6 @@ public class MemoryViewUtil {
 
 	/**
 	 * Helper function to open an error dialog.
-	 *
-	 * @param title
-	 * @param message
-	 * @param e
 	 */
 	static public void openError(final String title, final String message, final Exception e) {
 		UIJob uiJob = new UIJob("open error") { //$NON-NLS-1$
@@ -151,7 +142,6 @@ public class MemoryViewUtil {
 	 * Checks to see if the event is valid for activating cell editing in a view
 	 * tab
 	 *
-	 * @param event
 	 * @return true if the edit event is valid for activating the cell editor
 	 */
 	public static boolean isValidEditEvent(int event) {
@@ -185,7 +175,6 @@ public class MemoryViewUtil {
 	/**
 	 * Return the memory block retrieval of the given object
 	 *
-	 * @param object
 	 * @return the memory block retrieval of the given object or
 	 *         <code>null</code> if no memory block retrieval can be found
 	 *

@@ -33,8 +33,6 @@ public interface IMemoryView {
 
 	/**
 	 * Move specified view tab to the top
-	 *
-	 * @param viewTab
 	 */
 	void moveToTop(IMemoryViewTab viewTab);
 

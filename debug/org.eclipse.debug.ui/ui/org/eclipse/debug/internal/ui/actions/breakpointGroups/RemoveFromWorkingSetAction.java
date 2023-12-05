@@ -37,8 +37,6 @@ public class RemoveFromWorkingSetAction extends BreakpointSelectionAction {
 
 	/**
 	 * Constructs action to remove breakpoints from a category.
-	 *
-	 * @param view
 	 */
 	public RemoveFromWorkingSetAction(BreakpointsView view) {
 		super(BreakpointGroupMessages.RemoveFromWorkingSetAction_0, view);
@@ -64,9 +62,6 @@ public class RemoveFromWorkingSetAction extends BreakpointSelectionAction {
 	 *
 	 *  All the returned elements contain a breakpoint and a working set container the breakpoint is contained and the breakpoint
 	 *  can be removed from.
-	 *
-	 * @param selection
-	 * @return
 	 */
 	protected BreakpointSetElement[] getRemovableBreakpoints(IStructuredSelection selection) {
 		List<BreakpointSetElement> res = new ArrayList<>();

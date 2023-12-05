@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -296,7 +297,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("3.5", 0, states.length);
 	}
 
-	public void testBug28238() {
+	public void testBug28238() throws CoreException {
 		// paths to mimic files in the workspace
 		IProject project = getWorkspace().getRoot().getProject("myproject28238");
 		IFolder folder = project.getFolder("myfolder");
@@ -369,7 +370,6 @@ public class HistoryStoreTest extends ResourceTest {
 	 * - do not store files greater than some stated size
 	 * - consider history store information stale after some specified period
 	 *   of time and discard stale data
-	 *
 	 */
 	public void testClean() throws Exception {
 		/* Create common objects. */

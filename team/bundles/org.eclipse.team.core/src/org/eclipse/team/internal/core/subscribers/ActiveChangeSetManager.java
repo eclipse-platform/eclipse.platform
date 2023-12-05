@@ -157,7 +157,6 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 * @param title the title of the commit set
 	 * @param files the files contained in the set
 	 * @return the created set
-	 * @throws CoreException
 	 */
 	public ActiveChangeSet createSet(String title, IFile[] files) throws CoreException {
 		List<IDiff> infos = new ArrayList<>();

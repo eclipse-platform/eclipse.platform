@@ -24,9 +24,6 @@ public class IntroAnchor extends AbstractIntroIdElement {
 
 	protected static final String TAG_ANCHOR = "anchor"; //$NON-NLS-1$
 
-	/**
-	 * @param element
-	 */
 	IntroAnchor(Element element, Bundle bundle) {
 		super(element, bundle);
 	}

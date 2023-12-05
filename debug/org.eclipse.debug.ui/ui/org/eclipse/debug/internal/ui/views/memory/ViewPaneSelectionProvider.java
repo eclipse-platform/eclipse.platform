@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
  * Handles selection changes in a rendering view pane.
  *
  * @since 3.1
- *
  */
 public class ViewPaneSelectionProvider implements ISelectionProvider {
 	ArrayList<ISelectionChangedListener> fListeners = new ArrayList<>();

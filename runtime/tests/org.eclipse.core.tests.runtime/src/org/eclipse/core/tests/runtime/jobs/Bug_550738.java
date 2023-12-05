@@ -27,7 +27,6 @@ import org.eclipse.core.tests.harness.TestJob;
  *
  * Job should not start after cancel() if no schedule() is called after it. Job
  * should start after schedule() if no cancel() is called after it.
- *
  */
 public class Bug_550738 extends AbstractJobManagerTest {
 	private static final class BusyLoopJob extends TestJob {

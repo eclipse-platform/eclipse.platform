@@ -187,7 +187,6 @@ public final class ProxyProviderUtil {
 	}
 
 	/**
-	 * @param pacFindProxyForUrlResult
 	 * @return a list of IProxyData objects
 	 */
 	public static List<IProxyData> getProxies(String pacFindProxyForUrlResult) {

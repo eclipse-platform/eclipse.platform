@@ -27,7 +27,6 @@ import org.osgi.framework.FrameworkUtil;
 
 /**
  * Class to manage the tip providers and start the tip of the day UI.
- *
  */
 @SuppressWarnings("restriction")
 public abstract class DefaultTipManager extends TipManager {
@@ -54,7 +53,6 @@ public abstract class DefaultTipManager extends TipManager {
 	 *
 	 * @return this tip manager.
 	 * @see #open(boolean)
-	 *
 	 */
 	public ITipManager open(boolean startUp, IDialogSettings dialogSettings) {
 		if (isOpen() && !isDialogOpen()) {

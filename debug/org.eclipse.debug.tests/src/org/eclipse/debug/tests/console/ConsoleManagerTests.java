@@ -105,8 +105,6 @@ public class ConsoleManagerTests extends AbstractDebugTest {
 	 * this calls were properly proceeded by the manager.
 	 * <p>
 	 * See bug 489546.
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testShowAllConsoles() throws Exception {

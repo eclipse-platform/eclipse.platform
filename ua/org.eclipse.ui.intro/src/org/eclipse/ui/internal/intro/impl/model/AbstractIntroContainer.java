@@ -44,24 +44,15 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	// store the base since it will needed later to resolve children.
 	protected String base;
 
-	/**
-	 * @param element
-	 */
 	AbstractIntroContainer(IConfigurationElement element) {
 		super(element);
 	}
 
-	/**
-	 * @param element
-	 */
 	AbstractIntroContainer(Element element, Bundle bundle) {
 		super(element, bundle);
 		this.element = element;
 	}
 
-	/**
-	 * @param element
-	 */
 	AbstractIntroContainer(Element element, Bundle bundle, String base) {
 		super(element, bundle);
 		this.element = element;
@@ -151,8 +142,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	 * IntroElement instances. If elementMask is a predefined model type (ie:
 	 * homogenous), then return array of corresponding type. Else, returns an
 	 * array of IntroElements.
-	 *
-	 * @param vector
 	 */
 	private Object[] convertToModelArray(Vector vector, int elementMask) {
 		int size = vector.size();
@@ -243,8 +232,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	/**
 	 * Adds the given elements as children of this container, before the
 	 * specified index.
-	 *
-	 * @param childElements
 	 */
 	protected void insertElementsBefore(Element[] childElements, Bundle bundle,
 			String base, int index, String mixinStyle) {
@@ -265,7 +252,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	/**
 	 * Adds the given elements as children of this container, before the
 	 * specified element. The element must be a direct child of this container.
-	 *
 	 */
 	protected void insertElementsBefore(Element[] childElements, Bundle bundle,
 			String base, AbstractIntroElement child, String mixinStyle) {
@@ -281,7 +267,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	/**
 	 * Adds a child to this container, depending on its type. Subclasses may
 	 * override if there is a child specific to the subclass.
-	 *
 	 */
 	protected AbstractIntroElement getModelChild(Element childElement,
 			Bundle bundle, String base) {
@@ -340,8 +325,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	 * and adds it as a child of this current container. If target is not a
 	 * group, or any element that can be included in a group, ignore this
 	 * include.
-	 *
-	 * @param include
 	 */
 	private void resolveInclude(IntroInclude include) {
 		AbstractIntroElement target = findIncludeTarget(include);
@@ -381,10 +364,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	 * Find the target element pointed to by the path in the include. It is
 	 * assumed that configId always points to an external config, and not the
 	 * same config of the include.
-	 *
-	 * @param include
-	 * @param path
-	 * @return
 	 */
 	private AbstractIntroElement findIncludeTarget(IntroInclude include) {
 		String path = include.getPath();
@@ -406,7 +385,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	 * model.<br>
 	 * ps: This method could be a static method, but left as instance for model
 	 * enhancements.
-	 *
 	 */
 	public AbstractIntroElement findTarget(AbstractIntroContainer container,
 			String path) {
@@ -533,9 +511,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	 * plugin. Also note that when including a container, it must be resolved
 	 * otherwise reparenting will cause includes in this target container to
 	 * fail.
-	 *
-	 * @param include
-	 * @param target
 	 */
 	private void handleIncludeStyleInheritence(IntroInclude include,
 			AbstractIntroElement target) {
@@ -579,9 +554,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	 * Note: looked into the clonable interface in Java, but it was not used
 	 * because it makes modifications/additions to the model harder to maintain.
 	 * Will revisit later.
-	 *
-	 * @param target
-	 * @return
 	 */
 	protected AbstractIntroElement cloneTarget(AbstractIntroElement target) {
 		return null;
@@ -613,8 +585,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 
 	/**
 	 * Returns the element.
-	 *
-	 * @return
 	 */
 	@Override
 	public Element getElement() {
@@ -638,8 +608,6 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	/**
 	 * Adds a model element as a child. Caller is responsible for inserting
 	 * model elements that rea valid as children.
-	 *
-	 * @param child
 	 */
 	public void addChild(AbstractIntroElement child) {
 		children.add(child);

@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SNOW;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import junit.framework.Test;
@@ -26,7 +31,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SnowBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -38,16 +42,12 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 	 * Returns true if this project's build spec has the given builder,
 	 * and false otherwise.
 	 */
-	protected boolean hasBuilder(IProject project, String builderId) {
-		try {
-			ICommand[] commands = project.getDescription().getBuildSpec();
-			for (ICommand command : commands) {
-				if (command.getBuilderName().equals(builderId)) {
-					return true;
-				}
+	protected boolean hasBuilder(IProject project, String builderId) throws CoreException {
+		ICommand[] commands = project.getDescription().getBuildSpec();
+		for (ICommand command : commands) {
+			if (command.getBuilderName().equals(builderId)) {
+				return true;
 			}
-		} catch (CoreException e) {
-			fail("Failed in hasBuilder(" + project.getName() + ", " + builderId + ")", e);
 		}
 		return false;
 	}
@@ -77,10 +77,10 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		// setting description file will also trigger build
 		descFile.setContents(projectFileWithoutWater(), IResource.FORCE, getMonitor());
 		//assert that builder was skipped
-		builder.assertLifecycleEvents("1.0");
+		builder.assertLifecycleEvents();
 
 		//assert that the builder is still in the build spec
-		assertTrue("1.1", hasBuilder(project, SnowBuilder.BUILDER_NAME));
+		assertTrue(hasBuilder(project, SnowBuilder.BUILDER_NAME));
 
 		getWorkspace().save(true, getMonitor());
 	}
@@ -93,14 +93,14 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
 
 		//assert that the builder is still in the build spec
-		assertTrue("1.0", hasBuilder(project, SnowBuilder.BUILDER_NAME));
+		assertTrue(hasBuilder(project, SnowBuilder.BUILDER_NAME));
 
 		//perform a build and ensure snow builder isn't called
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 		builder.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);
-		builder.assertLifecycleEvents("1.1");
+		builder.assertLifecycleEvents();
 
 		getWorkspace().save(true, getMonitor());
 	}
@@ -120,7 +120,7 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 		builder.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);
-		builder.assertLifecycleEvents("1.1");
+		builder.assertLifecycleEvents();
 
 		//now re-enable the nature and ensure that the delta was null
 		waitForBuild();
@@ -130,12 +130,12 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
 		project.setDescription(desc, IResource.FORCE, getMonitor());
 		waitForBuild();
-		builder.assertLifecycleEvents("2.0");
-		assertTrue("2.1", builder.wasDeltaNull());
+		builder.assertLifecycleEvents();
+		assertTrue(builder.wasDeltaNull());
 
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestMissingBuilder.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestMissingBuilder.class);
 	}
 }

@@ -90,7 +90,6 @@ public abstract class AbstractDebugCheckboxSelectionDialog extends AbstractDebug
 	/**
 	 * A checkbox state listener that ensures that exactly one element is checked
 	 * and enables the OK button when this is the case.
-	 *
 	 */
 	private class DefaultCheckboxListener implements ICheckStateListener{
 		@Override

@@ -43,7 +43,6 @@ import org.eclipse.team.ui.synchronize.TeamStateProvider;
  * A decorated state provider that delegates to the provider for the repository
  * provider type that is associated with the projects that an element maps to
  * using the ResourceMapping API.
- *
  */
 public class WorkspaceTeamStateProvider extends TeamStateProvider
 		implements ITeamStateChangeListener, IRepositoryProviderListener,

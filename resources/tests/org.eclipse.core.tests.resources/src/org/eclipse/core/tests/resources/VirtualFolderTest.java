@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.filesystem.EFS;
@@ -184,7 +185,7 @@ public class VirtualFolderTest extends ResourceTest {
 		IFile childFile = folder.getFile(getUniqueString());
 		IResource[] oldResources = new IResource[] {existingProject, file, folder, childFile};
 
-		assertDoesNotExistInWorkspace("1.0", new IResource[] { folder, file, childFile });
+		assertDoesNotExistInWorkspace(new IResource[] { folder, file, childFile });
 
 		createFileInFileSystem(fileLocation);
 		folderLocation.toFile().mkdir();
@@ -196,7 +197,7 @@ public class VirtualFolderTest extends ResourceTest {
 
 		// move the project
 		IProject destinationProject = getWorkspace().getRoot().getProject("MoveTargetProject");
-		assertDoesNotExistInWorkspace("3.0", destinationProject);
+		assertDoesNotExistInWorkspace(destinationProject);
 
 		existingProject.move(destinationProject.getFullPath(), IResource.SHALLOW, getMonitor());
 
@@ -205,8 +206,8 @@ public class VirtualFolderTest extends ResourceTest {
 		IFile newChildFile = newFolder.getFile(childFile.getName());
 		IResource[] newResources = new IResource[] { destinationProject, newFile, newFolder, newChildFile };
 
-		assertExistsInWorkspace("5.0", newResources);
-		assertDoesNotExistInWorkspace("6.1", oldResources);
+		assertExistsInWorkspace(newResources);
+		assertDoesNotExistInWorkspace(oldResources);
 		assertTrue("7.0", existingProject.isSynchronized(IResource.DEPTH_INFINITE));
 		assertTrue("8.0", destinationProject.isSynchronized(IResource.DEPTH_INFINITE));
 

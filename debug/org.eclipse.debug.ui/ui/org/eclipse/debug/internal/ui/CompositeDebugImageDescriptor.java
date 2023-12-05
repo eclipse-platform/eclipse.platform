@@ -38,7 +38,6 @@ public class CompositeDebugImageDescriptor extends CompositeImageDescriptor {
 	 *
 	 * @param baseImage an image used as the base image
 	 * @param flags flags indicating which adornments are to be rendered
-	 *
 	 */
 	public CompositeDebugImageDescriptor(Image baseImage, int flags) {
 		setBaseImage(baseImage);

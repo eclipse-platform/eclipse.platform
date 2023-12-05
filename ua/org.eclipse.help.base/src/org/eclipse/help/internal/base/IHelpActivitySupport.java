@@ -23,9 +23,6 @@ public interface IHelpActivitySupport {
 	 * Checks if href matches an enabled activity. If it does not match any
 	 * defined activites, it is assumed to be enabled. If Help role filtering is
 	 * disabled, this method always returns <code>true</code>.
-	 *
-	 * @param href
-	 * @return
 	 */
 	public boolean isEnabled(String href);
 
@@ -46,7 +43,6 @@ public interface IHelpActivitySupport {
 	 * Additionally topic may match description topic of a root TOC.
 	 *
 	 * @return true if topic belongs to an enabled TOC
-	 * @param href
 	 * @param locale
 	 *            locale for which TOCs are checked
 	 */
@@ -54,8 +50,6 @@ public interface IHelpActivitySupport {
 
 	/**
 	 * Enables activities with patterns matching the href
-	 *
-	 * @param href
 	 */
 	public void enableActivities(String href);
 

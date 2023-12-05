@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import junit.framework.Test;
 import org.eclipse.core.internal.resources.ContentDescriptionManager;
 import org.eclipse.core.internal.resources.Workspace;
@@ -33,7 +36,6 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  * starts failing, it might mean bundles are being re-installed unnecessarily
  * in the second session.  For details, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=94859.
  * @since 3.2
- *
  */
 public class TestBug93473 extends WorkspaceSessionTest {
 
@@ -49,10 +51,10 @@ public class TestBug93473 extends WorkspaceSessionTest {
 		assertEquals("0.0", ContentDescriptionManager.INVALID_CACHE, ((Workspace) workspace).getContentDescriptionManager().getCacheState());
 
 		IProject project = workspace.getRoot().getProject("proj1");
-		assertDoesNotExistInWorkspace("0.1", project);
+		assertDoesNotExistInWorkspace(project);
 		Platform.getContentTypeManager().getContentType(IContentTypeManager.CT_TEXT);
 		IFile file = project.getFile("foo.txt");
-		assertDoesNotExistInWorkspace("0.2", file);
+		assertDoesNotExistInWorkspace(file);
 		ensureExistsInWorkspace(file, getRandomContents());
 		// this will also cause the cache flush job to be scheduled
 		file.getContentDescription();

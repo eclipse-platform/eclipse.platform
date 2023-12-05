@@ -486,7 +486,6 @@ public class ExpressionDropAdapter extends ViewerDropAdapter {
 	/**
 	 * Returns the factory adapter for the given variable or <code>null</code> if none.
 	 *
-	 * @param variable
 	 * @return factory or <code>null</code>
 	 */
 	private IWatchExpressionFactoryAdapter getFactory(IVariable variable) {
@@ -496,7 +495,6 @@ public class ExpressionDropAdapter extends ViewerDropAdapter {
 	/**
 	 * Returns the factory adapter for the given element or <code>null</code> if none.
 	 *
-	 * @param element
 	 * @return factory or <code>null</code>
 	 */
 	private IWatchExpressionFactoryAdapter2 getFactory2(Object element) {

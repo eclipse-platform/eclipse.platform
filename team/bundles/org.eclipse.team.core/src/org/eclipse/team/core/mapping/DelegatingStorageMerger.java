@@ -47,7 +47,6 @@ import org.eclipse.team.internal.core.mapping.IStreamMergerDelegate;
  * <p>
  * Clients may use this class directly or subclass it.
  * @since 3.4
- *
  */
 public class DelegatingStorageMerger implements IStorageMerger {
 

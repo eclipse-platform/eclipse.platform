@@ -47,8 +47,6 @@ public class SourceLookupManager implements IWindowListener {
 
 	/**
 	 * Returns the default source lookup manager.
-	 *
-	 * @return
 	 */
 	public static SourceLookupManager getDefault() {
 		if (fgDefault == null) {

@@ -148,7 +148,6 @@ public class UrlUtil {
 	 * Returns a URL that can be loaded from a browser. This method is used for
 	 * all url's except those from the webapp plugin.
 	 *
-	 * @param url
 	 * @return String
 	 */
 	public static String getHelpURL(String url) {
@@ -225,7 +224,6 @@ public class UrlUtil {
 	 * the 4th toc, it will return { 3, 1, 2 }.
 	 *
 	 * @param path the path portion of the url without the initial "/help", e.g. "/topic/my.plugin/foo.html"
-	 * @param locale
 	 * @return path to the topic using zero-based indexes
 	 * If the path is empty or has invalid syntax null is returned
 	 */
@@ -442,11 +440,9 @@ public class UrlUtil {
 	}
 	/**
 	 *
-	 * @param request
 	 * @param response
 	 *            HttpServletResponse or null (locale will not be persisted in
 	 *            session cookie)
-	 * @return
 	 */
 	public static Locale getLocaleObj(HttpServletRequest request,
 			HttpServletResponse response) {
@@ -473,11 +469,9 @@ public class UrlUtil {
 	}
 	/**
 	 *
-	 * @param request
 	 * @param response
 	 *            HttpServletResponse or null (locale will not be persisted in
 	 *            session cookie)
-	 * @return
 	 */
 	public static String getLocale(HttpServletRequest request,
 			HttpServletResponse response) {
@@ -560,7 +554,6 @@ public class UrlUtil {
 	 * Obtains locale passed as lang parameter with a request during user
 	 * session
 	 *
-	 * @param request
 	 * @param response
 	 *            response or null; if null, locale will not be persisted (in
 	 *            session cookie)
@@ -618,9 +611,6 @@ public class UrlUtil {
 		}
 
 	}
-	/**
-	 *
-	 */
 	private static void initializeLocales() {
 		// initialize default locale
 		defaultLocale = Platform.getNL();

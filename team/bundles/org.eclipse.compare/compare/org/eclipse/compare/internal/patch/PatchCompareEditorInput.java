@@ -150,8 +150,6 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 	/**
 	 * Creates a new PatchCompareEditorInput and makes use of the passed in CompareConfiguration
 	 * to configure the UI elements.
-	 * @param patcher
-	 * @param configuration
 	 */
 	public PatchCompareEditorInput(WorkspacePatcher patcher, CompareConfiguration configuration) {
 		super(configuration);

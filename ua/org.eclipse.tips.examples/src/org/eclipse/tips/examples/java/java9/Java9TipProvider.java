@@ -29,10 +29,6 @@ import org.eclipse.tips.examples.tipsframework.Navigate2Tip;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
-/**
- *
- *
- */
 @SuppressWarnings("restriction")
 public class Java9TipProvider extends TipProvider {
 

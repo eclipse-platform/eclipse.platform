@@ -395,7 +395,6 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 
 	/**
 	 * For each node create children based on the contents of
-	 * @param node
 	 * @return the diff elements
 	 */
 	protected abstract IDiffElement[] buildModelObjects(ISynchronizeModelElement node);
@@ -745,7 +744,6 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * Update the viewer for the sync set additions in the provided event. This
 	 * method is invoked by <code>handleChanges(ISyncInfoSetChangeEvent)</code>.
 	 * Subclasses may override.
-	 * @param event
 	 */
 	protected abstract void handleResourceAdditions(ISyncInfoTreeChangeEvent event);
 
@@ -753,7 +751,6 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * Update the viewer for the sync set changes in the provided event. This
 	 * method is invoked by <code>handleChanges(ISyncInfoSetChangeEvent)</code>.
 	 * Subclasses may override.
-	 * @param event
 	 */
 	protected abstract void handleResourceChanges(ISyncInfoTreeChangeEvent event);
 
@@ -761,7 +758,6 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * Update the viewer for the sync set removals in the provided event. This
 	 * method is invoked by <code>handleChanges(ISyncInfoSetChangeEvent)</code>.
 	 * Subclasses may override.
-	 * @param event
 	 */
 	protected abstract void handleResourceRemovals(ISyncInfoTreeChangeEvent event);
 
@@ -968,7 +964,6 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * This is a callback from the model update handler that gets invoked
 	 * when a node is added to the viewer. It is only invoked for the
 	 * root level model provider.
-	 * @param node
 	 * @param provider the provider that added the node
 	 */
 	protected void nodeAdded(ISynchronizeModelElement node, AbstractSynchronizeModelProvider provider) {
@@ -981,7 +976,6 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * root level model provider. A removed node may have children for
 	 * which a <code>nodeRemoved</code> callback is not received (see
 	 * <code>modelObjectCleared</code>).
-	 * @param node
 	 */
 	protected void nodeRemoved(ISynchronizeModelElement node, AbstractSynchronizeModelProvider provider) {
 		// Default is to do nothing
@@ -1045,7 +1039,6 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * Wait until the provider is done processing any events and
 	 * the page content are up-to-date.
 	 * This method is for testing purposes only.
-	 * @param monitor
 	 */
 	public void waitUntilDone(IProgressMonitor monitor) {
 		monitor.worked(1);
@@ -1082,7 +1075,6 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * which results in the view being updated.
 	 * @param runnable the runnable which updates the model.
 	 * @param preserveExpansion whether the expansion of the view should be preserver
-	 * @param runInUIThread
 	 */
 	public void performUpdate(IWorkspaceRunnable runnable, boolean preserveExpansion, boolean runInUIThread) {
 		updateHandler.performUpdate(runnable, preserveExpansion, runInUIThread);

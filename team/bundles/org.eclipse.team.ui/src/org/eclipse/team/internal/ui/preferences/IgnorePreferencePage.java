@@ -133,9 +133,6 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 		fillTable(ignore);
 	}
 
-	/**
-	 * @param ignore
-	 */
 	private void fillTable(IIgnoreInfo[] ignore) {
 		for (IIgnoreInfo info : ignore) {
 			TableItem item = new TableItem(ignoreTable, SWT.NONE);

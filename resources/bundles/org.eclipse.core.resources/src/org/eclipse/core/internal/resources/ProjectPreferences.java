@@ -253,7 +253,6 @@ public class ProjectPreferences extends EclipsePreferences {
 	 * @param current in-memory state
 	 * @param file    new state on the disk to be loaded
 	 * @return new node that contains everything required to apply new state
-	 * @throws BackingStoreException
 	 * @see PreferencesService#applyPreferences(IExportedPreferences)
 	 */
 	private static ExportedPreferences overridingPreferences(ProjectPreferences current, IFile file)

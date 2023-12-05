@@ -38,9 +38,6 @@ public class IntroLink extends AbstractTextElement {
 	private IntroImage img;
 	private IntroURL introURL;
 
-	/**
-	 * @param element
-	 */
 	IntroLink(Element element, Bundle bundle, String base) {
 		super(element, bundle);
 		url = getAttribute(element, ATT_URL);

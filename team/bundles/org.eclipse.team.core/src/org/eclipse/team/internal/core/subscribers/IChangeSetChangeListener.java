@@ -32,7 +32,6 @@ public interface IChangeSetChangeListener {
 	 * The default change set has change to be the given set.
 	 * All new modifications will be placed in the default
 	 * set.
-	 * @param previousDefault
 	 * @param set the default set
 	 */
 	void defaultSetChanged(ChangeSet previousDefault, ChangeSet set);

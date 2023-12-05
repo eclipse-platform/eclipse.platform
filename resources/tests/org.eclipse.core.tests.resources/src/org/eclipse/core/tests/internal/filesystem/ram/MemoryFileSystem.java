@@ -30,8 +30,6 @@ public class MemoryFileSystem extends FileSystem {
 
 	/**
 	 * Converts a path to a URI in the memory file system.
-	 * @param path
-	 * @return
 	 */
 	public static URI toURI(IPath path) {
 		try {

@@ -78,7 +78,6 @@ public abstract class CheckedInChangeSet extends ChangeSet {
 	/**
 	 * Add the resource to this set if it is modified
 	 * w.r.t. the subscriber.
-	 * @param info
 	 */
 	public void add(SyncInfo info) {
 		if (isValidChange(info)) {

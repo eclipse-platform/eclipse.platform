@@ -221,7 +221,6 @@ public final class ExternalToolBuilder extends IncrementalProjectBuilder {
 
 	/**
 	 * Stores the currently active build kind and build project when a build begins
-	 * @param buildKind
 	 * @param args the arguments passed into the builder
 	 */
 	private void buildStarted(int buildKind, Map<String, String> args) {

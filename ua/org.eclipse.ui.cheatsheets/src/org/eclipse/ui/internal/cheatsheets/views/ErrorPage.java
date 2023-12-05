@@ -116,8 +116,6 @@ public class ErrorPage extends Page {
 
 	/**
 	 * Return the image for a status message
-	 *
-	 * @return
 	 */
 	private Image getImage(int severity) {
 		switch(severity) {

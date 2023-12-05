@@ -82,7 +82,6 @@ public class SWTUtils {
 	/**
 	 * Get the preference node with pageId.
 	 *
-	 * @param pageId
 	 * @return IPreferenceNode
 	 */
 	private static IPreferenceNode getPreferenceNode(String pageId) {

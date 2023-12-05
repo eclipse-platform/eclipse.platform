@@ -96,10 +96,6 @@ public class GoToAddressAction extends Action
 				DebugUIMessages.GoToAddressAction_Address_is_invalid, null);
 		}
 	}
-	/**
-	 * @param expression
-	 * @return
-	 */
 	public String parseExpression(String expression) {
 		expression = expression.toUpperCase();
 		expression = expression.trim();
@@ -110,10 +106,6 @@ public class GoToAddressAction extends Action
 		}
 		return expression;
 	}
-	/**
-	 * @param expression
-	 * @throws DebugException
-	 */
 	public void doGoToAddress(String expression) throws DebugException, NumberFormatException {
 		// convert expression to address
 		BigInteger address = new BigInteger(expression, 16);

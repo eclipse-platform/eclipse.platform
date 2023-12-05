@@ -104,9 +104,6 @@ public class ViewManagementPreferencePage extends PreferencePage implements IWor
 		return composite;
 	}
 
-	/**
-	 * @param composite
-	 */
 	private void createViewTrackingOptions(Composite composite) {
 		fTrackViewsButton= new Button(composite, SWT.CHECK);
 		fTrackViewsButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -139,9 +136,6 @@ public class ViewManagementPreferencePage extends PreferencePage implements IWor
 		}
 	}
 
-	/**
-	 * @param parent
-	 */
 	private void createPerspectiveViewer(Composite parent) {
 		Label label= new Label(parent, SWT.WRAP);
 		label.setText(DebugPreferencesMessages.ViewManagementPreferencePage_2);

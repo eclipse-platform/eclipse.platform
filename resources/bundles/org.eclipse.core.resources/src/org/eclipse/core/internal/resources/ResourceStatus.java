@@ -17,9 +17,6 @@ import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.*;
 
-/**
- *
- */
 public class ResourceStatus extends Status implements IResourceStatus {
 	IPath path;
 

@@ -29,9 +29,6 @@ public class RenderingsUtil {
 	/**
 	 * Pad byte array with zero's with the byte array's length
 	 * is shorter that what's expected the conversion functions.
-	 * @param array
-	 * @param size
-	 * @param endianess
 	 * @return an array of bytes
 	 */
 	protected static byte[] fillArray(byte[] array, int size, int endianess)
@@ -111,9 +108,6 @@ public class RenderingsUtil {
 
 	/**
 	 * Convert byte array to long.
-	 * @param array
-	 * @param endianess
-	 * @param addressableSize
 	 * @return result of the conversion in long
 	 */
 	static public long convertByteArrayToLong(byte[] array, int endianess, int addressableSize)
@@ -270,9 +264,6 @@ public class RenderingsUtil {
 
 	/**
 	 * Convert byte array to integer.
-	 * @param array
-	 * @param endianess
-	 * @param addressableSize
 	 * @return result of the conversion in int
 	 */
 	static public int convertByteArrayToInt(byte[] array, int endianess, int addressableSize)
@@ -307,9 +298,6 @@ public class RenderingsUtil {
 
 	/**
 	 * Convert byte array to short.
-	 * @param array
-	 * @param endianess
-	 * @param addressableSize
 	 * @return result of teh conversion in short
 	 */
 	static public short convertByteArrayToShort(byte[] array, int endianess, int addressableSize)
@@ -343,9 +331,6 @@ public class RenderingsUtil {
 
 	/**
 	 * Convert big integer to byte array.
-	 * @param i
-	 * @param endianess
-	 * @param addressableSize
 	 * @return result of the conversion in raw byte array
 	 */
 	static public byte[] convertBigIntegerToByteArray(BigInteger i, int endianess, int addressableSize)
@@ -394,9 +379,6 @@ public class RenderingsUtil {
 
 	/**
 	 * Convert big integer to byte array.
-	 * @param i
-	 * @param endianess
-	 * @param addressableSize
 	 * @return result of the conversion in raw byte array
 	 */
 	static public byte[] convertUnsignedBigIntegerToByteArray(BigInteger i, int endianess, int addressableSize)
@@ -445,9 +427,6 @@ public class RenderingsUtil {
 
 	/**
 	 * Convert long to byte array.
-	 * @param i
-	 * @param endianess
-	 * @param addressableSize
 	 * @return result of the conversion in raw byte array
 	 */
 	static public byte[] convertLongToByteArray(long i, int endianess, int addressableSize)
@@ -472,9 +451,6 @@ public class RenderingsUtil {
 
 	/**
 	 * Convert integer to byte array.
-	 * @param i
-	 * @param endianess
-	 * @param addressableSize
 	 * @return result of the conversion in raw byte array
 	 */
 	static public byte[] convertIntToByteArray(int i, int endianess, int addressableSize)
@@ -499,9 +475,6 @@ public class RenderingsUtil {
 
 	/**
 	 * Convert short to byte array.
-	 * @param i
-	 * @param endianess
-	 * @param addressableSize
 	 * @return result of the conversion in raw byte array
 	 */
 	static public byte[] convertShortToByteArray(short i, int endianess, int addressableSize)
@@ -557,11 +530,8 @@ public class RenderingsUtil {
 
 	/**
 	 * Convert raw memory data to byte array
-	 * @param str
-	 * @param numBytes
 	 * @param numCharsPerByte - number of characters per byte of data
 	 * @return an array of byte, converted from a hex string
-	 * @throws NumberFormatException
 	 */
 	public static byte[] convertHexStringToByteArray(String str, int numBytes, int numCharsPerByte) throws NumberFormatException
 	{

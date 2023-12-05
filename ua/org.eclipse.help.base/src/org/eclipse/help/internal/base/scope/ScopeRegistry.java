@@ -107,9 +107,6 @@ public class ScopeRegistry {
 	/**
 	 * Parse logical sets of Scopes.  All phrases in the
 	 * array are intersected together
-	 *
-	 * @param phrases
-	 * @return
 	 */
 	public AbstractHelpScope parseScopePhrases(String phrases[])
 	{
@@ -133,9 +130,6 @@ public class ScopeRegistry {
 	/**
 	 * Parse a logical phrase of scope names.  i.e.:
 	 * (A^B)|C
-	 *
-	 * @param phrase
-	 * @return
 	 */
 	public AbstractHelpScope parseScopePhrase(String phrase)
 	{
@@ -189,7 +183,6 @@ public class ScopeRegistry {
 	/**
 	 * A class used to parse a logical scope phrase, by
 	 * returning each part of the phrase as a separate element
-	 *
 	 */
 	static class ScopePhrase{
 
@@ -239,7 +232,6 @@ public class ScopeRegistry {
 	/**
 	 * A class used to contruct a logical AbstractHelpScope based
 	 * on one Scope, or a union/intersection of scopes.
-	 *
 	 */
 	private static class TempScope
 	{

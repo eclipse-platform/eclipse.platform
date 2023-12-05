@@ -21,7 +21,6 @@ import java.util.ResourceBundle;
  * Wrapper class for accessing translations out of a {@link ResourceBundle}.
  *
  * @author Dirk Fauth
- *
  */
 public class ResourceBundleTranslationProvider {
 

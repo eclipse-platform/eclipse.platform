@@ -52,8 +52,6 @@ public class TargetOrderDialog extends Dialog implements ISelectionChangedListen
 
 	/**
 	 * Constructs the dialog.
-	 * 
-	 * @param parentShell
 	 */
 	public TargetOrderDialog(Shell parentShell, AntTargetNode[] targets) {
 		super(parentShell);
@@ -84,8 +82,6 @@ public class TargetOrderDialog extends Dialog implements ISelectionChangedListen
 
 	/**
 	 * Create button area &amp; buttons
-	 * 
-	 * @param parent
 	 */
 	private void createButtons(Composite parent) {
 		Composite comp = new Composite(parent, SWT.NONE);
@@ -193,8 +189,6 @@ public class TargetOrderDialog extends Dialog implements ISelectionChangedListen
 
 	/**
 	 * Creates a list viewer for the targets
-	 * 
-	 * @param comp
 	 */
 	private void createTargetList(Composite comp) {
 		fViewer = new TableViewer(comp, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER);

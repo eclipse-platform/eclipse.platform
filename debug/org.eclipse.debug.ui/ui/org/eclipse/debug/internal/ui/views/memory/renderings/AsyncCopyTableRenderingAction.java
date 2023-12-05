@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.TableItem;
 /**
  * Copy action for <code>AbstractAsyncTableRendering</code>. Only copy what is
  * visible in the view.
- *
  */
 public class AsyncCopyTableRenderingAction extends CopyTableRenderingToClipboardAction {
 

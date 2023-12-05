@@ -29,7 +29,6 @@ import org.eclipse.ui.internal.intro.universal.UniversalIntroPlugin;
  * mode. Info messages are only logged when the /trace/logInfo debug option is
  * set to true. Performance reports are only logged when /trace/performance is
  * set to true.
- *
  */
 public class Log implements IUniversalIntroConstants {
 

@@ -194,7 +194,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	/**
 	 * Throws an exception if the link preconditions are not met.  Returns the file info
 	 * for the file being linked to, or <code>null</code> if not available.
-	 * @throws CoreException
 	 */
 	protected IFileInfo assertLinkRequirements(URI localLocation, int updateFlags) throws CoreException {
 		boolean allowMissingLocal = (updateFlags & IResource.ALLOW_MISSING_LOCAL) != 0;
@@ -537,9 +536,6 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		return path.isPrefixOf(resource.getFullPath());
 	}
 
-	/**
-	 * @throws CoreException
-	 */
 	public void convertToPhantom() throws CoreException {
 		ResourceInfo info = getResourceInfo(false, true);
 		if (info == null || isPhantom(getFlags(info)))

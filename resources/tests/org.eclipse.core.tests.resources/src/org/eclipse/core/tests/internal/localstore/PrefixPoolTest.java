@@ -15,6 +15,7 @@ package org.eclipse.core.tests.internal.localstore;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.internal.localstore.PrefixPool;
@@ -24,21 +25,8 @@ public class PrefixPoolTest {
 
 	@Test
 	public void testIllegalCapacity() {
-		boolean exceptionOK=true;
-		try {
-			new PrefixPool(0);
-			exceptionOK=false;
-		} catch(IllegalArgumentException e) {
-			/*ignore, exception is expected*/
-		}
-		assertTrue(exceptionOK);
-		try {
-			new PrefixPool(-1);
-			exceptionOK=false;
-		} catch(IllegalArgumentException e) {
-			/*ignore, exception is expected*/
-		}
-		assertTrue(exceptionOK);
+		assertThrows(IllegalArgumentException.class, () -> new PrefixPool(0));
+		assertThrows(IllegalArgumentException.class, () -> new PrefixPool(-1));
 	}
 
 	@Test

@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.junit.Assert.assertThrows;
+
 import java.io.InputStream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -25,132 +27,76 @@ import org.eclipse.core.runtime.IPath;
 //
 public class BlobStoreTest extends LocalStoreTest {
 
-	public void testConstructor() {
+	public void testConstructor() throws CoreException {
 		/* build scenario */
 		IFileStore root = createStore();
 
 		/* null location */
-		boolean ok = false;
-		try {
-			new BlobStore(null, 0);
-		} catch (RuntimeException e) {
-			ok = true;
-		}
-		assertTrue("1.1", ok);
+		assertThrows(RuntimeException.class, () -> new BlobStore(null, 0));
 
 		/* nonexistent location */
-		ok = false;
-		try {
-			new BlobStore(EFS.getLocalFileSystem().getStore(IPath.fromOSString("../this/path/should/not/be/a/folder")), 128);
-		} catch (RuntimeException e) {
-			ok = true;
-		}
-		assertTrue("3.1", ok);
+		assertThrows(RuntimeException.class, () -> new BlobStore(
+						EFS.getLocalFileSystem().getStore(IPath.fromOSString("../this/path/should/not/be/a/folder")),
+						128));
 
 		/* invalid limit values */
-		ok = false;
-		try {
-			new BlobStore(root, 0);
-		} catch (RuntimeException e) {
-			ok = true;
-		}
-		assertTrue("4.1", ok);
-		ok = false;
-		try {
-			new BlobStore(root, -1);
-		} catch (RuntimeException e) {
-			ok = true;
-		}
-		assertTrue("4.2", ok);
-		ok = false;
-		try {
-			new BlobStore(root, 35);
-		} catch (RuntimeException e) {
-			ok = true;
-		}
-		assertTrue("4.3", ok);
-		ok = false;
-		try {
-			new BlobStore(root, 512);
-		} catch (RuntimeException e) {
-			ok = true;
-		}
-		assertTrue("4.4", ok);
+		assertThrows(RuntimeException.class, () -> new BlobStore(root, 0));
+
+		assertThrows(RuntimeException.class, () -> new BlobStore(root, -1));
+
+		assertThrows(RuntimeException.class, () -> new BlobStore(root, 35));
+
+		assertThrows(RuntimeException.class, () -> new BlobStore(root, 512));
 	}
 
-	private IFileStore createStore() {
+	private IFileStore createStore() throws CoreException {
 		IFileStore root = getTempStore();
-		try {
-			root.mkdir(EFS.NONE, null);
-		} catch (CoreException e1) {
-			fail("createStore.99", e1);
-		}
+		root.mkdir(EFS.NONE, null);
 		IFileInfo info = root.fetchInfo();
 		assertTrue("createStore.1", info.exists());
 		assertTrue("createStore.2", info.isDirectory());
 		return root;
 	}
 
-	public void testDeleteBlob() {
+	public void testDeleteBlob() throws CoreException {
 		/* initialize common objects */
 		IFileStore root = createStore();
 		BlobStore store = new BlobStore(root, 64);
 
 		/* delete blob that does not exist */
 		UniversalUniqueIdentifier uuid = new UniversalUniqueIdentifier();
-		assertTrue("2.1", !store.fileFor(uuid).fetchInfo().exists());
+		assertTrue(!store.fileFor(uuid).fetchInfo().exists());
 		store.deleteBlob(uuid);
-		assertTrue("2.2", !store.fileFor(uuid).fetchInfo().exists());
+		assertTrue(!store.fileFor(uuid).fetchInfo().exists());
 
 		/* delete existing blob */
 		IFileStore target = root.getChild("target");
-		try {
-			createFile(target, "bla bla bla");
-			uuid = store.addBlob(target, true);
-		} catch (CoreException e) {
-			fail("4.1", e);
-		}
-		assertTrue("4.2", store.fileFor(uuid).fetchInfo().exists());
+		createFile(target, "bla bla bla");
+		uuid = store.addBlob(target, true);
+		assertTrue(store.fileFor(uuid).fetchInfo().exists());
 		store.deleteBlob(uuid);
-		assertTrue("4.3", !store.fileFor(uuid).fetchInfo().exists());
+		assertFalse(store.fileFor(uuid).fetchInfo().exists());
 	}
 
-	public void testGetBlob() {
+	public void testGetBlob() throws CoreException {
 		/* initialize common objects */
 		IFileStore root = createStore();
 		BlobStore store = new BlobStore(root, 64);
 
 		/* null UUID */
-		boolean ok = false;
-		try {
-			store.getBlob(null);
-		} catch (RuntimeException e) {
-			ok = true;
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
-		assertTrue("2.1", ok);
+		assertThrows(RuntimeException.class, () -> store.getBlob(null));
 
 		/* get existing blob */
 		IFileStore target = root.getChild("target");
 		UniversalUniqueIdentifier uuid = null;
 		String content = "nothing important........tnatropmi gnihton";
-		try {
-			createFile(target, content);
-			uuid = store.addBlob(target, true);
-		} catch (CoreException e) {
-			fail("3.1", e);
-		}
-		InputStream input = null;
-		try {
-			input = store.getBlob(uuid);
-		} catch (CoreException e) {
-			fail("3.4", e);
-		}
-		assertTrue("4.1", compareContent(getContents(content), input));
+		createFile(target, content);
+		uuid = store.addBlob(target, true);
+		InputStream input = store.getBlob(uuid);
+		assertTrue(compareContent(getContents(content), input));
 	}
 
-	public void testSetBlob() {
+	public void testSetBlob() throws CoreException {
 		/* initialize common objects */
 		IFileStore root = createStore();
 		BlobStore store = new BlobStore(root, 64);
@@ -159,18 +105,9 @@ public class BlobStoreTest extends LocalStoreTest {
 		IFileStore target = root.getChild("target");
 		UniversalUniqueIdentifier uuid = null;
 		String content = "nothing important........tnatropmi gnihton";
-		try {
-			createFile(target, content);
-			uuid = store.addBlob(target, true);
-		} catch (CoreException e) {
-			fail("2.1", e);
-		}
-		InputStream input = null;
-		try {
-			input = store.getBlob(uuid);
-		} catch (CoreException e) {
-			fail("2.4", e);
-		}
-		assertTrue("2.5", compareContent(getContents(content), input));
+		createFile(target, content);
+		uuid = store.addBlob(target, true);
+		InputStream input = store.getBlob(uuid);
+		assertTrue(compareContent(getContents(content), input));
 	}
 }

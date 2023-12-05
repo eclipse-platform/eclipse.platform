@@ -36,7 +36,6 @@ import org.eclipse.debug.core.model.ITerminate;
  * Adapter factory for debug commands.
  *
  * @since 3.3
- *
  */
 public class CommandAdapterFactory implements IAdapterFactory {
 

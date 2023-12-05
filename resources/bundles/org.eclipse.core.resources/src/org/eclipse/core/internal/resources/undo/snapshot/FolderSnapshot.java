@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.SubMonitor;
  * This class is not intended to be instantiated or used by clients.
  *
  * @since 3.20
- *
  */
 public class FolderSnapshot extends ContainerSnapshot<IFolder> {
 

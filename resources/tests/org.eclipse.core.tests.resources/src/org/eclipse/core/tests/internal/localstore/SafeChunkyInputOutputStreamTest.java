@@ -13,10 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
-import java.io.*;
+import static org.junit.Assert.assertThrows;
+
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.internal.localstore.*;
+import org.eclipse.core.internal.localstore.ILocalStoreConstants;
+import org.eclipse.core.internal.localstore.SafeChunkyInputStream;
+import org.eclipse.core.internal.localstore.SafeChunkyOutputStream;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.runtime.IPath;
 
@@ -90,7 +96,7 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 
 	public void testFailure() throws Exception {
 		Workspace.clear(target); // make sure there was nothing here before
-		assertTrue(!target.exists());
+		assertFalse(target.exists());
 
 		// misc
 		byte[] fakeEnd = new byte[ILocalStoreConstants.END_CHUNK.length];
@@ -181,16 +187,13 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 		}
 
 		try (DataInputStream input = new DataInputStream(new SafeChunkyInputStream(target))) {
-			input.readUTF();
-			fail("Should throw EOFException");
-		} catch (EOFException e) {
-			// should hit here
+			assertThrows(EOFException.class, () -> input.readUTF());
 		}
 	}
 
 	public void testSimple() throws Exception {
 		Workspace.clear(target); // make sure there was nothing here before
-		assertTrue(!target.exists());
+		assertFalse(target.exists());
 
 		// write chunks
 		byte[] chunk1 = getRandomString().getBytes();

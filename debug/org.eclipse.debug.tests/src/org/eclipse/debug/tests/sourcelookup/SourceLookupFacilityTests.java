@@ -56,8 +56,6 @@ public class SourceLookupFacilityTests extends AbstractDebugTest {
 	 * Tests calling
 	 * {@link SourceLookupFacility#lookup(Object, org.eclipse.debug.core.model.ISourceLocator, boolean)}
 	 * with simple type, no locator and no forcing
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testLookupStringNoLocatorNoForce() throws Exception {
@@ -75,8 +73,6 @@ public class SourceLookupFacilityTests extends AbstractDebugTest {
 	 * Tests calling
 	 * {@link SourceLookupFacility#lookup(Object, org.eclipse.debug.core.model.ISourceLocator, boolean)}
 	 * with simple type and no forcing
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testLookupStringNoForce() throws Exception {
@@ -101,8 +97,6 @@ public class SourceLookupFacilityTests extends AbstractDebugTest {
 	 * Tests calling
 	 * {@link SourceLookupFacility#lookup(Object, org.eclipse.debug.core.model.ISourceLocator, boolean)}
 	 * with simple type and forcing
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testLookupStringForce() throws Exception {
@@ -127,8 +121,6 @@ public class SourceLookupFacilityTests extends AbstractDebugTest {
 	 * Tests calling
 	 * {@link SourceLookupFacility#lookup(Object, org.eclipse.debug.core.model.ISourceLocator, boolean)}
 	 * with simple type and no forcing
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testLookupStringLocatorNoForce() throws Exception {
@@ -146,8 +138,6 @@ public class SourceLookupFacilityTests extends AbstractDebugTest {
 	 * Tests calling
 	 * {@link SourceLookupFacility#lookup(Object, org.eclipse.debug.core.model.ISourceLocator, boolean)}
 	 * with an {@link IStackFrame} impl and no forcing
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testLookupStackframeNoForce() throws Exception {
@@ -171,8 +161,6 @@ public class SourceLookupFacilityTests extends AbstractDebugTest {
 	 * Tests calling
 	 * {@link SourceLookupFacility#lookup(Object, org.eclipse.debug.core.model.ISourceLocator, boolean)}
 	 * with an {@link IStackFrame} impl and forcing
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testLookupStackframeForce() throws Exception {
@@ -196,8 +184,6 @@ public class SourceLookupFacilityTests extends AbstractDebugTest {
 	 * Tests calling
 	 * {@link SourceLookupFacility#lookup(Object, org.eclipse.debug.core.model.ISourceLocator, boolean)}
 	 * with an {@link IStackFrame} impl, no forcing, no locator, no launch
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testLookupStackframeWithDebugElement1() throws Exception {
@@ -214,8 +200,6 @@ public class SourceLookupFacilityTests extends AbstractDebugTest {
 	 * Tests calling
 	 * {@link SourceLookupFacility#lookup(Object, org.eclipse.debug.core.model.ISourceLocator, boolean)}
 	 * with an {@link IStackFrame} impl, no forcing, no locator
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testLookupStackframeWithDebugElement2() throws Exception {
@@ -239,8 +223,6 @@ public class SourceLookupFacilityTests extends AbstractDebugTest {
 	 * Tests calling
 	 * {@link SourceLookupFacility#lookup(Object, org.eclipse.debug.core.model.ISourceLocator, boolean)}
 	 * with an {@link IStackFrame} impl, forcing, no locator
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testLookupStackframeWithDebugElement3() throws Exception {
@@ -264,8 +246,6 @@ public class SourceLookupFacilityTests extends AbstractDebugTest {
 	 * Tests calling
 	 * {@link SourceLookupFacility#lookup(Object, org.eclipse.debug.core.model.ISourceLocator, boolean)}
 	 * with an {@link IStackFrame} impl, no forcing, ISourceLocator impl
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testLookupStackframeWithDebugElement4() throws Exception {
@@ -289,8 +269,6 @@ public class SourceLookupFacilityTests extends AbstractDebugTest {
 	 * Tests calling
 	 * {@link SourceLookupFacility#lookup(Object, org.eclipse.debug.core.model.ISourceLocator, boolean)}
 	 * with an {@link IStackFrame} impl, forcing, ISourceLocator impl
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testLookupStackframeWithDebugElement5() throws Exception {

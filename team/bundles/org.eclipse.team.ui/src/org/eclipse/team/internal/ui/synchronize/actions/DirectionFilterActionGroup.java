@@ -120,7 +120,6 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 	}
 
 	/**
-	 * @param supportedModes
 	 * @return the support mode
 	 */
 	private int getSupportedMode(int supportedModes) {

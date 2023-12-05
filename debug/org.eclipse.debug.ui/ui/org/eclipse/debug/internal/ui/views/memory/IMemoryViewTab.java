@@ -42,15 +42,11 @@ public interface IMemoryViewTab {
 
 	/**
 	 * Sets the enablament state of the view tab.
-	 *
-	 * @param enabled
 	 */
 	void setEnabled(boolean enabled);
 
 	/**
 	 * Set view tab's label
-	 *
-	 * @param label
 	 */
 	void setTabLabel(String label);
 

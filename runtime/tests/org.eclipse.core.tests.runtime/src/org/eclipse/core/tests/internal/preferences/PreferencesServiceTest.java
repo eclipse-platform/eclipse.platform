@@ -717,7 +717,6 @@ public class PreferencesServiceTest {
 	}
 
 	/**
-	 * @throws Exception
 	 * @deprecated this tests deprecated functions, so deprecation added to avoid
 	 *             warnings
 	 */

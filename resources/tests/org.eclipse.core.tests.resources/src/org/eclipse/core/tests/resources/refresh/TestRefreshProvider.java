@@ -20,9 +20,6 @@ import junit.framework.AssertionFailedError;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.refresh.*;
 
-/**
- *
- */
 public class TestRefreshProvider extends RefreshProvider implements IRefreshMonitor {
 	private final List<AssertionFailedError> failures = new CopyOnWriteArrayList<>();
 	private final Set<Object> monitoredResources = Collections.synchronizedSet(new HashSet<>());

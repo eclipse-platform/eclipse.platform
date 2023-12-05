@@ -383,11 +383,10 @@ public class XmlProcessorFactoryTest {
 
 		/** Example Server that will log and quit when contacted **/
 		public static void main(String[] args) throws Exception {
-			@SuppressWarnings("resource")
-			Server server = new Server();
-			System.out.println("Server startet on port: " + server.getLocalPort());
-			server.httpServerThread.join();
-			server.close();
+			try (Server server = new Server()) {
+				System.out.println("Server startet on port: " + server.getLocalPort());
+				server.httpServerThread.join();
+			}
 		}
 	}
 

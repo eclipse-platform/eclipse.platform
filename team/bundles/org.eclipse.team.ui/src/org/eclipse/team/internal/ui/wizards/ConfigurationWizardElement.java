@@ -95,7 +95,6 @@ public class ConfigurationWizardElement extends WorkbenchAdapter implements IAda
 	/*
 	 * Method declared on IAdaptable.
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IWorkbenchAdapter.class) {

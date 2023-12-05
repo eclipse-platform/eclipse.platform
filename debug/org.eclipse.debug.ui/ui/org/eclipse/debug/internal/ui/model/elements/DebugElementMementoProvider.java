@@ -51,7 +51,6 @@ public abstract class DebugElementMementoProvider extends ElementMementoProvider
 	/**
 	 * Returns whether this adapter supports the given context.
 	 *
-	 * @param context
 	 * @return whether this adapter supports the given context
 	 */
 	protected boolean supportsContext(IPresentationContext context) {
@@ -75,7 +74,6 @@ public abstract class DebugElementMementoProvider extends ElementMementoProvider
 	 * @param element model element
 	 * @param context presentation context
 	 * @return element name or <code>null</code> if none
-	 * @throws CoreException
 	 */
 	protected abstract String getElementName(Object element, IPresentationContext context) throws CoreException;
 }

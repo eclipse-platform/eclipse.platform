@@ -355,7 +355,6 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 	 * @param info ResourceInfo for the passed in file
 	 * @param inSync boolean flag which indicates if cache can be trusted. If false false don't trust the cache
 	 * @return IContentDescription for the file
-	 * @throws CoreException
 	 */
 	public IContentDescription getDescriptionFor(File file, ResourceInfo info, boolean inSync) throws CoreException {
 		if (ProjectContentTypes.usesContentTypePreferences(file.getFullPath().segment(0)))

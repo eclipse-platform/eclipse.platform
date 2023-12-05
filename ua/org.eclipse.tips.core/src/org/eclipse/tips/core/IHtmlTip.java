@@ -16,7 +16,6 @@ package org.eclipse.tips.core;
 
 /**
  * Decoration of {@link Tip} that enables HTML content.
- *
  */
 public interface IHtmlTip {
 

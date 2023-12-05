@@ -447,7 +447,6 @@ public class ModelSynchronizeParticipant extends
 		};
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IRefreshable.class && refreshSchedule != null) {

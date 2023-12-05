@@ -72,9 +72,6 @@ public class TocValidator {
 	 * (i.e. "/&lt;plug-in id&gt;/&lt;path&gt;/&lt;file&gt;")
 	 * @return An ArrayList of BrokenLink objects in the toc. If no broken links are found, an empty ArrayList
 	 * is returned.
-	 * @throws IOException
-	 * @throws SAXException
-	 * @throws ParserConfigurationException
 	 */
 	public static ArrayList<BrokenLink> validate(String[] hrefs) throws IOException, SAXException, ParserConfigurationException{
 		return filteredValidate(hrefs, new PassThroughFilter());

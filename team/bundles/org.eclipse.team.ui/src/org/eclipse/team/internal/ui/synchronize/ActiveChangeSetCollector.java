@@ -160,7 +160,6 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 	 * properly. Updates done from other threads should use the
 	 * <code>performUpdate</code> method to ensure the view is
 	 * updated properly.
-	 * @param seedSet
 	 */
 	public void reset(SyncInfoSet seedSet) {
 		// First, clean up

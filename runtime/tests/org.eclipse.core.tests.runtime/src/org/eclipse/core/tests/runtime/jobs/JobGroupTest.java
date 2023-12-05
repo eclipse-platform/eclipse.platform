@@ -1316,7 +1316,6 @@ public class JobGroupTest extends AbstractJobTest {
 	 * the cancelation of any running job.
 	 *
 	 * Expected result: The second job is explicitly canceled
-	 *
 	 */
 	public void testShouldCancel_5() {
 		// the job group allows for 2 threads so both jobs will be started in

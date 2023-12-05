@@ -22,8 +22,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.*;
 import org.eclipse.osgi.util.NLS;
 
-/**
- */
 public class ProjectNatureDescriptor implements IProjectNatureDescriptor {
 	protected String id;
 	protected String label;

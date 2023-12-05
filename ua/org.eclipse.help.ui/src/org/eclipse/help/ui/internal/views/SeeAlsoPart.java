@@ -45,10 +45,6 @@ public class SeeAlsoPart extends AbstractFormPart implements IHelpPart {
 	private Image bgImage;
 	private final HyperlinkGroup hyperlinkGroup;
 
-	/**
-	 * @param parent
-	 * @param toolkit
-	 */
 	public SeeAlsoPart(Composite parent, FormToolkit toolkit) {
 		container = toolkit.createComposite(parent);
 		container.setBackgroundMode(SWT.INHERIT_DEFAULT);

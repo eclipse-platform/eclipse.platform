@@ -77,7 +77,6 @@ public class DebugFileSystem extends FileSystem {
 	/**
 	 * Returns whether contents of the file or <code>null</code> if none.
 	 *
-	 * @param uri
 	 * @return bytes or <code>null</code>
 	 */
 	public byte[] getContents(URI uri) {
@@ -86,8 +85,6 @@ public class DebugFileSystem extends FileSystem {
 
 	/**
 	 * Deletes the file.
-	 *
-	 * @param uri
 	 */
 	public void delete(URI uri) {
 		files.remove(uri);
@@ -95,9 +92,6 @@ public class DebugFileSystem extends FileSystem {
 
 	/**
 	 * Sets the content of the given file.
-	 *
-	 * @param uri
-	 * @param bytes
 	 */
 	public void setContents(URI uri, byte[] bytes) {
 		files.put(uri, bytes);
@@ -105,8 +99,6 @@ public class DebugFileSystem extends FileSystem {
 
 	/**
 	 * Returns URIs of all existing files.
-	 *
-	 * @return
 	 */
 	public URI[] getFileURIs() {
 		return files.keySet().toArray(new URI[files.size()]);

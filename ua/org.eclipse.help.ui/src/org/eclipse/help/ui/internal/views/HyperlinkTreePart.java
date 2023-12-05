@@ -110,11 +110,6 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 
 	private ScopeObserver scopeObserver;
 
-	/**
-	 * @param parent
-	 * @param toolkit
-	 * @param tbm
-	 */
 	public HyperlinkTreePart(Composite parent, final FormToolkit toolkit,
 			IToolBarManager tbm) {
 		Cursor handCursor = parent.getDisplay().getSystemCursor(SWT.CURSOR_HAND);

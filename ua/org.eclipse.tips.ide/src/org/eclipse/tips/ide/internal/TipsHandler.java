@@ -19,7 +19,6 @@ import org.eclipse.core.commands.ExecutionException;
 
 /**
  * Internal class to open the IDE Tip Dialog.
- *
  */
 public class TipsHandler extends AbstractHandler {
 

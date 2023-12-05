@@ -229,7 +229,6 @@ public class ExportLaunchConfigurationsWizardPage extends WizardPage {
 
 	/**
 	 * Updates the checked state of child launch configurations if the parent type is checked
-	 * @param element
 	 */
 	protected void updateCheckedState(Object element) {
 		boolean state = fViewer.getChecked(element);
@@ -260,7 +259,6 @@ public class ExportLaunchConfigurationsWizardPage extends WizardPage {
 
 	/**
 	 * Creates the controls for the file path selection area of the page
-	 * @param parent
 	 */
 	protected void createFilePath(Composite parent) {
 		Composite comp = SWTFactory.createComposite(parent, parent.getFont(), 3, 2, GridData.FILL_HORIZONTAL, 0, 10);
@@ -449,8 +447,6 @@ public class ExportLaunchConfigurationsWizardPage extends WizardPage {
 	 * Copies a file from one location to another
 	 * @param in the file to copy
 	 * @param out the file to be copied out to
-	 * @throws CoreException
-	 * @throws IOException
 	 * @since 3.5
 	 */
 	protected void copyFile(IFileStore in, File out) throws CoreException, IOException {

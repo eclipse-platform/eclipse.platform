@@ -38,7 +38,6 @@ public interface IModelProxy2 extends IModelProxy {
 	 * not be called by clients.
 	 * </p>
 	 * @param viewer Viewer that is installing this model proxy.
-	 *
 	 */
 	void initialize(ITreeModelViewer viewer);
 

@@ -92,7 +92,6 @@ public abstract class ElementMementoProvider implements IElementMementoProvider 
 	 * @param memento the memento to write to
 	 * @param context presentation context
 	 * @return false if cancelled/not supported
-	 * @throws CoreException
 	 */
 	protected abstract boolean encodeElement(Object element, IMemento memento, IPresentationContext context) throws CoreException;
 

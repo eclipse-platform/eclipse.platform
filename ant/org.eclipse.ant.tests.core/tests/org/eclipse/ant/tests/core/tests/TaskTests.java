@@ -36,8 +36,6 @@ public class TaskTests extends AbstractAntTest {
 
 	/**
 	 * Testing the old deprecated API
-	 * 
-	 * @throws CoreException
 	 */
 	@SuppressWarnings("deprecation")
 	@Test

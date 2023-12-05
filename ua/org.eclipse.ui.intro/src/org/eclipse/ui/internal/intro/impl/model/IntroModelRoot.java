@@ -172,7 +172,6 @@ public class IntroModelRoot extends AbstractIntroContainer {
 	 * extension pages and groups. The presentation is loaded from the
 	 * IConfiguration element representing the config. All else is loaded from
 	 * xml content file.
-	 *
 	 */
 	@Override
 	protected void loadChildren() {
@@ -232,8 +231,6 @@ public class IntroModelRoot extends AbstractIntroContainer {
 	 * presentation as the first child, so use that fact. This method is used
 	 * for dynamic awarness to enable replacing the new presentation with the
 	 * existing one after a model refresh.
-	 *
-	 * @param presentation
 	 */
 	public void setPresentation(IntroPartPresentation presentation) {
 		this.introPartPresentation = presentation;
@@ -494,7 +491,6 @@ public class IntroModelRoot extends AbstractIntroContainer {
 	 * element on failure.
 	 *
 	 * @param
-	 * @return
 	 */
 	private Element[] loadExtensionContent(Document dom,
 			IConfigurationElement configExtElement, String base) {
@@ -543,9 +539,6 @@ public class IntroModelRoot extends AbstractIntroContainer {
 
 	/**
 	 * Insert the extension content into the target.
-	 *
-	 * @param extensionContent
-	 * @return
 	 */
 	private boolean loadXHTMLExtensionContent(
 			IntroExtensionContent extensionContent) {
@@ -602,9 +595,6 @@ public class IntroModelRoot extends AbstractIntroContainer {
 
 	/**
 	 * Insert the extension content (3.0 format) into the target.
-	 *
-	 * @param extensionContent
-	 * @return
 	 */
 	private boolean load3_0ExtensionContent(IntroExtensionContent extensionContent) {
 		String path = extensionContent.getPath();
@@ -663,9 +653,6 @@ public class IntroModelRoot extends AbstractIntroContainer {
 	 * configExtension. If we are extending a shared group do nothing. For
 	 * inherited alt-styles, we have to cache the bundle from which we inherited
 	 * the styles to be able to access resources in that plugin.
-	 *
-	 * @param include
-	 * @param target
 	 */
 	private void handleExtensionStyleInheritence(AbstractIntroElement target,
 			IntroExtensionContent extension) {
@@ -875,8 +862,6 @@ public class IntroModelRoot extends AbstractIntroContainer {
 	 * the configExt content files. ie: in plugin.xml. <br>
 	 * This method also sets the base attribute on the root element in the DOM
 	 * to enable resolving all resources relative to this DOM.
-	 *
-	 * @return
 	 */
 	protected Document loadDOM(IConfigurationElement cfgElement) {
 		String content = cfgElement.getAttribute(ATT_CONTENT);

@@ -38,7 +38,6 @@ import org.eclipse.ui.intro.config.CustomizableIntroPart;
  * instantiated from plugin markup and so we need a default constructor,
  * including in subclasses. It has some base methods, including maintaining a
  * history of navigation locations. Also, dynamic awarness is honored here.
- *
  */
 public abstract class AbstractIntroPartImplementation {
 
@@ -124,8 +123,6 @@ public abstract class AbstractIntroPartImplementation {
 
 	/**
 	 * Creates the UI based on this implementation class. .
-	 *
-	 * @param parent
 	 */
 	public abstract void createPartControl(Composite parent);
 
@@ -133,8 +130,6 @@ public abstract class AbstractIntroPartImplementation {
 	 * Called when the init method is called in the IIntroPart. Subclasses may
 	 * extend, for example to get the passed Memento. When extending, make sure
 	 * you include a call to super.
-	 *
-	 * @param introPart
 	 */
 	public void init(IIntroPart introPart, IMemento memento) {
 		// we know the class type to cast to.
@@ -142,9 +137,6 @@ public abstract class AbstractIntroPartImplementation {
 		this.memento = memento;
 	}
 
-	/**
-	 * @return
-	 */
 	public IntroModelRoot getModel() {
 		return IntroPlugin.getDefault().getIntroModelRoot();
 	}
@@ -159,8 +151,6 @@ public abstract class AbstractIntroPartImplementation {
 
 	/**
 	 * Updates the UI navigation history with either a real URL.
-	 *
-	 * @param location
 	 */
 	public void updateHistory(String location) {
 		history.updateHistory(location);
@@ -169,8 +159,6 @@ public abstract class AbstractIntroPartImplementation {
 
 	/**
 	 * Updates the UI navigation history with a page ID.
-	 *
-	 * @param  page
 	 */
 	public void updateHistory(AbstractIntroPage page) {
 		history.updateHistory(page);
@@ -181,7 +169,6 @@ public abstract class AbstractIntroPartImplementation {
 	/**
 	 * Subclasses must implement to set the state of the navigation actions in
 	 * the toolbar.
-	 *
 	 */
 	public abstract void setFocus();
 
@@ -189,7 +176,6 @@ public abstract class AbstractIntroPartImplementation {
 	/**
 	 * Subclasses must implement to update the intro view actions when history
 	 * is updated.
-	 *
 	 */
 	protected abstract void updateNavigationActionsState();
 
@@ -227,8 +213,6 @@ public abstract class AbstractIntroPartImplementation {
 	 * Called when the Intro changes state. This method should not be
 	 * subclassed. It adds performance logging calls. Subclasses must implement
 	 * doStandbyStateChanged instead.
-	 *
-	 * @param standby
 	 */
 	public void standbyStateChanged(boolean standby, boolean isStandbyPartNeeded) {
 		PerformanceStats setStandbyStateStats = null;
@@ -313,8 +297,6 @@ public abstract class AbstractIntroPartImplementation {
 	 * Subclasses need to extend to get the desired behavior relavent to the
 	 * specific implementation. Broswer implementation needs to cache an http
 	 * web page, if it happens to be the last page visited.
-	 *
-	 * @param memento
 	 */
 	public void saveState(IMemento memento) {
 		saveCurrentPage(memento);
@@ -326,8 +308,6 @@ public abstract class AbstractIntroPartImplementation {
 	 * memento. If a given implementation requires saving alternative
 	 * information (e.g., information about the most recently visited static
 	 * page) it should override this method.
-	 *
-	 * @param memento
 	 */
 	protected void saveCurrentPage(IMemento memento) {
 		IntroModelRoot model = getModel();

@@ -17,11 +17,19 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.core.internal.resources.ProjectDescription;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 
@@ -55,48 +63,22 @@ public class Bug_185247_LinuxTests extends ResourceTest {
 		}
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		try {
-			for (IProject testProject : testProjects) {
-				testProject.delete(false, true, getMonitor());
-			}
-		} finally {
-			super.tearDown();
-		}
-	}
-
-	/**
-	 *
-	 */
 	public void test1_trivial() throws Exception {
 		runProjectTestCase();
 	}
 
-	/**
-	 *
-	 */
 	public void test2_mutual() throws Exception {
 		runProjectTestCase();
 	}
 
-	/**
-	 *
-	 */
 	public void test3_outside_tree() throws Exception {
 		runProjectTestCase();
 	}
 
-	/**
-	 *
-	 */
 	public void test5_transitive_mutual() throws Exception {
 		runProjectTestCase();
 	}
 
-	/**
-	 *
-	 */
 	public void test6_nonrecursive() throws Exception {
 		runProjectTestCase();
 	}

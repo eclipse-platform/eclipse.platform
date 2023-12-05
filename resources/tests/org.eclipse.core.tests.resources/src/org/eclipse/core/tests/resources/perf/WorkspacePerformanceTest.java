@@ -14,11 +14,20 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.Random;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -275,7 +284,7 @@ public class WorkspacePerformanceTest extends ResourceTest {
 		}.run(this, REPEATS, 3);
 	}
 
-	public void testLoadSnapshot() {
+	public void testLoadSnapshot() throws CoreException {
 		// 2 minutes total test time, 528 msec test execution time
 		IProject snapProject = getWorkspace().getRoot().getProject("SnapProject");
 		ensureExistsInWorkspace(snapProject, true);
@@ -314,7 +323,6 @@ public class WorkspacePerformanceTest extends ResourceTest {
 
 	/**
 	 * Waits until background activity settles down before running a performance test.
-	 *
 	 */
 	public void waitForBackgroundActivity() {
 		waitForSnapshot();

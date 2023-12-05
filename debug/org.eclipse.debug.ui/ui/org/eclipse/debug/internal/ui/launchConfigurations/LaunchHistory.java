@@ -109,7 +109,6 @@ public class LaunchHistory implements ILaunchListener, ILaunchConfigurationListe
 	/**
 	 * Adds the given configuration to this history
 	 *
-	 * @param configuration
 	 * @param prepend whether the configuration should be added to the beginning of
 	 * the history list
 	 */
@@ -162,7 +161,6 @@ public class LaunchHistory implements ILaunchListener, ILaunchConfigurationListe
 	 * Allows the dirty flag for this launch history to be set.
 	 * It is the clients of this class that must set the saved flag to true
 	 * if they have persisted the launch history
-	 * @param saved
 	 * @since 3.3.1
 	 */
 	public void setSaved(boolean saved) {
@@ -255,8 +253,6 @@ public class LaunchHistory implements ILaunchListener, ILaunchConfigurationListe
 
 	/**
 	 * Sets this container's favorites.
-	 *
-	 * @param favorites
 	 */
 	public synchronized void setFavorites(ILaunchConfiguration[] favorites) {
 		fFavorites = new Vector<>(Arrays.asList(favorites));
@@ -266,8 +262,6 @@ public class LaunchHistory implements ILaunchListener, ILaunchConfigurationListe
 
 	/**
 	 * Adds the given configuration to the favorites list.
-	 *
-	 * @param configuration
 	 */
 	public synchronized void addFavorite(ILaunchConfiguration configuration) {
 		if (!fFavorites.contains(configuration)) {
@@ -279,7 +273,6 @@ public class LaunchHistory implements ILaunchListener, ILaunchConfigurationListe
 
 	/**
 	 * Returns the launch group associated with this history
-	 *
 	 */
 	public ILaunchGroup getLaunchGroup() {
 		return fGroup;
@@ -288,7 +281,6 @@ public class LaunchHistory implements ILaunchListener, ILaunchConfigurationListe
 	/**
 	 * Returns whether the given configuration is included in the group
 	 * associated with this launch history.
-	 *
 	 */
 	public boolean accepts(ILaunchConfiguration configuration) {
 		try {
@@ -355,7 +347,6 @@ public class LaunchHistory implements ILaunchListener, ILaunchConfigurationListe
 	 * This method checks if the specified <code>ILaunchConfiguration</code> is a favorite in this
 	 * history's launch group.
 	 *
-	 * @param configuration
 	 * @return true if the configuration is a favorite in this history's launch group, false otherwise
 	 * @throws CoreException
 	 *
@@ -382,7 +373,6 @@ public class LaunchHistory implements ILaunchListener, ILaunchConfigurationListe
 	 * Adds the given config to the favorites list if it is a favorite, and
 	 * returns whether the config was added to the favorites list.
 	 *
-	 * @param configuration
 	 * @return whether added to the favorites list
 	 */
 	protected boolean checkFavorites(ILaunchConfiguration configuration) {
@@ -408,8 +398,6 @@ public class LaunchHistory implements ILaunchListener, ILaunchConfigurationListe
 
 	/**
 	 * Removes the given config from the favorites list, if needed.
-	 *
-	 * @param configuration
 	 */
 	protected synchronized void removeFavorite(ILaunchConfiguration configuration) {
 		fFavorites.remove(configuration);

@@ -26,7 +26,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 /**
  * Popup menu action to find and create the projects nested within the
  * selected projects.
- *
  */
 public class CreatedNestedProjectsHandler extends AbstractHandler {
 

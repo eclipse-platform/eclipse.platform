@@ -19,7 +19,6 @@ package org.eclipse.help.search;
  * {@link ISearchEngineResult2#canOpen()}.
  *
  * @since 3.2
- *
  */
 
 public interface ISearchEngine2 extends ISearchEngine {

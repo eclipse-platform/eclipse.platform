@@ -112,7 +112,6 @@ public class WizardExportBreakpointsPage extends WizardPage implements Listener 
 
 	/**
 	 * Handles the select all button pressed
-	 *
 	 */
 	private void handleSelectAllPressed() {
 		BreakpointsViewer viewer = fTView.getViewer();
@@ -125,7 +124,6 @@ public class WizardExportBreakpointsPage extends WizardPage implements Listener 
 
 	/**
 	 * Handles the de-select all button pressed
-	 *
 	 */
 	private void handleDeselectAllPressed() {
 		BreakpointsViewer viewer = fTView.getViewer();

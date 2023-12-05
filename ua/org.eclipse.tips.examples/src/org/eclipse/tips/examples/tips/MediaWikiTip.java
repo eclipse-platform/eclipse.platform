@@ -27,7 +27,6 @@ import org.eclipse.tips.core.TipProvider;
  *
  * <a href=
  * "https://wiki.eclipse.org/Tip_of_the_Day/Eclipse_Tips/Now_where_was_I">https://wiki.eclipse.org/Tip_of_the_Day/Eclipse_Tips/Now_where_was_I</a>
- *
  */
 public class MediaWikiTip extends Tip implements IUrlTip {
 

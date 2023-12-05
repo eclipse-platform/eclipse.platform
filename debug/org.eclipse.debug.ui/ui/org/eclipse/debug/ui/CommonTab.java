@@ -1108,7 +1108,6 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 
 	/**
 	 * Provides the labels for the favorites table
-	 *
 	 */
 	class FavoritesLabelProvider implements ITableLabelProvider {
 

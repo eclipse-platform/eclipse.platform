@@ -14,7 +14,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import org.eclipse.core.internal.resources.LinkDescription;
@@ -35,11 +34,7 @@ public class Bug_132510 extends ResourceTest {
 		HashMap<IPath, LinkDescription> linkMap = desc.getLinks();
 		Iterator<LinkDescription> it = linkMap.values().iterator();
 		desc.setLinkLocation(path2, link);
-		try {
-			it.next();
-		} catch (ConcurrentModificationException e) {
-			fail("4.99", e);
-		}
+		it.next();
 	}
 
 }

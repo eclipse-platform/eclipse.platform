@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 
@@ -243,7 +244,11 @@ public class EnableBreakpointsAction implements IViewActionDelegate, IPartListen
 			return;
 		}
 		Runnable r = () -> {
-			IWorkbenchWindow ww = getView().getViewSite().getPage().getWorkbenchWindow();
+			IWorkbenchPage page = getView().getViewSite().getPage();
+			if (page == null) {
+				return;
+			}
+			IWorkbenchWindow ww = page.getWorkbenchWindow();
 			if (ww == null) {
 				return;
 			}

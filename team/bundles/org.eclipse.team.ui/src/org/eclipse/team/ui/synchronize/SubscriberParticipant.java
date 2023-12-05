@@ -524,7 +524,6 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		return scope;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IRefreshable.class && refreshSchedule != null) {

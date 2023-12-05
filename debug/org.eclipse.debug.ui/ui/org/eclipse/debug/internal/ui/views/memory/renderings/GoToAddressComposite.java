@@ -37,10 +37,6 @@ public class GoToAddressComposite {
 	private Combo fGoToCombo;
 	private Button fHexButton;
 
-	/**
-	 * @param parent
-	 * @return
-	 */
 	public Control createControl(Composite parent)
 	{
 		fComposite = new Composite(parent, SWT.NONE);

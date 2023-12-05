@@ -65,8 +65,6 @@ public class GroupLaunch extends Launch implements ILaunchesListener2 {
 
 	/**
 	 * Associate the launch
-	 *
-	 * @param subLaunch
 	 */
 	public void addSubLaunch(ILaunch subLaunch) {
 		synchronized (subLaunches) {
@@ -176,8 +174,6 @@ public class GroupLaunch extends Launch implements ILaunchesListener2 {
 
 	/**
 	 * Handle terminated sub-launch
-	 *
-	 * @param launch
 	 */
 	private void launchTerminated(ILaunch launch) {
 		if (this == launch) {

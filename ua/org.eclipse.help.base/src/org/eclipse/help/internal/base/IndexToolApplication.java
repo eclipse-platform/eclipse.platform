@@ -92,9 +92,6 @@ public class IndexToolApplication implements IApplication {
 
 	/**
 	 * Recursively deletes directory and files.
-	 *
-	 * @param file
-	 * @throws IOException
 	 */
 	private static void delete(File file) throws IOException {
 		if (file.isDirectory()) {
@@ -121,7 +118,6 @@ public class IndexToolApplication implements IApplication {
 	 *            ZipOutputStream
 	 * @param base
 	 *            directory prefix for file entries inside the zip or null
-	 * @throws IOException
 	 */
 	private static void zipDirectory(File dir, ZipOutputStream zout, String base)
 			throws IOException {

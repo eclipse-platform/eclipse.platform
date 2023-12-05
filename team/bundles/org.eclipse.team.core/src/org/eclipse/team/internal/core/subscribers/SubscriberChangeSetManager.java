@@ -287,7 +287,6 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 	 * from the subscriber.
 	 * @param resource the resource
 	 * @return the sync info for the resource
-	 * @throws CoreException
 	 */
 	@Override
 	public IDiff getDiff(IResource resource) throws CoreException {
@@ -335,7 +334,6 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 	/**
 	 * Wait until the collector is done processing any events.
 	 * This method is for testing purposes only.
-	 * @param monitor
 	 */
 	public void waitUntilDone(IProgressMonitor monitor) {
 		monitor.worked(1);

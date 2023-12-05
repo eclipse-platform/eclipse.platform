@@ -102,8 +102,6 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	 * Create an advisor that will allow viewer contributions with the given <code>targetID</code>. This
 	 * advisor will provide a presentation model based on the given sync info set. The model is disposed
 	 * when the viewer is disposed.
-	 *
-	 * @param configuration
 	 */
 	public StructuredViewerAdvisor(ISynchronizePageConfiguration configuration) {
 		super(configuration);

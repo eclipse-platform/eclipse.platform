@@ -19,9 +19,6 @@ public class HistoryEntry {
 	private final int type;
 	private final String target;
 	private final Object data;
-	/**
-	 *
-	 */
 	public HistoryEntry(int type, String target, Object data) {
 		this.type = type;
 		this.target = target;

@@ -26,7 +26,6 @@ import org.junit.Test;
 
 /**
  * Tests the tasks description provider.
- * 
  */
 @SuppressWarnings("restriction")
 public class TaskDescriptionProviderTest extends AbstractAntUITest {

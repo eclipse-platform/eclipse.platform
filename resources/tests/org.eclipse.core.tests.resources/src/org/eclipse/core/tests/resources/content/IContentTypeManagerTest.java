@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.content;
 
-import static org.eclipse.core.tests.resources.AutomatedResourceTests.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

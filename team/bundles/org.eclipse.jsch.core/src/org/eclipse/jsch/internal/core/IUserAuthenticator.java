@@ -130,7 +130,6 @@ public interface IUserAuthenticator{
 
   /**
    * The host key for the given location has changed.
-   * @param location
    * @return true if new host key should be accepted
    */
   public boolean promptForHostKeyChange(IJSchLocation location);

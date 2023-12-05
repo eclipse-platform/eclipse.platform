@@ -58,7 +58,6 @@ import org.eclipse.ui.ide.IDE;
  * </p>
  *
  * @since 3.3
- *
  */
 public class ApplyPatchOperation implements Runnable {
 
@@ -229,8 +228,7 @@ public class ApplyPatchOperation implements Runnable {
 
 	private static IFilePatch[] internalParsePatch(IStorage storage)
 			throws CoreException {
-		BufferedReader reader = Utilities.createReader(storage);
-		try {
+		try (BufferedReader reader = Utilities.createReader(storage)) {
 			PatchReader patchReader = new PatchReader() {
 				@Override
 				protected FilePatch2 createFileDiff(IPath oldPath, long oldDate,
@@ -251,11 +249,6 @@ public class ApplyPatchOperation implements Runnable {
 		} catch (IOException e) {
 			throw new CoreException(new Status(IStatus.ERROR,
 					CompareUIPlugin.PLUGIN_ID, 0, e.getMessage(), e));
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) { // ignored
-			}
 		}
 	}
 

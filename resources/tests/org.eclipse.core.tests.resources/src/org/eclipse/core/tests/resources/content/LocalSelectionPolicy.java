@@ -13,12 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.content;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager.ISelectionPolicy;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 
 /**
  * Selection policy that filters out any content types that do not
@@ -30,7 +31,8 @@ public class LocalSelectionPolicy implements ISelectionPolicy {
 		List<IContentType> result = new ArrayList<>(candidates.length);
 		for (IContentType candidate : candidates) {
 			String namespace = getNamespace(candidate.getId());
-			if (namespace.equals(AutomatedResourceTests.PI_RESOURCES_TESTS) || namespace.equals(Platform.PI_RUNTIME)) {
+			if (namespace.equals(PI_RESOURCES_TESTS)
+					|| namespace.equals(Platform.PI_RUNTIME)) {
 				result.add(candidate);
 			}
 		}

@@ -195,7 +195,6 @@ class ImplicitJobs {
 
 	/**
 	 * Implements IJobManager#resume(ISchedulingRule)
-	 * @param rule
 	 */
 	void resume(ISchedulingRule rule) {
 		//resume happens as a consequence of freeing the last rule in the stack
@@ -206,8 +205,6 @@ class ImplicitJobs {
 
 	/**
 	 * Implements IJobManager#suspend(ISchedulingRule, IProgressMonitor)
-	 * @param rule
-	 * @param monitor
 	 */
 	void suspend(ISchedulingRule rule, IProgressMonitor monitor) {
 		if (JobManager.DEBUG_BEGIN_END)

@@ -106,7 +106,6 @@ public class XmlProcessorFactory {
 	 * external entities. The builder is not thread safe.
 	 *
 	 * @return javax.xml.parsers.DocumentBuilder
-	 * @throws ParserConfigurationException
 	 */
 	public static synchronized DocumentBuilder createDocumentBuilderWithErrorOnDOCTYPE()
 			throws ParserConfigurationException {
@@ -118,7 +117,6 @@ public class XmlProcessorFactory {
 	 * remote DTDs. The builder is not thread safe.
 	 *
 	 * @return javax.xml.parsers.DocumentBuilder
-	 * @throws ParserConfigurationException
 	 */
 	public static synchronized DocumentBuilder createDocumentBuilderIgnoringDOCTYPE()
 			throws ParserConfigurationException {

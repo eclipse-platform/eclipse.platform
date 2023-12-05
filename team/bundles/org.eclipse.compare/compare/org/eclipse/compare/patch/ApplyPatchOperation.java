@@ -48,7 +48,6 @@ import org.eclipse.ui.ide.IDE;
  * any user supplied values, it will work in default mode.
  *
  * @since 3.3
- *
  */
 public class ApplyPatchOperation implements Runnable {
 

@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import java.io.ByteArrayInputStream;
 import junit.framework.Test;
 import org.eclipse.core.resources.ICommand;
@@ -21,7 +23,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -79,7 +80,7 @@ public class Test1G1N9GZ extends WorkspaceSerializationTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, Test1G1N9GZ.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, Test1G1N9GZ.class);
 	}
 
 }

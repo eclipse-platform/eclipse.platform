@@ -34,7 +34,6 @@ import org.eclipse.ui.progress.UIJob;
  * This update policy updates immediately after a model changed event.  The update policy will
  * only update if the rendering is visible.  Cache from the content manager is cleared
  * when the memory block has changed when the rendering is not visible
- *
  */
 public class AsyncTableRenderingUpdatePolicy extends TableUpdatePolicy
 {

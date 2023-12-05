@@ -25,9 +25,6 @@ public class FederatedSearchEntry {
 	private final ISearchEngine engine;
 	private final ISearchEngineResultCollector collector;
 
-	/**
-	 *
-	 */
 	public FederatedSearchEntry(String engineId, String engineName, ISearchScope scope, ISearchEngine engine, ISearchEngineResultCollector collector) {
 		this.engineId = engineId;
 		this.engineName = engineName;

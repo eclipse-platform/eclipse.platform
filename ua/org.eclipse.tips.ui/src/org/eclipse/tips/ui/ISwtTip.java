@@ -19,7 +19,6 @@ import org.eclipse.tips.core.Tip;
 /**
  * A decoration of {@link Tip} class that provides the opportunity to
  * create a rich SWT UI.
- *
  */
 public interface ISwtTip {
 

@@ -151,8 +151,6 @@ public class SourceLookupFacility implements IPageListener, IPartListener2, IPro
 	 */
 	/**
 	 * Returns the source lookup facility
-	 *
-	 * @return
 	 */
 	public static SourceLookupFacility getDefault() {
 		if (fgDefault == null) {

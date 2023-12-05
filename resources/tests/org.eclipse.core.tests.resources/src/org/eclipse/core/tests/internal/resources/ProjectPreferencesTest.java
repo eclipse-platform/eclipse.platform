@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -112,7 +113,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		}
 	}
 
-	public void testSimple() {
+	public void testSimple() throws CoreException {
 		IProject project = getProject("foo");
 		String qualifier = "org.eclipse.core.tests.resources";
 		String key = "key" + getUniqueString();
@@ -1059,7 +1060,6 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 * @param node the node to check
 	 * @param childrenNames the names of children to check
 	 * @return true, if the node and its children have no associated values
-	 * @throws BackingStoreException
 	 */
 	private boolean isNodeCleared(Preferences node, String[] childrenNames) throws BackingStoreException {
 		// check if the node has associate values

@@ -39,7 +39,6 @@ import org.eclipse.ui.texteditor.RetargetTextEditorAction;
 
 /**
  * Contributes interesting Ant Editor actions to the desktop's Edit menu and the toolbar.
- * 
  */
 public class AntEditorActionContributor extends TextEditorActionContributor {
 

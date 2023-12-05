@@ -80,7 +80,6 @@ import org.osgi.service.prefs.BackingStoreException;
  * Inside the file:
  * org.eclipse.tips.ide/disabled_providers=org.eclipse.tips.ide.internal.provider.TipsTipProvider,another.provider.id
  * </pre>
- *
  */
 @SuppressWarnings("restriction")
 public class TipsPreferences extends AbstractPreferenceInitializer {

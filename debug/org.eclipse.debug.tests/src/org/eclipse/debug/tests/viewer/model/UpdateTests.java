@@ -326,8 +326,6 @@ abstract public class UpdateTests extends AbstractViewerModelTest implements ITe
 	/**
 	 * This test forces the viewer to reschedule pending content updates due to
 	 * a remove event from the model.
-	 *
-	 * see org.eclipse.debug.internal.ui.viewers.model.TreeModelContentProvider#rescheduleUpdates
 	 */
 	@Test
 	public void testRescheduleUpdates() throws Exception {
@@ -537,8 +535,6 @@ abstract public class UpdateTests extends AbstractViewerModelTest implements ITe
 	 * <p>
 	 * See Bug 373790 - Debug view stays busy after Resume
 	 * </p>
-	 *
-	 * see org.eclipse.debug.internal.ui.viewers.model.TreeModelContentProvider#rescheduleUpdates
 	 */
 	@Test
 	public void testCancelUpdatesOnRemoveElementWhileUpdatingSubTree() throws Exception {

@@ -42,9 +42,7 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 	/**
 	 * Creates FileRevisionEditorInput on the given revision.
 	 * @param revision the file revision
-	 * @param monitor
 	 * @return a file revision editor input
-	 * @throws CoreException
 	 */
 	public static FileRevisionEditorInput createEditorInputFor(IFileRevision revision, IProgressMonitor monitor) throws CoreException {
 		IStorage storage = revision.getStorage(monitor);
@@ -191,7 +189,6 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IWorkbenchAdapter.class)
 			return (T) this;

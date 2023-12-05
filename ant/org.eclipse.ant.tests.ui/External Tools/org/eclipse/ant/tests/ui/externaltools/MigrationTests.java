@@ -37,8 +37,6 @@ public class MigrationTests extends AbstractExternalToolTest {
 
 	/**
 	 * Tests migration of arguments from an Eclipse 2.0 Ant buildfile configuration to a current launch configuration.
-	 * 
-	 * @throws CoreException
 	 */
 	@Test
 	public void test20AntMigration() throws CoreException {
@@ -64,8 +62,6 @@ public class MigrationTests extends AbstractExternalToolTest {
 
 	/**
 	 * Tests migration of arguments from an Eclipse 2.0 Ant buildfile configuration to a current launch configuration.
-	 * 
-	 * @throws CoreException
 	 */
 	@Test
 	public void test20ProgramMigration() throws CoreException {
@@ -84,8 +80,6 @@ public class MigrationTests extends AbstractExternalToolTest {
 
 	/**
 	 * Tests migration of arguments from an Eclipse 2.1 Ant buildfile configuration to a current launch configuration.
-	 * 
-	 * @throws CoreException
 	 */
 	@Test
 	public void test21AntMigration() throws CoreException {
@@ -113,8 +107,6 @@ public class MigrationTests extends AbstractExternalToolTest {
 
 	/**
 	 * Tests migration of arguments from an Eclipse 2.1 program configuration to a current launch configuration.
-	 * 
-	 * @throws CoreException
 	 */
 	@Test
 	public void test21ProgramMigration() throws CoreException {

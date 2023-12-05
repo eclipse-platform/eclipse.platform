@@ -32,9 +32,6 @@ public interface IMemoryViewPane {
 	/**
 	 * Create the view pane with the given parent composite, and pane id.
 	 *
-	 * @param parent
-	 * @param paneId
-	 * @param label
 	 * @return the control of the view pane
 	 */
 	Control createViewPane(Composite parent, String paneId, String label);
@@ -64,16 +61,12 @@ public interface IMemoryViewPane {
 	/**
 	 * Add the given selection listener to the view pane. The selection listener
 	 * gets notified when the selection from the view pane has changed.
-	 *
-	 * @param listener
 	 */
 	void addSelectionListener(ISelectionChangedListener listener);
 
 	/**
 	 * Remove the selection listener from the view pane. The listener will no
 	 * longer get notified when selection is changed.
-	 *
-	 * @param listener
 	 */
 	void removeSelctionListener(ISelectionChangedListener listener);
 

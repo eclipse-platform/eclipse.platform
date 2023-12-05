@@ -49,7 +49,6 @@ public interface IIntroXHTMLContentProvider extends IIntroContentProvider {
 	 * @param parent
 	 *            the parent xml Element where dynamic content will be added as
 	 *            children.
-	 *
 	 */
 	public void createContent(String id, Element parent);
 

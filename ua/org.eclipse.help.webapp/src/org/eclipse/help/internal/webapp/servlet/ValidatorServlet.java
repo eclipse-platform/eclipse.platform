@@ -53,7 +53,6 @@ import org.eclipse.help.internal.webapp.utils.Utils;
  * matches the URL passed here, it will finish the processing and return
  * results here for validation.  If there are no malicious threats detected,
  * this class will return the output to the client.
- *
  */
 public class ValidatorServlet extends HttpServlet {
 

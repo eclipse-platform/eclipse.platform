@@ -250,7 +250,6 @@ class ResourceTree implements IResourceTree {
 	/**
 	 * Returns the local timestamp for a file.
 	 *
-	 * @param file
 	 * @return The local file system timestamp
 	 */
 	private long internalComputeTimestamp(IFile file) {

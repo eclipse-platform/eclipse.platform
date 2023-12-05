@@ -56,7 +56,6 @@ public class AlwaysWelcomeCheckbox implements IIntroContentProvider,IIntroAction
 	 * @return String label for the checkbox
 	 *
 	 * @since 3.3
-	 *
 	 */
 	protected String getText()
 	{
@@ -135,7 +134,6 @@ public class AlwaysWelcomeCheckbox implements IIntroContentProvider,IIntroAction
 
 	/**
 	 * Method reverses preference ALWAYS_SHOW_INTRO due to checkbox selection change
-	 *
 	 */
 	private void reverseShowIntroState()
 	{

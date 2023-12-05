@@ -127,7 +127,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Returns the source folder with the given name in the given project.
 	 * 
-	 * @param project
 	 * @param name
 	 *            source folder name
 	 * @return package fragment root
@@ -358,7 +357,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 * @param bp
 	 *            the breakpoint that should cause a suspend event
 	 * @return thread in which the first suspend event occurred
-	 * @throws CoreException
 	 */
 	protected AntThread launchToLineBreakpoint(String buildFileName, ILineBreakpoint bp) throws CoreException {
 		ILaunchConfiguration config = getLaunchConfiguration(buildFileName);
@@ -375,7 +373,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 * @param bp
 	 *            the breakpoint that should cause a suspend event
 	 * @return thread in which the first suspend event occurred
-	 * @throws CoreException
 	 */
 	protected AntThread launchToLineBreakpoint(ILaunchConfiguration config, ILineBreakpoint bp) throws CoreException {
 		DebugEventWaiter waiter = new DebugElementKindEventDetailWaiter(DebugEvent.SUSPEND, AntThread.class, DebugEvent.BREAKPOINT);
@@ -437,7 +434,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 * @param resumeThread
 	 *            thread to resume
 	 * @return thread in which the first suspend event occurs
-	 * @throws CoreException
 	 */
 	protected AntThread resumeToLineBreakpoint(AntThread resumeThread, ILineBreakpoint bp) throws CoreException {
 		DebugEventWaiter waiter = new DebugElementKindEventDetailWaiter(DebugEvent.SUSPEND, AntThread.class, DebugEvent.BREAKPOINT);
@@ -520,7 +516,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 *            line number
 	 * @param file
 	 *            the build file
-	 * @throws CoreException
 	 */
 	protected AntLineBreakpoint createLineBreakpoint(int lineNumber, IFile file) throws CoreException {
 		return new AntLineBreakpoint(file, lineNumber);
@@ -609,7 +604,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 * 
 	 * @param frame
 	 *            stack frame to step in
-	 * @throws DebugException
 	 */
 	protected AntThread stepOver(AntStackFrame frame) throws DebugException {
 		org.eclipse.ant.tests.ui.testplugin.DebugEventWaiter waiter = new DebugElementKindEventDetailWaiter(DebugEvent.SUSPEND, AntThread.class, DebugEvent.STEP_END);
@@ -630,7 +624,6 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	 * 
 	 * @param frame
 	 *            stack frame to step in
-	 * @throws DebugException
 	 */
 	protected AntThread stepOverToHitBreakpoint(AntStackFrame frame) throws DebugException {
 		org.eclipse.ant.tests.ui.testplugin.DebugEventWaiter waiter = new DebugElementKindEventDetailWaiter(DebugEvent.SUSPEND, AntThread.class, DebugEvent.BREAKPOINT);

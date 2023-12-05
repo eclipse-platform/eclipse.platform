@@ -12,10 +12,6 @@
  *     wim.jongman@remainsoftware.com - initial API and implementation
  *******************************************************************************/
 /**
- *
- */
-/**
  * @author jongw
- *
  */
 package org.eclipse.tips.manual.tests;

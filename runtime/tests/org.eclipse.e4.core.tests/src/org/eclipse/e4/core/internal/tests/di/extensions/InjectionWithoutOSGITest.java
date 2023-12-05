@@ -32,7 +32,6 @@ import jakarta.inject.Named;
  * 513883
  *
  * @author jonas
- *
  */
 public class InjectionWithoutOSGITest {
 

@@ -118,7 +118,6 @@ public class FileSystemSubscriber extends ThreeWaySubscriber {
 	/**
 	 * Make the resource in-sync.
 	 * @param resource the resource
-	 * @throws TeamException
 	 */
 	public void makeInSync(IResource resource) throws TeamException {
 		ThreeWaySynchronizer synchronizer = getSynchronizer();
@@ -133,8 +132,6 @@ public class FileSystemSubscriber extends ThreeWaySubscriber {
 
 	/**
 	 * Make the change an outgoing change
-	 * @param resource
-	 * @throws TeamException
 	 */
 	public void markAsMerged(IResource resource, IProgressMonitor monitor) throws TeamException {
 		makeInSync(resource);

@@ -903,7 +903,6 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 	/**
 	 * update all actions independent of their type
-	 *
 	 */
 	public void updateActions() {
 		Iterator<IAction> e= fActions.values().iterator();
@@ -931,10 +930,6 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 	/**
 	 * specific implementation to support a vertical ruler
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
 	 */
 	public void setBounds (int x, int y, int width, int height) {
 		if(getSourceViewer().getControl() instanceof Composite){
@@ -946,7 +941,6 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 	/**
 	 * handle show/hide line numbers from editor preferences
-	 * @param event
 	 */
 	protected void handlePropertyChangeEvent(PropertyChangeEvent event) {
 

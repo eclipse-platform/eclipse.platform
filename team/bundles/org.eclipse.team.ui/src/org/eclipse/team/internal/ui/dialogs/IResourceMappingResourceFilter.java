@@ -30,7 +30,6 @@ public interface IResourceMappingResourceFilter {
 	 * @param mapping the mapping chiehc containes the resource
 	 * @param traversal the traversal from which the resource was obtained
 	 * @return whether the resource passes the filter
-	 * @throws CoreException
 	 */
 	boolean select(IResource resource, ResourceMapping mapping, ResourceTraversal traversal) throws CoreException;
 }

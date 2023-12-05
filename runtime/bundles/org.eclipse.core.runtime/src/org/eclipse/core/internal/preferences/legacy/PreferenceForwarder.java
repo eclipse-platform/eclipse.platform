@@ -825,8 +825,6 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 
 	/**
 	 * Flush the values of these plug-in preferences to disk.
-	 *
-	 * @throws BackingStoreException
 	 */
 	public void flush() throws BackingStoreException {
 		IEclipsePreferences node = getPluginPreferences(false);

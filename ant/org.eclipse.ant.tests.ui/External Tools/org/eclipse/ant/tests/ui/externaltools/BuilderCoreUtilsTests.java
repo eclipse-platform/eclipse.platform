@@ -55,8 +55,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * Tests the {@link BuilderCoreUtils#configFromBuildCommandArgs(org.eclipse.core.resources.IProject, java.util.Map, String[])} method. <br>
 	 * <br>
 	 * Tests the argument map missing the {@link BuilderCoreUtils#LAUNCH_CONFIG_HANDLE} attribute and all other config arguments
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigFromBuildCommandArgs1() throws Exception {
@@ -69,8 +67,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * Tests the {@link BuilderCoreUtils#configFromBuildCommandArgs(org.eclipse.core.resources.IProject, java.util.Map, String[])} method. <br>
 	 * <br>
 	 * Tests the argument map missing the {@link BuilderCoreUtils#LAUNCH_CONFIG_HANDLE} attribute only
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigFromBuildCommandArgs2() throws Exception {
@@ -83,8 +79,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * Tests the {@link BuilderCoreUtils#configFromBuildCommandArgs(org.eclipse.core.resources.IProject, java.util.Map, String[])} method. <br>
 	 * <br>
 	 * Tests the argument map with an invalid {@link BuilderCoreUtils#LAUNCH_CONFIG_HANDLE} attribute
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigFromBuildCommandArgs3() throws Exception {
@@ -99,8 +93,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * <br>
 	 * Tests the argument map with a valid {@link BuilderCoreUtils#LAUNCH_CONFIG_HANDLE} attribute with no project prefix, but does include the
 	 * .externalToolBuilders dir name - causes a lookup in the launch manager which fails because of the extra path prefix
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigFromBuildCommandArgs4() throws Exception {
@@ -116,8 +108,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * <br>
 	 * Tests the argument map with a valid {@link BuilderCoreUtils#LAUNCH_CONFIG_HANDLE} attribute with no project prefix - causes a lookup in the
 	 * launch manager returns the config
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigFromBuildCommandArgs5() throws Exception {
@@ -133,8 +123,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * <br>
 	 * Tests the argument map with a valid {@link BuilderCoreUtils#LAUNCH_CONFIG_HANDLE} attribute with the project prefix but not including the
 	 * .externalToolBuilder path segment
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigFromBuildCommandArgs6() throws Exception {
@@ -149,8 +137,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * Tests the {@link BuilderCoreUtils#configFromBuildCommandArgs(org.eclipse.core.resources.IProject, java.util.Map, String[])} method. <br>
 	 * <br>
 	 * Tests the argument map with a valid {@link BuilderCoreUtils#LAUNCH_CONFIG_HANDLE} attribute with the project prefix and a valid config path
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigFromBuildCommandArgs7() throws Exception {
@@ -166,8 +152,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * <br>
 	 * <br>
 	 * Tests that the triggers are configured for a full build of the default target after a clean
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigureTriggers1() throws Exception {
@@ -189,8 +173,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * <br>
 	 * <br>
 	 * Tests that the triggers are configured for a full build of a specific targets 'def' and 'clean'
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigureTriggers2() throws Exception {
@@ -214,8 +196,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * Tests that the triggers are configured for an incremental AND full build with default targets <br>
 	 * <br>
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=114563
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigureTriggers3() throws Exception {
@@ -240,8 +220,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * Tests that the triggers are configured for an incremental AND full build with the targets 'def' and 'inc' <br>
 	 * <br>
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=114563
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigureTriggers4() throws Exception {
@@ -264,8 +242,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * <br>
 	 * <br>
 	 * Tests that the triggers are configured for an auto build
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigureTriggers5() throws Exception {
@@ -287,8 +263,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * <br>
 	 * <br>
 	 * Tests that the triggers are configured for an auto build with the targets 'def' and 'auto'
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigureTriggers6() throws Exception {
@@ -310,8 +284,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * <br>
 	 * <br>
 	 * Tests that the triggers are configured for a clean build
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigureTriggers7() throws Exception {
@@ -333,8 +305,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * <br>
 	 * <br>
 	 * Tests that the triggers are configured for a clean build with the targets 'def' and 'clean'
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigureTriggers8() throws Exception {
@@ -357,8 +327,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * <br>
 	 * Tests that the triggers are configured for a full + incremental build with the targets 'def' and 'inc' specified for after clean targets and
 	 * manual targets respectively
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigureTriggers9() throws Exception {
@@ -384,8 +352,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * <br>
 	 * Tests that the triggers are configured for a full + incremental build with the targets 'def' and 'inc' specified for after clean targets and
 	 * manual targets respectively
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testConfigureTriggers10() throws Exception {
@@ -414,8 +380,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 
 	/**
 	 * Tests the {@link BuilderCoreUtils#isUnmigratedConfig(org.eclipse.debug.core.ILaunchConfiguration)} method
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testIsUnmigratedConfig1() throws Exception {
@@ -430,8 +394,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 
 	/**
 	 * Tests the {@link BuilderCoreUtils#isUnmigratedConfig(org.eclipse.debug.core.ILaunchConfiguration)} method
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testIsUnmigratedConfig2() throws Exception {
@@ -445,8 +407,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * method <br>
 	 * <br>
 	 * Tests the case of a new un-saved {@link ILaunchConfiguration}
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testToBuildCommand1() throws Exception {
@@ -461,8 +421,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * method <br>
 	 * <br>
 	 * Tests the case of an existing configuration
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testToBuildCommand2() throws Exception {
@@ -478,8 +436,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 	 * method <br>
 	 * <br>
 	 * Tests the case of the working copy of an existing configuration
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testToBuildCommand3() throws Exception {
@@ -491,8 +447,6 @@ public class BuilderCoreUtilsTests extends AbstractExternalToolTest {
 
 	/**
 	 * Tests the {@link BuilderCoreUtils#buildTypesToArray(String)} method
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testBuildTypesToArray1() throws Exception {

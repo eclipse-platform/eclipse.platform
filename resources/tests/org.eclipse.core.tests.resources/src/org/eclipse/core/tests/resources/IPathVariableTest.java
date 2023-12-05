@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.BufferedWriter;
@@ -284,8 +285,6 @@ public class IPathVariableTest extends ResourceTest {
 		assertEquals("1.0", expected, actual);
 	}
 
-	/**
-	 */
 	public void testProjectLoc() {
 		IPath path = IPath.fromOSString("${PROJECT_LOC}/bar");
 		IPath projectLocation = project.getLocation();
@@ -295,8 +294,6 @@ public class IPathVariableTest extends ResourceTest {
 		assertEquals("1.0", expected, actual);
 	}
 
-	/**
-	 */
 	public void testEclipseHome() {
 		IPath path = IPath.fromOSString("${ECLIPSE_HOME}/bar");
 		IPath expected = IPath.fromOSString(Platform.getInstallLocation().getURL().getPath()).append("bar");
@@ -304,8 +301,6 @@ public class IPathVariableTest extends ResourceTest {
 		assertEquals("1.0", expected, actual);
 	}
 
-	/**
-	 */
 	public void testWorkspaceLocation() {
 		IPath path = IPath.fromOSString("${WORKSPACE_LOC}/bar");
 		IPath expected = project.getWorkspace().getRoot().getLocation().append("bar");
@@ -615,7 +610,7 @@ public class IPathVariableTest extends ResourceTest {
 	 * attempting to get the location of a resource that would live under an
 	 * existing IFile.
 	 */
-	public void testDiscoverLocationOfInvalidFile() {
+	public void testDiscoverLocationOfInvalidFile() throws CoreException {
 		IPath filep = IPath.fromOSString("someFile");
 		IPath invalidChild = filep.append("invalidChild");
 

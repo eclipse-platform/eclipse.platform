@@ -172,8 +172,6 @@ public class SampleDebugTarget extends DebugElement implements IDebugTarget, IMe
 
 	/**
 	 * Remove the memory block from this debug session.
-	 *
-	 * @param memBlk
 	 */
 	public void removeMemoryBlock(IMemoryBlock memBlk) {
 		fMemoryBlocks.remove(memBlk);

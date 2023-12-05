@@ -16,16 +16,11 @@ package org.eclipse.debug.internal.ui.viewers;
 
 /**
  * @since 3.2
- *
  */
 public class TableAddRequestMonitor extends AsynchronousRequestMonitor {
 
 	protected Object[] fElements;
 
-	/**
-	 * @param node
-	 * @param model
-	 */
 	TableAddRequestMonitor(ModelNode parent, Object elements[], AsynchronousModel model) {
 		super(parent, model);
 		fElements = elements;

@@ -85,7 +85,6 @@ public class CheatSheetManager implements ICheatSheetManager {
 	/**
 	 * Similar to get data except that if the key is prefixed with "parent."
 	 * get the data from the parent
-	 * @param qualifiedKey
 	 * @return The data for this key
 	 */
 	public String getDataQualified(String qualifiedKey) {
@@ -176,7 +175,6 @@ public class CheatSheetManager implements ICheatSheetManager {
 
 	/**
 	 * Add a listener for cheatsheet events
-	 * @param listener
 	 */
 	public void addListener(CheatSheetListener listener) {
 		if (listener != null) {

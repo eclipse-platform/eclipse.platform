@@ -34,8 +34,6 @@ public class ProxyBypass {
 
 	/**
 	 * Create a ProxyBypass instance from the proxy bypass list string.
-	 *
-	 * @param proxyBypass
 	 */
 	public ProxyBypass(String proxyBypass) {
 		this.proxyBypass = proxyBypass != null ? proxyBypass : ""; //$NON-NLS-1$
@@ -51,7 +49,6 @@ public class ProxyBypass {
 	/**
 	 * Check whether the given uri should bypass the proxy.
 	 *
-	 * @param uri
 	 * @return true if the the uri should bypass the proxy; otherwise false
 	 */
 	public boolean bypassProxyFor(URI uri) {
@@ -62,11 +59,6 @@ public class ProxyBypass {
 				|| isInBypassList(host);
 	}
 
-	/**
-	 * @param proxyBypass
-	 * @param uri
-	 * @return
-	 */
 	private boolean isInBypassList(String host) {
 		for (String entry : proxyBypassEntries) {
 			if (StringUtil.hostMatchesFilter(host, entry)) {
@@ -76,18 +68,10 @@ public class ProxyBypass {
 		return false;
 	}
 
-	/**
-	 * @param uri
-	 * @return
-	 */
 	private static boolean isLocal(String host) {
 		return !host.contains("."); //$NON-NLS-1$
 	}
 
-	/**
-	 * @param addressListString
-	 * @return
-	 */
 	private static boolean isBypassLocalAddresses(String proxyBypass) {
 		return proxyBypass.contains(BYPASS_LOCAL_ADDESSES_TOKEN);
 	}

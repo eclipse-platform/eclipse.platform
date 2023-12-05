@@ -20,7 +20,6 @@ import org.eclipse.osgi.util.NLS;
  * Helper class to get NLSed messages.
  *
  * @since 3.20
- *
  */
 public final class ResourceSnapshotMessages extends NLS {
 

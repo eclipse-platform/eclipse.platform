@@ -13,9 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.IBuildContext;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -53,16 +59,13 @@ public class ContextBuilder extends TestBuilder {
 		return getBuilder(variant).contextForLastBuild;
 	}
 
-	public static boolean checkValid() {
+	public static void assertValid() {
 		for (ContextBuilder builder : builders.values()) {
-			if (builder.getRuleCalledForLastBuild && !builder.contextForLastBuild.equals(builder.contextForLastBuildInGetRule)) {
-				return false;
-			}
-			if (builder.getRuleCalledForLastBuild && !builder.buildConfigurationForLastBuild.equals(builder.buildConfigurationForLastBuildInGetRule)) {
-				return false;
+			if (builder.getRuleCalledForLastBuild) {
+				assertThat(builder.contextForLastBuild, is(builder.contextForLastBuildInGetRule));
+				assertThat(builder.buildConfigurationForLastBuild, is(builder.buildConfigurationForLastBuildInGetRule));
 			}
 		}
-		return true;
 	}
 
 	public static void clearStats() {

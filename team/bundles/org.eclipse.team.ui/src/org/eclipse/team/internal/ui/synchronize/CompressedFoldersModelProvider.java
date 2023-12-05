@@ -199,7 +199,6 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 	 * Update the viewer for the sync set additions in the provided event.
 	 * This method is invoked by <code>handleChanges(ISyncInfoSetChangeEvent)</code>.
 	 * Subclasses may override.
-	 * @param event
 	 */
 	@Override
 	protected void handleResourceAdditions(ISyncInfoTreeChangeEvent event) {

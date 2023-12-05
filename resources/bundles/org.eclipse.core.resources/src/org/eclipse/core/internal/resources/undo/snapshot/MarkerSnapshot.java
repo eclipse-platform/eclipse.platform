@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.CoreException;
  * This class is not intended to be instantiated or used by clients.
  *
  * @since 3.20
- *
  */
 public class MarkerSnapshot implements IMarkerSnapshot {
 	String type;
@@ -42,7 +41,6 @@ public class MarkerSnapshot implements IMarkerSnapshot {
 	 * Create a marker snapshot from the specified marker.
 	 *
 	 * @param marker the marker to be described
-	 * @throws CoreException
 	 */
 	public MarkerSnapshot(IMarker marker) throws CoreException {
 		this.type = marker.getType();
@@ -69,7 +67,6 @@ public class MarkerSnapshot implements IMarkerSnapshot {
 	 * Create a marker from the marker description.
 	 *
 	 * @return the created marker
-	 * @throws CoreException
 	 */
 	@Override
 	public IMarker createMarker() throws CoreException {
@@ -83,7 +80,6 @@ public class MarkerSnapshot implements IMarkerSnapshot {
 	 *
 	 * @param marker
 	 *            the marker to be updated
-	 * @throws CoreException
 	 */
 	@Override
 	public void updateMarker(IMarker marker) throws CoreException {

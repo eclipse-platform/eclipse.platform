@@ -173,9 +173,6 @@ public class BaseExtensionPointManager {
 	/**
 	 * Add a model to the cache. This method is private because only this
 	 * manager class knows how to load an intro model.
-	 *
-	 * @param modelId
-	 * @param model
 	 */
 	protected void addCachedModel(String modelId, IntroModelRoot model) {
 		introModels.put(modelId, model);
@@ -183,8 +180,6 @@ public class BaseExtensionPointManager {
 
 	/**
 	 * Gets the given model from the cache.
-	 *
-	 * @param configId
 	 */
 	protected IntroModelRoot getCachedModel(String configId) {
 		return introModels.get(configId);
@@ -195,9 +190,6 @@ public class BaseExtensionPointManager {
 	 * with an attribute of the given value. If there is more than one
 	 * configuration element that maps to the attribute value log the fact, and
 	 * return the first one. If there are non, return null.
-	 *
-	 * @param configElements
-	 * @return
 	 */
 	protected IConfigurationElement getConfigurationFromAttribute(
 			IConfigurationElement[] configElements, String attributeName,

@@ -32,7 +32,6 @@ public class CommonMenuManager extends MenuManager {
 
 	/**
 	 * Clear are the handlers registered with this manager.
-	 *
 	 */
 	public void clearHandlers() {
 		handlers.clear();

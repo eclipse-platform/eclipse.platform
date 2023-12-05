@@ -147,7 +147,6 @@ public class FileSystemTableProvider {
 
 		/**
 		 * The constructor.
-		 * @param columnNumber
 		 */
 		public HistoryComparator(int columnNumber) {
 			this.columnNumber = columnNumber;
@@ -217,7 +216,6 @@ public class FileSystemTableProvider {
 
 		/**
 		 * Sets the sorting order.
-		 * @param newReversed
 		 */
 		public void setReversed(boolean newReversed) {
 			reversed = newReversed;

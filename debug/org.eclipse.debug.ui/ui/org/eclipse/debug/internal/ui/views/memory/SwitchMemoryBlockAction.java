@@ -302,9 +302,6 @@ public class SwitchMemoryBlockAction extends Action implements IViewActionDelega
 		}
 	}
 
-	/**
-	 * @param memoryBlocks
-	 */
 	private void doSwitchToNext(IMemoryBlock[] memoryBlocks) {
 		// only run if there is more than one memory block
 		if (memoryBlocks.length > 1) {
@@ -380,8 +377,6 @@ public class SwitchMemoryBlockAction extends Action implements IViewActionDelega
 	/**
 	 * Decorate the label for the specified <code>IMemoryBlock</code>
 	 *
-	 * @param memBlk
-	 * @param label
 	 * @return the decorated label for the specified <code>IMemoryBlock</code>
 	 */
 	private String decorateLabel(final IMemoryBlock memBlk, String label) {

@@ -15,11 +15,13 @@ package org.eclipse.debug.ui.actions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.IEvaluationContext;
@@ -280,9 +282,12 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 			}
 		}
 		// now add collected launches
+		Set<ILaunchConfiguration> added = new HashSet<>();
 		for (Entry<LaunchShortcutExtension, ILaunchConfiguration[]> entry : launchConfigurations.entrySet()) {
 			for (ILaunchConfiguration configuration : entry.getValue()) {
-				populateMenuItem(fMode, entry.getKey(), menu, configuration, accelerator++, null);
+				if (added.add(configuration)) {
+					populateMenuItem(fMode, entry.getKey(), menu, configuration, accelerator++, null);
+				}
 			}
 		}
 
@@ -308,7 +313,6 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 	 * @param mode          the id of the mode
 	 * @param ext           the extension to get label and help info from
 	 * @param menu          the menu to add to
-	 * @param configuration
 	 * @param accelerator   the accelerator to use with the new menu item, <code>-1</code> to skip
 	 * @param indent an optional string to add as indentation before the label
 	 */

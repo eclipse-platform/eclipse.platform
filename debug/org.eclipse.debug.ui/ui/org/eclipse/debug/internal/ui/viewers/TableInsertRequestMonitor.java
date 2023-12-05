@@ -16,16 +16,11 @@ package org.eclipse.debug.internal.ui.viewers;
 
 /**
  * @since 3.2
- *
  */
 public class TableInsertRequestMonitor extends TableAddRequestMonitor {
 
 	private final int fIndex;
 
-	/**
-	 * @param node
-	 * @param model
-	 */
 	TableInsertRequestMonitor(ModelNode parent, Object elements[], int index, AsynchronousModel model) {
 		super(parent, elements, model);
 		fIndex = index;

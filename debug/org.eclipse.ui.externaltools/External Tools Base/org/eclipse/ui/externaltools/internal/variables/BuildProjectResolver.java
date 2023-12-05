@@ -47,7 +47,6 @@ public class BuildProjectResolver implements IDynamicVariableResolver {
 	 *
 	 * @param message exception message
 	 * @param exception underlying exception or <code>null</code>
-	 * @throws CoreException
 	 */
 	protected void abort(String message, Throwable exception) throws CoreException {
 		throw new CoreException(new Status(IStatus.ERROR, ExternalToolsPlugin.PLUGIN_ID, IExternalToolConstants.ERR_INTERNAL_ERROR, message, exception));

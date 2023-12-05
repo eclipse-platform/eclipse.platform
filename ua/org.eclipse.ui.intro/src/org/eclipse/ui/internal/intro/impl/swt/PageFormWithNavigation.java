@@ -42,9 +42,6 @@ public class PageFormWithNavigation extends PageForm {
 	public static String PAGE_FORM_WITH_NAVIGATION_ID = "pageFormWithNavigationId"; //$NON-NLS-1$
 
 
-	/**
-	 *
-	 */
 	public PageFormWithNavigation(FormToolkit toolkit,
 			IntroModelRoot modelRoot, Form parentForm) {
 		super(toolkit, modelRoot, parentForm);
@@ -101,9 +98,6 @@ public class PageFormWithNavigation extends PageForm {
 
 	/**
 	 * Creates an Image Hyperlink from an IntroLink. Model object is NOT cached.
-	 *
-	 * @param body
-	 * @param link
 	 */
 	private Control createImageHyperlink(Composite body, IntroLink link) {
 		ImageHyperlink imageLink = toolkit.createImageHyperlink(body, SWT.NULL);

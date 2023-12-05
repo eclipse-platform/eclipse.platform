@@ -35,7 +35,6 @@ public final class HTMLUtil {
 	 * @param insertLineBreak
 	 *            true to insert a line break after the start tag is closed,
 	 *            false otherwise
-	 * @return
 	 */
 	public static StringBuilder createHTMLStartTag(String elementName,
 			Map elementAttributes, boolean insertLineBreak) {
@@ -63,7 +62,6 @@ public final class HTMLUtil {
 	 *            the name of the element to create
 	 * @param insertLineBreak
 	 *            true to insert a new line after the start tag
-	 * @return
 	 */
 	public static StringBuilder createHTMLStartTag(String elementName,
 			boolean insertLineBreak) {
@@ -79,7 +77,6 @@ public final class HTMLUtil {
 	 *
 	 * @param elementName
 	 *            the name of the element to create
-	 * @return
 	 */
 	public static StringBuilder createHTMLStartTag(String elementName) {
 		return createHTMLStartTag(elementName, null, true);
@@ -95,7 +92,6 @@ public final class HTMLUtil {
 	 *            the name of the closing element to create
 	 * @param addNewLine
 	 *            true to add a new line at the end
-	 * @return
 	 */
 	public static StringBuilder createHTMLEndTag(String elementName,
 			boolean addNewLine) {
@@ -114,7 +110,6 @@ public final class HTMLUtil {
 	 *
 	 * @param attributes
 	 *            the attributes to be converted into a String list
-	 * @return
 	 */
 	public static String createAttributeList(Map attributes) {
 		if (attributes == null)
@@ -142,7 +137,6 @@ public final class HTMLUtil {
 	 *            the name of the attribute
 	 * @param attrValue
 	 *            the value of the attribute
-	 * @return
 	 */
 	public static StringBuilder createAttribute(String attrName, String attrValue) {
 		StringBuilder attribute = new StringBuilder();
@@ -173,10 +167,6 @@ public final class HTMLUtil {
 
 	/**
 	 * Determine if the contents of two character arrays are equal
-	 *
-	 * @param a
-	 * @param b
-	 * @return
 	 */
 	public static boolean equalCharArrayContent(char[] a, char[] b) {
 		if (a.length != b.length)

@@ -137,8 +137,6 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 
 	/**
 	 * Returns the SAXParser to use when parsing project description files.
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
 	 */
 	private static synchronized SAXParser createParser(Workspace workspace)
 			throws ParserConfigurationException, SAXException {
@@ -153,7 +151,6 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 
 	/**
 	 * Returns the SAXParserFactory to use when parsing project description files.
-	 * @throws ParserConfigurationException
 	 */
 	private static synchronized SAXParserFactory createParserFactory() throws ParserConfigurationException {
 		if (singletonParserFactory == null) {
@@ -625,7 +622,6 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 	/**
 	 * For backwards compatibility, link locations in the local file system are represented
 	 * in the project description under the "location" tag.
-	 * @param elementName
 	 */
 	private void endLinkLocation(String elementName) {
 		if (elementName.equals(LOCATION)) {
@@ -646,7 +642,6 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 	/**
 	 * Link locations that are not stored in the local file system are represented
 	 * in the project description under the "locationURI" tag.
-	 * @param elementName
 	 */
 	private void endLinkLocationURI(String elementName) {
 		if (elementName.equals(LOCATION_URI)) {

@@ -187,8 +187,6 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 * Return the new provider instance. If a TeamException is thrown, it is
 	 * guaranteed that the session property will not be set.
 	 *
-	 * @param project
-	 * @param id
 	 * @return RepositoryProvider
 	 * @throws TeamException we can't instantiate the provider, or if the set
 	 * session property fails from core

@@ -176,7 +176,6 @@ public class ScopeUtils {
 	/**
 	 * Filter out any disabled entries from an array
 	 * @param entries an array of entries
-	 * @param scope
 	 * @return an array containing only those entries which are enabled
 	 */
 	public static IIndexEntry[] inScopeEntries(IIndexEntry[] entries, AbstractHelpScope scope) {
@@ -197,7 +196,6 @@ public class ScopeUtils {
 	/**
 	 * Filter out any disabled topics from an array
 	 * @param topics an array of topics
-	 * @param scope
 	 * @return an array containing only those topics which are enabled
 	 */
 	public static ITopic[] inScopeTopics(ITopic[] topics, AbstractHelpScope scope) {

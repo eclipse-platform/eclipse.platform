@@ -59,7 +59,6 @@ public interface IResourceDiffTree extends IDiffTree {
 	 * Visit all diffs in this tree that are covered by the given traversals.
 	 * @param traversals the set of traversals whose diffs are to be visited
 	 * @param visitor a diff visitor
-	 *
 	 */
 	void accept(ResourceTraversal[] traversals, IDiffVisitor visitor);
 

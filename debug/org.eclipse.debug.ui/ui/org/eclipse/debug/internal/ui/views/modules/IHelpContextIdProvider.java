@@ -24,7 +24,6 @@ package org.eclipse.debug.internal.ui.views.modules;
  * is not returned, then the view will use the default help context id.
  *
  * This is provided until Bug 216834 is fixed.
- *
  */
 public interface IHelpContextIdProvider {
 

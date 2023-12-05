@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 

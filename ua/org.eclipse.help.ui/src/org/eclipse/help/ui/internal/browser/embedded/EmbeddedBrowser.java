@@ -191,7 +191,6 @@ public class EmbeddedBrowser {
 	 * Constructor for derived help window It is either secondary browser or a
 	 * help dialog
 	 *
-	 * @param event
 	 * @param parent
 	 *            Shell or null
 	 */

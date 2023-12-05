@@ -253,9 +253,6 @@ public class BuildCommand extends ModelObject implements ICommand {
 	 *
 	 * Does nothing if a builder was already added for the specified configuration,
 	 * or if a builder was added and this builder does not support multiple configurations.
-	 *
-	 * @param config
-	 * @param newBuilder
 	 */
 	public void addBuilder(IBuildConfiguration config, IncrementalProjectBuilder newBuilder) {
 		synchronized (builderLock) {

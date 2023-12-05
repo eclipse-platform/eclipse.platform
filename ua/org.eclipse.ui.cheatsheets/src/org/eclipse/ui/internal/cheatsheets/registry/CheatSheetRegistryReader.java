@@ -402,7 +402,6 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 	 *	based upon its defining extension's CATEGORY tag value
 	 *
 	 *	@param element CheatSheetElement
-	 *	@param extension
 	 *	@param currentResult CheatSheetCollectionElement
 	 */
 	private void finishCheatSheet(CheatSheetElement element, IConfigurationElement config, CheatSheetCollectionElement result) {

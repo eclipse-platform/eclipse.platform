@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.SubProgressMonitor;
  * The number of totalWork that can actually be worked is n*totalWork/2 where
  * 2^n = totalWork. What this means is that if you provide a totalWork of 32 (2^5) than
  * the maximum number of ticks is 5*32/2 = 80.
- *
  */
 public class InfiniteSubProgressMonitor extends SubProgressMonitor {
 
@@ -38,8 +37,6 @@ public class InfiniteSubProgressMonitor extends SubProgressMonitor {
 
 	/**
 	 * Constructor for InfiniteSubProgressMonitor.
-	 * @param monitor
-	 * @param ticks
 	 */
 	public InfiniteSubProgressMonitor(IProgressMonitor monitor, int ticks) {
 		this(monitor, ticks, 0);
@@ -47,9 +44,6 @@ public class InfiniteSubProgressMonitor extends SubProgressMonitor {
 
 	/**
 	 * Constructor for InfiniteSubProgressMonitor.
-	 * @param monitor
-	 * @param ticks
-	 * @param style
 	 */
 	public InfiniteSubProgressMonitor(IProgressMonitor monitor, int ticks, int style) {
 		super(monitor, ticks, style);

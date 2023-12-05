@@ -26,7 +26,6 @@ public class LaunchDelegateContribution implements IPluginContribution {
 
 	/**
 	 * Constructor
-	 * @param delegate
 	 */
 	public LaunchDelegateContribution(ILaunchDelegate delegate) {
 		fDelegate = delegate;

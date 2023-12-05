@@ -44,7 +44,6 @@ public class AntImageDescriptor extends CompositeImageDescriptor {
 	 *            an image descriptor used as the base image
 	 * @param flags
 	 *            flags indicating which adornments are to be rendered
-	 * 
 	 */
 	public AntImageDescriptor(ImageDescriptor baseImage, int flags) {
 		setBaseImage(baseImage);

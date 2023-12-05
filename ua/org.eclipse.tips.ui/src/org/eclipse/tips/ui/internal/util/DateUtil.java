@@ -19,7 +19,6 @@ import java.util.Date;
 
 /**
  * Date utilities.
- *
  */
 public class DateUtil {
 

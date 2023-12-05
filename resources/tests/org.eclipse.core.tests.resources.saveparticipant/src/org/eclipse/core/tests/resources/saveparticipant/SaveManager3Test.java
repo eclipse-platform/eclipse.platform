@@ -23,6 +23,7 @@ import org.eclipse.core.tests.resources.saveparticipant1.SaveParticipant1Plugin;
 import org.eclipse.core.tests.resources.saveparticipant2.SaveParticipant2Plugin;
 import org.eclipse.core.tests.resources.saveparticipant3.SaveParticipant3Plugin;
 import org.osgi.framework.Bundle;
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 
 /**
  * @see SaveManager1Test

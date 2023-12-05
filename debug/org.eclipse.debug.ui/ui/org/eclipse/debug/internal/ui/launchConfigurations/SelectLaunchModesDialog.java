@@ -73,8 +73,6 @@ public class SelectLaunchModesDialog extends AbstractDebugListSelectionDialog{
 	 * @param parentShell the parent shell
 	 * @param mode the current mode context
 	 * @param configuration the current launch configuration context
-	 *
-	 * @throws CoreException
 	 */
 	public SelectLaunchModesDialog(Shell parentShell, String mode, ILaunchConfiguration configuration) throws CoreException {
 		super(parentShell);

@@ -58,8 +58,6 @@ public class FindSupport {
 	 * returned if more than one entry matches the path in the host and
 	 * any of its fragments.
 	 *
-	 * @param bundle
-	 * @param path
 	 * @return an array of entries which match the given path.  An empty
 	 * array is returned if no matches are found.
 	 */
@@ -72,9 +70,6 @@ public class FindSupport {
 	 * entries can be returned if more than one entry matches the path in the host and any of its
 	 * fragments.
 	 *
-	 * @param bundle
-	 * @param path
-	 * @param override
 	 * @return an array of entries which match the given path. An empty array is returned if no
 	 *         matches are found.
 	 */

@@ -27,8 +27,6 @@ public class NotifyingReconciler extends MonoReconciler {
 
 	/**
 	 * Constructor for NotifyingReconciler.
-	 * 
-	 * @param strategy
 	 */
 	public NotifyingReconciler(IReconcilingStrategy strategy) {
 		super(strategy, false);

@@ -106,8 +106,6 @@ public class EmbeddedBrowserAdapter implements IBrowser, IBrowserCloseListener{
 	}
 	/**
 	 * Must be run on UI thread
-	 *
-	 * @param url
 	 */
 	private void uiDisplayURL(final String url) {
 		getBrowser().displayUrl(url);
@@ -133,9 +131,6 @@ public class EmbeddedBrowserAdapter implements IBrowser, IBrowserCloseListener{
 			secondThread=null;
 		}
 	}
-	/**
-	 *
-	 */
 	private EmbeddedBrowser getBrowser() {
 		if (browser == null || browser.isDisposed()) {
 			browser = new EmbeddedBrowser();

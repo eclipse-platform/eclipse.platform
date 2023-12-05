@@ -41,7 +41,6 @@ public class LaunchHistoryTests extends AbstractLaunchTest {
 
 	/**
 	 * Returns the run launch history
-	 * @return
 	 */
 	private LaunchHistory getRunLaunchHistory() {
 		return getLaunchConfigurationManager().getLaunchHistory(IDebugUIConstants.ID_RUN_LAUNCH_GROUP);
@@ -65,7 +64,6 @@ public class LaunchHistoryTests extends AbstractLaunchTest {
 
 	/**
 	 * Returns the debug launch history
-	 * @return
 	 */
 	private LaunchHistory getDebugLaunchHistory() {
 		return getLaunchConfigurationManager().getLaunchHistory(IDebugUIConstants.ID_DEBUG_LAUNCH_GROUP);

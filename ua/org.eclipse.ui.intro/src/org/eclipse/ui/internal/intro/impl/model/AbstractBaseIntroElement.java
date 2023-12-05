@@ -54,7 +54,6 @@ public abstract class AbstractBaseIntroElement extends AbstractIntroIdElement {
 
 	/**
 	 * Filter this element out based on the presentation kind.
-	 *
 	 */
 	private boolean checkFilterState() {
 		if (this.isOfType(AbstractIntroElement.MODEL_ROOT))

@@ -201,8 +201,6 @@ public abstract class ChangeSetManager {
 
 	/**
 	 * Fire resource change notifications to the listeners.
-	 * @param changeSet
-	 * @param allAffectedResources
 	 */
 	protected void fireResourcesChangedEvent(final ChangeSet changeSet, final IPath[] allAffectedResources) {
 		if (initializing)

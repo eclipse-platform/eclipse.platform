@@ -99,7 +99,6 @@ public class ResourceExtender extends PropertyTester {
 	 *
 	 * @param type content type or <code>null</code>
 	 * @param typeId content type identifier
-	 * @return
 	 */
 	private boolean matchesContentType(IContentType type, String typeId) {
 		while (type != null) {

@@ -32,8 +32,6 @@ public class Bug_307391 extends AbstractJobManagerTest {
 	 * Trips assertion:
 	 * java.lang.IllegalArgumentException: Cannot yieldRule job that is YIELDING
 	 * 		in JobManager#yieldRule
-	 *
-	 * @throws Exception
 	 */
 	public void testYieldWithlockAcquire() throws Exception {
 		final IdentityRule idSchedRule = new IdentityRule();

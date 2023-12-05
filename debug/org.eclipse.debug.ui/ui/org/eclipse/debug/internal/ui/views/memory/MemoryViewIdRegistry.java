@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 /**
  * Class for managing the secondary ids for Memory View
- *
  */
 public class MemoryViewIdRegistry {
 

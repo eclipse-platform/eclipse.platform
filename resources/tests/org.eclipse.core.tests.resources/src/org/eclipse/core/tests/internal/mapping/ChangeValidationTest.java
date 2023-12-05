@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.mapping;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.IFile;

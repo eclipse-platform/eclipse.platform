@@ -59,7 +59,6 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 
 	/**
 	 * Restore REVEAL on simple model with elements without children.
-	 *
 	 */
 	@Test
 	public void testRestoreTopIndex() throws Exception {

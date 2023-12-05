@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.*;
  * TableViewer as their viewer and PluginStats as the basis for their data
  * model. The only affected method is <code>getSelection()</code>, which will
  * return a string that closely resembles the table view of this object.
- *
  */
 public class TableSelectionProviderDecorator implements ISelectionProvider {
 

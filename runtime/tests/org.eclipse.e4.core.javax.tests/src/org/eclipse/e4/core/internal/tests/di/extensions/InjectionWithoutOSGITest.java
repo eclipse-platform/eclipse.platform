@@ -32,7 +32,6 @@ import org.osgi.service.prefs.BackingStoreException;
  * 513883
  *
  * @author jonas
- *
  */
 public class InjectionWithoutOSGITest {
 

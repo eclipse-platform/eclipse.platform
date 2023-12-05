@@ -81,8 +81,6 @@ public class SharedConfigExtensionsManager {
 
 	/**
 	 * Create an intro standby part or an intro command model class.
-	 *
-	 * @param element
 	 */
 	private void createModelClass(IConfigurationElement element) {
 		if (element.getName().equals(

@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;

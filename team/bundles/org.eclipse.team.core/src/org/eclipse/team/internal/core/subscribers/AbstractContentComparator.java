@@ -52,30 +52,16 @@ public abstract class AbstractContentComparator {
 	}
 
 	private boolean compareObjects(Object e1, Object e2, IProgressMonitor monitor) {
-		InputStream is1 = null;
-		InputStream is2 = null;
-		try {
-			monitor.beginTask(null, 100);
-			is1 = getContents(e1, Policy.subMonitorFor(monitor, 30));
-			is2 = getContents(e2, Policy.subMonitorFor(monitor, 30));
+		monitor.beginTask(null, 100);
+		try (InputStream is1 = getContents(e1, Policy.subMonitorFor(monitor, 30));
+				InputStream is2 = getContents(e2, Policy.subMonitorFor(monitor, 30))) {
 			return contentsEqual(Policy.subMonitorFor(monitor, 40), is1, is2, shouldIgnoreWhitespace());
+		} catch (IOException e) {
+			return false;
 		} catch (TeamException e) {
 			TeamPlugin.log(e);
 			return false;
 		} finally {
-			try {
-				try {
-					if (is1 != null) {
-						is1.close();
-					}
-				} finally {
-					if (is2 != null) {
-						is2.close();
-					}
-				}
-			} catch (IOException e) {
-				// Ignore
-			}
 			monitor.done();
 		}
 	}

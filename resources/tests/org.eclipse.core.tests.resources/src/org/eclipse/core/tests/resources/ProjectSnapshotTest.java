@@ -16,6 +16,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.InputStream;
@@ -59,7 +60,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 		ensureExistsInWorkspace(projects, true);
 	}
 
-	private void populateProject(IProject project) {
+	private void populateProject(IProject project) throws CoreException {
 		// add files and folders to project
 		IFile file = project.getFile("file");
 		ensureExistsInFileSystem(file);

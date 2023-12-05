@@ -88,10 +88,6 @@ public class IntroModelSerializer {
 						.getChildrenOfType(AbstractIntroElement.CONTAINER_EXTENSION).length);
 	}
 
-	/**
-	 * @param text
-	 * @param root
-	 */
 	private void printHomePage(AbstractIntroPage rootPage, StringBuilder text) {
 		text.append("\n\nHOME PAGE: "); //$NON-NLS-1$
 		text.append("\n--------------"); //$NON-NLS-1$
@@ -270,8 +266,6 @@ public class IntroModelSerializer {
 
 	/**
 	 * Appends a given page's categories to the Text buffer.
-	 *
-	 * @param text
 	 */
 	private void printPages(IntroPage[] pages, StringBuilder text) {
 		for (IntroPage page : pages) {

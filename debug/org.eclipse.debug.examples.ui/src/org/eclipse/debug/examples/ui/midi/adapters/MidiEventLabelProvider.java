@@ -67,9 +67,6 @@ public class MidiEventLabelProvider extends ElementLabelProvider {
 
 	/**
 	 * Appends a byte to the buffer with 2 hex characters.
-	 *
-	 * @param buffer
-	 * @param b
 	 */
 	private void appendByte(StringBuilder buffer, byte b) {
 		String hex = Integer.toHexString(b & 0xFF).toUpperCase();

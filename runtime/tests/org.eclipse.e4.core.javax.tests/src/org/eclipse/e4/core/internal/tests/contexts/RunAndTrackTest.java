@@ -151,8 +151,6 @@ public class RunAndTrackTest {
 	 * There was a failing scenario in the legacy workbench support. This captures the hierarchy and
 	 * function (without any workbench level references). It should be updated when we figure out
 	 * the failing scenario :-)
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testRunAndTrackComplex() throws Exception {
@@ -315,7 +313,6 @@ public class RunAndTrackTest {
 
 	/**
 	 * Interface defining function
-	 *
 	 */
 	private interface ITestAction {
 

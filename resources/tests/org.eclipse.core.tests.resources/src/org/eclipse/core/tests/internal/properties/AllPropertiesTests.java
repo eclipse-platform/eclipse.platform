@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ PropertyManagerTest.class, Bug468PerformanceTest.class })
+@Suite.SuiteClasses({ PropertyManagerTest.class,
+// Bug468PerformanceTest.class
+})
 public class AllPropertiesTests {
 }

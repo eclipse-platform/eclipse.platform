@@ -20,7 +20,6 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.IStatusMonitor;
  * Common function for request monitors
  *
  * @since 3.3
- *
  */
 public abstract class AbstractRequestMonitor implements IStatusMonitor {
 

@@ -724,7 +724,6 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	 *  one  of <code>Window.OK</code> or <code>Window.CANCEL</code>
 	 *
 	 * @since 3.3
-	 *
 	 */
 	public static int openLaunchConfigurationEditDialog(Shell shell, ILaunchConfiguration configuration, String groupIdentifier, IStatus status, boolean showCancel) {
 		LaunchGroupExtension group = DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchGroup(groupIdentifier);
@@ -758,7 +757,6 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	 *  one  of <code>Window.OK</code> or <code>Window.CANCEL</code>
 	 *
 	 * @since 3.3
-	 *
 	 */
 	public static int openLaunchConfigurationPropertiesDialog(Shell shell, ILaunchConfiguration configuration, String groupIdentifier, Set<String> reservednames, IStatus status, boolean setDefaults) {
 		LaunchGroupExtension group = DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchGroup(groupIdentifier);

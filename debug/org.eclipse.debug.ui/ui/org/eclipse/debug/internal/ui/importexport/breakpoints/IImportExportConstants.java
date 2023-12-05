@@ -39,7 +39,6 @@ public interface IImportExportConstants {
 	 *
 	 * @see WizardExportBreakpointsPage
 	 * @see WizardImportBreakpointsPage
-	 *
 	 */
 	String IE_NODE_BREAKPOINTS = "breakpoints"; //$NON-NLS-1$
 

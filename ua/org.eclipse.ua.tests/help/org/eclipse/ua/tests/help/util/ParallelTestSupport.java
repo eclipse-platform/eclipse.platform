@@ -24,7 +24,6 @@ public class ParallelTestSupport {
 		 * Runs a test case one time
 		 * @return null if the test passes, otherwise a string representing
 		 * the reason for the failure
-		 * @throws Exception
 		 */
 		public String runTest() throws Exception;
 	}

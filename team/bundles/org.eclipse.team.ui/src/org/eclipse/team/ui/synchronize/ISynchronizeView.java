@@ -29,7 +29,6 @@ import org.eclipse.ui.IViewPart;
  * @see ISynchronizeManager#showSynchronizeViewInActivePage()
  * @since 3.0
  * @noimplement Clients are not intended to implement this interface.
- *
  */
 public interface ISynchronizeView extends IViewPart {
 	/**

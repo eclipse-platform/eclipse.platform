@@ -13,14 +13,30 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.events;
 
-import java.util.*;
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.core.internal.events.BuildCommand;
 import org.eclipse.core.internal.resources.Project;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.internal.builders.ConfigurationBuilder;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.regression.SimpleBuilder;
 
@@ -51,14 +67,6 @@ public class BuildProjectFromMultipleJobsTest extends ResourceTest {
 
 		Platform.removeLogListener(logListener);
 		logListener.clear();
-
-		try {
-			IProject testProject = getTestProject();
-			if (testProject.exists()) {
-				testProject.delete(true, null);
-			}
-		} finally {
-		}
 
 		super.tearDown();
 	}
@@ -193,7 +201,7 @@ public class BuildProjectFromMultipleJobsTest extends ResourceTest {
 			} catch (CoreException e) {
 				return e.getStatus();
 			}
-			return new Status(IStatus.OK, AutomatedResourceTests.PI_RESOURCES_TESTS, getName() + " finished");
+			return new Status(IStatus.OK, PI_RESOURCES_TESTS, getName() + " finished");
 		}
 
 		@Override

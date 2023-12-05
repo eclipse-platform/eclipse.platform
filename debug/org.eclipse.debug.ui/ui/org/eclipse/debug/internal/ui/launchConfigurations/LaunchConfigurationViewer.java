@@ -46,8 +46,6 @@ public class LaunchConfigurationViewer extends TreeViewer {
 
 	/**
 	 * Constructor
-	 * @param parent
-	 * @param style
 	 */
 	public LaunchConfigurationViewer(Composite parent, int style) {
 		this(new Tree(parent, style));
@@ -259,9 +257,6 @@ public class LaunchConfigurationViewer extends TreeViewer {
 
 	}
 
-	/**
-	 * @param launchConfigurationView
-	 */
 	protected void setLaunchConfigurationView(LaunchConfigurationView launchConfigurationView) {
 		fView = launchConfigurationView;
 	}

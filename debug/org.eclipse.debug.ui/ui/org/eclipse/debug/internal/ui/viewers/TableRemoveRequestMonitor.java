@@ -16,15 +16,9 @@ package org.eclipse.debug.internal.ui.viewers;
 
 /**
  * @since 3.2
- *
  */
 public class TableRemoveRequestMonitor extends TableAddRequestMonitor {
 
-	/**
-	 * @param parent
-	 * @param elements
-	 * @param model
-	 */
 	TableRemoveRequestMonitor(ModelNode parent, Object[] elements, AsynchronousModel model) {
 		super(parent, elements, model);
 	}

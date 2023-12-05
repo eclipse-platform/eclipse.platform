@@ -144,9 +144,6 @@ public class Utils {
 		return  bundle == null ? false : (bundle.getState() & (Bundle.ACTIVE | Bundle.STARTING)) != 0;
 	}
 
-	/**
-	 * 
-	 */
 	public static boolean isValidEnvironment(String os, String ws, String arch, String nl) {
 		if (os!=null && !isMatching(os, getOS())) return false;
 		if (ws!=null && !isMatching(ws, getWS())) return false;

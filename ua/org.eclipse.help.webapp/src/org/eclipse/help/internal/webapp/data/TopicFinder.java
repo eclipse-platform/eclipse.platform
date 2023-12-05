@@ -326,7 +326,6 @@ public class TopicFinder {
 	/**
 	 * Check if given TOC is visible and non empty
 	 *
-	 * @param toc
 	 * @return true if TOC should be visible
 	 */
 	private boolean isEnabled(IToc toc) {

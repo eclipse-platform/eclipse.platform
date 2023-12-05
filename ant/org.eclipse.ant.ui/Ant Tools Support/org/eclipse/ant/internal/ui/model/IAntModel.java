@@ -244,7 +244,6 @@ public interface IAntModel {
 	 * @param column
 	 *            the column number in that line
 	 * @return the offset in the document
-	 * @throws BadLocationException
 	 */
 	int getOffset(int lineNumber, int column) throws BadLocationException;
 

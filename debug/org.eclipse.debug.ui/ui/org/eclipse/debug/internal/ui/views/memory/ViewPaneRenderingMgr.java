@@ -285,11 +285,6 @@ public class ViewPaneRenderingMgr implements IDebugEventSetListener {
 
 	/**
 	 * Convert renderings to xml text
-	 *
-	 * @return
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws TransformerException
 	 */
 	private String getRenderingsAsXML() throws IOException, ParserConfigurationException, TransformerException {
 		IMemoryRendering[] renderings = fRenderings.toArray(new IMemoryRendering[fRenderings.size()]);

@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.alias;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

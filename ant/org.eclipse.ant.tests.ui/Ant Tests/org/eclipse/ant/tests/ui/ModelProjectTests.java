@@ -39,8 +39,6 @@ public class ModelProjectTests {
 
 	/**
 	 * Tests {@link AntModelProject#setNewProperty(String, String)}
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testsetNewProperty1() throws Exception {
@@ -53,8 +51,6 @@ public class ModelProjectTests {
 
 	/**
 	 * Tests {@link AntModelProject#reset()}
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testReset1() throws Exception {
@@ -73,8 +69,6 @@ public class ModelProjectTests {
 	/**
 	 * Tests {@link AntModelProject#getProperty(String)} where the property we want
 	 * has been set using {@link AntModelProject#setNewProperty(String, String)}
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testGetProprty1() throws Exception {
@@ -86,8 +80,6 @@ public class ModelProjectTests {
 	/**
 	 * Tests {@link AntModelProject#getProperty(String)} where the property has been
 	 * set into the user properties
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testGetProprty2() throws Exception {
@@ -100,8 +92,6 @@ public class ModelProjectTests {
 	 * Tests {@link AntModelProject#getReference(String)} where the desired ref has
 	 * been placed in the primary reference map using
 	 * {@link AntModelProject#addReference(String, Object)}
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testGetReference1() throws Exception {
@@ -114,8 +104,6 @@ public class ModelProjectTests {
 	 * Tests {@link AntModelProject#getReference(String)} where the desired ref has
 	 * been placed in the secondary 'idrefs' map using
 	 * {@link AntModelProject#addIdReference(String, Object)}
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testGetReference2() throws Exception {
@@ -127,8 +115,6 @@ public class ModelProjectTests {
 	/**
 	 * Tests {@link AntModelProject#getReference(String)} where the desired ref is
 	 * in the secondary 'idrefs' map and is an {@link UnknownElement}
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testGetReference3() throws Exception {
@@ -147,8 +133,6 @@ public class ModelProjectTests {
 	 * Tests {@link AntModelProject#getProperties()} such that all properties (user
 	 * and 'normal') are returned in one call to
 	 * {@link AntModelProject#getProperties()}
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testGetProperties1() throws Exception {
@@ -165,8 +149,6 @@ public class ModelProjectTests {
 	 * {@link AntModelProject#createClassLoader(org.apache.tools.ant.types.Path)}
 	 * such that only one classloader is created for a given path - classloaders are
 	 * cached per-Path
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testCreateClassloader1() throws Exception {
@@ -185,8 +167,6 @@ public class ModelProjectTests {
 	/**
 	 * Tests {@link AntModelProject#getReferences()} to ensure the map returned is
 	 * the live map https://bugs.eclipse.org/bugs/show_bug.cgi?id=336936
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testGetReferences1() throws Exception {
@@ -201,8 +181,6 @@ public class ModelProjectTests {
 
 	/**
 	 * Tests {@link AntModelProject#getCopyOfReferences()}
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testGetCopyOfReferences1() throws Exception {

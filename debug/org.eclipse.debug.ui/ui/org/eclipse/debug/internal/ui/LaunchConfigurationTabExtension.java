@@ -83,7 +83,6 @@ public final class LaunchConfigurationTabExtension {
 	/**
 	 * This method returns the id of the tab that this tab should be placed immediately after.
 	 * @return the id of the relative tab or <code>null</code> if one has not been specified
-	 *
 	 */
 	public String getRelativeTabId() {
 		IConfigurationElement[] elems = fElement.getChildren(IConfigurationElementConstants.PLACEMENT);

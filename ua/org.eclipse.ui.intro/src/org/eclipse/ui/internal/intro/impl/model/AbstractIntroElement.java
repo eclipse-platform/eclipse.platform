@@ -198,9 +198,6 @@ public abstract class AbstractIntroElement implements Cloneable {
 	 * Constructor used when model elements are being loaded from an xml content
 	 * file. Bundle is propagated down the model to enable resolving resources
 	 * relative to the base of the bundle.
-	 *
-	 * @param element
-	 * @param pd
 	 */
 	AbstractIntroElement(Element element, Bundle bundle) {
 		this.cfgElement = element;
@@ -216,9 +213,6 @@ public abstract class AbstractIntroElement implements Cloneable {
 	 * In the case of a configExtension, it is set to point to the relative
 	 * position of the parent folder that holds the extension. Only when needed,
 	 * the base field is stored in a model element. This saves memory.
-	 *
-	 * @param element
-	 * @param pd
 	 */
 	AbstractIntroElement(Element element, Bundle bundle, String base) {
 		this(element, bundle);
@@ -231,8 +225,6 @@ public abstract class AbstractIntroElement implements Cloneable {
 	 * Returns the configuration element from which this intro element was
 	 * loaded. In the case of extension, returns the configuration element of
 	 * the defining extension.
-	 *
-	 * @return
 	 */
 	public IConfigurationElement getCfgElement() {
 		return cfgElement instanceof IConfigurationElement?(IConfigurationElement)cfgElement:null;
@@ -246,10 +238,6 @@ public abstract class AbstractIntroElement implements Cloneable {
 	 * DOM getAttribute retruns an empty string (not null) if attribute is not
 	 * defined. Override this behavior to be consistent with Intro Model, and
 	 * IConfiguration element.
-	 *
-	 * @param element
-	 * @param att
-	 * @return
 	 */
 	protected String getAttribute(Element element, String att) {
 		if (element.hasAttribute(att)) {
@@ -266,10 +254,6 @@ public abstract class AbstractIntroElement implements Cloneable {
 
 	/**
 	 * Util method to parse a comma separated list of values
-	 *
-	 * @param element
-	 * @param att
-	 * @return
 	 */
 	protected String[] getAttributeList(Element element, String att) {
 		if (element.hasAttribute(att)) {
@@ -300,8 +284,6 @@ public abstract class AbstractIntroElement implements Cloneable {
 	 * Returns the plugin descriptor of the plugin from which this intro element
 	 * was loaded. In the case of extension, returns the plugin descriptor of
 	 * the plugin defining the extension.
-	 *
-	 * @return
 	 */
 	public Bundle getBundle() {
 		return bundle;

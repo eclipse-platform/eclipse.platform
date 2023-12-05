@@ -20,7 +20,6 @@ import java.util.Set;
 
 /**
  * Plugins with prebuilt search indexes.
- *
  */
 public class PrebuiltIndexes {
 	private final SearchIndex targetIndex;

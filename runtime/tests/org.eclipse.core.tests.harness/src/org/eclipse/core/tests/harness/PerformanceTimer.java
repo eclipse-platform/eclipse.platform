@@ -21,9 +21,6 @@ class PerformanceTimer {
 	private long fElapsedTime;
 	private long fStartTime;
 
-	/**
-	 *
-	 */
 	public PerformanceTimer(String name) {
 		fName = name;
 		fElapsedTime = 0;

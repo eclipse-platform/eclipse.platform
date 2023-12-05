@@ -32,9 +32,6 @@ import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.handlers.CollapseAllHandler;
 
-/**
- *
- */
 public class BreakpointsCollapseAllAction implements IViewActionDelegate, IActionDelegate2, IViewerUpdateListener, IModelChangedListener  {
 
 	private AbstractDebugView fView;

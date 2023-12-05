@@ -1778,8 +1778,6 @@ public class AntModel implements IAntModel {
 
 	/**
 	 * Sets whether the AntModel should reconcile if it become dirty. If set to reconcile, a reconcile is triggered if the model is dirty.
-	 *
-	 * @param shouldReconcile
 	 */
 	public void setShouldReconcile(boolean shouldReconcile) {
 		fShouldReconcile = shouldReconcile;

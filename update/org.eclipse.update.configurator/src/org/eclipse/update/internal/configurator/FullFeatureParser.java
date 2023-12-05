@@ -53,8 +53,6 @@ public class FullFeatureParser extends DefaultHandler implements IConfigurationC
 			System.out.println(e);
 		}
 	}
-	/**
-	 */
 	public void parse(){
 		InputStream in = null;
 		try {

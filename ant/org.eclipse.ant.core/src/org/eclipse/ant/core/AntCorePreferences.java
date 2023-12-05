@@ -673,10 +673,6 @@ public class AntCorePreferences implements IPropertyChangeListener {
 	/**
 	 * Configures the given {@link AntObject} and returns if it should be retained
 	 *
-	 * @param element
-	 * @param antObject
-	 * @param objectName
-	 * @param errorMessage
 	 * @return <code>true</code> if the object configured and should be retained, <code>false</code> otherwise
 	 */
 	private boolean configureAntObject(IConfigurationElement element, AntObject antObject, String objectName, String errorMessage) {
@@ -974,11 +970,6 @@ public class AntCorePreferences implements IPropertyChangeListener {
 
 	/**
 	 * Add the libraries contributed by the Ant plug-in, to the classpath.
-	 *
-	 * @param source
-	 * @param destination
-	 * @throws IOException
-	 * @throws MalformedURLException
 	 */
 	private void addLibraries(Bundle source, List<AntClasspathEntry> destination) throws IOException, MalformedURLException {
 		ManifestElement[] libraries = null;

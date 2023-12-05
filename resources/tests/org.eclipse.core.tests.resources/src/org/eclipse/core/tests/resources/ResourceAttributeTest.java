@@ -15,6 +15,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.io.File;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
@@ -24,9 +26,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 
-/**
- *
- */
 public class ResourceAttributeTest extends ResourceTest {
 
 	private void setArchive(IResource resource, boolean value) throws CoreException {
@@ -130,7 +129,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertTrue("2.4", !project.getResourceAttributes().isHidden());
 	}
 
-	public void testAttributeReadOnly() {
+	public void testAttributeReadOnly() throws CoreException {
 		// only activate this test on platforms that support it
 		if (!isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY)) {
 			return;
@@ -164,7 +163,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertNull("1.0", project.getResourceAttributes());
 	}
 
-	public void testNonExistingResource() {
+	public void testNonExistingResource() throws CoreException {
 		//asking for attributes of a non-existent resource should return null
 		IProject project = getWorkspace().getRoot().getProject("testNonExistingResource");
 		IFolder folder = project.getFolder("folder");

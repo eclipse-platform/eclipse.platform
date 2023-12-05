@@ -13,11 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -37,14 +40,14 @@ public class TestBug316182 extends WorkspaceSessionTest {
 		CAUGHT_EXCEPTION = null;
 	}
 
-	public void test02_startWorkspace() {
+	public void test02_startWorkspace() throws Exception {
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
 		if (CAUGHT_EXCEPTION != null) {
-			fail("Test failed", CAUGHT_EXCEPTION);
+			throw CAUGHT_EXCEPTION;
 		}
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug316182.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug316182.class);
 	}
 }

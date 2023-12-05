@@ -14,6 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +31,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -64,7 +67,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		for (String property : descriptionProperties) {
 			assertTrue("2.0 - Description property is not default: " + property, defaultPropertiesList.contains(property));
 		}
-		
+
 		setDefaultWorkspaceDescription();
 	}
 
@@ -267,7 +270,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 	 */
 	public void assertEquals(String message, IWorkspaceDescription description1, IWorkspaceDescription description2) throws ComparisonFailure {
 		assertEquals(message + " - 1", description1.isAutoBuilding(), description2.isAutoBuilding());
-		assertEquals(message + " - 2", description1.getBuildOrder(), description2.getBuildOrder());
+		assertThat(message + " - 2", description1.getBuildOrder(), is(description2.getBuildOrder()));
 		assertEquals(message + " - 3", WorkspacePreferences.convertStringArraytoString(description1.getBuildOrder()), WorkspacePreferences.convertStringArraytoString(description2.getBuildOrder()));
 		assertEquals(message + " - 4", description1.isApplyFileStatePolicy(), description2.isApplyFileStatePolicy());
 		assertEquals(message + " - 5", description1.getFileStateLongevity(), description2.getFileStateLongevity());
@@ -279,7 +282,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, WorkspacePreferencesTest.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, WorkspacePreferencesTest.class);
 	}
 
 }

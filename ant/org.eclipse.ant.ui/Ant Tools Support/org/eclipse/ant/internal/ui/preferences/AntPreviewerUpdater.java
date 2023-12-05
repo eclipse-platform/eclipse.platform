@@ -90,10 +90,6 @@ class AntPreviewerUpdater {
 				}
 			}
 
-			/**
-			 * @param viewer
-			 * @param preferenceStore
-			 */
 			private void format(final SourceViewer sourceViewer, final IPreferenceStore store) {
 				String contents = sourceViewer.getDocument().get();
 				FormattingPreferences prefs = new FormattingPreferences();

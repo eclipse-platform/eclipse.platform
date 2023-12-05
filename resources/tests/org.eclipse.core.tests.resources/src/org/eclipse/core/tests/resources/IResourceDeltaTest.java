@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -61,17 +63,13 @@ public class IResourceDeltaTest extends ResourceTest {
 
 		// Create and open the resources
 		IWorkspaceRunnable body = monitor -> ensureExistsInWorkspace(allResources, true);
-		try {
-			getWorkspace().run(body, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		getWorkspace().run(body, getMonitor());
 	}
 
 	/**
 	 * Tests the IResourceDelta#findMember method.
 	 */
-	public void testFindMember() {
+	public void testFindMember() throws CoreException {
 		/*
 		 * The following changes will occur:
 		 * - change file1
@@ -117,8 +115,6 @@ public class IResourceDeltaTest extends ResourceTest {
 		};
 		try {
 			getWorkspace().run(body, getMonitor());
-		} catch (CoreException e) {
-			fail("Exception1", e);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}

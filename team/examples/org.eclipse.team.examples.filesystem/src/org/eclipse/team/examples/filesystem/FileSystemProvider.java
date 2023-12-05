@@ -56,7 +56,6 @@ import org.eclipse.team.examples.filesystem.subscriber.FileSystemSubscriber;
  * <li>Use of decorators
  * <li>combining streams and progress monitors to get responsive UI
  * </ol>
- *
  */
 public class FileSystemProvider extends RepositoryProvider {
 
@@ -124,7 +123,6 @@ public class FileSystemProvider extends RepositoryProvider {
 	 * perform any operations.
 	 *
 	 * @param location the path representing the location where the project contents will be stored.
-	 * @throws TeamException
 	 */
 	public void setTargetLocation(String location) throws TeamException {
 

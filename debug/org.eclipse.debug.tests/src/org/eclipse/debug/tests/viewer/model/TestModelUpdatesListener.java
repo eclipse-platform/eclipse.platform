@@ -585,7 +585,6 @@ public class TestModelUpdatesListener implements IViewerUpdateListener, ILabelUp
 	 * currently running or have already completed.
 	 *
 	 * @see CHILDREN_UPDATES_RUNNING
-	 * @return
 	 */
 	private boolean isFinishedChildrenRunning() {
 		// All children updates that have been scheduled are either running or

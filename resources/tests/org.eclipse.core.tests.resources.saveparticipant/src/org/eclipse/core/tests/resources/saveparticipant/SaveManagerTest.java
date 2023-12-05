@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.saveparticipant;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 
 /**
  * Runs all the SaveManager tests as a single session test.

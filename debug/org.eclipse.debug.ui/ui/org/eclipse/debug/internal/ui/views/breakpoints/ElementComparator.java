@@ -61,10 +61,6 @@ public class ElementComparator implements Comparator<Object> {
 
 	/**
 	 * Compares two breakpoint containers.
-	 *
-	 * @param c1
-	 * @param c2
-	 * @return
 	 */
 	private int doCompare(IBreakpointContainer c1, IBreakpointContainer c2) {
 		// The "Other" breakpoint category should be listed last.
@@ -91,10 +87,6 @@ public class ElementComparator implements Comparator<Object> {
 
 	/**
 	 * Compares two breakpoints.
-	 *
-	 * @param b1
-	 * @param b2
-	 * @return
 	 */
 	private int doCompare(IBreakpoint b1, IBreakpoint b2) {
 		int sortingOrder = DebugUIPlugin.getDefault().getPreferenceStore().getInt(IInternalDebugUIConstants.PREF_BREAKPOINT_SORTING_ORDER);
@@ -158,12 +150,6 @@ public class ElementComparator implements Comparator<Object> {
 
 	/**
 	 * Compares two line breakpoints.
-	 *
-	 * @param b1
-	 * @param b2
-	 * @param name1
-	 * @param name2
-	 * @return
 	 */
 	private int compareLineBreakpoints(IBreakpoint b1, IBreakpoint b2, String name1, String name2) {
 		int colon1 = name1.indexOf(':');

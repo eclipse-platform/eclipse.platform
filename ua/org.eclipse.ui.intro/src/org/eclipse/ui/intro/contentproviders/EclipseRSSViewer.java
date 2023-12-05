@@ -290,7 +290,6 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 	 *  not finished, the TimeoutThread sets the threadRunning boolean to false and refreshes
 	 *  the page (basically telling the UI that no content could be found, and removes
 	 *  the 'Loading...' text).
-	 *
 	 */
 	private void createNewsItems() {
 

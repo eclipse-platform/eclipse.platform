@@ -24,7 +24,6 @@ import org.eclipse.ui.ide.fileSystem.FileSystemContributor;
 
 /**
  * ZipFileSystemContributor is the zip example of a file system contributor.
- * 
  */
 public class ZipFileSystemContributor extends FileSystemContributor {
 

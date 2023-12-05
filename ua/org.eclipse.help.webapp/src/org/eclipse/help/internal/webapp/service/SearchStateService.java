@@ -62,7 +62,6 @@ public class SearchStateService extends HttpServlet {
 	 * Servlet to handle a POST request.
 	 *
 	 * Handle the search requests,
-	 *
 	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -73,7 +72,6 @@ public class SearchStateService extends HttpServlet {
 
 	/**
 	 * Processes all requests to the servlet.
-	 *
 	 */
 	private void process(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {

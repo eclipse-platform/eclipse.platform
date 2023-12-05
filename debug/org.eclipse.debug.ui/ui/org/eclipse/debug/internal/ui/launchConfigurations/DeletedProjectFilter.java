@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.ViewerFilter;
  * It is (de) activated via the <code>IInternalDebugUIConstants.PREF_FILTER_LAUNCH_DELETED</code> preference.
  *
  * @since 3.2
- *
  */
 public class DeletedProjectFilter extends ViewerFilter {
 

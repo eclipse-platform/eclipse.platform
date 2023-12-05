@@ -28,9 +28,6 @@ import org.eclipse.equinox.log.SynchronousLogListener;
 import org.osgi.framework.Bundle;
 import org.osgi.service.log.LogEntry;
 
-/**
- *
- */
 public class Log implements ILog, SynchronousLogListener, LogFilter {
 	final Bundle bundle;
 	private final Logger logger;

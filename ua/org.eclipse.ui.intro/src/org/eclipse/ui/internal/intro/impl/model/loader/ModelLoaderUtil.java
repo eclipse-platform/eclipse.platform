@@ -32,10 +32,6 @@ public class ModelLoaderUtil {
 
 	/**
 	 * Utility method to validate an elements name.
-	 *
-	 * @param element
-	 * @param validName
-	 * @return
 	 */
 	public static boolean isValidElementName(IConfigurationElement element,
 			String validName) {
@@ -52,7 +48,6 @@ public class ModelLoaderUtil {
 	 * there is more than one element in the array, the first one is picked, but
 	 * this fact is logged. Attribute passed is used for logging.
 	 *
-	 * @param configElements
 	 * @return the first configElement in the array, or null if the array is
 	 *         empty.
 	 */
@@ -130,10 +125,6 @@ public class ModelLoaderUtil {
 
 	/**
 	 * Util class for creating class instances from plugins.
-	 *
-	 * @param pluginId
-	 * @param className
-	 * @return
 	 */
 	public static Object createClassInstance(String pluginId, String className) {
 		// quick exits.
@@ -161,9 +152,6 @@ public class ModelLoaderUtil {
 	/**
 	 * Creates a key for the given element. Returns null if any id is null along
 	 * the path.
-	 *
-	 * @param element
-	 * @return
 	 */
 	public static StringBuilder createPathToElementKey(
 			AbstractIntroIdElement element, boolean full) {

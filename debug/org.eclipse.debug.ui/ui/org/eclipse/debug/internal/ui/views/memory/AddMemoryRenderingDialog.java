@@ -511,9 +511,6 @@ public class AddMemoryRenderingDialog extends SelectionDialog {
 		job.schedule();
 	}
 
-	/**
-	 *
-	 */
 	private void addNew() {
 		WorkbenchJob job = new WorkbenchJob("populate dialog") { //$NON-NLS-1$
 

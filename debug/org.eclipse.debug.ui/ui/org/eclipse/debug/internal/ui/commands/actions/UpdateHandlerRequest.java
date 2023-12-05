@@ -22,7 +22,6 @@ import org.eclipse.debug.internal.core.commands.DebugCommandRequest;
  * other handlers.
  *
  * @since 3.3
- *
  */
 public class UpdateHandlerRequest extends DebugCommandRequest implements IEnabledStateRequest {
 

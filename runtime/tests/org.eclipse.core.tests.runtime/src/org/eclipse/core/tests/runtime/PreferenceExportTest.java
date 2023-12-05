@@ -46,8 +46,6 @@ public class PreferenceExportTest {
 	/**
 	 * Tests exporting a preference that is different from the default value, but
 	 * the same as the default-default value. See bug 31458.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testExportEmptyPreference() throws CoreException {
@@ -95,8 +93,6 @@ public class PreferenceExportTest {
 	 * Tests that identity tests on preference keys after export/import will still
 	 * work. This is to safeguard against programming errors in property change
 	 * listeners. See bug 20193.
-	 *
-	 * @throws CoreException
 	 */
 	@Test
 	public void testKeyIdentityAfterExport() throws CoreException {

@@ -23,7 +23,6 @@ public class TaskChoiceCompletionStrategy implements TaskGroup.CompletionStrateg
 	 * NOT_STARTED if all children are not started
 	 * COMPLETED if one children is completed or skipped
 	 * IN_PROGRESS otherwise
-	 * @return
 	 */
 	@Override
 	public int computeState(TaskGroup taskGroup) {

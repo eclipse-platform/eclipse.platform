@@ -165,7 +165,6 @@ public class TeamCapabilityHelper {
 	 * @param project the project to query.
 	 * @return the provider id for this project or <code>null</code> if no providers are mapped
 	 * to this project
-	 * @throws CoreException
 	 */
 	public String getProviderIdFor(IProject project) throws CoreException {
 		if(project.isAccessible()) {

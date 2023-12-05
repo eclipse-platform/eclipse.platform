@@ -41,7 +41,6 @@ public interface IHelpWorkingSetManager {
 
 	/**
 	 * Returns a working set by name
-	 *
 	 */
 	public WorkingSet getWorkingSet(String name);
 

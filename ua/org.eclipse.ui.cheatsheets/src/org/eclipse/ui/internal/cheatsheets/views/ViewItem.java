@@ -321,17 +321,11 @@ public abstract class ViewItem {
 		}
 	}
 
-	/**
-	 * @return
-	 */
 	/*package*/
 	Image getCompleteImage() {
 		return CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.CHEATSHEET_ITEM_COMPLETE);
 	}
 
-	/**
-	 * @return
-	 */
 	public Item getItem() {
 		return item;
 	}
@@ -345,9 +339,6 @@ public abstract class ViewItem {
 		return mainItemComposite;
 	}
 
-	/**
-	 * @return
-	 */
 	/*package*/
 	Image getSkipImage() {
 		return CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.CHEATSHEET_ITEM_SKIP);

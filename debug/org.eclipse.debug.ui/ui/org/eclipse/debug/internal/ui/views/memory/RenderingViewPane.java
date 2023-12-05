@@ -69,7 +69,6 @@ import org.eclipse.ui.progress.UIJob;
  * view tabs in the view.
  *
  * @since 3.1
- *
  */
 public class RenderingViewPane extends AbstractMemoryViewPane implements IMemoryRenderingContainer {
 
@@ -853,14 +852,6 @@ public class RenderingViewPane extends AbstractMemoryViewPane implements IMemory
 		return doCreateViewPane(parent, paneId, label, true, true);
 	}
 
-	/**
-	 * @param parent
-	 * @param paneId
-	 * @param label
-	 * @param canAddRendering
-	 * @param canRemoveRendering
-	 * @return
-	 */
 	private Control doCreateViewPane(Composite parent, String paneId, String label, boolean canAddRendering, boolean canRemoveRendering) {
 		Control control = super.createViewPane(parent, paneId, label);
 		fCanAddRendering = canAddRendering;
@@ -1115,9 +1106,6 @@ public class RenderingViewPane extends AbstractMemoryViewPane implements IMemory
 		job.schedule();
 	}
 
-	/**
-	 * @param memory
-	 */
 	private CTabFolder createFolderForMemoryBlock(IMemoryBlock memory) {
 		CTabFolder folder = createTabFolder(fViewPaneCanvas);
 
@@ -1172,11 +1160,6 @@ public class RenderingViewPane extends AbstractMemoryViewPane implements IMemory
 		return fCanRemoveRendering;
 	}
 
-	/**
-	 * @param tabFolder
-	 * @param index
-	 * @return
-	 */
 	private CTabItem createTab(CTabFolder tabFolder, int index) {
 		int swtStyle = SWT.CLOSE;
 		if (!canRemoveRendering()) {

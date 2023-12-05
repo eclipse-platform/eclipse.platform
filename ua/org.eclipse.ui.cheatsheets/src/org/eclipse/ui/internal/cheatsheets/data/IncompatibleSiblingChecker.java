@@ -41,7 +41,6 @@ public class IncompatibleSiblingChecker {
 	 * other elements. The rules are the only one action, command or perform-when can
 	 * be declared per item or subitem and none of these can coexist with a subitem,
 	 * conditional-subitem or repeated-subitem
-	 * @param elementKind
 	 */
 	public void checkElement(String elementKind) {
 		if (isExecutable(elementKind)) {

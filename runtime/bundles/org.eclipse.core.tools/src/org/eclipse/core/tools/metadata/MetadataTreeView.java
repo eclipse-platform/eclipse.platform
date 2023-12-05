@@ -167,7 +167,6 @@ public class MetadataTreeView extends SpyView {
 	/**
 	 * Rebuilds the viewer content provider.
 	 *
-	 * @param file
 	 * @see IContentProvider#inputChanged(Viewer, Object, Object)
 	 */
 	protected void setMetadataRoot(final File file) {

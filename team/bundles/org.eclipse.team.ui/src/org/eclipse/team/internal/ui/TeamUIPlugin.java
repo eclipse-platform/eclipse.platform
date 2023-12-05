@@ -117,7 +117,6 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * @param element the config element defining the extension
 	 * @param classAttribute the name of the attribute carrying the class
 	 * @return the extension object
-	 * @throws CoreException
 	 */
 	public static Object createExtension(final IConfigurationElement element, final String classAttribute) throws CoreException {
 		// If plugin has been loaded create extension.
@@ -207,7 +206,6 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	/**
 	 * Convenience method for logging a TeamException in such a way that the
 	 * stacktrace is logged as well.
-	 * @param e
 	 */
 	public static void log(CoreException e) {
 		IStatus status = e.getStatus();

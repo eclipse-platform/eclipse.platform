@@ -38,9 +38,6 @@ public abstract class ColumnSorter extends ViewerComparator {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param cviewer
-	 * @param column
 	 */
 	public ColumnSorter(ColumnViewer cviewer, TableColumn column) {
 		this.cviewer = cviewer;
@@ -67,16 +64,12 @@ public abstract class ColumnSorter extends ViewerComparator {
 	/**
 	 * Returns the compare text that should be used for the given object coming from the given column index
 	 * 
-	 * @param obj
-	 * @param columnindex
 	 * @return the text to compare with
 	 */
 	public abstract String getCompareText(Object obj, int columnindex);
 
 	/**
 	 * Sets the sorting direction for this sorter to use
-	 * 
-	 * @param direction
 	 */
 	public void setDirection(int direction) {
 		this.column.getParent().setSortColumn(this.column);

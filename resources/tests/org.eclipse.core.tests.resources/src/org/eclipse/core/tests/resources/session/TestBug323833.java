@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+
 import java.io.File;
 import junit.framework.Test;
 import org.eclipse.core.filesystem.EFS;
@@ -23,7 +25,6 @@ import org.eclipse.core.internal.filesystem.FileCache;
 import org.eclipse.core.internal.filesystem.local.LocalFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -64,6 +65,6 @@ public class TestBug323833 extends WorkspaceSessionTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug323833.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug323833.class);
 	}
 }

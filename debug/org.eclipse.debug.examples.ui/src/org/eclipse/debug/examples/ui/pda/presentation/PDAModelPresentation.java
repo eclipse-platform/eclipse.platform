@@ -59,7 +59,6 @@ public class PDAModelPresentation extends LabelProvider implements IDebugModelPr
 	/**
 	 * Returns a label for the given watchpoint.
 	 *
-	 * @param watchpoint
 	 * @return a label for the given watchpoint
 	 */
 	private String getWatchpointText(PDAWatchpoint watchpoint) {

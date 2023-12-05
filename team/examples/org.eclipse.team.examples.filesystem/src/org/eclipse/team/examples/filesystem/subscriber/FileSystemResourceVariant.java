@@ -128,9 +128,6 @@ public class FileSystemResourceVariant extends CachedResourceVariant {
 		return new FileSystemResourceVariant[0];
 	}
 
-	/**
-	 * @return
-	 */
 	public InputStream getContents() throws TeamException {
 		try {
 			return new BufferedInputStream(new FileInputStream(ioFile));

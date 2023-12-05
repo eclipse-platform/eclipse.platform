@@ -15,9 +15,6 @@ package org.eclipse.core.tests.internal.filesystem.ram;
 
 import org.eclipse.core.runtime.*;
 
-/**
- *
- */
 public class Policy {
 
 	public static void error(String message) throws CoreException {

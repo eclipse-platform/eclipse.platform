@@ -680,9 +680,7 @@ public class ComputeProjectOrder {
 	 * Complexity is O(#edge + #vertex). It implements a dynamic recursive deep-first graph traversing algorithm to compute
 	 * resutling edges.
 	 *
-	 * @param initialGraph
 	 * @param filterOut a filter to exclude nodes.
-	 * @param clazz
 	 * @return the filtered graph.
 	 */
 	public static <T> Digraph<T> buildFilteredDigraph(Digraph<T> initialGraph, Predicate<T> filterOut, Class<T> clazz) {

@@ -23,7 +23,6 @@ import org.eclipse.jface.viewers.ILightweightLabelDecorator;
  * Decorator for {@link ILaunchConfiguration} prototypes.
  *
  * @since 3.13
- *
  */
 public class PrototypeDecorator implements ILightweightLabelDecorator {
 

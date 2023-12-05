@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 //Test case for GitHub Issue 468
@@ -141,7 +142,8 @@ public class Bug468PerformanceTest extends TestCase {
 	// For 3 tries, the time was around 18000 ms to 25000 ms in windows 10 machine,
 	// so, set a limit of 1 minute.
 	@Test
-	public void test() throws CoreException {
+	@Ignore("See https://github.com/eclipse-platform/eclipse.platform/issues/715")
+	public void _test() throws CoreException {
 		IFolder tempFolder = this.project.getFolder(TEMP_FOLDER_NAME);
 		long[] timeTakenForDeletingFiles = new long[1];
 

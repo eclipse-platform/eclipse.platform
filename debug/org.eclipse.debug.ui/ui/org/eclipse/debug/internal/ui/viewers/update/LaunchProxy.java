@@ -46,8 +46,6 @@ public class LaunchProxy extends AbstractModelProxy implements ILaunchesListener
 
 	/**
 	 * Constructs a new model proxy for the given launch.
-	 *
-	 * @param launch
 	 */
 	public LaunchProxy(ILaunch launch) {
 		fLaunch = launch;
@@ -110,7 +108,6 @@ public class LaunchProxy extends AbstractModelProxy implements ILaunchesListener
 
 	/**
 	 * Installs model proxies for any new children in the given launch.
-	 *
 	 */
 	protected void installModelProxies() {
 		boolean changes = false;

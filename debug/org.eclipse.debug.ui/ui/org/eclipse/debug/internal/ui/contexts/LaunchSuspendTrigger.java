@@ -92,9 +92,6 @@ public class LaunchSuspendTrigger implements ISuspendTrigger, IDebugEventSetList
 		}
 	}
 
-	/**
-	 * @param event
-	 */
 	private void notifySuspend(DebugEvent event) {
 		Object source = event.getSource();
 		if (source instanceof IDebugElement) {

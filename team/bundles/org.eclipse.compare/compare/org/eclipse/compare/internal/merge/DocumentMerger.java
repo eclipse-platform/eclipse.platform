@@ -351,7 +351,6 @@ public class DocumentMerger {
 	/**
 	 * Perform a two level 2- or 3-way diff.
 	 * The first level is based on line comparison, the second level on token comparison.
-	 * @throws CoreException
 	 */
 	public void doDiff() throws CoreException {
 
@@ -989,8 +988,6 @@ public class DocumentMerger {
 
 	/**
 	 * Returns the virtual position for the given view position.
-	 * @param contributor
-	 * @param vpos
 	 * @return the virtual position for the given view position
 	 */
 	public int realToVirtualPosition(char contributor, int vpos) {
@@ -1026,8 +1023,6 @@ public class DocumentMerger {
 
 	/**
 	 * maps given virtual position into a real view position of this view.
-	 * @param contributor
-	 * @param v
 	 * @return the real view position
 	 */
 	public int virtualToRealPosition(char contributor, int v) {

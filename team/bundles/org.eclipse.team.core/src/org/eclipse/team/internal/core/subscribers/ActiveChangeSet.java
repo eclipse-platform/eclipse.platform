@@ -202,7 +202,6 @@ public class ActiveChangeSet extends DiffChangeSet {
 	/**
 	 * Add the resources to the change set if they are outgoing changes.
 	 * @param resources the resources to add.
-	 * @throws CoreException
 	 */
 	public void add(IResource[] resources) throws CoreException {
 		List<IDiff> toAdd = new ArrayList<>();

@@ -139,7 +139,6 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 		}
 
 		@Override
-		@SuppressWarnings("unchecked")
 		public <T> T getAdapter(Class<T> adapter) {
 			if (adapter == IWorkbenchAdapter.class)
 				return (T) this;
@@ -227,7 +226,6 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 		}
 
 		@Override
-		@SuppressWarnings("unchecked")
 		public <T> T getAdapter(Class<T> adapter) {
 			if (adapter == IWorkbenchAdapter.class)
 				return (T) this;

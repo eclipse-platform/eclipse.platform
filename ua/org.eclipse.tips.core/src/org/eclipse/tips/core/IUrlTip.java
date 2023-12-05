@@ -17,7 +17,6 @@ import java.net.URL;
 
 /**
  * Decoration of {@link Tip} that enables URL content.
- *
  */
 public interface IUrlTip {
 
@@ -28,7 +27,6 @@ public interface IUrlTip {
 	 * file).
 	 *
 	 * @return the string representation of URL to the (remote) content
-	 *
 	 */
 	String getURL();
 }

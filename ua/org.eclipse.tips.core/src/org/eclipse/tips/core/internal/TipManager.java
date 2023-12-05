@@ -31,7 +31,6 @@ import org.eclipse.tips.core.TipProvider;
  * the rest of the framework must work with ITipManager, this class provides API
  * to open the dialog and do low level housekeeping that is of no concern to
  * external participants (Tip and TipProvider).
- *
  */
 public abstract class TipManager implements ITipManager {
 

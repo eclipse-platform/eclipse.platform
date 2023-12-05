@@ -98,9 +98,6 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 
 	/**
 	 * Creates a new CompareFileRevisionEditorInput.
-	 * @param left
-	 * @param right
-	 * @param page
 	 */
 	public CompareFileRevisionEditorInput(ITypedElement left, ITypedElement right, IWorkbenchPage page) {
 		super(new CompareConfiguration(), page);
@@ -242,7 +239,6 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_compareResourceAndVersions, titleObject);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IFile.class || adapter == IResource.class) {

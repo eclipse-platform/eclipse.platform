@@ -640,7 +640,6 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
 		if(adapter == IHistoryCompareAdapter.class) {
 			return (T) this;

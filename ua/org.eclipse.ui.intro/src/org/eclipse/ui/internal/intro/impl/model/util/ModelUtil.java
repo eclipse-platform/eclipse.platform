@@ -68,8 +68,6 @@ public class ModelUtil {
 	 * declaring plugin. Return the plugin relative location, fully qualified.
 	 * Returns null if the passed string itself is null.
 	 *
-	 * @param url
-	 * @param pluginId
 	 * @return returns the URL as is if it had a protocol.
 	 */
 	public static String resolveURL(String url, String pluginId) {
@@ -88,8 +86,6 @@ public class ModelUtil {
 	 * declaring plugin. Return the plugin relative location, fully qualified.
 	 * Returns null if the passed string itself is null.
 	 *
-	 * @param url
-	 * @param element
 	 * @return returns the URL as is if it had a protocol.
 	 */
 	public static String resolveURL(String url, IConfigurationElement element) {
@@ -228,9 +224,6 @@ public class ModelUtil {
 
 	/**
 	 * Returns a reference to the body of the DOM.
-	 *
-	 * @param dom
-	 * @return
 	 */
 	public static Element getBodyElement(Document dom) {
 		// there should only be one body element dom.
@@ -356,9 +349,6 @@ public class ModelUtil {
 	/**
 	 * Updates all the resource attributes of the passed element to point to a
 	 * local resolved url.
-	 *
-	 * @param element
-	 * @param extensionContent
 	 */
 	private static void updateResourceAttributes(Element element, String base,
 			Bundle bundle) {
@@ -426,7 +416,6 @@ public class ModelUtil {
 
 	/**
 	 * Remove all instances of the element from the DOM.
-	 *
 	 */
 	public static void removeAllElements(Document dom, String elementLocalName) {
 		// get all elements in DOM and remove them.

@@ -163,10 +163,6 @@ public class SearchIndex implements IHelpSearchIndex {
 	/**
 	 * Alternative constructor that provides index directory.
 	 *
-	 * @param indexDir
-	 * @param locale
-	 * @param analyzerDesc
-	 * @param tocManager
 	 * @since 3.1
 	 */
 
@@ -486,8 +482,6 @@ public class SearchIndex implements IHelpSearchIndex {
 
 	/**
 	 *
-	 * @param pluginIndexes
-	 * @param monitor
 	 * @return Map. Keys are /pluginid/href of all merged Docs. Values are null for
 	 *         added document, or String[] of indexIds with duplicates of the
 	 *         document
@@ -592,10 +586,6 @@ public class SearchIndex implements IHelpSearchIndex {
 
 	/**
 	 * Removes documents containing term1 and term2
-	 *
-	 * @param doc1
-	 * @param docs2
-	 * @throws IOException
 	 */
 	private void removeDocuments(PostingsEnum doc1, PostingsEnum docs2) throws IOException {
 		if (doc1.nextDoc() == DocIdSetIterator.NO_MORE_DOCS) {
@@ -706,8 +696,6 @@ public class SearchIndex implements IHelpSearchIndex {
 
 	/**
 	 * Sets the list of all plug-ns in this session. This method is used for external indexer.
-	 *
-	 * @param docPlugins
 	 */
 	public void setDocPlugins(PluginVersionInfo docPlugins) {
 		this.docPlugins = docPlugins;
@@ -744,7 +732,6 @@ public class SearchIndex implements IHelpSearchIndex {
 	/**
 	 * Determines whether an index can be read by the Lucene bundle
 	 * @param indexVersionString The version of an Index directory
-	 * @return
 	 */
 	public boolean isLuceneCompatible(String indexVersionString) {
 		if (indexVersionString==null) return false;
@@ -1069,7 +1056,6 @@ public class SearchIndex implements IHelpSearchIndex {
 	/**
 	 * Checks if document is indexable, and creates a URL to obtain contents.
 	 *
-	 * @param locale
 	 * @param url
 	 *            specified in the navigation
 	 * @return URL to obtain document content or null
@@ -1081,8 +1067,6 @@ public class SearchIndex implements IHelpSearchIndex {
 	/**
 	 * Checks if document is indexable, and creates a URL to obtain contents.
 	 *
-	 * @param locale
-	 * @param url
 	 * @param participantId
 	 *            the search participant or <code>null</code> specified in the navigation
 	 * @return URL to obtain document content or null

@@ -69,7 +69,6 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
 		return super.equals(object);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter.equals(ChangeSet.class)) {

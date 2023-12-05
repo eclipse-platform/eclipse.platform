@@ -87,7 +87,6 @@ public interface IStructureCreator {
 	 * @param path specifies a sub object within the input object
 	 * @param input the object from which to create the <code>IStructureComparator</code>
 	 * @return the single node specified by <code>path</code> or <code>null</code>
-	 *
 	 */
 	IStructureComparator locate(Object path, Object input);
 

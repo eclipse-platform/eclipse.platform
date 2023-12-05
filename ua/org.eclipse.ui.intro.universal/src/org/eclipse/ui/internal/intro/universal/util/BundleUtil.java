@@ -57,10 +57,6 @@ public class BundleUtil {
 
 	/**
 	 * Retrieves the given key from the bundle header.
-	 *
-	 * @param bundle
-	 * @param key
-	 * @return
 	 */
 	public static String getBundleHeader(Bundle bundle, String key) {
 		return bundle.getHeaders().get(key);
@@ -75,10 +71,6 @@ public class BundleUtil {
 
 	/**
 	 * Get the resourcelocation, but do not force an $nl$ on it.
-	 *
-	 * @param resource
-	 * @param element
-	 * @return
 	 */
 	public static String getResourceLocation(String resource,
 			IConfigurationElement element) {
@@ -91,9 +83,6 @@ public class BundleUtil {
 	 * Returns the fully qualified location of the passed resource string from
 	 * the passed plugin id. If the file could not be loaded from the plugin,
 	 * the resource is returned as is.
-	 *
-	 * @param resource
-	 * @return
 	 */
 	public static String getResolvedResourceLocation(String resource,
 			String pluginId) {
@@ -104,9 +93,6 @@ public class BundleUtil {
 
 	/**
 	 * Shorthand util method.
-	 *
-	 * @param resource
-	 * @return
 	 */
 	public static String getResolvedResourceLocation(String resource,
 			Bundle bundle) {
@@ -214,9 +200,6 @@ public class BundleUtil {
 	/**
 	 * Get the absolute path of the given bundle, in the form
 	 * file:/path_to_plugin
-	 *
-	 * @param bundle
-	 * @return
 	 */
 	public static String getResolvedBundleLocation(Bundle bundle) {
 		try {
@@ -242,9 +225,6 @@ public class BundleUtil {
 	/**
 	 * Get the absolute path of the bundle with id <code>bundleId</code>. If
 	 * no such bundle is found, return null.
-	 *
-	 * @param bundleId
-	 * @return
 	 */
 	public static String getResolvedBundleLocation(String bundleId) {
 		Bundle bundle = Platform.getBundle(bundleId);

@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Composite;
  * If the ADDED delta and SELECT delta are recieved in separate nodes, then the
  * delta will be handled as-is and would not take the pinning state of the
  * memory view into account.
- *
  */
 public class MemoryViewTreeViewer extends TreeModelViewer {
 

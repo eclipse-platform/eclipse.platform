@@ -103,8 +103,6 @@ public class TreeLabelProvider extends LabelProvider {
 
 	/**
 	 * Create a set of images for a task which may be [redefined.
-	 * @param kind
-	 * @return
 	 */
 	private ImageSet createImages(String kind) {
 		ImageSet images = new ImageSet();

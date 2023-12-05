@@ -37,7 +37,6 @@ import org.osgi.framework.Bundle;
 /**
  * An implementation of SearchParticipant that adds Welcome content into the local help
  * index so that it can be searched.
- *
  */
 
 public class IntroSearchParticipant extends SearchParticipant {

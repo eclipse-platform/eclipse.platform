@@ -89,9 +89,6 @@ public class TableRenderingCellModifier implements ICellModifier {
 		}
 	}
 
-	/**
-	 * @return
-	 */
 	private int getAddressableSize() {
 		int addressableSize = fRendering.getAddressableSize();
 		if (addressableSize < 1) {
@@ -244,8 +241,6 @@ public class TableRenderingCellModifier implements ICellModifier {
 	}
 
 	/**
-	 * @param start
-	 * @param end
 	 * @return padded string
 	 */
 	public String getPaddedString(int start, int end) {

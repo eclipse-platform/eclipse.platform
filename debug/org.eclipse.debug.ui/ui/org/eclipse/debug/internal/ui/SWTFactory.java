@@ -217,7 +217,6 @@ public class SWTFactory {
 	 * @param hspan the horizontal span to take up in the parent composite
 	 * @return the new label
 	 * @since 3.2
-	 *
 	 */
 	public static Label createLabel(Composite parent, String text, int hspan) {
 		Label l = new Label(parent, SWT.NONE);
@@ -341,7 +340,6 @@ public class SWTFactory {
 	 * @param hspan the horizontal span to take up on the parent composite
 	 * @return the new text widget
 	 * @since 3.2
-	 *
 	 */
 	public static Text createSingleText(Composite parent, int hspan) {
 		Text t = new Text(parent, SWT.SINGLE | SWT.BORDER);
@@ -459,7 +457,6 @@ public class SWTFactory {
 	 * @param fill the style for how this composite should fill into its parent
 	 * @return the new group
 	 * @since 3.2
-	 *
 	 */
 	public static Group createGroup(Composite parent, String text, int columns, int hspan, int fill) {
 		Group g = new Group(parent, SWT.NONE);
@@ -555,8 +552,6 @@ public class SWTFactory {
 
 	/**
 	 * creates a horizontal spacer for separating components
-	 * @param comp
-	 * @param numlines
 	 * @since 3.3
 	 */
 	public static void createHorizontalSpacer(Composite comp, int numlines) {
@@ -593,13 +588,6 @@ public class SWTFactory {
 
 	/**
 	 * Creates a {@link ViewForm}
-	 * @param parent
-	 * @param style
-	 * @param cols
-	 * @param span
-	 * @param fill
-	 * @param marginwidth
-	 * @param marginheight
 	 * @return a new {@link ViewForm}
 	 * @since 3.6
 	 */

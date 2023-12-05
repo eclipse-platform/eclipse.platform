@@ -34,9 +34,6 @@ public class RequestData {
 	protected WebappPreferences preferences;
 	/**
 	 * Constructs the data for a request.
-	 *
-	 * @param context
-	 * @param request
 	 */
 	public RequestData(ServletContext context, HttpServletRequest request,
 			HttpServletResponse response) {

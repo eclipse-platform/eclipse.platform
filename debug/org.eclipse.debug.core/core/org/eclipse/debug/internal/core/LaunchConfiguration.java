@@ -985,7 +985,6 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 
 	/*
 	 * Get Preferred delegate with all fallbacks
-	 *
 	 */
 	public ILaunchConfigurationDelegate getPreferredLaunchDelegate(String mode) throws CoreException {
 		Set<String> modes = getModes();

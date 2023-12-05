@@ -269,7 +269,6 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 
 	/**
 	 * Start the monitoring of resources by all monitors.
-	 * @param progressMonitor
 	 */
 	public void start(IProgressMonitor progressMonitor) {
 		List<IResource> resourcesToMonitor = getResourcesToMonitor();

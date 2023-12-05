@@ -23,9 +23,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.text.*;
 
-/**
- *
- */
 public class FindUnusedSearchResult extends AbstractTextSearchResult implements IResultReporter {
 
 	private final FindUnusedSearchQuery fQuery;

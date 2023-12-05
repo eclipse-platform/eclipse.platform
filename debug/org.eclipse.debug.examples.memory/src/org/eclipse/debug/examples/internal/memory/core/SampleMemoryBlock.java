@@ -34,7 +34,6 @@ import org.eclipse.jface.viewers.IColorProvider;
 
 /**
  * Memory Block Implementation
- *
  */
 public class SampleMemoryBlock extends DebugElement implements IMemoryBlockExtension {
 
@@ -48,10 +47,6 @@ public class SampleMemoryBlock extends DebugElement implements IMemoryBlockExten
 
 	/**
 	 * Creates memory block
-	 *
-	 * @param debugTarget
-	 * @param expression
-	 * @param address
 	 */
 	public SampleMemoryBlock(SampleDebugTarget debugTarget, String expression, BigInteger address) {
 		super(debugTarget);

@@ -1120,7 +1120,6 @@ public class DebugPlugin extends Plugin {
 
 	/**
 	 * Register status handlers.
-	 *
 	 */
 	private void initializeStatusHandlers() {
 		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(DebugPlugin.PI_DEBUG_CORE, EXTENSION_POINT_STATUS_HANDLERS);
@@ -1147,7 +1146,6 @@ public class DebugPlugin extends Plugin {
 
 	/**
 	 * Register process factories.
-	 *
 	 */
 	private void initializeProcessFactories() {
 		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(DebugPlugin.PI_DEBUG_CORE, EXTENSION_POINT_PROCESS_FACTORIES);

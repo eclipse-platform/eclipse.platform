@@ -19,7 +19,6 @@ import org.eclipse.debug.core.model.IVariable;
 
 /**
  * @since 3.2
- *
  */
 public class DefaultExpressionModelProxy extends EventHandlerModelProxy {
 
