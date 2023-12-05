@@ -276,8 +276,8 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	public void createFileInFileSystem(IFileStore file, InputStream contents) throws CoreException {
 		file.getParent().mkdir(EFS.NONE, null);
-		try (OutputStream output = file.openOutputStream(EFS.NONE, null)) {
-			transferData(contents, output);
+		try (contents; OutputStream output = file.openOutputStream(EFS.NONE, null)) {
+			contents.transferTo(output);
 		} catch (IOException e) {
 			throw new CoreException(
 					new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed creating file in file system", e));
@@ -454,7 +454,7 @@ public abstract class ResourceTest extends CoreTest {
 		assertNotNull("location was null for file: " + file, location);
 		try (FileInputStream inputStream = new FileInputStream(location.toFile())) {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			transferData(inputStream, outputStream);
+			inputStream.transferTo(outputStream);
 			return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			throw new IllegalStateException("could not read from location:" + location, e);

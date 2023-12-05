@@ -443,7 +443,7 @@ public class FilteredResourceTest extends ResourceTest {
 	private void modifyFileInWorkspace(final IFile file) throws IOException, CoreException {
 		try (InputStream fileInputStream = file.getContents(false)) {
 			ByteArrayOutputStream originalContentStream = new ByteArrayOutputStream();
-			transferData(fileInputStream, originalContentStream);
+			fileInputStream.transferTo(originalContentStream);
 			String originalContent = new String(originalContentStream.toByteArray(), StandardCharsets.UTF_8);
 			String newContent = originalContent + "w";
 			ByteArrayInputStream modifiedContentStream = new ByteArrayInputStream(

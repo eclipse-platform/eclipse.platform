@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
 import org.eclipse.core.filesystem.EFS;
@@ -102,9 +103,11 @@ public class LinkedResourceTest extends ResourceTest {
 		createFileInFileSystem(resolve(localFile), getRandomContents());
 	}
 
-	private byte[] getFileContents(IFile file) throws CoreException {
+	private byte[] getFileContents(IFile file) throws CoreException, IOException {
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		transferData(new BufferedInputStream(file.getContents()), bout);
+		try (InputStream inputStream = new BufferedInputStream(file.getContents())) {
+			inputStream.transferTo(bout);
+		}
 		return bout.toByteArray();
 	}
 
@@ -639,7 +642,7 @@ public class LinkedResourceTest extends ResourceTest {
 	 * Tests creating a linked resource by modifying the .project file directly.
 	 * This is a regression test for bug 63331.
 	 */
-	public void testCreateLinkInDotProject() throws CoreException {
+	public void testCreateLinkInDotProject() throws Exception {
 		final IFile dotProject = existingProject.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		IFile link = nonExistingFileInExistingProject;
 		byte[] oldContents = null;

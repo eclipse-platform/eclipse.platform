@@ -1024,7 +1024,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 			try (InputStream input = new BufferedInputStream(fileInput)) {
 				ByteArrayOutputStream output = new ByteArrayOutputStream(1024);
 				buffer = output.toByteArray();
-				transferData(input, output);
+				input.transferTo(output);
 			}
 		}
 
@@ -1042,7 +1042,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		try (OutputStream fileOutput = new FileOutputStream(fileInFS)) {
 			try (OutputStream output = new BufferedOutputStream(fileOutput)) {
 				try (InputStream input = new BufferedInputStream(new ByteArrayInputStream(buffer))) {
-					transferData(input, output);
+					input.transferTo(output);
 				}
 			}
 		}
