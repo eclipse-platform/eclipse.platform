@@ -238,7 +238,9 @@ public class IResourceTest extends ResourceTest {
 		//file system only
 		unsynchronized = buildResources(root, new String[] {"1/1/2/2/1"});
 		ensureDoesNotExistInWorkspace(unsynchronized);
-		ensureExistsInFileSystem(unsynchronized);
+		for (IResource resource : unsynchronized) {
+			ensureExistsInFileSystem(resource);
+		}
 		unsynchronizedResources.add(unsynchronized[0]);
 		return result;
 	}
@@ -2278,7 +2280,9 @@ public class IResourceTest extends ResourceTest {
 
 		String[] hierarchy = {"Folder/", "Folder/Folder/", "Folder/Folder/Folder/", "Folder/Folder/Folder/Folder/"};
 		IResource[] resources = buildResources(folder, hierarchy);
-		ensureExistsInFileSystem(resources);
+		for (IResource resource : resources) {
+			ensureExistsInFileSystem(resource);
+		}
 		assertDoesNotExistInWorkspace(resources);
 
 		folder.refreshLocal(IResource.DEPTH_ONE, createTestMonitor());
