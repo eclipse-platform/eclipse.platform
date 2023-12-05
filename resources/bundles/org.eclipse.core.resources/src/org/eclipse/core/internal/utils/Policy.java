@@ -16,58 +16,63 @@ package org.eclipse.core.internal.utils;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osgi.service.debug.*;
+import org.eclipse.osgi.service.debug.DebugOptionsListener;
+import org.eclipse.osgi.service.debug.DebugTrace;
 import org.osgi.framework.Bundle;
 
 public class Policy {
 	static DebugTrace DEBUG_TRACE;
 
-	public static final DebugOptionsListener RESOURCES_DEBUG_OPTIONS_LISTENER = new DebugOptionsListener() {
-		@Override
-		public void optionsChanged(DebugOptions options) {
-			DEBUG_TRACE = options.newDebugTrace(ResourcesPlugin.PI_RESOURCES);
-			DEBUG = options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/debug", false); //$NON-NLS-1$
+	public static final DebugOptionsListener RESOURCES_DEBUG_OPTIONS_LISTENER = options -> {
+		DEBUG_TRACE = options.newDebugTrace(ResourcesPlugin.PI_RESOURCES);
+		Policy.DEBUG = options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/debug", false); //$NON-NLS-1$
 
-			DEBUG_AUTO_REFRESH = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/refresh", false); //$NON-NLS-1$
+		Policy.DEBUG_AUTO_REFRESH = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/refresh", false); //$NON-NLS-1$
 
-			DEBUG_BUILD_DELTA = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/delta", false); //$NON-NLS-1$
-			DEBUG_BUILD_CYCLE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/cycle", false); //$NON-NLS-1$
-			DEBUG_BUILD_FAILURE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/failure", false); //$NON-NLS-1$
-			DEBUG_BUILD_INTERRUPT = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/interrupt", false); //$NON-NLS-1$
-			DEBUG_BUILD_INVOKING = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/invoking", false); //$NON-NLS-1$
-			DEBUG_BUILD_NEEDED = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/needbuild", false); //$NON-NLS-1$
-			DEBUG_BUILD_NEEDED_DELTA = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/needbuilddelta", false); //$NON-NLS-1$
-			DEBUG_BUILD_NEEDED_STACK = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/needbuildstack", false); //$NON-NLS-1$
-			DEBUG_BUILD_STACK = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/stacktrace", false); //$NON-NLS-1$
+		Policy.DEBUG_BUILD_DELTA = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/delta", false); //$NON-NLS-1$
+		Policy.DEBUG_BUILD_CYCLE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/cycle", false); //$NON-NLS-1$
+		Policy.DEBUG_BUILD_FAILURE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/failure", false); //$NON-NLS-1$
+		Policy.DEBUG_BUILD_INTERRUPT = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/interrupt", false); //$NON-NLS-1$
+		Policy.DEBUG_BUILD_INVOKING = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/invoking", false); //$NON-NLS-1$
+		Policy.DEBUG_BUILD_NEEDED = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/needbuild", false); //$NON-NLS-1$
+		Policy.DEBUG_BUILD_NEEDED_DELTA = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/needbuilddelta", false); //$NON-NLS-1$
+		Policy.DEBUG_BUILD_NEEDED_STACK = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/needbuildstack", false); //$NON-NLS-1$
+		Policy.DEBUG_BUILD_STACK = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/build/stacktrace", false); //$NON-NLS-1$
 
-			Policy.DEBUG_TREE_IMMUTABLE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/tree/immutable", false); //$NON-NLS-1$
-			Policy.DEBUG_TREE_IMMUTABLE_STACK = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/tree/immutablestack", false); //$NON-NLS-1$
-			
-			DEBUG_CONTENT_TYPE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/contenttype", false); //$NON-NLS-1$
-			DEBUG_CONTENT_TYPE_CACHE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/contenttype/cache", false); //$NON-NLS-1$
-			DEBUG_HISTORY = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/history", false); //$NON-NLS-1$
-			DEBUG_NATURES = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/natures", false); //$NON-NLS-1$
-			DEBUG_NOTIFICATIONS = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/notifications", false); //$NON-NLS-1$
-			DEBUG_PREFERENCES = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/preferences", false); //$NON-NLS-1$
+		Policy.DEBUG_TREE_IMMUTABLE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/tree/immutable", false); //$NON-NLS-1$
+		Policy.DEBUG_TREE_IMMUTABLE_STACK = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/tree/immutablestack", false); //$NON-NLS-1$
 
-			DEBUG_RESTORE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore", false); //$NON-NLS-1$
-			DEBUG_RESTORE_MARKERS = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/markers", false); //$NON-NLS-1$
-			DEBUG_RESTORE_MASTERTABLE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/mastertable", false); //$NON-NLS-1$
-			DEBUG_RESTORE_METAINFO = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/metainfo", false); //$NON-NLS-1$
-			DEBUG_RESTORE_SNAPSHOTS = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/snapshots", false); //$NON-NLS-1$
-			DEBUG_RESTORE_SYNCINFO = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/syncinfo", false); //$NON-NLS-1$
-			DEBUG_RESTORE_TREE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/tree", false); //$NON-NLS-1$
-			DEBUG_SAVE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save", false); //$NON-NLS-1$
-			DEBUG_SAVE_MARKERS = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/markers", false); //$NON-NLS-1$
-			DEBUG_SAVE_MASTERTABLE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/mastertable", false); //$NON-NLS-1$
-			DEBUG_SAVE_METAINFO = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/metainfo", false); //$NON-NLS-1$
-			DEBUG_SAVE_SYNCINFO = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/syncinfo", false); //$NON-NLS-1$
-			DEBUG_SAVE_TREE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/tree", false); //$NON-NLS-1$
+		Policy.DEBUG_CONTENT_TYPE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/contenttype", false); //$NON-NLS-1$
+		Policy.DEBUG_CONTENT_TYPE_CACHE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/contenttype/cache", false); //$NON-NLS-1$
+		Policy.DEBUG_HISTORY = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/history", false); //$NON-NLS-1$
+		Policy.DEBUG_NATURES = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/natures", false); //$NON-NLS-1$
+		Policy.DEBUG_NOTIFICATIONS = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/notifications", false); //$NON-NLS-1$
+		Policy.DEBUG_PREFERENCES = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/preferences", false); //$NON-NLS-1$
 
-			DEBUG_STRINGS = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/strings", false); //$NON-NLS-1$
-		}
+		Policy.DEBUG_RESTORE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore", false); //$NON-NLS-1$
+		Policy.DEBUG_RESTORE_MARKERS = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/markers", false); //$NON-NLS-1$
+		Policy.DEBUG_RESTORE_MASTERTABLE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/mastertable", false); //$NON-NLS-1$
+		Policy.DEBUG_RESTORE_METAINFO = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/metainfo", false); //$NON-NLS-1$
+		Policy.DEBUG_RESTORE_SNAPSHOTS = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/snapshots", false); //$NON-NLS-1$
+		Policy.DEBUG_RESTORE_SYNCINFO = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/syncinfo", false); //$NON-NLS-1$
+		Policy.DEBUG_RESTORE_TREE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/restore/tree", false); //$NON-NLS-1$
+		Policy.DEBUG_SAVE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save", false); //$NON-NLS-1$
+		Policy.DEBUG_SAVE_MARKERS = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/markers", false); //$NON-NLS-1$
+		Policy.DEBUG_SAVE_MASTERTABLE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/mastertable", false); //$NON-NLS-1$
+		Policy.DEBUG_SAVE_METAINFO = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/metainfo", false); //$NON-NLS-1$
+		Policy.DEBUG_SAVE_SYNCINFO = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/syncinfo", false); //$NON-NLS-1$
+		Policy.DEBUG_SAVE_TREE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/save/tree", false); //$NON-NLS-1$
+
+		Policy.DEBUG_STRINGS = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/strings", false); //$NON-NLS-1$
 	};
 
 	public static final boolean buildOnCancel = false;
@@ -179,10 +184,6 @@ public class Policy {
 	}
 
 	public static IProgressMonitor subMonitorFor(IProgressMonitor monitor, int ticks) {
-		if (monitor == null)
-			return new NullProgressMonitor();
-		if (monitor instanceof NullProgressMonitor)
-			return monitor;
-		return new SubProgressMonitor(monitor, ticks);
+		return SubMonitor.convert(monitor, ticks);
 	}
 }
