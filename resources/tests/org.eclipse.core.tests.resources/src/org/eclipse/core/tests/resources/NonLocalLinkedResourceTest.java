@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.filesystem.EFS;
@@ -40,7 +41,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 	protected IFileStore createFolderStore(String name) throws CoreException {
 		IFileSystem system = getFileSystem();
 		IFileStore store = system.getStore(IPath.ROOT.append(name));
-		store.mkdir(EFS.NONE, getMonitor());
+		store.mkdir(EFS.NONE, createTestMonitor());
 		return store;
 	}
 
@@ -66,21 +67,21 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 
 		//setup initial resources
 		ensureExistsInWorkspace(project, true);
-		source.createLink(sourceStore.toURI(), IResource.NONE, getMonitor());
-		destination.createLink(destinationStore.toURI(), IResource.NONE, getMonitor());
-		sourceFile.create(getRandomContents(), IResource.NONE, getMonitor());
+		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
+		destination.createLink(destinationStore.toURI(), IResource.NONE, createTestMonitor());
+		sourceFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
 
 		//copy to linked destination should succeed
-		sourceFile.copy(destinationFile.getFullPath(), IResource.NONE, getMonitor());
+		sourceFile.copy(destinationFile.getFullPath(), IResource.NONE, createTestMonitor());
 		//copy to local destination should succeed
-		sourceFile.copy(localFile.getFullPath(), IResource.NONE, getMonitor());
+		sourceFile.copy(localFile.getFullPath(), IResource.NONE, createTestMonitor());
 		//copy from local to non local
 		ensureDoesNotExistInWorkspace(destinationFile);
 		//copy from local to non local
-		localFile.copy(destinationFile.getFullPath(), IResource.NONE, getMonitor());
+		localFile.copy(destinationFile.getFullPath(), IResource.NONE, createTestMonitor());
 
 		//copy to self should fail
-		assertThrows(CoreException.class, () -> localFile.copy(localFile.getFullPath(), IResource.NONE, getMonitor()));
+		assertThrows(CoreException.class, () -> localFile.copy(localFile.getFullPath(), IResource.NONE, createTestMonitor()));
 	}
 
 	public void testCopyFolder() throws CoreException {
@@ -92,23 +93,23 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 
 		//setup initial resources
 		ensureExistsInWorkspace(project, true);
-		parentFolder.create(IResource.NONE, true, getMonitor());
-		source.createLink(sourceStore.toURI(), IResource.NONE, getMonitor());
+		parentFolder.create(IResource.NONE, true, createTestMonitor());
+		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
 
 		//shallow copy to destination should succeed
-		source.copy(destination.getFullPath(), IResource.SHALLOW, getMonitor());
+		source.copy(destination.getFullPath(), IResource.SHALLOW, createTestMonitor());
 		assertTrue("1.1", destination.exists());
 
 		//deep copy to destination should succeed
-		destination.delete(IResource.NONE, getMonitor());
-		source.copy(destination.getFullPath(), IResource.NONE, getMonitor());
+		destination.delete(IResource.NONE, createTestMonitor());
+		source.copy(destination.getFullPath(), IResource.NONE, createTestMonitor());
 		assertTrue("2.1", destination.exists());
 
 		//should fail when destination is occupied
-		assertThrows(CoreException.class, () -> source.copy(destination.getFullPath(), IResource.NONE, getMonitor()));
+		assertThrows(CoreException.class, () -> source.copy(destination.getFullPath(), IResource.NONE, createTestMonitor()));
 
 		//copy to self should fail
-		assertThrows(CoreException.class, () -> source.copy(source.getFullPath(), IResource.NONE, getMonitor()));
+		assertThrows(CoreException.class, () -> source.copy(source.getFullPath(), IResource.NONE, createTestMonitor()));
 	}
 
 	public void testMoveFile() throws CoreException {
@@ -123,24 +124,24 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 
 		//setup initial resources
 		ensureExistsInWorkspace(project, true);
-		source.createLink(sourceStore.toURI(), IResource.NONE, getMonitor());
-		destination.createLink(destinationStore.toURI(), IResource.NONE, getMonitor());
-		sourceFile.create(getRandomContents(), IResource.NONE, getMonitor());
+		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
+		destination.createLink(destinationStore.toURI(), IResource.NONE, createTestMonitor());
+		sourceFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
 
 		//move to linked destination should succeed
-		sourceFile.move(destinationFile.getFullPath(), IResource.NONE, getMonitor());
+		sourceFile.move(destinationFile.getFullPath(), IResource.NONE, createTestMonitor());
 		//move back to source location
 		//move to linked destination should succeed
-		destinationFile.move(sourceFile.getFullPath(), IResource.NONE, getMonitor());
+		destinationFile.move(sourceFile.getFullPath(), IResource.NONE, createTestMonitor());
 
 		//move to local destination should succeed
-		sourceFile.move(localFile.getFullPath(), IResource.NONE, getMonitor());
+		sourceFile.move(localFile.getFullPath(), IResource.NONE, createTestMonitor());
 
 		//movefrom local to non local
-		localFile.move(destinationFile.getFullPath(), IResource.NONE, getMonitor());
+		localFile.move(destinationFile.getFullPath(), IResource.NONE, createTestMonitor());
 
 		//copy to self should fail
-		assertThrows(CoreException.class, () -> localFile.copy(localFile.getFullPath(), IResource.NONE, getMonitor()));
+		assertThrows(CoreException.class, () -> localFile.copy(localFile.getFullPath(), IResource.NONE, createTestMonitor()));
 	}
 
 	// Test for Bug 342060 - Renaming a project failing with custom EFS
@@ -153,20 +154,20 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		IFile sourceFile = source.getFile("file.txt");
 		//setup initial resources
 		ensureExistsInWorkspace(project, true);
-		source.createLink(sourceStore.toURI(), IResource.NONE, getMonitor());
-		destination.createLink(destinationStore.toURI(), IResource.NONE, getMonitor());
-		sourceFile.create(getRandomContents(), IResource.NONE, getMonitor());
+		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
+		destination.createLink(destinationStore.toURI(), IResource.NONE, createTestMonitor());
+		sourceFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
 
 		//move to linked destination should succeed
-		project.move(IPath.fromPortableString("movedProject"), IResource.NONE, getMonitor());
+		project.move(IPath.fromPortableString("movedProject"), IResource.NONE, createTestMonitor());
 	}
 
 	protected IFileStore createBogusFolderStore(String name) throws CoreException {
 		IFileSystem system = getBogusFileSystem();
 		IFileStore store = system.getStore(IPath.ROOT.append(name));
 		deleteOnTearDown(
-					IPath.fromOSString(system.getStore(IPath.ROOT).toLocalFile(EFS.NONE, getMonitor()).getPath()));
-		store.mkdir(EFS.NONE, getMonitor());
+					IPath.fromOSString(system.getStore(IPath.ROOT).toLocalFile(EFS.NONE, createTestMonitor()).getPath()));
+		store.mkdir(EFS.NONE, createTestMonitor());
 		return store;
 	}
 

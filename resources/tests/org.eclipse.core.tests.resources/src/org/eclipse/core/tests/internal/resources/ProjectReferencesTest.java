@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.emptyArray;
@@ -81,7 +82,7 @@ public class ProjectReferencesTest extends ResourceTest {
 	private void setUpVariants(IProject project) throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildConfigs(new String[] {bc0, bc1});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 	}
 
 	public void testAddReferencesToNonExistantConfigs() throws CoreException {
@@ -91,7 +92,7 @@ public class ProjectReferencesTest extends ResourceTest {
 				!project0.hasBuildConfig(nonExistentBC));
 
 		desc.setBuildConfigReferences(nonExistentBC, new IBuildConfiguration[] {project1v0});
-		project0.setDescription(desc, getMonitor());
+		project0.setDescription(desc, createTestMonitor());
 
 		assertThat("project '" + project0 + "' has unexpected build config: " + nonExistentBC,
 				!project0.hasBuildConfig(nonExistentBC));
@@ -114,7 +115,7 @@ public class ProjectReferencesTest extends ResourceTest {
 		// Set some references
 		desc.setBuildConfigReferences(project0v0.getName(), refs);
 		desc.setBuildConfigReferences(project0v1.getName(), refs2);
-		project0.setDescription(desc, getMonitor());
+		project0.setDescription(desc, createTestMonitor());
 
 		// Check build configa
 		desc = project0.getDescription();
@@ -122,21 +123,21 @@ public class ProjectReferencesTest extends ResourceTest {
 		assertThat(desc.getBuildConfigReferences(project0v1.getName()), is(refs2));
 		// Resetting the build configs doesn't change anything
 		desc.setBuildConfigs(new String[] {project0v0.getName(), project0v1.getName()});
-		project0.setDescription(desc, getMonitor());
+		project0.setDescription(desc, createTestMonitor());
 
 		desc = project0.getDescription();
 		assertThat(desc.getBuildConfigReferences(project0v0.getName()), is(refs));
 		assertThat(desc.getBuildConfigReferences(project0v1.getName()), is(refs2));
 		// Removing a build configuration removes the references
 		desc.setBuildConfigs(new String[] {project0v0.getName()});
-		project0.setDescription(desc, getMonitor());
+		project0.setDescription(desc, createTestMonitor());
 
 		desc = project0.getDescription();
 		assertThat(desc.getBuildConfigReferences(project0v0.getName()), is(refs));
 		assertThat(desc.getBuildConfigReferences(project0v1.getName()), emptyArray());
 		// Re-adding a build configuration doesn't make references re-appear
 		desc.setBuildConfigs(new String[] {project0v0.getName()});
-		project0.setDescription(desc, getMonitor());
+		project0.setDescription(desc, createTestMonitor());
 
 		desc = project0.getDescription();
 		assertThat(desc.getBuildConfigReferences(project0v0.getName()), is(refs));
@@ -151,7 +152,7 @@ public class ProjectReferencesTest extends ResourceTest {
 		// Set project variant references
 		IProjectDescription desc = project0.getDescription();
 		desc.setDynamicReferences(new IProject[] {project1, project3});
-		project0.setDescription(desc, getMonitor());
+		project0.setDescription(desc, createTestMonitor());
 
 		// Check getters
 		desc = project0.getDescription();
@@ -165,7 +166,7 @@ public class ProjectReferencesTest extends ResourceTest {
 
 		// Now set dynamic references on config1
 		desc.setBuildConfigReferences(project0v0.getName(), new IBuildConfiguration[] {project3v1, project2v0, project1v0});
-		project0.setDescription(desc, getMonitor());
+		project0.setDescription(desc, createTestMonitor());
 
 		// Check references
 		// This is deterministic as config0 is listed first, so we expect its config order to trump cofig1's
@@ -185,22 +186,22 @@ public class ProjectReferencesTest extends ResourceTest {
 		IProjectDescription desc = project0.getDescription();
 		desc.setReferencedProjects(new IProject[] {project3, project1});
 		desc.setDynamicReferences(new IProject[] {project1, project2});
-		project0.setDescription(desc, getMonitor());
+		project0.setDescription(desc, createTestMonitor());
 
 		desc = project1.getDescription();
 		desc.setReferencedProjects(new IProject[] {project0});
 		desc.setDynamicReferences(new IProject[] {});
-		project1.setDescription(desc, getMonitor());
+		project1.setDescription(desc, createTestMonitor());
 
 		desc = project2.getDescription();
 		desc.setReferencedProjects(new IProject[] {});
 		desc.setDynamicReferences(new IProject[] {});
-		project2.setDescription(desc, getMonitor());
+		project2.setDescription(desc, createTestMonitor());
 
 		desc = project3.getDescription();
 		desc.setReferencedProjects(new IProject[] {});
 		desc.setDynamicReferences(new IProject[] {project0});
-		project3.setDescription(desc, getMonitor());
+		project3.setDescription(desc, createTestMonitor());
 
 		// Test getters
 		desc = project0.getDescription();
@@ -224,18 +225,18 @@ public class ProjectReferencesTest extends ResourceTest {
 		// config level references
 		desc.setBuildConfigReferences(bc0, new IBuildConfiguration[] {project2v0, project1v0});
 		desc.setBuildConfigReferences(bc1, new IBuildConfiguration[] {project2v0});
-		project0.setDescription(desc, getMonitor());
+		project0.setDescription(desc, createTestMonitor());
 
 		desc = project1.getDescription();
 		desc.setReferencedProjects(new IProject[] {project0});
 		desc.setBuildConfigReferences(bc0, new IBuildConfiguration[] {project0v1});
 		desc.setBuildConfigReferences(bc1, new IBuildConfiguration[] {});
-		project1.setDescription(desc, getMonitor());
+		project1.setDescription(desc, createTestMonitor());
 
 		desc = project3.getDescription();
 		desc.setBuildConfigReferences(bc0, new IBuildConfiguration[] {project0v1});
 		desc.setBuildConfigReferences(bc1, new IBuildConfiguration[] {});
-		project3.setDescription(desc, getMonitor());
+		project3.setDescription(desc, createTestMonitor());
 
 		// Check getters
 		desc = project0.getDescription();
@@ -255,7 +256,7 @@ public class ProjectReferencesTest extends ResourceTest {
 	public void testReferencesToActiveConfigs() throws CoreException {
 		IProjectDescription desc = project0.getDescription();
 		desc.setBuildConfigReferences(bc0, new IBuildConfiguration[] {getRef(project1)});
-		project0.setDescription(desc, getMonitor());
+		project0.setDescription(desc, createTestMonitor());
 
 		assertThat(desc.getBuildConfigReferences(bc0), arrayContaining(getRef(project1)));
 		assertThat(project0.getReferencedBuildConfigs(project0v0.getName(), true),

@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.net.URI;
 import org.eclipse.core.filesystem.IFileStore;
@@ -37,7 +38,7 @@ public class Bug_233939 extends ResourceTest {
 	 */
 	protected void symLinkAndRefresh(IContainer container, String linkName, IPath linkTarget) throws CoreException {
 		createSymLink(container.getLocation().toFile(), linkName, linkTarget.toOSString(), false);
-		container.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		container.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		IResource theLink = container.findMember(linkName);
 		assertExistsInWorkspace(theLink);
 		assertTrue("2.2", theLink.getResourceAttributes().isSymbolicLink());
@@ -64,8 +65,8 @@ public class Bug_233939 extends ResourceTest {
 		IFile file = project.getFile(fileName);
 
 		// create a project
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		// create a file: getTempStore() will be cleaned up in tearDown()
 		IFileStore tempFileStore = getTempStore().getChild(fileName);

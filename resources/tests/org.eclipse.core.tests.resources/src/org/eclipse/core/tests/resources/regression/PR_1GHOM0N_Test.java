@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
@@ -37,16 +38,16 @@ public class PR_1GHOM0N_Test extends ResourceTest {
 		ICommand command = description.newCommand();
 		command.setBuilderName(SimpleBuilder.BUILDER_ID);
 		description.setBuildSpec(new ICommand[] { command });
-		project.create(description, getMonitor());
-		project.open(getMonitor());
+		project.create(description, createTestMonitor());
+		project.open(createTestMonitor());
 
 		// try and reproduce the error (there are problems when calling an incremental
 		// build from within an operation...it leaves the tree immutable)
 		IWorkspaceRunnable body = monitor -> {
-			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 			IFile file = project.getFile("test.txt");
-			file.create(getRandomContents(), true, getMonitor());
+			file.create(getRandomContents(), true, createTestMonitor());
 		};
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 	}
 }

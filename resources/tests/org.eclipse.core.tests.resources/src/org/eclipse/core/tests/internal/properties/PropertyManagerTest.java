@@ -16,6 +16,7 @@ package org.eclipse.core.tests.internal.properties;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -117,7 +118,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 
 		// create common objects
 		final IFile target = projects[0].getFile("target");
-		target.create(getRandomContents(), true, getMonitor());
+		target.create(getRandomContents(), true, createTestMonitor());
 
 		// prepare keys and values
 		final int N = 50;
@@ -159,7 +160,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 			// give the threads a chance to start
 			Thread.sleep(10);
 			// delete the project while the threads are still running
-			target.getProject().delete(IResource.NONE, getMonitor());
+			target.getProject().delete(IResource.NONE, createTestMonitor());
 			for (Thread thread : threads) {
 				thread.join();
 			}
@@ -377,7 +378,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 		ensureExistsInWorkspace(file1a, true);
 		QualifiedName key = new QualifiedName(PI_RESOURCES_TESTS, "key");
 		file1a.setPersistentProperty(key, "value");
-		file1a.move(IPath.fromOSString("file2"), true, getMonitor());
+		file1a.move(IPath.fromOSString("file2"), true, createTestMonitor());
 		IFile file1b = folder.getFile("file1");
 		ensureExistsInWorkspace(file1b, true);
 		String value = null;
@@ -398,7 +399,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 		ensureExistsInWorkspace(folder1a, true);
 		QualifiedName key = new QualifiedName(PI_RESOURCES_TESTS, "key");
 		folder1a.setPersistentProperty(key, "value");
-		folder1a.move(IPath.fromOSString("folder2"), true, getMonitor());
+		folder1a.move(IPath.fromOSString("folder2"), true, createTestMonitor());
 		IFolder folder1b = project.getFolder("folder1");
 		ensureExistsInWorkspace(folder1b, true);
 		String value = null;
@@ -415,7 +416,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 	public void testLargeProperty() throws CoreException {
 		// create common objects
 		IFile target = projects[0].getFile("target");
-		target.create(getRandomContents(), true, getMonitor());
+		target.create(getRandomContents(), true, createTestMonitor());
 
 		QualifiedName name = new QualifiedName("stressTest", "prop");
 		final int SIZE = 10000;
@@ -436,7 +437,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 		ensureExistsInWorkspace(project1a, true);
 		QualifiedName key = new QualifiedName(PI_RESOURCES_TESTS, "key");
 		project1a.setPersistentProperty(key, "value");
-		project1a.move(IPath.fromOSString("proj2"), true, getMonitor());
+		project1a.move(IPath.fromOSString("proj2"), true, createTestMonitor());
 		IProject project1b = root.getProject("proj1");
 		ensureExistsInWorkspace(project1b, true);
 		String value = project1b.getPersistentProperty(key);
@@ -485,7 +486,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 
 		// create common objects
 		IFile target = projects[0].getFile("target");
-		target.create(getRandomContents(), true, getMonitor());
+		target.create(getRandomContents(), true, createTestMonitor());
 
 		// prepare keys and values
 		int N = 3;

@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import java.io.InputStream;
@@ -79,7 +80,7 @@ public class IResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(new IResource[] {project, outputFolder}, true);
 
 		assertTrue("0.0", description.exists());
-		description.copy(destination.getFullPath(), IResource.NONE, getMonitor());
+		description.copy(destination.getFullPath(), IResource.NONE, createTestMonitor());
 		assertTrue("0.1", destination.exists());
 	}
 
@@ -97,7 +98,7 @@ public class IResourceTest extends ResourceTest {
 		file.setResourceAttributes(attributes);
 		assertTrue("1.0", !file.getResourceAttributes().isArchive());
 		// modify the file
-		file.setContents(getRandomContents(), IResource.KEEP_HISTORY, getMonitor());
+		file.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
 
 		//now the archive bit should be set
 		assertTrue("2.0", file.getResourceAttributes().isArchive());
@@ -169,7 +170,7 @@ public class IResourceTest extends ResourceTest {
 				ISynchronizer synchronizer = getWorkspace().getSynchronizer();
 				synchronizer.flushSyncInfo(name, file, IResource.DEPTH_INFINITE);
 				synchronizer.setSyncInfo(name, file, new byte[] { 1 });
-			}, null, IWorkspace.AVOID_UPDATE, getMonitor());
+			}, null, IWorkspace.AVOID_UPDATE, createTestMonitor());
 			// ensure file was only seen by phantom listener
 			assertTrue("1.0", !seen[0]);
 			assertTrue("1.0", phantomSeen[0]);
@@ -187,7 +188,7 @@ public class IResourceTest extends ResourceTest {
 		IFolder folder = project.getFolder("f");
 		ensureExistsInWorkspace(project, true);
 		ensureExistsInWorkspace(folder, true);
-		folder.setLocal(false, IResource.DEPTH_ZERO, getMonitor());
+		folder.setLocal(false, IResource.DEPTH_ZERO, createTestMonitor());
 		// non-local resource is never synchronized because it doesn't exist on disk
 		assertTrue("1.0", !project.isSynchronized(IResource.DEPTH_INFINITE));
 	}
@@ -212,14 +213,14 @@ public class IResourceTest extends ResourceTest {
 	public void testCopy_1GA6QJP() throws CoreException, InterruptedException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile source = project.getFile("file1");
-		project.create(getMonitor());
-		project.open(getMonitor());
-		source.create(getContents("abc"), true, getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
+		source.create(getContents("abc"), true, createTestMonitor());
 
 		Thread.sleep(2000);
 
 		IPath destinationPath = IPath.fromOSString("copy of file");
-		source.copy(destinationPath, true, getMonitor());
+		source.copy(destinationPath, true, createTestMonitor());
 
 		IFile destination = project.getFile(destinationPath);
 		long expected = source.getLocation().toFile().lastModified();
@@ -271,7 +272,7 @@ public class IResourceTest extends ResourceTest {
 		}
 
 		// test refreshLocal
-		ThrowingRunnable refresh = () -> anotherFile.refreshLocal(IResource.DEPTH_ZERO, getMonitor());
+		ThrowingRunnable refresh = () -> anotherFile.refreshLocal(IResource.DEPTH_ZERO, createTestMonitor());
 		if (caseSensitive) {
 			refresh.run();
 		} else {
@@ -322,7 +323,7 @@ public class IResourceTest extends ResourceTest {
 		IFile file = project.getFile("MyFile");
 		ensureExistsInFileSystem(file);
 
-		file.create(getRandomContents(), true, getMonitor());
+		file.create(getRandomContents(), true, createTestMonitor());
 	}
 
 	/*
@@ -349,7 +350,7 @@ public class IResourceTest extends ResourceTest {
 		assertTrue("2.0", file.isReadOnly());
 
 		// doit
-		assertThrows(CoreException.class, () -> file.delete(false, getMonitor()));
+		assertThrows(CoreException.class, () -> file.delete(false, createTestMonitor()));
 
 		// cleanup
 		attributes = file.getResourceAttributes();
@@ -371,7 +372,7 @@ public class IResourceTest extends ResourceTest {
 		ensureOutOfSync(file);
 
 		// doit
-		CoreException exception = assertThrows(CoreException.class, () -> file.delete(false, getMonitor()));
+		CoreException exception = assertThrows(CoreException.class, () -> file.delete(false, createTestMonitor()));
 		IStatus status = exception.getStatus();
 		if (status.isMultiStatus()) {
 			IStatus[] children = status.getChildren();
@@ -404,15 +405,15 @@ public class IResourceTest extends ResourceTest {
 	 */
 	public void testFindMember_1GA6QYV() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		IFolder folder1 = project.getFolder("Folder1");
 		IFolder folder2 = folder1.getFolder("Folder2");
 		IFolder folder3 = folder2.getFolder("Folder3");
-		folder1.create(true, true, getMonitor());
-		folder2.create(true, true, getMonitor());
-		folder3.create(true, true, getMonitor());
+		folder1.create(true, true, createTestMonitor());
+		folder2.create(true, true, createTestMonitor());
+		folder3.create(true, true, createTestMonitor());
 
 		IPath targetPath = IPath.fromOSString("Folder2/Folder3");
 		IFolder target = (IFolder) folder1.findMember(targetPath);

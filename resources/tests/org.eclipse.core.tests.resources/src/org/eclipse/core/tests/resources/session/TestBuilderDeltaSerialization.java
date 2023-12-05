@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.io.ByteArrayInputStream;
 import java.util.Map;
@@ -84,7 +85,7 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 		command.setBuilderName(SortBuilder.BUILDER_NAME);
 		command.setArguments(args);
 		description.setBuildSpec(new ICommand[] { command });
-		project1.setDescription(description, getMonitor());
+		project1.setDescription(description, createTestMonitor());
 
 		// configure builder for project2
 		description = project1.getDescription();
@@ -95,12 +96,12 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 		command.setBuilderName(SortBuilder.BUILDER_NAME);
 		command.setArguments(args);
 		description.setBuildSpec(new ICommand[] { command });
-		project2.setDescription(description, getMonitor());
+		project2.setDescription(description, createTestMonitor());
 
 		// initial build -- created sortedFile1 and sortedFile2
-		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**
@@ -108,7 +109,7 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 	 * about changes made by Builder2 during the last build phase.
 	 */
 	public void test2() throws CoreException {
-		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		//Only builder1 should have been built
 		SortBuilder[] builders = SortBuilder.allInstances();
 		assertEquals("1.0", 2, builders.length);

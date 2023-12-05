@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -70,7 +71,7 @@ public class IResourceChangeEventTest extends ResourceTest {
 			marker2 = file2.createMarker(IMarker.BOOKMARK);
 			marker3 = file3.createMarker(IMarker.BOOKMARK);
 		};
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 	}
 
 	/**
@@ -123,7 +124,7 @@ public class IResourceChangeEventTest extends ResourceTest {
 			marker3.setAttribute("Foo", true);
 		};
 		try {
-			getWorkspace().run(body, getMonitor());
+			getWorkspace().run(body, createTestMonitor());
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
@@ -174,7 +175,7 @@ public class IResourceChangeEventTest extends ResourceTest {
 
 		//do the work
 		try {
-			file1.setContents(getRandomContents(), true, true, getMonitor());
+			file1.setContents(getRandomContents(), true, true, createTestMonitor());
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}

@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.is;
@@ -54,7 +55,7 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		IProjectDescription desc = project.getDescription();
 		String[] configs = new String[] {variantId0, variantId1};
 		desc.setBuildConfigs(configs);
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 
 		assertThat(project.getBuildConfigs(), arrayContaining(variant0, variant1));
 		assertThat(project.getBuildConfig(variantId0), is(variant0));
@@ -71,7 +72,7 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		assertThat(project.getActiveBuildConfig(), is(variant0));
 		desc = project.getDescription();
 		desc.setActiveBuildConfig(variantId1);
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		assertThat(project.getActiveBuildConfig(), is(variant1));
 		// test that setting the variant to an invalid id has no effect
 		desc.setActiveBuildConfig(variantId2);
@@ -85,14 +86,14 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 	public void testDuplicates() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildConfigs(new String[] {variantId0, variantId1, variantId0});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		assertThat(project.getBuildConfigs(), arrayContaining(variant0, variant1));
 	}
 
 	public void testDefaultVariant() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildConfigs(new String[] {});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 
 		assertThat(project.getBuildConfigs(), arrayContaining(defaultVariant));
 		assertThat("project '" + project + "' is missing build config: " + defaultVariant,
@@ -101,7 +102,7 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		assertThat(project.getActiveBuildConfig(), is(defaultVariant));
 		desc = project.getDescription();
 		desc.setActiveBuildConfig(IBuildConfiguration.DEFAULT_CONFIG_NAME);
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		assertThat(project.getActiveBuildConfig(), is(defaultVariant));
 	}
 
@@ -109,16 +110,16 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildConfigs(new String[0]);
 		desc.setBuildConfigs(new String[] {variant0.getName(), variant1.getName()});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		assertThat(project.getActiveBuildConfig(), is(variant0));
 		desc.setBuildConfigs(new String[] {variant0.getName(), variant2.getName()});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		assertThat(project.getActiveBuildConfig(), is(variant0));
 		desc = project.getDescription();
 		desc.setActiveBuildConfig(variantId2);
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		desc.setBuildConfigs(new String[] {variant0.getName(), variant1.getName()});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		assertThat(project.getActiveBuildConfig(), is(variant0));
 	}
 
@@ -129,13 +130,13 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		IProjectDescription desc = project.getDescription();
 		IBuildConfiguration[] configs = new IBuildConfiguration[] {variant0, variant1};
 		desc.setBuildConfigs(new String[] {configs[0].getName(), configs[1].getName()});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 
 		// Move the project. The build configurations should point at the new project
 		String newProjectName = "projectMoved";
 		desc = project.getDescription();
 		desc.setName(newProjectName);
-		project.move(desc, false, getMonitor());
+		project.move(desc, false, createTestMonitor());
 
 		IProject newProject = getWorkspace().getRoot().getProject(newProjectName);
 		assertThat("project does not exist: " + newProject, newProject.exists());

@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import java.io.BufferedWriter;
@@ -50,8 +51,8 @@ public class IPathVariableTest extends ResourceTest {
 	protected void setUp() throws Exception {
 		super.setUp();
 		project = getWorkspace().getRoot().getProject("MyProject");
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		assertTrue("1.4", project.exists());
 		manager = project.getPathVariableManager();
 	}
@@ -587,7 +588,7 @@ public class IPathVariableTest extends ResourceTest {
 
 		ensureExistsInWorkspace(new IResource[] {existingProject}, true);
 
-		existingProject.close(getMonitor());
+		existingProject.close(createTestMonitor());
 		ProjectInfo info = (ProjectInfo) ((Project) existingProject).getResourceInfo(false, false);
 		info.clear(ICoreConstants.M_USED);
 		String dotProjectPath = existingProject.getLocation().append(".project").toOSString();
@@ -595,7 +596,7 @@ public class IPathVariableTest extends ResourceTest {
 		try (BufferedWriter out = new BufferedWriter(fstream)) {
 			out.write(dorProjectContent);
 		}
-		existingProject.open(getMonitor());
+		existingProject.open(createTestMonitor());
 
 		IPathVariableManager pathVariableManager = existingProject.getPathVariableManager();
 		String[] varNames = pathVariableManager.getPathVariableNames();

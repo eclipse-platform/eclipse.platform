@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -31,8 +32,8 @@ public class PR_1GH2B0N_Test extends ResourceTest {
 		IPath projectLocation = path.append(project.getName());
 		deleteOnTearDown(projectLocation);
 		description.setLocation(projectLocation);
-		project.create(description, getMonitor());
-		project.open(getMonitor());
+		project.create(description, createTestMonitor());
+		project.open(createTestMonitor());
 
 		IProject project2 = getWorkspace().getRoot().getProject("MyProject2");
 		IStatus status = getWorkspace().validateProjectLocation(project2, project.getLocation().append(project2.getName()));

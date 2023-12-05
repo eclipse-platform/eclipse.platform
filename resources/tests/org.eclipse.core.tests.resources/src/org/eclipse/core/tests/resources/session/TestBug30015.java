@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.IProject;
@@ -47,10 +48,10 @@ public class TestBug30015 extends WorkspaceSessionTest {
 		IProjectDescription description = getWorkspace().newProjectDescription(PROJECT_NAME);
 		description.setLocation(rawLocation);
 		//create the project
-		project.create(description, getMonitor());
-		project.open(getMonitor());
+		project.create(description, createTestMonitor());
+		project.open(createTestMonitor());
 		//save and shutdown
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**

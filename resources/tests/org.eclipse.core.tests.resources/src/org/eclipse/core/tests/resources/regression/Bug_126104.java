@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -35,15 +36,15 @@ public class Bug_126104 extends ResourceTest {
 		ensureExistsInWorkspace(source, true);
 		IFolder link = project.getFolder("link");
 		IFileStore location = getTempStore();
-		link.createLink(location.toURI(), IResource.ALLOW_MISSING_LOCAL, getMonitor());
+		link.createLink(location.toURI(), IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 		IFile destination = link.getFile(source.getName());
-		source.copy(destination.getFullPath(), IResource.NONE, getMonitor());
+		source.copy(destination.getFullPath(), IResource.NONE, createTestMonitor());
 		assertTrue("1.0", destination.exists());
 
 		//try the same thing with move
 		ensureDoesNotExistInWorkspace(destination);
-		location.delete(EFS.NONE, getMonitor());
-		source.move(destination.getFullPath(), IResource.NONE, getMonitor());
+		location.delete(EFS.NONE, createTestMonitor());
+		source.move(destination.getFullPath(), IResource.NONE, createTestMonitor());
 		assertTrue("3.0", !source.exists());
 		assertTrue("3.1", destination.exists());
 	}

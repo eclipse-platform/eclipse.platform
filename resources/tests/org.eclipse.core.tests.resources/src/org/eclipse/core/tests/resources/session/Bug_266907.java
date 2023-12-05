@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -52,11 +53,11 @@ public class Bug_266907 extends WorkspaceSessionTest {
 
 		final IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(PROJECT_NAME);
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		IFile f = project.getFile(FILE_NAME);
-		f.create(getContents("content"), true, getMonitor());
+		f.create(getContents("content"), true, createTestMonitor());
 
 		IMarker marker = f.createMarker(IMarker.BOOKMARK);
 		marker.setAttribute(MARKER_ATTRIBUTE_NAME, MARKER_ATTRIBUTE);
@@ -64,7 +65,7 @@ public class Bug_266907 extends WorkspaceSessionTest {
 		// remember the location of .project to delete is at the end
 		File dotProject = project.getFile(".project").getLocation().toFile();
 
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 
 		// move .project to a temp location
 		File dotProjectCopy = getTempDir().append("dotProjectCopy").toFile();
@@ -88,7 +89,7 @@ public class Bug_266907 extends WorkspaceSessionTest {
 		transferStreams(new FileInputStream(dotProjectCopy), new FileOutputStream(dotProject), null);
 		dotProjectCopy.delete();
 
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 		assertThat("project should be accessible", project.isAccessible(), is(true));
 
 		IFile file = project.getFile(FILE_NAME);

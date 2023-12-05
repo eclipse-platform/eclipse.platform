@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -56,7 +57,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 		final IProject project = getWorkspace().getRoot().getProject("testEndRuleInWorkspaceOperation");
 		assertThrows(RuntimeException.class,
 				() -> getWorkspace().run((IWorkspaceRunnable) monitor -> Job.getJobManager().endRule(project), project,
-						IResource.NONE, getMonitor()));
+						IResource.NONE, createTestMonitor()));
 	}
 
 	/**
@@ -143,7 +144,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 		};
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			// noop
-		}, rule, IResource.NONE, getMonitor());
+		}, rule, IResource.NONE, createTestMonitor());
 	}
 
 	/**

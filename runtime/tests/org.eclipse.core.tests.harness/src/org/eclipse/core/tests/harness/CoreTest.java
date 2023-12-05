@@ -278,7 +278,7 @@ public class CoreTest extends TestCase {
 		return new ByteArrayInputStream(text.getBytes());
 	}
 
-	public IProgressMonitor getMonitor() {
+	public static IProgressMonitor getMonitor() {
 		return new FussyProgressMonitor();
 	}
 

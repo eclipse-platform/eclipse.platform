@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import java.util.HashMap;
@@ -155,7 +156,7 @@ public class IProjectDescriptionTest extends ResourceTest {
 		IProjectDescription description = project.getDescription();
 		description.setReferencedProjects(new IProject[] {target1});
 		description.setDynamicReferences(new IProject[] {target2});
-		project.setDescription(description, getMonitor());
+		project.setDescription(description, createTestMonitor());
 		IProject[] refs = project.getReferencedProjects();
 		assertEquals("2.1", 2, refs.length);
 		assertEquals("2.2", target1, refs[0]);
@@ -178,10 +179,10 @@ public class IProjectDescriptionTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("Project2");
 		ensureExistsInWorkspace(project, true);
 
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 		IProjectDescription description = project.getDescription();
 		description.setReferencedProjects(new IProject[] {target});
-		project.setDescription(description, getMonitor());
+		project.setDescription(description, createTestMonitor());
 		assertEquals("2.1", 1, target.getReferencingProjects().length);
 
 		//get references for a non-existent project

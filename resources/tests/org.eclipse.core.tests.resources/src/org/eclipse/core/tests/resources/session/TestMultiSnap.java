@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.session;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
@@ -35,25 +36,25 @@ public class TestMultiSnap extends WorkspaceSerializationTest {
 
 		/* create some resource handles */
 		IProject project = getWorkspace().getRoot().getProject(PROJECT);
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		/* snapshot */
-		workspace.save(false, getMonitor());
+		workspace.save(false, createTestMonitor());
 
 		/* do more stuff */
 		IFolder folder = project.getFolder(FOLDER);
-		folder.create(true, true, getMonitor());
+		folder.create(true, true, createTestMonitor());
 
-		workspace.save(false, getMonitor());
+		workspace.save(false, createTestMonitor());
 
 		/* do even more stuff */
 		IFile file = folder.getFile(FILE);
 		byte[] bytes = "Test bytes".getBytes();
 		java.io.ByteArrayInputStream in = new java.io.ByteArrayInputStream(bytes);
-		file.create(in, true, getMonitor());
+		file.create(in, true, createTestMonitor());
 
-		workspace.save(false, getMonitor());
+		workspace.save(false, createTestMonitor());
 
 		//exit without saving
 	}

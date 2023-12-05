@@ -13,11 +13,20 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryTree;
 import org.eclipse.core.tests.internal.filesystem.remote.RemoteFileSystem;
@@ -72,12 +81,12 @@ public class Bug_192631 extends ResourceTest {
 		IProject projectA = workspace.getRoot().getProject("projectA");
 		ensureExistsInWorkspace(projectA, true);
 		IFolder linkA = projectA.getFolder("link_to_commonA");
-		linkA.createLink(commonA, IResource.NONE, getMonitor());
+		linkA.createLink(commonA, IResource.NONE, createTestMonitor());
 
 		IProject projectB = workspace.getRoot().getProject("projectB");
 		ensureExistsInWorkspace(projectB, true);
 		IFolder linkB = projectB.getFolder("link_to_commonB");
-		linkB.createLink(commonB, IResource.NONE, getMonitor());
+		linkB.createLink(commonB, IResource.NONE, createTestMonitor());
 
 		toVisit.addAll(Arrays.asList(new URI[] {projectA.getLocationURI(), commonA, folderA, projectA.getFile(".project").getLocationURI()}));
 		toVisitCount[0] = 6;
@@ -91,8 +100,8 @@ public class Bug_192631 extends ResourceTest {
 		assertTrue("2.1", toVisit.isEmpty());
 		assertEquals("2.2", 0, toVisitCount[0]);
 
-		projectA.delete(true, getMonitor());
-		projectB.delete(true, getMonitor());
+		projectA.delete(true, createTestMonitor());
+		projectB.delete(true, createTestMonitor());
 	}
 
 	public void testCompareUserInfo() throws CoreException, URISyntaxException {
@@ -117,12 +126,12 @@ public class Bug_192631 extends ResourceTest {
 		IProject projectA = workspace.getRoot().getProject("projectA");
 		ensureExistsInWorkspace(projectA, true);
 		IFolder linkA = projectA.getFolder("link_to_commonA");
-		linkA.createLink(commonA, IResource.NONE, getMonitor());
+		linkA.createLink(commonA, IResource.NONE, createTestMonitor());
 
 		IProject projectB = workspace.getRoot().getProject("projectB");
 		ensureExistsInWorkspace(projectB, true);
 		IFolder linkB = projectB.getFolder("link_to_commonB");
-		linkB.createLink(commonB, IResource.NONE, getMonitor());
+		linkB.createLink(commonB, IResource.NONE, createTestMonitor());
 
 		toVisit.addAll(Arrays.asList(new URI[] {projectA.getLocationURI(), commonA, folderA, projectA.getFile(".project").getLocationURI()}));
 		toVisitCount[0] = 6;
@@ -136,8 +145,8 @@ public class Bug_192631 extends ResourceTest {
 		assertTrue("2.1", toVisit.isEmpty());
 		assertEquals("2.2", 0, toVisitCount[0]);
 
-		projectA.delete(true, getMonitor());
-		projectB.delete(true, getMonitor());
+		projectA.delete(true, createTestMonitor());
+		projectB.delete(true, createTestMonitor());
 	}
 
 	public void testComparePort() throws CoreException, URISyntaxException {
@@ -162,12 +171,12 @@ public class Bug_192631 extends ResourceTest {
 		IProject projectA = workspace.getRoot().getProject("projectA");
 		ensureExistsInWorkspace(projectA, true);
 		IFolder linkA = projectA.getFolder("link_to_commonA");
-		linkA.createLink(commonA, IResource.NONE, getMonitor());
+		linkA.createLink(commonA, IResource.NONE, createTestMonitor());
 
 		IProject projectB = workspace.getRoot().getProject("projectB");
 		ensureExistsInWorkspace(projectB, true);
 		IFolder linkB = projectB.getFolder("link_to_commonB");
-		linkB.createLink(commonB, IResource.NONE, getMonitor());
+		linkB.createLink(commonB, IResource.NONE, createTestMonitor());
 
 		toVisit.addAll(Arrays.asList(new URI[] {projectA.getLocationURI(), commonA, folderA, projectA.getFile(".project").getLocationURI()}));
 		toVisitCount[0] = 6;
@@ -181,7 +190,7 @@ public class Bug_192631 extends ResourceTest {
 		assertTrue("2.1", toVisit.isEmpty());
 		assertEquals("2.2", 0, toVisitCount[0]);
 
-		projectA.delete(true, getMonitor());
-		projectB.delete(true, getMonitor());
+		projectA.delete(true, createTestMonitor());
+		projectB.delete(true, createTestMonitor());
 	}
 }

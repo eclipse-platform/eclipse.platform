@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.eclipse.core.resources.IFolder;
@@ -39,7 +41,7 @@ public class Bug_331445 extends ResourceTest {
 
 		project.getPathVariableManager().setURIValue(variableName, new URI(variablePath));
 		IFolder folder = project.getFolder(getUniqueString());
-		folder.createLink(IPath.fromOSString(rawLinkFolderLocation), IResource.ALLOW_MISSING_LOCAL, getMonitor());
+		folder.createLink(IPath.fromOSString(rawLinkFolderLocation), IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 		assertNull("3.0", folder.getLocation());
 		assertEquals("4.0", IPath.fromOSString(rawLinkFolderLocation), folder.getRawLocation());
 		assertEquals("5.0", new URI(linkFolderLocation), folder.getLocationURI());

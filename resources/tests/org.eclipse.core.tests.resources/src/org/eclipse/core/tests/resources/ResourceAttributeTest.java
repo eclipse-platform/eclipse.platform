@@ -16,6 +16,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.io.File;
 import org.eclipse.core.filesystem.EFS;
@@ -159,7 +160,7 @@ public class ResourceAttributeTest extends ResourceTest {
 	public void testClosedProject() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		ensureExistsInWorkspace(project, true);
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 		assertNull("1.0", project.getResourceAttributes());
 	}
 

@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import java.io.DataInputStream;
@@ -146,11 +147,11 @@ public class ISynchronizerTest extends ResourceTest {
 			for (IProject project : projects) {
 				IResource[] children = project.members();
 				for (IResource element : children) {
-					element.delete(false, getMonitor());
+					element.delete(false, createTestMonitor());
 				}
 			}
 		};
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 
 		// sync info should remain for the resources since they are now phantoms
 		visitor = resource -> {
@@ -168,7 +169,7 @@ public class ISynchronizerTest extends ResourceTest {
 
 		// delete the projects
 		for (IProject project : projects) {
-			project.delete(false, getMonitor());
+			project.delete(false, createTestMonitor());
 		}
 
 		// sync info should be gone since projects can't become phantoms
@@ -219,12 +220,12 @@ public class ISynchronizerTest extends ResourceTest {
 			for (IProject project : projects) {
 				for (IResource element : project.members()) {
 					if (!element.getName().equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
-						element.delete(false, getMonitor());
+						element.delete(false, createTestMonitor());
 					}
 				}
 			}
 		};
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 
 		// sync info should remain for the resources since they are now phantoms
 		visitor = resource -> {
@@ -248,7 +249,7 @@ public class ISynchronizerTest extends ResourceTest {
 				}
 			}
 		};
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 
 		// there should be no sync info for any resources except the project
 		visitor = resource -> {
@@ -271,7 +272,7 @@ public class ISynchronizerTest extends ResourceTest {
 		final ISynchronizer synchronizer = ResourcesPlugin.getWorkspace().getSynchronizer();
 
 		// cleanup auto-created resources
-		getWorkspace().getRoot().delete(true, getMonitor());
+		getWorkspace().getRoot().delete(true, createTestMonitor());
 
 		// setup
 		IResource[] testResources = buildResources(getWorkspace().getRoot(), new String[] { "/Foo", "/Foo/file.txt" });
@@ -287,7 +288,7 @@ public class ISynchronizerTest extends ResourceTest {
 
 		// move the file
 		IFile destination = project.getFile("newFile.txt");
-		source.move(destination.getFullPath(), true, getMonitor());
+		source.move(destination.getFullPath(), true, createTestMonitor());
 
 		// check sync info
 		byte[] old = synchronizer.getSyncInfo(qname, source);
@@ -301,7 +302,7 @@ public class ISynchronizerTest extends ResourceTest {
 		final ISynchronizer synchronizer = ResourcesPlugin.getWorkspace().getSynchronizer();
 
 		// cleanup auto-created resources
-		getWorkspace().getRoot().delete(true, getMonitor());
+		getWorkspace().getRoot().delete(true, createTestMonitor());
 
 		// setup
 		IResource[] toTest = buildResources(getWorkspace().getRoot(), new String[] {"/Foo", "/Foo/file.txt"});
@@ -318,7 +319,7 @@ public class ISynchronizerTest extends ResourceTest {
 
 		// move the file
 		IFile destFile = sourceProject.getFile("newFile.txt");
-		sourceFile.move(destFile.getFullPath(), true, getMonitor());
+		sourceFile.move(destFile.getFullPath(), true, createTestMonitor());
 
 		// check sync info
 		byte[] old = synchronizer.getSyncInfo(qname, sourceFile);
@@ -327,7 +328,7 @@ public class ISynchronizerTest extends ResourceTest {
 		assertNull("4.2", synchronizer.getSyncInfo(qname, destFile));
 
 		// move the file back
-		destFile.move(sourceFile.getFullPath(), true, getMonitor());
+		destFile.move(sourceFile.getFullPath(), true, createTestMonitor());
 
 		// check the sync info
 		old = synchronizer.getSyncInfo(qname, sourceFile);
@@ -337,7 +338,7 @@ public class ISynchronizerTest extends ResourceTest {
 
 		// rename the file and ensure that the sync info is moved with it
 		IProject destProject = getWorkspace().getRoot().getProject("newProject");
-		sourceProject.move(destProject.getFullPath(), true, getMonitor());
+		sourceProject.move(destProject.getFullPath(), true, createTestMonitor());
 		assertNull("7.1", synchronizer.getSyncInfo(qname, sourceProject));
 		assertNull("7.2", synchronizer.getSyncInfo(qname, sourceFile));
 		old = synchronizer.getSyncInfo(qname, destProject.getFile(sourceFile.getName()));
@@ -447,7 +448,7 @@ public class ISynchronizerTest extends ResourceTest {
 						throw wrappedException;
 					}
 				};
-				getWorkspace().run(body, getMonitor());
+				getWorkspace().run(body, createTestMonitor());
 			}
 		}
 
@@ -723,7 +724,7 @@ public class ISynchronizerTest extends ResourceTest {
 		assertTrue("1.1", file1.exists());
 		assertTrue("1.2", !file1.isPhantom());
 		// deletes file
-		file1.delete(true, getMonitor());
+		file1.delete(true, createTestMonitor());
 		// file is now a phantom resource
 		assertTrue("2.1", !file1.exists());
 		assertTrue("2.2", file1.isPhantom());
@@ -739,7 +740,7 @@ public class ISynchronizerTest extends ResourceTest {
 		assertTrue("4.3", file2.exists());
 		assertTrue("4.4", !file2.isPhantom());
 		// deletes the folder and its only child
-		folder.delete(true, getMonitor());
+		folder.delete(true, createTestMonitor());
 		// both resources are now phantom resources
 		assertTrue("5.1", !folder.exists());
 		assertTrue("5.2", folder.isPhantom());

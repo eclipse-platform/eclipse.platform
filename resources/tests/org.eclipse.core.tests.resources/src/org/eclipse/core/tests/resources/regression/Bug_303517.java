@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import java.io.File;
@@ -77,7 +78,7 @@ public class Bug_303517 extends ResourceTest {
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
+		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// Core.resources should be aware that the file no longer exists...
 		assertFalse("1.4", f.exists());
@@ -102,7 +103,7 @@ public class Bug_303517 extends ResourceTest {
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
+		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// File is now in sync.
 		try (InputStream in = f.getContents(false)) {
@@ -124,7 +125,7 @@ public class Bug_303517 extends ResourceTest {
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
+		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// File is now in sync.
 		try (InputStream in = f.getContents()) {
@@ -154,7 +155,7 @@ public class Bug_303517 extends ResourceTest {
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
+		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// File is now in sync.
 		assertTrue("1.3", f.isSynchronized(IResource.DEPTH_ONE));
@@ -181,7 +182,7 @@ public class Bug_303517 extends ResourceTest {
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
+		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// File is no longer a file - i.e. still out-of-sync
 		assertFalse("1.3", f.exists());

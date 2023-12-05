@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.usecase;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.resources.ICommand;
@@ -39,10 +40,10 @@ public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
 				throw new IllegalArgumentException(exceptionToThrow);
 			}
 			if (triggerBuild) {
-				project.touch(getMonitor());
+				project.touch(createTestMonitor());
 			}
 			if (nestedOperation != null) {
-				getWorkspace().run(nestedOperation, getMonitor());
+				getWorkspace().run(nestedOperation, createTestMonitor());
 			}
 		};
 	}
@@ -54,8 +55,8 @@ public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
 		ICommand command = prjDescription.newCommand();
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		prjDescription.setBuildSpec(new ICommand[] { command });
-		project.create(prjDescription, getMonitor());
-		project.open(getMonitor());
+		project.create(prjDescription, createTestMonitor());
+		project.open(createTestMonitor());
 		waitForBuild();
 		SignaledBuilder builder = SignaledBuilder.getInstance(project);
 
@@ -65,7 +66,7 @@ public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
 			IWorkspaceRunnable op2 = createRunnable(project, op1, false, null);
 			IWorkspaceRunnable op3 = createRunnable(project, op2, false, null);
 			builder.reset();
-			getWorkspace().run(op3, getMonitor());
+			getWorkspace().run(op3, createTestMonitor());
 			waitForBuild();
 			assertTrue("1.1", builder.wasExecuted());
 		}
@@ -76,7 +77,7 @@ public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
 			IWorkspaceRunnable op2 = createRunnable(project, op1, true, null);
 			IWorkspaceRunnable op3 = createRunnable(project, op2, true, null);
 			builder.reset();
-			assertThrows(OperationCanceledException.class, () -> getWorkspace().run(op3, getMonitor()));
+			assertThrows(OperationCanceledException.class, () -> getWorkspace().run(op3, createTestMonitor()));
 			// waitForBuild(); // TODO: The test is invalid since it fails if this line is
 			// uncommented.
 			assertTrue("2.2", !builder.wasExecuted());
@@ -88,7 +89,7 @@ public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
 			IWorkspaceRunnable op2 = createRunnable(project, op1, true, null);
 			IWorkspaceRunnable op3 = createRunnable(project, op2, true, null);
 			builder.reset();
-			CoreException exception = assertThrows(CoreException.class, () -> getWorkspace().run(op3, getMonitor()));
+			CoreException exception = assertThrows(CoreException.class, () -> getWorkspace().run(op3, createTestMonitor()));
 			assertEquals(Status.CANCEL_STATUS, exception.getStatus());
 			// waitForBuild(); // TODO: The test is invalid since it fails if this line is
 			// uncommented.
@@ -101,7 +102,7 @@ public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
 			IWorkspaceRunnable op2 = createRunnable(project, op1, false, null);
 			IWorkspaceRunnable op3 = createRunnable(project, op2, false, null);
 			builder.reset();
-			getWorkspace().run(op3, getMonitor());
+			getWorkspace().run(op3, createTestMonitor());
 			// waitForBuild(); // TODO: The test is invalid since it fails if this line is
 			// uncommented.
 			assertTrue("4.1", !builder.wasExecuted());

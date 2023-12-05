@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IMarker;
@@ -168,7 +169,7 @@ public class BenchWorkspace extends ResourceTest {
 				}
 			}.run(BenchWorkspace.this, 10, 10);
 		};
-		workspace.run(runnable, getMonitor());
+		workspace.run(runnable, createTestMonitor());
 	}
 
 	/**

@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.filesystem.EFS;
@@ -46,7 +47,7 @@ public class Bug_160251 extends ResourceTest {
 		//move the project (should succeed)
 		IProjectDescription description = source.getDescription();
 		description.setLocationURI(destination.toURI());
-		source.move(description, IResource.NONE, getMonitor());
+		source.move(description, IResource.NONE, createTestMonitor());
 
 		//ensure project still exists
 		assertTrue("2.0", source.exists());
@@ -66,12 +67,12 @@ public class Bug_160251 extends ResourceTest {
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
 		ensureExistsInWorkspace(source, true);
 		ensureExistsInWorkspace(sourceFile, true);
-		destination.mkdir(EFS.NONE, getMonitor());
+		destination.mkdir(EFS.NONE, createTestMonitor());
 
 		//move the project (should succeed)
 		IProjectDescription description = source.getDescription();
 		description.setLocationURI(destination.toURI());
-		source.move(description, IResource.NONE, getMonitor());
+		source.move(description, IResource.NONE, createTestMonitor());
 
 		//ensure project still exists
 		assertTrue("2.0", source.exists());
@@ -91,13 +92,13 @@ public class Bug_160251 extends ResourceTest {
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
 		ensureExistsInWorkspace(source, true);
 		ensureExistsInWorkspace(sourceFile, true);
-		destination.mkdir(EFS.NONE, getMonitor());
+		destination.mkdir(EFS.NONE, createTestMonitor());
 		createFileInFileSystem(destinationFile, getRandomContents());
 
 		//move the project (should fail)
 		IProjectDescription description = source.getDescription();
 		description.setLocationURI(destination.toURI());
-		assertThrows(CoreException.class, () -> source.move(description, IResource.NONE, getMonitor()));
+		assertThrows(CoreException.class, () -> source.move(description, IResource.NONE, createTestMonitor()));
 
 		//ensure project still exists in old location
 		assertTrue("2.0", source.exists());

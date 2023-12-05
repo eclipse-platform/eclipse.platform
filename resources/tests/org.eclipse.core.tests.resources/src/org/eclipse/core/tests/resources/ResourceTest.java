@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -197,7 +198,7 @@ public abstract class ResourceTest extends CoreTest {
 		final IFileStore[] toDelete = storesToDelete.toArray(new IFileStore[0]);
 		storesToDelete.clear();
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
-			getWorkspace().getRoot().delete(true, true, getMonitor());
+			getWorkspace().getRoot().delete(true, true, createTestMonitor());
 			//clear stores in workspace runnable to avoid interaction with resource jobs
 			for (IFileStore store : toDelete) {
 				store.delete(EFS.NONE, null);
@@ -252,14 +253,14 @@ public abstract class ResourceTest extends CoreTest {
 		}
 		switch (resource.getType()) {
 			case IResource.FILE :
-				((IFile) resource).create(local ? new ByteArrayInputStream(new byte[0]) : null, true, getMonitor());
+				((IFile) resource).create(local ? new ByteArrayInputStream(new byte[0]) : null, true, createTestMonitor());
 				break;
 			case IResource.FOLDER :
-				((IFolder) resource).create(true, local, getMonitor());
+				((IFolder) resource).create(true, local, createTestMonitor());
 				break;
 			case IResource.PROJECT :
-				((IProject) resource).create(getMonitor());
-				((IProject) resource).open(getMonitor());
+				((IProject) resource).create(createTestMonitor());
+				((IProject) resource).open(createTestMonitor());
 				break;
 		}
 	}
@@ -328,7 +329,7 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	public void ensureDoesNotExistInWorkspace(IResource resource) throws CoreException {
 		if (resource.exists()) {
-			resource.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+			resource.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 		}
 	}
 

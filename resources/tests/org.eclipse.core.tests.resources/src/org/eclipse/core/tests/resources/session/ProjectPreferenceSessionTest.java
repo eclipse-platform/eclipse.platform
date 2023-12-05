@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.util.concurrent.atomic.AtomicReference;
 import junit.framework.Test;
@@ -41,7 +42,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 	}
 
 	private void saveWorkspace() throws Exception {
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/*
@@ -82,7 +83,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 		};
 		try {
 			Platform.addLogListener(listener);
-			project.delete(IResource.NONE, getMonitor());
+			project.delete(IResource.NONE, createTestMonitor());
 		} finally {
 			Platform.removeLogListener(listener);
 		}

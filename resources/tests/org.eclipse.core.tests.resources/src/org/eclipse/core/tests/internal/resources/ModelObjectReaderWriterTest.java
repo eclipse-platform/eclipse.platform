@@ -16,6 +16,7 @@
 package org.eclipse.core.tests.internal.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.arrayWithSize;
@@ -269,7 +270,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 	 * Reads and returns the project description stored in the given file store.
 	 */
 	private ProjectDescription readDescription(IFileStore store) throws CoreException, IOException {
-		try (InputStream input = store.openInputStream(EFS.NONE, getMonitor())) {
+		try (InputStream input = store.openInputStream(EFS.NONE, createTestMonitor())) {
 			InputSource in = new InputSource(input);
 			return new ProjectDescriptionReader(getWorkspace()).read(in);
 		}
@@ -549,13 +550,13 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		refProjects[2] = ResourcesPlugin.getWorkspace().getRoot().getProject("org.eclipse.core.resources");
 		description.setReferencedProjects(refProjects);
 
-		try (OutputStream output = tempStore.openOutputStream(EFS.NONE, getMonitor())) {
+		try (OutputStream output = tempStore.openOutputStream(EFS.NONE, createTestMonitor())) {
 			writer.write(description, output, System.lineSeparator());
 		}
 
 		/* test read */
 		ProjectDescription description2;
-		try (InputStream input = tempStore.openInputStream(EFS.NONE, getMonitor())) {
+		try (InputStream input = tempStore.openInputStream(EFS.NONE, createTestMonitor())) {
 			InputSource in = new InputSource(input);
 			description2 = reader.read(in);
 		}
@@ -634,7 +635,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 	 * Writes a project description to a file store
 	 */
 	private void writeDescription(IFileStore store, ProjectDescription description) throws IOException, CoreException {
-		try (OutputStream output = store.openOutputStream(EFS.NONE, getMonitor())) {
+		try (OutputStream output = store.openOutputStream(EFS.NONE, createTestMonitor())) {
 			new ModelObjectWriter().write(description, output, System.lineSeparator());
 		}
 	}

@@ -18,6 +18,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.internal.resources.File;
@@ -62,17 +63,17 @@ public class MoveTest extends LocalStoreTest {
 		String location = getUniqueString();
 		IProject source = getWorkspace().getRoot().getProject(location + "1");
 		IProject destination = getWorkspace().getRoot().getProject(location + "2");
-		source.create(getMonitor());
-		source.open(getMonitor());
+		source.create(createTestMonitor());
+		source.open(createTestMonitor());
 
 		IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
 		description.setLocation(IPath.fromOSString(devices[1] + location));
-		destination.create(description, getMonitor());
-		destination.open(getMonitor());
+		destination.create(description, createTestMonitor());
+		destination.open(createTestMonitor());
 
 		String fileName = "fileToBeMoved.txt";
 		IFile file = source.getFile(fileName);
-		file.create(getRandomContents(), true, getMonitor());
+		file.create(getRandomContents(), true, createTestMonitor());
 
 		// add some properties to file (persistent and session)
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];
@@ -86,7 +87,7 @@ public class MoveTest extends LocalStoreTest {
 
 		// move file
 		IPath dest = destination.getFile(fileName).getFullPath();
-		file.move(dest, true, getMonitor());
+		file.move(dest, true, createTestMonitor());
 
 		// assert file was moved
 		IFile newFile = destination.getFile(fileName);
@@ -164,18 +165,18 @@ public class MoveTest extends LocalStoreTest {
 		String location = getUniqueString();
 		IProject source = getWorkspace().getRoot().getProject(location + "1");
 		IProject destination = getWorkspace().getRoot().getProject(location + "2");
-		source.create(getMonitor());
-		source.open(getMonitor());
+		source.create(createTestMonitor());
+		source.open(createTestMonitor());
 
 		IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
 		description.setLocation(IPath.fromOSString(devices[1] + location));
-		destination.create(description, getMonitor());
-		destination.open(getMonitor());
+		destination.create(description, createTestMonitor());
+		destination.open(createTestMonitor());
 
 		// get folder instance
 		String folderName = "folderToBeMoved";
 		IFolder folder = source.getFolder(folderName);
-		folder.create(true, true, getMonitor());
+		folder.create(true, true, createTestMonitor());
 
 		// add some properties to file (persistent and session)
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];
@@ -189,7 +190,7 @@ public class MoveTest extends LocalStoreTest {
 
 		// rename folder
 		IPath dest = destination.getFile(folderName).getFullPath();
-		folder.move(dest, true, getMonitor());
+		folder.move(dest, true, createTestMonitor());
 
 		// assert folder was renamed
 		IFolder newFolder = destination.getFolder(folderName);
@@ -292,7 +293,7 @@ public class MoveTest extends LocalStoreTest {
 
 		// move hierarchy
 		//IProgressMonitor monitor = new LoggingProgressMonitor(System.out);
-		IProgressMonitor monitor = getMonitor();
+		IProgressMonitor monitor = createTestMonitor();
 		folderSource.move(folderDestination.getFullPath(), true, monitor);
 
 		// get new hierarchy instance
@@ -445,11 +446,11 @@ public class MoveTest extends LocalStoreTest {
 		assertFalse(folderDestination.exists());
 		assertFalse(destChild.exists());
 		// cleanup and delete the destination
-		folderDestination.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		folderDestination.delete(true, getMonitor());
+		folderDestination.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
+		folderDestination.delete(true, createTestMonitor());
 
-		folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		folder.move(folderDestination.getFullPath(), false, getMonitor());
+		folder.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
+		folder.move(folderDestination.getFullPath(), false, createTestMonitor());
 
 		folderDestination.move(folder.getFullPath(), true, null);
 		assertTrue(folder.exists());

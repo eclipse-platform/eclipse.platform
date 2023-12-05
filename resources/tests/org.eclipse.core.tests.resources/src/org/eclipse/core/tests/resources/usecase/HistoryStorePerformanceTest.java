@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.usecase;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -26,8 +27,8 @@ public class HistoryStorePerformanceTest extends ResourceTest {
 	@Override
 	public void setUp() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		IWorkspaceDescription description = getWorkspace().getDescription();
 		description.setFileStateLongevity(1000 * 3600 * 24); // 1 day
 		description.setMaxFileStates(10000);
@@ -38,7 +39,7 @@ public class HistoryStorePerformanceTest extends ResourceTest {
 	@Override
 	protected void tearDown() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
-		project.clearHistory(getMonitor());
+		project.clearHistory(createTestMonitor());
 		super.tearDown();
 	}
 

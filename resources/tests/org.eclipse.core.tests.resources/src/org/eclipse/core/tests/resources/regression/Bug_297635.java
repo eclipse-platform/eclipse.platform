@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -66,11 +67,11 @@ public class Bug_297635 extends ResourceTest {
 	}
 
 	private void saveFull() throws CoreException {
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	private void saveSnapshot(SaveManager saveManager) throws CoreException {
-		saveManager.save(ISaveContext.SNAPSHOT, true, null, getMonitor());
+		saveManager.save(ISaveContext.SNAPSHOT, true, null, createTestMonitor());
 	}
 
 	private void executeWithSaveManagerSpy(Consumer<SaveManager> executeOnSpySaveManager) throws Exception {

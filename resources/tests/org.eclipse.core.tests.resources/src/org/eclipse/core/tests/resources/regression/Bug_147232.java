@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -73,8 +74,8 @@ public class Bug_147232 extends AbstractBuilderTest implements IResourceChangeLi
 		file = project.getFile("file.txt");
 		getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_BUILD | IResourceChangeEvent.POST_BUILD);
 		setAutoBuilding(false);
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		addBuilder(project, ClearMarkersBuilder.BUILDER_NAME);
 		setAutoBuilding(true);
 		//create a file in the project to trigger a build

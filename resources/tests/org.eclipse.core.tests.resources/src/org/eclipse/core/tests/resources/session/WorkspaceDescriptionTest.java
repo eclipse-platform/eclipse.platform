@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -48,7 +49,7 @@ public class WorkspaceDescriptionTest extends WorkspaceSessionTest {
 		desc.setMaxFileStateSize(MAX_FILE_SIZE);
 		desc.setSnapshotInterval(SNAPSHOT_INTERVAL);
 		workspace.setDescription(desc);
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	public void test2() {

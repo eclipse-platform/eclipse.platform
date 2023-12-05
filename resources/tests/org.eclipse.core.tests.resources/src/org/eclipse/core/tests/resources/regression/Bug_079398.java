@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.internal.localstore.IHistoryStore;
 import org.eclipse.core.internal.resources.Workspace;
@@ -48,39 +49,39 @@ public class Bug_079398 extends ResourceTest {
 		getWorkspace().setDescription(description);
 		ensureExistsInWorkspace(file1, getRandomContents());
 		for (int i = 0; i < 10; i++) {
-			file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, getMonitor());
+			file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
 		}
 
-		IFileState[] sourceStates = file1.getHistory(getMonitor());
+		IFileState[] sourceStates = file1.getHistory(createTestMonitor());
 		// just make sure our assumptions are valid
 		assertEquals("0.4", 10, sourceStates.length);
 
 		// copy the file - the history should be shared, but the destination
 		// will conform to the policy
-		file1.copy(file2.getFullPath(), true, getMonitor());
+		file1.copy(file2.getFullPath(), true, createTestMonitor());
 
 		assertExistsInWorkspace(file2);
-		sourceStates = file1.getHistory(getMonitor());
+		sourceStates = file1.getHistory(createTestMonitor());
 		// the source is unaffected so far
 		assertEquals("1.2", 10, sourceStates.length);
-		IFileState[] destinationStates = file2.getHistory(getMonitor());
+		IFileState[] destinationStates = file2.getHistory(createTestMonitor());
 		// but the destination conforms to the policy
 		assertEquals("1.4", description.getMaxFileStates(), destinationStates.length);
 
 		// now cause the destination to have many more states
 		for (int i = 0; i <= description.getMaxFileStates(); i++) {
-			file2.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, getMonitor());
+			file2.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
 		}
 		IHistoryStore history = ((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore();
 		// clean history
-		history.clean(getMonitor());
+		history.clean(createTestMonitor());
 
-		destinationStates = file2.getHistory(getMonitor());
+		destinationStates = file2.getHistory(createTestMonitor());
 		// cleaning will remove any states the destination had in common
 		// with the source since they don't fit into the policy
 		assertEquals("1.7", description.getMaxFileStates(), destinationStates.length);
 
-		sourceStates = file1.getHistory(getMonitor());
+		sourceStates = file1.getHistory(createTestMonitor());
 		// the source should have any extra states removed as well,
 		// but the ones left should still exist
 		assertEquals("1.7", description.getMaxFileStates(), sourceStates.length);

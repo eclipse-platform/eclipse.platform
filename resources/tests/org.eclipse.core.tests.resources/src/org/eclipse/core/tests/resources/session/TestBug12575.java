@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
@@ -33,11 +34,11 @@ public class TestBug12575 extends WorkspaceSerializationTest {
 	 */
 	public void test1() throws CoreException {
 		IProject project = workspace.getRoot().getProject(projectName);
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		IFile dotProject = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		dotProject.delete(IResource.NONE, getMonitor());
-		workspace.save(true, getMonitor());
+		dotProject.delete(IResource.NONE, createTestMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	/**
@@ -48,7 +49,7 @@ public class TestBug12575 extends WorkspaceSerializationTest {
 		IProject other = workspace.getRoot().getProject("Other");
 		IProjectDescription desc = project.getDescription();
 		desc.setReferencedProjects(new IProject[] { other });
-		project.setDescription(desc, IResource.FORCE, getMonitor());
+		project.setDescription(desc, IResource.FORCE, createTestMonitor());
 		//creating a project will cause a snapshot
 		ensureExistsInWorkspace(other, true);
 

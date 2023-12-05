@@ -17,6 +17,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.io.IOException;
 import org.eclipse.core.filesystem.IFileStore;
@@ -64,11 +65,11 @@ public class Bug_044106 extends ResourceTest {
 		assertExistsInFileSystem(linkedFile);
 
 		// do a refresh and ensure that the resources are in the workspace
-		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertExistsInWorkspace(linkedFile);
 
 		// delete the file
-		linkedFile.delete(deleteFlags, getMonitor());
+		linkedFile.delete(deleteFlags, createTestMonitor());
 
 		// ensure that the folder and file weren't deleted in the filesystem
 		assertDoesNotExistInWorkspace(linkedFile);
@@ -103,15 +104,15 @@ public class Bug_044106 extends ResourceTest {
 		assertExistsInFileSystem(linkedFile);
 
 		// do a refresh and ensure that the resources are in the workspace
-		linkedFolder.getProject().refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		linkedFolder.getProject().refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertExistsInWorkspace(linkedFolder);
 		assertExistsInWorkspace(linkedFile);
 
 		// delete the folder or project
 		if (deleteParent) {
-			linkedFolder.getParent().delete(deleteFlags, getMonitor());
+			linkedFolder.getParent().delete(deleteFlags, createTestMonitor());
 		} else {
-			linkedFolder.delete(deleteFlags, getMonitor());
+			linkedFolder.delete(deleteFlags, createTestMonitor());
 		}
 
 		// ensure that the folder and file weren't deleted in the filesystem

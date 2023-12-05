@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertNotEquals;
 
 import java.io.ByteArrayInputStream;
@@ -24,7 +25,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.ResourceTest;
-
 
 /**
  * Test for Bug 530868: millisecond resolution of file timestamps with native
@@ -40,8 +40,8 @@ public class Bug_530868 extends ResourceTest {
 		super.setUp();
 
 		testProject = getWorkspace().getRoot().getProject(Bug_530868.class + "TestProject");
-		testProject.create(getMonitor());
-		testProject.open(getMonitor());
+		testProject.create(createTestMonitor());
+		testProject.open(createTestMonitor());
 		testFile = testProject.getFile(getName());
 
 	}
@@ -84,9 +84,9 @@ public class Bug_530868 extends ResourceTest {
 	private void setTestFileContents(String contents) throws Exception {
 		ByteArrayInputStream contentsStream = new ByteArrayInputStream(String.valueOf(contents).getBytes());
 		if (testFile.exists()) {
-			testFile.delete(true, getMonitor());
+			testFile.delete(true, createTestMonitor());
 		}
-		testFile.create(contentsStream, true, getMonitor());
+		testFile.create(contentsStream, true, createTestMonitor());
 	}
 
 	private long getLastModificationTimestamp() {

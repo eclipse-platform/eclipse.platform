@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.internal.resources.Workspace;
@@ -43,7 +44,7 @@ public class DeleteTest extends LocalStoreTest {
 		IPath projectLocation = project.getLocation();
 
 		/* delete */
-		project.delete(false, true, getMonitor());
+		project.delete(false, true, createTestMonitor());
 
 		/* assert project does not exist anymore in the workspace*/
 		assertFalse(project.exists());
@@ -69,7 +70,7 @@ public class DeleteTest extends LocalStoreTest {
 		projectLocation = project.getLocation();
 
 		/* delete */
-		project.delete(true, true, getMonitor());
+		project.delete(true, true, createTestMonitor());
 
 		/* assert project does not exist anymore in the workspace */
 		assertFalse(project.exists());
@@ -95,7 +96,7 @@ public class DeleteTest extends LocalStoreTest {
 		projectLocation = project.getLocation();
 
 		/* delete */
-		project.delete(true, true, getMonitor());
+		project.delete(true, true, createTestMonitor());
 
 		/* assert project does not exist anymore */
 		assertFalse(project.exists());
@@ -118,7 +119,7 @@ public class DeleteTest extends LocalStoreTest {
 		filePath = file.getLocation();
 
 		/* delete */
-		project.delete(true, true, getMonitor());
+		project.delete(true, true, createTestMonitor());
 
 		/* assert project does not exist anymore */
 		assertFalse(project.exists());
@@ -146,7 +147,7 @@ public class DeleteTest extends LocalStoreTest {
 		projectLocation = project.getLocation();
 
 		/* delete */
-		project.delete(true, true, getMonitor());
+		project.delete(true, true, createTestMonitor());
 
 		/* assert project does not exist anymore */
 		assertFalse(project.exists());
@@ -177,8 +178,8 @@ public class DeleteTest extends LocalStoreTest {
 		IPath projectLocation = project.getLocation();
 
 		/* close and delete */
-		project.close(getMonitor());
-		project.delete(false, true, getMonitor());
+		project.close(createTestMonitor());
+		project.delete(false, true, createTestMonitor());
 
 		/* assert project does not exist anymore in the workspace */
 		assertFalse(project.exists());
@@ -203,8 +204,8 @@ public class DeleteTest extends LocalStoreTest {
 		filePath = file.getLocation();
 
 		/* close and delete */
-		project.close(getMonitor());
-		project.delete(true, true, getMonitor());
+		project.close(createTestMonitor());
+		project.delete(true, true, createTestMonitor());
 
 		/* assert project does not exist anymore */
 		assertFalse(project.exists());
@@ -228,8 +229,8 @@ public class DeleteTest extends LocalStoreTest {
 		projectLocation = project.getLocation();
 
 		/* close and delete */
-		projects[0].close(getMonitor());
-		projects[0].delete(true, false, getMonitor());
+		projects[0].close(createTestMonitor());
+		projects[0].delete(true, false, createTestMonitor());
 
 		/* assert project was deleted */
 		assertFalse(project.exists());
