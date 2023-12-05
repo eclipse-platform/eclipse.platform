@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.Random;

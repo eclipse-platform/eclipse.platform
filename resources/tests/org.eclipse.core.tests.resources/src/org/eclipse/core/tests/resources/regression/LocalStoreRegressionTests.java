@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;

@@ -15,6 +15,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.io.File;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;

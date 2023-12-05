@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.util.Map;
 import java.util.stream.Stream;
 import org.eclipse.core.resources.ICommand;

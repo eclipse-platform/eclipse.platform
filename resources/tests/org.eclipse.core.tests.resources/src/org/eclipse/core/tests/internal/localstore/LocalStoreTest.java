@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;

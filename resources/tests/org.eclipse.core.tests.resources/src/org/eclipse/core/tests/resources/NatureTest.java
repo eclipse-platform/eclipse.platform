@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_127562;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_EARTH;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_MISSING;

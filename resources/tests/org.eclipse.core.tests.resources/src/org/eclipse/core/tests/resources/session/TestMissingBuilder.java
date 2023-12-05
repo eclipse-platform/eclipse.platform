@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SNOW;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;

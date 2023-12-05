@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;

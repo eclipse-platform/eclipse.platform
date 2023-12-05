@@ -13,6 +13,7 @@
  ******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyArray;

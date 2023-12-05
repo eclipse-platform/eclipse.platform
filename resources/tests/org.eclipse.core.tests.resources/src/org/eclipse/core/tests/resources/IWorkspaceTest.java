@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_CYCLE1;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_CYCLE2;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_CYCLE3;
