@@ -78,7 +78,7 @@ public class IResourceTest extends ResourceTest {
 		IFolder outputFolder = project.getFolder("bin");
 		IFile description = project.getFile(".project");
 		IFile destination = outputFolder.getFile(".project");
-		ensureExistsInWorkspace(new IResource[] {project, outputFolder}, true);
+		ensureExistsInWorkspace(new IResource[] {project, outputFolder});
 
 		assertTrue("0.0", description.exists());
 		description.copy(destination.getFullPath(), IResource.NONE, createTestMonitor());
@@ -124,7 +124,7 @@ public class IResourceTest extends ResourceTest {
 	public void testBug35991() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		final IFile file = project.getFile("file1");
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		//create phantom file by adding sync info
 		final QualifiedName name = new QualifiedName("test", "testBug35991");
 		getWorkspace().getSynchronizer().add(name);
@@ -187,8 +187,8 @@ public class IResourceTest extends ResourceTest {
 	public void testBug83777() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("testBug83777");
 		IFolder folder = project.getFolder("f");
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(folder, true);
+		ensureExistsInWorkspace(project);
+		ensureExistsInWorkspace(folder);
 		folder.setLocal(false, IResource.DEPTH_ZERO, createTestMonitor());
 		// non-local resource is never synchronized because it doesn't exist on disk
 		assertTrue("1.0", !project.isSynchronized(IResource.DEPTH_INFINITE));
@@ -201,7 +201,7 @@ public class IResourceTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("testBug111821");
 		IFolder folder = project.getFolder(new Path(null, "c:"));
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		QualifiedName partner = new QualifiedName("HowdyThere", "Partner");
 		ISynchronizer sync = getWorkspace().getSynchronizer();
 		sync.add(partner);
@@ -344,7 +344,7 @@ public class IResourceTest extends ResourceTest {
 		IFile file = project.getFile("MyFile");
 
 		// setup
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		ResourceAttributes attributes = file.getResourceAttributes();
 		attributes.setReadOnly(true);
 		file.setResourceAttributes(attributes);
@@ -369,7 +369,7 @@ public class IResourceTest extends ResourceTest {
 		IFile file = project.getFile("MyFile");
 
 		// setup
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		ensureOutOfSync(file);
 
 		// doit

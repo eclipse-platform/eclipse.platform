@@ -309,9 +309,9 @@ public class IProjectTest extends ResourceTest {
 
 	public void testProjectCloseOpen() throws CoreException {
 		IProject target = getWorkspace().getRoot().getProject("Project");
-		ensureExistsInWorkspace(target, true);
+		ensureExistsInWorkspace(target);
 		IFolder folder = target.getFolder("Folder");
-		ensureExistsInWorkspace(folder, true);
+		ensureExistsInWorkspace(folder);
 
 		target.close(monitor);
 		monitor.assertUsedUp();
@@ -340,8 +340,8 @@ public class IProjectTest extends ResourceTest {
 		source = project;
 		children = new String[] {"/1/", "/1/2"};
 		resources = buildResources(project, children);
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(project);
+		ensureExistsInWorkspace(resources);
 		destination = getWorkspace().getRoot().getProject("DestProject");
 		assertDoesNotExistInWorkspace(destination);
 		// set a property to copy
@@ -369,8 +369,8 @@ public class IProjectTest extends ResourceTest {
 		source = project;
 		children = new String[] {"/1/", "/1/2"};
 		resources = buildResources(project, children);
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(project);
+		ensureExistsInWorkspace(resources);
 		destination = getWorkspace().getRoot().getProject("DestProject");
 		IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
 		assertDoesNotExistInWorkspace(destination);
@@ -403,8 +403,8 @@ public class IProjectTest extends ResourceTest {
 		resources = buildResources(project, children);
 		destProject = getWorkspace().getRoot().getProject("DestProject");
 		destination = destProject.getFolder("MyFolder");
-		ensureExistsInWorkspace(new IResource[] {project, destProject}, true);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(new IResource[] {project, destProject});
+		ensureExistsInWorkspace(resources);
 		assertDoesNotExistInWorkspace(destination);
 
 		monitor.prepare();
@@ -422,8 +422,8 @@ public class IProjectTest extends ResourceTest {
 		source = project.getFolder("1");
 		resources = buildResources(project, children);
 		destination = getWorkspace().getRoot().getProject("DestProject");
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(project);
+		ensureExistsInWorkspace(resources);
 		assertDoesNotExistInWorkspace(destination);
 
 		monitor.prepare();
@@ -499,7 +499,7 @@ public class IProjectTest extends ResourceTest {
 		IFile file = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		IProjectDescription description;
 		try {
-			ensureExistsInWorkspace(project, true);
+			ensureExistsInWorkspace(project);
 			// new .project should have OS default line separator
 			assertEquals("1.0", systemValue, getLineSeparatorFromFile(file));
 
@@ -517,7 +517,7 @@ public class IProjectTest extends ResourceTest {
 			project.delete(true, monitor);
 			monitor.assertUsedUp();
 
-			ensureExistsInWorkspace(project, true);
+			ensureExistsInWorkspace(project);
 			// new .project should have instance-specific line separator
 			assertEquals("3.0", newInstanceValue, getLineSeparatorFromFile(file));
 
@@ -539,7 +539,7 @@ public class IProjectTest extends ResourceTest {
 			project.delete(true, monitor);
 			monitor.assertUsedUp();
 
-			ensureExistsInWorkspace(project, true);
+			ensureExistsInWorkspace(project);
 			// new .project should have OS default line separator
 			assertEquals("5.0", systemValue, getLineSeparatorFromFile(file));
 
@@ -654,7 +654,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = TRUE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file, otherFile}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file, otherFile});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -684,7 +684,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = FALSE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file, otherFile}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file, otherFile});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -714,7 +714,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = TRUE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file, otherFile}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file, otherFile});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -747,7 +747,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = FALSE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file, otherFile}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file, otherFile});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -779,7 +779,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = TRUE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file, otherFile}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file, otherFile});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -811,7 +811,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = FALSE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file, otherFile}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file, otherFile});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -856,7 +856,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = TRUE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -889,7 +889,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = FALSE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -920,7 +920,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = TRUE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -953,7 +953,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = FALSE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -986,7 +986,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = TRUE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1019,7 +1019,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = FALSE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1068,7 +1068,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		fileStore = ((Resource) file).getStore();
 		assertTrue("1.2", project.exists());
 		assertTrue("1.3", file.exists());
@@ -1094,7 +1094,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		fileStore = ((Resource) file).getStore();
 		assertTrue("2.2", project.exists());
 		assertTrue("2.3", file.exists());
@@ -1118,7 +1118,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		fileStore = ((Resource) file).getStore();
 		assertTrue("3.2", project.exists());
 		assertTrue("3.3", file.exists());
@@ -1142,7 +1142,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		fileStore = ((Resource) file).getStore();
 		assertTrue("4.2", project.exists());
 		assertTrue("4.3", file.exists());
@@ -1166,7 +1166,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		fileStore = ((Resource) file).getStore();
 		assertTrue("5.2", project.exists());
 		assertTrue("5.3", file.exists());
@@ -1190,7 +1190,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		fileStore = ((Resource) file).getStore();
 		assertTrue("6.2", project.exists());
 		assertTrue("6.3", file.exists());
@@ -1228,7 +1228,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1259,7 +1259,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1288,7 +1288,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1316,7 +1316,7 @@ public class IProjectTest extends ResourceTest {
 
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1344,7 +1344,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1372,7 +1372,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		waitForRefresh();
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
@@ -1413,7 +1413,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = TRUE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		assertTrue("1.0", project.exists());
@@ -1431,7 +1431,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = FALSE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		assertTrue("2.0", project.exists());
@@ -1448,7 +1448,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = TRUE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		assertTrue("3.0", project.exists());
@@ -1465,7 +1465,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = FALSE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		assertTrue("4.0", project.exists());
@@ -1482,7 +1482,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = TRUE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		assertTrue("5.0", project.exists());
@@ -1499,7 +1499,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = FALSE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		assertTrue("6.0", project.exists());
@@ -1528,7 +1528,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = TRUE
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		ensureExistsInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
@@ -1548,7 +1548,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = FALSE
 		 * Delete content = ALWAYS (always_delete_content over-rides FORCE flag)
 		 * =======================================================================*/
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		ensureExistsInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
@@ -1566,7 +1566,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = TRUE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		ensureExistsInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
@@ -1586,7 +1586,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = FALSE
 		 * Delete content = NEVER
 		 * =======================================================================*/
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		ensureExistsInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
@@ -1606,7 +1606,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = TRUE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		ensureExistsInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
@@ -1624,7 +1624,7 @@ public class IProjectTest extends ResourceTest {
 		 * Force = FALSE
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		waitForRefresh();
 		ensureExistsInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
@@ -1660,7 +1660,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		fileStore = ((Resource) file).getStore();
 		assertTrue("1.2", project.exists());
 		assertTrue("1.3", file.exists());
@@ -1682,7 +1682,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		fileStore = ((Resource) file).getStore();
 		assertTrue("2.2", project.exists());
 		assertTrue("2.3", file.exists());
@@ -1702,7 +1702,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		fileStore = ((Resource) file).getStore();
 		assertTrue("3.2", project.exists());
 		assertTrue("3.3", file.exists());
@@ -1721,7 +1721,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		fileStore = ((Resource) file).getStore();
 		assertTrue("4.2", project.exists());
 		assertTrue("4.3", file.exists());
@@ -1742,7 +1742,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		fileStore = ((Resource) file).getStore();
 		assertTrue("5.2", project.exists());
 		assertTrue("5.3", file.exists());
@@ -1762,7 +1762,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		fileStore = ((Resource) file).getStore();
 		assertTrue("6.2", project.exists());
 		assertTrue("6.3", file.exists());
@@ -1796,7 +1796,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1824,7 +1824,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1850,7 +1850,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1876,7 +1876,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1900,7 +1900,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, file});
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
@@ -1925,7 +1925,7 @@ public class IProjectTest extends ResourceTest {
 		projectStore = getTempStore();
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		waitForRefresh();
 		ensureExistsInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
@@ -2107,8 +2107,8 @@ public class IProjectTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		String[] children = new String[] {"/1/", "/1/2"};
 		IResource[] resources = buildResources(project, children);
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(project);
+		ensureExistsInWorkspace(resources);
 
 		// move the project content
 		IProjectDescription destination = project.getDescription();
@@ -2148,8 +2148,8 @@ public class IProjectTest extends ResourceTest {
 		source = project;
 		children = new String[] {"/1/", "/1/2"};
 		resources = buildResources(project, children);
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(project);
+		ensureExistsInWorkspace(resources);
 		destination = getWorkspace().getRoot().getProject("DestProject");
 		assertDoesNotExistInWorkspace(destination);
 		// set a property to move
@@ -2183,8 +2183,8 @@ public class IProjectTest extends ResourceTest {
 		source = project;
 		children = new String[] {"/1/", "/1/2"};
 		resources = buildResources(project, children);
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(project);
+		ensureExistsInWorkspace(resources);
 		// set a property to move
 		sourceChild = resources[1];
 		sourceChild.setPersistentProperty(qname, value);
@@ -2310,8 +2310,8 @@ public class IProjectTest extends ResourceTest {
 		monitor.prepare();
 		project.open(monitor);
 		monitor.assertUsedUp();
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(project);
+		ensureExistsInWorkspace(resources);
 		// set a property to move
 		IResource sourceChild = resources[1];
 		QualifiedName qname = new QualifiedName("com.example", "myProperty");
@@ -2351,7 +2351,7 @@ public class IProjectTest extends ResourceTest {
 	 */
 	public void testReplaceLocation() throws CoreException {
 		IProject target = getWorkspace().getRoot().getProject("testReplaceLocation");
-		ensureExistsInWorkspace(target, true);
+		ensureExistsInWorkspace(target);
 
 		IFileStore projectStore = getTempStore();
 		IFileStore childFile = projectStore.getChild("File.txt");
@@ -2359,7 +2359,7 @@ public class IProjectTest extends ResourceTest {
 		// add some content to the current location
 		IFolder folder = target.getFolder("Folder");
 		IFile file = folder.getFile("File.txt");
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 
 		// add content to new location
 		IFile newFile = target.getFile(childFile.getName());
@@ -2392,7 +2392,7 @@ public class IProjectTest extends ResourceTest {
 
 	public void testSetGetProjectPersistentProperty() throws CoreException {
 		IProject target = getWorkspace().getRoot().getProject("Project");
-		ensureExistsInWorkspace(target, true);
+		ensureExistsInWorkspace(target);
 		setGetPersistentProperty(target);
 	}
 
@@ -2502,7 +2502,7 @@ public class IProjectTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject(projectName);
 		IFolder folder = project.getFolder(createUniqueString());
 		IFile file = folder.getFile(createUniqueString());
-		ensureExistsInWorkspace(new IResource[] {project, folder, file}, true);
+		ensureExistsInWorkspace(new IResource[] {project, folder, file});
 		project.open(monitor);
 		monitor.assertUsedUp();
 
@@ -2519,7 +2519,7 @@ public class IProjectTest extends ResourceTest {
 		assertFalse("1.0", p.toFile().exists());
 
 		IProject otherProject = getWorkspace().getRoot().getProject(createUniqueString());
-		ensureExistsInWorkspace(new IResource[] {otherProject}, true);
+		ensureExistsInWorkspace(otherProject);
 		monitor.prepare();
 		otherProject.open(monitor);
 		monitor.assertUsedUp();

@@ -33,7 +33,7 @@ public class TestBug202384 extends WorkspaceSessionTest {
 	public void testInitializeWorkspace() throws CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("project");
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		project.setDefaultCharset("UTF-8", createTestMonitor());
 		assertEquals("2.0", "UTF-8", project.getDefaultCharset(false));
 		project.close(createTestMonitor());

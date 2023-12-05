@@ -44,7 +44,7 @@ public class BuilderCycleTest extends AbstractBuilderTest {
 		IProject before2 = root.getProject("Before2");
 		IProject after1 = root.getProject("After1");
 		IProject after2 = root.getProject("After2");
-		ensureExistsInWorkspace(new IResource[] {project, before1, before2, after1, after2}, true);
+		ensureExistsInWorkspace(new IResource[] {project, before1, before2, after1, after2});
 
 		setBuildOrder(before1, before2, project, after1, after2);
 		setAutoBuilding(false);
@@ -72,9 +72,9 @@ public class BuilderCycleTest extends AbstractBuilderTest {
 		IProject project = root.getProject("Project");
 		IFolder unsorted = project.getFolder(SortBuilder.DEFAULT_UNSORTED_FOLDER);
 		IFile unsortedFile = unsorted.getFile("File.txt");
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(unsorted, true);
-		ensureExistsInWorkspace(unsortedFile, true);
+		ensureExistsInWorkspace(project);
+		ensureExistsInWorkspace(unsorted);
+		ensureExistsInWorkspace(unsortedFile);
 
 		//setup so that the sortbuilder and cycle builder are both touching files in the project
 		setAutoBuilding(true);

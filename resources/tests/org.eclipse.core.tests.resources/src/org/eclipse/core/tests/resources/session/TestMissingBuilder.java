@@ -65,7 +65,7 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 	 */
 	public void test1() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		setAutoBuilding(true);
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });

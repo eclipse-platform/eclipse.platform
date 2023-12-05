@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static java.io.InputStream.nullInputStream;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
@@ -45,7 +46,7 @@ public class VirtualFolderTest extends ResourceTest {
 		super.setUp();
 		existingProject = getWorkspace().getRoot().getProject("ExistingProject");
 		existingVirtualFolderInExistingProject = existingProject.getFolder("existingVirtualFolderInExistingProject");
-		ensureExistsInWorkspace(new IResource[] { existingProject }, true);
+		ensureExistsInWorkspace(new IResource[] { existingProject });
 		existingVirtualFolderInExistingProject.create(IResource.VIRTUAL, true, createTestMonitor());
 	}
 
@@ -69,7 +70,7 @@ public class VirtualFolderTest extends ResourceTest {
 	 */
 	public void testCreateFileUnderVirtualFolder() {
 		IFile file = existingVirtualFolderInExistingProject.getFile(createUniqueString());
-		assertThrows(CoreException.class, () -> create(file, true));
+		assertThrows(CoreException.class, () -> file.create(nullInputStream(), true, createTestMonitor()));
 		assertTrue("2.0", !file.exists());
 	}
 
@@ -78,7 +79,7 @@ public class VirtualFolderTest extends ResourceTest {
 	 */
 	public void testCreateFolderUnderVirtualFolder() {
 		IFolder folder = existingVirtualFolderInExistingProject.getFolder(createUniqueString());
-		assertThrows(CoreException.class, () -> create(folder, true));
+		assertThrows(CoreException.class, () -> folder.create(true, true, createTestMonitor()));
 		assertTrue("2.0", !folder.exists());
 	}
 
@@ -310,7 +311,7 @@ public class VirtualFolderTest extends ResourceTest {
 		subFolderLocation.toFile().mkdir();
 
 		// create the structure in the workspace
-		ensureExistsInWorkspace(topFolder, true);
+		ensureExistsInWorkspace(topFolder);
 		linkedFolder.createLink(linkedFolderLocation, IResource.NONE, createTestMonitor());
 		virtualFolder.create(IResource.VIRTUAL, true, createTestMonitor());
 

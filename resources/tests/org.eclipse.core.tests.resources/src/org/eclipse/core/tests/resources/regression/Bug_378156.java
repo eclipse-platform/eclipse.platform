@@ -85,7 +85,7 @@ public class Bug_378156 extends ResourceTest {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final IProject project1 = root.getProject("Bug_378156");
 		final IFile file = project1.getFile("content.txt");
-		ensureExistsInWorkspace(project1, true);
+		ensureExistsInWorkspace(project1);
 		//add a builder that can tell us if it was called
 		IProjectDescription desc = project1.getDescription();
 		ICommand command = desc.newCommand();
@@ -127,7 +127,7 @@ public class Bug_378156 extends ResourceTest {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final IProject project1 = root.getProject("Bug_378156");
 		final IFile file = project1.getFile("content.txt");
-		ensureExistsInWorkspace(project1, true);
+		ensureExistsInWorkspace(project1);
 		//add a builder that can tell us if it was called
 		IProjectDescription desc = project1.getDescription();
 		ICommand command = desc.newCommand();

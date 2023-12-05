@@ -59,7 +59,7 @@ public class Bug_026294 extends ResourceTest {
 		IFile file3 = folder.getFile("file3.txt");
 		IFile projectFile = project.getFile(IPath.fromOSString(".project"));
 
-		ensureExistsInWorkspace(new IResource[] { file1, file2, file3 }, true);
+		ensureExistsInWorkspace(new IResource[] { file1, file2, file3 });
 		IPath projectRoot = project.getLocation();
 		deleteOnTearDown(projectRoot);
 
@@ -129,7 +129,7 @@ public class Bug_026294 extends ResourceTest {
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
 
-		ensureExistsInWorkspace(new IResource[] { file1, file2 }, true);
+		ensureExistsInWorkspace(new IResource[] { file1, file2 });
 		IPath projectRoot = project.getLocation();
 		deleteOnTearDown(projectRoot);
 
@@ -180,7 +180,7 @@ public class Bug_026294 extends ResourceTest {
 		IFile file3 = folder.getFile("file3.txt");
 		IFile projectFile = project.getFile(IPath.fromOSString(".project"));
 
-		ensureExistsInWorkspace(new IResource[] { file1, file2, file3 }, true);
+		ensureExistsInWorkspace(new IResource[] { file1, file2, file3 });
 		IPath projectRoot = project.getLocation();
 		deleteOnTearDown(projectRoot);
 
@@ -220,7 +220,7 @@ public class Bug_026294 extends ResourceTest {
 		IFile file2 = project.getFile("file2.txt");
 		IFile projectFile = project.getFile(IPath.fromOSString(".project"));
 
-		ensureExistsInWorkspace(new IResource[] { file1, file2 }, true);
+		ensureExistsInWorkspace(new IResource[] { file1, file2 });
 		IPath projectRoot = project.getLocation();
 		deleteOnTearDown(projectRoot);
 
@@ -265,7 +265,7 @@ public class Bug_026294 extends ResourceTest {
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file3 = folder.getFile("file3.txt");
 
-		ensureExistsInWorkspace(new IResource[] { file1, file3 }, true);
+		ensureExistsInWorkspace(new IResource[] { file1, file3 });
 		IPath projectRoot = project.getLocation();
 		deleteOnTearDown(projectRoot);
 
@@ -302,7 +302,7 @@ public class Bug_026294 extends ResourceTest {
 		IFile file1 = subFolder.getFile("file1.txt");
 		IFile file3 = folder.getFile("file3.txt");
 
-		ensureExistsInWorkspace(new IResource[] { file1, file3 }, true);
+		ensureExistsInWorkspace(new IResource[] { file1, file3 });
 		IPath projectRoot = project.getLocation();
 		deleteOnTearDown(projectRoot);
 

@@ -56,7 +56,7 @@ public class Bug_044106 extends ResourceTest {
 
 		// create some resources in the workspace
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 
 		// link in the folder
 		String target = new java.io.File(linkDestFile.toURI()).getAbsolutePath();
@@ -94,7 +94,7 @@ public class Bug_044106 extends ResourceTest {
 		assertTrue("0.2", linkDestFile.fetchInfo().exists());
 
 		// create some resources in the workspace
-		ensureExistsInWorkspace(linkedFolder.getParent(), true);
+		ensureExistsInWorkspace(linkedFolder.getParent());
 
 		// link in the folder
 		String target = new java.io.File(linkDestLocation.toURI()).getAbsolutePath();

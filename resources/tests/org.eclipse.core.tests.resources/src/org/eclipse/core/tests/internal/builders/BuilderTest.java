@@ -507,8 +507,10 @@ public class BuilderTest extends AbstractBuilderTest {
 		// Disable workspace auto-build
 		setAutoBuilding(false);
 
-		ensureExistsInWorkspace(proj1, false);
-		ensureExistsInWorkspace(proj2, false);
+		proj1.create(createTestMonitor());
+		proj1.open(createTestMonitor());
+		proj2.create(createTestMonitor());
+		proj2.open(createTestMonitor());
 
 		IProjectDescription desc = proj1.getDescription();
 		desc.setBuildSpec(new ICommand[] {createCommand(desc, "Build0")});

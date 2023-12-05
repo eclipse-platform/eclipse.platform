@@ -54,7 +54,7 @@ public class IFolderTest extends ResourceTest {
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder parentFolder = project.getFolder("parentFolder");
-		ensureExistsInWorkspace(new IResource[] {project, parentFolder}, true);
+		ensureExistsInWorkspace(new IResource[] {project, parentFolder});
 		IFolder folder = parentFolder.getFolder("folder");
 
 		try {
@@ -77,8 +77,10 @@ public class IFolderTest extends ResourceTest {
 		IFolder folder = project.getFolder("fold1");
 		IFile subFile = folder.getFile("f1");
 		IFile file = project.getFile("f2");
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(new IResource[] {folder, file, subFile}, false);
+		ensureExistsInWorkspace(project);
+		folder.create(true, false, createTestMonitor());
+		file.create(null, true, createTestMonitor());
+		subFile.create(null, true, createTestMonitor());
 
 		assertTrue("1.0", !folder.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("1.1", !file.isLocal(IResource.DEPTH_ZERO));
@@ -114,8 +116,8 @@ public class IFolderTest extends ResourceTest {
 		IProject project = root.getProject("TestProject");
 		IFolder folder = project.getFolder("folder");
 
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(new IResource[] {folder}, true);
+		ensureExistsInWorkspace(project);
+		ensureExistsInWorkspace(new IResource[] {folder});
 
 		IFileStore dir = EFS.getLocalFileSystem().fromLocalFile(folder.getLocation().toFile());
 		assertTrue(dir.fetchInfo().exists());

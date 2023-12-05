@@ -117,7 +117,7 @@ public class MoveTest extends LocalStoreTest {
 		// get file instance
 		String fileName = "newFile.txt";
 		IFile file = testProjects[0].getFile(fileName);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 
 		// add some properties to file (persistent and session)
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];
@@ -220,7 +220,7 @@ public class MoveTest extends LocalStoreTest {
 		// get folder instance
 		String folderName = "newFolder";
 		IFolder folder = testProjects[0].getFolder(folderName);
-		ensureExistsInWorkspace(folder, true);
+		ensureExistsInWorkspace(folder);
 
 		// add some properties to folder (persistent and session)
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];
@@ -265,14 +265,14 @@ public class MoveTest extends LocalStoreTest {
 		// create the source folder
 		String folderSourceName = "folder source";
 		IFolder folderSource = testPprojects[0].getFolder(folderSourceName);
-		ensureExistsInWorkspace(folderSource, true);
+		ensureExistsInWorkspace(folderSource);
 
 		// create hierarchy
 		String[] hierarchy = new String[] { "/", "/file1", "/file2", "/folder1/", "/folder1/file3",
 				"/folder1/file4", "/folder2/", "/folder2/file5", "/folder2/file6", "/folder1/folder3/",
 				"/folder1/folder3/file7", "/folder1/folder3/file8" };
 		IResource[] resources = buildResources(folderSource, hierarchy);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 
 		// add some properties to each resource (persistent and session)
 		String[] propNames = new String[numberOfProperties];
@@ -338,14 +338,14 @@ public class MoveTest extends LocalStoreTest {
 		// create the source folder
 		String folderSourceName = "source";
 		IFolder folderSource = testProjects[0].getFolder(folderSourceName);
-		ensureExistsInWorkspace(folderSource, true);
+		ensureExistsInWorkspace(folderSource);
 
 		// build hierarchy
 		String[] hierarchy = new String[] { "/", "/file1", "/file2", "/folder1/", "/folder1/file3", "/folder1/file4",
 				"/folder2/", "/folder2/file5", "/folder2/file6", "/folder1/folder3/", "/folder1/folder3/file7",
 				"/folder1/folder3/file8" };
 		IResource[] resources = buildResources(folderSource, hierarchy);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 
 		// add some properties to each resource
 		String[] propNames = new String[numberOfProperties];
@@ -405,8 +405,8 @@ public class MoveTest extends LocalStoreTest {
 		/* create folder and file */
 		IFolder folder = projects[0].getFolder("folder");
 		IFile file = folder.getFile("file.txt");
-		ensureExistsInWorkspace(folder, true);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(folder);
+		ensureExistsInWorkspace(file);
 
 		/* move to absolute destination */
 		IResource destination = testProjects[0].getFile("file.txt");
@@ -475,7 +475,7 @@ public class MoveTest extends LocalStoreTest {
 		int flags = ((File) ghostFile).getFlags(info);
 		assertTrue(((Resource) ghostFile).exists(flags, true));
 		anotherFile = folder.getFile("anotherFile");
-		ensureExistsInWorkspace(anotherFile, true);
+		ensureExistsInWorkspace(anotherFile);
 		anotherFile.move(ghostFile.getFullPath(), true, null);
 		assertTrue(ghostFile.exists());
 	}
@@ -491,7 +491,7 @@ public class MoveTest extends LocalStoreTest {
 		// create a folder
 		String fileName = "file.txt";
 		IFile file = testProjects[0].getFile(fileName);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 
 		// add some properties to file (persistent and session)
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];
@@ -543,7 +543,7 @@ public class MoveTest extends LocalStoreTest {
 		// create a folder
 		String folderName = "folder";
 		IFolder folder = testProjects[0].getFolder(folderName);
-		ensureExistsInWorkspace(folder, true);
+		ensureExistsInWorkspace(folder);
 
 		// add some properties to folder (persistent and session)
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];

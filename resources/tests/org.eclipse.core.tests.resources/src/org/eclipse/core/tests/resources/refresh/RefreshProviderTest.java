@@ -70,7 +70,7 @@ public class RefreshProviderTest extends ResourceTest {
 		deleteOnTearDown(location);
 		String name = "testUnmonitorLinkedResource";
 		IProject project = getWorkspace().getRoot().getProject(name);
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		joinAutoRefreshJobs();
 		IFile link = project.getFile("Link");
 		// ensure we currently have just the project being monitored
@@ -97,7 +97,7 @@ public class RefreshProviderTest extends ResourceTest {
 	public void testProjectCloseOpen() throws Exception {
 		String name = "testProjectCloseOpen";
 		IProject project = getWorkspace().getRoot().getProject(name);
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		joinAutoRefreshJobs();
 		// ensure we currently have just the project being monitored
 		TestRefreshProvider provider = TestRefreshProvider.getInstance();

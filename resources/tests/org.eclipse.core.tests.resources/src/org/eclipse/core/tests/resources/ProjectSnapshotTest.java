@@ -57,7 +57,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 		super.setUp();
 		projects[0] = getWorkspace().getRoot().getProject("p1");
 		projects[1] = getWorkspace().getRoot().getProject("p2");
-		ensureExistsInWorkspace(projects, true);
+		ensureExistsInWorkspace(projects);
 	}
 
 	private void populateProject(IProject project) throws CoreException {

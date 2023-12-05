@@ -67,7 +67,7 @@ public class IResourceChangeEventTest extends ResourceTest {
 
 		// Create and open the resources
 		IWorkspaceRunnable body = monitor -> {
-			ensureExistsInWorkspace(allResources, true);
+			ensureExistsInWorkspace(allResources);
 			marker2 = file2.createMarker(IMarker.BOOKMARK);
 			marker3 = file3.createMarker(IMarker.BOOKMARK);
 		};

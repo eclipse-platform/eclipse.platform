@@ -43,7 +43,7 @@ public class TestClosedProjectLocation extends WorkspaceSerializationTest {
 		desc.setLocation(location);
 		project.create(desc, createTestMonitor());
 		project.open(createTestMonitor());
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		project.close(createTestMonitor());
 		assertEquals("1.1", location, project.getLocation());
 

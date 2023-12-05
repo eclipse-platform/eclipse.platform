@@ -73,7 +73,7 @@ public class TestBug294854 extends WorkspaceSessionTest {
 	private IProject createProject() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(PROJECT_OLD_NAME);
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		assertTrue("1.0", project.exists());
 
 		// make sure we do not have .snap file

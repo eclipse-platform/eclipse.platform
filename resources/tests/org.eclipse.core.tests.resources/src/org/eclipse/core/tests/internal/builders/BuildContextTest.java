@@ -57,7 +57,7 @@ public class BuildContextTest extends AbstractBuilderTest {
 		project1 = root.getProject("BuildContextTests_p1");
 		project2 = root.getProject("BuildContextTests_p2");
 		IResource[] resources = {project0, project1, project2};
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		setAutoBuilding(false);
 		setupProject(project0);
 		setupProject(project1);

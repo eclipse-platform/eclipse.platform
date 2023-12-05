@@ -116,7 +116,7 @@ public class ProjectSnapshotPerfManualTest extends ResourceTest {
 		}.run(new ProjectSnapshotPerfManualTest("Original open"), 1, 1);
 
 		// dump the snapshot refresh info
-		ensureExistsInWorkspace(project.getFolder(DIR_NAME), true);
+		ensureExistsInWorkspace(project.getFolder(DIR_NAME));
 		IPath projPath = project.getLocation();
 		projPath = projPath.append(REFRESH_SNAPSHOT_FILE_LOCATION);
 		final URI snapshotLocation = org.eclipse.core.filesystem.URIUtil.toURI(projPath);

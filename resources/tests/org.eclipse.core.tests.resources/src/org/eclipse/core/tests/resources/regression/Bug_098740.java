@@ -32,7 +32,7 @@ public class Bug_098740 extends ResourceTest {
 
 	public void testBug() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Bug98740");
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		project.close(createTestMonitor());
 		assertThrows(CoreException.class, () -> project.members());
 		IResourceVisitor visitor = resource -> true;

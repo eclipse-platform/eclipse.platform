@@ -136,7 +136,7 @@ public class BuildProjectFromMultipleJobsTest extends ResourceTest {
 		IProject project = getTestProject();
 		assertFalse("Expected test project to not exist at beginning of test", project.exists());
 
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		assertTrue("Expected test project to be open after creation", project.isOpen());
 
 		// add some builder to the project, so that we can run into the concurrency problem

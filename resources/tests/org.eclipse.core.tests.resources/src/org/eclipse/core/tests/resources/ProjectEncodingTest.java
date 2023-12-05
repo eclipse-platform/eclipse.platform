@@ -162,7 +162,7 @@ public class ProjectEncodingTest extends ResourceTest {
 
 	private void whenProjectIsCreated() throws CoreException {
 		project = ResourcesPlugin.getWorkspace().getRoot().getProject(createUniqueString());
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 	}
 
 	private void whenProjectSpecificEncodingWasRemoved() throws Exception {

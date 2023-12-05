@@ -126,7 +126,7 @@ public class BenchWorkspace extends ResourceTest {
 			project.create(null);
 			project.open(null);
 			IResource[] resources = buildResources(project, defineHierarchy());
-			ensureExistsInWorkspace(resources, true);
+			ensureExistsInWorkspace(resources);
 		};
 		getWorkspace().run(runnable, null);
 	}

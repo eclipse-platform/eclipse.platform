@@ -157,25 +157,25 @@ public class BasicAliasTest extends ResourceTest {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		//project with no overlap
 		pNoOverlap = root.getProject("NoOverlap");
-		ensureExistsInWorkspace(pNoOverlap, true);
-		ensureExistsInWorkspace(buildResources(pNoOverlap, new String[] {"/1/", "/1/1", "/1/2", "/2/", "/2/1"}), true);
+		ensureExistsInWorkspace(pNoOverlap);
+		ensureExistsInWorkspace(buildResources(pNoOverlap, new String[] {"/1/", "/1/1", "/1/2", "/2/", "/2/1"}));
 
 		//project with overlap
 		pOverlap = root.getProject("Overlap");
-		ensureExistsInWorkspace(pOverlap, true);
+		ensureExistsInWorkspace(pOverlap);
 		fOverlap = pOverlap.getFolder("fOverlap");
 		IFolder f2 = pOverlap.getFolder("F2");
 		lOverlap = f2.getFile("lOverlap");
 		lChildOverlap = fOverlap.getFile("lChildOverlap");
-		ensureExistsInWorkspace(new IResource[] {fOverlap, f2, lOverlap, lChildOverlap}, true);
+		ensureExistsInWorkspace(new IResource[] {fOverlap, f2, lOverlap, lChildOverlap});
 		//create some other random child elements
-		ensureExistsInWorkspace(buildResources(pOverlap, new String[] {"/1/", "/1/1", "/1/2"}), true);
-		ensureExistsInWorkspace(buildResources(f2, new String[] {"/1/", "/1/1", "/1/2"}), true);
-		ensureExistsInWorkspace(buildResources(fOverlap, new String[] {"/1/", "/1/1", "/1/2"}), true);
+		ensureExistsInWorkspace(buildResources(pOverlap, new String[] {"/1/", "/1/1", "/1/2"}));
+		ensureExistsInWorkspace(buildResources(f2, new String[] {"/1/", "/1/1", "/1/2"}));
+		ensureExistsInWorkspace(buildResources(fOverlap, new String[] {"/1/", "/1/1", "/1/2"}));
 
 		//create links
 		pLinked = root.getProject("LinkProject");
-		ensureExistsInWorkspace(pLinked, true);
+		ensureExistsInWorkspace(pLinked);
 		fLinked = pLinked.getFolder("LinkedFolder");
 		fLinkOverlap1 = pLinked.getFolder("LinkOverlap1");
 		fLinkOverlap2 = pLinked.getFolder("LinkOverlap2");
@@ -183,9 +183,9 @@ public class BasicAliasTest extends ResourceTest {
 		lChildLinked = fLinked.getFile(lChildOverlap.getName());
 		fLinked.createLink(fOverlap.getLocation(), IResource.NONE, null);
 		lLinked.createLink(lOverlap.getLocation(), IResource.NONE, null);
-		ensureExistsInWorkspace(lChildLinked, true);
-		ensureExistsInWorkspace(buildResources(pLinked, new String[] {"/a/", "/a/a", "/a/b"}), true);
-		ensureExistsInWorkspace(buildResources(fLinked, new String[] {"/a/", "/a/a", "/a/b"}), true);
+		ensureExistsInWorkspace(lChildLinked);
+		ensureExistsInWorkspace(buildResources(pLinked, new String[] {"/a/", "/a/a", "/a/b"}));
+		ensureExistsInWorkspace(buildResources(fLinked, new String[] {"/a/", "/a/a", "/a/b"}));
 
 		linkOverlapLocation = getRandomLocation();
 		linkOverlapLocation.toFile().mkdirs();
@@ -238,7 +238,7 @@ public class BasicAliasTest extends ResourceTest {
 		IProject top = getWorkspace().getRoot().getProject("Bug156082_Top");
 		IProject sub1 = getWorkspace().getRoot().getProject("Bug156082_Sub1");
 		IProject sub2 = getWorkspace().getRoot().getProject("Bug156082_Sub2");
-		ensureExistsInWorkspace(top, true);
+		ensureExistsInWorkspace(top);
 		IProjectDescription desc1 = getWorkspace().newProjectDescription(sub1.getName());
 		desc1.setLocation(top.getLocation().append(sub1.getName()));
 		IProjectDescription desc2 = getWorkspace().newProjectDescription(sub2.getName());
@@ -405,7 +405,7 @@ public class BasicAliasTest extends ResourceTest {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject p1 = root.getProject(createUniqueString());
 		IProject p2 = root.getProject(createUniqueString());
-		ensureExistsInWorkspace(new IResource[] {p1, p2}, true);
+		ensureExistsInWorkspace(new IResource[] {p1, p2});
 
 		IFileStore tempStore = getTempStore();
 		tempStore.mkdir(EFS.NONE, createTestMonitor());
@@ -485,7 +485,7 @@ public class BasicAliasTest extends ResourceTest {
 	@Test
 	public void testCopyFile() throws CoreException {
 		IFile sourceFile = pNoOverlap.getFile("CopySource");
-		ensureExistsInWorkspace(sourceFile, true);
+		ensureExistsInWorkspace(sourceFile);
 
 		// file in linked folder
 		IFile linkDest = fLinked.getFile("CopyDestination");
@@ -535,7 +535,7 @@ public class BasicAliasTest extends ResourceTest {
 	@Test
 	public void testCopyFolder() throws CoreException {
 		IFolder source = pNoOverlap.getFolder("CopyFolder");
-		ensureExistsInWorkspace(source, true);
+		ensureExistsInWorkspace(source);
 
 		IFolder destFolder1 = fLinkOverlap1.getFolder(source.getName());
 		IFolder destFolder2 = fLinkOverlap2.getFolder(source.getName());
@@ -651,15 +651,15 @@ public class BasicAliasTest extends ResourceTest {
 		IFile folderChild = folder.getFile("Child.txt");
 		IFolder link = pLinked.getFolder("FolderLink");
 		IFile linkChild = link.getFile(folderChild.getName());
-		ensureExistsInWorkspace(folder, true);
-		ensureExistsInWorkspace(folderChild, true);
+		ensureExistsInWorkspace(folder);
+		ensureExistsInWorkspace(folderChild);
 		link.createLink(folder.getLocationURI(), IResource.NONE, createTestMonitor());
 		assertTrue("1.0", linkChild.exists());
 		// manipulate file below overlapping folder and make sure alias under link is
 		// updated
 		folderChild.delete(IResource.NONE, createTestMonitor());
 		assertFalse("1.1", linkChild.exists());
-		ensureExistsInWorkspace(folderChild, true);
+		ensureExistsInWorkspace(folderChild);
 		assertTrue("1.2", linkChild.exists());
 
 		link.delete(IResource.NONE, createTestMonitor());
@@ -673,7 +673,7 @@ public class BasicAliasTest extends ResourceTest {
 		final IFolder linkParent = pLinked.getFolder("LinkParent");
 		IFolder link = linkParent.getFolder("FolderLink");
 		IFile linkChild = link.getFile(folderChild.getName());
-		ensureExistsInWorkspace(new IResource[] {folder, folderChild, linkParent}, true);
+		ensureExistsInWorkspace(new IResource[] {folder, folderChild, linkParent});
 		link.createLink(folder.getLocationURI(), IResource.NONE, createTestMonitor());
 		assertTrue("1.0", linkChild.exists());
 
@@ -681,7 +681,7 @@ public class BasicAliasTest extends ResourceTest {
 		// updated
 		folderChild.delete(IResource.NONE, createTestMonitor());
 		assertFalse("1.1", linkChild.exists());
-		ensureExistsInWorkspace(folderChild, true);
+		ensureExistsInWorkspace(folderChild);
 		assertTrue("1.2", linkChild.exists());
 
 		link.delete(IResource.NONE, createTestMonitor());
@@ -694,7 +694,7 @@ public class BasicAliasTest extends ResourceTest {
 
 		folderChild.delete(IResource.NONE, createTestMonitor());
 		assertFalse("2.1", linkChild.exists());
-		ensureExistsInWorkspace(folderChild, true);
+		ensureExistsInWorkspace(folderChild);
 		assertTrue("2.2", linkChild.exists());
 
 		final AliasManager aliasManager = ((Workspace) getWorkspace()).getAliasManager();
@@ -703,7 +703,7 @@ public class BasicAliasTest extends ResourceTest {
 
 		folderChild.delete(IResource.NONE, createTestMonitor());
 		assertFalse("3.1", linkChild.exists());
-		ensureExistsInWorkspace(folderChild, true);
+		ensureExistsInWorkspace(folderChild);
 		assertTrue("3.2", linkChild.exists());
 
 		// delete the project that contains the links
@@ -756,7 +756,7 @@ public class BasicAliasTest extends ResourceTest {
 	public void testDeleteProjectUnderProject() throws CoreException {
 		IProject parent = getWorkspace().getRoot().getProject("parent");
 		IProject child = getWorkspace().getRoot().getProject("child");
-		ensureExistsInWorkspace(parent, true);
+		ensureExistsInWorkspace(parent);
 
 		IProjectDescription childDesc = getWorkspace().newProjectDescription(child.getName());
 		childDesc.setLocation(parent.getLocation().append(child.getName()));
