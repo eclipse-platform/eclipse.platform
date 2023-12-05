@@ -297,7 +297,10 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	public void createFileInFileSystem(IPath path, InputStream contents) throws CoreException {
 		try {
-			createFileInFileSystem(path.toFile(), contents);
+			path.toFile().getParentFile().mkdirs();
+			try (contents; FileOutputStream output = new FileOutputStream(path.toFile())) {
+				contents.transferTo(output);
+			}
 		} catch (IOException e) {
 			throw new CoreException(
 					new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed creating file in file system", e));
