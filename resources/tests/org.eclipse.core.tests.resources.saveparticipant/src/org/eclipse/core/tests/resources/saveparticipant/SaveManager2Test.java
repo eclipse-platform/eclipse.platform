@@ -29,6 +29,7 @@ import org.osgi.framework.Bundle;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 
 /**
  * @see SaveManager1Test

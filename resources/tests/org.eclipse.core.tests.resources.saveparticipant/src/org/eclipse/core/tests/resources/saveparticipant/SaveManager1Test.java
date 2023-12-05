@@ -25,6 +25,7 @@ import org.eclipse.core.tests.resources.saveparticipant2.SaveParticipant2Plugin;
 import org.eclipse.core.tests.resources.saveparticipant3.SaveParticipant3Plugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 
 /**
  * This class needs to be used with SaveManager2Test. Basically this

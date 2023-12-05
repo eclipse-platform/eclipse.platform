@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.eclipse.core.internal.content.ContentTypeHandler;

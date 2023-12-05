@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.util.Map;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFolder;

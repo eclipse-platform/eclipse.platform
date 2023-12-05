@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.util.List;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.ICommand;

@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;

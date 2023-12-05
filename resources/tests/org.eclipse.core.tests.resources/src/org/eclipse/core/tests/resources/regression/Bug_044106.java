@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import java.io.IOException;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
