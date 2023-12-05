@@ -22,6 +22,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -70,7 +72,10 @@ public class Bug_266907 extends WorkspaceSessionTest {
 		// move .project to a temp location
 		File dotProjectCopy = getTempDir().append("dotProjectCopy").toFile();
 		dotProjectCopy.createNewFile();
-		transferStreams(new FileInputStream(dotProject), new FileOutputStream(dotProjectCopy), null);
+		try (InputStream input = new FileInputStream(dotProject);
+				OutputStream output = new FileOutputStream(dotProjectCopy)) {
+			input.transferTo(output);
+		}
 		dotProject.delete();
 	}
 
@@ -86,7 +91,10 @@ public class Bug_266907 extends WorkspaceSessionTest {
 		File dotProjectCopy = getTempDir().append("dotProjectCopy").toFile();
 
 		dotProject.createNewFile();
-		transferStreams(new FileInputStream(dotProjectCopy), new FileOutputStream(dotProject), null);
+		try (InputStream input = new FileInputStream(dotProjectCopy);
+				OutputStream output = new FileOutputStream(dotProject)) {
+			input.transferTo(output);
+		}
 		dotProjectCopy.delete();
 
 		project.open(createTestMonitor());

@@ -42,7 +42,6 @@ import org.eclipse.core.internal.resources.CharsetDeltaJob;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.ValidateProjectEncoding;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -96,18 +95,6 @@ public abstract class ResourceTest extends CoreTest {
 			getWorkspace().setDescription(storedWorkspaceDescription);
 		}
 		storedWorkspaceDescription = null;
-	}
-
-	/**
-	 * Convenience method to copy contents from one stream to another.
-	 */
-	public static void transferStreams(InputStream source, OutputStream destination, String path) throws IOException {
-		try {
-			source.transferTo(destination);
-		}finally {
-			FileUtil.safeClose(source);
-			FileUtil.safeClose(destination);
-		}
 	}
 
 	/**
