@@ -18,6 +18,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SIMPLE;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -724,18 +725,18 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	}
 
 	public void testDeleteFolderDuringRefresh() throws Throwable {
-		project1 = getWorkspace().getRoot().getProject(getUniqueString());
+		project1 = getWorkspace().getRoot().getProject(createUniqueString());
 		project1.create(createTestMonitor());
 		project1.open(createTestMonitor());
 
-		project2 = getWorkspace().getRoot().getProject(getUniqueString());
+		project2 = getWorkspace().getRoot().getProject(createUniqueString());
 		project2.create(createTestMonitor());
 		project2.open(createTestMonitor());
 
 		assertTrue("1.0", project1.isOpen());
 		assertTrue("2.0", project2.isOpen());
 
-		final IFolder f = project1.getFolder(getUniqueString());
+		final IFolder f = project1.getFolder(createUniqueString());
 		f.create(true, true, createTestMonitor());
 
 		// the listener checks if an attempt to modify the tree succeeds if made in a job
@@ -787,11 +788,11 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	}
 
 	public void testRefreshOtherProjectDuringRefresh() throws Throwable {
-		final IProject p = getWorkspace().getRoot().getProject(getUniqueString());
+		final IProject p = getWorkspace().getRoot().getProject(createUniqueString());
 		p.create(null);
 		p.open(null);
 
-		project1 = getWorkspace().getRoot().getProject(getUniqueString());
+		project1 = getWorkspace().getRoot().getProject(createUniqueString());
 		project1.create(null);
 		project1.open(null);
 
@@ -873,7 +874,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	public void testPreRefreshNotification() throws Exception {
 		final IWorkspaceRoot root = getWorkspace().getRoot();
 
-		project1 = root.getProject(getUniqueString());
+		project1 = root.getProject(createUniqueString());
 		project1.create(null);
 		project1.open(null);
 
@@ -1598,11 +1599,11 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	}
 
 	public void testRemoveAndCreateUnderlyingFileForLinkedResource() throws CoreException, IOException {
-		IPath path = getTempDir().addTrailingSeparator().append(getUniqueString());
+		IPath path = getTempDir().addTrailingSeparator().append(createUniqueString());
 		deleteOnTearDown(path);
 		path.toFile().createNewFile();
 
-		IFile linkedFile = project1.getFile(getUniqueString());
+		IFile linkedFile = project1.getFile(createUniqueString());
 		linkedFile.createLink(path, IResource.NONE, createTestMonitor());
 
 		// check the delta when underlying file is removed
@@ -1620,11 +1621,11 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	}
 
 	public void testRemoveAndCreateUnderlyingFolderForLinkedResource() throws CoreException {
-		IPath path = getTempDir().addTrailingSeparator().append(getUniqueString());
+		IPath path = getTempDir().addTrailingSeparator().append(createUniqueString());
 		deleteOnTearDown(path);
 
 		path.toFile().mkdir();
-		IFolder linkedFolder = project1.getFolder(getUniqueString());
+		IFolder linkedFolder = project1.getFolder(createUniqueString());
 		linkedFolder.createLink(path, IResource.NONE, createTestMonitor());
 
 		// check the delta when underlying folder is removed
@@ -1641,14 +1642,14 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	}
 
 	public void testBug228354() throws CoreException {
-		IPath path = getTempDir().addTrailingSeparator().append(getUniqueString());
+		IPath path = getTempDir().addTrailingSeparator().append(createUniqueString());
 		deleteOnTearDown(path);
 
 		path.toFile().mkdir();
-		IFolder linkedFolder = project1.getFolder(getUniqueString());
+		IFolder linkedFolder = project1.getFolder(createUniqueString());
 		linkedFolder.createLink(path, IResource.NONE, createTestMonitor());
 
-		IFolder regularFolder = project1.getFolder(getUniqueString());
+		IFolder regularFolder = project1.getFolder(createUniqueString());
 		regularFolder.create(true, true, createTestMonitor());
 
 		// check the delta when underlying folder is removed

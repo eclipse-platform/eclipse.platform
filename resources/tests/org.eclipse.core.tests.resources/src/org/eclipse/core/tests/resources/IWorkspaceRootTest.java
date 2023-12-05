@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -329,7 +330,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	@Test
 	public void testBug234343_folderInHiddenProject() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject hiddenProject = root.getProject(getUniqueString());
+		IProject hiddenProject = root.getProject(createUniqueString());
 		ensureDoesNotExistInWorkspace(hiddenProject);
 		hiddenProject.create(null, IResource.HIDDEN, createTestMonitor());
 		hiddenProject.open(createTestMonitor());
@@ -347,7 +348,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	@Test
 	public void testBug234343_fileInHiddenProject() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject hiddenProject = root.getProject(getUniqueString());
+		IProject hiddenProject = root.getProject(createUniqueString());
 		ensureDoesNotExistInWorkspace(hiddenProject);
 		hiddenProject.create(null, IResource.HIDDEN, createTestMonitor());
 		hiddenProject.open(createTestMonitor());
@@ -419,7 +420,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 
 	public void checkFindMethods(int updateFlags, int[][] results) throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject project = root.getProject(getUniqueString());
+		IProject project = root.getProject(createUniqueString());
 		ensureDoesNotExistInWorkspace(project);
 
 		project.create(null, IResource.NONE, createTestMonitor());
@@ -484,9 +485,9 @@ public class IWorkspaceRootTest extends ResourceTest {
 	}
 
 	private IFile createFile(IContainer parent, int updateFlags, boolean linked) throws Exception {
-		IFile file = parent.getFile(IPath.fromOSString(getUniqueString()));
+		IFile file = parent.getFile(IPath.fromOSString(createUniqueString()));
 		if (linked) {
-			IPath path = getTempDir().append(getUniqueString());
+			IPath path = getTempDir().append(createUniqueString());
 			path.toFile().createNewFile();
 			file.createLink(URIUtil.toURI(path), updateFlags, createTestMonitor());
 			if ((updateFlags & IResource.TEAM_PRIVATE) == IResource.TEAM_PRIVATE) {
@@ -501,9 +502,9 @@ public class IWorkspaceRootTest extends ResourceTest {
 	}
 
 	private IFolder createFolder(IContainer parent, int updateFlags, boolean linked) throws CoreException {
-		IFolder folder = parent.getFolder(IPath.fromOSString(getUniqueString()));
+		IFolder folder = parent.getFolder(IPath.fromOSString(createUniqueString()));
 		if (linked) {
-			IPath path = getTempDir().append(getUniqueString());
+			IPath path = getTempDir().append(createUniqueString());
 			path.toFile().mkdir();
 			folder.createLink(URIUtil.toURI(path), updateFlags, createTestMonitor());
 			if ((updateFlags & IResource.TEAM_PRIVATE) == IResource.TEAM_PRIVATE) {

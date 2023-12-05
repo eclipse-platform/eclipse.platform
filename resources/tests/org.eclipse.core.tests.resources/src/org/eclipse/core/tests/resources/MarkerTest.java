@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.hamcrest.Matchers.arrayWithSize;
@@ -429,7 +430,7 @@ public class MarkerTest extends ResourceTest {
 	 * Bug 35300 - ClassCastException if marker transient attribute is set to a non-boolean
 	 */
 	public void test_35300() throws CoreException {
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		ensureExistsInWorkspace(project, true);
 		String MARKER_ID = "foomarker.example.com";
 		int expected = 4;
@@ -461,7 +462,7 @@ public class MarkerTest extends ResourceTest {
 	 */
 	public void test_289811() throws CoreException {
 		String testValue = getRandomString();
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		project.create(null);
 		project.open(null);
 		IFile file = project.getFile("foo.txt");

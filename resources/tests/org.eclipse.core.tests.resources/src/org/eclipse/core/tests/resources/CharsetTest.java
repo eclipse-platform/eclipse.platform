@@ -19,6 +19,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
 import static org.junit.Assert.assertThrows;
 
@@ -338,7 +339,7 @@ public class CharsetTest extends ResourceTest {
 
 	public void testBug59899() throws CoreException {
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		try {
 			IFile file = project.getFile("file.txt");
 			IFolder folder = project.getFolder("folder");
@@ -409,8 +410,8 @@ public class CharsetTest extends ResourceTest {
 			ensureExistsInWorkspace(project, true);
 			project.setDefaultCharset("BAR", createTestMonitor());
 
-			IFolder folder = project.getFolder(getUniqueString());
-			IFile file = folder.getFile(getUniqueString());
+			IFolder folder = project.getFolder(createUniqueString());
+			IFile file = folder.getFile(createUniqueString());
 			assertEquals("1.0", "BAR", file.getCharset(true));
 
 			ensureExistsInWorkspace(folder, true);
@@ -434,7 +435,7 @@ public class CharsetTest extends ResourceTest {
 	public void testBug186984() throws Exception {
 		getResourcesPreferences().putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false);
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFile file = project.getFile("file.xml");
 
 		// Test changing content types externally as per bug 186984 Comment 8
@@ -1101,7 +1102,7 @@ public class CharsetTest extends ResourceTest {
 	 */
 	public void testDeltasContainer() throws CoreException {
 		MultipleDeltasCharsetVerifier verifier = new MultipleDeltasCharsetVerifier(CharsetVerifier.IGNORE_BACKGROUND_THREAD);
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		getWorkspace().addResourceChangeListener(verifier, IResourceChangeEvent.POST_CHANGE);
 		try {
 			IFile prefs = getResourcesPreferenceFile(project, false);
@@ -1393,7 +1394,7 @@ public class CharsetTest extends ResourceTest {
 	public void testBug464072() throws CoreException {
 		getResourcesPreferences().putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, true);
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFile file = project.getFile("file.txt");
 		ensureExistsInWorkspace(file, true);
 		file.getLocation().toFile().delete();
@@ -1403,7 +1404,7 @@ public class CharsetTest extends ResourceTest {
 
 	public void testBug528827() throws CoreException, OperationCanceledException, InterruptedException {
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		ensureExistsInWorkspace(project, true);
 		JobChangeAdapterExtension listener = new JobChangeAdapterExtension();
 		Job.getJobManager().addJobChangeListener(listener);

@@ -20,6 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATUR
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SIMPLE;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.junit.Assert.assertThrows;
 
@@ -494,7 +495,7 @@ public class IProjectTest extends ResourceTest {
 		Preferences instanceNode = rootNode.node(InstanceScope.SCOPE).node(Platform.PI_RUNTIME);
 		String oldInstanceValue = instanceNode.get(Platform.PREF_LINE_SEPARATOR, null);
 
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFile file = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		IProjectDescription description;
 		try {
@@ -611,7 +612,7 @@ public class IProjectTest extends ResourceTest {
 			return;
 		}
 
-		String projectName = getUniqueString() + "a";
+		String projectName = createUniqueString() + "a";
 		IProject project = getWorkspace().getRoot().getProject(projectName);
 
 		project.create(monitor);
@@ -2240,7 +2241,7 @@ public class IProjectTest extends ResourceTest {
 
 	public void testProjectMoveVariations_bug307140() throws CoreException {
 		// Test moving project to its subfolder
-		IProject originalProject = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject originalProject = getWorkspace().getRoot().getProject(createUniqueString());
 		originalProject.create(monitor);
 		monitor.assertUsedUp();
 		monitor.prepare();
@@ -2248,7 +2249,7 @@ public class IProjectTest extends ResourceTest {
 		monitor.assertUsedUp();
 
 		IPath originalLocation = originalProject.getLocation();
-		IFolder originalProjectSubFolder = originalProject.getFolder(getUniqueString());
+		IFolder originalProjectSubFolder = originalProject.getFolder(createUniqueString());
 
 		assertThrows(CoreException.class, () -> {
 			IProjectDescription originalDescription = originalProject.getDescription();
@@ -2266,7 +2267,7 @@ public class IProjectTest extends ResourceTest {
 		monitor.assertUsedUp();
 
 		// Test moving project to its subfolder - project at non-default location
-		IProject destinationProject = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject destinationProject = getWorkspace().getRoot().getProject(createUniqueString());
 
 		//location outside the workspace
 		IProjectDescription newDescription = getWorkspace().newProjectDescription(destinationProject.getName());
@@ -2279,7 +2280,7 @@ public class IProjectTest extends ResourceTest {
 		monitor.assertUsedUp();
 
 		IPath destinationLocation = destinationProject.getLocation();
-		IFolder destinationProjectSubFolder = destinationProject.getFolder(getUniqueString());
+		IFolder destinationProjectSubFolder = destinationProject.getFolder(createUniqueString());
 
 		assertThrows(CoreException.class, () ->  {
 			IProjectDescription destinationDescription = destinationProject.getDescription();
@@ -2474,7 +2475,7 @@ public class IProjectTest extends ResourceTest {
 	}
 
 	public void testCreateHiddenProject() throws CoreException {
-		IProject hiddenProject = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject hiddenProject = getWorkspace().getRoot().getProject(createUniqueString());
 		ensureDoesNotExistInWorkspace(hiddenProject);
 
 		monitor.prepare();
@@ -2496,11 +2497,11 @@ public class IProjectTest extends ResourceTest {
 	}
 
 	public void testProjectDeletion_Bug347220() throws CoreException {
-		String projectName = getUniqueString();
+		String projectName = createUniqueString();
 
 		IProject project = getWorkspace().getRoot().getProject(projectName);
-		IFolder folder = project.getFolder(getUniqueString());
-		IFile file = folder.getFile(getUniqueString());
+		IFolder folder = project.getFolder(createUniqueString());
+		IFile file = folder.getFile(createUniqueString());
 		ensureExistsInWorkspace(new IResource[] {project, folder, file}, true);
 		project.open(monitor);
 		monitor.assertUsedUp();
@@ -2517,7 +2518,7 @@ public class IProjectTest extends ResourceTest {
 		IPath p = ((Workspace) getWorkspace()).getMetaArea().locationFor(project);
 		assertFalse("1.0", p.toFile().exists());
 
-		IProject otherProject = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject otherProject = getWorkspace().getRoot().getProject(createUniqueString());
 		ensureExistsInWorkspace(new IResource[] {otherProject}, true);
 		monitor.prepare();
 		otherProject.open(monitor);

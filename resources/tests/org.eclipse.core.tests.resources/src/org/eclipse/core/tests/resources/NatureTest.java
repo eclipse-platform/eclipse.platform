@@ -23,6 +23,7 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATUR
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getInvalidNatureSets;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getValidNatureSets;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.emptyArray;
@@ -115,7 +116,7 @@ public class NatureTest extends ResourceTest {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		this.project = ResourcesPlugin.getWorkspace().getRoot().getProject(getUniqueString());
+		this.project = ResourcesPlugin.getWorkspace().getRoot().getProject(createUniqueString());
 	}
 
 	private void assertHasEnabledNature(String nature) throws CoreException {

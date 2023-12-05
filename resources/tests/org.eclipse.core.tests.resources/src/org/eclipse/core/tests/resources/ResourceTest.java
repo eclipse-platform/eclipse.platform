@@ -17,6 +17,7 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,7 +42,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Resource;
-import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -528,11 +528,6 @@ public abstract class ResourceTest extends CoreTest {
 
 	}
 
-	@Override
-	public String getUniqueString() {
-		return new UniversalUniqueIdentifier().toString();
-	}
-
 	/**
 	 * Checks whether the local file system supports accessing and modifying
 	 * the given attribute.
@@ -621,7 +616,7 @@ public abstract class ResourceTest extends CoreTest {
 			java.io.File rootFile = new java.io.File(c + ":\\");
 			if (rootFile.exists() && rootFile.canWrite()) {
 				//sometimes canWrite can return true but we are still not allowed to create a file - see bug 379284.
-				File probe = new File(rootFile, getUniqueString());
+				File probe = new File(rootFile, createUniqueString());
 				try {
 					probe.createNewFile();
 				} catch (IOException e) {

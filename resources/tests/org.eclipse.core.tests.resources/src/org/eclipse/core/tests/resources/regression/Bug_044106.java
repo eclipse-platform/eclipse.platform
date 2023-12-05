@@ -18,6 +18,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 
 import java.io.IOException;
 import org.eclipse.core.filesystem.IFileStore;
@@ -54,7 +55,7 @@ public class Bug_044106 extends ResourceTest {
 		assertTrue("0.1", linkDestFile.fetchInfo().exists());
 
 		// create some resources in the workspace
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		ensureExistsInWorkspace(project, true);
 
 		// link in the folder
@@ -87,7 +88,7 @@ public class Bug_044106 extends ResourceTest {
 			return;
 		}
 		IFileStore linkDestLocation = getTempStore();
-		IFileStore linkDestFile = linkDestLocation.getChild(getUniqueString());
+		IFileStore linkDestFile = linkDestLocation.getChild(createUniqueString());
 		createFileInFileSystem(linkDestFile);
 		assertTrue("0.1", linkDestLocation.fetchInfo().exists());
 		assertTrue("0.2", linkDestFile.fetchInfo().exists());
@@ -133,7 +134,7 @@ public class Bug_044106 extends ResourceTest {
 		if (!OS.isLinux()) {
 			return;
 		}
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, false, IResource.NONE);
 	}
@@ -142,7 +143,7 @@ public class Bug_044106 extends ResourceTest {
 		if (!OS.isLinux()) {
 			return;
 		}
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.NONE);
 	}
@@ -158,7 +159,7 @@ public class Bug_044106 extends ResourceTest {
 		if (!OS.isLinux()) {
 			return;
 		}
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder parent = project.getFolder("parent");
 		IFolder linkedFolder = parent.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.KEEP_HISTORY);
@@ -168,7 +169,7 @@ public class Bug_044106 extends ResourceTest {
 		if (!OS.isLinux()) {
 			return;
 		}
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, false, IResource.KEEP_HISTORY);
 	}
@@ -177,7 +178,7 @@ public class Bug_044106 extends ResourceTest {
 		if (!OS.isLinux()) {
 			return;
 		}
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.KEEP_HISTORY);
 	}

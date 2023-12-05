@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
 import java.io.InputStream;
@@ -43,7 +44,7 @@ public class Bug_032076 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder sourceParent = project.getFolder("source_parent");
 		IFolder destinationParent = project.getFolder("destination_parent");
 		// this file will be made irremovable
@@ -97,7 +98,7 @@ public class Bug_032076 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder sourceParent = project.getFolder("source_parent");
 		IFolder destinationParent = project.getFolder("destination_parent");
 		IFolder folder = sourceParent.getFolder("folder");
@@ -160,8 +161,8 @@ public class Bug_032076 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject sourceProject = workspace.getRoot().getProject(getUniqueString() + ".source");
-		IProject destinationProject = workspace.getRoot().getProject(getUniqueString() + ".dest");
+		IProject sourceProject = workspace.getRoot().getProject(createUniqueString() + ".source");
+		IProject destinationProject = workspace.getRoot().getProject(createUniqueString() + ".dest");
 		// this file will be made un-removable
 		IFile file1 = sourceProject.getFile("file1.txt");
 		// but not this one
@@ -212,7 +213,7 @@ public class Bug_032076 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder sourceParent = project.getFolder("source_parent");
 		IFolder roFolder = sourceParent.getFolder("sub-folder");
 		IFolder destinationParent = project.getFolder("destination_parent");
@@ -274,7 +275,7 @@ public class Bug_032076 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder sourceParent = project.getFolder("source_parent");
 		IFolder roFolder = sourceParent.getFolder("sub-folder");
 		IFolder folder = roFolder.getFolder("folder");
@@ -352,13 +353,13 @@ public class Bug_032076 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject sourceProject = workspace.getRoot().getProject(getUniqueString() + ".source");
+		IProject sourceProject = workspace.getRoot().getProject(createUniqueString() + ".source");
 		IFileStore projectParentStore = getTempStore();
 		IFileStore projectStore = projectParentStore.getChild(sourceProject.getName());
 		IProjectDescription sourceDescription = workspace.newProjectDescription(sourceProject.getName());
 		sourceDescription.setLocationURI(projectStore.toURI());
 
-		IProject destinationProject = workspace.getRoot().getProject(getUniqueString() + ".dest");
+		IProject destinationProject = workspace.getRoot().getProject(createUniqueString() + ".dest");
 		IProjectDescription destinationDescription = workspace.newProjectDescription(destinationProject.getName());
 
 		// create and open the source project at a non-default location

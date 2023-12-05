@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.junit.Assert.assertThrows;
 
@@ -48,7 +49,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 
 	@Test
 	public void testBug440110() throws Exception {
-		String projectName = getUniqueString();
+		String projectName = createUniqueString();
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(projectName);
 		IProjectDescription projectDescription = workspace.newProjectDescription(projectName);
@@ -401,7 +402,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 	 */
 	@Test
 	public void testBug547691() throws CoreException {
-		String projectName = getUniqueString();
+		String projectName = createUniqueString();
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(projectName);
 		IProjectDescription projectDescription = workspace.newProjectDescription(projectName);

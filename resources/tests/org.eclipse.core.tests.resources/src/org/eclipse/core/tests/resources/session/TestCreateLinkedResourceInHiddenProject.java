@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 
 import junit.framework.Test;
 import org.eclipse.core.internal.resources.ProjectDescription;
@@ -44,11 +45,11 @@ public class TestCreateLinkedResourceInHiddenProject extends WorkspaceSerializat
 	}
 
 	public void test2() throws CoreException {
-		IPath path = getTempDir().addTrailingSeparator().append(getUniqueString());
+		IPath path = getTempDir().addTrailingSeparator().append(createUniqueString());
 		path.toFile().mkdir();
 
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
-		IFolder folder = project.getFolder(getUniqueString());
+		IFolder folder = project.getFolder(createUniqueString());
 
 		folder.createLink(path, IResource.NONE, createTestMonitor());
 	}

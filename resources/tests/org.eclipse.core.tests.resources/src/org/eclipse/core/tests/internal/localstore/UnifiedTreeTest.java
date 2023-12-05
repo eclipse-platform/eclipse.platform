@@ -16,6 +16,7 @@ package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -272,7 +273,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 	}
 
 	public void test368376() throws CoreException, IOException {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(createUniqueString());
 		ensureExistsInWorkspace(project, true);
 
 		String filePath = "a/b/c/file.txt";

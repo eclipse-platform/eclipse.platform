@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 
 import java.io.File;
 import junit.framework.Test;
@@ -38,7 +39,7 @@ public class TestBug323833 extends WorkspaceSessionTest {
 			return;
 		}
 
-		IFileStore fileStore = getTempStore().getChild(getUniqueString());
+		IFileStore fileStore = getTempStore().getChild(createUniqueString());
 		createFileInFileSystem(fileStore);
 
 		// set EFS.ATTRIBUTE_READ_ONLY which also sets EFS.IMMUTABLE on Mac

@@ -19,6 +19,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
 import java.io.InputStream;
@@ -49,7 +50,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
@@ -121,7 +122,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
@@ -170,7 +171,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
@@ -211,7 +212,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
@@ -257,7 +258,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file3 = folder.getFile("file3.txt");
@@ -293,7 +294,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFolder subFolder = folder.getFolder("sub-folder");
 		IFile file1 = subFolder.getFile("file1.txt");

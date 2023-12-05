@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -160,7 +161,7 @@ public class ProjectEncodingTest extends ResourceTest {
 	}
 
 	private void whenProjectIsCreated() throws CoreException {
-		project = ResourcesPlugin.getWorkspace().getRoot().getProject(getUniqueString());
+		project = ResourcesPlugin.getWorkspace().getRoot().getProject(createUniqueString());
 		ensureExistsInWorkspace(project, true);
 	}
 

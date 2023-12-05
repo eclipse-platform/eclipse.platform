@@ -19,6 +19,7 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATUR
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.junit.Assert.assertThrows;
 
@@ -785,7 +786,7 @@ public class LinkedResourceTest extends ResourceTest {
 	public void testDeleteLink_Bug351823() throws CoreException {
 		IProject project = existingProject;
 
-		IFile link = project.getFile(getUniqueString());
+		IFile link = project.getFile(createUniqueString());
 		link.createLink(localFile, IResource.NONE, createTestMonitor());
 
 		// set .project read-only
@@ -823,8 +824,8 @@ public class LinkedResourceTest extends ResourceTest {
 	public void testDeleteFolderWithLinks() throws CoreException {
 		IProject project = existingProject;
 		IFolder folder = existingFolderInExistingProject;
-		IFile file1 = folder.getFile(getUniqueString());
-		IFile file2 = project.getFile(getUniqueString());
+		IFile file1 = folder.getFile(createUniqueString());
+		IFile file2 = project.getFile(createUniqueString());
 		file1.createLink(localFile, IResource.NONE, createTestMonitor());
 		file2.createLink(localFile, IResource.NONE, createTestMonitor());
 
@@ -1563,7 +1564,7 @@ public class LinkedResourceTest extends ResourceTest {
 	 */
 	public void testMoveFolderWithLinks() throws Exception {
 		// create a folder
-		IFolder folderWithLinks = existingProject.getFolder(getUniqueString());
+		IFolder folderWithLinks = existingProject.getFolder(createUniqueString());
 		folderWithLinks.create(true, true, createTestMonitor());
 
 		IPath fileLocation = getRandomLocation();
@@ -1571,7 +1572,7 @@ public class LinkedResourceTest extends ResourceTest {
 		createFileInFileSystem(resolve(fileLocation), getRandomContents());
 
 		// create a linked file in the folder
-		IFile linkedFile = folderWithLinks.getFile(getUniqueString());
+		IFile linkedFile = folderWithLinks.getFile(createUniqueString());
 		linkedFile.createLink(fileLocation, IResource.NONE, createTestMonitor());
 
 		// there should be an entry in .project for the linked file
@@ -1579,7 +1580,7 @@ public class LinkedResourceTest extends ResourceTest {
 		assertTrue("3.0", string.contains(linkedFile.getProjectRelativePath().toString()));
 
 		// move the folder
-		folderWithLinks.move(otherExistingProject.getFolder(getUniqueString()).getFullPath(),
+		folderWithLinks.move(otherExistingProject.getFolder(createUniqueString()).getFullPath(),
 				IResource.SHALLOW | IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
 		// both the folder and link in the source project should not exist

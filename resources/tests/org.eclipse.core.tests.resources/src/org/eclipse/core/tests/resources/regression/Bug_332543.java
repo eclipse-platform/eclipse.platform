@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
 import java.io.BufferedOutputStream;
@@ -96,7 +97,7 @@ public class Bug_332543 extends ResourceTest {
 	private void testCancel(Function<ByteArrayInputStream, InputStream> wrap) throws CoreException {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 
-		String proj_name = getUniqueString();
+		String proj_name = createUniqueString();
 		IPath proj_loc = root.getLocation().append(proj_name);
 		URI proj_uri = WrapperFileSystem.getWrappedURI(URIUtil.toURI(proj_loc));
 

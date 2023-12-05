@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 
 import java.net.URI;
 import org.eclipse.core.filesystem.IFileStore;
@@ -61,7 +62,7 @@ public class Bug_233939 extends ResourceTest {
 		String fileName = "file.txt";
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject project = root.getProject(getUniqueString());
+		IProject project = root.getProject(createUniqueString());
 		IFile file = project.getFile(fileName);
 
 		// create a project
@@ -98,8 +99,8 @@ public class Bug_233939 extends ResourceTest {
 
 		// create two projects with a symlink to the folder each
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject projectA = root.getProject(getUniqueString());
-		IProject projectB = root.getProject(getUniqueString());
+		IProject projectA = root.getProject(createUniqueString());
+		IProject projectB = root.getProject(createUniqueString());
 		create(projectA, true);
 		create(projectB, true);
 		symLinkAndRefresh(projectA, "folderA", tempFolderPath);
