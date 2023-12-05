@@ -17,6 +17,7 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.hamcrest.Matchers.arrayWithSize;
@@ -154,7 +155,7 @@ public class MarkerTest extends ResourceTest {
 		new MarkerTest().addChildren(result, IPath.ROOT, 3, 4);
 		String[] names = result.toArray(new String[result.size()]);
 		IResource[] created = buildResources(getWorkspace().getRoot(), names);
-		ensureExistsInWorkspace(created, true);
+		ensureExistsInWorkspace(created);
 		return created;
 	}
 
@@ -178,7 +179,7 @@ public class MarkerTest extends ResourceTest {
 		super.setUp();
 		resources = buildResources(getWorkspace().getRoot(),
 				new String[] { "/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/" });
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 
 		// disable autorefresh an wait till that is finished
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
@@ -431,7 +432,7 @@ public class MarkerTest extends ResourceTest {
 	 */
 	public void test_35300() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		String MARKER_ID = "foomarker.example.com";
 		int expected = 4;
 
@@ -446,7 +447,7 @@ public class MarkerTest extends ResourceTest {
 
 	public void test_10989() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
-		create(project, false);
+		ensureExistsInWorkspace(project);
 		IFile file = project.getFile("foo.txt");
 		file.create(getRandomContents(), true, null);
 		file.createMarker(IMarker.PROBLEM);
@@ -485,7 +486,7 @@ public class MarkerTest extends ResourceTest {
 		IFile topFile = folder.getFile("a.txt");
 		IFile subFile = sub.getFile("b.txt");
 		IResource[] allResources = new IResource[] {project, folder, sub, topFile, subFile};
-		ensureExistsInWorkspace(allResources, true);
+		ensureExistsInWorkspace(allResources);
 
 		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE), is(-1));
 		assertThat(root.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE), is(-1));
@@ -538,7 +539,7 @@ public class MarkerTest extends ResourceTest {
 
 		final String INVALID_MARKER = "does.not.exist.at.AllMarker";
 
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		marker = project.createMarker(IMarker.MARKER);
 		task = project.createMarker(IMarker.TASK);
 		problem = project.createMarker(IMarker.PROBLEM);
@@ -869,8 +870,8 @@ public class MarkerTest extends ResourceTest {
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subFile.txt");
-		ensureExistsInWorkspace(new IResource[] {project, folder, file, subFile}, true);
-		ResourceTestUtil.waitForEncodingRelatedJobs(getName());
+		ensureExistsInWorkspace(new IResource[] { project, folder, file, subFile });
+		waitForEncodingRelatedJobs(getName());
 		IFolder destFolder = project.getFolder("myOtherFolder");
 		IFile destSubFile = destFolder.getFile(subFile.getName());
 
@@ -908,8 +909,8 @@ public class MarkerTest extends ResourceTest {
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subFile.txt");
-		ensureExistsInWorkspace(new IResource[] {project, folder, file, subFile}, true);
-		ResourceTestUtil.waitForEncodingRelatedJobs(getName());
+		ensureExistsInWorkspace(new IResource[] { project, folder, file, subFile });
+		waitForEncodingRelatedJobs(getName());
 		IFile destFile = folder.getFile(file.getName());
 		IFile destSubFile = project.getFile(subFile.getName());
 

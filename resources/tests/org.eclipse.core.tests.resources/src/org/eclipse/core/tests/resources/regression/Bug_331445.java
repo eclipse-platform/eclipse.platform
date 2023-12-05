@@ -32,7 +32,7 @@ public class Bug_331445 extends ResourceTest {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = root.getProject(createUniqueString());
 
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 
 		String variableName = "a" + createUniqueString();
 		String variablePath = "mem:/MyProject";

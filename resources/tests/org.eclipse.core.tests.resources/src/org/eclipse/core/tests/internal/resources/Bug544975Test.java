@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.io.ByteArrayInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,7 +41,7 @@ public class Bug544975Test extends ResourceTest {
 		boolean originalRefreshSetting = prefs.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
 		try {
 			prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
-			create(project, false);
+			ensureExistsInWorkspace(project);
 			createFile(project, "someFile.txt", "some text");
 			IFile file1 = project.getFile("someFile.txt");
 			assertTrue(file1.exists());
@@ -73,8 +75,7 @@ public class Bug544975Test extends ResourceTest {
 	public void testBug544975ProjectOpenWithoutBackgroundRefresh() throws Exception {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = root.getProject("Bug544975");
-
-		create(project, false);
+		ensureExistsInWorkspace(project);
 		createFile(project, "someFile.txt", "some text");
 		IFile file1 = project.getFile("someFile.txt");
 		assertTrue(file1.exists());
@@ -104,7 +105,7 @@ public class Bug544975Test extends ResourceTest {
 
 	private IFile createFile(IProject project, String fileName, String initialContents) throws CoreException {
 		IFile file = project.getFile(fileName);
-		create(file, false);
+		file.create(null, true, createTestMonitor());
 		ByteArrayInputStream stream = new ByteArrayInputStream(initialContents.getBytes());
 		file.setContents(stream, IResource.FORCE, new NullProgressMonitor());
 		return file;

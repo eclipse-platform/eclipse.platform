@@ -137,7 +137,7 @@ public class NatureTest extends ResourceTest {
 	 * Tests invalid additions to the set of natures for a project.
 	 */
 	public void testInvalidAdditions() throws Throwable {
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		setNatures(project, new String[] { NATURE_SIMPLE }, false);
 
 		//Adding a nature that is not available.
@@ -161,7 +161,7 @@ public class NatureTest extends ResourceTest {
 	 * Tests invalid removals from the set of natures for a project.
 	 */
 	public void testInvalidRemovals() throws Throwable {
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 
 		//Removing a nature that still has dependents.
 		setNatures(project, new String[] { NATURE_WATER, NATURE_SNOW }, false);
@@ -171,7 +171,7 @@ public class NatureTest extends ResourceTest {
 	}
 
 	public void testNatureLifecyle() throws Throwable {
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 
 		//add simple nature
 		setNatures(project, new String[] { NATURE_SIMPLE }, false);
@@ -207,7 +207,7 @@ public class NatureTest extends ResourceTest {
 	 * Test simple addition and removal of natures.
 	 */
 	public void testSimpleNature() throws Throwable {
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 
 		String[][] valid = getValidNatureSets();
 		for (String[] element : valid) {
@@ -232,7 +232,7 @@ public class NatureTest extends ResourceTest {
 	 * See bugs 127562 and  128709.
 	 */
 	public void testBug127562Nature() throws Throwable {
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		IWorkspace ws = project.getWorkspace();
 
 		String[][] valid = getValidNatureSets();
@@ -263,7 +263,7 @@ public class NatureTest extends ResourceTest {
 	}
 
 	public void testBug297871() throws Throwable {
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 
 		IFileStore descStore = ((File) project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME)).getStore();
 		java.io.File desc = descStore.toLocalFile(EFS.NONE, createTestMonitor());
@@ -308,7 +308,7 @@ public class NatureTest extends ResourceTest {
 	 */
 	public void testBug338055() throws Exception {
 		final boolean finished[] = new boolean[1];
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 
 		AtomicReference<CoreException> failureInJob = new AtomicReference<>();
 		Job simulateNatureAccessJob = new Job("CheckNatureJob") {
@@ -357,7 +357,7 @@ public class NatureTest extends ResourceTest {
 	}
 
 	public void testMissingNatureAddsMarker() throws Exception {
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).putInt(ResourcesPlugin.PREF_MISSING_NATURE_MARKER_SEVERITY, IMarker.SEVERITY_WARNING);
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).flush();
 		IProjectDescription desc = project.getDescription();
@@ -381,7 +381,7 @@ public class NatureTest extends ResourceTest {
 	}
 
 	public void testMissingNatureWithWhitespacesSetChars() throws Exception {
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).putInt(ResourcesPlugin.PREF_MISSING_NATURE_MARKER_SEVERITY, IMarker.SEVERITY_WARNING);
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).flush();
 		IFile dotProjectFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
@@ -405,7 +405,7 @@ public class NatureTest extends ResourceTest {
 	}
 
 	public void testKnownNatureDoesntAddMarker() throws Exception {
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).putInt(ResourcesPlugin.PREF_MISSING_NATURE_MARKER_SEVERITY, IMarker.SEVERITY_WARNING);
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).flush();
 		IProjectDescription desc = project.getDescription();

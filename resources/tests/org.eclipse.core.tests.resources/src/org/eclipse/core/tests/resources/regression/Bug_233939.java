@@ -101,8 +101,8 @@ public class Bug_233939 extends ResourceTest {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject projectA = root.getProject(createUniqueString());
 		IProject projectB = root.getProject(createUniqueString());
-		create(projectA, true);
-		create(projectB, true);
+		ensureExistsInWorkspace(projectA);
+		ensureExistsInWorkspace(projectB);
 		symLinkAndRefresh(projectA, "folderA", tempFolderPath);
 		symLinkAndRefresh(projectB, "folderB", tempFolderPath);
 

@@ -43,7 +43,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
 		IResource[] resources = { project, folder, file, subFile };
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 
 		ResourceDeltaVerifier listener = new ResourceDeltaVerifier();
 		listener.addExpectedChange(subFile, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
@@ -68,7 +68,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
 		IResource[] resources = { project, folder, file, subFile };
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 
 		// no team private members
 		assertThat(root.findMember(project.getFullPath()), is(project));
@@ -103,7 +103,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFolder settings = project.getFolder(".settings");
 		IFile prefs = settings.getFile("org.eclipse.core.resources.prefs");
 		IResource[] resources = new IResource[] { project, folder, file, subFile, settings, prefs };
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 
 		// Initial values should be false.
 		assertTeamPrivateMember(project, false, IResource.DEPTH_INFINITE);
@@ -168,7 +168,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFolder settings = project.getFolder(".settings");
 		IFile prefs = settings.getFile("org.eclipse.core.resources.prefs");
 		IResource[] resources = { project, folder, file, subFile, settings, prefs };
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		IResource description = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 
 		// default case, no team private members
@@ -259,7 +259,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
 		IResource[] resources = { project, folder, file, subFile };
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 
 		// handles to the destination resources
 		IProject destProject = root.getProject("MyOtherProject");
@@ -279,8 +279,8 @@ public class TeamPrivateMemberTest extends ResourceTest {
 
 		// Do it again and but just copy the folder
 		ensureDoesNotExistInWorkspace(destResources);
-		ensureExistsInWorkspace(resources, true);
-		ensureExistsInWorkspace(destProject, true);
+		ensureExistsInWorkspace(resources);
+		ensureExistsInWorkspace(destProject);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 		folder.copy(destFolder.getFullPath(), flags, createTestMonitor());
 		assertExistsInWorkspace(new IResource[] { folder, subFile });
@@ -289,7 +289,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		// set all the resources to be team private
 		// copy the project
 		ensureDoesNotExistInWorkspace(destResources);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		project.copy(destProject.getFullPath(), flags, createTestMonitor());
 		assertExistsInWorkspace(resources);
@@ -297,8 +297,8 @@ public class TeamPrivateMemberTest extends ResourceTest {
 
 		// do it again but only copy the folder
 		ensureDoesNotExistInWorkspace(destResources);
-		ensureExistsInWorkspace(resources, true);
-		ensureExistsInWorkspace(destProject, true);
+		ensureExistsInWorkspace(resources);
+		ensureExistsInWorkspace(destProject);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		folder.copy(destFolder.getFullPath(), flags, createTestMonitor());
 		assertExistsInWorkspace(new IResource[] { folder, subFile });
@@ -312,7 +312,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
 		IResource[] resources = { project, folder, file, subFile };
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 
 		// handles to the destination resources
 		IProject destProject = root.getProject("MyOtherProject");
@@ -332,8 +332,8 @@ public class TeamPrivateMemberTest extends ResourceTest {
 
 		// Do it again and but just move the folder
 		ensureDoesNotExistInWorkspace(destResources);
-		ensureExistsInWorkspace(resources, true);
-		ensureExistsInWorkspace(destProject, true);
+		ensureExistsInWorkspace(resources);
+		ensureExistsInWorkspace(destProject);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 		folder.move(destFolder.getFullPath(), flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
@@ -342,7 +342,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		// set all the resources to be team private
 		// move the project
 		ensureDoesNotExistInWorkspace(destResources);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		project.move(destProject.getFullPath(), flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
@@ -350,8 +350,8 @@ public class TeamPrivateMemberTest extends ResourceTest {
 
 		// do it again but only move the folder
 		ensureDoesNotExistInWorkspace(destResources);
-		ensureExistsInWorkspace(resources, true);
-		ensureExistsInWorkspace(destProject, true);
+		ensureExistsInWorkspace(resources);
+		ensureExistsInWorkspace(destProject);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		folder.move(destFolder.getFullPath(), flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
@@ -365,7 +365,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
 		IResource[] resources = new IResource[] {project, folder, file, subFile};
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 
 		// default behaviour with no team private members
 		int flags = IResource.ALWAYS_DELETE_PROJECT_CONTENT | IResource.FORCE;
@@ -373,43 +373,43 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		project.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		// delete a file
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		file.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(file);
 		assertExistsInWorkspace(new IResource[] { project, folder, subFile });
 		// delete a folder
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		folder.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { project, file });
 
 		// set one child to be team private
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 		// delete the project
 		project.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		// delete a folder
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 		folder.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { project, file });
 
 		// set all resources to be team private
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		// delete the project
 		project.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		// delete a file
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		file.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(file);
 		assertExistsInWorkspace(new IResource[] { project, folder, subFile });
 		// delete a folder
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		folder.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
@@ -430,7 +430,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		final ResourceDeltaVerifier listener = new ResourceDeltaVerifier();
 		getWorkspace().addResourceChangeListener(listener);
 		try {
-			IWorkspaceRunnable body = monitor -> ensureExistsInWorkspace(resources, true);
+			IWorkspaceRunnable body = monitor -> ensureExistsInWorkspace(resources);
 			listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
 			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
@@ -446,7 +446,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		getWorkspace().addResourceChangeListener(listener);
 		try {
 			IWorkspaceRunnable body = monitor -> {
-				ensureExistsInWorkspace(resources, true);
+				ensureExistsInWorkspace(resources);
 				setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 			};
 			listener.reset();
@@ -464,7 +464,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		getWorkspace().addResourceChangeListener(listener);
 		try {
 			IWorkspaceRunnable body = monitor -> {
-				ensureExistsInWorkspace(resources, true);
+				ensureExistsInWorkspace(resources);
 				setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 			};
 			listener.reset();
@@ -489,7 +489,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
 		IResource[] resources = { project, folder, file, subFile };
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 
 		// Check to see if all the resources exist in the workspace tree.
 		assertExistsInWorkspace(resources);
@@ -521,7 +521,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		}
 
 		// create the resources
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 
 		// Initial values should be false.
 		for (IResource resource : resources) {

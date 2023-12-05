@@ -78,7 +78,7 @@ public class ResourceURLTest extends ResourceTest {
 
 	public void testBasicURLs() throws Throwable {
 		IResource[] resources = buildResources(getWorkspace().getRoot(), resourcePaths);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		for (IResource resource : resources) {
 			checkURL(resource);
 		}
@@ -91,7 +91,7 @@ public class ResourceURLTest extends ResourceTest {
 		project.create(desc, null);
 		project.open(null);
 		IResource[] resources = buildResources(project, resourcePaths);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		for (IResource resource : resources) {
 			checkURL(resource);
 		}

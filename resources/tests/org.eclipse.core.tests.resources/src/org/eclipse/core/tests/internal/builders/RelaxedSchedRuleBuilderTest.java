@@ -106,7 +106,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		String projectName = "TestRelaxed";
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
-		create(project, false);
+		ensureExistsInWorkspace(project);
 		addBuilder(project, EmptyDeltaBuilder.BUILDER_NAME);
 
 		// Ensure the builder is instantiated
@@ -159,7 +159,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		tb.waitForStatus(TestBarrier2.STATUS_START);
 
 		// Should be able to write a file in the project
-		create(project.getFile("foo.c"), false);
+		project.getFile("foo.c").create(null, true, createTestMonitor());
 		assertTrue(project.getFile("foo.c").exists());
 
 		// Cancel the builder
@@ -180,7 +180,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		String projectName = "testTwoBuildersRunInOneBuild";
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
-		create(project, false);
+		ensureExistsInWorkspace(project);
 
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] {createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1"), createCommand(desc, EmptyDeltaBuilder2.BUILDER_NAME, "Project1Build2")});
@@ -293,7 +293,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		final IFile foo = project.getFile("foo");
-		create(project, false);
+		ensureExistsInWorkspace(project);
 
 		waitForEncodingRelatedJobs(getName());
 		waitForContentDescriptionUpdate();
@@ -432,7 +432,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		String projectName = "testBug343256";
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
-		create(project, false);
+		ensureExistsInWorkspace(project);
 
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] {createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1"), createCommand(desc, EmptyDeltaBuilder2.BUILDER_NAME, "Project1Build2")});

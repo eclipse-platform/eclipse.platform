@@ -98,7 +98,7 @@ public class LinkedResourceTest extends ResourceTest {
 
 	protected void doCleanup() throws Exception {
 		waitForRefresh();
-		ensureExistsInWorkspace(new IResource[] {existingProject, otherExistingProject, closedProject, existingFolderInExistingProject, existingFolderInExistingFolder, existingFileInExistingProject}, true);
+		ensureExistsInWorkspace(new IResource[] {existingProject, otherExistingProject, closedProject, existingFolderInExistingProject, existingFolderInExistingFolder, existingFileInExistingProject});
 		closedProject.close(createTestMonitor());
 		ensureDoesNotExistInWorkspace(new IResource[] { nonExistingProject, nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolderInNonExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder });
 		ensureDoesNotExistInFileSystem(resolve(nonExistingLocation).toFile());
@@ -630,7 +630,7 @@ public class LinkedResourceTest extends ResourceTest {
 	public void testCreateLinkCaseVariant() throws Throwable {
 		IFolder link = nonExistingFolderInExistingProject;
 		IFolder variant = link.getParent().getFolder(IPath.fromOSString(link.getName().toUpperCase()));
-		ensureExistsInWorkspace(variant, true);
+		ensureExistsInWorkspace(variant);
 
 		ThrowingRunnable linkCreation = () -> link.createLink(localFolder, IResource.NONE, createTestMonitor());
 		// should fail on case insensitive platforms
@@ -742,7 +742,7 @@ public class LinkedResourceTest extends ResourceTest {
 		IFile linkChild = link.getFile("child.txt");
 		IFileStore childStore = null;
 		link.createLink(localFolder, IResource.NONE, createTestMonitor());
-		ensureExistsInWorkspace(linkChild, true);
+		ensureExistsInWorkspace(linkChild);
 		childStore = EFS.getStore(linkChild.getLocationURI());
 
 		//everything should exist at this point
@@ -929,7 +929,7 @@ public class LinkedResourceTest extends ResourceTest {
 
 		nonExistingFolderInExistingProject.createLink(parentLoc, IResource.NONE, createTestMonitor());
 		nonExistingFolderInOtherExistingProject.createLink(childLoc, IResource.NONE, createTestMonitor());
-		create(nonExistingFolderInOtherExistingProject.getFile("foo"), true);
+		ensureExistsInWorkspace(nonExistingFolderInOtherExistingProject.getFile("foo"));
 
 		assertTrue("2.0", existingFolderInExistingFolder.members().length == 1);
 		assertTrue("3.0", existingFolderInExistingFolder.members()[0].getName().equals("foo"));
@@ -1003,7 +1003,7 @@ public class LinkedResourceTest extends ResourceTest {
 		fileStore.openOutputStream(EFS.NONE, createTestMonitor()).close();
 
 		// create the structure in the workspace
-		ensureExistsInWorkspace(top, true);
+		ensureExistsInWorkspace(top);
 		linkedFolder.createLink(folderStore.toURI(), IResource.NONE, createTestMonitor());
 		linkedFile.createLink(fileStore.toURI(), IResource.NONE, createTestMonitor());
 

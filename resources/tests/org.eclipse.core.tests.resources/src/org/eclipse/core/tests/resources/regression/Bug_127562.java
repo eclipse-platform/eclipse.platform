@@ -31,7 +31,7 @@ public class Bug_127562 extends ResourceTest {
 
 	public void testBug() throws CoreException {
 		final IProject project = getWorkspace().getRoot().getProject("Bug127562");
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		IProjectDescription description = project.getDescription();
 		description.setComment("Foo");
 		getWorkspace().run((IWorkspaceRunnable) monitor -> project.setDescription(description, createTestMonitor()),

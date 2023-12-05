@@ -35,7 +35,7 @@ public class TestBug316182 extends WorkspaceSessionTest {
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("project_TestBug316182");
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		workspace.save(true, createTestMonitor());
 		// reset last caught exception
 		CAUGHT_EXCEPTION = null;

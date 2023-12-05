@@ -73,7 +73,7 @@ public class FilteredResourceTest extends ResourceTest {
 	protected IProject otherExistingProject;
 
 	protected void doCleanup() throws Exception {
-		ensureExistsInWorkspace(new IResource[] {existingProject, otherExistingProject, closedProject, existingFolderInExistingProject, existingFolderInExistingFolder, existingFileInExistingProject}, true);
+		ensureExistsInWorkspace(new IResource[] {existingProject, otherExistingProject, closedProject, existingFolderInExistingProject, existingFolderInExistingFolder, existingFileInExistingProject});
 		closedProject.close(createTestMonitor());
 		ensureDoesNotExistInWorkspace(new IResource[] {nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolder2InOtherExistingProject, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder});
 		resolve(localFolder).toFile().mkdirs();
@@ -133,7 +133,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingProject.getFile("foo");
 		IFile bar = existingFolderInExistingProject.getFile("bar");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, bar});
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
@@ -170,7 +170,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFolder foo = existingProject.getFolder("foo");
 		IFolder bar = existingProject.getFolder("bar");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, bar});
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
@@ -216,7 +216,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = folder.getFile("foo");
 		IFile bar = folder.getFile("bar");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, bar});
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
@@ -402,7 +402,7 @@ public class FilteredResourceTest extends ResourceTest {
 
 		// Create 'foo.cpp' in existingFolder...
 		IFile newFile = existingFolderInExistingFolder.getFile("foo.cpp");
-		create(newFile, true);
+		ensureExistsInWorkspace(newFile);
 		IResource[] members = existingFolderInExistingFolder.members();
 		assertEquals("1.9", 1, members.length);
 		assertEquals("2.0", IResource.FILE, members[0].getType());
@@ -410,7 +410,7 @@ public class FilteredResourceTest extends ResourceTest {
 
 		// Create a 'foo.h' under folder
 		newFile = folder.getFile("foo.h");
-		create(newFile, true);
+		ensureExistsInWorkspace(newFile);
 		// Check that foo.h has appeared in 'folder'
 		// // Refreshing restores sanity (hides the .cpp files)...
 		// folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
@@ -617,7 +617,7 @@ public class FilteredResourceTest extends ResourceTest {
 		}
 
 		// Create a file under existingFolderInExistingFolder
-		create(folder2.getFile("foo"), true);
+		ensureExistsInWorkspace(folder2.getFile("foo"));
 
 		assertTrue("22.0", folder1.exists());
 		assertTrue("22.2", folder2.exists());
@@ -666,7 +666,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = folder.getFile("foo");
 		IFile bar = folder.getFile("bar");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, bar});
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
@@ -700,7 +700,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingFolder.getFile("foo");
 		IFile bar = existingFolderInExistingFolder.getFile("bar");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, bar});
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
@@ -738,7 +738,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingFolder.getFile("foo");
 		IFile bar = existingFolderInExistingFolder.getFile("bar");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, bar});
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		filterDescription.delete(0, createTestMonitor());
@@ -768,7 +768,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile file = existingFolderInExistingProject.getFile("file.c");
 		IFile bar = existingFolderInExistingProject.getFile("bar.h");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar, file}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, bar, file});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingProject.members();
@@ -807,7 +807,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile fooh = existingFolderInExistingFolder.getFile("foo.h");
 		IFile bar = existingFolderInExistingFolder.getFile("bar.h");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar, file, fooh}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, bar, file, fooh});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingFolder.members();
@@ -848,7 +848,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile fooh = existingFolderInExistingProject.getFile("foo.h");
 		IFile bar = existingFolderInExistingProject.getFile("bar.h");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar, file, fooh}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, bar, file, fooh});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingProject.members();
@@ -875,7 +875,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile fooh = existingFolderInExistingFolder.getFile("foo.h");
 		IFile bar = existingFolderInExistingFolder.getFile("bar.h");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar, file, fooh}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, bar, file, fooh});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingFolder.members();
@@ -896,7 +896,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingFolder.getFile("foo.c");
 		IFolder food = existingFolderInExistingFolder.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingFolder.members();
@@ -917,7 +917,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingFolder.getFile("foo.c");
 		IFolder food = existingFolderInExistingFolder.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingFolder.members();
@@ -938,7 +938,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IFolder destination = otherExistingProject.getFolder("destination");
@@ -967,7 +967,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IFolder destination = otherExistingProject.getFolder("destination");
@@ -1000,10 +1000,10 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
-		ensureExistsInWorkspace(new IResource[] {nonExistingFolderInExistingProject}, true);
+		ensureExistsInWorkspace(new IResource[] {nonExistingFolderInExistingProject});
 		IFolder destination = nonExistingFolderInExistingProject.getFolder("destination");
 		existingFolderInExistingProject.copy(destination.getFullPath(), 0, createTestMonitor());
 
@@ -1034,10 +1034,10 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
-		ensureExistsInWorkspace(new IResource[] {nonExistingFolderInExistingProject}, true);
+		ensureExistsInWorkspace(new IResource[] {nonExistingFolderInExistingProject});
 		IFolder destination = nonExistingFolderInExistingProject.getFolder("destination");
 		existingFolderInExistingProject.move(destination.getFullPath(), 0, createTestMonitor());
 
@@ -1069,10 +1069,10 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		ensureExistsInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
-		ensureExistsInWorkspace(new IResource[] {nonExistingFolderInExistingProject}, true);
+		ensureExistsInWorkspace(new IResource[] {nonExistingFolderInExistingProject});
 		existingFolderInExistingProject.delete(0, createTestMonitor());
 
 		IResourceFilterDescription[] filters = existingFolderInExistingProject.getFilters();
@@ -1122,7 +1122,7 @@ public class FilteredResourceTest extends ResourceTest {
 	 */
 	public void test317783() throws CoreException {
 		IFolder folder = existingProject.getFolder("foo");
-		ensureExistsInWorkspace(folder, true);
+		ensureExistsInWorkspace(folder);
 
 		IFile file = folder.getFile("bar.txt");
 		ensureExistsInWorkspace(file, "content");
@@ -1154,7 +1154,7 @@ public class FilteredResourceTest extends ResourceTest {
 	 */
 	public void test317824() throws CoreException {
 		IFolder folder = existingProject.getFolder("foo");
-		ensureExistsInWorkspace(folder, true);
+		ensureExistsInWorkspace(folder);
 
 		IFile file = folder.getFile("bar.txt");
 		ensureExistsInWorkspace(file, "content");
@@ -1187,10 +1187,10 @@ public class FilteredResourceTest extends ResourceTest {
 	 */
 	public void test328464() throws CoreException {
 		IFolder folder = existingProject.getFolder(createUniqueString());
-		ensureExistsInWorkspace(folder, true);
+		ensureExistsInWorkspace(folder);
 
 		IFile file_a_txt = folder.getFile("a.txt");
-		ensureExistsInWorkspace(file_a_txt, true);
+		ensureExistsInWorkspace(file_a_txt);
 
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER,
 				"a\\.txt");

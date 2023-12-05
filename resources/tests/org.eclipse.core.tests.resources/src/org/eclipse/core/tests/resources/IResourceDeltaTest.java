@@ -63,7 +63,7 @@ public class IResourceDeltaTest extends ResourceTest {
 		allResources = new IResource[] {project1, project2, folder1, folder2, folder3, file1, file2, file3};
 
 		// Create and open the resources
-		IWorkspaceRunnable body = monitor -> ensureExistsInWorkspace(allResources, true);
+		IWorkspaceRunnable body = monitor -> ensureExistsInWorkspace(allResources);
 		getWorkspace().run(body, createTestMonitor());
 	}
 

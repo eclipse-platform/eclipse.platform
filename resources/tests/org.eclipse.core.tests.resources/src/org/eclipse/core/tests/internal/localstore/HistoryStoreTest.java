@@ -336,7 +336,7 @@ public class HistoryStoreTest extends ResourceTest {
 		IFile file2 = folder2.getFile(file1.getName());
 
 		// directly deletes history files if project did already existed:
-		ensureExistsInWorkspace(new IResource[] {project, folder1, folder2}, true);
+		ensureExistsInWorkspace(new IResource[] {project, folder1, folder2});
 		file1.create(getRandomContents(), IResource.FORCE, createTestMonitor());
 		file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
 		file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
@@ -558,7 +558,7 @@ public class HistoryStoreTest extends ResourceTest {
 		String[] contents = {"content0", "content1", "content2", "content3", "content4"};
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("TestCopyHistoryProject");
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 
 		IFolder folder = project.getFolder("folder1");
 		IFile file = folder.getFile("file1.txt");
@@ -626,7 +626,7 @@ public class HistoryStoreTest extends ResourceTest {
 		String[] contents = {"content0", "content1", "content2", "content3", "content4"};
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("TestCopyHistoryProject");
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 
 		IFolder folder = project.getFolder("folder1");
 		IFolder folder2 = project.getFolder("folder2");
@@ -666,7 +666,7 @@ public class HistoryStoreTest extends ResourceTest {
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("TestCopyHistoryProject");
 		IProject project2 = getWorkspace().getRoot().getProject("TestCopyHistoryProject2");
-		ensureExistsInWorkspace(new IResource[] {project, project2}, true);
+		ensureExistsInWorkspace(new IResource[] {project, project2});
 
 		IFolder folder = project.getFolder("folder1");
 		IFolder folder2 = project2.getFolder("folder1");

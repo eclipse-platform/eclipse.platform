@@ -100,7 +100,7 @@ public class ChangeValidationTest extends ResourceTest {
 		super.setUp();
 		project = getWorkspace().getRoot().getProject("Project");
 		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/a/", "c/x", "c/b/y", "c/b/z"});
-		ensureExistsInWorkspace(before, true);
+		ensureExistsInWorkspace(before);
 		assertExistsInWorkspace(before);
 		factory = createEmptyChangeDescription();
 	}

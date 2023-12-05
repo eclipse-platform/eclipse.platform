@@ -163,7 +163,7 @@ public class ResourceAttributeTest extends ResourceTest {
 	 */
 	public void testClosedProject() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		project.close(createTestMonitor());
 		assertNull("1.0", project.getResourceAttributes());
 	}
@@ -179,9 +179,9 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertNull("1.2", file.getResourceAttributes());
 
 		//now create the resources and ensure non-null result
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(folder, true);
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(project);
+		ensureExistsInWorkspace(folder);
+		ensureExistsInWorkspace(file);
 		assertNotNull("2.0", project.getResourceAttributes());
 		assertNotNull("2.1", folder.getResourceAttributes());
 		assertNotNull("2.2", file.getResourceAttributes());
@@ -251,7 +251,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		// create a link to the target file and add it to the workspace,
 		// the resource in the workspace should have symbolic link attribute set
 		createSymLink(project.getLocation().toFile(), "link", "target", false);
-		ensureExistsInWorkspace(link, true);
+		ensureExistsInWorkspace(link);
 		assertTrue("5.0", link.getResourceAttributes().isSymbolicLink());
 
 		// attempts to clear the symbolic link attribute shouldn't affect

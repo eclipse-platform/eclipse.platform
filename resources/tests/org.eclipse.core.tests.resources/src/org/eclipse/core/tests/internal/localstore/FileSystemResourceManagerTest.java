@@ -168,7 +168,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		// create resources
 		IResource[] resources = buildResources(project, new String[] { "/Folder1/", "/Folder1/File1",
 				"/Folder1/Folder2/", "/Folder1/Folder2/File2", "/Folder1/Folder2/Folder3/" });
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		for (IResource resource : resources) {
 			ensureDoesNotExistInFileSystem(resource);
 		}
@@ -251,7 +251,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		/* initialize common objects */
 		IProject project = projects[0];
 		IFile file = project.getFile("testWriteFile");
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		/* common contents */
 		String originalContent = "this string should not be equal the other";
 		String anotherContent = "and this string should not... well, you know...";
@@ -309,7 +309,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		/* initialize common objects */
 		IProject project = projects[0];
 		IFile file = project.getFile("testWriteFile");
-		ensureExistsInWorkspace(file, true);
+		ensureExistsInWorkspace(file);
 		String content = "original";
 
 		/* write file for the first time */
@@ -342,7 +342,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		/* initialize common objects */
 		IProject project = projects[0];
 		IFolder folder = project.getFolder("testWriteFolder");
-		ensureExistsInWorkspace(folder, true);
+		ensureExistsInWorkspace(folder);
 
 		/* existing file on destination */
 		ensureDoesNotExistInFileSystem(folder);

@@ -49,7 +49,7 @@ public class Bug_303517 extends ResourceTest {
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
 		prefs.putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, true);
 		IResource[] resources = buildResources(getWorkspace().getRoot(), resourcePaths);
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 	}
 
 	@Override

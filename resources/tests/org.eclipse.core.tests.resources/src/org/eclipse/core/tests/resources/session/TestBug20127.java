@@ -41,7 +41,7 @@ public class TestBug20127 extends WorkspaceSerializationTest {
 	 */
 	public void test1() throws CoreException {
 		IProject project = workspace.getRoot().getProject("Project1");
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		setAutoBuilding(false);
 
 		//create a project and configure builder

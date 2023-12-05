@@ -228,7 +228,7 @@ public class RepositoryProviderTests extends TeamTest {
 		bicProvider.setMoveDeleteHook(hook);
 
 		IResource[] resources = buildResources(project, new String[] {"deleteFile.txt", "moveFile.txt", "deletedFolder/", "moveFolder/"});
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		resources[0].delete(false, null);
 		resources[1].move(resources[1].getFullPath().removeLastSegments(1).append("movedFile_NEW"), false, null);
 		resources[2].delete(false, null);
@@ -325,7 +325,7 @@ public class RepositoryProviderTests extends TeamTest {
 
 		// test that moving files/folders between two projects with providers calls the destination
 		IResource[] resources = buildResources(projectA, new String[] {"moveFile.txt", "moveFolder/"});
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		resources[0].move(projectB.getFullPath().append("moveFile_new.txt"), false, null);
 		resources[1].move(projectB.getFullPath().append("movedFolder"), false, null);
 		for (int i = 0; i < calledProjectA.length; i++) {
@@ -337,7 +337,7 @@ public class RepositoryProviderTests extends TeamTest {
 		calledProjectA[0] = false; calledProjectA[1] = false;
 		calledProjectB[0] = false; calledProjectB[1] = false;
 		resources = buildResources(projectA, new String[] {"anotherMovedFiled.txt", "anotherMovedFolder/"});
-		ensureExistsInWorkspace(resources, true);
+		ensureExistsInWorkspace(resources);
 		resources[0].move(projectC.getFullPath().append("moveFileOther_new.txt"), false, null);
 		resources[1].move(projectC.getFullPath().append("movedFolderOther"), false, null);
 		for (int i = 0; i < calledProjectA.length; i++) {

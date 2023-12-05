@@ -147,7 +147,7 @@ public class BucketTreeTests extends ResourceTest {
 		IFile file1 = proj1.getFile("file1.txt");
 		IFolder folder1 = proj1.getFolder("folder1");
 		IFile file2 = folder1.getFile("file2.txt");
-		ensureExistsInWorkspace(new IResource[] { file1, file2, proj2 }, true);
+		ensureExistsInWorkspace(new IResource[] { file1, file2, proj2 });
 		IPath[] paths = { IPath.ROOT, proj1.getFullPath(), file1.getFullPath(), folder1.getFullPath(),
 				file2.getFullPath(), proj2.getFullPath() };
 		for (IPath path : paths) {

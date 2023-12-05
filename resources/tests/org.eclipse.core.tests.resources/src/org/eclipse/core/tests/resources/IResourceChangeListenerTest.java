@@ -1102,7 +1102,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 
 	public void testMoveFileDeleteSourceParent() throws CoreException {
 		file1.delete(IResource.NONE, null);
-		create(file3, true);
+		ensureExistsInWorkspace(file3);
 		verifier.reset();
 		verifier.addExpectedChange(folder2, IResourceDelta.REMOVED, 0, null, null);
 		verifier.addExpectedChange(file1, IResourceDelta.ADDED, IResourceDelta.MOVED_FROM, file3.getFullPath(), null);

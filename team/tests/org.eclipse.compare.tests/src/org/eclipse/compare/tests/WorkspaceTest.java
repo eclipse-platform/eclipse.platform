@@ -112,7 +112,7 @@ public class WorkspaceTest extends ResourceTest {
 			resources.add(container);
 		resources.addAll(Arrays.asList(buildResources(container, hierarchy)));
 		IResource[] result = resources.toArray(new IResource[resources.size()]);
-		ensureExistsInWorkspace(result, true);
+		ensureExistsInWorkspace(result);
 		for (IResource r : result) {
 			if (r.getType() == IResource.FILE) {
 				((IFile) r).setContents(getRandomContents(100), true, false, null);

@@ -54,7 +54,7 @@ public class ProjectDynamicReferencesTest extends ResourceTest {
 		project0 = getWorkspace().getRoot().getProject(PROJECT_0_NAME);
 		project1 = getWorkspace().getRoot().getProject("ProjectDynamicReferencesTest_p1");
 		project2 = getWorkspace().getRoot().getProject("ProjectDynamicReferencesTest_p2");
-		ensureExistsInWorkspace(new IProject[] { project0, project1, project2 }, true);
+		ensureExistsInWorkspace(new IProject[] { project0, project1, project2 });
 		addBuilder(project0);
 		addBuilder(project1);
 		addBuilder(project2);

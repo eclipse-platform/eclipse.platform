@@ -66,7 +66,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		IFile localFile = project.getFile(sourceFile.getName());
 
 		//setup initial resources
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
 		destination.createLink(destinationStore.toURI(), IResource.NONE, createTestMonitor());
 		sourceFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
@@ -92,7 +92,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		IFolder destination = project.getFolder("destination");
 
 		//setup initial resources
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		parentFolder.create(IResource.NONE, true, createTestMonitor());
 		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
 
@@ -123,7 +123,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		IFile localFile = project.getFile(sourceFile.getName());
 
 		//setup initial resources
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
 		destination.createLink(destinationStore.toURI(), IResource.NONE, createTestMonitor());
 		sourceFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
@@ -153,7 +153,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		IFolder destination = project.getFolder("destination");
 		IFile sourceFile = source.getFile("file.txt");
 		//setup initial resources
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
 		destination.createLink(destinationStore.toURI(), IResource.NONE, createTestMonitor());
 		sourceFile.create(getRandomContents(), IResource.NONE, createTestMonitor());

@@ -58,7 +58,7 @@ public class IFileTest extends ResourceTest {
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
-		ensureExistsInWorkspace(new IResource[] {project, folder}, true);
+		ensureExistsInWorkspace(new IResource[] {project, folder});
 		IFile file = folder.getFile("file.txt");
 
 		try {
@@ -90,7 +90,7 @@ public class IFileTest extends ResourceTest {
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
-		ensureExistsInWorkspace(new IResource[] {project, folder}, true);
+		ensureExistsInWorkspace(new IResource[] {project, folder});
 		IFile file = folder.getFile("file.txt");
 
 		try {
@@ -111,7 +111,7 @@ public class IFileTest extends ResourceTest {
 	public void testBug43936() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		ensureExistsInWorkspace(project, true);
+		ensureExistsInWorkspace(project);
 		assertTrue("1.0", descFile.exists());
 
 		IProjectDescription desc = project.getDescription();
