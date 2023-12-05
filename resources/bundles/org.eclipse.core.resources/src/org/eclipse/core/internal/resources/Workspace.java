@@ -1112,7 +1112,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 						IStatus requirements = ((Resource) resource).checkCopyRequirements(destinationPath, resource.getType(), updateFlags);
 						if (requirements.isOK()) {
 							try {
-								resource.copy(destinationPath, updateFlags, Policy.subMonitorFor(monitor, 1));
+								resource.copy(destinationPath, updateFlags, subMonitor.newChild(1));
 							} catch (CoreException e) {
 								status.merge(e.getStatus());
 							}
@@ -1132,7 +1132,6 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			getWorkManager().operationCanceled();
 			throw e;
 		} finally {
-			subMonitor.done();
 			endOperation(getRoot(), true);
 		}
 		if (status.matches(IStatus.ERROR))

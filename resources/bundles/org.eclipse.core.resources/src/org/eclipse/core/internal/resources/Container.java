@@ -15,13 +15,32 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 import org.eclipse.core.internal.events.LifecycleEvent;
 import org.eclipse.core.internal.localstore.IHistoryStore;
-import org.eclipse.core.internal.utils.*;
-import org.eclipse.core.internal.watson.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.internal.utils.Policy;
+import org.eclipse.core.internal.utils.WrappedRuntimeException;
+import org.eclipse.core.internal.watson.ElementTree;
+import org.eclipse.core.internal.watson.ElementTreeIterator;
+import org.eclipse.core.internal.watson.IElementContentVisitor;
+import org.eclipse.core.internal.watson.IPathRequestor;
+import org.eclipse.core.resources.FileInfoMatcherDescription;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceFilterDescription;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.osgi.util.NLS;
 
@@ -47,47 +66,43 @@ public abstract class Container extends Resource implements IContainer {
 	@Override
 	public IResourceFilterDescription createFilter(int type, FileInfoMatcherDescription matcherDescription, int updateFlags, IProgressMonitor monitor) throws CoreException {
 		Assert.isNotNull(getProject());
-		monitor = Policy.monitorFor(monitor);
+
+		String message = NLS.bind(Messages.links_creating, getFullPath());
+		SubMonitor subMonitor = SubMonitor.convert(monitor, message, Policy.totalWork);
 		FilterDescription filter = null;
+		Policy.checkCanceled(subMonitor);
+		checkValidPath(path, FOLDER | PROJECT, true);
+		final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
 		try {
-			String message = NLS.bind(Messages.links_creating, getFullPath());
-			monitor.beginTask(message, Policy.totalWork);
-			Policy.checkCanceled(monitor);
-			checkValidPath(path, FOLDER | PROJECT, true);
-			final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
-			try {
-				workspace.prepareOperation(rule, monitor);
-				workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_FILTER_ADD, this));
-				workspace.beginOperation(true);
-				monitor.worked(Policy.opWork * 5 / 100);
-				//save the filter in the project description
-				filter = new FilterDescription(this, type, matcherDescription);
-				filter.setId(System.currentTimeMillis());
+			workspace.prepareOperation(rule, monitor);
+			workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_FILTER_ADD, this));
+			workspace.beginOperation(true);
+			monitor.worked(Policy.opWork * 5 / 100);
+			// save the filter in the project description
+			filter = new FilterDescription(this, type, matcherDescription);
+			filter.setId(System.currentTimeMillis());
 
-				Project project = (Project) getProject();
-				project.internalGetDescription().addFilter(getProjectRelativePath(), filter);
-				project.writeDescription(IResource.NONE);
-				monitor.worked(Policy.opWork * 5 / 100);
+			Project project = (Project) getProject();
+			project.internalGetDescription().addFilter(getProjectRelativePath(), filter);
+			project.writeDescription(IResource.NONE);
+			monitor.worked(Policy.opWork * 5 / 100);
 
-				//refresh to discover any new resources below this folder
-				if (getType() != IResource.FILE) {
-					//refresh either in background or foreground
-					if ((updateFlags & IResource.BACKGROUND_REFRESH) != 0) {
-						workspace.refreshManager.refresh(this);
-						monitor.worked(Policy.opWork * 90 / 100);
-					} else {
-						refreshLocal(DEPTH_INFINITE, Policy.subMonitorFor(monitor, Policy.opWork * 90 / 100));
-					}
-				} else
+			// refresh to discover any new resources below this folder
+			if (getType() != IResource.FILE) {
+				// refresh either in background or foreground
+				if ((updateFlags & IResource.BACKGROUND_REFRESH) != 0) {
+					workspace.refreshManager.refresh(this);
 					monitor.worked(Policy.opWork * 90 / 100);
-			} catch (OperationCanceledException e) {
-				workspace.getWorkManager().operationCanceled();
-				throw e;
-			} finally {
-				workspace.endOperation(rule, true);
-			}
+				} else {
+					refreshLocal(DEPTH_INFINITE, subMonitor.newChild(Policy.opWork * 90 / 100));
+				}
+			} else
+				monitor.worked(Policy.opWork * 90 / 100);
+		} catch (OperationCanceledException e) {
+			workspace.getWorkManager().operationCanceled();
+			throw e;
 		} finally {
-			monitor.done();
+			workspace.endOperation(rule, true);
 		}
 		return filter;
 	}

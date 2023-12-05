@@ -1383,27 +1383,22 @@ public class Project extends Container implements IProject {
 
 	@Override
 	public void touch(IProgressMonitor monitor) throws CoreException {
-		monitor = Policy.monitorFor(monitor);
+		String message = NLS.bind(Messages.resources_touch, getFullPath());
+		SubMonitor subMonitor = SubMonitor.convert(monitor, message, Policy.totalWork);
+		final ISchedulingRule rule = workspace.getRuleFactory().modifyRule(this);
 		try {
-			String message = NLS.bind(Messages.resources_touch, getFullPath());
-			monitor.beginTask(message, Policy.totalWork);
-			final ISchedulingRule rule = workspace.getRuleFactory().modifyRule(this);
-			try {
-				workspace.prepareOperation(rule, monitor);
-				workspace.beginOperation(true);
-				super.touch(Policy.subMonitorFor(monitor, Policy.opWork));
-			} catch (OperationCanceledException e) {
-				workspace.getWorkManager().operationCanceled();
-				throw e;
-			} finally {
-				try {
-					workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.POST_PROJECT_CHANGE, this));
-				} finally {
-					workspace.endOperation(rule, true);
-				}
-			}
+			workspace.prepareOperation(rule, subMonitor.newChild(0));
+			workspace.beginOperation(true);
+			super.touch(subMonitor.newChild(Policy.opWork));
+		} catch (OperationCanceledException e) {
+			workspace.getWorkManager().operationCanceled();
+			throw e;
 		} finally {
-			monitor.done();
+			try {
+				workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.POST_PROJECT_CHANGE, this));
+			} finally {
+				workspace.endOperation(rule, true);
+			}
 		}
 	}
 

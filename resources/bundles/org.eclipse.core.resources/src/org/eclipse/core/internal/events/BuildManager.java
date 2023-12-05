@@ -66,6 +66,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -453,28 +454,25 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 	 */
 	private IStatus basicBuild(IBuildConfiguration buildConfiguration, int trigger, String builderName, Map<String, String> args, IProgressMonitor monitor) {
 		final IProject project = buildConfiguration.getProject();
-		monitor = Policy.monitorFor(monitor);
+
+		String message = NLS.bind(Messages.events_building_1, project.getFullPath());
+		SubMonitor subMonitor = SubMonitor.convert(monitor, message, 1);
 		try {
-			String message = NLS.bind(Messages.events_building_1, project.getFullPath());
-			monitor.beginTask(message, 1);
+			hookStartBuild(new IBuildConfiguration[] { buildConfiguration }, trigger);
+			MultiStatus status = new MultiStatus(ResourcesPlugin.PI_RESOURCES, IResourceStatus.INTERNAL_ERROR,
+					Messages.events_errors, null);
+			ICommand command = getCommand(project, builderName, args);
 			try {
-				hookStartBuild(new IBuildConfiguration[] {buildConfiguration}, trigger);
-				MultiStatus status = new MultiStatus(ResourcesPlugin.PI_RESOURCES, IResourceStatus.INTERNAL_ERROR, Messages.events_errors, null);
-				ICommand command = getCommand(project, builderName, args);
-				try {
-					IBuildContext context = new BuildContext(buildConfiguration);
-					IncrementalProjectBuilder builder = getBuilder(buildConfiguration, command, -1, status, context);
-					if (builder != null)
-						basicBuild(trigger, builder, args, status, Policy.subMonitorFor(monitor, 1));
-				} catch (CoreException e) {
-					status.add(e.getStatus());
-				}
-				return status;
-			} finally {
-				hookEndBuild(trigger);
+				IBuildContext context = new BuildContext(buildConfiguration);
+				IncrementalProjectBuilder builder = getBuilder(buildConfiguration, command, -1, status, context);
+				if (builder != null)
+					basicBuild(trigger, builder, args, status, subMonitor.newChild(1));
+			} catch (CoreException e) {
+				status.add(e.getStatus());
 			}
+			return status;
 		} finally {
-			monitor.done();
+			hookEndBuild(trigger);
 		}
 	}
 
