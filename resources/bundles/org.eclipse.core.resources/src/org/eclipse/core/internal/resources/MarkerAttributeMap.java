@@ -22,8 +22,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import org.eclipse.core.internal.utils.IStringPoolParticipant;
-import org.eclipse.core.internal.utils.StringPool;
 
 /**
  * A specialized Map&lt;String,Object&gt; implementation that is optimized for a
@@ -33,7 +31,7 @@ import org.eclipse.core.internal.utils.StringPool;
  */
 // the Map interface is not implemented as it would allow to insert null key or values
 // or non interned keys via the iterator if not a specific entrySet is implemented.
-public class MarkerAttributeMap implements IStringPoolParticipant {
+public class MarkerAttributeMap {
 	// This implementation is a copy on write map.
 	private final AtomicReference<Map<String, Object>> mapRef;
 
@@ -150,18 +148,6 @@ public class MarkerAttributeMap implements IStringPoolParticipant {
 		});
 	}
 
-	@Override
-	public void shareStrings(StringPool set) {
-		// don't share keys because they are already interned
-		for (java.util.Map.Entry<String, Object> e : getMap().entrySet()) {
-			Object o = e.getValue();
-			if (o instanceof String) {
-				e.setValue(set.add((String) o));
-			} else if (o instanceof IStringPoolParticipant) {
-				((IStringPoolParticipant) o).shareStrings(set);
-			}
-		}
-	}
 
 	/** @see java.util.Map#isEmpty **/
 	public boolean isEmpty() {

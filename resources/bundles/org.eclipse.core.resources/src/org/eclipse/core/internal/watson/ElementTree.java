@@ -25,7 +25,6 @@ import org.eclipse.core.internal.dtree.DataTreeNode;
 import org.eclipse.core.internal.dtree.DeltaDataTree;
 import org.eclipse.core.internal.dtree.ObjectNotFoundException;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.internal.utils.StringPool;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
@@ -709,13 +708,6 @@ public class ElementTree {
 	 */
 	public void setTreeData(IElementTreeData data) {
 		userData = data;
-	}
-
-	/* (non-Javadoc)
-	 * Method declared on IStringPoolParticipant
-	 */
-	public void shareStrings(StringPool set) {
-		tree.storeStrings(set);
 	}
 
 	/**

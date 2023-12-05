@@ -15,10 +15,8 @@
 package org.eclipse.core.internal.resources;
 
 import java.util.Arrays;
-import org.eclipse.core.internal.utils.IStringPoolParticipant;
-import org.eclipse.core.internal.utils.StringPool;
 
-public class MarkerSet implements Cloneable, IStringPoolParticipant {
+public class MarkerSet implements Cloneable {
 	protected static final int MINIMUM_SIZE = 5;
 	protected int elementCount = 0;
 	protected IMarkerSetElement[] elements;
@@ -229,20 +227,6 @@ public class MarkerSet implements Cloneable, IStringPoolParticipant {
 		return elementCount;
 	}
 
-	/* (non-Javadoc
-	 * Method declared on IStringPoolParticipant
-	 */
-	@Override
-	public void shareStrings(StringPool set) {
-		//copy elements for thread safety
-		IMarkerSetElement[] array = elements;
-		if (array == null)
-			return;
-		for (IMarkerSetElement o : array) {
-			if (o instanceof IStringPoolParticipant)
-				((IStringPoolParticipant) o).shareStrings(set);
-		}
-	}
 
 	/** for debugging only **/
 	@Override

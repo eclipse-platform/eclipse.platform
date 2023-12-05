@@ -15,7 +15,6 @@ package org.eclipse.core.internal.dtree;
 
 import java.util.Objects;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.internal.utils.StringPool;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 
@@ -978,17 +977,6 @@ public class DeltaDataTree extends AbstractDataTree {
 		setRootNode(rootNode.simplifyWithParent(rootKey(), parent, comparer));
 	}
 
-	/**
-	 * @see org.eclipse.core.internal.utils.IStringPoolParticipant#shareStrings(StringPool)
-	 */
-	public void storeStrings(StringPool set) {
-		AbstractDataTreeNode root = null;
-		for (DeltaDataTree dad = this; dad != null; dad = dad.getParent()) {
-			root = dad.getRootNode();
-			if (root != null)
-				root.storeStrings(set);
-		}
-	}
 
 	/** for debugging purposes only */
 	@Override

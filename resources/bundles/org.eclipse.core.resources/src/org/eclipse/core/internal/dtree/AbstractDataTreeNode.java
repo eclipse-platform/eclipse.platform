@@ -17,7 +17,6 @@ package org.eclipse.core.internal.dtree;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.internal.utils.StringPool;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 
@@ -570,17 +569,6 @@ public abstract class AbstractDataTreeNode {
 		return children.length;
 	}
 
-	/* (non-Javadoc
-	 * Method declared on IStringPoolParticipant
-	 */
-	public void storeStrings(StringPool set) {
-		name = set.add(name);
-		//copy children pointer in case of concurrent modification
-		AbstractDataTreeNode[] nodes = children;
-		if (nodes != null)
-			for (int i = nodes.length; --i >= 0;)
-				nodes[i].storeStrings(set);
-	}
 
 	/**
 	 * Returns a unicode representation of the node.  This method is used

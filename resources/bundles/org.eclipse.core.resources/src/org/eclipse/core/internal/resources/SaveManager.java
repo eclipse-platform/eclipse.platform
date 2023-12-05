@@ -66,10 +66,8 @@ import org.eclipse.core.internal.localstore.SafeChunkyOutputStream;
 import org.eclipse.core.internal.localstore.SafeFileInputStream;
 import org.eclipse.core.internal.localstore.SafeFileOutputStream;
 import org.eclipse.core.internal.utils.FileUtil;
-import org.eclipse.core.internal.utils.IStringPoolParticipant;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.internal.utils.StringPool;
 import org.eclipse.core.internal.utils.WrappedRuntimeException;
 import org.eclipse.core.internal.watson.ElementTree;
 import org.eclipse.core.internal.watson.ElementTreeIterator;
@@ -104,7 +102,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
 
-public class SaveManager implements IElementInfoFlattener, IManager, IStringPoolParticipant {
+public class SaveManager implements IElementInfoFlattener, IManager {
 	class MasterTable extends Properties {
 		private static final long serialVersionUID = 1L;
 
@@ -1443,11 +1441,6 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 
 	protected void setSaveNumber(String pluginId, int number) {
 		masterTable.setProperty(SAVE_NUMBER_PREFIX + pluginId, Integer.toString(number));
-	}
-
-	@Override
-	public void shareStrings(StringPool pool) {
-		lastSnap.shareStrings(pool);
 	}
 
 	@Override

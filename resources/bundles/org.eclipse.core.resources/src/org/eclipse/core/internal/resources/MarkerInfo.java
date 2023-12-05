@@ -19,11 +19,11 @@ package org.eclipse.core.internal.resources;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.core.internal.utils.*;
+import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osgi.util.NLS;
 
-public class MarkerInfo implements IMarkerSetElement, Cloneable, IStringPoolParticipant {
+public class MarkerInfo implements IMarkerSetElement, Cloneable {
 	// this class is used concurrently => all members have to be final or volatile
 	/**
 	 * The store of attributes for this marker. Can not be modified since that could
@@ -170,12 +170,4 @@ public class MarkerInfo implements IMarkerSetElement, Cloneable, IStringPoolPart
 		attributes.putAll(map, validate);
 	}
 
-	/* (non-Javadoc
-	 * Method declared on IStringPoolParticipant
-	 */
-	@Override
-	public void shareStrings(StringPool set) {
-		type = set.add(type);
-		attributes.shareStrings(set);
-	}
 }

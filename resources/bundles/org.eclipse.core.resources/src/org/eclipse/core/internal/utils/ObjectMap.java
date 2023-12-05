@@ -15,7 +15,12 @@
  *******************************************************************************/
 package org.eclipse.core.internal.utils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A specialized map implementation that is optimized for a
@@ -24,7 +29,7 @@ import java.util.*;
  * Implemented as a single array that alternates keys and values.
  */
 @SuppressWarnings("unchecked")
-public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
+public class ObjectMap<K, V> implements Map<K, V> {
 
 	// 8 attribute keys, 8 attribute values
 	protected static final int DEFAULT_SIZE = 16;
@@ -283,23 +288,6 @@ public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
 		return count;
 	}
 
-	/* (non-Javadoc
-	 * Method declared on IStringPoolParticipant
-	 */
-	@Override
-	public void shareStrings(StringPool set) {
-		//copy elements for thread safety
-		Object[] array = elements;
-		if (array == null)
-			return;
-		for (int i = 0; i < array.length; i++) {
-			Object o = array[i];
-			if (o instanceof String)
-				array[i] = set.add((String) o);
-			if (o instanceof IStringPoolParticipant)
-				((IStringPoolParticipant) o).shareStrings(set);
-		}
-	}
 
 	/**
 	 * Creates a new hash map with the same contents as this map.

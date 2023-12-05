@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.internal.dtree;
 
-import org.eclipse.core.internal.utils.*;
+import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 
@@ -341,14 +341,6 @@ public class DataTreeNode extends AbstractDataTreeNode {
 		return parentsNode.forwardDeltaWith(this, comparer);
 	}
 
-	@Override
-	public void storeStrings(StringPool set) {
-		super.storeStrings(set);
-		//copy data for thread safety
-		Object o = data;
-		if (o instanceof IStringPoolParticipant)
-			((IStringPoolParticipant) o).shareStrings(set);
-	}
 
 	@Override
 	int type() {

@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.eclipse.core.internal.runtime.InternalPlatform;
-import org.eclipse.core.internal.utils.StringPoolJob;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -98,10 +97,6 @@ public class TestUtil {
 	}
 
 	static boolean ignoreJob(Job job) {
-		if (job instanceof StringPoolJob) {
-			// reschedules itself
-			return true;
-		}
 		Class<?> clazz = job.getClass();
 		while ((clazz = clazz.getSuperclass()) != null) {
 			if (clazz.getSimpleName().equals("UIJob")) {

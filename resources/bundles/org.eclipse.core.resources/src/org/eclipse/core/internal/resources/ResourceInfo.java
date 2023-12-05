@@ -16,10 +16,12 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Map;
 import org.eclipse.core.internal.localstore.FileStoreRoot;
-import org.eclipse.core.internal.utils.*;
+import org.eclipse.core.internal.utils.ObjectMap;
 import org.eclipse.core.internal.watson.IElementTreeData;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.QualifiedName;
@@ -27,7 +29,7 @@ import org.eclipse.core.runtime.QualifiedName;
 /**
  * A data structure containing the in-memory state of a resource in the workspace.
  */
-public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPoolParticipant {
+public class ResourceInfo implements IElementTreeData, ICoreConstants {
 	protected static final int LOWER = 0xFFFF;
 	protected static final int UPPER = 0xFFFF0000;
 
@@ -458,22 +460,6 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
 	 */
 	public void setType(int value) {
 		setBits(M_TYPE, M_TYPE_START, value);
-	}
-
-	/* (non-Javadoc
-	 * Method declared on IStringPoolParticipant
-	 */
-	@Override
-	public void shareStrings(StringPool set) {
-		ObjectMap<QualifiedName, Object> map = syncInfo;
-		if (map != null)
-			map.shareStrings(set);
-		map = sessionProperties;
-		if (map != null)
-			map.shareStrings(set);
-		MarkerSet markerSet = markers;
-		if (markerSet != null)
-			markerSet.shareStrings(set);
 	}
 
 	public void writeTo(DataOutput output) throws IOException {

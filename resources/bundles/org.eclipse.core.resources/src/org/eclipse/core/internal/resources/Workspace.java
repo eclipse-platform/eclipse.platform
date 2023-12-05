@@ -62,7 +62,6 @@ import org.eclipse.core.internal.resources.ComputeProjectOrder.Digraph;
 import org.eclipse.core.internal.resources.ComputeProjectOrder.VertexOrder;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.internal.utils.StringPoolJob;
 import org.eclipse.core.internal.watson.ElementTree;
 import org.eclipse.core.internal.watson.ElementTreeIterator;
 import org.eclipse.core.internal.watson.IElementContentVisitor;
@@ -219,11 +218,6 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 	 * validator first time through.  If false, there is no validator.
 	 */
 	protected boolean shouldValidate = true;
-
-	/**
-	 * Job that performs periodic string pool canonicalization.
-	 */
-	private StringPoolJob stringPoolJob;
 
 	/**
 	 * The synchronizer
@@ -694,7 +688,6 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 		SubMonitor newChild = subMonitor.newChild(1);
 		try {
 			try {
-				stringPoolJob.cancel();
 				// stop accepting refresh tasks & doing refresh
 				refreshManager.shutdown(null);
 				//shutdown save manager now so a last snapshot can be taken before we close
@@ -2334,9 +2327,6 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 						Messages.resources_errorMultiRefresh, e);
 			}
 		}
-		//finally register a string pool participant
-		stringPoolJob = new StringPoolJob();
-		stringPoolJob.addStringPoolParticipant(saveManager, getRoot());
 		return Status.OK_STATUS;
 	}
 
