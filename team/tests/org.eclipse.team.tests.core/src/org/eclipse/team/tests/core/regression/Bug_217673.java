@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.tests.core.TeamTest;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.*;
 
 public class Bug_217673 extends TeamTest {
 
@@ -32,7 +33,7 @@ public class Bug_217673 extends TeamTest {
 
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		final IProject project = workspace.getRoot().getProject(
-				getUniqueString());
+				createUniqueString());
 		project.create(null);
 		project.open(null);
 		IResource resource = project.getFile(".project");

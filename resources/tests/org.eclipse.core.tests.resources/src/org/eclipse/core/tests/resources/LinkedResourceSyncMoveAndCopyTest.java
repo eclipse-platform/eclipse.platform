@@ -17,6 +17,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -87,7 +88,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	}
 
 	public void testFileLinkedToNonExistent_Deep() throws CoreException {
-		IFile fileLink = existingProject.getFile(getUniqueString());
+		IFile fileLink = existingProject.getFile(createUniqueString());
 		IPath fileLocation = getRandomLocation();
 		fileLink.createLink(fileLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
@@ -115,7 +116,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	}
 
 	public void testFileLinkedToNonExistent_Shallow() throws CoreException {
-		IFile fileLink = existingProject.getFile(getUniqueString());
+		IFile fileLink = existingProject.getFile(createUniqueString());
 		IPath fileLocation = getRandomLocation();
 		fileLink.createLink(fileLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
@@ -135,7 +136,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	}
 
 	public void testFolderLinkedToNonExistent_Deep() throws CoreException {
-		IFolder folderLink = existingProject.getFolder(getUniqueString());
+		IFolder folderLink = existingProject.getFolder(createUniqueString());
 		IPath folderLocation = getRandomLocation();
 		folderLink.createLink(folderLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
@@ -155,7 +156,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	}
 
 	public void testFolderLinkedToNonExistent_Shallow() throws CoreException {
-		IFolder folderLink = existingProject.getFolder(getUniqueString());
+		IFolder folderLink = existingProject.getFolder(createUniqueString());
 		IPath folderLocation = getRandomLocation();
 		folderLink.createLink(folderLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
@@ -179,23 +180,23 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	 */
 	public void testMoveFolderWithLinksToNonExisitngLocations_withShallow() throws CoreException {
 		// create a folder
-		IFolder folderWithLinks = existingProject.getFolder(getUniqueString());
+		IFolder folderWithLinks = existingProject.getFolder(createUniqueString());
 		folderWithLinks.create(true, true, createTestMonitor());
 
 		// non-exisitng location
 		IPath fileLocation = getRandomLocation();
 
 		// create a linked file in the folder
-		IFile linkedFile = folderWithLinks.getFile(getUniqueString());
+		IFile linkedFile = folderWithLinks.getFile(createUniqueString());
 		linkedFile.createLink(fileLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
 		// move the folder
-		folderWithLinks.move(otherExistingProject.getFolder(getUniqueString()).getFullPath(), IResource.SHALLOW,
+		folderWithLinks.move(otherExistingProject.getFolder(createUniqueString()).getFullPath(), IResource.SHALLOW,
 				createTestMonitor());
 
 		// move the folder
 		assertThrows(CoreException.class, () -> folderWithLinks
-				.move(otherExistingProject.getFolder(getUniqueString()).getFullPath(), IResource.NONE, createTestMonitor()));
+				.move(otherExistingProject.getFolder(createUniqueString()).getFullPath(), IResource.NONE, createTestMonitor()));
 
 		// both the folder and link in the source project should not exist
 		assertFalse("5.0", folderWithLinks.exists());
@@ -207,22 +208,22 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	 */
 	public void _testCopyFolderWithLinksToNonExisitngLocations_withShallow() throws CoreException {
 		// create a folder
-		IFolder folderWithLinks = existingProject.getFolder(getUniqueString());
+		IFolder folderWithLinks = existingProject.getFolder(createUniqueString());
 		folderWithLinks.create(true, true, createTestMonitor());
 
 		// non-exisitng location
 		IPath fileLocation = getRandomLocation();
 
 		// create a linked file in the folder
-		IFile linkedFile = folderWithLinks.getFile(getUniqueString());
+		IFile linkedFile = folderWithLinks.getFile(createUniqueString());
 		linkedFile.createLink(fileLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
 		// copy the folder
-		folderWithLinks.copy(otherExistingProject.getFolder(getUniqueString()).getFullPath(), IResource.SHALLOW,
+		folderWithLinks.copy(otherExistingProject.getFolder(createUniqueString()).getFullPath(), IResource.SHALLOW,
 				createTestMonitor());
 
 		assertThrows(CoreException.class, () -> folderWithLinks
-				.copy(otherExistingProject.getFolder(getUniqueString()).getFullPath(), IResource.NONE, createTestMonitor()));
+				.copy(otherExistingProject.getFolder(createUniqueString()).getFullPath(), IResource.NONE, createTestMonitor()));
 
 		// both the folder and link in the source project should exist
 		assertTrue("5.0", folderWithLinks.exists());
@@ -230,10 +231,10 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	}
 
 	public void testFolderWithFileLinkedToNonExistent_Deep() throws CoreException {
-		IFolder folder = existingProject.getFolder(getUniqueString());
+		IFolder folder = existingProject.getFolder(createUniqueString());
 		ensureExistsInWorkspace(folder, true);
 
-		IFile fileLinkInFolder = folder.getFile(getUniqueString());
+		IFile fileLinkInFolder = folder.getFile(createUniqueString());
 
 		IPath fileLocation = getRandomLocation();
 		fileLinkInFolder.createLink(fileLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
@@ -254,10 +255,10 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	}
 
 	public void testFolderWithFileLinkedToNonExistent_Shallow() throws CoreException {
-		IFolder folder = existingProject.getFolder(getUniqueString());
+		IFolder folder = existingProject.getFolder(createUniqueString());
 		ensureExistsInWorkspace(folder, true);
 
-		IFile fileLinkInFolder = folder.getFile(getUniqueString());
+		IFile fileLinkInFolder = folder.getFile(createUniqueString());
 
 		IPath fileLocation = getRandomLocation();
 		fileLinkInFolder.createLink(fileLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
@@ -278,10 +279,10 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	}
 
 	public void testFolderWithFolderLinkedToNonExistent_Deep() throws CoreException {
-		IFolder folder = existingProject.getFolder(getUniqueString());
+		IFolder folder = existingProject.getFolder(createUniqueString());
 		ensureExistsInWorkspace(folder, true);
 
-		IFolder folderLinkInFolder = folder.getFolder(getUniqueString());
+		IFolder folderLinkInFolder = folder.getFolder(createUniqueString());
 
 		IPath folderLocation = getRandomLocation();
 		folderLinkInFolder.createLink(folderLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
@@ -302,10 +303,10 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	}
 
 	public void testFolderWithFolderLinkedToNonExistent_Shallow() throws CoreException {
-		IFolder folder = existingProject.getFolder(getUniqueString());
+		IFolder folder = existingProject.getFolder(createUniqueString());
 		ensureExistsInWorkspace(folder, true);
 
-		IFolder folderLinkInFolder = folder.getFolder(getUniqueString());
+		IFolder folderLinkInFolder = folder.getFolder(createUniqueString());
 
 		IPath folderLocation = getRandomLocation();
 		folderLinkInFolder.createLink(folderLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
@@ -326,7 +327,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	}
 
 	public void test361201() throws CoreException {
-		String linkName = getUniqueString();
+		String linkName = createUniqueString();
 		IFile fileLink = existingProject.getFile(linkName);
 		IFile file = existingProject.getFolder("dir").getFile("foo.txt");
 

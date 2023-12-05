@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -21,7 +22,7 @@ import org.eclipse.core.resources.ProjectScope;
 public class ProjectScopeTest extends ResourceTest {
 
 	public void testEqualsAndHashCode() {
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		ProjectScope projectScope1 = new ProjectScope(project);
 		ProjectScope projectScope2 = new ProjectScope(project);
 		assertTrue(projectScope1.equals(projectScope2));

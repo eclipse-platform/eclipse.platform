@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -47,12 +48,12 @@ public class Bug_265810 extends ResourceTest {
 
 	public void testBug() throws Throwable {
 		// create a project
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		project.create(new NullProgressMonitor());
 		project.open(new NullProgressMonitor());
 
 		// create a linked resource
-		final IFile file = project.getFile(getUniqueString());
+		final IFile file = project.getFile(createUniqueString());
 		// the file should not exist yet
 		assertDoesNotExistInWorkspace(file);
 		file.createLink(createFolderAtRandomLocation(), IResource.NONE, new NullProgressMonitor());

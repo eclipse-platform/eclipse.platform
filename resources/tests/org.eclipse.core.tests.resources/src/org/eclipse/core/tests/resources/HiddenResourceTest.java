@@ -17,6 +17,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.junit.Assert.assertThrows;
 
@@ -35,7 +36,7 @@ import org.eclipse.core.runtime.CoreException;
 public class HiddenResourceTest extends ResourceTest {
 	public void testRefreshLocal() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject project = root.getProject(getUniqueString());
+		IProject project = root.getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
@@ -61,7 +62,7 @@ public class HiddenResourceTest extends ResourceTest {
 	 */
 	public void testFindMember() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject project = root.getProject(getUniqueString());
+		IProject project = root.getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
@@ -94,7 +95,7 @@ public class HiddenResourceTest extends ResourceTest {
 	 * calls unless specifically included by calling #members(IContainer.INCLUDE_HIDDEN)
 	 */
 	public void testMembers() throws CoreException {
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
@@ -180,7 +181,7 @@ public class HiddenResourceTest extends ResourceTest {
 	 * resource visitors.
 	 */
 	public void testAccept() throws CoreException {
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
@@ -254,7 +255,7 @@ public class HiddenResourceTest extends ResourceTest {
 
 	public void testCopy() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject project = root.getProject(getUniqueString());
+		IProject project = root.getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
@@ -307,7 +308,7 @@ public class HiddenResourceTest extends ResourceTest {
 
 	public void testMove() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject project = root.getProject(getUniqueString());
+		IProject project = root.getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
@@ -360,7 +361,7 @@ public class HiddenResourceTest extends ResourceTest {
 
 	public void testDelete() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject project = root.getProject(getUniqueString());
+		IProject project = root.getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
@@ -418,7 +419,7 @@ public class HiddenResourceTest extends ResourceTest {
 
 	public void testDeltas() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		final IProject project = root.getProject(getUniqueString());
+		final IProject project = root.getProject(createUniqueString());
 		final IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
@@ -507,7 +508,7 @@ public class HiddenResourceTest extends ResourceTest {
 	 * in all calls to #exists.
 	 */
 	public void testExists() throws CoreException {
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
@@ -532,7 +533,7 @@ public class HiddenResourceTest extends ResourceTest {
 	 * Test the set and get methods for hidden resources.
 	 */
 	public void testSetGet() throws CoreException {
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subfile.txt");
@@ -591,7 +592,7 @@ public class HiddenResourceTest extends ResourceTest {
 	 * handles {@link IResource#HIDDEN} flag properly.
 	 */
 	public void testCreateHiddenResources() throws CoreException {
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 
@@ -603,7 +604,7 @@ public class HiddenResourceTest extends ResourceTest {
 		assertHidden(folder, true, IResource.DEPTH_ZERO);
 		assertHidden(file, true, IResource.DEPTH_ZERO);
 
-		IProject project2 = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project2 = getWorkspace().getRoot().getProject(createUniqueString());
 
 		project2.create(null, IResource.HIDDEN, createTestMonitor());
 		project2.open(createTestMonitor());

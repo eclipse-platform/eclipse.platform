@@ -20,6 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
@@ -695,7 +696,7 @@ public class IResourceTest extends ResourceTest {
 	}
 
 	public void testAcceptDoNotCheckExistence() throws CoreException {
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder a = project.getFolder("a");
 		ensureExistsInWorkspace(project, true);
 
@@ -729,7 +730,7 @@ public class IResourceTest extends ResourceTest {
 	}
 
 	public void testAcceptProxyVisitorWithDepth() throws CoreException {
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder a = project.getFolder("a");
 		IFile a1 = a.getFile("a1.txt");
 		IFile a2 = a.getFile("a2.txt");
@@ -1403,7 +1404,7 @@ public class IResourceTest extends ResourceTest {
 	 */
 	public void testDerivedUsingAncestors() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject project = root.getProject(getUniqueString());
+		IProject project = root.getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = folder.getFile("file2.txt");
@@ -2201,7 +2202,7 @@ public class IResourceTest extends ResourceTest {
 		if (!isReadOnlySupported()) {
 			return;
 		}
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFile file = project.getFile("target");
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());

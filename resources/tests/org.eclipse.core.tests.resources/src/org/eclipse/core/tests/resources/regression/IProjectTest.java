@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.junit.Assert.assertThrows;
 
@@ -139,7 +140,7 @@ public class IProjectTest extends AbstractBuilderTest {
 	 * that the resources are automatically discovered and brought into the workspace.
 	 */
 	public void testBug78711() throws CoreException {
-		String name = getUniqueString();
+		String name = createUniqueString();
 		IProject project = getWorkspace().getRoot().getProject(name);
 		IFolder folder = project.getFolder("folder");
 		IFile file1 = project.getFile("file1.txt");
@@ -189,7 +190,7 @@ public class IProjectTest extends AbstractBuilderTest {
 	}
 
 	public void testRefreshDotProject() throws CoreException {
-		String name = getUniqueString();
+		String name = createUniqueString();
 		IProject project = getWorkspace().getRoot().getProject(name);
 		IFile dotProject = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		project.create(null);

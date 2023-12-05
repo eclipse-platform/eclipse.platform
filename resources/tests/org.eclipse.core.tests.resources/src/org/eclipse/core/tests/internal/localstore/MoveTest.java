@@ -19,6 +19,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.internal.resources.File;
@@ -60,7 +61,7 @@ public class MoveTest extends LocalStoreTest {
 		Assume.assumeFalse(devices[0] == null || devices[1] == null);
 
 		// create common objects
-		String location = getUniqueString();
+		String location = createUniqueString();
 		IProject source = getWorkspace().getRoot().getProject(location + "1");
 		IProject destination = getWorkspace().getRoot().getProject(location + "2");
 		source.create(createTestMonitor());
@@ -162,7 +163,7 @@ public class MoveTest extends LocalStoreTest {
 		Assume.assumeFalse(devices[0] == null || devices[1] == null);
 
 		// create common objects
-		String location = getUniqueString();
+		String location = createUniqueString();
 		IProject source = getWorkspace().getRoot().getProject(location + "1");
 		IProject destination = getWorkspace().getRoot().getProject(location + "2");
 		source.create(createTestMonitor());

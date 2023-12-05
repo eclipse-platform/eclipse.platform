@@ -19,6 +19,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
@@ -264,7 +265,7 @@ public class BasicAliasTest extends ResourceTest {
 		String[] devices = findAvailableDevices();
 		Assume.assumeFalse(devices[0] == null || devices[1] == null);
 
-		String location = getUniqueString();
+		String location = createUniqueString();
 		IProject testProject1 = getWorkspace().getRoot().getProject(location + "1");
 		IProject testProject2 = getWorkspace().getRoot().getProject(location + "2");
 
@@ -402,8 +403,8 @@ public class BasicAliasTest extends ResourceTest {
 		aliasManager.startup(null);
 
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject p1 = root.getProject(getUniqueString());
-		IProject p2 = root.getProject(getUniqueString());
+		IProject p1 = root.getProject(createUniqueString());
+		IProject p2 = root.getProject(createUniqueString());
 		ensureExistsInWorkspace(new IResource[] {p1, p2}, true);
 
 		IFileStore tempStore = getTempStore();

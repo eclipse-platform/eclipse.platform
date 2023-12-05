@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.internal.resources.CharsetDeltaJob;
 import org.eclipse.core.internal.resources.ValidateProjectEncoding;
 import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -42,6 +43,10 @@ public final class ResourceTestUtil {
 
 	public static IProgressMonitor createTestMonitor() {
 		return new FussyProgressMonitor();
+	}
+
+	public static String createUniqueString() {
+		return new UniversalUniqueIdentifier().toString();
 	}
 
 	/**

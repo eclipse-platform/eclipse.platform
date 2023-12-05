@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -1185,7 +1186,7 @@ public class FilteredResourceTest extends ResourceTest {
 	 * Regression test for bug 328464
 	 */
 	public void test328464() throws CoreException {
-		IFolder folder = existingProject.getFolder(getUniqueString());
+		IFolder folder = existingProject.getFolder(createUniqueString());
 		ensureExistsInWorkspace(folder, true);
 
 		IFile file_a_txt = folder.getFile("a.txt");

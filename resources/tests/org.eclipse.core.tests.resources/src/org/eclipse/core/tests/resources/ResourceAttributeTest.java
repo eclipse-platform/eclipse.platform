@@ -17,6 +17,7 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 
 import java.io.File;
@@ -269,8 +270,8 @@ public class ResourceAttributeTest extends ResourceTest {
 	public void testAttributes() throws CoreException {
 		int[] attributes = new int[] {EFS.ATTRIBUTE_GROUP_READ, EFS.ATTRIBUTE_GROUP_WRITE, EFS.ATTRIBUTE_GROUP_EXECUTE, EFS.ATTRIBUTE_OTHER_READ, EFS.ATTRIBUTE_OTHER_WRITE, EFS.ATTRIBUTE_OTHER_EXECUTE};
 
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
-		IFile file = project.getFile(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
+		IFile file = project.getFile(createUniqueString());
 		ensureExistsInWorkspace(file, getRandomContents());
 
 		for (int attribute : attributes) {
