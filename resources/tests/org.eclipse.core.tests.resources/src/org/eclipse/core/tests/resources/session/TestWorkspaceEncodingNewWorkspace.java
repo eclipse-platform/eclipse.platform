@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.IWorkspace;
@@ -46,8 +47,8 @@ public class TestWorkspaceEncodingNewWorkspace extends WorkspaceSessionTest {
 		// Should be default
 		assertEquals("UTF-8", charset);
 		// Set something else
-		workspace.getRoot().setDefaultCharset(CHARSET, getMonitor());
-		workspace.save(true, getMonitor());
+		workspace.getRoot().setDefaultCharset(CHARSET, createTestMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	public void testExpectedEncoding2() throws Exception {

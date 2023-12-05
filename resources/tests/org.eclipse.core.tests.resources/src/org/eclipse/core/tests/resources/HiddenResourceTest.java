@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.resources.IContainer;
@@ -47,7 +48,7 @@ public class HiddenResourceTest extends ResourceTest {
 		try {
 			setHidden(folder, true, IResource.DEPTH_ZERO);
 			ensureOutOfSync(subFile);
-			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
 		} finally {
 			removeResourceChangeListener(listener);
@@ -271,7 +272,7 @@ public class HiddenResourceTest extends ResourceTest {
 		setHidden(folder, true, IResource.DEPTH_ZERO);
 		// copy the project
 		int flags = IResource.FORCE;
-		project.copy(destProject.getFullPath(), flags, getMonitor());
+		project.copy(destProject.getFullPath(), flags, createTestMonitor());
 		assertExistsInWorkspace(resources);
 		assertExistsInWorkspace(destResources);
 
@@ -280,7 +281,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
-		folder.copy(destFolder.getFullPath(), flags, getMonitor());
+		folder.copy(destFolder.getFullPath(), flags, createTestMonitor());
 		assertExistsInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 
@@ -289,7 +290,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(destResources);
 		ensureExistsInWorkspace(resources, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
-		project.copy(destProject.getFullPath(), flags, getMonitor());
+		project.copy(destProject.getFullPath(), flags, createTestMonitor());
 		assertExistsInWorkspace(resources);
 		assertExistsInWorkspace(destResources);
 
@@ -298,7 +299,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
-		folder.copy(destFolder.getFullPath(), flags, getMonitor());
+		folder.copy(destFolder.getFullPath(), flags, createTestMonitor());
 		assertExistsInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 	}
@@ -324,7 +325,7 @@ public class HiddenResourceTest extends ResourceTest {
 		setHidden(folder, true, IResource.DEPTH_ZERO);
 		// move the project
 		int flags = IResource.FORCE;
-		project.move(destProject.getFullPath(), flags, getMonitor());
+		project.move(destProject.getFullPath(), flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		assertExistsInWorkspace(destResources);
 
@@ -333,7 +334,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
-		folder.move(destFolder.getFullPath(), flags, getMonitor());
+		folder.move(destFolder.getFullPath(), flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 
@@ -342,7 +343,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(destResources);
 		ensureExistsInWorkspace(resources, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
-		project.move(destProject.getFullPath(), flags, getMonitor());
+		project.move(destProject.getFullPath(), flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		assertExistsInWorkspace(destResources);
 
@@ -351,7 +352,7 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
-		folder.move(destFolder.getFullPath(), flags, getMonitor());
+		folder.move(destFolder.getFullPath(), flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 	}
@@ -368,16 +369,16 @@ public class HiddenResourceTest extends ResourceTest {
 		// default behavior with no hidden
 		int flags = IResource.ALWAYS_DELETE_PROJECT_CONTENT | IResource.FORCE;
 		// delete the project
-		project.delete(flags, getMonitor());
+		project.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		// delete a file
 		ensureExistsInWorkspace(resources, true);
-		file.delete(flags, getMonitor());
+		file.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(file);
 		assertExistsInWorkspace(new IResource[] { project, folder, subFile });
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
-		folder.delete(flags, getMonitor());
+		folder.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { project, file });
 
@@ -385,12 +386,12 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
 		// delete the project
-		project.delete(flags, getMonitor());
+		project.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
-		folder.delete(flags, getMonitor());
+		folder.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { project, file });
 
@@ -398,18 +399,18 @@ public class HiddenResourceTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		// delete the project
-		project.delete(flags, getMonitor());
+		project.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		// delete a file
 		ensureExistsInWorkspace(resources, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
-		file.delete(flags, getMonitor());
+		file.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(file);
 		assertExistsInWorkspace(new IResource[] { project, folder, subFile });
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
-		folder.delete(flags, getMonitor());
+		folder.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { project, file });
 	}
@@ -431,7 +432,7 @@ public class HiddenResourceTest extends ResourceTest {
 			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
 			addResourceChangeListener(listener);
-			getWorkspace().run(body, getMonitor());
+			getWorkspace().run(body, createTestMonitor());
 			waitForBuild();
 			waitForEncodingRelatedJobs();
 			// FIXME sometimes fails with "Verifier has not yet been given a resource
@@ -452,7 +453,7 @@ public class HiddenResourceTest extends ResourceTest {
 			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
 			addResourceChangeListener(listener);
-			getWorkspace().run(body, getMonitor());
+			getWorkspace().run(body, createTestMonitor());
 			// FIXME sometimes fails with "Verifier has not yet been given a resource
 			// delta":
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
@@ -471,7 +472,7 @@ public class HiddenResourceTest extends ResourceTest {
 			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
 			addResourceChangeListener(listener);
-			getWorkspace().run(body, getMonitor());
+			getWorkspace().run(body, createTestMonitor());
 			// FIXME sometimes fails with "Verifier has not yet been given a resource
 			// delta":
 			assertTrue("3.1." + listener.getMessage(), listener.isDeltaValid());
@@ -594,8 +595,8 @@ public class HiddenResourceTest extends ResourceTest {
 		IFile file = project.getFile("file.txt");
 
 		ensureExistsInWorkspace(project, true);
-		folder.create(IResource.HIDDEN, true, getMonitor());
-		file.create(getRandomContents(), IResource.HIDDEN, getMonitor());
+		folder.create(IResource.HIDDEN, true, createTestMonitor());
+		file.create(getRandomContents(), IResource.HIDDEN, createTestMonitor());
 
 		assertHidden(project, false, IResource.DEPTH_ZERO);
 		assertHidden(folder, true, IResource.DEPTH_ZERO);
@@ -603,8 +604,8 @@ public class HiddenResourceTest extends ResourceTest {
 
 		IProject project2 = getWorkspace().getRoot().getProject(getUniqueString());
 
-		project2.create(null, IResource.HIDDEN, getMonitor());
-		project2.open(getMonitor());
+		project2.create(null, IResource.HIDDEN, createTestMonitor());
+		project2.open(createTestMonitor());
 
 		assertHidden(project2, true, IResource.DEPTH_ZERO);
 	}

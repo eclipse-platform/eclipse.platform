@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 				}
 			}
 			getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-		}, getMonitor());
+		}, createTestMonitor());
 	}
 
 	/**
@@ -121,7 +122,7 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 		//add builder and do an initial build to get the instance
 		setAutoBuilding(false);
 		addBuilder(project1, DeltaVerifierBuilder.BUILDER_NAME);
-		project1.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		final DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		assertTrue("1.1", builder != null);
@@ -206,19 +207,19 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 	public void testRequestMissingProject() throws CoreException {
 		//add builder and do an initial build to get the instance
 		addBuilder(project1, DeltaVerifierBuilder.BUILDER_NAME);
-		project1.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		final DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		assertTrue("1.1", builder != null);
 		//always check deltas for all projects
 		final IProject[] allProjects = new IProject[] {project1, project2, project3, project4};
-		project2.close(getMonitor());
-		project3.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+		project2.close(createTestMonitor());
+		project3.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 
 		builder.checkDeltas(allProjects);
 
 		//modify a file in project1 to force an autobuild
-		file1.setContents(getRandomContents(), IResource.NONE, getMonitor());
+		file1.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
 	}
 
 	/**
@@ -242,7 +243,7 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 
 		//do an incremental build by creating a file
 		IFile file = project.getFile("Foo");
-		file.create(getRandomContents(), true, getMonitor());
+		file.create(getRandomContents(), true, createTestMonitor());
 
 	}
 

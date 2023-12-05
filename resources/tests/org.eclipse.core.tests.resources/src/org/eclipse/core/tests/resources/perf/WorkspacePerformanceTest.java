@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
@@ -48,7 +49,7 @@ public class WorkspacePerformanceTest extends ResourceTest {
 	IFolder copyFolder() {
 		IFolder destination = testProject.getFolder("CopyDestination");
 		try {
-			testFolder.copy(destination.getFullPath(), IResource.NONE, getMonitor());
+			testFolder.copy(destination.getFullPath(), IResource.NONE, createTestMonitor());
 		} catch (CoreException e) {
 			fail("Failed to copy project in performance test", e);
 		}
@@ -61,10 +62,10 @@ public class WorkspacePerformanceTest extends ResourceTest {
 	void createAndPopulateProject(final int totalResources) {
 		try {
 			getWorkspace().run((IWorkspaceRunnable) monitor -> {
-				testProject.create(getMonitor());
-				testProject.open(getMonitor());
+				testProject.create(createTestMonitor());
+				testProject.open(createTestMonitor());
 				createFolder(testFolder, totalResources);
-			}, getMonitor());
+			}, createTestMonitor());
 		} catch (CoreException e) {
 			fail("Failed to create project in performance test", e);
 		}
@@ -80,7 +81,7 @@ public class WorkspacePerformanceTest extends ResourceTest {
 	 * Creates and returns a folder with lots of contents
 	 */
 	IFolder createFolder(IFolder topFolder, int totalResources) throws CoreException {
-		topFolder.create(IResource.NONE, true, getMonitor());
+		topFolder.create(IResource.NONE, true, createTestMonitor());
 		//tree depth is log of total resource count with the width as the log base
 		int depth = (int) (Math.log(totalResources) / Math.log(TREE_WIDTH));
 		recursiveCreateChildren(topFolder, depth - 1);
@@ -112,7 +113,7 @@ public class WorkspacePerformanceTest extends ResourceTest {
 	IFolder moveFolder() {
 		IFolder destination = testFolder.getProject().getFolder("MoveDestination");
 		try {
-			testFolder.move(destination.getFullPath(), IResource.NONE, getMonitor());
+			testFolder.move(destination.getFullPath(), IResource.NONE, createTestMonitor());
 		} catch (CoreException e) {
 			fail("Failed to move folder during performance test", e);
 		}
@@ -126,7 +127,7 @@ public class WorkspacePerformanceTest extends ResourceTest {
 		//create TREE_WIDTH files
 		for (int i = 0; i < TREE_WIDTH; i++) {
 			IFile file = parentFolder.getFile(createString(10));
-			file.create(new ByteArrayInputStream(createBytes(5000)), IResource.NONE, getMonitor());
+			file.create(new ByteArrayInputStream(createBytes(5000)), IResource.NONE, createTestMonitor());
 		}
 		if (depth <= 0) {
 			return;
@@ -134,7 +135,7 @@ public class WorkspacePerformanceTest extends ResourceTest {
 		//create TREE_WIDTH folders
 		for (int i = 0; i < TREE_WIDTH; i++) {
 			IFolder folder = parentFolder.getFolder(createString(6));
-			folder.create(IResource.NONE, true, getMonitor());
+			folder.create(IResource.NONE, true, createTestMonitor());
 			recursiveCreateChildren(folder, depth - 1);
 		}
 	}

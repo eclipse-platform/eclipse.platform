@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
@@ -49,7 +50,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		try {
 			setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 			ensureOutOfSync(subFile);
-			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
@@ -271,7 +272,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 		// copy the project
 		int flags = IResource.FORCE;
-		project.copy(destProject.getFullPath(), flags, getMonitor());
+		project.copy(destProject.getFullPath(), flags, createTestMonitor());
 		assertExistsInWorkspace(resources);
 		assertExistsInWorkspace(destResources);
 
@@ -280,7 +281,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
-		folder.copy(destFolder.getFullPath(), flags, getMonitor());
+		folder.copy(destFolder.getFullPath(), flags, createTestMonitor());
 		assertExistsInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 
@@ -289,7 +290,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(destResources);
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
-		project.copy(destProject.getFullPath(), flags, getMonitor());
+		project.copy(destProject.getFullPath(), flags, createTestMonitor());
 		assertExistsInWorkspace(resources);
 		assertExistsInWorkspace(destResources);
 
@@ -298,7 +299,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
-		folder.copy(destFolder.getFullPath(), flags, getMonitor());
+		folder.copy(destFolder.getFullPath(), flags, createTestMonitor());
 		assertExistsInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 	}
@@ -324,7 +325,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 		// move the project
 		int flags = IResource.FORCE;
-		project.move(destProject.getFullPath(), flags, getMonitor());
+		project.move(destProject.getFullPath(), flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		assertExistsInWorkspace(destResources);
 
@@ -333,7 +334,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
-		folder.move(destFolder.getFullPath(), flags, getMonitor());
+		folder.move(destFolder.getFullPath(), flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 
@@ -342,7 +343,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(destResources);
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
-		project.move(destProject.getFullPath(), flags, getMonitor());
+		project.move(destProject.getFullPath(), flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		assertExistsInWorkspace(destResources);
 
@@ -351,7 +352,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		ensureExistsInWorkspace(destProject, true);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
-		folder.move(destFolder.getFullPath(), flags, getMonitor());
+		folder.move(destFolder.getFullPath(), flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 	}
@@ -368,16 +369,16 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		// default behaviour with no team private members
 		int flags = IResource.ALWAYS_DELETE_PROJECT_CONTENT | IResource.FORCE;
 		// delete the project
-		project.delete(flags, getMonitor());
+		project.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		// delete a file
 		ensureExistsInWorkspace(resources, true);
-		file.delete(flags, getMonitor());
+		file.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(file);
 		assertExistsInWorkspace(new IResource[] { project, folder, subFile });
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
-		folder.delete(flags, getMonitor());
+		folder.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { project, file });
 
@@ -385,12 +386,12 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 		// delete the project
-		project.delete(flags, getMonitor());
+		project.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
-		folder.delete(flags, getMonitor());
+		folder.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { project, file });
 
@@ -398,18 +399,18 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		// delete the project
-		project.delete(flags, getMonitor());
+		project.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(resources);
 		// delete a file
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
-		file.delete(flags, getMonitor());
+		file.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(file);
 		assertExistsInWorkspace(new IResource[] { project, folder, subFile });
 		// delete a folder
 		ensureExistsInWorkspace(resources, true);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
-		folder.delete(flags, getMonitor());
+		folder.delete(flags, createTestMonitor());
 		assertDoesNotExistInWorkspace(new IResource[] { folder, subFile });
 		assertExistsInWorkspace(new IResource[] { project, file });
 	}
@@ -432,7 +433,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 			listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
 			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
-			getWorkspace().run(body, getMonitor());
+			getWorkspace().run(body, createTestMonitor());
 			waitForBuild();
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
 			ensureDoesNotExistInWorkspace(resources);
@@ -451,7 +452,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 			listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
 			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
-			getWorkspace().run(body, getMonitor());
+			getWorkspace().run(body, createTestMonitor());
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
 			ensureDoesNotExistInWorkspace(resources);
 		} finally {
@@ -469,7 +470,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 			listener.addExpectedChange(resources, IResourceDelta.ADDED, IResource.NONE);
 			listener.addExpectedChange(project, IResourceDelta.ADDED, IResourceDelta.OPEN);
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
-			getWorkspace().run(body, getMonitor());
+			getWorkspace().run(body, createTestMonitor());
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
 			ensureDoesNotExistInWorkspace(resources);
 		} finally {

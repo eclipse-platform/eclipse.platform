@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -33,7 +34,7 @@ public class Bug_127562 extends ResourceTest {
 		ensureExistsInWorkspace(project, true);
 		IProjectDescription description = project.getDescription();
 		description.setComment("Foo");
-		getWorkspace().run((IWorkspaceRunnable) monitor -> project.setDescription(description, getMonitor()),
-				getWorkspace().getRoot(), IResource.NONE, getMonitor());
+		getWorkspace().run((IWorkspaceRunnable) monitor -> project.setDescription(description, createTestMonitor()),
+				getWorkspace().getRoot(), IResource.NONE, createTestMonitor());
 	}
 }

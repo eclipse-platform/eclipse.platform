@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyArray;
 import static org.hamcrest.Matchers.is;
@@ -81,15 +82,15 @@ public class ProjectDescriptionDynamicTest extends WorkspaceSessionTest {
 	 */
 	public void test1() throws Exception {
 		// Projects to references -- needn't exist
-		proj.create(getMonitor());
-		proj.open(getMonitor());
+		proj.create(createTestMonitor());
+		proj.open(createTestMonitor());
 
 		IProjectDescription desc = proj.getDescription();
 		desc.setBuildConfigs(configNames);
 		desc.setDynamicReferences(dynRefs);
-		proj.setDescription(desc, getMonitor());
+		proj.setDescription(desc, createTestMonitor());
 
-		ResourcesPlugin.getWorkspace().save(true, getMonitor());
+		ResourcesPlugin.getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**
@@ -108,9 +109,9 @@ public class ProjectDescriptionDynamicTest extends WorkspaceSessionTest {
 		desc.setBuildConfigReferences(configs[1].getName(), configRefs);
 		// Change the active configuration
 		desc.setActiveBuildConfig(configs[1].getName());
-		proj.setDescription(desc, getMonitor());
+		proj.setDescription(desc, createTestMonitor());
 
-		ResourcesPlugin.getWorkspace().save(true, getMonitor());
+		ResourcesPlugin.getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**

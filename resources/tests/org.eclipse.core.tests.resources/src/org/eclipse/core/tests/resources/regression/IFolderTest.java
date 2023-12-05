@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.filesystem.EFS;
@@ -58,7 +59,7 @@ public class IFolderTest extends ResourceTest {
 		try {
 			parentFolder.setReadOnly(true);
 			assertTrue(parentFolder.isReadOnly());
-			CoreException exception = assertThrows(CoreException.class, () -> folder.create(true, true, getMonitor()));
+			CoreException exception = assertThrows(CoreException.class, () -> folder.create(true, true, createTestMonitor()));
 			assertEquals(IResourceStatus.PARENT_READ_ONLY, exception.getStatus().getCode());
 		} finally {
 			parentFolder.setReadOnly(false);
@@ -84,19 +85,19 @@ public class IFolderTest extends ResourceTest {
 
 		// now create the resources in the local file system and refresh
 		ensureExistsInFileSystem(file);
-		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertTrue("2.1", file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("2.2", !folder.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("2.3", !subFile.isLocal(IResource.DEPTH_ZERO));
 
 		folder.getLocation().toFile().mkdir();
-		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertTrue("3.1", folder.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("3.2", file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("3.3", !subFile.isLocal(IResource.DEPTH_ZERO));
 
 		ensureExistsInFileSystem(subFile);
-		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertTrue("4.1", subFile.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("4.2", folder.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("4.3", file.isLocal(IResource.DEPTH_ZERO));

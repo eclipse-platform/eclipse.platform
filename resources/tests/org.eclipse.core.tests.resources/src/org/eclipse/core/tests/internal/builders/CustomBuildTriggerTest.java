@@ -13,6 +13,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
@@ -57,8 +58,8 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		// Turn auto-building off
 		setAutoBuilding(false);
 		// Create some resources
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		// Create and set a build specs for project
 		IProjectDescription desc = project.getDescription();
 		command = createCommand(desc, CustomTriggerBuilder.BUILDER_NAME, "Build0");
@@ -67,12 +68,12 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, false);
 		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, false);
 		desc.setBuildSpec(new ICommand[] {command});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		command = project.getDescription().getBuildSpec()[0];
 		setAutoBuilding(true);
 
 		//do an initial workspace build to get the builder instance
-		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 		CustomTriggerBuilder builder = CustomTriggerBuilder.getInstance();
 		assertNotNull("1.0", builder);
 		assertTrue("1.1", builder.triggerForLastBuild == 0);
@@ -80,7 +81,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		//do a clean - builder should not be called
 		waitForBuild();
 		builder.reset();
-		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 		assertEquals("2.0", 0, builder.triggerForLastBuild);
 
 		// Ensure that Auto-build doesn't cause a FULL_BUILD
@@ -89,13 +90,13 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 
 		// But first requested build should cause a FULL_BUILD
 		builder.reset();
-		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertTrue("3.0", builder.wasFullBuild());
 
 		// But subsequent builds shouldn't
 		builder.reset();
 		builder.clearBuildTrigger();
-		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertTrue("3.1", builder.triggerForLastBuild == 0);
 	}
 
@@ -110,8 +111,8 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		// Turn auto-building off
 		setAutoBuilding(false);
 		// Create some resources
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		// Create and set a build specs for project
 		IProjectDescription desc = project.getDescription();
 		command = createCommand(desc, CustomTriggerBuilder.BUILDER_NAME, "Build0");
@@ -120,12 +121,12 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, true);
 		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, false);
 		desc.setBuildSpec(new ICommand[] {command});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		command = project.getDescription().getBuildSpec()[0];
 		setAutoBuilding(true);
 
 		//do an initial workspace build to get the builder instance
-		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 		CustomTriggerBuilder builder = CustomTriggerBuilder.getInstance();
 		assertNotNull("1.0", builder);
 		assertEquals("1.1", 0, builder.triggerForLastBuild);
@@ -133,7 +134,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		//do a clean - builder should not be called
 		waitForBuild();
 		builder.reset();
-		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 		assertEquals("2.0", 0, builder.triggerForLastBuild);
 
 		// Ensure that Auto-build doesn't cause a FULL_BUILD
@@ -142,16 +143,16 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 
 		// But first requested build should cause a FULL_BUILD
 		builder.reset();
-		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertTrue("3.0", builder.wasFullBuild());
 
 		IFile file = project.getFile("a.txt");
-		file.create(getRandomContents(), IResource.NONE, getMonitor());
+		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
 
 		// But subsequent INCREMENTAL_BUILD builds should cause INCREMENTAL_BUILD
 		builder.reset();
 		builder.clearBuildTrigger();
-		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertEquals("5.0", IncrementalProjectBuilder.INCREMENTAL_BUILD, builder.triggerForLastBuild);
 	}
 
@@ -166,8 +167,8 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		// Turn auto-building off
 		setAutoBuilding(false);
 		// Create some resources
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		// Create and set a build specs for project
 		IProjectDescription desc = project.getDescription();
 		command = createCommand(desc, CustomTriggerBuilder.BUILDER_NAME, "Build0");
@@ -176,7 +177,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, false);
 		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, false);
 		desc.setBuildSpec(new ICommand[] {command});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		command = project.getDescription().getBuildSpec()[0];
 
 		// Turn on autobuild without waiting for build to be finished
@@ -185,7 +186,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		workspace.setDescription(description);
 
 		// do an initial workspace build to get the builder instance
-		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 		CustomTriggerBuilder builder = CustomTriggerBuilder.getInstance();
 		assertNotNull("1.0", builder);
 		assertTrue("1.1", builder.triggerForLastBuild == 0);
@@ -193,7 +194,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		//do a clean - Ensure that Auto-build causes a FULL_BUILD
 		waitForBuild();
 		builder.reset();
-		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 
 		waitForBuild();
 		assertTrue("2.1", builder.wasFullBuild());
@@ -203,7 +204,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		builder.reset();
 
 		IFile file = project.getFile("b.txt");
-		file.create(getRandomContents(), IResource.NONE, getMonitor());
+		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
 
 		waitForBuild();
 		assertTrue("6.0", !builder.wasCleanBuild());
@@ -222,12 +223,12 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		// Turn auto-building off
 		setAutoBuilding(false);
 		// Create some resources
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		// Create and set a build specs for project
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] { createCommand(desc, CustomTriggerBuilder.BUILDER_NAME, "Build0") });
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		command = project.getDescription().getBuildSpec()[0];
 		assertTrue("1.0", command.isConfigurable());
 		//ensure that setBuilding has effect
@@ -250,23 +251,23 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		// set the command back into the project for change to take effect
 		desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] { command });
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 
 		//ensure the builder is not called
-		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		CustomTriggerBuilder builder = CustomTriggerBuilder.getInstance();
 		assertTrue("2.0", builder == null || builder.triggerForLastBuild == 0);
 
-		project.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 		builder = CustomTriggerBuilder.getInstance();
 		assertTrue("2.1", builder == null || builder.triggerForLastBuild == 0);
 
-		project.touch(getMonitor());
-		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		project.touch(createTestMonitor());
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		builder = CustomTriggerBuilder.getInstance();
 		assertTrue("3.0", builder == null || builder.triggerForLastBuild == 0);
 		setAutoBuilding(true);
-		project.touch(getMonitor());
+		project.touch(createTestMonitor());
 		builder = CustomTriggerBuilder.getInstance();
 		assertTrue("4.0", builder == null || builder.triggerForLastBuild == 0);
 
@@ -280,18 +281,18 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		setAutoBuilding(false);
 		desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] { command });
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 
 		//ensure the builder is called
-		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		builder = CustomTriggerBuilder.getInstance();
 		assertTrue("6.1", builder.wasFullBuild());
 
-		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		builder = CustomTriggerBuilder.getInstance();
 		assertTrue("7.1", builder.wasFullBuild());
 
-		project.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 		assertTrue("8.1", builder.wasCleanBuild());
 	}
 
@@ -307,12 +308,12 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		// Turn auto-building off
 		setAutoBuilding(false);
 		// Create some resources
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		// Create and set a build specs for project
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build0") });
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		command = project.getDescription().getBuildSpec()[0];
 
 		assertTrue("1.0", !command.isConfigurable());
@@ -329,17 +330,17 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		//set the command back into the project for change to take effect
 		desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] { command });
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 
 		//ensure that builder is still called
-		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		SortBuilder builder = SortBuilder.getInstance();
 		assertTrue("2.0", builder.wasBuilt());
 		assertTrue("2.1", builder.wasFullBuild());
 		assertEquals("2.2", command, builder.getCommand());
 
-		project.touch(getMonitor());
-		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		project.touch(createTestMonitor());
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertTrue("3.0", builder.wasBuilt());
 		assertTrue("3.1", builder.wasIncrementalBuild());
 	}
@@ -357,14 +358,14 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		// Turn auto-building off
 		setAutoBuilding(false);
 		// Create some resources
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		// Create and set a build specs for project
 		IProjectDescription desc = project.getDescription();
 		command = createCommand(desc, CustomTriggerBuilder.BUILDER_NAME, "Build0");
 		command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, false);
 		desc.setBuildSpec(new ICommand[] { command });
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		command = project.getDescription().getBuildSpec()[0];
 		// turn autobuild back on
 		setAutoBuilding(true);
@@ -374,7 +375,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		assertTrue("1.1", !command.isBuilding(IncrementalProjectBuilder.AUTO_BUILD));
 
 		//do an initial build to get the builder instance
-		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		waitForBuild();
 		CustomTriggerBuilder builder = CustomTriggerBuilder.getInstance();
 		assertNotNull("1.3", builder);
@@ -382,7 +383,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 
 		//add a file in the project, to trigger an autobuild
 		IFile file = project.getFile("a.txt");
-		file.create(getRandomContents(), IResource.NONE, getMonitor());
+		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
 
 		//autobuild should not call our builder
 		waitForBuild();
@@ -390,7 +391,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		assertTrue("2.1", !builder.wasAutobuild());
 
 		//but, a subsequent incremental build should call it
-		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertTrue("2.1", !builder.wasAutobuild());
 		assertTrue("3.0", builder.wasIncrementalBuild());
 
@@ -407,8 +408,8 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		ICommand command = null;
 
 		// Create some resources
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		// Create and set a build specs for project
 		IProjectDescription desc = project.getDescription();
@@ -418,14 +419,14 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, false);
 		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, false);
 		desc.setBuildSpec(new ICommand[] {command});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		command = project.getDescription().getBuildSpec()[0];
 
 		// turn auto-building off
 		setAutoBuilding(false);
 
 		// do an initial build to get the builder instance
-		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		waitForBuild();
 		CustomTriggerBuilder builder = CustomTriggerBuilder.getInstance();
 		assertNotNull("2.0", builder);
@@ -434,26 +435,26 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		// do a clean - builder should not be called
 		builder.clearBuildTrigger();
 		builder.reset();
-		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 		assertTrue("3.0", !builder.wasCleanBuild());
 		assertTrue("3.1", !builder.wasFullBuild());
 
 		// do an incremental build - FULL_BUILD should be triggered
 		builder.clearBuildTrigger();
 		builder.reset();
-		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		waitForBuild();
 		assertTrue("4.0", !builder.wasCleanBuild());
 		assertTrue("4.1", builder.wasFullBuild());
 
 		// add a file in the project before an incremental build is triggered again
 		IFile file = project.getFile("a.txt");
-		file.create(getRandomContents(), IResource.NONE, getMonitor());
+		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
 
 		// do an incremental build - build should NOT be triggered
 		builder.clearBuildTrigger();
 		builder.reset();
-		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		waitForBuild();
 		assertTrue("6.0", !builder.wasCleanBuild());
 		assertTrue("6.1", !builder.wasFullBuild());
@@ -470,8 +471,8 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		ICommand command = null;
 
 		// Create some resources
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		// Create and set a build specs for project
 		IProjectDescription desc = project.getDescription();
@@ -481,7 +482,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, false);
 		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, false);
 		desc.setBuildSpec(new ICommand[] {command});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		command = project.getDescription().getBuildSpec()[0];
 
 		// turn auto-building on
@@ -493,7 +494,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		// do a clean - builder should not be called
 		builder.clearBuildTrigger();
 		builder.reset();
-		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 		assertTrue("2.0", !builder.wasCleanBuild());
 		assertTrue("2.1", !builder.wasFullBuild());
 
@@ -502,13 +503,13 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		builder.reset();
 
 		IFile file = project.getFile("a.txt");
-		file.create(getRandomContents(), IResource.NONE, getMonitor());
+		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
 
 		waitForBuild();
 		assertEquals("4.0", 0, builder.triggerForLastBuild);
 
 		// Build the project explicitly -- full build should be triggered
-		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		waitForBuild();
 		assertTrue("4.1", builder.wasFullBuild());
 
@@ -517,7 +518,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		builder.reset();
 
 		file = project.getFile("b.txt");
-		file.create(getRandomContents(), IResource.NONE, getMonitor());
+		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
 
 		waitForBuild();
 		assertTrue("6.0", !builder.wasCleanBuild());

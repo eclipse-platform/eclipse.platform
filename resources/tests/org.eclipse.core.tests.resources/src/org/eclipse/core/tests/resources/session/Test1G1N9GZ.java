@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.io.ByteArrayInputStream;
 import junit.framework.Test;
@@ -43,7 +44,7 @@ public class Test1G1N9GZ extends WorkspaceSerializationTest {
 		command.setBuilderName(SortBuilder.BUILDER_NAME);
 		command.getArguments().put(TestBuilder.BUILD_ID, "P1Build1");
 		desc.setBuildSpec(new ICommand[] {command});
-		p1.setDescription(desc, getMonitor());
+		p1.setDescription(desc, createTestMonitor());
 
 		/* create P2 and set a builder */
 		IProject p2 = workspace.getRoot().getProject("p2");
@@ -54,14 +55,14 @@ public class Test1G1N9GZ extends WorkspaceSerializationTest {
 		command.setBuilderName(SortBuilder.BUILDER_NAME);
 		command.getArguments().put(TestBuilder.BUILD_ID, "P2Build1");
 		desc.setBuildSpec(new ICommand[] {command});
-		p1.setDescription(desc, getMonitor());
+		p1.setDescription(desc, createTestMonitor());
 
 		/* PR test case */
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	public void test2() throws CoreException {
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	public void test3() throws Exception {

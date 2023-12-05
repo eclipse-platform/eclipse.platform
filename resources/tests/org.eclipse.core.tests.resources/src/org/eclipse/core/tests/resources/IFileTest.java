@@ -20,6 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -101,7 +102,7 @@ public class IFileTest extends ResourceTest {
 			//file in existent folder
 			if (project.exists() && project.isOpen()) {
 				IFolder folder = project.getFolder("ExistingFolder");
-				folder.create(true, true, getMonitor());
+				folder.create(true, true, createTestMonitor());
 				generateInterestingFiles(folder);
 			}
 		}
@@ -163,13 +164,13 @@ public class IFileTest extends ResourceTest {
 
 			//open project
 			IProject openProject = getWorkspace().getRoot().getProject("OpenProject");
-			openProject.create(getMonitor());
-			openProject.open(getMonitor());
+			openProject.create(createTestMonitor());
+			openProject.open(createTestMonitor());
 			projects[0] = openProject;
 
 			//closed project
 			IProject closedProject = getWorkspace().getRoot().getProject("ClosedProject");
-			closedProject.create(getMonitor());
+			closedProject.create(createTestMonitor());
 			projects[1] = closedProject;
 
 			//non-existent project

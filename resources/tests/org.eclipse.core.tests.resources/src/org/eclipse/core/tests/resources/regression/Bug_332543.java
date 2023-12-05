@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import java.io.BufferedOutputStream;
@@ -103,27 +104,27 @@ public class Bug_332543 extends ResourceTest {
 		desc.setLocationURI(proj_uri);
 		// Create the project on the wrapped file system
 		IProject project = root.getProject(desc.getName());
-		project.create(desc, getMonitor());
+		project.create(desc, createTestMonitor());
 
 		// Create a file in the project
 		IFile file = project.getFile("foo.txt");
 		ensureExistsInFileSystem(file);
 
 		// Now open the project
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 
 		// Set our evil IOException on close() fs.
 		WrapperFileSystem.setCustomFileStore(IOErrOnCloseFileStore.class);
 
 		// Try #setContents on an existing file
 		assertThrows(CoreException.class, () -> file.setContents(wrap.apply(new ByteArrayInputStream("Random".getBytes())),
-				false, true, getMonitor()));
+				false, true, createTestMonitor()));
 
 		// Try create on a non-existent file
 		IFile nonExistentFile = project.getFile("foo1.txt");
 		assertThrows(CoreException.class,
 				() -> nonExistentFile.create(wrap.apply(new ByteArrayInputStream("Random".getBytes())), false,
-						getMonitor()));
+						createTestMonitor()));
 	}
 
 }

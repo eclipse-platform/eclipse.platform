@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
@@ -52,16 +53,16 @@ public class BuilderEventTest extends AbstractBuilderTest {
 		// Turn auto-building off
 		setAutoBuilding(false);
 		// Create and open a project
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		// Create and set a build spec for the project
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] { createCommand(desc, DeltaVerifierBuilder.BUILDER_NAME, "Project2Build2") });
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		listener.reset();
 		//start with an incremental build
-		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertEquals(getWorkspace(), listener.getSource());
 		assertEquals(IncrementalProjectBuilder.INCREMENTAL_BUILD, listener.getBuildKind());
 		assertTrue(listener.hadPreBuild());
@@ -70,7 +71,7 @@ public class BuilderEventTest extends AbstractBuilderTest {
 
 		//do a second incremental build and ensure we still get the events
 		listener.reset();
-		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertEquals(getWorkspace(), listener.getSource());
 		assertEquals(IncrementalProjectBuilder.INCREMENTAL_BUILD, listener.getBuildKind());
 		assertTrue(listener.hadPreBuild());
@@ -79,7 +80,7 @@ public class BuilderEventTest extends AbstractBuilderTest {
 
 		//do a full build and ensure we still get the event
 		listener.reset();
-		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		assertEquals(getWorkspace(), listener.getSource());
 		assertEquals(IncrementalProjectBuilder.FULL_BUILD, listener.getBuildKind());
 		assertTrue(listener.hadPreBuild());
@@ -88,7 +89,7 @@ public class BuilderEventTest extends AbstractBuilderTest {
 
 		//do a clean build and ensure we get the same events
 		listener.reset();
-		getWorkspace().build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 		assertEquals(getWorkspace(), listener.getSource());
 		assertEquals(IncrementalProjectBuilder.CLEAN_BUILD, listener.getBuildKind());
 		assertTrue(listener.hadPreBuild());

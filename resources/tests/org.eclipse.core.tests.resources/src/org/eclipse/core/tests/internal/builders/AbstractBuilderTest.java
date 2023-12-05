@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -42,7 +43,7 @@ public abstract class AbstractBuilderTest extends ResourceTest {
 	protected void addBuilder(IProject project, String builderName) throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] {createCommand(desc, builderName, "Project1Build1")});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 	}
 
 	/**
@@ -70,7 +71,7 @@ public abstract class AbstractBuilderTest extends ResourceTest {
 	 * Dirties the given file, forcing a build.
 	 */
 	protected void dirty(IFile file) throws CoreException {
-		file.setContents(getRandomContents(), true, true, getMonitor());
+		file.setContents(getRandomContents(), true, true, createTestMonitor());
 	}
 
 	/**

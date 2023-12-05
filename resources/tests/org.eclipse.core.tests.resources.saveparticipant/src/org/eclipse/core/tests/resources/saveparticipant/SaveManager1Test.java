@@ -28,6 +28,7 @@ import org.osgi.framework.BundleException;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.*;
 
 /**
  * This class needs to be used with SaveManager2Test. Basically this
@@ -164,7 +165,7 @@ public class SaveManager1Test extends SaveManagerTest {
 		command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
 		description.setBuildSpec(new ICommand[] {command});
 		project.setDescription(description, null);
-		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		// close and open the project and see if the builder gets a good delta
 		project.close(null);

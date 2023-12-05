@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.io.File;
 import org.eclipse.core.filesystem.IFileStore;
@@ -47,7 +48,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		project.getLocation().append("A").toFile().renameTo((project.getLocation().append("a").toFile()));
 
 		// refresh the project
-		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		//variant should exist but original shouldn't
 		assertTrue(folderVariant.exists());
@@ -128,19 +129,19 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		assertFalse(folder.exists());
 		assertFalse(file.isSynchronized(IResource.DEPTH_ZERO));
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));
-		file.refreshLocal(IResource.DEPTH_ZERO, getMonitor());
+		file.refreshLocal(IResource.DEPTH_ZERO, createTestMonitor());
 		assertTrue(file.exists());
 		assertTrue(folder.exists());
 
 		//try again with deleted project
-		project.delete(IResource.FORCE, getMonitor());
+		project.delete(IResource.FORCE, createTestMonitor());
 
 		ensureExistsInFileSystem(both);
 		ensureDoesNotExistInWorkspace(both);
 
 		assertFalse(file.exists());
 		assertFalse(folder.exists());
-		file.refreshLocal(IResource.DEPTH_ZERO, getMonitor());
+		file.refreshLocal(IResource.DEPTH_ZERO, createTestMonitor());
 		assertFalse(file.exists());
 		assertFalse(folder.exists());
 	}
@@ -185,12 +186,12 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 
 	public void testRefreshClosedProject() throws CoreException {
 		IProject project = projects[0];
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 
 		//refreshing a closed project should not fail
-		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		project.refreshLocal(IResource.DEPTH_ZERO, getMonitor());
-		project.refreshLocal(IResource.DEPTH_ONE, getMonitor());
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
+		project.refreshLocal(IResource.DEPTH_ZERO, createTestMonitor());
+		project.refreshLocal(IResource.DEPTH_ONE, createTestMonitor());
 	}
 
 	public void testRefreshFolder() throws Throwable {

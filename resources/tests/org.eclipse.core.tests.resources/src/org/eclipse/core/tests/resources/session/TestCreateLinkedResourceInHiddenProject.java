@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
 import org.eclipse.core.internal.resources.ProjectDescription;
@@ -36,10 +37,10 @@ public class TestCreateLinkedResourceInHiddenProject extends WorkspaceSerializat
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
 		IProjectDescription desc = new ProjectDescription();
 		desc.setName(PROJECT);
-		project.create(desc, IResource.HIDDEN, getMonitor());
-		project.open(getMonitor());
+		project.create(desc, IResource.HIDDEN, createTestMonitor());
+		project.open(createTestMonitor());
 
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	public void test2() throws CoreException {
@@ -49,7 +50,7 @@ public class TestCreateLinkedResourceInHiddenProject extends WorkspaceSerializat
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
 		IFolder folder = project.getFolder(getUniqueString());
 
-		folder.createLink(path, IResource.NONE, getMonitor());
+		folder.createLink(path, IResource.NONE, createTestMonitor());
 	}
 
 	public static Test suite() {

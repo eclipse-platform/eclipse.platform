@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.util.Map;
 import org.eclipse.core.resources.ICommand;
@@ -47,10 +48,10 @@ public class BuilderPerformanceTest extends WorkspacePerformanceTest {
 			desc.setBuildSpec(new ICommand[] { createCommand(desc, "Builder1"), createCommand(desc, "Builder2"),
 					createCommand(desc, "Builder3"), createCommand(desc, "Builder4"),
 					createCommand(desc, "Builder5") });
-			project.create(desc, getMonitor());
-			project.open(getMonitor());
+			project.create(desc, createTestMonitor());
+			project.open(createTestMonitor());
 			createFolder(folder, totalResources);
-		}, getMonitor());
+		}, createTestMonitor());
 	}
 
 	/**
@@ -108,7 +109,7 @@ public class BuilderPerformanceTest extends WorkspacePerformanceTest {
 				try {
 					for (int repeats = 0; repeats < REPEAT; repeats++) {
 						for (IProject project : projects) {
-							project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+							project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 						}
 					}
 				} catch (CoreException e) {

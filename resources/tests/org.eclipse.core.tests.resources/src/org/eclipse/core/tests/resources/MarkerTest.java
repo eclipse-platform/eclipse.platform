@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.hamcrest.Matchers.arrayWithSize;
@@ -162,7 +163,7 @@ public class MarkerTest extends ResourceTest {
 			for (int i = 0; i < hosts.length; i++) {
 				result[i] = hosts[i].createMarker(type);
 			}
-		}, getMonitor());
+		}, createTestMonitor());
 		return result;
 	}
 
@@ -215,7 +216,7 @@ public class MarkerTest extends ResourceTest {
 		IResource child = ((IProject) resource).members()[0];
 		markers[1] = child.createMarker(IMarker.TASK);
 		listener.reset();
-		resource.move(destination, false, getMonitor());
+		resource.move(destination, false, createTestMonitor());
 		IResource destinationResource = getWorkspace().getRoot().findMember(destination);
 		markers[2] = destinationResource.getMarker(markers[0].getId());
 		IResource destinationChild = ((IProject) destinationResource).findMember(child.getName());
@@ -233,7 +234,7 @@ public class MarkerTest extends ResourceTest {
 				.append(resource.getFullPath().lastSegment() + "copy");
 		resource.createMarker(IMarker.BOOKMARK);
 		listener.reset();
-		resource.copy(destination, false, getMonitor());
+		resource.copy(destination, false, createTestMonitor());
 		listener.assertNumberOfAffectedResources(0);
 
 		// delete all markers for a clean run next time
@@ -649,7 +650,7 @@ public class MarkerTest extends ResourceTest {
 		resource.deleteMarkers(null, true, IResource.DEPTH_INFINITE);
 		IMarker marker = resource.createMarker(IMarker.BOOKMARK);
 		listener.reset();
-		resource.delete(true, getMonitor());
+		resource.delete(true, createTestMonitor());
 		assertMarkerDoesNotExist(marker);
 		listener.assertChanges(resource, null, new IMarker[] { marker }, null);
 	}
@@ -671,7 +672,7 @@ public class MarkerTest extends ResourceTest {
 			markers[2].setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 			markers[2].setAttribute(IMarker.MESSAGE, "Hello");
 		};
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 
 		//create the attribute change listener
 		MarkerAttributeChangeListener listener = new MarkerAttributeChangeListener();
@@ -702,7 +703,7 @@ public class MarkerTest extends ResourceTest {
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			markers[1].setAttribute(IMarker.CHAR_START, 5);
 			markers[1].setAttribute(IMarker.CHAR_END, 10);
-		}, getMonitor());
+		}, createTestMonitor());
 		listener.verifyChanges();
 
 		// change+remove same marker
@@ -710,7 +711,7 @@ public class MarkerTest extends ResourceTest {
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			markers[1].setAttribute(IMarker.CHAR_START, 5);
 			markers[1].setAttribute(IMarker.CHAR_START, null);
-		}, getMonitor());
+		}, createTestMonitor());
 		listener.verifyChanges();
 
 		// change multiple markers
@@ -719,7 +720,7 @@ public class MarkerTest extends ResourceTest {
 			markers[0].setAttribute(IMarker.CHAR_START, 5);
 			markers[1].setAttribute(IMarker.CHAR_START, 10);
 			markers[2].setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_LOW);
-		}, getMonitor());
+		}, createTestMonitor());
 		listener.verifyChanges();
 	}
 
@@ -747,7 +748,7 @@ public class MarkerTest extends ResourceTest {
 			};
 			getWorkspace().getRoot().accept(visitor);
 		};
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 		listener.reset();
 
 		// copy all non-project resources
@@ -756,7 +757,7 @@ public class MarkerTest extends ResourceTest {
 			IResource[] children = project.members();
 			for (IResource element : children) {
 				IPath destination = IPath.fromOSString(element.getName() + "copy");
-				element.copy(destination, true, getMonitor());
+				element.copy(destination, true, createTestMonitor());
 			}
 		}
 
@@ -780,7 +781,7 @@ public class MarkerTest extends ResourceTest {
 				marker.delete();
 				assertMarkerDoesNotExist(marker);
 			};
-			getWorkspace().run(addAndRemoveOperation, getMonitor());
+			getWorkspace().run(addAndRemoveOperation, createTestMonitor());
 			listener.assertNumberOfAffectedResources(0);
 			listener.assertChanges(resource, null, null, null);
 
@@ -795,7 +796,7 @@ public class MarkerTest extends ResourceTest {
 				addAndChangeMarker.get().setAttribute(IMarker.MESSAGE, "my message text");
 				assertMarkerHasAttributeValue(addAndChangeMarker.get(), IMarker.MESSAGE, "my message text");
 			};
-			getWorkspace().run(addAndChangeOperation, getMonitor());
+			getWorkspace().run(addAndChangeOperation, createTestMonitor());
 			listener.assertNumberOfAffectedResources(1);
 			listener.assertChanges(resource, new IMarker[] { addAndChangeMarker.get() }, null, null);
 
@@ -835,7 +836,7 @@ public class MarkerTest extends ResourceTest {
 				assertMarkerHasAttributeValue(changeAndChangeMarker, IMarker.PRIORITY,
 						IMarker.PRIORITY_HIGH);
 			};
-			getWorkspace().run(changeAndChangeOperation, getMonitor());
+			getWorkspace().run(changeAndChangeOperation, createTestMonitor());
 			listener.assertNumberOfAffectedResources(1);
 			listener.assertChanges(resource, null, null, new IMarker[] { changeAndChangeMarker });
 
@@ -849,7 +850,7 @@ public class MarkerTest extends ResourceTest {
 				changeAndRemoveMarker.delete();
 				assertMarkerDoesNotExist(changeAndRemoveMarker);
 			};
-			getWorkspace().run(changeAndRemoveOperation, getMonitor());
+			getWorkspace().run(changeAndRemoveOperation, createTestMonitor());
 			listener.assertNumberOfAffectedResources(1);
 			listener.assertChanges(resource, null, new IMarker[] { changeAndRemoveMarker }, null);
 
@@ -883,7 +884,7 @@ public class MarkerTest extends ResourceTest {
 		listener = new MarkersChangeListener();
 		setResourceChangeListener(listener);
 		// move the files
-		folder.move(destFolder.getFullPath(), IResource.FORCE, getMonitor());
+		folder.move(destFolder.getFullPath(), IResource.FORCE, createTestMonitor());
 
 		// verify marker deltas
 		listener.assertChanges(folder, null, new IMarker[] { folderMarker }, null);
@@ -921,8 +922,8 @@ public class MarkerTest extends ResourceTest {
 		listener.reset();
 
 		// move the files
-		file.move(destFile.getFullPath(), IResource.FORCE, getMonitor());
-		subFile.move(destSubFile.getFullPath(), IResource.FORCE, getMonitor());
+		file.move(destFile.getFullPath(), IResource.FORCE, createTestMonitor());
+		subFile.move(destSubFile.getFullPath(), IResource.FORCE, createTestMonitor());
 
 		// verify marker deltas
 		listener.assertChanges(file, null, new IMarker[] { fileMarker }, null);
@@ -960,14 +961,14 @@ public class MarkerTest extends ResourceTest {
 			};
 			getWorkspace().getRoot().accept(visitor);
 		};
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 		listener.reset();
 
 		// move all resources
 		IProject[] projects = getWorkspace().getRoot().getProjects();
 		for (IProject project : projects) {
 			IPath destination = IPath.fromOSString(project.getName() + "move");
-			project.move(destination, true, getMonitor());
+			project.move(destination, true, createTestMonitor());
 		}
 
 		// verify marker deltas
@@ -1049,7 +1050,7 @@ public class MarkerTest extends ResourceTest {
 						throw new IllegalStateException("failed reading markers", e);
 					}
 				};
-				getWorkspace().run(body, getMonitor());
+				getWorkspace().run(body, createTestMonitor());
 			}
 		}
 
@@ -1137,7 +1138,7 @@ public class MarkerTest extends ResourceTest {
 						throw new IllegalStateException("Failed reading markers", e);
 					}
 				};
-				getWorkspace().run(body, getMonitor());
+				getWorkspace().run(body, createTestMonitor());
 			}
 		}
 
@@ -1166,10 +1167,10 @@ public class MarkerTest extends ResourceTest {
 		IMarker marker = project.createMarker(IMarker.BOOKMARK);
 		assertMarkerExists(marker);
 
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 		assertMarkerDoesNotExist(marker);
 
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 		assertMarkerExists(marker);
 	}
 

@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.resources.IProject;
@@ -32,7 +33,7 @@ public class Bug_098740 extends ResourceTest {
 	public void testBug() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Bug98740");
 		ensureExistsInWorkspace(project, true);
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 		assertThrows(CoreException.class, () -> project.members());
 		IResourceVisitor visitor = resource -> true;
 		assertThrows(CoreException.class, () -> project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE));

@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
@@ -40,13 +41,13 @@ public class TestClosedProjectLocation extends WorkspaceSerializationTest {
 		IFile file = project.getFile(FILE);
 		IProjectDescription desc = workspace.newProjectDescription(PROJECT);
 		desc.setLocation(location);
-		project.create(desc, getMonitor());
-		project.open(getMonitor());
+		project.create(desc, createTestMonitor());
+		project.open(createTestMonitor());
 		ensureExistsInWorkspace(file, true);
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 		assertEquals("1.1", location, project.getLocation());
 
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	/**

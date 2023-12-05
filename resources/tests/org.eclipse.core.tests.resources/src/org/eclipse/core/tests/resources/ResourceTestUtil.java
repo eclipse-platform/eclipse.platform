@@ -27,12 +27,17 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.tests.harness.FussyProgressMonitor;
 
 /**
  * Utilities for resource tests.
  */
 public final class ResourceTestUtil {
 	private ResourceTestUtil() {
+	}
+
+	public static IProgressMonitor createTestMonitor() {
+		return new FussyProgressMonitor();
 	}
 
 	/**

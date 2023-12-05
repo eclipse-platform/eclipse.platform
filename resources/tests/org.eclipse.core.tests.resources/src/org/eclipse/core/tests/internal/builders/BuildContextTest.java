@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.emptyArray;
@@ -79,7 +80,7 @@ public class BuildContextTest extends AbstractBuilderTest {
 		// Create buildConfigs
 		desc.setBuildConfigs(new String[] {variant0, variant1});
 
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 	}
 
 	/**
@@ -92,7 +93,7 @@ public class BuildContextTest extends AbstractBuilderTest {
 		for (IBuildConfiguration config : configs) {
 			if (!config.equals(active)) {
 				desc.setActiveBuildConfig(config.getName());
-				project.setDescription(desc, getMonitor());
+				project.setDescription(desc, createTestMonitor());
 				return config;
 			}
 		}
@@ -115,7 +116,7 @@ public class BuildContextTest extends AbstractBuilderTest {
 	private void setReferences(IBuildConfiguration variant, IBuildConfiguration[] refs) throws CoreException {
 		IProjectDescription desc = variant.getProject().getDescription();
 		desc.setBuildConfigReferences(variant.getName(), refs);
-		variant.getProject().setDescription(desc, getMonitor());
+		variant.getProject().setDescription(desc, createTestMonitor());
 	}
 
 	/**
@@ -157,7 +158,7 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 		setupSimpleReferences();
 		ContextBuilder.clearStats();
-		project0.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project0.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
@@ -182,7 +183,7 @@ public class BuildContextTest extends AbstractBuilderTest {
 		ContextBuilder.clearStats();
 
 		// Build project and resolve references
-		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, getMonitor());
+		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, createTestMonitor());
 		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
@@ -201,7 +202,7 @@ public class BuildContextTest extends AbstractBuilderTest {
 
 		// Build just project0
 		ContextBuilder.clearStats();
-		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, false, getMonitor());
+		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, false, createTestMonitor());
 		ContextBuilder.assertValid();
 
 		context = ContextBuilder.getContext(project0.getActiveBuildConfig());
@@ -216,7 +217,7 @@ public class BuildContextTest extends AbstractBuilderTest {
 		setupSimpleReferences();
 		ContextBuilder.clearStats();
 		// build project0 & project2 ; project1 will end up being built too.
-		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig(), project2.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, getMonitor());
+		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig(), project2.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, createTestMonitor());
 		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
@@ -243,7 +244,7 @@ public class BuildContextTest extends AbstractBuilderTest {
 		setReferences(project2.getActiveBuildConfig(), new IBuildConfiguration[] {});
 
 		ContextBuilder.clearStats();
-		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, getMonitor());
+		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, createTestMonitor());
 		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
@@ -272,7 +273,7 @@ public class BuildContextTest extends AbstractBuilderTest {
 		setReferences(project1.getActiveBuildConfig(), new IBuildConfiguration[] {});
 
 		ContextBuilder.clearStats();
-		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, getMonitor());
+		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, createTestMonitor());
 		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
@@ -288,7 +289,7 @@ public class BuildContextTest extends AbstractBuilderTest {
 		ContextBuilder.clearStats();
 		IBuildConfiguration project1PreviousActive = project1.getActiveBuildConfig();
 		IBuildConfiguration project1NewActive = changeActiveBuildConfig(project1);
-		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, getMonitor());
+		getWorkspace().build(new IBuildConfiguration[] {project0.getActiveBuildConfig()}, IncrementalProjectBuilder.FULL_BUILD, true, createTestMonitor());
 		ContextBuilder.assertValid();
 
 		context = ContextBuilder.getContext(project0.getActiveBuildConfig());

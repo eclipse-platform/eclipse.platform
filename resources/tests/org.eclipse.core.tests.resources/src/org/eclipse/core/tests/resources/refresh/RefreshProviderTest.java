@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.refresh;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.emptyArray;
@@ -75,10 +76,10 @@ public class RefreshProviderTest extends ResourceTest {
 		// ensure we currently have just the project being monitored
 		TestRefreshProvider provider = TestRefreshProvider.getInstance();
 		assertEquals("1.0", 1, provider.getMonitoredResources().length);
-		link.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
+		link.createLink(location, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 		joinAutoRefreshJobs();
 		assertEquals("1.1", 2, provider.getMonitoredResources().length);
-		link.delete(IResource.FORCE, getMonitor());
+		link.delete(IResource.FORCE, createTestMonitor());
 		joinAutoRefreshJobs();
 		assertEquals("1.2", 1, provider.getMonitoredResources().length);
 		ensureDoesNotExistInWorkspace(project);
@@ -101,10 +102,10 @@ public class RefreshProviderTest extends ResourceTest {
 		// ensure we currently have just the project being monitored
 		TestRefreshProvider provider = TestRefreshProvider.getInstance();
 		assertEquals("1.0", 1, provider.getMonitoredResources().length);
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 		joinAutoRefreshJobs();
 		assertEquals("1.1", 0, provider.getMonitoredResources().length);
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 		joinAutoRefreshJobs();
 		assertEquals("1.2", 1, provider.getMonitoredResources().length);
 		ensureDoesNotExistInWorkspace(project);

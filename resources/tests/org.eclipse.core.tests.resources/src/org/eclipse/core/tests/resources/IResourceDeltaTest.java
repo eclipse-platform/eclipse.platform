@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -63,7 +64,7 @@ public class IResourceDeltaTest extends ResourceTest {
 
 		// Create and open the resources
 		IWorkspaceRunnable body = monitor -> ensureExistsInWorkspace(allResources, true);
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 	}
 
 	/**
@@ -109,12 +110,12 @@ public class IResourceDeltaTest extends ResourceTest {
 
 		//do the work
 		IWorkspaceRunnable body = monitor -> {
-			file1.setContents(getRandomContents(), true, true, getMonitor());
-			folder2.delete(true, getMonitor());
-			file4.create(getRandomContents(), true, getMonitor());
+			file1.setContents(getRandomContents(), true, true, createTestMonitor());
+			folder2.delete(true, createTestMonitor());
+			file4.create(getRandomContents(), true, createTestMonitor());
 		};
 		try {
-			getWorkspace().run(body, getMonitor());
+			getWorkspace().run(body, createTestMonitor());
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}

@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import java.util.Map;
@@ -89,11 +90,11 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 
 	private void setupProjectWithOurBuilder() throws CoreException {
 		project = getWorkspace().getRoot().getProject(getName());
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] { createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, getName()) });
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 	}
 
 	private void requestAutoBuildJobExecution() {
@@ -200,7 +201,7 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 	 * Trigger an auto-build and wait for it to start.
 	 */
 	private void triggerAutoBuildAndWait() throws CoreException, InterruptedException {
-		project.touch(getMonitor());
+		project.touch(createTestMonitor());
 		Thread.sleep(Policy.MAX_BUILD_DELAY);
 	}
 

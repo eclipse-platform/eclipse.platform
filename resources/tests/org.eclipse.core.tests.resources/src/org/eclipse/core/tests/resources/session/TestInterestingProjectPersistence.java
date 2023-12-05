@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -79,12 +80,12 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
 		command.setArguments(args);
 		description.setBuildSpec(new ICommand[] { command });
-		project1.setDescription(description, getMonitor());
+		project1.setDescription(description, createTestMonitor());
 
 		// initial build requesting no projects
-		project1.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**
@@ -94,8 +95,8 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		builder.checkDeltas(new IProject[] {project1, project2, project3, project4});
 		builder.requestDeltas(new IProject[] {project1, project2, project4});
-		file1.setContents(getRandomContents(), true, true, getMonitor());
-		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		file1.setContents(getRandomContents(), true, true, createTestMonitor());
+		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		ArrayList<IProject> received = builder.getReceivedDeltas();
 
 		// should have received only a delta for project1
@@ -107,7 +108,7 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		assertEquals("1.2", 0, empty.size());
 
 		// save
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**
@@ -117,12 +118,12 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		builder.checkDeltas(new IProject[] {project1, project2, project3, project4});
 		// dirty projects 1, 2, 3
-		file1.setContents(getRandomContents(), true, true, getMonitor());
-		file2.setContents(getRandomContents(), true, true, getMonitor());
-		file3.setContents(getRandomContents(), true, true, getMonitor());
+		file1.setContents(getRandomContents(), true, true, createTestMonitor());
+		file2.setContents(getRandomContents(), true, true, createTestMonitor());
+		file3.setContents(getRandomContents(), true, true, createTestMonitor());
 
 		// build
-		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		ArrayList<IProject> received = builder.getReceivedDeltas();
 
 		// should have received deltas for 1, 2, and 4
@@ -138,7 +139,7 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		assertTrue("1.3", empty.contains(project4));
 
 		// save
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	public static Test suite() {
