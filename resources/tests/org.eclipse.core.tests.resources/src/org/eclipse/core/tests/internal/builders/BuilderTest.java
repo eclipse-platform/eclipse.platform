@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThrows;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -863,8 +864,8 @@ public class BuilderTest extends AbstractBuilderTest {
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			input.setContents(new ByteArrayInputStream(new byte[] { 5, 4, 3, 2, 1 }), IResource.NONE, createTestMonitor());
 			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
-			try {
-				transferStreams(output.getContents(), out, null);
+			try (InputStream inputStream = output.getContents()) {
+				inputStream.transferTo(out);
 			} catch (IOException e) {
 				exception.set(e);
 			}
