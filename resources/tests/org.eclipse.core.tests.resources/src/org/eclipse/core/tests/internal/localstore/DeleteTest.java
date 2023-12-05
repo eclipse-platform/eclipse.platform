@@ -141,7 +141,8 @@ public class DeleteTest extends LocalStoreTest {
 
 		/* initialize common objects */
 		ensureExistsInWorkspace(project, true);
-		ensureExistsInFileSystem(new IResource[] {folder, file});
+		ensureExistsInFileSystem(folder);
+		ensureExistsInFileSystem(file);
 		folderPath = folder.getLocation();
 		filePath = file.getLocation();
 		projectLocation = project.getLocation();

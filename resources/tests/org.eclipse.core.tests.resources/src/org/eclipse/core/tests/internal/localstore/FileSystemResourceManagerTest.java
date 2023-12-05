@@ -167,7 +167,9 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		IResource[] resources = buildResources(project, new String[] { "/Folder1/", "/Folder1/File1",
 				"/Folder1/Folder2/", "/Folder1/Folder2/File2", "/Folder1/Folder2/Folder3/" });
 		ensureExistsInWorkspace(resources, true);
-		ensureDoesNotExistInFileSystem(resources);
+		for (IResource resource : resources) {
+			ensureDoesNotExistInFileSystem(resource);
+		}
 
 		// exists
 		assertTrue(project.isLocal(IResource.DEPTH_INFINITE)); // test

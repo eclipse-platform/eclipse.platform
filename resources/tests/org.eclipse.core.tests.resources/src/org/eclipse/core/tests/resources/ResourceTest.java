@@ -306,15 +306,6 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Delete the resources in the array from the local store.
-	 */
-	public void ensureDoesNotExistInFileSystem(IResource[] resources) {
-		for (IResource resource : resources) {
-			ensureDoesNotExistInFileSystem(resource);
-		}
-	}
-
-	/**
 	 * Delete the given resource from the workspace resource tree.
 	 */
 	public void ensureDoesNotExistInWorkspace(IResource resource) throws CoreException {
@@ -337,31 +328,14 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Create the given file in the local store. Use the resource manager
+	 * Create the given file or folder in the local store. Use the resource manager
 	 * to ensure that we have a correct Path -&gt; File mapping.
-	 */
-	public void ensureExistsInFileSystem(IFile file) throws CoreException {
-		createFileInFileSystem(((Resource) file).getStore());
-	}
-
-	/**
-	 * Create the given folder in the local store. Use the resource
-	 * manager to ensure that we have a correct Path -&gt; File mapping.
 	 */
 	public void ensureExistsInFileSystem(IResource resource) throws CoreException {
 		if (resource instanceof IFile file) {
-			ensureExistsInFileSystem(file);
+			createFileInFileSystem(((Resource) file).getStore());
 		} else {
 			((Resource) resource).getStore().mkdir(EFS.NONE, null);
-		}
-	}
-
-	/**
-	 * Create the each resource of the array in the local store.
-	 */
-	public void ensureExistsInFileSystem(IResource[] resources) throws CoreException {
-		for (IResource resource : resources) {
-			ensureExistsInFileSystem(resource);
 		}
 	}
 
