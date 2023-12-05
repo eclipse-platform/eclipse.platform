@@ -57,7 +57,7 @@ public class TestBug93473 extends WorkspaceSessionTest {
 		Platform.getContentTypeManager().getContentType(IContentTypeManager.CT_TEXT);
 		IFile file = project.getFile("foo.txt");
 		assertDoesNotExistInWorkspace(file);
-		ensureExistsInWorkspace(file, getRandomContents());
+		ensureExistsInWorkspace(file, getRandomString());
 		// this will also cause the cache flush job to be scheduled
 		file.getContentDescription();
 		// after waiting cache flushing, cache should be new

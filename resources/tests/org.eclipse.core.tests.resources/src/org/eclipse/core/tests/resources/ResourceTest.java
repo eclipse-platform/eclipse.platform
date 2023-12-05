@@ -26,7 +26,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -318,27 +317,21 @@ public abstract class ResourceTest extends CoreTest {
 	/**
 	 * Create the given file in the workspace resource info tree.
 	 */
-	public void ensureExistsInWorkspace(final IFile resource, final InputStream contents) throws CoreException {
+	public void ensureExistsInWorkspace(IFile resource, String contents) throws CoreException {
+		InputStream contentStream = getContents(contents);
 		if (resource == null) {
 			return;
 		}
 		IWorkspaceRunnable body;
 		if (resource.exists()) {
-			body = monitor -> resource.setContents(contents, true, false, null);
+			body = monitor -> resource.setContents(contentStream, true, false, null);
 		} else {
 			body = monitor -> {
 				createInWorkspace(resource.getParent());
-				resource.create(contents, true, null);
+				resource.create(contentStream, true, null);
 			};
 		}
 		getWorkspace().run(body, null);
-	}
-
-	/**
-	 * Create the given file in the workspace resource info tree.
-	 */
-	public void ensureExistsInWorkspace(IFile resource, String contents) throws CoreException {
-		ensureExistsInWorkspace(resource, new ByteArrayInputStream(contents.getBytes()));
 	}
 
 	/**

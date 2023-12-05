@@ -76,8 +76,8 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		String newExtension = "xml_bug_79151";
 		IFile file1 = project.getFile("file.xml");
 		IFile file2 = project.getFile("file." + newExtension);
-		ensureExistsInWorkspace(file1, getContents(CharsetTest.SAMPLE_XML_ISO_8859_1_ENCODING));
-		ensureExistsInWorkspace(file2, getContents(CharsetTest.SAMPLE_XML_US_ASCII_ENCODING));
+		ensureExistsInWorkspace(file1, CharsetTest.SAMPLE_XML_ISO_8859_1_ENCODING);
+		ensureExistsInWorkspace(file2, CharsetTest.SAMPLE_XML_US_ASCII_ENCODING);
 		// ensure we start in a known state
 		((Workspace) workspace).getContentDescriptionManager().invalidateCache(true, null);
 		// wait for cache flush to finish

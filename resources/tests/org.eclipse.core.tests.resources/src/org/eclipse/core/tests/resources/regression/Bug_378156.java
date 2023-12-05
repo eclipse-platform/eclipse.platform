@@ -92,7 +92,7 @@ public class Bug_378156 extends ResourceTest {
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		desc.setBuildSpec(new ICommand[] {command});
 		project1.setDescription(desc, createTestMonitor());
-		ensureExistsInWorkspace(file, getRandomContents());
+		ensureExistsInWorkspace(file, getRandomString());
 		//build may not be triggered immediately
 		Thread.sleep(2000);
 		waitForBuild();
@@ -134,7 +134,7 @@ public class Bug_378156 extends ResourceTest {
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		desc.setBuildSpec(new ICommand[] {command});
 		project1.setDescription(desc, createTestMonitor());
-		ensureExistsInWorkspace(file, getRandomContents());
+		ensureExistsInWorkspace(file, getRandomString());
 		waitForBuild();
 
 		//initialize the builder
