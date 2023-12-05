@@ -47,7 +47,7 @@ public class Bug_079398 extends ResourceTest {
 		// max size of file = 1 Mb
 		description.setMaxFileStateSize(1024 * 1024);
 		getWorkspace().setDescription(description);
-		ensureExistsInWorkspace(file1, getRandomContents());
+		ensureExistsInWorkspace(file1, getRandomString());
 		for (int i = 0; i < 10; i++) {
 			file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
 		}

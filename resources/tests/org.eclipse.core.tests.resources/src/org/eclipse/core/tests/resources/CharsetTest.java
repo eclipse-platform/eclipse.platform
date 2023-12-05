@@ -362,7 +362,7 @@ public class CharsetTest extends ResourceTest {
 		assertNotNull("0.5", anotherXML);
 		ensureExistsInWorkspace(project);
 		IFile file = project.getFile("file.xml");
-		ensureExistsInWorkspace(file, new ByteArrayInputStream(SAMPLE_SPECIFIC_XML.getBytes(StandardCharsets.UTF_8)));
+		ensureExistsInWorkspace(file, SAMPLE_SPECIFIC_XML);
 		IContentDescription description = file.getContentDescription();
 		assertNotNull("1.0", description);
 		assertEquals("1.1", anotherXML, description.getContentType());
@@ -764,13 +764,13 @@ public class CharsetTest extends ResourceTest {
 		IWorkspace workspace = getWorkspace();
 		IProject project1 = workspace.getRoot().getProject("Project1");
 		IFile file = project1.getFile("file1.xml");
-		ensureExistsInWorkspace(file, new ByteArrayInputStream(SAMPLE_XML_ISO_8859_1_ENCODING.getBytes(StandardCharsets.ISO_8859_1)));
+		ensureExistsInWorkspace(file, SAMPLE_XML_ISO_8859_1_ENCODING);
 		ContentDescriptionManagerTest.waitForCacheFlush();
 		assertEquals("1.0", "ISO-8859-1", file.getCharset());
 
 		//delete and recreate the file with different contents
 		ensureDoesNotExistInWorkspace(file);
-		ensureExistsInWorkspace(file, new ByteArrayInputStream(SAMPLE_XML_DEFAULT_ENCODING.getBytes(StandardCharsets.UTF_8)));
+		ensureExistsInWorkspace(file, SAMPLE_XML_DEFAULT_ENCODING);
 		assertEquals("2.0", "UTF-8", file.getCharset());
 	}
 
@@ -875,7 +875,7 @@ public class CharsetTest extends ResourceTest {
 			IFile file = project.getFile("file.xml");
 			assertEquals("0.9", "FOO", project.getDefaultCharset());
 			// content-based encoding is BAR
-			ensureExistsInWorkspace(file, new ByteArrayInputStream(SAMPLE_XML_US_ASCII_ENCODING.getBytes(StandardCharsets.UTF_8)));
+			ensureExistsInWorkspace(file, SAMPLE_XML_US_ASCII_ENCODING);
 			assertEquals("1.0", "US-ASCII", file.getCharset());
 			// content-based encoding is FRED
 			file.setContents(new ByteArrayInputStream(SAMPLE_XML_ISO_8859_1_ENCODING.getBytes(StandardCharsets.ISO_8859_1)), false, false, null);
@@ -1200,7 +1200,7 @@ public class CharsetTest extends ResourceTest {
 			// File:
 			// single file
 			final IFile file1 = project.getFile("file1.txt");
-			ensureExistsInWorkspace(file1, getRandomContents());
+			ensureExistsInWorkspace(file1, getRandomString());
 			// change from default
 			verifier.reset();
 			verifier.addExpectedChange(file1, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
@@ -1239,7 +1239,7 @@ public class CharsetTest extends ResourceTest {
 			// multiple files (same operation)
 			verifier.reset();
 			final IFile file2 = project.getFile("file2.txt");
-			ensureExistsInWorkspace(file2, getRandomContents());
+			ensureExistsInWorkspace(file2, getRandomString());
 			verifier.addExpectedChange(new IResource[] {file1, file2}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
 			verifier.addExpectedChange(prefs.getParent(), IResourceDelta.CHANGED, 0);
 			verifier.addExpectedChange(prefs, IResourceDelta.CHANGED, IResourceDelta.CONTENT);

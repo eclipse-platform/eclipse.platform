@@ -41,7 +41,7 @@ public class TestBug208833 extends WorkspaceSessionTest {
 
 		// create a project with a file
 		ensureExistsInWorkspace(project);
-		ensureExistsInWorkspace(file, getRandomContents());
+		ensureExistsInWorkspace(file, getRandomString());
 
 		// save the workspace
 		workspace.save(true, null);

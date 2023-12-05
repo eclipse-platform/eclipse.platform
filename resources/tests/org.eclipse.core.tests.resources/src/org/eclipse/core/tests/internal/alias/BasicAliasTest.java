@@ -207,7 +207,7 @@ public class BasicAliasTest extends ResourceTest {
 		location.toFile().mkdirs();
 		deleteOnTearDown(location);
 		link.createLink(location, IResource.NONE, createTestMonitor());
-		ensureExistsInWorkspace(child, getRandomContents());
+		ensureExistsInWorkspace(child, getRandomString());
 		// move the link (rename)
 		IFolder movedLink = project.getFolder("MovedLink");
 		link.move(movedLink.getFullPath(), IResource.SHALLOW, createTestMonitor());
@@ -249,7 +249,7 @@ public class BasicAliasTest extends ResourceTest {
 		sub2.open(createTestMonitor());
 		IFile sub2File = sub2.getFile("file.txt");
 		IFile topFile = top.getFolder(sub2.getName()).getFile(sub2File.getName());
-		ensureExistsInWorkspace(sub2File, getRandomContents());
+		ensureExistsInWorkspace(sub2File, getRandomString());
 		assertTrue("1.0", topFile.exists());
 	}
 

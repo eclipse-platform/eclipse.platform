@@ -56,7 +56,7 @@ public class PropertyManagerPerformanceTest extends ResourceTest {
 		for (IFolder folder : folders) {
 			for (int j = 0; j < filesPerFolder; j++) {
 				IFile file = folder.getFile("file" + j);
-				ensureExistsInWorkspace(file, getRandomContents());
+				ensureExistsInWorkspace(file, getRandomString());
 				resources.add(file);
 			}
 		}

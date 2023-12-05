@@ -857,7 +857,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		command.setBuilderName(SortBuilder.BUILDER_NAME);
 		desc.setBuildSpec(new ICommand[] { command });
 		project.setDescription(desc, createTestMonitor());
-		ensureExistsInWorkspace(input, getRandomContents());
+		ensureExistsInWorkspace(input, getRandomString());
 
 		waitForBuild();
 		assertTrue("1.0", output.exists());

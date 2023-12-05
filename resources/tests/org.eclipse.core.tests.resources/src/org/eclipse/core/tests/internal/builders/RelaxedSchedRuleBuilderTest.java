@@ -21,7 +21,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 
-import java.io.ByteArrayInputStream;
 import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -316,7 +315,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 			protected IStatus run(IProgressMonitor monitor) {
 				tb.setStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
 				try {
-					ensureExistsInWorkspace(foo, new ByteArrayInputStream(new byte[0]));
+					ensureExistsInWorkspace(foo);
 				} catch (CoreException e) {
 					errorInWorkspaceChangingJob.set(e);
 				}
