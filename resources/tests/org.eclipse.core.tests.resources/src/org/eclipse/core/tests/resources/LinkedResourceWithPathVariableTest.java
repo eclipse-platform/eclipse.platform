@@ -21,6 +21,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
@@ -221,7 +222,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked file location is
 	 * removed.
 	 */
-	public void testFileVariableRemoved() throws CoreException {
+	public void testFileVariableRemoved() throws Exception {
 		final IPathVariableManager manager = getWorkspace().getPathVariableManager();
 
 		IFile file = nonExistingFileInExistingProject;
@@ -276,7 +277,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked file location is
 	 * removed.
 	 */
-	public void testFileProjectVariableRemoved() throws CoreException {
+	public void testFileProjectVariableRemoved() throws Exception {
 		final IPathVariableManager manager = existingProject.getPathVariableManager();
 
 		IFile file = nonExistingFileInExistingProject;
@@ -487,7 +488,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked file location is
 	 * removed.
 	 */
-	public void testFileProjectRelativeVariableRemoved() throws CoreException {
+	public void testFileProjectRelativeVariableRemoved() throws Exception {
 		final IPathVariableManager manager = existingProject.getPathVariableManager();
 
 		IFile file = nonExistingFileInExistingProject;
@@ -787,7 +788,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked file location is
 	 * changed.
 	 */
-	public void testVariableChanged() throws CoreException {
+	public void testVariableChanged() throws Exception {
 		final IPathVariableManager manager = getWorkspace().getPathVariableManager();
 
 		IPath existingValue = manager.getValue(VARIABLE_NAME);
@@ -852,7 +853,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked file location is
 	 * changed.
 	 */
-	public void testProjectVariableChanged() throws CoreException {
+	public void testProjectVariableChanged() throws Exception {
 		final IPathVariableManager manager = existingProject.getPathVariableManager();
 
 		IPath existingValue = manager.getValue(PROJECT_VARIABLE_NAME);

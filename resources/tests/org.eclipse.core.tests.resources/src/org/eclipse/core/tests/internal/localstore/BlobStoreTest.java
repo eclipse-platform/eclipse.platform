@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;

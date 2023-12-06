@@ -15,6 +15,7 @@ package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
@@ -114,7 +115,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 	 * this test should move to FileTest
 	 */
 	@Test
-	public void testCreateFile() throws CoreException {
+	public void testCreateFile() throws Exception {
 		/* initialize common objects */
 		IProject project = projects[0];
 		File file = (File) project.getFile("testCreateFile");

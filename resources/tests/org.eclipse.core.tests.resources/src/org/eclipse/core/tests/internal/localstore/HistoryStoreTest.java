@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.junit.Assert.assertThrows;
@@ -488,7 +489,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the copied file should have 4 states as it retains the states from
 	 * before the copy took place as well.
 	 */
-	public void testCopyFolder() throws CoreException {
+	public void testCopyFolder() throws Exception {
 		String[] contents = {"content1", "content2", "content3", "content4", "content5"};
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("CopyFolderProject");
@@ -1163,7 +1164,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the moved file should have 4 states as it retains the states from
 	 * before the move took place as well.
 	 */
-	public void testMoveFolder() throws CoreException {
+	public void testMoveFolder() throws Exception {
 		String[] contents = {"content1", "content2", "content3", "content4", "content5"};
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -1228,7 +1229,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the copied file should have 4 states as it retains the states from
 	 * before the copy took place as well.
 	 */
-	public void testMoveProject() throws CoreException {
+	public void testMoveProject() throws Exception {
 		String[] contents = {"content1", "content2", "content3", "content4", "content5"};
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("MoveProjectProject");
@@ -1371,7 +1372,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the copied file should have 4 states as it retains the states from
 	 * before the copy took place as well.
 	 */
-	public void testSimpleCopy() throws CoreException {
+	public void testSimpleCopy() throws Exception {
 		/* Initialize common objects. */
 		IProject project = getWorkspace().getRoot().getProject("SimpleCopyProject");
 		project.create(createTestMonitor());
@@ -1433,7 +1434,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the moved file should have 4 states as it retains the states from
 	 * before the move took place as well.
 	 */
-	public void testSimpleMove() throws CoreException {
+	public void testSimpleMove() throws Exception {
 		/* Initialize common objects. */
 		IProject project = getWorkspace().getRoot().getProject("SimpleMoveProject");
 		project.create(createTestMonitor());
@@ -1493,7 +1494,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 *   6. Set new content				"content 2"			4
 	 *   7. Roll back to third version  "content 3"			5
 	 */
-	public void testSimpleUse() throws CoreException {
+	public void testSimpleUse() throws Exception {
 		/* Initialize common objects. */
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		project.create(createTestMonitor());

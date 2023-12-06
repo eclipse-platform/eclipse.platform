@@ -164,31 +164,6 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Returns a boolean value indicating whether or not the contents
-	 * of the given streams are considered to be equal. Closes both input streams.
-	 */
-	public boolean compareContent(InputStream a, InputStream b) {
-		int c, d;
-		if (a == null && b == null) {
-			return true;
-		}
-		try {
-			if (a == null || b == null) {
-				return false;
-			}
-			while ((c = a.read()) == (d = b.read()) && (c != -1 && d != -1)) {
-				//body not needed
-			}
-			return (c == -1 && d == -1);
-		} catch (IOException e) {
-			return false;
-		} finally {
-			assertClose(a);
-			assertClose(b);
-		}
-	}
-
-	/**
 	 * Create the given file and its parents in the local store with random
 	 * contents.
 	 */
