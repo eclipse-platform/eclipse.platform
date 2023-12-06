@@ -100,8 +100,8 @@ public class LinkedResourceTest extends ResourceTest {
 		waitForRefresh();
 		createInWorkspace(new IResource[] {existingProject, otherExistingProject, closedProject, existingFolderInExistingProject, existingFolderInExistingFolder, existingFileInExistingProject});
 		closedProject.close(createTestMonitor());
-		ensureDoesNotExistInWorkspace(new IResource[] { nonExistingProject, nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolderInNonExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder });
-		ensureDoesNotExistInFileSystem(resolve(nonExistingLocation).toFile());
+		removeFromWorkspace(new IResource[] { nonExistingProject, nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolderInNonExistingProject, nonExistingFolderInNonExistingFolder, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder });
+		removeFromFileSystem(resolve(nonExistingLocation).toFile());
 		resolve(localFolder).toFile().mkdirs();
 		createFileInFileSystem(resolve(localFile));
 	}
@@ -273,7 +273,7 @@ public class LinkedResourceTest extends ResourceTest {
 		IPath resolvedLocation = resolve(localFolder);
 		folder.createLink(localFolder, IResource.NONE, createTestMonitor());
 
-		ensureDoesNotExistInFileSystem(resolvedLocation.toFile());
+		removeFromFileSystem(resolvedLocation.toFile());
 		createFileInFileSystem(resolvedLocation);
 		folder.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
@@ -283,7 +283,7 @@ public class LinkedResourceTest extends ResourceTest {
 		assertEquals("3.3", resolvedLocation, file.getLocation());
 
 		//change back to folder
-		ensureDoesNotExistInFileSystem(resolvedLocation.toFile());
+		removeFromFileSystem(resolvedLocation.toFile());
 		resolvedLocation.toFile().mkdirs();
 
 		folder.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
@@ -1264,7 +1264,7 @@ public class LinkedResourceTest extends ResourceTest {
 		assertTrue("2.0", linkedFile.getModificationStamp() >= 0);
 
 		// delete local file
-		ensureDoesNotExistInFileSystem(resolve(location).toFile());
+		removeFromFileSystem(resolve(location).toFile());
 		linkedFile.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertEquals("4.0", IResource.NULL_STAMP, linkedFile.getModificationStamp());
 	}

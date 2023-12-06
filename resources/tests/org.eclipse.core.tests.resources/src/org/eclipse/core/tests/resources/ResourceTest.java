@@ -233,33 +233,42 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Delete the given resource from the local store. Use the resource manager to
-	 * ensure that we have a correct Path -&gt; File mapping.
+	 * Delete the given file in the file system.
 	 */
-	public void ensureDoesNotExistInFileSystem(IResource resource) {
+	public void removeFromFileSystem(java.io.File file) {
+		FileSystemHelper.clear(file);
+	}
+
+	/**
+	 * Delete the given resource in the file system.
+	 */
+	public void removeFromFileSystem(IResource resource) {
 		IPath path = resource.getLocation();
 		if (path != null) {
-			ensureDoesNotExistInFileSystem(path.toFile());
+			removeFromFileSystem(path.toFile());
 		}
 	}
 
 	/**
-	 * Delete the given resource from the workspace resource tree.
+	 * Delete the given resource in the workspace resource tree. Also removes
+	 * project contents in case the resource is a project and the project is
+	 * currently closed.
 	 */
-	public void ensureDoesNotExistInWorkspace(IResource resource) throws CoreException {
+	public void removeFromWorkspace(IResource resource) throws CoreException {
 		if (resource.exists()) {
 			resource.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 		}
 	}
 
 	/**
-	 * Delete each element of the resource array from the workspace
-	 * resource info tree.
+	 * Delete each element of the resource array in the workspace resource info
+	 * tree. Also removes project contents in case a resource is a project and the
+	 * project is currently closed.
 	 */
-	public void ensureDoesNotExistInWorkspace(final IResource[] resources) throws CoreException {
+	public void removeFromWorkspace(final IResource[] resources) throws CoreException {
 		IWorkspaceRunnable body = monitor -> {
 			for (IResource resource : resources) {
-				ensureDoesNotExistInWorkspace(resource);
+				removeFromWorkspace(resource);
 			}
 		};
 		getWorkspace().run(body, null);

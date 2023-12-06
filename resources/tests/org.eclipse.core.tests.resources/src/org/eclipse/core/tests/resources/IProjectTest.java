@@ -2477,7 +2477,7 @@ public class IProjectTest extends ResourceTest {
 
 	public void testCreateHiddenProject() throws CoreException {
 		IProject hiddenProject = getWorkspace().getRoot().getProject(createUniqueString());
-		ensureDoesNotExistInWorkspace(hiddenProject);
+		removeFromWorkspace(hiddenProject);
 
 		monitor.prepare();
 		hiddenProject.create(null, IResource.HIDDEN, monitor);

@@ -58,8 +58,8 @@ public class LocalStoreRegressionTests extends LocalStoreTest {
 		file.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertTrue("1.1", folder.exists());
 		assertTrue("1.2", file.exists());
-		ensureDoesNotExistInWorkspace(folder);
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromWorkspace(folder);
+		removeFromFileSystem(folder);
 	}
 
 	/**

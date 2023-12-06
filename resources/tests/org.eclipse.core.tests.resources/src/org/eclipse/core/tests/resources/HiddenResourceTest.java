@@ -269,7 +269,7 @@ public class HiddenResourceTest extends ResourceTest {
 		IFile destFile = destProject.getFile(file.getName());
 		IFile destSubFile = destFolder.getFile(subFile.getName());
 		IResource[] destResources = new IResource[] {destProject, destFolder, destFile, destSubFile};
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 
 		// set a folder to be hidden
 		setHidden(folder, true, IResource.DEPTH_ZERO);
@@ -280,7 +280,7 @@ public class HiddenResourceTest extends ResourceTest {
 		assertExistsInWorkspace(destResources);
 
 		// do it again and but just copy the folder
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 		createInWorkspace(resources);
 		createInWorkspace(destProject);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
@@ -290,7 +290,7 @@ public class HiddenResourceTest extends ResourceTest {
 
 		// set all the resources to be hidden
 		// copy the project
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 		createInWorkspace(resources);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		project.copy(destProject.getFullPath(), flags, createTestMonitor());
@@ -298,7 +298,7 @@ public class HiddenResourceTest extends ResourceTest {
 		assertExistsInWorkspace(destResources);
 
 		// do it again but only copy the folder
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 		createInWorkspace(resources);
 		createInWorkspace(destProject);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
@@ -322,7 +322,7 @@ public class HiddenResourceTest extends ResourceTest {
 		IFile destFile = destProject.getFile(file.getName());
 		IFile destSubFile = destFolder.getFile(subFile.getName());
 		IResource[] destResources = new IResource[] {destProject, destFolder, destFile, destSubFile};
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 
 		// set a folder to be hidden
 		setHidden(folder, true, IResource.DEPTH_ZERO);
@@ -333,7 +333,7 @@ public class HiddenResourceTest extends ResourceTest {
 		assertExistsInWorkspace(destResources);
 
 		// do it again and but just move the folder
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 		createInWorkspace(resources);
 		createInWorkspace(destProject);
 		setHidden(folder, true, IResource.DEPTH_ZERO);
@@ -343,7 +343,7 @@ public class HiddenResourceTest extends ResourceTest {
 
 		// set all the resources to be hidden
 		// move the project
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 		createInWorkspace(resources);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		project.move(destProject.getFullPath(), flags, createTestMonitor());
@@ -351,7 +351,7 @@ public class HiddenResourceTest extends ResourceTest {
 		assertExistsInWorkspace(destResources);
 
 		// do it again but only move the folder
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 		createInWorkspace(resources);
 		createInWorkspace(destProject);
 		setHidden(project, true, IResource.DEPTH_INFINITE);
@@ -441,7 +441,7 @@ public class HiddenResourceTest extends ResourceTest {
 			// FIXME sometimes fails with "Verifier has not yet been given a resource
 			// delta":
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
-			ensureDoesNotExistInWorkspace(resources);
+			removeFromWorkspace(resources);
 		} finally {
 			removeResourceChangeListener(listener);
 		}
@@ -460,7 +460,7 @@ public class HiddenResourceTest extends ResourceTest {
 			// FIXME sometimes fails with "Verifier has not yet been given a resource
 			// delta":
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
-			ensureDoesNotExistInWorkspace(resources);
+			removeFromWorkspace(resources);
 		} finally {
 			removeResourceChangeListener(listener);
 		}
@@ -479,7 +479,7 @@ public class HiddenResourceTest extends ResourceTest {
 			// FIXME sometimes fails with "Verifier has not yet been given a resource
 			// delta":
 			assertTrue("3.1." + listener.getMessage(), listener.isDeltaValid());
-			ensureDoesNotExistInWorkspace(resources);
+			removeFromWorkspace(resources);
 		} finally {
 			removeResourceChangeListener(listener);
 		}

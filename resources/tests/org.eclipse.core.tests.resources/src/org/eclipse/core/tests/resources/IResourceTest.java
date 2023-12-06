@@ -234,7 +234,7 @@ public class IResourceTest extends ResourceTest {
 		nonExistingResources.add(result[result.length - 1]);
 
 		IResource[] deleted = buildResources(root, new String[] {"1/1/2/1/", "1/2/3/1"});
-		ensureDoesNotExistInWorkspace(deleted);
+		removeFromWorkspace(deleted);
 		nonExistingResources.addAll(Arrays.asList(deleted));
 		//out of sync
 		IResource[] unsynchronized = buildResources(root, new String[] {"1/2/3/3"});
@@ -243,7 +243,7 @@ public class IResourceTest extends ResourceTest {
 
 		//file system only
 		unsynchronized = buildResources(root, new String[] {"1/1/2/2/1"});
-		ensureDoesNotExistInWorkspace(unsynchronized);
+		removeFromWorkspace(unsynchronized);
 		for (IResource resource : unsynchronized) {
 			createInFileSystem(resource);
 		}
@@ -321,7 +321,7 @@ public class IResourceTest extends ResourceTest {
 		//target may have changed gender
 		IResource changedTarget = getWorkspace().getRoot().findMember(target.getFullPath());
 		if (changedTarget != null && changedTarget.getType() != target.getType()) {
-			ensureDoesNotExistInWorkspace(changedTarget);
+			removeFromWorkspace(changedTarget);
 		}
 		createInWorkspace(interestingResources);
 	}
@@ -515,7 +515,7 @@ public class IResourceTest extends ResourceTest {
 		switch (state) {
 			case S_WORKSPACE_ONLY :
 				createInWorkspace(target);
-				ensureDoesNotExistInFileSystem(target);
+				removeFromFileSystem(target);
 				if (addVerifier) {
 					verifier.reset();
 					// we only get a delta if the receiver of refreshLocal
@@ -527,7 +527,7 @@ public class IResourceTest extends ResourceTest {
 				}
 				break;
 			case S_FILESYSTEM_ONLY :
-				ensureDoesNotExistInWorkspace(target);
+				removeFromWorkspace(target);
 				createInFileSystem(target);
 				if (addVerifier) {
 					verifier.reset();
@@ -559,15 +559,15 @@ public class IResourceTest extends ResourceTest {
 				}
 				break;
 			case S_DOES_NOT_EXIST :
-				ensureDoesNotExistInWorkspace(target);
-				ensureDoesNotExistInFileSystem(target);
+				removeFromWorkspace(target);
+				removeFromFileSystem(target);
 				if (addVerifier) {
 					verifier.reset();
 				}
 				break;
 			case S_FOLDER_TO_FILE :
 				createInWorkspace(target);
-				ensureDoesNotExistInFileSystem(target);
+				removeFromFileSystem(target);
 				createInFileSystem(target);
 				if (addVerifier) {
 					verifier.reset();
@@ -581,7 +581,7 @@ public class IResourceTest extends ResourceTest {
 				break;
 			case S_FILE_TO_FOLDER :
 				createInWorkspace(target);
-				ensureDoesNotExistInFileSystem(target);
+				removeFromFileSystem(target);
 				target.getLocation().toFile().mkdirs();
 				if (addVerifier) {
 					verifier.reset();
@@ -1059,7 +1059,7 @@ public class IResourceTest extends ResourceTest {
 
 	private IProjectDescription prepareDestProjDesc(IProject sourceProj, IProject destProj, IPath destLocation)
 			throws CoreException {
-		ensureDoesNotExistInWorkspace(destProj);
+		removeFromWorkspace(destProj);
 		IProjectDescription desc = sourceProj.getDescription();
 		desc.setName(destProj.getName());
 		desc.setLocation(destLocation);
@@ -1843,8 +1843,8 @@ public class IResourceTest extends ResourceTest {
 			assertEquals("5.3", projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
 
 			project.open(createTestMonitor());
-			ensureDoesNotExistInWorkspace(topFolder);
-			ensureDoesNotExistInWorkspace(topFile);
+			removeFromWorkspace(topFolder);
+			removeFromWorkspace(topFile);
 			createFileInFileSystem(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(fileLocation));
 			folderLocation.toFile().mkdirs();
 			topFolder.createLink(folderLocation, IResource.NONE, createTestMonitor());
@@ -1871,8 +1871,8 @@ public class IResourceTest extends ResourceTest {
 			project.open(createTestMonitor());
 			IPath variableFolderLocation = IPath.fromOSString(variableName).append("/VarFolderName");
 			IPath variableFileLocation = IPath.fromOSString(variableName).append("/VarFileName");
-			ensureDoesNotExistInWorkspace(topFolder);
-			ensureDoesNotExistInWorkspace(topFile);
+			removeFromWorkspace(topFolder);
+			removeFromWorkspace(topFile);
 			createFileInFileSystem(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(varMan.resolvePath(variableFileLocation)));
 			varMan.resolvePath(variableFolderLocation).toFile().mkdirs();
 			topFolder.createLink(variableFolderLocation, IResource.NONE, createTestMonitor());

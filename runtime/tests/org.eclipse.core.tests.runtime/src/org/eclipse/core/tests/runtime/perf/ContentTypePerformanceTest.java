@@ -14,17 +14,27 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.perf;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.eclipse.core.internal.content.*;
+import org.eclipse.core.internal.content.ContentTypeBuilder;
+import org.eclipse.core.internal.content.ContentTypeHandler;
+import org.eclipse.core.internal.content.Util;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.content.*;
+import org.eclipse.core.runtime.content.BinarySignatureDescriber;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.core.tests.harness.*;
+import org.eclipse.core.tests.harness.BundleTestingHelper;
+import org.eclipse.core.tests.harness.PerformanceTestRunner;
+import org.eclipse.core.tests.harness.TestRegistryChangeListener;
 import org.eclipse.core.tests.runtime.RuntimeTest;
 import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
 import org.eclipse.core.tests.session.PerformanceSessionTestSuite;

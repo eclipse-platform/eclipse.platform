@@ -70,7 +70,7 @@ public class IFolderTest extends ResourceTest {
 		IFolder after = project.getFolder("NewFolder");
 		createInWorkspace(project);
 		createInWorkspace(before);
-		ensureDoesNotExistInFileSystem(before);
+		removeFromFileSystem(before);
 
 		// should fail because 'before' does not exist in the filesystem
 		assertThrows(CoreException.class, () -> before.copy(after.getFullPath(), IResource.FORCE, createTestMonitor()));
@@ -84,7 +84,7 @@ public class IFolderTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder derived = project.getFolder("derived");
 		createInWorkspace(project);
-		ensureDoesNotExistInWorkspace(derived);
+		removeFromWorkspace(derived);
 
 		derived.create(IResource.DERIVED, true, createTestMonitor());
 		assertTrue("1.0", derived.isDerived());
@@ -114,7 +114,7 @@ public class IFolderTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder teamPrivate = project.getFolder("teamPrivate");
 		createInWorkspace(project);
-		ensureDoesNotExistInWorkspace(teamPrivate);
+		removeFromWorkspace(teamPrivate);
 
 		teamPrivate.create(IResource.TEAM_PRIVATE | IResource.DERIVED, true, createTestMonitor());
 		assertTrue("1.0", teamPrivate.isTeamPrivateMember());
@@ -130,7 +130,7 @@ public class IFolderTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder teamPrivate = project.getFolder("teamPrivate");
 		createInWorkspace(project);
-		ensureDoesNotExistInWorkspace(teamPrivate);
+		removeFromWorkspace(teamPrivate);
 
 		teamPrivate.create(IResource.TEAM_PRIVATE, true, createTestMonitor());
 		assertTrue("1.0", teamPrivate.isTeamPrivateMember());
@@ -318,7 +318,7 @@ public class IFolderTest extends ResourceTest {
 		String value = "this is a test property value";
 		QualifiedName name = new QualifiedName("itp-test", "testProperty");
 		// getting/setting persistent properties on non-existent resources should throw an exception
-		ensureDoesNotExistInWorkspace(target);
+		removeFromWorkspace(target);
 		assertThrows(CoreException.class, () -> target.getPersistentProperty(name));
 		assertThrows(CoreException.class, () -> target.setPersistentProperty(name, value));
 

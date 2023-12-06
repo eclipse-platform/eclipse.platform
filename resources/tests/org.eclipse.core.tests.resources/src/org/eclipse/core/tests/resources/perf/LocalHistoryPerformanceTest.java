@@ -146,7 +146,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 			@Override
 			protected void tearDown() {
 				try {
-					ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
+					removeFromWorkspace(getWorkspace().getRoot());
 					IHistoryStore store = ((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore();
 					// Remove all the entries from the history store index.  Note that
 					// this does not cause the history store states to be removed.
@@ -173,7 +173,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 	private void testClearHistory(final int filesPerFolder, final int statesPerFile) throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		final IFolder base = project.getFolder("base");
-		ensureDoesNotExistInWorkspace(base);
+		removeFromWorkspace(base);
 		new PerformanceTestRunner() {
 			private IWorkspaceDescription original;
 
@@ -184,7 +184,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 				cleanHistory();
 				// create our own garbage
 				createTree(base, filesPerFolder, statesPerFile);
-				ensureDoesNotExistInWorkspace(base);
+				removeFromWorkspace(base);
 			}
 
 			@Override
@@ -254,7 +254,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		IFolder base = project.getFolder("base");
 		createTree(base, filesPerFolder, statesPerFile);
-		ensureDoesNotExistInWorkspace(base);
+		removeFromWorkspace(base);
 		// need a final reference so the inner class can see it
 		final IProject tmpProject = project;
 		new PerformanceTestRunner() {
@@ -303,7 +303,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 	private void testHistoryCleanUp(final int filesPerFolder, final int statesPerFile) throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		final IFolder base = project.getFolder("base");
-		ensureDoesNotExistInWorkspace(base);
+		removeFromWorkspace(base);
 		new PerformanceTestRunner() {
 			private IWorkspaceDescription original;
 
@@ -314,7 +314,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 				cleanHistory();
 				// create our own garbage
 				createTree(base, filesPerFolder, statesPerFile);
-				ensureDoesNotExistInWorkspace(base);
+				removeFromWorkspace(base);
 			}
 
 			@Override

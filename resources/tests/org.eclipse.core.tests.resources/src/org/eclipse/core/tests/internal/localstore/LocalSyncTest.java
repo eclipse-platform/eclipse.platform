@@ -119,10 +119,10 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 
 		// make some modifications in the local resources
 		// index stays the same
-		ensureDoesNotExistInFileSystem(toc);
+		removeFromFileSystem(toc);
 		//
-		ensureDoesNotExistInFileSystem(file);
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromFileSystem(file);
+		removeFromFileSystem(folder);
 
 		Thread.sleep(5000);
 

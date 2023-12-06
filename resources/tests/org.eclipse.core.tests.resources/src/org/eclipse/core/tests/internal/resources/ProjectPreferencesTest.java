@@ -397,7 +397,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		IProject project = getProject(createUniqueString());
 		IProject destProject = getProject(createUniqueString());
 		createInWorkspace(project);
-		ensureDoesNotExistInWorkspace(destProject);
+		removeFromWorkspace(destProject);
 		IScopeContext context = new ProjectScope(project);
 		String qualifier = createUniqueString();
 		Preferences node = context.getNode(qualifier);
@@ -533,7 +533,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		assertTrue("1.2", getFileInWorkspace(project, ResourcesPlugin.PI_RESOURCES).exists());
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		assertEquals("1.3", value, node.get(key, null));
-		ensureDoesNotExistInWorkspace(project.getFolder(DIR_NAME));
+		removeFromWorkspace(project.getFolder(DIR_NAME));
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		assertNull("2.0", node.get(key, null));
 	}

@@ -42,7 +42,7 @@ public class Bug_126104 extends ResourceTest {
 		assertTrue("1.0", destination.exists());
 
 		//try the same thing with move
-		ensureDoesNotExistInWorkspace(destination);
+		removeFromWorkspace(destination);
 		location.delete(EFS.NONE, createTestMonitor());
 		source.move(destination.getFullPath(), IResource.NONE, createTestMonitor());
 		assertTrue("3.0", !source.exists());

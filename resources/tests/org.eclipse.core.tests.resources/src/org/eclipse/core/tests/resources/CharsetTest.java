@@ -197,7 +197,7 @@ public class CharsetTest extends ResourceTest {
 				assertEquals("2.0", "BAR", file.getCharset());
 			}, null);
 		} finally {
-			ensureDoesNotExistInWorkspace(project);
+			removeFromWorkspace(project);
 		}
 	}
 
@@ -217,7 +217,7 @@ public class CharsetTest extends ResourceTest {
 			assertExistsInWorkspace(file2);
 			assertEquals("The file's charset was correctly copied while coying the file", "BAR", file2.getCharset());
 		} finally {
-			ensureDoesNotExistInWorkspace(project);
+			removeFromWorkspace(project);
 		}
 	}
 
@@ -237,7 +237,7 @@ public class CharsetTest extends ResourceTest {
 			final IFile copiedFile = project.getFile("file2.txt");
 			assertEquals("File with explicitly set charset keeps charset", copiedFile.getCharset(true), "FOO");
 		} finally {
-			ensureDoesNotExistInWorkspace(project);
+			removeFromWorkspace(project);
 		}
 	}
 
@@ -381,7 +381,7 @@ public class CharsetTest extends ResourceTest {
 		IContentDescription description = file.getContentDescription();
 		assertNotNull("1.0", description);
 		assertEquals("1.1", text, description.getContentType());
-		ensureDoesNotExistInWorkspace(file);
+		removeFromWorkspace(file);
 		CoreException e = assertThrows(CoreException.class, file::getContentDescription);
 		// Ok, the resource does not exist.
 		assertEquals("1.3", IResourceStatus.RESOURCE_NOT_FOUND, e.getStatus().getCode());
@@ -769,7 +769,7 @@ public class CharsetTest extends ResourceTest {
 		assertEquals("1.0", "ISO-8859-1", file.getCharset());
 
 		//delete and recreate the file with different contents
-		ensureDoesNotExistInWorkspace(file);
+		removeFromWorkspace(file);
 		createInWorkspace(file, SAMPLE_XML_DEFAULT_ENCODING);
 		assertEquals("2.0", "UTF-8", file.getCharset());
 	}

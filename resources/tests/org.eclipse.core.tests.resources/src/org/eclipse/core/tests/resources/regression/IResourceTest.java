@@ -359,7 +359,7 @@ public class IResourceTest extends ResourceTest {
 		attributes.setReadOnly(false);
 		file.setResourceAttributes(attributes);
 		assertTrue("4.0", !file.isReadOnly());
-		ensureDoesNotExistInWorkspace(new IResource[] {project, file});
+		removeFromWorkspace(new IResource[] {project, file});
 	}
 
 	public void testDelete_Bug8754() throws Exception {
@@ -383,7 +383,7 @@ public class IResourceTest extends ResourceTest {
 		}
 		assertEquals("1.2", IResourceStatus.OUT_OF_SYNC_LOCAL, status.getCode());
 		//cleanup
-		ensureDoesNotExistInWorkspace(new IResource[] {project, file});
+		removeFromWorkspace(new IResource[] {project, file});
 	}
 
 	public void testEquals_1FUOU25() {

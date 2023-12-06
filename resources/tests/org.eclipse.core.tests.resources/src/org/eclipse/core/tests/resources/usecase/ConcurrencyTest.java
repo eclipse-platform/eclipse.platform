@@ -66,6 +66,6 @@ public class ConcurrencyTest extends ResourceTest {
 		assertTrue("2.2", op2.getStatus().isOK());
 
 		/* remove trash */
-		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
+		removeFromWorkspace(getWorkspace().getRoot());
 	}
 }

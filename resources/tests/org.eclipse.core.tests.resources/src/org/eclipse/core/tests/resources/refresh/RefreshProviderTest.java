@@ -82,7 +82,7 @@ public class RefreshProviderTest extends ResourceTest {
 		link.delete(IResource.FORCE, createTestMonitor());
 		joinAutoRefreshJobs();
 		assertEquals("1.2", 1, provider.getMonitoredResources().length);
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 		joinAutoRefreshJobs();
 		assertEquals("1.3", 0, provider.getMonitoredResources().length);
 		// check provider for other errors
@@ -108,7 +108,7 @@ public class RefreshProviderTest extends ResourceTest {
 		project.open(createTestMonitor());
 		joinAutoRefreshJobs();
 		assertEquals("1.2", 1, provider.getMonitoredResources().length);
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 		joinAutoRefreshJobs();
 		assertEquals("1.3", 0, provider.getMonitoredResources().length);
 		// check provider for other errors

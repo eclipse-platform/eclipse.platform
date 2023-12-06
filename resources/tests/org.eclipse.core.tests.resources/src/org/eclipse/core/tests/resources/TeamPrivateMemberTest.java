@@ -267,7 +267,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFile destFile = destProject.getFile(file.getName());
 		IFile destSubFile = destFolder.getFile(subFile.getName());
 		IResource[] destResources = { destProject, destFolder, destFile, destSubFile };
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 
 		// set a folder to be team private
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
@@ -278,7 +278,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		assertExistsInWorkspace(destResources);
 
 		// Do it again and but just copy the folder
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 		createInWorkspace(resources);
 		createInWorkspace(destProject);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
@@ -288,7 +288,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 
 		// set all the resources to be team private
 		// copy the project
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 		createInWorkspace(resources);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		project.copy(destProject.getFullPath(), flags, createTestMonitor());
@@ -296,7 +296,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		assertExistsInWorkspace(destResources);
 
 		// do it again but only copy the folder
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 		createInWorkspace(resources);
 		createInWorkspace(destProject);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
@@ -320,7 +320,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		IFile destFile = destProject.getFile(file.getName());
 		IFile destSubFile = destFolder.getFile(subFile.getName());
 		IResource[] destResources = { destProject, destFolder, destFile, destSubFile };
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 
 		// set a folder to be team private
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
@@ -331,7 +331,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		assertExistsInWorkspace(destResources);
 
 		// Do it again and but just move the folder
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 		createInWorkspace(resources);
 		createInWorkspace(destProject);
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
@@ -341,7 +341,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 
 		// set all the resources to be team private
 		// move the project
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 		createInWorkspace(resources);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		project.move(destProject.getFullPath(), flags, createTestMonitor());
@@ -349,7 +349,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		assertExistsInWorkspace(destResources);
 
 		// do it again but only move the folder
-		ensureDoesNotExistInWorkspace(destResources);
+		removeFromWorkspace(destResources);
 		createInWorkspace(resources);
 		createInWorkspace(destProject);
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
@@ -437,7 +437,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 			getWorkspace().run(body, createTestMonitor());
 			waitForBuild();
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
-			ensureDoesNotExistInWorkspace(resources);
+			removeFromWorkspace(resources);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
@@ -455,7 +455,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
 			getWorkspace().run(body, createTestMonitor());
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
-			ensureDoesNotExistInWorkspace(resources);
+			removeFromWorkspace(resources);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
@@ -473,7 +473,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 			listener.addExpectedChange(description, IResourceDelta.ADDED, IResource.NONE);
 			getWorkspace().run(body, createTestMonitor());
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
-			ensureDoesNotExistInWorkspace(resources);
+			removeFromWorkspace(resources);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}

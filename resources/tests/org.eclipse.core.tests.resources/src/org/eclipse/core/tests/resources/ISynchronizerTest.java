@@ -757,6 +757,6 @@ public class ISynchronizerTest extends ResourceTest {
 
 		// clean-up
 		synchronizer.remove(partner);
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 	}
 }
