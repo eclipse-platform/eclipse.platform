@@ -20,6 +20,7 @@ import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -298,7 +299,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("3.5", 0, states.length);
 	}
 
-	public void testBug28238() throws CoreException {
+	public void testBug28238() throws Exception {
 		// paths to mimic files in the workspace
 		IProject project = getWorkspace().getRoot().getProject("myproject28238");
 		IFolder folder = project.getFolder("myfolder");
@@ -1070,8 +1071,8 @@ public class HistoryStoreTest extends ResourceTest {
 			fileInfo.setLastModified(myLong);
 			historyStore.addState(file.getFullPath(), ((Resource) file).getStore(), fileInfo, true);
 			contents = "This file has some contents in testGetContents.";
-			try (InputStream is = new ByteArrayInputStream(contents.getBytes())) {
-				createFileInFileSystem(file.getLocation(), is);
+			try (FileOutputStream output = new FileOutputStream(file.getLocation().toFile())) {
+				getContents(contents).transferTo(output);
 			}
 			file.refreshLocal(IResource.DEPTH_INFINITE, null);
 		}
@@ -1082,8 +1083,8 @@ public class HistoryStoreTest extends ResourceTest {
 			fileInfo.setLastModified(myLong);
 			historyStore.addState(secondValidFile.getFullPath(), ((Resource) secondValidFile).getStore(), fileInfo, true);
 			contents = "A file with some other contents in testGetContents.";
-			try (InputStream is = new ByteArrayInputStream(contents.getBytes())) {
-				createFileInFileSystem(secondValidFile.getLocation(), is);
+			try (FileOutputStream output = new FileOutputStream(secondValidFile.getLocation().toFile())) {
+				getContents(contents).transferTo(output);
 			}
 			secondValidFile.refreshLocal(IResource.DEPTH_INFINITE, null);
 		}

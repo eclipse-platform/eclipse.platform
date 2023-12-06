@@ -34,7 +34,7 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  * Test for bug 323833
  */
 public class TestBug323833 extends WorkspaceSessionTest {
-	public void test1() throws CoreException {
+	public void test1() throws Exception {
 		if (!Platform.getOS().equals(Platform.OS_MACOSX)) {
 			return;
 		}

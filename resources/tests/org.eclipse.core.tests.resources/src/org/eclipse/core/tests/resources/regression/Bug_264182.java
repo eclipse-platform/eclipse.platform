@@ -54,7 +54,7 @@ public class Bug_264182 extends ResourceTest {
 		super.tearDown();
 	}
 
-	public void testBug() throws CoreException {
+	public void testBug() throws Exception {
 		// create a linked resource
 		final IFile file = project.getFile(createUniqueString());
 		IFileStore tempFileStore = getTempStore();

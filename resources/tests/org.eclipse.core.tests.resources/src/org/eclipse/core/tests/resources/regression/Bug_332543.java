@@ -94,7 +94,7 @@ public class Bug_332543 extends ResourceTest {
 		});
 	}
 
-	private void testCancel(Function<ByteArrayInputStream, InputStream> wrap) throws CoreException {
+	private void testCancel(Function<ByteArrayInputStream, InputStream> wrap) throws Exception {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 
 		String proj_name = createUniqueString();
@@ -109,7 +109,7 @@ public class Bug_332543 extends ResourceTest {
 
 		// Create a file in the project
 		IFile file = project.getFile("foo.txt");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 
 		// Now open the project
 		project.open(createTestMonitor());

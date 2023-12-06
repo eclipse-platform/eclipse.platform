@@ -148,7 +148,7 @@ public class IFileTest extends ResourceTest {
 	 * Returns some interesting files.  These files are created
 	 * during setup.
 	 */
-	public IFile[] interestingFiles() throws CoreException {
+	public IFile[] interestingFiles() throws Exception {
 		refreshFiles();
 		IFile[] result = new IFile[allFiles.size()];
 		allFiles.toArray(result);
@@ -213,12 +213,12 @@ public class IFileTest extends ResourceTest {
 	/**
 	 * Makes sure file requirements are met (out of sync, workspace only, etc).
 	 */
-	public void refreshFile(IFile file) throws CoreException {
+	public void refreshFile(IFile file) throws CoreException, IOException {
 		if (file.getName().equals(LOCAL_ONLY)) {
 			ensureDoesNotExistInWorkspace(file);
 			//project must exist to access file system store.
 			if (file.getProject().exists()) {
-				ensureExistsInFileSystem(file);
+				createInFileSystem(file);
 			}
 			return;
 		}
@@ -249,7 +249,7 @@ public class IFileTest extends ResourceTest {
 	/**
 	 * Makes sure file requirements are met (out of sync, workspace only, etc).
 	 */
-	public void refreshFiles() throws CoreException {
+	public void refreshFiles() throws CoreException, IOException {
 		for (IFile file : allFiles) {
 			refreshFile(file);
 		}
@@ -279,7 +279,7 @@ public class IFileTest extends ResourceTest {
 	}
 
 	@Test
-	public void testAppendContents2() throws CoreException {
+	public void testAppendContents2() throws Exception {
 		IFile file = projects[0].getFile("file1");
 		ensureDoesNotExistInWorkspace(file);
 
@@ -293,7 +293,7 @@ public class IFileTest extends ResourceTest {
 		monitor.assertUsedUp();
 		assertTrue("1.0", !file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("1.1", !file.getLocation().toFile().exists());
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		assertTrue("1.2", !file.isLocal(IResource.DEPTH_ZERO));
 
 		monitor.prepare();
@@ -330,7 +330,7 @@ public class IFileTest extends ResourceTest {
 		monitor.assertUsedUp();
 		assertTrue("3.0", !file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("3.1", !file.getLocation().toFile().exists());
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		assertTrue("3.2", !file.isLocal(IResource.DEPTH_ZERO));
 
 		monitor.prepare();
@@ -366,7 +366,7 @@ public class IFileTest extends ResourceTest {
 		Object[][] inputs = new Object[][] {interestingFiles(), interestingStreams(), TRUE_AND_FALSE, PROGRESS_MONITORS};
 		new TestPerformer("IFileTest.testCreate") {
 			@Override
-			public void cleanUp(Object[] args, int count) throws CoreException {
+			public void cleanUp(Object[] args, int count) throws Exception {
 				IFile file = (IFile) args[0];
 				refreshFile(file);
 			}
@@ -724,7 +724,7 @@ public class IFileTest extends ResourceTest {
 		Object[][] inputs = new Object[][] {interestingFiles()};
 		new TestPerformer("IFileTest.testGetContents") {
 			@Override
-			public void cleanUp(Object[] args, int count) throws CoreException {
+			public void cleanUp(Object[] args, int count) throws Exception {
 				IFile file = (IFile) args[0];
 				refreshFile(file);
 			}
@@ -866,7 +866,7 @@ public class IFileTest extends ResourceTest {
 		Object[][] inputs = new Object[][] {interestingFiles(), interestingStreams(), TRUE_AND_FALSE, PROGRESS_MONITORS};
 		new TestPerformer("IFileTest.testSetContents1") {
 			@Override
-			public void cleanUp(Object[] args, int count) throws CoreException {
+			public void cleanUp(Object[] args, int count) throws Exception {
 				IFile file = (IFile) args[0];
 				refreshFile(file);
 			}

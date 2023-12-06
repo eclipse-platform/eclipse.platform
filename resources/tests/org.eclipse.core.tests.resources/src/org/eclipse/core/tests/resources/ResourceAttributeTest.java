@@ -246,7 +246,7 @@ public class ResourceAttributeTest extends ResourceTest {
 
 		// create the target file in the filesystem
 		IFile target = project.getFile("target");
-		ensureExistsInFileSystem(target);
+		createInFileSystem(target);
 
 		// create a link to the target file and add it to the workspace,
 		// the resource in the workspace should have symbolic link attribute set

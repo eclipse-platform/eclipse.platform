@@ -85,7 +85,7 @@ public class Bug_160251 extends ResourceTest {
 	/**
 	 * The destination directory exists, and contains an overlapping file. This should fail.
 	 */
-	public void testOccupiedDestination() throws CoreException {
+	public void testOccupiedDestination() throws Exception {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("Important.txt");
 		IFileStore destination = getTempStore();
@@ -93,7 +93,7 @@ public class Bug_160251 extends ResourceTest {
 		ensureExistsInWorkspace(source);
 		ensureExistsInWorkspace(sourceFile);
 		destination.mkdir(EFS.NONE, createTestMonitor());
-		createFileInFileSystem(destinationFile, getRandomContents());
+		createFileInFileSystem(destinationFile);
 
 		//move the project (should fail)
 		IProjectDescription description = source.getDescription();

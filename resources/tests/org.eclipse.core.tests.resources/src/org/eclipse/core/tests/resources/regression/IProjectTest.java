@@ -139,7 +139,7 @@ public class IProjectTest extends AbstractBuilderTest {
 	 * Create a project with resources already existing on disk and ensure
 	 * that the resources are automatically discovered and brought into the workspace.
 	 */
-	public void testBug78711() throws CoreException {
+	public void testBug78711() throws Exception {
 		String name = createUniqueString();
 		IProject project = getWorkspace().getRoot().getProject(name);
 		IFolder folder = project.getFolder("folder");
@@ -168,7 +168,7 @@ public class IProjectTest extends AbstractBuilderTest {
 	/**
 	 * 1GDW1RX: ITPCORE:ALL - IResource.delete() without force not working correctly
 	 */
-	public void testDelete_1GDW1RX() throws CoreException {
+	public void testDelete_1GDW1RX() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
@@ -178,10 +178,10 @@ public class IProjectTest extends AbstractBuilderTest {
 		ensureExistsInWorkspace(resources);
 
 		IFolder folder = project.getFolder("folder");
-		ensureExistsInFileSystem(folder);
+		createInFileSystem(folder);
 
 		IFile file = folder.getFile("MyFile");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 
 		assertThrows(CoreException.class, () -> project.delete(false, createTestMonitor()));
 
@@ -189,7 +189,7 @@ public class IProjectTest extends AbstractBuilderTest {
 		project.delete(true, true, createTestMonitor());
 	}
 
-	public void testRefreshDotProject() throws CoreException {
+	public void testRefreshDotProject() throws Exception {
 		String name = createUniqueString();
 		IProject project = getWorkspace().getRoot().getProject(name);
 		IFile dotProject = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);

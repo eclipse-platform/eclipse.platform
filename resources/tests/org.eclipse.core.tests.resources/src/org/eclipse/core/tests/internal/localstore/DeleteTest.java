@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.IPath;
 
 public class DeleteTest extends LocalStoreTest {
 
-	public void testDeleteOpenProject() throws CoreException {
+	public void testDeleteOpenProject() throws Exception {
 		IProject project = projects[0];
 		IFolder folder = project.getFolder("folder");
 		IFile file = folder.getFile("file");
@@ -142,8 +142,8 @@ public class DeleteTest extends LocalStoreTest {
 
 		/* initialize common objects */
 		ensureExistsInWorkspace(project);
-		ensureExistsInFileSystem(folder);
-		ensureExistsInFileSystem(file);
+		createInFileSystem(folder);
+		createInFileSystem(file);
 		folderPath = folder.getLocation();
 		filePath = file.getLocation();
 		projectLocation = project.getLocation();
@@ -287,7 +287,7 @@ public class DeleteTest extends LocalStoreTest {
 		IFile fileUnsync = folder.getFile("fileUnsync");
 		ensureExistsInWorkspace(fileUnsync);
 		IFile fileCreated = folder.getFile("fileCreated");
-		ensureExistsInFileSystem(fileCreated); // create only in file system
+		createInFileSystem(fileCreated); // create only in file system
 		IFolder subfolderSync = folder.getFolder("subfolderSync");
 		ensureExistsInWorkspace(subfolderSync);
 		IFolder deletedfolderSync = subfolderSync.getFolder("deletedfolderSync");
@@ -327,7 +327,7 @@ public class DeleteTest extends LocalStoreTest {
 		ensureExistsInWorkspace(fileUnsync);
 		//
 		fileCreated = recreatedFolder.getFile("fileCreated");
-		ensureExistsInFileSystem(fileCreated); // create only in file system
+		createInFileSystem(fileCreated); // create only in file system
 		//
 		subfolderSync = recreatedFolder.getFolder("subfolderSync");
 		ensureExistsInWorkspace(subfolderSync);

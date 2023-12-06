@@ -71,7 +71,7 @@ public class IFolderTest extends ResourceTest {
 	 * Bug 11510 [resources] Non-local folders do not become local when directory is created.
 	 */
 	@Test
-	public void testBug11510() throws CoreException {
+	public void testBug11510() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("TestProject");
 		IFolder folder = project.getFolder("fold1");
@@ -87,7 +87,7 @@ public class IFolderTest extends ResourceTest {
 		assertTrue("1.1", !subFile.isLocal(IResource.DEPTH_ZERO));
 
 		// now create the resources in the local file system and refresh
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertTrue("2.1", file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("2.2", !folder.isLocal(IResource.DEPTH_ZERO));
@@ -99,7 +99,7 @@ public class IFolderTest extends ResourceTest {
 		assertTrue("3.2", file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("3.3", !subFile.isLocal(IResource.DEPTH_ZERO));
 
-		ensureExistsInFileSystem(subFile);
+		createInFileSystem(subFile);
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertTrue("4.1", subFile.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("4.2", folder.isLocal(IResource.DEPTH_ZERO));

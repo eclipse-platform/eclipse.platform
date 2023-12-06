@@ -31,6 +31,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -223,7 +224,7 @@ public class IResourceTest extends ResourceTest {
 		return result;
 	}
 
-	private IResource[] buildSampleResources(IContainer root) throws CoreException {
+	private IResource[] buildSampleResources(IContainer root) throws Exception {
 		// do not change the example resources unless you change references to
 		// specific indices in setUp()
 		IResource[] result = buildResources(root, new String[] {"1/", "1/1/", "1/1/1/", "1/1/1/1", "1/1/2/", "1/1/2/1/", "1/1/2/2/", "1/1/2/3/", "1/2/", "1/2/1", "1/2/2", "1/2/3/", "1/2/3/1", "1/2/3/2", "1/2/3/3", "1/2/3/4", "2", "2"});
@@ -243,7 +244,7 @@ public class IResourceTest extends ResourceTest {
 		unsynchronized = buildResources(root, new String[] {"1/1/2/2/1"});
 		ensureDoesNotExistInWorkspace(unsynchronized);
 		for (IResource resource : unsynchronized) {
-			ensureExistsInFileSystem(resource);
+			createInFileSystem(resource);
 		}
 		unsynchronizedResources.add(unsynchronized[0]);
 		return result;
@@ -428,7 +429,7 @@ public class IResourceTest extends ResourceTest {
 		initializeProjects();
 	}
 
-	private void initializeProjects() throws CoreException {
+	private void initializeProjects() throws Exception {
 		nonExistingResources.clear();
 		// closed project
 		IProject closedProject = getWorkspace().getRoot().getProject("ClosedProject");
@@ -495,7 +496,7 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * Sets up the workspace and file system for this test. */
 	protected void setupBeforeState(IResource receiver, IResource target, int state, int depth, boolean addVerifier)
-			throws OperationCanceledException, InterruptedException, CoreException {
+			throws OperationCanceledException, InterruptedException, CoreException, IOException {
 		// Wait for any outstanding refresh to finish
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
@@ -526,7 +527,7 @@ public class IResourceTest extends ResourceTest {
 				break;
 			case S_FILESYSTEM_ONLY :
 				ensureDoesNotExistInWorkspace(target);
-				ensureExistsInFileSystem(target);
+				createInFileSystem(target);
 				if (addVerifier) {
 					verifier.reset();
 					// we only get a delta if the receiver of refreshLocal
@@ -566,7 +567,7 @@ public class IResourceTest extends ResourceTest {
 			case S_FOLDER_TO_FILE :
 				ensureExistsInWorkspace(target);
 				ensureDoesNotExistInFileSystem(target);
-				ensureExistsInFileSystem(target);
+				createInFileSystem(target);
 				if (addVerifier) {
 					verifier.reset();
 					// we only get a delta if the receiver of refreshLocal
@@ -1775,7 +1776,7 @@ public class IResourceTest extends ResourceTest {
 	 * Performs black box testing of the following method: IPath
 	 * getRawLocation()
 	 */
-	public void testGetRawLocation() throws CoreException {
+	public void testGetRawLocation() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder topFolder = project.getFolder("TopFolder");
 		IFile topFile = project.getFile("TopFile");
@@ -2282,7 +2283,7 @@ public class IResourceTest extends ResourceTest {
 		}.performTest(inputs);
 	}
 
-	public void testRefreshLocalWithDepth() throws CoreException {
+	public void testRefreshLocalWithDepth() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder folder = project.getFolder("Folder");
 		project.create(createTestMonitor());
@@ -2292,7 +2293,7 @@ public class IResourceTest extends ResourceTest {
 		String[] hierarchy = {"Folder/", "Folder/Folder/", "Folder/Folder/Folder/", "Folder/Folder/Folder/Folder/"};
 		IResource[] resources = buildResources(folder, hierarchy);
 		for (IResource resource : resources) {
-			ensureExistsInFileSystem(resource);
+			createInFileSystem(resource);
 		}
 		assertDoesNotExistInWorkspace(resources);
 
@@ -2304,7 +2305,7 @@ public class IResourceTest extends ResourceTest {
 
 	/**
 	 * This method tests the IResource.refreshLocal() operation */
-	public void testRefreshWithMissingParent() throws CoreException {
+	public void testRefreshWithMissingParent() throws Exception {
 		/**
 		 * Add a folder and file to the file system. Call refreshLocal on the
 		 * file, when neither of them exist in the workspace.
@@ -2316,7 +2317,7 @@ public class IResourceTest extends ResourceTest {
 		IFolder folder = project1.getFolder("Folder");
 		IFile file = folder.getFile("File");
 
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 
 		file.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 	}

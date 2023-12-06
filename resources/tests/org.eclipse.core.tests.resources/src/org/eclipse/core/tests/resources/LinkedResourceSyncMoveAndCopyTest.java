@@ -87,7 +87,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		//		}
 	}
 
-	public void testFileLinkedToNonExistent_Deep() throws CoreException {
+	public void testFileLinkedToNonExistent_Deep() throws Exception {
 		IFile fileLink = existingProject.getFile(createUniqueString());
 		IPath fileLocation = getRandomLocation();
 		fileLink.createLink(fileLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
@@ -115,7 +115,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(fileLink, IResource.NONE, true);
 	}
 
-	public void testFileLinkedToNonExistent_Shallow() throws CoreException {
+	public void testFileLinkedToNonExistent_Shallow() throws Exception {
 		IFile fileLink = existingProject.getFile(createUniqueString());
 		IPath fileLocation = getRandomLocation();
 		fileLink.createLink(fileLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
@@ -230,7 +230,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		assertTrue("6.0", linkedFile.exists());
 	}
 
-	public void testFolderWithFileLinkedToNonExistent_Deep() throws CoreException {
+	public void testFolderWithFileLinkedToNonExistent_Deep() throws Exception {
 		IFolder folder = existingProject.getFolder(createUniqueString());
 		ensureExistsInWorkspace(folder);
 
@@ -254,7 +254,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(folder, IResource.NONE, true);
 	}
 
-	public void testFolderWithFileLinkedToNonExistent_Shallow() throws CoreException {
+	public void testFolderWithFileLinkedToNonExistent_Shallow() throws Exception {
 		IFolder folder = existingProject.getFolder(createUniqueString());
 		ensureExistsInWorkspace(folder);
 

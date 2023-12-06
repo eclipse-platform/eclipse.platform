@@ -550,7 +550,7 @@ public class IWorkspaceTest extends ResourceTest {
 	/**
 	 * Another test method for IWorkspace.copy().  See also testCopy
 	 */
-	public void testMultiCopy() throws CoreException {
+	public void testMultiCopy() throws Exception {
 		/* create common objects */
 		IResource[] resources = buildResourceHierarchy();
 		IProject project = (IProject) resources[1];
@@ -558,16 +558,16 @@ public class IWorkspaceTest extends ResourceTest {
 
 		/* create folder and file */
 		ensureExistsInWorkspace(folder);
-		ensureExistsInFileSystem(folder);
+		createInFileSystem(folder);
 		IFile file1 = project.getFile("file.txt");
 		ensureExistsInWorkspace(file1);
-		ensureExistsInFileSystem(file1);
+		createInFileSystem(file1);
 		IFile anotherFile = project.getFile("anotherFile.txt");
 		ensureExistsInWorkspace(anotherFile);
-		ensureExistsInFileSystem(anotherFile);
+		createInFileSystem(anotherFile);
 		IFile oneMoreFile = project.getFile("oneMoreFile.txt");
 		ensureExistsInWorkspace(oneMoreFile);
-		ensureExistsInFileSystem(oneMoreFile);
+		createInFileSystem(oneMoreFile);
 
 		/* normal case */
 		resources = new IResource[] {file1, anotherFile, oneMoreFile};

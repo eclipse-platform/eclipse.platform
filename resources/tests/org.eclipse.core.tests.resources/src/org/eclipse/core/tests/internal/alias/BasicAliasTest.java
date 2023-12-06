@@ -258,7 +258,7 @@ public class BasicAliasTest extends ResourceTest {
 	 * used in the locations map of AliasManager.
 	 */
 	@Test
-	public void testBug198571() throws CoreException {
+	public void testBug198571() throws Exception {
 		Assume.assumeTrue(OS.isWindows());
 
 		/* look for the adequate environment */
@@ -292,7 +292,7 @@ public class BasicAliasTest extends ResourceTest {
 
 		// new folder in one of the projects
 		IFolder folder = testProject2.getFolder("NewFolder");
-		ensureExistsInFileSystem(folder);
+		createInFileSystem(folder);
 
 		testProject2.refreshLocal(IResource.DEPTH_INFINITE, null);
 		IResource[] resources = aliasManager.computeAliases(folder, ((Folder) folder).getStore());
@@ -429,7 +429,7 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	@Test
-	public void testBug258987() throws CoreException {
+	public void testBug258987() throws Exception {
 		// Create the directory to which you will link. The directory needs a single file.
 		IFileStore dirStore = getTempStore();
 		dirStore.mkdir(EFS.NONE, createTestMonitor());
@@ -667,7 +667,7 @@ public class BasicAliasTest extends ResourceTest {
 	}
 
 	@Test
-	public void testDeepLink() throws CoreException {
+	public void testDeepLink() throws Exception {
 		IFolder folder = pNoOverlap.getFolder("folder");
 		IFile folderChild = folder.getFile("Child.txt");
 		final IFolder linkParent = pLinked.getFolder("LinkParent");
@@ -708,7 +708,7 @@ public class BasicAliasTest extends ResourceTest {
 
 		// delete the project that contains the links
 		IFile fileInLinkedProject = pLinked.getFile("fileInLinkedProject.txt");
-		createFileInFileSystem(((Resource) fileInLinkedProject).getStore(), getRandomContents());
+		createFileInFileSystem(((Resource) fileInLinkedProject).getStore());
 		// failure expected here because it is out of sync
 		assertThrows(CoreException.class, () -> getWorkspace().getRoot().delete(IResource.NONE, createTestMonitor()));
 		waitForRefresh();
