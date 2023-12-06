@@ -564,7 +564,6 @@ public class LaunchConfigurationInfo {
 	 * @param mapKey the key for the element
 	 * @param map the map to fill the new element with
 	 * @return the new element
-	 *
 	 */
 	protected Element createMapElement(Document doc, String elementType, String mapKey, Map<String, String> map) {
 		Element mapElement = doc.createElement(elementType);

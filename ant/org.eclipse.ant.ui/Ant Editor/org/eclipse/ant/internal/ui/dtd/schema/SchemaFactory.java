@@ -234,7 +234,6 @@ public class SchemaFactory implements DeclHandler {
 	 * Scan an element name or a parenthesized sub-expression.
 	 * 
 	 * @return IModel
-	 * @throws SAXException
 	 */
 	private IModel scanElement() throws SAXException {
 		checkLen();

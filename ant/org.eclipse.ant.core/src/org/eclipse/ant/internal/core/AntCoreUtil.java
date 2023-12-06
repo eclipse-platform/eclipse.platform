@@ -138,9 +138,7 @@ public class AntCoreUtil {
 	 *            the names of the properties files to load from
 	 * @param base
 	 *            the base directory name
-	 * @param buildFileLocation
 	 * @return a list of {@link Properties} objects for each filename
-	 * @throws IOException
 	 */
 	public static List<Properties> loadPropertyFiles(List<String> fileNames, String base, String buildFileLocation) throws IOException {
 		ArrayList<Properties> allProperties = new ArrayList<>(fileNames.size());

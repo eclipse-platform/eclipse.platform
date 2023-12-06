@@ -77,9 +77,6 @@ public class TableRenderingContentProvider extends BasicDebugViewContentProvider
 		DebugPlugin.getDefault().addDebugEventListener(this);
 	}
 
-	/**
-	 * @param viewer
-	 */
 	public void setViewer(StructuredViewer viewer)
 	{
 		fViewer = viewer;
@@ -163,9 +160,6 @@ public class TableRenderingContentProvider extends BasicDebugViewContentProvider
 		}
 	}
 
-	/**
-	 * @throws DebugException
-	 */
 	public void loadContentForSimpleMemoryBlock() throws DebugException {
 		// get as much memory as the memory block can handle
 		fInput.setPreBuffer(0);
@@ -177,9 +171,6 @@ public class TableRenderingContentProvider extends BasicDebugViewContentProvider
 		getMemoryToFitTable(address, numLines, fInput.isUpdateDelta());
 	}
 
-	/**
-	 * @throws DebugException
-	 */
 	public void loadContentForExtendedMemoryBlock() throws DebugException {
 
 		// do not load if number of lines needed is < 0
@@ -292,10 +283,6 @@ public class TableRenderingContentProvider extends BasicDebugViewContentProvider
 
 	/**
 	 * Get memory to fit table
-	 * @param startingAddress
-	 * @param numberOfLines
-	 * @param updateDelta
-	 * @throws DebugException
 	 */
 	public void getMemoryToFitTable(BigInteger startingAddress, long numberOfLines, boolean updateDelta) throws DebugException
 	{
@@ -600,7 +587,6 @@ public class TableRenderingContentProvider extends BasicDebugViewContentProvider
 	}
 
 	/**
-	 * @param numberOfLines
 	 * @return an array of dummy MemoryByte
 	 */
 	private MemoryByte[] makeDummyContent(long numberOfLines) {
@@ -747,7 +733,6 @@ public class TableRenderingContentProvider extends BasicDebugViewContentProvider
 
 	/**
 	 * Calculate address size of the given address
-	 * @param address
 	 * @return size of address from the debuggee
 	 */
 	public int getAddressSize(BigInteger address) throws DebugException
@@ -801,7 +786,6 @@ public class TableRenderingContentProvider extends BasicDebugViewContentProvider
 
 	/**
 	 * Check if address is out of buffered range
-	 * @param address
 	 * @return true if address is out of bufferred range, false otherwise
 	 */
 	public boolean isAddressOutOfRange(BigInteger address)

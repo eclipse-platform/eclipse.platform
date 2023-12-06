@@ -27,7 +27,6 @@ import org.eclipse.ui.internal.cheatsheets.registry.CheatSheetRegistryReader;
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- *
  */
 public class CheatSheetCategoryBasedSelectionAction extends Action {
 
@@ -39,7 +38,6 @@ public class CheatSheetCategoryBasedSelectionAction extends Action {
 
 	/**
 	 * Constructor for CheatSheetCategoryBasedSelectionAction.
-	 * @param text
 	 */
 	public CheatSheetCategoryBasedSelectionAction(String text) {
 		super(text);
@@ -47,8 +45,6 @@ public class CheatSheetCategoryBasedSelectionAction extends Action {
 
 	/**
 	 * Constructor for CheatSheetCategoryBasedSelectionAction.
-	 * @param text
-	 * @param image
 	 */
 	public CheatSheetCategoryBasedSelectionAction(String text, ImageDescriptor image) {
 		super(text, image);

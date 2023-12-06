@@ -75,9 +75,6 @@ public class SelectFavoritesDialog extends AbstractDebugCheckboxSelectionDialog 
 
 	/**
 	 * Constructor
-	 * @param parentShell
-	 * @param history
-	 * @param favorites
 	 */
 	public SelectFavoritesDialog(Shell parentShell, LaunchHistory history, List<ILaunchConfiguration> favorites) {
 		super(parentShell);

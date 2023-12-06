@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Control;
  */
 /**
  * @author chanskw
- *
  */
 public class ErrorRendering extends AbstractMemoryRendering {
 
@@ -61,9 +60,6 @@ public class ErrorRendering extends AbstractMemoryRendering {
 	}
 
 
-	/**
-	 *
-	 */
 	private String getRenderingName() {
 
 		if (DebugUITools.getMemoryRenderingManager().getRenderingType(fRenderingId)!= null)

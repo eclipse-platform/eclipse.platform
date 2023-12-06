@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -17,13 +19,20 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.core.internal.resources.ProjectDescription;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.core.tests.resources.ResourceTest;
-
 
 /**
  * Test cases for symbolic links in projects.
@@ -55,48 +64,22 @@ public class Bug_185247_LinuxTests extends ResourceTest {
 		}
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		try {
-			for (IProject testProject : testProjects) {
-				testProject.delete(false, true, getMonitor());
-			}
-		} finally {
-			super.tearDown();
-		}
-	}
-
-	/**
-	 *
-	 */
 	public void test1_trivial() throws Exception {
 		runProjectTestCase();
 	}
 
-	/**
-	 *
-	 */
 	public void test2_mutual() throws Exception {
 		runProjectTestCase();
 	}
 
-	/**
-	 *
-	 */
 	public void test3_outside_tree() throws Exception {
 		runProjectTestCase();
 	}
 
-	/**
-	 *
-	 */
 	public void test5_transitive_mutual() throws Exception {
 		runProjectTestCase();
 	}
 
-	/**
-	 *
-	 */
 	public void test6_nonrecursive() throws Exception {
 		runProjectTestCase();
 	}
@@ -110,7 +93,7 @@ public class Bug_185247_LinuxTests extends ResourceTest {
 	private void importProjectAndRefresh(String projectName) throws Exception {
 		if (IS_LINUX) {
 			IProject project = importTestProject(projectName);
-			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		}
 	}
 
@@ -121,8 +104,8 @@ public class Bug_185247_LinuxTests extends ResourceTest {
 		projectDescription.setName(projectName);
 		String projectRoot = String.join(File.separator, testCasesLocation.toOSString(), "bug185247", projectName);
 		projectDescription.setLocationURI(URI.create(projectRoot));
-		testProject.create(projectDescription, getMonitor());
-		testProject.open(getMonitor());
+		testProject.create(projectDescription, createTestMonitor());
+		testProject.open(createTestMonitor());
 		assertTrue("expected project to be open: " + projectName, testProject.isAccessible());
 		return testProject;
 	}

@@ -15,6 +15,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -37,18 +40,6 @@ import org.eclipse.core.tests.harness.FussyProgressMonitor;
  * solution, project, folder and file.
  */
 public class WorkspaceTest extends ResourceTest {
-	/**
-	 * Returns a collection of string paths describing the standard
-	 * resource hierarchy for this test.  In the string forms, folders are
-	 * represented as having trailing separators ('/').  All other resources
-	 * are files.  It is generally assumed that this hierarchy will be
-	 * inserted under some solution and project structure.
-	 */
-	@Override
-	public String[] defineHierarchy() {
-		return new String[] {"/", "/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1", "/2/2", "/2/3", "/3/", "/3/1", "/3/2", "/3/3", "/4/", "/5"};
-	}
-
 	protected IProject getTestProject() {
 		return getWorkspace().getRoot().getProject("testProject");
 	}

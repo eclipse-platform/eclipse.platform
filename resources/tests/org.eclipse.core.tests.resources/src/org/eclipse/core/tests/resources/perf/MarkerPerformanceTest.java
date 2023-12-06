@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -96,11 +98,7 @@ public class MarkerPerformanceTest extends ResourceTest {
 			}
 		};
 
-		try {
-			getWorkspace().run(runnable, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		getWorkspace().run(runnable, null);
 		markers = createdMarkers;
 	}
 

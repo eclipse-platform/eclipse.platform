@@ -68,7 +68,6 @@ public class VariableContentProvider extends ElementContentProvider {
 	 * @param parent the parent IVariable
 	 * @param context the context the children will be presented in
 	 * @return an array of all children or an empty array if none
-	 * @throws CoreException
 	 */
 	protected Object[] getAllChildren(Object parent, IPresentationContext context) throws CoreException {
 		IVariable variable = (IVariable) parent;
@@ -106,8 +105,6 @@ public class VariableContentProvider extends ElementContentProvider {
 	/**
 	 * Returns any logical value for the raw value in the specified context
 	 *
-	 * @param value
-	 * @param context
 	 * @return logical value for the raw value
 	 */
 	protected IValue getLogicalValue(IValue value, IPresentationContext context) throws CoreException {
@@ -123,7 +120,6 @@ public class VariableContentProvider extends ElementContentProvider {
 	 * @param context the context in which children have been requested
 	 * @return children for the given value, creating array partitions if
 	 *         required
-	 * @throws CoreException
 	 */
 	protected Object[] getValueChildren(IDebugElement parent, IValue value, IPresentationContext context) throws CoreException {
 		if (value == null) {

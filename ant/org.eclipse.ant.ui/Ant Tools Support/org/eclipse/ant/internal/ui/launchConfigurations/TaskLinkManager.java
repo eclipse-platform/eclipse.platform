@@ -100,9 +100,6 @@ public class TaskLinkManager {
 	/**
 	 * A new line has been added to the given console. Adds any task hyperlink associated with the line, to the console. The new line may be stored to
 	 * process future incoming tasks hyperlinks.
-	 * 
-	 * @param console
-	 * @param newLine
 	 */
 	public static synchronized void processNewLine(IConsole console, IRegion newLine) {
 		AntLaunch launch = (AntLaunch) console.getProcess().getLaunch();
@@ -121,8 +118,6 @@ public class TaskLinkManager {
 
 	/**
 	 * Disposes any information stored for the given process.
-	 * 
-	 * @param process
 	 */
 	public static void dispose(IProcess process) {
 		AntLaunch launch = (AntLaunch) process.getLaunch();

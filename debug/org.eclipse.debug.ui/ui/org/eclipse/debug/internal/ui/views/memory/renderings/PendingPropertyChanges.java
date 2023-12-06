@@ -18,7 +18,6 @@ import java.math.BigInteger;
 /**
  * Stores changes in properties when the rendering is hidden.
  * These data will be used to sync up the rendering when it becomes visible again.
- *
  */
 public class PendingPropertyChanges
 {

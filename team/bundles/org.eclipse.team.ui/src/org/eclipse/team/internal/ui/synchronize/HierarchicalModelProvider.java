@@ -106,7 +106,6 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 	 * Invoked by the <code>buildModelObject</code> method to create
 	 * the childen of the given node. This method can be overriden
 	 * by subclasses but subclasses should inv
-	 * @param container
 	 * @return the diff elements
 	 */
 	protected IDiffElement[] createModelObjects(ISynchronizeModelElement container) {

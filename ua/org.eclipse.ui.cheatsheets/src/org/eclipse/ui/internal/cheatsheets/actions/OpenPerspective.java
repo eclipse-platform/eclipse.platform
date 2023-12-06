@@ -32,7 +32,6 @@ import org.eclipse.ui.internal.cheatsheets.Messages;
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- *
  */
 public class OpenPerspective extends Action implements ICheatSheetAction {
 

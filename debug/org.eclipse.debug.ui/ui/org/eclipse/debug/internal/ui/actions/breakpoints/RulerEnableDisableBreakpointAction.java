@@ -25,7 +25,6 @@ import org.eclipse.ui.texteditor.IUpdate;
 
 /**
  * @since 3.2
- *
  */
 public class RulerEnableDisableBreakpointAction extends RulerBreakpointAction implements IUpdate {
 

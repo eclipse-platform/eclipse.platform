@@ -26,9 +26,6 @@ import org.eclipse.debug.examples.core.pda.DebugCorePlugin;
  */
 public class ClockControl extends TimeControl {
 
-	/**
-	 * @param launch
-	 */
 	public ClockControl(MidiLaunch launch) {
 		super("Time" , launch); //$NON-NLS-1$
 	}

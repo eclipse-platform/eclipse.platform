@@ -43,9 +43,6 @@ public class GoToAddressDialog extends TrayDialog implements ModifyListener {
 	private Combo expressionInput;
 	private String expression;
 
-	/**
-	 * @param parentShell
-	 */
 	public GoToAddressDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);

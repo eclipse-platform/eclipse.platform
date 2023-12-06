@@ -29,9 +29,6 @@ public class CounterServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 *
-	 */
 	private static final String XHTML_1 = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<title>"; //$NON-NLS-1$
 	private static final String XHTML_2 = "</title>\n <style type = \"text/css\"> td { padding-right : 10px; }</style></head>\n<body>\n"; //$NON-NLS-1$
 	private static final String XHTML_3 = "</body>\n</html>"; //$NON-NLS-1$

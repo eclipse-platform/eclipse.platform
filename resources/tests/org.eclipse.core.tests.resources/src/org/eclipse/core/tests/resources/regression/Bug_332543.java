@@ -13,13 +13,27 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import java.io.*;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.junit.Assert.assertThrows;
+
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.function.Function;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileStore;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -83,7 +97,7 @@ public class Bug_332543 extends ResourceTest {
 	private void testCancel(Function<ByteArrayInputStream, InputStream> wrap) throws CoreException {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 
-		String proj_name = getUniqueString();
+		String proj_name = createUniqueString();
 		IPath proj_loc = root.getLocation().append(proj_name);
 		URI proj_uri = WrapperFileSystem.getWrappedURI(URIUtil.toURI(proj_loc));
 
@@ -91,34 +105,27 @@ public class Bug_332543 extends ResourceTest {
 		desc.setLocationURI(proj_uri);
 		// Create the project on the wrapped file system
 		IProject project = root.getProject(desc.getName());
-		project.create(desc, getMonitor());
+		project.create(desc, createTestMonitor());
 
 		// Create a file in the project
-		IFile f = project.getFile("foo.txt");
-		ensureExistsInFileSystem(f);
+		IFile file = project.getFile("foo.txt");
+		ensureExistsInFileSystem(file);
 
 		// Now open the project
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 
 		// Set our evil IOException on close() fs.
 		WrapperFileSystem.setCustomFileStore(IOErrOnCloseFileStore.class);
 
 		// Try #setContents on an existing file
-		try {
-			f.setContents(wrap.apply(new ByteArrayInputStream("Random".getBytes())), false, true, getMonitor());
-			fail("1.0");
-		} catch (CoreException e) {
-			// This is expected.
-		}
+		assertThrows(CoreException.class, () -> file.setContents(wrap.apply(new ByteArrayInputStream("Random".getBytes())),
+				false, true, createTestMonitor()));
 
 		// Try create on a non-existent file
-		f = project.getFile("foo1.txt");
-		try {
-			f.create(wrap.apply(new ByteArrayInputStream("Random".getBytes())), false, getMonitor());
-			fail("2.0");
-		} catch (CoreException e) {
-			// This is expected.
-		}
+		IFile nonExistentFile = project.getFile("foo1.txt");
+		assertThrows(CoreException.class,
+				() -> nonExistentFile.create(wrap.apply(new ByteArrayInputStream("Random".getBytes())), false,
+						createTestMonitor()));
 	}
 
 }

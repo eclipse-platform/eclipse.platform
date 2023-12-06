@@ -13,8 +13,24 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+import static org.junit.Assert.assertThrows;
+
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.internal.builders.AbstractBuilderTest;
 import org.eclipse.core.tests.resources.usecase.SignaledBuilder;
 
@@ -42,113 +58,78 @@ public class IProjectTest extends AbstractBuilderTest {
 			return true;
 		};
 		/* test */
-		try {
-			project.accept(renameVisitor);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.accept(renameVisitor);
 		// cleanup
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 	}
 
 	public void test_1G5I6PV() throws CoreException {
 		/* common objects */
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		/* test */
-		try {
-			project.setLocal(true, IResource.DEPTH_ZERO, getMonitor());
-		} catch (Exception e) {
-			fail("1.0", e);
-		}
+		project.setLocal(true, IResource.DEPTH_ZERO, createTestMonitor());
 
 		// cleanup
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 	}
 
 	/**
 	 * 1GC2FKV: ITPCORE:BuildManager triggers incremental build when doing full builds
 	 */
-	public void testAutoBuild_1GC2FKV() {
+	public void testAutoBuild_1GC2FKV() throws CoreException {
 		// set auto build OFF
-		try {
-			IWorkspaceDescription description = getWorkspace().getDescription();
-			description.setAutoBuilding(false);
-			getWorkspace().setDescription(description);
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		IWorkspaceDescription description = getWorkspace().getDescription();
+		description.setAutoBuilding(false);
+		getWorkspace().setDescription(description);
 
 		// create project with a builder
 		IProject projectONE = getWorkspace().getRoot().getProject("Project_ONE");
-		try {
-			IProjectDescription prjDescription = getWorkspace().newProjectDescription("ProjectONE");
-			ICommand command = prjDescription.newCommand();
-			command.setBuilderName(SignaledBuilder.BUILDER_ID);
-			prjDescription.setBuildSpec(new ICommand[] {command});
-			projectONE.create(prjDescription, getMonitor());
-			projectONE.open(getMonitor());
-		} catch (CoreException e) {
-			fail("0.1", e);
-		}
+		IProjectDescription prjDescription = getWorkspace().newProjectDescription("ProjectONE");
+		ICommand command = prjDescription.newCommand();
+		command.setBuilderName(SignaledBuilder.BUILDER_ID);
+		prjDescription.setBuildSpec(new ICommand[] { command });
+		projectONE.create(prjDescription, createTestMonitor());
+		projectONE.open(createTestMonitor());
 
 		// create project with a builder
 		IProject projectTWO = getWorkspace().getRoot().getProject("Project_TWO");
-		try {
-			IProjectDescription prjDescription = getWorkspace().newProjectDescription("Project_TWO");
-			ICommand command = prjDescription.newCommand();
-			command.setBuilderName(SignaledBuilder.BUILDER_ID);
-			prjDescription.setBuildSpec(new ICommand[] {command});
-			projectTWO.create(prjDescription, getMonitor());
-			projectTWO.open(getMonitor());
-		} catch (CoreException e) {
-			fail("0.2", e);
-		}
+		prjDescription = getWorkspace().newProjectDescription("Project_TWO");
+		command = prjDescription.newCommand();
+		command.setBuilderName(SignaledBuilder.BUILDER_ID);
+		prjDescription.setBuildSpec(new ICommand[] { command });
+		projectTWO.create(prjDescription, createTestMonitor());
+		projectTWO.open(createTestMonitor());
+
 		// set auto build ON
-		try {
-			IWorkspaceDescription description = getWorkspace().getDescription();
-			description.setAutoBuilding(true);
-			getWorkspace().setDescription(description);
-			getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		description = getWorkspace().getDescription();
+		description.setAutoBuilding(true);
+		getWorkspace().setDescription(description);
+		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
+		waitForBuild();
 
 		SignaledBuilder projectONEbuilder = SignaledBuilder.getInstance(projectONE);
 		SignaledBuilder projectTWObuilder = SignaledBuilder.getInstance(projectTWO);
 		projectONEbuilder.reset();
 		projectTWObuilder.reset();
-		try {
-			projectONE.build(IncrementalProjectBuilder.FULL_BUILD, null);
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		projectONE.build(IncrementalProjectBuilder.FULL_BUILD, null);
+		waitForBuild();
 		assertTrue("1.1", projectONEbuilder.wasExecuted());
 		assertTrue("1.2", !projectTWObuilder.wasExecuted());
 
 		projectONEbuilder.reset();
 		projectTWObuilder.reset();
-		try {
-			projectTWO.build(IncrementalProjectBuilder.FULL_BUILD, SignaledBuilder.BUILDER_ID, null, null);
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		projectTWO.build(IncrementalProjectBuilder.FULL_BUILD, SignaledBuilder.BUILDER_ID, null, null);
+		waitForBuild();
 		assertTrue("2.1", !projectONEbuilder.wasExecuted());
 		assertTrue("2.2", projectTWObuilder.wasExecuted());
 
 		projectONEbuilder.reset();
 		projectTWObuilder.reset();
-		try {
-			projectTWO.touch(null);
-			waitForBuild();
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		projectTWO.touch(null);
+		waitForBuild();
 		//project one won't be executed because project didn't change.
 		assertTrue("3.1", !projectONEbuilder.wasExecuted());
 		assertTrue("3.2", projectTWObuilder.wasExecuted());
@@ -158,8 +139,8 @@ public class IProjectTest extends AbstractBuilderTest {
 	 * Create a project with resources already existing on disk and ensure
 	 * that the resources are automatically discovered and brought into the workspace.
 	 */
-	public void testBug78711() {
-		String name = getUniqueString();
+	public void testBug78711() throws CoreException {
+		String name = createUniqueString();
 		IProject project = getWorkspace().getRoot().getProject(name);
 		IFolder folder = project.getFolder("folder");
 		IFile file1 = project.getFile("file1.txt");
@@ -174,12 +155,8 @@ public class IProjectTest extends AbstractBuilderTest {
 		createFileInFileSystem(location.append(file1.getName()));
 
 		// create
-		try {
-			project.create(getMonitor());
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		// verify discovery
 		assertTrue("2.0", project.isAccessible());
@@ -191,14 +168,10 @@ public class IProjectTest extends AbstractBuilderTest {
 	/**
 	 * 1GDW1RX: ITPCORE:ALL - IResource.delete() without force not working correctly
 	 */
-	public void testDelete_1GDW1RX() {
+	public void testDelete_1GDW1RX() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
-		try {
-			project.create(getMonitor());
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		String[] paths = new String[] {"/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1"};
 		IResource[] resources = buildResources(project, paths);
@@ -210,39 +183,22 @@ public class IProjectTest extends AbstractBuilderTest {
 		IFile file = folder.getFile("MyFile");
 		ensureExistsInFileSystem(file);
 
-		try {
-			project.delete(false, getMonitor());
-			fail("3.0");
-		} catch (CoreException e) {
-			// expected
-		}
+		assertThrows(CoreException.class, () -> project.delete(false, createTestMonitor()));
 
 		// clean up
-		try {
-			project.delete(true, true, getMonitor());
-		} catch (CoreException e) {
-			fail("20.0", e);
-		}
+		project.delete(true, true, createTestMonitor());
 	}
 
-	public void testRefreshDotProject() {
-		String name = getUniqueString();
+	public void testRefreshDotProject() throws CoreException {
+		String name = createUniqueString();
 		IProject project = getWorkspace().getRoot().getProject(name);
 		IFile dotProject = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		try {
-			project.create(null);
-			project.open(null);
-			touchInFilesystem(dotProject);
-			project.refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			fail("0.99", e);
-		}
-		try {
-			IProjectDescription description = project.getDescription();
-			description.setComment("Changed description");
-			project.setDescription(description, IResource.NONE, null);
-		} catch (CoreException e) {
-			fail("1.99", e);
-		}
+		project.create(null);
+		project.open(null);
+		touchInFilesystem(dotProject);
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		IProjectDescription description = project.getDescription();
+		description.setComment("Changed description");
+		project.setDescription(description, IResource.NONE, null);
 	}
 }

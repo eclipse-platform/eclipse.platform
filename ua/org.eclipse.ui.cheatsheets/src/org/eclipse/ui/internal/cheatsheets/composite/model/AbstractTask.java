@@ -161,7 +161,6 @@ public abstract class AbstractTask implements ICompositeCheatSheetTask {
 	/**
 	 * Interface used when restoring state from a file.
 	 * Not intended to be called from task editors.
-	 * @param state
 	 */
 	public void setState(int state) {
 		setStateNoNotify(state);
@@ -172,7 +171,6 @@ public abstract class AbstractTask implements ICompositeCheatSheetTask {
 	 * Set the state of a task but don't send out any events yet,
 	 * let them collect so we don't send out multiple events for
 	 * one task
-	 * @param state
 	 */
 	public void setStateNoNotify(int state) {
 		this.state = state;

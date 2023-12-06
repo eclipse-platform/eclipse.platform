@@ -64,7 +64,6 @@ public class Parser {
 	 * @return schema for document.
 	 * @throws ParseError
 	 *             for NOT_SUPPORTED or PARSE_ERROR.
-	 * @throws IOException
 	 */
 	public ISchema parse(InputSource inputSource, EntityResolver entityResolver) throws ParseError, IOException {
 		XMLReader parser = null;
@@ -119,7 +118,6 @@ public class Parser {
 	 * @return IWalker that can be used to traverse document.
 	 * @throws ParseError
 	 *             for NOT_SUPPORTED or PARSE_ERROR.
-	 * @throws IOException
 	 */
 	public ISchema parse(String url) throws ParseError, IOException {
 		return parse(new InputSource(url), null);
@@ -134,7 +132,6 @@ public class Parser {
 	 * @return IWalker that can be used to traverse document.
 	 * @throws ParseError
 	 *             for NOT_SUPPORTED or PARSE_ERROR.
-	 * @throws IOException
 	 */
 	public ISchema parse(Reader reader) throws ParseError, IOException {
 		return parse(new InputSource(reader), null);
@@ -153,7 +150,6 @@ public class Parser {
 	 * @return IWalker that can be used to traverse document.
 	 * @throws ParseError
 	 *             for NOT_SUPPORTED or PARSE_ERROR.
-	 * @throws IOException
 	 */
 	public ISchema parseDTD(String pub, String sys, String root) throws ParseError, IOException {
 		return parse(new InputSource(new DTDReader(pub, sys, root)), null);
@@ -170,7 +166,6 @@ public class Parser {
 	 * @return ISchema that can be used to traverse document.
 	 * @throws ParseError
 	 *             for NOT_SUPPORTED or PARSE_ERROR.
-	 * @throws IOException
 	 */
 	public ISchema parseDTD(Reader reader, String root) throws ParseError, IOException {
 		return parse(new InputSource(new DTDReader(INTERNAL, INTERNAL, root)), new DTDEntityResolver(reader));

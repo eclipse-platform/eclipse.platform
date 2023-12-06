@@ -32,7 +32,6 @@ public class LaunchConfigurationSelectionDialog extends AbstractDebugListSelecti
 
 	/**
 	 * Constructor
-	 * @param parent
 	 */
 	public LaunchConfigurationSelectionDialog(Shell parent, Object input) {
 		super(parent);

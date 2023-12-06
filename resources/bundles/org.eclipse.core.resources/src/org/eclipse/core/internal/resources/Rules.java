@@ -41,7 +41,6 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
 
 	/**
 	 * Creates a new scheduling rule factory for the given workspace
-	 * @param workspace
 	 */
 	Rules(Workspace workspace) {
 		this.defaultFactory = new ResourceRuleFactory(workspace) {

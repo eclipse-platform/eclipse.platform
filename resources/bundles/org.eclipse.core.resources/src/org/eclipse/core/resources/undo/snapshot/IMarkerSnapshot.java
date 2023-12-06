@@ -32,7 +32,6 @@ public interface IMarkerSnapshot {
 	 * Create a marker from the marker description.
 	 *
 	 * @return the created marker
-	 * @throws CoreException
 	 */
 	public IMarker createMarker() throws CoreException;
 
@@ -40,7 +39,6 @@ public interface IMarkerSnapshot {
 	 * Update an existing marker using the attributes in the marker description.
 	 *
 	 * @param marker the marker to be updated
-	 * @throws CoreException
 	 */
 	public void updateMarker(IMarker marker) throws CoreException;
 

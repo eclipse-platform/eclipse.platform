@@ -53,8 +53,6 @@ public class History {
 
 		/**
 		 * returns the history page. If iframe page, updated to correct url.
-		 *
-		 * @return
 		 */
 		AbstractIntroPage getPage() {
 			if (page.isIFramePage())
@@ -94,8 +92,6 @@ public class History {
 
 	/**
 	 * Updates the UI navigation history with either a real URL, or a page ID.
-	 *
-	 * @param location
 	 */
 	public void updateHistory(String location) {
 		// quick exit.
@@ -107,8 +103,6 @@ public class History {
 
 	/**
 	 * Updates the UI navigation history with either a real URL, or a page ID.
-	 *
-	 * @param page
 	 */
 	public void updateHistory(AbstractIntroPage page) {
 		// quick exit.
@@ -183,7 +177,6 @@ public class History {
 	/**
 	 * Return the position of the last element in the navigation history. If
 	 * vector is empty, return 0.
-	 *
 	 */
 	private int getHistoryEndPosition() {
 		if (history.isEmpty())

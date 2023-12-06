@@ -24,7 +24,6 @@ import org.eclipse.tips.core.internal.ImageUtil;
 /**
  * Provides more information about the image to be used in the tip. The image
  * aspect ratio must be around 3:2 to be comfortably displayed in the Tip UI.
- *
  */
 public class TipImage {
 
@@ -42,7 +41,7 @@ public class TipImage {
 	private final URL fURL;
 	private double fAspectRatio = THREE_TO_TWO;
 
-	private final String fBase64Image;
+	private String fBase64Image;
 
 	/**
 	 * Creates a new TipImage with the specified URL which gets read into a base 64
@@ -52,7 +51,6 @@ public class TipImage {
 	 *            the image URL which may not be null
 	 * @throws IOException
 	 *             in case the stream of the passed URL could not be opened or read.
-	 *
 	 */
 	public TipImage(URL url) throws IOException {
 		Assert.isNotNull(url);
@@ -82,13 +80,11 @@ public class TipImage {
 	 *
 	 * @param base64Image
 	 *            the non-null base64 encoded image according to RFC-2397.
-	 *
 	 * @throws RuntimeException
 	 *             if the string is not valid
 	 * @see TipImage
 	 * @see <a href="https://tools.ietf.org/search/rfc2397">RFC-2397
 	 *      (https://tools.ietf.org/search/rfc2397)</a>
-	 *
 	 */
 	public TipImage(String base64Image) {
 		Assert.isNotNull(base64Image);
@@ -97,8 +93,7 @@ public class TipImage {
 			fBase64Image = base64Image;
 			int from = base64Image.indexOf('/') + 1;
 			int to = base64Image.indexOf(';');
-			setExtension(base64Image.substring(from, to).trim());
-			setExtension(base64Image.substring(from, to).trim());
+			fExtension = base64Image.substring(from, to).trim();
 		} else {
 			int length = base64Image.length();
 			throw new RuntimeException(Messages.TipImage_5 + base64Image.substring(0, length < 50 ? length : 50));
@@ -205,15 +200,16 @@ public class TipImage {
 
 	/**
 	 * Changes the default value "null" to the passed value which commonly is "png",
-	 * "gif" and such.
+	 * "gif" and such. It also updates the Base64Image to properly include the new
+	 * extension.
 	 *
-	 * @param extension
-	 *            the extension of this file
+	 * @param newExtension the new extension of this file
 	 * @return this
 	 * @see #getExtension()
 	 */
-	public TipImage setExtension(String extension) {
-		fExtension = extension;
+	public TipImage setExtension(String newExtension) {
+		fBase64Image = fBase64Image.replaceAll("/.*;", "/" + newExtension + ";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		fExtension = newExtension;
 		return this;
 	}
 

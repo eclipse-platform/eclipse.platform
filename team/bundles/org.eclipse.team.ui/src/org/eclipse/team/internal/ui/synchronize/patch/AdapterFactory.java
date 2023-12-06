@@ -27,7 +27,6 @@ public class AdapterFactory implements IAdapterFactory {
 	private final IWorkbenchAdapter modelAdapter = new PatchWorkbenchAdapter();
 	private ISynchronizationCompareAdapter compareAdapter;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		if (adapterType == ResourceMapping.class) {

@@ -22,7 +22,6 @@ import org.eclipse.ui.actions.SelectionListenerAction;
 
 /**
  * The action used to remove source containers in the source location dialog/tab.
- *
  */
 public class RemoveAction extends SourceContainerAction {
 	public RemoveAction() {

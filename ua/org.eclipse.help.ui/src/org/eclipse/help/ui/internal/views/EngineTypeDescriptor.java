@@ -36,9 +36,6 @@ public class EngineTypeDescriptor {
 	private final IConfigurationElement config;
 	private Image image;
 	private ISearchScopeFactory factory;
-	/**
-	 *
-	 */
 	public EngineTypeDescriptor(IConfigurationElement config) {
 		this.config = config;
 	}

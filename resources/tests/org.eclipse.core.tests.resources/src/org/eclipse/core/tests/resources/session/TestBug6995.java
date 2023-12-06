@@ -14,6 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.util.Map;
 import junit.framework.Test;
 import org.eclipse.core.resources.ICommand;
@@ -25,7 +29,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -45,8 +48,8 @@ public class TestBug6995 extends WorkspaceSessionTest {
 
 		//create a project and configure builder
 		IProject project = workspace.getRoot().getProject("Project");
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		IProjectDescription description = project.getDescription();
 		ICommand command = description.newCommand();
@@ -55,13 +58,13 @@ public class TestBug6995 extends WorkspaceSessionTest {
 		command.setBuilderName(SortBuilder.BUILDER_NAME);
 		command.setArguments(args);
 		description.setBuildSpec(new ICommand[] { command });
-		project.setDescription(description, getMonitor());
+		project.setDescription(description, createTestMonitor());
 
 		//do an initial build
-		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		//save the workspace
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	/**
@@ -71,13 +74,13 @@ public class TestBug6995 extends WorkspaceSessionTest {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("Project");
 		//snapshot
-		workspace.save(false, getMonitor());
+		workspace.save(false, createTestMonitor());
 
 		//build
 		//make a change so build doesn't get short-circuited
 		IFile file = project.getFile("File");
-		file.create(getRandomContents(), true, getMonitor());
-		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		file.create(getRandomContents(), true, createTestMonitor());
+		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
 		//make sure an incremental build occurred
 		SortBuilder builder = SortBuilder.getInstance();
@@ -86,6 +89,6 @@ public class TestBug6995 extends WorkspaceSessionTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug6995.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug6995.class);
 	}
 }

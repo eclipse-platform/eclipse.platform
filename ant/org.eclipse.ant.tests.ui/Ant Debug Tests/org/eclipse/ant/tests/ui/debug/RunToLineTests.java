@@ -76,8 +76,6 @@ public class RunToLineTests extends AbstractAntDebugTest {
 
 	/**
 	 * Test a run to line, with no extra breakpoints.
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testRunToLine() throws Exception {
@@ -86,8 +84,6 @@ public class RunToLineTests extends AbstractAntDebugTest {
 
 	/**
 	 * Test a run to line, with no extra breakpoints in separate VM.
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testRunToLineSepVM() throws Exception {
@@ -96,8 +92,6 @@ public class RunToLineTests extends AbstractAntDebugTest {
 
 	/**
 	 * Test a run to line, with an extra breakpoint, and preference to skip
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testRunToLineSkipBreakpoint() throws Exception {
@@ -108,8 +102,6 @@ public class RunToLineTests extends AbstractAntDebugTest {
 	/**
 	 * Test a run to line, with an extra breakpoint, and preference to skip in a
 	 * separate VM
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testRunToLineSkipBreakpointSepVM() throws Exception {
@@ -119,8 +111,6 @@ public class RunToLineTests extends AbstractAntDebugTest {
 
 	/**
 	 * Test a run to line, with an extra breakpoint, and preference to *not* skip
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testRunToLineHitBreakpoint() throws Exception {
@@ -130,8 +120,6 @@ public class RunToLineTests extends AbstractAntDebugTest {
 
 	/**
 	 * Test a run to line, with an extra breakpoint, and preference to *not* skip
-	 * 
-	 * @throws Exception
 	 */
 	@Test
 	public void testRunToLineHitBreakpointSepVM() throws Exception {
@@ -149,7 +137,6 @@ public class RunToLineTests extends AbstractAntDebugTest {
 	 *                           skip breakpoints is off).
 	 * @param skipBreakpoints    preference value for "skip breakpoints during run
 	 *                           to line"
-	 * @throws Exception
 	 */
 	public void runToLine(final int lineNumber, int expectedLineNumber, boolean skipBreakpoints, boolean sepVM)
 			throws Exception {

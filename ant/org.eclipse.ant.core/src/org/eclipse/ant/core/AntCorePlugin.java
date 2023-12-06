@@ -165,7 +165,6 @@ public class AntCorePlugin extends Plugin {
 	 * </p>
 	 *
 	 * @since 3.1
-	 *
 	 */
 	public AntCorePlugin() {
 		plugin = this;

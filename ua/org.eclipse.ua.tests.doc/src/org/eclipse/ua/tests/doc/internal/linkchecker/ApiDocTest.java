@@ -53,7 +53,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-@SuppressWarnings("restriction")
 public class ApiDocTest {
 
 	static class InternalExtensionFoundException extends SAXException {
@@ -124,8 +123,6 @@ public class ApiDocTest {
 	 *
 	 * However, the test prints potentially missing extension points / API
 	 * packages to System.out.
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testTopicsReference() throws Exception {

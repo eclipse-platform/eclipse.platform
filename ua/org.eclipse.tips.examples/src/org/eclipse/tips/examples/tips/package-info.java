@@ -13,6 +13,5 @@
  *******************************************************************************/
 /**
  * Contains some example tip implementations,
- *
  */
 package org.eclipse.tips.examples.tips;

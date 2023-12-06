@@ -46,7 +46,6 @@ public class WorkspaceSessionTestSuite extends SessionTestSuite {
 
 	/**
 	 * Ensures setup uses this suite's instance location.
-	 * @throws SetupException
 	 */
 	@Override
 	protected Setup newSetup() throws SetupException {

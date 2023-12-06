@@ -128,7 +128,6 @@ public class PathTree {
 
 	/**
 	 * Return whether the given path has children in the tree
-	 * @param path
 	 * @return whether there are children for the given path
 	 */
 	public synchronized boolean hasChildren(IPath path) {

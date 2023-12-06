@@ -139,7 +139,6 @@ public class ResourceBundleHelper {
 	 * @param provider
 	 *            The service for retrieving a {@link ResourceBundle} for a given {@link Locale} out
 	 *            of the given {@link Bundle} which is specified by URI.
-	 * @return
 	 */
 	public static ResourceBundle getResourceBundleForUri(String contributionURI, Locale locale,
 			ResourceBundleProvider provider) {

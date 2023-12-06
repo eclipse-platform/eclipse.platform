@@ -390,9 +390,6 @@ public class PDAThread extends PDADebugElement implements IThread, IPDAEventList
 	/**
 	 * Sets the current variables for the given stack frame. Called
 	 * by PDA stack frame when it is created.
-	 *
-	 * @param frame
-	 * @param variables
 	 */
 	protected void setVariables(IStackFrame frame, IVariable[] variables) {
 		synchronized (fVariables) {

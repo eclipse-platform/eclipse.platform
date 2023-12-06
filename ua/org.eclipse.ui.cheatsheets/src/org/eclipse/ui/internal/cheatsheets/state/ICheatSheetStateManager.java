@@ -31,7 +31,6 @@ public interface ICheatSheetStateManager {
 
 	/**
 	 * Will be called before any of the functions to get or save state
-	 * @param element
 	 */
 	public void setElement(CheatSheetElement element);
 
@@ -47,9 +46,6 @@ public interface ICheatSheetStateManager {
 
 	/**
 	 * Save the properties and the cheat sheet manager
-	 * @param properties
-	 * @param manager
-	 * @return
 	 */
 	public IStatus saveState(Properties properties, CheatSheetManager manager);
 

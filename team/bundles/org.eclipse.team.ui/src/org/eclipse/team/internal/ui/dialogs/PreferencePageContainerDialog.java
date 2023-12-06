@@ -355,7 +355,6 @@ public class PreferencePageContainerDialog extends TrayDialog
 	/**
 	 * Set the message text. If the message line currently displays an error,
 	 * the message is stored and will be shown after a call to clearErrorMessage
-	 * @param newMessage
 	 */
 	public void setMessage(String newMessage) {
 		fMessage = newMessage;

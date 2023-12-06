@@ -25,7 +25,6 @@ import org.eclipse.ui.IWorkbenchPart;
  * For IMemoryBlockExtension, default is governed by the attributes set
  * in its memory bytes.
  * For IMemoryBlock, default is big endian.
- *
  */
 public class DefaultEndianessAction implements IObjectActionDelegate {
 

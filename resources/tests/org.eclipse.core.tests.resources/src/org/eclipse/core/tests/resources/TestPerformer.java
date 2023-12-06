@@ -35,7 +35,7 @@ public abstract class TestPerformer {
 		super();
 	}
 
-	public void cleanUp(Object[] args, int countArg) {
+	public void cleanUp(Object[] args, int countArg) throws Exception {
 		// do nothing
 	}
 
@@ -46,7 +46,7 @@ public abstract class TestPerformer {
 
 	public abstract Object invokeMethod(Object[] args, int countArg) throws Exception;
 
-	public final void performTest(Object[][] inputs) {
+	public final void performTest(Object[][] inputs) throws Exception {
 		// call helper method
 		int permutations = 1;
 		for (Object[] input : inputs) {
@@ -63,7 +63,7 @@ public abstract class TestPerformer {
 	 * Then invoke method if nth==inputs.length-1, otherwise do recursive call
 	 * with incremented nth.
 	 */
-	private void performTestRecursiveLoop(Object[][] inputs, Object[] args, int nth) {
+	private void performTestRecursiveLoop(Object[][] inputs, Object[] args, int nth) throws Exception {
 		for (Object input : inputs[nth]) {
 			args[nth] = input;
 			if (nth == inputs.length - 1) {
@@ -161,7 +161,7 @@ public abstract class TestPerformer {
 		}
 	}
 
-	public abstract boolean shouldFail(Object[] args, int countArg);
+	public abstract boolean shouldFail(Object[] args, int countArg) throws Exception;
 
 	public abstract boolean wasSuccess(Object[] args, Object result, Object[] oldState) throws Exception;
 }

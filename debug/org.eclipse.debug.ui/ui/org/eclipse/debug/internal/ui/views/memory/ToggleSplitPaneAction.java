@@ -19,7 +19,6 @@ import org.eclipse.debug.ui.IDebugUIConstants;
  * Toggles the visibility of the rendering view pane 2.
  *
  * @since 3.1
- *
  */
 public class ToggleSplitPaneAction extends ToggleViewPaneAction {
 

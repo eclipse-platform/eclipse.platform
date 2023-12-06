@@ -21,9 +21,6 @@ import org.eclipse.core.filesystem.provider.FileSystem;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
-/**
- * 
- */
 public class ZipFileSystem extends FileSystem {
 	/**
 	 * Scheme constant (value "zip") indicating the zip file system scheme.

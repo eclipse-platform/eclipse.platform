@@ -13,8 +13,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
+
 import org.eclipse.core.internal.preferences.EclipsePreferences;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
@@ -64,7 +75,7 @@ public class PR_1GEAB3C_Test extends ResourceTest {
 	 * Ensure that we get ADDED and OPEN in the delta when we create and open
 	 * a project in a workspace runnable.
 	 */
-	public void test_1GEAB3C() {
+	public void test_1GEAB3C() throws CoreException {
 		verifier.reset();
 		final IProject project = getWorkspace().getRoot().getProject("MyAddedAndOpenedProject");
 		IFile prefs = project.getFolder(EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME)
@@ -82,11 +93,7 @@ public class PR_1GEAB3C_Test extends ResourceTest {
 				monitor.done();
 			}
 		};
-		try {
-			getWorkspace().run(body, getMonitor());
-		} catch (CoreException e) {
-			fail("1.1", e);
-		}
+		getWorkspace().run(body, createTestMonitor());
 		assertDelta();
 	}
 }

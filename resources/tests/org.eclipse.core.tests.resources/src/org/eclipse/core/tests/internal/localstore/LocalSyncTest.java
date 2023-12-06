@@ -13,6 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.junit.Assert.assertThrows;
+
 import org.eclipse.core.internal.resources.ICoreConstants;
 import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.internal.resources.TestingSupport;
@@ -28,17 +34,12 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		assertTrue(existsInFileSystemWithNoContent(target));
 	}
 
-	@Override
-	public String[] defineHierarchy() {
-		return new String[] {"/File1", "/Folder1/", "/Folder1/File1", "/Folder1/Folder2/"};
-	}
-
 	private boolean existsInFileSystemWithNoContent(IResource resource) {
 		IPath path = resource.getLocation();
 		return path.toFile().exists() && path.toFile().length() == 0;
 	}
 
-	public void testProjectDeletion() {
+	public void testProjectDeletion() throws CoreException {
 		/* initialize common objects */
 		Project project = (Project) projects[0];
 
@@ -46,7 +47,8 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		TestingSupport.waitForSnapshot();
 
 		// create resources
-		IResource[] resources = buildResources(project, defineHierarchy());
+		IResource[] resources = buildResources(project,
+				new String[] { "/File1", "/Folder1/", "/Folder1/File1", "/Folder1/Folder2/" });
 		ensureExistsInWorkspace(resources, true);
 
 		// delete project's default directory
@@ -54,39 +56,30 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 
 		// run synchronize
 		//The .project file has been deleted, so this will fail
-		try {
-			project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			fail("1.0");
-		} catch (CoreException e) {
-			// expected
-		}
+		assertThrows(CoreException.class, () -> project.refreshLocal(IResource.DEPTH_INFINITE, null));
 
 		/* project should still exists */
-		assertTrue("1.1", project.exists());
+		assertTrue(project.exists());
 
 		/* resources should not exist anymore */
 		for (int i = 1; i < resources.length; i++) {
-			assertTrue("1.2", !resources[i].exists());
+			assertFalse("Resource does unexpectedly exist: " + resources[i], resources[i].exists());
 		}
 	}
 
-	public void testProjectWithNoResources() {
+	public void testProjectWithNoResources() throws CoreException {
 		/* initialize common objects */
 		Project project = (Project) projects[0];
 
-		try {
-			/* check normal behaviour */
-			project.refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
-		assertTrue("1.1", project.exists());
+		/* check normal behaviour */
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		assertTrue(project.exists());
 	}
 
 	/**
 	 * Simple synchronization test. Uses one solution and one project.
 	 */
-	public void testSimpleSync() {
+	public void testSimpleSync() throws Exception {
 		/* initialize common objects */
 		Project project = (Project) projects[0];
 
@@ -102,12 +95,8 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		ensureExistsInWorkspace((IFile) file, "");
 		ensureExistsInWorkspace(folder, true);
 
-		try {
-			// run synchronize
-			project.refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			fail("0.0", e);
-		}
+		// run synchronize
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 
 		//-----------------------------------------------------------
 		// test synchronize
@@ -133,22 +122,16 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		//
 		ensureDoesNotExistInFileSystem(file);
 		ensureDoesNotExistInFileSystem(folder);
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			fail("3.0", e);
-		}
+
+		Thread.sleep(5000);
+
 		file = project.getFolder(IPath.fromOSString("file"));
 		folder = project.getFile(IPath.fromOSString("folder"));
 		ensureExistsInFileSystem(file);
 		ensureExistsInFileSystem((IFile) folder);
 
-		try {
-			// run synchronize
-			project.refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		// run synchronize
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 
 		//-----------------------------------------------------------
 		// test synchronize

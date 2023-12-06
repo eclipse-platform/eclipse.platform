@@ -31,7 +31,6 @@ import org.eclipse.debug.ui.memory.IMemoryRendering;
  * <code>IMemoryBlockConnection.update</code> is called.
  *
  * This interface is EXPERIMENTAL.
- *
  */
 public interface IMemoryRenderingUpdater extends IMemoryBlockExtension {
 

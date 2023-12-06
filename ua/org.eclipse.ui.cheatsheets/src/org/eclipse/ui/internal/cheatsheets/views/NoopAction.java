@@ -27,7 +27,6 @@ public class NoopAction extends Action {
 
 	/**
 	 * Constructor for NoopAction.
-	 * @param text
 	 */
 	protected NoopAction(String text) {
 		super(text);
@@ -35,8 +34,6 @@ public class NoopAction extends Action {
 
 	/**
 	 * Constructor for NoopAction.
-	 * @param text
-	 * @param image
 	 */
 	protected NoopAction(String text, ImageDescriptor image) {
 		super(text, image);

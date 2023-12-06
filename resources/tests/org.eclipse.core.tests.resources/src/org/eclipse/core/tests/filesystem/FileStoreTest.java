@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.Assert.assertThrows;
 
 import java.io.File;
@@ -77,12 +82,12 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("file info does not exist", !info.exists());
 
 		// two-arg fetchInfo should throw exception
-		assertThrows(CoreException.class, () -> broken.fetchInfo(EFS.NONE, getMonitor()));
+		assertThrows(CoreException.class, () -> broken.fetchInfo(EFS.NONE, createTestMonitor()));
 	}
 
 	private IFileStore getDirFileStore(String path) throws CoreException {
 		IFileStore store = EFS.getFileSystem(EFS.SCHEME_FILE).getStore(IPath.fromOSString(path));
-		if (!store.toLocalFile(EFS.NONE, getMonitor()).exists()) {
+		if (!store.toLocalFile(EFS.NONE, createTestMonitor()).exists()) {
 			store.mkdir(EFS.NONE, null);
 			deleteOnTearDown(store);
 		}
@@ -197,7 +202,7 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore existing = getTempStore();
 		createFile(existing, getRandomString());
 		// try to copy when parent of destination does not exist
-		assertThrows(CoreException.class, () -> existing.copy(child, EFS.NONE, getMonitor()));
+		assertThrows(CoreException.class, () -> existing.copy(child, EFS.NONE, createTestMonitor()));
 		// destination should not exist
 		assertTrue("1.1", !child.fetchInfo().exists());
 	}
@@ -281,7 +286,7 @@ public class FileStoreTest extends LocalStoreTest {
 		assertTrue("7.2", compareContent(getContents(sb.toString()), bigFile.openInputStream(EFS.NONE, null)));
 		IFileStore destination = temp.getChild("copy of bigFile");
 		// IProgressMonitor monitor = new LoggingProgressMonitor(System.out);
-		IProgressMonitor monitor = getMonitor();
+		IProgressMonitor monitor = createTestMonitor();
 		bigFile.copy(destination, EFS.NONE, monitor);
 		assertTrue("7.3", compareContent(getContents(sb.toString()), destination.openInputStream(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
@@ -498,7 +503,7 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore existing = getTempStore();
 		createFile(existing, getRandomString());
 		// try to move when parent of destination does not exist
-		assertThrows(CoreException.class, () -> existing.move(child, EFS.NONE, getMonitor()));
+		assertThrows(CoreException.class, () -> existing.move(child, EFS.NONE, createTestMonitor()));
 		// destination should not exist
 		assertTrue("1.1", !child.fetchInfo().exists());
 	}
@@ -514,10 +519,10 @@ public class FileStoreTest extends LocalStoreTest {
 		// assert that modifying a non-existing store fails
 		IFileInfo info = nonExisting.fetchInfo();
 		info.setLastModified(System.currentTimeMillis());
-		assertThrows(CoreException.class, () -> nonExisting.putInfo(info, EFS.SET_LAST_MODIFIED, getMonitor()));
+		assertThrows(CoreException.class, () -> nonExisting.putInfo(info, EFS.SET_LAST_MODIFIED, createTestMonitor()));
 		IFileInfo refetchedInfo = nonExisting.fetchInfo();
 		info.setAttribute(EFS.ATTRIBUTE_READ_ONLY, false);
-		assertThrows(CoreException.class, () -> nonExisting.putInfo(refetchedInfo, EFS.SET_ATTRIBUTES, getMonitor()));
+		assertThrows(CoreException.class, () -> nonExisting.putInfo(refetchedInfo, EFS.SET_ATTRIBUTES, createTestMonitor()));
 	}
 
 	@Test

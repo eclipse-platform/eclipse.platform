@@ -87,7 +87,6 @@ public class SelectLaunchersDialog extends AbstractDebugListSelectionDialog {
 
 	/**
 	 * Constructor
-	 * @param parentShell
 	 */
 	public SelectLaunchersDialog(Shell parentShell, ILaunchDelegate[] delegates, ILaunchConfigurationWorkingCopy configuration, String launchmode) {
 		super(parentShell);

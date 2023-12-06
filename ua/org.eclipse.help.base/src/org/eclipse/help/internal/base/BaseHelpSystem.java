@@ -352,7 +352,6 @@ public final class BaseHelpSystem {
 	 * Check supplied token against stored token. Clears the stored token if
 	 * successful.
 	 *
-	 * @param helpSessionToken
 	 * @return true if match successful
 	 */
 	public boolean matchOnceLiveHelpToken(String helpSessionToken) {

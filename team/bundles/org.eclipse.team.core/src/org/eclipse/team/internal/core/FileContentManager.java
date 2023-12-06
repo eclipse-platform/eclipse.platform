@@ -92,7 +92,6 @@ public class FileContentManager implements IFileContentManager {
 		 *
 		 * @return true if the workspace was a 2.0 one and the old mappings have
 		 * been added to the map, false otherwise.
-		 *
 		 */
 		private boolean loadMappingsFromOldWorkspace(Map<String, Integer> map) {
 			// File name of the persisted file type information

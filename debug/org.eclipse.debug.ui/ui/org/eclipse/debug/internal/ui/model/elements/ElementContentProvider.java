@@ -159,7 +159,6 @@ public abstract class ElementContentProvider implements IElementContentProvider 
 	/**
 	 * Returns whether this adapter supports the given context.
 	 *
-	 * @param context
 	 * @return whether this adapter supports the given context
 	 */
 	protected boolean supportsContext(IPresentationContext context) {
@@ -243,11 +242,6 @@ public abstract class ElementContentProvider implements IElementContentProvider 
 	/**
 	 * Returns whether the given element has children in the specified context.
 	 * Subclasses can override to be more efficient.
-	 *
-	 * @param element
-	 * @param context
-	 * @param monitor
-	 * @return
 	 */
 	protected boolean hasChildren(Object element, IPresentationContext context, IViewerUpdate monitor) throws CoreException {
 		return getChildCount(element, context, monitor) > 0;
@@ -257,7 +251,6 @@ public abstract class ElementContentProvider implements IElementContentProvider 
 	 * Returns a scheduling rule to use when performing the given updates or
 	 * <code>null</code> if none.
 	 *
-	 * @param updates
 	 * @return scheduling rule or <code>null</code> if none
 	 */
 	protected ISchedulingRule getRule(IChildrenCountUpdate[] updates) {
@@ -268,7 +261,6 @@ public abstract class ElementContentProvider implements IElementContentProvider 
 	 * Returns a scheduling rule to use when performing the given updates or
 	 * <code>null</code> if none.
 	 *
-	 * @param updates
 	 * @return scheduling rule or <code>null</code> if none
 	 */
 	protected ISchedulingRule getRule(IChildrenUpdate[] updates) {
@@ -279,7 +271,6 @@ public abstract class ElementContentProvider implements IElementContentProvider 
 	 * Returns a scheduling rule to use when performing the given updates or
 	 * <code>null</code> if none.
 	 *
-	 * @param updates
 	 * @return scheduling rule or <code>null</code> if none
 	 */
 	protected ISchedulingRule getRule(IHasChildrenUpdate[] updates) {

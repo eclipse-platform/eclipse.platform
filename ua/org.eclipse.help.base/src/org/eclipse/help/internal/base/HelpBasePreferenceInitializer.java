@@ -20,8 +20,6 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.osgi.service.prefs.BackingStoreException;
 
-/**
- */
 public class HelpBasePreferenceInitializer extends
 		AbstractPreferenceInitializer {
 

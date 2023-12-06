@@ -88,7 +88,6 @@ public interface IAntElement {
 	/**
 	 * Returns the complete live list of offsets for the given identifier
 	 * 
-	 * @param identifier
 	 * @return the list of offsets for the given identifier
 	 */
 	public List<Integer> computeIdentifierOffsets(String identifier);
@@ -117,7 +116,6 @@ public interface IAntElement {
 	/**
 	 * Returns whether this node contains a reference to the supplied identifier
 	 * 
-	 * @param identifier
 	 * @return whether this node contains a reference to the supplied identifier
 	 */
 	public boolean containsOccurrence(String identifier);

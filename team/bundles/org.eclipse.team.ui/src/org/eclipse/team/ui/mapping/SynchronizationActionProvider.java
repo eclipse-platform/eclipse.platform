@@ -100,7 +100,6 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	 * still call this method, in which case they only need to handle providing
 	 * open for non-files. Otherwise, if they do not call this method, they must
 	 * provide all non-compare related open items.
-	 *
 	 */
 	protected void initializeOpenActions() {
 		ICommonViewerSite cvs = getActionSite().getViewSite();

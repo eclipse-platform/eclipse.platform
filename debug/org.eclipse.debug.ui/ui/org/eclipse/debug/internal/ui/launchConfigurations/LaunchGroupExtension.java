@@ -140,7 +140,6 @@ public class LaunchGroupExtension implements ILaunchGroup {
 	/**
 	 * Creates an image descriptor based on the given attribute name
 	 *
-	 * @param attribute
 	 * @return ImageDescriptor
 	 */
 	protected ImageDescriptor createImageDescriptor(String attribute) {

@@ -15,6 +15,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.filesystem.EFS;
@@ -41,29 +46,29 @@ public class VirtualFolderTest extends ResourceTest {
 		existingProject = getWorkspace().getRoot().getProject("ExistingProject");
 		existingVirtualFolderInExistingProject = existingProject.getFolder("existingVirtualFolderInExistingProject");
 		ensureExistsInWorkspace(new IResource[] { existingProject }, true);
-		existingVirtualFolderInExistingProject.create(IResource.VIRTUAL, true, getMonitor());
+		existingVirtualFolderInExistingProject.create(IResource.VIRTUAL, true, createTestMonitor());
 	}
 
 	/**
 	 * Tests creating a virtual folder
 	 */
 	public void testCreateVirtualFolder() throws CoreException {
-		IFolder virtualFolder = existingProject.getFolder(getUniqueString());
+		IFolder virtualFolder = existingProject.getFolder(createUniqueString());
 
-		virtualFolder.create(IResource.VIRTUAL, true, getMonitor());
+		virtualFolder.create(IResource.VIRTUAL, true, createTestMonitor());
 
 		assertTrue("2.0", virtualFolder.exists());
 		assertTrue("3.0", virtualFolder.isVirtual());
 
 		// delete should succeed
-		virtualFolder.delete(IResource.NONE, getMonitor());
+		virtualFolder.delete(IResource.NONE, createTestMonitor());
 	}
 
 	/**
 	 * Tests creating a file under a virtual folder
 	 */
 	public void testCreateFileUnderVirtualFolder() {
-		IFile file = existingVirtualFolderInExistingProject.getFile(getUniqueString());
+		IFile file = existingVirtualFolderInExistingProject.getFile(createUniqueString());
 		assertThrows(CoreException.class, () -> create(file, true));
 		assertTrue("2.0", !file.exists());
 	}
@@ -72,7 +77,7 @@ public class VirtualFolderTest extends ResourceTest {
 	 * Tests creating a folder under a virtual folder
 	 */
 	public void testCreateFolderUnderVirtualFolder() {
-		IFolder folder = existingVirtualFolderInExistingProject.getFolder(getUniqueString());
+		IFolder folder = existingVirtualFolderInExistingProject.getFolder(createUniqueString());
 		assertThrows(CoreException.class, () -> create(folder, true));
 		assertTrue("2.0", !folder.exists());
 	}
@@ -81,14 +86,14 @@ public class VirtualFolderTest extends ResourceTest {
 	 * Tests creating a virtual folder under a virtual folder
 	 */
 	public void testCreateVirtualFolderUnderVirtualFolder() throws CoreException {
-		IFolder virtualFolder = existingVirtualFolderInExistingProject.getFolder(getUniqueString());
+		IFolder virtualFolder = existingVirtualFolderInExistingProject.getFolder(createUniqueString());
 		virtualFolder.create(IResource.VIRTUAL, true, null);
 
 		assertTrue("2.0", virtualFolder.exists());
 		assertTrue("3.0", virtualFolder.isVirtual());
 
 		// delete should succeed
-		virtualFolder.delete(IResource.NONE, getMonitor());
+		virtualFolder.delete(IResource.NONE, createTestMonitor());
 	}
 
 	/**
@@ -97,9 +102,9 @@ public class VirtualFolderTest extends ResourceTest {
 	public void testCreateLinkedFolderUnderVirtualFolder() throws CoreException {
 		// get a non-existing location
 		IPath location = getRandomLocation();
-		IFolder linkedFolder = existingVirtualFolderInExistingProject.getFolder(getUniqueString());
+		IFolder linkedFolder = existingVirtualFolderInExistingProject.getFolder(createUniqueString());
 
-		linkedFolder.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
+		linkedFolder.createLink(location, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
 		assertTrue("2.0", linkedFolder.exists());
 		assertEquals("3.0", location, linkedFolder.getLocation());
@@ -109,7 +114,7 @@ public class VirtualFolderTest extends ResourceTest {
 		assertEquals("5.0", 0, linkedFolder.members().length);
 
 		// delete should succeed
-		linkedFolder.delete(IResource.NONE, getMonitor());
+		linkedFolder.delete(IResource.NONE, createTestMonitor());
 	}
 
 	/**
@@ -118,16 +123,16 @@ public class VirtualFolderTest extends ResourceTest {
 	public void testCreateLinkedFileUnderVirtualFolder() throws CoreException {
 		// get a non-existing location
 		IPath location = getRandomLocation();
-		IFile file = existingVirtualFolderInExistingProject.getFile(getUniqueString());
+		IFile file = existingVirtualFolderInExistingProject.getFile(createUniqueString());
 
-		file.createLink(location, IResource.ALLOW_MISSING_LOCAL, getMonitor());
+		file.createLink(location, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
 		assertTrue("2.0", file.exists());
 		assertEquals("3.0", location, file.getLocation());
 		assertTrue("4.0", !location.toFile().exists());
 
 		// delete should succeed
-		file.delete(IResource.NONE, getMonitor());
+		file.delete(IResource.NONE, createTestMonitor());
 	}
 
 	public void testCopyProjectWithVirtualFolder() throws CoreException {
@@ -136,18 +141,18 @@ public class VirtualFolderTest extends ResourceTest {
 		IPath folderLocation = getRandomLocation();
 		deleteOnTearDown(folderLocation);
 
-		IFile linkedFile = existingVirtualFolderInExistingProject.getFile(getUniqueString());
-		IFolder linkedFolder = existingVirtualFolderInExistingProject.getFolder(getUniqueString());
+		IFile linkedFile = existingVirtualFolderInExistingProject.getFile(createUniqueString());
+		IFolder linkedFolder = existingVirtualFolderInExistingProject.getFolder(createUniqueString());
 
 		createFileInFileSystem(fileLocation, getRandomContents());
 		folderLocation.toFile().mkdir();
 
-		linkedFolder.createLink(folderLocation, IResource.NONE, getMonitor());
-		linkedFile.createLink(fileLocation, IResource.NONE, getMonitor());
+		linkedFolder.createLink(folderLocation, IResource.NONE, createTestMonitor());
+		linkedFile.createLink(fileLocation, IResource.NONE, createTestMonitor());
 
 		// copy the project
 		IProject destinationProject = getWorkspace().getRoot().getProject("CopyTargetProject");
-		existingProject.copy(destinationProject.getFullPath(), IResource.SHALLOW, getMonitor());
+		existingProject.copy(destinationProject.getFullPath(), IResource.SHALLOW, createTestMonitor());
 
 		IFile newFile = destinationProject.getFile(linkedFile.getProjectRelativePath());
 		assertTrue("3.0", newFile.isLinked());
@@ -160,8 +165,8 @@ public class VirtualFolderTest extends ResourceTest {
 		assertTrue("4.2", newFolder.getParent().isVirtual());
 
 		// test project deep copy
-		destinationProject.delete(IResource.NONE, getMonitor());
-		existingProject.copy(destinationProject.getFullPath(), IResource.NONE, getMonitor());
+		destinationProject.delete(IResource.NONE, createTestMonitor());
+		existingProject.copy(destinationProject.getFullPath(), IResource.NONE, createTestMonitor());
 
 		assertTrue("5.1", newFile.isLinked());
 		assertEquals("5.2", linkedFile.getLocation(), newFile.getLocation());
@@ -170,7 +175,7 @@ public class VirtualFolderTest extends ResourceTest {
 		assertEquals("5.5", linkedFolder.getLocation(), newFolder.getLocation());
 		assertTrue("5.6", newFolder.getParent().isVirtual());
 
-		destinationProject.delete(IResource.NONE, getMonitor());
+		destinationProject.delete(IResource.NONE, createTestMonitor());
 	}
 
 	public void testMoveProjectWithVirtualFolder() throws CoreException {
@@ -179,34 +184,34 @@ public class VirtualFolderTest extends ResourceTest {
 		IPath folderLocation = getRandomLocation();
 		deleteOnTearDown(folderLocation);
 
-		IFile file = existingVirtualFolderInExistingProject.getFile(getUniqueString());
-		IFolder folder = existingVirtualFolderInExistingProject.getFolder(getUniqueString());
-		IFile childFile = folder.getFile(getUniqueString());
+		IFile file = existingVirtualFolderInExistingProject.getFile(createUniqueString());
+		IFolder folder = existingVirtualFolderInExistingProject.getFolder(createUniqueString());
+		IFile childFile = folder.getFile(createUniqueString());
 		IResource[] oldResources = new IResource[] {existingProject, file, folder, childFile};
 
-		assertDoesNotExistInWorkspace("1.0", new IResource[] { folder, file, childFile });
+		assertDoesNotExistInWorkspace(new IResource[] { folder, file, childFile });
 
 		createFileInFileSystem(fileLocation);
 		folderLocation.toFile().mkdir();
 
-		folder.createLink(folderLocation, IResource.NONE, getMonitor());
-		file.createLink(fileLocation, IResource.NONE, getMonitor());
+		folder.createLink(folderLocation, IResource.NONE, createTestMonitor());
+		file.createLink(fileLocation, IResource.NONE, createTestMonitor());
 
-		childFile.create(getRandomContents(), true, getMonitor());
+		childFile.create(getRandomContents(), true, createTestMonitor());
 
 		// move the project
 		IProject destinationProject = getWorkspace().getRoot().getProject("MoveTargetProject");
-		assertDoesNotExistInWorkspace("3.0", destinationProject);
+		assertDoesNotExistInWorkspace(destinationProject);
 
-		existingProject.move(destinationProject.getFullPath(), IResource.SHALLOW, getMonitor());
+		existingProject.move(destinationProject.getFullPath(), IResource.SHALLOW, createTestMonitor());
 
 		IFile newFile = destinationProject.getFile(file.getProjectRelativePath());
 		IFolder newFolder = destinationProject.getFolder(folder.getProjectRelativePath());
 		IFile newChildFile = newFolder.getFile(childFile.getName());
 		IResource[] newResources = new IResource[] { destinationProject, newFile, newFolder, newChildFile };
 
-		assertExistsInWorkspace("5.0", newResources);
-		assertDoesNotExistInWorkspace("6.1", oldResources);
+		assertExistsInWorkspace(newResources);
+		assertDoesNotExistInWorkspace(oldResources);
 		assertTrue("7.0", existingProject.isSynchronized(IResource.DEPTH_INFINITE));
 		assertTrue("8.0", destinationProject.isSynchronized(IResource.DEPTH_INFINITE));
 
@@ -218,16 +223,16 @@ public class VirtualFolderTest extends ResourceTest {
 	}
 
 	public void testDeleteProjectWithVirtualFolder() throws CoreException {
-		IFolder virtualFolder = existingProject.getFolder(getUniqueString());
+		IFolder virtualFolder = existingProject.getFolder(createUniqueString());
 
 		virtualFolder.create(IResource.VIRTUAL, true, null);
-		existingProject.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, getMonitor());
-		existingProject.create(getMonitor());
+		existingProject.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, createTestMonitor());
+		existingProject.create(createTestMonitor());
 
 		// virtual folder should not exist until the project is open
 		assertTrue("2.0", !virtualFolder.exists());
 
-		existingProject.open(getMonitor());
+		existingProject.open(createTestMonitor());
 
 		// virtual folder should now exist
 		assertTrue("4.0", virtualFolder.exists());
@@ -238,20 +243,20 @@ public class VirtualFolderTest extends ResourceTest {
 		IPath folderLocation = getRandomLocation();
 		deleteOnTearDown(folderLocation);
 
-		IFolder virtualFolder = existingProject.getFolder(getUniqueString());
+		IFolder virtualFolder = existingProject.getFolder(createUniqueString());
 		IFolder linkedFolder = virtualFolder.getFolder("a_link");
 
 		folderLocation.toFile().mkdir();
 		virtualFolder.create(IResource.VIRTUAL, true, null);
-		linkedFolder.createLink(folderLocation, IResource.NONE, getMonitor());
-		existingProject.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, getMonitor());
-		existingProject.create(getMonitor());
+		linkedFolder.createLink(folderLocation, IResource.NONE, createTestMonitor());
+		existingProject.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, createTestMonitor());
+		existingProject.create(createTestMonitor());
 
 		// virtual folder should not exist until the project is open
 		assertTrue("2.0", !virtualFolder.exists());
 		assertTrue("3.0", !linkedFolder.exists());
 
-		existingProject.open(getMonitor());
+		existingProject.open(createTestMonitor());
 
 		// virtual folder should now exist
 		assertTrue("5.0", virtualFolder.exists());
@@ -266,9 +271,9 @@ public class VirtualFolderTest extends ResourceTest {
 
 	public void testLinkedFolderInVirtualFolder_FileStoreURI() throws CoreException {
 		IPath folderLocation = getRandomLocation();
-		IFolder folder = existingVirtualFolderInExistingProject.getFolder(getUniqueString());
+		IFolder folder = existingVirtualFolderInExistingProject.getFolder(createUniqueString());
 
-		folder.createLink(folderLocation, IResource.ALLOW_MISSING_LOCAL, getMonitor());
+		folder.createLink(folderLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
 		assertTrue("2.0", folder.exists());
 		assertEquals("3.0", folderLocation, folder.getLocation());
@@ -283,7 +288,7 @@ public class VirtualFolderTest extends ResourceTest {
 
 	public void testIsVirtual() throws CoreException {
 		// create a virtual folder
-		IFolder virtualFolder = existingProject.getFolder(getUniqueString());
+		IFolder virtualFolder = existingProject.getFolder(createUniqueString());
 		virtualFolder.create(IResource.VIRTUAL, true, null);
 		assertTrue("2.0", virtualFolder.isVirtual());
 	}
@@ -306,8 +311,8 @@ public class VirtualFolderTest extends ResourceTest {
 
 		// create the structure in the workspace
 		ensureExistsInWorkspace(topFolder, true);
-		linkedFolder.createLink(linkedFolderLocation, IResource.NONE, getMonitor());
-		virtualFolder.create(IResource.VIRTUAL, true, getMonitor());
+		linkedFolder.createLink(linkedFolderLocation, IResource.NONE, createTestMonitor());
+		virtualFolder.create(IResource.VIRTUAL, true, createTestMonitor());
 
 		// assert locations
 		assertEquals("2.0", linkedFolderLocation, linkedFolder.getLocation());

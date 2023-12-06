@@ -35,7 +35,6 @@ public class ExtensionMap {
 
 	/**
 	 * Get the one and only instance of this class
-	 * @return
 	 */
 	static public ExtensionMap getInstance() {
 		if (instance == null) {
@@ -57,7 +56,6 @@ public class ExtensionMap {
 
 	/**
 	 * Lookup in which plugin
-	 * @param anchorId
 	 * @return the plugin which contributed that anchor
 	 */
 	public String getPluginId(String anchorId) {
@@ -83,7 +81,6 @@ public class ExtensionMap {
 	/**
 	 * Allows a configurer to override the page which is displayed when
 	 * the welcome screen is first shown
-	 * @param contentPage
 	 */
 	public void setStartPage(String contentPage) {
 		startPage = contentPage;

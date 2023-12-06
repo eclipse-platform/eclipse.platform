@@ -27,10 +27,6 @@ public class LaunchConfigurationDialog extends LaunchConfigurationPropertiesDial
 
 	/**
 	 * Constructs a dialog
-	 *
-	 * @param shell
-	 * @param launchConfiguration
-	 * @param group
 	 */
 	public LaunchConfigurationDialog(Shell shell, ILaunchConfiguration launchConfiguration, LaunchGroupExtension group) {
 		super(shell, launchConfiguration, group);

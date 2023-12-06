@@ -17,7 +17,6 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * @since 3.2
- *
  */
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.debug.internal.ui.elements.adapters.Messages"; //$NON-NLS-1$

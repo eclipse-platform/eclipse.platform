@@ -109,8 +109,6 @@ public class TaskDependencies {
 	 * <li>Repeat step 3 until not further tasks can be removed
 	 * <li>Any tasks remaining are part of a cycle or depend on a task in a cycle
 	 * </ol>
-	 * @param model
-	 * @param status
 	 */
 	private void checkForCircularities (IStatusContainer status) {
 		Set<ICompositeCheatSheetTask> tasks = new HashSet<>();

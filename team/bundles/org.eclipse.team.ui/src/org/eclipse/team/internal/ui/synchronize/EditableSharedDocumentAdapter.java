@@ -126,7 +126,6 @@ public class EditableSharedDocumentAdapter extends
 	 * 			while saving the given element if necessary
 	 * @param monitor a progress monitor
 	 * @return whether the save succeeded or not
-	 * @throws CoreException
 	 */
 	public boolean saveDocument(IEditorInput input, boolean overwrite, IProgressMonitor monitor) throws CoreException {
 		if (isConnected()) {

@@ -14,6 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.mapping;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
@@ -260,7 +264,7 @@ public class ChangeValidationTest extends ResourceTest {
 	}
 
 	private IStatus validateChange(IResourceChangeDescriptionFactory f) {
-		return ResourceChangeValidator.getValidator().validateChange(f.getDelta(), getMonitor());
+		return ResourceChangeValidator.getValidator().validateChange(f.getDelta(), createTestMonitor());
 	}
 
 }

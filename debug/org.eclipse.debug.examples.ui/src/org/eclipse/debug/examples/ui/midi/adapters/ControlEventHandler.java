@@ -41,9 +41,6 @@ public class ControlEventHandler extends DebugEventHandler {
 	 */
 	private Timer fTimer;
 
-	/**
-	 * @param proxy
-	 */
 	public ControlEventHandler(SequencerControlsModelProxy proxy) {
 		super(proxy);
 		fLaunch = proxy.getMidiLaunch();
