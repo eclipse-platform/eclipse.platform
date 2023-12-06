@@ -16,6 +16,7 @@ package org.eclipse.core.tests.internal.localstore;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
@@ -123,11 +124,11 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		String originalContent = "this string should not be equal the other";
 
 		/* create file with flag false */
-		file.create(getContents(originalContent), false, null);
+		file.create(createInputStream(originalContent), false, null);
 		assertTrue(file.exists());
 		assertTrue(file.isLocal(IResource.DEPTH_ZERO));
 		assertEquals(file.getStore().fetchInfo().getLastModified(), file.getResourceInfo(false, false).getLocalSyncInfo());
-		assertTrue(compareContent(getContents(originalContent), getLocalManager().read(file, true, null)));
+		assertTrue(compareContent(createInputStream(originalContent), getLocalManager().read(file, true, null)));
 	}
 
 	@Test
@@ -262,32 +263,32 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		InputStream another;
 
 		/* write file for the first time */
-		original = getContents(originalContent);
+		original = createInputStream(originalContent);
 		write(file, original, true, null);
 
-		original = getContents(originalContent);
+		original = createInputStream(originalContent);
 		assertTrue("Unexpected content in " + original,
 				compareContent(original, getLocalManager().read(file, true, null)));
 
 		/* test the overwrite parameter (false) */
-		another = getContents(anotherContent);
+		another = createInputStream(anotherContent);
 		write(file, another, false, null);
 
-		another = getContents(anotherContent);
+		another = createInputStream(anotherContent);
 		assertTrue("Unexpected content in " + another,
 				compareContent(another, getLocalManager().read(file, true, null)));
 
 		/* test the overwrite parameter (true) */
-		original = getContents(originalContent);
+		original = createInputStream(originalContent);
 		write(file, original, true, null);
 
-		original = getContents(originalContent);
+		original = createInputStream(originalContent);
 		assertTrue("Unexpected content in " + original,
 				compareContent(original, getLocalManager().read(file, true, null)));
 
 		/* test the overwrite parameter (false) */
 		ensureOutOfSync(file);
-		InputStream another2 = getContents(anotherContent);
+		InputStream another2 = createInputStream(anotherContent);
 		assertThrows("Should fail writing out of sync file #1", CoreException.class,
 				() -> write(file, another2, false, null));
 		ensureOutOfSync(file);
@@ -297,7 +298,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 
 		/* test the overwrite parameter (false) */
 		removeFromFileSystem(file); // FIXME Race Condition with asynchronous workplace refresh see Bug 571133
-		InputStream another3 = getContents(anotherContent);
+		InputStream another3 = createInputStream(anotherContent);
 		waitForRefresh(); // wait for refresh to ensure that file is not present in workspace
 		assertThrows("Should fail writing non existing file", CoreException.class,
 				() -> write(file, another3, false, null));
@@ -316,11 +317,11 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		String content = "original";
 
 		/* write file for the first time */
-		write(file, getContents(content), true, null);
+		write(file, createInputStream(content), true, null);
 
 		file.delete(true, null);
 		assertThrows("Should fail writing file that is already deleted", CoreException.class,
-				() -> write(file, getContents(content), false, null));
+				() -> write(file, createInputStream(content), false, null));
 	}
 
 	@Test
@@ -333,7 +334,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 
 		/* common contents */
 		String anotherContent = "and this string should not... well, you know...";
-		InputStream another = getContents(anotherContent);
+		InputStream another = createInputStream(anotherContent);
 		assertThrows(CoreException.class, () -> write(file, another, false, null));
 
 		/* remove trash */

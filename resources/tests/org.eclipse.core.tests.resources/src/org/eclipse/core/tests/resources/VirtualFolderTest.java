@@ -19,6 +19,7 @@ import static java.io.InputStream.nullInputStream;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
@@ -198,7 +199,7 @@ public class VirtualFolderTest extends ResourceTest {
 		folder.createLink(folderLocation, IResource.NONE, createTestMonitor());
 		file.createLink(fileLocation, IResource.NONE, createTestMonitor());
 
-		childFile.create(getRandomContents(), true, createTestMonitor());
+		childFile.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// move the project
 		IProject destinationProject = getWorkspace().getRoot().getProject("MoveTargetProject");

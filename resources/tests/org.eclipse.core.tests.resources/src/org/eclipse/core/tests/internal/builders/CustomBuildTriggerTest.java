@@ -13,6 +13,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
@@ -149,7 +150,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		assertTrue("3.0", builder.wasFullBuild());
 
 		IFile file = project.getFile("a.txt");
-		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		// But subsequent INCREMENTAL_BUILD builds should cause INCREMENTAL_BUILD
 		builder.reset();
@@ -206,7 +207,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		builder.reset();
 
 		IFile file = project.getFile("b.txt");
-		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		waitForBuild();
 		assertTrue("6.0", !builder.wasCleanBuild());
@@ -385,7 +386,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 
 		//add a file in the project, to trigger an autobuild
 		IFile file = project.getFile("a.txt");
-		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		//autobuild should not call our builder
 		waitForBuild();
@@ -451,7 +452,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 
 		// add a file in the project before an incremental build is triggered again
 		IFile file = project.getFile("a.txt");
-		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		// do an incremental build - build should NOT be triggered
 		builder.clearBuildTrigger();
@@ -505,7 +506,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		builder.reset();
 
 		IFile file = project.getFile("a.txt");
-		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		waitForBuild();
 		assertEquals("4.0", 0, builder.triggerForLastBuild);
@@ -520,7 +521,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		builder.reset();
 
 		file = project.getFile("b.txt");
-		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		waitForBuild();
 		assertTrue("6.0", !builder.wasCleanBuild());

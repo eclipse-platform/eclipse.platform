@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
@@ -600,7 +601,7 @@ public class HiddenResourceTest extends ResourceTest {
 
 		createInWorkspace(project);
 		folder.create(IResource.HIDDEN, true, createTestMonitor());
-		file.create(getRandomContents(), IResource.HIDDEN, createTestMonitor());
+		file.create(createRandomContentsStream(), IResource.HIDDEN, createTestMonitor());
 
 		assertHidden(project, false, IResource.DEPTH_ZERO);
 		assertHidden(folder, true, IResource.DEPTH_ZERO);

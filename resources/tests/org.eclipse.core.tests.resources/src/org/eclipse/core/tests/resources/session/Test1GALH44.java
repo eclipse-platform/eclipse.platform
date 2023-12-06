@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.ICommand;
@@ -47,7 +48,7 @@ public class Test1GALH44 extends WorkspaceSessionTest {
 		project.setDescription(description, getMonitor());
 
 		IFile file = project.getFile("foo.txt");
-		file.create(getRandomContents(), true, getMonitor());
+		file.create(createRandomContentsStream(), true, getMonitor());
 
 		getWorkspace().save(true, getMonitor());
 	}
@@ -58,7 +59,7 @@ public class Test1GALH44 extends WorkspaceSessionTest {
 	public void test2() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile file = project.getFile("foo.txt");
-		file.setContents(getRandomContents(), true, true, getMonitor());
+		file.setContents(createRandomContentsStream(), true, true, getMonitor());
 		// crash
 		System.exit(-1);
 	}

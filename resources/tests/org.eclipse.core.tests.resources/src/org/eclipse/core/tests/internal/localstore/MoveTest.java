@@ -19,6 +19,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.findAvailableDevices;
@@ -76,7 +77,7 @@ public class MoveTest extends LocalStoreTest {
 
 		String fileName = "fileToBeMoved.txt";
 		IFile file = source.getFile(fileName);
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// add some properties to file (persistent and session)
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];

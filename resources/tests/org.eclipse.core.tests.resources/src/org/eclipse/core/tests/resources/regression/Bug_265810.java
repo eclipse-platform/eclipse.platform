@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 
 import java.io.ByteArrayInputStream;
@@ -57,7 +58,7 @@ public class Bug_265810 extends ResourceTest {
 		// the file should not exist yet
 		assertDoesNotExistInWorkspace(file);
 		file.createLink(createFolderAtRandomLocation(), IResource.NONE, new NullProgressMonitor());
-		file.setContents(getContents("contents for a file"), IResource.NONE, new NullProgressMonitor());
+		file.setContents(createInputStream("contents for a file"), IResource.NONE, new NullProgressMonitor());
 
 		// save the .project [1] content
 		byte[] dotProject1 = storeDotProject(project);
@@ -110,7 +111,7 @@ public class Bug_265810 extends ResourceTest {
 		listenerInMainThreadCallback.get().run();
 
 		// create newFile as a non-linked resource
-		newFile.create(getContents("content"), IResource.NONE, new NullProgressMonitor());
+		newFile.create(createInputStream("content"), IResource.NONE, new NullProgressMonitor());
 
 		try {
 			resourceDeltas = new ArrayList<>();

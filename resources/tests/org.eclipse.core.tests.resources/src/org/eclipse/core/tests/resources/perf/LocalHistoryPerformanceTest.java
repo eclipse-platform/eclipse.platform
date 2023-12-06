@@ -14,6 +14,8 @@
 package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 
@@ -60,10 +62,10 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 				for (IFolder folder : folders) {
 					for (int j = 0; j < filesPerFolder; j++) {
 						IFile file = folder.getFile("file" + j);
-						createInWorkspace(file, getRandomString());
+						createInWorkspace(file, createRandomString());
 						try {
 							for (int k = 0; k < statesPerFile; k++) {
-								file.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
+								file.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 							}
 						} catch (CoreException ce) {
 							fail("0.5", ce);
@@ -97,7 +99,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 
 			@Override
 			protected void setUp() throws CoreException {
-				createInWorkspace(file, getRandomString());
+				createInWorkspace(file, createRandomString());
 			}
 
 			@Override
@@ -113,7 +115,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 			@Override
 			protected void test() {
 				try {
-					file.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
+					file.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 				} catch (CoreException e) {
 					fail("", e);
 				}
@@ -134,10 +136,10 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 			protected void setUp() throws CoreException {
 				createInWorkspace(new IResource[] {project, folder1, folder2});
 				try {
-					file1.create(getRandomContents(), IResource.FORCE, createTestMonitor());
-					file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
-					file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
-					file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
+					file1.create(createRandomContentsStream(), IResource.FORCE, createTestMonitor());
+					file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
+					file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
+					file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
 				} catch (CoreException e) {
 					fail("0.0", e);
 				}
@@ -284,9 +286,9 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 	public void testGetHistory() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		final IFile file = project.getFile("file.txt");
-		createInWorkspace(file, getRandomString());
+		createInWorkspace(file, createRandomString());
 		for (int i = 0; i < 100; i++) {
-			file.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
+			file.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 		}
 		new PerformanceTestRunner() {
 			@Override

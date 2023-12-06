@@ -18,6 +18,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SIMPLE;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.readStringInFileSystem;
@@ -216,7 +217,7 @@ public class LinkedResourceTest extends ResourceTest {
 
 		// creating child should fail
 		assertThrows(CoreException.class,
-				() -> folder.getFile("abc.txt").create(getRandomContents(), IResource.NONE, createTestMonitor()));
+				() -> folder.getFile("abc.txt").create(createRandomContentsStream(), IResource.NONE, createTestMonitor()));
 	}
 
 	/**

@@ -15,6 +15,8 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.internal.localstore.IHistoryStore;
@@ -47,9 +49,9 @@ public class Bug_079398 extends ResourceTest {
 		// max size of file = 1 Mb
 		description.setMaxFileStateSize(1024 * 1024);
 		getWorkspace().setDescription(description);
-		createInWorkspace(file1, getRandomString());
+		createInWorkspace(file1, createRandomString());
 		for (int i = 0; i < 10; i++) {
-			file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
+			file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
 		}
 
 		IFileState[] sourceStates = file1.getHistory(createTestMonitor());
@@ -70,7 +72,7 @@ public class Bug_079398 extends ResourceTest {
 
 		// now cause the destination to have many more states
 		for (int i = 0; i <= description.getMaxFileStates(); i++) {
-			file2.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
+			file2.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
 		}
 		IHistoryStore history = ((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore();
 		// clean history

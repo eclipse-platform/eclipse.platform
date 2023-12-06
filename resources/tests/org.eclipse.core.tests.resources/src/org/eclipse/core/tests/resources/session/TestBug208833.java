@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 
 import java.io.File;
 import junit.framework.Test;
@@ -41,7 +42,7 @@ public class TestBug208833 extends WorkspaceSessionTest {
 
 		// create a project with a file
 		createInWorkspace(project);
-		createInWorkspace(file, getRandomString());
+		createInWorkspace(file, createRandomString());
 
 		// save the workspace
 		workspace.save(true, null);

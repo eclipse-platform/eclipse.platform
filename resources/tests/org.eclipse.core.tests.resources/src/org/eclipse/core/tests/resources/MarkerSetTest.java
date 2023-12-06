@@ -14,9 +14,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
+
 import java.util.Arrays;
 import java.util.Map;
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.IMarkerSetElement;
+import org.eclipse.core.internal.resources.MarkerAttributeMap;
+import org.eclipse.core.internal.resources.MarkerInfo;
+import org.eclipse.core.internal.resources.MarkerSet;
 import org.eclipse.core.resources.IMarker;
 
 public class MarkerSetTest extends ResourceTest {
@@ -53,7 +58,7 @@ public class MarkerSetTest extends ResourceTest {
 		MarkerInfo[] infos = new MarkerInfo[max];
 		for (int i = 0; i < max; i++) {
 			info = new MarkerInfo(IMarker.PROBLEM, i);
-			info.setAttribute(IMarker.MESSAGE, getRandomString(), true);
+			info.setAttribute(IMarker.MESSAGE, createRandomString(), true);
 			infos[i] = info;
 		}
 
@@ -83,7 +88,7 @@ public class MarkerSetTest extends ResourceTest {
 		MarkerInfo[] infos = new MarkerInfo[max];
 		for (int i = 0; i < max; i++) {
 			info = new MarkerInfo(IMarker.PROBLEM, i);
-			info.setAttribute(IMarker.MESSAGE, getRandomString(), true);
+			info.setAttribute(IMarker.MESSAGE, createRandomString(), true);
 			infos[i] = info;
 		}
 		set.addAll(infos);
@@ -102,7 +107,7 @@ public class MarkerSetTest extends ResourceTest {
 		MarkerInfo[] infos = new MarkerInfo[max];
 		for (int i = 0; i < max; i++) {
 			info = new MarkerInfo(IMarker.PROBLEM, i);
-			info.setAttribute(IMarker.MESSAGE, getRandomString(), true);
+			info.setAttribute(IMarker.MESSAGE, createRandomString(), true);
 			infos[i] = info;
 		}
 		set.addAll(infos);

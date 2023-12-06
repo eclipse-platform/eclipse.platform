@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 
@@ -80,7 +81,7 @@ public class TestBug6995 extends WorkspaceSessionTest {
 		//build
 		//make a change so build doesn't get short-circuited
 		IFile file = project.getFile("File");
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
 		//make sure an incremental build occurred

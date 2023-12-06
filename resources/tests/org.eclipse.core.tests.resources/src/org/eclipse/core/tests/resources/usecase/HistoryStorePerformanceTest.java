@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.usecase;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.IFile;
@@ -54,7 +55,7 @@ public class HistoryStorePerformanceTest extends ResourceTest {
 		int nTimes = 1000;
 		long startTime = System.currentTimeMillis();
 		for (int i = 0; i < nTimes; i++) {
-			file.setContents(getContents(contents), true, true, null);
+			file.setContents(createInputStream(contents), true, true, null);
 		}
 		long endTime = System.currentTimeMillis();
 		System.out.println("Adding " + nTimes + " states: " + (endTime - startTime) + " milliseconds.");

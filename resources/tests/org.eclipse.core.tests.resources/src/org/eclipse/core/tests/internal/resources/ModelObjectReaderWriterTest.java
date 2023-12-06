@@ -16,6 +16,7 @@
 package org.eclipse.core.tests.internal.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
@@ -330,7 +331,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		// Write out the project description file
 		removeFromFileSystem(location.toFile());
 		try (FileOutputStream output = new FileOutputStream(location.toFile())) {
-			getContents(invalidProjectDescription).transferTo(output);
+			createInputStream(invalidProjectDescription).transferTo(output);
 		}
 		ProjectDescription projDesc = reader.read(location);
 		assertThat(projDesc, nullValue());
@@ -342,7 +343,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		IFileStore store = getTempStore();
 		// Write out the project description file
 		try (OutputStream output = store.openOutputStream(EFS.NONE, null)) {
-			getContents(invalidProjectDescription).transferTo(output);
+			createInputStream(invalidProjectDescription).transferTo(output);
 		}
 		ProjectDescription projDesc = readDescription(store);
 		assertThat(projDesc, not(nullValue()));
@@ -361,7 +362,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		IFileStore store = getTempStore();
 		// Write out the project description file
 		try (OutputStream output = store.openOutputStream(EFS.NONE, null)) {
-			getContents(invalidProjectDescription).transferTo(output);
+			createInputStream(invalidProjectDescription).transferTo(output);
 		}
 
 		ProjectDescription projDesc = readDescription(store);
@@ -381,7 +382,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		IFileStore store = getTempStore();
 		// Write out the project description file
 		try (OutputStream output = store.openOutputStream(EFS.NONE, null)) {
-			getContents(invalidProjectDescription).transferTo(output);
+			createInputStream(invalidProjectDescription).transferTo(output);
 		}
 		ProjectDescription projDesc = readDescription(store);
 		assertThat(projDesc, not(nullValue()));
@@ -409,7 +410,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		// Write out the project description file
 		removeFromFileSystem(location.toFile());
 		try (FileOutputStream output = new FileOutputStream(location.toFile())) {
-			getContents(longProjectDescription).transferTo(output);
+			createInputStream(longProjectDescription).transferTo(output);
 		}
 		ProjectDescription projDesc = reader.read(location);
 		removeFromFileSystem(location.toFile());
@@ -431,7 +432,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		// Write out the project description file
 		removeFromFileSystem(location.toFile());
 		try (FileOutputStream output = new FileOutputStream(location.toFile())) {
-			getContents(longProjectDescription).transferTo(output);
+			createInputStream(longProjectDescription).transferTo(output);
 		}
 		ProjectDescription projDesc = reader.read(location);
 		removeFromFileSystem(location.toFile());
@@ -460,10 +461,10 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		removeFromFileSystem(multiLocation.toFile());
 		removeFromFileSystem(singleLocation.toFile());
 		try (FileOutputStream output = new FileOutputStream(multiLocation.toFile())) {
-			getContents(multiLineProjectDescription).transferTo(output);
+			createInputStream(multiLineProjectDescription).transferTo(output);
 		}
 		try (FileOutputStream output = new FileOutputStream(singleLocation.toFile())) {
-			getContents(singleLineProjectDescription).transferTo(output);
+			createInputStream(singleLineProjectDescription).transferTo(output);
 		}
 		ProjectDescription multiDesc = reader.read(multiLocation);
 		ProjectDescription singleDesc = reader.read(singleLocation);
@@ -683,7 +684,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 		// Write out the project description file
 		removeFromFileSystem(location.toFile());
 		try (FileOutputStream output = new FileOutputStream(location.toFile())) {
-			getContents(projectDescription).transferTo(output);
+			createInputStream(projectDescription).transferTo(output);
 		}
 		ProjectDescription projDesc = reader.read(location);
 		assertThat(projDesc, not(nullValue()));

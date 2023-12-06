@@ -15,6 +15,8 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
@@ -125,9 +127,9 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		// Create folders and files
 		folder.create(true, true, createTestMonitor());
-		fileA.create(getRandomContents(), true, createTestMonitor());
+		fileA.create(createRandomContentsStream(), true, createTestMonitor());
 		sub.create(true, true, createTestMonitor());
-		fileB.create(getRandomContents(), true, createTestMonitor());
+		fileB.create(createRandomContentsStream(), true, createTestMonitor());
 	}
 
 	/**
@@ -237,8 +239,8 @@ public class BuilderTest extends AbstractBuilderTest {
 		project1.open(createTestMonitor());
 		project2.create(createTestMonitor());
 		project2.open(createTestMonitor());
-		file1.create(getRandomContents(), true, createTestMonitor());
-		file2.create(getRandomContents(), true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
+		file2.create(createRandomContentsStream(), true, createTestMonitor());
 		// Do an initial build to get the builder instance
 		IProjectDescription desc = project1.getDescription();
 		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Project1Build1") });
@@ -858,7 +860,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		command.setBuilderName(SortBuilder.BUILDER_NAME);
 		desc.setBuildSpec(new ICommand[] { command });
 		project.setDescription(desc, createTestMonitor());
-		createInWorkspace(input, getRandomString());
+		createInWorkspace(input, createRandomString());
 
 		waitForBuild();
 		assertTrue("1.0", output.exists());
@@ -901,7 +903,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		command.setBuilderName(SortBuilder.BUILDER_NAME);
 		desc.setBuildSpec(new ICommand[] { command });
 		project.setDescription(desc, createTestMonitor());
-		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		waitForBuild();
 
 		// Set up a plug-in lifecycle verifier for testing purposes
@@ -930,7 +932,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		try {
 			getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.PRE_BUILD);
 			// Now change a file. The build should not complete until the job triggered by the listener completes
-			file.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+			file.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 			//wait for job to be scheduled
 			barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 			//wait for test job to complete
@@ -1054,7 +1056,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		// Create and open a project
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		// Create and set a build spec for the project
 		IProjectDescription desc = project.getDescription();
@@ -1077,7 +1079,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		// Now make a change and then turn autobuild on. Turning it on should
 		// cause a build.
 		IWorkspaceRunnable r = monitor -> {
-			file.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+			file.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 			IWorkspaceDescription description = getWorkspace().getDescription();
 			description.setAutoBuilding(true);
 			getWorkspace().setDescription(description);

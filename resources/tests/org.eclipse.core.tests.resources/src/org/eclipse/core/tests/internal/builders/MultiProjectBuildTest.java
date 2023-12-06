@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 
@@ -72,7 +73,7 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 			for (IProject project : projects) {
 				for (IResource member : project.members()) {
 					if (member.getType() == IResource.FILE && !member.getName().equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
-						((IFile) member).setContents(getRandomContents(), true, true, null);
+						((IFile) member).setContents(createRandomContentsStream(), true, true, null);
 					}
 				}
 			}
@@ -220,7 +221,7 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 		builder.checkDeltas(allProjects);
 
 		//modify a file in project1 to force an autobuild
-		file1.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 	}
 
 	/**
@@ -244,7 +245,7 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 
 		//do an incremental build by creating a file
 		IFile file = project.getFile("Foo");
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 	}
 

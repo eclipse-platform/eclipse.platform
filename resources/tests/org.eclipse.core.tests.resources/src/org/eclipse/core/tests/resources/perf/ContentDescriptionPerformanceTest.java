@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.util.Set;
@@ -74,7 +75,7 @@ public class ContentDescriptionPerformanceTest extends ResourceTest {
 			folder.create(false, true, createTestMonitor());
 			for (int j = 0; j < TOTAL_FILES / SUBDIRS; j++) {
 				IFile file = folder.getFile("file_" + j + getFileName(j));
-				file.create(getContents(getContents(j)), false, createTestMonitor());
+				file.create(createInputStream(getContents(j)), false, createTestMonitor());
 			}
 		}
 	}

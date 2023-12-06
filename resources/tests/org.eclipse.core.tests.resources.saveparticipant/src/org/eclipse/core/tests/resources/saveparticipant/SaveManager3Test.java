@@ -26,6 +26,7 @@ import org.eclipse.core.tests.resources.saveparticipant2.SaveParticipant2Plugin;
 import org.eclipse.core.tests.resources.saveparticipant3.SaveParticipant3Plugin;
 import org.osgi.framework.Bundle;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.*;
 
 /**
  * @see SaveManager1Test
@@ -67,7 +68,7 @@ public class SaveManager3Test extends SaveManagerTest {
 
 		IFile added = project.getFile("added file");
 		verifier.addExpectedChange(added, project, IResourceDelta.ADDED, 0);
-		added.create(getRandomContents(), true, null);
+		added.create(createRandomContentsStream(), true, null);
 		waitForBuild();
 		assertTrue("3.2", verifier.wasAutoBuild());
 		assertTrue("3.3", verifier.isDeltaValid());

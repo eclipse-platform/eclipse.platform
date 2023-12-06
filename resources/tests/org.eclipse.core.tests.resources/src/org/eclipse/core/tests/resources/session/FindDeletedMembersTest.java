@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.util.Arrays;
@@ -75,7 +76,7 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 
 		// test that a deleted file can be found
 		// create and delete a file
-		pfile.create(getRandomContents(), true, createTestMonitor());
+		pfile.create(createRandomContentsStream(), true, createTestMonitor());
 		pfile.delete(true, true, createTestMonitor());
 
 		saveWorkspace();
@@ -106,7 +107,7 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		assertEquals("0.5.4", 0, df.length);
 
 		// recreate the file
-		pfile.create(getRandomContents(), true, createTestMonitor());
+		pfile.create(createRandomContentsStream(), true, createTestMonitor());
 
 		saveWorkspace();
 	}
@@ -143,7 +144,7 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		// test folder
 		// create and delete a file in a folder
 		folder.create(true, true, createTestMonitor());
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 		file.delete(true, true, createTestMonitor());
 
 		saveWorkspace();
@@ -162,7 +163,7 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		assertEquals("1.4", 0, df.length);
 
 		// recreate the file
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// the recreated file should no longer show up as a deleted member
 		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
@@ -193,7 +194,7 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		assertEquals("1.11", 0, df.length);
 
 		// create and delete a file where the folder was
-		folderAsFile.create(getRandomContents(), true, createTestMonitor());
+		folderAsFile.create(createRandomContentsStream(), true, createTestMonitor());
 		folderAsFile.delete(true, true, createTestMonitor());
 		folder.create(true, true, createTestMonitor());
 
@@ -226,9 +227,9 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		// create and delete a file in a folder
 		folder.create(true, true, createTestMonitor());
 		folder2.create(true, true, createTestMonitor());
-		file1.create(getRandomContents(), true, createTestMonitor());
-		file2.create(getRandomContents(), true, createTestMonitor());
-		file3.create(getRandomContents(), true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
+		file2.create(createRandomContentsStream(), true, createTestMonitor());
+		file3.create(createRandomContentsStream(), true, createTestMonitor());
 		folder.delete(true, true, createTestMonitor());
 
 		saveWorkspace();

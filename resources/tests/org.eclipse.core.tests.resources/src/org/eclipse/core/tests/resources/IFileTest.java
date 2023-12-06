@@ -21,6 +21,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.junit.Assert.assertThrows;
@@ -193,7 +196,7 @@ public class IFileTest extends ResourceTest {
 		streams.add(bis);
 
 		// random content
-		streams.add(getRandomContents());
+		streams.add(createRandomContentsStream());
 
 		//large stream
 		bis = new ByteArrayInputStream(new byte[10000]);
@@ -272,11 +275,11 @@ public class IFileTest extends ResourceTest {
 	@Test
 	public void testAppendContents() throws Exception {
 		IFile target = projects[0].getFile("file1");
-		target.create(getContents("abc"), false, null);
-		target.appendContents(getContents("def"), false, false, null);
+		target.create(createInputStream("abc"), false, null);
+		target.appendContents(createInputStream("def"), false, false, null);
 
 		try (InputStream content = target.getContents(false)) {
-			assertTrue("3.0", compareContent(content, getContents("abcdef")));
+			assertTrue("3.0", compareContent(content, createInputStream("abcdef")));
 		}
 	}
 
@@ -299,7 +302,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("1.2", !file.isLocal(IResource.DEPTH_ZERO));
 
 		monitor.prepare();
-		file.appendContents(getRandomContents(), IResource.FORCE, monitor);
+		file.appendContents(createRandomContentsStream(), IResource.FORCE, monitor);
 		monitor.assertUsedUp();
 
 		assertTrue("1.5", file.isLocal(IResource.DEPTH_ZERO));
@@ -318,7 +321,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("2.1", !file.getLocation().toFile().exists());
 
 		monitor.prepare();
-		assertThrows(CoreException.class, () -> file.appendContents(getRandomContents(), IResource.FORCE, monitor));
+		assertThrows(CoreException.class, () -> file.appendContents(createRandomContentsStream(), IResource.FORCE, monitor));
 		monitor.sanityCheck();
 		assertTrue("2.4", !file.isLocal(IResource.DEPTH_ZERO));
 		// cleanup
@@ -336,7 +339,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("3.2", !file.isLocal(IResource.DEPTH_ZERO));
 
 		monitor.prepare();
-		assertThrows(CoreException.class, () -> file.appendContents(getRandomContents(), IResource.NONE, monitor));
+		assertThrows(CoreException.class, () -> file.appendContents(createRandomContentsStream(), IResource.NONE, monitor));
 		monitor.assertUsedUp();
 		assertTrue("3.5", !file.isLocal(IResource.DEPTH_ZERO));
 		// cleanup
@@ -352,7 +355,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("4.1", !file.getLocation().toFile().exists());
 
 		monitor.prepare();
-		assertThrows(CoreException.class, () -> file.appendContents(getRandomContents(), IResource.NONE, monitor));
+		assertThrows(CoreException.class, () -> file.appendContents(createRandomContentsStream(), IResource.NONE, monitor));
 		monitor.sanityCheck();
 		assertTrue("4.4", !file.isLocal(IResource.DEPTH_ZERO));
 		// cleanup
@@ -431,7 +434,7 @@ public class IFileTest extends ResourceTest {
 		removeFromWorkspace(derived);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		derived.create(getRandomContents(), IResource.DERIVED, monitor);
+		derived.create(createRandomContentsStream(), IResource.DERIVED, monitor);
 		monitor.assertUsedUp();
 		assertTrue("1.0", derived.isDerived());
 		assertTrue("1.1", !derived.isTeamPrivateMember());
@@ -440,7 +443,7 @@ public class IFileTest extends ResourceTest {
 		derived.delete(false, monitor);
 		monitor.assertUsedUp();
 		monitor.prepare();
-		derived.create(getRandomContents(), IResource.NONE, monitor);
+		derived.create(createRandomContentsStream(), IResource.NONE, monitor);
 		monitor.assertUsedUp();
 		assertTrue("2.0", !derived.isDerived());
 		assertTrue("2.1", !derived.isTeamPrivateMember());
@@ -457,7 +460,7 @@ public class IFileTest extends ResourceTest {
 		verifier.addExpectedChange(derived, IResourceDelta.ADDED, IResource.NONE);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		derived.create(getRandomContents(), IResource.FORCE | IResource.DERIVED, monitor);
+		derived.create(createRandomContentsStream(), IResource.FORCE | IResource.DERIVED, monitor);
 		monitor.assertUsedUp();
 
 		assertTrue("2.0", verifier.isDeltaValid());
@@ -470,7 +473,7 @@ public class IFileTest extends ResourceTest {
 		removeFromWorkspace(teamPrivate);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		teamPrivate.create(getRandomContents(), IResource.TEAM_PRIVATE | IResource.DERIVED, monitor);
+		teamPrivate.create(createRandomContentsStream(), IResource.TEAM_PRIVATE | IResource.DERIVED, monitor);
 		monitor.assertUsedUp();
 
 		assertTrue("1.0", teamPrivate.isTeamPrivateMember());
@@ -480,7 +483,7 @@ public class IFileTest extends ResourceTest {
 		teamPrivate.delete(false, monitor);
 		monitor.assertUsedUp();
 		monitor.prepare();
-		teamPrivate.create(getRandomContents(), IResource.NONE, monitor);
+		teamPrivate.create(createRandomContentsStream(), IResource.NONE, monitor);
 		monitor.assertUsedUp();
 		assertTrue("2.0", !teamPrivate.isTeamPrivateMember());
 		assertTrue("2.1", !teamPrivate.isDerived());
@@ -493,7 +496,7 @@ public class IFileTest extends ResourceTest {
 		removeFromWorkspace(teamPrivate);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		teamPrivate.create(getRandomContents(), IResource.TEAM_PRIVATE, monitor);
+		teamPrivate.create(createRandomContentsStream(), IResource.TEAM_PRIVATE, monitor);
 		monitor.assertUsedUp();
 		assertTrue("1.0", teamPrivate.isTeamPrivateMember());
 		assertTrue("1.1", !teamPrivate.isDerived());
@@ -502,7 +505,7 @@ public class IFileTest extends ResourceTest {
 		teamPrivate.delete(false, monitor);
 		monitor.assertUsedUp();
 		monitor.prepare();
-		teamPrivate.create(getRandomContents(), IResource.NONE, monitor);
+		teamPrivate.create(createRandomContentsStream(), IResource.NONE, monitor);
 		monitor.assertUsedUp();
 		assertTrue("2.0", !teamPrivate.isTeamPrivateMember());
 		assertTrue("2.1", !teamPrivate.isDerived());
@@ -523,23 +526,23 @@ public class IFileTest extends ResourceTest {
 		assertTrue("2.0", !emptyFile.exists());
 		String contents = "";
 		monitor.prepare();
-		emptyFile.create(getContents(contents), true, monitor);
+		emptyFile.create(createInputStream(contents), true, monitor);
 		monitor.assertUsedUp();
 		assertTrue("2.2", emptyFile.exists());
 		try (InputStream stream = emptyFile.getContents(false)) {
 			assertTrue("2.4", stream.available() == 0);
 		}
-		assertTrue("2.6", compareContent(emptyFile.getContents(false), getContents(contents)));
+		assertTrue("2.6", compareContent(emptyFile.getContents(false), createInputStream(contents)));
 
 		// creation with random content
 		IFile fileWithRandomContent = projects[0].getFile("file3");
 		assertTrue("3.0", !fileWithRandomContent.exists());
-		contents = getRandomString();
+		contents = createRandomString();
 		monitor.prepare();
-		fileWithRandomContent.create(getContents(contents), true, monitor);
+		fileWithRandomContent.create(createInputStream(contents), true, monitor);
 		monitor.assertUsedUp();
 		assertTrue("3.2", fileWithRandomContent.exists());
-		assertTrue("3.2", compareContent(fileWithRandomContent.getContents(false), getContents(contents)));
+		assertTrue("3.2", compareContent(fileWithRandomContent.getContents(false), createInputStream(contents)));
 
 		// try to create a file over a folder that exists
 		IFolder folder = projects[0].getFolder("folder1");
@@ -641,7 +644,7 @@ public class IFileTest extends ResourceTest {
 	public void testFileEmptyDeletion() throws Throwable {
 		IFile target = projects[0].getFile("file1");
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		target.create(getContents(""), true, monitor);
+		target.create(createInputStream(""), true, monitor);
 		monitor.assertUsedUp();
 		assertTrue("1.0", target.exists());
 		monitor.prepare();
@@ -659,7 +662,7 @@ public class IFileTest extends ResourceTest {
 
 		IFile target = folder.getFile("file1");
 		monitor.prepare();
-		target.create(getRandomContents(), true, monitor);
+		target.create(createRandomContentsStream(), true, monitor);
 		monitor.assertUsedUp();
 		assertTrue("1.1", target.exists());
 	}
@@ -671,7 +674,7 @@ public class IFileTest extends ResourceTest {
 
 		IFile target = folder.getFile("file1");
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		target.create(getRandomContents(), true, monitor);
+		target.create(createRandomContentsStream(), true, monitor);
 		monitor.assertUsedUp();
 		assertTrue("1.0", target.exists());
 	}
@@ -685,7 +688,7 @@ public class IFileTest extends ResourceTest {
 
 		IFile target = folder.getFile("file1");
 		monitor.prepare();
-		target.create(getRandomContents(), true, monitor);
+		target.create(createRandomContentsStream(), true, monitor);
 		monitor.assertUsedUp();
 		assertTrue("1.1", target.exists());
 	}
@@ -694,7 +697,7 @@ public class IFileTest extends ResourceTest {
 	public void testFileMove() throws Throwable {
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		IFile target = projects[0].getFile("file1");
-		target.create(getRandomContents(), true, monitor);
+		target.create(createRandomContentsStream(), true, monitor);
 		monitor.assertUsedUp();
 
 		IFile destination = projects[0].getFile("file2");
@@ -773,10 +776,10 @@ public class IFileTest extends ResourceTest {
 	@Test
 	public void testGetContents2() throws IOException, CoreException {
 		IFile target = projects[0].getFile("file1");
-		String testString = getRandomString();
+		String testString = createRandomString();
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		target.create(null, false, null);
-		target.setContents(getContents(testString), true, false, monitor);
+		target.setContents(createInputStream(testString), true, false, monitor);
 		monitor.assertUsedUp();
 		ensureOutOfSync(target);
 
@@ -836,7 +839,7 @@ public class IFileTest extends ResourceTest {
 			monitor.prepare();
 			IFile file = project.getFile(IPath.fromPortableString(name));
 			assertTrue("1.0 " + name, !file.exists());
-			assertThrows(CoreException.class, () -> file.create(getRandomContents(), true, monitor));
+			assertThrows(CoreException.class, () -> file.create(createRandomContentsStream(), true, monitor));
 			monitor.sanityCheck();
 			assertTrue("1.2 " + name, !file.exists());
 		}
@@ -853,7 +856,7 @@ public class IFileTest extends ResourceTest {
 			IFile file = project.getFile(name);
 			assertTrue("2.0 " + name, !file.exists());
 			monitor.prepare();
-			file.create(getRandomContents(), true, monitor);
+			file.create(createRandomContentsStream(), true, monitor);
 			monitor.assertUsedUp();
 			assertTrue("2.2 " + name, file.exists());
 		}
@@ -924,13 +927,13 @@ public class IFileTest extends ResourceTest {
 		IFile target = projects[0].getFile("file1");
 		target.create(null, false, null);
 
-		String testString = getRandomString();
+		String testString = createRandomString();
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		target.setContents(getContents(testString), true, false, monitor);
+		target.setContents(createInputStream(testString), true, false, monitor);
 		monitor.assertUsedUp();
 
 		try (InputStream content = target.getContents(false)) {
-			assertTrue("get not equal set", compareContent(content, getContents(testString)));
+			assertTrue("get not equal set", compareContent(content, createInputStream(testString)));
 		}
 	}
 

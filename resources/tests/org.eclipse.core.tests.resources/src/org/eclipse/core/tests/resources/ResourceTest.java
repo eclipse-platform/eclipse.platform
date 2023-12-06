@@ -16,6 +16,8 @@ package org.eclipse.core.tests.resources;
 
 import static java.io.InputStream.nullInputStream;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
@@ -167,7 +169,7 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	public void createFileInFileSystem(IFileStore file) throws CoreException, IOException {
 		file.getParent().mkdir(EFS.NONE, null);
-		try (InputStream input = getRandomContents(); OutputStream output = file.openOutputStream(EFS.NONE, null)) {
+		try (InputStream input = createRandomContentsStream(); OutputStream output = file.openOutputStream(EFS.NONE, null)) {
 			input.transferTo(output);
 		}
 	}
@@ -178,7 +180,7 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	public void createFileInFileSystem(IPath path) throws CoreException, IOException {
 		path.toFile().getParentFile().mkdirs();
-		try (InputStream input = getRandomContents(); OutputStream output = new FileOutputStream(path.toFile())) {
+		try (InputStream input = createRandomContentsStream(); OutputStream output = new FileOutputStream(path.toFile())) {
 			input.transferTo(output);
 		}
 	}
@@ -241,7 +243,7 @@ public abstract class ResourceTest extends CoreTest {
 	 * Create the given file in the workspace resource info tree.
 	 */
 	public void createInWorkspace(IFile resource, String contents) throws CoreException {
-		InputStream contentStream = getContents(contents);
+		InputStream contentStream = createInputStream(contents);
 		if (resource == null) {
 			return;
 		}

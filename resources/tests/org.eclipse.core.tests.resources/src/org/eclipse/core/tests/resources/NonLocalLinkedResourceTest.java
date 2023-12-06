@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
@@ -69,7 +70,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		createInWorkspace(project);
 		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
 		destination.createLink(destinationStore.toURI(), IResource.NONE, createTestMonitor());
-		sourceFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		sourceFile.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		//copy to linked destination should succeed
 		sourceFile.copy(destinationFile.getFullPath(), IResource.NONE, createTestMonitor());
@@ -126,7 +127,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		createInWorkspace(project);
 		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
 		destination.createLink(destinationStore.toURI(), IResource.NONE, createTestMonitor());
-		sourceFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		sourceFile.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		//move to linked destination should succeed
 		sourceFile.move(destinationFile.getFullPath(), IResource.NONE, createTestMonitor());
@@ -156,7 +157,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		createInWorkspace(project);
 		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
 		destination.createLink(destinationStore.toURI(), IResource.NONE, createTestMonitor());
-		sourceFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		sourceFile.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		//move to linked destination should succeed
 		project.move(IPath.fromPortableString("movedProject"), IResource.NONE, createTestMonitor());

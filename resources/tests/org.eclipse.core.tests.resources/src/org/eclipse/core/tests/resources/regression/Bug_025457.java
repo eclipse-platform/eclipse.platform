@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.junit.Assert.assertThrows;
@@ -49,7 +50,7 @@ public class Bug_025457 extends ResourceTest {
 		IFile sourceFile = source.getFile("file.txt");
 		IFile destFile = source.getFile("File.txt");
 		createInWorkspace(source);
-		final String content = getRandomString();
+		final String content = createRandomString();
 		createInWorkspace(sourceFile, content);
 
 		//open a stream in the source to cause the rename to fail

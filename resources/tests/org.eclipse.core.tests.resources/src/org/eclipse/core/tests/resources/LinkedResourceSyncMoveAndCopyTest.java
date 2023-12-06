@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
@@ -93,7 +94,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		fileLink.createLink(fileLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
 		CoreException exception = assertThrows(CoreException.class, () -> fileLink
-				.setContents(new ByteArrayInputStream(getRandomString().getBytes()), IResource.NONE, createTestMonitor()));
+				.setContents(new ByteArrayInputStream(createRandomString().getBytes()), IResource.NONE, createTestMonitor()));
 		assertEquals("1.2", IResourceStatus.NOT_FOUND_LOCAL, exception.getStatus().getCode());
 
 		assertTrue("2.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
@@ -103,7 +104,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		deleteOnTearDown(fileLocation);
 
 		exception = assertThrows(CoreException.class, () -> fileLink
-				.setContents(new ByteArrayInputStream(getRandomString().getBytes()), IResource.NONE, createTestMonitor()));
+				.setContents(new ByteArrayInputStream(createRandomString().getBytes()), IResource.NONE, createTestMonitor()));
 		assertEquals("2.2", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
 		assertFalse("3.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));

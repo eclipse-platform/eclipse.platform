@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
@@ -57,8 +58,8 @@ public class Bug_032076 extends ResourceTest {
 		deleteOnTearDown(project.getLocation());
 
 		// add a marker to a file to ensure the move operation is not losing anything
-		String attributeKey = getRandomString();
-		String attributeValue = getRandomString();
+		String attributeKey = createRandomString();
+		String attributeValue = createRandomString();
 		long markerId = -1;
 		IMarker bookmark = sourceFile.createMarker(IMarker.BOOKMARK);
 		bookmark.setAttribute(attributeKey, attributeValue);
@@ -114,8 +115,8 @@ public class Bug_032076 extends ResourceTest {
 		deleteOnTearDown(project.getLocation());
 
 		// add a marker to a file to ensure the move operation is not losing anything
-		String attributeKey = getRandomString();
-		String attributeValue = getRandomString();
+		String attributeKey = createRandomString();
+		String attributeValue = createRandomString();
 		long markerId = -1;
 		IMarker bookmark = file1.createMarker(IMarker.BOOKMARK);
 		bookmark.setAttribute(attributeKey, attributeValue);
@@ -174,8 +175,8 @@ public class Bug_032076 extends ResourceTest {
 		deleteOnTearDown(sourceProject.getLocation()); // Ensure project location is moved after test
 
 		// add a marker to a file to ensure the move operation is not losing anything
-		String attributeKey = getRandomString();
-		String attributeValue = getRandomString();
+		String attributeKey = createRandomString();
+		String attributeValue = createRandomString();
 		long markerId = -1;
 		IMarker bookmark = file1.createMarker(IMarker.BOOKMARK);
 		bookmark.setAttribute(attributeKey, attributeValue);
@@ -229,8 +230,8 @@ public class Bug_032076 extends ResourceTest {
 		IFileStore roFolderStore = ((Resource) roFolder).getStore();
 
 		// add a marker to a file to ensure the move operation is not losing anything
-		String attributeKey = getRandomString();
-		String attributeValue = getRandomString();
+		String attributeKey = createRandomString();
+		String attributeValue = createRandomString();
 		long markerId = -1;
 		IMarker bookmark = sourceFile.createMarker(IMarker.BOOKMARK);
 		bookmark.setAttribute(attributeKey, attributeValue);
@@ -293,8 +294,8 @@ public class Bug_032076 extends ResourceTest {
 		IFileStore destinationROFolderLocation = ((Resource) destinationROFolder).getStore();
 
 		// add a marker to a file to ensure the move operation is not losing anything
-		String attributeKey = getRandomString();
-		String attributeValue = getRandomString();
+		String attributeKey = createRandomString();
+		String attributeValue = createRandomString();
 		long markerId = -1;
 		IMarker bookmark = file1.createMarker(IMarker.BOOKMARK);
 		bookmark.setAttribute(attributeKey, attributeValue);
@@ -374,8 +375,8 @@ public class Bug_032076 extends ResourceTest {
 		createInWorkspace(new IResource[] { file1 });
 
 		// add a marker to a file to ensure the move operation is not losing anything
-		String attributeKey = getRandomString();
-		String attributeValue = getRandomString();
+		String attributeKey = createRandomString();
+		String attributeValue = createRandomString();
 		long markerId = -1;
 		IMarker bookmark = file1.createMarker(IMarker.BOOKMARK);
 		bookmark.setAttribute(attributeKey, attributeValue);

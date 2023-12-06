@@ -16,6 +16,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
@@ -68,7 +69,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
-		createInWorkspace(file, getRandomString());
+		createInWorkspace(file, createRandomString());
 
 		// file bit is set already for a new file
 		assertTrue("1.0", file.getResourceAttributes().isArchive());
@@ -92,7 +93,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
-		createInWorkspace(file, getRandomString());
+		createInWorkspace(file, createRandomString());
 
 		// file
 		assertTrue("1.0", !file.getResourceAttributes().isExecutable());
@@ -117,7 +118,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
-		createInWorkspace(file, getRandomString());
+		createInWorkspace(file, createRandomString());
 
 		// file
 		assertTrue("1.0", !file.getResourceAttributes().isHidden());
@@ -141,7 +142,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
-		createInWorkspace(file, getRandomString());
+		createInWorkspace(file, createRandomString());
 
 		// file
 		assertTrue("1.0", !file.getResourceAttributes().isReadOnly());
@@ -205,7 +206,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("testRefreshExecutableOnFolder");
 		IFolder folder = project.getFolder("folder");
 		IFile file = folder.getFile("file");
-		createInWorkspace(file, getRandomString());
+		createInWorkspace(file, createRandomString());
 
 		// folder is executable initially and the file should exist
 		assertTrue("1.0", project.getResourceAttributes().isExecutable());
@@ -232,7 +233,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile link = project.getFile("link");
-		createInWorkspace(link, getRandomString());
+		createInWorkspace(link, createRandomString());
 
 		// attempts to set the symbolic link attribute wont't affect
 		// the resource and the underlying file
@@ -274,7 +275,7 @@ public class ResourceAttributeTest extends ResourceTest {
 
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFile file = project.getFile(createUniqueString());
-		createInWorkspace(file, getRandomString());
+		createInWorkspace(file, createRandomString());
 
 		for (int attribute : attributes) {
 			// only activate this test on platforms that support it

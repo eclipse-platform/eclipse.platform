@@ -31,6 +31,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWo
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.*;
 
 /**
  * This class needs to be used with SaveManager2Test. Basically this
@@ -177,7 +178,7 @@ public class SaveManager1Test extends SaveManagerTest {
 		DeltaVerifierBuilder verifier = DeltaVerifierBuilder.getInstance();
 		verifier.reset();
 		verifier.addExpectedChange(added, project, IResourceDelta.ADDED, 0);
-		added.create(getRandomContents(), true, null);
+		added.create(createRandomContentsStream(), true, null);
 		waitForBuild();
 		assertTrue("3.2", verifier.wasAutoBuild());
 		assertTrue("3.3", verifier.isDeltaValid());

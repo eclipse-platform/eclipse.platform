@@ -16,6 +16,9 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
@@ -65,11 +68,11 @@ public class IResourceTest extends ResourceTest {
 		project.open(null);
 
 		IFile target = project.getFile("file1");
-		target.create(getContents("abc"), false, null);
-		target.appendContents(getContents("def"), false, true, null);
+		target.create(createInputStream("abc"), false, null);
+		target.appendContents(createInputStream("def"), false, true, null);
 
 		InputStream content = target.getContents(false);
-		assertTrue("3.0", compareContent(content, getContents("abcdef")));
+		assertTrue("3.0", compareContent(content, createInputStream("abcdef")));
 	}
 
 	/**
@@ -95,14 +98,14 @@ public class IResourceTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile file = project.getFile("a.txt");
-		createInWorkspace(file, getRandomString());
+		createInWorkspace(file, createRandomString());
 		// ensure archive bit is not set
 		ResourceAttributes attributes = file.getResourceAttributes();
 		attributes.setArchive(false);
 		file.setResourceAttributes(attributes);
 		assertTrue("1.0", !file.getResourceAttributes().isArchive());
 		// modify the file
-		file.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
+		file.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 
 		//now the archive bit should be set
 		assertTrue("2.0", file.getResourceAttributes().isArchive());
@@ -219,7 +222,7 @@ public class IResourceTest extends ResourceTest {
 		IFile source = project.getFile("file1");
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		source.create(getContents("abc"), true, createTestMonitor());
+		source.create(createInputStream("abc"), true, createTestMonitor());
 
 		Thread.sleep(2000);
 
@@ -251,13 +254,13 @@ public class IResourceTest extends ResourceTest {
 		IFile file = project.getFile("file");
 		project.create(null);
 		project.open(null);
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 
 		// force = true
 		assertTrue("2.0", file.exists());
 		IFile anotherFile = project.getFile("File");
 
-		ThrowingRunnable forcedFileCreation = () -> anotherFile.create(getRandomContents(), true, null);
+		ThrowingRunnable forcedFileCreation = () -> anotherFile.create(createRandomContentsStream(), true, null);
 		if (caseSensitive) {
 			forcedFileCreation.run();
 		} else {
@@ -268,7 +271,7 @@ public class IResourceTest extends ResourceTest {
 		anotherFile.delete(true, false, null);
 
 		// force = false
-		ThrowingRunnable fileCreation = () -> anotherFile.create(getRandomContents(), false, null);
+		ThrowingRunnable fileCreation = () -> anotherFile.create(createRandomContentsStream(), false, null);
 		if (caseSensitive) {
 			fileCreation.run();
 		} else {
@@ -302,7 +305,7 @@ public class IResourceTest extends ResourceTest {
 		assertTrue("2.2", !folder.exists());
 
 		IFile file = project.getFile(sb.toString());
-		assertThrows(CoreException.class, () -> file.create(getRandomContents(), true, null));
+		assertThrows(CoreException.class, () -> file.create(createRandomContentsStream(), true, null));
 		assertTrue("3.1", !file.exists());
 
 		// clean up
@@ -327,7 +330,7 @@ public class IResourceTest extends ResourceTest {
 		IFile file = project.getFile("MyFile");
 		createInFileSystem(file);
 
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 	}
 
 	/*
@@ -438,16 +441,16 @@ public class IResourceTest extends ResourceTest {
 
 		final IFile target = project.getFile("file1");
 		String contents = "some random contents";
-		target.create(getContents(contents), false, null);
+		target.create(createInputStream(contents), false, null);
 
 		try (InputStream is = target.getContents(false)) {
-			assertTrue("2.0", compareContent(getContents(contents), is));
+			assertTrue("2.0", compareContent(createInputStream(contents), is));
 		}
 
 		final String newContents = "some other contents";
 		Thread.sleep(5000);
 		try (FileOutputStream output = new FileOutputStream(target.getLocation().toFile())) {
-			getContents(newContents).transferTo(output);
+			createInputStream(newContents).transferTo(output);
 		}
 
 		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(() -> {
@@ -455,7 +458,7 @@ public class IResourceTest extends ResourceTest {
 		IResourceChangeListener listener = event -> {
 			listenerInMainThreadCallback.set(() -> {
 				try (InputStream is = target.getContents(true)) {
-					assertTrue("4.0", compareContent(getContents(newContents), is));
+					assertTrue("4.0", compareContent(createInputStream(newContents), is));
 				}
 			});
 		};
@@ -475,7 +478,7 @@ public class IResourceTest extends ResourceTest {
 		assertEquals("5.1", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
 		try (InputStream is = target.getContents(true)) {
-			assertTrue("6.0", compareContent(getContents(newContents), is));
+			assertTrue("6.0", compareContent(createInputStream(newContents), is));
 		}
 	}
 
@@ -489,7 +492,7 @@ public class IResourceTest extends ResourceTest {
 		project.create(null);
 		project.open(null);
 		folder.create(true, true, null);
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 		assertTrue("2.0", file.exists());
 		folder.refreshLocal(IResource.DEPTH_ZERO, null);
 		assertTrue("2.2", file.exists());

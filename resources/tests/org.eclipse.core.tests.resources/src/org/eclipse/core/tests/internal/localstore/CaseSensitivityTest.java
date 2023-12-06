@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
@@ -69,7 +70,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		// create a file; should fail because has same name with different casing
 		IFile file = aProject.getFile(folderName.toUpperCase());
-		assertThrows(CoreException.class, () -> file.create(getRandomContents(), true, null));
+		assertThrows(CoreException.class, () -> file.create(createRandomContentsStream(), true, null));
 	}
 
 	public void testCreateFiles() throws Throwable {
@@ -78,11 +79,11 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		// create a file, should be fine
 		IFile file1 = aProject.getFile(fileName);
-		file1.create(getRandomContents(), true, null);
+		file1.create(createRandomContentsStream(), true, null);
 
 		// create a second file; should fail because has same name with different casing
 		IFile file2 = aProject.getFile(fileName.toUpperCase());
-		ThrowingRunnable fileCreation = () -> file2.create(getRandomContents(), true, null);
+		ThrowingRunnable fileCreation = () -> file2.create(createRandomContentsStream(), true, null);
 		if (isCaseSensitive) {
 			fileCreation.run();
 		} else {
@@ -146,10 +147,10 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		// create 2 files with different names
 		IFile file1 = aProject.getFile(file1name);
-		file1.create(getRandomContents(), true, null);
+		file1.create(createRandomContentsStream(), true, null);
 
 		IFile file2 = aProject.getFile(file2name);
-		file2.create(getRandomContents(), true, null);
+		file2.create(createRandomContentsStream(), true, null);
 
 		// try to rename folder 1 to the uppercase name of folder 2, should fail
 		IFile file3 = aProject.getFile(file2name.toUpperCase());
@@ -196,10 +197,10 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		// create 2 files, one in each project, with case-different names
 		IFile file1 = sourceProject.getFile(fileName);
-		file1.create(getRandomContents(), true, null);
+		file1.create(createRandomContentsStream(), true, null);
 
 		IFile file2 = destinationProject.getFile(fileName.toUpperCase());
-		file2.create(getRandomContents(), true, null);
+		file2.create(createRandomContentsStream(), true, null);
 
 		// try to copy the file from source project to destination project.
 		// should fail due to conflict
@@ -227,7 +228,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		folder.create(true, true, null);
 
 		IFile file = destinationProject.getFile(name.toUpperCase());
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 
 		// try to copy the folder from source project to destination project.
 		// should fail due to conflict with existing file with case-different name
@@ -252,7 +253,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		// create 2 resources, one in each project, with case-different names
 		IFile file = sourceProject.getFile(name);
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 
 		IFolder folder = destinationProject.getFolder(name.toUpperCase());
 		folder.create(true, true, null);
@@ -296,7 +297,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		// create a file in the destination project with a case-different name of the source project
 		IFile file = destinationProject.getFile(sourceProject.getName().toUpperCase());
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 
 		// try to move the source project to the destination project, which makes it a folder.
 		// should fail because we aren't allowed to move a project to be a folder
@@ -339,7 +340,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		// create a File, which should be fine
 		IFile file = project.getFile(name.toUpperCase());
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 
 		// get a File handle with the same name but different casing
 		// in order to determine file system location
@@ -385,7 +386,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		// create a File, which should be fine
 		IFile file = project.getFile(name.toUpperCase());
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 
 		// get a Folder handle with the same name but different casing
 		// in order to determine file system location
@@ -420,7 +421,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		// create a File, which should be fine
 		IFile file = folder.getFile(name);
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 
 		// replace the File's filesystem rep. with a case-different name
 		java.io.File localFile = file.getLocation().toFile();

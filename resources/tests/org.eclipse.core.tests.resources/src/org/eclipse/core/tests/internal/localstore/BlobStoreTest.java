@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
@@ -95,7 +96,7 @@ public class BlobStoreTest extends LocalStoreTest {
 		createFile(target, content);
 		uuid = store.addBlob(target, true);
 		InputStream input = store.getBlob(uuid);
-		assertTrue(compareContent(getContents(content), input));
+		assertTrue(compareContent(createInputStream(content), input));
 	}
 
 	public void testSetBlob() throws CoreException, IOException {
@@ -110,6 +111,6 @@ public class BlobStoreTest extends LocalStoreTest {
 		createFile(target, content);
 		uuid = store.addBlob(target, true);
 		InputStream input = store.getBlob(uuid);
-		assertTrue(compareContent(getContents(content), input));
+		assertTrue(compareContent(createInputStream(content), input));
 	}
 }

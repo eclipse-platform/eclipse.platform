@@ -21,6 +21,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
@@ -1224,7 +1225,7 @@ public class IResourceTest extends ResourceTest {
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 		folder.create(true, true, createTestMonitor());
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		verifier = new ResourceDeltaVerifier();
 		getWorkspace().addResourceChangeListener(verifier, IResourceChangeEvent.POST_CHANGE);
@@ -1335,7 +1336,7 @@ public class IResourceTest extends ResourceTest {
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 		folder.create(true, true, createTestMonitor());
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// all resources have independent derived flag; all non-derived by
 		// default; check each type
@@ -2220,7 +2221,7 @@ public class IResourceTest extends ResourceTest {
 		IFile file = project.getFile("target");
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// file
 		assertFalse("1.0", file.isReadOnly());
@@ -2433,7 +2434,7 @@ public class IResourceTest extends ResourceTest {
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 		folder.create(true, true, createTestMonitor());
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// all resources have independent team private member flag
 		// all non-TPM by default; check each type

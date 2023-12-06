@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 
@@ -114,7 +115,7 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 		project1.create(createTestMonitor());
 		project1.open(createTestMonitor());
 		folder1.create(true, true, createTestMonitor());
-		file1.create(getRandomContents(), true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// Create and set a build spec for the project
 		IProjectDescription desc = project1.getDescription();
@@ -262,7 +263,7 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 		verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED,
 				IResourceDelta.REPLACED | IResourceDelta.CONTENT);
 		file1.delete(true, null);
-		file1.create(getRandomContents(), true, null);
+		file1.create(createRandomContentsStream(), true, null);
 		rebuild();
 		// new builder gets instantiated so grab a reference to the latest builder
 		verifier = DeltaVerifierBuilder.getInstance();

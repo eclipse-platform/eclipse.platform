@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -91,7 +92,7 @@ public class MarkerPerformanceTest extends ResourceTest {
 			project.create(null);
 			project.open(null);
 			file = project.getFile(IPath.ROOT.append("file.txt"));
-			file.create(getRandomContents(), true, null);
+			file.create(createRandomContentsStream(), true, null);
 			//create markers
 			for (int i = 0; i < NUM_MARKERS; i++) {
 				createdMarkers[i] = file.createMarker(IMarker.BOOKMARK);
