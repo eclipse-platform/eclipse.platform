@@ -494,10 +494,6 @@ class IndexingOperation {
 
 	/**
 	 * Obtains PluginIndexes pointing to prebuilt indexes
-	 *
-	 * @param pluginIds
-	 * @param locale
-	 * @return
 	 */
 	private PrebuiltIndexes getIndexesToAdd(Collection<String> pluginIds) {
 		PrebuiltIndexes indexes = new PrebuiltIndexes(index);

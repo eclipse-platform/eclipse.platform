@@ -190,7 +190,6 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IFile.class || adapter == IResource.class) {

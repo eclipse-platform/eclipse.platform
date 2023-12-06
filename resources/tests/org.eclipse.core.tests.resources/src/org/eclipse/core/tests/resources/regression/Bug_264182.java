@@ -13,8 +13,17 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
+import static org.junit.Assert.assertThrows;
+
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -29,13 +38,9 @@ public class Bug_264182 extends ResourceTest {
 		super.setUp();
 
 		// create a project
-		project = getWorkspace().getRoot().getProject(getUniqueString());
-		try {
-			project.create(new NullProgressMonitor());
-			project.open(new NullProgressMonitor());
-		} catch (CoreException e) {
-			fail("Project creation failed", e);
-		}
+		project = getWorkspace().getRoot().getProject(createUniqueString());
+		project.create(new NullProgressMonitor());
+		project.open(new NullProgressMonitor());
 
 		// set the description read-only
 		dotProject = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
@@ -49,17 +54,13 @@ public class Bug_264182 extends ResourceTest {
 		super.tearDown();
 	}
 
-	public void testBug() {
+	public void testBug() throws CoreException {
 		// create a linked resource
-		final IFile file = project.getFile(getUniqueString());
+		final IFile file = project.getFile(createUniqueString());
 		IFileStore tempFileStore = getTempStore();
 		createFileInFileSystem(tempFileStore);
-		try {
-			file.createLink(tempFileStore.toURI(), IResource.NONE, new NullProgressMonitor());
-			fail("1.0");
-		} catch (CoreException e) {
-			// should fail updating the description
-		}
+		assertThrows(CoreException.class,
+				() -> file.createLink(tempFileStore.toURI(), IResource.NONE, new NullProgressMonitor()));
 
 		// the file should not exist in the workspace
 		assertDoesNotExistInWorkspace(file);

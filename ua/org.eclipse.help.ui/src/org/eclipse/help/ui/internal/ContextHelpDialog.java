@@ -261,9 +261,6 @@ public class ContextHelpDialog {
 
 	/**
 	 * Measures the longest label of related links
-	 *
-	 * @param text
-	 * @return
 	 */
 	private int getLinksWidth(Description text) {
 		int linkWidth = 0;
@@ -475,10 +472,6 @@ public class ContextHelpDialog {
 	}
 
 	public static class Description extends StyledText {
-		/**
-		 * @param parent
-		 * @param style
-		 */
 		public Description(Composite parent, int style) {
 			super(parent, style);
 		}

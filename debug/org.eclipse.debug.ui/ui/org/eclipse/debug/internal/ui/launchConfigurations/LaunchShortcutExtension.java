@@ -74,8 +74,6 @@ public class LaunchShortcutExtension implements ILaunchShortcut2, IPluginContrib
 
 		/**
 		 * Constructs a new command handler for the given shortcut
-		 *
-		 * @param shortcut
 		 */
 		public LaunchCommandHandler(LaunchShortcutExtension shortcut, String mode) {
 			fShortcut = shortcut;
@@ -270,7 +268,6 @@ public class LaunchShortcutExtension implements ILaunchShortcut2, IPluginContrib
 	 * @param context the context of the evaluation. Usually, the
 	 *  user's selection.
 	 * @return the result of evaluating the expression
-	 * @throws CoreException
 	 */
 	public boolean evalEnablementExpression(IEvaluationContext context, Expression exp) throws CoreException {
 		return (exp != null) ? ((exp.evaluate(context)) != EvaluationResult.FALSE) : false;

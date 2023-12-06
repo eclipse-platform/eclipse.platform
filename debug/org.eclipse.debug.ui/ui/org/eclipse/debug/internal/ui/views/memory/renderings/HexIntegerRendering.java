@@ -62,8 +62,6 @@ public class HexIntegerRendering extends AbstractIntegerRendering {
 
 	/**
 	 * @todo davidp needs to add a method comment.
-	 * @param data
-	 * @return
 	 */
 	private int getEndianness (MemoryByte[] data) {
 		// if the user has not set an endianess to the rendering

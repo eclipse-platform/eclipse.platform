@@ -25,7 +25,6 @@ import org.eclipse.debug.ui.IDebugUIConstants;
  * This interface contains constants only; it is not intended to be implemented
  * or extended.
  * </p>
- *
  */
 public interface IDebugHelpContextIds {
 

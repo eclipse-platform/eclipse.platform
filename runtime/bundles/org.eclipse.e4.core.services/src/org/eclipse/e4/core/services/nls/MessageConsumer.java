@@ -28,7 +28,6 @@ package org.eclipse.e4.core.services.nls;
  * </p>
  *
  * @since 2.0
- *
  */
 public interface MessageConsumer {
 

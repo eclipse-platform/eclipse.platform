@@ -14,8 +14,19 @@
  ******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.util.Map;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
@@ -72,7 +83,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		// Create buildConfigs
 		desc.setBuildConfigs(new String[] {variant0, variant1, variant2});
 
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 	}
 
 	/**
@@ -83,12 +94,12 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		ConfigurationBuilder.clearStats();
 		// Run some incremental builds while varying the active variant and whether the project was modified
 		// and check that the builder is run/not run with the correct trigger
-		file0.setContents(getRandomContents(), true, true, getMonitor());
+		file0.setContents(getRandomContents(), true, true, createTestMonitor());
 		incrementalBuild(1, project0, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(2, project0, variant1, false, 1, 0);
 		incrementalBuild(3, project0, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(4, project0, variant1, false, 1, 0);
-		file0.setContents(getRandomContents(), true, true, getMonitor());
+		file0.setContents(getRandomContents(), true, true, createTestMonitor());
 		incrementalBuild(5, project0, variant1, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 		incrementalBuild(6, project0, variant2, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 		incrementalBuild(7, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
@@ -99,14 +110,14 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 */
 	public void testCloseAndOpenProject() throws CoreException {
 		ConfigurationBuilder.clearStats();
-		file0.setContents(getRandomContents(), true, true, getMonitor());
+		file0.setContents(getRandomContents(), true, true, createTestMonitor());
 		incrementalBuild(1, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(2, project0, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(3, project0, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 
-		project0.close(getMonitor());
+		project0.close(createTestMonitor());
 		ConfigurationBuilder.clearStats();
-		project0.open(getMonitor());
+		project0.open(createTestMonitor());
 
 		incrementalBuild(4, project0, variant0, false, 0, 0);
 		incrementalBuild(5, project0, variant1, false, 0, 0);
@@ -125,50 +136,47 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		ensureExistsInWorkspace(resources, true);
 		setupProject(tempProject);
 
-		try {
-			ConfigurationBuilder.clearStats();
+		ConfigurationBuilder.clearStats();
 
-			tempFile0.setContents(getRandomContents(), true, true, getMonitor());
-			tempFile1.setContents(getRandomContents(), true, true, getMonitor());
-			incrementalBuild(1, tempProject, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
-			incrementalBuild(2, tempProject, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
-			incrementalBuild(3, tempProject, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
+		tempFile0.setContents(getRandomContents(), true, true, createTestMonitor());
+		tempFile1.setContents(getRandomContents(), true, true, createTestMonitor());
+		incrementalBuild(1, tempProject, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
+		incrementalBuild(2, tempProject, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
+		incrementalBuild(3, tempProject, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 
-			tempFile0.setContents(getRandomContents(), true, true, getMonitor());
-			incrementalBuild(4, tempProject, variant1, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		tempFile0.setContents(getRandomContents(), true, true, createTestMonitor());
+		incrementalBuild(4, tempProject, variant1, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 
-			tempFile1.setContents(getRandomContents(), true, true, getMonitor());
-			incrementalBuild(5, tempProject, variant2, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		tempFile1.setContents(getRandomContents(), true, true, createTestMonitor());
+		incrementalBuild(5, tempProject, variant2, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 
-			tempProject.close(getMonitor());
-			ConfigurationBuilder.clearStats();
-			tempProject.open(getMonitor());
+		tempProject.close(createTestMonitor());
+		ConfigurationBuilder.clearStats();
+		tempProject.open(createTestMonitor());
 
-			// verify variant0 - both File0 and File1 are expected to have changed since it was last built
-			incrementalBuild(6, tempProject, variant0, true, 1, IncrementalProjectBuilder.INCREMENTAL_BUILD);
-			ConfigurationBuilder builder0 = ConfigurationBuilder.getBuilder(tempProject.getBuildConfig(variant0));
-			assertNotNull("6.10", builder0);
-			ResourceDeltaVerifier verifier0 = new ResourceDeltaVerifier();
-			verifier0.addExpectedChange(tempFile0, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			verifier0.addExpectedChange(tempFile1, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			verifier0.verifyDelta(builder0.deltaForLastBuild);
-			assertTrue("6.11: " + verifier0.getMessage(), verifier0.isDeltaValid());
+		// verify variant0 - both File0 and File1 are expected to have changed since it
+		// was last built
+		incrementalBuild(6, tempProject, variant0, true, 1, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		ConfigurationBuilder builder0 = ConfigurationBuilder.getBuilder(tempProject.getBuildConfig(variant0));
+		assertNotNull("6.10", builder0);
+		ResourceDeltaVerifier verifier0 = new ResourceDeltaVerifier();
+		verifier0.addExpectedChange(tempFile0, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
+		verifier0.addExpectedChange(tempFile1, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
+		verifier0.verifyDelta(builder0.deltaForLastBuild);
+		assertTrue("6.11: " + verifier0.getMessage(), verifier0.isDeltaValid());
 
-			// verify variant1 - only File1 is expected to have changed since it was last built
-			incrementalBuild(7, tempProject, variant1, true, 1, IncrementalProjectBuilder.INCREMENTAL_BUILD);
-			ConfigurationBuilder builder1 = ConfigurationBuilder.getBuilder(tempProject.getBuildConfig(variant1));
-			assertNotNull("7.10", builder1);
-			ResourceDeltaVerifier verifier1 = new ResourceDeltaVerifier();
-			verifier1.addExpectedChange(tempFile1, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-			verifier1.verifyDelta(builder1.deltaForLastBuild);
-			assertTrue("7.11: " + verifier1.getMessage(), verifier1.isDeltaValid());
+		// verify variant1 - only File1 is expected to have changed since it was last
+		// built
+		incrementalBuild(7, tempProject, variant1, true, 1, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+		ConfigurationBuilder builder1 = ConfigurationBuilder.getBuilder(tempProject.getBuildConfig(variant1));
+		assertNotNull("7.10", builder1);
+		ResourceDeltaVerifier verifier1 = new ResourceDeltaVerifier();
+		verifier1.addExpectedChange(tempFile1, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
+		verifier1.verifyDelta(builder1.deltaForLastBuild);
+		assertTrue("7.11: " + verifier1.getMessage(), verifier1.isDeltaValid());
 
-			// verify variant2 - no changes are expected since it was last built
-			incrementalBuild(8, tempProject, variant2, false, 0, 0);
-
-		} finally {
-			tempProject.delete(true, getMonitor());
-		}
+		// verify variant2 - no changes are expected since it was last built
+		incrementalBuild(8, tempProject, variant2, false, 0, 0);
 	}
 
 	/**
@@ -188,14 +196,14 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		ConfigurationBuilder.clearBuildOrder();
 		IProjectDescription desc = project0.getDescription();
 		desc.setActiveBuildConfig(variant0);
-		project0.setDescription(desc, getMonitor());
+		project0.setDescription(desc, createTestMonitor());
 		desc = project1.getDescription();
 		desc.setActiveBuildConfig(variant0);
-		project1.setDescription(desc, getMonitor());
+		project1.setDescription(desc, createTestMonitor());
 
 		// Note: references are not alphabetically ordered to check that references are sorted into a stable order
 		setReferences(project0, variant0, new IBuildConfiguration[] {project0.getBuildConfig(variant1), project1.getBuildConfig(variant2), project1.getBuildConfig(variant0)});
-		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
 		assertEquals("1.0", 4, ConfigurationBuilder.buildOrder.size());
 		assertEquals("1.1", project0.getBuildConfig(variant1), ConfigurationBuilder.buildOrder.get(0));
@@ -210,10 +218,10 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		checkBuild(7, project1, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 
 		// Modify project1, all project1 builders should do an incremental build
-		file1.setContents(getRandomContents(), true, true, getMonitor());
+		file1.setContents(getRandomContents(), true, true, createTestMonitor());
 
 		ConfigurationBuilder.clearBuildOrder();
-		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
 		assertEquals("8.0", 2, ConfigurationBuilder.buildOrder.size());
 		assertEquals("8.1", project1.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(0));
@@ -232,7 +240,6 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 *     p0,v0 depends on p1,v0
 	 * p1 is closed.
 	 * p0v0 should still be built.
-	 * @throws CoreException
 	 */
 	public void testBuildReferencesOfClosedProject() throws CoreException {
 		ConfigurationBuilder.clearStats();
@@ -240,12 +247,12 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		IProjectDescription desc = project0.getDescription();
 		desc.setActiveBuildConfig(variant0);
 		desc.setBuildConfigReferences(variant0, new IBuildConfiguration[] {project1.getBuildConfig(variant0)});
-		project0.setDescription(desc, getMonitor());
+		project0.setDescription(desc, createTestMonitor());
 
 		// close project 1
-		project1.close(getMonitor());
+		project1.close(createTestMonitor());
 		// should still be able to build project 0.
-		getWorkspace().build(new IBuildConfiguration[] {project0.getBuildConfig(variant0)}, IncrementalProjectBuilder.FULL_BUILD, true, getMonitor());
+		getWorkspace().build(new IBuildConfiguration[] {project0.getBuildConfig(variant0)}, IncrementalProjectBuilder.FULL_BUILD, true, createTestMonitor());
 		assertEquals("1.0", 1, ConfigurationBuilder.buildOrder.size());
 		assertEquals("1.1", project0.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(0));
 		checkBuild(2, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
@@ -253,17 +260,17 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		// Workspace full build should also build project 0
 		ConfigurationBuilder.clearStats();
 		ConfigurationBuilder.clearBuildOrder();
-		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		assertEquals("1.0", 1, ConfigurationBuilder.buildOrder.size());
 		assertEquals("1.1", project0.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(0));
 		checkBuild(2, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 
 		// re-open project 1
-		project1.open(getMonitor());
+		project1.open(createTestMonitor());
 
 		ConfigurationBuilder.clearStats();
 		ConfigurationBuilder.clearBuildOrder();
-		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		assertEquals("8.0", 2, ConfigurationBuilder.buildOrder.size());
 		assertEquals("8.1", project1.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(0));
@@ -287,14 +294,14 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	private void setReferences(IProject project, String configId, IBuildConfiguration[] configs) throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildConfigReferences(configId, configs);
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 	}
 
 	/**
 	 * Run an incremental build for the given project variant, and check the behaviour of the build.
 	 */
 	private void incrementalBuild(int testId, IProject project, String variant, boolean shouldBuild, int expectedCount, int expectedTrigger) throws CoreException {
-		project.build(project.getBuildConfig(variant), IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		project.build(project.getBuildConfig(variant), IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		checkBuild(testId, project, variant, shouldBuild, expectedCount, expectedTrigger);
 	}
 
@@ -302,7 +309,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 * Clean the specified project variant.
 	 */
 	private void clean(int testId, IProject project, String variant, int expectedCount) throws CoreException {
-		project.build(project.getBuildConfig(variant), IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		project.build(project.getBuildConfig(variant), IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 		ConfigurationBuilder builder = ConfigurationBuilder.getBuilder(project.getBuildConfig(variant));
 		assertNotNull(testId + ".0", builder);
 		assertEquals(testId + ".1", expectedCount, builder.buildCount);
@@ -313,11 +320,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 * Check the behaviour of a build
 	 */
 	private void checkBuild(int testId, IProject project, String variant, boolean shouldBuild, int expectedCount, int expectedTrigger) throws CoreException {
-		try {
-			project.getBuildConfig(variant);
-		} catch (CoreException e) {
-			fail(testId + ".0");
-		}
+		project.getBuildConfig(variant);
 		ConfigurationBuilder builder = ConfigurationBuilder.getBuilder(project.getBuildConfig(variant));
 		if (builder == null) {
 			assertFalse(testId + ".1", shouldBuild);
@@ -343,7 +346,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	public void testBuildProjectWithNotExistingReference() throws Exception {
 		// need a build to create builder
 		IBuildConfiguration buildConfig = project0.getBuildConfig(variant0);
-		project0.build(buildConfig, IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		project0.build(buildConfig, IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
 		// Configure builder to report "interesting" projects
 		ConfigurationBuilder builder = ConfigurationBuilder.getBuilder(buildConfig);
@@ -360,13 +363,13 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		});
 
 		// need a full build to remember "interesting" projects
-		project0.build(buildConfig, IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project0.build(buildConfig, IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		// need a delta NOT in the builder's own project
-		project1.touch(getMonitor());
+		project1.touch(createTestMonitor());
 
 		// this will try to find delta for non existing resource
-		project0.build(buildConfig, IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		project0.build(buildConfig, IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 	}
 
 }

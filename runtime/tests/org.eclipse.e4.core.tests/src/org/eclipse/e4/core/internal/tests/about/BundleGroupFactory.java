@@ -22,7 +22,6 @@ import org.osgi.framework.Bundle;
 /**
  *
  * Helper mock class to enable "plain JUnit" testing
- *
  */
 final class BundleGroupFactory {
 

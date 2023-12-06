@@ -153,8 +153,6 @@ public abstract class EventHandlerModelProxy extends AbstractModelProxy implemen
 
 	/**
 	 * Dispatches a create event.
-	 *
-	 * @param event
 	 */
 	protected void dispatchCreate(DebugEventHandler handler, DebugEvent event) {
 		handler.handleCreate(event);
@@ -162,8 +160,6 @@ public abstract class EventHandlerModelProxy extends AbstractModelProxy implemen
 
 	/**
 	 * Dispatches a terminate event.
-	 *
-	 * @param event
 	 */
 	protected void dispatchTerminate(DebugEventHandler handler, DebugEvent event) {
 		handler.handleTerminate(event);
@@ -171,8 +167,6 @@ public abstract class EventHandlerModelProxy extends AbstractModelProxy implemen
 
 	/**
 	 * Dispatches a suspend event. Subclasses may override.
-	 *
-	 * @param event
 	 */
 	protected void dispatchSuspend(DebugEventHandler handler, DebugEvent event) {
 		// stop timer, if any
@@ -198,8 +192,6 @@ public abstract class EventHandlerModelProxy extends AbstractModelProxy implemen
 	 * or a step, a timer is started to update the event source if the step or
 	 * evaluation takes more than 500ms. Otherwise the source is refreshed.
 	 * Subclasses may override.
-	 *
-	 * @param event
 	 */
 	protected void dispatchResume(DebugEventHandler handler, DebugEvent event) {
 		if (event.isEvaluation() || event.isStepStart()) {
@@ -225,8 +217,6 @@ public abstract class EventHandlerModelProxy extends AbstractModelProxy implemen
 
 	/**
 	 * Dispatches a change event.
-	 *
-	 * @param event
 	 */
 	protected void dispatchChange(DebugEventHandler handler, DebugEvent event) {
 		handler.handleChange(event);
@@ -234,8 +224,6 @@ public abstract class EventHandlerModelProxy extends AbstractModelProxy implemen
 
 	/**
 	 * Dispatches an unknown event.
-	 *
-	 * @param event
 	 */
 	protected void dispatchOther(DebugEventHandler handler, DebugEvent event) {
 		handler.handleOther(event);
@@ -256,8 +244,6 @@ public abstract class EventHandlerModelProxy extends AbstractModelProxy implemen
 	 * Returns the index of the given element in the list or -1 if
 	 * not present.
 	 *
-	 * @param list
-	 * @param element
 	 * @return index or -1 if not present
 	 */
 	protected int indexOf(Object[] list, Object element) {

@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
-/**
- */
 public class EarthNature extends TestNature {
 	/**
 	 * Constructor for EarthNature.

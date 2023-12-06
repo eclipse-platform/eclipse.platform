@@ -13,12 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -29,12 +31,12 @@ public class TestSaveWithClosedProject extends WorkspaceSerializationTest {
 		/* create some resource handles */
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
 		IFile file = project.getFile(FILE);
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		file.create(getRandomContents(), true, null);
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	public void test2() throws CoreException {
@@ -45,13 +47,13 @@ public class TestSaveWithClosedProject extends WorkspaceSerializationTest {
 		assertTrue("1.1", !project.isOpen());
 		assertTrue("1.2", !file.exists());
 
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 
 		assertTrue("2.0", project.isOpen());
 		assertTrue("2.1", file.exists());
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestSaveWithClosedProject.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestSaveWithClosedProject.class);
 	}
 }

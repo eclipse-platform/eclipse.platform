@@ -120,9 +120,7 @@ public class CompositeCheatSheetSaveHelper {
 
 	/**
 	 * Save the state of a composite cheat sheet model
-	 * @param model
 	 * @param layoutData Will contain pairs of name/value Strings used to save and restore layout
-	 * @return
 	 */
 	public IStatus saveCompositeState(CompositeCheatSheetModel model, Map<String, String> layoutData) {
 		if (stateManager instanceof NoSaveStateManager) return Status.OK_STATUS;

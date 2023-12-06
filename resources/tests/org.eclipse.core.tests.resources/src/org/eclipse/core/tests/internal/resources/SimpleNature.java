@@ -15,8 +15,6 @@ package org.eclipse.core.tests.internal.resources;
 
 import org.eclipse.core.runtime.CoreException;
 
-/**
- */
 public class SimpleNature extends TestNature {
 	private static SimpleNature instance;
 	public boolean wasConfigured;

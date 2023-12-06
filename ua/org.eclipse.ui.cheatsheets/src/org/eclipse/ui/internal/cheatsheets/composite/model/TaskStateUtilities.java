@@ -32,7 +32,6 @@ public class TaskStateUtilities {
 
 	/**
 	 * Find the most recent ancestor of this task that is blocked
-	 * @param task
 	 * @return A blocked task or null if no ancestors are blocked
 	 */
 	public static ICompositeCheatSheetTask findBlockedAncestor(ICompositeCheatSheetTask task) {
@@ -48,7 +47,6 @@ public class TaskStateUtilities {
 
 	/**
 	 * Find the most recent ancestor of this task that is skipped
-	 * @param task
 	 * @return A skipped task or null if no ancestors are skipped
 	 */
 	public static ICompositeCheatSheetTask findSkippedAncestor(ICompositeCheatSheetTask task) {
@@ -64,7 +62,6 @@ public class TaskStateUtilities {
 
 	/**
 	 * Find the most recent ancestor of this task that is completed
-	 * @param task
 	 * @return A completed task or null if no ancestors are completed
 	 */
 	public static ICompositeCheatSheetTask findCompletedAncestor(ICompositeCheatSheetTask task) {

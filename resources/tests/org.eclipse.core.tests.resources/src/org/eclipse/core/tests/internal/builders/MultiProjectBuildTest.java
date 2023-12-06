@@ -14,9 +14,21 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.lang.reflect.Array;
-import java.util.*;
-import org.eclipse.core.resources.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.TestPerformer;
 
@@ -64,7 +76,7 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 				}
 			}
 			getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-		}, getMonitor());
+		}, createTestMonitor());
 	}
 
 	/**
@@ -106,15 +118,12 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 	 * In this test, only project1 has a builder, but it is interested in deltas from the other projects.
 	 * We vary the set of projects that are changed, and the set of projects we request deltas for.
 	 */
-	public void testDeltas() {
+	public void testDeltas() throws Exception {
 		//add builder and do an initial build to get the instance
-		try {
-			setAutoBuilding(false);
-			addBuilder(project1, DeltaVerifierBuilder.BUILDER_NAME);
-			project1.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		setAutoBuilding(false);
+		addBuilder(project1, DeltaVerifierBuilder.BUILDER_NAME);
+		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
+
 		final DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		assertTrue("1.1", builder != null);
 		//always check deltas for all projects
@@ -195,32 +204,22 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 	/**
 	 * Tests a builder that requests deltas for closed and missing projects.
 	 */
-	public void testRequestMissingProject() {
+	public void testRequestMissingProject() throws CoreException {
 		//add builder and do an initial build to get the instance
-		try {
-			addBuilder(project1, DeltaVerifierBuilder.BUILDER_NAME);
-			project1.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		addBuilder(project1, DeltaVerifierBuilder.BUILDER_NAME);
+		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
+
 		final DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		assertTrue("1.1", builder != null);
 		//always check deltas for all projects
 		final IProject[] allProjects = new IProject[] {project1, project2, project3, project4};
-		try {
-			project2.close(getMonitor());
-			project3.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
-		} catch (CoreException e1) {
-			fail("1.99", e1);
-		}
+		project2.close(createTestMonitor());
+		project3.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
+
 		builder.checkDeltas(allProjects);
 
 		//modify a file in project1 to force an autobuild
-		try {
-			file1.setContents(getRandomContents(), IResource.NONE, getMonitor());
-		} catch (CoreException e2) {
-			fail("2.99", e2);
-		}
+		file1.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
 	}
 
 	/**
@@ -244,7 +243,7 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 
 		//do an incremental build by creating a file
 		IFile file = project.getFile("Foo");
-		file.create(getRandomContents(), true, getMonitor());
+		file.create(getRandomContents(), true, createTestMonitor());
 
 	}
 

@@ -48,7 +48,6 @@ import org.eclipse.tips.core.internal.LogUtil;
  *
  * To indicate that this provider is ready to serve tips, it should call the
  * {@link #setTips(List)} method which then sets its <code>ready</code> flag.
- *
  */
 public abstract class TipProvider {
 

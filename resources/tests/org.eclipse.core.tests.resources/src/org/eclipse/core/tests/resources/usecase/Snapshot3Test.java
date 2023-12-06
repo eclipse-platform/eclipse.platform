@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -44,8 +48,8 @@ public class Snapshot3Test extends SnapshotTest {
 
 		// verify existence of children
 		IResource[] resources = buildResources(project, Snapshot2Test.defineHierarchy1());
-		assertExistsInFileSystem("2.1", resources);
-		assertExistsInWorkspace("2.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 
 		// Project2
 		project = getWorkspace().getRoot().getProject(PROJECT_2);
@@ -57,7 +61,7 @@ public class Snapshot3Test extends SnapshotTest {
 
 		// verify existence of children
 		resources = buildResources(project, Snapshot2Test.defineHierarchy2());
-		assertExistsInFileSystem("5.1", resources);
-		assertExistsInWorkspace("5.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 	}
 }

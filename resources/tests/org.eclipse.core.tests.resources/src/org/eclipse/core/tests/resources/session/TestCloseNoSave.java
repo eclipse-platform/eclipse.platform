@@ -13,10 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -26,12 +31,12 @@ public class TestCloseNoSave extends WorkspaceSerializationTest {
 	public void test1() throws CoreException {
 		/* create some resource handles */
 		IProject project = workspace.getRoot().getProject(PROJECT);
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		IFolder folder = project.getFolder(FOLDER);
-		folder.create(true, true, getMonitor());
+		folder.create(true, true, createTestMonitor());
 		IFile file = folder.getFile(FILE);
-		file.create(getRandomContents(), true, getMonitor());
+		file.create(getRandomContents(), true, createTestMonitor());
 	}
 
 	public void test2() throws CoreException {
@@ -56,7 +61,7 @@ public class TestCloseNoSave extends WorkspaceSerializationTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestCloseNoSave.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestCloseNoSave.class);
 	}
 
 }

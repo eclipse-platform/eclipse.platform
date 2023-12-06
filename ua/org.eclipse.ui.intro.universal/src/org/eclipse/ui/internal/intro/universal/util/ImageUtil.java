@@ -81,7 +81,6 @@ public final class ImageUtil {
 
 	/**
 	 * Convenience method to create an image descriptor.
-	 *
 	 */
 	public static ImageDescriptor createImageDescriptor(Bundle bundle,
 			String imageName) {
@@ -102,7 +101,6 @@ public final class ImageUtil {
 
 	/**
 	 * Convenience method to create an image descriptor.
-	 *
 	 */
 	public static ImageDescriptor createImageDescriptor(IPath base,
 			String imageName) {
@@ -137,9 +135,6 @@ public final class ImageUtil {
 
 	/**
 	 * Util method for image re-use in Intro Plugin.
-	 *
-	 * @param key
-	 * @return
 	 */
 	public static Image getImage(String key) {
 		// INTRO: Image registry should not have the same life span
@@ -159,9 +154,6 @@ public final class ImageUtil {
 	/**
 	 * Register an image descriptor in the Intro Plugin image registry. Has no
 	 * effect if the key has already been registered.
-	 *
-	 * @param key
-	 * @param imageName
 	 */
 	public static void registerImage(String key, String imageName) {
 		ImageRegistry registry = UniversalIntroPlugin.getDefault()

@@ -41,13 +41,12 @@ public class TipImageBas64Test {
 
 	@Test
 	public void testSetExtension() {
-		// assertTrue(getTipImage().getIMGAttributes(19, 10).contains("png"));
+		assertTrue(getTipImage().getBase64Image().contains("png"));
 	}
 
 	@Test
 	public void testSetExtension2() {
-		// assertTrue(getTipImage().setExtension("bmp").getBase64Image().contains("bmp"));
-		// assertTrue(getTipImage().getIMGAttributes(19, 10).contains("png"));
+		assertTrue(getTipImage().setExtension("bmp").getBase64Image().contains("bmp"));
 	}
 
 	@Test

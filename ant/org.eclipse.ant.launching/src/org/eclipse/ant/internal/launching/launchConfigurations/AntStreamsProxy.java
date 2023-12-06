@@ -17,9 +17,6 @@ import org.eclipse.ant.internal.launching.AntLaunching;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 
-/**
- *
- */
 public class AntStreamsProxy implements IStreamsProxy {
 
 	private final AntStreamMonitor fErrorMonitor = new AntStreamMonitor();

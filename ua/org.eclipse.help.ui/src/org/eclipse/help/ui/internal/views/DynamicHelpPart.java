@@ -84,10 +84,6 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 		}
 	}
 
-	/**
-	 * @param parent
-	 * @param toolkit
-	 */
 	public DynamicHelpPart(Composite parent, FormToolkit toolkit) {
 		super(parent, toolkit, Section.EXPANDED | Section.TWISTIE
 				| Section.TITLE_BAR);

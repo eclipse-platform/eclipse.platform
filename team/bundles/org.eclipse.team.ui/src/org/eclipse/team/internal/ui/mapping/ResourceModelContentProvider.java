@@ -62,7 +62,6 @@ import org.eclipse.ui.navigator.ICommonContentExtensionSite;
  * are mappings from a model provider that does not have a content provider
  * registered. The third is for the case where a resource mapping does not
  * have a model provider registered (this may be considered an error case).
- *
  */
 public class ResourceModelContentProvider extends SynchronizationContentProvider implements ITreePathContentProvider {
 

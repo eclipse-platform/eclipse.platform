@@ -30,8 +30,6 @@ public interface ISearchHitCollector {
 	/**
 	 * An exception occurred in the search. Implementing subclasses should either
 	 * rethrow the exception or save a local copy and test for it later.
-	 * @param exception
-	 * @throws QueryTooComplexException
 	 */
 	public void addQTCException(QueryTooComplexException exception) throws QueryTooComplexException;
 }

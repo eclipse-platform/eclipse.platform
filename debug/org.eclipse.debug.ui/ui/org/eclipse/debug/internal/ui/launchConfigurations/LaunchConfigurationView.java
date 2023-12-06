@@ -123,8 +123,6 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 
 	/**
 	 * Constructor
-	 * @param launchGroup
-	 * @param filters
 	 */
 	public LaunchConfigurationView(LaunchGroupExtension launchGroup, ViewerFilter[] filters) {
 		super();
@@ -465,7 +463,6 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 
 	/**
 	 * returns the launch manager
-	 * @return
 	 */
 	protected ILaunchManager getLaunchManager() {
 		return fLaunchManager;

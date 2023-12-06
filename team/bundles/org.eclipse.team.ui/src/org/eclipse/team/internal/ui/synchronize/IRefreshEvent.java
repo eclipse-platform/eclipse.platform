@@ -108,7 +108,6 @@ public interface IRefreshEvent {
 
 	/**
 	 * Set whether this event is being presented in a progress view link
-	 * @param isLink
 	 */
 	public void setIsLink(boolean isLink);
 

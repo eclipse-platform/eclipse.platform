@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Item;
  * because the original has package access only.
  *
  * TODO: complain to UI about package access to API class.
- *
  */
 public abstract class TableEditorImpl {
 	private CellEditor fCellEditor;
@@ -194,9 +193,6 @@ public abstract class TableEditorImpl {
 
 	/**
 	 * Start editing the given element.
-	 *
-	 * @param element
-	 * @param column
 	 */
 	public void editElement(Object element, int column) {
 		if (fCellEditor != null)
@@ -326,8 +322,6 @@ public abstract class TableEditorImpl {
 
 	/**
 	 * Set the cell editors
-	 *
-	 * @param editors
 	 */
 	public void setCellEditors(CellEditor[] editors) {
 		fCellEditors = editors;
@@ -335,8 +329,6 @@ public abstract class TableEditorImpl {
 
 	/**
 	 * Set the cell modifier
-	 *
-	 * @param modifier
 	 */
 	public void setCellModifier(ICellModifier modifier) {
 		fCellModifier = modifier;
@@ -344,8 +336,6 @@ public abstract class TableEditorImpl {
 
 	/**
 	 * Set the column properties
-	 *
-	 * @param columnProperties
 	 */
 	public void setColumnProperties(String[] columnProperties) {
 		fColumnProperties = columnProperties;

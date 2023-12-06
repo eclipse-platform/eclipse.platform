@@ -69,8 +69,6 @@ public class BatchingLock {
 		/**
 		 * Push a scheduling rule onto the stack for this thread and
 		 * acquire the rule if it is not the workspace root.
-		 * @param resource
-		 * @param monitor
 		 * @return the scheduling rule that was obtained
 		 */
 		public ISchedulingRule pushRule(ISchedulingRule resource, IProgressMonitor monitor) {
@@ -109,9 +107,6 @@ public class BatchingLock {
 		 * disk if necessary. A flush is necessary if the stack is empty
 		 * or if the top-most non-null scheduling rule was popped as a result
 		 * of this operation.
-		 * @param rule
-		 * @param monitor
-		 * @throws TeamException
 		 */
 		public void popRule(ISchedulingRule rule, IProgressMonitor monitor) throws TeamException {
 			try {
@@ -305,7 +300,6 @@ public class BatchingLock {
 	 * the the flush operation provided in the acquire method will be executed.
 	 * @param rule the scheduling rule
 	 * @param monitor a progress monitor
-	 * @throws TeamException
 	 */
 	public void release(ISchedulingRule rule, IProgressMonitor monitor) throws TeamException {
 		ThreadInfo info = getThreadInfo();
@@ -330,7 +324,6 @@ public class BatchingLock {
 	/**
 	 * Flush any changes accumulated by the lock so far.
 	 * @param monitor a progress monitor
-	 * @throws TeamException
 	 */
 	public void flush(IProgressMonitor monitor) throws TeamException {
 		ThreadInfo info = getThreadInfo();

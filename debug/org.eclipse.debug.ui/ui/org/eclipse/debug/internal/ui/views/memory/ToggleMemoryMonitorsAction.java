@@ -17,7 +17,6 @@ package org.eclipse.debug.internal.ui.views.memory;
  * Toggles the visiblity of a view pane.
  *
  * @since 3.1
- *
  */
 public class ToggleMemoryMonitorsAction extends ToggleViewPaneAction {
 

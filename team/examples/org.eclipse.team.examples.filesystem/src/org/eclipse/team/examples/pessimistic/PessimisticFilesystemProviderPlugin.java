@@ -139,8 +139,6 @@ public class PessimisticFilesystemProviderPlugin extends AbstractUIPlugin {
 	/**
 	 * Adds the listener to the list of listeners that are notified when
 	 * the repository state of resources change.
-	 *
-	 * @param listener
 	 */
 	public void addProviderListener(IResourceStateListener listener) {
 		if (fListeners.contains(listener))
@@ -152,8 +150,6 @@ public class PessimisticFilesystemProviderPlugin extends AbstractUIPlugin {
 	/**
 	 * Removes the listener from the list of listeners that are notified when
 	 * the repository state of resources change.
-	 *
-	 * @param listener
 	 */
 	public void removeProviderListener(IResourceStateListener listener) {
 		fListeners.remove(listener);

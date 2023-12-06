@@ -13,9 +13,6 @@
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.commands.actions;
 
-/**
- *
- */
 public interface IEnabledTarget {
 	void setEnabled(boolean enabled);
 }

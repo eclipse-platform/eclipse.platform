@@ -50,8 +50,6 @@ public abstract class DialogArea {
 	 * Listener for property change events. The only event of interest is for
 	 * property SELECTED_WORKING_SET which contains the selected working set or
 	 * <code>null</code> if none is selected.
-	 *
-	 * @param listener
 	 */
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
 		if (!listeners.contains(listener))
@@ -59,8 +57,6 @@ public abstract class DialogArea {
 	}
 	/**
 	 * Remove the provided listener from the receiver.
-	 *
-	 * @param listener
 	 */
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		listeners.remove(listener);
@@ -91,7 +87,6 @@ public abstract class DialogArea {
 
 	/**
 	 * Create the area using the given parent as the containing composite
-	 * @param parent
 	 */
 	public abstract void createArea(Composite parent);
 

@@ -13,18 +13,26 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.eclipse.core.internal.resources.PreferenceInitializer;
 import org.eclipse.core.internal.resources.ValidateProjectEncoding;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.util.NLS;
-import org.hamcrest.*;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.DiagnosingMatcher;
 import org.junit.Test;
 
 /**
@@ -149,11 +157,11 @@ public class ProjectEncodingTest extends ResourceTest {
 		node.putInt(ResourcesPlugin.PREF_MISSING_ENCODING_MARKER_SEVERITY, value);
 		node.flush();
 		Job.getJobManager().wakeUp(ValidateProjectEncoding.class);
-		Job.getJobManager().join(ValidateProjectEncoding.class, getMonitor());
+		Job.getJobManager().join(ValidateProjectEncoding.class, createTestMonitor());
 	}
 
-	private void whenProjectIsCreated() {
-		project = ResourcesPlugin.getWorkspace().getRoot().getProject(getUniqueString());
+	private void whenProjectIsCreated() throws CoreException {
+		project = ResourcesPlugin.getWorkspace().getRoot().getProject(createUniqueString());
 		ensureExistsInWorkspace(project, true);
 	}
 
@@ -230,7 +238,6 @@ public class ProjectEncodingTest extends ResourceTest {
 	}
 
 	private void buildAndWaitForBuildFinish() {
-		buildResources();
 		waitForBuild();
 	}
 

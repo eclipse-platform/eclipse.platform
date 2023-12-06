@@ -27,7 +27,6 @@ import org.eclipse.debug.core.model.MemoryByte;
  * Clients may implement this interface.
  * </p>
  * @since 3.3
- *
  */
 public interface IRepositionableMemoryRendering extends IMemoryRendering{
 

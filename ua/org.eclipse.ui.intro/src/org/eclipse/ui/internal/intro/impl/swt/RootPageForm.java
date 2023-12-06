@@ -157,9 +157,6 @@ public class RootPageForm implements IIntroConstants {
 		}
 	};
 
-	/**
-	 *
-	 */
 	public RootPageForm(FormToolkit toolkit, IntroModelRoot modelRoot,
 			Form parentForm) {
 		this.toolkit = toolkit;
@@ -278,9 +275,6 @@ public class RootPageForm implements IIntroConstants {
 	/**
 	 * Creates an Image Hyperlink from an IntroLink. Model object is cached in
 	 * link.
-	 *
-	 * @param body
-	 * @param link
 	 */
 	private void createImageHyperlink(Composite parent, IntroLink link) {
 		// create the container composite that will hold the imageHyperLink and
@@ -319,8 +313,6 @@ public class RootPageForm implements IIntroConstants {
 	/**
 	 * Creates a label to display the link description when you hover over a
 	 * hyperlink.
-	 *
-	 * @param body
 	 */
 	private Label createHoverLabel(Composite body) {
 		Label label = toolkit.createLabel(body, "", SWT.WRAP); //$NON-NLS-1$

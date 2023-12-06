@@ -34,8 +34,6 @@ public class IntroStandbyContentPart extends AbstractIntroIdElement {
 	/**
 	 * Note: model class with public constructor because it is not instantiated
 	 * by the model root.
-	 *
-	 * @param element
 	 */
 	public IntroStandbyContentPart(IConfigurationElement element) {
 		super(element);

@@ -27,9 +27,6 @@ import org.eclipse.e4.core.internal.tests.CoreTestsActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-/**
- *
- */
 public class ContextExample {
 	static class Crayon {
 		@Inject
@@ -97,9 +94,6 @@ public class ContextExample {
 		new ContextExample().price();
 	}
 
-	/**
-	 *
-	 */
 	public void run() {
 		IEclipseContext parent = EclipseContextFactory.create();
 		parent.set("complement", new ComplementaryColor());

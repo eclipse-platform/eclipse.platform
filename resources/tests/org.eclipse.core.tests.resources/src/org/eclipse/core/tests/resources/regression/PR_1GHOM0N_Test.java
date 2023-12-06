@@ -13,7 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import org.eclipse.core.resources.*;
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -23,40 +31,23 @@ public class PR_1GHOM0N_Test extends ResourceTest {
 	 * Ensure that we get ADDED and OPEN in the delta when we create and open
 	 * a project in a workspace runnable.
 	 */
-	public void test_1GEAB3C() {
-		// turn off auto-build
-		//	try {
-		//		IWorkspaceDescription wd = getWorkspace().getDescription();
-		//		wd.setAutoBuilding(false);
-		//		getWorkspace().setDescription(wd);
-		//	} catch (CoreException e) {
-		//		fail("1.0", e);
-		//	}
-
+	public void test_1GEAB3C() throws CoreException {
 		// setup the project
 		final IProject project = getWorkspace().getRoot().getProject("MyProject");
-		try {
-			IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
-			ICommand command = description.newCommand();
-			command.setBuilderName(SimpleBuilder.BUILDER_ID);
-			description.setBuildSpec(new ICommand[] {command});
-			project.create(description, getMonitor());
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
+		ICommand command = description.newCommand();
+		command.setBuilderName(SimpleBuilder.BUILDER_ID);
+		description.setBuildSpec(new ICommand[] { command });
+		project.create(description, createTestMonitor());
+		project.open(createTestMonitor());
 
 		// try and reproduce the error (there are problems when calling an incremental
 		// build from within an operation...it leaves the tree immutable)
 		IWorkspaceRunnable body = monitor -> {
-			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 			IFile file = project.getFile("test.txt");
-			file.create(getRandomContents(), true, getMonitor());
+			file.create(getRandomContents(), true, createTestMonitor());
 		};
-		try {
-			getWorkspace().run(body, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		getWorkspace().run(body, createTestMonitor());
 	}
 }

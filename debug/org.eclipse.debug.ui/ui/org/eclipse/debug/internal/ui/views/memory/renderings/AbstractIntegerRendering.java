@@ -22,7 +22,6 @@ import org.eclipse.debug.ui.memory.IMemoryRenderingContainer;
 /**
  * Abstract implementation to an integer rendering.
  * @since 3.1
- *
  */
 public abstract class AbstractIntegerRendering extends AbstractAsyncTableRendering {
 

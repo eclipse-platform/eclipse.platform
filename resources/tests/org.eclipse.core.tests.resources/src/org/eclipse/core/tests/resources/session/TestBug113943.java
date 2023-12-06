@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import junit.framework.Test;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -23,7 +27,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -34,7 +37,7 @@ public class TestBug113943 extends WorkspaceSerializationTest {
 	IPath location = Platform.getLocation().removeLastSegments(1).append("OtherLocation");
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug113943.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug113943.class);
 	}
 
 	/**
@@ -47,14 +50,14 @@ public class TestBug113943 extends WorkspaceSerializationTest {
 		ensureExistsInWorkspace(project, true);
 		IFileStore parent = EFS.getStore(location.toFile().toURI());
 		IFileStore child = parent.getChild(linkChild.getName());
-		parent.mkdir(EFS.NONE, getMonitor());
-		child.openOutputStream(EFS.NONE, getMonitor()).close();
-		link.createLink(location, IResource.NONE, getMonitor());
+		parent.mkdir(EFS.NONE, createTestMonitor());
+		child.openOutputStream(EFS.NONE, createTestMonitor()).close();
+		link.createLink(location, IResource.NONE, createTestMonitor());
 
 		assertTrue("1.0", link.exists());
 		assertTrue("1.1", linkChild.exists());
 
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**
@@ -64,7 +67,7 @@ public class TestBug113943 extends WorkspaceSerializationTest {
 		IProject project = workspace.getRoot().getProject("Project1");
 		IFolder link = project.getFolder("link");
 		IFile linkChild = link.getFile("child.txt");
-		link.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		link.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		assertTrue("1.0", link.exists());
 		assertTrue("1.1", linkChild.exists());

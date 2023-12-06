@@ -116,10 +116,6 @@ public class PDAThreadEventHandler extends DebugEventHandler {
 		return newdelta.addNode(debugTarget, indexOf(children, debugTarget), IModelDelta.NO_CHANGE, numFrames);
 	}
 
-	/**
-	 * @param thread
-	 * @param flags
-	 */
 	private void fireDeltaAndClearTopFrame(IThread thread, int flags) {
 		ModelDelta delta = buildRootDelta();
 		addTarget(delta, thread);

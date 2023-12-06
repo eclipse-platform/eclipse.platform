@@ -13,8 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
+import java.io.IOException;
 import java.util.Random;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
@@ -44,7 +47,7 @@ public class FileSystemPerformanceTest extends LocalStoreTest {
 		return buf.toString();
 	}
 
-	void createStructure() throws CoreException {
+	void createStructure() throws CoreException, IOException {
 		baseStore = EFS.getLocalFileSystem().getStore(FileSystemHelper.getRandomLocation(getTempDir()));
 		baseStore.mkdir(EFS.NONE, null);
 		for (int i = 0; i < DIR_COUNT; i++) {
@@ -70,7 +73,7 @@ public class FileSystemPerformanceTest extends LocalStoreTest {
 		}
 	}
 
-	public void testPutFileInfo() throws CoreException {
+	public void testPutFileInfo() throws Exception {
 		createStructure();
 		PerformanceTestRunner runner = new PerformanceTestRunner() {
 			@Override

@@ -14,8 +14,17 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.util.Map;
-import org.eclipse.core.resources.*;
+import java.util.stream.Stream;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -34,7 +43,7 @@ public abstract class AbstractBuilderTest extends ResourceTest {
 	protected void addBuilder(IProject project, String builderName) throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] {createCommand(desc, builderName, "Project1Build1")});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 	}
 
 	/**
@@ -62,7 +71,17 @@ public abstract class AbstractBuilderTest extends ResourceTest {
 	 * Dirties the given file, forcing a build.
 	 */
 	protected void dirty(IFile file) throws CoreException {
-		file.setContents(getRandomContents(), true, true, getMonitor());
+		file.setContents(getRandomContents(), true, true, createTestMonitor());
+	}
+
+	/**
+	 * Sets the workspace build order to just contain the given projects.
+	 */
+	protected void setBuildOrder(IProject... projects) throws CoreException {
+		IWorkspace workspace = getWorkspace();
+		IWorkspaceDescription desc = workspace.getDescription();
+		desc.setBuildOrder(Stream.of(projects).map(IProject::getName).toArray(String[]::new));
+		workspace.setDescription(desc);
 	}
 
 }

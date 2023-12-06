@@ -13,12 +13,22 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 public class Bug_226264 extends ResourceTest {
-	public void testBug() throws CoreException {
+	public void testBug() throws CoreException, InterruptedException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		final IProject project1 = workspace.getRoot().getProject("Project1");
 		project1.create(null);
@@ -50,21 +60,19 @@ public class Bug_226264 extends ResourceTest {
 				}
 			}
 		};
-		workspace.addResourceChangeListener(projectDeletingChangeListener, IResourceChangeEvent.PRE_DELETE);
 
 		try {
+			workspace.addResourceChangeListener(projectDeletingChangeListener, IResourceChangeEvent.PRE_DELETE);
 			// delete project
 			project1.delete(true, null);
 			job.join();
-		} catch (InterruptedException e) {
-			fail("1.0", e);
 		} finally {
 			workspace.removeResourceChangeListener(projectDeletingChangeListener);
 		}
 
 		assertTrue("2.0: " + job.getResult(), job.getResult().isOK());
 
-		assertDoesNotExistInWorkspace("3.0", project1);
-		assertDoesNotExistInWorkspace("4.0", project2);
+		assertDoesNotExistInWorkspace(project1);
+		assertDoesNotExistInWorkspace(project2);
 	}
 }

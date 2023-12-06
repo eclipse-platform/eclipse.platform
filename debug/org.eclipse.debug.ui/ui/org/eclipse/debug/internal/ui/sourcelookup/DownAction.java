@@ -22,7 +22,6 @@ import org.eclipse.ui.actions.SelectionListenerAction;
 
 /**
  * The action for sorting the order of source containers in the dialog.
- *
  */
 public class DownAction	extends SourceContainerAction {
 

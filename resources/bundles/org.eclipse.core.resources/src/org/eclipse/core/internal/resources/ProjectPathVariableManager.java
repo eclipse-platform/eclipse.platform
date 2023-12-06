@@ -468,7 +468,6 @@ public class ProjectPathVariableManager implements IPathVariableManager, IManage
 	}
 
 	/**
-	 * @throws CoreException
 	 * @see IPathVariableManager#convertToRelative(URI, boolean, String)
 	 */
 	@Override

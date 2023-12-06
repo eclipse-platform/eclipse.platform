@@ -38,7 +38,6 @@ public class LaunchConfigurationTabImageDescriptor extends CompositeImageDescrip
 	 *
 	 * @param baseImage an image descriptor used as the base image
 	 * @param flags flags indicating which adornments are to be rendered
-	 *
 	 */
 	public LaunchConfigurationTabImageDescriptor(Image baseImage, int flags) {
 		setBaseImage(baseImage);

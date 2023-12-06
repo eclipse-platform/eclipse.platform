@@ -49,10 +49,6 @@ public class MemoryBlockLabelProvider extends DebugElementLabelProvider {
 		return super.getImageDescriptor(elementPath, presentationContext, columnId);
 	}
 
-	/**
-	 * @param memoryBlockLabel
-	 * @return
-	 */
 	private String getLabel(IMemoryBlock memoryBlock) {
 
 		String memoryBlockLabel = " "; //$NON-NLS-1$

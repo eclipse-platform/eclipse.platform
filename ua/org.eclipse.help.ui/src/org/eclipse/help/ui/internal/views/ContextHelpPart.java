@@ -107,10 +107,6 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 
 	private String savedDescription;
 
-	/**
-	 * @param parent
-	 * @param toolkit
-	 */
 	public ContextHelpPart(Composite parent, FormToolkit toolkit) {
 		super(parent, toolkit, getSectionStyle());
 		Section section = getSection();
@@ -681,9 +677,6 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 	/**
 	 * Make sure to support the Help system bold tag. The help system returns a
 	 * regular string for getText(). Use internal apis for now to get bold.
-	 *
-	 * @param context
-	 * @return
 	 */
 	private String decodeContextBoldTags(IContext context) {
 		String styledText;

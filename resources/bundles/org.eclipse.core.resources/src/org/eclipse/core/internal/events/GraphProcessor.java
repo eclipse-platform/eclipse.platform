@@ -23,9 +23,6 @@ import org.eclipse.core.internal.resources.ComputeProjectOrder.VertexOrder;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
 
-/**
- *
- */
 class GraphProcessor<T> {
 
 	final private Digraph<T> graph;

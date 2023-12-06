@@ -43,23 +43,14 @@ public class SubItemCompositeHolder {
 		return checkDoneLabel;
 	}
 
-	/**
-	 * @return
-	 */
 	public boolean isCompleted() {
 		return completed;
 	}
 
-	/**
-	 * @return
-	 */
 	public boolean isSkipped() {
 		return skipped;
 	}
 
-	/**
-	 * @param isCompleted
-	 */
 	public void setCompleted(boolean isCompleted) {
 		completed = isCompleted;
 		if (isCompleted && checkDoneLabel != null) {
@@ -68,9 +59,6 @@ public class SubItemCompositeHolder {
 		checkDoneLabel.setVisible(completed || skipped);
 	}
 
-	/**
-	 * @param isSkipped
-	 */
 	public void setSkipped(boolean isSkipped) {
 		skipped = isSkipped;
 		if (isSkipped && checkDoneLabel != null) {
@@ -102,7 +90,6 @@ public class SubItemCompositeHolder {
 
 	/**
 	 * Hide or reveal all the action/complete/skip buttons
-	 * @param isVisible
 	 */
 	public void setButtonsVisible(boolean isVisible) {
 		if (startButton != null) {

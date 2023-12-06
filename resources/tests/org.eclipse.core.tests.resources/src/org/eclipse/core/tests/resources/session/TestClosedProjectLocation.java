@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -20,7 +23,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -39,13 +41,13 @@ public class TestClosedProjectLocation extends WorkspaceSerializationTest {
 		IFile file = project.getFile(FILE);
 		IProjectDescription desc = workspace.newProjectDescription(PROJECT);
 		desc.setLocation(location);
-		project.create(desc, getMonitor());
-		project.open(getMonitor());
+		project.create(desc, createTestMonitor());
+		project.open(createTestMonitor());
 		ensureExistsInWorkspace(file, true);
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 		assertEquals("1.1", location, project.getLocation());
 
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	/**
@@ -65,6 +67,6 @@ public class TestClosedProjectLocation extends WorkspaceSerializationTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestClosedProjectLocation.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestClosedProjectLocation.class);
 	}
 }

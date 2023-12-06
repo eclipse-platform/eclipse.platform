@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core Resources Tools
 Bundle-SymbolicName: org.eclipse.core.tools.resources;singleton:=true
-Bundle-Version: 1.7.100.qualifier
+Bundle-Version: 1.7.200.qualifier
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.core.tools.resources,
  org.eclipse.core.tools.resources.markers

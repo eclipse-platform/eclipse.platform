@@ -25,7 +25,6 @@ import org.osgi.framework.FrameworkUtil;
 
 /**
  * Special generic tip that tells the user that there are no more tips.
- *
  */
 public class FinalTip extends Tip implements IHtmlTip {
 

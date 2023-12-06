@@ -13,10 +13,17 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import junit.framework.Test;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -29,25 +36,25 @@ public class TestMultiSnap extends WorkspaceSerializationTest {
 
 		/* create some resource handles */
 		IProject project = getWorkspace().getRoot().getProject(PROJECT);
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		/* snapshot */
-		workspace.save(false, getMonitor());
+		workspace.save(false, createTestMonitor());
 
 		/* do more stuff */
 		IFolder folder = project.getFolder(FOLDER);
-		folder.create(true, true, getMonitor());
+		folder.create(true, true, createTestMonitor());
 
-		workspace.save(false, getMonitor());
+		workspace.save(false, createTestMonitor());
 
 		/* do even more stuff */
 		IFile file = folder.getFile(FILE);
 		byte[] bytes = "Test bytes".getBytes();
 		java.io.ByteArrayInputStream in = new java.io.ByteArrayInputStream(bytes);
-		file.create(in, true, getMonitor());
+		file.create(in, true, createTestMonitor());
 
-		workspace.save(false, getMonitor());
+		workspace.save(false, createTestMonitor());
 
 		//exit without saving
 	}
@@ -64,10 +71,10 @@ public class TestMultiSnap extends WorkspaceSerializationTest {
 		assertTrue("1.2", project.exists());
 		assertTrue("1.3", project.isOpen());
 
-		assertExistsInWorkspace("1.4", new IResource[] {project, folder, file});
+		assertExistsInWorkspace(new IResource[] { project, folder, file });
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestMultiSnap.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestMultiSnap.class);
 	}
 }

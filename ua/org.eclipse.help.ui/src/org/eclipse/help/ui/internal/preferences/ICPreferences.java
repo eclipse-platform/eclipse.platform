@@ -156,10 +156,6 @@ public class ICPreferences {
 
 	/**
 	 * Set a preference in the given node.
-	 *
-	 * @param node
-	 * @param name
-	 * @param value
 	 */
 	public static void set(IEclipsePreferences node,String name,String value)
 	{
@@ -183,9 +179,6 @@ public class ICPreferences {
 
 	/**
 	 * Get the IEclipsePreferences node for the given plugin
-	 *
-	 * @param plugin
-	 * @return
 	 */
 	public static IEclipsePreferences getNode(String plugin)
 	{
@@ -196,9 +189,6 @@ public class ICPreferences {
 
 	/**
 	 * Get the default IEclipsePreferences node for the given plugin
-	 *
-	 * @param plugin
-	 * @return
 	 */
 	public static IEclipsePreferences getDefaultNode(String plugin)
 	{

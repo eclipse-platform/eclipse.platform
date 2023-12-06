@@ -28,7 +28,6 @@ import org.eclipse.debug.ui.actions.RelaunchLastAction;
  * @see RelaunchLastAction
  * @see RunLastAction
  * @see DebugLastAction
- *
  */
 public class ProfileLastAction extends RelaunchLastAction {
 

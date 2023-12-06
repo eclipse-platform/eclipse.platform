@@ -39,8 +39,6 @@ public class Category implements IWorkbenchAdapter, IPluginContribution,
 	 */
 	public final static String MISC_NAME = Messages.CATEGORY_OTHER;
 
-	/**
-	 */
 	public final static String MISC_ID = "org.eclipse.ui.cheatsheets.otherCategory"; //$NON-NLS-1$
 
 	private final String id;

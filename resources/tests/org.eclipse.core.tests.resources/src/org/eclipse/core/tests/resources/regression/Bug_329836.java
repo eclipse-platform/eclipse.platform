@@ -14,7 +14,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import org.eclipse.core.filesystem.*;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -23,22 +29,18 @@ import org.eclipse.core.tests.resources.ResourceTest;
  * Test for bug 329836
  */
 public class Bug_329836 extends ResourceTest {
-	public void testBug() {
+	public void testBug() throws CoreException {
 		if (!Platform.getOS().equals(Platform.OS_MACOSX)) {
 			return;
 		}
 
-		IFileStore fileStore = getTempStore().getChild(getUniqueString());
+		IFileStore fileStore = getTempStore().getChild(createUniqueString());
 		createFileInFileSystem(fileStore);
 
 		// set EFS.ATTRIBUTE_READ_ONLY which also sets EFS.IMMUTABLE on Mac
 		IFileInfo info = fileStore.fetchInfo();
 		info.setAttribute(EFS.ATTRIBUTE_READ_ONLY, true);
-		try {
-			fileStore.putInfo(info, EFS.SET_ATTRIBUTES, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		fileStore.putInfo(info, EFS.SET_ATTRIBUTES, createTestMonitor());
 
 		// read the info again
 		info = fileStore.fetchInfo();
@@ -52,11 +54,7 @@ public class Bug_329836 extends ResourceTest {
 		// unset EFS.ATTRIBUTE_READ_ONLY which also unsets EFS.IMMUTABLE on Mac
 
 		info.setAttribute(EFS.ATTRIBUTE_READ_ONLY, false);
-		try {
-			fileStore.putInfo(info, EFS.SET_ATTRIBUTES, getMonitor());
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		fileStore.putInfo(info, EFS.SET_ATTRIBUTES, createTestMonitor());
 
 		// read the info again
 		info = fileStore.fetchInfo();

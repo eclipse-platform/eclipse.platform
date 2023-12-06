@@ -63,8 +63,6 @@ public class InfocenterWorkingSetManager implements IHelpWorkingSetManager {
 
 	/**
 	 * Constructor
-	 *
-	 * @param locale
 	 */
 	public InfocenterWorkingSetManager(HttpServletRequest request,
 			HttpServletResponse response, String locale) {
@@ -109,7 +107,6 @@ public class InfocenterWorkingSetManager implements IHelpWorkingSetManager {
 
 	/**
 	 * Returns a working set by name
-	 *
 	 */
 	@Override
 	public WorkingSet getWorkingSet(String name) {

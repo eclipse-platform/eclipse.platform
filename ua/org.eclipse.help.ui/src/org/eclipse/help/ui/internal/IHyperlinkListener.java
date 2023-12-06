@@ -15,9 +15,6 @@ package org.eclipse.help.ui.internal;
 
 import org.eclipse.swt.widgets.*;
 
-/**
- *
- */
 public interface IHyperlinkListener {
 	/**
 	 * @param linkLabel

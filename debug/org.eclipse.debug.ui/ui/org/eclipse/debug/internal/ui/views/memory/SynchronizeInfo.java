@@ -40,8 +40,6 @@ public class SynchronizeInfo {
 
 	/**
 	 * Create a new synchronization info object for the memory block
-	 *
-	 * @param block
 	 */
 	public SynchronizeInfo(IMemoryBlock block) {
 		fBlock = block;
@@ -50,9 +48,6 @@ public class SynchronizeInfo {
 
 	/**
 	 * Set a property and its value to the info object
-	 *
-	 * @param propertyId
-	 * @param value
 	 */
 	public void setProperty(String propertyId, Object value) {
 		if (propertyId == null)
@@ -67,7 +62,6 @@ public class SynchronizeInfo {
 	/**
 	 * Returns the value of the property from the info object
 	 *
-	 * @param propertyId
 	 * @return value of the property
 	 */
 	public Object getProperty(String propertyId) {

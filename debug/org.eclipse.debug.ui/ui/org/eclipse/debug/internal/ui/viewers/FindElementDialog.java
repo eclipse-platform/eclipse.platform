@@ -25,7 +25,6 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
  * A dialog used to select elements from a list.
  *
  * @since 3.3
- *
  */
 public class FindElementDialog extends ElementListSelectionDialog {
 

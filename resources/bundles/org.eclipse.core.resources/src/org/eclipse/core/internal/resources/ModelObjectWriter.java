@@ -139,8 +139,6 @@ public class ModelObjectWriter implements IModelObjectConstants {
 	 * Writes a location to the XML writer.  For backwards compatibility,
 	 * local file system locations are written and read using a different tag
 	 * from non-local file systems.
-	 * @param location
-	 * @param writer
 	 */
 	private void writeLocation(URI location, XMLWriter writer) {
 		if (EFS.SCHEME_FILE.equals(location.getScheme())) {

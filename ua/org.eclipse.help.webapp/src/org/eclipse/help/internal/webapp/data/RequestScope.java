@@ -51,7 +51,6 @@ public class RequestScope {
 	 * @param isSearchFilter is true if this filter will be used to filter search results.
 	 * Search results are already filtered by search scope and if this parameter is true search
 	 * scopes will not be considered
-	 * @return
 	 */
 	public static AbstractHelpScope getScope(HttpServletRequest req, HttpServletResponse resp, boolean isSearchFilter ) {
 		AbstractHelpScope[] scopeArray;

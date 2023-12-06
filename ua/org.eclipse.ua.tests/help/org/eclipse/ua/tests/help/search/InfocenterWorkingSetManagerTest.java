@@ -266,7 +266,6 @@ public class InfocenterWorkingSetManagerTest {
 
 	/**
 	 * Verify that adding a second topic in the same toc only adds 4 more bytes to the cookie size
-	 * @throws IOException
 	 */
 	@Test
 	public void testCookieSizeOptimization() throws IOException {

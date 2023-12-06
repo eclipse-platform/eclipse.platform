@@ -18,7 +18,6 @@ package org.eclipse.debug.internal.ui.commands.actions;
  * Collects votes from handler update requests.
  *
  * @since 3.3
- *
  */
 public class ActionsUpdater {
 

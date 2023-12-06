@@ -647,9 +647,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		 * This method is used to prevent duplicating names of linked resources.
 		 * It adds a suffix based on the <code>counter</code> value.
 		 *
-		 * @param name
 		 * @param extension optional
-		 * @return
 		 */
 		private String getName(String name, String extension) {
 			if (counter != 0) {

@@ -25,9 +25,6 @@ public abstract class TimeControl extends SequencerControl {
 	/**
 	 * Constructs a time control with the given name for the
 	 * given launch.
-	 *
-	 * @param name
-	 * @param launch
 	 */
 	public TimeControl(String name, MidiLaunch launch) {
 		super(name, launch);

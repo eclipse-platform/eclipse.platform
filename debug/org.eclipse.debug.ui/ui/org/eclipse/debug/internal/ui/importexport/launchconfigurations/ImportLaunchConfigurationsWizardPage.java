@@ -100,8 +100,6 @@ public class ImportLaunchConfigurationsWizardPage extends WizardResourceImportPa
 
 		/**
 		 * Populates the children of the specified parent <code>FileSystemElement</code>
-		 * @param element
-		 * @param folderonly
 		 */
 		private void populateElementChildren() {
 			FileSystemStructureProvider provider = FileSystemStructureProvider.INSTANCE;

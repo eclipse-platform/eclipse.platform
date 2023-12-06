@@ -25,7 +25,6 @@ import org.eclipse.debug.core.DebugException;
  * Clients may implement this interface.
  * </p>
  * @since 3.2
- *
  */
 public interface IResettableMemoryRendering extends IMemoryRendering {
 

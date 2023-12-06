@@ -13,10 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import junit.framework.Test;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -29,7 +31,7 @@ public class TestWorkspaceEncodingNewWorkspace extends WorkspaceSessionTest {
 	private static final String CHARSET = "UTF-16";
 
 	public static Test suite() {
-		WorkspaceSessionTestSuite suite = new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS,
+		WorkspaceSessionTestSuite suite = new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS,
 				TestWorkspaceEncodingNewWorkspace.class);
 		// no special setup
 		return suite;
@@ -45,8 +47,8 @@ public class TestWorkspaceEncodingNewWorkspace extends WorkspaceSessionTest {
 		// Should be default
 		assertEquals("UTF-8", charset);
 		// Set something else
-		workspace.getRoot().setDefaultCharset(CHARSET, getMonitor());
-		workspace.save(true, getMonitor());
+		workspace.getRoot().setDefaultCharset(CHARSET, createTestMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	public void testExpectedEncoding2() throws Exception {

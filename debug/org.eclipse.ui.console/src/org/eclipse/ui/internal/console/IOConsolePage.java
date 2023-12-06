@@ -29,7 +29,6 @@ import org.eclipse.ui.console.TextConsoleViewer;
  * A page for an IOConsole
  *
  * @since 3.1
- *
  */
 public class IOConsolePage extends TextConsolePage {
 

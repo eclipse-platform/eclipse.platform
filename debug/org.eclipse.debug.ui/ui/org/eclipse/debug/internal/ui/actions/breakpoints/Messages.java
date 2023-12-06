@@ -15,9 +15,6 @@ package org.eclipse.debug.internal.ui.actions.breakpoints;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- *
- */
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.debug.internal.ui.actions.breakpoints.Messages"; //$NON-NLS-1$
 	public static String RetargetMethodBreakpointAction_0;

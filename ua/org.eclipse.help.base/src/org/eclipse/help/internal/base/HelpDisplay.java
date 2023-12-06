@@ -245,7 +245,6 @@ public class HelpDisplay {
 	 * If href contains URL parameter noframes=true return href with that
 	 * paramter removed, otherwise returns null
 	 *
-	 * @param href
 	 * @return String or null
 	 */
 	private String getNoframesURL(String href) {

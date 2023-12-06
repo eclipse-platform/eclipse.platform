@@ -300,8 +300,6 @@ public class NonSyncModelMergePage extends Page {
 
 	/**
 	 * Check whether any of the diffs overlap with mappings that are not selected
-	 * @param diffs
-	 * @return
 	 */
 	protected boolean checkForModelOverlap(IDiff[] diffs, IProgressMonitor monitor) {
 		// TODO: This check should see if the diffs are also part of mappings

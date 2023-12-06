@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.TableItem;
 
 /**
  * @since 3.1
- *
  */
 // TODO:  if we want "true" flexible hierarchy, also need to allow clients
 // to plug cell modifier in case the element is not MemorySegment

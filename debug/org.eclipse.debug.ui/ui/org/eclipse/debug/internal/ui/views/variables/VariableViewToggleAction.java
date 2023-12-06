@@ -26,9 +26,6 @@ import org.eclipse.ui.IActionDelegate2;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 
-/**
- *
- */
 public abstract class VariableViewToggleAction implements IViewActionDelegate, IActionDelegate2 {
 
 	private IViewPart fView;
@@ -79,7 +76,6 @@ public abstract class VariableViewToggleAction implements IViewActionDelegate, I
 	 * Returns the value of this filters preference (on/off) for the given
 	 * view.
 	 *
-	 * @param part
 	 * @return boolean
 	 */
 	protected boolean getPreferenceValue(IViewPart part) {

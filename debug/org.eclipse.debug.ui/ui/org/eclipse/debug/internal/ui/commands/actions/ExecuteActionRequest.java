@@ -23,7 +23,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
  * Plain status collector for actions. Has no result.
  *
  * @since 3.3
- *
  */
 public class ExecuteActionRequest extends DebugCommandRequest {
 

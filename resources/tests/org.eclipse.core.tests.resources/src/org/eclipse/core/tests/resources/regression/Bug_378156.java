@@ -13,9 +13,26 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+
 import java.util.concurrent.Semaphore;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.usecase.SignaledBuilder;
 
@@ -49,7 +66,8 @@ public class Bug_378156 extends ResourceTest {
 			try {
 				jobFlag.acquire();
 			} catch (InterruptedException e) {
-				fail("0.99", e);
+				throw new CoreException(
+						new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "Failed to acquire job flag log", e));
 			}
 			return Status.OK_STATUS;
 		}
@@ -73,7 +91,7 @@ public class Bug_378156 extends ResourceTest {
 		ICommand command = desc.newCommand();
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		desc.setBuildSpec(new ICommand[] {command});
-		project1.setDescription(desc, getMonitor());
+		project1.setDescription(desc, createTestMonitor());
 		ensureExistsInWorkspace(file, getRandomContents());
 		//build may not be triggered immediately
 		Thread.sleep(2000);
@@ -115,7 +133,7 @@ public class Bug_378156 extends ResourceTest {
 		ICommand command = desc.newCommand();
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		desc.setBuildSpec(new ICommand[] {command});
-		project1.setDescription(desc, getMonitor());
+		project1.setDescription(desc, createTestMonitor());
 		ensureExistsInWorkspace(file, getRandomContents());
 		waitForBuild();
 

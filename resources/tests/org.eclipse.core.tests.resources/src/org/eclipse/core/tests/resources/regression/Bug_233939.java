@@ -14,11 +14,20 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+
 import java.net.URI;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.utils.FileUtil;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -28,15 +37,11 @@ public class Bug_233939 extends ResourceTest {
 	 * Create a symbolic link in the given container, pointing to the given target.
 	 * Refresh the workspace and verify that the symbolic link attribute is set.
 	 */
-	protected void symLinkAndRefresh(IContainer container, String linkName, IPath linkTarget) {
+	protected void symLinkAndRefresh(IContainer container, String linkName, IPath linkTarget) throws CoreException {
 		createSymLink(container.getLocation().toFile(), linkName, linkTarget.toOSString(), false);
-		try {
-			container.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		container.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		IResource theLink = container.findMember(linkName);
-		assertExistsInWorkspace("2.1", theLink);
+		assertExistsInWorkspace(theLink);
 		assertTrue("2.2", theLink.getResourceAttributes().isSymbolicLink());
 	}
 
@@ -49,7 +54,7 @@ public class Bug_233939 extends ResourceTest {
 		return loc1.equals(loc2);
 	}
 
-	public void testBug() {
+	public void testBug() throws CoreException {
 		// Only activate this test if testing of symbolic links is possible.
 		if (!canCreateSymLinks()) {
 			return;
@@ -57,16 +62,12 @@ public class Bug_233939 extends ResourceTest {
 		String fileName = "file.txt";
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject project = root.getProject(getUniqueString());
+		IProject project = root.getProject(createUniqueString());
 		IFile file = project.getFile(fileName);
 
 		// create a project
-		try {
-			project.create(getMonitor());
-			project.open(getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		// create a file: getTempStore() will be cleaned up in tearDown()
 		IFileStore tempFileStore = getTempStore().getChild(fileName);
@@ -76,7 +77,7 @@ public class Bug_233939 extends ResourceTest {
 		// create a link to the file in the temp dir and refresh
 		symLinkAndRefresh(project, fileName, fileInTempDirPath);
 
-		IFile[] files = root.findFilesForLocation(file.getLocation());
+		IFile[] files = root.findFilesForLocationURI(file.getLocationURI());
 		assertEquals("7.0", 1, files.length);
 		assertEquals("7.1", file, files[0]);
 
@@ -86,7 +87,7 @@ public class Bug_233939 extends ResourceTest {
 		//		assertEquals("6.1", file, files[0]);
 	}
 
-	public void testMultipleLinksToFolder() {
+	public void testMultipleLinksToFolder() throws CoreException {
 		// Only activate this test if testing of symbolic links is possible.
 		if (!canCreateSymLinks()) {
 			return;
@@ -98,14 +99,10 @@ public class Bug_233939 extends ResourceTest {
 
 		// create two projects with a symlink to the folder each
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject projectA = root.getProject(getUniqueString());
-		IProject projectB = root.getProject(getUniqueString());
-		try {
-			create(projectA, true);
-			create(projectB, true);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		IProject projectA = root.getProject(createUniqueString());
+		IProject projectB = root.getProject(createUniqueString());
+		create(projectA, true);
+		create(projectB, true);
 		symLinkAndRefresh(projectA, "folderA", tempFolderPath);
 		symLinkAndRefresh(projectB, "folderB", tempFolderPath);
 

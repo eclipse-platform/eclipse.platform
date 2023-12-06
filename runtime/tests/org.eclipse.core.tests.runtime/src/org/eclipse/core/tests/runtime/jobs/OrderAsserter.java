@@ -24,9 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import org.eclipse.core.tests.harness.TestBarrier2;
 
-/**
- *
- */
 public class OrderAsserter {
 	public class Event {
 		final String name;

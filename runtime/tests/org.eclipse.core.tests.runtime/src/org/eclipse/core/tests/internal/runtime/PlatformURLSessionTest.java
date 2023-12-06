@@ -17,7 +17,12 @@ package org.eclipse.core.tests.internal.runtime;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.stream.Collectors;
@@ -74,8 +79,9 @@ public class PlatformURLSessionTest extends RuntimeTest {
 		// tests run with file based configuration
 		assertEquals(tag + ".1", "file", childConfigURL.getProtocol());
 		File childConfigPrivateDir = new File(childConfigURL.getPath(), PI_RUNTIME_TESTS);
-		createFileInFileSystem(new File(childConfigPrivateDir, FILE_CHILD_ONLY), getContents(DATA_CHILD));
-		createFileInFileSystem(new File(childConfigPrivateDir, FILE_BOTH_PARENT_AND_CHILD), getContents(DATA_CHILD));
+		childConfigPrivateDir.mkdirs();
+		createFileWithContents(new File(childConfigPrivateDir, FILE_CHILD_ONLY), getContents(DATA_CHILD));
+		createFileWithContents(new File(childConfigPrivateDir, FILE_BOTH_PARENT_AND_CHILD), getContents(DATA_CHILD));
 
 		Location parent = Platform.getConfigurationLocation().getParentLocation();
 		// tests run with cascaded configuration
@@ -84,9 +90,17 @@ public class PlatformURLSessionTest extends RuntimeTest {
 		// tests run with file based configuration
 		assertEquals(tag + ".4", "file", parentConfigURL.getProtocol());
 		File parentConfigPrivateDir = new File(parentConfigURL.getPath(), PI_RUNTIME_TESTS);
-		createFileInFileSystem(new File(parentConfigPrivateDir, FILE_PARENT_ONLY), getContents(DATA_PARENT));
-		createFileInFileSystem(new File(parentConfigPrivateDir, FILE_ANOTHER_PARENT_ONLY), getContents(DATA_PARENT));
-		createFileInFileSystem(new File(parentConfigPrivateDir, FILE_BOTH_PARENT_AND_CHILD), getContents(DATA_PARENT));
+		parentConfigPrivateDir.mkdirs();
+		createFileWithContents(new File(parentConfigPrivateDir, FILE_PARENT_ONLY), getContents(DATA_PARENT));
+		createFileWithContents(new File(parentConfigPrivateDir, FILE_ANOTHER_PARENT_ONLY), getContents(DATA_PARENT));
+		createFileWithContents(new File(parentConfigPrivateDir, FILE_BOTH_PARENT_AND_CHILD), getContents(DATA_PARENT));
+	}
+
+	private void createFileWithContents(File file, InputStream contents) throws IOException {
+		try (contents; FileOutputStream output = new FileOutputStream(file)) {
+			contents.transferTo(output);
+		}
+
 	}
 
 	/**

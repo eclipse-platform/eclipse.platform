@@ -13,9 +13,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.junit.Assert.assertThrows;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -32,7 +42,7 @@ public class IFolderTest extends ResourceTest {
 	 * error code and message to the user.
 	 */
 	@Test
-	public void testBug25662() {
+	public void testBug25662() throws CoreException {
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
@@ -49,13 +59,9 @@ public class IFolderTest extends ResourceTest {
 
 		try {
 			parentFolder.setReadOnly(true);
-			assertTrue("0.0", parentFolder.isReadOnly());
-			try {
-				folder.create(true, true, getMonitor());
-				fail("0.1");
-			} catch (CoreException e) {
-				assertEquals("0.2", IResourceStatus.PARENT_READ_ONLY, e.getStatus().getCode());
-			}
+			assertTrue(parentFolder.isReadOnly());
+			CoreException exception = assertThrows(CoreException.class, () -> folder.create(true, true, createTestMonitor()));
+			assertEquals(IResourceStatus.PARENT_READ_ONLY, exception.getStatus().getCode());
 		} finally {
 			parentFolder.setReadOnly(false);
 		}
@@ -65,7 +71,7 @@ public class IFolderTest extends ResourceTest {
 	 * Bug 11510 [resources] Non-local folders do not become local when directory is created.
 	 */
 	@Test
-	public void testBug11510() {
+	public void testBug11510() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("TestProject");
 		IFolder folder = project.getFolder("fold1");
@@ -80,31 +86,19 @@ public class IFolderTest extends ResourceTest {
 
 		// now create the resources in the local file system and refresh
 		ensureExistsInFileSystem(file);
-		try {
-			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("2.0", e);
-		}
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertTrue("2.1", file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("2.2", !folder.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("2.3", !subFile.isLocal(IResource.DEPTH_ZERO));
 
 		folder.getLocation().toFile().mkdir();
-		try {
-			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("3.0", e);
-		}
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertTrue("3.1", folder.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("3.2", file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("3.3", !subFile.isLocal(IResource.DEPTH_ZERO));
 
 		ensureExistsInFileSystem(subFile);
-		try {
-			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		} catch (CoreException e) {
-			fail("4.0", e);
-		}
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertTrue("4.1", subFile.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("4.2", folder.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("4.3", file.isLocal(IResource.DEPTH_ZERO));

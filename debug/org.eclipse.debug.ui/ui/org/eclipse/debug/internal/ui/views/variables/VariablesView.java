@@ -606,9 +606,10 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 	public void partDeactivated(IWorkbenchPart part) {
 		String id = part.getSite().getId();
 		if (id.equals(getSite().getId())) {
-			try (StringWriter writer = new StringWriter()) {
-				XMLMemento memento = XMLMemento.createWriteRoot("VariablesViewMemento"); //$NON-NLS-1$
-				saveViewerState(memento);
+			StringWriter writer = new StringWriter();
+			XMLMemento memento = XMLMemento.createWriteRoot("VariablesViewMemento"); //$NON-NLS-1$
+			saveViewerState(memento);
+			try {
 				memento.save(writer);
 
 				IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
@@ -1133,8 +1134,6 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 
 	/**
 	 * Selection in the variable tree changed. Perform any updates.
-	 *
-	 * @param event
 	 */
 	protected void treeSelectionChanged(SelectionChangedEvent event) {}
 
@@ -1503,7 +1502,6 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 	 *
 	 * @param action the action to store a default value
 	 * @param value the default value for action
-	 *
 	 */
 	void storeDefaultPreference(Action action, Object value) {
 		if (value instanceof Boolean) {
