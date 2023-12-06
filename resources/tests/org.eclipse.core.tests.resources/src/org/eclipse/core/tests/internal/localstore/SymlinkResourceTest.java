@@ -15,6 +15,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IProject;
@@ -31,16 +35,16 @@ import org.junit.runners.JUnit4;
 public class SymlinkResourceTest extends LocalStoreTest {
 
 	protected void mkLink(IFileStore dir, String src, String tgt, boolean isDir) throws CoreException {
-		createSymLink(dir.toLocalFile(EFS.NONE, getMonitor()), src, tgt, isDir);
+		createSymLink(dir.toLocalFile(EFS.NONE, createTestMonitor()), src, tgt, isDir);
 	}
 
 	protected void createBug232426Structure(IFileStore rootDir) throws CoreException {
 		IFileStore folderA = rootDir.getChild("a");
 		IFileStore folderB = rootDir.getChild("b");
 		IFileStore folderC = rootDir.getChild("c");
-		folderA.mkdir(EFS.NONE, getMonitor());
-		folderB.mkdir(EFS.NONE, getMonitor());
-		folderC.mkdir(EFS.NONE, getMonitor());
+		folderA.mkdir(EFS.NONE, createTestMonitor());
+		folderB.mkdir(EFS.NONE, createTestMonitor());
+		folderC.mkdir(EFS.NONE, createTestMonitor());
 
 		/* create symbolic links */
 		mkLink(folderA, "link", IPath.fromOSString("../b").toOSString(), true);
@@ -51,7 +55,7 @@ public class SymlinkResourceTest extends LocalStoreTest {
 
 	protected void createBug358830Structure(IFileStore rootDir) throws CoreException {
 		IFileStore folderA = rootDir.getChild("a");
-		folderA.mkdir(EFS.NONE, getMonitor());
+		folderA.mkdir(EFS.NONE, createTestMonitor());
 
 		/* create trivial recursive symbolic link */
 		mkLink(folderA, "link", IPath.fromOSString("../").toOSString(), true);
@@ -79,11 +83,11 @@ public class SymlinkResourceTest extends LocalStoreTest {
 		final IProject project = projects[0];
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			/* delete open project because we must re-open with BACKGROUND_REFRESH */
-			project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, getMonitor());
+			project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, createTestMonitor());
 			project.create(null);
 			createBug232426Structure(EFS.getStore(project.getLocationURI()));
 			//Bug only happens with BACKGROUND_REFRESH.
-			project.open(IResource.BACKGROUND_REFRESH, getMonitor());
+			project.open(IResource.BACKGROUND_REFRESH, createTestMonitor());
 		}, null);
 
 		//wait for BACKGROUND_REFRESH to complete.
@@ -110,10 +114,10 @@ public class SymlinkResourceTest extends LocalStoreTest {
 		final IProject project = projects[0];
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			/* delete open project because we must re-open with BACKGROUND_REFRESH */
-			project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, getMonitor());
+			project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, createTestMonitor());
 			project.create(null);
 			createBug358830Structure(EFS.getStore(project.getLocationURI()));
-			project.open(IResource.BACKGROUND_REFRESH, getMonitor());
+			project.open(IResource.BACKGROUND_REFRESH, createTestMonitor());
 		}, null);
 
 		//wait for BACKGROUND_REFRESH to complete.

@@ -13,8 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.util.Set;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.tests.harness.CoreTest;
@@ -61,14 +67,14 @@ public class ContentDescriptionPerformanceTest extends ResourceTest {
 		// create a project with thousands of files
 		IProject bigProject = ResourcesPlugin.getWorkspace().getRoot().getProject("bigproject");
 		assertTrue("1.0", !bigProject.exists());
-		bigProject.create(getMonitor());
-		bigProject.open(getMonitor());
+		bigProject.create(createTestMonitor());
+		bigProject.open(createTestMonitor());
 		for (int i = 0; i < SUBDIRS; i++) {
 			IFolder folder = bigProject.getFolder("folder_" + i);
-			folder.create(false, true, getMonitor());
+			folder.create(false, true, createTestMonitor());
 			for (int j = 0; j < TOTAL_FILES / SUBDIRS; j++) {
 				IFile file = folder.getFile("file_" + j + getFileName(j));
-				file.create(getContents(getContents(j)), false, getMonitor());
+				file.create(getContents(getContents(j)), false, createTestMonitor());
 			}
 		}
 	}

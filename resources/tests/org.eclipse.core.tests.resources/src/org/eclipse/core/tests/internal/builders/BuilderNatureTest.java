@@ -13,7 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
-
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SNOW;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -61,7 +64,7 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		setAutoBuilding(true);
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
-		project.setDescription(desc, IResource.FORCE, getMonitor());
+		project.setDescription(desc, IResource.FORCE, createTestMonitor());
 		waitForBuild();
 		builder.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 		builder.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);
@@ -79,7 +82,7 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		setAutoBuilding(true);
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
-		project.setDescription(desc, IResource.FORCE, getMonitor());
+		project.setDescription(desc, IResource.FORCE, createTestMonitor());
 		waitForBuild();
 
 		//remove the water nature, thus invalidating snow nature
@@ -87,7 +90,7 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		builder.reset();
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		// setting description file will also trigger build
-		descFile.setContents(projectFileWithoutWater(), IResource.FORCE, getMonitor());
+		descFile.setContents(projectFileWithoutWater(), IResource.FORCE, createTestMonitor());
 		waitForBuild();
 		//assert that builder was skipped
 		builder.assertLifecycleEvents();
@@ -97,7 +100,7 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		builder.addExpectedLifecycleEvent(SnowBuilder.SNOW_BUILD_EVENT);
 		desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
-		project.setDescription(desc, IResource.FORCE, getMonitor());
+		project.setDescription(desc, IResource.FORCE, createTestMonitor());
 		waitForBuild();
 		builder.assertLifecycleEvents();
 		assertTrue(builder.wasDeltaNull());
@@ -113,7 +116,7 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		setAutoBuilding(true);
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
-		project.setDescription(desc, IResource.FORCE, getMonitor());
+		project.setDescription(desc, IResource.FORCE, createTestMonitor());
 		waitForBuild();
 
 		//remove the snow nature through normal API
@@ -121,7 +124,7 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		builder.reset();
 		desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER });
-		project.setDescription(desc, IResource.NONE, getMonitor());
+		project.setDescription(desc, IResource.NONE, createTestMonitor());
 		waitForBuild();
 		//make sure the snow builder wasn't run
 		builder.assertLifecycleEvents();
@@ -139,7 +142,7 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		builder.addExpectedLifecycleEvent(SnowBuilder.SNOW_BUILD_EVENT);
 		desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
-		project.setDescription(desc, IResource.KEEP_HISTORY, getMonitor());
+		project.setDescription(desc, IResource.KEEP_HISTORY, createTestMonitor());
 		waitForBuild();
 		builder.assertLifecycleEvents();
 
@@ -148,7 +151,7 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		builder.reset();
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		// setting description file will also trigger build
-		descFile.setContents(projectFileWithoutSnow(), IResource.FORCE, getMonitor());
+		descFile.setContents(projectFileWithoutSnow(), IResource.FORCE, createTestMonitor());
 		waitForBuild();
 		//assert that builder was skipped
 		builder.assertLifecycleEvents();
@@ -166,7 +169,7 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		builder.addExpectedLifecycleEvent(SnowBuilder.SNOW_BUILD_EVENT);
 		desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
-		project.setDescription(desc, IResource.FORCE, getMonitor());
+		project.setDescription(desc, IResource.FORCE, createTestMonitor());
 		waitForBuild();
 		builder.assertLifecycleEvents();
 		assertTrue("5.1", builder.wasDeltaNull());

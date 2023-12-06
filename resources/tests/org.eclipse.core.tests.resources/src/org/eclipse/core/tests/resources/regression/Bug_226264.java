@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -70,7 +72,7 @@ public class Bug_226264 extends ResourceTest {
 
 		assertTrue("2.0: " + job.getResult(), job.getResult().isOK());
 
-		assertDoesNotExistInWorkspace("3.0", project1);
-		assertDoesNotExistInWorkspace("4.0", project2);
+		assertDoesNotExistInWorkspace(project1);
+		assertDoesNotExistInWorkspace(project2);
 	}
 }

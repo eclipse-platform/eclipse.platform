@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.io.ByteArrayInputStream;
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
@@ -20,7 +25,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -33,26 +37,26 @@ public class TestSnapSaveSnap extends WorkspaceSerializationTest {
 		IProject project = getWorkspace().getRoot().getProject(PROJECT);
 		IFolder folder = project.getFolder(FOLDER);
 		IFile file = folder.getFile(FILE);
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		// snapshot
-		workspace.save(false, getMonitor());
+		workspace.save(false, createTestMonitor());
 
 		/* do more stuff */
-		folder.create(true, true, getMonitor());
+		folder.create(true, true, createTestMonitor());
 
 		// full save
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 
 		/* do even more stuff */
 		byte[] bytes = "Test bytes".getBytes();
 		try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
-			file.create(in, true, getMonitor());
+			file.create(in, true, createTestMonitor());
 		}
 
 		// snapshot
-		workspace.save(false, getMonitor());
+		workspace.save(false, createTestMonitor());
 		//exit without saving
 	}
 
@@ -68,10 +72,10 @@ public class TestSnapSaveSnap extends WorkspaceSerializationTest {
 		assertTrue("1.2", project.exists());
 		assertTrue("1.3", project.isOpen());
 
-		assertExistsInWorkspace("1.4", new IResource[] {project, folder, file});
+		assertExistsInWorkspace(new IResource[] { project, folder, file });
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestSnapSaveSnap.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestSnapSaveSnap.class);
 	}
 }

@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.Assert.assertThrows;
 
 import java.io.InputStream;
@@ -41,7 +46,7 @@ public class Bug_032076 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder sourceParent = project.getFolder("source_parent");
 		IFolder destinationParent = project.getFolder("destination_parent");
 		// this file will be made irremovable
@@ -62,7 +67,7 @@ public class Bug_032076 extends ResourceTest {
 		// opens the file so it cannot be removed on Windows
 		try (InputStream input = sourceFile.getContents()) {
 			assertThrows(CoreException.class,
-					() -> sourceFile.move(destinationFile.getFullPath(), IResource.FORCE, getMonitor()));
+					() -> sourceFile.move(destinationFile.getFullPath(), IResource.FORCE, createTestMonitor()));
 
 			// the source parent is in sync
 			assertTrue("3.0", sourceParent.isSynchronized(IResource.DEPTH_INFINITE));
@@ -82,7 +87,7 @@ public class Bug_032076 extends ResourceTest {
 			assertTrue("4.2", sourceFile.isSynchronized(IResource.DEPTH_ZERO));
 
 			// refresh the source parent
-			sourceParent.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			sourceParent.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 			// file is still found in source tree
 			assertTrue("4.7", sourceFile.exists());
@@ -95,7 +100,7 @@ public class Bug_032076 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder sourceParent = project.getFolder("source_parent");
 		IFolder destinationParent = project.getFolder("destination_parent");
 		IFolder folder = sourceParent.getFolder("folder");
@@ -119,7 +124,7 @@ public class Bug_032076 extends ResourceTest {
 		// opens a file so it (and its parent) cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
 			assertThrows(CoreException.class,
-					() -> folder.move(destinationFolder.getFullPath(), IResource.FORCE, getMonitor()));
+					() -> folder.move(destinationFolder.getFullPath(), IResource.FORCE, createTestMonitor()));
 
 			// the source parent is in sync
 			assertTrue("3.0", sourceParent.isSynchronized(IResource.DEPTH_INFINITE));
@@ -143,7 +148,7 @@ public class Bug_032076 extends ResourceTest {
 			assertTrue("4.3", !file2.exists());
 
 			// refresh the source parent
-			sourceParent.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			sourceParent.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 			// non-removable resources still in source tree
 			assertTrue("4.6", folder.exists());
@@ -158,8 +163,8 @@ public class Bug_032076 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject sourceProject = workspace.getRoot().getProject(getUniqueString() + ".source");
-		IProject destinationProject = workspace.getRoot().getProject(getUniqueString() + ".dest");
+		IProject sourceProject = workspace.getRoot().getProject(createUniqueString() + ".source");
+		IProject destinationProject = workspace.getRoot().getProject(createUniqueString() + ".dest");
 		// this file will be made un-removable
 		IFile file1 = sourceProject.getFile("file1.txt");
 		// but not this one
@@ -180,7 +185,7 @@ public class Bug_032076 extends ResourceTest {
 		try (InputStream input = file1.getContents()) {
 
 			assertThrows(CoreException.class,
-					() -> sourceProject.move(destinationProject.getFullPath(), IResource.FORCE, getMonitor()));
+					() -> sourceProject.move(destinationProject.getFullPath(), IResource.FORCE, createTestMonitor()));
 
 			// the source does not exist
 			assertTrue("3.0", !sourceProject.exists());
@@ -210,7 +215,7 @@ public class Bug_032076 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder sourceParent = project.getFolder("source_parent");
 		IFolder roFolder = sourceParent.getFolder("sub-folder");
 		IFolder destinationParent = project.getFolder("destination_parent");
@@ -235,7 +240,7 @@ public class Bug_032076 extends ResourceTest {
 			// mark sub-folder as read-only so its immediate children cannot be removed on Linux
 			setReadOnly(roFolder, true);
 			assertThrows(CoreException.class,
-					() -> sourceFile.move(destinationFile.getFullPath(), IResource.FORCE, getMonitor()));
+					() -> sourceFile.move(destinationFile.getFullPath(), IResource.FORCE, createTestMonitor()));
 
 			// the source parent is out-of-sync
 			assertTrue("3.0", !sourceParent.isSynchronized(IResource.DEPTH_INFINITE));
@@ -254,7 +259,7 @@ public class Bug_032076 extends ResourceTest {
 			assertTrue("4.1", !sourceFile.exists());
 
 			// refresh the source parent
-			sourceParent.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			sourceParent.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 			// non-removable file now reappear in the resource tree
 			assertTrue("4.7", sourceFile.exists());
@@ -272,7 +277,7 @@ public class Bug_032076 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder sourceParent = project.getFolder("source_parent");
 		IFolder roFolder = sourceParent.getFolder("sub-folder");
 		IFolder folder = roFolder.getFolder("folder");
@@ -300,7 +305,7 @@ public class Bug_032076 extends ResourceTest {
 			setReadOnly(roFolder, true);
 
 			assertThrows(CoreException.class, () -> roFolder
-					.move(destinationParent.getFullPath().append(roFolder.getName()), IResource.FORCE, getMonitor()));
+					.move(destinationParent.getFullPath().append(roFolder.getName()), IResource.FORCE, createTestMonitor()));
 
 			// the source parent is out-of-sync
 			assertTrue("3.0", !sourceParent.isSynchronized(IResource.DEPTH_INFINITE));
@@ -328,7 +333,7 @@ public class Bug_032076 extends ResourceTest {
 			assertTrue("4.3", !file2.exists());
 
 			// refresh the source parent
-			sourceParent.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			sourceParent.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 			// non-removed resources now reappear in the resource tree
 			assertTrue("4.5", roFolder.exists());
@@ -350,18 +355,18 @@ public class Bug_032076 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject sourceProject = workspace.getRoot().getProject(getUniqueString() + ".source");
+		IProject sourceProject = workspace.getRoot().getProject(createUniqueString() + ".source");
 		IFileStore projectParentStore = getTempStore();
 		IFileStore projectStore = projectParentStore.getChild(sourceProject.getName());
 		IProjectDescription sourceDescription = workspace.newProjectDescription(sourceProject.getName());
 		sourceDescription.setLocationURI(projectStore.toURI());
 
-		IProject destinationProject = workspace.getRoot().getProject(getUniqueString() + ".dest");
+		IProject destinationProject = workspace.getRoot().getProject(createUniqueString() + ".dest");
 		IProjectDescription destinationDescription = workspace.newProjectDescription(destinationProject.getName());
 
 		// create and open the source project at a non-default location
-		sourceProject.create(sourceDescription, getMonitor());
-		sourceProject.open(getMonitor());
+		sourceProject.create(sourceDescription, createTestMonitor());
+		sourceProject.open(createTestMonitor());
 		deleteOnTearDown(sourceProject.getLocation());
 
 		IFile file1 = sourceProject.getFile("file1.txt");
@@ -381,7 +386,7 @@ public class Bug_032076 extends ResourceTest {
 			setReadOnly(projectParentStore, true);
 
 			assertThrows(CoreException.class,
-					() -> sourceProject.move(destinationDescription, IResource.FORCE, getMonitor()));
+					() -> sourceProject.move(destinationDescription, IResource.FORCE, createTestMonitor()));
 			deleteOnTearDown(destinationProject.getLocation());
 
 			// the source does not exist

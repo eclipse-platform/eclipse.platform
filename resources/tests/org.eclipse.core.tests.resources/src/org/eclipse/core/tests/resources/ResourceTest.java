@@ -14,6 +14,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -32,17 +38,10 @@ import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Stream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.internal.resources.CharsetDeltaJob;
 import org.eclipse.core.internal.resources.Resource;
-import org.eclipse.core.internal.resources.ValidateProjectEncoding;
-import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.internal.utils.FileUtil;
-import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -51,16 +50,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourceAttributes;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.harness.FileSystemHelper;
@@ -73,40 +66,6 @@ import org.junit.rules.TestName;
  * Superclass for tests that use the Eclipse Platform workspace.
  */
 public abstract class ResourceTest extends CoreTest {
-	//nature that installs and runs a builder (regression test for bug 29116)
-	protected static final String NATURE_29116 = "org.eclipse.core.tests.resources.nature29116";
-
-	//cycle1 requires: cycle2
-	protected static final String NATURE_CYCLE1 = "org.eclipse.core.tests.resources.cycle1";
-	//cycle2 requires: cycle3
-	protected static final String NATURE_CYCLE2 = "org.eclipse.core.tests.resources.cycle2";
-
-	//constants for nature ids
-
-	//cycle3 requires: cycle1
-	protected static final String NATURE_CYCLE3 = "org.eclipse.core.tests.resources.cycle3";
-	//earthNature, one-of: stateSet
-	protected static final String NATURE_EARTH = "org.eclipse.core.tests.resources.earthNature";
-	//invalidNature
-	protected static final String NATURE_INVALID = "org.eclipse.core.tests.resources.invalidNature";
-	//missing nature
-	protected static final String NATURE_MISSING = "no.such.nature.Missing";
-	//missing pre-req nature
-	protected static final String NATURE_MISSING_PREREQ = "org.eclipse.core.tests.resources.missingPrerequisiteNature";
-	//mudNature, requires: waterNature, earthNature, one-of: otherSet
-	protected static final String NATURE_MUD = "org.eclipse.core.tests.resources.mudNature";
-	//simpleNature
-	protected static final String NATURE_SIMPLE = "org.eclipse.core.tests.resources.simpleNature";
-	//nature for regression tests of bug 127562
-	protected static final String NATURE_127562 = "org.eclipse.core.tests.resources.bug127562Nature";
-	//snowNature, requires: waterNature, one-of: otherSet
-	protected static final String NATURE_SNOW = "org.eclipse.core.tests.resources.snowNature";
-	//waterNature, one-of: stateSet
-	protected static final String NATURE_WATER = "org.eclipse.core.tests.resources.waterNature";
-	public static final String PI_RESOURCES_TESTS = "org.eclipse.core.tests.resources"; //$NON-NLS-1$
-	protected static final String SET_OTHER = "org.eclipse.core.tests.resources.otherSet";
-	//constants for nature sets
-	protected static final String SET_STATE = "org.eclipse.core.tests.resources.stateSet";
 
 	/**
 	 * For retrieving the test name when executing test class with JUnit 4.
@@ -121,10 +80,6 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	private final Set<IFileStore> storesToDelete = new HashSet<>();
 
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
-	}
-
 	private IWorkspaceDescription storedWorkspaceDescription;
 
 	private final void storeWorkspaceDescription() {
@@ -136,27 +91,6 @@ public abstract class ResourceTest extends CoreTest {
 			getWorkspace().setDescription(storedWorkspaceDescription);
 		}
 		storedWorkspaceDescription = null;
-	}
-
-	/**
-	 * Returns whether the file system in which the provided resource
-	 * is stored is case sensitive. This succeeds whether or not the resource
-	 * exists.
-	 */
-	protected static boolean isCaseSensitive(IResource resource) {
-		return ((Resource) resource).getStore().getFileSystem().isCaseSensitive();
-	}
-
-	/**
-	 * Convenience method to copy contents from one stream to another.
-	 */
-	public static void transferStreams(InputStream source, OutputStream destination, String path) throws IOException {
-		try {
-			source.transferTo(destination);
-		}finally {
-			FileUtil.safeClose(source);
-			FileUtil.safeClose(destination);
-		}
 	}
 
 	/**
@@ -214,197 +148,10 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Assert that the given resource does not exist in the local store.
-	 */
-	public void assertDoesNotExistInFileSystem(IResource resource) {
-		assertDoesNotExistInFileSystem("", resource); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert that each element of the resource array does not exist in the
-	 * local store.
-	 */
-	public void assertDoesNotExistInFileSystem(IResource[] resources) {
-		assertDoesNotExistInFileSystem("", resources); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert that the given resource does not exist in the local store.
-	 */
-	public void assertDoesNotExistInFileSystem(String message, IResource resource) {
-		if (existsInFileSystem(resource)) {
-			String formatted = message == null ? "" : message + " ";
-			fail(formatted + resource.getFullPath() + " unexpectedly exists in the file system");
-		}
-	}
-
-	/**
-	 * Assert that each element of the resource array does not exist in the
-	 * local store.
-	 */
-	public void assertDoesNotExistInFileSystem(String message, IResource[] resources) {
-		for (IResource resource : resources) {
-			assertDoesNotExistInFileSystem(message, resource);
-		}
-	}
-
-	/**
-	 * Assert that the given resource does not exist in the workspace
-	 * resource info tree.
-	 */
-	public void assertDoesNotExistInWorkspace(IResource resource) {
-		assertDoesNotExistInWorkspace("", resource); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert that each element of the resource array does not exist
-	 * in the workspace resource info tree.
-	 */
-	public void assertDoesNotExistInWorkspace(IResource[] resources) {
-		assertDoesNotExistInWorkspace("", resources); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert that the given resource does not exist in the workspace
-	 * resource info tree.
-	 */
-	public void assertDoesNotExistInWorkspace(String message, IResource resource) {
-		if (existsInWorkspace(resource, false)) {
-			String formatted = message == null ? "" : message + " ";
-			fail(formatted + resource.getFullPath().toString() + " unexpectedly exists in the workspace");
-		}
-	}
-
-	/**
-	 * Assert that each element of the resource array does not exist
-	 * in the workspace resource info tree.
-	 */
-	public void assertDoesNotExistInWorkspace(String message, IResource[] resources) {
-		for (IResource resource : resources) {
-			assertDoesNotExistInWorkspace(message, resource);
-		}
-	}
-
-	/**
-	 * Assert whether or not the given resource exists in the local
-	 * store. Use the resource manager to ensure that we have a
-	 * correct Path -&gt; File mapping.
-	 */
-	public void assertExistsInFileSystem(IResource resource) {
-		assertExistsInFileSystem("", resource); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert that each element in the resource array  exists in the local store.
-	 */
-	public void assertExistsInFileSystem(IResource[] resources) {
-		assertExistsInFileSystem("", resources); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert whether or not the given resource exists in the local
-	 * store. Use the resource manager to ensure that we have a
-	 * correct Path -&gt; File mapping.
-	 */
-	public void assertExistsInFileSystem(String message, IResource resource) {
-		if (!existsInFileSystem(resource)) {
-			String formatted = message == null ? "" : message + " ";
-			fail(formatted + resource.getFullPath() + " unexpectedly does not exist in the file system");
-		}
-	}
-
-	/**
-	 * Assert that each element in the resource array  exists in the local store.
-	 */
-	public void assertExistsInFileSystem(String message, IResource[] resources) {
-		for (IResource resource : resources) {
-			assertExistsInFileSystem(message, resource);
-		}
-	}
-
-	/**
-	 * Assert whether or not the given resource exists in the workspace
-	 * resource info tree.
-	 */
-	public void assertExistsInWorkspace(IResource resource) {
-		assertExistsInWorkspace("", resource, false); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert whether or not the given resource exists in the workspace
-	 * resource info tree.
-	 */
-	public void assertExistsInWorkspace(IResource resource, boolean phantom) {
-		assertExistsInWorkspace("", resource, phantom); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert that each element of the resource array exists in the
-	 * workspace resource info tree.
-	 */
-	public void assertExistsInWorkspace(IResource[] resources) {
-		assertExistsInWorkspace("", resources, false); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert that each element of the resource array exists in the
-	 * workspace resource info tree.
-	 */
-	public void assertExistsInWorkspace(IResource[] resources, boolean phantom) {
-		assertExistsInWorkspace("", resources, phantom); //$NON-NLS-1$
-	}
-
-	/**
-	 * Assert whether or not the given resource exists in the workspace
-	 * resource info tree.
-	 */
-	public void assertExistsInWorkspace(String message, IResource resource) {
-		assertExistsInWorkspace(message, resource, false);
-	}
-
-	/**
-	 * Assert whether or not the given resource exists in the workspace
-	 * resource info tree.
-	 */
-	public void assertExistsInWorkspace(String message, IResource resource, boolean phantom) {
-		if (!existsInWorkspace(resource, phantom)) {
-			String formatted = message == null ? "" : message + " ";
-			fail(formatted + resource.getFullPath().toString() + " unexpectedly does not exist in the workspace");
-		}
-	}
-
-	/**
-	 * Assert that each element of the resource array exists in the
-	 * workspace resource info tree.
-	 */
-	public void assertExistsInWorkspace(String message, IResource[] resources) {
-		for (IResource resource : resources) {
-			assertExistsInWorkspace(message, resource, false);
-		}
-	}
-
-	/**
-	 * Assert that each element of the resource array exists in the
-	 * workspace resource info tree.
-	 */
-	public void assertExistsInWorkspace(String message, IResource[] resources, boolean phantom) {
-		for (IResource resource : resources) {
-			assertExistsInWorkspace(message, resource, phantom);
-		}
-	}
-
-	/**
-	 * Return a collection of resources the hierarchy defined by defineHeirarchy().
-	 */
-	public IResource[] buildResources() {
-		return buildResources(getWorkspace().getRoot(), defineHierarchy());
-	}
-
-	/**
 	 * Return a collection of resources for the given hierarchy at
 	 * the given root.
 	 */
-	public IResource[] buildResources(IContainer root, String[] hierarchy) {
+	public IResource[] buildResources(IContainer root, String[] hierarchy) throws CoreException {
 		IResource[] result = new IResource[hierarchy.length];
 		for (int i = 0; i < hierarchy.length; i++) {
 			IPath path = IPath.fromOSString(hierarchy[i]);
@@ -434,7 +181,7 @@ public abstract class ResourceTest extends CoreTest {
 		final IFileStore[] toDelete = storesToDelete.toArray(new IFileStore[0]);
 		storesToDelete.clear();
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
-			getWorkspace().getRoot().delete(true, true, getMonitor());
+			getWorkspace().getRoot().delete(true, true, createTestMonitor());
 			//clear stores in workspace runnable to avoid interaction with resource jobs
 			for (IFileStore store : toDelete) {
 				store.delete(EFS.NONE, null);
@@ -480,19 +227,6 @@ public abstract class ResourceTest extends CoreTest {
 		}
 	}
 
-	private IPath computeDefaultLocation(IResource target) {
-		switch (target.getType()) {
-			case IResource.ROOT :
-				return Platform.getLocation();
-			case IResource.PROJECT :
-				return Platform.getLocation().append(target.getFullPath());
-			default :
-				IPath location = computeDefaultLocation(target.getProject());
-				location = location.append(target.getFullPath().removeFirstSegments(1));
-				return location;
-		}
-	}
-
 	protected void create(final IResource resource, boolean local) throws CoreException {
 		if (resource == null || resource.exists()) {
 			return;
@@ -502,14 +236,14 @@ public abstract class ResourceTest extends CoreTest {
 		}
 		switch (resource.getType()) {
 			case IResource.FILE :
-				((IFile) resource).create(local ? new ByteArrayInputStream(new byte[0]) : null, true, getMonitor());
+				((IFile) resource).create(local ? new ByteArrayInputStream(new byte[0]) : null, true, createTestMonitor());
 				break;
 			case IResource.FOLDER :
-				((IFolder) resource).create(true, local, getMonitor());
+				((IFolder) resource).create(true, local, createTestMonitor());
 				break;
 			case IResource.PROJECT :
-				((IProject) resource).create(getMonitor());
-				((IProject) resource).open(getMonitor());
+				((IProject) resource).create(createTestMonitor());
+				((IProject) resource).open(createTestMonitor());
 				break;
 		}
 	}
@@ -526,8 +260,8 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	public void createFileInFileSystem(IFileStore file, InputStream contents) throws CoreException {
 		file.getParent().mkdir(EFS.NONE, null);
-		try (OutputStream output = file.openOutputStream(EFS.NONE, null)) {
-			transferData(contents, output);
+		try (contents; OutputStream output = file.openOutputStream(EFS.NONE, null)) {
+			contents.transferTo(output);
 		} catch (IOException e) {
 			throw new CoreException(
 					new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed creating file in file system", e));
@@ -546,32 +280,14 @@ public abstract class ResourceTest extends CoreTest {
 	 */
 	public void createFileInFileSystem(IPath path, InputStream contents) throws CoreException {
 		try {
-			createFileInFileSystem(path.toFile(), contents);
+			path.toFile().getParentFile().mkdirs();
+			try (contents; FileOutputStream output = new FileOutputStream(path.toFile())) {
+				contents.transferTo(output);
+			}
 		} catch (IOException e) {
 			throw new CoreException(
 					new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed creating file in file system", e));
 		}
-	}
-
-	public IResource[] createHierarchy() throws CoreException {
-		IResource[] result = buildResources();
-		ensureExistsInWorkspace(result, true);
-		return result;
-	}
-
-	/**
-	 * Returns a collection of string paths describing the standard
-	 * resource hierarchy for this test.  In the string forms, folders are
-	 * represented as having trailing separators ('/').  All other resources
-	 * are files.  It is generally assumed that this hierarchy will be
-	 * inserted under some project structure.
-	 * For example,
-	 * <pre>
-	 *    return new String[] {"/", "/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1"};
-	 * </pre>
-	 */
-	public String[] defineHierarchy() {
-		return new String[0];
 	}
 
 	/**
@@ -586,20 +302,11 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Delete the resources in the array from the local store.
-	 */
-	public void ensureDoesNotExistInFileSystem(IResource[] resources) {
-		for (IResource resource : resources) {
-			ensureDoesNotExistInFileSystem(resource);
-		}
-	}
-
-	/**
 	 * Delete the given resource from the workspace resource tree.
 	 */
 	public void ensureDoesNotExistInWorkspace(IResource resource) throws CoreException {
 		if (resource.exists()) {
-			resource.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+			resource.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 		}
 	}
 
@@ -617,31 +324,14 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Create the given file in the local store. Use the resource manager
+	 * Create the given file or folder in the local store. Use the resource manager
 	 * to ensure that we have a correct Path -&gt; File mapping.
-	 */
-	public void ensureExistsInFileSystem(IFile file) throws CoreException {
-		createFileInFileSystem(((Resource) file).getStore());
-	}
-
-	/**
-	 * Create the given folder in the local store. Use the resource
-	 * manager to ensure that we have a correct Path -&gt; File mapping.
 	 */
 	public void ensureExistsInFileSystem(IResource resource) throws CoreException {
 		if (resource instanceof IFile file) {
-			ensureExistsInFileSystem(file);
+			createFileInFileSystem(((Resource) file).getStore());
 		} else {
 			((Resource) resource).getStore().mkdir(EFS.NONE, null);
-		}
-	}
-
-	/**
-	 * Create the each resource of the array in the local store.
-	 */
-	public void ensureExistsInFileSystem(IResource[] resources) throws CoreException {
-		for (IResource resource : resources) {
-			ensureExistsInFileSystem(resource);
 		}
 	}
 
@@ -725,7 +415,7 @@ public abstract class ResourceTest extends CoreTest {
 		assertNotNull("location was null for file: " + file, location);
 		try (FileInputStream inputStream = new FileInputStream(location.toFile())) {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			transferData(inputStream, outputStream);
+			inputStream.transferTo(outputStream);
 			return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			throw new IllegalStateException("could not read from location:" + location, e);
@@ -774,75 +464,6 @@ public abstract class ResourceTest extends CoreTest {
 	private long getLastModifiedTime(IPath fileLocation) {
 		IFileInfo fileInfo = EFS.getLocalFileSystem().getStore(fileLocation).fetchInfo();
 		return fileInfo.getLastModified();
-	}
-
-	private boolean existsInFileSystem(IResource resource) {
-		IPath path = resource.getLocation();
-		if (path == null) {
-			path = computeDefaultLocation(resource);
-		}
-		return path.toFile().exists();
-	}
-
-	boolean existsInWorkspace(IResource resource, boolean phantom) {
-		class CheckIfResourceExistsJob extends Job {
-
-			private final AtomicBoolean resourceExists = new AtomicBoolean(false);
-
-			public CheckIfResourceExistsJob() {
-				super("Test " + ResourceTest.this.getName() + " checking whether resource exists: " + resource);
-			}
-
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				if (monitor.isCanceled()) {
-					return Status.CANCEL_STATUS;
-				}
-
-				IResource target = getWorkspace().getRoot().findMember(resource.getFullPath(), phantom);
-				boolean existsInWorkspace = target != null && target.getType() == resource.getType();
-				resourceExists.set(existsInWorkspace);
-
-				return Status.OK_STATUS;
-			}
-
-			boolean resourceExists() {
-				return resourceExists.get();
-			}
-		}
-
-		IWorkspace workspace = getWorkspace();
-		ISchedulingRule modifyWorkspaceRule = workspace.getRuleFactory().modifyRule(workspace.getRoot());
-
-		CheckIfResourceExistsJob checkIfResourceExistsJob = new CheckIfResourceExistsJob();
-		checkIfResourceExistsJob.setRule(modifyWorkspaceRule);
-		checkIfResourceExistsJob.schedule();
-		try {
-			checkIfResourceExistsJob.join(30_000, getMonitor());
-		} catch (OperationCanceledException | InterruptedException e) {
-			throw new IllegalStateException("failed when joining resource-existence-checking job", e);
-		}
-
-		return checkIfResourceExistsJob.resourceExists();
-	}
-
-	/**
-	 * Returns invalid sets of natures
-	 */
-	protected String[][] getInvalidNatureSets() {
-		return new String[][] {{NATURE_SNOW}, //missing water pre-req
-				{NATURE_WATER, NATURE_EARTH}, //duplicates from state-set
-				{NATURE_WATER, NATURE_MUD}, //missing earth pre-req
-				{NATURE_WATER, NATURE_EARTH, NATURE_MUD}, //duplicates from state-set
-				{NATURE_SIMPLE, NATURE_SNOW, NATURE_WATER, NATURE_MUD}, //duplicates from other-set, missing pre-req
-				{NATURE_MISSING}, //doesn't exist
-				{NATURE_SIMPLE, NATURE_MISSING}, //missing doesn't exist
-				{NATURE_MISSING_PREREQ}, //requires nature that doesn't exist
-				{NATURE_SIMPLE, NATURE_MISSING_PREREQ}, //requires nature that doesn't exist
-				{NATURE_CYCLE1}, //missing pre-req
-				{NATURE_CYCLE2, NATURE_CYCLE3}, //missing pre-req
-				{NATURE_CYCLE1, NATURE_SIMPLE, NATURE_CYCLE2, NATURE_CYCLE3}, //cycle
-		};
 	}
 
 	protected String getLineSeparatorFromFile(IFile file) {
@@ -906,48 +527,6 @@ public abstract class ResourceTest extends CoreTest {
 
 	}
 
-	@Override
-	public String getUniqueString() {
-		return new UniversalUniqueIdentifier().toString();
-	}
-
-	/**
-	 * Returns valid sets of natures
-	 */
-	protected String[][] getValidNatureSets() {
-		return new String[][] {{}, {NATURE_SIMPLE}, {NATURE_SNOW, NATURE_WATER}, {NATURE_EARTH}, {NATURE_WATER, NATURE_SIMPLE, NATURE_SNOW},};
-	}
-
-	/**
-	 * Checks whether the local file system supports accessing and modifying
-	 * the given attribute.
-	 */
-	protected boolean isAttributeSupported(int attribute) {
-		return (EFS.getLocalFileSystem().attributes() & attribute) != 0;
-	}
-
-	/**
-	 * Checks whether the local file system supports accessing and modifying
-	 * the read-only flag.
-	 */
-	protected boolean isReadOnlySupported() {
-		return isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY);
-	}
-
-	protected void setReadOnly(IFileStore target, boolean value) throws CoreException {
-		assertThat("Setting read only is not supported by local file system", isReadOnlySupported());
-		IFileInfo fileInfo = target.fetchInfo();
-		fileInfo.setAttribute(EFS.ATTRIBUTE_READ_ONLY, value);
-		target.putInfo(fileInfo, EFS.SET_ATTRIBUTES, null);
-	}
-
-	protected void setReadOnly(IResource target, boolean value) throws CoreException {
-		ResourceAttributes attributes = target.getResourceAttributes();
-		assertNotNull("tried to set read only for null attributes", attributes);
-		attributes.setReadOnly(value);
-		target.setResourceAttributes(attributes);
-	}
-
 	/**
 	 * The environment should be set-up in the main method.
 	 */
@@ -999,35 +578,6 @@ public abstract class ResourceTest extends CoreTest {
 		waitForBuild();
 	}
 
-	/**
-	 * Sets the workspace build order to just contain the given projects.
-	 */
-	protected void setBuildOrder(IProject... projects) throws CoreException {
-		IWorkspace workspace = getWorkspace();
-		IWorkspaceDescription desc = workspace.getDescription();
-		desc.setBuildOrder(Stream.of(projects).map(IProject::getName).toArray(String[]::new));
-		workspace.setDescription(desc);
-	}
-
-	/**
-	 * Blocks the calling thread until autobuild completes.
-	 */
-	protected void waitForBuild() {
-		((Workspace) getWorkspace()).getBuildManager().waitForAutoBuild();
-	}
-
-	/**
-	 * Blocks the calling thread until refresh job completes.
-	 */
-	protected void waitForRefresh() {
-		try {
-			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, null);
-		} catch (OperationCanceledException | InterruptedException e) {
-			//ignore
-		}
-	}
-
 	public String[] findAvailableDevices() {
 		String[] devices = new String[2];
 		for (int i = 97/*a*/; i < 123/*z*/; i++) {
@@ -1035,7 +585,7 @@ public abstract class ResourceTest extends CoreTest {
 			java.io.File rootFile = new java.io.File(c + ":\\");
 			if (rootFile.exists() && rootFile.canWrite()) {
 				//sometimes canWrite can return true but we are still not allowed to create a file - see bug 379284.
-				File probe = new File(rootFile, getUniqueString());
+				File probe = new File(rootFile, createUniqueString());
 				try {
 					probe.createNewFile();
 				} catch (IOException e) {
@@ -1053,11 +603,6 @@ public abstract class ResourceTest extends CoreTest {
 			}
 		}
 		return devices;
-	}
-
-	protected void waitForEncodingRelatedJobs() {
-		TestUtil.waitForJobs(getName(), 10, 5_000, ValidateProjectEncoding.class);
-		TestUtil.waitForJobs(getName(), 10, 5_000, CharsetDeltaJob.FAMILY_CHARSET_DELTA);
 	}
 
 }

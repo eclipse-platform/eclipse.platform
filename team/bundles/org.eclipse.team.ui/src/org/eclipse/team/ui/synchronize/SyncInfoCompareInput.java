@@ -137,7 +137,6 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (IFile.class.equals(adapter) && resource.getType() == IResource.FILE) {

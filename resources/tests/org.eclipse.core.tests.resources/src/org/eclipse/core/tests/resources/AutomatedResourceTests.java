@@ -37,5 +37,4 @@ import org.junit.runners.Suite;
 		org.eclipse.core.tests.internal.resources.AllInternalResourcesTests.class,
 		org.eclipse.core.tests.resources.LinkedDotProjectTest.class })
 public class AutomatedResourceTests {
-	public static final String PI_RESOURCES_TESTS = "org.eclipse.core.tests.resources"; //$NON-NLS-1$
 }

@@ -13,6 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+
 import java.io.IOException;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -48,7 +55,7 @@ public class Bug_044106 extends ResourceTest {
 		assertTrue("0.1", linkDestFile.fetchInfo().exists());
 
 		// create some resources in the workspace
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		ensureExistsInWorkspace(project, true);
 
 		// link in the folder
@@ -56,17 +63,17 @@ public class Bug_044106 extends ResourceTest {
 		IFile linkedFile = project.getFile("linkedFile");
 		String local = linkedFile.getLocation().toOSString();
 		createSymLink(target, local);
-		assertExistsInFileSystem("1.2", linkedFile);
+		assertExistsInFileSystem(linkedFile);
 
 		// do a refresh and ensure that the resources are in the workspace
-		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		assertExistsInWorkspace("2.1", linkedFile);
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
+		assertExistsInWorkspace(linkedFile);
 
 		// delete the file
-		linkedFile.delete(deleteFlags, getMonitor());
+		linkedFile.delete(deleteFlags, createTestMonitor());
 
 		// ensure that the folder and file weren't deleted in the filesystem
-		assertDoesNotExistInWorkspace("4.0", linkedFile);
+		assertDoesNotExistInWorkspace(linkedFile);
 		assertTrue("4.1", linkDestFile.fetchInfo().exists());
 	}
 
@@ -81,7 +88,7 @@ public class Bug_044106 extends ResourceTest {
 			return;
 		}
 		IFileStore linkDestLocation = getTempStore();
-		IFileStore linkDestFile = linkDestLocation.getChild(getUniqueString());
+		IFileStore linkDestFile = linkDestLocation.getChild(createUniqueString());
 		createFileInFileSystem(linkDestFile);
 		assertTrue("0.1", linkDestLocation.fetchInfo().exists());
 		assertTrue("0.2", linkDestFile.fetchInfo().exists());
@@ -94,24 +101,24 @@ public class Bug_044106 extends ResourceTest {
 		IFile linkedFile = linkedFolder.getFile(linkDestFile.getName());
 		String local = linkedFolder.getLocation().toOSString();
 		createSymLink(target, local);
-		assertExistsInFileSystem("1.2", linkedFolder);
-		assertExistsInFileSystem("1.3", linkedFile);
+		assertExistsInFileSystem(linkedFolder);
+		assertExistsInFileSystem(linkedFile);
 
 		// do a refresh and ensure that the resources are in the workspace
-		linkedFolder.getProject().refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		assertExistsInWorkspace("2.1", linkedFolder);
-		assertExistsInWorkspace("2.2", linkedFile);
+		linkedFolder.getProject().refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
+		assertExistsInWorkspace(linkedFolder);
+		assertExistsInWorkspace(linkedFile);
 
 		// delete the folder or project
 		if (deleteParent) {
-			linkedFolder.getParent().delete(deleteFlags, getMonitor());
+			linkedFolder.getParent().delete(deleteFlags, createTestMonitor());
 		} else {
-			linkedFolder.delete(deleteFlags, getMonitor());
+			linkedFolder.delete(deleteFlags, createTestMonitor());
 		}
 
 		// ensure that the folder and file weren't deleted in the filesystem
-		assertDoesNotExistInWorkspace("4.0", linkedFolder);
-		assertDoesNotExistInWorkspace("4.1", linkedFile);
+		assertDoesNotExistInWorkspace(linkedFolder);
+		assertDoesNotExistInWorkspace(linkedFile);
 		assertTrue("4.2", linkDestLocation.fetchInfo().exists());
 		assertTrue("4.3", linkDestFile.fetchInfo().exists());
 	}
@@ -127,7 +134,7 @@ public class Bug_044106 extends ResourceTest {
 		if (!OS.isLinux()) {
 			return;
 		}
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, false, IResource.NONE);
 	}
@@ -136,7 +143,7 @@ public class Bug_044106 extends ResourceTest {
 		if (!OS.isLinux()) {
 			return;
 		}
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.NONE);
 	}
@@ -152,7 +159,7 @@ public class Bug_044106 extends ResourceTest {
 		if (!OS.isLinux()) {
 			return;
 		}
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder parent = project.getFolder("parent");
 		IFolder linkedFolder = parent.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.KEEP_HISTORY);
@@ -162,7 +169,7 @@ public class Bug_044106 extends ResourceTest {
 		if (!OS.isLinux()) {
 			return;
 		}
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, false, IResource.KEEP_HISTORY);
 	}
@@ -171,7 +178,7 @@ public class Bug_044106 extends ResourceTest {
 		if (!OS.isLinux()) {
 			return;
 		}
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.KEEP_HISTORY);
 	}

@@ -13,6 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.Assert.assertThrows;
 
 import java.io.InputStream;
@@ -43,7 +52,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
@@ -54,42 +63,42 @@ public class Bug_026294 extends ResourceTest {
 		IPath projectRoot = project.getLocation();
 		deleteOnTearDown(projectRoot);
 
-		assertExistsInFileSystem("0.0", file1);
-		assertExistsInFileSystem("0.1", file2);
-		assertExistsInFileSystem("0.2", file3);
-		assertExistsInFileSystem("0.3", folder);
-		assertExistsInFileSystem("0.4", projectFile);
+		assertExistsInFileSystem(file1);
+		assertExistsInFileSystem(file2);
+		assertExistsInFileSystem(file3);
+		assertExistsInFileSystem(folder);
+		assertExistsInFileSystem(projectFile);
 
 		// opens a file so it cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
 			assertTrue("1.2", projectFile.exists());
 			assertTrue("1.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertThrows(CoreException.class, () -> project.delete(IResource.FORCE, getMonitor()));
+			assertThrows(CoreException.class, () -> project.delete(IResource.FORCE, createTestMonitor()));
 
 			// Delete is best-case so check all the files.
 			// Do a check on disk and in the workspace in case something is out of sync.
-			assertExistsInWorkspace("2.1.1", project);
-			assertExistsInFileSystem("2.1.2", project);
+			assertExistsInWorkspace(project);
+			assertExistsInFileSystem(project);
 
-			assertExistsInWorkspace("2.2.1", file1);
-			assertExistsInFileSystem("2.2.2", file1);
+			assertExistsInWorkspace(file1);
+			assertExistsInFileSystem(file1);
 			assertTrue("2.2.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertDoesNotExistInWorkspace("2.3.1", file2);
-			assertDoesNotExistInFileSystem("2.3.2", file2);
+			assertDoesNotExistInWorkspace(file2);
+			assertDoesNotExistInFileSystem(file2);
 			assertTrue("2.3.3", file2.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertDoesNotExistInWorkspace("2.4.1", file3);
-			assertDoesNotExistInFileSystem("2.4.2", file3);
+			assertDoesNotExistInWorkspace(file3);
+			assertDoesNotExistInFileSystem(file3);
 			assertTrue("2.4.3", file3.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertExistsInWorkspace("2.5.1", folder);
-			assertExistsInFileSystem("2.5.2", folder);
+			assertExistsInWorkspace(folder);
+			assertExistsInFileSystem(folder);
 			assertTrue("2.5.3", folder.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertExistsInWorkspace("2.6.1", projectFile);
-			assertExistsInFileSystem("2.6.2", projectFile);
+			assertExistsInWorkspace(projectFile);
+			assertExistsInFileSystem(projectFile);
 			assertTrue("2.6.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
 
 			assertTrue("2.7.0", project.isSynchronized(IResource.DEPTH_ZERO));
@@ -97,7 +106,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
-		project.delete(IResource.FORCE, getMonitor());
+		project.delete(IResource.FORCE, createTestMonitor());
 		assertTrue("5.1", !project.exists());
 		assertTrue("5.2", !file1.exists());
 		assertTrue("5.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
@@ -115,7 +124,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
@@ -132,7 +141,7 @@ public class Bug_026294 extends ResourceTest {
 			assertTrue("1.2", projectFile.exists());
 			assertTrue("1.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertThrows(CoreException.class, () -> project.delete(IResource.FORCE, getMonitor()));
+			assertThrows(CoreException.class, () -> project.delete(IResource.FORCE, createTestMonitor()));
 			assertTrue("2.1", project.exists());
 			assertTrue("2.2", file1.exists());
 			assertTrue("2.3", !file2.exists());
@@ -146,7 +155,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
-		project.delete(IResource.FORCE, getMonitor());
+		project.delete(IResource.FORCE, createTestMonitor());
 		assertTrue("5.1", !project.exists());
 		assertTrue("5.2", !file1.exists());
 		assertTrue("5.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
@@ -164,7 +173,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
@@ -177,20 +186,20 @@ public class Bug_026294 extends ResourceTest {
 
 		// opens a file so it cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
-			project.close(getMonitor());
+			project.close(createTestMonitor());
 			assertThrows(CoreException.class,
-					() -> project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor()));
+					() -> project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor()));
 			assertTrue("2.1", project.exists());
 			assertTrue("2.7", project.isSynchronized(IResource.DEPTH_INFINITE));
-			assertExistsInFileSystem("2.8", projectFile);
+			assertExistsInFileSystem(projectFile);
 
 		}
 		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
-		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 		assertTrue("5.1", !project.exists());
 		assertTrue("5.3", project.isSynchronized(IResource.DEPTH_INFINITE));
 		assertTrue("6.0", !projectRoot.toFile().exists());
-		assertDoesNotExistInFileSystem("7.0", projectFile);
+		assertDoesNotExistInFileSystem(projectFile);
 	}
 
 	/**
@@ -205,7 +214,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
@@ -219,26 +228,26 @@ public class Bug_026294 extends ResourceTest {
 			// marks folder as read-only so its files cannot be removed on Linux
 			setReadOnly(folder, true);
 
-			project.close(getMonitor());
+			project.close(createTestMonitor());
 			assertThrows(CoreException.class,
-					() -> project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor()));
+					() -> project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor()));
 
 			assertTrue("3.0", project.exists());
 			assertTrue("3.1", project.isSynchronized(IResource.DEPTH_INFINITE));
-			assertExistsInFileSystem("3.2", projectFile);
+			assertExistsInFileSystem(projectFile);
 
-			project.open(getMonitor());
+			project.open(createTestMonitor());
 		} finally {
 			if (folder.exists()) {
 				setReadOnly(folder, false);
 			}
 		}
 
-		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 		assertTrue("6.0", !project.exists());
 		assertTrue("6.1", project.isSynchronized(IResource.DEPTH_INFINITE));
 		assertTrue("6.2", !projectRoot.toFile().exists());
-		assertDoesNotExistInFileSystem("6.3", projectFile);
+		assertDoesNotExistInFileSystem(projectFile);
 	}
 
 	/**
@@ -251,7 +260,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file3 = folder.getFile("file3.txt");
@@ -262,7 +271,7 @@ public class Bug_026294 extends ResourceTest {
 
 		// opens a file so it cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
-			assertThrows(CoreException.class, () -> folder.delete(IResource.FORCE, getMonitor()));
+			assertThrows(CoreException.class, () -> folder.delete(IResource.FORCE, createTestMonitor()));
 			assertTrue("2.2", file1.exists());
 			assertTrue("2.4", !file3.exists());
 			assertTrue("2.5", folder.exists());
@@ -270,7 +279,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
-		folder.delete(IResource.FORCE, getMonitor());
+		folder.delete(IResource.FORCE, createTestMonitor());
 		assertTrue("5.1", !file1.exists());
 		assertTrue("5.2", !folder.exists());
 		assertTrue("5.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
@@ -287,7 +296,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFolder subFolder = folder.getFolder("sub-folder");
 		IFile file1 = subFolder.getFile("file1.txt");
@@ -301,7 +310,7 @@ public class Bug_026294 extends ResourceTest {
 			// marks sub-folder as read-only so its files cannot be removed on Linux
 			setReadOnly(subFolder, true);
 
-			assertThrows(CoreException.class, () -> folder.delete(IResource.FORCE, getMonitor()));
+			assertThrows(CoreException.class, () -> folder.delete(IResource.FORCE, createTestMonitor()));
 			assertTrue("2.2", file1.exists());
 			assertTrue("2.3", subFolder.exists());
 			assertTrue("2.4", !file3.exists());
@@ -314,7 +323,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
-		folder.delete(IResource.FORCE, getMonitor());
+		folder.delete(IResource.FORCE, createTestMonitor());
 		assertTrue("5.1", !file1.exists());
 		assertTrue("5.2", !subFolder.exists());
 		assertTrue("5.3", !folder.exists());

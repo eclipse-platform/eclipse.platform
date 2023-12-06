@@ -15,6 +15,7 @@ package org.eclipse.core.tests.internal.localstore;
 
 import static org.junit.Assert.assertThrows;
 
+import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -58,7 +59,7 @@ public class BlobStoreTest extends LocalStoreTest {
 		return root;
 	}
 
-	public void testDeleteBlob() throws CoreException {
+	public void testDeleteBlob() throws CoreException, IOException {
 		/* initialize common objects */
 		IFileStore root = createStore();
 		BlobStore store = new BlobStore(root, 64);
@@ -78,7 +79,7 @@ public class BlobStoreTest extends LocalStoreTest {
 		assertFalse(store.fileFor(uuid).fetchInfo().exists());
 	}
 
-	public void testGetBlob() throws CoreException {
+	public void testGetBlob() throws CoreException, IOException {
 		/* initialize common objects */
 		IFileStore root = createStore();
 		BlobStore store = new BlobStore(root, 64);
@@ -96,7 +97,7 @@ public class BlobStoreTest extends LocalStoreTest {
 		assertTrue(compareContent(getContents(content), input));
 	}
 
-	public void testSetBlob() throws CoreException {
+	public void testSetBlob() throws CoreException, IOException {
 		/* initialize common objects */
 		IFileStore root = createStore();
 		BlobStore store = new BlobStore(root, 64);

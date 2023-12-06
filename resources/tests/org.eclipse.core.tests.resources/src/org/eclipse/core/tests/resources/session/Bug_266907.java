@@ -13,12 +13,17 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -50,11 +55,11 @@ public class Bug_266907 extends WorkspaceSessionTest {
 
 		final IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(PROJECT_NAME);
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		IFile f = project.getFile(FILE_NAME);
-		f.create(getContents("content"), true, getMonitor());
+		f.create(getContents("content"), true, createTestMonitor());
 
 		IMarker marker = f.createMarker(IMarker.BOOKMARK);
 		marker.setAttribute(MARKER_ATTRIBUTE_NAME, MARKER_ATTRIBUTE);
@@ -62,12 +67,15 @@ public class Bug_266907 extends WorkspaceSessionTest {
 		// remember the location of .project to delete is at the end
 		File dotProject = project.getFile(".project").getLocation().toFile();
 
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 
 		// move .project to a temp location
 		File dotProjectCopy = getTempDir().append("dotProjectCopy").toFile();
 		dotProjectCopy.createNewFile();
-		transferStreams(new FileInputStream(dotProject), new FileOutputStream(dotProjectCopy), null);
+		try (InputStream input = new FileInputStream(dotProject);
+				OutputStream output = new FileOutputStream(dotProjectCopy)) {
+			input.transferTo(output);
+		}
 		dotProject.delete();
 	}
 
@@ -83,10 +91,13 @@ public class Bug_266907 extends WorkspaceSessionTest {
 		File dotProjectCopy = getTempDir().append("dotProjectCopy").toFile();
 
 		dotProject.createNewFile();
-		transferStreams(new FileInputStream(dotProjectCopy), new FileOutputStream(dotProject), null);
+		try (InputStream input = new FileInputStream(dotProjectCopy);
+				OutputStream output = new FileOutputStream(dotProject)) {
+			input.transferTo(output);
+		}
 		dotProjectCopy.delete();
 
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 		assertThat("project should be accessible", project.isAccessible(), is(true));
 
 		IFile file = project.getFile(FILE_NAME);

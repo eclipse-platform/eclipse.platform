@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -61,17 +64,13 @@ public class IResourceDeltaTest extends ResourceTest {
 
 		// Create and open the resources
 		IWorkspaceRunnable body = monitor -> ensureExistsInWorkspace(allResources, true);
-		try {
-			getWorkspace().run(body, getMonitor());
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		getWorkspace().run(body, createTestMonitor());
 	}
 
 	/**
 	 * Tests the IResourceDelta#findMember method.
 	 */
-	public void testFindMember() {
+	public void testFindMember() throws CoreException {
 		/*
 		 * The following changes will occur:
 		 * - change file1
@@ -111,14 +110,12 @@ public class IResourceDeltaTest extends ResourceTest {
 
 		//do the work
 		IWorkspaceRunnable body = monitor -> {
-			file1.setContents(getRandomContents(), true, true, getMonitor());
-			folder2.delete(true, getMonitor());
-			file4.create(getRandomContents(), true, getMonitor());
+			file1.setContents(getRandomContents(), true, true, createTestMonitor());
+			folder2.delete(true, createTestMonitor());
+			file4.create(getRandomContents(), true, createTestMonitor());
 		};
 		try {
-			getWorkspace().run(body, getMonitor());
-		} catch (CoreException e) {
-			fail("Exception1", e);
+			getWorkspace().run(body, createTestMonitor());
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}

@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -62,7 +64,7 @@ public class Bug_231301 extends ResourceTest {
 		try {
 			workspace.addResourceChangeListener(projectClosingChangeListener, IResourceChangeEvent.PRE_CLOSE);
 			// close project
-			project1.close(getMonitor());
+			project1.close(createTestMonitor());
 			job.join();
 		} finally {
 			workspace.removeResourceChangeListener(projectClosingChangeListener);

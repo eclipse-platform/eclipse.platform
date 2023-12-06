@@ -216,8 +216,9 @@ public class CoreTest extends TestCase {
 	 */
 	public void createFileInFileSystem(File file, InputStream contents) throws IOException {
 		file.getParentFile().mkdirs();
-		FileOutputStream output = new FileOutputStream(file);
-		transferData(contents, output);
+		try (contents; FileOutputStream output = new FileOutputStream(file)) {
+			contents.transferTo(output);
+		}
 	}
 
 	/**
@@ -277,7 +278,7 @@ public class CoreTest extends TestCase {
 		return new ByteArrayInputStream(text.getBytes());
 	}
 
-	public IProgressMonitor getMonitor() {
+	public static IProgressMonitor getMonitor() {
 		return new FussyProgressMonitor();
 	}
 

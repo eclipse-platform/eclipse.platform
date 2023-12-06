@@ -25,6 +25,11 @@ import org.eclipse.core.tests.resources.saveparticipant2.SaveParticipant2Plugin;
 import org.eclipse.core.tests.resources.saveparticipant3.SaveParticipant3Plugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 
 /**
  * This class needs to be used with SaveManager2Test. Basically this
@@ -139,13 +144,13 @@ public class SaveManager1Test extends SaveManagerTest {
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_1));
 		ensureExistsInWorkspace(resources, true);
-		assertExistsInFileSystem("3.1", resources);
-		assertExistsInWorkspace("3.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 
 		project.close(null);
 		project.open(null);
-		assertExistsInFileSystem("4.1", resources);
-		assertExistsInWorkspace("4.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 
 		getWorkspace().save(true, null);
 	}
@@ -161,7 +166,7 @@ public class SaveManager1Test extends SaveManagerTest {
 		command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
 		description.setBuildSpec(new ICommand[] {command});
 		project.setDescription(description, null);
-		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		// close and open the project and see if the builder gets a good delta
 		project.close(null);
@@ -202,13 +207,13 @@ public class SaveManager1Test extends SaveManagerTest {
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_1));
 		ensureExistsInWorkspace(resources, true);
-		assertExistsInFileSystem("3.1", resources);
-		assertExistsInWorkspace("3.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 
 		project.close(null);
 		project.open(null);
-		assertExistsInFileSystem("4.1", resources);
-		assertExistsInWorkspace("4.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 	}
 
 	/**
@@ -224,8 +229,8 @@ public class SaveManager1Test extends SaveManagerTest {
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_2));
 		ensureExistsInWorkspace(resources, true);
-		assertExistsInFileSystem("3.1", resources);
-		assertExistsInWorkspace("3.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 
 		// add a builder to this project
 		IProjectDescription description = project.getDescription();

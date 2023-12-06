@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -24,7 +26,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.resources.ResourceTest;
-
 
 /**
  * Tests for recursive symbolic links in projects.
@@ -190,7 +191,7 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 
 	private void importProjectAndRefresh(String projectName, URI projectRootLocation) throws Exception {
 		IProject project = importTestProject(projectName, projectRootLocation);
-		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 	}
 
 	private IProject importTestProject(String projectName, URI projectRootLocation) throws Exception {
@@ -199,8 +200,8 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 		IProjectDescription projectDescription = new ProjectDescription();
 		projectDescription.setName(projectName);
 		projectDescription.setLocationURI(projectRootLocation);
-		testProject.create(projectDescription, getMonitor());
-		testProject.open(getMonitor());
+		testProject.create(projectDescription, createTestMonitor());
+		testProject.open(createTestMonitor());
 		assertTrue("expected project to be open: " + projectName, testProject.isAccessible());
 		return testProject;
 	}

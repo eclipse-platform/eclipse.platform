@@ -453,7 +453,6 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
 		if (IFile.class.equals(adapter)) {
 			IResource resource = Utils.getResource(getCompareResult());

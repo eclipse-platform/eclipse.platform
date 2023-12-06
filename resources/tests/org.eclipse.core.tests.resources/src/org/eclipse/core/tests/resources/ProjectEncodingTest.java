@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.eclipse.core.internal.resources.PreferenceInitializer;
@@ -154,11 +157,11 @@ public class ProjectEncodingTest extends ResourceTest {
 		node.putInt(ResourcesPlugin.PREF_MISSING_ENCODING_MARKER_SEVERITY, value);
 		node.flush();
 		Job.getJobManager().wakeUp(ValidateProjectEncoding.class);
-		Job.getJobManager().join(ValidateProjectEncoding.class, getMonitor());
+		Job.getJobManager().join(ValidateProjectEncoding.class, createTestMonitor());
 	}
 
 	private void whenProjectIsCreated() throws CoreException {
-		project = ResourcesPlugin.getWorkspace().getRoot().getProject(getUniqueString());
+		project = ResourcesPlugin.getWorkspace().getRoot().getProject(createUniqueString());
 		ensureExistsInWorkspace(project, true);
 	}
 
@@ -235,7 +238,6 @@ public class ProjectEncodingTest extends ResourceTest {
 	}
 
 	private void buildAndWaitForBuildFinish() {
-		buildResources();
 		waitForBuild();
 	}
 

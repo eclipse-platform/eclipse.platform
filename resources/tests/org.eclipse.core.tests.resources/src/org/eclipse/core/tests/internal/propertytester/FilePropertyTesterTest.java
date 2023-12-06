@@ -13,9 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.propertytester;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.io.ByteArrayInputStream;
 import org.eclipse.core.internal.propertytester.FilePropertyTester;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.tests.resources.ResourceTest;
@@ -62,7 +67,7 @@ public class FilePropertyTesterTest extends ResourceTest {
 	public void testExistingTextFile() throws Throwable {
 		String expected = "org.eclipse.core.runtime.text";
 		IFile target = project.getFile("tmp.txt");
-		target.create(getRandomContents(), true, getMonitor());
+		target.create(getRandomContents(), true, createTestMonitor());
 
 		boolean ret;
 		ret = tester.test(target, CONTENT_TYPE_ID, new String[] {}, expected);
@@ -96,7 +101,7 @@ public class FilePropertyTesterTest extends ResourceTest {
 		String expectedExact = "org.eclipse.core.tests.resources.ns-root-element";
 		IFile target = project.getFile("tmp.xml");
 		byte[] bytes = IContentTypeManagerTest.XML_ROOT_ELEMENT_NS_MATCH1.getBytes("UTF-8");
-		target.create(new ByteArrayInputStream(bytes), true, getMonitor());
+		target.create(new ByteArrayInputStream(bytes), true, createTestMonitor());
 
 		boolean ret;
 		ret = tester.test(target, CONTENT_TYPE_ID, new String[] {}, expectedExact);

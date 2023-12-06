@@ -14,6 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -237,7 +241,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 	public void test342968() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("test");
 		ensureExistsInWorkspace(project, true);
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 
 		IProjectDescription description = project.getDescription();
 		URI projectLocation = Test342968FileSystem.getTestUriFor(EFS.getLocalFileSystem().fromLocalFile(new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile(), "test")).toURI());
@@ -246,7 +250,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 		project.delete(false, false, null);
 
 		project.create(description, IResource.NONE, null);
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 
 		assertTrue(project.getLocationURI().equals(projectLocation));
 
@@ -269,7 +273,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 	}
 
 	public void test368376() throws CoreException, IOException {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(createUniqueString());
 		ensureExistsInWorkspace(project, true);
 
 		String filePath = "a/b/c/file.txt";
@@ -282,12 +286,12 @@ public class UnifiedTreeTest extends LocalStoreTest {
 		assertFalse(folder.exists());
 		assertFalse(file.exists());
 
-		file.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		file.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		assertTrue(folder.exists());
 		assertTrue(file.exists());
 		assertTrue(folder.isSynchronized(IResource.DEPTH_INFINITE));
 
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 	}
 }

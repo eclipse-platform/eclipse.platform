@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -71,7 +74,7 @@ public class FilteredResourceTest extends ResourceTest {
 
 	protected void doCleanup() throws Exception {
 		ensureExistsInWorkspace(new IResource[] {existingProject, otherExistingProject, closedProject, existingFolderInExistingProject, existingFolderInExistingFolder, existingFileInExistingProject}, true);
-		closedProject.close(getMonitor());
+		closedProject.close(createTestMonitor());
 		ensureDoesNotExistInWorkspace(new IResource[] {nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolder2InOtherExistingProject, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder});
 		resolve(localFolder).toFile().mkdirs();
 		createFileInFileSystem(resolve(localFile), getRandomContents());
@@ -125,18 +128,18 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo");
 		existingFolderInExistingProject.createFilter(IResourceFilterDescription.INCLUDE_ONLY
 				| IResourceFilterDescription.FILES | IResourceFilterDescription.FOLDERS, matcherDescription, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IFile foo = existingFolderInExistingProject.getFile("foo");
 		IFile bar = existingFolderInExistingProject.getFile("bar");
 
 		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
 
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		//close and reopen the project
-		existingProject.close(getMonitor());
-		existingProject.open(getMonitor());
+		existingProject.close(createTestMonitor());
+		existingProject.open(createTestMonitor());
 
 		IResourceFilterDescription[] filters = existingFolderInExistingProject.getFilters();
 
@@ -162,18 +165,18 @@ public class FilteredResourceTest extends ResourceTest {
 	public void testCreateFilterOnProject() throws CoreException {
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo");
 		existingProject.createFilter(IResourceFilterDescription.INCLUDE_ONLY | IResourceFilterDescription.FOLDERS,
-				matcherDescription, 0, getMonitor());
+				matcherDescription, 0, createTestMonitor());
 
 		IFolder foo = existingProject.getFolder("foo");
 		IFolder bar = existingProject.getFolder("bar");
 
 		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
 
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		//close and reopen the project
-		existingProject.close(getMonitor());
-		existingProject.open(getMonitor());
+		existingProject.close(createTestMonitor());
+		existingProject.open(createTestMonitor());
 		IResourceFilterDescription[] filters = existingProject.getFilters();
 
 		assertEquals("1.4", filters.length, 1);
@@ -204,22 +207,22 @@ public class FilteredResourceTest extends ResourceTest {
 		IFolder folder = nonExistingFolderInExistingProject;
 
 		//try to create without the flag (should fail)
-		assertThrows(CoreException.class, () -> folder.createLink(location, IResource.NONE, getMonitor()));
+		assertThrows(CoreException.class, () -> folder.createLink(location, IResource.NONE, createTestMonitor()));
 
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo");
 		folder.createFilter(IResourceFilterDescription.INCLUDE_ONLY | IResourceFilterDescription.FILES,
-				matcherDescription, 0, getMonitor());
+				matcherDescription, 0, createTestMonitor());
 
 		IFile foo = folder.getFile("foo");
 		IFile bar = folder.getFile("bar");
 
 		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
 
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		//close and reopen the project
-		existingProject.close(getMonitor());
-		existingProject.open(getMonitor());
+		existingProject.close(createTestMonitor());
+		existingProject.open(createTestMonitor());
 
 		IResourceFilterDescription[] filters = folder.getFilters();
 
@@ -247,16 +250,16 @@ public class FilteredResourceTest extends ResourceTest {
 		IPath location = existingFolderInExistingFolder.getLocation();
 		IFolder folder = nonExistingFolderInExistingProject;
 
-		folder.createLink(location, IResource.NONE, getMonitor());
+		folder.createLink(location, IResource.NONE, createTestMonitor());
 
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*\\.cpp");
 		FileInfoMatcherDescription matcherDescription2 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*\\.h");
 
 		folder.createFilter(IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FILES,
-				matcherDescription1, 0, getMonitor());
+				matcherDescription1, 0, createTestMonitor());
 		IResourceFilterDescription filterDescription2 = existingFolderInExistingFolder.createFilter(
 				IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FILES, matcherDescription2, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IResource members[] = folder.members();
 		assertEquals("1.2", members.length, 0);
@@ -267,7 +270,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile newFile = existingFolderInExistingFolder.getFile("foo.cpp");
 		assertTrue("1.5", newFile.getLocation().toFile().createNewFile());
 
-		existingFolderInExistingFolder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingFolderInExistingFolder.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		members = existingFolderInExistingFolder.members();
 		assertEquals("1.9", members.length, 1);
 		assertEquals("2.0", members[0].getType(), IResource.FILE);
@@ -279,7 +282,7 @@ public class FilteredResourceTest extends ResourceTest {
 		newFile = existingFolderInExistingFolder.getFile("foo.h");
 		assertTrue("2.5", newFile.getLocation().toFile().createNewFile());
 
-		existingFolderInExistingFolder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingFolderInExistingFolder.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		members = existingFolderInExistingFolder.members();
 		assertEquals("2.9", members.length, 1);
 		assertEquals("3.0", members[0].getType(), IResource.FILE);
@@ -288,7 +291,7 @@ public class FilteredResourceTest extends ResourceTest {
 		members = folder.members();
 		assertEquals("3.3", members.length, 0);
 
-		folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		folder.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		members = existingFolderInExistingFolder.members();
 		assertEquals("3.9", members.length, 1);
 		assertEquals("4.0", members[0].getType(), IResource.FILE);
@@ -303,7 +306,7 @@ public class FilteredResourceTest extends ResourceTest {
 		newFile = existingFolderInExistingFolder.getFile("foo.text");
 		assertTrue("5.5", newFile.getLocation().toFile().createNewFile());
 
-		existingFolderInExistingFolder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingFolderInExistingFolder.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		members = existingFolderInExistingFolder.members();
 		assertEquals("5.9", members.length, 2);
 		assertEquals("6.0", members[0].getType(), IResource.FILE);
@@ -319,7 +322,7 @@ public class FilteredResourceTest extends ResourceTest {
 		assertEquals("6.9", members[1].getName(), "foo.text");
 
 		// delete the common file
-		newFile.delete(true, getMonitor());
+		newFile.delete(true, createTestMonitor());
 		members = existingFolderInExistingFolder.members();
 		assertEquals("7.2", members.length, 1);
 		assertEquals("7.3", members[0].getType(), IResource.FILE);
@@ -331,7 +334,7 @@ public class FilteredResourceTest extends ResourceTest {
 		assertEquals("7.8", members[0].getName(), "foo.h");
 
 		// remove the first filter
-		filterDescription2.delete(0, getMonitor());
+		filterDescription2.delete(0, createTestMonitor());
 		members = existingFolderInExistingFolder.members();
 		assertEquals("8.2", members.length, 2);
 		assertEquals("8.3", members[0].getType(), IResource.FILE);
@@ -347,7 +350,7 @@ public class FilteredResourceTest extends ResourceTest {
 		// add the filter again
 		existingFolderInExistingFolder.createFilter(
 				IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FILES, matcherDescription2, 0,
-				getMonitor());
+				createTestMonitor());
 		members = existingFolderInExistingFolder.members();
 		assertEquals("9.2", members.length, 1);
 		assertEquals("9.3", members[0].getType(), IResource.FILE);
@@ -363,12 +366,12 @@ public class FilteredResourceTest extends ResourceTest {
 		IFolder folder = existingFolderInExistingProject.getFolder("virtual_folder.txt");
 		IFile file = existingFolderInExistingProject.getFile("linked_file.txt");
 
-		folder.create(IResource.VIRTUAL, true, getMonitor());
-		file.createLink(existingFileInExistingProject.getLocation(), 0, getMonitor());
+		folder.create(IResource.VIRTUAL, true, createTestMonitor());
+		file.createLink(existingFileInExistingProject.getLocation(), 0, createTestMonitor());
 
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*\\.txt");
 		existingFolderInExistingProject.createFilter(IResourceFilterDescription.EXCLUDE_ALL, matcherDescription, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IWorkspace workspace = existingProject.getWorkspace();
 		assertTrue("1.0", workspace.validateFiltered(folder).isOK());
@@ -385,16 +388,16 @@ public class FilteredResourceTest extends ResourceTest {
 		final IPath location = existingFolderInExistingFolder.getLocation();
 		final IFolder folder = nonExistingFolderInExistingProject;
 
-		folder.createLink(location, IResource.NONE, getMonitor());
+		folder.createLink(location, IResource.NONE, createTestMonitor());
 
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*\\.h");
 		FileInfoMatcherDescription matcherDescription2 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*\\.cpp");
 
 		folder.createFilter(IResourceFilterDescription.INCLUDE_ONLY | IResourceFilterDescription.FILES,
-				matcherDescription1, 0, getMonitor());
+				matcherDescription1, 0, createTestMonitor());
 		existingFolderInExistingFolder.createFilter(
 				IResourceFilterDescription.INCLUDE_ONLY | IResourceFilterDescription.FILES, matcherDescription2, 0,
-				getMonitor());
+				createTestMonitor());
 
 
 		// Create 'foo.cpp' in existingFolder...
@@ -425,7 +428,7 @@ public class FilteredResourceTest extends ResourceTest {
 		assertEquals("3.0", IResource.FILE, members[0].getType());
 		assertEquals("3.1", "foo.cpp", members[0].getName());
 		// And refreshing doesn't change things
-		existingFolderInExistingFolder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingFolderInExistingFolder.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		members = existingFolderInExistingFolder.members();
 		assertEquals("2.9", 1, members.length);
 		assertEquals("3.0", IResource.FILE, members[0].getType());
@@ -442,7 +445,7 @@ public class FilteredResourceTest extends ResourceTest {
 	private void modifyFileInWorkspace(final IFile file) throws IOException, CoreException {
 		try (InputStream fileInputStream = file.getContents(false)) {
 			ByteArrayOutputStream originalContentStream = new ByteArrayOutputStream();
-			transferData(fileInputStream, originalContentStream);
+			fileInputStream.transferTo(originalContentStream);
 			String originalContent = new String(originalContentStream.toByteArray(), StandardCharsets.UTF_8);
 			String newContent = originalContent + "w";
 			ByteArrayInputStream modifiedContentStream = new ByteArrayInputStream(
@@ -478,11 +481,11 @@ public class FilteredResourceTest extends ResourceTest {
 		// Filter out all children from existingFolderInExistingProject
 		IResourceFilterDescription filterDescription1 = folder1.createFilter(
 				IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FOLDERS, matcherDescription1, 0,
-				getMonitor());
+				createTestMonitor());
 
-		folder1.createLink(parentLoc, IResource.NONE, getMonitor());
-		folder2.createLink(childLoc, IResource.NONE, getMonitor());
-		existingProject.close(getMonitor());
+		folder1.createLink(parentLoc, IResource.NONE, createTestMonitor());
+		folder2.createLink(childLoc, IResource.NONE, createTestMonitor());
+		existingProject.close(createTestMonitor());
 
 		assertTrue("12.0", folder1.exists());
 		assertTrue("12.2", folder2.exists());
@@ -497,7 +500,7 @@ public class FilteredResourceTest extends ResourceTest {
 		// reconcileLinks will never be called...
 		Workspace workspace = ((Workspace) ResourcesPlugin.getWorkspace());
 		try {
-			workspace.prepareOperation(project, getMonitor());
+			workspace.prepareOperation(project, createTestMonitor());
 			workspace.beginOperation(true);
 
 			ResourceInfo ri = ((Resource) project).getResourceInfo(false, true);
@@ -506,12 +509,12 @@ public class FilteredResourceTest extends ResourceTest {
 			workspace.endOperation(project, true);
 		}
 
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 		assertTrue("3.1", !project.isOpen());
 		// Create a file under existingFolderInExistingFolder
 		createFileInFileSystem(childLoc.append("foo"));
 		// Reopen the project
-		project.open(IResource.NONE, getMonitor());
+		project.open(IResource.NONE, createTestMonitor());
 
 		assertTrue("22.0", folder1.exists());
 		assertTrue("22.2", folder2.exists());
@@ -523,19 +526,19 @@ public class FilteredResourceTest extends ResourceTest {
 		assertTrue("22.12", folder2.members().length == 1);
 
 		// Swap the links around, loading may be order independent...
-		folder2.createLink(parentLoc, IResource.REPLACE, getMonitor());
-		folder1.createLink(childLoc, IResource.REPLACE | IResource.FORCE, getMonitor());
+		folder2.createLink(parentLoc, IResource.REPLACE, createTestMonitor());
+		folder1.createLink(childLoc, IResource.REPLACE | IResource.FORCE, createTestMonitor());
 
 		// Filter out all children from existingFolderInExistingProject
 		folder2.createFilter(IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FOLDERS,
-				matcherDescription1, 0, getMonitor());
-		filterDescription1.delete(0, getMonitor());
+				matcherDescription1, 0, createTestMonitor());
+		filterDescription1.delete(0, createTestMonitor());
 		assertTrue(folder1.getFilters().length == 0);
 
 		// Need to unset M_USED on the project's resource info, or
 		// reconcileLinks will never be called...
 		try {
-			workspace.prepareOperation(project, getMonitor());
+			workspace.prepareOperation(project, createTestMonitor());
 			workspace.beginOperation(true);
 
 			ResourceInfo ri = ((Resource) project).getResourceInfo(false, true);
@@ -544,9 +547,9 @@ public class FilteredResourceTest extends ResourceTest {
 			workspace.endOperation(project, true);
 		}
 
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 		assertTrue("3.1", !project.isOpen());
-		project.open(IResource.NONE, getMonitor());
+		project.open(IResource.NONE, createTestMonitor());
 
 		assertTrue("32.0", folder1.exists());
 		assertTrue("32.2", folder2.exists());
@@ -585,11 +588,11 @@ public class FilteredResourceTest extends ResourceTest {
 		// Filter out all children from existingFolderInExistingProject
 		IResourceFilterDescription filterDescription1 = folder1.createFilter(
 				IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FOLDERS, matcherDescription1, 0,
-				getMonitor());
+				createTestMonitor());
 
-		folder1.createLink(parentLoc, IResource.NONE, getMonitor());
-		folder2.createLink(childLoc, IResource.NONE, getMonitor());
-		existingProject.close(getMonitor());
+		folder1.createLink(parentLoc, IResource.NONE, createTestMonitor());
+		folder2.createLink(childLoc, IResource.NONE, createTestMonitor());
+		existingProject.close(createTestMonitor());
 
 		assertTrue("12.0", folder1.exists());
 		assertTrue("12.2", folder2.exists());
@@ -604,7 +607,7 @@ public class FilteredResourceTest extends ResourceTest {
 		// reconcileLinks will never be called...
 		Workspace workspace = ((Workspace) ResourcesPlugin.getWorkspace());
 		try {
-			workspace.prepareOperation(project, getMonitor());
+			workspace.prepareOperation(project, createTestMonitor());
 			workspace.beginOperation(true);
 
 			ResourceInfo ri = ((Resource) project).getResourceInfo(false, true);
@@ -626,13 +629,13 @@ public class FilteredResourceTest extends ResourceTest {
 		assertTrue("22.12", folder2.members().length == 1);
 
 		// Swap the links around, loading may be order independent...
-		folder2.createLink(parentLoc, IResource.REPLACE | IResource.NONE, getMonitor());
-		folder1.createLink(childLoc, IResource.REPLACE | IResource.FORCE, getMonitor());
+		folder2.createLink(parentLoc, IResource.REPLACE | IResource.NONE, createTestMonitor());
+		folder1.createLink(childLoc, IResource.REPLACE | IResource.FORCE, createTestMonitor());
 
 		// Filter out all children from existingFolderInExistingProject
 		folder2.createFilter(IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FOLDERS,
-				matcherDescription1, 0, getMonitor());
-		filterDescription1.delete(0, getMonitor());
+				matcherDescription1, 0, createTestMonitor());
+		filterDescription1.delete(0, createTestMonitor());
 		assertTrue(folder1.getFilters().length == 0);
 
 		assertTrue("32.0", folder1.exists());
@@ -657,19 +660,19 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo");
 
 		folder.createFilter(IResourceFilterDescription.INCLUDE_ONLY | IResourceFilterDescription.FILES,
-				matcherDescription1, 0, getMonitor());
-		folder.createLink(location, IResource.NONE, getMonitor());
+				matcherDescription1, 0, createTestMonitor());
+		folder.createLink(location, IResource.NONE, createTestMonitor());
 
 		IFile foo = folder.getFile("foo");
 		IFile bar = folder.getFile("bar");
 
 		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
 
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		//close and reopen the project
-		existingProject.close(getMonitor());
-		existingProject.open(getMonitor());
+		existingProject.close(createTestMonitor());
+		existingProject.open(createTestMonitor());
 
 		IResourceFilterDescription[] filters = folder.getFilters();
 
@@ -692,24 +695,24 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo");
 		IResourceFilterDescription filterDescription = existingFolderInExistingFolder
 				.createFilter(IResourceFilterDescription.INCLUDE_ONLY | IResourceFilterDescription.FILES
-						| IResourceFilterDescription.FOLDERS, matcherDescription1, 0, getMonitor());
+						| IResourceFilterDescription.FOLDERS, matcherDescription1, 0, createTestMonitor());
 
 		IFile foo = existingFolderInExistingFolder.getFile("foo");
 		IFile bar = existingFolderInExistingFolder.getFile("bar");
 
 		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
 
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		//close and reopen the project
-		existingProject.close(getMonitor());
-		existingProject.open(getMonitor());
+		existingProject.close(createTestMonitor());
+		existingProject.open(createTestMonitor());
 
-		filterDescription.delete(0, getMonitor());
+		filterDescription.delete(0, createTestMonitor());
 
 		//close and reopen the project
-		existingProject.close(getMonitor());
-		existingProject.open(getMonitor());
+		existingProject.close(createTestMonitor());
+		existingProject.open(createTestMonitor());
 
 		IResourceFilterDescription[] filters = existingFolderInExistingFolder.getFilters();
 
@@ -730,15 +733,15 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo");
 		IResourceFilterDescription filterDescription = existingFolderInExistingFolder
 				.createFilter(IResourceFilterDescription.INCLUDE_ONLY | IResourceFilterDescription.FILES
-						| IResourceFilterDescription.FOLDERS, matcherDescription1, 0, getMonitor());
+						| IResourceFilterDescription.FOLDERS, matcherDescription1, 0, createTestMonitor());
 
 		IFile foo = existingFolderInExistingFolder.getFile("foo");
 		IFile bar = existingFolderInExistingFolder.getFile("bar");
 
 		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
 
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		filterDescription.delete(0, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
+		filterDescription.delete(0, createTestMonitor());
 
 		IResourceFilterDescription[] filters = existingFolderInExistingFolder.getFilters();
 		assertEquals("1.6", filters.length, 0);
@@ -759,14 +762,14 @@ public class FilteredResourceTest extends ResourceTest {
 
 		existingFolderInExistingProject.createFilter(IResourceFilterDescription.INCLUDE_ONLY
 				| IResourceFilterDescription.FILES | IResourceFilterDescription.FOLDERS, matcherDescription1, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFile file = existingFolderInExistingProject.getFile("file.c");
 		IFile bar = existingFolderInExistingProject.getFile("bar.h");
 
 		ensureExistsInWorkspace(new IResource[] {foo, bar, file}, true);
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingProject.members();
 		assertEquals("2.0", members.length, 2);
@@ -778,9 +781,9 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription2 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*\\.c");
 		existingFolderInExistingProject.createFilter(IResourceFilterDescription.INCLUDE_ONLY
 				| IResourceFilterDescription.FILES | IResourceFilterDescription.FOLDERS, matcherDescription2, 0,
-				getMonitor());
+				createTestMonitor());
 
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		members = existingFolderInExistingProject.members();
 		assertEquals("3.3", members.length, 2);
 		assertEquals("3.4", members[0].getType(), IResource.FILE);
@@ -797,7 +800,7 @@ public class FilteredResourceTest extends ResourceTest {
 
 		existingFolderInExistingFolder.createFilter(IResourceFilterDescription.EXCLUDE_ALL
 				| IResourceFilterDescription.FILES | IResourceFilterDescription.FOLDERS, matcherDescription1, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IFile foo = existingFolderInExistingFolder.getFile("foo.c");
 		IFile file = existingFolderInExistingFolder.getFile("file.c");
@@ -805,7 +808,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile bar = existingFolderInExistingFolder.getFile("bar.h");
 
 		ensureExistsInWorkspace(new IResource[] {foo, bar, file, fooh}, true);
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingFolder.members();
 		assertEquals("2.0", members.length, 2);
@@ -817,8 +820,8 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription2 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingFolder.createFilter(IResourceFilterDescription.EXCLUDE_ALL
 				| IResourceFilterDescription.FILES | IResourceFilterDescription.FOLDERS, matcherDescription2, 0,
-				getMonitor());
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+				createTestMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		members = existingFolderInExistingFolder.members();
 		assertEquals("3.3", members.length, 1);
@@ -835,10 +838,10 @@ public class FilteredResourceTest extends ResourceTest {
 
 		existingFolderInExistingProject.createFilter(IResourceFilterDescription.INCLUDE_ONLY
 				| IResourceFilterDescription.FILES | IResourceFilterDescription.FOLDERS, matcherDescription1, 0,
-				getMonitor());
+				createTestMonitor());
 		existingFolderInExistingProject.createFilter(IResourceFilterDescription.EXCLUDE_ALL
 				| IResourceFilterDescription.FILES | IResourceFilterDescription.FOLDERS, matcherDescription2, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFile file = existingFolderInExistingProject.getFile("file.c");
@@ -846,7 +849,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile bar = existingFolderInExistingProject.getFile("bar.h");
 
 		ensureExistsInWorkspace(new IResource[] {foo, bar, file, fooh}, true);
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingProject.members();
 		assertEquals("2.0", members.length, 1);
@@ -862,10 +865,10 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription2 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 
 		existingProject.createFilter(IResourceFilterDescription.INCLUDE_ONLY | IResourceFilterDescription.INHERITABLE
-				| IResourceFilterDescription.FILES, matcherDescription1, 0, getMonitor());
+				| IResourceFilterDescription.FILES, matcherDescription1, 0, createTestMonitor());
 		existingFolderInExistingFolder.createFilter(IResourceFilterDescription.EXCLUDE_ALL
 				| IResourceFilterDescription.FILES | IResourceFilterDescription.FOLDERS, matcherDescription2, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IFile foo = existingFolderInExistingFolder.getFile("foo.c");
 		IFile file = existingFolderInExistingFolder.getFile("file.c");
@@ -873,7 +876,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile bar = existingFolderInExistingFolder.getFile("bar.h");
 
 		ensureExistsInWorkspace(new IResource[] {foo, bar, file, fooh}, true);
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingFolder.members();
 		assertEquals("2.0", members.length, 1);
@@ -888,13 +891,13 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingFolder.createFilter(
 				IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FOLDERS, matcherDescription1, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IFile foo = existingFolderInExistingFolder.getFile("foo.c");
 		IFolder food = existingFolderInExistingFolder.getFolder("foo.d");
 
 		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingFolder.members();
 		assertEquals("2.0", members.length, 1);
@@ -909,13 +912,13 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingFolder.createFilter(
 				IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FILES, matcherDescription1, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IFile foo = existingFolderInExistingFolder.getFile("foo.c");
 		IFolder food = existingFolderInExistingFolder.getFolder("foo.d");
 
 		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingFolder.members();
 		assertEquals("2.0", members.length, 1);
@@ -930,16 +933,16 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingProject.createFilter(
 				IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FILES, matcherDescription1, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
 		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IFolder destination = otherExistingProject.getFolder("destination");
-		existingFolderInExistingProject.move(destination.getFullPath(), 0, getMonitor());
+		existingFolderInExistingProject.move(destination.getFullPath(), 0, createTestMonitor());
 
 		IResourceFilterDescription[] filters = existingFolderInExistingProject.getFilters();
 		assertEquals("1.4", filters.length, 0);
@@ -959,16 +962,16 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingProject.createFilter(
 				IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FILES, matcherDescription1, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
 		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IFolder destination = otherExistingProject.getFolder("destination");
-		existingFolderInExistingProject.copy(destination.getFullPath(), 0, getMonitor());
+		existingFolderInExistingProject.copy(destination.getFullPath(), 0, createTestMonitor());
 
 		IResourceFilterDescription[] filters = existingFolderInExistingProject.getFilters();
 		assertEquals("1.4", filters.length, 1);
@@ -992,17 +995,17 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingProject.createFilter(
 				IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FILES, matcherDescription1, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
 		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		ensureExistsInWorkspace(new IResource[] {nonExistingFolderInExistingProject}, true);
 		IFolder destination = nonExistingFolderInExistingProject.getFolder("destination");
-		existingFolderInExistingProject.copy(destination.getFullPath(), 0, getMonitor());
+		existingFolderInExistingProject.copy(destination.getFullPath(), 0, createTestMonitor());
 
 		IResourceFilterDescription[] filters = existingFolderInExistingProject.getFilters();
 		assertEquals("1.4", filters.length, 1);
@@ -1026,17 +1029,17 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingProject.createFilter(
 				IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FILES, matcherDescription1, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
 		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		ensureExistsInWorkspace(new IResource[] {nonExistingFolderInExistingProject}, true);
 		IFolder destination = nonExistingFolderInExistingProject.getFolder("destination");
-		existingFolderInExistingProject.move(destination.getFullPath(), 0, getMonitor());
+		existingFolderInExistingProject.move(destination.getFullPath(), 0, createTestMonitor());
 
 		IResourceFilterDescription[] filters = existingFolderInExistingProject.getFilters();
 		assertEquals("1.4", filters.length, 0);
@@ -1058,19 +1061,19 @@ public class FilteredResourceTest extends ResourceTest {
 
 		existingFolderInExistingProject.createFilter(
 				IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FILES, matcherDescription1, 0,
-				getMonitor());
+				createTestMonitor());
 		existingFolderInExistingFolder.createFilter(
 				IResourceFilterDescription.INCLUDE_ONLY | IResourceFilterDescription.FILES, matcherDescription2, 0,
-				getMonitor());
+				createTestMonitor());
 
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
 		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		ensureExistsInWorkspace(new IResource[] {nonExistingFolderInExistingProject}, true);
-		existingFolderInExistingProject.delete(0, getMonitor());
+		existingFolderInExistingProject.delete(0, createTestMonitor());
 
 		IResourceFilterDescription[] filters = existingFolderInExistingProject.getFilters();
 		assertEquals("1.4", filters.length, 0);
@@ -1092,11 +1095,11 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo");
 		existingFolderInExistingProject.createFilter(IResourceFilterDescription.INCLUDE_ONLY
 				| IResourceFilterDescription.FILES | IResourceFilterDescription.FOLDERS, matcherDescription, 0,
-				getMonitor());
+				createTestMonitor());
 
 		// close and reopen the project
-		existingProject.close(getMonitor());
-		existingProject.open(getMonitor());
+		existingProject.close(createTestMonitor());
+		existingProject.open(createTestMonitor());
 		IResourceFilterDescription[] filters = existingFolderInExistingProject.getFilters();
 
 		// check that filters are recreated when the project is reopened
@@ -1124,18 +1127,18 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile file = folder.getFile("bar.txt");
 		ensureExistsInWorkspace(file, "content");
 
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*");
 		existingProject.createFilter(IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FOLDERS,
-				matcherDescription, 0, getMonitor());
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+				matcherDescription, 0, createTestMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingProject.members();
 		assertEquals("1.5", 2, members.length);
 		assertEquals("1.6", ".project", members[0].getName());
 		assertEquals("1.7", existingFileInExistingProject.getName(), members[1].getName());
 
-		folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		folder.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		members = existingProject.members();
 		assertEquals("2.2", 2, members.length);
 		assertEquals("2.3", ".project", members[0].getName());
@@ -1156,23 +1159,23 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile file = folder.getFile("bar.txt");
 		ensureExistsInWorkspace(file, "content");
 
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*");
 		existingProject.createFilter(IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FOLDERS,
-				matcherDescription, 0, getMonitor());
+				matcherDescription, 0, createTestMonitor());
 		assertEquals(1, existingProject.getFilters().length);
 
-		existingProject.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IPath newPath = existingProject.getFullPath().removeLastSegments(1).append(existingProject.getName() + "_moved");
-		existingProject.move(newPath, true, getMonitor());
+		existingProject.move(newPath, true, createTestMonitor());
 
 		IProject newProject = ResourcesPlugin.getWorkspace().getRoot().getProject(existingProject.getName() + "_moved");
 		assertTrue(newProject.exists());
 		assertEquals(1, newProject.getFilters().length);
 
 		newPath = newProject.getFullPath().removeLastSegments(1).append(newProject.getName() + "_copy");
-		newProject.copy(newPath, true, getMonitor());
+		newProject.copy(newPath, true, createTestMonitor());
 
 		newProject = ResourcesPlugin.getWorkspace().getRoot().getProject(newProject.getName() + "_copy");
 		assertTrue(newProject.exists());
@@ -1183,7 +1186,7 @@ public class FilteredResourceTest extends ResourceTest {
 	 * Regression test for bug 328464
 	 */
 	public void test328464() throws CoreException {
-		IFolder folder = existingProject.getFolder(getUniqueString());
+		IFolder folder = existingProject.getFolder(createUniqueString());
 		ensureExistsInWorkspace(folder, true);
 
 		IFile file_a_txt = folder.getFile("a.txt");
@@ -1192,7 +1195,7 @@ public class FilteredResourceTest extends ResourceTest {
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER,
 				"a\\.txt");
 		existingProject.createFilter(IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FILES
-				| IResourceFilterDescription.INHERITABLE, matcherDescription, 0, getMonitor());
+				| IResourceFilterDescription.INHERITABLE, matcherDescription, 0, createTestMonitor());
 
 		assertFalse("2.0", existingProject.getWorkspace().validateFiltered(file_a_txt).isOK());
 
@@ -1203,7 +1206,7 @@ public class FilteredResourceTest extends ResourceTest {
 
 		assertFalse("4.0", existingProject.getWorkspace().validateFiltered(file_a_txt).isOK());
 
-		folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		folder.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		assertFalse("6.0", file_a_txt.exists());
 		assertFalse("7.0", existingProject.getWorkspace().validateFiltered(file_a_txt).isOK());
@@ -1225,7 +1228,7 @@ public class FilteredResourceTest extends ResourceTest {
 		existingProject.createFilter(
 				IResourceFilterDescription.EXCLUDE_ALL | IResourceFilterDescription.FOLDERS
 						| IResourceFilterDescription.FILES | IResourceFilterDescription.INHERITABLE,
-				matcherDescription, 0, getMonitor());
+				matcherDescription, 0, createTestMonitor());
 
 		IPath fileLocation = subProjectLocation.append("file.txt");
 
@@ -1252,7 +1255,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IProjectDescription newProjectDescription = getWorkspace().newProjectDescription(subProjectName);
 		newProjectDescription.setLocation(subProjectLocation);
 
-		subProject.create(newProjectDescription, getMonitor());
+		subProject.create(newProjectDescription, createTestMonitor());
 		result = root.getFileForLocation(fileLocation);
 
 		assertTrue("3.0", result != null);

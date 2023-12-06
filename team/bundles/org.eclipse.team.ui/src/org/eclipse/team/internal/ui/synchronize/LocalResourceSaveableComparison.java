@@ -340,7 +340,6 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IDocument.class) {

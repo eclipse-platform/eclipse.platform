@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.eclipse.core.internal.content.ContentTypeHandler;
@@ -179,7 +182,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 
 		// originally, project description has no natures
 		try (InputStream input = projectDescriptionWithNatures(project.getName(), new String[0])) {
-			descFile.setContents(input, IResource.FORCE, getMonitor());
+			descFile.setContents(input, IResource.FORCE, createTestMonitor());
 		}
 		waitForCacheFlush();
 		description = file.getContentDescription();
@@ -188,7 +191,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 
 		// change project description to include one of the natures
 		try (InputStream input = projectDescriptionWithNatures(project.getName(), new String[] { CONTENT_TYPE_RELATED_NATURE1 })) {
-			descFile.setContents(input, IResource.FORCE, getMonitor());
+			descFile.setContents(input, IResource.FORCE, createTestMonitor());
 		}
 		waitForCacheFlush();
 		description = file.getContentDescription();
@@ -198,7 +201,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		// change project description to include the other nature
 		try (InputStream input = projectDescriptionWithNatures(project.getName(),
 				new String[] { CONTENT_TYPE_RELATED_NATURE2 })) {
-			descFile.setContents(input, IResource.FORCE, getMonitor());
+			descFile.setContents(input, IResource.FORCE, createTestMonitor());
 		}
 		waitForCacheFlush();
 		description = file.getContentDescription();
@@ -208,7 +211,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		// change project description to include both of the natures
 		try (InputStream input = projectDescriptionWithNatures(project.getName(),
 				new String[] { CONTENT_TYPE_RELATED_NATURE1, CONTENT_TYPE_RELATED_NATURE2  })) {
-			descFile.setContents(input, IResource.FORCE, getMonitor());
+			descFile.setContents(input, IResource.FORCE, createTestMonitor());
 		}
 		waitForCacheFlush();
 
@@ -218,7 +221,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 
 		// back to no natures
 		descFile.setContents(projectDescriptionWithNatures(project.getName(), new String[0]), IResource.FORCE,
-				getMonitor());
+				createTestMonitor());
 		waitForCacheFlush();
 		description = file.getContentDescription();
 		assertNotNull("5.2", description);
@@ -239,7 +242,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		ensureExistsInWorkspace(txtFile, "");
 		ensureExistsInWorkspace(xmlFile, "");
 
-		project.setDefaultCharset("FOO", getMonitor());
+		project.setDefaultCharset("FOO", createTestMonitor());
 		assertEquals("1.0", "FOO", txtFile.getCharset());
 		assertEquals("1.1", "UTF-8", xmlFile.getCharset());
 

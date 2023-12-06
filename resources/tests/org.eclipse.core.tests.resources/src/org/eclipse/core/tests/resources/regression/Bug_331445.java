@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.eclipse.core.resources.IFolder;
@@ -27,19 +30,19 @@ import org.eclipse.core.tests.resources.ResourceTest;
 public class Bug_331445 extends ResourceTest {
 	public void testBug() throws CoreException, URISyntaxException {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject project = root.getProject(getUniqueString());
+		IProject project = root.getProject(createUniqueString());
 
 		ensureExistsInWorkspace(project, true);
 
-		String variableName = "a" + getUniqueString();
+		String variableName = "a" + createUniqueString();
 		String variablePath = "mem:/MyProject";
 		String folderName = "MyFolder";
 		String rawLinkFolderLocation = variableName + "/" + folderName;
 		String linkFolderLocation = variablePath + "/" + folderName;
 
 		project.getPathVariableManager().setURIValue(variableName, new URI(variablePath));
-		IFolder folder = project.getFolder(getUniqueString());
-		folder.createLink(IPath.fromOSString(rawLinkFolderLocation), IResource.ALLOW_MISSING_LOCAL, getMonitor());
+		IFolder folder = project.getFolder(createUniqueString());
+		folder.createLink(IPath.fromOSString(rawLinkFolderLocation), IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 		assertNull("3.0", folder.getLocation());
 		assertEquals("4.0", IPath.fromOSString(rawLinkFolderLocation), folder.getRawLocation());
 		assertEquals("5.0", new URI(linkFolderLocation), folder.getLocationURI());

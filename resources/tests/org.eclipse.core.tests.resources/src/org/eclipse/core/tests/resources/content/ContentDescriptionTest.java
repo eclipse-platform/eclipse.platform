@@ -13,14 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.content;
 
-import static org.eclipse.core.tests.resources.AutomatedResourceTests.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.core.internal.content.*;
+import org.eclipse.core.internal.content.ContentDescription;
+import org.eclipse.core.internal.content.ContentType;
+import org.eclipse.core.internal.content.ContentTypeHandler;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescription;

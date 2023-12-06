@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import junit.framework.Test;
 import org.eclipse.core.internal.resources.ContentDescriptionManager;
 import org.eclipse.core.internal.resources.Workspace;
@@ -48,10 +53,10 @@ public class TestBug93473 extends WorkspaceSessionTest {
 		assertEquals("0.0", ContentDescriptionManager.INVALID_CACHE, ((Workspace) workspace).getContentDescriptionManager().getCacheState());
 
 		IProject project = workspace.getRoot().getProject("proj1");
-		assertDoesNotExistInWorkspace("0.1", project);
+		assertDoesNotExistInWorkspace(project);
 		Platform.getContentTypeManager().getContentType(IContentTypeManager.CT_TEXT);
 		IFile file = project.getFile("foo.txt");
-		assertDoesNotExistInWorkspace("0.2", file);
+		assertDoesNotExistInWorkspace(file);
 		ensureExistsInWorkspace(file, getRandomContents());
 		// this will also cause the cache flush job to be scheduled
 		file.getContentDescription();
@@ -65,7 +70,7 @@ public class TestBug93473 extends WorkspaceSessionTest {
 		ContentDescriptionManagerTest.waitForCacheFlush();
 		assertEquals("4.0", ContentDescriptionManager.USED_CACHE, ((Workspace) workspace).getContentDescriptionManager().getCacheState());
 
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	public void test2ndSession() {

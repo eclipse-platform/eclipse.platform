@@ -14,6 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.util.Map;
 import junit.framework.Test;
 import org.eclipse.core.resources.ICommand;
@@ -24,7 +28,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -49,12 +52,12 @@ public class TestBug20127 extends WorkspaceSerializationTest {
 		command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
 		command.setArguments(args);
 		description.setBuildSpec(new ICommand[] { command });
-		project.setDescription(description, getMonitor());
+		project.setDescription(description, createTestMonitor());
 
 		//initial build
-		workspace.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**
@@ -64,8 +67,8 @@ public class TestBug20127 extends WorkspaceSerializationTest {
 		IProject project = workspace.getRoot().getProject("Project1");
 		IProjectDescription desc = project.getDescription();
 		desc.setName("MovedProject");
-		project.move(desc, IResource.NONE, getMonitor());
-		workspace.save(true, getMonitor());
+		project.move(desc, IResource.NONE, createTestMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	/**
@@ -78,10 +81,10 @@ public class TestBug20127 extends WorkspaceSerializationTest {
 		assertTrue("1.0", !oldLocation.exists());
 		assertTrue("1.0", newLocation.exists());
 		assertTrue("1.1", newLocation.isOpen());
-		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug20127.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug20127.class);
 	}
 }
