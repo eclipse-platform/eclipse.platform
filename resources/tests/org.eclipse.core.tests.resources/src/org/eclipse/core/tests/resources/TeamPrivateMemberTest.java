@@ -36,7 +36,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 
 public class TeamPrivateMemberTest extends ResourceTest {
-	public void testRefreshLocal() throws CoreException {
+	public void testRefreshLocal() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("MyProject");
 		IFolder folder = project.getFolder("folder");

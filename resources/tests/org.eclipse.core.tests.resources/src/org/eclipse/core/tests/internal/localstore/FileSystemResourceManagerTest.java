@@ -247,7 +247,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 	}
 
 	@Test
-	public void testWriteFile() throws CoreException {
+	public void testWriteFile() throws Exception {
 		/* initialize common objects */
 		IProject project = projects[0];
 		IFile file = project.getFile("testWriteFile");

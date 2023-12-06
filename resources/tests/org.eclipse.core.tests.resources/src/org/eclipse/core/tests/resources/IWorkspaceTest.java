@@ -105,7 +105,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * 		IStatus copy([IResource, IPath, boolean, IProgressMonitor)
 	 * See also testMultiCopy()
 	 */
-	public void testCopy() throws CoreException {
+	public void testCopy() throws Exception {
 		IResource[] resources = buildResourceHierarchy();
 		IProject project = (IProject) resources[1];
 		IFolder folder = (IFolder) resources[2];
