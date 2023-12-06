@@ -362,7 +362,7 @@ public class IResourceTest extends ResourceTest {
 		ensureDoesNotExistInWorkspace(new IResource[] {project, file});
 	}
 
-	public void testDelete_Bug8754() throws CoreException {
+	public void testDelete_Bug8754() throws Exception {
 		//In this test, we delete with force false on a file that does not exist in the file system,
 		//and ensure that the returned exception is of type OUT_OF_SYNC_LOCAL
 

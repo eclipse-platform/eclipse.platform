@@ -16,7 +16,6 @@ package org.eclipse.core.tests.resources;
 
 import static java.io.InputStream.nullInputStream;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
@@ -29,6 +28,7 @@ import static org.junit.Assert.assertArrayEquals;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,7 +54,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.harness.FileSystemHelper;
@@ -362,7 +361,7 @@ public abstract class ResourceTest extends CoreTest {
 	 * Modifies the passed in IFile in the file system so that it is out of sync
 	 * with the workspace.
 	 */
-	public void ensureOutOfSync(final IFile file) throws CoreException {
+	public void ensureOutOfSync(final IFile file) throws CoreException, IOException {
 		modifyInFileSystem(file);
 		waitForRefresh();
 		touchInFilesystem(file);
@@ -370,13 +369,11 @@ public abstract class ResourceTest extends CoreTest {
 				not(is(file.getLocation().toFile().lastModified())));
 	}
 
-	private void modifyInFileSystem(IFile file) {
+	private void modifyInFileSystem(IFile file) throws FileNotFoundException, IOException {
 		String originalContent = readStringInFileSystem(file);
 		String newContent = originalContent + "f";
 		try (FileOutputStream outputStream = new FileOutputStream(file.getLocation().toFile())) {
 			outputStream.write(newContent.getBytes("UTF8"));
-		} catch (IOException e) {
-			throw new IllegalStateException("could not write to location:" + file.getLocation(), e);
 		}
 	}
 
@@ -386,15 +383,13 @@ public abstract class ResourceTest extends CoreTest {
 	 * @param file
 	 *            file system file to read
 	 */
-	protected String readStringInFileSystem(IFile file) {
+	protected String readStringInFileSystem(IFile file) throws IOException {
 		IPath location = file.getLocation();
 		assertNotNull("location was null for file: " + file, location);
 		try (FileInputStream inputStream = new FileInputStream(location.toFile())) {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			inputStream.transferTo(outputStream);
 			return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			throw new IllegalStateException("could not read from location:" + location, e);
 		}
 	}
 
@@ -402,19 +397,14 @@ public abstract class ResourceTest extends CoreTest {
 	 * Touch (but don't modify) the resource in the filesystem so that it's modification stamp is newer than
 	 * the cached value in the Workspace.
 	 */
-	public void touchInFilesystem(IResource resource) throws CoreException {
+	public void touchInFilesystem(IResource resource) throws CoreException, IOException {
 		IPath location = resource.getLocation();
 		// Manually check that the core.resource time-stamp is out-of-sync
 		// with the java.io.File last modified. #isSynchronized() will schedule
 		// out-of-sync resources for refresh, so we don't use that here.
 		for (int count = 0; count < 3000 && isInSync(resource); count++) {
 			FileTime now = FileTime.fromMillis(resource.getLocalTimeStamp() + 1000);
-			try {
-				Files.setLastModifiedTime(location.toFile().toPath(), now);
-			} catch (IOException e) {
-				throw new CoreException(
-						new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed setting modification time", e));
-			}
+			Files.setLastModifiedTime(location.toFile().toPath(), now);
 			if (count > 1) {
 				try {
 					Thread.sleep(1);
