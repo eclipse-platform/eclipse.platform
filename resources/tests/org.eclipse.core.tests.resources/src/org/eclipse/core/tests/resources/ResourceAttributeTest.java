@@ -16,10 +16,13 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 

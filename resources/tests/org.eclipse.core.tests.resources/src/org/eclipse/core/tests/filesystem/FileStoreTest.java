@@ -15,6 +15,7 @@ package org.eclipse.core.tests.filesystem;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
@@ -579,7 +580,7 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore targetFolder = createDir(root.toString(), true);
 		deleteOnTearDown(targetFolder);
 		IFileStore targetFile = targetFolder.getChild("targetFile");
-		createFileInFileSystem(targetFile);
+		createInFileSystem(targetFile);
 
 		// file
 		boolean init = targetFile.fetchInfo().getAttribute(attribute);

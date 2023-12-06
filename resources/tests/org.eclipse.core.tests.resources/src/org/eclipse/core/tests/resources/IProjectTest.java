@@ -21,9 +21,12 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATUR
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.getLineSeparatorFromFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.junit.Assert.assertThrows;
 
@@ -869,7 +872,7 @@ public class IProjectTest extends ResourceTest {
 		monitor.prepare();
 		project.close(monitor);
 		monitor.assertUsedUp();
-		createFileInFileSystem(otherFileStore);
+		createInFileSystem(otherFileStore);
 		assertTrue("1.5", otherFileStore.fetchInfo().exists());
 		assertTrue("1.6", project.exists());
 		assertFalse("1.7", project.isOpen());
@@ -902,7 +905,7 @@ public class IProjectTest extends ResourceTest {
 		monitor.prepare();
 		project.close(monitor);
 		monitor.assertUsedUp();
-		createFileInFileSystem(otherFileStore);
+		createInFileSystem(otherFileStore);
 		assertTrue("2.5", otherFileStore.fetchInfo().exists());
 		assertTrue("2.6", project.exists());
 		assertFalse("2.7", project.isOpen());
@@ -933,7 +936,7 @@ public class IProjectTest extends ResourceTest {
 		monitor.prepare();
 		project.close(monitor);
 		monitor.assertUsedUp();
-		createFileInFileSystem(otherFileStore);
+		createInFileSystem(otherFileStore);
 		assertTrue("3.5", otherFileStore.fetchInfo().exists());
 		assertTrue("3.6", project.exists());
 		assertFalse("3.7", project.isOpen());
@@ -966,7 +969,7 @@ public class IProjectTest extends ResourceTest {
 		monitor.prepare();
 		project.close(monitor);
 		monitor.assertUsedUp();
-		createFileInFileSystem(otherFileStore);
+		createInFileSystem(otherFileStore);
 		assertTrue("4.5", otherFileStore.fetchInfo().exists());
 		assertTrue("4.6", project.exists());
 		assertFalse("4.7", project.isOpen());
@@ -999,7 +1002,7 @@ public class IProjectTest extends ResourceTest {
 		monitor.prepare();
 		project.close(monitor);
 		monitor.assertUsedUp();
-		createFileInFileSystem(otherFileStore);
+		createInFileSystem(otherFileStore);
 		assertTrue("5.5", otherFileStore.fetchInfo().exists());
 		assertTrue("5.6", project.exists());
 		assertFalse("5.7", project.isOpen());
@@ -1032,7 +1035,7 @@ public class IProjectTest extends ResourceTest {
 		monitor.prepare();
 		project.close(monitor);
 		monitor.assertUsedUp();
-		createFileInFileSystem(otherFileStore);
+		createInFileSystem(otherFileStore);
 		assertTrue("6.5", otherFileStore.fetchInfo().exists());
 		assertTrue("6.6", project.exists());
 		assertFalse("6.7", project.isOpen());
@@ -2366,7 +2369,7 @@ public class IProjectTest extends ResourceTest {
 
 		// add content to new location
 		IFile newFile = target.getFile(childFile.getName());
-		createFileInFileSystem(childFile);
+		createInFileSystem(childFile);
 
 		// replace project location
 		IProjectDescription description = target.getDescription();

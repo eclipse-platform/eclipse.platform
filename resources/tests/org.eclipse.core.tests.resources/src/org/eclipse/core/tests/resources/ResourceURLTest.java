@@ -17,6 +17,7 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.junit.Assert.assertThrows;
 

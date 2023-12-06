@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.Assert.assertThrows;
@@ -58,7 +59,7 @@ public class Bug_264182 extends ResourceTest {
 		// create a linked resource
 		final IFile file = project.getFile(createUniqueString());
 		IFileStore tempFileStore = getTempStore();
-		createFileInFileSystem(tempFileStore);
+		createInFileSystem(tempFileStore);
 		assertThrows(CoreException.class,
 				() -> file.createLink(tempFileStore.toURI(), IResource.NONE, new NullProgressMonitor()));
 

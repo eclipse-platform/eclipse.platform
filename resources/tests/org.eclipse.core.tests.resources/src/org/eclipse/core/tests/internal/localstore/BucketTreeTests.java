@@ -16,6 +16,7 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

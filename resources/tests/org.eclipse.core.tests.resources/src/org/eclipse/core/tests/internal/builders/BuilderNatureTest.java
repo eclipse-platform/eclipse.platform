@@ -15,6 +15,7 @@ package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SNOW;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;

@@ -14,34 +14,21 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import static java.io.InputStream.nullInputStream;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.junit.Assert.assertArrayEquals;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.internal.resources.Resource;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.CoreTest;
@@ -161,145 +148,6 @@ public abstract class ResourceTest extends CoreTest {
 				.listFiles(file -> !file.getName().equals(metadataDirectoryName));
 		assertArrayEquals("There are unexpected contents in the workspace folder", new File[0],
 				remainingFilesInWorkspace);
-	}
-
-	/**
-	 * Create the given file and its parents in the local store with random
-	 * contents.
-	 */
-	public void createFileInFileSystem(IFileStore file) throws CoreException, IOException {
-		file.getParent().mkdir(EFS.NONE, null);
-		try (InputStream input = createRandomContentsStream(); OutputStream output = file.openOutputStream(EFS.NONE, null)) {
-			input.transferTo(output);
-		}
-	}
-
-	/**
-	 * Create the given file and its parents in the file system with random
-	 * contents.
-	 */
-	public void createFileInFileSystem(IPath path) throws CoreException, IOException {
-		path.toFile().getParentFile().mkdirs();
-		try (InputStream input = createRandomContentsStream(); OutputStream output = new FileOutputStream(path.toFile())) {
-			input.transferTo(output);
-		}
-	}
-
-	/**
-	 * Create the given file or folder in the local store. Use the resource manager
-	 * to ensure that we have a correct Path -&gt; File mapping.
-	 */
-	public void createInFileSystem(IResource resource) throws CoreException, IOException {
-		if (resource instanceof IFile file) {
-			createFileInFileSystem(((Resource) file).getStore());
-		} else {
-			((Resource) resource).getStore().mkdir(EFS.NONE, null);
-		}
-	}
-
-	/**
-	 * Delete the given file in the file system.
-	 */
-	public void removeFromFileSystem(java.io.File file) {
-		FileSystemHelper.clear(file);
-	}
-
-	/**
-	 * Delete the given resource in the file system.
-	 */
-	public void removeFromFileSystem(IResource resource) {
-		IPath path = resource.getLocation();
-		if (path != null) {
-			removeFromFileSystem(path.toFile());
-		}
-	}
-
-	/**
-	 * Delete the given resource in the workspace resource tree. Also removes
-	 * project contents in case the resource is a project and the project is
-	 * currently closed.
-	 */
-	public void removeFromWorkspace(IResource resource) throws CoreException {
-		if (resource.exists()) {
-			resource.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
-		}
-	}
-
-	/**
-	 * Delete each element of the resource array in the workspace resource info
-	 * tree. Also removes project contents in case a resource is a project and the
-	 * project is currently closed.
-	 */
-	public void removeFromWorkspace(final IResource[] resources) throws CoreException {
-		IWorkspaceRunnable body = monitor -> {
-			for (IResource resource : resources) {
-				removeFromWorkspace(resource);
-			}
-		};
-		getWorkspace().run(body, null);
-	}
-
-	/**
-	 * Create the given file in the workspace resource info tree.
-	 */
-	public void createInWorkspace(IFile resource, String contents) throws CoreException {
-		InputStream contentStream = createInputStream(contents);
-		if (resource == null) {
-			return;
-		}
-		IWorkspaceRunnable body;
-		if (resource.exists()) {
-			body = monitor -> resource.setContents(contentStream, true, false, null);
-		} else {
-			body = monitor -> {
-				createInWorkspace(resource.getParent(), monitor);
-				resource.create(contentStream, true, null);
-			};
-		}
-		getWorkspace().run(body, createTestMonitor());
-	}
-
-	/**
-	 * Create the given resource and all its parents in the workspace resource info
-	 * tree.
-	 */
-	public void createInWorkspace(final IResource resource) throws CoreException {
-		IWorkspaceRunnable body = monitor -> createInWorkspace(resource, monitor);
-		getWorkspace().run(body, createTestMonitor());
-	}
-
-	/**
-	 * Create each element of the resource array and all their parents in the
-	 * workspace resource info tree.
-	 */
-	public void createInWorkspace(final IResource[] resources) throws CoreException {
-		IWorkspaceRunnable body = monitor -> {
-			for (IResource resource : resources) {
-				createInWorkspace(resource, monitor);
-			}
-		};
-		getWorkspace().run(body, createTestMonitor());
-	}
-
-	private void createInWorkspace(final IResource resource, IProgressMonitor monitor) throws CoreException {
-		if (resource == null || resource.exists()) {
-			return;
-		}
-		if (!resource.getParent().exists()) {
-			createInWorkspace(resource.getParent(), monitor);
-		}
-		switch (resource.getType()) {
-		case IResource.FILE:
-			((IFile) resource).create(nullInputStream(), true, monitor);
-			break;
-		case IResource.FOLDER:
-			((IFolder) resource).create(true, true, monitor);
-			break;
-		case IResource.PROJECT:
-			((IProject) resource).create(monitor);
-			((IProject) resource).open(monitor);
-			break;
-		}
 	}
 
 	/**

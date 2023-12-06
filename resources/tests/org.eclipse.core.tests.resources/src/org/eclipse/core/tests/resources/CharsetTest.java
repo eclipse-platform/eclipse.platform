@@ -18,10 +18,13 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
 import static org.junit.Assert.assertThrows;
@@ -944,7 +947,7 @@ public class CharsetTest extends ResourceTest {
 			assertCharsetIs("2.1", null, new IResource[] {project, file1, folder1, file2, folder2, file3}, false);
 
 			// sets project default charset
-			project.setDefaultCharset("BAR", getMonitor());
+			project.setDefaultCharset("BAR", createTestMonitor());
 			waitForEncodingRelatedJobs(getName());
 
 			markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
@@ -1171,7 +1174,7 @@ public class CharsetTest extends ResourceTest {
 			verifier.reset();
 			verifier.addExpectedChange(new IResource[] {project, folder1, folder2, file1, file2, prefs.getParent()}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
 			verifier.addExpectedChange(prefs, IResourceDelta.ADDED, 0);
-			project.setDefaultCharset("foo", getMonitor());
+			project.setDefaultCharset("foo", createTestMonitor());
 			waitForEncodingRelatedJobs(getName());
 			verifier.assertExpectedDeltasWereReceived("7.2.");
 
@@ -1179,7 +1182,7 @@ public class CharsetTest extends ResourceTest {
 			clearAllEncodings(project);
 			verifier.reset();
 			verifier.addExpectedChange(new IResource[] {project, folder1, folder2, file1, file2, prefs.getParent()}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
-			getWorkspace().getRoot().setDefaultCharset("foo", getMonitor());
+			getWorkspace().getRoot().setDefaultCharset("foo", createTestMonitor());
 			waitForEncodingRelatedJobs(getName());
 			verifier.assertExpectedDeltasWereReceived("8.2.");
 		} finally {

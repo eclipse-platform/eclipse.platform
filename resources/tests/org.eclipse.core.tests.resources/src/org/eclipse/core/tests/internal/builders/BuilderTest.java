@@ -15,9 +15,11 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;

@@ -22,6 +22,7 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATUR
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getInvalidNatureSets;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getValidNatureSets;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.hamcrest.MatcherAssert.assertThat;

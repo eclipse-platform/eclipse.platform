@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static java.io.InputStream.nullInputStream;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -27,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
@@ -36,14 +38,18 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.CharsetDeltaJob;
+import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.ValidateProjectEncoding;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -56,6 +62,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 
 /**
@@ -96,6 +103,147 @@ public final class ResourceTestUtil {
 	 */
 	public static InputStream createRandomContentsStream() {
 		return createInputStream(createRandomString());
+	}
+
+	/**
+	 * Create the given file and its parents in the local store with random
+	 * contents.
+	 */
+	public static void createInFileSystem(IFileStore file) throws CoreException, IOException {
+		file.getParent().mkdir(EFS.NONE, null);
+		try (InputStream input = createRandomContentsStream();
+				OutputStream output = file.openOutputStream(EFS.NONE, null)) {
+			input.transferTo(output);
+		}
+	}
+
+	/**
+	 * Create a file and its parents at the given path in the file system with
+	 * random contents.
+	 */
+	public static void createInFileSystem(IPath path) throws CoreException, IOException {
+		path.toFile().getParentFile().mkdirs();
+		try (InputStream input = createRandomContentsStream();
+				OutputStream output = new FileOutputStream(path.toFile())) {
+			input.transferTo(output);
+		}
+	}
+
+	/**
+	 * Create the given file or folder in the local store. Use the resource manager
+	 * to ensure that we have a correct Path -&gt; File mapping.
+	 */
+	public static void createInFileSystem(IResource resource) throws CoreException, IOException {
+		if (resource instanceof IFile file) {
+			createInFileSystem(((Resource) file).getStore());
+		} else {
+			((Resource) resource).getStore().mkdir(EFS.NONE, null);
+		}
+	}
+
+	/**
+	 * Create the given file in the workspace resource info tree.
+	 */
+	public static void createInWorkspace(IFile resource, String contents) throws CoreException {
+		InputStream contentStream = createInputStream(contents);
+		if (resource == null) {
+			return;
+		}
+		IWorkspaceRunnable body;
+		if (resource.exists()) {
+			body = monitor -> resource.setContents(contentStream, true, false, null);
+		} else {
+			body = monitor -> {
+				createInWorkspace(resource.getParent(), monitor);
+				resource.create(contentStream, true, null);
+			};
+		}
+		getWorkspace().run(body, createTestMonitor());
+	}
+
+	/**
+	 * Create the given resource and all its parents in the workspace resource info
+	 * tree.
+	 */
+	public static void createInWorkspace(final IResource resource) throws CoreException {
+		IWorkspaceRunnable body = monitor -> createInWorkspace(resource, monitor);
+		getWorkspace().run(body, createTestMonitor());
+	}
+
+	/**
+	 * Create each element of the resource array and all their parents in the
+	 * workspace resource info tree.
+	 */
+	public static void createInWorkspace(final IResource[] resources) throws CoreException {
+		IWorkspaceRunnable body = monitor -> {
+			for (IResource resource : resources) {
+				createInWorkspace(resource, monitor);
+			}
+		};
+		getWorkspace().run(body, createTestMonitor());
+	}
+
+	private static void createInWorkspace(final IResource resource, IProgressMonitor monitor) throws CoreException {
+		if (resource == null || resource.exists()) {
+			return;
+		}
+		if (!resource.getParent().exists()) {
+			createInWorkspace(resource.getParent(), monitor);
+		}
+		switch (resource.getType()) {
+		case IResource.FILE:
+			((IFile) resource).create(nullInputStream(), true, monitor);
+			break;
+		case IResource.FOLDER:
+			((IFolder) resource).create(true, true, monitor);
+			break;
+		case IResource.PROJECT:
+			((IProject) resource).create(monitor);
+			((IProject) resource).open(monitor);
+			break;
+		}
+	}
+
+	/**
+	 * Delete the given file in the file system.
+	 */
+	public static void removeFromFileSystem(java.io.File file) {
+		FileSystemHelper.clear(file);
+	}
+
+	/**
+	 * Delete the given resource in the file system.
+	 */
+	public static void removeFromFileSystem(IResource resource) {
+		IPath path = resource.getLocation();
+		if (path != null) {
+			removeFromFileSystem(path.toFile());
+		}
+	}
+
+	/**
+	 * Delete the given resource in the workspace resource tree. Also removes
+	 * project contents in case the resource is a project and the project is
+	 * currently closed.
+	 */
+	public static void removeFromWorkspace(IResource resource) throws CoreException {
+		if (resource.exists()) {
+			resource.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
+		}
+	}
+
+	/**
+	 * Delete each element of the resource array in the workspace resource info
+	 * tree. Also removes project contents in case a resource is a project and the
+	 * project is currently closed.
+	 */
+	public static void removeFromWorkspace(final IResource[] resources) throws CoreException {
+		IWorkspaceRunnable body = monitor -> {
+			for (IResource resource : resources) {
+				removeFromWorkspace(resource);
+			}
+		};
+		getWorkspace().run(body, null);
 	}
 
 	/**

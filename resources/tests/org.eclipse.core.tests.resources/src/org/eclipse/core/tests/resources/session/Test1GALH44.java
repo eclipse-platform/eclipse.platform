@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.session;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.ICommand;
@@ -43,14 +44,14 @@ public class Test1GALH44 extends WorkspaceSessionTest {
 		ICommand command = description.newCommand();
 		command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
 		description.setBuildSpec(new ICommand[] {command});
-		project.create(getMonitor());
-		project.open(getMonitor());
-		project.setDescription(description, getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
+		project.setDescription(description, createTestMonitor());
 
 		IFile file = project.getFile("foo.txt");
-		file.create(createRandomContentsStream(), true, getMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class Test1GALH44 extends WorkspaceSessionTest {
 	public void test2() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile file = project.getFile("foo.txt");
-		file.setContents(createRandomContentsStream(), true, true, getMonitor());
+		file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		// crash
 		System.exit(-1);
 	}
@@ -68,7 +69,7 @@ public class Test1GALH44 extends WorkspaceSessionTest {
 	 * Now immediately try to save after recovering from crash.
 	 */
 	public void test3() throws CoreException {
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	public static Test suite() {

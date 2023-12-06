@@ -15,6 +15,8 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
@@ -153,8 +155,8 @@ public class IProjectTest extends AbstractBuilderTest {
 
 		// create in file-system
 		location.append(folder.getName()).toFile().mkdirs();
-		createFileInFileSystem(location.append(folder.getName()).append(file2.getName()));
-		createFileInFileSystem(location.append(file1.getName()));
+		createInFileSystem(location.append(folder.getName()).append(file2.getName()));
+		createInFileSystem(location.append(file1.getName()));
 
 		// create
 		project.create(createTestMonitor());

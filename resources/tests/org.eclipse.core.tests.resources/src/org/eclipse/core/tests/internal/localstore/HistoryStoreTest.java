@@ -16,6 +16,8 @@ package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
@@ -315,7 +317,7 @@ public class HistoryStoreTest extends ResourceTest {
 
 		// location of the data on disk
 		IFileStore fileStore = getTempStore();
-		createFileInFileSystem(fileStore);
+		createInFileSystem(fileStore);
 		assertEquals("1.0" + " file already has state", 0, store.getStates(file.getFullPath(), createTestMonitor()).length);
 
 		// add the data to the history store

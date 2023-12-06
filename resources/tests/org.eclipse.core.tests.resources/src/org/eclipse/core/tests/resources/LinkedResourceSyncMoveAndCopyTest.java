@@ -16,6 +16,8 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
@@ -100,7 +102,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		assertTrue("2.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(fileLink, IResource.NONE, false);
 
-		createFileInFileSystem(fileLocation);
+		createInFileSystem(fileLocation);
 		deleteOnTearDown(fileLocation);
 
 		exception = assertThrows(CoreException.class, () -> fileLink
@@ -124,7 +126,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		assertTrue("2.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(fileLink, IResource.SHALLOW, true);
 
-		createFileInFileSystem(fileLocation);
+		createInFileSystem(fileLocation);
 		deleteOnTearDown(fileLocation);
 
 		assertFalse("3.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
@@ -243,7 +245,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		assertTrue(folder.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folder, IResource.NONE, false);
 
-		createFileInFileSystem(fileLocation);
+		createInFileSystem(fileLocation);
 		deleteOnTearDown(fileLocation);
 
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));
@@ -267,7 +269,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		assertTrue(folder.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folder, IResource.SHALLOW, true);
 
-		createFileInFileSystem(fileLocation);
+		createInFileSystem(fileLocation);
 		deleteOnTearDown(fileLocation);
 
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));
