@@ -1,6 +1,9 @@
 package org.eclipse.pki.util;
 
 import java.io.IOException;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -14,17 +17,20 @@ import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
+import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 
 public enum SecurityFileSnapshot {
 	INSTANCE;
+	Path pkiFile = null;
 	public static final String USER_HOME = System.getProperty("user.home");
-	public void image() {
+	public boolean image() {
 		/*
 		 * CHeck if .pki file is present.
 		 */
+		boolean isFound=false;
 		Path userM2Home = null;
-		Path pkiFile = null;
 		try {
 
 			if (System.getProperty("M2_HOME") != null) {
@@ -32,7 +38,8 @@ public enum SecurityFileSnapshot {
 			} else {
 				// No M2_HOME is set so figure out where it is, check HOME first.
 				userM2Home = Paths.get(USER_HOME, FileSystems.getDefault().getSeparator(), ".m2");
-				//System.out.println("PKIController -Searching for FILE:" + userM2Home.toAbsolutePath());
+				//System.out.println("SecurityFileSnapshot -Searching for FILE:" + userM2Home.toAbsolutePath());
+			
 			}
 
 			pkiFile = Paths.get(userM2Home + "/.pki");
@@ -40,13 +47,31 @@ public enum SecurityFileSnapshot {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		if (!(Files.exists(pkiFile, LinkOption.NOFOLLOW_LINKS))) {
-			/*
-			 *  Determined that we no longer need to have a .pki file automatically created
-			 *  so its being commenting out.  12MAR2019
-			 */
-			//ispkiFileRequired(userM2Home.toAbsolutePath().toString());
+		if (Files.exists(pkiFile)) {
+			
+			isFound=true;
 		} 
+		return isFound;
+	}
+	public Properties load() {
+		System.out.println("SecurityFileSnapshot - loading properties from dot PKI file");
+		Properties properties = new Properties();
+		try {
+			FileChannel fileChannel = FileChannel.open(pkiFile, StandardOpenOption.READ);
+			FileLock lock = fileChannel.lock(0L, Long.MAX_VALUE,true);
+			properties.load(Channels.newInputStream(fileChannel));
+			for ( Entry<Object,Object>entry:properties.entrySet()) {
+				entry.setValue(entry.getValue().toString().trim());
+			}
+			System.setProperties(properties);
+			lock.release();
+			System.out.println("SecurityFileSnapshot - loading properties COMPLETED");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return properties;
+		
 	}
 
 	@SuppressWarnings("unused")
