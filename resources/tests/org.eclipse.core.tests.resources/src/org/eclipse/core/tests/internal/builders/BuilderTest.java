@@ -635,7 +635,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		// Create some resources
 		proj1.create(createTestMonitor());
 		proj1.open(createTestMonitor());
-		ensureDoesNotExistInWorkspace(proj2);
+		removeFromWorkspace(proj2);
 
 		// Create and set a build spec for project one
 		IProjectDescription desc = proj1.getDescription();

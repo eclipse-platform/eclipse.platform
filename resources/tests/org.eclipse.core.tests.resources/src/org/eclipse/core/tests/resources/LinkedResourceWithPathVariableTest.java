@@ -837,7 +837,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertTrue("4.3", compareContent(file.getContents(), getContents("contents in different location")));
 
 		// clean-up
-		ensureDoesNotExistInFileSystem(file);
+		removeFromFileSystem(file);
 
 		// restore the previous value
 		manager.setValue(VARIABLE_NAME, existingValue);
@@ -902,7 +902,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertTrue("4.3", compareContent(file.getContents(), getContents("contents in different location")));
 
 		// clean-up
-		ensureDoesNotExistInFileSystem(file);
+		removeFromFileSystem(file);
 
 		// restore the previous value
 		manager.setValue(PROJECT_VARIABLE_NAME, existingValue);

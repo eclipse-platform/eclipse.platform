@@ -328,7 +328,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(workspace);
 		// Write out the project description file
-		ensureDoesNotExistInFileSystem(location.toFile());
+		removeFromFileSystem(location.toFile());
 		try (FileOutputStream output = new FileOutputStream(location.toFile())) {
 			getContents(invalidProjectDescription).transferTo(output);
 		}
@@ -407,12 +407,12 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(getWorkspace());
 		// Write out the project description file
-		ensureDoesNotExistInFileSystem(location.toFile());
+		removeFromFileSystem(location.toFile());
 		try (FileOutputStream output = new FileOutputStream(location.toFile())) {
 			getContents(longProjectDescription).transferTo(output);
 		}
 		ProjectDescription projDesc = reader.read(location);
-		ensureDoesNotExistInFileSystem(location.toFile());
+		removeFromFileSystem(location.toFile());
 		for (LinkDescription link : projDesc.getLinks().values()) {
 			assertThat("Unexpected location URI for link with relative path: " + link.getProjectRelativePath(),
 					link.getLocationURI(), is(LONG_LOCATION_URI));
@@ -429,12 +429,12 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(ResourcesPlugin.getWorkspace());
 		// Write out the project description file
-		ensureDoesNotExistInFileSystem(location.toFile());
+		removeFromFileSystem(location.toFile());
 		try (FileOutputStream output = new FileOutputStream(location.toFile())) {
 			getContents(longProjectDescription).transferTo(output);
 		}
 		ProjectDescription projDesc = reader.read(location);
-		ensureDoesNotExistInFileSystem(location.toFile());
+		removeFromFileSystem(location.toFile());
 		for (LinkDescription link : projDesc.getLinks().values()) {
 			assertThat("Unexpected location URI for link with relative path: " + link.getProjectRelativePath(),
 					link.getLocationURI(), is(LONG_LOCATION_URI));
@@ -457,8 +457,8 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(workspace);
 		// Write out the project description file
-		ensureDoesNotExistInFileSystem(multiLocation.toFile());
-		ensureDoesNotExistInFileSystem(singleLocation.toFile());
+		removeFromFileSystem(multiLocation.toFile());
+		removeFromFileSystem(singleLocation.toFile());
 		try (FileOutputStream output = new FileOutputStream(multiLocation.toFile())) {
 			getContents(multiLineProjectDescription).transferTo(output);
 		}
@@ -681,7 +681,7 @@ public class ModelObjectReaderWriterTest extends ResourceTest {
 
 		ProjectDescriptionReader reader = new ProjectDescriptionReader(getWorkspace());
 		// Write out the project description file
-		ensureDoesNotExistInFileSystem(location.toFile());
+		removeFromFileSystem(location.toFile());
 		try (FileOutputStream output = new FileOutputStream(location.toFile())) {
 			getContents(projectDescription).transferTo(output);
 		}

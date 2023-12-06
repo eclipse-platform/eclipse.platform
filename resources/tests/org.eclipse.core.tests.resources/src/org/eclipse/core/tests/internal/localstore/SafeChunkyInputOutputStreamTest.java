@@ -69,7 +69,7 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 				// ignore
 			}
 		}
-		ensureDoesNotExistInFileSystem(temp.getParentFile());
+		removeFromFileSystem(temp.getParentFile());
 		super.tearDown();
 	}
 

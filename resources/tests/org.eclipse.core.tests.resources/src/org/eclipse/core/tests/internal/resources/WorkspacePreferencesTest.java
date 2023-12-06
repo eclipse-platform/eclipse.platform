@@ -208,8 +208,8 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 			// ensures preferences exported match the imported ones
 			assertEquals("5.1", modified, workspace.getDescription());
 		} finally {
-			ensureDoesNotExistInFileSystem(originalPreferencesFile.removeLastSegments(1).toFile());
-			ensureDoesNotExistInFileSystem(modifiedPreferencesFile.removeLastSegments(1).toFile());
+			removeFromFileSystem(originalPreferencesFile.removeLastSegments(1).toFile());
+			removeFromFileSystem(modifiedPreferencesFile.removeLastSegments(1).toFile());
 		}
 
 		setDefaultWorkspaceDescription();

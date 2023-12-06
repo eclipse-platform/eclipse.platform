@@ -942,7 +942,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		};
 		workspace.addResourceChangeListener(listener);
 		workspace.getSynchronizer().add(partner);
-		ensureDoesNotExistInWorkspace(phantomResources);
+		removeFromWorkspace(phantomResources);
 		try {
 			//create a phantom folder
 			workspace.run((IWorkspaceRunnable) monitor -> workspace.getSynchronizer().setSyncInfo(partner, phantomFolder, new byte[] {1}), createTestMonitor());

@@ -303,7 +303,7 @@ public class DeleteTest extends LocalStoreTest {
 
 		/* make some resources "unsync" with the workspace */
 		ensureOutOfSync(fileUnsync);
-		ensureDoesNotExistInFileSystem(deletedfolderSync);
+		removeFromFileSystem(deletedfolderSync);
 		ensureOutOfSync(subsubfileUnsync);
 
 		/* delete */
@@ -349,7 +349,7 @@ public class DeleteTest extends LocalStoreTest {
 
 		/* make some resources "unsync" with the workspace */
 		ensureOutOfSync(fileUnsync);
-		ensureDoesNotExistInFileSystem(deletedfolderSync);
+		removeFromFileSystem(deletedfolderSync);
 		ensureOutOfSync(subsubfileUnsync);
 
 		/* delete */

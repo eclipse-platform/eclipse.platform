@@ -88,7 +88,7 @@ public class NLTest extends ResourceTest {
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertExistsInFileSystem(resources);
 		assertExistsInWorkspace(resources);
-		ensureDoesNotExistInWorkspace(resources);
+		removeFromWorkspace(resources);
 
 		files = getFileNames(Locale.getDefault().getLanguage());
 		resources = buildResources(project, files);

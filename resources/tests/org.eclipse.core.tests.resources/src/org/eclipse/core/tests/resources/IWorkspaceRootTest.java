@@ -331,7 +331,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	public void testBug234343_folderInHiddenProject() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject hiddenProject = root.getProject(createUniqueString());
-		ensureDoesNotExistInWorkspace(hiddenProject);
+		removeFromWorkspace(hiddenProject);
 		hiddenProject.create(null, IResource.HIDDEN, createTestMonitor());
 		hiddenProject.open(createTestMonitor());
 
@@ -349,7 +349,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	public void testBug234343_fileInHiddenProject() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject hiddenProject = root.getProject(createUniqueString());
-		ensureDoesNotExistInWorkspace(hiddenProject);
+		removeFromWorkspace(hiddenProject);
 		hiddenProject.create(null, IResource.HIDDEN, createTestMonitor());
 		hiddenProject.open(createTestMonitor());
 
@@ -421,7 +421,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	public void checkFindMethods(int updateFlags, int[][] results) throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(createUniqueString());
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 
 		project.create(null, IResource.NONE, createTestMonitor());
 		project.open(createTestMonitor());

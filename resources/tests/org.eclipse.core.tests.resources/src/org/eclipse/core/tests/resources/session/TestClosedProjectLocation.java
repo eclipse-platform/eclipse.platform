@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.harness.FileSystemHelper.clear;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
@@ -62,7 +63,7 @@ public class TestClosedProjectLocation extends WorkspaceSerializationTest {
 			assertTrue("1.2", !file.exists());
 			assertEquals("1.3", location, project.getLocation());
 		} finally {
-			ensureDoesNotExistInFileSystem(location.toFile());
+			clear(location.toFile());
 		}
 	}
 

@@ -346,7 +346,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		IFile herringRouge = project.getFile(name);
 
 		// create a file in the local file system with the same name but different casing
-		ensureDoesNotExistInFileSystem(file);
+		removeFromFileSystem(file);
 		createInFileSystem(herringRouge);
 
 		// do a refresh, which should cause a problem
@@ -369,7 +369,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		IFile herringRouge = project.getFile(name);
 
 		// create a file in the local file system with the same name but different casing
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromFileSystem(folder);
 		createInFileSystem(herringRouge);
 
 		// do a refresh, which should cause a problem

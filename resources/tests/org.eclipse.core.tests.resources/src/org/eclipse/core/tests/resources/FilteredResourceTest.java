@@ -75,7 +75,7 @@ public class FilteredResourceTest extends ResourceTest {
 	protected void doCleanup() throws Exception {
 		createInWorkspace(new IResource[] {existingProject, otherExistingProject, closedProject, existingFolderInExistingProject, existingFolderInExistingFolder, existingFileInExistingProject});
 		closedProject.close(createTestMonitor());
-		ensureDoesNotExistInWorkspace(new IResource[] {nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolder2InOtherExistingProject, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder});
+		removeFromWorkspace(new IResource[] {nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolder2InOtherExistingProject, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder});
 		resolve(localFolder).toFile().mkdirs();
 		createFileInFileSystem(resolve(localFile));
 	}

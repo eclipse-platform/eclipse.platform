@@ -76,7 +76,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		//copy to local destination should succeed
 		sourceFile.copy(localFile.getFullPath(), IResource.NONE, createTestMonitor());
 		//copy from local to non local
-		ensureDoesNotExistInWorkspace(destinationFile);
+		removeFromWorkspace(destinationFile);
 		//copy from local to non local
 		localFile.copy(destinationFile.getFullPath(), IResource.NONE, createTestMonitor());
 

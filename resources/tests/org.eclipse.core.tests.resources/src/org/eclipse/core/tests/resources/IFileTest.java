@@ -215,7 +215,7 @@ public class IFileTest extends ResourceTest {
 	 */
 	public void refreshFile(IFile file) throws CoreException, IOException {
 		if (file.getName().equals(LOCAL_ONLY)) {
-			ensureDoesNotExistInWorkspace(file);
+			removeFromWorkspace(file);
 			//project must exist to access file system store.
 			if (file.getProject().exists()) {
 				createInFileSystem(file);
@@ -224,14 +224,14 @@ public class IFileTest extends ResourceTest {
 		}
 		if (file.getName().equals(WORKSPACE_ONLY)) {
 			createInWorkspace(file);
-			ensureDoesNotExistInFileSystem(file);
+			removeFromFileSystem(file);
 			return;
 		}
 		if (file.getName().equals(DOES_NOT_EXIST)) {
-			ensureDoesNotExistInWorkspace(file);
+			removeFromWorkspace(file);
 			//project must exist to access file system store.
 			if (file.getProject().exists()) {
-				ensureDoesNotExistInFileSystem(file);
+				removeFromFileSystem(file);
 			}
 			return;
 		}
@@ -281,7 +281,7 @@ public class IFileTest extends ResourceTest {
 	@Test
 	public void testAppendContents2() throws Exception {
 		IFile file = projects[0].getFile("file1");
-		ensureDoesNotExistInWorkspace(file);
+		removeFromWorkspace(file);
 
 		// If force=true, IFile is non-local, file exists in local file system:
 		// make IFile local, append contents (the thinking being that this file,
@@ -303,7 +303,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("1.5", file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("1.6", file.getLocation().toFile().exists());
 		// cleanup
-		ensureDoesNotExistInWorkspace(file);
+		removeFromWorkspace(file);
 
 		// If force=true, IFile is non-local, file does not exist in local file system:
 		// fail - file not local (this file is not local for real - cannot append
@@ -320,7 +320,7 @@ public class IFileTest extends ResourceTest {
 		monitor.sanityCheck();
 		assertTrue("2.4", !file.isLocal(IResource.DEPTH_ZERO));
 		// cleanup
-		ensureDoesNotExistInWorkspace(file);
+		removeFromWorkspace(file);
 
 		// If force=false, IFile is non-local, file exists in local file system:
 		// fail - file not local
@@ -338,7 +338,7 @@ public class IFileTest extends ResourceTest {
 		monitor.assertUsedUp();
 		assertTrue("3.5", !file.isLocal(IResource.DEPTH_ZERO));
 		// cleanup
-		ensureDoesNotExistInWorkspace(file);
+		removeFromWorkspace(file);
 
 		// If force=false, IFile is non-local, file does not exist in local file system:
 		// fail - file not local
@@ -354,7 +354,7 @@ public class IFileTest extends ResourceTest {
 		monitor.sanityCheck();
 		assertTrue("4.4", !file.isLocal(IResource.DEPTH_ZERO));
 		// cleanup
-		ensureDoesNotExistInWorkspace(file);
+		removeFromWorkspace(file);
 	}
 
 	/**
@@ -426,7 +426,7 @@ public class IFileTest extends ResourceTest {
 	public void testCreateDerived() throws CoreException {
 		IFile derived = projects[0].getFile("derived.txt");
 		createInWorkspace(projects[0]);
-		ensureDoesNotExistInWorkspace(derived);
+		removeFromWorkspace(derived);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		derived.create(getRandomContents(), IResource.DERIVED, monitor);
@@ -465,7 +465,7 @@ public class IFileTest extends ResourceTest {
 	public void testCreateDerivedTeamPrivate() throws CoreException {
 		IFile teamPrivate = projects[0].getFile("teamPrivateDerived.txt");
 		createInWorkspace(projects[0]);
-		ensureDoesNotExistInWorkspace(teamPrivate);
+		removeFromWorkspace(teamPrivate);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		teamPrivate.create(getRandomContents(), IResource.TEAM_PRIVATE | IResource.DERIVED, monitor);
@@ -488,7 +488,7 @@ public class IFileTest extends ResourceTest {
 	public void testCreateTeamPrivate() throws CoreException {
 		IFile teamPrivate = projects[0].getFile("teamPrivate.txt");
 		createInWorkspace(projects[0]);
-		ensureDoesNotExistInWorkspace(teamPrivate);
+		removeFromWorkspace(teamPrivate);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		teamPrivate.create(getRandomContents(), IResource.TEAM_PRIVATE, monitor);
@@ -565,8 +565,8 @@ public class IFileTest extends ResourceTest {
 
 		//create from stream that throws exceptions
 		IFile fileFromStream = projects[0].getFile("file2");
-		ensureDoesNotExistInWorkspace(fileFromStream);
-		ensureDoesNotExistInFileSystem(fileFromStream);
+		removeFromWorkspace(fileFromStream);
+		removeFromFileSystem(fileFromStream);
 
 		InputStream content = new InputStream() {
 			@Override
@@ -606,8 +606,8 @@ public class IFileTest extends ResourceTest {
 	public void testFileCreation_Bug107188() throws CoreException {
 		//create from stream that is canceled
 		IFile target = projects[0].getFile("file1");
-		ensureDoesNotExistInWorkspace(target);
-		ensureDoesNotExistInFileSystem(target);
+		removeFromWorkspace(target);
+		removeFromFileSystem(target);
 
 		InputStream content = new InputStream() {
 			@Override
@@ -938,7 +938,7 @@ public class IFileTest extends ResourceTest {
 		String value = "this is a test property value";
 		QualifiedName name = new QualifiedName("itp-test", "testProperty");
 		// getting/setting persistent properties on non-existent resources should throw an exception
-		ensureDoesNotExistInWorkspace(target);
+		removeFromWorkspace(target);
 		assertThrows(CoreException.class, () -> target.getPersistentProperty(name));
 		assertThrows(CoreException.class, () -> target.setPersistentProperty(name, value));
 
