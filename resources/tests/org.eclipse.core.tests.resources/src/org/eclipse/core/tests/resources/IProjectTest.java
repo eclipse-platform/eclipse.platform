@@ -846,7 +846,7 @@ public class IProjectTest extends ResourceTest {
 	 * 	- content area is the DEFAULT
 	 * 	- resources are OUT_OF_SYNC with the file system
 	 */
-	public void testProjectDeletionClosedDefaultOutOfSync() throws CoreException {
+	public void testProjectDeletionClosedDefaultOutOfSync() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("myfile.txt");
 		IFile otherFile = project.getFile("myotherfile.txt");
@@ -1214,7 +1214,7 @@ public class IProjectTest extends ResourceTest {
 	 * 	- content area is USER-DEFINED
 	 * 	- resources are OUT_OF_SYNC with the file system
 	 */
-	public void testProjectDeletionClosedUserDefinedOutOfSync() throws CoreException {
+	public void testProjectDeletionClosedUserDefinedOutOfSync() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("myfile.txt");
 		IFile otherFile = project.getFile("myotherfile.txt");
@@ -1229,7 +1229,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file);
-		ensureExistsInFileSystem(otherFile);
+		createInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
 		assertTrue("1.0", project.exists());
@@ -1260,7 +1260,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file);
-		ensureExistsInFileSystem(otherFile);
+		createInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
 		assertTrue("2.0", project.exists());
@@ -1289,7 +1289,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file);
-		ensureExistsInFileSystem(otherFile);
+		createInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
 		assertTrue("3.0", project.exists());
@@ -1317,7 +1317,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file);
-		ensureExistsInFileSystem(otherFile);
+		createInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
 		assertTrue("4.0", project.exists());
@@ -1345,7 +1345,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(new IResource[] {project, file});
-		ensureExistsInFileSystem(otherFile);
+		createInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
 		assertTrue("5.0", project.exists());
@@ -1374,7 +1374,7 @@ public class IProjectTest extends ResourceTest {
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file);
 		waitForRefresh();
-		ensureExistsInFileSystem(otherFile);
+		createInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
 		assertTrue("6.0", project.exists());
@@ -1519,7 +1519,7 @@ public class IProjectTest extends ResourceTest {
 	 * 	- content area is the DEFAULT
 	 * 	- resources are OUT_OF_SYNC with the file system
 	 */
-	public void testProjectDeletionOpenDefaultOutOfSync() throws CoreException {
+	public void testProjectDeletionOpenDefaultOutOfSync() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("myfile.txt");
 		IFileStore projectStore, fileStore;
@@ -1529,7 +1529,7 @@ public class IProjectTest extends ResourceTest {
 		 * Delete content = ALWAYS
 		 * =======================================================================*/
 		ensureExistsInWorkspace(project);
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		assertTrue("1.0", project.exists());
@@ -1549,7 +1549,7 @@ public class IProjectTest extends ResourceTest {
 		 * Delete content = ALWAYS (always_delete_content over-rides FORCE flag)
 		 * =======================================================================*/
 		ensureExistsInWorkspace(project);
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		assertTrue("2.0", project.exists());
@@ -1567,7 +1567,7 @@ public class IProjectTest extends ResourceTest {
 		 * Delete content = NEVER
 		 * =======================================================================*/
 		ensureExistsInWorkspace(project);
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		assertTrue("3.0", project.exists());
@@ -1587,7 +1587,7 @@ public class IProjectTest extends ResourceTest {
 		 * Delete content = NEVER
 		 * =======================================================================*/
 		ensureExistsInWorkspace(project);
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		assertTrue("4.0", project.exists());
@@ -1607,7 +1607,7 @@ public class IProjectTest extends ResourceTest {
 		 * Delete content = DEFAULT
 		 * =======================================================================*/
 		ensureExistsInWorkspace(project);
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		assertTrue("5.0", project.exists());
@@ -1626,7 +1626,7 @@ public class IProjectTest extends ResourceTest {
 		 * =======================================================================*/
 		ensureExistsInWorkspace(project);
 		waitForRefresh();
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		projectStore = ((Resource) project).getStore();
 		fileStore = ((Resource) file).getStore();
 		assertTrue("6.0", project.exists());
@@ -1782,7 +1782,7 @@ public class IProjectTest extends ResourceTest {
 	 * 	- content area is USER-DEFINED
 	 * 	- resources are OUT_OF_SYNC with the file system
 	 */
-	public void testProjectDeletionOpenUserDefinedOutOfSync() throws CoreException {
+	public void testProjectDeletionOpenUserDefinedOutOfSync() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("testProjectDeletionOpenUserDefinedOutOfSync");
 		IFile file = project.getFile("myfile.txt");
 		IFile otherFile = project.getFile("myotherfile.txt");
@@ -1797,7 +1797,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file);
-		ensureExistsInFileSystem(otherFile);
+		createInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
 		assertTrue("1.0", project.exists());
@@ -1825,7 +1825,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file);
-		ensureExistsInFileSystem(otherFile);
+		createInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
 		assertTrue("2.0", project.exists());
@@ -1851,7 +1851,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file);
-		ensureExistsInFileSystem(otherFile);
+		createInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
 		assertTrue("3.0", project.exists());
@@ -1877,7 +1877,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file);
-		ensureExistsInFileSystem(otherFile);
+		createInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
 		assertTrue("4.0", project.exists());
@@ -1901,7 +1901,7 @@ public class IProjectTest extends ResourceTest {
 		description.setLocationURI(projectStore.toURI());
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(new IResource[] {project, file});
-		ensureExistsInFileSystem(otherFile);
+		createInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
 		assertTrue("5.0", project.exists());
@@ -1927,7 +1927,7 @@ public class IProjectTest extends ResourceTest {
 		ensureExistsInWorkspace(project, description);
 		ensureExistsInWorkspace(file);
 		waitForRefresh();
-		ensureExistsInFileSystem(otherFile);
+		createInFileSystem(otherFile);
 		fileStore = ((Resource) file).getStore();
 		otherFileStore = ((Resource) otherFile).getStore();
 		assertTrue("6.0", project.exists());
@@ -2349,7 +2349,7 @@ public class IProjectTest extends ResourceTest {
 	 * Tests {@link IResource#move(IProjectDescription, int, IProgressMonitor)}
 	 * in conjunction with {@link IResource#REPLACE}.
 	 */
-	public void testReplaceLocation() throws CoreException {
+	public void testReplaceLocation() throws Exception {
 		IProject target = getWorkspace().getRoot().getProject("testReplaceLocation");
 		ensureExistsInWorkspace(target);
 

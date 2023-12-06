@@ -451,7 +451,7 @@ public class CharsetTest extends ResourceTest {
 		assertTrue(file.getLocation().toFile().delete());
 		file.getCharset(true);
 
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		ensureOutOfSync(file);
 		//getCharset uses a cached value, so it will still pass
 		file.getCharset(true);

@@ -526,7 +526,7 @@ public class FileStoreTest extends LocalStoreTest {
 	}
 
 	@Test
-	public void testReadOnly() throws CoreException {
+	public void testReadOnly() throws Exception {
 		testAttribute(EFS.ATTRIBUTE_READ_ONLY);
 	}
 
@@ -557,7 +557,7 @@ public class FileStoreTest extends LocalStoreTest {
 	}
 
 	@Test
-	public void testPermissions() throws CoreException {
+	public void testPermissions() throws Exception {
 		testAttribute(EFS.ATTRIBUTE_OWNER_READ);
 		testAttribute(EFS.ATTRIBUTE_OWNER_WRITE);
 		testAttribute(EFS.ATTRIBUTE_OWNER_EXECUTE);
@@ -569,7 +569,7 @@ public class FileStoreTest extends LocalStoreTest {
 		testAttribute(EFS.ATTRIBUTE_OTHER_EXECUTE);
 	}
 
-	private void testAttribute(int attribute) throws CoreException {
+	private void testAttribute(int attribute) throws Exception {
 		Assume.assumeTrue(isAttributeSupported(attribute));
 
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());

@@ -333,7 +333,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		assertTrue(herringRouge.exists());
 	}
 
-	public void testRefreshLocalFile1() throws CoreException {
+	public void testRefreshLocalFile1() throws Exception {
 		String name = "test31415";
 		IProject project = getWorkspace().getRoot().getProjects()[0];
 
@@ -347,7 +347,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		// create a file in the local file system with the same name but different casing
 		ensureDoesNotExistInFileSystem(file);
-		ensureExistsInFileSystem(herringRouge);
+		createInFileSystem(herringRouge);
 
 		// do a refresh, which should cause a problem
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -356,7 +356,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		assertTrue(herringRouge.exists());
 	}
 
-	public void testRefreshLocalFolder2() throws CoreException {
+	public void testRefreshLocalFolder2() throws Exception {
 		String name = "test31415";
 		IProject project = getWorkspace().getRoot().getProjects()[0];
 
@@ -370,7 +370,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		// create a file in the local file system with the same name but different casing
 		ensureDoesNotExistInFileSystem(folder);
-		ensureExistsInFileSystem(herringRouge);
+		createInFileSystem(herringRouge);
 
 		// do a refresh, which should cause a problem
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);

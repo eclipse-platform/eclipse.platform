@@ -42,9 +42,9 @@ public class CopyTest extends LocalStoreTest {
 		IFolder folder = testProjects[0].getFolder("folder");
 		IFile file = folder.getFile("file.txt");
 		ensureExistsInWorkspace(folder);
-		ensureExistsInFileSystem(folder);
+		createInFileSystem(folder);
 		ensureExistsInWorkspace(file);
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		/* add some properties to file (server, local and session) */
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];
 		String[] propValues = new String[numberOfProperties];
@@ -93,9 +93,9 @@ public class CopyTest extends LocalStoreTest {
 		/* test flag force = false */
 		testProjects[0].refreshLocal(IResource.DEPTH_INFINITE, null);
 		IFolder subfolder = folder.getFolder("subfolder");
-		ensureExistsInFileSystem(subfolder);
+		createInFileSystem(subfolder);
 		IFile anotherFile = folder.getFile("new file");
-		ensureExistsInFileSystem(anotherFile);
+		createInFileSystem(anotherFile);
 		IFolder destinationFolder = testProjects[0].getFolder("destination");
 		CoreException exception = assertThrows(CoreException.class,
 				() -> folder.copy(destinationFolder.getFullPath(), false, null));

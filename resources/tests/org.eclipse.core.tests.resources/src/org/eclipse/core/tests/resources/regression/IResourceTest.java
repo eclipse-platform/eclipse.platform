@@ -19,6 +19,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
 import static org.junit.Assert.assertThrows;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicReference;
@@ -316,13 +317,13 @@ public class IResourceTest extends ResourceTest {
 	 * Ensure that creating a file with force==true doesn't throw
 	 * a CoreException if the resource already exists on disk.
 	 */
-	public void testCreate_1GD7CSU() throws CoreException {
+	public void testCreate_1GD7CSU() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		project.create(null);
 		project.open(null);
 
 		IFile file = project.getFile("MyFile");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 
 		file.create(getRandomContents(), true, createTestMonitor());
 	}
@@ -443,7 +444,9 @@ public class IResourceTest extends ResourceTest {
 
 		final String newContents = "some other contents";
 		Thread.sleep(5000);
-		createFileInFileSystem(target.getLocation(), getContents(newContents));
+		try (FileOutputStream output = new FileOutputStream(target.getLocation().toFile())) {
+			getContents(newContents).transferTo(output);
+		}
 
 		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(() -> {
 		});

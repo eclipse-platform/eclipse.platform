@@ -21,7 +21,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSuppo
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -29,7 +28,7 @@ import org.eclipse.core.tests.resources.ResourceTest;
  * Test for bug 329836
  */
 public class Bug_329836 extends ResourceTest {
-	public void testBug() throws CoreException {
+	public void testBug() throws Exception {
 		if (!Platform.getOS().equals(Platform.OS_MACOSX)) {
 			return;
 		}

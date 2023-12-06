@@ -207,20 +207,20 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 	}
 
 	@Test
-	public void testSynchronizeProject() throws CoreException {
+	public void testSynchronizeProject() throws Exception {
 		/* test DEPTH parameter */
 		/* DEPTH_ZERO */
 		IFile file = projects[0].getFile("file");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		projects[0].refreshLocal(IResource.DEPTH_ZERO, null);
 		assertFalse(file.exists());
 		/* DEPTH_ONE */
 		IFolder folder = projects[0].getFolder("folder");
 		IFolder subfolder = folder.getFolder("subfolder");
 		IFile subfile = folder.getFile("subfile");
-		ensureExistsInFileSystem(folder);
-		ensureExistsInFileSystem(subfolder);
-		ensureExistsInFileSystem(subfile);
+		createInFileSystem(folder);
+		createInFileSystem(subfolder);
+		createInFileSystem(subfile);
 		projects[0].refreshLocal(IResource.DEPTH_ONE, null);
 		assertTrue(file.exists());
 		assertTrue(folder.exists());
@@ -236,7 +236,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		/* closed project */
 		file = projects[0].getFile("closed");
 		projects[0].close(null);
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		projects[0].open(null);
 		assertFalse(file.exists());
 		projects[0].refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -338,7 +338,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 	}
 
 	@Test
-	public void testWriteFolder() throws CoreException {
+	public void testWriteFolder() throws Exception {
 		/* initialize common objects */
 		IProject project = projects[0];
 		IFolder folder = project.getFolder("testWriteFolder");
@@ -347,7 +347,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		/* existing file on destination */
 		ensureDoesNotExistInFileSystem(folder);
 		IFile file = project.getFile("testWriteFolder");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		/* force = true */
 		assertThrows(CoreException.class, () -> write(folder, true, null));
 		/* force = false */
@@ -355,7 +355,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		ensureDoesNotExistInFileSystem(file);
 
 		/* existing folder on destination */
-		ensureExistsInFileSystem(folder);
+		createInFileSystem(folder);
 		/* force = true */
 		write(folder, true, null);
 		assertTrue(folder.getLocation().toFile().isDirectory());

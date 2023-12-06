@@ -49,7 +49,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	 * Tests findFilesForLocation when non-canonical paths are used (bug 155101).
 	 */
 	@Test
-	public void testFindFilesNonCanonicalPath() throws CoreException {
+	public void testFindFilesNonCanonicalPath() throws Exception {
 		// this test is for windows only
 		Assume.assumeTrue(OS.isWindows());
 

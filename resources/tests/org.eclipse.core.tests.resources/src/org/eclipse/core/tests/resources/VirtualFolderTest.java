@@ -136,7 +136,7 @@ public class VirtualFolderTest extends ResourceTest {
 		file.delete(IResource.NONE, createTestMonitor());
 	}
 
-	public void testCopyProjectWithVirtualFolder() throws CoreException {
+	public void testCopyProjectWithVirtualFolder() throws Exception {
 		IPath fileLocation = getRandomLocation();
 		deleteOnTearDown(fileLocation);
 		IPath folderLocation = getRandomLocation();
@@ -145,7 +145,7 @@ public class VirtualFolderTest extends ResourceTest {
 		IFile linkedFile = existingVirtualFolderInExistingProject.getFile(createUniqueString());
 		IFolder linkedFolder = existingVirtualFolderInExistingProject.getFolder(createUniqueString());
 
-		createFileInFileSystem(fileLocation, getRandomContents());
+		createFileInFileSystem(fileLocation);
 		folderLocation.toFile().mkdir();
 
 		linkedFolder.createLink(folderLocation, IResource.NONE, createTestMonitor());
@@ -179,7 +179,7 @@ public class VirtualFolderTest extends ResourceTest {
 		destinationProject.delete(IResource.NONE, createTestMonitor());
 	}
 
-	public void testMoveProjectWithVirtualFolder() throws CoreException {
+	public void testMoveProjectWithVirtualFolder() throws Exception {
 		IPath fileLocation = getRandomLocation();
 		deleteOnTearDown(fileLocation);
 		IPath folderLocation = getRandomLocation();

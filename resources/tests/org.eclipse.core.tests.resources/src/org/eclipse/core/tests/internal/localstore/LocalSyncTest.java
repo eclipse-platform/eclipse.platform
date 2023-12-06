@@ -127,8 +127,8 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 
 		file = project.getFolder(IPath.fromOSString("file"));
 		folder = project.getFile(IPath.fromOSString("folder"));
-		ensureExistsInFileSystem(file);
-		ensureExistsInFileSystem((IFile) folder);
+		createInFileSystem(file);
+		createInFileSystem((IFile) folder);
 
 		// run synchronize
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);

@@ -15,15 +15,14 @@ package org.eclipse.core.tests.resources.perf;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.OldCorePerformanceTest;
 
 public class BenchCopyFile extends OldCorePerformanceTest {
 	private static final int COUNT = 5000;
 
-	public void testCopyFile() throws CoreException {
+	public void testCopyFile() throws Exception {
 		IFileStore input = getTempStore();
-		createFileInFileSystem(input, getRandomContents());
+		createFileInFileSystem(input);
 		IFileStore[] output = new IFileStore[COUNT];
 		for (int i = 0; i < output.length; i++) {
 			output[i] = getTempStore();

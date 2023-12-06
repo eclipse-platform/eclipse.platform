@@ -41,7 +41,7 @@ public class LocalStoreRegressionTests extends LocalStoreTest {
 
 		/* */
 		IFile file = project.getFile("file");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		assertTrue("1.0", !file.exists());
 		file.refreshLocal(IResource.DEPTH_ZERO, null);
 		assertTrue("1.1", file.exists());
@@ -53,8 +53,8 @@ public class LocalStoreRegressionTests extends LocalStoreTest {
 	public void test_1FU4TW7() throws Throwable {
 		IFolder folder = projects[0].getFolder("folder");
 		IFile file = folder.getFile("file");
-		ensureExistsInFileSystem(folder);
-		ensureExistsInFileSystem(file);
+		createInFileSystem(folder);
+		createInFileSystem(file);
 		file.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertTrue("1.1", folder.exists());
 		assertTrue("1.2", file.exists());

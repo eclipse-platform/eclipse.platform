@@ -121,9 +121,9 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		IFolder folder = project.getFolder("Folder");
 		IFile file = folder.getFile("File");
 
-		ensureExistsInFileSystem(folder);
+		createInFileSystem(folder);
 		ensureDoesNotExistInWorkspace(folder);
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		ensureDoesNotExistInWorkspace(file);
 
 		assertFalse(file.exists());
@@ -137,9 +137,9 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		//try again with deleted project
 		project.delete(IResource.FORCE, createTestMonitor());
 
-		ensureExistsInFileSystem(folder);
+		createInFileSystem(folder);
 		ensureDoesNotExistInWorkspace(folder);
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		ensureDoesNotExistInWorkspace(file);
 
 		assertFalse(file.exists());
@@ -179,7 +179,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		ensureDoesNotExistInFileSystem(folder);
 		//
 		IFile file = project.getFile("folder");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		//
 		assertTrue(folder.exists());
 		folder.refreshLocal(IResource.DEPTH_ZERO, null);
@@ -219,7 +219,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 
 		/* test creation of a child */
 		file = project.getFile("file");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		assertFalse(file.exists());
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertTrue(file.exists());
@@ -230,7 +230,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		IFolder folder = project.getFolder("folder");
 		folder.create(true, true, null);
 		file = folder.getFile("file");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		assertTrue(folder.exists());
 		assertTrue(folder.isLocal(IResource.DEPTH_ZERO));
 		assertFalse(file.exists());

@@ -228,50 +228,42 @@ public abstract class ResourceTest extends CoreTest {
 	}
 
 	/**
-	 * Create the given file in the local store.
+	 * Create the given file and its parents in the local store with random
+	 * contents.
 	 */
-	public void createFileInFileSystem(IFileStore file) throws CoreException {
-		createFileInFileSystem(file, getRandomContents());
-	}
-
-	/**
-	 * Create the given file in the local store.
-	 */
-	public void createFileInFileSystem(IFileStore file, InputStream contents) throws CoreException {
+	public void createFileInFileSystem(IFileStore file) throws CoreException, IOException {
 		file.getParent().mkdir(EFS.NONE, null);
-		try (contents; OutputStream output = file.openOutputStream(EFS.NONE, null)) {
-			contents.transferTo(output);
-		} catch (IOException e) {
-			throw new CoreException(
-					new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed creating file in file system", e));
+		try (InputStream input = getRandomContents(); OutputStream output = file.openOutputStream(EFS.NONE, null)) {
+			input.transferTo(output);
 		}
 	}
 
 	/**
-	 * Create the given file in the file system.
+	 * Create the given file and its parents in the file system with random
+	 * contents.
 	 */
-	public void createFileInFileSystem(IPath path) throws CoreException {
-		createFileInFileSystem(path, getRandomContents());
-	}
-
-	/**
-	 * Create the given file in the file system.
-	 */
-	public void createFileInFileSystem(IPath path, InputStream contents) throws CoreException {
-		try {
-			path.toFile().getParentFile().mkdirs();
-			try (contents; FileOutputStream output = new FileOutputStream(path.toFile())) {
-				contents.transferTo(output);
-			}
-		} catch (IOException e) {
-			throw new CoreException(
-					new Status(IStatus.ERROR, PI_RESOURCES_TESTS, "failed creating file in file system", e));
+	public void createFileInFileSystem(IPath path) throws CoreException, IOException {
+		path.toFile().getParentFile().mkdirs();
+		try (InputStream input = getRandomContents(); OutputStream output = new FileOutputStream(path.toFile())) {
+			input.transferTo(output);
 		}
 	}
 
 	/**
-	 * Delete the given resource from the local store. Use the resource
-	 * manager to ensure that we have a correct Path -&gt; File mapping.
+	 * Create the given file or folder in the local store. Use the resource manager
+	 * to ensure that we have a correct Path -&gt; File mapping.
+	 */
+	public void createInFileSystem(IResource resource) throws CoreException, IOException {
+		if (resource instanceof IFile file) {
+			createFileInFileSystem(((Resource) file).getStore());
+		} else {
+			((Resource) resource).getStore().mkdir(EFS.NONE, null);
+		}
+	}
+
+	/**
+	 * Delete the given resource from the local store. Use the resource manager to
+	 * ensure that we have a correct Path -&gt; File mapping.
 	 */
 	public void ensureDoesNotExistInFileSystem(IResource resource) {
 		IPath path = resource.getLocation();
@@ -300,18 +292,6 @@ public abstract class ResourceTest extends CoreTest {
 			}
 		};
 		getWorkspace().run(body, null);
-	}
-
-	/**
-	 * Create the given file or folder in the local store. Use the resource manager
-	 * to ensure that we have a correct Path -&gt; File mapping.
-	 */
-	public void ensureExistsInFileSystem(IResource resource) throws CoreException {
-		if (resource instanceof IFile file) {
-			createFileInFileSystem(((Resource) file).getStore());
-		} else {
-			((Resource) resource).getStore().mkdir(EFS.NONE, null);
-		}
 	}
 
 	/**
@@ -422,11 +402,7 @@ public abstract class ResourceTest extends CoreTest {
 	 * the cached value in the Workspace.
 	 */
 	public void touchInFilesystem(IResource resource) throws CoreException {
-		// Ensure the resource exists in the filesystem
 		IPath location = resource.getLocation();
-		if (!location.toFile().exists()) {
-			ensureExistsInFileSystem(resource);
-		}
 		// Manually check that the core.resource time-stamp is out-of-sync
 		// with the java.io.File last modified. #isSynchronized() will schedule
 		// out-of-sync resources for refresh, so we don't use that here.

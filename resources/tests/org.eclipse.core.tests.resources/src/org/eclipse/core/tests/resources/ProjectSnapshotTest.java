@@ -60,16 +60,16 @@ public class ProjectSnapshotTest extends ResourceTest {
 		ensureExistsInWorkspace(projects);
 	}
 
-	private void populateProject(IProject project) throws CoreException {
+	private void populateProject(IProject project) throws Exception {
 		// add files and folders to project
 		IFile file = project.getFile("file");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		IFolder folder = project.getFolder("folder");
 		IFolder subfolder = folder.getFolder("subfolder");
 		IFile subfile = folder.getFile("subfile");
-		ensureExistsInFileSystem(folder);
-		ensureExistsInFileSystem(subfolder);
-		ensureExistsInFileSystem(subfile);
+		createInFileSystem(folder);
+		createInFileSystem(subfolder);
+		createInFileSystem(subfile);
 	}
 
 	private URI getSnapshotLocation(IProject project) {
@@ -224,7 +224,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 		// add two more files to probably provoke a tree delta chain
 		// In SaveManager.writeTree() line 1885, treesToSave.length must be 1
 		IFile file2 = project.getFile("file2");
-		ensureExistsInFileSystem(file2);
+		createInFileSystem(file2);
 		project.getFile("file3");
 		// save project refresh snapshot outside the project
 		URI snapshotLocation = getSnapshotLocation(projects[1]);
@@ -255,7 +255,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 		IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
 		((ProjectDescription) description).setSnapshotLocationURI(URI.create("./relative/uri.zip"));
 		project.create(description, null);
-		ensureExistsInFileSystem(project.getFolder("foo"));
+		createInFileSystem(project.getFolder("foo"));
 		assertFalse("1.0", project.getFolder("foo").exists());
 		// expect to see warning logged, but project open successfully and refresh
 		project.open(null);
@@ -271,7 +271,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 		// create project with non-existing snapshot autoload location
 		((ProjectDescription) description).setSnapshotLocationURI(getTempStore().toURI());
 		project.create(description, null);
-		ensureExistsInFileSystem(project.getFile("foo"));
+		createInFileSystem(project.getFile("foo"));
 		assertFalse("1.0", project.getFile("foo").exists());
 		project.open(null);
 		// expect warning logged but project open and refreshed

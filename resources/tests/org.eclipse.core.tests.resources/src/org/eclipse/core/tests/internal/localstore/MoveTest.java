@@ -434,9 +434,9 @@ public class MoveTest extends LocalStoreTest {
 		/* test flag force = false */
 		testProjects[0].refreshLocal(IResource.DEPTH_INFINITE, null);
 		IFolder subfolder = folder.getFolder("aaa");
-		ensureExistsInFileSystem(subfolder);
+		createInFileSystem(subfolder);
 		IFile anotherFile = folder.getFile("bbb");
-		ensureExistsInFileSystem(anotherFile);
+		createInFileSystem(anotherFile);
 		IFolder folderDestination = testProjects[0].getFolder("destination");
 		assertThrows(CoreException.class, () -> folder.move(folderDestination.getFullPath(), false, null));
 		assertThrows(CoreException.class, () -> folder.move(folderDestination.getFullPath(), false, null));

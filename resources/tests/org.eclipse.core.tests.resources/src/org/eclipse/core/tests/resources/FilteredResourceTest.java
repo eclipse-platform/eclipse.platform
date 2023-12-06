@@ -77,7 +77,7 @@ public class FilteredResourceTest extends ResourceTest {
 		closedProject.close(createTestMonitor());
 		ensureDoesNotExistInWorkspace(new IResource[] {nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolder2InOtherExistingProject, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder});
 		resolve(localFolder).toFile().mkdirs();
-		createFileInFileSystem(resolve(localFile), getRandomContents());
+		createFileInFileSystem(resolve(localFile));
 	}
 
 	/**

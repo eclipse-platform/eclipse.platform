@@ -54,7 +54,7 @@ public class Bug_233939 extends ResourceTest {
 		return loc1.equals(loc2);
 	}
 
-	public void testBug() throws CoreException {
+	public void testBug() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
 		if (!canCreateSymLinks()) {
 			return;
@@ -87,7 +87,7 @@ public class Bug_233939 extends ResourceTest {
 		//		assertEquals("6.1", file, files[0]);
 	}
 
-	public void testMultipleLinksToFolder() throws CoreException {
+	public void testMultipleLinksToFolder() throws Exception {
 		// Only activate this test if testing of symbolic links is possible.
 		if (!canCreateSymLinks()) {
 			return;
