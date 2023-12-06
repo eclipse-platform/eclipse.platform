@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.hamcrest.Matchers.arrayWithSize;
@@ -161,7 +164,7 @@ public class MarkerTest extends ResourceTest {
 			for (int i = 0; i < hosts.length; i++) {
 				result[i] = hosts[i].createMarker(type);
 			}
-		}, getMonitor());
+		}, createTestMonitor());
 		return result;
 	}
 
@@ -170,19 +173,12 @@ public class MarkerTest extends ResourceTest {
 		marker.setAttribute(IMarker.SEVERITY, severity);
 	}
 
-	/**
-	 * Return a string array which defines the hierarchy of a tree.
-	 * Folder resources must have a trailing slash.
-	 */
-	@Override
-	public String[] defineHierarchy() {
-		return new String[] {"/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/"};
-	}
-
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		resources = createHierarchy();
+		resources = buildResources(getWorkspace().getRoot(),
+				new String[] { "/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/" });
+		ensureExistsInWorkspace(resources, true);
 
 		// disable autorefresh an wait till that is finished
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
@@ -207,8 +203,6 @@ public class MarkerTest extends ResourceTest {
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
 	public void testMarkerChangesInDelta3() throws CoreException {
-		debug("TestMarkerChangesInDelta3");
-
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
 		setResourceChangeListener(listener);
@@ -223,7 +217,7 @@ public class MarkerTest extends ResourceTest {
 		IResource child = ((IProject) resource).members()[0];
 		markers[1] = child.createMarker(IMarker.TASK);
 		listener.reset();
-		resource.move(destination, false, getMonitor());
+		resource.move(destination, false, createTestMonitor());
 		IResource destinationResource = getWorkspace().getRoot().findMember(destination);
 		markers[2] = destinationResource.getMarker(markers[0].getId());
 		IResource destinationChild = ((IProject) destinationResource).findMember(child.getName());
@@ -241,7 +235,7 @@ public class MarkerTest extends ResourceTest {
 				.append(resource.getFullPath().lastSegment() + "copy");
 		resource.createMarker(IMarker.BOOKMARK);
 		listener.reset();
-		resource.copy(destination, false, getMonitor());
+		resource.copy(destination, false, createTestMonitor());
 		listener.assertNumberOfAffectedResources(0);
 
 		// delete all markers for a clean run next time
@@ -252,12 +246,9 @@ public class MarkerTest extends ResourceTest {
 	 * Tests whether markers correctly copy with resources.
 	 */
 	public void testCopyResource() {
-		debug("TestCopyResource");
 	}
 
 	public void testCreateMarker() throws CoreException {
-		debug("TestCreateMarker");
-
 		// create markers on our hierarchy of resources
 		for (IResource resource : resources) {
 			// Create and register a listener.
@@ -359,7 +350,6 @@ public class MarkerTest extends ResourceTest {
 	}
 
 	public void testDeleteMarker() throws CoreException {
-		debug("TestDeleteMarker");
 		IMarker marker = null;
 
 		// Create and register a listener.
@@ -402,7 +392,6 @@ public class MarkerTest extends ResourceTest {
 	}
 
 	public void testDeleteMarkers() throws CoreException {
-		debug("TestDeleteMarkers");
 		IMarker[] markers = createMarkers(resources, IMarker.PROBLEM);
 
 		// Check that a collection of markers can be removed.
@@ -414,8 +403,6 @@ public class MarkerTest extends ResourceTest {
 	}
 
 	public void testFindMarkers() throws CoreException {
-		debug("TestFindMarkers");
-
 		// test finding some markers which actually exist
 		IMarker[] markers = createMarkers(resources, IMarker.PROBLEM);
 		IMarker[] found = getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, false, IResource.DEPTH_INFINITE);
@@ -443,7 +430,7 @@ public class MarkerTest extends ResourceTest {
 	 * Bug 35300 - ClassCastException if marker transient attribute is set to a non-boolean
 	 */
 	public void test_35300() throws CoreException {
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		ensureExistsInWorkspace(project, true);
 		String MARKER_ID = "foomarker.example.com";
 		int expected = 4;
@@ -458,8 +445,6 @@ public class MarkerTest extends ResourceTest {
 	}
 
 	public void test_10989() throws CoreException {
-		debug("test_10989");
-
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		create(project, false);
 		IFile file = project.getFile("foo.txt");
@@ -476,10 +461,8 @@ public class MarkerTest extends ResourceTest {
 	 * Bug 289811 - ArrayIndexOutOfBoundsException in MarkerAttributeMap
 	 */
 	public void test_289811() throws CoreException {
-		debug("test_289811");
-
 		String testValue = getRandomString();
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		project.create(null);
 		project.open(null);
 		IFile file = project.getFile("foo.txt");
@@ -600,8 +583,6 @@ public class MarkerTest extends ResourceTest {
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
 	public void testMarkerChangesInDelta() throws CoreException {
-		debug("TestMarkerChangesInDelta");
-
 		// Create and register a listener.
 		MarkersChangeListener listener = new MarkersChangeListener();
 		setResourceChangeListener(listener);
@@ -670,7 +651,7 @@ public class MarkerTest extends ResourceTest {
 		resource.deleteMarkers(null, true, IResource.DEPTH_INFINITE);
 		IMarker marker = resource.createMarker(IMarker.BOOKMARK);
 		listener.reset();
-		resource.delete(true, getMonitor());
+		resource.delete(true, createTestMonitor());
 		assertMarkerDoesNotExist(marker);
 		listener.assertChanges(resource, null, new IMarker[] { marker }, null);
 	}
@@ -681,8 +662,6 @@ public class MarkerTest extends ResourceTest {
 	 * state of the marker before the change occurred.
 	 */
 	public void testMarkerDeltaAttributes() throws CoreException {
-		debug("testMarkerDeltaAttributes");
-
 		// create markers on various resources
 		final IMarker[] markers = new IMarker[3];
 		IWorkspaceRunnable body = monitor -> {
@@ -694,7 +673,7 @@ public class MarkerTest extends ResourceTest {
 			markers[2].setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 			markers[2].setAttribute(IMarker.MESSAGE, "Hello");
 		};
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 
 		//create the attribute change listener
 		MarkerAttributeChangeListener listener = new MarkerAttributeChangeListener();
@@ -725,7 +704,7 @@ public class MarkerTest extends ResourceTest {
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			markers[1].setAttribute(IMarker.CHAR_START, 5);
 			markers[1].setAttribute(IMarker.CHAR_END, 10);
-		}, getMonitor());
+		}, createTestMonitor());
 		listener.verifyChanges();
 
 		// change+remove same marker
@@ -733,7 +712,7 @@ public class MarkerTest extends ResourceTest {
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			markers[1].setAttribute(IMarker.CHAR_START, 5);
 			markers[1].setAttribute(IMarker.CHAR_START, null);
-		}, getMonitor());
+		}, createTestMonitor());
 		listener.verifyChanges();
 
 		// change multiple markers
@@ -742,7 +721,7 @@ public class MarkerTest extends ResourceTest {
 			markers[0].setAttribute(IMarker.CHAR_START, 5);
 			markers[1].setAttribute(IMarker.CHAR_START, 10);
 			markers[2].setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_LOW);
-		}, getMonitor());
+		}, createTestMonitor());
 		listener.verifyChanges();
 	}
 
@@ -750,8 +729,6 @@ public class MarkerTest extends ResourceTest {
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
 	public void testMarkerDeltasCopyResource() throws CoreException {
-		debug("testMarkerDeltasCopyResource");
-
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
 		setResourceChangeListener(listener);
@@ -772,7 +749,7 @@ public class MarkerTest extends ResourceTest {
 			};
 			getWorkspace().getRoot().accept(visitor);
 		};
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 		listener.reset();
 
 		// copy all non-project resources
@@ -781,7 +758,7 @@ public class MarkerTest extends ResourceTest {
 			IResource[] children = project.members();
 			for (IResource element : children) {
 				IPath destination = IPath.fromOSString(element.getName() + "copy");
-				element.copy(destination, true, getMonitor());
+				element.copy(destination, true, createTestMonitor());
 			}
 		}
 
@@ -792,8 +769,6 @@ public class MarkerTest extends ResourceTest {
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
 	public void testMarkerDeltasMerge() throws CoreException {
-		debug("testMarkerDeltasMerge");
-
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
 		setResourceChangeListener(listener);
@@ -807,7 +782,7 @@ public class MarkerTest extends ResourceTest {
 				marker.delete();
 				assertMarkerDoesNotExist(marker);
 			};
-			getWorkspace().run(addAndRemoveOperation, getMonitor());
+			getWorkspace().run(addAndRemoveOperation, createTestMonitor());
 			listener.assertNumberOfAffectedResources(0);
 			listener.assertChanges(resource, null, null, null);
 
@@ -822,7 +797,7 @@ public class MarkerTest extends ResourceTest {
 				addAndChangeMarker.get().setAttribute(IMarker.MESSAGE, "my message text");
 				assertMarkerHasAttributeValue(addAndChangeMarker.get(), IMarker.MESSAGE, "my message text");
 			};
-			getWorkspace().run(addAndChangeOperation, getMonitor());
+			getWorkspace().run(addAndChangeOperation, createTestMonitor());
 			listener.assertNumberOfAffectedResources(1);
 			listener.assertChanges(resource, new IMarker[] { addAndChangeMarker.get() }, null, null);
 
@@ -862,7 +837,7 @@ public class MarkerTest extends ResourceTest {
 				assertMarkerHasAttributeValue(changeAndChangeMarker, IMarker.PRIORITY,
 						IMarker.PRIORITY_HIGH);
 			};
-			getWorkspace().run(changeAndChangeOperation, getMonitor());
+			getWorkspace().run(changeAndChangeOperation, createTestMonitor());
 			listener.assertNumberOfAffectedResources(1);
 			listener.assertChanges(resource, null, null, new IMarker[] { changeAndChangeMarker });
 
@@ -876,7 +851,7 @@ public class MarkerTest extends ResourceTest {
 				changeAndRemoveMarker.delete();
 				assertMarkerDoesNotExist(changeAndRemoveMarker);
 			};
-			getWorkspace().run(changeAndRemoveOperation, getMonitor());
+			getWorkspace().run(changeAndRemoveOperation, createTestMonitor());
 			listener.assertNumberOfAffectedResources(1);
 			listener.assertChanges(resource, null, new IMarker[] { changeAndRemoveMarker }, null);
 
@@ -889,15 +864,13 @@ public class MarkerTest extends ResourceTest {
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
 	public void testMarkerDeltasMoveFolder() throws CoreException {
-		debug("testMarkerDeltasMoveFolder");
-
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		final IProject project = root.getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subFile.txt");
 		ensureExistsInWorkspace(new IResource[] {project, folder, file, subFile}, true);
-		waitForEncodingRelatedJobs();
+		ResourceTestUtil.waitForEncodingRelatedJobs(getName());
 		IFolder destFolder = project.getFolder("myOtherFolder");
 		IFile destSubFile = destFolder.getFile(subFile.getName());
 
@@ -912,7 +885,7 @@ public class MarkerTest extends ResourceTest {
 		listener = new MarkersChangeListener();
 		setResourceChangeListener(listener);
 		// move the files
-		folder.move(destFolder.getFullPath(), IResource.FORCE, getMonitor());
+		folder.move(destFolder.getFullPath(), IResource.FORCE, createTestMonitor());
 
 		// verify marker deltas
 		listener.assertChanges(folder, null, new IMarker[] { folderMarker }, null);
@@ -930,14 +903,13 @@ public class MarkerTest extends ResourceTest {
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
 	public void testMarkerDeltasMoveFile() throws CoreException {
-		debug("testMarkerDeltasMoveFile");
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		final IProject project = root.getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
 		IFile file = project.getFile("file.txt");
 		IFile subFile = folder.getFile("subFile.txt");
 		ensureExistsInWorkspace(new IResource[] {project, folder, file, subFile}, true);
-		waitForEncodingRelatedJobs();
+		ResourceTestUtil.waitForEncodingRelatedJobs(getName());
 		IFile destFile = folder.getFile(file.getName());
 		IFile destSubFile = project.getFile(subFile.getName());
 
@@ -951,8 +923,8 @@ public class MarkerTest extends ResourceTest {
 		listener.reset();
 
 		// move the files
-		file.move(destFile.getFullPath(), IResource.FORCE, getMonitor());
-		subFile.move(destSubFile.getFullPath(), IResource.FORCE, getMonitor());
+		file.move(destFile.getFullPath(), IResource.FORCE, createTestMonitor());
+		subFile.move(destSubFile.getFullPath(), IResource.FORCE, createTestMonitor());
 
 		// verify marker deltas
 		listener.assertChanges(file, null, new IMarker[] { fileMarker }, null);
@@ -970,8 +942,6 @@ public class MarkerTest extends ResourceTest {
 	 * Tests the appearance of marker changes in the resource delta.
 	 */
 	public void testMarkerDeltasMoveProject() throws CoreException {
-		debug("testMarkerDeltasMoveProject");
-
 		// Create and register a listener.
 		final MarkersChangeListener listener = new MarkersChangeListener();
 		setResourceChangeListener(listener);
@@ -992,14 +962,14 @@ public class MarkerTest extends ResourceTest {
 			};
 			getWorkspace().getRoot().accept(visitor);
 		};
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 		listener.reset();
 
 		// move all resources
 		IProject[] projects = getWorkspace().getRoot().getProjects();
 		for (IProject project : projects) {
 			IPath destination = IPath.fromOSString(project.getName() + "move");
-			project.move(destination, true, getMonitor());
+			project.move(destination, true, createTestMonitor());
 		}
 
 		// verify marker deltas
@@ -1024,8 +994,6 @@ public class MarkerTest extends ResourceTest {
 	}
 
 	public void testMarkerSave() throws Exception {
-		debug("TestMarkerSave");
-
 		IMarker[] newMarkers = createMarkers(resources, IMarker.PROBLEM);
 		IMarker[] expected = new IMarker[newMarkers.length * 3];
 		System.arraycopy(newMarkers, 0, expected, 0, newMarkers.length);
@@ -1083,7 +1051,7 @@ public class MarkerTest extends ResourceTest {
 						throw new IllegalStateException("failed reading markers", e);
 					}
 				};
-				getWorkspace().run(body, getMonitor());
+				getWorkspace().run(body, createTestMonitor());
 			}
 		}
 
@@ -1098,8 +1066,6 @@ public class MarkerTest extends ResourceTest {
 	}
 
 	public void testMarkerSaveTransient() throws Exception {
-		debug("TestMarkerSaveTransient");
-
 		// create the markers on the resources. create both transient
 		// and persistent markers.
 		final ArrayList<IMarker> persistentMarkers = new ArrayList<>();
@@ -1173,7 +1139,7 @@ public class MarkerTest extends ResourceTest {
 						throw new IllegalStateException("Failed reading markers", e);
 					}
 				};
-				getWorkspace().run(body, getMonitor());
+				getWorkspace().run(body, createTestMonitor());
 			}
 		}
 
@@ -1191,30 +1157,25 @@ public class MarkerTest extends ResourceTest {
 	 * Tests whether markers correctly move with resources.
 	 */
 	public void testMoveResource() {
-		debug("TestMoveResource");
 	}
 
 	/*
 	 * Test for PR: "1FWT3V5: ITPCORE:WINNT - Task view shows entries for closed projects"
 	 */
 	public void testProjectCloseOpen() throws CoreException {
-		debug("testProjectCloseOpen");
-
 		// create a marker on the project
 		IProject project = getWorkspace().getRoot().getProjects()[0];
 		IMarker marker = project.createMarker(IMarker.BOOKMARK);
 		assertMarkerExists(marker);
 
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 		assertMarkerDoesNotExist(marker);
 
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 		assertMarkerExists(marker);
 	}
 
 	public void testSetGetAttribute() throws CoreException {
-		debug("testSetGetAttribute");
-
 		for (IResource resource : resources) {
 			String resourcePath = resource.getFullPath().toString();
 
@@ -1283,8 +1244,6 @@ public class MarkerTest extends ResourceTest {
 	}
 
 	public void testSetGetAttribute2() throws CoreException {
-		debug("testSetGetAttribute2");
-
 		for (IResource resource : resources) {
 			String resourcePath = resource.getFullPath().toString();
 

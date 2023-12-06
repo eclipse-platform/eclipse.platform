@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -52,7 +55,7 @@ public class Bug_025457 extends ResourceTest {
 		try (InputStream stream = sourceFile.getContents()) {
 			//try to rename the file (should fail)
 			assertThrows(CoreException.class,
-					() -> sourceFile.move(destFile.getFullPath(), IResource.NONE, getMonitor()));
+					() -> sourceFile.move(destFile.getFullPath(), IResource.NONE, createTestMonitor()));
 		}
 		//ensure source still exists and has same content
 		assertTrue("2.0", source.exists());
@@ -83,7 +86,7 @@ public class Bug_025457 extends ResourceTest {
 		try (InputStream stream = sourceFile.getContents()) {
 			//try to rename the project (should fail)
 			assertThrows(CoreException.class,
-					() -> sourceFolder.move(destFolder.getFullPath(), IResource.NONE, getMonitor()));
+					() -> sourceFolder.move(destFolder.getFullPath(), IResource.NONE, createTestMonitor()));
 			//ensure source still exists
 			assertTrue("2.0", source.exists());
 			assertTrue("2.1", sourceFolder.exists());
@@ -111,7 +114,7 @@ public class Bug_025457 extends ResourceTest {
 		try (InputStream stream = sourceFile.getContents()) {
 			//try to rename the project (should fail)
 			assertThrows(CoreException.class,
-					() -> source.move(destination.getFullPath(), IResource.NONE, getMonitor()));
+					() -> source.move(destination.getFullPath(), IResource.NONE, createTestMonitor()));
 
 			//ensure source does not exist
 			assertTrue("2.0", !source.exists());

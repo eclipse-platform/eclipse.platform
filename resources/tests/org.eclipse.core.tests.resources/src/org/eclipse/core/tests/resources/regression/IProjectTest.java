@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.resources.ICommand;
@@ -56,20 +60,20 @@ public class IProjectTest extends AbstractBuilderTest {
 		/* test */
 		project.accept(renameVisitor);
 		// cleanup
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 	}
 
 	public void test_1G5I6PV() throws CoreException {
 		/* common objects */
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		/* test */
-		project.setLocal(true, IResource.DEPTH_ZERO, getMonitor());
+		project.setLocal(true, IResource.DEPTH_ZERO, createTestMonitor());
 
 		// cleanup
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 	}
 
 	/**
@@ -87,8 +91,8 @@ public class IProjectTest extends AbstractBuilderTest {
 		ICommand command = prjDescription.newCommand();
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		prjDescription.setBuildSpec(new ICommand[] { command });
-		projectONE.create(prjDescription, getMonitor());
-		projectONE.open(getMonitor());
+		projectONE.create(prjDescription, createTestMonitor());
+		projectONE.open(createTestMonitor());
 
 		// create project with a builder
 		IProject projectTWO = getWorkspace().getRoot().getProject("Project_TWO");
@@ -96,14 +100,14 @@ public class IProjectTest extends AbstractBuilderTest {
 		command = prjDescription.newCommand();
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		prjDescription.setBuildSpec(new ICommand[] { command });
-		projectTWO.create(prjDescription, getMonitor());
-		projectTWO.open(getMonitor());
+		projectTWO.create(prjDescription, createTestMonitor());
+		projectTWO.open(createTestMonitor());
 
 		// set auto build ON
 		description = getWorkspace().getDescription();
 		description.setAutoBuilding(true);
 		getWorkspace().setDescription(description);
-		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		waitForBuild();
 
 		SignaledBuilder projectONEbuilder = SignaledBuilder.getInstance(projectONE);
@@ -136,7 +140,7 @@ public class IProjectTest extends AbstractBuilderTest {
 	 * that the resources are automatically discovered and brought into the workspace.
 	 */
 	public void testBug78711() throws CoreException {
-		String name = getUniqueString();
+		String name = createUniqueString();
 		IProject project = getWorkspace().getRoot().getProject(name);
 		IFolder folder = project.getFolder("folder");
 		IFile file1 = project.getFile("file1.txt");
@@ -151,8 +155,8 @@ public class IProjectTest extends AbstractBuilderTest {
 		createFileInFileSystem(location.append(file1.getName()));
 
 		// create
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		// verify discovery
 		assertTrue("2.0", project.isAccessible());
@@ -166,8 +170,8 @@ public class IProjectTest extends AbstractBuilderTest {
 	 */
 	public void testDelete_1GDW1RX() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		String[] paths = new String[] {"/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1"};
 		IResource[] resources = buildResources(project, paths);
@@ -179,14 +183,14 @@ public class IProjectTest extends AbstractBuilderTest {
 		IFile file = folder.getFile("MyFile");
 		ensureExistsInFileSystem(file);
 
-		assertThrows(CoreException.class, () -> project.delete(false, getMonitor()));
+		assertThrows(CoreException.class, () -> project.delete(false, createTestMonitor()));
 
 		// clean up
-		project.delete(true, true, getMonitor());
+		project.delete(true, true, createTestMonitor());
 	}
 
 	public void testRefreshDotProject() throws CoreException {
-		String name = getUniqueString();
+		String name = createUniqueString();
 		IProject project = getWorkspace().getRoot().getProject(name);
 		IFile dotProject = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		project.create(null);

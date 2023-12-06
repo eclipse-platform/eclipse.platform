@@ -13,6 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.internal.resources.File;
@@ -42,11 +49,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class MoveTest extends LocalStoreTest {
 
-	@Override
-	public String[] defineHierarchy() {
-		return new String[] {"/", "/file1", "/file2", "/folder1/", "/folder1/file3", "/folder1/file4", "/folder2/", "/folder2/file5", "/folder2/file6", "/folder1/folder3/", "/folder1/folder3/file7", "/folder1/folder3/file8"};
-	}
-
 	/**
 	 * This test has Windows as the target OS. Drives C: and D: should be available.
 	 */
@@ -59,20 +61,20 @@ public class MoveTest extends LocalStoreTest {
 		Assume.assumeFalse(devices[0] == null || devices[1] == null);
 
 		// create common objects
-		String location = getUniqueString();
+		String location = createUniqueString();
 		IProject source = getWorkspace().getRoot().getProject(location + "1");
 		IProject destination = getWorkspace().getRoot().getProject(location + "2");
-		source.create(getMonitor());
-		source.open(getMonitor());
+		source.create(createTestMonitor());
+		source.open(createTestMonitor());
 
 		IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
 		description.setLocation(IPath.fromOSString(devices[1] + location));
-		destination.create(description, getMonitor());
-		destination.open(getMonitor());
+		destination.create(description, createTestMonitor());
+		destination.open(createTestMonitor());
 
 		String fileName = "fileToBeMoved.txt";
 		IFile file = source.getFile(fileName);
-		file.create(getRandomContents(), true, getMonitor());
+		file.create(getRandomContents(), true, createTestMonitor());
 
 		// add some properties to file (persistent and session)
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];
@@ -86,14 +88,14 @@ public class MoveTest extends LocalStoreTest {
 
 		// move file
 		IPath dest = destination.getFile(fileName).getFullPath();
-		file.move(dest, true, getMonitor());
+		file.move(dest, true, createTestMonitor());
 
 		// assert file was moved
 		IFile newFile = destination.getFile(fileName);
-		assertDoesNotExistInWorkspace("4.1", file);
-		assertDoesNotExistInFileSystem("4.2", file);
-		assertExistsInWorkspace("4.3", newFile);
-		assertExistsInFileSystem("4.4", newFile);
+		assertDoesNotExistInWorkspace(file);
+		assertDoesNotExistInFileSystem(file);
+		assertExistsInWorkspace(newFile);
+		assertExistsInFileSystem(newFile);
 
 		// assert properties still exist (server, local and session)
 		for (int j = 0; j < numberOfProperties; j++) {
@@ -161,21 +163,21 @@ public class MoveTest extends LocalStoreTest {
 		Assume.assumeFalse(devices[0] == null || devices[1] == null);
 
 		// create common objects
-		String location = getUniqueString();
+		String location = createUniqueString();
 		IProject source = getWorkspace().getRoot().getProject(location + "1");
 		IProject destination = getWorkspace().getRoot().getProject(location + "2");
-		source.create(getMonitor());
-		source.open(getMonitor());
+		source.create(createTestMonitor());
+		source.open(createTestMonitor());
 
 		IProjectDescription description = getWorkspace().newProjectDescription(destination.getName());
 		description.setLocation(IPath.fromOSString(devices[1] + location));
-		destination.create(description, getMonitor());
-		destination.open(getMonitor());
+		destination.create(description, createTestMonitor());
+		destination.open(createTestMonitor());
 
 		// get folder instance
 		String folderName = "folderToBeMoved";
 		IFolder folder = source.getFolder(folderName);
-		folder.create(true, true, getMonitor());
+		folder.create(true, true, createTestMonitor());
 
 		// add some properties to file (persistent and session)
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];
@@ -189,14 +191,14 @@ public class MoveTest extends LocalStoreTest {
 
 		// rename folder
 		IPath dest = destination.getFile(folderName).getFullPath();
-		folder.move(dest, true, getMonitor());
+		folder.move(dest, true, createTestMonitor());
 
 		// assert folder was renamed
 		IFolder newFolder = destination.getFolder(folderName);
-		assertDoesNotExistInWorkspace("4.1", folder);
-		assertDoesNotExistInFileSystem("4.2", folder);
-		assertExistsInWorkspace("4.3", newFolder);
-		assertExistsInFileSystem("4.4", newFolder);
+		assertDoesNotExistInWorkspace(folder);
+		assertDoesNotExistInFileSystem(folder);
+		assertExistsInWorkspace(newFolder);
+		assertExistsInFileSystem(newFolder);
 
 		// assert properties still exist (server, local and session)
 		for (int j = 0; j < numberOfProperties; j++) {
@@ -266,7 +268,9 @@ public class MoveTest extends LocalStoreTest {
 		ensureExistsInWorkspace(folderSource, true);
 
 		// create hierarchy
-		String[] hierarchy = defineHierarchy();
+		String[] hierarchy = new String[] { "/", "/file1", "/file2", "/folder1/", "/folder1/file3",
+				"/folder1/file4", "/folder2/", "/folder2/file5", "/folder2/file6", "/folder1/folder3/",
+				"/folder1/folder3/file7", "/folder1/folder3/file8" };
 		IResource[] resources = buildResources(folderSource, hierarchy);
 		ensureExistsInWorkspace(resources, true);
 
@@ -290,7 +294,7 @@ public class MoveTest extends LocalStoreTest {
 
 		// move hierarchy
 		//IProgressMonitor monitor = new LoggingProgressMonitor(System.out);
-		IProgressMonitor monitor = getMonitor();
+		IProgressMonitor monitor = createTestMonitor();
 		folderSource.move(folderDestination.getFullPath(), true, monitor);
 
 		// get new hierarchy instance
@@ -337,7 +341,9 @@ public class MoveTest extends LocalStoreTest {
 		ensureExistsInWorkspace(folderSource, true);
 
 		// build hierarchy
-		String[] hierarchy = defineHierarchy();
+		String[] hierarchy = new String[] { "/", "/file1", "/file2", "/folder1/", "/folder1/file3", "/folder1/file4",
+				"/folder2/", "/folder2/file5", "/folder2/file6", "/folder1/folder3/", "/folder1/folder3/file7",
+				"/folder1/folder3/file8" };
 		IResource[] resources = buildResources(folderSource, hierarchy);
 		ensureExistsInWorkspace(resources, true);
 
@@ -441,11 +447,11 @@ public class MoveTest extends LocalStoreTest {
 		assertFalse(folderDestination.exists());
 		assertFalse(destChild.exists());
 		// cleanup and delete the destination
-		folderDestination.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		folderDestination.delete(true, getMonitor());
+		folderDestination.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
+		folderDestination.delete(true, createTestMonitor());
 
-		folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		folder.move(folderDestination.getFullPath(), false, getMonitor());
+		folder.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
+		folder.move(folderDestination.getFullPath(), false, createTestMonitor());
 
 		folderDestination.move(folder.getFullPath(), true, null);
 		assertTrue(folder.exists());

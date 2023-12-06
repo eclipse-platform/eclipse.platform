@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
@@ -107,7 +110,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		addBuilder(project, EmptyDeltaBuilder.BUILDER_NAME);
 
 		// Ensure the builder is instantiated
-		project.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 
 		final TestBarrier2 tb = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
 
@@ -181,10 +184,10 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] {createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1"), createCommand(desc, EmptyDeltaBuilder2.BUILDER_NAME, "Project1Build2")});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 
 		// Ensure the builder is instantiated
-		project.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 
 		final TestBarrier2 tb1 = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
 		final TestBarrier2 tb2 = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
@@ -292,17 +295,17 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		final IFile foo = project.getFile("foo");
 		create(project, false);
 
-		waitForEncodingRelatedJobs();
+		waitForEncodingRelatedJobs(getName());
 		waitForContentDescriptionUpdate();
 		// wait for noBuildJob so POST_BUILD will fire
 		((Workspace) getWorkspace()).getBuildManager().waitForAutoBuildOff();
 
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] { createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1") });
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 
 		// Ensure the builder is instantiated
-		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		final TestBarrier2 tb = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
 		AtomicReference<Throwable> errorInBuildTriggeringJob = new AtomicReference<>();
@@ -433,10 +436,10 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildSpec(new ICommand[] {createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1"), createCommand(desc, EmptyDeltaBuilder2.BUILDER_NAME, "Project1Build2")});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 
 		// Ensure the builder is instantiated
-		project.build(IncrementalProjectBuilder.CLEAN_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 
 		final TestBarrier2 tb1 = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
 		final TestBarrier2 tb2 = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);

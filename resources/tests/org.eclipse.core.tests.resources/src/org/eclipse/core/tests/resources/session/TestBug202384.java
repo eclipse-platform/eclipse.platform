@@ -13,12 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import junit.framework.Test;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.TestUtil;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
@@ -32,10 +34,10 @@ public class TestBug202384 extends WorkspaceSessionTest {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("project");
 		ensureExistsInWorkspace(project, true);
-		project.setDefaultCharset("UTF-8", getMonitor());
+		project.setDefaultCharset("UTF-8", createTestMonitor());
 		assertEquals("2.0", "UTF-8", project.getDefaultCharset(false));
-		project.close(getMonitor());
-		workspace.save(true, getMonitor());
+		project.close(createTestMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	public void testStartWithClosedProject() throws CoreException {
@@ -45,10 +47,10 @@ public class TestBug202384 extends WorkspaceSessionTest {
 		// project is closed so it is not possible to read correct encoding
 		assertNull("2.0", project.getDefaultCharset(false));
 		// opening the project should initialize ProjectPreferences
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 		// correct values should be available after initialization
 		assertEquals("5.0", "UTF-8", project.getDefaultCharset(false));
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	public void testStartWithOpenProject() throws CoreException {
@@ -67,10 +69,10 @@ public class TestBug202384 extends WorkspaceSessionTest {
 			TestUtil.waitForJobs(getName(), 500, 1000);
 		}
 		assertEquals("2.0", expectedEncoding, project.getDefaultCharset(false));
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug202384.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug202384.class);
 	}
 }

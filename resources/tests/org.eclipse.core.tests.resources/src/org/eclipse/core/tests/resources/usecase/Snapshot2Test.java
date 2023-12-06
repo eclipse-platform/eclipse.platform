@@ -14,6 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,8 +57,8 @@ public class Snapshot2Test extends SnapshotTest {
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy1());
 		ensureExistsInWorkspace(resources, true);
-		assertExistsInFileSystem("1.1", resources);
-		assertExistsInWorkspace("1.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 	}
 
 	public void testChangeProject2() throws CoreException {
@@ -69,8 +73,8 @@ public class Snapshot2Test extends SnapshotTest {
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy2());
 		ensureExistsInWorkspace(resources, true);
-		assertExistsInFileSystem("1.1", resources);
-		assertExistsInWorkspace("1.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 	}
 
 	public void testSnapshotWorkspace() throws CoreException {
@@ -88,8 +92,8 @@ public class Snapshot2Test extends SnapshotTest {
 
 		// verify existence of children
 		IResource[] resources = buildResources(project, Snapshot1Test.defineHierarchy1());
-		assertExistsInFileSystem("2.1", resources);
-		assertExistsInWorkspace("2.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 
 		// Project2
 		project = getWorkspace().getRoot().getProject(PROJECT_2);
@@ -98,7 +102,7 @@ public class Snapshot2Test extends SnapshotTest {
 
 		// verify existence of children
 		resources = buildResources(project, Snapshot1Test.defineHierarchy2());
-		assertExistsInFileSystem("5.1", resources);
-		assertExistsInWorkspace("5.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 	}
 }

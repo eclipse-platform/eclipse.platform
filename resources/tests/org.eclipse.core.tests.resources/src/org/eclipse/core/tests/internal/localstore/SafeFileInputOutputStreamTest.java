@@ -56,18 +56,17 @@ public class SafeFileInputOutputStreamTest extends ResourceTest {
 		// define temp path
 		IPath parentLocation = IPath.fromOSString(target.getParentFile().getAbsolutePath());
 		IPath tempLocation = parentLocation.append(target.getName() + ".backup");
+		String contents = getRandomString();
+		File tempFile = tempLocation.toFile();
 
 		// we did not have a file on the destination, so we should not have a temp file
-		SafeFileOutputStream safeStream = createSafeStream(target.getAbsolutePath(), tempLocation.toOSString());
-		File tempFile = tempLocation.toFile();
-		String contents = getRandomString();
-		transferStreams(getContents(contents), safeStream, target.getAbsolutePath());
-
+		try (SafeFileOutputStream safeStream = createSafeStream(target.getAbsolutePath(), tempLocation.toOSString())) {
+			getContents(contents).transferTo(safeStream);
+		}
 		// now we should have a temp file
-		safeStream = createSafeStream(target.getAbsolutePath(), tempLocation.toOSString());
-		tempFile = tempLocation.toFile();
-		transferStreams(getContents(contents), safeStream, target.getAbsolutePath());
-
+		try(SafeFileOutputStream safeStream = createSafeStream(target.getAbsolutePath(), tempLocation.toOSString())) {
+			getContents(contents).transferTo(safeStream);
+		}
 		assertTrue(target.exists());
 		assertFalse(tempFile.exists());
 		InputStream diskContents = new SafeFileInputStream(tempLocation.toOSString(), target.getAbsolutePath());
@@ -79,23 +78,26 @@ public class SafeFileInputOutputStreamTest extends ResourceTest {
 		File target = new File(temp.toFile(), "target");
 		Workspace.clear(target); // make sure there was nothing here before
 		assertTrue(!target.exists());
+		String contents = getRandomString();
 
 		// basic use (like a FileOutputStream)
-		SafeFileOutputStream safeStream = createSafeStream(target);
-		String contents = getRandomString();
-		transferStreams(getContents(contents), safeStream, target.getAbsolutePath());
+		try (SafeFileOutputStream safeStream = createSafeStream(target)) {
+			getContents(contents).transferTo(safeStream);
+		}
 		InputStream diskContents = getContents(target);
 		assertTrue(compareContent(diskContents, getContents(contents)));
 
-		// update target contents
 		contents = getRandomString();
-		safeStream = createSafeStream(target);
-		File tempFile = new File(safeStream.getTempFilePath());
-		assertTrue(tempFile.exists());
-		transferStreams(getContents(contents), safeStream, target.getAbsolutePath());
+		// update target contents
+		File tempFile;
+		try (SafeFileOutputStream safeStream = createSafeStream(target)) {
+			tempFile = new File(safeStream.getTempFilePath());
+			assertTrue(tempFile.exists());
+			getContents(contents).transferTo(safeStream);
+		}
+		assertFalse(tempFile.exists());
 		diskContents = getContents(target);
 		assertTrue(compareContent(diskContents, getContents(contents)));
-		assertFalse(tempFile.exists());
 		Workspace.clear(target); // make sure there was nothing here before
 	}
 
@@ -108,29 +110,28 @@ public class SafeFileInputOutputStreamTest extends ResourceTest {
 		IPath parentLocation = IPath.fromOSString(target.getParentFile().getAbsolutePath());
 		IPath tempLocation = parentLocation.append(target.getName() + ".backup");
 
-		// we did not have a file on the destination, so we should not have a temp file
-		SafeFileOutputStream safeStream = createSafeStream(target.getAbsolutePath(), tempLocation.toOSString());
-		File tempFile = tempLocation.toFile();
-		assertFalse(tempFile.exists());
-
-		// update target contents
 		String contents = getRandomString();
-		transferStreams(getContents(contents), safeStream, target.getAbsolutePath());
+		File tempFile = tempLocation.toFile();
+		// we did not have a file on the destination, so we should not have a temp file
+		try (SafeFileOutputStream safeStream = createSafeStream(target.getAbsolutePath(), tempLocation.toOSString())) {
+			assertFalse(tempFile.exists());
+			// update target contents
+			getContents(contents).transferTo(safeStream);
+		}
+		assertFalse(tempFile.exists());
 		InputStream diskContents = getContents(target);
 		assertTrue(compareContent(diskContents, getContents(contents)));
-		assertFalse(tempFile.exists());
 
-		// now we should have a temp file
-		safeStream = createSafeStream(target.getAbsolutePath(), tempLocation.toOSString());
-		tempFile = tempLocation.toFile();
-		assertTrue(tempFile.exists());
-
-		// update target contents
 		contents = getRandomString();
-		transferStreams(getContents(contents), safeStream, target.getAbsolutePath());
+		// now we should have a temp file
+		try (SafeFileOutputStream safeStream = createSafeStream(target.getAbsolutePath(), tempLocation.toOSString())) {
+			assertTrue(tempFile.exists());
+			// update target contents
+			getContents(contents).transferTo(safeStream);
+		}
+		assertFalse(tempFile.exists());
 		diskContents = getContents(target);
 		assertTrue(compareContent(diskContents, getContents(contents)));
-		assertFalse(tempFile.exists());
 		Workspace.clear(target); // make sure there was nothing here before
 	}
 }

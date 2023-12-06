@@ -14,6 +14,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
@@ -232,7 +241,9 @@ public class IResourceTest extends ResourceTest {
 		//file system only
 		unsynchronized = buildResources(root, new String[] {"1/1/2/2/1"});
 		ensureDoesNotExistInWorkspace(unsynchronized);
-		ensureExistsInFileSystem(unsynchronized);
+		for (IResource resource : unsynchronized) {
+			ensureExistsInFileSystem(resource);
+		}
 		unsynchronizedResources.add(unsynchronized[0]);
 		return result;
 	}
@@ -472,7 +483,7 @@ public class IResourceTest extends ResourceTest {
 			// Reinitialize projects if necessary
 			if (reinitializeOnCleanup) {
 				waitForBuild();
-				getWorkspace().getRoot().delete(true, true, getMonitor());
+				getWorkspace().getRoot().delete(true, true, createTestMonitor());
 				IResourceTest.this.initializeProjects();
 				reinitializeOnCleanup = false;
 			}
@@ -486,7 +497,7 @@ public class IResourceTest extends ResourceTest {
 			throws OperationCanceledException, InterruptedException, CoreException {
 		// Wait for any outstanding refresh to finish
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
+		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		if (addVerifier) {
 			/* install the verifier */
@@ -686,7 +697,7 @@ public class IResourceTest extends ResourceTest {
 	}
 
 	public void testAcceptDoNotCheckExistence() throws CoreException {
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder a = project.getFolder("a");
 		ensureExistsInWorkspace(project, true);
 
@@ -720,7 +731,7 @@ public class IResourceTest extends ResourceTest {
 	}
 
 	public void testAcceptProxyVisitorWithDepth() throws CoreException {
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder a = project.getFolder("a");
 		IFile a1 = a.getFile("a1.txt");
 		IFile a2 = a.getFile("a2.txt");
@@ -767,8 +778,8 @@ public class IResourceTest extends ResourceTest {
 		 * Add a project in the file system, but not in the workspace */
 
 		IProject project1 = getWorkspace().getRoot().getProject("Project");
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		IProject project2 = getWorkspace().getRoot().getProject("NewProject");
 
@@ -776,8 +787,8 @@ public class IResourceTest extends ResourceTest {
 		deleteOnTearDown(projectPath);
 		projectPath.toFile().mkdirs();
 
-		project1.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
-		project2.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		project1.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
+		project2.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertTrue("1.1", project1.exists());
 		assertTrue("1.2", project1.isSynchronized(IResource.DEPTH_INFINITE));
 		assertFalse("1.3", project2.exists());
@@ -1036,7 +1047,7 @@ public class IResourceTest extends ResourceTest {
 		try {
 			logListener = new LogListener();
 			Platform.addLogListener(logListener);
-			sourceProj.copy(desc, IResource.NONE, getMonitor());
+			sourceProj.copy(desc, IResource.NONE, createTestMonitor());
 		} finally {
 			Platform.removeLogListener(logListener);
 		}
@@ -1055,8 +1066,8 @@ public class IResourceTest extends ResourceTest {
 	private IProject createProject(boolean applyResFilter) throws CoreException {
 		IProject sourceProj = getWorkspace().getRoot().getProject(getName());
 		// create source project and apply resource filter.
-		sourceProj.create(getMonitor());
-		sourceProj.open(getMonitor());
+		sourceProj.create(createTestMonitor());
+		sourceProj.open(createTestMonitor());
 		// create a new filter.
 		if (applyResFilter) {
 			String MULTI_FILT_ID = "org.eclipse.ui.ide.multiFilter";
@@ -1064,7 +1075,7 @@ public class IResourceTest extends ResourceTest {
 			FileInfoMatcherDescription filterDesc = new FileInfoMatcherDescription(MULTI_FILT_ID, FILT_ARG);
 			int EXCL_FILE_GT = IResourceFilterDescription.EXCLUDE_ALL + IResourceFilterDescription.FILES
 					+ IResourceFilterDescription.INHERITABLE;
-			sourceProj.createFilter(EXCL_FILE_GT, filterDesc, IResource.BACKGROUND_REFRESH, getMonitor());
+			sourceProj.createFilter(EXCL_FILE_GT, filterDesc, IResource.BACKGROUND_REFRESH, createTestMonitor());
 		}
 		return sourceProj;
 	}
@@ -1204,10 +1215,10 @@ public class IResourceTest extends ResourceTest {
 		IProject project = root.getProject("Project");
 		IFolder folder = project.getFolder("folder");
 		IFile file = folder.getFile("target");
-		project.create(getMonitor());
-		project.open(getMonitor());
-		folder.create(true, true, getMonitor());
-		file.create(getRandomContents(), true, getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
+		folder.create(true, true, createTestMonitor());
+		file.create(getRandomContents(), true, createTestMonitor());
 
 		verifier = new ResourceDeltaVerifier();
 		getWorkspace().addResourceChangeListener(verifier, IResourceChangeEvent.POST_CHANGE);
@@ -1293,7 +1304,7 @@ public class IResourceTest extends ResourceTest {
 		verifier.reset();
 
 		/* remove trash */
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 
 		// isDerived should return false when resource does not exist
 		assertFalse("8.1", project.isDerived());
@@ -1315,10 +1326,10 @@ public class IResourceTest extends ResourceTest {
 		IProject project = root.getProject("Project");
 		IFolder folder = project.getFolder("folder");
 		IFile file = folder.getFile("target");
-		project.create(getMonitor());
-		project.open(getMonitor());
-		folder.create(true, true, getMonitor());
-		file.create(getRandomContents(), true, getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
+		folder.create(true, true, createTestMonitor());
+		file.create(getRandomContents(), true, createTestMonitor());
 
 		// all resources have independent derived flag; all non-derived by
 		// default; check each type
@@ -1376,7 +1387,7 @@ public class IResourceTest extends ResourceTest {
 		assertFalse("5.2.4", file.isDerived());
 
 		/* remove trash */
-		project.delete(true, true, getMonitor());
+		project.delete(true, true, createTestMonitor());
 
 		// isDerived should return false when resource does not exist
 		assertFalse("8.1", project.isDerived());
@@ -1394,7 +1405,7 @@ public class IResourceTest extends ResourceTest {
 	 */
 	public void testDerivedUsingAncestors() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject project = root.getProject(getUniqueString());
+		IProject project = root.getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = folder.getFile("file2.txt");
@@ -1564,7 +1575,7 @@ public class IResourceTest extends ResourceTest {
 
 	public void testGetModificationStamp() throws CoreException {
 		// cleanup auto-created resources
-		getWorkspace().getRoot().delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+		getWorkspace().getRoot().delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 
 		// setup
 		IResource[] resources = buildResources(getWorkspace().getRoot(), new String[] {"/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1"});
@@ -1582,7 +1593,7 @@ public class IResourceTest extends ResourceTest {
 		IProject project;
 		for (IProject project2 : projects) {
 			project = project2;
-			project.create(getMonitor());
+			project.create(createTestMonitor());
 			assertEquals("2.1." + project.getFullPath(), IResource.NULL_STAMP, project.getModificationStamp());
 		}
 
@@ -1591,7 +1602,7 @@ public class IResourceTest extends ResourceTest {
 		for (IProject project2 : projects) {
 			project = project2;
 			assertEquals("3.1." + project.getFullPath(), IResource.NULL_STAMP, project.getModificationStamp());
-			project.open(getMonitor());
+			project.open(createTestMonitor());
 			assertNotEquals("3.3." + project.getFullPath(), IResource.NULL_STAMP, project.getModificationStamp());
 			// cache the value for later use
 			table.put(project.getFullPath(), Long.valueOf(project.getModificationStamp()));
@@ -1609,7 +1620,7 @@ public class IResourceTest extends ResourceTest {
 		// close the projects. now all resources should have a null stamp again
 		for (IProject project2 : projects) {
 			project = project2;
-			project.close(getMonitor());
+			project.close(createTestMonitor());
 		}
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
@@ -1620,7 +1631,7 @@ public class IResourceTest extends ResourceTest {
 		// re-open the projects. all resources should have the same stamps
 		for (IProject project2 : projects) {
 			project = project2;
-			project.open(getMonitor());
+			project.open(createTestMonitor());
 		}
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.PROJECT) {
@@ -1635,7 +1646,7 @@ public class IResourceTest extends ResourceTest {
 		final Map<IPath, Long> tempTable = new HashMap<>(resources.length);
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
-				resource.touch(getMonitor());
+				resource.touch(createTestMonitor());
 				long stamp = resource.getModificationStamp();
 				Object v = table.get(resource.getFullPath());
 				assertNotNull("6.0." + resource.getFullPath(), v);
@@ -1650,7 +1661,7 @@ public class IResourceTest extends ResourceTest {
 
 		// mark all resources as non-local. all non-local resources have a null
 		// stamp
-		getWorkspace().getRoot().setLocal(false, IResource.DEPTH_INFINITE, getMonitor());
+		getWorkspace().getRoot().setLocal(false, IResource.DEPTH_INFINITE, createTestMonitor());
 		IResourceVisitor visitor = resource -> {
 			//projects and root are always local
 			if (resource.getType() == IResource.ROOT || resource.getType() == IResource.PROJECT) {
@@ -1665,7 +1676,7 @@ public class IResourceTest extends ResourceTest {
 		// mark all resources as local. none should have a null stamp and it
 		// should be different than
 		// the last one
-		getWorkspace().getRoot().setLocal(true, IResource.DEPTH_INFINITE, getMonitor());
+		getWorkspace().getRoot().setLocal(true, IResource.DEPTH_INFINITE, createTestMonitor());
 		tempTable.clear();
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
@@ -1682,7 +1693,7 @@ public class IResourceTest extends ResourceTest {
 		table.putAll(tempTable);
 		//set local on resources that are already local, this should not
 		// affect the modification stamp
-		getWorkspace().getRoot().setLocal(true, IResource.DEPTH_INFINITE, getMonitor());
+		getWorkspace().getRoot().setLocal(true, IResource.DEPTH_INFINITE, createTestMonitor());
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.ROOT) {
 				long newStamp = resource.getModificationStamp();
@@ -1695,7 +1706,7 @@ public class IResourceTest extends ResourceTest {
 		}
 
 		// delete all the resources so we can start over.
-		getWorkspace().getRoot().delete(true, getMonitor());
+		getWorkspace().getRoot().delete(true, createTestMonitor());
 
 		// none of the resources exist yet so all the modification stamps
 		// should be null
@@ -1721,7 +1732,7 @@ public class IResourceTest extends ResourceTest {
 			}
 		}
 		// now make all resources local and re-check stamps
-		getWorkspace().getRoot().setLocal(true, IResource.DEPTH_INFINITE, getMonitor());
+		getWorkspace().getRoot().setLocal(true, IResource.DEPTH_INFINITE, createTestMonitor());
 		visitor = resource -> {
 			if (resource.getType() != IResource.ROOT) {
 				assertNotEquals("12.1." + resource.getFullPath(), IResource.NULL_STAMP,
@@ -1745,9 +1756,9 @@ public class IResourceTest extends ResourceTest {
 
 		// Remove and re-create the file in a workspace operation
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
-			file.delete(false, getMonitor());
+			file.delete(false, createTestMonitor());
 			create(file, true);
-		}, getMonitor());
+		}, createTestMonitor());
 
 		assertNotEquals("1.0", modificationStamp, file.getModificationStamp());
 	}
@@ -1780,7 +1791,7 @@ public class IResourceTest extends ResourceTest {
 		assertEquals("2.2", workspaceLocation.append(topFile.getFullPath()), topFile.getRawLocation());
 		assertEquals("2.3", workspaceLocation.append(deepFile.getFullPath()), deepFile.getRawLocation());
 
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 		//closed project
 		assertNull("3.0", project.getRawLocation());
 		//resource in closed project
@@ -1800,10 +1811,10 @@ public class IResourceTest extends ResourceTest {
 		IPathVariableManager varMan = getWorkspace().getPathVariableManager();
 		try {
 			varMan.setValue(variableName, variableLocation);
-			project.open(getMonitor());
+			project.open(createTestMonitor());
 			IProjectDescription description = project.getDescription();
 			description.setLocation(projectLocation);
-			project.move(description, IResource.NONE, getMonitor());
+			project.move(description, IResource.NONE, createTestMonitor());
 
 			//open project not in default location
 			assertEquals("4.0", projectLocation, project.getRawLocation());
@@ -1812,7 +1823,7 @@ public class IResourceTest extends ResourceTest {
 			assertEquals("4.2", projectLocation.append(topFile.getProjectRelativePath()), topFile.getRawLocation());
 			assertEquals("4.3", projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
 
-			project.close(getMonitor());
+			project.close(createTestMonitor());
 
 			//closed project not in default location
 			assertEquals("5.0", projectLocation, project.getRawLocation());
@@ -1821,13 +1832,13 @@ public class IResourceTest extends ResourceTest {
 			assertEquals("5.2", projectLocation.append(topFile.getProjectRelativePath()), topFile.getRawLocation());
 			assertEquals("5.3", projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
 
-			project.open(getMonitor());
+			project.open(createTestMonitor());
 			ensureDoesNotExistInWorkspace(topFolder);
 			ensureDoesNotExistInWorkspace(topFile);
 			createFileInFileSystem(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(fileLocation));
 			folderLocation.toFile().mkdirs();
-			topFolder.createLink(folderLocation, IResource.NONE, getMonitor());
-			topFile.createLink(fileLocation, IResource.NONE, getMonitor());
+			topFolder.createLink(folderLocation, IResource.NONE, createTestMonitor());
+			topFile.createLink(fileLocation, IResource.NONE, createTestMonitor());
 			ensureExistsInWorkspace(deepFile, true);
 
 			//linked file
@@ -1837,7 +1848,7 @@ public class IResourceTest extends ResourceTest {
 			//resource below linked folder
 			assertEquals("6.2", folderLocation.append(deepFile.getName()), deepFile.getRawLocation());
 
-			project.close(getMonitor());
+			project.close(createTestMonitor());
 
 			//linked file in closed project (should default to project
 			// location)
@@ -1847,15 +1858,15 @@ public class IResourceTest extends ResourceTest {
 			//resource below linked folder in closed project
 			assertEquals("7.3", projectLocation.append(deepFile.getProjectRelativePath()), deepFile.getRawLocation());
 
-			project.open(getMonitor());
+			project.open(createTestMonitor());
 			IPath variableFolderLocation = IPath.fromOSString(variableName).append("/VarFolderName");
 			IPath variableFileLocation = IPath.fromOSString(variableName).append("/VarFileName");
 			ensureDoesNotExistInWorkspace(topFolder);
 			ensureDoesNotExistInWorkspace(topFile);
 			createFileInFileSystem(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(varMan.resolvePath(variableFileLocation)));
 			varMan.resolvePath(variableFolderLocation).toFile().mkdirs();
-			topFolder.createLink(variableFolderLocation, IResource.NONE, getMonitor());
-			topFile.createLink(variableFileLocation, IResource.NONE, getMonitor());
+			topFolder.createLink(variableFolderLocation, IResource.NONE, createTestMonitor());
+			topFile.createLink(variableFileLocation, IResource.NONE, createTestMonitor());
 			ensureExistsInWorkspace(deepFile, true);
 
 			//linked file with variable
@@ -1865,7 +1876,7 @@ public class IResourceTest extends ResourceTest {
 			//resource below linked folder with variable
 			assertEquals("8.3", varMan.resolvePath(variableFolderLocation).append(deepFile.getName()), deepFile.getRawLocation());
 
-			project.close(getMonitor());
+			project.close(createTestMonitor());
 
 			//linked file in closed project with variable
 			assertEquals("9.0", projectLocation.append(topFile.getProjectRelativePath()), topFile.getRawLocation());
@@ -1896,7 +1907,7 @@ public class IResourceTest extends ResourceTest {
 		assertEquals(true, b.isConflicting(multi));
 		assertEquals(true, multi.isConflicting(b));
 
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 	}
 
 	public void testIsConflicting2() throws CoreException {
@@ -1931,14 +1942,14 @@ public class IResourceTest extends ResourceTest {
 		assertEquals(true, wrapper.isConflicting(project));
 		assertEquals(true, multi.isConflicting(project));
 
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 	}
 
 	/**
 	 * This method tests the IResource.isSynchronized() operation */
 	public void testIsSynchronized() throws Exception {
 		//don't need auto-created resources
-		getWorkspace().getRoot().delete(true, true, getMonitor());
+		getWorkspace().getRoot().delete(true, true, createTestMonitor());
 
 		interestingResources = buildInterestingResources();
 		Object[][] inputs = { interestingResources, interestingResources, interestingStates(), interestingDepths() };
@@ -2069,24 +2080,24 @@ public class IResourceTest extends ResourceTest {
 		// listener)
 		project.create(null);
 		project.open(null);
-		assertExistsInWorkspace("1.3", project);
+		assertExistsInWorkspace(project);
 		// define an operation which will create a bunch of resources including
 		// a project.
 		for (IResource resource : resources) {
 			switch (resource.getType()) {
 			case IResource.FILE:
-				((IFile) resource).create(null, false, getMonitor());
+				((IFile) resource).create(null, false, createTestMonitor());
 				break;
 			case IResource.FOLDER:
-				((IFolder) resource).create(false, true, getMonitor());
+				((IFolder) resource).create(false, true, createTestMonitor());
 				break;
 			case IResource.PROJECT:
-				((IProject) resource).create(getMonitor());
+				((IProject) resource).create(createTestMonitor());
 				break;
 			}
 		}
-		assertExistsInWorkspace("1.5", resources);
-		project.delete(true, false, getMonitor());
+		assertExistsInWorkspace(resources);
+		project.delete(true, false, createTestMonitor());
 	}
 
 	/**
@@ -2192,11 +2203,11 @@ public class IResourceTest extends ResourceTest {
 		if (!isReadOnlySupported()) {
 			return;
 		}
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFile file = project.getFile("target");
-		project.create(getMonitor());
-		project.open(getMonitor());
-		file.create(getRandomContents(), true, getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
+		file.create(getRandomContents(), true, createTestMonitor());
 
 		// file
 		assertFalse("1.0", file.isReadOnly());
@@ -2217,7 +2228,7 @@ public class IResourceTest extends ResourceTest {
 	 * This method tests the IResource.refreshLocal() operation */
 	public void testRefreshLocal() throws Exception {
 		//don't need auto-created resources
-		getWorkspace().getRoot().delete(true, true, getMonitor());
+		getWorkspace().getRoot().delete(true, true, createTestMonitor());
 
 		interestingResources = buildInterestingResources();
 		Object[][] inputs = { interestingResources, interestingResources, interestingStates(), interestingDepths() };
@@ -2239,7 +2250,7 @@ public class IResourceTest extends ResourceTest {
 					return null;
 				}
 				setupBeforeState(receiver, target, state, depth, true);
-				receiver.refreshLocal(depth, getMonitor());
+				receiver.refreshLocal(depth, createTestMonitor());
 				return Boolean.TRUE;
 			}
 
@@ -2266,19 +2277,21 @@ public class IResourceTest extends ResourceTest {
 	public void testRefreshLocalWithDepth() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder folder = project.getFolder("Folder");
-		project.create(getMonitor());
-		project.open(getMonitor());
-		folder.create(true, true, getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
+		folder.create(true, true, createTestMonitor());
 
 		String[] hierarchy = {"Folder/", "Folder/Folder/", "Folder/Folder/Folder/", "Folder/Folder/Folder/Folder/"};
 		IResource[] resources = buildResources(folder, hierarchy);
-		ensureExistsInFileSystem(resources);
-		assertDoesNotExistInWorkspace("3.0", resources);
+		for (IResource resource : resources) {
+			ensureExistsInFileSystem(resource);
+		}
+		assertDoesNotExistInWorkspace(resources);
 
-		folder.refreshLocal(IResource.DEPTH_ONE, getMonitor());
+		folder.refreshLocal(IResource.DEPTH_ONE, createTestMonitor());
 
-		assertExistsInWorkspace("5.0", folder.getFolder("Folder"));
-		assertDoesNotExistInWorkspace("5.1", folder.getFolder("Folder/Folder"));
+		assertExistsInWorkspace(folder.getFolder("Folder"));
+		assertDoesNotExistInWorkspace(folder.getFolder("Folder/Folder"));
 	}
 
 	/**
@@ -2289,15 +2302,15 @@ public class IResourceTest extends ResourceTest {
 		 * file, when neither of them exist in the workspace.
 		 */
 		IProject project1 = getWorkspace().getRoot().getProject("Project");
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		IFolder folder = project1.getFolder("Folder");
 		IFile file = folder.getFile("File");
 
 		ensureExistsInFileSystem(file);
 
-		file.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		file.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 	}
 
 	/**
@@ -2333,7 +2346,7 @@ public class IResourceTest extends ResourceTest {
 			}
 		}
 		//should fail for non-existent resources
-		getWorkspace().getRoot().delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+		getWorkspace().getRoot().delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 		for (IResource resource : resources) {
 			//should fail except for root
 			ThrowingRunnable revertOperation = () -> resource.revertModificationStamp(1);
@@ -2349,7 +2362,7 @@ public class IResourceTest extends ResourceTest {
 	 * This method tests the IResource.setLocalTimeStamp() operation */
 	public void testSetLocalTimeStamp() throws Exception {
 		//don't need auto-created resources
-		getWorkspace().getRoot().delete(true, true, getMonitor());
+		getWorkspace().getRoot().delete(true, true, createTestMonitor());
 
 		interestingResources = buildInterestingResources();
 		Long[] interestingTimes = { Long.valueOf(-1), Long.valueOf(System.currentTimeMillis() - 1000),
@@ -2404,10 +2417,10 @@ public class IResourceTest extends ResourceTest {
 		IProject project = root.getProject("Project");
 		IFolder folder = project.getFolder("folder");
 		IFile file = folder.getFile("target");
-		project.create(getMonitor());
-		project.open(getMonitor());
-		folder.create(true, true, getMonitor());
-		file.create(getRandomContents(), true, getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
+		folder.create(true, true, createTestMonitor());
+		file.create(getRandomContents(), true, createTestMonitor());
 
 		// all resources have independent team private member flag
 		// all non-TPM by default; check each type
@@ -2465,7 +2478,7 @@ public class IResourceTest extends ResourceTest {
 		assertFalse("5.2.4", file.isTeamPrivateMember());
 
 		/* remove trash */
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 
 		// isTeamPrivateMember should return false when resource does not exist
 		assertFalse("8.1", project.isTeamPrivateMember());

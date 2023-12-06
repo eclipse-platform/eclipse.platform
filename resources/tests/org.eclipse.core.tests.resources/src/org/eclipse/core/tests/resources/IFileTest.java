@@ -15,6 +15,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -96,7 +102,7 @@ public class IFileTest extends ResourceTest {
 			//file in existent folder
 			if (project.exists() && project.isOpen()) {
 				IFolder folder = project.getFolder("ExistingFolder");
-				folder.create(true, true, getMonitor());
+				folder.create(true, true, createTestMonitor());
 				generateInterestingFiles(folder);
 			}
 		}
@@ -158,13 +164,13 @@ public class IFileTest extends ResourceTest {
 
 			//open project
 			IProject openProject = getWorkspace().getRoot().getProject("OpenProject");
-			openProject.create(getMonitor());
-			openProject.open(getMonitor());
+			openProject.create(createTestMonitor());
+			openProject.open(createTestMonitor());
 			projects[0] = openProject;
 
 			//closed project
 			IProject closedProject = getWorkspace().getRoot().getProject("ClosedProject");
-			closedProject.create(getMonitor());
+			closedProject.create(createTestMonitor());
 			projects[1] = closedProject;
 
 			//non-existent project
@@ -571,8 +577,8 @@ public class IFileTest extends ResourceTest {
 		monitor.prepare();
 		assertThrows(CoreException.class, () -> fileFromStream.create(content, false, monitor));
 		monitor.assertUsedUp();
-		assertDoesNotExistInWorkspace("6.2", fileFromStream);
-		assertDoesNotExistInFileSystem("6.3", fileFromStream);
+		assertDoesNotExistInWorkspace(fileFromStream);
+		assertDoesNotExistInFileSystem(fileFromStream);
 
 		// cleanup
 		folder = projects[0].getFolder("folder1");
@@ -612,8 +618,8 @@ public class IFileTest extends ResourceTest {
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
 		assertThrows(OperationCanceledException.class, () -> target.create(content, false, monitor));
 		monitor.assertUsedUp();
-		assertDoesNotExistInWorkspace("3.0", target);
-		assertDoesNotExistInFileSystem("4.0", target);
+		assertDoesNotExistInWorkspace(target);
+		assertDoesNotExistInFileSystem(target);
 	}
 
 	@Test
@@ -797,8 +803,8 @@ public class IFileTest extends ResourceTest {
 			assertThrows(CoreException.class, () -> target.setContents(content, IResource.NONE, monitor));
 			monitor.sanityCheck();
 		}
-		assertExistsInWorkspace("4.2", target);
-		assertExistsInFileSystem("4.3", target);
+		assertExistsInWorkspace(target);
+		assertExistsInFileSystem(target);
 	}
 
 	/**

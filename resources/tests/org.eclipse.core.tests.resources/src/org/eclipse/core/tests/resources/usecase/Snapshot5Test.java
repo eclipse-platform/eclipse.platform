@@ -13,16 +13,23 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 
 /**
  * Only verifies previous session.
  */
 public class Snapshot5Test extends SnapshotTest {
-	public void testVerifyPreviousSession() {
+	public void testVerifyPreviousSession() throws CoreException {
 		// MyProject
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
 		assertTrue("0.0", project.exists());
@@ -30,17 +37,17 @@ public class Snapshot5Test extends SnapshotTest {
 
 		// verify existence of children
 		IResource[] resources = buildResources(project, Snapshot4Test.defineHierarchy1());
-		assertExistsInFileSystem("2.1", resources);
-		assertExistsInWorkspace("2.2", resources);
+		assertExistsInFileSystem(resources);
+		assertExistsInWorkspace(resources);
 		IFile file = project.getFile("added file");
-		assertDoesNotExistInFileSystem("2.3", file);
-		assertDoesNotExistInWorkspace("2.4", file);
+		assertDoesNotExistInFileSystem(file);
+		assertDoesNotExistInWorkspace(file);
 		file = project.getFile("yet another file");
-		assertDoesNotExistInFileSystem("2.5", file);
-		assertDoesNotExistInWorkspace("2.6", file);
+		assertDoesNotExistInFileSystem(file);
+		assertDoesNotExistInWorkspace(file);
 		IFolder folder = project.getFolder("a folder");
-		assertDoesNotExistInFileSystem("2.7", folder);
-		assertDoesNotExistInWorkspace("2.8", folder);
+		assertDoesNotExistInFileSystem(folder);
+		assertDoesNotExistInWorkspace(folder);
 
 		// Project2
 		project = getWorkspace().getRoot().getProject(PROJECT_2);

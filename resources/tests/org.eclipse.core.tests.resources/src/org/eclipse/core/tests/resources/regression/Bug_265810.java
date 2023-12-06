@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,14 +48,14 @@ public class Bug_265810 extends ResourceTest {
 
 	public void testBug() throws Throwable {
 		// create a project
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		project.create(new NullProgressMonitor());
 		project.open(new NullProgressMonitor());
 
 		// create a linked resource
-		final IFile file = project.getFile(getUniqueString());
+		final IFile file = project.getFile(createUniqueString());
 		// the file should not exist yet
-		assertDoesNotExistInWorkspace("2.0", file);
+		assertDoesNotExistInWorkspace(file);
 		file.createLink(createFolderAtRandomLocation(), IResource.NONE, new NullProgressMonitor());
 		file.setContents(getContents("contents for a file"), IResource.NONE, new NullProgressMonitor());
 
@@ -61,7 +65,7 @@ public class Bug_265810 extends ResourceTest {
 		// create a new linked file
 		final IFile newFile = project.getFile("newFile");
 		// the file should not exist yet
-		assertDoesNotExistInWorkspace("5.0", newFile);
+		assertDoesNotExistInWorkspace(newFile);
 		newFile.createLink(createFolderAtRandomLocation(), IResource.NONE, new NullProgressMonitor());
 
 		// save the .project [2] content

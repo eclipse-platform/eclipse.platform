@@ -13,13 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import junit.framework.Test;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -45,10 +48,10 @@ public class TestBug30015 extends WorkspaceSessionTest {
 		IProjectDescription description = getWorkspace().newProjectDescription(PROJECT_NAME);
 		description.setLocation(rawLocation);
 		//create the project
-		project.create(description, getMonitor());
-		project.open(getMonitor());
+		project.create(description, createTestMonitor());
+		project.open(createTestMonitor());
 		//save and shutdown
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**
@@ -67,6 +70,6 @@ public class TestBug30015 extends WorkspaceSessionTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestBug30015.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug30015.class);
 	}
 }

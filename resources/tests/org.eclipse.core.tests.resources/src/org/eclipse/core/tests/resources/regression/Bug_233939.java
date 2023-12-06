@@ -14,6 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+
 import java.net.URI;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
@@ -35,9 +39,9 @@ public class Bug_233939 extends ResourceTest {
 	 */
 	protected void symLinkAndRefresh(IContainer container, String linkName, IPath linkTarget) throws CoreException {
 		createSymLink(container.getLocation().toFile(), linkName, linkTarget.toOSString(), false);
-		container.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		container.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		IResource theLink = container.findMember(linkName);
-		assertExistsInWorkspace("2.1", theLink);
+		assertExistsInWorkspace(theLink);
 		assertTrue("2.2", theLink.getResourceAttributes().isSymbolicLink());
 	}
 
@@ -58,12 +62,12 @@ public class Bug_233939 extends ResourceTest {
 		String fileName = "file.txt";
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject project = root.getProject(getUniqueString());
+		IProject project = root.getProject(createUniqueString());
 		IFile file = project.getFile(fileName);
 
 		// create a project
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		// create a file: getTempStore() will be cleaned up in tearDown()
 		IFileStore tempFileStore = getTempStore().getChild(fileName);
@@ -95,8 +99,8 @@ public class Bug_233939 extends ResourceTest {
 
 		// create two projects with a symlink to the folder each
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject projectA = root.getProject(getUniqueString());
-		IProject projectB = root.getProject(getUniqueString());
+		IProject projectA = root.getProject(createUniqueString());
+		IProject projectB = root.getProject(createUniqueString());
 		create(projectA, true);
 		create(projectB, true);
 		symLinkAndRefresh(projectA, "folderA", tempFolderPath);

@@ -43,7 +43,6 @@ public class TeamAdapterFactory implements IAdapterFactory {
 
 	private static final ISynchronizationCompareAdapter COMPARE_ADAPTER = new ResourceModelPersistenceAdapter();
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		if(adaptableObject instanceof DiffNode && adapterType == IWorkbenchAdapter.class) {

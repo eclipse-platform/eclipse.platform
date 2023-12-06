@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
 import java.io.File;
@@ -35,13 +37,9 @@ import org.eclipse.core.tests.resources.ResourceTest;
  */
 public class Bug_303517 extends ResourceTest {
 
-	String[] resources = new String[] {"/", "/Bug303517/", "/Bug303517/Folder/", "/Bug303517/Folder/Resource",};
+	private final String[] resourcePaths = new String[] { "/", "/Bug303517/", "/Bug303517/Folder/",
+			"/Bug303517/Folder/Resource", };
 	private boolean originalRefreshSetting;
-
-	@Override
-	public String[] defineHierarchy() {
-		return resources;
-	}
 
 	@Override
 	protected void setUp() throws Exception {
@@ -50,6 +48,8 @@ public class Bug_303517 extends ResourceTest {
 		originalRefreshSetting = prefs.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
 		prefs.putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, true);
+		IResource[] resources = buildResources(getWorkspace().getRoot(), resourcePaths);
+		ensureExistsInWorkspace(resources, true);
 	}
 
 	@Override
@@ -64,8 +64,7 @@ public class Bug_303517 extends ResourceTest {
 	 * Tests that file deleted is updated after #getContents
 	 */
 	public void testExists() throws Exception {
-		createHierarchy();
-		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resources[resources.length - 1]));
+		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
 		assertTrue("1.0", f.exists());
 		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
 
@@ -79,7 +78,7 @@ public class Bug_303517 extends ResourceTest {
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
+		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// Core.resources should be aware that the file no longer exists...
 		assertFalse("1.4", f.exists());
@@ -89,8 +88,7 @@ public class Bug_303517 extends ResourceTest {
 	 * Tests that file discovered out-of-sync during #getContents is updated
 	 */
 	public void testGetContents() throws Exception {
-		createHierarchy();
-		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resources[resources.length - 1]));
+		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
 		assertTrue("1.0", f.exists());
 		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
 
@@ -105,7 +103,7 @@ public class Bug_303517 extends ResourceTest {
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
+		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// File is now in sync.
 		try (InputStream in = f.getContents(false)) {
@@ -116,8 +114,7 @@ public class Bug_303517 extends ResourceTest {
 	 * Tests that file discovered out-of-sync during #getContents is updated
 	 */
 	public void testGetContentsTrue() throws Exception {
-		createHierarchy();
-		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resources[resources.length - 1]));
+		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
 		assertTrue("1.0", f.exists());
 		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
 
@@ -128,7 +125,7 @@ public class Bug_303517 extends ResourceTest {
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
+		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// File is now in sync.
 		try (InputStream in = f.getContents()) {
@@ -148,8 +145,7 @@ public class Bug_303517 extends ResourceTest {
 	 * Tests that resource discovered out-of-sync during #isSynchronized is updated
 	 */
 	public void testIsSynchronized() throws Exception {
-		createHierarchy();
-		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resources[resources.length - 1]));
+		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
 		assertTrue("1.0", f.exists());
 		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
 
@@ -159,7 +155,7 @@ public class Bug_303517 extends ResourceTest {
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
+		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// File is now in sync.
 		assertTrue("1.3", f.isSynchronized(IResource.DEPTH_ONE));
@@ -169,8 +165,7 @@ public class Bug_303517 extends ResourceTest {
 	 * Tests that when changing resource gender is correctly picked up.
 	 */
 	public void testChangeResourceGender() throws Exception {
-		createHierarchy();
-		IResource f = getWorkspace().getRoot().getFile(IPath.fromOSString(resources[resources.length - 1]));
+		IResource f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
 		assertTrue("1.0", f.exists());
 		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
 
@@ -187,13 +182,13 @@ public class Bug_303517 extends ResourceTest {
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
-		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, getMonitor());
+		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// File is no longer a file - i.e. still out-of-sync
 		assertFalse("1.3", f.exists());
 		assertFalse("1.4", f.isSynchronized(IResource.DEPTH_ONE));
 		// Folder + child are now in-sync
-		f = getWorkspace().getRoot().getFolder(IPath.fromOSString(resources[resources.length - 1]));
+		f = getWorkspace().getRoot().getFolder(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
 		assertTrue("1.5", f.exists());
 		assertTrue("1.6", f.isSynchronized(IResource.DEPTH_INFINITE));
 	}

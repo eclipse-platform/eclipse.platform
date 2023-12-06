@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+
 import junit.framework.Test;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IFolder;
@@ -22,7 +26,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -35,23 +38,23 @@ public class TestCreateLinkedResourceInHiddenProject extends WorkspaceSerializat
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
 		IProjectDescription desc = new ProjectDescription();
 		desc.setName(PROJECT);
-		project.create(desc, IResource.HIDDEN, getMonitor());
-		project.open(getMonitor());
+		project.create(desc, IResource.HIDDEN, createTestMonitor());
+		project.open(createTestMonitor());
 
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 	}
 
 	public void test2() throws CoreException {
-		IPath path = getTempDir().addTrailingSeparator().append(getUniqueString());
+		IPath path = getTempDir().addTrailingSeparator().append(createUniqueString());
 		path.toFile().mkdir();
 
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
-		IFolder folder = project.getFolder(getUniqueString());
+		IFolder folder = project.getFolder(createUniqueString());
 
-		folder.createLink(path, IResource.NONE, getMonitor());
+		folder.createLink(path, IResource.NONE, createTestMonitor());
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestCreateLinkedResourceInHiddenProject.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestCreateLinkedResourceInHiddenProject.class);
 	}
 }

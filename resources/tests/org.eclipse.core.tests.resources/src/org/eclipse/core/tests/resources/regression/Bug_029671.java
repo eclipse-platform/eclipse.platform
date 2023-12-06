@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -47,14 +51,14 @@ public class Bug_029671 extends ResourceTest {
 			IFolder targetFolder = project.getFolder("target");
 			IFile targetFile = targetFolder.getFile(file.getName());
 
-			folder.move(targetFolder.getFullPath(), false, false, getMonitor());
+			folder.move(targetFolder.getFullPath(), false, false, createTestMonitor());
 			assertTrue("3.0", folder.isPhantom());
 			assertTrue("4.0", file.isPhantom());
 
-			assertExistsInWorkspace("5.0", targetFolder);
+			assertExistsInWorkspace(targetFolder);
 			assertTrue("5.1", !targetFolder.isPhantom());
 
-			assertExistsInWorkspace("6.0", targetFile);
+			assertExistsInWorkspace(targetFile);
 			assertTrue("6.1", !targetFile.isPhantom());
 		} finally {
 			synchronizer.remove(partner);

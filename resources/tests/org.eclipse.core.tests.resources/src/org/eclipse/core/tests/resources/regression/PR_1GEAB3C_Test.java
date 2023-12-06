@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
+
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -88,7 +93,7 @@ public class PR_1GEAB3C_Test extends ResourceTest {
 				monitor.done();
 			}
 		};
-		getWorkspace().run(body, getMonitor());
+		getWorkspace().run(body, createTestMonitor());
 		assertDelta();
 	}
 }

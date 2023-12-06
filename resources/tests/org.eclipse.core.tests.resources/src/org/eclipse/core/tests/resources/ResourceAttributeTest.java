@@ -15,6 +15,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
+
 import java.io.File;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
@@ -157,7 +164,7 @@ public class ResourceAttributeTest extends ResourceTest {
 	public void testClosedProject() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		ensureExistsInWorkspace(project, true);
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 		assertNull("1.0", project.getResourceAttributes());
 	}
 
@@ -265,8 +272,8 @@ public class ResourceAttributeTest extends ResourceTest {
 	public void testAttributes() throws CoreException {
 		int[] attributes = new int[] {EFS.ATTRIBUTE_GROUP_READ, EFS.ATTRIBUTE_GROUP_WRITE, EFS.ATTRIBUTE_GROUP_EXECUTE, EFS.ATTRIBUTE_OTHER_READ, EFS.ATTRIBUTE_OTHER_WRITE, EFS.ATTRIBUTE_OTHER_EXECUTE};
 
-		IProject project = getWorkspace().getRoot().getProject(getUniqueString());
-		IFile file = project.getFile(getUniqueString());
+		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
+		IFile file = project.getFile(createUniqueString());
 		ensureExistsInWorkspace(file, getRandomContents());
 
 		for (int attribute : attributes) {

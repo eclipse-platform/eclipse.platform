@@ -14,6 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+
 import java.io.ByteArrayInputStream;
 import java.util.Map;
 import junit.framework.Test;
@@ -28,7 +32,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.eclipse.core.tests.resources.AutomatedResourceTests;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -68,12 +71,12 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 		IProjectDescription description = project1.getDescription();
 		description.setBuildSpec(new ICommand[] { createCommand(description, "Project1Build1"),
 				createCommand(description, "Project1Build2") });
-		project1.setDescription(description, getMonitor());
+		project1.setDescription(description, createTestMonitor());
 
 		// initial build -- created sortedFile1
-		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	protected ICommand createCommand(IProjectDescription description, String builderId) {
@@ -90,7 +93,7 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 	 * about changes made by Builder2 during the last build phase.
 	 */
 	public void test2() throws CoreException {
-		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		//Only builder1 should have been built
 		SortBuilder[] builders = SortBuilder.allInstances();
 		assertEquals("1.0", 2, builders.length);
@@ -100,7 +103,7 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 	}
 
 	public static Test suite() {
-		return new WorkspaceSessionTestSuite(AutomatedResourceTests.PI_RESOURCES_TESTS, TestMultipleBuildersOfSameType.class);
+		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestMultipleBuildersOfSameType.class);
 	}
 
 }

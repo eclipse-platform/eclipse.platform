@@ -14,6 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -30,13 +34,13 @@ public class Bug_329836 extends ResourceTest {
 			return;
 		}
 
-		IFileStore fileStore = getTempStore().getChild(getUniqueString());
+		IFileStore fileStore = getTempStore().getChild(createUniqueString());
 		createFileInFileSystem(fileStore);
 
 		// set EFS.ATTRIBUTE_READ_ONLY which also sets EFS.IMMUTABLE on Mac
 		IFileInfo info = fileStore.fetchInfo();
 		info.setAttribute(EFS.ATTRIBUTE_READ_ONLY, true);
-		fileStore.putInfo(info, EFS.SET_ATTRIBUTES, getMonitor());
+		fileStore.putInfo(info, EFS.SET_ATTRIBUTES, createTestMonitor());
 
 		// read the info again
 		info = fileStore.fetchInfo();
@@ -50,7 +54,7 @@ public class Bug_329836 extends ResourceTest {
 		// unset EFS.ATTRIBUTE_READ_ONLY which also unsets EFS.IMMUTABLE on Mac
 
 		info.setAttribute(EFS.ATTRIBUTE_READ_ONLY, false);
-		fileStore.putInfo(info, EFS.SET_ATTRIBUTES, getMonitor());
+		fileStore.putInfo(info, EFS.SET_ATTRIBUTES, createTestMonitor());
 
 		// read the info again
 		info = fileStore.fetchInfo();

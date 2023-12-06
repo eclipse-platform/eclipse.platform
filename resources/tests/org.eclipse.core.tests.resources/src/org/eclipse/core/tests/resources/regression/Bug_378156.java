@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+
 import java.util.concurrent.Semaphore;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
@@ -86,7 +91,7 @@ public class Bug_378156 extends ResourceTest {
 		ICommand command = desc.newCommand();
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		desc.setBuildSpec(new ICommand[] {command});
-		project1.setDescription(desc, getMonitor());
+		project1.setDescription(desc, createTestMonitor());
 		ensureExistsInWorkspace(file, getRandomContents());
 		//build may not be triggered immediately
 		Thread.sleep(2000);
@@ -128,7 +133,7 @@ public class Bug_378156 extends ResourceTest {
 		ICommand command = desc.newCommand();
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		desc.setBuildSpec(new ICommand[] {command});
-		project1.setDescription(desc, getMonitor());
+		project1.setDescription(desc, createTestMonitor());
 		ensureExistsInWorkspace(file, getRandomContents());
 		waitForBuild();
 
