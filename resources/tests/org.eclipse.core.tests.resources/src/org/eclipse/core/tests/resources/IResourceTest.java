@@ -21,11 +21,15 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
@@ -1849,7 +1853,7 @@ public class IResourceTest extends ResourceTest {
 			project.open(createTestMonitor());
 			removeFromWorkspace(topFolder);
 			removeFromWorkspace(topFile);
-			createFileInFileSystem(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(fileLocation));
+			createInFileSystem(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(fileLocation));
 			folderLocation.toFile().mkdirs();
 			topFolder.createLink(folderLocation, IResource.NONE, createTestMonitor());
 			topFile.createLink(fileLocation, IResource.NONE, createTestMonitor());
@@ -1877,7 +1881,7 @@ public class IResourceTest extends ResourceTest {
 			IPath variableFileLocation = IPath.fromOSString(variableName).append("/VarFileName");
 			removeFromWorkspace(topFolder);
 			removeFromWorkspace(topFile);
-			createFileInFileSystem(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(varMan.resolvePath(variableFileLocation)));
+			createInFileSystem(EFS.getFileSystem(EFS.SCHEME_FILE).getStore(varMan.resolvePath(variableFileLocation)));
 			varMan.resolvePath(variableFolderLocation).toFile().mkdirs();
 			topFolder.createLink(variableFolderLocation, IResource.NONE, createTestMonitor());
 			topFile.createLink(variableFileLocation, IResource.NONE, createTestMonitor());

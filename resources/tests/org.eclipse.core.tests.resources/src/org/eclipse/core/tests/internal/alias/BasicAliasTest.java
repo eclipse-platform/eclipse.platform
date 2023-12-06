@@ -19,6 +19,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
@@ -441,7 +443,7 @@ public class BasicAliasTest extends ResourceTest {
 		assertTrue("3.0", dirStore.fetchInfo().isDirectory());
 
 		IFileStore childStore = dirStore.getChild("child");
-		createFileInFileSystem(childStore);
+		createInFileSystem(childStore);
 		assertTrue("4.0", childStore.fetchInfo().exists());
 
 		// Create and open the first project. Project links to the directory.
@@ -712,7 +714,7 @@ public class BasicAliasTest extends ResourceTest {
 
 		// delete the project that contains the links
 		IFile fileInLinkedProject = pLinked.getFile("fileInLinkedProject.txt");
-		createFileInFileSystem(((Resource) fileInLinkedProject).getStore());
+		createInFileSystem(((Resource) fileInLinkedProject).getStore());
 		// failure expected here because it is out of sync
 		assertThrows(CoreException.class, () -> getWorkspace().getRoot().delete(IResource.NONE, createTestMonitor()));
 		waitForRefresh();

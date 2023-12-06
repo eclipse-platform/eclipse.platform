@@ -14,8 +14,11 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -77,7 +80,7 @@ public class FilteredResourceTest extends ResourceTest {
 		closedProject.close(createTestMonitor());
 		removeFromWorkspace(new IResource[] {nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolder2InOtherExistingProject, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder});
 		resolve(localFolder).toFile().mkdirs();
-		createFileInFileSystem(resolve(localFile));
+		createInFileSystem(resolve(localFile));
 	}
 
 	/**
@@ -512,7 +515,7 @@ public class FilteredResourceTest extends ResourceTest {
 		project.close(createTestMonitor());
 		assertTrue("3.1", !project.isOpen());
 		// Create a file under existingFolderInExistingFolder
-		createFileInFileSystem(childLoc.append("foo"));
+		createInFileSystem(childLoc.append("foo"));
 		// Reopen the project
 		project.open(IResource.NONE, createTestMonitor());
 

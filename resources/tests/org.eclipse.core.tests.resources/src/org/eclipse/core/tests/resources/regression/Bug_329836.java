@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
@@ -34,7 +35,7 @@ public class Bug_329836 extends ResourceTest {
 		}
 
 		IFileStore fileStore = getTempStore().getChild(createUniqueString());
-		createFileInFileSystem(fileStore);
+		createInFileSystem(fileStore);
 
 		// set EFS.ATTRIBUTE_READ_ONLY which also sets EFS.IMMUTABLE on Mac
 		IFileInfo info = fileStore.fetchInfo();

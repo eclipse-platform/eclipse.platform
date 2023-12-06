@@ -14,6 +14,8 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
@@ -93,7 +95,7 @@ public class Bug_160251 extends ResourceTest {
 		createInWorkspace(source);
 		createInWorkspace(sourceFile);
 		destination.mkdir(EFS.NONE, createTestMonitor());
-		createFileInFileSystem(destinationFile);
+		createInFileSystem(destinationFile);
 
 		//move the project (should fail)
 		IProjectDescription description = source.getDescription();

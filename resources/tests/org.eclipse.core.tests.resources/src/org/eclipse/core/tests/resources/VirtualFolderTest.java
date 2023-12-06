@@ -19,6 +19,8 @@ import static java.io.InputStream.nullInputStream;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
@@ -146,7 +148,7 @@ public class VirtualFolderTest extends ResourceTest {
 		IFile linkedFile = existingVirtualFolderInExistingProject.getFile(createUniqueString());
 		IFolder linkedFolder = existingVirtualFolderInExistingProject.getFolder(createUniqueString());
 
-		createFileInFileSystem(fileLocation);
+		createInFileSystem(fileLocation);
 		folderLocation.toFile().mkdir();
 
 		linkedFolder.createLink(folderLocation, IResource.NONE, createTestMonitor());
@@ -193,7 +195,7 @@ public class VirtualFolderTest extends ResourceTest {
 
 		assertDoesNotExistInWorkspace(new IResource[] { folder, file, childFile });
 
-		createFileInFileSystem(fileLocation);
+		createInFileSystem(fileLocation);
 		folderLocation.toFile().mkdir();
 
 		folder.createLink(folderLocation, IResource.NONE, createTestMonitor());

@@ -14,8 +14,11 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -58,7 +61,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 
 		IFile link = project.getFile("file.txt");
 		IFileStore fileStore = getTempStore();
-		createFileInFileSystem(fileStore);
+		createInFileSystem(fileStore);
 		assertEquals("0.1", EFS.SCHEME_FILE, fileStore.getFileSystem().getScheme());
 		IPath fileLocationLower = URIUtil.toPath(fileStore.toURI());
 		fileLocationLower = fileLocationLower.setDevice(fileLocationLower.getDevice().toLowerCase());

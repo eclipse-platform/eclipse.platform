@@ -44,6 +44,7 @@ import org.eclipse.core.resources.team.FileModificationValidationContext;
 import org.eclipse.core.resources.team.FileModificationValidator;
 import org.eclipse.core.resources.team.IMoveDeleteHook;
 import org.eclipse.core.resources.team.IResourceTree;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.*;
 
 public class RepositoryProviderTests extends TeamTest {
 	public RepositoryProviderTests() {
