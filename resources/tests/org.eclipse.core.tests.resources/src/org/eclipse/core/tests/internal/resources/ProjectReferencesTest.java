@@ -55,7 +55,7 @@ public class ProjectReferencesTest extends ResourceTest {
 		project1 = getWorkspace().getRoot().getProject("ProjectReferencesTest_p1");
 		project2 = getWorkspace().getRoot().getProject("ProjectReferencesTest_p2");
 		project3 = getWorkspace().getRoot().getProject("ProjectReferencesTest_p3");
-		ensureExistsInWorkspace(new IProject[] {project0, project1, project2, project3});
+		createInWorkspace(new IProject[] {project0, project1, project2, project3});
 		setUpVariants(project0);
 		setUpVariants(project1);
 		setUpVariants(project2);

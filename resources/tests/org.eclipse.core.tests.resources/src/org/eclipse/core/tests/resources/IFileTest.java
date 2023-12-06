@@ -223,7 +223,7 @@ public class IFileTest extends ResourceTest {
 			return;
 		}
 		if (file.getName().equals(WORKSPACE_ONLY)) {
-			ensureExistsInWorkspace(file);
+			createInWorkspace(file);
 			ensureDoesNotExistInFileSystem(file);
 			return;
 		}
@@ -236,11 +236,11 @@ public class IFileTest extends ResourceTest {
 			return;
 		}
 		if (file.getName().equals(EXISTING)) {
-			ensureExistsInWorkspace(file);
+			createInWorkspace(file);
 			return;
 		}
 		if (file.getName().equals(OUT_OF_SYNC)) {
-			ensureExistsInWorkspace(file);
+			createInWorkspace(file);
 			ensureOutOfSync(file);
 			return;
 		}
@@ -425,7 +425,7 @@ public class IFileTest extends ResourceTest {
 	@Test
 	public void testCreateDerived() throws CoreException {
 		IFile derived = projects[0].getFile("derived.txt");
-		ensureExistsInWorkspace(projects[0]);
+		createInWorkspace(projects[0]);
 		ensureDoesNotExistInWorkspace(derived);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
@@ -447,7 +447,7 @@ public class IFileTest extends ResourceTest {
 	@Test
 	public void testDeltaOnCreateDerived() throws CoreException {
 		IFile derived = projects[0].getFile("derived.txt");
-		ensureExistsInWorkspace(projects[0]);
+		createInWorkspace(projects[0]);
 
 		ResourceDeltaVerifier verifier = new ResourceDeltaVerifier();
 		getWorkspace().addResourceChangeListener(verifier, IResourceChangeEvent.POST_CHANGE);
@@ -464,7 +464,7 @@ public class IFileTest extends ResourceTest {
 	@Test
 	public void testCreateDerivedTeamPrivate() throws CoreException {
 		IFile teamPrivate = projects[0].getFile("teamPrivateDerived.txt");
-		ensureExistsInWorkspace(projects[0]);
+		createInWorkspace(projects[0]);
 		ensureDoesNotExistInWorkspace(teamPrivate);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
@@ -487,7 +487,7 @@ public class IFileTest extends ResourceTest {
 	@Test
 	public void testCreateTeamPrivate() throws CoreException {
 		IFile teamPrivate = projects[0].getFile("teamPrivate.txt");
-		ensureExistsInWorkspace(projects[0]);
+		createInWorkspace(projects[0]);
 		ensureDoesNotExistInWorkspace(teamPrivate);
 
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
@@ -942,7 +942,7 @@ public class IFileTest extends ResourceTest {
 		assertThrows(CoreException.class, () -> target.getPersistentProperty(name));
 		assertThrows(CoreException.class, () -> target.setPersistentProperty(name, value));
 
-		ensureExistsInWorkspace(target);
+		createInWorkspace(target);
 		target.setPersistentProperty(name, value);
 		// see if we can get the property
 		assertTrue("2.0", target.getPersistentProperty(name).equals(value));

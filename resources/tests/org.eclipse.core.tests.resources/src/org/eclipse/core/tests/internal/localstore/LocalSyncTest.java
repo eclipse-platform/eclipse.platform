@@ -49,7 +49,7 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		// create resources
 		IResource[] resources = buildResources(project,
 				new String[] { "/File1", "/Folder1/", "/Folder1/File1", "/Folder1/Folder2/" });
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 
 		// delete project's default directory
 		Workspace.clear(project.getLocation().toFile());
@@ -90,10 +90,10 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		IResource folder = project.getFolder(IPath.fromOSString("folder"));
 
 		// add resources to the workspace
-		ensureExistsInWorkspace((IFile) index, "");
-		ensureExistsInWorkspace(toc);
-		ensureExistsInWorkspace((IFile) file, "");
-		ensureExistsInWorkspace(folder);
+		createInWorkspace((IFile) index, "");
+		createInWorkspace(toc);
+		createInWorkspace((IFile) file, "");
+		createInWorkspace(folder);
 
 		// run synchronize
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);

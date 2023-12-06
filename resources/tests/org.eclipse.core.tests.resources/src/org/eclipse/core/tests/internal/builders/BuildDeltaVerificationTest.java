@@ -338,7 +338,7 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 
 	public void testReuseCachedDelta() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("delta-cache");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		IProjectDescription description = project.getDescription();
 		description.setBuildSpec(new ICommand[] { createCommand(description, EmptyDeltaBuilder.BUILDER_NAME, null),

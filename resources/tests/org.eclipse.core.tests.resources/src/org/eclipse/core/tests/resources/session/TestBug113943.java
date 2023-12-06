@@ -47,7 +47,7 @@ public class TestBug113943 extends WorkspaceSerializationTest {
 		IProject project = workspace.getRoot().getProject("Project1");
 		IFolder link = project.getFolder("link");
 		IFile linkChild = link.getFile("child.txt");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		IFileStore parent = EFS.getStore(location.toFile().toURI());
 		IFileStore child = parent.getChild(linkChild.getName());
 		parent.mkdir(EFS.NONE, createTestMonitor());

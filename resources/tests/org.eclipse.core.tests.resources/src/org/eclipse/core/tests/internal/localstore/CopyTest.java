@@ -41,9 +41,9 @@ public class CopyTest extends LocalStoreTest {
 		/* create folder and file */
 		IFolder folder = testProjects[0].getFolder("folder");
 		IFile file = folder.getFile("file.txt");
-		ensureExistsInWorkspace(folder);
+		createInWorkspace(folder);
 		createInFileSystem(folder);
-		ensureExistsInWorkspace(file);
+		createInWorkspace(file);
 		createInFileSystem(file);
 		/* add some properties to file (server, local and session) */
 		QualifiedName[] propNames = new QualifiedName[numberOfProperties];

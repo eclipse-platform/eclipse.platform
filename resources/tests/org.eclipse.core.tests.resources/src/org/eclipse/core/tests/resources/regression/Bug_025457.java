@@ -47,9 +47,9 @@ public class Bug_025457 extends ResourceTest {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("file.txt");
 		IFile destFile = source.getFile("File.txt");
-		ensureExistsInWorkspace(source);
+		createInWorkspace(source);
 		final String content = getRandomString();
-		ensureExistsInWorkspace(sourceFile, content);
+		createInWorkspace(sourceFile, content);
 
 		//open a stream in the source to cause the rename to fail
 		try (InputStream stream = sourceFile.getContents()) {
@@ -78,9 +78,9 @@ public class Bug_025457 extends ResourceTest {
 		IFile sourceFile = sourceFolder.getFile("Important.txt");
 		IFolder destFolder = source.getFolder("Folder");
 		IFile destFile = destFolder.getFile("Important.txt");
-		ensureExistsInWorkspace(source);
-		ensureExistsInWorkspace(sourceFolder);
-		ensureExistsInWorkspace(sourceFile);
+		createInWorkspace(source);
+		createInWorkspace(sourceFolder);
+		createInWorkspace(sourceFile);
 
 		//open a stream in the source to cause the rename to fail
 		try (InputStream stream = sourceFile.getContents()) {
@@ -107,8 +107,8 @@ public class Bug_025457 extends ResourceTest {
 		IProject destination = getWorkspace().getRoot().getProject("Project");
 		IFile sourceFile = source.getFile("Important.txt");
 		IFile destFile = destination.getFile("Important.txt");
-		ensureExistsInWorkspace(source);
-		ensureExistsInWorkspace(sourceFile);
+		createInWorkspace(source);
+		createInWorkspace(sourceFile);
 
 		//open a stream in the source to cause the rename to fail
 		try (InputStream stream = sourceFile.getContents()) {

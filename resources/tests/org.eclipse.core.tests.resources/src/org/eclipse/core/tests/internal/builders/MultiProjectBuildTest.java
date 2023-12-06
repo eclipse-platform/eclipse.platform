@@ -111,7 +111,7 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 		file3 = project3.getFile("File3");
 		file4 = project4.getFile("File4");
 		IResource[] resources = {project1, project2, project3, project4, file1, file2, file3, file4};
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 	}
 
 	/**

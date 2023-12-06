@@ -83,7 +83,7 @@ public class NLTest extends ResourceTest {
 
 		String[] files = getFileNames(Locale.ENGLISH.getLanguage());
 		IResource[] resources = buildResources(project, files);
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertExistsInFileSystem(resources);
 		assertExistsInWorkspace(resources);
@@ -91,7 +91,7 @@ public class NLTest extends ResourceTest {
 
 		files = getFileNames(Locale.getDefault().getLanguage());
 		resources = buildResources(project, files);
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertExistsInFileSystem(resources);
 		assertExistsInWorkspace(resources);

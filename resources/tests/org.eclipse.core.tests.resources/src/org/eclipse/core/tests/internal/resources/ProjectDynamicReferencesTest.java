@@ -54,7 +54,7 @@ public class ProjectDynamicReferencesTest extends ResourceTest {
 		project0 = getWorkspace().getRoot().getProject(PROJECT_0_NAME);
 		project1 = getWorkspace().getRoot().getProject("ProjectDynamicReferencesTest_p1");
 		project2 = getWorkspace().getRoot().getProject("ProjectDynamicReferencesTest_p2");
-		ensureExistsInWorkspace(new IProject[] { project0, project1, project2 });
+		createInWorkspace(new IProject[] { project0, project1, project2 });
 		addBuilder(project0);
 		addBuilder(project1);
 		addBuilder(project2);
@@ -227,7 +227,7 @@ public class ProjectDynamicReferencesTest extends ResourceTest {
 		IFile projectFile = project0.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		String projectDescription = readStringInFileSystem(projectFile);
 		projectDescription = projectDescription.replace(PROJECT_0_NAME, "anotherName");
-		ensureExistsInWorkspace(projectFile, projectDescription);
+		createInWorkspace(projectFile, projectDescription);
 		project0.delete(false, true, null);
 		project0.create(null);
 		project0.open(null);

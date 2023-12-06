@@ -146,8 +146,8 @@ public class PropertyManagerTest extends LocalStoreTest {
 		final int REPEAT = 8;
 		for (int i = 0; i < REPEAT; i++) {
 			// create common objects
-			ensureExistsInWorkspace(projects[0]);
-			ensureExistsInWorkspace(target);
+			createInWorkspace(projects[0]);
+			createInWorkspace(target);
 
 			// prepare keys and values
 			final int N = 50;
@@ -178,7 +178,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 		QualifiedName propName = new QualifiedName("test", "prop");
 		String propValue = "this is the property value";
 
-		ensureExistsInWorkspace(new IResource[] { source, sourceFolder, sourceFile });
+		createInWorkspace(new IResource[] { source, sourceFolder, sourceFile });
 
 		System.gc();
 		System.runFinalization();
@@ -205,7 +205,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 		int MAX_VALUE_SIZE = 2 * 1024; // PropertyManager2.MAX_VALUE_SIZE
 		String propValue = new String(new byte[MAX_VALUE_SIZE], StandardCharsets.ISO_8859_1);
 
-		ensureExistsInWorkspace(new IResource[] { source, sourceFolder, sourceFile });
+		createInWorkspace(new IResource[] { source, sourceFolder, sourceFile });
 
 		manager.setProperty(source, propName, propValue);
 		manager.setProperty(sourceFolder, propName, propValue);
@@ -265,7 +265,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 		QualifiedName propName = new QualifiedName("test", "prop");
 		String propValue = "this is the property value";
 
-		ensureExistsInWorkspace(new IResource[] {source, sourceFolder, sourceFile});
+		createInWorkspace(new IResource[] {source, sourceFolder, sourceFile});
 
 		/*
 		 * persistent properties
@@ -327,7 +327,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 		/* create common objects */
 		IPropertyManager manager = new PropertyManager2((Workspace) ResourcesPlugin.getWorkspace());
 		IFile target = projects[0].getFile("target");
-		ensureExistsInWorkspace(target);
+		createInWorkspace(target);
 
 		/* server properties */
 		QualifiedName propName = new QualifiedName("eclipse", "prop");
@@ -344,7 +344,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 		IResource sourceFile = sourceFolder.getFile("myfile.txt");
 		propName = new QualifiedName("test", "prop");
 		propValue = "this is the property value";
-		ensureExistsInWorkspace(new IResource[] {source, sourceFolder, sourceFile});
+		createInWorkspace(new IResource[] {source, sourceFolder, sourceFile});
 
 		/*
 		 * persistent properties
@@ -375,12 +375,12 @@ public class PropertyManagerTest extends LocalStoreTest {
 		IProject project = root.getProject("proj");
 		IFolder folder = project.getFolder("folder");
 		IFile file1a = folder.getFile("file1");
-		ensureExistsInWorkspace(file1a);
+		createInWorkspace(file1a);
 		QualifiedName key = new QualifiedName(PI_RESOURCES_TESTS, "key");
 		file1a.setPersistentProperty(key, "value");
 		file1a.move(IPath.fromOSString("file2"), true, createTestMonitor());
 		IFile file1b = folder.getFile("file1");
-		ensureExistsInWorkspace(file1b);
+		createInWorkspace(file1b);
 		String value = null;
 		value = file1b.getPersistentProperty(key);
 		assertNull("1.0", value);
@@ -396,12 +396,12 @@ public class PropertyManagerTest extends LocalStoreTest {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("proj");
 		IFolder folder1a = project.getFolder("folder1");
-		ensureExistsInWorkspace(folder1a);
+		createInWorkspace(folder1a);
 		QualifiedName key = new QualifiedName(PI_RESOURCES_TESTS, "key");
 		folder1a.setPersistentProperty(key, "value");
 		folder1a.move(IPath.fromOSString("folder2"), true, createTestMonitor());
 		IFolder folder1b = project.getFolder("folder1");
-		ensureExistsInWorkspace(folder1b);
+		createInWorkspace(folder1b);
 		String value = null;
 		value = folder1b.getPersistentProperty(key);
 		assertNull("1.0", value);
@@ -434,12 +434,12 @@ public class PropertyManagerTest extends LocalStoreTest {
 	public void testProjectRename() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project1a = root.getProject("proj1");
-		ensureExistsInWorkspace(project1a);
+		createInWorkspace(project1a);
 		QualifiedName key = new QualifiedName(PI_RESOURCES_TESTS, "key");
 		project1a.setPersistentProperty(key, "value");
 		project1a.move(IPath.fromOSString("proj2"), true, createTestMonitor());
 		IProject project1b = root.getProject("proj1");
-		ensureExistsInWorkspace(project1b);
+		createInWorkspace(project1b);
 		String value = project1b.getPersistentProperty(key);
 		assertNull("1.0", value);
 

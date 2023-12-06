@@ -122,7 +122,7 @@ public class WorkspaceTest extends ResourceTest {
 	public void testFolderDeletion() throws Throwable {
 		IProject project = getTestProject();
 		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/x", "c/b/y", "c/b/z"});
-		ensureExistsInWorkspace(before);
+		createInWorkspace(before);
 		//
 		assertExistsInWorkspace(before);
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
@@ -137,7 +137,7 @@ public class WorkspaceTest extends ResourceTest {
 		IResource[] after = buildResources(project, new String[] {"a/", "a/b/", "a/x", "a/b/y", "a/b/z"});
 
 		// create the resources and set some content in a file that will be moved.
-		ensureExistsInWorkspace(before);
+		createInWorkspace(before);
 		String content = getRandomString();
 		IFile file = project.getFile(IPath.fromOSString("b/b/z"));
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
@@ -216,7 +216,7 @@ public class WorkspaceTest extends ResourceTest {
 	public void testMultiDeletion() throws Throwable {
 		IProject project = getTestProject();
 		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/x", "c/b/y", "c/b/z"});
-		ensureExistsInWorkspace(before);
+		createInWorkspace(before);
 		//
 		assertExistsInWorkspace(before);
 		FussyProgressMonitor monitor = new FussyProgressMonitor();

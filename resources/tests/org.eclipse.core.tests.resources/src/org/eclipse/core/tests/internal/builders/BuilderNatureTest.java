@@ -58,7 +58,7 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		//add the water and snow natures to the project, and ensure
 		//the snow builder gets run
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.reset();
 		setAutoBuilding(true);
@@ -78,7 +78,7 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 	 */
 	public void testDisabledNature() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		setAutoBuilding(true);
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
@@ -112,7 +112,7 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 	 */
 	public void testMissingNature() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		setAutoBuilding(true);
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });

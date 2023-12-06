@@ -48,7 +48,7 @@ public class Bug_028981 extends ResourceTest {
 		IFolder settings = project.getFolder(".settings");
 		IFile prefs = settings.getFile("org.eclipse.core.resources.prefs");
 
-		ensureExistsInWorkspace(new IResource[] {teamPrivateFile, regularFile});
+		createInWorkspace(new IResource[] {teamPrivateFile, regularFile});
 		synchronizer.setSyncInfo(partner, phantomFile, getRandomString().getBytes());
 		teamPrivateFile.setTeamPrivateMember(true);
 		assertTrue("0.7", !regularFile.isPhantom() && !regularFile.isTeamPrivateMember());

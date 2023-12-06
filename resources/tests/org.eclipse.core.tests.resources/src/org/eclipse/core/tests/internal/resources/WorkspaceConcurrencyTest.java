@@ -66,7 +66,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 	 */
 	public void testCancelOnBlocked() throws Throwable {
 		//create a dummy project
-		ensureExistsInWorkspace(getWorkspace().getRoot().getProject("P1"));
+		createInWorkspace(getWorkspace().getRoot().getProject("P1"));
 		//add a resource change listener that blocks forever, thus
 		//simulating a scenario where workspace lock is held indefinitely
 		final AtomicIntegerArray barrier = new AtomicIntegerArray(new int[1]);
@@ -164,9 +164,9 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 		final IProject touch = workspace.getRoot().getProject("ToTouch");
 		final IProject rule = workspace.getRoot().getProject("jobThree");
 		final IFile ruleFile = rule.getFile("somefile.txt");
-		ensureExistsInWorkspace(rule);
-		ensureExistsInWorkspace(touch);
-		ensureExistsInWorkspace(ruleFile);
+		createInWorkspace(rule);
+		createInWorkspace(touch);
+		createInWorkspace(ruleFile);
 		AtomicReference<Throwable> failure = new AtomicReference<>();
 		IResourceChangeListener listener = event -> {
 			try {

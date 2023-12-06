@@ -586,7 +586,7 @@ public class IPathVariableTest extends ResourceTest {
 
 		IProject existingProject = getWorkspace().getRoot().getProject("ExistingProject");
 
-		ensureExistsInWorkspace(new IResource[] {existingProject});
+		createInWorkspace(new IResource[] {existingProject});
 
 		existingProject.close(createTestMonitor());
 		ProjectInfo info = (ProjectInfo) ((Project) existingProject).getResourceInfo(false, false);
@@ -617,7 +617,7 @@ public class IPathVariableTest extends ResourceTest {
 
 		// Create filep
 		IFile f = project.getFile(filep);
-		ensureExistsInWorkspace(f);
+		createInWorkspace(f);
 
 		// Get a reference to a child
 		IFile invalidFile = project.getFile(invalidChild);

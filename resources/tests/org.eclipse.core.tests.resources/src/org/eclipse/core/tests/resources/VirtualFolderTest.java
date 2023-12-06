@@ -46,7 +46,7 @@ public class VirtualFolderTest extends ResourceTest {
 		super.setUp();
 		existingProject = getWorkspace().getRoot().getProject("ExistingProject");
 		existingVirtualFolderInExistingProject = existingProject.getFolder("existingVirtualFolderInExistingProject");
-		ensureExistsInWorkspace(new IResource[] { existingProject });
+		createInWorkspace(new IResource[] { existingProject });
 		existingVirtualFolderInExistingProject.create(IResource.VIRTUAL, true, createTestMonitor());
 	}
 
@@ -311,7 +311,7 @@ public class VirtualFolderTest extends ResourceTest {
 		subFolderLocation.toFile().mkdir();
 
 		// create the structure in the workspace
-		ensureExistsInWorkspace(topFolder);
+		createInWorkspace(topFolder);
 		linkedFolder.createLink(linkedFolderLocation, IResource.NONE, createTestMonitor());
 		virtualFolder.create(IResource.VIRTUAL, true, createTestMonitor());
 

@@ -41,7 +41,7 @@ public class Bug544975Test extends ResourceTest {
 		boolean originalRefreshSetting = prefs.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
 		try {
 			prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
-			ensureExistsInWorkspace(project);
+			createInWorkspace(project);
 			createFile(project, "someFile.txt", "some text");
 			IFile file1 = project.getFile("someFile.txt");
 			assertTrue(file1.exists());
@@ -75,7 +75,7 @@ public class Bug544975Test extends ResourceTest {
 	public void testBug544975ProjectOpenWithoutBackgroundRefresh() throws Exception {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = root.getProject("Bug544975");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		createFile(project, "someFile.txt", "some text");
 		IFile file1 = project.getFile("someFile.txt");
 		assertTrue(file1.exists());

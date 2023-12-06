@@ -51,7 +51,7 @@ public class Bug_029851 extends ResourceTest {
 		Collection<String> result = createChildren(breadth, depth, prefix);
 		result.add(prefix.toString());
 		IResource[] resources = buildResources(getWorkspace().getRoot(), result.toArray(new String[0]));
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 	}
 
 	public void test() throws CoreException {

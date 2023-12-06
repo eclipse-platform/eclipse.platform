@@ -33,7 +33,7 @@ public class Bug_126104 extends ResourceTest {
 	public void testBug() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("p1");
 		IFile source = project.getFile("source");
-		ensureExistsInWorkspace(source);
+		createInWorkspace(source);
 		IFolder link = project.getFolder("link");
 		IFileStore location = getTempStore();
 		link.createLink(location.toURI(), IResource.ALLOW_MISSING_LOCAL, createTestMonitor());

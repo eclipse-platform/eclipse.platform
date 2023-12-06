@@ -290,7 +290,7 @@ public class WorkspacePerformanceTest extends ResourceTest {
 	public void testLoadSnapshot() throws CoreException {
 		// 2 minutes total test time, 528 msec test execution time
 		IProject snapProject = getWorkspace().getRoot().getProject("SnapProject");
-		ensureExistsInWorkspace(snapProject);
+		createInWorkspace(snapProject);
 		final URI snapshotLocation = snapProject.getFile("snapshot.zip").getLocationURI();
 		createAndPopulateProject(50000);
 		waitForBackgroundActivity();

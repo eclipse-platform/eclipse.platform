@@ -60,7 +60,7 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 	 */
 	public void test1() throws CoreException {
 		IResource[] resources = {project1, unsorted1, sorted1, unsortedFile1};
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 
 		// give unsorted files some initial content
 		unsortedFile1.setContents(new ByteArrayInputStream(new byte[] { 1, 4, 3 }), true, true, null);

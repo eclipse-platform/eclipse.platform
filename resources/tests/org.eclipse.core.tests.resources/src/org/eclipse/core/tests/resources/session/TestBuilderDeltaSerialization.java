@@ -64,7 +64,7 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 	 */
 	public void test1() throws CoreException {
 		IResource[] resources = {project1, project2, unsorted1, unsorted2, sorted1, sorted2, unsortedFile1, unsortedFile2};
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 
 		// give unsorted files some initial content
 		unsortedFile1.setContents(new ByteArrayInputStream(new byte[] { 1, 4, 3 }), true, true, null);

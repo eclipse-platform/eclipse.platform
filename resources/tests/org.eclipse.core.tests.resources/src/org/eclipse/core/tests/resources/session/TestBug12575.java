@@ -51,7 +51,7 @@ public class TestBug12575 extends WorkspaceSerializationTest {
 		desc.setReferencedProjects(new IProject[] { other });
 		project.setDescription(desc, IResource.FORCE, createTestMonitor());
 		//creating a project will cause a snapshot
-		ensureExistsInWorkspace(other);
+		createInWorkspace(other);
 
 		//crash
 	}

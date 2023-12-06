@@ -175,7 +175,7 @@ public class IProjectTest extends AbstractBuilderTest {
 
 		String[] paths = new String[] {"/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1"};
 		IResource[] resources = buildResources(project, paths);
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 
 		IFolder folder = project.getFolder("folder");
 		createInFileSystem(folder);

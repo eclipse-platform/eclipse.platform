@@ -68,7 +68,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
-		ensureExistsInWorkspace(file, getRandomString());
+		createInWorkspace(file, getRandomString());
 
 		// file bit is set already for a new file
 		assertTrue("1.0", file.getResourceAttributes().isArchive());
@@ -92,7 +92,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
-		ensureExistsInWorkspace(file, getRandomString());
+		createInWorkspace(file, getRandomString());
 
 		// file
 		assertTrue("1.0", !file.getResourceAttributes().isExecutable());
@@ -117,7 +117,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
-		ensureExistsInWorkspace(file, getRandomString());
+		createInWorkspace(file, getRandomString());
 
 		// file
 		assertTrue("1.0", !file.getResourceAttributes().isHidden());
@@ -141,7 +141,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
-		ensureExistsInWorkspace(file, getRandomString());
+		createInWorkspace(file, getRandomString());
 
 		// file
 		assertTrue("1.0", !file.getResourceAttributes().isReadOnly());
@@ -163,7 +163,7 @@ public class ResourceAttributeTest extends ResourceTest {
 	 */
 	public void testClosedProject() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		project.close(createTestMonitor());
 		assertNull("1.0", project.getResourceAttributes());
 	}
@@ -179,9 +179,9 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertNull("1.2", file.getResourceAttributes());
 
 		//now create the resources and ensure non-null result
-		ensureExistsInWorkspace(project);
-		ensureExistsInWorkspace(folder);
-		ensureExistsInWorkspace(file);
+		createInWorkspace(project);
+		createInWorkspace(folder);
+		createInWorkspace(file);
 		assertNotNull("2.0", project.getResourceAttributes());
 		assertNotNull("2.1", folder.getResourceAttributes());
 		assertNotNull("2.2", file.getResourceAttributes());
@@ -205,7 +205,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("testRefreshExecutableOnFolder");
 		IFolder folder = project.getFolder("folder");
 		IFile file = folder.getFile("file");
-		ensureExistsInWorkspace(file, getRandomString());
+		createInWorkspace(file, getRandomString());
 
 		// folder is executable initially and the file should exist
 		assertTrue("1.0", project.getResourceAttributes().isExecutable());
@@ -232,7 +232,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile link = project.getFile("link");
-		ensureExistsInWorkspace(link, getRandomString());
+		createInWorkspace(link, getRandomString());
 
 		// attempts to set the symbolic link attribute wont't affect
 		// the resource and the underlying file
@@ -251,7 +251,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		// create a link to the target file and add it to the workspace,
 		// the resource in the workspace should have symbolic link attribute set
 		createSymLink(project.getLocation().toFile(), "link", "target", false);
-		ensureExistsInWorkspace(link);
+		createInWorkspace(link);
 		assertTrue("5.0", link.getResourceAttributes().isSymbolicLink());
 
 		// attempts to clear the symbolic link attribute shouldn't affect
@@ -274,7 +274,7 @@ public class ResourceAttributeTest extends ResourceTest {
 
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFile file = project.getFile(createUniqueString());
-		ensureExistsInWorkspace(file, getRandomString());
+		createInWorkspace(file, getRandomString());
 
 		for (int attribute : attributes) {
 			// only activate this test on platforms that support it
