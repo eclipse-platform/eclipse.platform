@@ -13,9 +13,11 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.eclipse.core.pki.AuthenticationBase;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
@@ -38,11 +40,12 @@ import org.eclipse.pki.util.TrustStoreSecureStorage;
 
 public class PKIController implements IStartup {
 	protected static final String USER_HOME = System.getProperty("user.home");
-	public static final File PKI_ECLIPSE_DIR = new File(USER_HOME, ".pki");
+	public static final File PKI_ECLIPSE_DIR = new File(USER_HOME, ".eclipse_pki");
 	public static final String PKI_DIR = "eclipse_pki";
 	public static final Path pkiHome = Paths.get(PKI_ECLIPSE_DIR.getAbsolutePath() + File.separator + PKI_DIR);
 	static boolean isPkcs11Installed = false;
 	ListenerQueue<PKIController, Object, EventManager> queue = null;
+	Properties pkiProperties = null;
 
 	public PKIController() {
 	}
@@ -50,7 +53,7 @@ public class PKIController implements IStartup {
 	@Override
 	public void earlyStartup() {
 		// TODO Auto-generated method stub
-		System.out.println("PKIController EARLY Startup");
+		//System.out.println("PKIController EARLY Startup");
 		Startup();
 	}
 
@@ -60,7 +63,8 @@ public class PKIController implements IStartup {
 		/*
 		 * Check if .pki file exists. If it doesnt, then create one.
 		 */
-
+		
+	
 		/*
 		 * NOTE: Initialize pki settings so that NO PKI is set on start up.
 		 */
@@ -70,47 +74,82 @@ public class PKIController implements IStartup {
 		 * PKCS11 will be the default certificate store, so check it first.
 		 */
 
-		System.out.println("PKIController Startup");
+		//System.out.println("PKIController Startup");
+		
+		
 		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
-			if (((!(VendorImplementation.getInstance().isInstalled())) || (isPreviousPkiSelection()))) {
-				PKCSpick.getInstance().setPKCS11on(false);
-				PKCSpick.getInstance().setPKCS12on(true);
-				PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
-			} else {
-				PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
-			}
-
-			try {
-
-				IPreferenceStore store = AuthenticationPlugin.getDefault().getPreferenceStore();
-				String tsPref = store.getString(AuthenticationPreferences.TRUST_STORE_LOCATION);
-
-				// System.out.println("tspref " + tsPref);
-
-				if (tsPref == null || tsPref.isEmpty()) {
-					this.installTrustStore();
+			System.out.println("PKIController get PKI TYPE");
+			PublicKeySecurity.INSTANCE.getPkiPropertyFile();
+			String pkiType = System.getProperty("javax.net.ssl.keyStoreType").trim();
+			//System.out.println("PKIController PKI TYPE:["+pkiType+"]");
+			if ( pkiType != null) {
+				if (pkiType.equalsIgnoreCase("PKCS12")) {
+					System.out.println("PKIController PKI TYPE FROM FILE:"+System.getProperty("javax.net.ssl.keyStoreType"));
+					PKCSpick.getInstance().setPKCS11on(false);
+					PKCSpick.getInstance().setPKCS12on(true);
+					PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
+					AuthenticationPlugin.getDefault()
+	    				.getPreferenceStore()
+	    				.setValue(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION, null );
 				} else {
-					File tsFileLoc = new File(tsPref);
-					if (!tsFileLoc.exists()) {
-						// TS location exists in pref store but file not actually in default location -
-						// can this break for custom locations?
-						this.installTrustStore();
+					System.out.println("PKIController PKI TYPE NOT FOUND TO BE EQUAL");
+				}
+				if ("PKCS11".equalsIgnoreCase(System.getProperty("javax.net.ssl.keyStoreType"))) {
+					if (VendorImplementation.getInstance().isInstalled()) {
+						PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
+						PKCSpick.getInstance().setPKCS11on(true);
+						PKCSpick.getInstance().setPKCS12on(false);
+					} else {
+						// need exception here no PROVIDER
 					}
 				}
-				// Load system properties
-				if (AuthenticationPlugin.isNeedSSLPropertiesSet()) {
-					EventProcessor.getInstance().initializeEvent(this);
-					if (EventProcessor.getInstance().isEventPending()) {
-						EventProcessor.getInstance().sendEvent(EventConstant.SETUP.getValue());
-					}
-					// setupSSLSystemProperties(isPkcs11Installed);
+			}
+		} else {
+			if ( AuthenticationBase.INSTANCE.isPkcs11Setup() ) {
+				System.out.println("PKIController PKI PKCS11 setup file FOUND:"+AuthenticationPlugin.getDefault().getPreferenceStore()
+						.getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION));
+				if (((!(VendorImplementation.getInstance().isInstalled())) || (isPreviousPkiSelection()))) {
+					PKCSpick.getInstance().setPKCS11on(false);
+					PKCSpick.getInstance().setPKCS12on(true);
+					PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
+				} else {
+					PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
 				}
-
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
+
+		try {
+			System.out.println("PKIController  Setup preferences");
+			IPreferenceStore store = AuthenticationPlugin.getDefault().getPreferenceStore();
+			String tsPref = store.getString(AuthenticationPreferences.TRUST_STORE_LOCATION);
+
+			// System.out.println("tspref " + tsPref);
+
+			if (tsPref == null || tsPref.isEmpty()) {
+				this.installTrustStore();
+			} else {
+				File tsFileLoc = new File(tsPref);
+				if (!tsFileLoc.exists()) {
+					// TS location exists in pref store but file not actually in default location -
+					// can this break for custom locations?
+					this.installTrustStore();
+				}
+			}
+			// Load system properties
+			if (AuthenticationPlugin.isNeedSSLPropertiesSet()) {
+				System.out.println("PKIController  Setup preferences SEND EVENT");
+				EventProcessor.getInstance().initializeEvent(this);
+				if (EventProcessor.getInstance().isEventPending()) {
+					EventProcessor.getInstance().sendEvent(EventConstant.SETUP.getValue());
+				}
+				// setupSSLSystemProperties(isPkcs11Installed);
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("PKIController  Setup preferences SEND EVENT DONE METHOD");
 	}
 
 	public boolean isPreviousPkiSelection() {
@@ -124,6 +163,7 @@ public class PKIController implements IStartup {
 		final Integer value = Integer.valueOf(incoming);
 		return new Runnable() {
 			public void run() {
+				System.out.println("PKIController EVENT runner");
 				if (value.equals(EventConstant.DONE.getValue())) {
 					AuthenticationPlugin.getDefault().setUserKeyStore(VendorImplementation.getInstance().getKeyStore());
 				} else if (value.equals(EventConstant.CANCEL.getValue())) {
@@ -132,7 +172,7 @@ public class PKIController implements IStartup {
 					PKCSpick.getInstance().setPKCS11on(false);
 					System.clearProperty("javax.net.ssl.keyStoreType");
 					System.clearProperty("javax.net.ssl.keyStoreProvider");
-					System.out.println("EarlyStartup - TURNED OFF ALL PKCS11");
+					System.out.println("PKIController - TURNED OFF ALL PKCS11");
 				} else if (value.equals(EventConstant.SETUP.getValue())) {
 					setupSSLSystemProperties(isPkcs11Installed);
 				}
