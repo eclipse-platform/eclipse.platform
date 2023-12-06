@@ -14,7 +14,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.utils;
 
-import java.util.*;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import org.eclipse.core.internal.utils.ObjectMap;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -87,7 +92,7 @@ public class ObjectMapTest extends ResourceTest {
 		assertFalse("3.0", map.containsKey(Integer.valueOf(MAXIMUM + 1)));
 		assertFalse("3.1", map.containsKey(Integer.valueOf(-1)));
 		assertFalse("3.2", map.containsValue(null));
-		assertFalse("3.3", map.containsValue(getRandomString()));
+		assertFalse("3.3", map.containsValue(createRandomString()));
 	}
 
 	public void testValues() {

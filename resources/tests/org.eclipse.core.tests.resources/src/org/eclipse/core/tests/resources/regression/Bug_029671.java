@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.IFile;
@@ -45,8 +46,8 @@ public class Bug_029671 extends ResourceTest {
 
 		try {
 			// sets sync info for the folder and its children
-			synchronizer.setSyncInfo(partner, folder, getRandomString().getBytes());
-			synchronizer.setSyncInfo(partner, file, getRandomString().getBytes());
+			synchronizer.setSyncInfo(partner, folder, createRandomString().getBytes());
+			synchronizer.setSyncInfo(partner, file, createRandomString().getBytes());
 
 			IFolder targetFolder = project.getFolder("target");
 			IFile targetFile = targetFolder.getFile(file.getName());

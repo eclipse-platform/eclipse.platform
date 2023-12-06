@@ -14,6 +14,8 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -112,7 +114,7 @@ public abstract class LocalStoreTest extends ResourceTest {
 		if (type == 'd') {
 			node.mkdir(EFS.NONE, null);
 		} else {
-			InputStream input = getRandomContents();
+			InputStream input = createRandomContentsStream();
 			try (OutputStream output = node.openOutputStream(EFS.NONE, null)) {
 				input.transferTo(output);
 			}
@@ -138,7 +140,7 @@ public abstract class LocalStoreTest extends ResourceTest {
 	protected String getBigString(int size) {
 		StringBuilder sb = new StringBuilder();
 		while (sb.length() < size) {
-			sb.append(getRandomString());
+			sb.append(createRandomString());
 		}
 		return sb.toString();
 	}

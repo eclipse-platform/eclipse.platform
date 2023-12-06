@@ -20,6 +20,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -78,7 +81,7 @@ public class WorkspaceTest extends ResourceTest {
 		IPath path = IPath.fromOSString("/testProject/testFileForDelete2");
 		IFile target = getWorkspace().getRoot().getFile(path);
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		target.create(getContents(""), true, monitor);
+		target.create(createInputStream(""), true, monitor);
 		monitor.assertUsedUp();
 		assertTrue(target.exists());
 		monitor.prepare();
@@ -91,7 +94,7 @@ public class WorkspaceTest extends ResourceTest {
 		IPath path = IPath.fromOSString("/testProject/testFolder/testFile2");
 		IFile target = getWorkspace().getRoot().getFile(path);
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		target.create(getRandomContents(), true, monitor);
+		target.create(createRandomContentsStream(), true, monitor);
 		monitor.assertUsedUp();
 		assertTrue(target.exists());
 	}
@@ -100,7 +103,7 @@ public class WorkspaceTest extends ResourceTest {
 		IPath path = IPath.fromOSString("/testProject/targetFile");
 		IFile target = getWorkspace().getRoot().getFile(path);
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		target.create(getRandomContents(), true, monitor);
+		target.create(createRandomContentsStream(), true, monitor);
 		monitor.assertUsedUp();
 		IFile destination = getWorkspace().getRoot().getFile(IPath.fromOSString("/testProject/movedFile"));
 		monitor.prepare();
@@ -140,10 +143,10 @@ public class WorkspaceTest extends ResourceTest {
 
 		// create the resources and set some content in a file that will be moved.
 		createInWorkspace(before);
-		String content = getRandomString();
+		String content = createRandomString();
 		IFile file = project.getFile(IPath.fromOSString("b/b/z"));
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		file.setContents(getContents(content), true, false, monitor);
+		file.setContents(createInputStream(content), true, false, monitor);
 		monitor.assertUsedUp();
 
 		// Be sure the resources exist and then move them.
@@ -156,7 +159,7 @@ public class WorkspaceTest extends ResourceTest {
 		assertDoesNotExistInWorkspace(before);
 		assertExistsInWorkspace(after);
 		file = project.getFile(IPath.fromOSString("a/b/z"));
-		assertTrue("get not equal set", compareContent(getContents(content), file.getContents(false)));
+		assertTrue("get not equal set", compareContent(createInputStream(content), file.getContents(false)));
 	}
 
 	public void testFolderOverFile() throws Throwable {
@@ -287,12 +290,12 @@ public class WorkspaceTest extends ResourceTest {
 		fileTarget.create(null, true, monitor);
 		monitor.assertUsedUp();
 		assertTrue(fileTarget.exists());
-		String testString = getRandomString();
+		String testString = createRandomString();
 		monitor = new FussyProgressMonitor();
-		fileTarget.setContents(getContents(testString), true, false, monitor);
+		fileTarget.setContents(createInputStream(testString), true, false, monitor);
 		monitor.assertUsedUp();
 		try (InputStream content = fileTarget.getContents(false)) {
-			assertTrue("get not equal set", compareContent(content, getContents(testString)));
+			assertTrue("get not equal set", compareContent(content, createInputStream(testString)));
 		}
 	}
 
@@ -367,12 +370,12 @@ public class WorkspaceTest extends ResourceTest {
 	public void testSetContents() throws Throwable {
 		IPath path = IPath.fromOSString("/testProject/testFile");
 		IFile target = getWorkspace().getRoot().getFile(path);
-		String testString = getRandomString();
+		String testString = createRandomString();
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		target.setContents(getContents(testString), true, false, monitor);
+		target.setContents(createInputStream(testString), true, false, monitor);
 		monitor.assertUsedUp();
 		try (InputStream content = target.getContents(false)) {
-			assertTrue("get not equal set", compareContent(content, getContents(testString)));
+			assertTrue("get not equal set", compareContent(content, createInputStream(testString)));
 		}
 	}
 
@@ -404,7 +407,7 @@ public class WorkspaceTest extends ResourceTest {
 		IPath path = IPath.fromOSString("/testProject/simpleFile");
 		IFile target = getWorkspace().getRoot().getFile(path);
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
-		target.create(getRandomContents(), true, monitor);
+		target.create(createRandomContentsStream(), true, monitor);
 		monitor.assertUsedUp();
 		IFile destination = getWorkspace().getRoot().getFile(IPath.fromOSString("/testProject/newSimpleFile"));
 		monitor.prepare();

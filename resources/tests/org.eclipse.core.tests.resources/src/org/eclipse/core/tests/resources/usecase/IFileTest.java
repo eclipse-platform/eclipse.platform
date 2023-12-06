@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.usecase;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
@@ -103,7 +104,7 @@ public class IFileTest extends IResourceTest {
 		nonexistentFileFailureTests(file, workspace);
 
 		// Create the file
-		file.create(getContents("0123456789"), false, monitor);
+		file.create(createInputStream("0123456789"), false, monitor);
 
 		// Now tests pass that require that the file exists.
 		assertThat("file does not exist: " + file, file.exists());

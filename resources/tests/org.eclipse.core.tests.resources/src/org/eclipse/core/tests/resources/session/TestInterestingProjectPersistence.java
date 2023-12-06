@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 
@@ -96,7 +97,7 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		builder.checkDeltas(new IProject[] {project1, project2, project3, project4});
 		builder.requestDeltas(new IProject[] {project1, project2, project4});
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		ArrayList<IProject> received = builder.getReceivedDeltas();
 
@@ -119,9 +120,9 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		builder.checkDeltas(new IProject[] {project1, project2, project3, project4});
 		// dirty projects 1, 2, 3
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
-		file2.setContents(getRandomContents(), true, true, createTestMonitor());
-		file3.setContents(getRandomContents(), true, true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		file2.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		file3.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 
 		// build
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());

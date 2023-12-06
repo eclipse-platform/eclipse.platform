@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
@@ -38,7 +39,7 @@ public class SampleSessionTest extends WorkspaceSessionTest {
 		p1.create(null);
 		p1.open(null);
 		IFile file = p1.getFile("foo.txt");
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 		workspace.save(true, null);
 	}
 

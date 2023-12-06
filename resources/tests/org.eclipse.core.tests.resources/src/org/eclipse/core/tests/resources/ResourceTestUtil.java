@@ -19,6 +19,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +30,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -60,6 +62,8 @@ import org.eclipse.core.tests.harness.FussyProgressMonitor;
  * Utilities for resource tests.
  */
 public final class ResourceTestUtil {
+	private static final Random RANDOM = new Random();
+
 	private ResourceTestUtil() {
 	}
 
@@ -69,6 +73,29 @@ public final class ResourceTestUtil {
 
 	public static String createUniqueString() {
 		return new UniversalUniqueIdentifier().toString();
+	}
+
+	/**
+	 * Return an input stream with some the specified text to use as contents for a
+	 * file resource.
+	 */
+	public static InputStream createInputStream(String text) {
+		return new ByteArrayInputStream(text.getBytes());
+	}
+
+	/**
+	 * Return String with some random text to use as contents for a file resource.
+	 */
+	public static String createRandomString() {
+		return RANDOM.nextLong() + " " + RANDOM.nextLong();
+	}
+
+	/**
+	 * Return an input stream with some random text to use as contents for a file
+	 * resource.
+	 */
+	public static InputStream createRandomContentsStream() {
+		return createInputStream(createRandomString());
 	}
 
 	/**

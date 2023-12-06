@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 
@@ -95,12 +96,12 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		ConfigurationBuilder.clearStats();
 		// Run some incremental builds while varying the active variant and whether the project was modified
 		// and check that the builder is run/not run with the correct trigger
-		file0.setContents(getRandomContents(), true, true, createTestMonitor());
+		file0.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		incrementalBuild(1, project0, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(2, project0, variant1, false, 1, 0);
 		incrementalBuild(3, project0, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(4, project0, variant1, false, 1, 0);
-		file0.setContents(getRandomContents(), true, true, createTestMonitor());
+		file0.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		incrementalBuild(5, project0, variant1, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 		incrementalBuild(6, project0, variant2, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 		incrementalBuild(7, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
@@ -111,7 +112,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 */
 	public void testCloseAndOpenProject() throws CoreException {
 		ConfigurationBuilder.clearStats();
-		file0.setContents(getRandomContents(), true, true, createTestMonitor());
+		file0.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		incrementalBuild(1, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(2, project0, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(3, project0, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
@@ -139,16 +140,16 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 
 		ConfigurationBuilder.clearStats();
 
-		tempFile0.setContents(getRandomContents(), true, true, createTestMonitor());
-		tempFile1.setContents(getRandomContents(), true, true, createTestMonitor());
+		tempFile0.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		tempFile1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		incrementalBuild(1, tempProject, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(2, tempProject, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(3, tempProject, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 
-		tempFile0.setContents(getRandomContents(), true, true, createTestMonitor());
+		tempFile0.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		incrementalBuild(4, tempProject, variant1, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 
-		tempFile1.setContents(getRandomContents(), true, true, createTestMonitor());
+		tempFile1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		incrementalBuild(5, tempProject, variant2, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 
 		tempProject.close(createTestMonitor());
@@ -219,7 +220,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		checkBuild(7, project1, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 
 		// Modify project1, all project1 builders should do an incremental build
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 
 		ConfigurationBuilder.clearBuildOrder();
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());

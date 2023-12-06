@@ -22,6 +22,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
@@ -235,7 +237,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertDoesNotExistInWorkspace(file);
 
 		file.createLink(variableBasedLocation, IResource.ALLOW_MISSING_LOCAL, null);
-		file.setContents(getContents("contents for a file"), IResource.FORCE, null);
+		file.setContents(createInputStream("contents for a file"), IResource.FORCE, null);
 
 		// now the file exists in both workspace and file system
 		assertExistsInWorkspace(file);
@@ -253,7 +255,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		// try to change resource's contents
 		// Resource has no-defined location - should fail
-		assertThrows(CoreException.class, () -> file.setContents(getContents("new contents"), IResource.NONE, null));
+		assertThrows(CoreException.class, () -> file.setContents(createInputStream("new contents"), IResource.NONE, null));
 
 		assertExistsInWorkspace(file);
 		// the location is null
@@ -270,7 +272,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertNotNull("5.1", file.getLocation());
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertTrue("5.3", compareContent(file.getContents(true), getContents("contents for a file")));
+		assertTrue("5.3", compareContent(file.getContents(true), createInputStream("contents for a file")));
 	}
 
 	/**
@@ -290,7 +292,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertDoesNotExistInWorkspace(file);
 
 		file.createLink(variableBasedLocation, IResource.ALLOW_MISSING_LOCAL, null);
-		file.setContents(getContents("contents for a file"), IResource.FORCE, null);
+		file.setContents(createInputStream("contents for a file"), IResource.FORCE, null);
 
 		// now the file exists in both workspace and file system
 		assertExistsInWorkspace(file);
@@ -308,7 +310,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		// try to change resource's contents
 		// Resource has no-defined location - should fail
-		assertThrows(CoreException.class, () -> file.setContents(getContents("new contents"), IResource.NONE, null));
+		assertThrows(CoreException.class, () -> file.setContents(createInputStream("new contents"), IResource.NONE, null));
 
 		assertExistsInWorkspace(file);
 		// the location is null
@@ -326,7 +328,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertNotNull("5.1", file.getLocation());
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertTrue("5.3", compareContent(file.getContents(true), getContents("contents for a file")));
+		assertTrue("5.3", compareContent(file.getContents(true), createInputStream("contents for a file")));
 	}
 
 	/**
@@ -436,7 +438,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertDoesNotExistInWorkspace(file);
 
 		file.createLink(variableBasedLocation, IResource.ALLOW_MISSING_LOCAL, null);
-		file.setContents(getContents("contents for a file"), IResource.FORCE, null);
+		file.setContents(createInputStream("contents for a file"), IResource.FORCE, null);
 
 		// now the file exists in both workspace and file system
 		assertExistsInWorkspace(file);
@@ -469,7 +471,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertDoesNotExistInWorkspace(file);
 
 		file.createLink(variableBasedLocation, IResource.ALLOW_MISSING_LOCAL, null);
-		file.setContents(getContents("contents for a file"), IResource.FORCE, null);
+		file.setContents(createInputStream("contents for a file"), IResource.FORCE, null);
 
 		// now the file exists in both workspace and file system
 		assertExistsInWorkspace(file);
@@ -501,7 +503,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertDoesNotExistInWorkspace(file);
 
 		file.createLink(variableBasedLocation, IResource.ALLOW_MISSING_LOCAL, null);
-		file.setContents(getContents("contents for a file"), IResource.FORCE, null);
+		file.setContents(createInputStream("contents for a file"), IResource.FORCE, null);
 
 		// now the file exists in both workspace and file system
 		assertExistsInWorkspace(file);
@@ -519,7 +521,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		// try to change resource's contents
 		// Resource has no-defined location - should fail
-		assertThrows(CoreException.class, () -> file.setContents(getContents("new contents"), IResource.NONE, null));
+		assertThrows(CoreException.class, () -> file.setContents(createInputStream("new contents"), IResource.NONE, null));
 
 		assertExistsInWorkspace(file);
 		// the location is null
@@ -537,7 +539,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertNotNull("5.1", file.getLocation());
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertTrue("5.3", compareContent(file.getContents(true), getContents("contents for a file")));
+		assertTrue("5.3", compareContent(file.getContents(true), createInputStream("contents for a file")));
 	}
 
 	/**
@@ -558,8 +560,8 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertDoesNotExistInWorkspace(folder);
 
 		folder.createLink(variableBasedLocation, IResource.ALLOW_MISSING_LOCAL, null);
-		childFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
-		childFile.setContents(getContents("contents for a file"), IResource.FORCE, null);
+		childFile.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
+		childFile.setContents(createInputStream("contents for a file"), IResource.FORCE, null);
 
 		// now the file exists in both workspace and file system
 		assertExistsInWorkspace(folder);
@@ -584,7 +586,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertTrue("3.6", !destination.exists());
 
 		//try to create a sub-file
-		assertThrows(CoreException.class, () -> destination.create(getRandomContents(), IResource.NONE, createTestMonitor()));
+		assertThrows(CoreException.class, () -> destination.create(createRandomContentsStream(), IResource.NONE, createTestMonitor()));
 
 		//try to create a sub-folder
 		IFolder subFolder = folder.getFolder("SubFolder");
@@ -593,7 +595,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		// try to change resource's contents
 		// Resource has no-defined location - should fail
 		assertThrows(CoreException.class,
-				() -> childFile.setContents(getContents("new contents"), IResource.NONE, null));
+				() -> childFile.setContents(createInputStream("new contents"), IResource.NONE, null));
 
 		assertExistsInWorkspace(folder);
 		// the location is null
@@ -674,8 +676,8 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertDoesNotExistInWorkspace(folder);
 
 		folder.createLink(variableBasedLocation, IResource.ALLOW_MISSING_LOCAL, null);
-		childFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
-		childFile.setContents(getContents("contents for a file"), IResource.FORCE, null);
+		childFile.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
+		childFile.setContents(createInputStream("contents for a file"), IResource.FORCE, null);
 
 		// now the file exists in both workspace and file system
 		assertExistsInWorkspace(folder);
@@ -701,7 +703,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertTrue("3.6", !destination.exists());
 
 		// try to create a sub-file
-		assertThrows(CoreException.class, () -> destination.create(getRandomContents(), IResource.NONE, createTestMonitor()));
+		assertThrows(CoreException.class, () -> destination.create(createRandomContentsStream(), IResource.NONE, createTestMonitor()));
 
 		// try to create a sub-folder
 		IFolder subFolder = folder.getFolder("SubFolder");
@@ -710,7 +712,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		// try to change resource's contents
 		// Resource has no-defined location - should fail
 		assertThrows(CoreException.class,
-				() -> childFile.setContents(getContents("new contents"), IResource.NONE, null));
+				() -> childFile.setContents(createInputStream("new contents"), IResource.NONE, null));
 
 		assertExistsInWorkspace(folder);
 		// the location is null
@@ -802,7 +804,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertDoesNotExistInWorkspace(file);
 
 		file.createLink(variableBasedLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
-		file.setContents(getContents("contents for a file"), IResource.FORCE, createTestMonitor());
+		file.setContents(createInputStream("contents for a file"), IResource.FORCE, createTestMonitor());
 
 		// now the file exists in both workspace and file system
 		assertExistsInWorkspace(file);
@@ -816,7 +818,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		// try to change resource's contents
 		// Resource was out of sync - should not be able to change
 		CoreException exception = assertThrows(CoreException.class,
-				() -> file.setContents(getContents("new contents"), IResource.NONE, createTestMonitor()));
+				() -> file.setContents(createInputStream("new contents"), IResource.NONE, createTestMonitor()));
 		assertEquals("3.1", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
 		assertExistsInWorkspace(file);
@@ -824,7 +826,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertDoesNotExistInFileSystem(file);
 
 		// successfully changes resource's contents (using IResource.FORCE)
-		file.setContents(getContents("contents in different location"), IResource.FORCE, createTestMonitor());
+		file.setContents(createInputStream("contents in different location"), IResource.FORCE, createTestMonitor());
 
 		// now the file exists in a different location
 		assertExistsInFileSystem(file);
@@ -835,7 +837,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertEquals("4.2", expectedNewLocation, actualNewLocation);
 
 		// its contents are as just set
-		assertTrue("4.3", compareContent(file.getContents(), getContents("contents in different location")));
+		assertTrue("4.3", compareContent(file.getContents(), createInputStream("contents in different location")));
 
 		// clean-up
 		removeFromFileSystem(file);
@@ -846,7 +848,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertExistsInWorkspace(file);
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertTrue("5.3", compareContent(file.getContents(true), getContents("contents for a file")));
+		assertTrue("5.3", compareContent(file.getContents(true), createInputStream("contents for a file")));
 	}
 
 	/**
@@ -867,7 +869,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertDoesNotExistInWorkspace(file);
 
 		file.createLink(variableBasedLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
-		file.setContents(getContents("contents for a file"), IResource.FORCE, createTestMonitor());
+		file.setContents(createInputStream("contents for a file"), IResource.FORCE, createTestMonitor());
 
 		// now the file exists in both workspace and file system
 		assertExistsInWorkspace(file);
@@ -881,7 +883,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		// try to change resource's contents
 		// Resource was out of sync - should not be able to change
 		CoreException exception = assertThrows(CoreException.class,
-				() -> file.setContents(getContents("new contents"), IResource.NONE, createTestMonitor()));
+				() -> file.setContents(createInputStream("new contents"), IResource.NONE, createTestMonitor()));
 		assertEquals("3.1", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
 		assertExistsInWorkspace(file);
@@ -889,7 +891,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertDoesNotExistInFileSystem(file);
 
 		// successfully changes resource's contents (using IResource.FORCE)
-		file.setContents(getContents("contents in different location"), IResource.FORCE, createTestMonitor());
+		file.setContents(createInputStream("contents in different location"), IResource.FORCE, createTestMonitor());
 
 		// now the file exists in a different location
 		assertExistsInFileSystem(file);
@@ -900,7 +902,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertEquals("4.2", expectedNewLocation, actualNewLocation);
 
 		// its contents are as just set
-		assertTrue("4.3", compareContent(file.getContents(), getContents("contents in different location")));
+		assertTrue("4.3", compareContent(file.getContents(), createInputStream("contents in different location")));
 
 		// clean-up
 		removeFromFileSystem(file);
@@ -911,7 +913,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertExistsInWorkspace(file);
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertTrue("5.3", compareContent(file.getContents(true), getContents("contents for a file")));
+		assertTrue("5.3", compareContent(file.getContents(true), createInputStream("contents for a file")));
 	}
 
 	/**

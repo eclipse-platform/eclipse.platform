@@ -15,6 +15,8 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 
@@ -61,7 +63,7 @@ public class Bug_378156 extends ResourceTest {
 			if (cancel) {
 				throw new OperationCanceledException();
 			}
-			jobFile.setContents(getRandomContents(), IResource.NONE, null);
+			jobFile.setContents(createRandomContentsStream(), IResource.NONE, null);
 			//wait for signal
 			try {
 				jobFlag.acquire();
@@ -92,7 +94,7 @@ public class Bug_378156 extends ResourceTest {
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		desc.setBuildSpec(new ICommand[] {command});
 		project1.setDescription(desc, createTestMonitor());
-		createInWorkspace(file, getRandomString());
+		createInWorkspace(file, createRandomString());
 		//build may not be triggered immediately
 		Thread.sleep(2000);
 		waitForBuild();
@@ -134,7 +136,7 @@ public class Bug_378156 extends ResourceTest {
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		desc.setBuildSpec(new ICommand[] {command});
 		project1.setDescription(desc, createTestMonitor());
-		createInWorkspace(file, getRandomString());
+		createInWorkspace(file, createRandomString());
 		waitForBuild();
 
 		//initialize the builder
@@ -143,7 +145,7 @@ public class Bug_378156 extends ResourceTest {
 
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			//modify the file so autobuild is needed
-			file.setContents(getRandomContents(), IResource.NONE, null);
+			file.setContents(createRandomContentsStream(), IResource.NONE, null);
 			//create a nested operation that immediately cancels
 			try {
 				getWorkspace().run((IWorkspaceRunnable) monitor1 -> {

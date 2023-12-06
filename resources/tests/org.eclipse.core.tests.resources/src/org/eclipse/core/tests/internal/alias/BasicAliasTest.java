@@ -19,6 +19,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.findAvailableDevices;
@@ -209,7 +211,7 @@ public class BasicAliasTest extends ResourceTest {
 		location.toFile().mkdirs();
 		deleteOnTearDown(location);
 		link.createLink(location, IResource.NONE, createTestMonitor());
-		createInWorkspace(child, getRandomString());
+		createInWorkspace(child, createRandomString());
 		// move the link (rename)
 		IFolder movedLink = project.getFolder("MovedLink");
 		link.move(movedLink.getFullPath(), IResource.SHALLOW, createTestMonitor());
@@ -251,7 +253,7 @@ public class BasicAliasTest extends ResourceTest {
 		sub2.open(createTestMonitor());
 		IFile sub2File = sub2.getFile("file.txt");
 		IFile topFile = top.getFolder(sub2.getName()).getFile(sub2File.getName());
-		createInWorkspace(sub2File, getRandomString());
+		createInWorkspace(sub2File, createRandomString());
 		assertTrue("1.0", topFile.exists());
 	}
 
@@ -471,7 +473,7 @@ public class BasicAliasTest extends ResourceTest {
 		// close the project and make sure aliases in that project are no longer updated
 		pOverlap.close(createTestMonitor());
 		IFile linkFile = fLinked.getFile("ChildFile.txt");
-		linkFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		linkFile.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		IFile closedFile = fOverlap.getFile(linkFile.getName());
 		assertFalse("1.0", closedFile.exists());
 		pOverlap.open(IResource.NONE, createTestMonitor());
@@ -584,7 +586,7 @@ public class BasicAliasTest extends ResourceTest {
 		// file in linked folder
 		lChildLinked.delete(IResource.NONE, createTestMonitor());
 		assertOverlap("1.1", lChildLinked, lChildOverlap);
-		lChildLinked.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		lChildLinked.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertOverlap("1.2", lChildLinked, lChildOverlap);
 		//duplicate file
 		lOverlap.delete(IResource.NONE, createTestMonitor());
@@ -598,15 +600,15 @@ public class BasicAliasTest extends ResourceTest {
 		assertTrue("2.4", lLinked.exists());
 		assertFalse("2.5", lLinked.getLocation().toFile().exists());
 		assertTrue("2.6", lLinked.isSynchronized(IResource.DEPTH_INFINITE));
-		assertThrows(CoreException.class, () -> lLinked.setContents(getRandomContents(), IResource.NONE, createTestMonitor()));
+		assertThrows(CoreException.class, () -> lLinked.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor()));
 
-		lOverlap.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		lOverlap.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertOverlap("2.8", lLinked, lOverlap);
 
 		//file in duplicate folder
 		lChildOverlap.delete(IResource.NONE, createTestMonitor());
 		assertOverlap("1.1", lChildLinked, lChildOverlap);
-		lChildOverlap.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		lChildOverlap.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertOverlap("1.2", lChildLinked, lChildOverlap);
 	}
 
@@ -804,34 +806,34 @@ public class BasicAliasTest extends ResourceTest {
 	@Test
 	public void testFileAppendContents() throws CoreException {
 		//linked file
-		lLinked.appendContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		lLinked.appendContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertOverlap("1.1", lLinked, lOverlap);
 
 		//file in linked folder
-		lChildLinked.appendContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		lChildLinked.appendContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertOverlap("2.1", lChildLinked, lChildOverlap);
 		//duplicate file
-		lOverlap.appendContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		lOverlap.appendContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertOverlap("3.1", lLinked, lOverlap);
 		//file in duplicate folder
-		lChildOverlap.appendContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		lChildOverlap.appendContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertOverlap("3.1", lChildLinked, lChildOverlap);
 	}
 
 	@Test
 	public void testFileSetContents() throws CoreException {
 		//linked file
-		lLinked.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		lLinked.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertOverlap("1.1", lLinked, lOverlap);
 
 		//file in linked folder
-		lChildLinked.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		lChildLinked.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertOverlap("2.1", lChildLinked, lChildOverlap);
 		//duplicate file
-		lOverlap.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		lOverlap.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertOverlap("3.1", lLinked, lOverlap);
 		//file in duplicate folder
-		lChildOverlap.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		lChildOverlap.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertOverlap("3.1", lChildLinked, lChildOverlap);
 	}
 

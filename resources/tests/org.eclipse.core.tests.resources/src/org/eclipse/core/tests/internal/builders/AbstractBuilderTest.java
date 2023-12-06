@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.util.Map;
@@ -71,7 +72,7 @@ public abstract class AbstractBuilderTest extends ResourceTest {
 	 * Dirties the given file, forcing a build.
 	 */
 	protected void dirty(IFile file) throws CoreException {
-		file.setContents(getRandomContents(), true, true, createTestMonitor());
+		file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 	}
 
 	/**

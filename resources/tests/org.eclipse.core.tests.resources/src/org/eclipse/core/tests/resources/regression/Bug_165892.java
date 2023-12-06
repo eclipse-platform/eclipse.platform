@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.IFile;
@@ -73,7 +74,7 @@ public class Bug_165892 extends ResourceTest {
 		createInWorkspace(sourceFile);
 
 		// modify the source file so it has some history
-		sourceFile.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
+		sourceFile.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 		// check that the source file has the expected history
 		assertEquals("1.0", 1, sourceFile.getHistory(createTestMonitor()).length);
 
@@ -85,7 +86,7 @@ public class Bug_165892 extends ResourceTest {
 		assertEquals("2.1", 1, destinationFile.getHistory(createTestMonitor()).length);
 
 		//modify the destination to change its history
-		destinationFile.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
+		destinationFile.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 
 		//make sure the history is correct
 		assertEquals("2.0", 1, sourceFile.getHistory(createTestMonitor()).length);

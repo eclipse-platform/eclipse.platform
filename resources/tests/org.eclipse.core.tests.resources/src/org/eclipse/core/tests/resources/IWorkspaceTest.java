@@ -32,6 +32,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
@@ -152,9 +153,9 @@ public class IWorkspaceTest extends ResourceTest {
 
 		// create the files
 		IFile projectFile = project.getFile("ProjectPhile");
-		file2.create(getRandomContents(), false, createTestMonitor());
-		file3.create(getRandomContents(), false, createTestMonitor());
-		projectFile.create(getRandomContents(), false, createTestMonitor());
+		file2.create(createRandomContentsStream(), false, createTestMonitor());
+		file3.create(createRandomContentsStream(), false, createTestMonitor());
+		projectFile.create(createRandomContentsStream(), false, createTestMonitor());
 
 		//source files aren't siblings
 		assertThrows(CoreException.class, () -> getWorkspace().copy(new IResource[] { file, projectFile },
@@ -173,7 +174,7 @@ public class IWorkspaceTest extends ResourceTest {
 
 		//target exists
 		assertThrows(CoreException.class, () -> {
-			file2Copy.create(getRandomContents(), false, createTestMonitor());
+			file2Copy.create(createRandomContentsStream(), false, createTestMonitor());
 			getWorkspace().copy(new IResource[] { file, file2 }, folder2.getFullPath(), false, createTestMonitor());
 		});
 		removeFromWorkspace(file2Copy);
@@ -245,7 +246,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue(getWorkspace().delete(resources, false, createTestMonitor()).isOK());
 		assertDoesNotExistInFileSystem(resources);
 		assertDoesNotExistInWorkspace(resources);
-		file.create(getRandomContents(), false, createTestMonitor());
+		file.create(createRandomContentsStream(), false, createTestMonitor());
 		resources = new IResource[] {};
 		assertTrue(getWorkspace().delete(resources, false, createTestMonitor()).isOK());
 		assertDoesNotExistInFileSystem(resources);
@@ -264,7 +265,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue(getWorkspace().delete(resources, false, createTestMonitor()).isOK());
 		assertDoesNotExistInFileSystem(resources);
 		assertDoesNotExistInWorkspace(resources);
-		file.create(getRandomContents(), false, createTestMonitor());
+		file.create(createRandomContentsStream(), false, createTestMonitor());
 		resources = new IResource[] {fakeProject};
 		assertTrue(getWorkspace().delete(resources, false, createTestMonitor()).isOK());
 		//	assertDoesNotExistInFileSystem(resources);

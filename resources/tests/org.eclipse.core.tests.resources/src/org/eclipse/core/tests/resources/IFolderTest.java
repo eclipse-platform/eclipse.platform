@@ -18,6 +18,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.junit.Assert.assertThrows;
@@ -49,7 +52,7 @@ public class IFolderTest extends ResourceTest {
 
 		// create the resources and set some content in a file that will be moved.
 		createInWorkspace(before);
-		beforeFile.create(getRandomContents(), false, createTestMonitor());
+		beforeFile.create(createRandomContentsStream(), false, createTestMonitor());
 
 		// Be sure the resources exist and then move them.
 		assertExistsInWorkspace(before);
@@ -168,7 +171,7 @@ public class IFolderTest extends ResourceTest {
 		// try to create a folder over a file that exists
 		IFile file = target.getFile("File1");
 		target = target.getFolder("File1");
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 		assertTrue("4.0", file.exists());
 
 		IFolder subfolderTarget = target;
@@ -218,9 +221,9 @@ public class IFolderTest extends ResourceTest {
 
 		// create the resources and set some content in a file that will be moved.
 		createInWorkspace(before);
-		String content = getRandomString();
+		String content = createRandomString();
 		IFile file = project.getFile(IPath.fromOSString("b/b/z"));
-		file.setContents(getContents(content), true, false, createTestMonitor());
+		file.setContents(createInputStream(content), true, false, createTestMonitor());
 
 		// Be sure the resources exist and then move them.
 		assertExistsInWorkspace(before);
@@ -230,7 +233,7 @@ public class IFolderTest extends ResourceTest {
 		assertDoesNotExistInWorkspace(before);
 		assertExistsInWorkspace(after);
 		file = project.getFile(IPath.fromOSString("a/b/z"));
-		assertTrue("2.1", compareContent(getContents(content), file.getContents(false)));
+		assertTrue("2.1", compareContent(createInputStream(content), file.getContents(false)));
 	}
 
 	public void testFolderOverFile() throws Throwable {

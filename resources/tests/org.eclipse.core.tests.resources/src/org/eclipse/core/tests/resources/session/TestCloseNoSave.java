@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
@@ -36,7 +37,7 @@ public class TestCloseNoSave extends WorkspaceSerializationTest {
 		IFolder folder = project.getFolder(FOLDER);
 		folder.create(true, true, createTestMonitor());
 		IFile file = folder.getFile(FILE);
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 	}
 
 	public void test2() throws CoreException {

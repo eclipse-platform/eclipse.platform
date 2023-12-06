@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.propertytester;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.io.ByteArrayInputStream;
@@ -67,7 +68,7 @@ public class FilePropertyTesterTest extends ResourceTest {
 	public void testExistingTextFile() throws Throwable {
 		String expected = "org.eclipse.core.runtime.text";
 		IFile target = project.getFile("tmp.txt");
-		target.create(getRandomContents(), true, createTestMonitor());
+		target.create(createRandomContentsStream(), true, createTestMonitor());
 
 		boolean ret;
 		ret = tester.test(target, CONTENT_TYPE_ID, new String[] {}, expected);

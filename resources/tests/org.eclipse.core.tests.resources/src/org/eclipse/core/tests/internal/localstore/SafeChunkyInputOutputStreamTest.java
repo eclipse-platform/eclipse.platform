@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.junit.Assert.assertThrows;
 
 import java.io.DataInputStream;
@@ -104,12 +105,12 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 		fakeEnd[fakeEnd.length - 1] = 86;
 
 		// write chunks
-		byte[] chunk1 = getRandomString().getBytes();
-		byte[] chunk2 = getRandomString().getBytes();
-		byte[] chunk3 = getRandomString().getBytes();
-		byte[] chunk4 = getRandomString().getBytes();
-		byte[] chunk5 = getRandomString().getBytes();
-		byte[] chunk6 = getRandomString().getBytes();
+		byte[] chunk1 = createRandomString().getBytes();
+		byte[] chunk2 = createRandomString().getBytes();
+		byte[] chunk3 = createRandomString().getBytes();
+		byte[] chunk4 = createRandomString().getBytes();
+		byte[] chunk5 = createRandomString().getBytes();
+		byte[] chunk6 = createRandomString().getBytes();
 		SafeChunkyOutputStream output = new SafeChunkyOutputStream(target);
 		try {
 			output.write(chunk1);
@@ -196,11 +197,11 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 		assertFalse(target.exists());
 
 		// write chunks
-		byte[] chunk1 = getRandomString().getBytes();
-		byte[] chunk2 = getRandomString().getBytes();
-		byte[] chunk3 = getRandomString().getBytes();
-		byte[] chunk4 = getRandomString().getBytes();
-		byte[] chunk5 = getRandomString().getBytes();
+		byte[] chunk1 = createRandomString().getBytes();
+		byte[] chunk2 = createRandomString().getBytes();
+		byte[] chunk3 = createRandomString().getBytes();
+		byte[] chunk4 = createRandomString().getBytes();
+		byte[] chunk5 = createRandomString().getBytes();
 		try (SafeChunkyOutputStream output = new SafeChunkyOutputStream(target)) {
 			output.write(chunk1);
 			output.succeed();

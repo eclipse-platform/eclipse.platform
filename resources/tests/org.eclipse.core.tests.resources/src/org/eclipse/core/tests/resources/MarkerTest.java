@@ -16,6 +16,8 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
@@ -321,7 +323,7 @@ public class MarkerTest extends ResourceTest {
 			listener.reset();
 			// each setAttributes triggers one additional resource change event
 			IMarker marker = resource.createMarker(TEST_PROBLEM_MARKER);
-			marker.setAttribute(IMarker.MESSAGE, getRandomString());
+			marker.setAttribute(IMarker.MESSAGE, createRandomString());
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 			assertThat(listener.numberOfChanges(), is(3));
 		}
@@ -338,7 +340,7 @@ public class MarkerTest extends ResourceTest {
 			listener.reset();
 			// each setAttributes triggers one resource change event
 			resource.createMarker(TEST_PROBLEM_MARKER,
-					Map.of(IMarker.MESSAGE, getRandomString(), IMarker.PRIORITY, IMarker.PRIORITY_HIGH));
+					Map.of(IMarker.MESSAGE, createRandomString(), IMarker.PRIORITY, IMarker.PRIORITY_HIGH));
 			assertThat(listener.numberOfChanges(), is(1));
 		}
 	}
@@ -443,14 +445,14 @@ public class MarkerTest extends ResourceTest {
 
 		int actual = marker.getAttribute(IMarker.TRANSIENT, -1);
 		assertThat(actual, is(expected));
-		marker.setAttribute(IMarker.MESSAGE, getRandomString());
+		marker.setAttribute(IMarker.MESSAGE, createRandomString());
 	}
 
 	public void test_10989() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		createInWorkspace(project);
 		IFile file = project.getFile("foo.txt");
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 		file.createMarker(IMarker.PROBLEM);
 		IMarker[] found = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ZERO);
 		assertThat(found, arrayWithSize(1));
@@ -463,12 +465,12 @@ public class MarkerTest extends ResourceTest {
 	 * Bug 289811 - ArrayIndexOutOfBoundsException in MarkerAttributeMap
 	 */
 	public void test_289811() throws CoreException {
-		String testValue = getRandomString();
+		String testValue = createRandomString();
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		project.create(null);
 		project.open(null);
 		IFile file = project.getFile("foo.txt");
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 		IMarker marker = file.createMarker(IMarker.PROBLEM);
 		marker.setAttributes(new HashMap<>());
 		marker.setAttribute(IMarker.SEVERITY, testValue);
@@ -640,7 +642,7 @@ public class MarkerTest extends ResourceTest {
 			listener.reset();
 			markers[0].delete();
 			assertMarkerDoesNotExist(markers[0]);
-			markers[1].setAttribute(IMarker.MESSAGE, getRandomString());
+			markers[1].setAttribute(IMarker.MESSAGE, createRandomString());
 			markers[2] = resource.createMarker(IMarker.TASK);
 			listener.assertNumberOfAffectedResources(1);
 			listener.assertChanges(resource, new IMarker[] { markers[2] }, new IMarker[] { markers[0] },
@@ -1186,7 +1188,7 @@ public class MarkerTest extends ResourceTest {
 			assertMarkerHasAttributeValue(marker, IMarker.MESSAGE, null);
 
 			// set an attribute, get its value, then remove it
-			String testMessage = getRandomString();
+			String testMessage = createRandomString();
 			marker.setAttribute(IMarker.MESSAGE, testMessage);
 			assertMarkerHasAttributeValue(marker, IMarker.MESSAGE, testMessage);
 			marker.setAttribute(IMarker.MESSAGE, null);
@@ -1195,7 +1197,7 @@ public class MarkerTest extends ResourceTest {
 			// set more attributes, get their values, then remove one
 			String[] keys = new String[] { IMarker.LOCATION, IMarker.SEVERITY, IMarker.DONE };
 			Object[] values = new Object[3];
-			values[0] = getRandomString();
+			values[0] = createRandomString();
 			values[1] = Integer.valueOf(5);
 			values[2] = Boolean.FALSE;
 			Map<String, Object> originalMap = Map.of(keys[0], values[0], keys[1], values[1], keys[2], values[2]);
@@ -1213,9 +1215,9 @@ public class MarkerTest extends ResourceTest {
 			// try sending null as args
 			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null));
 			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttributes(null));
-			assertThrows(resourcePath, RuntimeException.class, () -> marker.setAttribute(null, getRandomString()));
+			assertThrows(resourcePath, RuntimeException.class, () -> marker.setAttribute(null, createRandomString()));
 			assertThrows(resourcePath, RuntimeException.class,
-					() -> marker.setAttributes(null, new String[] { getRandomString() }));
+					() -> marker.setAttributes(null, new String[] { createRandomString() }));
 			assertThrows(resourcePath, RuntimeException.class,
 					() -> marker.setAttributes(new String[] { IMarker.MESSAGE }, null));
 			//set attributes on deleted marker
@@ -1265,7 +1267,7 @@ public class MarkerTest extends ResourceTest {
 			assertThat(resourcePath, marker.getAttributes(new String[] { IMarker.MESSAGE })[0], is(nullValue()));
 
 			// set an attribute, get its value, then remove it
-			String testMessage = getRandomString();
+			String testMessage = createRandomString();
 			marker.setAttribute(IMarker.MESSAGE, testMessage);
 			assertMarkerHasAttributeValue(marker, IMarker.MESSAGE, testMessage);
 			marker.setAttribute(IMarker.MESSAGE, null);
@@ -1274,7 +1276,7 @@ public class MarkerTest extends ResourceTest {
 			// set more attributes, get their values, then remove one
 			String[] keys = new String[] { IMarker.LOCATION, IMarker.SEVERITY, IMarker.DONE };
 			Object[] values = new Object[3];
-			values[0] = getRandomString();
+			values[0] = createRandomString();
 			values[1] = Integer.valueOf(5);
 			values[2] = Boolean.FALSE;
 			Map<String, Object> originalMap = Map.of(keys[0], values[0], keys[1], values[1], keys[2], values[2]);
@@ -1295,9 +1297,9 @@ public class MarkerTest extends ResourceTest {
 			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null, true));
 			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null, 5));
 			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttributes(null));
-			assertThrows(resourcePath, RuntimeException.class, () -> marker.setAttribute(null, getRandomString()));
+			assertThrows(resourcePath, RuntimeException.class, () -> marker.setAttribute(null, createRandomString()));
 			assertThrows(resourcePath, RuntimeException.class,
-					() -> marker.setAttributes(null, new String[] { getRandomString() }));
+					() -> marker.setAttributes(null, new String[] { createRandomString() }));
 			assertThrows(resourcePath, RuntimeException.class,
 					() -> marker.setAttributes(new String[] { IMarker.MESSAGE }, null));
 

@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.resources;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -173,7 +174,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 
 			// sets a non-used preference to a non-default value so a
 			// preferences file can be generated
-			preferences.setValue("foo.bar", getRandomString());
+			preferences.setValue("foo.bar", createRandomString());
 
 			// exports original preferences (only default values - except for bogus preference above)
 			Preferences.exportPreferences(originalPreferencesFile);

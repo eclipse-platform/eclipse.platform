@@ -21,6 +21,7 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATUR
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.getLineSeparatorFromFile;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
@@ -2510,7 +2511,7 @@ public class IProjectTest extends ResourceTest {
 
 		// modify the file to create an entry in the history
 		monitor.prepare();
-		file.setContents(new ByteArrayInputStream(getRandomString().getBytes()), true, true, monitor);
+		file.setContents(new ByteArrayInputStream(createRandomString().getBytes()), true, true, monitor);
 		monitor.assertUsedUp();
 
 		// delete the project and check that its metadata is also deleted

@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.resources.IContainer;
@@ -49,7 +50,7 @@ public class Bug_028981 extends ResourceTest {
 		IFile prefs = settings.getFile("org.eclipse.core.resources.prefs");
 
 		createInWorkspace(new IResource[] {teamPrivateFile, regularFile});
-		synchronizer.setSyncInfo(partner, phantomFile, getRandomString().getBytes());
+		synchronizer.setSyncInfo(partner, phantomFile, createRandomString().getBytes());
 		teamPrivateFile.setTeamPrivateMember(true);
 		assertTrue("0.7", !regularFile.isPhantom() && !regularFile.isTeamPrivateMember());
 		assertTrue("0.8", teamPrivateFile.isTeamPrivateMember());

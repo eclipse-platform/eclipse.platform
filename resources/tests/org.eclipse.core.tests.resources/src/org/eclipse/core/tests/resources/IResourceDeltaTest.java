@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.IFile;
@@ -110,9 +111,9 @@ public class IResourceDeltaTest extends ResourceTest {
 
 		//do the work
 		IWorkspaceRunnable body = monitor -> {
-			file1.setContents(getRandomContents(), true, true, createTestMonitor());
+			file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 			folder2.delete(true, createTestMonitor());
-			file4.create(getRandomContents(), true, createTestMonitor());
+			file4.create(createRandomContentsStream(), true, createTestMonitor());
 		};
 		try {
 			getWorkspace().run(body, createTestMonitor());

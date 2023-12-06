@@ -16,6 +16,7 @@ package org.eclipse.core.tests.internal.properties;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
@@ -118,7 +119,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 
 		// create common objects
 		final IFile target = projects[0].getFile("target");
-		target.create(getRandomContents(), true, createTestMonitor());
+		target.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// prepare keys and values
 		final int N = 50;
@@ -416,7 +417,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 	public void testLargeProperty() throws CoreException {
 		// create common objects
 		IFile target = projects[0].getFile("target");
-		target.create(getRandomContents(), true, createTestMonitor());
+		target.create(createRandomContentsStream(), true, createTestMonitor());
 
 		QualifiedName name = new QualifiedName("stressTest", "prop");
 		final int SIZE = 10000;
@@ -486,7 +487,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 
 		// create common objects
 		IFile target = projects[0].getFile("target");
-		target.create(getRandomContents(), true, createTestMonitor());
+		target.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// prepare keys and values
 		int N = 3;

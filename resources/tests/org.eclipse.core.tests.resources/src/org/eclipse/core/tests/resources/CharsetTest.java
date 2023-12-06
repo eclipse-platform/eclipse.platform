@@ -18,6 +18,7 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
@@ -1202,7 +1203,7 @@ public class CharsetTest extends ResourceTest {
 			// File:
 			// single file
 			final IFile file1 = project.getFile("file1.txt");
-			createInWorkspace(file1, getRandomString());
+			createInWorkspace(file1, createRandomString());
 			// change from default
 			verifier.reset();
 			verifier.addExpectedChange(file1, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
@@ -1241,7 +1242,7 @@ public class CharsetTest extends ResourceTest {
 			// multiple files (same operation)
 			verifier.reset();
 			final IFile file2 = project.getFile("file2.txt");
-			createInWorkspace(file2, getRandomString());
+			createInWorkspace(file2, createRandomString());
 			verifier.addExpectedChange(new IResource[] {file1, file2}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
 			verifier.addExpectedChange(prefs.getParent(), IResourceDelta.CHANGED, 0);
 			verifier.addExpectedChange(prefs, IResourceDelta.CHANGED, IResourceDelta.CONTENT);

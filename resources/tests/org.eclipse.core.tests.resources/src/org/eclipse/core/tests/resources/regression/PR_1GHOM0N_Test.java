@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.ICommand;
@@ -46,7 +47,7 @@ public class PR_1GHOM0N_Test extends ResourceTest {
 		IWorkspaceRunnable body = monitor -> {
 			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 			IFile file = project.getFile("test.txt");
-			file.create(getRandomContents(), true, createTestMonitor());
+			file.create(createRandomContentsStream(), true, createTestMonitor());
 		};
 		getWorkspace().run(body, createTestMonitor());
 	}

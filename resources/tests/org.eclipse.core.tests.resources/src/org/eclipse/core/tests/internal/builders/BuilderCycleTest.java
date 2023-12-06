@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 
@@ -62,7 +63,7 @@ public class BuilderCycleTest extends AbstractBuilderTest {
 		builder.setAfterProjects(new IProject[] {after1, after2});
 
 		// create a file to ensure incremental build is called
-		project.getFile("Foo.txt").create(getRandomContents(), IResource.NONE, createTestMonitor());
+		project.getFile("Foo.txt").create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		builder.resetBuildCount();
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
@@ -98,7 +99,7 @@ public class BuilderCycleTest extends AbstractBuilderTest {
 		//force an incremental build
 		IFile file = project.getFile("foo.txt");
 		builder.resetBuildCount();
-		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertEquals(1, builder.getBuildCount());
 
 		//request 1 rebuild and ensure we're called twice
@@ -109,7 +110,7 @@ public class BuilderCycleTest extends AbstractBuilderTest {
 
 		//force an incremental build
 		builder.resetBuildCount();
-		file.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertEquals(2, builder.getBuildCount());
 
 		//request 5 rebuilds and ensure we're called six times
@@ -120,7 +121,7 @@ public class BuilderCycleTest extends AbstractBuilderTest {
 
 		//force an incremental build
 		builder.resetBuildCount();
-		file.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertEquals(6, builder.getBuildCount());
 
 		//request many rebuilds and ensure we're called according to the build policy
@@ -132,7 +133,7 @@ public class BuilderCycleTest extends AbstractBuilderTest {
 
 		//force an incremental build
 		builder.resetBuildCount();
-		file.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertEquals(maxBuilds, builder.getBuildCount());
 
 		//change the rebuild policy and ensure we're called the correct number of times
@@ -147,7 +148,7 @@ public class BuilderCycleTest extends AbstractBuilderTest {
 
 		//force an incremental build
 		builder.resetBuildCount();
-		file.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertEquals(maxBuilds, builder.getBuildCount());
 
 	}

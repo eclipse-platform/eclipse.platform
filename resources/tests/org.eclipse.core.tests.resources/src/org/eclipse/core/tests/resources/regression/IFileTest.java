@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.junit.Assert.assertThrows;
@@ -65,7 +66,7 @@ public class IFileTest extends ResourceTest {
 			folder.setReadOnly(true);
 			assertTrue(folder.isReadOnly());
 			CoreException exception = assertThrows(CoreException.class,
-					() -> file.create(getRandomContents(), true, createTestMonitor()));
+					() -> file.create(createRandomContentsStream(), true, createTestMonitor()));
 			assertEquals(IResourceStatus.FAILED_WRITE_LOCAL, exception.getStatus().getCode());
 		} finally {
 			folder.setReadOnly(false);
@@ -97,7 +98,7 @@ public class IFileTest extends ResourceTest {
 			folder.setReadOnly(true);
 			assertTrue(folder.isReadOnly());
 			CoreException exception = assertThrows(CoreException.class,
-					() -> file.create(getRandomContents(), true, createTestMonitor()));
+					() -> file.create(createRandomContentsStream(), true, createTestMonitor()));
 			assertEquals(IResourceStatus.PARENT_READ_ONLY, exception.getStatus().getCode());
 		} finally {
 			folder.setReadOnly(false);

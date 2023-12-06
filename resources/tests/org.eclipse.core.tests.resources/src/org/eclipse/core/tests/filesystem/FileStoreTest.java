@@ -15,6 +15,8 @@ package org.eclipse.core.tests.filesystem;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
@@ -201,7 +203,7 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore parent = getTempStore();
 		IFileStore child = parent.getChild("child");
 		IFileStore existing = getTempStore();
-		createFile(existing, getRandomString());
+		createFile(existing, createRandomString());
 		// try to copy when parent of destination does not exist
 		assertThrows(CoreException.class, () -> existing.copy(child, EFS.NONE, createTestMonitor()));
 		// destination should not exist
@@ -221,15 +223,15 @@ public class FileStoreTest extends LocalStoreTest {
 		createFile(fileWithSmallName, content);
 		System.out.println(fileWithSmallName.fetchInfo().getName());
 		assertTrue("1.3", fileWithSmallName.fetchInfo().exists());
-		assertTrue("1.4", compareContent(getContents(content), fileWithSmallName.openInputStream(EFS.NONE, null)));
+		assertTrue("1.4", compareContent(createInputStream(content), fileWithSmallName.openInputStream(EFS.NONE, null)));
 
 		IFileStore fileWithOtherName = temp.getChild("FILENAME");
 		System.out.println(fileWithOtherName.fetchInfo().getName());
 		// file content is already the same for both Cases:
-		assertTrue("2.0", compareContent(getContents(content), fileWithOtherName.openInputStream(EFS.NONE, null)));
+		assertTrue("2.0", compareContent(createInputStream(content), fileWithOtherName.openInputStream(EFS.NONE, null)));
 		fileWithSmallName.copy(fileWithOtherName, IResource.DEPTH_INFINITE, null); // a NOP Operation
 		// file content is still the same for both Cases:
-		assertTrue("2.1", compareContent(getContents(content), fileWithOtherName.openInputStream(EFS.NONE, null)));
+		assertTrue("2.1", compareContent(createInputStream(content), fileWithOtherName.openInputStream(EFS.NONE, null)));
 		assertTrue("3.0", fileWithOtherName.fetchInfo().exists());
 		assertTrue("3.1", fileWithSmallName.fetchInfo().exists());
 		fileWithOtherName.delete(EFS.NONE, null);
@@ -251,12 +253,12 @@ public class FileStoreTest extends LocalStoreTest {
 		target.delete(EFS.NONE, null);
 		createFile(target, content);
 		assertTrue("1.3", target.fetchInfo().exists());
-		assertTrue("1.4", compareContent(getContents(content), target.openInputStream(EFS.NONE, null)));
+		assertTrue("1.4", compareContent(createInputStream(content), target.openInputStream(EFS.NONE, null)));
 
 		/* temp\target -> temp\copy of target */
 		IFileStore copyOfTarget = temp.getChild("copy of target");
 		target.copy(copyOfTarget, IResource.DEPTH_INFINITE, null);
-		assertTrue("2.1", compareContent(getContents(content), copyOfTarget.openInputStream(EFS.NONE, null)));
+		assertTrue("2.1", compareContent(createInputStream(content), copyOfTarget.openInputStream(EFS.NONE, null)));
 		copyOfTarget.delete(EFS.NONE, null);
 
 		// We need to know whether or not we can unset the read-only flag
@@ -267,7 +269,7 @@ public class FileStoreTest extends LocalStoreTest {
 			setReadOnly(target, true);
 
 			target.copy(copyOfTarget, IResource.DEPTH_INFINITE, null);
-			assertTrue("3.1", compareContent(getContents(content), copyOfTarget.openInputStream(EFS.NONE, null)));
+			assertTrue("3.1", compareContent(createInputStream(content), copyOfTarget.openInputStream(EFS.NONE, null)));
 			// reset read only flag for cleanup
 			setReadOnly(copyOfTarget, false);
 			copyOfTarget.delete(EFS.NONE, null);
@@ -284,12 +286,12 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore bigFile = temp.getChild("bigFile");
 		createFile(bigFile, sb.toString());
 		assertTrue("7.1", bigFile.fetchInfo().exists());
-		assertTrue("7.2", compareContent(getContents(sb.toString()), bigFile.openInputStream(EFS.NONE, null)));
+		assertTrue("7.2", compareContent(createInputStream(sb.toString()), bigFile.openInputStream(EFS.NONE, null)));
 		IFileStore destination = temp.getChild("copy of bigFile");
 		// IProgressMonitor monitor = new LoggingProgressMonitor(System.out);
 		IProgressMonitor monitor = createTestMonitor();
 		bigFile.copy(destination, EFS.NONE, monitor);
-		assertTrue("7.3", compareContent(getContents(sb.toString()), destination.openInputStream(EFS.NONE, null)));
+		assertTrue("7.3", compareContent(createInputStream(sb.toString()), destination.openInputStream(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
 	}
 
@@ -318,13 +320,13 @@ public class FileStoreTest extends LocalStoreTest {
 		createFile(target, content);
 		deleteOnTearDown(target);
 		assertTrue("1.3", target.fetchInfo().exists());
-		assertTrue("1.4", compareContent(getContents(content), target.openInputStream(EFS.NONE, null)));
+		assertTrue("1.4", compareContent(createInputStream(content), target.openInputStream(EFS.NONE, null)));
 
 		/* c:\temp\target -> d:\temp\target */
 		IFileStore destination = tempDest.getChild(subfolderName);
 		deleteOnTearDown(destination);
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
-		assertTrue("3.1", compareContent(getContents(content), destination.openInputStream(EFS.NONE, null)));
+		assertTrue("3.1", compareContent(createInputStream(content), destination.openInputStream(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\copy of target */
@@ -332,7 +334,7 @@ public class FileStoreTest extends LocalStoreTest {
 		destination = tempDest.getChild(copyOfSubfoldername);
 		deleteOnTearDown(destination);
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
-		assertTrue("4.1", compareContent(getContents(content), destination.openInputStream(EFS.NONE, null)));
+		assertTrue("4.1", compareContent(createInputStream(content), destination.openInputStream(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a file */
@@ -342,7 +344,7 @@ public class FileStoreTest extends LocalStoreTest {
 		createFile(destination, anotherContent);
 		assertTrue("5.1", !destination.fetchInfo().isDirectory());
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
-		assertTrue("5.2", compareContent(getContents(content), destination.openInputStream(EFS.NONE, null)));
+		assertTrue("5.2", compareContent(createInputStream(content), destination.openInputStream(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a folder */
@@ -502,7 +504,7 @@ public class FileStoreTest extends LocalStoreTest {
 		IFileStore parent = getTempStore();
 		IFileStore child = parent.getChild("child");
 		IFileStore existing = getTempStore();
-		createFile(existing, getRandomString());
+		createFile(existing, createRandomString());
 		// try to move when parent of destination does not exist
 		assertThrows(CoreException.class, () -> existing.move(child, EFS.NONE, createTestMonitor()));
 		// destination should not exist

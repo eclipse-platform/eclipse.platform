@@ -17,6 +17,7 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
 
@@ -121,7 +122,7 @@ public class ISynchronizerTest extends ResourceTest {
 			if (resource.getType() == IResource.ROOT) {
 				return true;
 			}
-			byte[] b = getRandomString().getBytes();
+			byte[] b = createRandomString().getBytes();
 			table.put(resource.getFullPath(), b);
 			synchronizer.setSyncInfo(qname, resource, b);
 			return true;
@@ -194,7 +195,7 @@ public class ISynchronizerTest extends ResourceTest {
 			if (resource.getType() == IResource.ROOT) {
 				return true;
 			}
-			byte[] b = getRandomString().getBytes();
+			byte[] b = createRandomString().getBytes();
 			table.put(resource.getFullPath(), b);
 			synchronizer.setSyncInfo(qname, resource, b);
 			return true;
@@ -388,7 +389,7 @@ public class ISynchronizerTest extends ResourceTest {
 			if (resource.getType() == IResource.ROOT) {
 				return true;
 			}
-			byte[] b = getRandomString().getBytes();
+			byte[] b = createRandomString().getBytes();
 			synchronizer.setSyncInfo(qname, resource, b);
 			table.put(resource.getFullPath(), b);
 			return true;
@@ -607,7 +608,7 @@ public class ISynchronizerTest extends ResourceTest {
 			if (resource.getType() == IResource.ROOT) {
 				return true;
 			}
-			byte[] b = getRandomString().getBytes();
+			byte[] b = createRandomString().getBytes();
 			table.put(resource.getFullPath(), b);
 			return true;
 		};
@@ -667,7 +668,7 @@ public class ISynchronizerTest extends ResourceTest {
 			if (resource.getType() == IResource.ROOT) {
 				return true;
 			}
-			byte[] b = getRandomString().getBytes();
+			byte[] b = createRandomString().getBytes();
 			synchronizer.setSyncInfo(qname, resource, b);
 			table.put(resource.getFullPath(), b);
 			return true;
@@ -717,9 +718,9 @@ public class ISynchronizerTest extends ResourceTest {
 		createInWorkspace(new IResource[] {file1, file2});
 
 		// sets sync info for the folder and its children
-		synchronizer.setSyncInfo(partner, folder, getRandomString().getBytes());
-		synchronizer.setSyncInfo(partner, file1, getRandomString().getBytes());
-		synchronizer.setSyncInfo(partner, file2, getRandomString().getBytes());
+		synchronizer.setSyncInfo(partner, folder, createRandomString().getBytes());
+		synchronizer.setSyncInfo(partner, file1, createRandomString().getBytes());
+		synchronizer.setSyncInfo(partner, file2, createRandomString().getBytes());
 
 		// 1) tests with one child first
 		assertTrue("1.1", file1.exists());
