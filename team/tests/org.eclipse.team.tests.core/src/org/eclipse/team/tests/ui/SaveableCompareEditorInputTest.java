@@ -50,6 +50,7 @@ import org.eclipse.team.internal.ui.synchronize.SaveablesCompareEditorInput;
 import org.eclipse.team.tests.core.TeamTest;
 import org.eclipse.team.ui.synchronize.SaveableCompareEditorInput;
 import org.eclipse.ui.PlatformUI;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.*;
 
 public class SaveableCompareEditorInputTest extends TeamTest {
 
@@ -355,7 +356,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 	private void verifyModifyAndSaveBothSidesOfCompareEditor(String extention)
 			throws InterruptedException, InvocationTargetException,
 			IllegalArgumentException, SecurityException,
-			IllegalAccessException, NoSuchFieldException, CoreException {
+			IllegalAccessException, NoSuchFieldException, CoreException, IOException {
 
 		// create files to compare
 		IFile file1 = project.getFile("CompareFile1." + extention);
@@ -411,38 +412,23 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 				file2.getContents()));
 	}
 
-	public void testModifyAndSaveBothSidesOfCompareEditorHtml()
-			throws IllegalArgumentException, SecurityException,
-			InterruptedException, InvocationTargetException,
-			IllegalAccessException, NoSuchFieldException, CoreException {
+	public void testModifyAndSaveBothSidesOfCompareEditorHtml() throws Exception {
 		verifyModifyAndSaveBothSidesOfCompareEditor("html");
 	}
 
-	public void testModifyAndSaveBothSidesOfCompareEditorTxt()
-			throws IllegalArgumentException, SecurityException,
-			InterruptedException, InvocationTargetException,
-			IllegalAccessException, NoSuchFieldException, CoreException {
+	public void testModifyAndSaveBothSidesOfCompareEditorTxt() throws Exception {
 		verifyModifyAndSaveBothSidesOfCompareEditor("txt");
 	}
 
-	public void testModifyAndSaveBothSidesOfCompareEditorJava()
-			throws IllegalArgumentException, SecurityException,
-			InterruptedException, InvocationTargetException,
-			IllegalAccessException, NoSuchFieldException, CoreException {
+	public void testModifyAndSaveBothSidesOfCompareEditorJava() throws Exception {
 		verifyModifyAndSaveBothSidesOfCompareEditor("java");
 	}
 
-	public void testModifyAndSaveBothSidesOfCompareEditorXml()
-			throws IllegalArgumentException, SecurityException,
-			InterruptedException, InvocationTargetException,
-			IllegalAccessException, NoSuchFieldException, CoreException {
+	public void testModifyAndSaveBothSidesOfCompareEditorXml() throws Exception {
 		verifyModifyAndSaveBothSidesOfCompareEditor("xml");
 	}
 
-	public void testModifyAndSaveBothSidesOfCompareEditorProperties()
-			throws IllegalArgumentException, SecurityException,
-			InterruptedException, InvocationTargetException,
-			IllegalAccessException, NoSuchFieldException, CoreException {
+	public void testModifyAndSaveBothSidesOfCompareEditorProperties() throws Exception {
 		verifyModifyAndSaveBothSidesOfCompareEditor("properties");
 	}
 }

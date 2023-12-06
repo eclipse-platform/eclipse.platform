@@ -16,6 +16,7 @@ package org.eclipse.compare.tests;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -206,7 +207,7 @@ public class WorkspaceTest extends ResourceTest {
 	}
 
 	// Assert that the two containers have equal contents
-	protected void assertEquals(IContainer container1, IContainer container2) throws CoreException {
+	protected void assertEquals(IContainer container1, IContainer container2) throws CoreException, IOException {
 		assertEquals(container1.getName(), container2.getName());
 		List<IResource> members1 = new ArrayList<>();
 		members1.addAll(Arrays.asList(container1.members()));
@@ -224,14 +225,14 @@ public class WorkspaceTest extends ResourceTest {
 	}
 
 	// Assert that the two files have equal contents
-	protected void assertEquals(IFile file1, IFile file2) throws CoreException {
+	protected void assertEquals(IFile file1, IFile file2) throws CoreException, IOException {
 		assertEquals(file1.getName(), file2.getName());
 		assertTrue(compareContent(file1.getContents(), file2.getContents()));
 	}
 
 	// Assert that the two projects have equal contents ignoreing the project name
 	// and the .vcm_meta file
-	protected void assertEquals(IProject container1, IProject container2) throws CoreException {
+	protected void assertEquals(IProject container1, IProject container2) throws CoreException, IOException {
 		List<IResource> members1 = new ArrayList<>();
 		members1.addAll(Arrays.asList(container1.members()));
 		members1.remove(container1.findMember(".project"));
@@ -248,7 +249,7 @@ public class WorkspaceTest extends ResourceTest {
 			assertEquals(member1, member2);
 		}
 	}
-	protected void assertEquals(IResource resource1, IResource resource2) throws CoreException {
+	protected void assertEquals(IResource resource1, IResource resource2) throws CoreException, IOException {
 		assertEquals(resource1.getType(), resource2.getType());
 		if (resource1.getType() == IResource.FILE)
 			assertEquals((IFile)resource1, (IFile)resource2);

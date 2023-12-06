@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
@@ -58,7 +59,7 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * 1G9RBH5: ITPCORE:WIN98 - IFile.appendContents might lose data
 	 */
-	public void testAppendContents_1G9RBH5() throws CoreException {
+	public void testAppendContents_1G9RBH5() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		project.create(null);
 		project.open(null);

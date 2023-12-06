@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
@@ -360,6 +361,26 @@ public final class ResourceTestUtil {
 	private static long getLastModifiedTime(IPath fileLocation) {
 		IFileInfo fileInfo = EFS.getLocalFileSystem().getStore(fileLocation).fetchInfo();
 		return fileInfo.getLastModified();
+	}
+
+	/**
+	 * Returns a boolean value indicating whether or not the contents
+	 * of the given streams are considered to be equal. Closes both input streams.
+	 */
+	public static boolean compareContent(InputStream a, InputStream b) throws IOException {
+		int c, d;
+		if (a == null && b == null) {
+			return true;
+		}
+		try (a; b) {
+			if (a == null || b == null) {
+				return false;
+			}
+			while ((c = a.read()) == (d = b.read()) && (c != -1 && d != -1)) {
+				// body not needed
+			}
+		}
+		return (c == -1 && d == -1);
 	}
 
 }

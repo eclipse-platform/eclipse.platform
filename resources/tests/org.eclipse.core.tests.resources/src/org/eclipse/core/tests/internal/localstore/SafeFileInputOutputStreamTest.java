@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
