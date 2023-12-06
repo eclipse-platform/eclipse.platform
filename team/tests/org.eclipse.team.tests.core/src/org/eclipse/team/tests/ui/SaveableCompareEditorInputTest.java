@@ -31,7 +31,6 @@ import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.compare.tests.ReflectionUtils;
-import org.eclipse.core.internal.runtime.RuntimeLog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -39,6 +38,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
@@ -82,13 +82,13 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 		file2.setContents(new ByteArrayInputStream(fileContents2.getBytes()),
 				true, true, null);
 
-		RuntimeLog.addLogListener(logListener);
+		Platform.addLogListener(logListener);
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
 		// remove log listener
-		RuntimeLog.removeLogListener(logListener);
+		Platform.removeLogListener(logListener);
 		super.tearDown();
 	}
 
