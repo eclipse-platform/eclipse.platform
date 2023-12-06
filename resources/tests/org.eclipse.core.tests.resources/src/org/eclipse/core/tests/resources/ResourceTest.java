@@ -17,7 +17,6 @@ package org.eclipse.core.tests.resources;
 import static java.io.InputStream.nullInputStream;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.junit.Assert.assertArrayEquals;
@@ -36,7 +35,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -302,39 +300,6 @@ public abstract class ResourceTest extends CoreTest {
 		}
 	}
 
-	protected String getLineSeparatorFromFile(IFile file) {
-		if (file.exists()) {
-			InputStream input = null;
-			try {
-				input = file.getContents();
-				int c = input.read();
-				while (c != -1 && c != '\r' && c != '\n') {
-					c = input.read();
-				}
-				if (c == '\n')
-				 {
-					return "\n"; //$NON-NLS-1$
-				}
-				if (c == '\r') {
-					if (input.read() == '\n')
-					 {
-						return "\r\n"; //$NON-NLS-1$
-					}
-					return "\r"; //$NON-NLS-1$
-				}
-			} catch (CoreException | IOException e) {
-				// ignore
-			} finally {
-				try {
-					input.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-		}
-		return null;
-	}
-
 	/**
 	 * Returns a FileStore instance backed by storage in a temporary location.
 	 * The returned store will not exist, but will belong to an existing parent.
@@ -398,47 +363,6 @@ public abstract class ResourceTest extends CoreTest {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Enables or disables workspace autobuild. Waits for the build to be finished,
-	 * even if the autobuild value did not change and a previous build is still running.
-	 */
-	protected void setAutoBuilding(boolean enabled) throws CoreException {
-		IWorkspace workspace = getWorkspace();
-		if (workspace.isAutoBuilding() != enabled) {
-			IWorkspaceDescription description = workspace.getDescription();
-			description.setAutoBuilding(enabled);
-			workspace.setDescription(description);
-		}
-		waitForBuild();
-	}
-
-	public String[] findAvailableDevices() {
-		String[] devices = new String[2];
-		for (int i = 97/*a*/; i < 123/*z*/; i++) {
-			char c = (char) i;
-			java.io.File rootFile = new java.io.File(c + ":\\");
-			if (rootFile.exists() && rootFile.canWrite()) {
-				//sometimes canWrite can return true but we are still not allowed to create a file - see bug 379284.
-				File probe = new File(rootFile, createUniqueString());
-				try {
-					probe.createNewFile();
-				} catch (IOException e) {
-					//can't create a file here.. try another device
-					continue;
-				} finally {
-					probe.delete();
-				}
-				if (devices[0] == null) {
-					devices[0] = c + ":/";
-				} else {
-					devices[1] = c + ":/";
-					break;
-				}
-			}
-		}
-		return devices;
 	}
 
 }

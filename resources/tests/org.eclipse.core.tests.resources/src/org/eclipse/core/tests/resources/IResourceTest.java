@@ -25,6 +25,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;

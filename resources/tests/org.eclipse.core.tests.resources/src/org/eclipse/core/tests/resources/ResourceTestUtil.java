@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -40,6 +41,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -381,6 +383,90 @@ public final class ResourceTestUtil {
 			}
 		}
 		return (c == -1 && d == -1);
+	}
+
+	/**
+	 * Enables or disables workspace autobuild. Waits for the build to be finished,
+	 * even if the autobuild value did not change and a previous build is still
+	 * running.
+	 */
+	public static void setAutoBuilding(boolean enabled) throws CoreException {
+		IWorkspace workspace = getWorkspace();
+		if (workspace.isAutoBuilding() != enabled) {
+			IWorkspaceDescription description = workspace.getDescription();
+			description.setAutoBuilding(enabled);
+			workspace.setDescription(description);
+		}
+		waitForBuild();
+	}
+
+	/**
+	 * Returns the character sequence used as a line separator within the given
+	 * file.
+	 */
+	public static String getLineSeparatorFromFile(IFile file) {
+		if (file.exists()) {
+			InputStream input = null;
+			try {
+				input = file.getContents();
+				int c = input.read();
+				while (c != -1 && c != '\r' && c != '\n') {
+					c = input.read();
+				}
+				if (c == '\n')
+				 {
+					return "\n"; //$NON-NLS-1$
+				}
+				if (c == '\r') {
+					if (input.read() == '\n')
+					 {
+						return "\r\n"; //$NON-NLS-1$
+					}
+					return "\r"; //$NON-NLS-1$
+				}
+			} catch (CoreException | IOException e) {
+				// ignore
+			} finally {
+				try {
+					input.close();
+				} catch (IOException e) {
+					// ignore
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns a two-element array containing two available devices. In case there
+	 * are fewer devices available, the other array entries will be null. Note that
+	 * this method only works on Windows.
+	 */
+	public static String[] findAvailableDevices() {
+		String[] devices = new String[2];
+		for (int i = 97/*a*/; i < 123/*z*/; i++) {
+			char c = (char) i;
+			java.io.File rootFile = new java.io.File(c + ":\\");
+			if (rootFile.exists() && rootFile.canWrite()) {
+				//sometimes canWrite can return true but we are still not allowed to create a file - see bug 379284.
+				File probe = new File(rootFile, createUniqueString());
+				try {
+					probe.createNewFile();
+				} catch (IOException e) {
+					//can't create a file here.. try another device
+					continue;
+				} finally {
+					probe.delete();
+				}
+				if (devices[0] == null) {
+					devices[0] = c + ":/";
+				} else {
+					devices[1] = c + ":/";
+					break;
+				}
+			}
+		}
+		return devices;
 	}
 
 }

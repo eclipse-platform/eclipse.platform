@@ -15,6 +15,7 @@ package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
