@@ -79,12 +79,12 @@ public class Bug_192631 extends ResourceTest {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
 		IProject projectA = workspace.getRoot().getProject("projectA");
-		ensureExistsInWorkspace(projectA);
+		createInWorkspace(projectA);
 		IFolder linkA = projectA.getFolder("link_to_commonA");
 		linkA.createLink(commonA, IResource.NONE, createTestMonitor());
 
 		IProject projectB = workspace.getRoot().getProject("projectB");
-		ensureExistsInWorkspace(projectB);
+		createInWorkspace(projectB);
 		IFolder linkB = projectB.getFolder("link_to_commonB");
 		linkB.createLink(commonB, IResource.NONE, createTestMonitor());
 
@@ -124,12 +124,12 @@ public class Bug_192631 extends ResourceTest {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
 		IProject projectA = workspace.getRoot().getProject("projectA");
-		ensureExistsInWorkspace(projectA);
+		createInWorkspace(projectA);
 		IFolder linkA = projectA.getFolder("link_to_commonA");
 		linkA.createLink(commonA, IResource.NONE, createTestMonitor());
 
 		IProject projectB = workspace.getRoot().getProject("projectB");
-		ensureExistsInWorkspace(projectB);
+		createInWorkspace(projectB);
 		IFolder linkB = projectB.getFolder("link_to_commonB");
 		linkB.createLink(commonB, IResource.NONE, createTestMonitor());
 
@@ -169,12 +169,12 @@ public class Bug_192631 extends ResourceTest {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
 		IProject projectA = workspace.getRoot().getProject("projectA");
-		ensureExistsInWorkspace(projectA);
+		createInWorkspace(projectA);
 		IFolder linkA = projectA.getFolder("link_to_commonA");
 		linkA.createLink(commonA, IResource.NONE, createTestMonitor());
 
 		IProject projectB = workspace.getRoot().getProject("projectB");
-		ensureExistsInWorkspace(projectB);
+		createInWorkspace(projectB);
 		IFolder linkB = projectB.getFolder("link_to_commonB");
 		linkB.createLink(commonB, IResource.NONE, createTestMonitor());
 

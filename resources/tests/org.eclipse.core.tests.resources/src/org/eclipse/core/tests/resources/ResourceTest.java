@@ -52,6 +52,7 @@ import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -297,7 +298,7 @@ public abstract class ResourceTest extends CoreTest {
 	/**
 	 * Create the given file in the workspace resource info tree.
 	 */
-	public void ensureExistsInWorkspace(IFile resource, String contents) throws CoreException {
+	public void createInWorkspace(IFile resource, String contents) throws CoreException {
 		InputStream contentStream = getContents(contents);
 		if (resource == null) {
 			return;
@@ -307,52 +308,52 @@ public abstract class ResourceTest extends CoreTest {
 			body = monitor -> resource.setContents(contentStream, true, false, null);
 		} else {
 			body = monitor -> {
-				createInWorkspace(resource.getParent());
+				createInWorkspace(resource.getParent(), monitor);
 				resource.create(contentStream, true, null);
 			};
 		}
-		getWorkspace().run(body, null);
+		getWorkspace().run(body, createTestMonitor());
 	}
 
 	/**
 	 * Create the given resource and all its parents in the workspace resource info
 	 * tree.
 	 */
-	public void ensureExistsInWorkspace(final IResource resource) throws CoreException {
-		IWorkspaceRunnable body = monitor -> createInWorkspace(resource);
-		getWorkspace().run(body, null);
+	public void createInWorkspace(final IResource resource) throws CoreException {
+		IWorkspaceRunnable body = monitor -> createInWorkspace(resource, monitor);
+		getWorkspace().run(body, createTestMonitor());
 	}
 
 	/**
 	 * Create each element of the resource array and all their parents in the
 	 * workspace resource info tree.
 	 */
-	public void ensureExistsInWorkspace(final IResource[] resources) throws CoreException {
+	public void createInWorkspace(final IResource[] resources) throws CoreException {
 		IWorkspaceRunnable body = monitor -> {
 			for (IResource resource : resources) {
-				createInWorkspace(resource);
+				createInWorkspace(resource, monitor);
 			}
 		};
-		getWorkspace().run(body, null);
+		getWorkspace().run(body, createTestMonitor());
 	}
 
-	private void createInWorkspace(final IResource resource) throws CoreException {
+	private void createInWorkspace(final IResource resource, IProgressMonitor monitor) throws CoreException {
 		if (resource == null || resource.exists()) {
 			return;
 		}
 		if (!resource.getParent().exists()) {
-			createInWorkspace(resource.getParent());
+			createInWorkspace(resource.getParent(), monitor);
 		}
 		switch (resource.getType()) {
 		case IResource.FILE:
-			((IFile) resource).create(nullInputStream(), true, createTestMonitor());
+			((IFile) resource).create(nullInputStream(), true, monitor);
 			break;
 		case IResource.FOLDER:
-			((IFolder) resource).create(true, true, createTestMonitor());
+			((IFolder) resource).create(true, true, monitor);
 			break;
 		case IResource.PROJECT:
-			((IProject) resource).create(createTestMonitor());
-			((IProject) resource).open(createTestMonitor());
+			((IProject) resource).create(monitor);
+			((IProject) resource).open(monitor);
 			break;
 		}
 	}

@@ -240,7 +240,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 	 */
 	public void test342968() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("test");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		project.open(createTestMonitor());
 
 		IProjectDescription description = project.getDescription();
@@ -274,7 +274,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 
 	public void test368376() throws CoreException, IOException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(createUniqueString());
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		String filePath = "a/b/c/file.txt";
 		File javaFile = new File(project.getLocation().toFile(), filePath);

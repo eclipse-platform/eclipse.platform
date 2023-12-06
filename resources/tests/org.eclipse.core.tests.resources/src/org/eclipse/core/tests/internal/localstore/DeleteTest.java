@@ -38,7 +38,7 @@ public class DeleteTest extends LocalStoreTest {
 		 * =========================================================== */
 
 		/* create some resources */
-		ensureExistsInWorkspace(new IResource[] {project, folder, file});
+		createInWorkspace(new IResource[] {project, folder, file});
 		IPath folderPath = folder.getLocation();
 		IPath filePath = file.getLocation();
 		IPath projectLocation = project.getLocation();
@@ -64,7 +64,7 @@ public class DeleteTest extends LocalStoreTest {
 		 * ========================================================== */
 
 		/* initialize common objects */
-		ensureExistsInWorkspace(new IResource[] {project, folder, file});
+		createInWorkspace(new IResource[] {project, folder, file});
 		folderPath = folder.getLocation();
 		filePath = file.getLocation();
 		projectLocation = project.getLocation();
@@ -89,7 +89,7 @@ public class DeleteTest extends LocalStoreTest {
 		 * =========================================================== */
 
 		/* initialize common objects */
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		folder.create(true, false, createTestMonitor());
 		file.create(null, true, createTestMonitor());
 		folderPath = folder.getLocation();
@@ -115,7 +115,7 @@ public class DeleteTest extends LocalStoreTest {
 		 * =========================================================== */
 
 		/* initialize common objects */
-		ensureExistsInWorkspace(new IResource[] {project, folder, file});
+		createInWorkspace(new IResource[] {project, folder, file});
 		folderPath = folder.getLocation();
 		filePath = file.getLocation();
 
@@ -141,7 +141,7 @@ public class DeleteTest extends LocalStoreTest {
 		 * =========================================================== */
 
 		/* initialize common objects */
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		createInFileSystem(folder);
 		createInFileSystem(file);
 		folderPath = folder.getLocation();
@@ -173,9 +173,9 @@ public class DeleteTest extends LocalStoreTest {
 		 * =========================================================== */
 
 		/* initialize common objects */
-		ensureExistsInWorkspace(new IResource[] {project, folder});
+		createInWorkspace(new IResource[] {project, folder});
 		getWorkspace().run(monitor -> file.create(null, true, monitor), createTestMonitor());
-		ensureExistsInWorkspace(file);
+		createInWorkspace(file);
 		IPath folderPath = folder.getLocation();
 		IPath filePath = file.getLocation();
 		IPath projectLocation = project.getLocation();
@@ -202,7 +202,7 @@ public class DeleteTest extends LocalStoreTest {
 		 * =========================================================== */
 
 		/* initialize common objects */
-		ensureExistsInWorkspace(new IResource[] {project, folder, file});
+		createInWorkspace(new IResource[] {project, folder, file});
 		folderPath = folder.getLocation();
 		filePath = file.getLocation();
 
@@ -225,8 +225,8 @@ public class DeleteTest extends LocalStoreTest {
 		 * =========================================================== */
 
 		/* initialize common objects */
-		ensureExistsInWorkspace(new IResource[] {project, folder});
-		ensureExistsInWorkspace(file);
+		createInWorkspace(new IResource[] {project, folder});
+		createInWorkspace(file);
 		folderPath = folder.getLocation();
 		filePath = file.getLocation();
 		projectLocation = project.getLocation();
@@ -281,25 +281,25 @@ public class DeleteTest extends LocalStoreTest {
 
 		/* create some resources */
 		IFolder folder = projects[0].getFolder("folder");
-		ensureExistsInWorkspace(folder);
+		createInWorkspace(folder);
 		IFile fileSync = folder.getFile("fileSync");
-		ensureExistsInWorkspace(fileSync);
+		createInWorkspace(fileSync);
 		IFile fileUnsync = folder.getFile("fileUnsync");
-		ensureExistsInWorkspace(fileUnsync);
+		createInWorkspace(fileUnsync);
 		IFile fileCreated = folder.getFile("fileCreated");
 		createInFileSystem(fileCreated); // create only in file system
 		IFolder subfolderSync = folder.getFolder("subfolderSync");
-		ensureExistsInWorkspace(subfolderSync);
+		createInWorkspace(subfolderSync);
 		IFolder deletedfolderSync = subfolderSync.getFolder("deletedfolderSync");
-		ensureExistsInWorkspace(deletedfolderSync);
+		createInWorkspace(deletedfolderSync);
 		IFolder subfolderUnsync = folder.getFolder("subfolderUnsync");
-		ensureExistsInWorkspace(subfolderUnsync);
+		createInWorkspace(subfolderUnsync);
 		IFolder subsubfolderUnsync = subfolderUnsync.getFolder("subsubfolderUnsync");
-		ensureExistsInWorkspace(subsubfolderUnsync);
+		createInWorkspace(subsubfolderUnsync);
 		IFile subsubfileSync = subsubfolderUnsync.getFile("subsubfileSync");
-		ensureExistsInWorkspace(subsubfileSync);
+		createInWorkspace(subsubfileSync);
 		IFile subsubfileUnsync = subsubfolderUnsync.getFile("subsubfileUnsync");
-		ensureExistsInWorkspace(subsubfileUnsync);
+		createInWorkspace(subsubfileUnsync);
 
 		/* make some resources "unsync" with the workspace */
 		ensureOutOfSync(fileUnsync);
@@ -318,34 +318,34 @@ public class DeleteTest extends LocalStoreTest {
 
 		/* create some resources */
 		IFolder recreatedFolder = projects[0].getFolder("folder");
-		ensureExistsInWorkspace(recreatedFolder);
+		createInWorkspace(recreatedFolder);
 		//
 		fileSync = recreatedFolder.getFile("fileSync");
-		ensureExistsInWorkspace(fileSync);
+		createInWorkspace(fileSync);
 		//
 		fileUnsync = recreatedFolder.getFile("fileUnsync");
-		ensureExistsInWorkspace(fileUnsync);
+		createInWorkspace(fileUnsync);
 		//
 		fileCreated = recreatedFolder.getFile("fileCreated");
 		createInFileSystem(fileCreated); // create only in file system
 		//
 		subfolderSync = recreatedFolder.getFolder("subfolderSync");
-		ensureExistsInWorkspace(subfolderSync);
+		createInWorkspace(subfolderSync);
 		//
 		deletedfolderSync = subfolderSync.getFolder("deletedfolderSync");
-		ensureExistsInWorkspace(deletedfolderSync);
+		createInWorkspace(deletedfolderSync);
 		//
 		subfolderUnsync = recreatedFolder.getFolder("subfolderUnsync");
-		ensureExistsInWorkspace(subfolderUnsync);
+		createInWorkspace(subfolderUnsync);
 		//
 		subsubfolderUnsync = subfolderUnsync.getFolder("subsubfolderUnsync");
-		ensureExistsInWorkspace(subsubfolderUnsync);
+		createInWorkspace(subsubfolderUnsync);
 		//
 		subsubfileSync = subsubfolderUnsync.getFile("subsubfileSync");
-		ensureExistsInWorkspace(subsubfileSync);
+		createInWorkspace(subsubfileSync);
 		//
 		subsubfileUnsync = subsubfolderUnsync.getFile("subsubfileUnsync");
-		ensureExistsInWorkspace(subsubfileUnsync);
+		createInWorkspace(subsubfileUnsync);
 
 		/* make some resources "unsync" with the workspace */
 		ensureOutOfSync(fileUnsync);

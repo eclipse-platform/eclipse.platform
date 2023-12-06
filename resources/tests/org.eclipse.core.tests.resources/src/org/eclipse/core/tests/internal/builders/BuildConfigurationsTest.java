@@ -60,7 +60,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		file0 = project0.getFile("File0");
 		file1 = project1.getFile("File1");
 		IResource[] resources = {project0, project1, file0, file1};
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		setAutoBuilding(false);
 		setupProject(project0);
 		setupProject(project1);
@@ -133,7 +133,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		IFile tempFile0 = tempProject.getFile("File0");
 		IFile tempFile1 = tempProject.getFile("File1");
 		IResource[] resources = {tempProject, tempFile0, tempFile1};
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		setupProject(tempProject);
 
 		ConfigurationBuilder.clearStats();

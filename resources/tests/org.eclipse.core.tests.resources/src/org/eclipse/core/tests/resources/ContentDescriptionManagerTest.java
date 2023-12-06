@@ -76,8 +76,8 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		String newExtension = "xml_bug_79151";
 		IFile file1 = project.getFile("file.xml");
 		IFile file2 = project.getFile("file." + newExtension);
-		ensureExistsInWorkspace(file1, CharsetTest.SAMPLE_XML_ISO_8859_1_ENCODING);
-		ensureExistsInWorkspace(file2, CharsetTest.SAMPLE_XML_US_ASCII_ENCODING);
+		createInWorkspace(file1, CharsetTest.SAMPLE_XML_ISO_8859_1_ENCODING);
+		createInWorkspace(file2, CharsetTest.SAMPLE_XML_US_ASCII_ENCODING);
 		// ensure we start in a known state
 		((Workspace) workspace).getContentDescriptionManager().invalidateCache(true, null);
 		// wait for cache flush to finish
@@ -127,7 +127,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		assertNotNull("0.1", text);
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		IFile unrelatedFile = project.getFile("file." + getName());
-		ensureExistsInWorkspace(unrelatedFile, "");
+		createInWorkspace(unrelatedFile, "");
 
 		IContentDescription description = null;
 		description = unrelatedFile.getContentDescription();
@@ -177,7 +177,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		IFile file = project.getFile("file.nature-associated");
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		ensureExistsInWorkspace(file, "it really does not matter");
+		createInWorkspace(file, "it really does not matter");
 		IContentDescription description = null;
 
 		// originally, project description has no natures
@@ -239,8 +239,8 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		IFile txtFile = project.getFile(getName() + ".txt");
 		IFile xmlFile = project.getFile(getName() + ".xml");
 
-		ensureExistsInWorkspace(txtFile, "");
-		ensureExistsInWorkspace(xmlFile, "");
+		createInWorkspace(txtFile, "");
+		createInWorkspace(xmlFile, "");
 
 		project.setDefaultCharset("FOO", createTestMonitor());
 		assertEquals("1.0", "FOO", txtFile.getCharset());
@@ -277,9 +277,9 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		IFile xmlFile = project.getFile(getName() + ".xml");
 		IFile unrelatedFile = project.getFile("file." + getName());
 
-		ensureExistsInWorkspace(txtFile, "");
-		ensureExistsInWorkspace(xmlFile, "");
-		ensureExistsInWorkspace(unrelatedFile, "");
+		createInWorkspace(txtFile, "");
+		createInWorkspace(xmlFile, "");
+		createInWorkspace(unrelatedFile, "");
 		IContentDescription description = null;
 
 		description = txtFile.getContentDescription();

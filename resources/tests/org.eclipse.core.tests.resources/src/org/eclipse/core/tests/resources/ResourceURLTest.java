@@ -78,7 +78,7 @@ public class ResourceURLTest extends ResourceTest {
 
 	public void testBasicURLs() throws Throwable {
 		IResource[] resources = buildResources(getWorkspace().getRoot(), resourcePaths);
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		for (IResource resource : resources) {
 			checkURL(resource);
 		}
@@ -91,7 +91,7 @@ public class ResourceURLTest extends ResourceTest {
 		project.create(desc, null);
 		project.open(null);
 		IResource[] resources = buildResources(project, resourcePaths);
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		for (IResource resource : resources) {
 			checkURL(resource);
 		}
@@ -111,7 +111,7 @@ public class ResourceURLTest extends ResourceTest {
 	public void testSpaces() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("My Project");
 		IFile file = project.getFile("a.txt");
-		ensureExistsInWorkspace(file, CONTENT);
+		createInWorkspace(file, CONTENT);
 		URL url = new URL(PlatformURLResourceConnection.RESOURCE_URL_STRING + "My%20Project/a.txt");
 		InputStream stream = url.openStream();
 		assertTrue("1.0", compareContent(stream, getContents(CONTENT)));

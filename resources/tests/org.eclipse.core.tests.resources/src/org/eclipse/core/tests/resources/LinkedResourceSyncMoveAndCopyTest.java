@@ -58,7 +58,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		super.setUp();
 		existingProject = getWorkspace().getRoot().getProject("ExistingProject");
 		otherExistingProject = getWorkspace().getRoot().getProject("OtherExistingProject");
-		ensureExistsInWorkspace(new IResource[] { existingProject, otherExistingProject });
+		createInWorkspace(new IResource[] { existingProject, otherExistingProject });
 	}
 
 	public void internalMovedAndCopyTest(IResource resource, int copyMoveFlag, boolean copyMoveSucceeds) {
@@ -232,7 +232,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 
 	public void testFolderWithFileLinkedToNonExistent_Deep() throws Exception {
 		IFolder folder = existingProject.getFolder(createUniqueString());
-		ensureExistsInWorkspace(folder);
+		createInWorkspace(folder);
 
 		IFile fileLinkInFolder = folder.getFile(createUniqueString());
 
@@ -256,7 +256,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 
 	public void testFolderWithFileLinkedToNonExistent_Shallow() throws Exception {
 		IFolder folder = existingProject.getFolder(createUniqueString());
-		ensureExistsInWorkspace(folder);
+		createInWorkspace(folder);
 
 		IFile fileLinkInFolder = folder.getFile(createUniqueString());
 
@@ -280,7 +280,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 
 	public void testFolderWithFolderLinkedToNonExistent_Deep() throws CoreException {
 		IFolder folder = existingProject.getFolder(createUniqueString());
-		ensureExistsInWorkspace(folder);
+		createInWorkspace(folder);
 
 		IFolder folderLinkInFolder = folder.getFolder(createUniqueString());
 
@@ -304,7 +304,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 
 	public void testFolderWithFolderLinkedToNonExistent_Shallow() throws CoreException {
 		IFolder folder = existingProject.getFolder(createUniqueString());
-		ensureExistsInWorkspace(folder);
+		createInWorkspace(folder);
 
 		IFolder folderLinkInFolder = folder.getFolder(createUniqueString());
 
@@ -331,8 +331,8 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		IFile fileLink = existingProject.getFile(linkName);
 		IFile file = existingProject.getFolder("dir").getFile("foo.txt");
 
-		ensureExistsInWorkspace(file.getParent());
-		ensureExistsInWorkspace(file, "content");
+		createInWorkspace(file.getParent());
+		createInWorkspace(file, "content");
 		IPath fileLocation = file.getLocation();
 
 		URI relativeLocation = existingProject.getPathVariableManager().convertToRelative(URIUtil.toURI(fileLocation),

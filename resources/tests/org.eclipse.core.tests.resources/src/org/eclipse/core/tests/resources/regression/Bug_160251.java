@@ -41,8 +41,8 @@ public class Bug_160251 extends ResourceTest {
 		IFile sourceFile = source.getFile("Important.txt");
 		IFileStore destination = getTempStore();
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
-		ensureExistsInWorkspace(source);
-		ensureExistsInWorkspace(sourceFile);
+		createInWorkspace(source);
+		createInWorkspace(sourceFile);
 
 		//move the project (should succeed)
 		IProjectDescription description = source.getDescription();
@@ -65,8 +65,8 @@ public class Bug_160251 extends ResourceTest {
 		IFile sourceFile = source.getFile("Important.txt");
 		IFileStore destination = getTempStore();
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
-		ensureExistsInWorkspace(source);
-		ensureExistsInWorkspace(sourceFile);
+		createInWorkspace(source);
+		createInWorkspace(sourceFile);
 		destination.mkdir(EFS.NONE, createTestMonitor());
 
 		//move the project (should succeed)
@@ -90,8 +90,8 @@ public class Bug_160251 extends ResourceTest {
 		IFile sourceFile = source.getFile("Important.txt");
 		IFileStore destination = getTempStore();
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
-		ensureExistsInWorkspace(source);
-		ensureExistsInWorkspace(sourceFile);
+		createInWorkspace(source);
+		createInWorkspace(sourceFile);
 		destination.mkdir(EFS.NONE, createTestMonitor());
 		createFileInFileSystem(destinationFile);
 

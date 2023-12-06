@@ -91,7 +91,7 @@ public class ISynchronizerTest extends ResourceTest {
 		super.setUp();
 		resources = buildResources(getWorkspace().getRoot(),
 				new String[] { "/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/" });
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 	}
 
 	@Override
@@ -279,7 +279,7 @@ public class ISynchronizerTest extends ResourceTest {
 		IProject project = (IProject) testResources[0];
 		IFile source = (IFile) testResources[1];
 		// create in workspace
-		ensureExistsInWorkspace(testResources);
+		createInWorkspace(testResources);
 
 		// register partner and add sync info
 		synchronizer.add(qname);
@@ -309,7 +309,7 @@ public class ISynchronizerTest extends ResourceTest {
 		IProject sourceProject = (IProject) toTest[0];
 		IFile sourceFile = (IFile) toTest[1];
 		// create in workspace
-		ensureExistsInWorkspace(toTest);
+		createInWorkspace(toTest);
 
 		// register partner and add sync info
 		synchronizer.add(qname);
@@ -713,7 +713,7 @@ public class ISynchronizerTest extends ResourceTest {
 		IFolder folder = project.getFolder("foo");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = folder.getFile("file2.txt");
-		ensureExistsInWorkspace(new IResource[] {file1, file2});
+		createInWorkspace(new IResource[] {file1, file2});
 
 		// sets sync info for the folder and its children
 		synchronizer.setSyncInfo(partner, folder, getRandomString().getBytes());

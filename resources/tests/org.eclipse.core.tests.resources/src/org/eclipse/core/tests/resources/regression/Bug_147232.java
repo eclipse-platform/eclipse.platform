@@ -80,7 +80,7 @@ public class Bug_147232 extends AbstractBuilderTest implements IResourceChangeLi
 		addBuilder(project, ClearMarkersBuilder.BUILDER_NAME);
 		setAutoBuilding(true);
 		//create a file in the project to trigger a build
-		ensureExistsInWorkspace(file);
+		createInWorkspace(file);
 		waitForBuild();
 		assertEquals("2.0", 1, deltaSeenCount);
 	}

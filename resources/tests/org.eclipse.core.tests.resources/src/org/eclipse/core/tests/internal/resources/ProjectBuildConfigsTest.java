@@ -44,7 +44,7 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 	public void setUp() throws Exception {
 		super.setUp();
 		project = getWorkspace().getRoot().getProject("ProjectBuildConfigsTest_Project");
-		ensureExistsInWorkspace(new IProject[] {project});
+		createInWorkspace(new IProject[] {project});
 		variant0 = new BuildConfiguration(project, variantId0);
 		variant1 = new BuildConfiguration(project, variantId1);
 		variant2 = new BuildConfiguration(project, variantId2);

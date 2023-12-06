@@ -53,7 +53,7 @@ public class Bug_032076 extends ResourceTest {
 		IFile sourceFile = sourceParent.getFile("file1.txt");
 		IFile destinationFile = destinationParent.getFile(sourceFile.getName());
 
-		ensureExistsInWorkspace(new IResource[] { sourceFile, destinationParent });
+		createInWorkspace(new IResource[] { sourceFile, destinationParent });
 		deleteOnTearDown(project.getLocation());
 
 		// add a marker to a file to ensure the move operation is not losing anything
@@ -110,7 +110,7 @@ public class Bug_032076 extends ResourceTest {
 		// but not this one
 		IFile file2 = folder.getFile("file2.txt");
 
-		ensureExistsInWorkspace(new IResource[] { file1, file2, destinationParent });
+		createInWorkspace(new IResource[] { file1, file2, destinationParent });
 		deleteOnTearDown(project.getLocation());
 
 		// add a marker to a file to ensure the move operation is not losing anything
@@ -170,7 +170,7 @@ public class Bug_032076 extends ResourceTest {
 		// but not this one
 		IFile file2 = sourceProject.getFile("file2.txt");
 
-		ensureExistsInWorkspace(new IResource[] {file1, file2});
+		createInWorkspace(new IResource[] {file1, file2});
 		deleteOnTearDown(sourceProject.getLocation()); // Ensure project location is moved after test
 
 		// add a marker to a file to ensure the move operation is not losing anything
@@ -223,7 +223,7 @@ public class Bug_032076 extends ResourceTest {
 		IFile sourceFile = roFolder.getFile("file.txt");
 		IFile destinationFile = destinationParent.getFile("file.txt");
 
-		ensureExistsInWorkspace(new IResource[] { sourceFile, destinationParent });
+		createInWorkspace(new IResource[] { sourceFile, destinationParent });
 		deleteOnTearDown(project.getLocation());
 
 		IFileStore roFolderStore = ((Resource) roFolder).getStore();
@@ -286,7 +286,7 @@ public class Bug_032076 extends ResourceTest {
 		IFolder destinationParent = project.getFolder("destination_parent");
 		IFolder destinationROFolder = destinationParent.getFolder(roFolder.getName());
 
-		ensureExistsInWorkspace(new IResource[] { file1, file2, destinationParent });
+		createInWorkspace(new IResource[] { file1, file2, destinationParent });
 		deleteOnTearDown(project.getLocation());
 
 		IFileStore roFolderLocation = ((Resource) roFolder).getStore();
@@ -371,7 +371,7 @@ public class Bug_032076 extends ResourceTest {
 
 		IFile file1 = sourceProject.getFile("file1.txt");
 
-		ensureExistsInWorkspace(new IResource[] { file1 });
+		createInWorkspace(new IResource[] { file1 });
 
 		// add a marker to a file to ensure the move operation is not losing anything
 		String attributeKey = getRandomString();

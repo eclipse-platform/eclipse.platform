@@ -46,7 +46,7 @@ public class IProjectDescriptionTest extends ResourceTest {
 	 */
 	public void testBuildSpecBuilder() throws Exception {
 		Project project = (Project) getWorkspace().getRoot().getProject("ProjectTBSB");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		IFile descriptionFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		assertTrue("1.0", descriptionFile.exists());
@@ -80,7 +80,7 @@ public class IProjectDescriptionTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IProject target1 = getWorkspace().getRoot().getProject("target1");
 		IProject target2 = getWorkspace().getRoot().getProject("target2");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		IFile descriptionFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		assertTrue("1.0", descriptionFile.exists());
 
@@ -118,7 +118,7 @@ public class IProjectDescriptionTest extends ResourceTest {
 	public void testDirtyBuildSpec() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile projectDescription = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		String key = "key";
 		String value1 = "value1";
 		String value2 = "value2";
@@ -147,11 +147,11 @@ public class IProjectDescriptionTest extends ResourceTest {
 	public void testDynamicProjectReferences() throws CoreException {
 		IProject target1 = getWorkspace().getRoot().getProject("target1");
 		IProject target2 = getWorkspace().getRoot().getProject("target2");
-		ensureExistsInWorkspace(target1);
-		ensureExistsInWorkspace(target2);
+		createInWorkspace(target1);
+		createInWorkspace(target2);
 
 		IProject project = getWorkspace().getRoot().getProject("project");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		IProjectDescription description = project.getDescription();
 		description.setReferencedProjects(new IProject[] {target1});
@@ -174,10 +174,10 @@ public class IProjectDescriptionTest extends ResourceTest {
 	 */
 	public void testProjectReferences() throws CoreException {
 		IProject target = getWorkspace().getRoot().getProject("Project1");
-		ensureExistsInWorkspace(target);
+		createInWorkspace(target);
 
 		IProject project = getWorkspace().getRoot().getProject("Project2");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		project.open(createTestMonitor());
 		IProjectDescription description = project.getDescription();

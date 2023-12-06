@@ -40,8 +40,8 @@ public class TestBug208833 extends WorkspaceSessionTest {
 		IFile file = project.getFile("file1.txt");
 
 		// create a project with a file
-		ensureExistsInWorkspace(project);
-		ensureExistsInWorkspace(file, getRandomString());
+		createInWorkspace(project);
+		createInWorkspace(file, getRandomString());
 
 		// save the workspace
 		workspace.save(true, null);

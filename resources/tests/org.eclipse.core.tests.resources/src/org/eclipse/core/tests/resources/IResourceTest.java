@@ -220,7 +220,7 @@ public class IResourceTest extends ResourceTest {
 		result[1] = emptyProject;
 		result[2] = fullProject;
 		System.arraycopy(resources, 0, result, 3, resources.length);
-		ensureExistsInWorkspace(result);
+		createInWorkspace(result);
 		return result;
 	}
 
@@ -228,7 +228,7 @@ public class IResourceTest extends ResourceTest {
 		// do not change the example resources unless you change references to
 		// specific indices in setUp()
 		IResource[] result = buildResources(root, new String[] {"1/", "1/1/", "1/1/1/", "1/1/1/1", "1/1/2/", "1/1/2/1/", "1/1/2/2/", "1/1/2/3/", "1/2/", "1/2/1", "1/2/2", "1/2/3/", "1/2/3/1", "1/2/3/2", "1/2/3/3", "1/2/3/4", "2", "2"});
-		ensureExistsInWorkspace(result);
+		createInWorkspace(result);
 		result[result.length - 1] = root.getFolder(IPath.fromOSString("2/"));
 		nonExistingResources.add(result[result.length - 1]);
 
@@ -322,7 +322,7 @@ public class IResourceTest extends ResourceTest {
 		if (changedTarget != null && changedTarget.getType() != target.getType()) {
 			ensureDoesNotExistInWorkspace(changedTarget);
 		}
-		ensureExistsInWorkspace(interestingResources);
+		createInWorkspace(interestingResources);
 	}
 
 	/**
@@ -510,10 +510,10 @@ public class IResourceTest extends ResourceTest {
 		}
 
 		/* the target's parents must exist */
-		ensureExistsInWorkspace(target.getParent());
+		createInWorkspace(target.getParent());
 		switch (state) {
 			case S_WORKSPACE_ONLY :
-				ensureExistsInWorkspace(target);
+				createInWorkspace(target);
 				ensureDoesNotExistInFileSystem(target);
 				if (addVerifier) {
 					verifier.reset();
@@ -539,13 +539,13 @@ public class IResourceTest extends ResourceTest {
 				}
 				break;
 			case S_UNCHANGED :
-				ensureExistsInWorkspace(target);
+				createInWorkspace(target);
 				if (addVerifier) {
 					verifier.reset();
 				}
 				break;
 			case S_CHANGED :
-				ensureExistsInWorkspace(target);
+				createInWorkspace(target);
 				touchInFilesystem(target);
 				if (addVerifier) {
 					verifier.reset();
@@ -565,7 +565,7 @@ public class IResourceTest extends ResourceTest {
 				}
 				break;
 			case S_FOLDER_TO_FILE :
-				ensureExistsInWorkspace(target);
+				createInWorkspace(target);
 				ensureDoesNotExistInFileSystem(target);
 				createInFileSystem(target);
 				if (addVerifier) {
@@ -579,7 +579,7 @@ public class IResourceTest extends ResourceTest {
 				}
 				break;
 			case S_FILE_TO_FOLDER :
-				ensureExistsInWorkspace(target);
+				createInWorkspace(target);
 				ensureDoesNotExistInFileSystem(target);
 				target.getLocation().toFile().mkdirs();
 				if (addVerifier) {
@@ -701,7 +701,7 @@ public class IResourceTest extends ResourceTest {
 	public void testAcceptDoNotCheckExistence() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder a = project.getFolder("a");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		// pass DEPTH_ONE to avoid using proxy visitor
 		assertThrows(CoreException.class, () -> a.accept((IResourceVisitor) resource -> {
@@ -752,7 +752,7 @@ public class IResourceTest extends ResourceTest {
 			return true;
 		};
 
-		ensureExistsInWorkspace(new IResource[] {project, a, a1, a2, b, b1, b2, c, c1, c2});
+		createInWorkspace(new IResource[] {project, a, a1, a2, b, b1, b2, c, c1, c2});
 
 		toVisit.addAll(Arrays.asList(new IResource[] {a}));
 		toVisitCount[0] = 1;
@@ -1414,7 +1414,7 @@ public class IResourceTest extends ResourceTest {
 		IResource[] resources = { project, folder, file1, file2 };
 
 		// create the resources
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 
 		// initial values should be false
 		for (IResource resource2 : resources) {
@@ -1612,7 +1612,7 @@ public class IResourceTest extends ResourceTest {
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.PROJECT) {
 				assertEquals("3.4." + resource.getFullPath(), IResource.NULL_STAMP, resource.getModificationStamp());
-				ensureExistsInWorkspace(resource);
+				createInWorkspace(resource);
 				assertNotEquals("3.5." + resource.getFullPath(), IResource.NULL_STAMP, resource.getModificationStamp());
 				// cache the value for later use
 				table.put(resource.getFullPath(), Long.valueOf(resource.getModificationStamp()));
@@ -1719,7 +1719,7 @@ public class IResourceTest extends ResourceTest {
 		}
 
 		// create all the resources (non-local) and ensure all stamps are null
-		ensureExistsInWorkspace(getProjects(resources));
+		createInWorkspace(getProjects(resources));
 		for (IResource resource : resources) {
 			if (resource instanceof IFolder folder) {
 				folder.create(true, false, createTestMonitor());
@@ -1759,7 +1759,7 @@ public class IResourceTest extends ResourceTest {
 	 */
 	public void testGetModificationStampAfterReplace() throws Exception {
 		final IFile file = getWorkspace().getRoot().getFile(IPath.fromOSString("/project/f"));
-		ensureExistsInWorkspace(file);
+		createInWorkspace(file);
 		long modificationStamp = file.getModificationStamp();
 		assertNotEquals("1.1", modificationStamp, IResource.NULL_STAMP);
 
@@ -1791,7 +1791,7 @@ public class IResourceTest extends ResourceTest {
 		assertNull("2.2", topFile.getRawLocation());
 		assertNull("2.3", deepFile.getRawLocation());
 
-		ensureExistsInWorkspace(allResources);
+		createInWorkspace(allResources);
 		//open project
 		assertNull("2.0", project.getRawLocation());
 		//resources in open project
@@ -1848,7 +1848,7 @@ public class IResourceTest extends ResourceTest {
 			folderLocation.toFile().mkdirs();
 			topFolder.createLink(folderLocation, IResource.NONE, createTestMonitor());
 			topFile.createLink(fileLocation, IResource.NONE, createTestMonitor());
-			ensureExistsInWorkspace(deepFile);
+			createInWorkspace(deepFile);
 
 			//linked file
 			assertEquals("6.0", fileLocation, topFile.getRawLocation());
@@ -1876,7 +1876,7 @@ public class IResourceTest extends ResourceTest {
 			varMan.resolvePath(variableFolderLocation).toFile().mkdirs();
 			topFolder.createLink(variableFolderLocation, IResource.NONE, createTestMonitor());
 			topFile.createLink(variableFileLocation, IResource.NONE, createTestMonitor());
-			ensureExistsInWorkspace(deepFile);
+			createInWorkspace(deepFile);
 
 			//linked file with variable
 			assertEquals("8.0", variableFileLocation, topFile.getRawLocation());
@@ -1903,7 +1903,7 @@ public class IResourceTest extends ResourceTest {
 		IFolder a = project.getFolder("a");
 		IFolder b = project.getFolder("b");
 
-		ensureExistsInWorkspace(new IResource[] { project, a, b });
+		createInWorkspace(new IResource[] { project, a, b });
 
 		ISchedulingRule multi = MultiRule.combine(a, b);
 
@@ -1921,7 +1921,7 @@ public class IResourceTest extends ResourceTest {
 
 	public void testIsConflicting2() throws CoreException {
 		final IProject project = getWorkspace().getRoot().getProject("Project");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		ISchedulingRule wrapper = new ISchedulingRule() {
 			@Override
@@ -2512,7 +2512,7 @@ public class IResourceTest extends ResourceTest {
 		IFile b1 = b.getFile("b1.txt");
 		IFile b2 = b.getFile("B2.txt");
 
-		ensureExistsInWorkspace(new IResource[] {project, settings, prefs, a, a1, a2, b, b1, b2});
+		createInWorkspace(new IResource[] {project, settings, prefs, a, a1, a2, b, b1, b2});
 
 		final List<IResource> actualOrder = new ArrayList<>();
 		IResourceProxyVisitor visitor = proxy -> {

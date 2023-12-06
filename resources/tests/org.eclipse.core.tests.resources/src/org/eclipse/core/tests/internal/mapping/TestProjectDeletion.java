@@ -39,7 +39,7 @@ public class TestProjectDeletion extends ResourceTest {
 		super.setUp();
 		project = getWorkspace().getRoot().getProject("Project");
 		IResource[] resources = buildResources(project, new String[] { "a/", "a/b/", "a/c/", "a/d", "a/b/e", "a/b/f" });
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		assertExistsInWorkspace(resources);
 		factory = ResourceChangeValidator.getValidator().createDeltaFactory();
 		int kind = factory.getDelta().getKind();

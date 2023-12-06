@@ -47,7 +47,7 @@ public class Snapshot1Test extends SnapshotTest {
 
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy1());
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		assertExistsInFileSystem(resources);
 		assertExistsInWorkspace(resources);
 
@@ -68,7 +68,7 @@ public class Snapshot1Test extends SnapshotTest {
 
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy2());
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		assertExistsInFileSystem(resources);
 		assertExistsInWorkspace(resources);
 	}

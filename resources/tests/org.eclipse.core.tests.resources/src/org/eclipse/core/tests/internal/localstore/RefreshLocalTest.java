@@ -42,7 +42,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		IFile file = folder.getFile("file");
 		IFile fileVariant = folderVariant.getFile(file.getName());
 		//create the project, folder, and file
-		ensureExistsInWorkspace(file);
+		createInWorkspace(file);
 
 		//change the case of the folder on disk
 		project.getLocation().append("A").toFile().renameTo((project.getLocation().append("a").toFile()));
@@ -248,7 +248,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		/* test changes of a child (child is file) */
 		file = project.getFile("file");
 		IFileStore fileStore = ((Resource) file).getStore();
-		ensureExistsInWorkspace(file);
+		createInWorkspace(file);
 		assertTrue(file.exists());
 		assertTrue(file.isLocal(IResource.DEPTH_ZERO));
 		assertEquals(fileStore.fetchInfo().getLastModified(),
@@ -270,7 +270,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 
 		/* test root deletion */
 		IFile file = project.getFile("file");
-		ensureExistsInWorkspace(file);
+		createInWorkspace(file);
 		ensureDoesNotExistInFileSystem(file);
 		assertTrue(file.exists());
 		file.refreshLocal(IResource.DEPTH_INFINITE, null);

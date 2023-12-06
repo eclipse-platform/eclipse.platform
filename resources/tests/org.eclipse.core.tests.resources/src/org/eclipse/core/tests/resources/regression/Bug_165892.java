@@ -39,7 +39,7 @@ public class Bug_165892 extends ResourceTest {
 		IFolder sourceFolder = source.getFolder("folder");
 		IFile sourceFile = sourceFolder.getFile("source");
 		IFile destinationFile = sourceFolder.getFile("destination");
-		ensureExistsInWorkspace(sourceFile);
+		createInWorkspace(sourceFile);
 
 		final String sourceValue = "SourceValue";
 		QualifiedName name = new QualifiedName("Bug_165892", "Property");
@@ -70,7 +70,7 @@ public class Bug_165892 extends ResourceTest {
 		IFolder sourceFolder = source.getFolder("folder");
 		IFile sourceFile = sourceFolder.getFile("source");
 		IFile destinationFile = sourceFolder.getFile("destination");
-		ensureExistsInWorkspace(sourceFile);
+		createInWorkspace(sourceFile);
 
 		// modify the source file so it has some history
 		sourceFile.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
@@ -101,7 +101,7 @@ public class Bug_165892 extends ResourceTest {
 		IFile sourceFile = sourceFolder.getFile("Important.txt");
 		IFolder destinationFolder = source.getFolder("destination");
 		IFile destinationFile = destinationFolder.getFile(sourceFile.getName());
-		ensureExistsInWorkspace(sourceFile);
+		createInWorkspace(sourceFile);
 
 		//add a persistent property to each source resource
 		final String sourceValue = "SourceValue";
@@ -143,7 +143,7 @@ public class Bug_165892 extends ResourceTest {
 		IProject destination = getWorkspace().getRoot().getProject("destination");
 		IFolder destinationFolder = destination.getFolder(sourceFolder.getName());
 		IFile destinationFile = destinationFolder.getFile(sourceFile.getName());
-		ensureExistsInWorkspace(sourceFile);
+		createInWorkspace(sourceFile);
 
 		//add a persistent property to each source resource
 		final String sourceValue = "SourceValue";

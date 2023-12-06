@@ -56,11 +56,11 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 		final IWorkspace workspace = getWorkspace();
 		try {
 			workspace.run((IWorkspaceRunnable) monitor -> {
-				ensureExistsInWorkspace(folders);
+				createInWorkspace(folders);
 				for (IFolder folder : folders) {
 					for (int j = 0; j < filesPerFolder; j++) {
 						IFile file = folder.getFile("file" + j);
-						ensureExistsInWorkspace(file, getRandomString());
+						createInWorkspace(file, getRandomString());
 						try {
 							for (int k = 0; k < statesPerFile; k++) {
 								file.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
@@ -97,7 +97,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 
 			@Override
 			protected void setUp() throws CoreException {
-				ensureExistsInWorkspace(file, getRandomString());
+				createInWorkspace(file, getRandomString());
 			}
 
 			@Override
@@ -132,7 +132,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 
 			@Override
 			protected void setUp() throws CoreException {
-				ensureExistsInWorkspace(new IResource[] {project, folder1, folder2});
+				createInWorkspace(new IResource[] {project, folder1, folder2});
 				try {
 					file1.create(getRandomContents(), IResource.FORCE, createTestMonitor());
 					file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
@@ -284,7 +284,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 	public void testGetHistory() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		final IFile file = project.getFile("file.txt");
-		ensureExistsInWorkspace(file, getRandomString());
+		createInWorkspace(file, getRandomString());
 		for (int i = 0; i < 100; i++) {
 			file.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
 		}

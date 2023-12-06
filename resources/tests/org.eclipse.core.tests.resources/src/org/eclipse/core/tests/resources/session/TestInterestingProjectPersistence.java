@@ -69,7 +69,7 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 	 */
 	public void test1() throws CoreException {
 		IResource[] resources = {project1, project2, project3, project4, file1, file2, file3, file4};
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		setAutoBuilding(false);
 
 		// create a project and configure builder

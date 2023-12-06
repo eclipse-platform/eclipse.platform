@@ -46,7 +46,7 @@ public class IFolderTest extends ResourceTest {
 		IFile afterFile = after.getFile("file");
 
 		// create the resources and set some content in a file that will be moved.
-		ensureExistsInWorkspace(before);
+		createInWorkspace(before);
 		beforeFile.create(getRandomContents(), false, createTestMonitor());
 
 		// Be sure the resources exist and then move them.
@@ -67,8 +67,8 @@ public class IFolderTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder before = project.getFolder("OldFolder");
 		IFolder after = project.getFolder("NewFolder");
-		ensureExistsInWorkspace(project);
-		ensureExistsInWorkspace(before);
+		createInWorkspace(project);
+		createInWorkspace(before);
 		ensureDoesNotExistInFileSystem(before);
 
 		// should fail because 'before' does not exist in the filesystem
@@ -82,7 +82,7 @@ public class IFolderTest extends ResourceTest {
 	public void testCreateDerived() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder derived = project.getFolder("derived");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		ensureDoesNotExistInWorkspace(derived);
 
 		derived.create(IResource.DERIVED, true, createTestMonitor());
@@ -97,7 +97,7 @@ public class IFolderTest extends ResourceTest {
 	public void testDeltaOnCreateDerived() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder derived = project.getFolder("derived");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		ResourceDeltaVerifier verifier = new ResourceDeltaVerifier();
 		getWorkspace().addResourceChangeListener(verifier, IResourceChangeEvent.POST_CHANGE);
@@ -112,7 +112,7 @@ public class IFolderTest extends ResourceTest {
 	public void testCreateDerivedTeamPrivate() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder teamPrivate = project.getFolder("teamPrivate");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		ensureDoesNotExistInWorkspace(teamPrivate);
 
 		teamPrivate.create(IResource.TEAM_PRIVATE | IResource.DERIVED, true, createTestMonitor());
@@ -128,7 +128,7 @@ public class IFolderTest extends ResourceTest {
 	public void testCreateTeamPrivate() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder teamPrivate = project.getFolder("teamPrivate");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		ensureDoesNotExistInWorkspace(teamPrivate);
 
 		teamPrivate.create(IResource.TEAM_PRIVATE, true, createTestMonitor());
@@ -144,7 +144,7 @@ public class IFolderTest extends ResourceTest {
 	public void testFolderCreation() throws Exception {
 		// basic folder creation
 		IProject project = getWorkspace().getRoot().getProject("Project");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		IFolder target = project.getFolder("Folder1");
 		assertTrue("1.0", !target.exists());
@@ -202,7 +202,7 @@ public class IFolderTest extends ResourceTest {
 	public void testFolderDeletion() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/x", "c/b/y", "c/b/z"});
-		ensureExistsInWorkspace(before);
+		createInWorkspace(before);
 		//
 		assertExistsInWorkspace(before);
 		project.getFolder("c").delete(true, createTestMonitor());
@@ -215,7 +215,7 @@ public class IFolderTest extends ResourceTest {
 		IResource[] after = buildResources(project, new String[] {"a/", "a/b/", "a/x", "a/b/y", "a/b/z"});
 
 		// create the resources and set some content in a file that will be moved.
-		ensureExistsInWorkspace(before);
+		createInWorkspace(before);
 		String content = getRandomString();
 		IFile file = project.getFile(IPath.fromOSString("b/b/z"));
 		file.setContents(getContents(content), true, false, createTestMonitor());
@@ -234,7 +234,7 @@ public class IFolderTest extends ResourceTest {
 	public void testFolderOverFile() throws Throwable {
 		IPath path = IPath.fromOSString("/Project/File");
 		IFile existing = getWorkspace().getRoot().getFile(path);
-		ensureExistsInWorkspace(existing);
+		createInWorkspace(existing);
 		IFolder target = getWorkspace().getRoot().getFolder(path);
 		assertThrows("Should not be able to create folder over a file", CoreException.class,
 				() -> target.create(true, true, createTestMonitor()));
@@ -246,7 +246,7 @@ public class IFolderTest extends ResourceTest {
 	 */
 	public void testInvalidFolderNames() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		//do some tests with invalid names
 		String[] names = new String[0];
@@ -284,7 +284,7 @@ public class IFolderTest extends ResourceTest {
 	public void testLeafFolderMove() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder source = project.getFolder("Folder1");
-		ensureExistsInWorkspace(source);
+		createInWorkspace(source);
 		IFolder dest = project.getFolder("Folder2");
 		source.move(dest.getFullPath(), true, createTestMonitor());
 		assertExistsInWorkspace(dest);
@@ -299,7 +299,7 @@ public class IFolderTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder source = project.getFolder("Folder1");
-		ensureExistsInWorkspace(source);
+		createInWorkspace(source);
 		source.setReadOnly(true);
 		IFolder dest = project.getFolder("Folder2");
 		source.copy(dest.getFullPath(), true, createTestMonitor());
@@ -321,7 +321,7 @@ public class IFolderTest extends ResourceTest {
 		assertThrows(CoreException.class, () -> target.getPersistentProperty(name));
 		assertThrows(CoreException.class, () -> target.setPersistentProperty(name, value));
 
-		ensureExistsInWorkspace(target);
+		createInWorkspace(target);
 		target.setPersistentProperty(name, value);
 		// see if we can get the property
 		assertTrue("2.0", target.getPersistentProperty(name).equals(value));

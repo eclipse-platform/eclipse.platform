@@ -57,7 +57,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 	public void testDeleteFileBeforeLoad1() throws Exception {
 		IProject project = getProject("testDeleteFileBeforeLoad");
 		String qualifier = "test.delete.file.before.load";
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		IScopeContext context = new ProjectScope(project);
 		Preferences node = context.getNode(qualifier);
 		node.put("key", "value");
@@ -100,7 +100,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 	 */
 	public void testSaveLoad1() throws Exception {
 		IProject project = getProject("testSaveLoad");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		IScopeContext context = new ProjectScope(project);
 		Preferences node = context.getNode("test.save.load");
 		node.put("key", "value");

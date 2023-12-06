@@ -124,7 +124,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		String projectValue = "project" + createUniqueString();
 		IScopeContext projectContext = new ProjectScope(project);
 		IScopeContext instanceContext = InstanceScope.INSTANCE;
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		ArrayList<IScopeContext[]> list = new ArrayList<>();
 		list.add(null);
@@ -216,7 +216,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		String value = "value" + createUniqueString();
 		IScopeContext projectContext = new ProjectScope(project);
 		// create project
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		// set preferences
 		Preferences node = projectContext.getNode(qualifier);
 		node.put(key, value);
@@ -269,7 +269,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 	public void testProjectDelete() throws Exception {
 		// create the project
 		IProject project = getProject(createUniqueString());
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		// set some settings
 		String qualifier = createUniqueString();
 		String key = createUniqueString();
@@ -287,7 +287,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		assertTrue("3.0", !parent.nodeExists(project.getName()));
 
 		// create a project with the same name
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		// ensure that the preference value is not set
 		assertNull("4.0", context.getNode(qualifier).get(key, null));
@@ -298,7 +298,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		IProject project1 = getProject(createUniqueString());
 		IProject project2 = getProject(createUniqueString());
 
-		ensureExistsInWorkspace(project1);
+		createInWorkspace(project1);
 		String qualifier = createUniqueString();
 		String key = createUniqueString();
 		String value = createUniqueString();
@@ -335,7 +335,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 	public void test_60925() throws Exception {
 		// setup
 		IProject project = getProject(createUniqueString());
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		String qualifier = createUniqueString();
 		IFile file = getFileInWorkspace(project, qualifier);
 
@@ -365,7 +365,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 */
 	public void test_55410() throws Exception {
 		IProject project1 = getProject(createUniqueString());
-		ensureExistsInWorkspace(project1);
+		createInWorkspace(project1);
 		Preferences node = new ProjectScope(project1).getNode(ResourcesPlugin.PI_RESOURCES).node("subnode");
 		String key1 = ".";
 		String key2 = "x";
@@ -396,7 +396,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 	public void test_61277a() throws Exception {
 		IProject project = getProject(createUniqueString());
 		IProject destProject = getProject(createUniqueString());
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		ensureDoesNotExistInWorkspace(destProject);
 		IScopeContext context = new ProjectScope(project);
 		String qualifier = createUniqueString();
@@ -426,7 +426,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 	public void test_61277b() throws Exception {
 		IProject project1 = getProject(createUniqueString());
 		IProject project2 = getProject(createUniqueString());
-		ensureExistsInWorkspace(project1);
+		createInWorkspace(project1);
 		Preferences node = new ProjectScope(project1).getNode(ResourcesPlugin.PI_RESOURCES);
 		assertTrue("1.0", getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
 		node.put("key", "value");
@@ -449,7 +449,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 */
 	public void test_61277c() throws Exception {
 		IProject project1 = getProject(createUniqueString());
-		ensureExistsInWorkspace(project1);
+		createInWorkspace(project1);
 		assertTrue("1.0", getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
 		Preferences node = new ProjectScope(project1).getNode(ResourcesPlugin.PI_RESOURCES);
 		String key1 = "key";
@@ -481,7 +481,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		// create the project and manually give it a settings file
 		final String qualifier = createUniqueString();
 		final IProject project = getProject(createUniqueString());
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		IFile settingsFile = getFileInWorkspace(project, qualifier);
 
 		// write some property values in the settings file
@@ -524,7 +524,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 */
 	public void test_65068() throws Exception {
 		IProject project = getProject(createUniqueString());
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		Preferences node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		String key = "key";
 		String value = createUniqueString();
@@ -543,7 +543,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 */
 	public void test_95052() throws Exception {
 		IProject project = getProject(createUniqueString());
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		Preferences node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		node.put("key1", "value1");
 		node.put("key2", "value2");
@@ -586,7 +586,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 */
 	public void test_579372() throws Exception {
 		IProject project = getProject(createUniqueString());
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		Preferences node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		node.put("key1", "value1");
 		node.node("child").put("key", "childValue1");
@@ -653,12 +653,12 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 */
 	public void test_256900() throws Exception {
 		IProject project = getProject(createUniqueString());
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		// create the destination project and the .settings folder inside
 		IProject project2 = getProject(createUniqueString());
-		ensureExistsInWorkspace(project2);
-		ensureExistsInWorkspace(project2.getFolder(DIR_NAME));
+		createInWorkspace(project2);
+		createInWorkspace(project2.getFolder(DIR_NAME));
 
 		// get the pref node for the project and add a sample key/value to it
 		Preferences node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
@@ -687,7 +687,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 */
 	public void test_325000() throws Exception {
 		IProject project1 = getProject(createUniqueString());
-		ensureExistsInWorkspace(project1);
+		createInWorkspace(project1);
 		Preferences node = new ProjectScope(project1).getNode(ResourcesPlugin.PI_RESOURCES).node("subnode");
 
 		List<String> keys = new ArrayList<>();
@@ -814,7 +814,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		}
 
 		IProject project = getProject(createUniqueString());
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 
 		Preferences rootNode = Platform.getPreferencesService().getRootNode();
 		Preferences instanceNode = rootNode.node(InstanceScope.SCOPE).node(Platform.PI_RUNTIME);
@@ -910,7 +910,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 
 	public void testProjectOpenClose() throws Exception {
 		IProject project = getProject(createUniqueString());
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		String qualifier = createUniqueString();
 		String key = createUniqueString();
 		String value = createUniqueString();
@@ -940,7 +940,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		String value = "value" + createUniqueString();
 		IScopeContext projectContext = new ProjectScope(project);
 		// create project
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		// set preferences
 		Preferences node = projectContext.getNode(qualifier);
 		node.put(key, value);
@@ -1006,7 +1006,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 
 		// setup
 		IProject project = getProject(createUniqueString());
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		IScopeContext context = new ProjectScope(project);
 		String qualifier = "test.load.is.import";
 		IEclipsePreferences node = context.getNode(qualifier);

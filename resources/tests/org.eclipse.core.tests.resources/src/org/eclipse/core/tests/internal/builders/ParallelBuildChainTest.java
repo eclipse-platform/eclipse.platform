@@ -345,7 +345,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 		String projectName = createUniqueProjectName(buildDurationType.toString());
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(projectName);
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		configureTimerBuilder(project, buildDurationType.getDurationInMillis(), ruleType);
 		return project;
 	}

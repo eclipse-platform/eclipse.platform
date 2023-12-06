@@ -70,7 +70,7 @@ public class IWorkspaceTest extends ResourceTest {
 	}
 
 	private void ensureResourceHierarchyExist() throws CoreException {
-		ensureExistsInWorkspace(buildResourceHierarchy());
+		createInWorkspace(buildResourceHierarchy());
 	}
 
 	/**
@@ -496,7 +496,7 @@ public class IWorkspaceTest extends ResourceTest {
 		IFile file = project.getFile("file.txt");
 		IFile anotherFile = project.getFile("anotherFile.txt");
 		IFile oneMoreFile = project.getFile("oneMoreFile.txt");
-		ensureExistsInWorkspace(new IResource[] {project, folder, file, anotherFile, oneMoreFile});
+		createInWorkspace(new IResource[] {project, folder, file, anotherFile, oneMoreFile});
 
 		/* normal case */
 		IResource[] resources = {file, anotherFile, oneMoreFile};
@@ -557,16 +557,16 @@ public class IWorkspaceTest extends ResourceTest {
 		IFolder folder = (IFolder) resources[2];
 
 		/* create folder and file */
-		ensureExistsInWorkspace(folder);
+		createInWorkspace(folder);
 		createInFileSystem(folder);
 		IFile file1 = project.getFile("file.txt");
-		ensureExistsInWorkspace(file1);
+		createInWorkspace(file1);
 		createInFileSystem(file1);
 		IFile anotherFile = project.getFile("anotherFile.txt");
-		ensureExistsInWorkspace(anotherFile);
+		createInWorkspace(anotherFile);
 		createInFileSystem(anotherFile);
 		IFile oneMoreFile = project.getFile("oneMoreFile.txt");
-		ensureExistsInWorkspace(oneMoreFile);
+		createInWorkspace(oneMoreFile);
 		createInFileSystem(oneMoreFile);
 
 		/* normal case */
@@ -672,7 +672,7 @@ public class IWorkspaceTest extends ResourceTest {
 	public void testMultiDeletion() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("testProject");
 		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/x", "c/b/y", "c/b/z"});
-		ensureExistsInWorkspace(before);
+		createInWorkspace(before);
 		//
 		assertExistsInWorkspace(before);
 		getWorkspace().delete(before, true, createTestMonitor());
@@ -726,7 +726,7 @@ public class IWorkspaceTest extends ResourceTest {
 	public void testSave() throws CoreException {
 		// ensure save returns a warning if a project's .project file is deleted.
 		IProject project = getWorkspace().getRoot().getProject("Broken");
-		ensureExistsInWorkspace(project);
+		createInWorkspace(project);
 		// wait for snapshot before modifying file
 		TestingSupport.waitForSnapshot();
 		IFile descriptionFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
@@ -780,7 +780,7 @@ public class IWorkspaceTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile file = project.getFile("myfile.txt");
-		ensureExistsInWorkspace(new IResource[] {project, file});
+		createInWorkspace(new IResource[] {project, file});
 		IStatus result = getWorkspace().validateEdit(new IFile[] {file}, null);
 		assertTrue("1.0", result.isOK());
 		file.setReadOnly(true);

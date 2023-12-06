@@ -143,7 +143,7 @@ public class SaveManager1Test extends SaveManagerTest {
 
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_1));
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		assertExistsInFileSystem(resources);
 		assertExistsInWorkspace(resources);
 
@@ -206,7 +206,7 @@ public class SaveManager1Test extends SaveManagerTest {
 
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_1));
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		assertExistsInFileSystem(resources);
 		assertExistsInWorkspace(resources);
 
@@ -228,7 +228,7 @@ public class SaveManager1Test extends SaveManagerTest {
 
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_2));
-		ensureExistsInWorkspace(resources);
+		createInWorkspace(resources);
 		assertExistsInFileSystem(resources);
 		assertExistsInWorkspace(resources);
 

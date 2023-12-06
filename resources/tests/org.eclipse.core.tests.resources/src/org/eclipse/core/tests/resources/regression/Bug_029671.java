@@ -41,7 +41,7 @@ public class Bug_029671 extends ResourceTest {
 		IFolder folder = project.getFolder("source");
 		IFile file = folder.getFile("file.txt");
 
-		ensureExistsInWorkspace(file);
+		createInWorkspace(file);
 
 		try {
 			// sets sync info for the folder and its children
