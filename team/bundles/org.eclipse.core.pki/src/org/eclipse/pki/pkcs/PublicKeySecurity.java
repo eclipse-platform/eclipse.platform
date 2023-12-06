@@ -1,8 +1,15 @@
 package org.eclipse.pki.pkcs;
 
+import java.util.Properties;
+
+import org.eclipse.pki.util.SecurityFileSnapshot;
+
 public enum PublicKeySecurity {
 	INSTANCE;
 	public boolean isTurnedOn() {
-		return false;
+		return SecurityFileSnapshot.INSTANCE.image();
+	}
+	public Properties getPkiPropertyFile() {
+		return SecurityFileSnapshot.INSTANCE.load();
 	}
 }
