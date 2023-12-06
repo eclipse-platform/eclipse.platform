@@ -16,6 +16,7 @@ package org.eclipse.core.tests.internal.builders;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SNOW;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

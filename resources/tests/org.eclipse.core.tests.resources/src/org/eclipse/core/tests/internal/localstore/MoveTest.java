@@ -21,6 +21,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWo
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.findAvailableDevices;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.internal.resources.File;
