@@ -78,13 +78,13 @@ public class PKIController implements IStartup {
 		
 		
 		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
-			System.out.println("PKIController get PKI TYPE");
+			//System.out.println("PKIController get PKI TYPE");
 			PublicKeySecurity.INSTANCE.getPkiPropertyFile();
 			String pkiType = System.getProperty("javax.net.ssl.keyStoreType").trim();
 			//System.out.println("PKIController PKI TYPE:["+pkiType+"]");
 			if ( pkiType != null) {
 				if (pkiType.equalsIgnoreCase("PKCS12")) {
-					System.out.println("PKIController PKI TYPE FROM FILE:"+System.getProperty("javax.net.ssl.keyStoreType"));
+					//System.out.println("PKIController PKI TYPE FROM FILE:"+System.getProperty("javax.net.ssl.keyStoreType"));
 					PKCSpick.getInstance().setPKCS11on(false);
 					PKCSpick.getInstance().setPKCS12on(true);
 					PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
@@ -106,8 +106,6 @@ public class PKIController implements IStartup {
 			}
 		} else {
 			if ( AuthenticationBase.INSTANCE.isPkcs11Setup() ) {
-				System.out.println("PKIController PKI PKCS11 setup file FOUND:"+AuthenticationPlugin.getDefault().getPreferenceStore()
-						.getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION));
 				if (((!(VendorImplementation.getInstance().isInstalled())) || (isPreviousPkiSelection()))) {
 					PKCSpick.getInstance().setPKCS11on(false);
 					PKCSpick.getInstance().setPKCS12on(true);
@@ -119,7 +117,7 @@ public class PKIController implements IStartup {
 		}
 
 		try {
-			System.out.println("PKIController  Setup preferences");
+			//System.out.println("PKIController  Setup preferences");
 			IPreferenceStore store = AuthenticationPlugin.getDefault().getPreferenceStore();
 			String tsPref = store.getString(AuthenticationPreferences.TRUST_STORE_LOCATION);
 
@@ -137,7 +135,7 @@ public class PKIController implements IStartup {
 			}
 			// Load system properties
 			if (AuthenticationPlugin.isNeedSSLPropertiesSet()) {
-				System.out.println("PKIController  Setup preferences SEND EVENT");
+				//System.out.println("PKIController  Setup preferences SEND EVENT");
 				EventProcessor.getInstance().initializeEvent(this);
 				if (EventProcessor.getInstance().isEventPending()) {
 					EventProcessor.getInstance().sendEvent(EventConstant.SETUP.getValue());
@@ -149,7 +147,6 @@ public class PKIController implements IStartup {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("PKIController  Setup preferences SEND EVENT DONE METHOD");
 	}
 
 	public boolean isPreviousPkiSelection() {
@@ -163,7 +160,7 @@ public class PKIController implements IStartup {
 		final Integer value = Integer.valueOf(incoming);
 		return new Runnable() {
 			public void run() {
-				System.out.println("PKIController EVENT runner");
+				//System.out.println("PKIController EVENT runner");
 				if (value.equals(EventConstant.DONE.getValue())) {
 					AuthenticationPlugin.getDefault().setUserKeyStore(VendorImplementation.getInstance().getKeyStore());
 				} else if (value.equals(EventConstant.CANCEL.getValue())) {
