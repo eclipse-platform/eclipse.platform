@@ -154,7 +154,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     }
    
     public ILog getLogger() {
-    	System.out.println("AuthenticationPlugin ------------------------------ WHERE is ILOGG");
+    	
     	return  AuthenticationPlugin.getDefault().getLog();
     }
    
@@ -913,7 +913,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 	
 	public void initialize() {
 		try {
-			System.out.println("AuthenticationPlugin CLEARED PROPERTY PROVIDER TBD");
+			//System.out.println("AuthenticationPlugin CLEARED PROPERTY PROVIDER TBD");
 			//System.clearProperty(JAVA_SSL_USER_KEY_STORE_PROVIDER_KEY);
 			System.clearProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY);
 			System.clearProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY);
@@ -933,7 +933,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 				/*
 				 * TODO: save the store
 				 */
-				System.out.println(" AuthenticationPlugin -- Please save the store!");
+				//System.out.println(" AuthenticationPlugin -- Please save the store!");
 				try {
 					((IPersistentPreferenceStore)getPreferenceStore()).save();
 				} catch (IOException e) {
