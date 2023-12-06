@@ -115,7 +115,7 @@ public class SSLPkcs11Provider {
 										IStatus status = new Status (IStatus.OK, AuthenticationPlugin.getPluginId(),"      SunPKCS11 provider loaded.");
 										AuthenticationPlugin.getDefault().getLog().log(status);
 										if ( pin.equals("pin")) {
-											System.out.println("SSLPkcs11Provide KEYSTORE  FIX THIS  ");
+											System.out.println("SSLPkcs11Provide KEYSTORE  PIN CHECK FIX THIS  ");
 											// @see AUTHENTICATION
 											AuthenticationBase.INSTANCE.setSSLContext(targetKeyStore);
 										}
