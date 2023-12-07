@@ -277,7 +277,6 @@ public class NetTest {
 	}
 
 	@Test
-	@Ignore("Disabled due to bug 403311")
 	public void _testSimpleHost() throws CoreException {
 
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);

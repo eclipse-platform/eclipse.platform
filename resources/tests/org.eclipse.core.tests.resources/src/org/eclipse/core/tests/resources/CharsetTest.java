@@ -76,7 +76,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -228,7 +227,6 @@ public class CharsetTest extends ResourceTest {
 	}
 
 	@Test
-	@Ignore("https://github.com/eclipse-platform/eclipse.platform/issues/634")
 	public void _testCopyFileCopiesCharset() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		final IProject project = workspace.getRoot().getProject("MyProject");
