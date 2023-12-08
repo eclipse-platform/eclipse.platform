@@ -16,12 +16,14 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayWithSize;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
@@ -57,22 +59,18 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 	public void testBuildAfterClean_builderRespondingToFull() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
-		ICommand command = null;
 		// Turn auto-building off
 		setAutoBuilding(false);
 		// Create some resources
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 		// Create and set a build specs for project
-		IProjectDescription desc = project.getDescription();
-		command = createCommand(desc, CustomTriggerBuilder.BUILDER_NAME, "Build0");
-		command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, false);
-		command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, false);
-		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, false);
-		desc.setBuildSpec(new ICommand[] {command});
-		project.setDescription(desc, createTestMonitor());
-		command = project.getDescription().getBuildSpec()[0];
+		updateProjectDescription(project).addingCommand(CustomTriggerBuilder.BUILDER_NAME).withTestBuilderId("Build0")
+				.withBuildingSetting(IncrementalProjectBuilder.AUTO_BUILD, false) //
+				.withBuildingSetting(IncrementalProjectBuilder.FULL_BUILD, true) //
+				.withBuildingSetting(IncrementalProjectBuilder.INCREMENTAL_BUILD, false) //
+				.withBuildingSetting(IncrementalProjectBuilder.CLEAN_BUILD, false) //
+				.apply();
 		setAutoBuilding(true);
 
 		//do an initial workspace build to get the builder instance
@@ -110,22 +108,18 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 	public void testBuildAfterClean_builderRespondingToIncremental() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
-		ICommand command = null;
 		// Turn auto-building off
 		setAutoBuilding(false);
 		// Create some resources
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 		// Create and set a build specs for project
-		IProjectDescription desc = project.getDescription();
-		command = createCommand(desc, CustomTriggerBuilder.BUILDER_NAME, "Build0");
-		command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, false);
-		command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, false);
-		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, false);
-		desc.setBuildSpec(new ICommand[] {command});
-		project.setDescription(desc, createTestMonitor());
-		command = project.getDescription().getBuildSpec()[0];
+		updateProjectDescription(project).addingCommand(CustomTriggerBuilder.BUILDER_NAME).withTestBuilderId("Build0")
+				.withBuildingSetting(IncrementalProjectBuilder.AUTO_BUILD, false) //
+				.withBuildingSetting(IncrementalProjectBuilder.FULL_BUILD, false) //
+				.withBuildingSetting(IncrementalProjectBuilder.INCREMENTAL_BUILD, true) //
+				.withBuildingSetting(IncrementalProjectBuilder.CLEAN_BUILD, false) //
+				.apply();
 		setAutoBuilding(true);
 
 		//do an initial workspace build to get the builder instance
@@ -166,22 +160,18 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 	public void testBuildAfterClean_builderRespondingToAuto() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
-		ICommand command = null;
 		// Turn auto-building off
 		setAutoBuilding(false);
 		// Create some resources
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 		// Create and set a build specs for project
-		IProjectDescription desc = project.getDescription();
-		command = createCommand(desc, CustomTriggerBuilder.BUILDER_NAME, "Build0");
-		command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, false);
-		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, false);
-		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, false);
-		desc.setBuildSpec(new ICommand[] {command});
-		project.setDescription(desc, createTestMonitor());
-		command = project.getDescription().getBuildSpec()[0];
+		updateProjectDescription(project).addingCommand(CustomTriggerBuilder.BUILDER_NAME).withTestBuilderId("Build0")
+				.withBuildingSetting(IncrementalProjectBuilder.AUTO_BUILD, true) //
+				.withBuildingSetting(IncrementalProjectBuilder.FULL_BUILD, false) //
+				.withBuildingSetting(IncrementalProjectBuilder.INCREMENTAL_BUILD, false) //
+				.withBuildingSetting(IncrementalProjectBuilder.CLEAN_BUILD, false) //
+				.apply();
 
 		// Turn on autobuild without waiting for build to be finished
 		IWorkspaceDescription description = workspace.getDescription();
@@ -221,7 +211,6 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 	public void testConfigurable() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
-		ICommand command = null;
 
 		// Turn auto-building off
 		setAutoBuilding(false);
@@ -229,10 +218,11 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 		// Create and set a build specs for project
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, CustomTriggerBuilder.BUILDER_NAME, "Build0") });
-		project.setDescription(desc, createTestMonitor());
-		command = project.getDescription().getBuildSpec()[0];
+		updateProjectDescription(project).addingCommand(CustomTriggerBuilder.BUILDER_NAME).withTestBuilderId("Build0")
+				.apply();
+
+		assertThat(project.getDescription().getBuildSpec(), arrayWithSize(1));
+		ICommand command = project.getDescription().getBuildSpec()[0];
 		assertTrue("1.0", command.isConfigurable());
 		//ensure that setBuilding has effect
 		assertTrue("1.1", command.isBuilding(IncrementalProjectBuilder.AUTO_BUILD));
@@ -252,9 +242,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		assertTrue("1.8", !command.isBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD));
 
 		// set the command back into the project for change to take effect
-		desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { command });
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).removingExistingCommands().addingCommand(command).apply();
 
 		//ensure the builder is not called
 		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
@@ -275,16 +263,12 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		assertTrue("4.0", builder == null || builder.triggerForLastBuild == 0);
 
 		//turn the builder back on and make sure it runs
-		command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, true);
-
-		// set the command back into the project for change to take effect
 		setAutoBuilding(false);
-		desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { command });
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).removingExistingCommands().addingCommand(command)
+				.withBuildingSetting(IncrementalProjectBuilder.AUTO_BUILD, true)
+				.withBuildingSetting(IncrementalProjectBuilder.CLEAN_BUILD, true)
+				.withBuildingSetting(IncrementalProjectBuilder.FULL_BUILD, true)
+				.withBuildingSetting(IncrementalProjectBuilder.INCREMENTAL_BUILD, true).apply();
 
 		//ensure the builder is called
 		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
@@ -306,7 +290,6 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 	public void testNonConfigurable() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
-		ICommand command = null;
 
 		// Turn auto-building off
 		setAutoBuilding(false);
@@ -314,11 +297,10 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 		// Create and set a build specs for project
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build0") });
-		project.setDescription(desc, createTestMonitor());
-		command = project.getDescription().getBuildSpec()[0];
+		updateProjectDescription(project).addingCommand(SortBuilder.BUILDER_NAME).withTestBuilderId("Build0").apply();
 
+		assertThat(project.getDescription().getBuildSpec(), arrayWithSize(1));
+		ICommand command = project.getDescription().getBuildSpec()[0];
 		assertTrue("1.0", !command.isConfigurable());
 		//ensure that setBuilding has no effect
 		command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, false);
@@ -331,9 +313,7 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		assertTrue("1.4", command.isBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD));
 
 		//set the command back into the project for change to take effect
-		desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { command });
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).removingExistingCommands().addingCommand(command);
 
 		//ensure that builder is still called
 		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
@@ -355,7 +335,6 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 	public void testSkipAutobuildDelta() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
-		ICommand command = null;
 		CustomTriggerBuilder.resetSingleton();
 
 		// Turn auto-building off
@@ -364,12 +343,12 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 		// Create and set a build specs for project
-		IProjectDescription desc = project.getDescription();
-		command = createCommand(desc, CustomTriggerBuilder.BUILDER_NAME, "Build0");
-		command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, false);
-		desc.setBuildSpec(new ICommand[] { command });
-		project.setDescription(desc, createTestMonitor());
-		command = project.getDescription().getBuildSpec()[0];
+		updateProjectDescription(project).addingCommand(CustomTriggerBuilder.BUILDER_NAME).withTestBuilderId("Build0")
+				.withBuildingSetting(IncrementalProjectBuilder.AUTO_BUILD, false)
+				.apply();
+		assertThat(project.getDescription().getBuildSpec(), arrayWithSize(1));
+		ICommand command = project.getDescription().getBuildSpec()[0];
+
 		// turn autobuild back on
 		setAutoBuilding(true);
 
@@ -408,22 +387,18 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 	public void testCleanBuild_AfterCleanBuilder() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
-		ICommand command = null;
 
 		// Create some resources
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 
 		// Create and set a build specs for project
-		IProjectDescription desc = project.getDescription();
-		command = createCommand(desc, CustomTriggerBuilder.BUILDER_NAME, "Build0");
-		command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, false);
-		command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, false);
-		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, false);
-		desc.setBuildSpec(new ICommand[] {command});
-		project.setDescription(desc, createTestMonitor());
-		command = project.getDescription().getBuildSpec()[0];
+		updateProjectDescription(project).addingCommand(CustomTriggerBuilder.BUILDER_NAME).withTestBuilderId("Build0")
+				.withBuildingSetting(IncrementalProjectBuilder.AUTO_BUILD, false) //
+				.withBuildingSetting(IncrementalProjectBuilder.FULL_BUILD, true) //
+				.withBuildingSetting(IncrementalProjectBuilder.INCREMENTAL_BUILD, false) //
+				.withBuildingSetting(IncrementalProjectBuilder.CLEAN_BUILD, false) //
+				.apply();
 
 		// turn auto-building off
 		setAutoBuilding(false);
@@ -471,22 +446,18 @@ public class CustomBuildTriggerTest extends AbstractBuilderTest {
 	public void testCleanAutoBuild_AfterCleanBuilder() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
-		ICommand command = null;
 
 		// Create some resources
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 
 		// Create and set a build specs for project
-		IProjectDescription desc = project.getDescription();
-		command = createCommand(desc, CustomTriggerBuilder.BUILDER_NAME, "Build0");
-		command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, false);
-		command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, false);
-		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, false);
-		desc.setBuildSpec(new ICommand[] {command});
-		project.setDescription(desc, createTestMonitor());
-		command = project.getDescription().getBuildSpec()[0];
+		updateProjectDescription(project).addingCommand(CustomTriggerBuilder.BUILDER_NAME).withTestBuilderId("Build0")
+				.withBuildingSetting(IncrementalProjectBuilder.AUTO_BUILD, false) //
+				.withBuildingSetting(IncrementalProjectBuilder.FULL_BUILD, true) //
+				.withBuildingSetting(IncrementalProjectBuilder.INCREMENTAL_BUILD, false) //
+				.withBuildingSetting(IncrementalProjectBuilder.CLEAN_BUILD, false) //
+				.apply();
 
 		// turn auto-building on
 		setAutoBuilding(true);

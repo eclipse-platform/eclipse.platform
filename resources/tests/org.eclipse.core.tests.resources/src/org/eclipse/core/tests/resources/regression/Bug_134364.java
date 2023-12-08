@@ -14,9 +14,19 @@
 
 package org.eclipse.core.tests.resources.regression;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.junit.Test;
 
@@ -37,7 +47,7 @@ public class Bug_134364 extends ResourceTest {
 		IProject other = workspace.getRoot().getProject("Other");
 		IProjectDescription desc = workspace.newProjectDescription(other.getName());
 		ICommand command = desc.newCommand();
-		command.setBuilderName("org.eclipse.core.tests.resources.sortbuilder");
+		command.setBuilderName(SortBuilder.BUILDER_NAME);
 		desc.setBuildSpec(new ICommand[] {command});
 		other.create(desc, null);
 		other.open(null);

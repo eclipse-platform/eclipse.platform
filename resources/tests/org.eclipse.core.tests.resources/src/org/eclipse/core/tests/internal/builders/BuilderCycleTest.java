@@ -19,12 +19,11 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setBuildOrder;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -52,11 +51,7 @@ public class BuilderCycleTest extends AbstractBuilderTest {
 
 		setBuildOrder(before1, before2, project, after1, after2);
 		setAutoBuilding(false);
-
-		IProjectDescription description = project.getDescription();
-		ICommand command1 = createCommand(description, CycleBuilder.BUILDER_NAME, "Build0");
-		description.setBuildSpec(new ICommand[] { command1 });
-		project.setDescription(description, IResource.NONE, createTestMonitor());
+		updateProjectDescription(project).addingCommand(CycleBuilder.BUILDER_NAME).withTestBuilderId("Build0").apply();
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		CycleBuilder builder = CycleBuilder.getInstance();
@@ -82,11 +77,8 @@ public class BuilderCycleTest extends AbstractBuilderTest {
 
 		//setup so that the sortbuilder and cycle builder are both touching files in the project
 		setAutoBuilding(true);
-		IProjectDescription description = project.getDescription();
-		ICommand command1 = createCommand(description, CycleBuilder.BUILDER_NAME, "Build0");
-		ICommand command2 = createCommand(description, SortBuilder.BUILDER_NAME, "Build1");
-		description.setBuildSpec(new ICommand[] { command1, command2 });
-		project.setDescription(description, IResource.NONE, createTestMonitor());
+		updateProjectDescription(project).addingCommand(CycleBuilder.BUILDER_NAME).withTestBuilderId("Build0")
+				.andCommand(SortBuilder.BUILDER_NAME).withTestBuilderId("Build1").apply();
 
 		CycleBuilder builder = CycleBuilder.getInstance();
 		builder.resetBuildCount();

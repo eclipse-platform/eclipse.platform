@@ -16,6 +16,7 @@ package org.eclipse.core.tests.internal.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.readStringInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.emptyArray;
@@ -27,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.resources.IBuildConfiguration;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IDynamicReferenceProvider;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -57,17 +57,9 @@ public class ProjectDynamicReferencesTest extends ResourceTest {
 		project1 = getWorkspace().getRoot().getProject("ProjectDynamicReferencesTest_p1");
 		project2 = getWorkspace().getRoot().getProject("ProjectDynamicReferencesTest_p2");
 		createInWorkspace(new IProject[] { project0, project1, project2 });
-		addBuilder(project0);
-		addBuilder(project1);
-		addBuilder(project2);
-	}
-
-	private static void addBuilder(IProject project) throws CoreException {
-		IProjectDescription description = project.getDescription();
-		ICommand command = description.newCommand();
-		command.setBuilderName(Builder.NAME);
-		description.setBuildSpec(new ICommand[] {command});
-		project.setDescription(description, null);
+		updateProjectDescription(project0).addingCommand(Builder.NAME).apply();
+		updateProjectDescription(project1).addingCommand(Builder.NAME).apply();
+		updateProjectDescription(project2).addingCommand(Builder.NAME).apply();
 	}
 
 	@Override

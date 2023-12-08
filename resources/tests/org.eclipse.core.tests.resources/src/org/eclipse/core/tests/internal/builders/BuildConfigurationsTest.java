@@ -19,10 +19,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
 import java.util.Map;
 import org.eclipse.core.resources.IBuildConfiguration;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -73,19 +73,14 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 * Helper method to configure a project with a build command and several buildConfigs.
 	 */
 	private void setupProject(IProject project) throws CoreException {
+		updateProjectDescription(project).addingCommand(ConfigurationBuilder.BUILDER_NAME).withTestBuilderId("Build0")
+				.withBuildingSetting(IncrementalProjectBuilder.AUTO_BUILD, true)
+				.withBuildingSetting(IncrementalProjectBuilder.FULL_BUILD, true)
+				.withBuildingSetting(IncrementalProjectBuilder.INCREMENTAL_BUILD, true)
+				.withBuildingSetting(IncrementalProjectBuilder.CLEAN_BUILD, true).apply();
+
 		IProjectDescription desc = project.getDescription();
-
-		// Add build command
-		ICommand command = createCommand(desc, ConfigurationBuilder.BUILDER_NAME, "Build0");
-		command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, true);
-		desc.setBuildSpec(new ICommand[] {command});
-
-		// Create buildConfigs
 		desc.setBuildConfigs(new String[] {variant0, variant1, variant2});
-
 		project.setDescription(desc, createTestMonitor());
 	}
 

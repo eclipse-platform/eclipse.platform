@@ -17,6 +17,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 
 import org.eclipse.core.resources.IFile;
@@ -79,7 +80,8 @@ public class Bug_147232 extends AbstractBuilderTest implements IResourceChangeLi
 		setAutoBuilding(false);
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		addBuilder(project, ClearMarkersBuilder.BUILDER_NAME);
+		updateProjectDescription(project).addingCommand(ClearMarkersBuilder.BUILDER_NAME).withTestBuilderId("builder")
+				.apply();
 		setAutoBuilding(true);
 		//create a file in the project to trigger a build
 		createInWorkspace(file);

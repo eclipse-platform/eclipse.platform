@@ -16,6 +16,7 @@ package org.eclipse.core.tests.internal.builders;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.junit.Assert.assertThrows;
 
 import java.util.Map;
@@ -29,9 +30,7 @@ import org.eclipse.core.internal.events.BuildManager;
 import org.eclipse.core.internal.events.BuildManager.JobManagerSuspendedException;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
@@ -93,9 +92,9 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 		project = getWorkspace().getRoot().getProject(getName());
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, getName()) });
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).addingCommand(EmptyDeltaBuilder.BUILDER_NAME)
+				.withTestBuilderId(getName()).apply();
+		;
 	}
 
 	private void requestAutoBuildJobExecution() {

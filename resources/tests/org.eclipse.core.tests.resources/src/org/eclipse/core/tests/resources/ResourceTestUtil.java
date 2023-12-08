@@ -32,6 +32,9 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
@@ -43,10 +46,12 @@ import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.ValidateProjectEncoding;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
+import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
@@ -65,6 +70,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
+import org.eclipse.core.tests.internal.builders.TestBuilder;
 
 /**
  * Utilities for resource tests.
@@ -593,6 +599,111 @@ public final class ResourceTestUtil {
 	}
 
 	/**
+	 * Creates a builder to update the project description with new commands. After
+	 * finishing the builder, @{link {@link ProjectDescriptionUpdater#apply()} has
+	 * to be called.
+	 */
+	public static ProjectDescriptionUpdater updateProjectDescription(IProject project) throws CoreException {
+		return new ProjectDescriptionUpdater(project);
+	}
+
+	public static class ProjectDescriptionUpdater {
+		private IProject project;
+
+		private IProjectDescription description;
+
+		private List<ICommand> commands = new ArrayList<>();
+
+		private ProjectDescriptionUpdater(IProject project) throws CoreException {
+			this.project = project;
+			this.description = project.getDescription();
+		}
+
+		/**
+		 * Applies the project description update.
+		 */
+		public void apply() throws CoreException {
+			description.setBuildSpec(commands.toArray(ICommand[]::new));
+			project.setDescription(description, createTestMonitor());
+		}
+
+		/**
+		 * Removes all existing commands.
+		 */
+		public ProjectDescriptionUpdater removingExistingCommands() {
+			commands.clear();
+			return this;
+		}
+
+		/**
+		 * Adds the given command to the project description.
+		 */
+		public CommandBuilder addingCommand(ICommand command) {
+			commands.add(command);
+			return new CommandBuilder(command);
+		}
+
+		/**
+		 * Adds a command with the given builder name.
+		 */
+		public CommandBuilder addingCommand(String builderName) {
+			ICommand command = description.newCommand();
+			command.setBuilderName(builderName);
+			commands.add(command);
+			return new CommandBuilder(command);
+		}
+
+		public class CommandBuilder {
+			private final ICommand command;
+
+			private CommandBuilder(ICommand command) {
+				this.command = command;
+			}
+
+			/**
+			 * Adds the given TestBuilder.BUILD_ID to the command.
+			 */
+			public CommandBuilder withTestBuilderId(String id) {
+				return withAdditionalBuildArgument(TestBuilder.BUILD_ID, id);
+			}
+
+			/**
+			 * Activates or deactivates the given build setting.
+			 */
+			public CommandBuilder withBuildingSetting(int kind, boolean value) {
+				command.setBuilding(kind, value);
+				return this;
+			}
+
+			/**
+			 * Adds the given argument to the command.
+			 */
+			public CommandBuilder withAdditionalBuildArgument(String key, String value) {
+				Map<String, String> args = command.getArguments();
+				args.put(key, value);
+				command.setArguments(args);
+				return this;
+			}
+
+			/**
+			 * Finalizes the current command and adds another command with the given builder
+			 * name.
+			 */
+			public CommandBuilder andCommand(String builderName) {
+				return ProjectDescriptionUpdater.this.addingCommand(builderName);
+			}
+
+			/**
+			 * Applies the project description update.
+			 */
+			public void apply() throws CoreException {
+				ProjectDescriptionUpdater.this.apply();
+			}
+		}
+
+	}
+
+	/**
 	 * Returns the character sequence used as a line separator within the given
 	 * file.
 	 */
@@ -660,6 +771,5 @@ public final class ResourceTestUtil {
 		}
 		return devices;
 	}
-
 
 }

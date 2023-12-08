@@ -17,12 +17,11 @@ package org.eclipse.core.tests.internal.builders;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
 import java.util.List;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.junit.FixMethodOrder;
@@ -74,19 +73,14 @@ public class RebuildTest extends AbstractBuilderTest {
 		project.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project.getDescription();
-
-		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder1"),
-				createCommand(desc, builderName, "builder2"),
-				createCommand(desc, builderName, "builder3"),
-				});
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		// do an initial build to create builders
 		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(desc.getBuildSpec().length, builders.size());
+		assertEquals(project.getDescription().getBuildSpec().length, builders.size());
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -209,16 +203,14 @@ public class RebuildTest extends AbstractBuilderTest {
 		project.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project.getDescription();
-
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder1"),
-				createCommand(desc, builderName, "builder2"), createCommand(desc, builderName, "builder3"), });
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).addingCommand(builderName).withTestBuilderId("builder1")
+				.andCommand(builderName).withTestBuilderId("builder2")
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		// do an initial build to create builders
 		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(desc.getBuildSpec().length, builders.size());
+		assertEquals(project.getDescription().getBuildSpec().length, builders.size());
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -332,19 +324,14 @@ public class RebuildTest extends AbstractBuilderTest {
 		project.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project.getDescription();
-
-		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder1"),
-				createCommand(desc, builderName, "builder2"),
-				createCommand(desc, builderName, "builder3"),
-				});
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		// do an initial build to create builders
 		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(desc.getBuildSpec().length, builders.size());
+		assertEquals(project.getDescription().getBuildSpec().length, builders.size());
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -462,19 +449,14 @@ public class RebuildTest extends AbstractBuilderTest {
 		project.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project.getDescription();
-
-		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder1"),
-				createCommand(desc, builderName, "builder2"),
-				createCommand(desc, builderName, "builder3"),
-				});
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		// do an initial build to create builders
 		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(desc.getBuildSpec().length, builders.size());
+		assertEquals(project.getDescription().getBuildSpec().length, builders.size());
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -602,32 +584,23 @@ public class RebuildTest extends AbstractBuilderTest {
 		project2.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project1.getDescription();
-
-		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder1"),
-				createCommand(desc, builderName, "builder2"),
-				createCommand(desc, builderName, "builder3"),
-				});
-				project1.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(desc.getBuildSpec().length, builders.size());
+		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
 		builders.forEach(RebuildingBuilder::reset);
 
 		// Create and set a build spec for the project
-		desc = project2.getDescription();
-
-		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder4"),
-				createCommand(desc, builderName, "builder5"),
-				createCommand(desc, builderName, "builder6"), });
-		project2.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project2).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		project2.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertEquals(6, builders.size());
@@ -745,27 +718,23 @@ public class RebuildTest extends AbstractBuilderTest {
 		project2.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project1.getDescription();
-
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder1"),
-				createCommand(desc, builderName, "builder2"), createCommand(desc, builderName, "builder3"), });
-		project1.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(desc.getBuildSpec().length, builders.size());
+		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
 		builders.forEach(RebuildingBuilder::reset);
 
 		// Create and set a build spec for the project
-		desc = project2.getDescription();
-
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder4"),
-				createCommand(desc, builderName, "builder5"), createCommand(desc, builderName, "builder6"), });
-		project2.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project2).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		project2.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertEquals(6, builders.size());
@@ -889,19 +858,14 @@ public class RebuildTest extends AbstractBuilderTest {
 		project2.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project1.getDescription();
-
-		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder1"),
-				createCommand(desc, builderName, "builder2"),
-				createCommand(desc, builderName, "builder3"),
-				});
-				project1.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(desc.getBuildSpec().length, builders.size());
+		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -910,13 +874,9 @@ public class RebuildTest extends AbstractBuilderTest {
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
 
 		// Create and set a build spec for the project
-		desc = project2.getDescription();
-
-		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder4"),
-				createCommand(desc, builderName, "builder5"),
-				createCommand(desc, builderName, "builder6"), });
-		project2.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project2).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		project2.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertEquals(6, builders.size());
@@ -1053,32 +1013,23 @@ public class RebuildTest extends AbstractBuilderTest {
 		project2.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project1.getDescription();
-
-		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder1"),
-				createCommand(desc, builderName, "builder2"),
-				createCommand(desc, builderName, "builder3"),
-				});
-		project1.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(desc.getBuildSpec().length, builders.size());
+		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
 		builders.forEach(RebuildingBuilder::reset);
 
 		// Create and set a build spec for the project
-		desc = project2.getDescription();
-
-		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder4"),
-				createCommand(desc, builderName, "builder5"),
-				createCommand(desc, builderName, "builder6"), });
-		project2.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project2).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(false));
@@ -1218,27 +1169,23 @@ public class RebuildTest extends AbstractBuilderTest {
 		project2.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project1.getDescription();
-
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder1"),
-				createCommand(desc, builderName, "builder2"), createCommand(desc, builderName, "builder3"), });
-		project1.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(desc.getBuildSpec().length, builders.size());
+		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
 		builders.forEach(RebuildingBuilder::reset);
 
 		// Create and set a build spec for the project
-		desc = project2.getDescription();
-
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder4"),
-				createCommand(desc, builderName, "builder5"), createCommand(desc, builderName, "builder6"), });
-		project2.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project2).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		builders.forEach(b -> b.setPropagateRebuild(false));
 		builders.forEach(b -> b.setProcessOtherBuilders(true));
@@ -1380,31 +1327,22 @@ public class RebuildTest extends AbstractBuilderTest {
 		project2.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project1.getDescription();
-
-		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder1"),
-				createCommand(desc, builderName, "builder2"),
-				createCommand(desc, builderName, "builder3"),
-				});
-		project1.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(desc.getBuildSpec().length, builders.size());
+		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
 
 		// Create and set a build spec for the project
-		desc = project2.getDescription();
-
-		desc.setBuildSpec(new ICommand[] {
-				createCommand(desc, builderName, "builder4"),
-				createCommand(desc, builderName, "builder5"),
-				createCommand(desc, builderName, "builder6"), });
-		project2.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project2).addingCommand(builderName).withTestBuilderId("builder1") //
+				.andCommand(builderName).withTestBuilderId("builder2") //
+				.andCommand(builderName).withTestBuilderId("builder3").apply();
 
 		builders.forEach(b -> b.setPropagateRebuild(false));
 
@@ -1545,32 +1483,23 @@ public class RebuildTest extends AbstractBuilderTest {
 		project3.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project1.getDescription();
-
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder1"), });
-		project1.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(builderName).withTestBuilderId("builder1").apply();
 
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(desc.getBuildSpec().length, builders.size());
+		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
 		RebuildingBuilder b1 = builders.get(0);
 
 		// Create and set a build spec for the project
-		desc = project2.getDescription();
-
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder2"), });
-		project2.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project2).addingCommand(builderName).withTestBuilderId("builder1").apply();
 
 		project2.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertEquals(2, builders.size());
 		RebuildingBuilder b2 = builders.get(1);
 
 		// Create and set a build spec for the project
-		desc = project3.getDescription();
-
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder3"), });
-		project3.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project3).addingCommand(builderName).withTestBuilderId("builder1").apply();
 
 		project3.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertEquals(3, builders.size());
@@ -1756,32 +1685,23 @@ public class RebuildTest extends AbstractBuilderTest {
 		project3.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project1.getDescription();
-
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder1"), });
-		project1.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(builderName).withTestBuilderId("builder1").apply();
 
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(desc.getBuildSpec().length, builders.size());
+		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
 		RebuildingBuilder b1 = builders.get(0);
 
 		// Create and set a build spec for the project
-		desc = project2.getDescription();
-
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder2"), });
-		project2.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project2).addingCommand(builderName).withTestBuilderId("builder1").apply();
 
 		project2.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertEquals(2, builders.size());
 		RebuildingBuilder b2 = builders.get(1);
 
 		// Create and set a build spec for the project
-		desc = project3.getDescription();
-
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, builderName, "builder3"), });
-		project3.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project3).addingCommand(builderName).withTestBuilderId("builder1").apply();
 
 		project3.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		assertEquals(3, builders.size());

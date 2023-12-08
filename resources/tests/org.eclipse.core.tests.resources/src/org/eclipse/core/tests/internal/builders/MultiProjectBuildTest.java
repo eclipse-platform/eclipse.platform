@@ -19,12 +19,12 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -124,7 +124,8 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 	public void testDeltas() throws Exception {
 		//add builder and do an initial build to get the instance
 		setAutoBuilding(false);
-		addBuilder(project1, DeltaVerifierBuilder.BUILDER_NAME);
+		updateProjectDescription(project1).addingCommand(DeltaVerifierBuilder.BUILDER_NAME)
+				.withTestBuilderId("testbuild").apply();
 		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		final DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
@@ -209,7 +210,8 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 	 */
 	public void testRequestMissingProject() throws CoreException {
 		//add builder and do an initial build to get the instance
-		addBuilder(project1, DeltaVerifierBuilder.BUILDER_NAME);
+		updateProjectDescription(project1).addingCommand(DeltaVerifierBuilder.BUILDER_NAME)
+				.withTestBuilderId("testbuild").apply();
 		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		final DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
@@ -233,13 +235,8 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 		IProject project = getWorkspace().getRoot().getProject("P1");
 		project.create(null);
 		project.open(null);
-		IProjectDescription desc = project.getDescription();
-		ICommand one = desc.newCommand();
-		one.setBuilderName(RefreshLocalJavaFileBuilder.BUILDER_NAME);
-		ICommand two = desc.newCommand();
-		two.setBuilderName(SortBuilder.BUILDER_NAME);
-		desc.setBuildSpec(new ICommand[] {one, two});
-		project.setDescription(desc, null);
+		updateProjectDescription(project).addingCommand(RefreshLocalJavaFileBuilder.BUILDER_NAME)
+				.andCommand(SortBuilder.BUILDER_NAME).apply();
 
 		//do a full build
 		project.build(IncrementalProjectBuilder.FULL_BUILD, null);

@@ -18,6 +18,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
@@ -39,10 +40,8 @@ import org.eclipse.core.internal.events.ResourceDelta;
 import org.eclipse.core.internal.resources.ContentDescriptionManager;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IBuildConfiguration;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
@@ -108,7 +107,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		createInWorkspace(project);
-		addBuilder(project, EmptyDeltaBuilder.BUILDER_NAME);
+		updateProjectDescription(project).addingCommand(EmptyDeltaBuilder.BUILDER_NAME).withTestBuilderId("testbuild")
+				.apply();
 
 		// Ensure the builder is instantiated
 		project.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
@@ -183,9 +183,9 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		createInWorkspace(project);
 
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] {createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1"), createCommand(desc, EmptyDeltaBuilder2.BUILDER_NAME, "Project1Build2")});
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project) //
+				.addingCommand(EmptyDeltaBuilder.BUILDER_NAME).withTestBuilderId("Project1Build1") //
+				.andCommand(EmptyDeltaBuilder2.BUILDER_NAME).withTestBuilderId("Project1Build2").apply();
 
 		// Ensure the builder is instantiated
 		project.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
@@ -301,9 +301,8 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		// wait for noBuildJob so POST_BUILD will fire
 		((Workspace) getWorkspace()).getBuildManager().waitForAutoBuildOff();
 
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1") });
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).addingCommand(EmptyDeltaBuilder.BUILDER_NAME)
+				.withTestBuilderId("Project1Build1").apply();
 
 		// Ensure the builder is instantiated
 		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
@@ -434,10 +433,9 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		createInWorkspace(project);
-
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] {createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1"), createCommand(desc, EmptyDeltaBuilder2.BUILDER_NAME, "Project1Build2")});
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project) //
+				.addingCommand(EmptyDeltaBuilder.BUILDER_NAME).withTestBuilderId("Project1Build1")
+				.andCommand(EmptyDeltaBuilder2.BUILDER_NAME).withTestBuilderId("Project1Build2").apply();
 
 		// Ensure the builder is instantiated
 		project.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());

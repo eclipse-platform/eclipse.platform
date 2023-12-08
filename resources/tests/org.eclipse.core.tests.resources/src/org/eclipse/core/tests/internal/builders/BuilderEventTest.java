@@ -16,10 +16,9 @@ package org.eclipse.core.tests.internal.builders;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
@@ -58,9 +57,8 @@ public class BuilderEventTest extends AbstractBuilderTest {
 		project.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, DeltaVerifierBuilder.BUILDER_NAME, "Project2Build2") });
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).addingCommand(DeltaVerifierBuilder.BUILDER_NAME)
+				.withTestBuilderId("Project2Build2").apply();
 		listener.reset();
 		//start with an incremental build
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
