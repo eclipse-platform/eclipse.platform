@@ -14,15 +14,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
-import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-
-import java.util.Map;
-import org.eclipse.core.resources.ICommand;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
@@ -32,43 +23,6 @@ public abstract class AbstractBuilderTest extends ResourceTest {
 
 	public AbstractBuilderTest(String name) {
 		super(name);
-	}
-
-	/**
-	 * Adds a new delta verifier builder to the given project.
-	 */
-	protected void addBuilder(IProject project, String builderName) throws CoreException {
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] {createCommand(desc, builderName, "Project1Build1")});
-		project.setDescription(desc, createTestMonitor());
-	}
-
-	/**
-	 * Creates and returns a new command with the SortBuilder, and the TestBuilder.BUILD_ID
-	 * parameter set to the given value.
-	 */
-	protected ICommand createCommand(IProjectDescription description, String buildID) {
-		return createCommand(description, SortBuilder.BUILDER_NAME, buildID);
-	}
-
-	/**
-	 * Creates and returns a new command with the given builder name, and the TestBuilder.BUILD_ID
-	 * parameter set to the given value.
-	 */
-	protected ICommand createCommand(IProjectDescription description, String builderName, String buildID) {
-		ICommand command = description.newCommand();
-		Map<String, String> args = command.getArguments();
-		args.put(TestBuilder.BUILD_ID, buildID);
-		command.setBuilderName(builderName);
-		command.setArguments(args);
-		return command;
-	}
-
-	/**
-	 * Dirties the given file, forcing a build.
-	 */
-	protected void dirty(IFile file) throws CoreException {
-		file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 	}
 
 }

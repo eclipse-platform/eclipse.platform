@@ -18,6 +18,7 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.TestUtil.waitForCondition;
 import static org.hamcrest.CoreMatchers.not;
@@ -33,9 +34,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.core.internal.events.BuildCommand;
 import org.eclipse.core.resources.IBuildConfiguration;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceDescription;
@@ -362,15 +361,9 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 	}
 
 	private void configureTimerBuilder(IProject project, int duration, RuleType ruleType) throws CoreException {
-		BuildCommand buildCommand = new BuildCommand();
-		buildCommand.setBuilderName(TimerBuilder.BUILDER_NAME);
-		Map<String, String> arguments = new HashMap<>();
-		arguments.put(TimerBuilder.DURATION_ARG, Integer.toString(duration));
-		arguments.put(TimerBuilder.RULE_TYPE_ARG, ruleType.toString());
-		buildCommand.setArguments(arguments);
-		IProjectDescription projectDescription = project.getDescription();
-		projectDescription.setBuildSpec(new ICommand[] { buildCommand });
-		project.setDescription(projectDescription, createTestMonitor());
+		updateProjectDescription(project).addingCommand(TimerBuilder.BUILDER_NAME)
+				.withAdditionalBuildArgument(TimerBuilder.DURATION_ARG, Integer.toString(duration))
+				.withAdditionalBuildArgument(TimerBuilder.RULE_TYPE_ARG, ruleType.toString()).apply();
 	}
 
 	private void makeProjectsDependOnEachOther(List<IProject> projects) throws CoreException {

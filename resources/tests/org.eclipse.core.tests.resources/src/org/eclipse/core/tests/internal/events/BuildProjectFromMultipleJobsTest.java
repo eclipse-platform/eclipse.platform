@@ -17,17 +17,14 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.internal.events.BuildCommand;
 import org.eclipse.core.internal.resources.Project;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
@@ -142,14 +139,7 @@ public class BuildProjectFromMultipleJobsTest extends ResourceTest {
 		assertTrue("Expected test project to be open after creation", project.isOpen());
 
 		// add some builder to the project, so that we can run into the concurrency problem
-		IProjectDescription projectDescription = project.getDescription();
-		ICommand[] buildSpec = projectDescription.getBuildSpec();
-		ICommand command = projectDescription.newCommand();
-		command.setBuilderName(builderId);
-		Collection<ICommand> builders = new ArrayList<>(Arrays.asList(buildSpec));
-		builders.add(command);
-		projectDescription.setBuildSpec(builders.toArray(new ICommand[] {}));
-		project.setDescription(projectDescription, monitor);
+		updateProjectDescription(project).addingCommand(builderId).apply();
 
 		return project;
 	}

@@ -16,10 +16,9 @@ package org.eclipse.core.tests.internal.builders;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 
@@ -43,11 +42,7 @@ public class EmptyDeltaTest extends AbstractBuilderTest {
 		project.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project.getDescription();
-		ICommand command = desc.newCommand();
-		command.setBuilderName(EmptyDeltaBuilder.BUILDER_NAME);
-		desc.setBuildSpec(new ICommand[] { command });
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).addingCommand(EmptyDeltaBuilder.BUILDER_NAME).apply();
 
 		//do an initial incremental build
 		new EmptyDeltaBuilder().reset();

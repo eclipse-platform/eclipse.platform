@@ -92,6 +92,26 @@ public class BuilderTest extends AbstractBuilderTest {
 	}
 
 	/**
+	 * Dirties the given file, forcing a build.
+	 */
+	private void dirty(IFile file) throws CoreException {
+		file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+	}
+
+	/**
+	 * Creates and returns a new command with the given builder name, and the
+	 * TestBuilder.BUILD_ID parameter set to the given value.
+	 */
+	private ICommand createCommand(IProjectDescription description, String builderName, String buildID) {
+		ICommand command = description.newCommand();
+		Map<String, String> args = command.getArguments();
+		args.put(TestBuilder.BUILD_ID, buildID);
+		command.setBuilderName(builderName);
+		command.setArguments(args);
+		return command;
+	}
+
+	/**
 	 * Make sure this test runs first, before any other test
 	 * has a chance to mess with the build order.
 	 */
@@ -244,7 +264,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		file2.create(createRandomContentsStream(), true, createTestMonitor());
 		// Do an initial build to get the builder instance
 		IProjectDescription desc = project1.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Project1Build1") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Project1Build1") });
 		project1.setDescription(desc, createTestMonitor());
 		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		verifier = SortBuilder.getInstance();
@@ -283,7 +303,7 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		// Create and set a build specs for project one
 		desc = project1.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Project1Build1") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Project1Build1") });
 		project1.setDescription(desc, createTestMonitor());
 
 		// Create and set a build spec for project two
@@ -361,7 +381,7 @@ public class BuilderTest extends AbstractBuilderTest {
 			proj1.open(createTestMonitor());
 			// Create and set a build spec for project one
 			IProjectDescription desc = proj1.getDescription();
-			desc.setBuildSpec(new ICommand[] {createCommand(desc, "Build0")});
+			desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build0") });
 			proj1.setDescription(desc, createTestMonitor());
 			proj1.build(IncrementalProjectBuilder.FULL_BUILD, SortBuilder.BUILDER_NAME, new HashMap<>(), null);
 			notified[0] = false;
@@ -396,12 +416,13 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		// Create and set a build specs for project one
 		IProjectDescription desc = proj1.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build0") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build0") });
 		proj1.setDescription(desc, createTestMonitor());
 
 		// Create and set a build spec for project two
 		desc = proj2.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build1"), createCommand(desc, "Build2") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build1"),
+				createCommand(desc, SortBuilder.BUILDER_NAME, "Build2") });
 		proj2.setDescription(desc, createTestMonitor());
 
 		// Build the workspace
@@ -462,7 +483,7 @@ public class BuilderTest extends AbstractBuilderTest {
 			proj2.create(createTestMonitor());
 			proj2.open(createTestMonitor());
 			IProjectDescription desc = proj2.getDescription();
-			desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build1") });
+			desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build1") });
 			proj2.setDescription(desc, createTestMonitor());
 		}, createTestMonitor());
 		waitForBuild();
@@ -488,7 +509,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		proj1.create(createTestMonitor());
 		proj1.open(createTestMonitor());
 		IProjectDescription desc = proj1.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build0") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build0") });
 		proj1.setDescription(desc, createTestMonitor());
 		// add the dynamic reference to project two
 		IProjectDescription description = proj2.getDescription();
@@ -515,11 +536,11 @@ public class BuilderTest extends AbstractBuilderTest {
 		proj2.open(createTestMonitor());
 
 		IProjectDescription desc = proj1.getDescription();
-		desc.setBuildSpec(new ICommand[] {createCommand(desc, "Build0")});
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build0") });
 		proj1.setDescription(desc, createTestMonitor());
 
 		desc = proj2.getDescription();
-		desc.setBuildSpec(new ICommand[] {createCommand(desc, "Build1")});
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build1") });
 		proj2.setDescription(desc, createTestMonitor());
 
 		// Ensure the builder is instantiated
@@ -604,7 +625,8 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		// Create and set a build spec
 		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build1"), createCommand(desc, "Build2") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build1"),
+				createCommand(desc, SortBuilder.BUILDER_NAME, "Build2") });
 		project.setDescription(desc, createTestMonitor());
 
 		project.close(createTestMonitor());
@@ -641,7 +663,7 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		// Create and set a build spec for project one
 		IProjectDescription desc = proj1.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build0") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build0") });
 		proj1.setDescription(desc, createTestMonitor());
 
 		waitForBuild();
@@ -689,12 +711,13 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		// Create and set a build specs for project one
 		IProjectDescription desc = proj1.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build0") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build0") });
 		proj1.setDescription(desc, createTestMonitor());
 
 		// Create and set a build spec for project two
 		desc = proj2.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build1"), createCommand(desc, "Build2") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build1"),
+				createCommand(desc, SortBuilder.BUILDER_NAME, "Build2") });
 		proj2.setDescription(desc, createTestMonitor());
 
 		// Build the workspace

@@ -18,16 +18,15 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -119,11 +118,7 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 		file1.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project1.getDescription();
-		ICommand command = desc.newCommand();
-		command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
-		desc.setBuildSpec(new ICommand[] { command });
-		project1.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(DeltaVerifierBuilder.BUILDER_NAME).apply();
 
 		// Build the project
 		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
@@ -342,11 +337,8 @@ public class BuildDeltaVerificationTest extends AbstractBuilderTest {
 	public void testReuseCachedDelta() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("delta-cache");
 		createInWorkspace(project);
-
-		IProjectDescription description = project.getDescription();
-		description.setBuildSpec(new ICommand[] { createCommand(description, EmptyDeltaBuilder.BUILDER_NAME, null),
-				createCommand(description, EmptyDeltaBuilder2.BUILDER_NAME, null) });
-		project.setDescription(description, createTestMonitor());
+		updateProjectDescription(project).addingCommand(EmptyDeltaBuilder.BUILDER_NAME)
+				.andCommand(EmptyDeltaBuilder2.BUILDER_NAME).apply();
 
 		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 

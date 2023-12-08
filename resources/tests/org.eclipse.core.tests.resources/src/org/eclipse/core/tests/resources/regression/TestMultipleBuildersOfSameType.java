@@ -19,21 +19,18 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
 import java.io.ByteArrayInputStream;
-import java.util.Map;
 import junit.framework.Test;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
-import org.eclipse.core.tests.internal.builders.TestBuilder;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -70,24 +67,13 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 		setAutoBuilding(false);
 
 		// configure builder for project1
-		IProjectDescription description = project1.getDescription();
-		description.setBuildSpec(new ICommand[] { createCommand(description, "Project1Build1"),
-				createCommand(description, "Project1Build2") });
-		project1.setDescription(description, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(SortBuilder.BUILDER_NAME).withTestBuilderId("Project1Build1")
+				.andCommand(SortBuilder.BUILDER_NAME).withTestBuilderId("Project2Build1").apply();
 
 		// initial build -- created sortedFile1
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
 		getWorkspace().save(true, createTestMonitor());
-	}
-
-	protected ICommand createCommand(IProjectDescription description, String builderId) {
-		ICommand command = description.newCommand();
-		Map<String, String> args = command.getArguments();
-		args.put(TestBuilder.BUILD_ID, builderId);
-		command.setBuilderName(SortBuilder.BUILDER_NAME);
-		command.setArguments(args);
-		return command;
 	}
 
 	/**

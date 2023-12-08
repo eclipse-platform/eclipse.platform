@@ -18,14 +18,12 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 
 import java.util.concurrent.Semaphore;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -90,11 +88,7 @@ public class Bug_378156 extends ResourceTest {
 		final IFile file = project1.getFile("content.txt");
 		createInWorkspace(project1);
 		//add a builder that can tell us if it was called
-		IProjectDescription desc = project1.getDescription();
-		ICommand command = desc.newCommand();
-		command.setBuilderName(SignaledBuilder.BUILDER_ID);
-		desc.setBuildSpec(new ICommand[] {command});
-		project1.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(SignaledBuilder.BUILDER_ID).apply();
 		createInWorkspace(file, createRandomString());
 		//build may not be triggered immediately
 		Thread.sleep(2000);
@@ -132,11 +126,7 @@ public class Bug_378156 extends ResourceTest {
 		final IFile file = project1.getFile("content.txt");
 		createInWorkspace(project1);
 		//add a builder that can tell us if it was called
-		IProjectDescription desc = project1.getDescription();
-		ICommand command = desc.newCommand();
-		command.setBuilderName(SignaledBuilder.BUILDER_ID);
-		desc.setBuildSpec(new ICommand[] {command});
-		project1.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(SignaledBuilder.BUILDER_ID).apply();
 		createInWorkspace(file, createRandomString());
 		waitForBuild();
 

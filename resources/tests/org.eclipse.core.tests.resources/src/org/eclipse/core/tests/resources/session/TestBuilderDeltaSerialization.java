@@ -20,15 +20,13 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setBuildOrder;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
 import java.io.ByteArrayInputStream;
-import java.util.Map;
 import junit.framework.Test;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -76,26 +74,12 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 		setAutoBuilding(false);
 
 		// configure builder for project1
-		IProjectDescription description = project1.getDescription();
-		ICommand command = description.newCommand();
-		Map<String, String> args = command.getArguments();
-		args.put(TestBuilder.BUILD_ID, "Project1Build1");
-		args.put(TestBuilder.INTERESTING_PROJECT, project2.getName());
-		command.setBuilderName(SortBuilder.BUILDER_NAME);
-		command.setArguments(args);
-		description.setBuildSpec(new ICommand[] { command });
-		project1.setDescription(description, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(SortBuilder.BUILDER_NAME).withTestBuilderId("Project1Build1")
+				.withAdditionalBuildArgument(TestBuilder.INTERESTING_PROJECT, project2.getName()).apply();
 
 		// configure builder for project2
-		description = project1.getDescription();
-		command = description.newCommand();
-		args = command.getArguments();
-		args.put(TestBuilder.BUILD_ID, "Project2Build1");
-		args.put(TestBuilder.INTERESTING_PROJECT, project1.getName());
-		command.setBuilderName(SortBuilder.BUILDER_NAME);
-		command.setArguments(args);
-		description.setBuildSpec(new ICommand[] { command });
-		project2.setDescription(description, createTestMonitor());
+		updateProjectDescription(project2).addingCommand(SortBuilder.BUILDER_NAME).withTestBuilderId("Project2Build1")
+				.withAdditionalBuildArgument(TestBuilder.INTERESTING_PROJECT, project1.getName()).apply();
 
 		// initial build -- created sortedFile1 and sortedFile2
 		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
