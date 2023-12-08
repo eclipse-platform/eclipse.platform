@@ -96,6 +96,17 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 		Workspace.clear(target); // make sure there was nothing here before
 	}
 
+	/**
+	 * The returned array will have at least the specified size.
+	 */
+	private byte[] getBigContents(int size) {
+		StringBuilder sb = new StringBuilder();
+		while (sb.length() < size) {
+			sb.append(createRandomString());
+		}
+		return sb.toString().getBytes();
+	}
+
 	public void testFailure() throws Exception {
 		Workspace.clear(target); // make sure there was nothing here before
 		assertFalse(target.exists());
