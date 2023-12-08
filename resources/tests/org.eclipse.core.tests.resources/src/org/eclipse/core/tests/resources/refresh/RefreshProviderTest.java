@@ -14,12 +14,16 @@
 package org.eclipse.core.tests.resources.refresh;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.emptyArray;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,19 +38,29 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.TestUtil;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * Tests the IRefreshMonitor interface
  */
-public class RefreshProviderTest extends ResourceTest {
+public class RefreshProviderTest {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private boolean originalRefreshSetting;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() {
 		TestRefreshProvider.reset();
 		//turn on autorefresh
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
@@ -54,9 +68,8 @@ public class RefreshProviderTest extends ResourceTest {
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() {
 		//turn off autorefresh
 		TestRefreshProvider.reset();
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
@@ -67,9 +80,10 @@ public class RefreshProviderTest extends ResourceTest {
 	 * Test to ensure that a refresh provider is given the correct events when a linked
 	 * file is created and deleted.
 	 */
+	@Test
 	public void testLinkedFile() throws Exception {
 		IPath location = getRandomLocation();
-		deleteOnTearDown(location);
+		workspaceRule.deleteOnTearDown(location);
 		String name = "testUnmonitorLinkedResource";
 		IProject project = getWorkspace().getRoot().getProject(name);
 		createInWorkspace(project);
@@ -96,6 +110,7 @@ public class RefreshProviderTest extends ResourceTest {
 	 * Test to ensure that a refresh provider is given the correct events when a project
 	 * is closed or opened.
 	 */
+	@Test
 	public void testProjectCloseOpen() throws Exception {
 		String name = "testProjectCloseOpen";
 		IProject project = getWorkspace().getRoot().getProject(name);
@@ -122,6 +137,7 @@ public class RefreshProviderTest extends ResourceTest {
 	 * Test to ensure that a refresh provider is given the correct events when a project
 	 * is closed or opened.
 	 */
+	@Test
 	public void testProjectCreateDelete() throws Exception {
 		String name = "testProjectCreateDelete";
 		final int maxRuns = 1000;
@@ -129,7 +145,7 @@ public class RefreshProviderTest extends ResourceTest {
 		Map<Integer, Throwable> fails = new HashMap<>();
 		for (; i < maxRuns; i++) {
 			if (i % 50 == 0) {
-				TestUtil.waitForJobs(getName(), 5, 100);
+				TestUtil.waitForJobs(testName.getMethodName(), 5, 100);
 			}
 			try {
 				assertTrue(createProject(name).isAccessible());
