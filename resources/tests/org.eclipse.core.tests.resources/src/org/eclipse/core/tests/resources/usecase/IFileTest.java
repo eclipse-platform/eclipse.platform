@@ -15,6 +15,13 @@ package org.eclipse.core.tests.resources.usecase;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.FILE;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.FOLDER;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.PROJECT;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.Q_NAME_SESSION;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.STRING_VALUE;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.commonFailureTestsForResource;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.isLocal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
@@ -28,8 +35,14 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class IFileTest extends IResourceTest {
+public class IFileTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Tests failure on get/set methods invoked on a nonexistent file.
@@ -60,6 +73,7 @@ public class IFileTest extends IResourceTest {
 	 * Test deleting file that doesn't exist (failure?).
 	 * Finish testing IResource API
 	 */
+	@Test
 	public void testFile() throws CoreException {
 		IProgressMonitor monitor = null;
 		IWorkspace workspace = getWorkspace();
@@ -150,4 +164,5 @@ public class IFileTest extends IResourceTest {
 		// These tests produce failure because the file no longer exists.
 		nonexistentFileFailureTests(file, workspace);
 	}
+
 }

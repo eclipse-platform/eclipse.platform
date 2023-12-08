@@ -18,7 +18,10 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-		ConcurrencyTest.class, IFileTest.class, IFolderTest.class, IProjectTest.class,
+		ConcurrencyTest.class, //
+		IFileTest.class, //
+		IFolderTest.class, //
+		IProjectTest.class, //
 		IWorkspaceRunnableUseCaseTest.class
 })
 public class AllUsecaseTests {
