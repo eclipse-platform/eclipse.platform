@@ -17,7 +17,9 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
@@ -26,9 +28,14 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
+public class IWorkspaceRunnableUseCaseTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	protected IWorkspaceRunnable createRunnable(final IProject project, final IWorkspaceRunnable nestedOperation, final boolean triggerBuild, final Exception exceptionToThrow) {
 		return monitor -> {
@@ -50,6 +57,7 @@ public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
 		};
 	}
 
+	@Test
 	public void testNestedOperationsAndBuilds() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		setAutoBuilding(true);
@@ -110,4 +118,5 @@ public class IWorkspaceRunnableUseCaseTest extends ResourceTest {
 			assertTrue("4.1", !builder.wasExecuted());
 		}
 	}
+
 }
