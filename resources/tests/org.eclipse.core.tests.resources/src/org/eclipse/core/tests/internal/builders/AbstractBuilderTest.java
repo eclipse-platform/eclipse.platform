@@ -14,18 +14,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
-import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.util.Map;
-import java.util.stream.Stream;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.ResourceTest;
 
@@ -73,16 +69,6 @@ public abstract class AbstractBuilderTest extends ResourceTest {
 	 */
 	protected void dirty(IFile file) throws CoreException {
 		file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
-	}
-
-	/**
-	 * Sets the workspace build order to just contain the given projects.
-	 */
-	protected void setBuildOrder(IProject... projects) throws CoreException {
-		IWorkspace workspace = getWorkspace();
-		IWorkspaceDescription desc = workspace.getDescription();
-		desc.setBuildOrder(Stream.of(projects).map(IProject::getName).toArray(String[]::new));
-		workspace.setDescription(desc);
 	}
 
 }

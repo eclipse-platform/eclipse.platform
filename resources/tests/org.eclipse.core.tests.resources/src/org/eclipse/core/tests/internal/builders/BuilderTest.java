@@ -21,6 +21,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomStri
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setBuildOrder;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
 import static org.junit.Assert.assertArrayEquals;
@@ -229,9 +230,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		IFile file1 = project1.getFile("FILE1");
 		IFile file2 = project2.getFile("FILE2");
 		//set the build order
-		IWorkspaceDescription workspaceDesc = workspace.getDescription();
-		workspaceDesc.setBuildOrder(new String[] { project1.getName(), project2.getName() });
-		workspace.setDescription(workspaceDesc);
+		setBuildOrder(project1, project2);
 		TestBuilder verifier = null;
 
 		// Turn auto-building off
@@ -457,9 +456,7 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		// Turn auto-building on and make sure there is no explicit build order
 		setAutoBuilding(true);
-		IWorkspaceDescription wsDescription = getWorkspace().getDescription();
-		wsDescription.setBuildOrder(null);
-		getWorkspace().setDescription(wsDescription);
+		setBuildOrder((IProject[]) null);
 		// Create and set a build spec for project two
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			proj2.create(createTestMonitor());
@@ -688,9 +685,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		IProjectDescription description = proj2.getDescription();
 		description.setDynamicReferences(new IProject[] { proj1 });
 		proj2.setDescription(description, IResource.NONE, null);
-		IWorkspaceDescription wsDescription = getWorkspace().getDescription();
-		wsDescription.setBuildOrder(null);
-		getWorkspace().setDescription(wsDescription);
+		setBuildOrder((IProject[]) null);
 
 		// Create and set a build specs for project one
 		IProjectDescription desc = proj1.getDescription();
