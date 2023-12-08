@@ -20,6 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setBuildOrder;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -29,18 +30,22 @@ import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests platform support for build cycles.  Namely, the ability of builders to
  * request that a rebuild occur automatically if it modifies projects that came
  * before it in the build order.
  */
-public class BuilderCycleTest extends ResourceTest {
-	public BuilderCycleTest(String name) {
-		super(name);
-	}
+public class BuilderCycleTest {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testIsBeforeThisProject() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("Project");
@@ -67,7 +72,9 @@ public class BuilderCycleTest extends ResourceTest {
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 	}
 
-	public void skipTestNeedRebuild() throws CoreException {
+	@Test
+	@Ignore("test has been skipped for unknown reasons")
+	public void testNeedRebuild() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("Project");
 		IFolder unsorted = project.getFolder(SortBuilder.DEFAULT_UNSORTED_FOLDER);
@@ -145,6 +152,6 @@ public class BuilderCycleTest extends ResourceTest {
 		builder.resetBuildCount();
 		file.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertEquals(maxBuilds, builder.getBuildCount());
-
 	}
+
 }

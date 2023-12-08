@@ -18,33 +18,42 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.List;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runners.MethodSorters;
 
 /**
  * This class tests builder behavior related to re-building
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class RebuildTest extends ResourceTest {
+public class RebuildTest {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	final String builderName = RebuildingBuilder.BUILDER_NAME;
-	private final int maxBuildIterations;
+	private int maxBuildIterations;
 
-	public RebuildTest(String name) {
-		super(name);
+	@Before
+	public void setUp() throws CoreException {
 		maxBuildIterations = getWorkspace().getDescription().getMaxBuildIterations();
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 		// Turn auto-building off
 		setAutoBuilding(false);
 		boolean earlyExitAllowed = ((Workspace) getWorkspace()).getBuildManager()
@@ -52,22 +61,22 @@ public class RebuildTest extends ResourceTest {
 		assertFalse("early exit shouldn't be set", earlyExitAllowed);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws CoreException {
 		IWorkspaceDescription description = getWorkspace().getDescription();
 		description.setMaxBuildIterations(maxBuildIterations);
 		getWorkspace().setDescription(description);
 		RebuildingBuilder.getInstances().clear();
 		allowEarlyBuildLoopExit(false);
-		super.tearDown();
 	}
 
 	/**
 	 * Tests IncrementProjectBuilder.requestProjectRebuild with a single project
 	 */
+	@Test
 	public void testSingleProjectPropagationAndNoOtherBuilders() throws Exception {
 		// Create some resource handles
-		IProject project = getWorkspace().getRoot().getProject(getName());
+		IProject project = getWorkspace().getRoot().getProject(testName.getMethodName());
 
 		// Create and open a project
 		project.create(createTestMonitor());
@@ -195,9 +204,10 @@ public class RebuildTest extends ResourceTest {
 	/**
 	 * Tests IncrementProjectBuilder.requestProjectRebuild with a single project
 	 */
+	@Test
 	public void testSingleProjectPropagationAndOtherBuilders() throws Exception {
 		// Create some resource handles
-		IProject project = getWorkspace().getRoot().getProject(getName());
+		IProject project = getWorkspace().getRoot().getProject(testName.getMethodName());
 
 		// Create and open a project
 		project.create(createTestMonitor());
@@ -316,9 +326,10 @@ public class RebuildTest extends ResourceTest {
 	/**
 	 * Tests IncrementProjectBuilder.requestProjectRebuild with a single project
 	 */
+	@Test
 	public void testSingleProjectNoPropagationAndProcessOtherBuilder() throws Exception {
 		// Create some resource handles
-		IProject project = getWorkspace().getRoot().getProject(getName());
+		IProject project = getWorkspace().getRoot().getProject(testName.getMethodName());
 
 		// Create and open a project
 		project.create(createTestMonitor());
@@ -441,9 +452,10 @@ public class RebuildTest extends ResourceTest {
 	/**
 	 * Tests IncrementProjectBuilder.requestProjectRebuild with a single project
 	 */
+	@Test
 	public void testSingleProjectNoPropagationNoOtherBuilders() throws Exception {
 		// Create some resource handles
-		IProject project = getWorkspace().getRoot().getProject(getName());
+		IProject project = getWorkspace().getRoot().getProject(testName.getMethodName());
 
 		// Create and open a project
 		project.create(createTestMonitor());
@@ -573,10 +585,11 @@ public class RebuildTest extends ResourceTest {
 	/**
 	 * Tests IncrementProjectBuilder.requestProjectRebuild with multiple projects
 	 */
+	@Test
 	public void testMultipleProjectsPropagationAndNoOtherBuilders() throws Exception {
 		// Create some resource handles
-		IProject project1 = getWorkspace().getRoot().getProject(getName() + 1);
-		IProject project2 = getWorkspace().getRoot().getProject(getName() + 2);
+		IProject project1 = getWorkspace().getRoot().getProject(testName.getMethodName() + 1);
+		IProject project2 = getWorkspace().getRoot().getProject(testName.getMethodName() + 2);
 
 		// Create and open a project
 		project1.create(createTestMonitor());
@@ -707,10 +720,11 @@ public class RebuildTest extends ResourceTest {
 	/**
 	 * Tests IncrementProjectBuilder.requestProjectRebuild with multiple projects
 	 */
+	@Test
 	public void testMultipleProjectsPropagationAndProcessOtherBuilders() throws Exception {
 		// Create some resource handles
-		IProject project1 = getWorkspace().getRoot().getProject(getName() + 1);
-		IProject project2 = getWorkspace().getRoot().getProject(getName() + 2);
+		IProject project1 = getWorkspace().getRoot().getProject(testName.getMethodName() + 1);
+		IProject project2 = getWorkspace().getRoot().getProject(testName.getMethodName() + 2);
 
 		// Create and open a project
 		project1.create(createTestMonitor());
@@ -844,13 +858,14 @@ public class RebuildTest extends ResourceTest {
 	 * Tests IncrementProjectBuilder.requestProjectRebuild with multiple projects
 	 * and early exit enabled
 	 */
+	@Test
 	public void testMultipleProjectsPropagationAndNoOtherBuildersWithEarlyExit() throws Exception {
 		// turn rebuild request propagation to other projects in same loop off
 		allowEarlyBuildLoopExit(true);
 
 		// Create some resource handles
-		IProject project1 = getWorkspace().getRoot().getProject(getName() + 1);
-		IProject project2 = getWorkspace().getRoot().getProject(getName() + 2);
+		IProject project1 = getWorkspace().getRoot().getProject(testName.getMethodName() + 1);
+		IProject project2 = getWorkspace().getRoot().getProject(testName.getMethodName() + 2);
 
 		// Create and open a project
 		project1.create(createTestMonitor());
@@ -1002,10 +1017,11 @@ public class RebuildTest extends ResourceTest {
 	/**
 	 * Tests IncrementProjectBuilder.requestProjectRebuild with multiple projects
 	 */
+	@Test
 	public void testMultipleProjectsNoPropagationNoOtherBuilders() throws Exception {
 		// Create some resource handles
-		IProject project1 = getWorkspace().getRoot().getProject(getName() + 1);
-		IProject project2 = getWorkspace().getRoot().getProject(getName() + 2);
+		IProject project1 = getWorkspace().getRoot().getProject(testName.getMethodName() + 1);
+		IProject project2 = getWorkspace().getRoot().getProject(testName.getMethodName() + 2);
 
 		// Create and open a project
 		project1.create(createTestMonitor());
@@ -1158,10 +1174,11 @@ public class RebuildTest extends ResourceTest {
 	/**
 	 * Tests IncrementProjectBuilder.requestProjectRebuild with multiple projects
 	 */
+	@Test
 	public void testMultipleProjectsNoPropagationAndOtherBuilders() throws Exception {
 		// Create some resource handles
-		IProject project1 = getWorkspace().getRoot().getProject(getName() + 1);
-		IProject project2 = getWorkspace().getRoot().getProject(getName() + 2);
+		IProject project1 = getWorkspace().getRoot().getProject(testName.getMethodName() + 1);
+		IProject project2 = getWorkspace().getRoot().getProject(testName.getMethodName() + 2);
 
 		// Create and open a project
 		project1.create(createTestMonitor());
@@ -1313,13 +1330,14 @@ public class RebuildTest extends ResourceTest {
 	/**
 	 * Tests IncrementProjectBuilder.requestProjectRebuild with multiple projects
 	 */
+	@Test
 	public void testMultipleProjectsNoPropagationNoOtherBuildersEarlyExit() throws Exception {
 		// turn rebuild request propagation to other projects in same loop off
 		allowEarlyBuildLoopExit(true);
 
 		// Create some resource handles
-		IProject project1 = getWorkspace().getRoot().getProject(getName() + 1);
-		IProject project2 = getWorkspace().getRoot().getProject(getName() + 2);
+		IProject project1 = getWorkspace().getRoot().getProject(testName.getMethodName() + 1);
+		IProject project2 = getWorkspace().getRoot().getProject(testName.getMethodName() + 2);
 
 		// Create and open a project
 		project1.create(createTestMonitor());
@@ -1469,11 +1487,12 @@ public class RebuildTest extends ResourceTest {
 	/**
 	 * Tests IncrementProjectBuilder.requestProjectRebuild with multiple projects
 	 */
+	@Test
 	public void testMultipleProjectsPropagationAndNoOtherBuildersExplicitRebuild() throws Exception {
 		// Create some resource handles
-		IProject project1 = getWorkspace().getRoot().getProject(getName() + 1);
-		IProject project2 = getWorkspace().getRoot().getProject(getName() + 2);
-		IProject project3 = getWorkspace().getRoot().getProject(getName() + 3);
+		IProject project1 = getWorkspace().getRoot().getProject(testName.getMethodName() + 1);
+		IProject project2 = getWorkspace().getRoot().getProject(testName.getMethodName() + 2);
+		IProject project3 = getWorkspace().getRoot().getProject(testName.getMethodName() + 3);
 
 		// Create and open a project
 		project1.create(createTestMonitor());
@@ -1671,11 +1690,12 @@ public class RebuildTest extends ResourceTest {
 	/**
 	 * Tests IncrementProjectBuilder.requestProjectRebuild with multiple projects
 	 */
+	@Test
 	public void testMultipleProjectsPropagationAndProcessOtherBuildersExplicitRebuild() throws Exception {
 		// Create some resource handles
-		IProject project1 = getWorkspace().getRoot().getProject(getName() + 1);
-		IProject project2 = getWorkspace().getRoot().getProject(getName() + 2);
-		IProject project3 = getWorkspace().getRoot().getProject(getName() + 3);
+		IProject project1 = getWorkspace().getRoot().getProject(testName.getMethodName() + 1);
+		IProject project2 = getWorkspace().getRoot().getProject(testName.getMethodName() + 2);
+		IProject project3 = getWorkspace().getRoot().getProject(testName.getMethodName() + 3);
 
 		// Create and open a project
 		project1.create(createTestMonitor());

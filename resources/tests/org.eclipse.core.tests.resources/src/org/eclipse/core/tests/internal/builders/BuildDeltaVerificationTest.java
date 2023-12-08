@@ -19,6 +19,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -32,12 +35,19 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests that deltas supplied to the builder are accurate
  */
-public class BuildDeltaVerificationTest extends ResourceTest {
+public class BuildDeltaVerificationTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	DeltaVerifierBuilder verifier;
 	/* some random resource handles */
 	protected static final String PROJECT1 = "Project1";
@@ -55,14 +65,6 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	IFile file1;//below folder1
 	IFile file2;//below folder1
 	IFile file3;//below folder2
-
-	/**
-	 * Creates a new instance of BuildDeltaVerificationTest.
-	 * @param name java.lang.String
-	 */
-	public BuildDeltaVerificationTest(String name) {
-		super(name);
-	}
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
@@ -94,10 +96,8 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	 * Sets up the fixture, for example, open a network connection.
 	 * This method is called before a test is executed.
 	 */
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		// Turn auto-building off
 		IWorkspace workspace = getWorkspace();
 		setAutoBuilding(false);
@@ -132,6 +132,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testAddAndRemoveFile() throws CoreException {
 		ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
 		file2.create(in, true, createTestMonitor());
@@ -147,6 +148,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testAddAndRemoveFolder() throws CoreException {
 		folder2.create(true, true, createTestMonitor());
 		folder2.delete(true, createTestMonitor());
@@ -161,6 +163,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testAddFile() throws CoreException {
 		verifier.addExpectedChange(file2, project1, IResourceDelta.ADDED, 0);
 		ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
@@ -172,6 +175,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testAddFileAndFolder() throws CoreException {
 		verifier.addExpectedChange(folder2, project1, IResourceDelta.ADDED, 0);
 		verifier.addExpectedChange(file3, project1, IResourceDelta.ADDED, 0);
@@ -185,6 +189,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testAddFolder() throws CoreException {
 		verifier.addExpectedChange(folder2, project1, IResourceDelta.ADDED, 0);
 		folder2.create(true, true, createTestMonitor());
@@ -195,6 +200,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testAddProject() throws CoreException {
 		// should not affect project1's delta
 		project2.create(createTestMonitor());
@@ -206,6 +212,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testChangeFile() throws CoreException {
 		/* change file1's contents */
 		verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
@@ -218,6 +225,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testChangeFileToFolder() throws CoreException {
 		/* change file1 into a folder */
 		verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED,
@@ -231,6 +239,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testChangeFolderToFile() throws CoreException {
 		/* change to a folder */
 		file1.delete(true, createTestMonitor());
@@ -250,6 +259,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testCloseOpenReplaceFile() throws CoreException {
 		rebuild();
 		project1.close(null);
@@ -270,6 +280,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testMoveFile() throws CoreException {
 		verifier.addExpectedChange(folder2, project1, IResourceDelta.ADDED, 0);
 		verifier.addExpectedChange(file1, project1, IResourceDelta.REMOVED, IResourceDelta.MOVED_TO, null,
@@ -286,6 +297,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testRemoveFile() throws CoreException {
 		verifier.addExpectedChange(file1, project1, IResourceDelta.REMOVED, 0);
 		file1.delete(true, createTestMonitor());
@@ -296,6 +308,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testRemoveFileAndFolder() throws CoreException {
 		verifier.addExpectedChange(folder1, project1, IResourceDelta.REMOVED, 0);
 		verifier.addExpectedChange(file1, project1, IResourceDelta.REMOVED, 0);
@@ -307,6 +320,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testReplaceFile() throws CoreException {
 		/* change file1's contents */
 		verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED,
@@ -321,6 +335,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 	/**
 	 * Tests that the builder is receiving an appropriate delta
 	 */
+	@Test
 	public void testTwoFileChanges() throws CoreException {
 		verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
 		verifier.addExpectedChange(file2, project1, IResourceDelta.ADDED, 0);
@@ -335,6 +350,7 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testReuseCachedDelta() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("delta-cache");
 		createInWorkspace(project);
@@ -363,4 +379,5 @@ public class BuildDeltaVerificationTest extends ResourceTest {
 
 		assertSame("both builders should receive the same cached delta ", deltas.get(0), deltas.get(1));
 	}
+
 }
