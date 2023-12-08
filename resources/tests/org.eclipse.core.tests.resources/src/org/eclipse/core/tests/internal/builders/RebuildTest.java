@@ -24,6 +24,7 @@ import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
@@ -31,7 +32,7 @@ import org.junit.runners.MethodSorters;
  * This class tests builder behavior related to re-building
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class RebuildTest extends AbstractBuilderTest {
+public class RebuildTest extends ResourceTest {
 
 	final String builderName = RebuildingBuilder.BUILDER_NAME;
 	private final int maxBuildIterations;

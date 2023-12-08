@@ -33,12 +33,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
  * These tests exercise the build context functionality that tells a builder in what context
  * it was called.
  */
-public class BuildContextTest extends AbstractBuilderTest {
+public class BuildContextTest extends ResourceTest {
 
 	private IProject project0;
 	private IProject project1;

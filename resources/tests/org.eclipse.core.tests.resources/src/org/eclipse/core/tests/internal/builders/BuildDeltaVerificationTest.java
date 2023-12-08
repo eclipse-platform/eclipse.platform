@@ -32,11 +32,12 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
  * Tests that deltas supplied to the builder are accurate
  */
-public class BuildDeltaVerificationTest extends AbstractBuilderTest {
+public class BuildDeltaVerificationTest extends ResourceTest {
 	DeltaVerifierBuilder verifier;
 	/* some random resource handles */
 	protected static final String PROJECT1 = "Project1";

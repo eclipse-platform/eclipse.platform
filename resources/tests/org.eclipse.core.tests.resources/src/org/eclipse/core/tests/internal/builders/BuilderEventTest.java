@@ -22,11 +22,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
  * Tests the PRE_BUILD and POST_BUILD events.
  */
-public class BuilderEventTest extends AbstractBuilderTest {
+public class BuilderEventTest extends ResourceTest {
 	private BuildEventListener listener;
 
 	public BuilderEventTest(String name) {

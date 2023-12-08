@@ -29,6 +29,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
  * These tests exercise the function added in Eclipse 3.1 to allow a builder
@@ -38,7 +39,7 @@ import org.eclipse.core.runtime.CoreException;
  * ICommand.setBuilding(int, boolean)
  * The "isConfigurable" attribute in the builder extension schema
  */
-public class CustomBuildTriggerTest extends AbstractBuilderTest {
+public class CustomBuildTriggerTest extends ResourceTest {
 
 	public CustomBuildTriggerTest(String name) {
 		super(name);

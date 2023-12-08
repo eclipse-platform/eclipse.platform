@@ -53,6 +53,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.junit.function.ThrowingRunnable;
 
 /**
@@ -62,7 +63,7 @@ import org.junit.function.ThrowingRunnable;
  * IWorkspace#build IProject#build IProjectDescription#getBuildSpec
  * IProjectDescription#setBuildSpec
  */
-public class BuilderTest extends AbstractBuilderTest {
+public class BuilderTest extends ResourceTest {
 
 	/**
 	 * BuilderTest constructor comment.

@@ -34,12 +34,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
+import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
  * These tests exercise the project buildConfigs functionality which allows a different
  * builder to be run for different project buildConfigs.
  */
-public class BuildConfigurationsTest extends AbstractBuilderTest {
+public class BuildConfigurationsTest extends ResourceTest {
 
 	private IProject project0;
 	private IProject project1;

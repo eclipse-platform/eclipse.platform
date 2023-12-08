@@ -29,13 +29,14 @@ import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
  * Tests platform support for build cycles.  Namely, the ability of builders to
  * request that a rebuild occur automatically if it modifies projects that came
  * before it in the build order.
  */
-public class BuilderCycleTest extends AbstractBuilderTest {
+public class BuilderCycleTest extends ResourceTest {
 	public BuilderCycleTest(String name) {
 		super(name);
 	}

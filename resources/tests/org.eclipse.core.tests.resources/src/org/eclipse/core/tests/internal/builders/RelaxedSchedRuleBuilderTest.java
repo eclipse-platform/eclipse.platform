@@ -55,6 +55,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.TestUtil;
 import org.junit.function.ThrowingRunnable;
 
@@ -65,7 +66,7 @@ import org.junit.function.ThrowingRunnable;
  * When one of these builders runs, other threads may modify the workspace
  * depending on the builder's scheduling rule
  */
-public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
+public class RelaxedSchedRuleBuilderTest extends ResourceTest {
 	private ErrorLogging errorLogging = new ErrorLogging();
 
 	public RelaxedSchedRuleBuilderTest(String name) {

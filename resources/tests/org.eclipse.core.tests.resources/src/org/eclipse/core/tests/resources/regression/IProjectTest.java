@@ -35,10 +35,10 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.internal.builders.AbstractBuilderTest;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.usecase.SignaledBuilder;
 
-public class IProjectTest extends AbstractBuilderTest {
+public class IProjectTest extends ResourceTest {
 	public IProjectTest(String name) {
 		super(name);
 	}
