@@ -48,12 +48,18 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobGroup;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TimerBuilder.RuleType;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-public class ParallelBuildChainTest extends ResourceTest {
+public class ParallelBuildChainTest {
 	private static final int TIMEOUT_IN_MILLIS = 30_000;
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static enum BuildDurationType {
 		/*
@@ -98,22 +104,16 @@ public class ParallelBuildChainTest extends ResourceTest {
 
 	}
 
-	public ParallelBuildChainTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		setAutoBuilding(false);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// Cleanup workspace first to ensure that auto-build is not started on projects
 		waitForBuild();
 		getWorkspace().getRoot().delete(true, true, createTestMonitor());
-		super.tearDown();
 		TimerBuilder.abortCurrentBuilds();
 	}
 
@@ -235,6 +235,7 @@ public class ParallelBuildChainTest extends ResourceTest {
 		});
 	}
 
+	@Test
 	public void testWorkspaceBuild_DependentProjects() throws Exception {
 		int numberOfParallelBuilds = 3;
 		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
@@ -255,6 +256,7 @@ public class ParallelBuildChainTest extends ResourceTest {
 		});
 	}
 
+	@Test
 	public void testWorkspaceBuild_DependentProjects_ProjectSubset() throws Exception {
 		int numberOfParallelBuilds = 3;
 		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
@@ -278,6 +280,7 @@ public class ParallelBuildChainTest extends ResourceTest {
 		});
 	}
 
+	@Test
 	public void testWorkspaceBuild_DependentProjectBuildConfigurations() throws Exception {
 		int numberOfParallelBuilds = 3;
 		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
@@ -298,6 +301,7 @@ public class ParallelBuildChainTest extends ResourceTest {
 		});
 	}
 
+	@Test
 	public void testWorkspaceBuild_DependentProjectBuildConfigurations_ProjectSubset() throws Exception {
 		int numberOfParallelBuilds = 3;
 		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);

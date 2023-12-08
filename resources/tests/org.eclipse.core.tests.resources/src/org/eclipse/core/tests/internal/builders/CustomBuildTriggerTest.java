@@ -20,6 +20,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDes
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
@@ -29,7 +32,10 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * These tests exercise the function added in Eclipse 3.1 to allow a builder
@@ -39,15 +45,13 @@ import org.eclipse.core.tests.resources.ResourceTest;
  * ICommand.setBuilding(int, boolean)
  * The "isConfigurable" attribute in the builder extension schema
  */
-public class CustomBuildTriggerTest extends ResourceTest {
+public class CustomBuildTriggerTest {
 
-	public CustomBuildTriggerTest(String name) {
-		super(name);
-	}
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		SortBuilder.resetSingleton();
 		CustomTriggerBuilder.resetSingleton();
 	}
@@ -57,6 +61,7 @@ public class CustomBuildTriggerTest extends ResourceTest {
 	 * on the first build after a clean.
 	 * See bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=182781.
 	 */
+	@Test
 	public void testBuildAfterClean_builderRespondingToFull() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
@@ -106,6 +111,7 @@ public class CustomBuildTriggerTest extends ResourceTest {
 	 * Tests that a builder that responds only to the "incremental" trigger will be called
 	 * on the first build after a clean.
 	 */
+	@Test
 	public void testBuildAfterClean_builderRespondingToIncremental() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
@@ -158,6 +164,7 @@ public class CustomBuildTriggerTest extends ResourceTest {
 	 * Tests that a builder that responds only to the "auto" trigger will be called
 	 * on the first build after a clean.
 	 */
+	@Test
 	public void testBuildAfterClean_builderRespondingToAuto() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
@@ -209,6 +216,7 @@ public class CustomBuildTriggerTest extends ResourceTest {
 	 * Tests that a builder that does not declare itself as configurable
 	 * is not configurable.
 	 */
+	@Test
 	public void testConfigurable() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
@@ -288,6 +296,7 @@ public class CustomBuildTriggerTest extends ResourceTest {
 	 * Tests that a builder that does not declare itself as configurable
 	 * is not configurable.
 	 */
+	@Test
 	public void testNonConfigurable() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
@@ -333,6 +342,7 @@ public class CustomBuildTriggerTest extends ResourceTest {
 	 * Tests that a builder that skips autobuild still receives the correct resource delta
 	 * See bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=173931
 	 */
+	@Test
 	public void testSkipAutobuildDelta() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
@@ -385,6 +395,7 @@ public class CustomBuildTriggerTest extends ResourceTest {
 	 * on the first and only first build after a clean.
 	 * See bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=206540.
 	 */
+	@Test
 	public void testCleanBuild_AfterCleanBuilder() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
@@ -444,6 +455,7 @@ public class CustomBuildTriggerTest extends ResourceTest {
 	 * on the first and only first (non-auto) build after a clean.
 	 * See bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=206540.
 	 */
+	@Test
 	public void testCleanAutoBuild_AfterCleanBuilder() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
@@ -499,4 +511,5 @@ public class CustomBuildTriggerTest extends ResourceTest {
 		assertTrue("6.0", !builder.wasCleanBuild());
 		assertTrue("6.1", !builder.wasFullBuild());
 	}
+
 }

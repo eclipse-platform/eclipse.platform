@@ -33,13 +33,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * These tests exercise the build context functionality that tells a builder in what context
  * it was called.
  */
-public class BuildContextTest extends ResourceTest {
+public class BuildContextTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project0;
 	private IProject project1;
@@ -47,13 +53,8 @@ public class BuildContextTest extends ResourceTest {
 	private static final String variant0 = "Variant0";
 	private static final String variant1 = "Variant1";
 
-	public BuildContextTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		// Create resources
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		project0 = root.getProject("BuildContextTests_p0");
@@ -122,6 +123,7 @@ public class BuildContextTest extends ResourceTest {
 	 * Setup a reference graph, then test the build context for for each project involved
 	 * in the 'build'.
 	 */
+	@Test
 	public void testBuildContext() {
 		// Create reference graph
 		IBuildConfiguration p0v0 = getWorkspace().newBuildConfig(project0.getName(), variant0);
@@ -152,6 +154,7 @@ public class BuildContextTest extends ResourceTest {
 		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
 	}
 
+	@Test
 	public void testSingleProjectBuild() throws CoreException {
 		setAutoBuilding(true);
 
@@ -177,6 +180,7 @@ public class BuildContextTest extends ResourceTest {
 	/**
 	 * Tests building a single project with and without references
 	 */
+	@Test
 	public void testWorkspaceBuildProject() throws CoreException {
 		setupSimpleReferences();
 		ContextBuilder.clearStats();
@@ -212,6 +216,7 @@ public class BuildContextTest extends ResourceTest {
 	/**
 	 * Builds a couple configurations, including references
 	 */
+	@Test
 	public void testWorkspaceBuildProjects() throws CoreException {
 		setupSimpleReferences();
 		ContextBuilder.clearStats();
@@ -237,6 +242,7 @@ public class BuildContextTest extends ResourceTest {
 	/**
 	 * Sets references to the 'active' project build configuration
 	 */
+	@Test
 	public void testReferenceActiveVariant() throws CoreException {
 		setReferences(project0.getActiveBuildConfig(), new IBuildConfiguration[] {getWorkspace().newBuildConfig(project1.getName(), null)});
 		setReferences(project1.getActiveBuildConfig(), new IBuildConfiguration[] {getWorkspace().newBuildConfig(project2.getName(), null)});
@@ -265,6 +271,7 @@ public class BuildContextTest extends ResourceTest {
 	 * Attempts to build a project that references the active variant of another project,
 	 * and the same variant directly. This should only result in one referenced variant being built.
 	 */
+	@Test
 	public void testReferenceVariantTwice() throws CoreException {
 		IBuildConfiguration ref1 = new BuildConfiguration(project1, null);
 		IBuildConfiguration ref2 = new BuildConfiguration(project1, project1.getActiveBuildConfig().getName());

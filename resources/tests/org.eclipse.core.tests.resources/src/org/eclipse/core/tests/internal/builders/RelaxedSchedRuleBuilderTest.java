@@ -23,6 +23,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingR
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.Thread.State;
 import java.util.ArrayList;
@@ -55,9 +58,14 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
-import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.TestUtil;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
+import org.junit.rules.TestName;
 
 /**
  * This class tests extended functionality (since 3.6) which allows
@@ -66,26 +74,24 @@ import org.junit.function.ThrowingRunnable;
  * When one of these builders runs, other threads may modify the workspace
  * depending on the builder's scheduling rule
  */
-public class RelaxedSchedRuleBuilderTest extends ResourceTest {
+public class RelaxedSchedRuleBuilderTest {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	private ErrorLogging errorLogging = new ErrorLogging();
 
-	public RelaxedSchedRuleBuilderTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		errorLogging.enable();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		try {
-			errorLogging.disable();
-		} finally {
-			super.tearDown();
-		}
+	@After
+	public void tearDown() throws Exception {
+		errorLogging.disable();
 		TestBuilder builder = DeltaVerifierBuilder.getInstance();
 		if (builder != null) {
 			builder.reset();
@@ -103,6 +109,7 @@ public class RelaxedSchedRuleBuilderTest extends ResourceTest {
 	/**
 	 * Test a simple builder with a relaxed scheduling rule
 	 */
+	@Test
 	public void testBasicRelaxedSchedulingRules() throws Throwable {
 		String projectName = "TestRelaxed";
 		setAutoBuilding(false);
@@ -178,6 +185,7 @@ public class RelaxedSchedRuleBuilderTest extends ResourceTest {
 	 *     Bug 306824 - null scheduling rule and non-null scheduling rule don't work together
 	 *     Builders should have separate scheduling rules
 	 */
+	@Test
 	public void testTwoBuildersRunInOneBuild() throws Throwable {
 		String projectName = "testTwoBuildersRunInOneBuild";
 		setAutoBuilding(false);
@@ -289,6 +297,7 @@ public class RelaxedSchedRuleBuilderTest extends ResourceTest {
 	 * a change which sneaks in during the window or the build thread acquiring its scheduling
 	 * rule, is correctly present in the builder's delta.
 	 */
+	@Test
 	public void testBuilderDeltaUsingRelaxedRuleBug343256() throws Throwable {
 		final int timeout = 10000;
 		String projectName = "testBuildDeltaUsingRelaxedRuleBug343256";
@@ -297,7 +306,7 @@ public class RelaxedSchedRuleBuilderTest extends ResourceTest {
 		final IFile foo = project.getFile("foo");
 		createInWorkspace(project);
 
-		waitForEncodingRelatedJobs(getName());
+		waitForEncodingRelatedJobs(testName.getMethodName());
 		waitForContentDescriptionUpdate();
 		// wait for noBuildJob so POST_BUILD will fire
 		((Workspace) getWorkspace()).getBuildManager().waitForAutoBuildOff();
@@ -423,12 +432,14 @@ public class RelaxedSchedRuleBuilderTest extends ResourceTest {
 	}
 
 	private void waitForContentDescriptionUpdate() {
-		TestUtil.waitForJobs(getName(), 10, 5_000, ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH);
+		TestUtil.waitForJobs(testName.getMethodName(), 10, 5_000,
+				ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH);
 	}
 
 	/**
 	 * Tests for regression in running the build with reduced scheduling rules.
 	 */
+	@Test
 	public void testBug343256() throws Throwable {
 		String projectName = "testBug343256";
 		setAutoBuilding(false);

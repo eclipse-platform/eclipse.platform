@@ -25,7 +25,11 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.setBuildOrder;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -53,8 +57,13 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
+import org.junit.rules.TestName;
 
 /**
  * This class tests public API related to building and to build specifications.
@@ -63,25 +72,17 @@ import org.junit.function.ThrowingRunnable;
  * IWorkspace#build IProject#build IProjectDescription#getBuildSpec
  * IProjectDescription#setBuildSpec
  */
-public class BuilderTest extends ResourceTest {
+public class BuilderTest {
 
-	/**
-	 * BuilderTest constructor comment.
-	 *
-	 * @param name
-	 *                  java.lang.String
-	 */
-	public BuilderTest(String name) {
-		super(name);
-	}
+	@Rule
+	public TestName testName = new TestName();
 
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Before
+	@After
+	public void resetBuilder() throws Exception {
 		TestBuilder builder = SortBuilder.getInstance();
 		if (builder != null) {
 			builder.reset();
@@ -116,6 +117,7 @@ public class BuilderTest extends ResourceTest {
 	 * Make sure this test runs first, before any other test
 	 * has a chance to mess with the build order.
 	 */
+	@Test
 	public void testAardvarkBuildOrder() {
 		IWorkspace workspace = getWorkspace();
 		//builder order should initially be null
@@ -127,6 +129,7 @@ public class BuilderTest extends ResourceTest {
 	 *
 	 * @see SortBuilder
 	 */
+	@Test
 	public void testAutoBuildPR() throws CoreException {
 		//REF: 1FUQUJ4
 		// Create some resource handles
@@ -160,6 +163,7 @@ public class BuilderTest extends ResourceTest {
 	 * Tests installing and running a builder that always fails during
 	 * instantation.
 	 */
+	@Test
 	public void testBrokenBuilder() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -191,6 +195,7 @@ public class BuilderTest extends ResourceTest {
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 	}
 
+	@Test
 	public void testBuildClean() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -243,6 +248,7 @@ public class BuilderTest extends ResourceTest {
 	 *
 	 * @see SortBuilder
 	 */
+	@Test
 	public void testBuildCommands() throws CoreException {
 		// Create some resource handles
 		IWorkspace workspace = getWorkspace();
@@ -367,6 +373,7 @@ public class BuilderTest extends ResourceTest {
 	 * Tests that a pre_build listener is not called if there have been no changes
 	 * since the last build of any kind occurred.  See https://bugs.eclipse.org/bugs/show_bug.cgi?id=154880.
 	 */
+	@Test
 	public void testPreBuildEvent() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
@@ -399,6 +406,7 @@ public class BuilderTest extends ResourceTest {
 	 *
 	 * @see SortBuilder
 	 */
+	@Test
 	public void testBuildOrder() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
@@ -470,6 +478,7 @@ public class BuilderTest extends ResourceTest {
 	 * Tests that changing the dynamic build order will induce an autobuild on a project.
 	 * This is a regression test for bug 60653.
 	 */
+	@Test
 	public void testChangeDynamicBuildOrder() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
@@ -523,6 +532,7 @@ public class BuilderTest extends ResourceTest {
 	 * to be built in the correct order.
 	 * This is a regression test for bug 330194.
 	 */
+	@Test
 	public void testChangeDynamicBuildOrderDuringPreBuild() throws Throwable {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
@@ -617,6 +627,7 @@ public class BuilderTest extends ResourceTest {
 	/**
 	 * Ensure that build order is preserved when project is closed/opened.
 	 */
+	@Test
 	public void testCloseOpenProject() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
@@ -649,6 +660,7 @@ public class BuilderTest extends ResourceTest {
 	 * Tests that when a project is copied, the copied project has a full build
 	 * but the source project does not.
 	 */
+	@Test
 	public void testCopyProject() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
@@ -673,7 +685,7 @@ public class BuilderTest extends ResourceTest {
 		desc.setName(proj2.getName());
 		proj1.copy(desc, IResource.NONE, createTestMonitor());
 
-		waitForEncodingRelatedJobs(getName());
+		waitForEncodingRelatedJobs(testName.getMethodName());
 		waitForBuild();
 		SortBuilder builder = SortBuilder.getInstance();
 		assertEquals(proj2, builder.getProject());
@@ -690,6 +702,7 @@ public class BuilderTest extends ResourceTest {
 	 * Tests an implicit workspace build order created by setting dynamic
 	 * project references.
 	 */
+	@Test
 	public void testDynamicBuildOrder() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
@@ -754,6 +767,7 @@ public class BuilderTest extends ResourceTest {
 	/**
 	 * Tests that enabling autobuild causes a build to occur.
 	 */
+	@Test
 	public void testEnableAutobuild() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -784,6 +798,7 @@ public class BuilderTest extends ResourceTest {
 	/**
 	 * Tests installing and running a builder that always fails in its build method
 	 */
+	@Test
 	public void testExceptionBuilder() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -818,6 +833,7 @@ public class BuilderTest extends ResourceTest {
 	/**
 	 * Tests the method IncrementProjectBuilder.forgetLastBuiltState
 	 */
+	@Test
 	public void testForgetLastBuiltState() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -866,6 +882,7 @@ public class BuilderTest extends ResourceTest {
 	 * Tests that a client invoking a manual incremental build before autobuild has had
 	 * a chance to run will block until the build completes. See bug 275879.
 	 */
+	@Test
 	public void testIncrementalBuildBeforeAutobuild() throws Exception {
 		// Create some resource handles
 		final IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -910,6 +927,7 @@ public class BuilderTest extends ResourceTest {
 	/**
 	 * Tests that autobuild is interrupted by a background scheduled job, but eventually completes.
 	 */
+	@Test
 	public void testInterruptAutobuild() throws Exception {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -970,6 +988,7 @@ public class BuilderTest extends ResourceTest {
 	/**
 	 * Tests the lifecycle of a builder.
 	 */
+	@Test
 	public void testLifecycleEvents() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -1033,6 +1052,7 @@ public class BuilderTest extends ResourceTest {
 	 *
 	 * @see SortBuilder
 	 */
+	@Test
 	public void testMoveProject() throws CoreException {
 		// Create some resource handles
 		IWorkspace workspace = getWorkspace();
@@ -1067,6 +1087,7 @@ public class BuilderTest extends ResourceTest {
 	 * Tests that turning autobuild on will invoke a build in the next
 	 * operation.
 	 */
+	@Test
 	public void testTurnOnAutobuild() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -1111,4 +1132,5 @@ public class BuilderTest extends ResourceTest {
 		verifier.addExpectedLifecycleEvent(TestBuilder.DEFAULT_BUILD_ID);
 		verifier.assertLifecycleEvents();
 	}
+
 }

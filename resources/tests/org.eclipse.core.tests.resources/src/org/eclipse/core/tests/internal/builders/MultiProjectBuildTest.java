@@ -20,6 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -33,15 +34,22 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.TestPerformer;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * This class tests builds that span multiple projects.  Project builders
  * can specify what other projects they are interested in receiving deltas for,
  * and they should only be receiving deltas for exactly those projects.
  */
-public class MultiProjectBuildTest extends ResourceTest {
+public class MultiProjectBuildTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	//various resource handles
 	private IProject project1;
 	private IProject project2;
@@ -51,13 +59,6 @@ public class MultiProjectBuildTest extends ResourceTest {
 	private IFile file2;
 	private IFile file3;
 	private IFile file4;
-
-	/**
-	 * Public constructor required for test harness.
-	 */
-	public MultiProjectBuildTest(String name) {
-		super(name);
-	}
 
 	/**
 	 * Returns an array of interesting project combinations.
@@ -101,9 +102,8 @@ public class MultiProjectBuildTest extends ResourceTest {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		setAutoBuilding(true);
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		project1 = root.getProject("Project1");
@@ -122,6 +122,7 @@ public class MultiProjectBuildTest extends ResourceTest {
 	 * In this test, only project1 has a builder, but it is interested in deltas from the other projects.
 	 * We vary the set of projects that are changed, and the set of projects we request deltas for.
 	 */
+	@Test
 	public void testDeltas() throws Exception {
 		//add builder and do an initial build to get the instance
 		setAutoBuilding(false);
@@ -209,6 +210,7 @@ public class MultiProjectBuildTest extends ResourceTest {
 	/**
 	 * Tests a builder that requests deltas for closed and missing projects.
 	 */
+	@Test
 	public void testRequestMissingProject() throws CoreException {
 		//add builder and do an initial build to get the instance
 		updateProjectDescription(project1).addingCommand(DeltaVerifierBuilder.BUILDER_NAME)
@@ -231,6 +233,7 @@ public class MultiProjectBuildTest extends ResourceTest {
 	/**
 	 * Test for Bug #5102.  Never reproduced but interesting little test, worth keeping around
 	 */
+	@Test
 	public void testPR() throws Exception {
 		//create a project with a RefreshLocalJavaFileBuilder and a SortBuilder on the classpath
 		IProject project = getWorkspace().getRoot().getProject("P1");
@@ -245,7 +248,6 @@ public class MultiProjectBuildTest extends ResourceTest {
 		//do an incremental build by creating a file
 		IFile file = project.getFile("Foo");
 		file.create(createRandomContentsStream(), true, createTestMonitor());
-
 	}
 
 }

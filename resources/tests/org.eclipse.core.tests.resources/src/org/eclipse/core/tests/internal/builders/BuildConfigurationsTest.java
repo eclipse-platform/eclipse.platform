@@ -20,6 +20,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 import org.eclipse.core.resources.IBuildConfiguration;
@@ -34,13 +38,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * These tests exercise the project buildConfigs functionality which allows a different
  * builder to be run for different project buildConfigs.
  */
-public class BuildConfigurationsTest extends ResourceTest {
+public class BuildConfigurationsTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project0;
 	private IProject project1;
@@ -50,13 +60,8 @@ public class BuildConfigurationsTest extends ResourceTest {
 	private static final String variant1 = "Variant1";
 	private static final String variant2 = "Variant2";
 
-	public BuildConfigurationsTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		// Create resources
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		project0 = root.getProject("BuildVariantTest_p0");
@@ -89,6 +94,7 @@ public class BuildConfigurationsTest extends ResourceTest {
 	 * Tests that an incremental builder is run/not run correctly, depending on deltas,
 	 * and is given the correct deltas depending on which project variant is being built
 	 */
+	@Test
 	public void testDeltas() throws CoreException {
 		ConfigurationBuilder.clearStats();
 		// Run some incremental builds while varying the active variant and whether the project was modified
@@ -107,6 +113,7 @@ public class BuildConfigurationsTest extends ResourceTest {
 	/**
 	 * Tests that deltas are preserved per variant when a project is closed then opened.
 	 */
+	@Test
 	public void testCloseAndOpenProject() throws CoreException {
 		ConfigurationBuilder.clearStats();
 		file0.setContents(createRandomContentsStream(), true, true, createTestMonitor());
@@ -126,6 +133,7 @@ public class BuildConfigurationsTest extends ResourceTest {
 	/**
 	 * Tests that deltas are restored in the correct order per variant when a project is closed then opened.
 	 */
+	@Test
 	public void testCloseAndOpenProject_Bug361675() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject tempProject = root.getProject("BuildVariantTest_pTemp");
@@ -190,6 +198,7 @@ public class BuildConfigurationsTest extends ResourceTest {
 	 * Build order should be:
 	 *     p0,v1  p1,v0  p1,v2  p0,v0
 	 */
+	@Test
 	public void testBuildReferences() throws CoreException {
 		ConfigurationBuilder.clearStats();
 		ConfigurationBuilder.clearBuildOrder();
@@ -240,6 +249,7 @@ public class BuildConfigurationsTest extends ResourceTest {
 	 * p1 is closed.
 	 * p0v0 should still be built.
 	 */
+	@Test
 	public void testBuildReferencesOfClosedProject() throws CoreException {
 		ConfigurationBuilder.clearStats();
 		ConfigurationBuilder.clearBuildOrder();
@@ -279,6 +289,7 @@ public class BuildConfigurationsTest extends ResourceTest {
 	/**
 	 * Tests that cleaning a project variant does not affect other buildConfigs in the same project
 	 */
+	@Test
 	public void testClean() throws CoreException {
 		ConfigurationBuilder.clearStats();
 		incrementalBuild(1, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
@@ -342,6 +353,7 @@ public class BuildConfigurationsTest extends ResourceTest {
 	 * another (not yet imported) project. Xtext builder reports it is interested in
 	 * the project that isn't there (but is referenced in the .project file).
 	 */
+	@Test
 	public void testBuildProjectWithNotExistingReference() throws Exception {
 		// need a build to create builder
 		IBuildConfiguration buildConfig = project0.getBuildConfig(variant0);

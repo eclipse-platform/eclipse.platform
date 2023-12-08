@@ -21,17 +21,19 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDes
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests the callOnEmptyDelta attribute of the builder extension
  */
-public class EmptyDeltaTest extends ResourceTest {
+public class EmptyDeltaTest {
 
-	public EmptyDeltaTest(String name) {
-		super(name);
-	}
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
+	@Test
 	public void testBuildEvents() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("TestBuildEvents");
