@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.internal.alias;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
@@ -27,8 +28,12 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.findAvailableDevices;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -56,18 +61,21 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.junit.Assume;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
  * Tests basic API methods in the face of aliased resources, and ensures that
  * nothing is ever out of sync.
  */
-@RunWith(JUnit4.class)
-public class BasicAliasTest extends ResourceTest {
+public class BasicAliasTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	//resource handles (p=project, f=folder, l=file)
 	private IProject pNoOverlap;
 	private IProject pOverlap;
@@ -157,9 +165,8 @@ public class BasicAliasTest extends ResourceTest {
 		return children;
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		//project with no overlap
 		pNoOverlap = root.getProject("NoOverlap");
@@ -195,7 +202,7 @@ public class BasicAliasTest extends ResourceTest {
 
 		linkOverlapLocation = getRandomLocation();
 		linkOverlapLocation.toFile().mkdirs();
-		deleteOnTearDown(linkOverlapLocation);
+		workspaceRule.deleteOnTearDown(linkOverlapLocation);
 		fLinkOverlap1.createLink(linkOverlapLocation, IResource.NONE, null);
 		fLinkOverlap2.createLink(linkOverlapLocation, IResource.NONE, null);
 	}
@@ -211,7 +218,7 @@ public class BasicAliasTest extends ResourceTest {
 		IFile child = link.getFile("Child.txt");
 		IPath location = getRandomLocation();
 		location.toFile().mkdirs();
-		deleteOnTearDown(location);
+		workspaceRule.deleteOnTearDown(location);
 		link.createLink(location, IResource.NONE, createTestMonitor());
 		createInWorkspace(child, createRandomString());
 		// move the link (rename)
@@ -280,12 +287,12 @@ public class BasicAliasTest extends ResourceTest {
 		IPath location1 = IPath.fromOSString(devices[0] + location);
 		assertTrue("0.1", !location1.toFile().exists());
 		desc1.setLocation(location1);
-		deleteOnTearDown(location1);
+		workspaceRule.deleteOnTearDown(location1);
 		IProjectDescription desc2 = getWorkspace().newProjectDescription(testProject2.getName());
 		IPath location2 = IPath.fromOSString(devices[1] + location);
 		assertTrue("0.2", !location2.toFile().exists());
 		desc2.setLocation(location2);
-		deleteOnTearDown(location2);
+		workspaceRule.deleteOnTearDown(location2);
 
 		testProject1.create(desc1, createTestMonitor());
 		testProject1.open(createTestMonitor());
@@ -308,7 +315,8 @@ public class BasicAliasTest extends ResourceTest {
 	private void replaceProject(IProject project, URI newLocation) throws CoreException {
 		IProjectDescription projectDesc = project.getDescription();
 		projectDesc.setLocationURI(newLocation);
-		deleteOnTearDown(project.getLocation()); // Ensure that project contents are removed from file system
+		workspaceRule.deleteOnTearDown(project.getLocation()); // Ensure that project contents are removed from file
+																// system
 		project.move(projectDesc, IResource.REPLACE, null);
 	}
 
@@ -413,7 +421,7 @@ public class BasicAliasTest extends ResourceTest {
 		IProject p2 = root.getProject(createUniqueString());
 		createInWorkspace(new IResource[] {p1, p2});
 
-		IFileStore tempStore = getTempStore();
+		IFileStore tempStore = workspaceRule.getTempStore();
 		tempStore.mkdir(EFS.NONE, createTestMonitor());
 
 		replaceProject(p2, WrapperFileSystem.getWrappedURI(p2.getLocationURI()));
@@ -437,7 +445,7 @@ public class BasicAliasTest extends ResourceTest {
 	@Test
 	public void testBug258987() throws Exception {
 		// Create the directory to which you will link. The directory needs a single file.
-		IFileStore dirStore = getTempStore();
+		IFileStore dirStore = workspaceRule.getTempStore();
 		dirStore.mkdir(EFS.NONE, createTestMonitor());
 		assertTrue("2.0", dirStore.fetchInfo().exists());
 		assertTrue("3.0", dirStore.fetchInfo().isDirectory());
@@ -887,4 +895,5 @@ public class BasicAliasTest extends ResourceTest {
 		assertDoesNotExistInWorkspace(destination);
 		assertOverlap("3.8", lChildLinked, lChildOverlap);
 	}
+
 }
