@@ -17,6 +17,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicIntegerArray;
@@ -39,12 +40,17 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests concurrency issues when dealing with operations on the workspace
  */
-public class WorkspaceConcurrencyTest extends ResourceTest {
+public class WorkspaceConcurrencyTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private void sleep(long duration) {
 		try {
@@ -54,6 +60,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testEndRuleInWorkspaceOperation() {
 		final IProject project = getWorkspace().getRoot().getProject("testEndRuleInWorkspaceOperation");
 		assertThrows(RuntimeException.class,
@@ -65,6 +72,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 	 * Tests that it is possible to cancel a workspace operation when it is blocked
 	 * by activity in another thread. This is a regression test for bug 56118.
 	 */
+	@Test
 	public void testCancelOnBlocked() throws Throwable {
 		//create a dummy project
 		createInWorkspace(getWorkspace().getRoot().getProject("P1"));
@@ -131,6 +139,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 	 * Tests calling IWorkspace.run with a non-workspace rule.  This should be
 	 * allowed. This is a regression test for bug 60114.
 	 */
+	@Test
 	public void testRunnableWithOtherRule() throws CoreException {
 		ISchedulingRule rule = new ISchedulingRule() {
 			@Override
@@ -159,6 +168,7 @@ public class WorkspaceConcurrencyTest extends ResourceTest {
 	 * will not be available and it will fail.
 	 * This is a regression test for bug 	62927.
 	 */
+	@Test
 	public void testRunWhileBuilding() throws Throwable {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		//create a POST_BUILD listener that will touch a project
