@@ -705,4 +705,20 @@ public class FileStoreTest extends LocalStoreTest {
 				.map(URI::getPath).toList();
 		assertEquals("2.0 ", pathsTrimmed, sortedLocalFileStores);
 	}
+
+	private boolean verifyNode(IFileStore node) {
+		char type = node.getName().charAt(0);
+		// if the name starts with d it must be a directory
+		return (type == 'd') == node.fetchInfo().isDirectory();
+	}
+
+	private boolean verifyTree(IFileStore[] tree) {
+		for (IFileStore t : tree) {
+			if (!verifyNode(t)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

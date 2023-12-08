@@ -482,4 +482,9 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 			localManager.write(file, contents, info, flags, false, jobMonitor);
 		}
 	}
+
+	private FileSystemResourceManager getLocalManager() {
+		return ((Workspace) getWorkspace()).getFileSystemManager();
+	}
+
 }
