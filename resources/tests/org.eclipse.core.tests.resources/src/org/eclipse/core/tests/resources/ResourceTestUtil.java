@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -576,6 +577,22 @@ public final class ResourceTestUtil {
 	}
 
 	/**
+	 * Sets the workspace build order to just contain the given projects. With
+	 * {@code projects} is null, the default build order of the workspace will be
+	 * used.
+	 */
+	public static void setBuildOrder(IProject... projects) throws CoreException {
+		IWorkspace workspace = getWorkspace();
+		IWorkspaceDescription desc = workspace.getDescription();
+		if (projects == null) {
+			desc.setBuildOrder(null);
+		} else {
+			desc.setBuildOrder(Stream.of(projects).map(IProject::getName).toArray(String[]::new));
+		}
+		workspace.setDescription(desc);
+	}
+
+	/**
 	 * Returns the character sequence used as a line separator within the given
 	 * file.
 	 */
@@ -643,5 +660,6 @@ public final class ResourceTestUtil {
 		}
 		return devices;
 	}
+
 
 }
