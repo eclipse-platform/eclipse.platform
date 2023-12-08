@@ -17,6 +17,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.resources.IFile;
@@ -29,9 +30,17 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class PR_1GEAB3C_Test extends ResourceTest {
+public class PR_1GEAB3C_Test {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	ResourceDeltaVerifier verifier;
 
 	protected static final String VERIFIER_NAME = "TestListener";
@@ -51,9 +60,8 @@ public class PR_1GEAB3C_Test extends ResourceTest {
 	 * Sets up the fixture, for example, open a network connection.
 	 * This method is called before a test is executed.
 	 */
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() {
 		//ensure background work is done before adding verifier
 		waitForBuild();
 		waitForRefresh();
@@ -65,9 +73,8 @@ public class PR_1GEAB3C_Test extends ResourceTest {
 	 * Tears down the fixture, for example, close a network connection.
 	 * This method is called after a test is executed.
 	 */
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() {
 		getWorkspace().removeResourceChangeListener(verifier);
 	}
 
@@ -75,6 +82,7 @@ public class PR_1GEAB3C_Test extends ResourceTest {
 	 * Ensure that we get ADDED and OPEN in the delta when we create and open
 	 * a project in a workspace runnable.
 	 */
+	@Test
 	public void test_1GEAB3C() throws CoreException {
 		verifier.reset();
 		final IProject project = getWorkspace().getRoot().getProject("MyAddedAndOpenedProject");
@@ -96,4 +104,5 @@ public class PR_1GEAB3C_Test extends ResourceTest {
 		getWorkspace().run(body, createTestMonitor());
 		assertDelta();
 	}
+
 }

@@ -22,14 +22,20 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Changing a project description requires the workspace root
  * scheduling rule.
  */
-public class Bug_127562 extends ResourceTest {
+public class Bug_127562 {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testBug() throws CoreException {
 		final IProject project = getWorkspace().getRoot().getProject("Bug127562");
 		createInWorkspace(project);
@@ -38,4 +44,5 @@ public class Bug_127562 extends ResourceTest {
 		getWorkspace().run((IWorkspaceRunnable) monitor -> project.setDescription(description, createTestMonitor()),
 				getWorkspace().getRoot(), IResource.NONE, createTestMonitor());
 	}
+
 }

@@ -24,6 +24,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueStri
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.InputStream;
 import org.eclipse.core.resources.IFile;
@@ -34,23 +36,27 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * A parent container (projects and folders) would become out-of-sync if any of
  * its children could not be deleted for some reason. These platform-
  * specific test cases ensure that it does not happen.
  */
-public class Bug_026294 extends ResourceTest {
+public class Bug_026294 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Tries to delete an open project containing an unremovable file.
 	 * Works only for Windows.
 	 */
+	@Test
 	public void testDeleteOpenProjectWindows() throws Exception {
-		if (!(OS.isWindows())) {
-			return;
-		}
+		assumeTrue("test only works on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -62,7 +68,7 @@ public class Bug_026294 extends ResourceTest {
 
 		createInWorkspace(new IResource[] { file1, file2, file3 });
 		IPath projectRoot = project.getLocation();
-		deleteOnTearDown(projectRoot);
+		workspaceRule.deleteOnTearDown(projectRoot);
 
 		assertExistsInFileSystem(file1);
 		assertExistsInFileSystem(file2);
@@ -116,13 +122,12 @@ public class Bug_026294 extends ResourceTest {
 	}
 
 	/**
-	 * Tries to delete an open project containing an irremovable file.
-	 * Works only for Linux with natives.
+	 * Tries to delete an open project containing an non-removable file. Works only
+	 * for Linux with natives.
 	 */
+	@Test
 	public void testDeleteOpenProjectLinux() throws CoreException {
-		if (!(OS.isLinux() && isReadOnlySupported())) {
-			return;
-		}
+		assumeTrue("test only works on Linux", OS.isLinux() && isReadOnlySupported());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -132,7 +137,7 @@ public class Bug_026294 extends ResourceTest {
 
 		createInWorkspace(new IResource[] { file1, file2 });
 		IPath projectRoot = project.getLocation();
-		deleteOnTearDown(projectRoot);
+		workspaceRule.deleteOnTearDown(projectRoot);
 
 		try {
 			// marks folder as read-only so its files cannot be deleted on Linux
@@ -165,13 +170,12 @@ public class Bug_026294 extends ResourceTest {
 	}
 
 	/**
-	 * Tries to delete a closed project containing an unremovable file.
+	 * Tries to delete a closed project containing a non-removable file.
 	 * Works only for Windows.
 	 */
+	@Test
 	public void testDeleteClosedProjectWindows() throws Exception {
-		if (!OS.isWindows()) {
-			return;
-		}
+		assumeTrue("test only works on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -183,7 +187,7 @@ public class Bug_026294 extends ResourceTest {
 
 		createInWorkspace(new IResource[] { file1, file2, file3 });
 		IPath projectRoot = project.getLocation();
-		deleteOnTearDown(projectRoot);
+		workspaceRule.deleteOnTearDown(projectRoot);
 
 		// opens a file so it cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
@@ -204,15 +208,12 @@ public class Bug_026294 extends ResourceTest {
 	}
 
 	/**
-	 * Tries to delete a closed project containing an unremovable file.
-	 * Works only for Linux with natives.
-	 *
-	 * TODO: enable this test once bug 48321 is fixed.
+	 * Tries to delete a closed project containing an non-removable file. Works only
+	 * for Linux with natives.
 	 */
+	@Test
 	public void testDeleteClosedProjectLinux() throws CoreException {
-		if (!OS.isLinux()) {
-			return;
-		}
+		assumeTrue("test only works on Linux", OS.isLinux());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -223,7 +224,7 @@ public class Bug_026294 extends ResourceTest {
 
 		createInWorkspace(new IResource[] { file1, file2 });
 		IPath projectRoot = project.getLocation();
-		deleteOnTearDown(projectRoot);
+		workspaceRule.deleteOnTearDown(projectRoot);
 
 		try {
 			// marks folder as read-only so its files cannot be removed on Linux
@@ -252,13 +253,12 @@ public class Bug_026294 extends ResourceTest {
 	}
 
 	/**
-	 * Tries to delete a folder containing an unremovable file.
-	 * Works only for Windows.
+	 * Tries to delete a folder containing a non-removable file. Works only for
+	 * Windows.
 	 */
+	@Test
 	public void testDeleteFolderWindows() throws Exception {
-		if (!OS.isWindows()) {
-			return;
-		}
+		assumeTrue("test only works on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -268,7 +268,7 @@ public class Bug_026294 extends ResourceTest {
 
 		createInWorkspace(new IResource[] { file1, file3 });
 		IPath projectRoot = project.getLocation();
-		deleteOnTearDown(projectRoot);
+		workspaceRule.deleteOnTearDown(projectRoot);
 
 		// opens a file so it cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
@@ -288,13 +288,12 @@ public class Bug_026294 extends ResourceTest {
 	}
 
 	/**
-	 * Tries to delete a folder containing an irremovable file.
-	 * Works only for Linux with natives.
+	 * Tries to delete a folder containing a non-removable file. Works only for
+	 * Linux with natives.
 	 */
+	@Test
 	public void testDeleteFolderLinux() throws CoreException {
-		if (!OS.isLinux()) {
-			return;
-		}
+		assumeTrue("test only works on Linux", OS.isLinux());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -305,7 +304,7 @@ public class Bug_026294 extends ResourceTest {
 
 		createInWorkspace(new IResource[] { file1, file3 });
 		IPath projectRoot = project.getLocation();
-		deleteOnTearDown(projectRoot);
+		workspaceRule.deleteOnTearDown(projectRoot);
 
 		try {
 			// marks sub-folder as read-only so its files cannot be removed on Linux

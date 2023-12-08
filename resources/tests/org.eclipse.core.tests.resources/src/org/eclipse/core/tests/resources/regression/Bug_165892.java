@@ -17,6 +17,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -24,7 +25,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests regression of bug 165892. Copying a resource should perform a deep
@@ -32,10 +35,15 @@ import org.eclipse.core.tests.resources.ResourceTest;
  * properties on the destination resource should not affect the properties on the
  * source resource.
  */
-public class Bug_165892 extends ResourceTest {
+public class Bug_165892 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * Tests copying a file
 	 */
+	@Test
 	public void testCopyFile() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFolder sourceFolder = source.getFolder("folder");
@@ -67,6 +75,7 @@ public class Bug_165892 extends ResourceTest {
 	/**
 	 * Tests that history of source file isn't affected by a copy
 	 */
+	@Test
 	public void testCopyFileHistory() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFolder sourceFolder = source.getFolder("folder");
@@ -97,6 +106,7 @@ public class Bug_165892 extends ResourceTest {
 	/**
 	 * Tests copying a folder
 	 */
+	@Test
 	public void testCopyFolder() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFolder sourceFolder = source.getFolder("source");
@@ -138,6 +148,7 @@ public class Bug_165892 extends ResourceTest {
 	/**
 	 * Tests copying a project
 	 */
+	@Test
 	public void testCopyProject() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("source");
 		IFolder sourceFolder = source.getFolder("folder");

@@ -18,7 +18,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSyst
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -30,14 +33,15 @@ import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.ResourceTest;
-import org.junit.Assume;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
-public class IFolderTest extends ResourceTest {
+public class IFolderTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * Bug requests that if a failed folder creation occurs on Linux that we check
 	 * the immediate parent to see if it is read-only so we can return a better
@@ -45,14 +49,13 @@ public class IFolderTest extends ResourceTest {
 	 */
 	@Test
 	public void testBug25662() throws CoreException {
-
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		Assume.assumeTrue(isReadOnlySupported());
+		assumeTrue(isReadOnlySupported());
 
 		// Only run this test on Linux for now since Windows lets you create
 		// a file within a read-only folder.
-		Assume.assumeTrue(OS.isLinux());
+		assumeTrue(OS.isLinux());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder parentFolder = project.getFolder("parentFolder");
@@ -128,4 +131,5 @@ public class IFolderTest extends ResourceTest {
 		dir.mkdir(EFS.SHALLOW, null);
 		// should not throw an exception
 	}
+
 }

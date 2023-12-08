@@ -29,8 +29,12 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.harness.BundleTestingHelper;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.eclipse.core.tests.resources.content.ContentTypeTest;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -38,24 +42,23 @@ import org.osgi.framework.BundleException;
 /**
  * Tests regression of bug 297635
  */
-public class Bug_297635 extends ResourceTest {
+public class Bug_297635 {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Before
+	public void setUp() throws Exception {
 		BundleWithSaveParticipant.install();
 		saveFull();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		try {
-			BundleWithSaveParticipant.uninstall();
-		} finally {
-			super.tearDown();
-		}
+	@After
+	public void tearDown() throws BundleException {
+		BundleWithSaveParticipant.uninstall();
 	}
 
+	@Test
 	public void testCleanSaveStateBySaveParticipantOnSnapshotSave() throws Exception {
 		executeWithSaveManagerSpy(saveManagerSpy -> {
 			try {

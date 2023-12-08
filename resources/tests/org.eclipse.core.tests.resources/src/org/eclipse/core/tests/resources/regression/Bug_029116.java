@@ -20,13 +20,20 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
- * Test regression of bug 29116.  In this bug, triggering a builder during
+ * Test regression of bug 29116. In this bug, triggering a builder during
  * installation of a nature caused an assertion failure.
  */
-public class Bug_029116 extends ResourceTest {
+public class Bug_029116 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testBug() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");

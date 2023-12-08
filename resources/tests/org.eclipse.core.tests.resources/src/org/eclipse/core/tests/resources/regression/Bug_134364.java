@@ -27,7 +27,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -38,7 +39,11 @@ import org.junit.Test;
  * malformed state.  The fix was to synchronize the routine that collapses
  * unused trees in ElementTree.
  */
-public class Bug_134364 extends ResourceTest {
+public class Bug_134364 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * Creates a project with a builder attached
 	 */
@@ -112,4 +117,5 @@ public class Bug_134364 extends ResourceTest {
 			throw new AssertionError("1.0", failure[0]);
 		}
 	}
+
 }

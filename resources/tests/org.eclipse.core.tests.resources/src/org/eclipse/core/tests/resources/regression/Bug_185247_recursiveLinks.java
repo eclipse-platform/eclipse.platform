@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.harness.FileSystemHelper.canCreateSymLinks;
+import static org.eclipse.core.tests.harness.FileSystemHelper.createSymLink;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IProject;
@@ -25,14 +28,27 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * Tests for recursive symbolic links in projects.
  */
-public class Bug_185247_recursiveLinks extends ResourceTest {
+public class Bug_185247_recursiveLinks {
 
-	private final List<IProject> testProjects = new ArrayList<>();
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Before
+	public void requireCanCreateSymlinks() throws IOException {
+		assumeTrue("test only for platform providing symlinks", canCreateSymLinks());
+	}
 
 	/**
 	 * Test project structure:
@@ -45,6 +61,7 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 	 *         |-- link_current -&gt; ./ (links "directory")
 	 * </pre>
 	 */
+	@Test
 	public void test1_linkCurrentDirectory() throws Exception {
 		CreateTestProjectStructure createSymlinks = directory -> {
 			createSymlink(directory, "link_current", "./");
@@ -64,6 +81,7 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 	 *         |-- link_parent -&gt; ../ (links "project root")
 	 * </pre>
 	 */
+	@Test
 	public void test2_linkParentDirectory() throws Exception {
 		CreateTestProjectStructure createSymlinks = directory -> {
 			createSymlink(directory, "link_parent", "../");
@@ -85,6 +103,7 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 	 *              |-- link_grandparent -&gt; ../../ (links "project root")
 	 * </pre>
 	 */
+	@Test
 	public void test3_linkGrandparentDirectory() throws Exception {
 		CreateTestProjectStructure createSymlinks = directory -> {
 			File subdirectory = new File(directory, "subdirectory");
@@ -112,6 +131,7 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 	 *              |-- link_parent -&gt; ../ (links directory)
 	 * </pre>
 	 */
+	@Test
 	public void test4_linkParentDirectoryTwice() throws Exception {
 		CreateTestProjectStructure createSymlinks = directory -> {
 			String[] subdirectoryNames = { "subdirectory1", "subdirectory2" };
@@ -142,6 +162,7 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 	 *              |-- link_parent -&gt; /tmp/&lt;random string&gt;/bug185247recursive/test5_linkParentDirectoyTwiceWithAbsolutePath/directory
 	 * </pre>
 	 */
+	@Test
 	public void test5_linkParentDirectoyTwiceWithAbsolutePath() throws Exception {
 		CreateTestProjectStructure createSymlinks = directory -> {
 			String[] subdirectoryNames = { "subdirectory1", "subdirectory2" };
@@ -156,17 +177,9 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 	}
 
 	private void runTest(CreateTestProjectStructure createSymlinks) throws MalformedURLException, Exception {
-		if (!canCreateSymLinks()) {
-			/*
-			 * we don't run this test case on platforms that have no symlinks, since we want
-			 * to test recursive symlinks
-			 */
-			return;
-		}
-
-		String projectName = getName();
+		String projectName = testName.getMethodName();
 		IPath testRoot = getRandomLocation();
-		deleteOnTearDown(testRoot);
+		workspaceRule.deleteOnTearDown(testRoot);
 		IPath projectRoot = testRoot.append("bug185247recursive").append(projectName);
 		File directory = projectRoot.append("directory").toFile();
 		createDirectory(directory);
@@ -183,7 +196,7 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 		assertTrue("failed to create test directory: " + directory, directory.mkdirs());
 	}
 
-	void createSymlink(File directory, String linkName, String linkTarget) {
+	void createSymlink(File directory, String linkName, String linkTarget) throws IOException {
 		assertTrue("symlinks not supported by platform", canCreateSymLinks());
 		boolean isDir = true;
 		createSymLink(directory, linkName, linkTarget, isDir);
@@ -196,7 +209,6 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 
 	private IProject importTestProject(String projectName, URI projectRootLocation) throws Exception {
 		IProject testProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-		testProjects.add(testProject);
 		IProjectDescription projectDescription = new ProjectDescription();
 		projectDescription.setName(projectName);
 		projectDescription.setLocationURI(projectRootLocation);
@@ -206,10 +218,8 @@ public class Bug_185247_recursiveLinks extends ResourceTest {
 		return testProject;
 	}
 
-	interface CreateTestProjectStructure extends Consumer<File> {
-		/*
-		 * we give a class name for the runnable that we use to create different project
-		 * structures in different tests.
-		 */
+	interface CreateTestProjectStructure {
+		void accept(File file) throws Exception;
 	}
+
 }

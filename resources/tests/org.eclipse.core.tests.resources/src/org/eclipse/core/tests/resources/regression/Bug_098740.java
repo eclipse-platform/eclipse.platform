@@ -22,15 +22,21 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * A parent container (projects and folders) would become out-of-sync if any of
  * its children could not be deleted for some reason. These platform-
  * specific test cases ensure that it does not happen.
  */
-public class Bug_098740 extends ResourceTest {
+public class Bug_098740 {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testBug() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Bug98740");
 		createInWorkspace(project);
@@ -39,4 +45,5 @@ public class Bug_098740 extends ResourceTest {
 		IResourceVisitor visitor = resource -> true;
 		assertThrows(CoreException.class, () -> project.accept(visitor, IResource.DEPTH_INFINITE, IResource.NONE));
 	}
+
 }

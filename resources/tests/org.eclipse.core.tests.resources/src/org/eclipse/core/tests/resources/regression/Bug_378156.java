@@ -20,6 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.Semaphore;
 import org.eclipse.core.resources.IFile;
@@ -34,14 +35,19 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.eclipse.core.tests.resources.usecase.SignaledBuilder;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests a timing problem where a canceled waiting thread could cause a change
  * in another thread to skip building.
  */
-public class Bug_378156 extends ResourceTest {
+public class Bug_378156 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	class ModifyFileJob extends WorkspaceJob {
 		private boolean cancel;
@@ -81,6 +87,7 @@ public class Bug_378156 extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testBugTwoThreads() throws Exception {
 		//setup
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -119,6 +126,7 @@ public class Bug_378156 extends ResourceTest {
 		assertTrue("1.0", builder.wasExecuted());
 	}
 
+	@Test
 	public void testBugOneThread() throws Exception {
 		//setup
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
