@@ -28,9 +28,14 @@ import java.util.Locale;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class NLTest extends ResourceTest {
+public class NLTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	public void getFileNames(List<String> list, char begin, char end) {
 		char current = begin;
@@ -79,6 +84,7 @@ public class NLTest extends ResourceTest {
 		return names.toArray(new String[names.size()]);
 	}
 
+	@Test
 	public void testFileNames() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("project");
 		project.create(createTestMonitor());

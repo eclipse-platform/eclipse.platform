@@ -14,9 +14,11 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -32,21 +34,26 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 
-public class Bug_265810 extends ResourceTest {
+public class Bug_265810 {
 
-	protected final static String VARIABLE_NAME = "ROOT";
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	List<IResourceDelta> resourceDeltas = new ArrayList<>();
 
 	public IPath createFolderAtRandomLocation() throws IOException {
 		IPath path = getRandomLocation();
 		path.toFile().createNewFile();
-		deleteOnTearDown(path);
+		workspaceRule.deleteOnTearDown(path);
 		return path;
 	}
 
+	@Test
 	public void testBug() throws Throwable {
 		// create a project
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
@@ -153,4 +160,5 @@ public class Bug_265810 extends ResourceTest {
 	boolean addToResourceDelta(IResourceDelta delta) {
 		return resourceDeltas.add(delta);
 	}
+
 }

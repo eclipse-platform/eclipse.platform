@@ -14,8 +14,10 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFile;
@@ -27,13 +29,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class IWorkspaceTest extends ResourceTest {
+public class IWorkspaceTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * 1GDKIHD: ITPCORE:WINNT - API - IWorkspace.move needs to keep history
 	 */
+	@Test
 	public void testMultiMove_1GDKIHD() throws CoreException {
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -71,6 +79,7 @@ public class IWorkspaceTest extends ResourceTest {
 	/**
 	 * 1GDGRIZ: ITPCORE:WINNT - API - IWorkspace.delete needs to keep history
 	 */
+	@Test
 	public void testMultiDelete_1GDGRIZ() throws CoreException {
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -129,11 +138,12 @@ public class IWorkspaceTest extends ResourceTest {
 		project.clearHistory(createTestMonitor());
 	}
 
+	@Test
 	public void test_8974() throws CoreException {
 		IProject one = getWorkspace().getRoot().getProject("One");
 		IPath oneLocation = getRandomLocation().append(one.getName());
 		oneLocation.toFile().mkdirs();
-		deleteOnTearDown(oneLocation.removeLastSegments(1));
+		workspaceRule.deleteOnTearDown(oneLocation.removeLastSegments(1));
 		IProjectDescription oneDescription = getWorkspace().newProjectDescription(one.getName());
 		oneDescription.setLocation(oneLocation);
 
@@ -145,4 +155,5 @@ public class IWorkspaceTest extends ResourceTest {
 		IStatus result = getWorkspace().validateProjectLocation(two, twoLocation);
 		assertEquals(Workspace.caseSensitive, result.isOK());
 	}
+
 }

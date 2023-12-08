@@ -22,6 +22,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueStri
 import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
@@ -35,14 +36,17 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.eclipse.core.tests.resources.usecase.SignaledBuilder;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class IProjectTest extends ResourceTest {
-	public IProjectTest(String name) {
-		super(name);
-	}
+public class IProjectTest {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void test_1G0XIMA() throws CoreException {
 		/* common objects */
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -67,6 +71,7 @@ public class IProjectTest extends ResourceTest {
 		project.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void test_1G5I6PV() throws CoreException {
 		/* common objects */
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -83,6 +88,7 @@ public class IProjectTest extends ResourceTest {
 	/**
 	 * 1GC2FKV: ITPCORE:BuildManager triggers incremental build when doing full builds
 	 */
+	@Test
 	public void testAutoBuild_1GC2FKV() throws CoreException {
 		// set auto build OFF
 		IWorkspaceDescription description = getWorkspace().getDescription();
@@ -143,6 +149,7 @@ public class IProjectTest extends ResourceTest {
 	 * Create a project with resources already existing on disk and ensure
 	 * that the resources are automatically discovered and brought into the workspace.
 	 */
+	@Test
 	public void testBug78711() throws Exception {
 		String name = createUniqueString();
 		IProject project = getWorkspace().getRoot().getProject(name);
@@ -172,6 +179,7 @@ public class IProjectTest extends ResourceTest {
 	/**
 	 * 1GDW1RX: ITPCORE:ALL - IResource.delete() without force not working correctly
 	 */
+	@Test
 	public void testDelete_1GDW1RX() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		project.create(createTestMonitor());
@@ -188,11 +196,9 @@ public class IProjectTest extends ResourceTest {
 		createInFileSystem(file);
 
 		assertThrows(CoreException.class, () -> project.delete(false, createTestMonitor()));
-
-		// clean up
-		project.delete(true, true, createTestMonitor());
 	}
 
+	@Test
 	public void testRefreshDotProject() throws Exception {
 		String name = createUniqueString();
 		IProject project = getWorkspace().getRoot().getProject(name);

@@ -25,14 +25,19 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
- * Tests regression of bug 25457.  In this case, attempting to move a project
+ * Tests regression of bug 25457. In this case, attempting to move a project
  * that is only a case change, where the move fails due to another handle being
  * open on a file in the hierarchy, would cause deletion of the source.
  */
-public class Bug_029851 extends ResourceTest {
+public class Bug_029851 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private Collection<String> createChildren(int breadth, int depth, IPath prefix) {
 		ArrayList<String> result = new ArrayList<>();
@@ -56,6 +61,7 @@ public class Bug_029851 extends ResourceTest {
 		createInWorkspace(resources);
 	}
 
+	@Test
 	public void test() throws CoreException {
 		createResourceHierarchy();
 		final QualifiedName key = new QualifiedName("local", createUniqueString());
@@ -66,4 +72,5 @@ public class Bug_029851 extends ResourceTest {
 		};
 		getWorkspace().getRoot().accept(visitor);
 	}
+
 }

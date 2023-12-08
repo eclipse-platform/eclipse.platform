@@ -18,7 +18,11 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -28,15 +32,15 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.ResourceTest;
-import org.junit.Assume;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
-public class IFileTest extends ResourceTest {
-	private final boolean DISABLED = true;
+public class IFileTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Bug states that the error code in the CoreException which is thrown when
@@ -44,19 +48,14 @@ public class IFileTest extends ResourceTest {
 	 * ERROR_WRITE.
 	 */
 	@Test
+	@Ignore("This test is no longer valid since the error code is dependent on whether or not the parent folder is marked as read-only. We need to write a different test to make the file.create fail.")
 	public void testBug25658() throws CoreException {
-
-		// This test is no longer valid since the error code is dependent on whether
-		// or not the parent folder is marked as read-only. We need to write a different
-		// test to make the file.create fail.
-		Assume.assumeFalse(DISABLED);
-
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		Assume.assumeTrue(isReadOnlySupported());
+		assumeTrue(isReadOnlySupported());
 
 		// Don't test this on Windows
-		Assume.assumeFalse(OS.isWindows());
+		assumeFalse(OS.isWindows());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -84,11 +83,11 @@ public class IFileTest extends ResourceTest {
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		Assume.assumeTrue(isReadOnlySupported());
+		assumeTrue(isReadOnlySupported());
 
 		// Only run this test on Linux for now since Windows lets you create
 		// a file within a read-only folder.
-		Assume.assumeTrue(OS.isLinux());
+		assumeTrue(OS.isLinux());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -127,4 +126,5 @@ public class IFileTest extends ResourceTest {
 		// try setting the description -- shouldn't fail
 		project.setDescription(desc, createTestMonitor());
 	}
+
 }

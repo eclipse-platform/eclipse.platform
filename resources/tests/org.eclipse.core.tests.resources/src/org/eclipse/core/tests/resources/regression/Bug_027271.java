@@ -14,39 +14,45 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests how changes in the underlying preference store may affect the path
  * variable manager.
  */
 
-public class Bug_027271 extends ResourceTest {
+public class Bug_027271 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	static final String VARIABLE_PREFIX = "pathvariable."; //$NON-NLS-1$
 
-	private Preferences preferences;
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
+	@Before
+	public void setUp() {
 		clearPathVariablesProperties();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() {
 		clearPathVariablesProperties();
-		super.tearDown();
 	}
 
 	private void clearPathVariablesProperties() {
+		Preferences preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
 		// ensure we have no preferences related to path variables
 		String[] propertyNames = preferences.propertyNames();
 		for (String propertyName : propertyNames) {
@@ -56,11 +62,10 @@ public class Bug_027271 extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testBug() {
-		//this bug is only relevant on Windows
-		if (!OS.isWindows()) {
-			return;
-		}
+		assumeTrue("tested bug is only relevant on Windows", OS.isWindows());
+
 		IPathVariableManager pvm = getWorkspace().getPathVariableManager();
 		Preferences prefs = ResourcesPlugin.getPlugin().getPluginPreferences();
 
@@ -82,4 +87,5 @@ public class Bug_027271 extends ResourceTest {
 		assertEquals("3.1", 1, pvm.getPathVariableNames().length);
 		assertEquals("3.2", "VALID_VAR", pvm.getPathVariableNames()[0]);
 	}
+
 }

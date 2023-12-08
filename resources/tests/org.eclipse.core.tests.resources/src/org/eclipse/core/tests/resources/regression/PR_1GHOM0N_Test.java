@@ -24,14 +24,20 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class PR_1GHOM0N_Test extends ResourceTest {
+public class PR_1GHOM0N_Test {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/*
 	 * Ensure that we get ADDED and OPEN in the delta when we create and open
 	 * a project in a workspace runnable.
 	 */
+	@Test
 	public void test_1GEAB3C() throws CoreException {
 		// setup the project
 		final IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -51,4 +57,5 @@ public class PR_1GHOM0N_Test extends ResourceTest {
 		};
 		getWorkspace().run(body, createTestMonitor());
 	}
+
 }

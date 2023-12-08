@@ -20,6 +20,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomStri
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -30,7 +32,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests regression of bug 25457.  In this case, attempting to move a project
@@ -40,13 +44,15 @@ import org.eclipse.core.tests.resources.ResourceTest;
  * Note: this is similar to Bug_32076, which deals with failure to move in
  * the non case-change scenario.
  */
-public class Bug_025457 extends ResourceTest {
+public class Bug_025457 {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testFile() throws Exception {
-		//this test only works on windows
-		if (!OS.isWindows()) {
-			return;
-		}
+		assumeTrue("test only works on Windows", OS.isWindows());
+
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("file.txt");
 		IFile destFile = source.getFile("File.txt");
@@ -70,12 +76,11 @@ public class Bug_025457 extends ResourceTest {
 		assertTrue("2.3", !destFile.exists());
 	}
 
+	@Test
 	public void testFolder() throws IOException, CoreException {
-		//this test only works on windows
 		//native code must also be present so move can detect the case change
-		if (!OS.isWindows() || !isReadOnlySupported()) {
-			return;
-		}
+		assumeTrue("test only works on Windows", OS.isWindows() && isReadOnlySupported());
+
 		IProject source = getWorkspace().getRoot().getProject("SourceProject");
 		IFolder sourceFolder = source.getFolder("folder");
 		IFile sourceFile = sourceFolder.getFile("Important.txt");
@@ -101,11 +106,10 @@ public class Bug_025457 extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testProject() throws IOException, CoreException {
-		//this test only works on windows
-		if (!OS.isWindows()) {
-			return;
-		}
+		assumeTrue("test only works on Windows", OS.isWindows());
+
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IProject destination = getWorkspace().getRoot().getProject("Project");
 		IFile sourceFile = source.getFile("Important.txt");

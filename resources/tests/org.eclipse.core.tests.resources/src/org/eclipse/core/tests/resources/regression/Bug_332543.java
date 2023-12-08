@@ -37,13 +37,20 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileStore;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * This tests that I/O Exception on OuptuStream#close() after IFile#setContents
  * is correctly reported.
  */
-public class Bug_332543 extends ResourceTest {
+public class Bug_332543 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * Wrapper FS which throws an IOException when someone closes an output
 	 * stream...
@@ -70,16 +77,17 @@ public class Bug_332543 extends ResourceTest {
 		}
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() {
 		WrapperFileSystem.setCustomFileStore(null);
-		super.tearDown();
 	}
 
+	@Test
 	public void testBugForByteArrayInputStream() throws Exception {
 		testCancel(s -> s);
 	}
 
+	@Test
 	public void testBugForInputStream() throws Exception {
 		testCancel(delegate -> new InputStream() { // Not ArrayInputStream
 			@Override

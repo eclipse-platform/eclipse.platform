@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -25,9 +26,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class Bug_226264 extends ResourceTest {
+public class Bug_226264 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testBug() throws CoreException, InterruptedException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		final IProject project1 = workspace.getRoot().getProject("Project1");
@@ -75,4 +83,5 @@ public class Bug_226264 extends ResourceTest {
 		assertDoesNotExistInWorkspace(project1);
 		assertDoesNotExistInWorkspace(project2);
 	}
+
 }
