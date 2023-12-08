@@ -19,7 +19,7 @@ pipeline {
 					mvn clean verify --batch-mode --fail-at-end -Dmaven.repo.local=$WORKSPACE/.m2/repository \
 						-Pbree-libs -Papi-check -Pjavadoc \
 						-Dcompare-version-with-baselines.skip=false \
-						-Dmaven.compiler.failOnWarning=true \
+						-Dmaven.compiler.failOnWarning=false \
 						-Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss.SSS \
 						-DtrimStackTrace=false
 					"""
@@ -30,7 +30,7 @@ pipeline {
 					archiveArtifacts artifacts: '.*log,*/target/work/data/.metadata/.*log,*/tests/target/work/data/.metadata/.*log,apiAnalyzer-workspace/.metadata/.*log', allowEmptyArchive: true
 					junit '**/target/surefire-reports/TEST-*.xml'
 					discoverGitReferenceBuild referenceJob: 'eclipse.platform/master'
-					recordIssues publishAllIssues: true, tools: [java(), mavenConsole(), javaDoc()]
+					recordIssues tools: [eclipse(), mavenConsole(), javaDoc()], qualityGates: [[threshold: 1, type: 'DELTA', unstable: true]]
 				}
 			}
 		}

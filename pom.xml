@@ -77,6 +77,13 @@
             <testClassesDirectory>${tycho.surefire.testClassesDirectory}</testClassesDirectory>
           </configuration>
         </plugin>
+		<plugin>
+			<groupId>org.eclipse.tycho</groupId>
+			<artifactId>tycho-compiler-plugin</artifactId>
+			<configuration>
+				<useProjectSettings>true</useProjectSettings>
+			</configuration>
+		</plugin>
       </plugins>
     </pluginManagement>
   </build>
