@@ -19,8 +19,14 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -37,11 +43,24 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.tests.internal.localstore.LocalStoreTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class PropertyManagerTest extends LocalStoreTest {
+public class PropertyManagerTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	private IProject project;
+
+	@Before
+	public void createTestProject() throws CoreException {
+		project = getWorkspace().getRoot().getProject("test");
+		createInWorkspace(project);
+	}
 
 	public static class StoredProperty {
 		protected QualifiedName name = null;
@@ -116,10 +135,11 @@ public class PropertyManagerTest extends LocalStoreTest {
 	/**
 	 * Tests concurrent acces to the property store.
 	 */
+	@Test
 	public void testConcurrentAccess() throws Exception {
 
 		// create common objects
-		final IFile target = projects[0].getFile("target");
+		final IFile target = project.getFile("target");
 		target.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// prepare keys and values
@@ -142,13 +162,14 @@ public class PropertyManagerTest extends LocalStoreTest {
 	 * Tests concurrent access to the property store while the project is being
 	 * deleted.
 	 */
+	@Test
 	public void testConcurrentDelete() throws Exception {
 		Thread[] threads;
-		final IFile target = projects[0].getFile("target");
+		final IFile target = project.getFile("target");
 		final int REPEAT = 8;
 		for (int i = 0; i < REPEAT; i++) {
 			// create common objects
-			createInWorkspace(projects[0]);
+			createInWorkspace(project);
 			createInWorkspace(target);
 
 			// prepare keys and values
@@ -172,9 +193,10 @@ public class PropertyManagerTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testCache() throws Throwable {
 		IPropertyManager manager = new PropertyManager2((Workspace) ResourcesPlugin.getWorkspace());
-		IProject source = projects[0];
+		IProject source = project;
 		IFolder sourceFolder = source.getFolder("myfolder");
 		IResource sourceFile = sourceFolder.getFile("myfile.txt");
 		QualifiedName propName = new QualifiedName("test", "prop");
@@ -198,9 +220,10 @@ public class PropertyManagerTest extends LocalStoreTest {
 		assertSame(hint + "1.6", propValue, manager.getProperty(sourceFile, propName));
 	}
 
+	@Test
 	public void testOOME() throws Throwable {
 		IPropertyManager manager = new PropertyManager2((Workspace) ResourcesPlugin.getWorkspace());
-		IProject source = projects[0];
+		IProject source = project;
 		IFolder sourceFolder = source.getFolder("myfolder");
 		IResource sourceFile = sourceFolder.getFile("myfile.txt");
 		QualifiedName propName = new QualifiedName("test", "prop");
@@ -256,12 +279,15 @@ public class PropertyManagerTest extends LocalStoreTest {
 		// The cache was emptied but the active Bucket.entries map did survive:
 		assertSame("4.3", propValue, manager.getProperty(sourceFile, propName));
 	}
+
+	@Test
 	public void testCopy() throws Throwable {
 		IPropertyManager manager = new PropertyManager2((Workspace) ResourcesPlugin.getWorkspace());
-		IProject source = projects[0];
+		IProject source = project;
 		IFolder sourceFolder = source.getFolder("myfolder");
 		IResource sourceFile = sourceFolder.getFile("myfile.txt");
-		IProject destination = projects[1];
+		IProject destination = getWorkspace().getRoot().getProject("destination");
+		createInWorkspace(destination);
 		IFolder destFolder = destination.getFolder(sourceFolder.getName());
 		IResource destFile = destFolder.getFile(sourceFile.getName());
 		QualifiedName propName = new QualifiedName("test", "prop");
@@ -325,10 +351,11 @@ public class PropertyManagerTest extends LocalStoreTest {
 		assertTrue("2.1", manager.getProperty(destination, propName).equals(newPropValue));
 	}
 
+	@Test
 	public void testDeleteProperties() throws Throwable {
 		/* create common objects */
 		IPropertyManager manager = new PropertyManager2((Workspace) ResourcesPlugin.getWorkspace());
-		IFile target = projects[0].getFile("target");
+		IFile target = project.getFile("target");
 		createInWorkspace(target);
 
 		/* server properties */
@@ -341,7 +368,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 		assertTrue("1.3", manager.getProperty(target, propName) == null);
 
 		//test deep deletion of project properties
-		IProject source = projects[0];
+		IProject source = project;
 		IFolder sourceFolder = source.getFolder("myfolder");
 		IResource sourceFile = sourceFolder.getFile("myfile.txt");
 		propName = new QualifiedName("test", "prop");
@@ -372,9 +399,8 @@ public class PropertyManagerTest extends LocalStoreTest {
 	/**
 	 * See bug 93849.
 	 */
+	@Test
 	public void testFileRename() throws CoreException {
-		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject project = root.getProject("proj");
 		IFolder folder = project.getFolder("folder");
 		IFile file1a = folder.getFile("file1");
 		createInWorkspace(file1a);
@@ -394,9 +420,8 @@ public class PropertyManagerTest extends LocalStoreTest {
 	/**
 	 * See bug 93849.
 	 */
+	@Test
 	public void testFolderRename() throws CoreException {
-		IWorkspaceRoot root = getWorkspace().getRoot();
-		IProject project = root.getProject("proj");
 		IFolder folder1a = project.getFolder("folder1");
 		createInWorkspace(folder1a);
 		QualifiedName key = new QualifiedName(PI_RESOURCES_TESTS, "key");
@@ -415,9 +440,10 @@ public class PropertyManagerTest extends LocalStoreTest {
 	/**
 	 * Do a stress test by adding a very large property to the store.
 	 */
+	@Test
 	public void testLargeProperty() throws CoreException {
 		// create common objects
-		IFile target = projects[0].getFile("target");
+		IFile target = project.getFile("target");
 		target.create(createRandomContentsStream(), true, createTestMonitor());
 
 		QualifiedName name = new QualifiedName("stressTest", "prop");
@@ -433,6 +459,7 @@ public class PropertyManagerTest extends LocalStoreTest {
 	/**
 	 * See bug 93849.
 	 */
+	@Test
 	public void testProjectRename() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project1a = root.getProject("proj1");
@@ -450,13 +477,12 @@ public class PropertyManagerTest extends LocalStoreTest {
 		assertEquals("2.0", "value", value);
 	}
 
+	@Test
 	public void testProperties() throws Throwable {
-		IProgressMonitor monitor = null;
-
 		// create common objects
 		IPropertyManager manager = new PropertyManager2((Workspace) ResourcesPlugin.getWorkspace());
-		IFile target = projects[0].getFile("target");
-		target.create(null, false, monitor);
+		IFile target = project.getFile("target");
+		target.create(null, false, createTestMonitor());
 
 		// these are the properties that we are going to use
 		QualifiedName propName1 = new QualifiedName("org.eclipse.core.tests", "prop1");
@@ -484,10 +510,10 @@ public class PropertyManagerTest extends LocalStoreTest {
 		manager.deleteProperties(target, IResource.DEPTH_INFINITE);
 	}
 
+	@Test
 	public void testSimpleUpdate() throws CoreException {
-
 		// create common objects
-		IFile target = projects[0].getFile("target");
+		IFile target = project.getFile("target");
 		target.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// prepare keys and values
