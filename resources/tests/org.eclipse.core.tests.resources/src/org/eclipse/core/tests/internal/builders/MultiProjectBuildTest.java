@@ -33,6 +33,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.TestPerformer;
 
 /**
@@ -40,7 +41,7 @@ import org.eclipse.core.tests.resources.TestPerformer;
  * can specify what other projects they are interested in receiving deltas for,
  * and they should only be receiving deltas for exactly those projects.
  */
-public class MultiProjectBuildTest extends AbstractBuilderTest {
+public class MultiProjectBuildTest extends ResourceTest {
 	//various resource handles
 	private IProject project1;
 	private IProject project2;

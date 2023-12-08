@@ -40,12 +40,13 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.junit.Test;
 
 /**
  * Test for various AutoBuildJob scheduling use cases
  */
-public class AutoBuildJobTest extends AbstractBuilderTest {
+public class AutoBuildJobTest extends ResourceTest {
 
 	private IProject project;
 	private AtomicLong running;

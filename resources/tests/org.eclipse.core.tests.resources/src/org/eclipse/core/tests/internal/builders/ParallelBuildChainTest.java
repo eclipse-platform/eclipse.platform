@@ -48,10 +48,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobGroup;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TimerBuilder.RuleType;
+import org.eclipse.core.tests.resources.ResourceTest;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ParallelBuildChainTest extends AbstractBuilderTest {
+public class ParallelBuildChainTest extends ResourceTest {
 	private static final int TIMEOUT_IN_MILLIS = 30_000;
 
 	private static enum BuildDurationType {

@@ -21,11 +21,12 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDes
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
  * Tests the callOnEmptyDelta attribute of the builder extension
  */
-public class EmptyDeltaTest extends AbstractBuilderTest {
+public class EmptyDeltaTest extends ResourceTest {
 
 	public EmptyDeltaTest(String name) {
 		super(name);

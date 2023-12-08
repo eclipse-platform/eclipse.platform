@@ -26,14 +26,14 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.internal.builders.AbstractBuilderTest;
 import org.eclipse.core.tests.internal.builders.ClearMarkersBuilder;
+import org.eclipse.core.tests.resources.ResourceTest;
 
 /**
  * Tests duplicate resource change events caused by a builder that makes
  * no changes.
  */
-public class Bug_147232 extends AbstractBuilderTest implements IResourceChangeListener {
+public class Bug_147232 extends ResourceTest implements IResourceChangeListener {
 	/**
 	 * Records the number of times we have seen the file creation delta
 	 */
