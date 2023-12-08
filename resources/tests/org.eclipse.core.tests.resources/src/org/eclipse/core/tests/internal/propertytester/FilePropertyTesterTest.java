@@ -13,21 +13,27 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.propertytester;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import org.eclipse.core.internal.propertytester.FilePropertyTester;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.eclipse.core.tests.resources.content.IContentTypeManagerTest;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class FilePropertyTesterTest extends ResourceTest {
+public class FilePropertyTesterTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final String CONTENT_TYPE_ID = "contentTypeId";
 	private static final String IS_KIND_OF = "kindOf";
@@ -35,20 +41,16 @@ public class FilePropertyTesterTest extends ResourceTest {
 
 	private FilePropertyTester tester = null;
 	private IProject project = null;
-	private IProgressMonitor monitor = null;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		monitor = new NullProgressMonitor();
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		project = root.getProject("project1");
-		project.create(monitor);
-		project.open(monitor);
-
+	@Before
+	public void setUp() throws CoreException {
+		project = getWorkspace().getRoot().getProject("project1");
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 		tester = new FilePropertyTester();
 	}
 
+	@Test
 	public void testNonExistingTextFile() throws Throwable {
 		String expected = "org.eclipse.core.runtime.text";
 		IFile target = project.getFile("tmp.txt");
@@ -65,6 +67,7 @@ public class FilePropertyTesterTest extends ResourceTest {
 
 	}
 
+	@Test
 	public void testExistingTextFile() throws Throwable {
 		String expected = "org.eclipse.core.runtime.text";
 		IFile target = project.getFile("tmp.txt");
@@ -81,6 +84,7 @@ public class FilePropertyTesterTest extends ResourceTest {
 		assertTrue("1.3", ret);
 	}
 
+	@Test
 	public void testNonExistingNsRootElementFile() throws Throwable {
 		String expectedBase = "org.eclipse.core.runtime.xml";
 		String expectedExact = "org.eclipse.core.tests.resources.ns-root-element";
@@ -97,6 +101,7 @@ public class FilePropertyTesterTest extends ResourceTest {
 		assertTrue("1.3", ret);
 	}
 
+	@Test
 	public void testExistingNsRootElementFile() throws Throwable {
 		String expectedBase = "org.eclipse.core.runtime.xml";
 		String expectedExact = "org.eclipse.core.tests.resources.ns-root-element";
