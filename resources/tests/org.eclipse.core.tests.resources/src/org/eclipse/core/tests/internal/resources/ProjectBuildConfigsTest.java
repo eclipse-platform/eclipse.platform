@@ -25,12 +25,18 @@ import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests configuration project build configuration on the project description
  */
-public class ProjectBuildConfigsTest extends ResourceTest {
+public class ProjectBuildConfigsTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project;
 	private static final String variantId0 = "Variant0";
@@ -41,9 +47,8 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 	private IBuildConfiguration variant2;
 	private IBuildConfiguration defaultVariant;
 
-	@Override
+	@Before
 	public void setUp() throws Exception {
-		super.setUp();
 		project = getWorkspace().getRoot().getProject("ProjectBuildConfigsTest_Project");
 		createInWorkspace(new IProject[] {project});
 		variant0 = new BuildConfiguration(project, variantId0);
@@ -52,6 +57,7 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		defaultVariant = new BuildConfiguration(project, IBuildConfiguration.DEFAULT_CONFIG_NAME);
 	}
 
+	@Test
 	public void testBasics() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		String[] configs = new String[] {variantId0, variantId1};
@@ -84,6 +90,7 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		assertThat(variant.getName(), is(variantId0));
 	}
 
+	@Test
 	public void testDuplicates() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildConfigs(new String[] {variantId0, variantId1, variantId0});
@@ -91,6 +98,7 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		assertThat(project.getBuildConfigs(), arrayContaining(variant0, variant1));
 	}
 
+	@Test
 	public void testDefaultVariant() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildConfigs(new String[] {});
@@ -107,6 +115,7 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		assertThat(project.getActiveBuildConfig(), is(defaultVariant));
 	}
 
+	@Test
 	public void testRemoveActiveVariant() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildConfigs(new String[0]);
@@ -127,6 +136,7 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 	/**
 	 * Tests that build configuration references are correct after moving a project
 	 */
+	@Test
 	public void testProjectMove() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		IBuildConfiguration[] configs = new IBuildConfiguration[] {variant0, variant1};
@@ -148,4 +158,5 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 			assertThat("unexpected project name at index " + i, newConfigs[i].getName(), is(configs[i].getName()));
 		}
 	}
+
 }

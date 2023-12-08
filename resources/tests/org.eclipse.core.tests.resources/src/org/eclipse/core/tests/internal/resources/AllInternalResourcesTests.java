@@ -22,9 +22,15 @@ import org.junit.runners.Suite;
  * in this test package.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ ModelObjectReaderWriterTest.class, ProjectPreferencesTest.class,
-		ResourceInfoTest.class,
-		WorkspaceConcurrencyTest.class, WorkspacePreferencesTest.class, ProjectReferencesTest.class,
-		ProjectDynamicReferencesTest.class, ProjectBuildConfigsTest.class, Bug544975Test.class, })
+@Suite.SuiteClasses({ //
+		Bug544975Test.class, //
+		ModelObjectReaderWriterTest.class, //
+		ProjectBuildConfigsTest.class, //
+		ProjectDynamicReferencesTest.class, //
+		ProjectPreferencesTest.class, //
+		ProjectReferencesTest.class, //
+		ResourceInfoTest.class, //
+		WorkspaceConcurrencyTest.class, //
+		WorkspacePreferencesTest.class, })
 public class AllInternalResourcesTests {
 }
