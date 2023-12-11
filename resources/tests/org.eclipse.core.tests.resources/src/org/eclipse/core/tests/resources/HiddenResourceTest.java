@@ -24,7 +24,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -37,8 +40,19 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
-public class HiddenResourceTest extends ResourceTest {
+public class HiddenResourceTest {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testRefreshLocal() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(createUniqueString());
@@ -47,7 +61,7 @@ public class HiddenResourceTest extends ResourceTest {
 		IFile subFile = folder.getFile("subfile.txt");
 		IResource[] resources = new IResource[] {project, folder, file, subFile};
 		createInWorkspace(resources);
-		waitForEncodingRelatedJobs(getName());
+		waitForEncodingRelatedJobs(testName.getMethodName());
 
 		ResourceDeltaVerifier listener = new ResourceDeltaVerifier();
 		listener.addExpectedChange(subFile, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
@@ -65,6 +79,7 @@ public class HiddenResourceTest extends ResourceTest {
 	/**
 	 * Resources which are marked as hidden resources should always be found.
 	 */
+	@Test
 	public void testFindMember() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(createUniqueString());
@@ -99,6 +114,7 @@ public class HiddenResourceTest extends ResourceTest {
 	 * Resources which are marked as hidden are not included in #members
 	 * calls unless specifically included by calling #members(IContainer.INCLUDE_HIDDEN)
 	 */
+	@Test
 	public void testMembers() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
@@ -185,6 +201,7 @@ public class HiddenResourceTest extends ResourceTest {
 	 * Resources which are marked as hidden resources should not be visited by
 	 * resource visitors.
 	 */
+	@Test
 	public void testAccept() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
@@ -258,6 +275,7 @@ public class HiddenResourceTest extends ResourceTest {
 		assertTrue(visitor.getMessage(), visitor.isValid());
 	}
 
+	@Test
 	public void testCopy() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(createUniqueString());
@@ -311,6 +329,7 @@ public class HiddenResourceTest extends ResourceTest {
 		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 	}
 
+	@Test
 	public void testMove() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(createUniqueString());
@@ -364,6 +383,7 @@ public class HiddenResourceTest extends ResourceTest {
 		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 	}
 
+	@Test
 	public void testDelete() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(createUniqueString());
@@ -422,6 +442,7 @@ public class HiddenResourceTest extends ResourceTest {
 		assertExistsInWorkspace(new IResource[] { project, file });
 	}
 
+	@Test
 	public void testDeltas() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		final IProject project = root.getProject(createUniqueString());
@@ -441,7 +462,7 @@ public class HiddenResourceTest extends ResourceTest {
 			addResourceChangeListener(listener);
 			getWorkspace().run(body, createTestMonitor());
 			waitForBuild();
-			waitForEncodingRelatedJobs(getName());
+			waitForEncodingRelatedJobs(testName.getMethodName());
 			// FIXME sometimes fails with "Verifier has not yet been given a resource
 			// delta":
 			assertTrue(listener.getMessage(), listener.isDeltaValid());
@@ -512,6 +533,7 @@ public class HiddenResourceTest extends ResourceTest {
 	 * Resources which are marked as hidden resources return TRUE
 	 * in all calls to #exists.
 	 */
+	@Test
 	public void testExists() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
@@ -537,6 +559,7 @@ public class HiddenResourceTest extends ResourceTest {
 	/**
 	 * Test the set and get methods for hidden resources.
 	 */
+	@Test
 	public void testSetGet() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
@@ -596,6 +619,7 @@ public class HiddenResourceTest extends ResourceTest {
 	 * and {@link IProject#create(IProjectDescription, int, IProgressMonitor)}
 	 * handles {@link IResource#HIDDEN} flag properly.
 	 */
+	@Test
 	public void testCreateHiddenResources() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("folder");
@@ -638,4 +662,5 @@ public class HiddenResourceTest extends ResourceTest {
 		};
 		root.accept(visitor, depth, IContainer.INCLUDE_HIDDEN);
 	}
+
 }

@@ -18,6 +18,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.internal.resources.PreferenceInitializer;
 import org.eclipse.core.internal.resources.ValidateProjectEncoding;
@@ -34,20 +35,25 @@ import org.eclipse.osgi.util.NLS;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.DiagnosingMatcher;
+import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * Test for integration of marker
  * {@link org.eclipse.core.resources.ResourcesPlugin#PREF_MISSING_ENCODING_MARKER_SEVERITY}.
  */
-public class ProjectEncodingTest extends ResourceTest {
+public class ProjectEncodingTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final int IGNORE = -1;
 
 	private IProject project;
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		if (project != null) {
 			project.delete(true, true, null);
 		}
@@ -55,8 +61,6 @@ public class ProjectEncodingTest extends ResourceTest {
 				ResourcesPlugin.PREF_MISSING_ENCODING_MARKER_SEVERITY,
 				PreferenceInitializer.PREF_MISSING_ENCODING_MARKER_SEVERITY_DEFAULT);
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).flush();
-
-		super.tearDown();
 	}
 
 	@Test

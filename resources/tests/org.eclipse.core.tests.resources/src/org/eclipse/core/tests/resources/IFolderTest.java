@@ -26,7 +26,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -38,14 +40,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class IFolderTest extends ResourceTest {
-	@Override
-	protected void tearDown() throws Exception {
-		getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		super.tearDown();
-	}
+public class IFolderTest {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testChangeCase() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder before = project.getFolder("folder");
@@ -70,6 +73,7 @@ public class IFolderTest extends ResourceTest {
 		assertExistsInWorkspace(afterFile);
 	}
 
+	@Test
 	public void testCopyMissingFolder() throws CoreException {
 		//tests copying a folder that is missing from the file system
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -87,6 +91,7 @@ public class IFolderTest extends ResourceTest {
 		assertTrue("1.2", !after.exists());
 	}
 
+	@Test
 	public void testCreateDerived() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder derived = project.getFolder("derived");
@@ -102,6 +107,7 @@ public class IFolderTest extends ResourceTest {
 		assertTrue("2.1", !derived.isTeamPrivateMember());
 	}
 
+	@Test
 	public void testDeltaOnCreateDerived() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder derived = project.getFolder("derived");
@@ -117,6 +123,7 @@ public class IFolderTest extends ResourceTest {
 		assertTrue("2.0", verifier.isDeltaValid());
 	}
 
+	@Test
 	public void testCreateDerivedTeamPrivate() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder teamPrivate = project.getFolder("teamPrivate");
@@ -133,6 +140,7 @@ public class IFolderTest extends ResourceTest {
 		assertTrue("2.1", !teamPrivate.isDerived());
 	}
 
+	@Test
 	public void testCreateTeamPrivate() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder teamPrivate = project.getFolder("teamPrivate");
@@ -149,6 +157,7 @@ public class IFolderTest extends ResourceTest {
 		assertTrue("2.1", !teamPrivate.isDerived());
 	}
 
+	@Test
 	public void testFolderCreation() throws Exception {
 		// basic folder creation
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -207,6 +216,7 @@ public class IFolderTest extends ResourceTest {
 		assertTrue("8.3", !target.exists());
 	}
 
+	@Test
 	public void testFolderDeletion() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/x", "c/b/y", "c/b/z"});
@@ -217,6 +227,7 @@ public class IFolderTest extends ResourceTest {
 		assertDoesNotExistInWorkspace(before);
 	}
 
+	@Test
 	public void testFolderMove() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IResource[] before = buildResources(project, new String[] {"b/", "b/b/", "b/x", "b/b/y", "b/b/z"});
@@ -239,6 +250,7 @@ public class IFolderTest extends ResourceTest {
 		assertTrue("2.1", compareContent(createInputStream(content), file.getContents(false)));
 	}
 
+	@Test
 	public void testFolderOverFile() throws Throwable {
 		IPath path = IPath.fromOSString("/Project/File");
 		IFile existing = getWorkspace().getRoot().getFile(path);
@@ -252,6 +264,7 @@ public class IFolderTest extends ResourceTest {
 	/**
 	 * Tests creation and manipulation of folder names that are reserved on some platforms.
 	 */
+	@Test
 	public void testInvalidFolderNames() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);
@@ -289,6 +302,7 @@ public class IFolderTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testLeafFolderMove() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder source = project.getFolder("Folder1");
@@ -299,6 +313,7 @@ public class IFolderTest extends ResourceTest {
 		assertDoesNotExistInWorkspace(source);
 	}
 
+	@Test
 	public void testReadOnlyFolderCopy() throws Exception {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
@@ -320,6 +335,7 @@ public class IFolderTest extends ResourceTest {
 		dest.setReadOnly(false);
 	}
 
+	@Test
 	public void testSetGetFolderPersistentProperty() throws Throwable {
 		IResource target = getWorkspace().getRoot().getFolder(IPath.fromOSString("/Project/Folder"));
 		String value = "this is a test property value";
@@ -337,4 +353,5 @@ public class IFolderTest extends ResourceTest {
 		QualifiedName nonExistentPropertyName = new QualifiedName("itp-test", "testNonProperty");
 		assertNull("2.1", target.getPersistentProperty(nonExistentPropertyName));
 	}
+
 }

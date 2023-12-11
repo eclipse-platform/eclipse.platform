@@ -26,7 +26,10 @@ import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -61,8 +64,16 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class ISynchronizerTest extends ResourceTest {
+public class ISynchronizerTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	public static int NUMBER_OF_PARTNERS = 100;
 	public IResource[] resources;
 
@@ -87,15 +98,14 @@ public class ISynchronizerTest extends ResourceTest {
 		getWorkspace().run(body, null);
 	}
 
-	@Override
+	@Before
 	public void setUp() throws Exception {
-		super.setUp();
 		resources = buildResources(getWorkspace().getRoot(),
 				new String[] { "/", "1/", "1/1", "1/2/", "1/2/1", "1/2/2/", "2/", "2/1", "2/2/", "2/2/1", "2/2/2/" });
 		createInWorkspace(resources);
 	}
 
-	@Override
+	@After
 	public void tearDown() throws Exception {
 		// remove all registered sync partners so we don't create
 		// phantoms when we delete
@@ -103,9 +113,6 @@ public class ISynchronizerTest extends ResourceTest {
 		for (QualifiedName name : names) {
 			getWorkspace().getSynchronizer().remove(name);
 		}
-
-		// delete the root and everything under it
-		super.tearDown();
 	}
 
 	private void assertExpectedSyncInfo(IResource resource, byte[] actualSyncInfo, byte[] expectedSyncInfo) {
@@ -120,6 +127,7 @@ public class ISynchronizerTest extends ResourceTest {
 				is(actualSyncInfo));
 	}
 
+	@Test
 	public void testDeleteResources() throws CoreException {
 		final QualifiedName qname = new QualifiedName("org.eclipse.core.tests.resources", "myTarget");
 		final ISynchronizer synchronizer = ResourcesPlugin.getWorkspace().getSynchronizer();
@@ -183,6 +191,7 @@ public class ISynchronizerTest extends ResourceTest {
 		getWorkspace().getRoot().accept(visitor);
 	}
 
+	@Test
 	public void testDeleteResources2() throws CoreException {
 		final QualifiedName qname = new QualifiedName("org.eclipse.core.tests.resources", "myTarget");
 		final ISynchronizer synchronizer = ResourcesPlugin.getWorkspace().getSynchronizer();
@@ -260,6 +269,7 @@ public class ISynchronizerTest extends ResourceTest {
 		getWorkspace().getRoot().accept(visitor, IResource.DEPTH_INFINITE, true);
 	}
 
+	@Test
 	public void testMoveResource() throws CoreException {
 		final QualifiedName qname = new QualifiedName("org.eclipse.core.tests.resources", "myTarget");
 		final ISynchronizer synchronizer = ResourcesPlugin.getWorkspace().getSynchronizer();
@@ -291,6 +301,7 @@ public class ISynchronizerTest extends ResourceTest {
 				synchronizer.getSyncInfo(qname, destination), nullValue());
 	}
 
+	@Test
 	public void testMoveResource2() throws CoreException {
 		final QualifiedName qname = new QualifiedName("org.eclipse.core.tests.resources", "myTarget");
 		final ISynchronizer synchronizer = ResourcesPlugin.getWorkspace().getSynchronizer();
@@ -345,6 +356,7 @@ public class ISynchronizerTest extends ResourceTest {
 		assertThat("unexpected sync info for resource: " + sourceFile.getFullPath(), syncInfo, is(b));
 	}
 
+	@Test
 	public void testRegistration() {
 		// setup
 		QualifiedName[] partners = new QualifiedName[NUMBER_OF_PARTNERS];
@@ -371,6 +383,7 @@ public class ISynchronizerTest extends ResourceTest {
 		assertThat(synchronizer.getPartners(), arrayWithSize(0));
 	}
 
+	@Test
 	public void testSave() throws Exception {
 		final Hashtable<IPath, byte[]> table = new Hashtable<>(10);
 		final QualifiedName qname = new QualifiedName("org.eclipse.core.tests.resources", "myTarget");
@@ -392,7 +405,7 @@ public class ISynchronizerTest extends ResourceTest {
 		// write out the data
 		IPath syncInfoPath = Platform.getLocation().append(".testsyncinfo");
 		File file = syncInfoPath.toFile();
-		deleteOnTearDown(syncInfoPath);
+		workspaceRule.deleteOnTearDown(syncInfoPath);
 		try (OutputStream fileOutput = new FileOutputStream(file)) {
 			try (DataOutputStream output = new DataOutputStream(fileOutput)) {
 				final List<QualifiedName> list = new ArrayList<>(5);
@@ -457,6 +470,7 @@ public class ISynchronizerTest extends ResourceTest {
 		getWorkspace().getRoot().accept(visitor);
 	}
 
+	@Test
 	public void testSnap() {
 		/*
 		 final Hashtable table = new Hashtable(10);
@@ -586,6 +600,7 @@ public class ISynchronizerTest extends ResourceTest {
 		 */
 	}
 
+	@Test
 	public void testSyncInfo() throws CoreException {
 		final QualifiedName qname = new QualifiedName("org.eclipse.core.tests.resources", "myTarget");
 		final ISynchronizer synchronizer = ResourcesPlugin.getWorkspace().getSynchronizer();
@@ -682,6 +697,7 @@ public class ISynchronizerTest extends ResourceTest {
 	 * Removes resources, sets sync info to <code>null</code> and ensures the
 	 * phantoms do not exist any more (see bug 3024)
 	 */
+	@Test
 	public void testPhantomRemoval() throws CoreException {
 		final QualifiedName partner = new QualifiedName("org.eclipse.core.tests.resources", "myTarget");
 		final IWorkspace workspace = getWorkspace();

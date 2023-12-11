@@ -14,12 +14,17 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
@@ -40,27 +45,26 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
-import org.junit.Assume;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
-public class IWorkspaceRootTest extends ResourceTest {
+public class IWorkspaceRootTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Tests findFilesForLocation when non-canonical paths are used (bug 155101).
 	 */
 	@Test
 	public void testFindFilesNonCanonicalPath() throws Exception {
-		// this test is for windows only
-		Assume.assumeTrue(OS.isWindows());
+		assumeTrue("this test is for windows only", OS.isWindows());
 
 		IProject project = getWorkspace().getRoot().getProject("testFindFilesNonCanonicalPath");
 		createInWorkspace(project);
 
 		IFile link = project.getFile("file.txt");
-		IFileStore fileStore = getTempStore();
+		IFileStore fileStore = workspaceRule.getTempStore();
 		createInFileSystem(fileStore);
 		assertEquals("0.1", EFS.SCHEME_FILE, fileStore.getFileSystem().getScheme());
 		IPath fileLocationLower = URIUtil.toPath(fileStore.toURI());
@@ -140,7 +144,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		assertThrows(RuntimeException.class, () -> root.findContainersForLocationURI(relative));
 		//linked folder that does not overlap a project location
 		IFolder otherLink = p1.getFolder("otherLink");
-		IFileStore linkStore = getTempStore();
+		IFileStore linkStore = workspaceRule.getTempStore();
 		URI location = linkStore.toURI();
 		linkStore.mkdir(EFS.NONE, createTestMonitor());
 		otherLink.createLink(location, IResource.NONE, createTestMonitor());
@@ -221,7 +225,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 
 		//linked resource
 		IFolder link = project.getFolder("link");
-		IFileStore linkStore = getTempStore();
+		IFileStore linkStore = workspaceRule.getTempStore();
 		URI location = linkStore.toURI();
 		linkStore.mkdir(EFS.NONE, createTestMonitor());
 		link.createLink(location, IResource.NONE, createTestMonitor());
@@ -518,4 +522,5 @@ public class IWorkspaceRootTest extends ResourceTest {
 		}
 		return folder;
 	}
+
 }

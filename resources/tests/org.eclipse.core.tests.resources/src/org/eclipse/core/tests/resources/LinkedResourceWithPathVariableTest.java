@@ -26,7 +26,11 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStrea
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +54,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.tests.harness.FileSystemHelper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This class extends <code>LinkedResourceTest</code> in order to use
@@ -66,20 +73,21 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	private IFileStore toSetWritable = null;
 
 	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		IPath base = FileSystemHelper.getRandomLocation();
-		deleteOnTearDown(base);
+		workspaceRule.deleteOnTearDown(base);
 		getWorkspace().getPathVariableManager().setValue(VARIABLE_NAME, base);
 		base = FileSystemHelper.getRandomLocation();
-		deleteOnTearDown(base);
+		workspaceRule.deleteOnTearDown(base);
 		super.setUp();
 		existingProject.getPathVariableManager().setValue(PROJECT_VARIABLE_NAME, base);
 		existingProject.getPathVariableManager().setValue(PROJECT_RELATIVE_VARIABLE_NAME,
 				IPath.fromPortableString(PROJECT_RELATIVE_VARIABLE_VALUE));
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		if (toSetWritable != null) {
 			IFileInfo info = toSetWritable.fetchInfo();
 			info.setAttribute(EFS.ATTRIBUTE_READ_ONLY, false);
@@ -87,7 +95,6 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 			toSetWritable = null;
 		}
 		getWorkspace().getPathVariableManager().setValue(VARIABLE_NAME, null);
-		super.tearDown();
 	}
 
 	/**
@@ -135,8 +142,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		}
 	}
 
-	@Override
-	public IPath getRandomLocation() {
+	private IPath getRandomLocation() {
 		IPathVariableManager pathVars = getWorkspace().getPathVariableManager();
 		//low order bits are current time, high order bits are static counter
 		IPath parent = IPath.fromOSString(VARIABLE_NAME);
@@ -149,7 +155,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 			}
 			path = FileSystemHelper.computeRandomLocation(parent);
 		}
-		deleteOnTearDown(pathVars.resolvePath(path));
+		workspaceRule.deleteOnTearDown(pathVars.resolvePath(path));
 		return path;
 	}
 
@@ -166,7 +172,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 			}
 			path = FileSystemHelper.computeRandomLocation(parent);
 		}
-		deleteOnTearDown(pathVars.resolvePath(path));
+		workspaceRule.deleteOnTearDown(pathVars.resolvePath(path));
 		return path;
 	}
 
@@ -183,7 +189,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 			}
 			path = FileSystemHelper.computeRandomLocation(parent);
 		}
-		deleteOnTearDown(pathVars.resolvePath(path));
+		workspaceRule.deleteOnTearDown(pathVars.resolvePath(path));
 		return path;
 	}
 
@@ -197,6 +203,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		return getWorkspace().getPathVariableManager().resolveURI(uri);
 	}
 
+	@Test
 	public void testProjectResolution() {
 		final IPathVariableManager manager = existingProject.getPathVariableManager();
 		IPath value = manager.getValue(PROJECT_VARIABLE_NAME);
@@ -217,6 +224,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked file location is
 	 * removed.
 	 */
+	@Test
 	public void testFileVariableRemoved() throws Exception {
 		final IPathVariableManager manager = getWorkspace().getPathVariableManager();
 
@@ -272,6 +280,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked file location is
 	 * removed.
 	 */
+	@Test
 	public void testFileProjectVariableRemoved() throws Exception {
 		final IPathVariableManager manager = existingProject.getPathVariableManager();
 
@@ -329,8 +338,8 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * moved to a new project.
 	 * This is a regression test for bug 266679
 	 */
+	@Test
 	public void testMoveFileToDifferentProject() throws Exception {
-
 		IFile file = existingProjectInSubDirectory.getFile("my_link");
 
 		// creates a variable-based location
@@ -339,7 +348,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		if (!targetPath.toFile().exists()) {
 			targetPath.toFile().createNewFile();
 		}
-		deleteOnTearDown(targetPath);
+		workspaceRule.deleteOnTearDown(targetPath);
 
 		variableBasedLocation = convertToRelative(targetPath, file, true, null);
 
@@ -368,6 +377,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * relative to PROJECT_LOC is moved to a different project.
 	 * This is a regression test for bug 266679
 	 */
+	@Test
 	public void testPROJECT_LOC_MoveFileToDifferentProject() throws Exception {
 
 		String[] existingVariables = nonExistingFileInExistingFolder.getProject().getPathVariableManager().getPathVariableNames();
@@ -385,7 +395,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		if (!targetPath.toFile().exists()) {
 			targetPath.toFile().createNewFile();
 		}
-		deleteOnTearDown(targetPath);
+		workspaceRule.deleteOnTearDown(targetPath);
 
 		existingProjectInSubDirectory.getPathVariableManager().setValue("P_RELATIVE",
 				IPath.fromPortableString("${PARENT-3-PROJECT_LOC}"));
@@ -418,6 +428,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a linked file location is
 	 * is moved to a new project.
 	 */
+	@Test
 	public void testMoveFileProjectVariable() throws CoreException {
 		final IPathVariableManager manager = existingProject.getPathVariableManager();
 
@@ -451,6 +462,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked file location is
 	 * removed.
 	 */
+	@Test
 	public void testMoveFileToNewProjectProjectVariable() throws CoreException {
 		final IPathVariableManager manager = existingProject.getPathVariableManager();
 
@@ -483,6 +495,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked file location is
 	 * removed.
 	 */
+	@Test
 	public void testFileProjectRelativeVariableRemoved() throws Exception {
 		final IPathVariableManager manager = existingProject.getPathVariableManager();
 
@@ -539,6 +552,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked folder location is
 	 * removed.
 	 */
+	@Test
 	public void testFolderVariableRemoved() throws CoreException {
 		final IPathVariableManager manager = getWorkspace().getPathVariableManager();
 
@@ -617,6 +631,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * is marked read-only.
 	 * See <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=210664">Bug 210664</a>.
 	 */
+	@Test
 	public void testImportWrongLineEndings_Bug210664() throws Exception {
 		// Choose a project to work on
 		IProject proj = existingProject;
@@ -655,6 +670,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked folder location is
 	 * removed.
 	 */
+	@Test
 	public void testFolderProjectVariableRemoved() throws CoreException {
 		final IPathVariableManager manager = existingProject.getPathVariableManager();
 
@@ -729,6 +745,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	/**
 	 * Tests scenario where links are relative to undefined variables
 	 */
+	@Test
 	public void testUndefinedVariable() throws CoreException {
 		IPath folderLocation = IPath.fromOSString("NOVAR/folder");
 		IPath fileLocation = IPath.fromOSString("NOVAR/abc.txt");
@@ -783,6 +800,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked file location is
 	 * changed.
 	 */
+	@Test
 	public void testVariableChanged() throws Exception {
 		final IPathVariableManager manager = getWorkspace().getPathVariableManager();
 
@@ -805,7 +823,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		// changes the variable value - the file location will change
 		IPath newLocation = FileSystemHelper.getRandomLocation();
-		deleteOnTearDown(newLocation);
+		workspaceRule.deleteOnTearDown(newLocation);
 		manager.setValue(VARIABLE_NAME, newLocation);
 
 		// try to change resource's contents
@@ -848,6 +866,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	 * Tests a scenario where a variable used in a linked file location is
 	 * changed.
 	 */
+	@Test
 	public void testProjectVariableChanged() throws Exception {
 		final IPathVariableManager manager = existingProject.getPathVariableManager();
 
@@ -870,7 +889,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 
 		// changes the variable value - the file location will change
 		IPath newLocation = FileSystemHelper.getRandomLocation();
-		deleteOnTearDown(newLocation);
+		workspaceRule.deleteOnTearDown(newLocation);
 		manager.setValue(PROJECT_VARIABLE_NAME, newLocation);
 
 		// try to change resource's contents
@@ -945,6 +964,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	/**
 	 * Test Bug 288880 - Redundant path variables generated when converting some linked resources to path variable-relative
 	 */
+	@Test
 	public void testNonRedundentPathVariablesGenerated() throws Exception {
 		IFile file = existingProjectInSubDirectory.getFile("my_link");
 
@@ -956,7 +976,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		if (!targetPath.toFile().exists()) {
 			targetPath.toFile().createNewFile();
 		}
-		deleteOnTearDown(targetPath);
+		workspaceRule.deleteOnTearDown(targetPath);
 
 		variableBasedLocation = convertToRelative(targetPath, file, true, null);
 		IPath resolvedPath = URIUtil.toPath(pathVariableManager.resolveURI(URIUtil.toURI(variableBasedLocation)));
@@ -972,6 +992,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertEquals("5.1", targetPath, resolvedPath);
 	}
 
+	@Test
 	public void testConvertToUserEditableFormat() {
 		IPathVariableManager pathVariableManager = existingProject.getPathVariableManager();
 
@@ -1033,6 +1054,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	/**
 	 * Regression for Bug 305676 - Selecting PARENT_LOC as the relative path variable in the ImportTypeDialog causes an error
 	 */
+	@Test
 	public void testPrefixVariablesAreNotConfused() {
 		URI uri = nonExistingFileInExistingFolder.getPathVariableManager().getURIValue("PARENT");
 		assertEquals("1.0", uri, null);
@@ -1043,6 +1065,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	/**
 	* Regression test for Bug 338185 - Core Resource Variable Resolvers that do not specify the 'class' attribute are not displayed
 	*/
+	@Test
 	public void test338185() {
 		final IPathVariableManager manager = existingProject.getPathVariableManager();
 		String[] variables = manager.getPathVariableNames();
@@ -1055,4 +1078,5 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		}
 		assertTrue(found);
 	}
+
 }

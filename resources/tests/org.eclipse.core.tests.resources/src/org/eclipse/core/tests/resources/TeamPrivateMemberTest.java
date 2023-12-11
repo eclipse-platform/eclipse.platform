@@ -25,6 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -37,8 +38,15 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class TeamPrivateMemberTest extends ResourceTest {
+public class TeamPrivateMemberTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testRefreshLocal() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("MyProject");
@@ -64,6 +72,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 	/**
 	 * Resources which are marked as team private members should always be found.
 	 */
+	@Test
 	public void testFindMember() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("MyProject");
@@ -98,6 +107,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 	 * Resources which are marked as team private members are not included in #members
 	 * calls unless specifically included by calling #members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS)
 	 */
+	@Test
 	public void testMembers() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -163,6 +173,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 	 * Resources which are marked as team private members should not be visited by
 	 * resource visitors.
 	 */
+	@Test
 	public void testAccept() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -255,6 +266,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		assertTrue(visitor.getMessage(), visitor.isValid());
 	}
 
+	@Test
 	public void testCopy() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("MyProject");
@@ -308,6 +320,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 	}
 
+	@Test
 	public void testMove() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("MyProject");
@@ -361,6 +374,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		assertExistsInWorkspace(new IResource[] { destFolder, destSubFile });
 	}
 
+	@Test
 	public void testDelete() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("MyProject");
@@ -419,6 +433,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 		assertExistsInWorkspace(new IResource[] { project, file });
 	}
 
+	@Test
 	public void testDeltas() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		final IProject project = root.getProject("MyProject");
@@ -486,6 +501,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 	 * Resources which are marked as team private members return TRUE
 	 * in all calls to #exists.
 	 */
+	@Test
 	public void testExists() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -511,6 +527,7 @@ public class TeamPrivateMemberTest extends ResourceTest {
 	/**
 	 * Test the set and get methods for team private members.
 	 */
+	@Test
 	public void testSetGet() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");

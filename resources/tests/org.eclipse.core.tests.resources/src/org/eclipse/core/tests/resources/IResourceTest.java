@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources;
 
 import static java.io.InputStream.nullInputStream;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
@@ -36,8 +37,14 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,9 +90,17 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.CancelingProgressMonitor;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 
-public class IResourceTest extends ResourceTest {
+public class IResourceTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	protected static final Boolean[] FALSE_AND_TRUE = { Boolean.FALSE, Boolean.TRUE };
 	protected static final IPath[] interestingPaths = getInterestingPaths();
 	protected static IResource[] interestingResources;
@@ -431,9 +446,8 @@ public class IResourceTest extends ResourceTest {
 		return true;
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		setAutoBuilding(false);
 		initializeProjects();
 	}
@@ -604,8 +618,8 @@ public class IResourceTest extends ResourceTest {
 		}
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		if (verifier != null) {
 			getWorkspace().removeResourceChangeListener(verifier);
 		}
@@ -613,13 +627,13 @@ public class IResourceTest extends ResourceTest {
 		interestingResources = null;
 		nonExistingResources.clear();
 		unsynchronizedResources.clear();
-		super.tearDown();
 	}
 
 	/**
 	 * Performs black box testing of the following method: void
 	 * accept(IResourceVisitor)
 	 */
+	@Test
 	public void testAccept2() throws Exception {
 		class LoggingResourceVisitor implements IResourceVisitor {
 			Vector<IResource> visitedResources = new Vector<>();
@@ -707,6 +721,7 @@ public class IResourceTest extends ResourceTest {
 		}.performTest(inputs);
 	}
 
+	@Test
 	public void testAcceptDoNotCheckExistence() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder a = project.getFolder("a");
@@ -741,6 +756,7 @@ public class IResourceTest extends ResourceTest {
 		}, IContainer.DO_NOT_CHECK_EXISTENCE);
 	}
 
+	@Test
 	public void testAcceptProxyVisitorWithDepth() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder a = project.getFolder("a");
@@ -784,6 +800,7 @@ public class IResourceTest extends ResourceTest {
 
 	/**
 	 * This method tests the IResource.refreshLocal() operation */
+	@Test
 	public void testAddLocalProject() throws CoreException {
 		/**
 		 * Add a project in the file system, but not in the workspace */
@@ -795,7 +812,7 @@ public class IResourceTest extends ResourceTest {
 		IProject project2 = getWorkspace().getRoot().getProject("NewProject");
 
 		IPath projectPath = project1.getLocation().removeLastSegments(1).append("NewProject");
-		deleteOnTearDown(projectPath);
+		workspaceRule.deleteOnTearDown(projectPath);
 		projectPath.toFile().mkdirs();
 
 		project1.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
@@ -808,6 +825,7 @@ public class IResourceTest extends ResourceTest {
 
 	/**
 	 * Tests various resource constants. */
+	@Test
 	public void testConstants() {
 		// IResource constants (all have fixed values)
 		assertEquals("1.0", 0, IResource.NONE);
@@ -838,6 +856,7 @@ public class IResourceTest extends ResourceTest {
 	 * Performs black box testing of the following method: void copy(IPath,
 	 * boolean, IProgressMonitor)
 	 */
+	@Test
 	public void testCopy() throws Exception {
 		//add markers to all resources ... markers should not be copied
 		getWorkspace().getRoot().accept(resource -> {
@@ -988,14 +1007,15 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * copy a project to external location which has resource filters.
 	 */
+	@Test
 	public void testCopyProjectWithResFilterToExternLocation() throws CoreException {
 		IProject sourceProj = createProject(true);
 
 		// prepare destination project description.
 		IProject destProj = getWorkspace().getRoot().getProject("testCopyProject" + 2);
-		IPath targetLocation = IPath.fromOSString(FileSystemHelper
-				.getRandomLocation(FileSystemHelper.getTempDir()).append(destProj.getName()).toOSString());
-		deleteOnTearDown(targetLocation);
+		IPath targetLocation = IPath
+				.fromOSString(getRandomLocation(FileSystemHelper.getTempDir()).append(destProj.getName()).toOSString());
+		workspaceRule.deleteOnTearDown(targetLocation);
 		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, targetLocation);
 
 		LogListener logListener = copyProject(sourceProj, desc);
@@ -1011,14 +1031,15 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * copy a project to external location.
 	 */
+	@Test
 	public void testCopyProjectWithoutResFilterToExternLocation() throws CoreException {
 		IProject sourceProj = createProject(false);
 
 		// prepare destination project description.
 		IProject destProj = getWorkspace().getRoot().getProject("testCopyProject" + 2);
-		IPath targetLocation = IPath.fromOSString(FileSystemHelper
-				.getRandomLocation(FileSystemHelper.getTempDir()).append(destProj.getName()).toOSString());
-		deleteOnTearDown(targetLocation);
+		IPath targetLocation = IPath
+				.fromOSString(getRandomLocation(FileSystemHelper.getTempDir()).append(destProj.getName()).toOSString());
+		workspaceRule.deleteOnTearDown(targetLocation);
 		IProjectDescription desc = prepareDestProjDesc(sourceProj, destProj, targetLocation);
 
 		LogListener logListener = copyProject(sourceProj, desc);
@@ -1036,6 +1057,7 @@ public class IResourceTest extends ResourceTest {
 	 * copy a project within the workspace(i.e default location) which has a
 	 * resource filter.
 	 */
+	@Test
 	public void testCopyProjectWithResFilterWithinWorkspace() throws CoreException {
 		IProject sourceProj = createProject(true);
 
@@ -1075,7 +1097,7 @@ public class IResourceTest extends ResourceTest {
 	}
 
 	private IProject createProject(boolean applyResFilter) throws CoreException {
-		IProject sourceProj = getWorkspace().getRoot().getProject(getName());
+		IProject sourceProj = getWorkspace().getRoot().getProject("testProject");
 		// create source project and apply resource filter.
 		sourceProj.create(createTestMonitor());
 		sourceProj.open(createTestMonitor());
@@ -1095,6 +1117,7 @@ public class IResourceTest extends ResourceTest {
 	 * Performs black box testing of the following method: void delete(boolean,
 	 * IProgressMonitor)
 	 */
+	@Test
 	public void testDelete() throws Exception {
 		IProgressMonitor[] monitors = new IProgressMonitor[] {new FussyProgressMonitor(), null};
 		Object[][] inputs = { FALSE_AND_TRUE, monitors, interestingResources };
@@ -1118,7 +1141,8 @@ public class IResourceTest extends ResourceTest {
 				}
 				try {
 					if (resource.exists()) {
-						deleteOnTearDown(resource.getLocation()); // Ensure that resource contents are removed from file
+						workspaceRule.deleteOnTearDown(resource.getLocation()); // Ensure that resource contents are
+																				// removed from file
 																	// system
 					}
 					resource.delete(force.booleanValue(), monitor);
@@ -1221,6 +1245,7 @@ public class IResourceTest extends ResourceTest {
 	 * Performs black box testing of the following methods: isDerived() and
 	 * setDerived(boolean, IProgressMonitor)
 	 */
+	@Test
 	public void testDerived() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("Project");
@@ -1332,6 +1357,7 @@ public class IResourceTest extends ResourceTest {
 	 * Performs black box testing of the following methods: isDerived() and
 	 * setDerived(boolean)
 	 */
+	@Test
 	public void testDeprecatedDerived() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("Project");
@@ -1414,6 +1440,7 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * Test the isDerived() and isDerived(int) methods
 	 */
+	@Test
 	public void testDerivedUsingAncestors() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(createUniqueString());
@@ -1477,6 +1504,7 @@ public class IResourceTest extends ResourceTest {
 	 * Performs black box testing of the following method: boolean
 	 * equals(Object)
 	 */
+	@Test
 	public void testEquals() throws Exception {
 		Object[][] inputs = { interestingResources, interestingResources };
 		new TestPerformer("IResourceTest.testEquals") {
@@ -1515,6 +1543,7 @@ public class IResourceTest extends ResourceTest {
 
 	/**
 	 * Performs black box testing of the following method: boolean exists() */
+	@Test
 	public void testExists() throws Exception {
 		Object[][] inputs = { interestingResources };
 		new TestPerformer("IResourceTest.testExists") {
@@ -1546,6 +1575,7 @@ public class IResourceTest extends ResourceTest {
 
 	/**
 	 * Performs black box testing of the following method: IPath getLocation() */
+	@Test
 	public void testGetLocation() throws Exception {
 		Object[][] inputs = { interestingResources };
 		new TestPerformer("IResourceTest.testGetLocation") {
@@ -1584,6 +1614,7 @@ public class IResourceTest extends ResourceTest {
 		}.performTest(inputs);
 	}
 
+	@Test
 	public void testGetModificationStamp() throws CoreException {
 		// cleanup auto-created resources
 		getWorkspace().getRoot().delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
@@ -1766,6 +1797,7 @@ public class IResourceTest extends ResourceTest {
 	 * Tests that, having replaced a file, the modification stamp
 	 * has changed.
 	 */
+	@Test
 	public void testGetModificationStampAfterReplace() throws Exception {
 		final IFile file = getWorkspace().getRoot().getFile(IPath.fromOSString("/project/f"));
 		createInWorkspace(file);
@@ -1785,6 +1817,7 @@ public class IResourceTest extends ResourceTest {
 	 * Performs black box testing of the following method: IPath
 	 * getRawLocation()
 	 */
+	@Test
 	public void testGetRawLocation() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder topFolder = project.getFolder("TopFolder");
@@ -1818,13 +1851,13 @@ public class IResourceTest extends ResourceTest {
 		assertEquals("3.3", workspaceLocation.append(deepFile.getFullPath()), deepFile.getRawLocation());
 
 		IPath projectLocation = getRandomLocation();
-		deleteOnTearDown(projectLocation);
+		workspaceRule.deleteOnTearDown(projectLocation);
 		IPath folderLocation = getRandomLocation();
-		deleteOnTearDown(folderLocation);
+		workspaceRule.deleteOnTearDown(folderLocation);
 		IPath fileLocation = getRandomLocation();
-		deleteOnTearDown(fileLocation);
+		workspaceRule.deleteOnTearDown(fileLocation);
 		IPath variableLocation = getRandomLocation();
-		deleteOnTearDown(variableLocation);
+		workspaceRule.deleteOnTearDown(variableLocation);
 		final String variableName = "IResourceTest_VariableName";
 		IPathVariableManager varMan = getWorkspace().getPathVariableManager();
 		try {
@@ -1907,6 +1940,7 @@ public class IResourceTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testIsConflicting() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder a = project.getFolder("a");
@@ -1928,6 +1962,7 @@ public class IResourceTest extends ResourceTest {
 		project.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void testIsConflicting2() throws CoreException {
 		final IProject project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);
@@ -1965,6 +2000,7 @@ public class IResourceTest extends ResourceTest {
 
 	/**
 	 * This method tests the IResource.isSynchronized() operation */
+	@Test
 	public void testIsSynchronized() throws Exception {
 		//don't need auto-created resources
 		getWorkspace().getRoot().delete(true, true, createTestMonitor());
@@ -2037,6 +2073,7 @@ public class IResourceTest extends ResourceTest {
 	 * Performs black box testing of the following method: void move(IPath,
 	 * boolean, IProgressMonitor)
 	 */
+	@Test
 	public void testMove() throws Exception {
 		Object[][] inputs = { interestingResources, interestingPaths, TRUE_AND_FALSE, PROGRESS_MONITORS };
 		new ProjectsReinitializingTestPerformer("IResourceTest.testMove") {
@@ -2089,8 +2126,8 @@ public class IResourceTest extends ResourceTest {
 		}.performTest(inputs);
 	}
 
+	@Test
 	public void testMultiCreation() throws CoreException {
-
 		final IProject project = getWorkspace().getRoot().getProject("bar");
 		final IResource[] resources = buildResources(project, new String[] {"a/", "a/b"});
 		// create the project. Have to do this outside the resource operation
@@ -2122,6 +2159,7 @@ public class IResourceTest extends ResourceTest {
 	 * Test that opening an closing a project does not affect the description
 	 * file.
 	 */
+	@Test
 	public void testProjectDescriptionFileModification() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("P1");
 		IFile file = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
@@ -2136,6 +2174,7 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * Tests IResource#getPersistentProperties and IResource#getSessionProperties
 	 */
+	@Test
 	public void testProperties() throws CoreException {
 		QualifiedName qn1 = new QualifiedName("package", "property1");
 		QualifiedName qn2 = new QualifiedName("package", "property2");
@@ -2215,6 +2254,7 @@ public class IResourceTest extends ResourceTest {
 	 * @deprecated This test is for deprecated API
 	 */
 	@Deprecated
+	@Test
 	public void testReadOnly() throws CoreException {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
@@ -2244,6 +2284,7 @@ public class IResourceTest extends ResourceTest {
 
 	/**
 	 * This method tests the IResource.refreshLocal() operation */
+	@Test
 	public void testRefreshLocal() throws Exception {
 		//don't need auto-created resources
 		getWorkspace().getRoot().delete(true, true, createTestMonitor());
@@ -2292,6 +2333,7 @@ public class IResourceTest extends ResourceTest {
 		}.performTest(inputs);
 	}
 
+	@Test
 	public void testRefreshLocalWithDepth() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFolder folder = project.getFolder("Folder");
@@ -2314,6 +2356,7 @@ public class IResourceTest extends ResourceTest {
 
 	/**
 	 * This method tests the IResource.refreshLocal() operation */
+	@Test
 	public void testRefreshWithMissingParent() throws Exception {
 		/**
 		 * Add a folder and file to the file system. Call refreshLocal on the
@@ -2333,6 +2376,7 @@ public class IResourceTest extends ResourceTest {
 
 	/**
 	 * This method tests the IResource.revertModificationStamp() operation */
+	@Test
 	public void testRevertModificationStamp() throws Throwable {
 		//revert all existing resources
 		getWorkspace().getRoot().accept(resource -> {
@@ -2378,6 +2422,7 @@ public class IResourceTest extends ResourceTest {
 
 	/**
 	 * This method tests the IResource.setLocalTimeStamp() operation */
+	@Test
 	public void testSetLocalTimeStamp() throws Exception {
 		//don't need auto-created resources
 		getWorkspace().getRoot().delete(true, true, createTestMonitor());
@@ -2430,6 +2475,7 @@ public class IResourceTest extends ResourceTest {
 	 * Performs black box testing of the following methods:
 	 * isTeamPrivateMember() and setTeamPrivateMember(boolean)
 	 */
+	@Test
 	public void testTeamPrivateMember() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("Project");
@@ -2510,6 +2556,7 @@ public class IResourceTest extends ResourceTest {
 	}
 
 	// https://bugs.eclipse.org/461838
+	@Test
 	public void testAcceptProxyVisitorAlphabetic() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("P");
 		IFolder settings = project.getFolder(".settings");
@@ -2549,4 +2596,5 @@ public class IResourceTest extends ResourceTest {
 			assertThat(errors, is(empty()));
 		}
 	}
+
 }
