@@ -33,12 +33,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
-import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IPathVariableManager;
@@ -65,16 +63,15 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	private final static String PROJECT_VARIABLE_NAME = "PROOT";
 	private final static String PROJECT_RELATIVE_VARIABLE_NAME = "RELATIVE_PROOT";
 	private final static String PROJECT_RELATIVE_VARIABLE_VALUE = "${PROOT}";
-	private final ArrayList<IPath> toDelete = new ArrayList<>();
 	private IFileStore toSetWritable = null;
 
 	@Override
 	protected void setUp() throws Exception {
-		IPath base = super.getRandomLocation();
-		toDelete.add(base);
+		IPath base = FileSystemHelper.getRandomLocation();
+		deleteOnTearDown(base);
 		getWorkspace().getPathVariableManager().setValue(VARIABLE_NAME, base);
-		base = super.getRandomLocation();
-		toDelete.add(base);
+		base = FileSystemHelper.getRandomLocation();
+		deleteOnTearDown(base);
 		super.setUp();
 		existingProject.getPathVariableManager().setValue(PROJECT_VARIABLE_NAME, base);
 		existingProject.getPathVariableManager().setValue(PROJECT_RELATIVE_VARIABLE_NAME,
@@ -90,11 +87,6 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 			toSetWritable = null;
 		}
 		getWorkspace().getPathVariableManager().setValue(VARIABLE_NAME, null);
-		IPath[] paths = toDelete.toArray(new IPath[toDelete.size()]);
-		toDelete.clear();
-		for (IPath path : paths) {
-			Workspace.clear(path.toFile());
-		}
 		super.tearDown();
 	}
 
@@ -157,7 +149,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 			}
 			path = FileSystemHelper.computeRandomLocation(parent);
 		}
-		toDelete.add(pathVars.resolvePath(path));
+		deleteOnTearDown(pathVars.resolvePath(path));
 		return path;
 	}
 
@@ -174,7 +166,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 			}
 			path = FileSystemHelper.computeRandomLocation(parent);
 		}
-		toDelete.add(pathVars.resolvePath(path));
+		deleteOnTearDown(pathVars.resolvePath(path));
 		return path;
 	}
 
@@ -191,7 +183,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 			}
 			path = FileSystemHelper.computeRandomLocation(parent);
 		}
-		toDelete.add(pathVars.resolvePath(path));
+		deleteOnTearDown(pathVars.resolvePath(path));
 		return path;
 	}
 
@@ -347,7 +339,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		if (!targetPath.toFile().exists()) {
 			targetPath.toFile().createNewFile();
 		}
-		toDelete.add(targetPath);
+		deleteOnTearDown(targetPath);
 
 		variableBasedLocation = convertToRelative(targetPath, file, true, null);
 
@@ -393,7 +385,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		if (!targetPath.toFile().exists()) {
 			targetPath.toFile().createNewFile();
 		}
-		toDelete.add(targetPath);
+		deleteOnTearDown(targetPath);
 
 		existingProjectInSubDirectory.getPathVariableManager().setValue("P_RELATIVE",
 				IPath.fromPortableString("${PARENT-3-PROJECT_LOC}"));
@@ -812,8 +804,8 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertExistsInFileSystem(file);
 
 		// changes the variable value - the file location will change
-		IPath newLocation = super.getRandomLocation();
-		toDelete.add(newLocation);
+		IPath newLocation = FileSystemHelper.getRandomLocation();
+		deleteOnTearDown(newLocation);
 		manager.setValue(VARIABLE_NAME, newLocation);
 
 		// try to change resource's contents
@@ -877,8 +869,8 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertExistsInFileSystem(file);
 
 		// changes the variable value - the file location will change
-		IPath newLocation = super.getRandomLocation();
-		toDelete.add(newLocation);
+		IPath newLocation = FileSystemHelper.getRandomLocation();
+		deleteOnTearDown(newLocation);
 		manager.setValue(PROJECT_VARIABLE_NAME, newLocation);
 
 		// try to change resource's contents
@@ -938,7 +930,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 	//		assertTrue("3.2", extensions == null);
 	//
 	//		try {
-	//			IPath newLocation = super.getRandomLocation();
+	//			IPath newLocation = FileSystemHelper.getRandomLocation();
 	//			toDelete.add(newLocation);
 	//			manager.setValue(PROJECT_VARIABLE_NAME, newLocation);
 	//		} catch (CoreException e) {
@@ -964,7 +956,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		if (!targetPath.toFile().exists()) {
 			targetPath.toFile().createNewFile();
 		}
-		toDelete.add(targetPath);
+		deleteOnTearDown(targetPath);
 
 		variableBasedLocation = convertToRelative(targetPath, file, true, null);
 		IPath resolvedPath = URIUtil.toPath(pathVariableManager.resolveURI(URIUtil.toURI(variableBasedLocation)));
