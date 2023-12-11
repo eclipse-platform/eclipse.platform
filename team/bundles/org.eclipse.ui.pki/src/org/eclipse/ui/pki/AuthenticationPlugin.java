@@ -14,7 +14,7 @@
  * -------- -------- -----------------------------------------------------------
  * 20231101   00000 joe@schiavone.org PKI implementation
  *******************************************************************************/
-package org.eclipse.pki.auth;
+package org.eclipse.ui.pki;
 
 import java.io.BufferedInputStream;
 import java.io.File;

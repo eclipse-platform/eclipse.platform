@@ -34,11 +34,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.commands.CommandService;
+import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.ui.statushandlers.StatusAdapter;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.framework.Bundle;
-
-import org.eclipse.pki.auth.AuthenticationPlugin;
 
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;

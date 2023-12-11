@@ -10,8 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.pki.auth.AuthenticationPlugin;
+import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.pki.pkiselection.PKCS11WidgetSelectedActions;
 import org.eclipse.pki.pkiselection.PKCS12WidgetSelectedActions;
 import org.eclipse.pki.preferences.AuthenticationPreferences;

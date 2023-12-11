@@ -1,4 +1,4 @@
-package org.eclipse.pki.auth;
+package org.eclipse.ui.pki;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,7 +17,6 @@ import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.eclipse.core.pki.AuthenticationBase;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
@@ -27,15 +26,14 @@ import org.eclipse.osgi.framework.eventmgr.ListenerQueue;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
+import org.eclipse.ui.pki.AuthenticationBase;
 import org.eclipse.pki.pkcs.PublicKeySecurity;
 import org.eclipse.pki.pkcs.VendorImplementation;
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.pki.pkiselection.PKCSSelected;
-import org.eclipse.pki.pkiselection.PKCSpick;
 import org.eclipse.pki.preferences.AuthenticationPreferences;
 import org.eclipse.pki.util.KeyStoreFormat;
 import org.eclipse.pki.util.LogUtil;
-import org.eclipse.pki.util.PKISecureStorage;
 import org.eclipse.pki.util.TrustStoreSecureStorage;
 
 public class PKIController implements IStartup {

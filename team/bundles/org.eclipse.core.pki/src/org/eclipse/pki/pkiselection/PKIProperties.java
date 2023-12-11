@@ -4,8 +4,7 @@ import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.pki.auth.AuthenticationPlugin;
+import org.eclipse.ui.pki.AuthenticationPlugin;
 
 public class PKIProperties extends Authenticator {
 	

@@ -12,7 +12,8 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
-import org.eclipse.pki.auth.AuthenticationPlugin;
+import org.eclipse.core.pki.AuthenticationService;
+import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 
 public enum AuthenticationBase implements AuthenticationService {

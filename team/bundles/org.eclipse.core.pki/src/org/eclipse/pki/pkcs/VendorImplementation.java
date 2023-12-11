@@ -5,7 +5,7 @@ import java.security.KeyStore;
 import javax.net.ssl.SSLContext;
 
 import org.eclipse.pki.pkcs.ProviderImpl;
-import org.eclipse.core.pki.AuthenticationBase;
+import org.eclipse.ui.pki.AuthenticationBase;
 import org.eclipse.pki.interfaces.IProvider;
 
 

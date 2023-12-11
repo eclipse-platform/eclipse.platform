@@ -6,6 +6,7 @@ import org.eclipse.osgi.framework.eventmgr.CopyOnWriteIdentityMap;
 import org.eclipse.osgi.framework.eventmgr.EventDispatcher;
 import org.eclipse.osgi.framework.eventmgr.EventManager;
 import org.eclipse.osgi.framework.eventmgr.ListenerQueue;
+import org.eclipse.ui.pki.PKIController;
 
 public class EventProcessor implements EventDispatcher<Object, Object, Object> {
 	private EventManager eventManager=null;
