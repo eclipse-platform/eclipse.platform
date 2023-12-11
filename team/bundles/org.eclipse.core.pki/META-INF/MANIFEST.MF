@@ -15,8 +15,7 @@ Require-Bundle: org.eclipse.equinox.security;bundle-version="[1.0.0,2.0.0)",
 Bundle-Version: 1.0.0
 Export-Package: org.eclipse.core.pki,
  org.eclipse.pki.auth,
- org.eclipse.pki.exception,
- org.eclipse.pki.pkcs
+ org.eclipse.pki.exception
 Bundle-Vendor: %PLUGIN_PROVIDER
 Automatic-Module-Name: org.eclipse.core.pki
 Bundle-ActivationPolicy: lazy

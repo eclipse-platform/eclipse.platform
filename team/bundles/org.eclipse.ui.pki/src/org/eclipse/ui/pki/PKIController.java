@@ -27,12 +27,12 @@ import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.pki.AuthenticationBase;
+import org.eclipse.ui.pki.pkcs.PublicKeySecurity;
+import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSSelected;
 import org.eclipse.ui.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.LogUtil;
 import org.eclipse.ui.pki.wizard.TrustStoreSecureStorage;
-import org.eclipse.pki.pkcs.PublicKeySecurity;
-import org.eclipse.pki.pkcs.VendorImplementation;
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 

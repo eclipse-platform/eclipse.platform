@@ -69,11 +69,11 @@ import org.osgi.framework.BundleContext;
 
 import org.eclipse.ui.pki.dialog.PassphraseDialog;
 import org.eclipse.ui.pki.jsse.CdeX509TrustManager;
+import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSSelected;
 import org.eclipse.ui.pki.pkiselection.PKCSpick;
 import org.eclipse.ui.pki.pkiselection.PKIProperties;
 import org.eclipse.pki.exception.UserCanceledException;
-import org.eclipse.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 import org.eclipse.ui.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
