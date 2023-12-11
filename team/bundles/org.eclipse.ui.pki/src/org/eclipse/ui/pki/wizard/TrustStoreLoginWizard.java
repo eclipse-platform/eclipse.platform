@@ -3,8 +3,8 @@ package org.eclipse.ui.pki.wizard;
 import java.security.KeyStore;
 import org.eclipse.jface.wizard.Wizard;
 
-import org.eclipse.pki.auth.AuthenticationPlugin;
-import org.eclipse.pki.preferences.AuthenticationPreferences;
+import org.eclipse.ui.pki.AuthenticationPlugin;
+import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 import org.eclipse.pki.util.ChangedPressedFieldEditorStatus;
 import org.eclipse.pki.util.TrustStoreSecureStorage;
 
