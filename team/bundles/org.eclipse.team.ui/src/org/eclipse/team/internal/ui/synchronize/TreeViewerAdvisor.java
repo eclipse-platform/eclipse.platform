@@ -59,7 +59,7 @@ import org.eclipse.ui.part.ResourceTransfer;
  * By default this advisor supports hierarchical models and honour the compressed
  * folder Team preference for showing the sync set as compressed folders. Subclasses
  * can provide their own presentation models.
- * <p>
+ * </p>
  * @since 3.0
  */
 public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {

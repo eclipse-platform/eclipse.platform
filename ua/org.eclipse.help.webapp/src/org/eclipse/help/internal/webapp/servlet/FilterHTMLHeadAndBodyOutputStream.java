@@ -79,13 +79,10 @@ public class FilterHTMLHeadAndBodyOutputStream extends FilterOutputStream {
 	 * @param bytesForHead
 	 *            bytes to insert at the end of head of HTML or
 	 *            <code>null</code>
-	 * @param bytesToInsert
-	 *            bytes to insert at the begining of body of HTML or
+	 * @param bodyContent
+	 *            the content to insert as the HTML body or
 	 *            <code>null</code>
-	 * @param bytesToAppend
-	 *            bytes to append at the end of body of HTML or
-	 *            <code>null</code>
-	 */
+ 	 */
 	public FilterHTMLHeadAndBodyOutputStream(OutputStream out,
 			byte[] bytesForHead, String bodyContent) {
 		super(out);
