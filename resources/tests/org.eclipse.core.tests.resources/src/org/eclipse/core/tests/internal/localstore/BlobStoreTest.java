@@ -14,11 +14,15 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -26,10 +30,16 @@ import org.eclipse.core.internal.localstore.BlobStore;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-//
-public class BlobStoreTest extends LocalStoreTest {
+public class BlobStoreTest {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testConstructor() throws CoreException {
 		/* build scenario */
 		IFileStore root = createStore();
@@ -53,7 +63,7 @@ public class BlobStoreTest extends LocalStoreTest {
 	}
 
 	private IFileStore createStore() throws CoreException {
-		IFileStore root = getTempStore();
+		IFileStore root = workspaceRule.getTempStore();
 		root.mkdir(EFS.NONE, null);
 		IFileInfo info = root.fetchInfo();
 		assertTrue("createStore.1", info.exists());
@@ -61,6 +71,7 @@ public class BlobStoreTest extends LocalStoreTest {
 		return root;
 	}
 
+	@Test
 	public void testDeleteBlob() throws CoreException, IOException {
 		/* initialize common objects */
 		IFileStore root = createStore();
@@ -74,13 +85,14 @@ public class BlobStoreTest extends LocalStoreTest {
 
 		/* delete existing blob */
 		IFileStore target = root.getChild("target");
-		createFile(target, "bla bla bla");
+		createInFileSystem(target);
 		uuid = store.addBlob(target, true);
 		assertTrue(store.fileFor(uuid).fetchInfo().exists());
 		store.deleteBlob(uuid);
 		assertFalse(store.fileFor(uuid).fetchInfo().exists());
 	}
 
+	@Test
 	public void testGetBlob() throws CoreException, IOException {
 		/* initialize common objects */
 		IFileStore root = createStore();
@@ -93,12 +105,15 @@ public class BlobStoreTest extends LocalStoreTest {
 		IFileStore target = root.getChild("target");
 		UniversalUniqueIdentifier uuid = null;
 		String content = "nothing important........tnatropmi gnihton";
-		createFile(target, content);
+		try (OutputStream output = target.openOutputStream(EFS.NONE, null)) {
+			createInputStream(content).transferTo(output);
+		}
 		uuid = store.addBlob(target, true);
 		InputStream input = store.getBlob(uuid);
 		assertTrue(compareContent(createInputStream(content), input));
 	}
 
+	@Test
 	public void testSetBlob() throws CoreException, IOException {
 		/* initialize common objects */
 		IFileStore root = createStore();
@@ -108,9 +123,12 @@ public class BlobStoreTest extends LocalStoreTest {
 		IFileStore target = root.getChild("target");
 		UniversalUniqueIdentifier uuid = null;
 		String content = "nothing important........tnatropmi gnihton";
-		createFile(target, content);
+		try (OutputStream output = target.openOutputStream(EFS.NONE, null)) {
+			createInputStream(content).transferTo(output);
+		}
 		uuid = store.addBlob(target, true);
 		InputStream input = store.getBlob(uuid);
 		assertTrue(compareContent(createInputStream(content), input));
 	}
+
 }

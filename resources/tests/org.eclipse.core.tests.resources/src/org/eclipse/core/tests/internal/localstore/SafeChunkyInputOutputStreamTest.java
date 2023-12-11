@@ -13,9 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -26,44 +32,41 @@ import org.eclipse.core.internal.localstore.ILocalStoreConstants;
 import org.eclipse.core.internal.localstore.SafeChunkyInputStream;
 import org.eclipse.core.internal.localstore.SafeChunkyOutputStream;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
-	protected File temp;
+public class SafeChunkyInputOutputStreamTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	private File temp;
 
 	private List<SafeChunkyOutputStream> streams;
 
 	private File target;
 
-	protected boolean compare(byte[] source, byte[] target1) {
-		assertEquals(source.length, target1.length);
-		for (int i = 0; i < target1.length; i++) {
-			assertEquals(source[i], target1[i]);
-		}
-		return true;
-	}
-
-	protected byte[] merge(byte[] b1, byte[] b2) {
+	private byte[] merge(byte[] b1, byte[] b2) {
 		byte[] result = new byte[b1.length + b2.length];
 		System.arraycopy(b1, 0, result, 0, b1.length);
 		System.arraycopy(b2, 0, result, b1.length, b2.length);
 		return result;
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		streams = new ArrayList<>();
-
-		IPath location = getRandomLocation();
-		temp = location.append("temp").toFile();
+		temp = getRandomLocation().append("temp").toFile();
 		temp.mkdirs();
 		assertTrue("could not create temp directory", temp.isDirectory());
 		target = new File(temp, "target");
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		for (SafeChunkyOutputStream stream : streams) {
 			try {
 				stream.close();
@@ -72,9 +75,9 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 			}
 		}
 		removeFromFileSystem(temp.getParentFile());
-		super.tearDown();
 	}
 
+	@Test
 	public void testBufferLimit() throws Exception {
 		Workspace.clear(target); // make sure there was nothing here before
 		assertTrue(!target.exists());
@@ -91,7 +94,7 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 		try (SafeChunkyInputStream input = new SafeChunkyInputStream(target)) {
 			byte[] read = new byte[chunk.length];
 			assertEquals(chunk.length, input.read(read));
-			assertTrue(compare(chunk, read));
+			assertThat(read, is(chunk));
 		}
 		Workspace.clear(target); // make sure there was nothing here before
 	}
@@ -171,13 +174,13 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 			assertEquals(chunk4.length, input.read(read4));
 			assertEquals(chunk5.length, input.read(read5));
 			assertEquals((fakeEnd.length + chunk6.length), input.read(read6));
-			assertTrue(compare(chunk1, read1));
+			assertThat(read1, is(chunk1));
 			// assert("3.7", compare(chunk2, read2));
-			assertTrue(compare(chunk3, read3));
-			assertTrue(compare(chunk4, read4));
-			assertTrue(compare(chunk5, read5));
+			assertThat(read3, is(chunk3));
+			assertThat(read4, is(chunk4));
+			assertThat(read5, is(chunk5));
 			byte[] expected = merge(fakeEnd, chunk6);
-			assertTrue(compare(expected, read6));
+			assertThat(read6, is(expected));
 		}
 	}
 
@@ -190,6 +193,7 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 		streams.add(output);
 	}
 
+	@Test
 	public void testAlmostEmpty() throws Exception {
 		Workspace.clear(target); // make sure there was nothing here before
 		assertTrue(!target.exists());
@@ -204,6 +208,7 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testSimple() throws Exception {
 		Workspace.clear(target); // make sure there was nothing here before
 		assertFalse(target.exists());
@@ -239,13 +244,14 @@ public class SafeChunkyInputOutputStreamTest extends LocalStoreTest {
 			assertEquals(chunk3.length, input.read(read3));
 			assertEquals(chunk4.length, input.read(read4));
 			assertEquals(chunk5.length, input.read(read5));
-			assertTrue(compare(chunk1, read1));
-			assertTrue(compare(chunk2, read2));
-			assertTrue(compare(chunk3, read3));
-			assertTrue(compare(chunk4, read4));
-			assertTrue(compare(chunk5, read5));
+			assertThat(read1, is(chunk1));
+			assertThat(read2, is(chunk2));
+			assertThat(read3, is(chunk3));
+			assertThat(read4, is(chunk4));
+			assertThat(read5, is(chunk5));
 		} finally {
 			Workspace.clear(target); // make sure there was nothing here before
 		}
 	}
+
 }

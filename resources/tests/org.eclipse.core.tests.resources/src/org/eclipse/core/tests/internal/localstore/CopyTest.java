@@ -22,7 +22,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -32,27 +34,36 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Test the copy operation.
  */
-public class CopyTest extends LocalStoreTest {
+public class CopyTest {
 
+	private static final int NUMBER_OF_PROPERTIES = 5;
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testCopyResource() throws Throwable {
-		/* create common objects */
-		IProject[] testProjects = getWorkspace().getRoot().getProjects();
+		IProject project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
 
 		/* create folder and file */
-		IFolder folder = testProjects[0].getFolder("folder");
+		IFolder folder = project.getFolder("folder");
 		IFile file = folder.getFile("file.txt");
 		createInWorkspace(folder);
 		createInFileSystem(folder);
 		createInWorkspace(file);
 		createInFileSystem(file);
 		/* add some properties to file (server, local and session) */
-		QualifiedName[] propNames = new QualifiedName[numberOfProperties];
-		String[] propValues = new String[numberOfProperties];
-		for (int i = 0; i < numberOfProperties; i++) {
+		QualifiedName[] propNames = new QualifiedName[NUMBER_OF_PROPERTIES];
+		String[] propValues = new String[NUMBER_OF_PROPERTIES];
+		for (int i = 0; i < NUMBER_OF_PROPERTIES; i++) {
 			propNames[i] = new QualifiedName("test", "prop" + i);
 			propValues[i] = "value" + i;
 			file.setPersistentProperty(propNames[i], propValues[i]);
@@ -60,12 +71,12 @@ public class CopyTest extends LocalStoreTest {
 		}
 
 		/* copy to absolute path */
-		IResource destination = testProjects[0].getFile("copy of file.txt");
+		IResource destination = project.getFile("copy of file.txt");
 		removeFromFileSystem(destination);
 		file.copy(destination.getFullPath(), true, null);
 		assertTrue(destination.exists());
 		/* assert properties were properly copied */
-		for (int i = 0; i < numberOfProperties; i++) {
+		for (int i = 0; i < NUMBER_OF_PROPERTIES; i++) {
 			String persistentValue = destination.getPersistentProperty(propNames[i]);
 			Object sessionValue = destination.getSessionProperty(propNames[i]);
 			assertThat(propValues[i], is(persistentValue));
@@ -81,7 +92,7 @@ public class CopyTest extends LocalStoreTest {
 		file.copy(path, true, null);
 		assertTrue(destinationInFolder.exists());
 		/* assert properties were properly copied */
-		for (int i = 0; i < numberOfProperties; i++) {
+		for (int i = 0; i < NUMBER_OF_PROPERTIES; i++) {
 			String persistentValue = destinationInFolder.getPersistentProperty(propNames[i]);
 			Object sessionValue = destinationInFolder.getSessionProperty(propNames[i]);
 			assertThat(propValues[i], is(persistentValue));
@@ -95,12 +106,12 @@ public class CopyTest extends LocalStoreTest {
 		assertThrows(RuntimeException.class, () -> folder.copy(destinationInSubfolder.getFullPath(), true, null));
 
 		/* test flag force = false */
-		testProjects[0].refreshLocal(IResource.DEPTH_INFINITE, null);
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		IFolder subfolder = folder.getFolder("subfolder");
 		createInFileSystem(subfolder);
 		IFile anotherFile = folder.getFile("new file");
 		createInFileSystem(anotherFile);
-		IFolder destinationFolder = testProjects[0].getFolder("destination");
+		IFolder destinationFolder = project.getFolder("destination");
 		CoreException exception = assertThrows(CoreException.class,
 				() -> folder.copy(destinationFolder.getFullPath(), false, null));
 		assertThat(exception.getStatus().getChildren(), arrayWithSize(2));
@@ -110,7 +121,7 @@ public class CopyTest extends LocalStoreTest {
 		assertFalse(((IContainer) destinationFolder).getFile(IPath.fromOSString(anotherFile.getName())).exists());
 		/* assert properties were properly copied */
 		IResource target = ((IContainer) destinationFolder).getFile(IPath.fromOSString(file.getName()));
-		for (int i = 0; i < numberOfProperties; i++) {
+		for (int i = 0; i < NUMBER_OF_PROPERTIES; i++) {
 			String persistentValue = target.getPersistentProperty(propNames[i]);
 			Object sessionValue = target.getSessionProperty(propNames[i]);
 			assertThat(propValues[i], is(persistentValue));
@@ -120,10 +131,11 @@ public class CopyTest extends LocalStoreTest {
 		removeFromFileSystem(destinationFolder);
 
 		/* copy a file that is not local but exists in the workspace */
-		IFile ghostFile = testProjects[0].getFile("ghost");
+		IFile ghostFile = project.getFile("ghost");
 		ghostFile.create(null, true, null);
 		removeFromFileSystem(file);
-		IFile destinationFile = testProjects[0].getFile("destination");
+		IFile destinationFile = project.getFile("destination");
 		assertThrows(CoreException.class, () -> ghostFile.copy(destinationFile.getFullPath(), true, null));
 	}
+
 }

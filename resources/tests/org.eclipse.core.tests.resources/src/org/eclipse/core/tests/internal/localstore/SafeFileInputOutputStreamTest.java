@@ -13,9 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,34 +27,40 @@ import org.eclipse.core.internal.localstore.SafeFileInputStream;
 import org.eclipse.core.internal.localstore.SafeFileOutputStream;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class SafeFileInputOutputStreamTest extends ResourceTest {
-	protected IPath temp;
+public class SafeFileInputOutputStreamTest {
 
-	public SafeFileOutputStream createSafeStream(File target) throws IOException {
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	private IPath temp;
+
+	private SafeFileOutputStream createSafeStream(File target) throws IOException {
 		return createSafeStream(target.getAbsolutePath(), null);
 	}
 
-	public SafeFileOutputStream createSafeStream(String targetPath, String tempFilePath)
+	private SafeFileOutputStream createSafeStream(String targetPath, String tempFilePath)
 			throws IOException {
 		return new SafeFileOutputStream(targetPath, tempFilePath);
 	}
 
-	public InputStream getContents(java.io.File target) throws IOException {
+	private InputStream getContents(java.io.File target) throws IOException {
 		return new SafeFileInputStream(target);
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		IPath location = getRandomLocation();
-		temp = location.append("temp");
+	@Before
+	public void setUp() throws Exception {
+		temp = getRandomLocation().append("temp");
 		temp.toFile().mkdirs();
-		deleteOnTearDown(temp);
+		workspaceRule.deleteOnTearDown(temp);
 		assertTrue("could not create temp directory", temp.toFile().isDirectory());
 	}
 
+	@Test
 	public void testSafeFileInputStream() throws IOException {
 		File target = new File(temp.toFile(), "target");
 		Workspace.clear(target); // make sure there was nothing here before
@@ -78,6 +87,7 @@ public class SafeFileInputOutputStreamTest extends ResourceTest {
 		Workspace.clear(target); // make sure there was nothing here before
 	}
 
+	@Test
 	public void testSimple() throws IOException {
 		File target = new File(temp.toFile(), "target");
 		Workspace.clear(target); // make sure there was nothing here before
@@ -105,6 +115,7 @@ public class SafeFileInputOutputStreamTest extends ResourceTest {
 		Workspace.clear(target); // make sure there was nothing here before
 	}
 
+	@Test
 	public void testSpecifiedTempFile() throws IOException {
 		File target = new File(temp.toFile(), "target");
 		Workspace.clear(target); // make sure there was nothing here before
@@ -138,4 +149,5 @@ public class SafeFileInputOutputStreamTest extends ResourceTest {
 		assertTrue(compareContent(diskContents, createInputStream(contents)));
 		Workspace.clear(target); // make sure there was nothing here before
 	}
+
 }

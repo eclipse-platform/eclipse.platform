@@ -22,7 +22,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStrea
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -54,13 +56,19 @@ import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * This class defines all tests for the HistoryStore Class.
  */
 
-public class HistoryStoreTest extends ResourceTest {
+public class HistoryStoreTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	static class LogListenerVerifier implements ILogListener {
 		List<Integer> actual = new ArrayList<>();
@@ -121,7 +129,7 @@ public class HistoryStoreTest extends ResourceTest {
 		}
 	}
 
-	public static void assertEquals(String tag, IFileState expected, IFileState actual) {
+	public static void assertFileStateEquals(String tag, IFileState expected, IFileState actual) {
 		assertEquals(tag + " path differs", expected.getFullPath(), actual.getFullPath());
 		assertEquals(tag + " timestamp differs", expected.getModificationTime(), actual.getModificationTime());
 		assertEquals(tag + " uuid differs", ((FileState) expected).getUUID(), ((FileState) actual).getUUID());
@@ -168,9 +176,8 @@ public class HistoryStoreTest extends ResourceTest {
 		return currentDescription;
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		wipeHistoryStore(createTestMonitor());
 	}
 
@@ -209,6 +216,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 *      encounter granularity issues).
 	 *  15. Check file states.  There should be none left.
 	 */
+	@Test
 	public void testAddStateAndPolicies() throws Exception {
 		/* Create common objects. */
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -253,7 +261,7 @@ public class HistoryStoreTest extends ResourceTest {
 
 		// assert that the most recent states were preserved
 		for (int i = 0; i < states.length; i++) {
-			assertEquals("1.4." + i, oldStates[i], states[i]);
+			assertFileStateEquals("1.4." + i, oldStates[i], states[i]);
 		}
 
 		/* test max file state size */
@@ -305,6 +313,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("3.5", 0, states.length);
 	}
 
+	@Test
 	public void testBug28238() throws Exception {
 		// paths to mimic files in the workspace
 		IProject project = getWorkspace().getRoot().getProject("myproject28238");
@@ -316,7 +325,7 @@ public class HistoryStoreTest extends ResourceTest {
 		IHistoryStore store = ((Resource) getWorkspace().getRoot()).getLocalManager().getHistoryStore();
 
 		// location of the data on disk
-		IFileStore fileStore = getTempStore();
+		IFileStore fileStore = workspaceRule.getTempStore();
 		createInFileSystem(fileStore);
 		assertEquals("1.0" + " file already has state", 0, store.getStates(file.getFullPath(), createTestMonitor()).length);
 
@@ -334,6 +343,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("3.0", 1, states.length);
 	}
 
+	@Test
 	public void testBug28603() throws CoreException {
 		// paths to mimic files in the workspace
 		IProject project = getWorkspace().getRoot().getProject("myproject28603");
@@ -379,6 +389,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * - consider history store information stale after some specified period
 	 *   of time and discard stale data
 	 */
+	@Test
 	public void testClean() throws Exception {
 		/* Create common objects. */
 		IProject project = getWorkspace().getRoot().getProject("ProjectClean");
@@ -493,6 +504,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the copied file should have 4 states as it retains the states from
 	 * before the copy took place as well.
 	 */
+	@Test
 	public void testCopyFolder() throws Exception {
 		String[] contents = {"content1", "content2", "content3", "content4", "content5"};
 		// create common objects
@@ -550,6 +562,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * - give an invalid source path but a valid destination path
 	 * - give an invalid destination path but a valid source path
 	 */
+	@Test
 	public void testCopyHistoryFile() throws Exception {
 		// Create a project, folder and file so we have some history store
 		// Should have a project that appears as follows:
@@ -629,6 +642,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertTrue("2.7", compareContent(createInputStream(contents[0]), states[2].getContents()));
 	}
 
+	@Test
 	public void testCopyHistoryFolder() throws Exception {
 		String[] contents = {"content0", "content1", "content2", "content3", "content4"};
 		// create common objects
@@ -668,6 +682,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertTrue("2.7", compareContent(createInputStream(contents[0]), states[2].getContents()));
 	}
 
+	@Test
 	public void testCopyHistoryProject() throws Exception {
 		String[] contents = {"content0", "content1", "content2", "content3", "content4"};
 		// create common objects
@@ -707,6 +722,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertTrue("2.7", compareContent(createInputStream(contents[0]), states[2].getContents()));
 	}
 
+	@Test
 	public void testDelete() throws CoreException {
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -764,6 +780,7 @@ public class HistoryStoreTest extends ResourceTest {
 	/**
 	 * Test for existence of file states in the HistoryStore.
 	 */
+	@Test
 	public void testExists() throws Throwable {
 
 		/* Create common objects. */
@@ -791,6 +808,7 @@ public class HistoryStoreTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testFindDeleted() throws CoreException {
 		// create common objects
 		IWorkspaceRoot root = getWorkspace().getRoot();
@@ -1049,6 +1067,7 @@ public class HistoryStoreTest extends ResourceTest {
 	/**
 	 * Test for retrieving contents of files with states logged in the HistoryStore.
 	 */
+	@Test
 	public void testGetContents() throws Throwable {
 		final int ITERATIONS = 20;
 
@@ -1129,6 +1148,7 @@ public class HistoryStoreTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testModifiedStamp() throws CoreException {
 		/* Initialize common objects. */
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -1168,6 +1188,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the moved file should have 4 states as it retains the states from
 	 * before the move took place as well.
 	 */
+	@Test
 	public void testMoveFolder() throws Exception {
 		String[] contents = {"content1", "content2", "content3", "content4", "content5"};
 		// create common objects
@@ -1233,6 +1254,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the copied file should have 4 states as it retains the states from
 	 * before the copy took place as well.
 	 */
+	@Test
 	public void testMoveProject() throws Exception {
 		String[] contents = {"content1", "content2", "content3", "content4", "content5"};
 		// create common objects
@@ -1281,6 +1303,7 @@ public class HistoryStoreTest extends ResourceTest {
 		project.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void testRemoveAll() throws CoreException {
 		/* Create common objects. */
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -1376,6 +1399,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the copied file should have 4 states as it retains the states from
 	 * before the copy took place as well.
 	 */
+	@Test
 	public void testSimpleCopy() throws Exception {
 		/* Initialize common objects. */
 		IProject project = getWorkspace().getRoot().getProject("SimpleCopyProject");
@@ -1438,6 +1462,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the moved file should have 4 states as it retains the states from
 	 * before the move took place as well.
 	 */
+	@Test
 	public void testSimpleMove() throws Exception {
 		/* Initialize common objects. */
 		IProject project = getWorkspace().getRoot().getProject("SimpleMoveProject");
@@ -1498,6 +1523,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 *   6. Set new content				"content 2"			4
 	 *   7. Roll back to third version  "content 3"			5
 	 */
+	@Test
 	public void testSimpleUse() throws Exception {
 		/* Initialize common objects. */
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -1575,4 +1601,5 @@ public class HistoryStoreTest extends ResourceTest {
 		// Check file contents.
 		assertTrue("9.2", compareContent(createInputStream(contents[1]), file.getContents(false)));
 	}
+
 }
