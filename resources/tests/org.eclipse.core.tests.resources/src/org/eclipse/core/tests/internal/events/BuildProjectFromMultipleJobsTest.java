@@ -18,6 +18,11 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +41,12 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.internal.builders.ConfigurationBuilder;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.eclipse.core.tests.resources.regression.SimpleBuilder;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests that triggering a project build from multiple jobs does not cause assertion failures,
@@ -45,29 +54,29 @@ import org.eclipse.core.tests.resources.regression.SimpleBuilder;
  *
  * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=517411">Eclipse bug 517411</a>
  */
-public class BuildProjectFromMultipleJobsTest extends ResourceTest {
+public class BuildProjectFromMultipleJobsTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final String TEST_PROJECT_NAME = "ProjectForBuildCommandTest";
 
 	private final ErrorLogListener logListener = new ErrorLogListener();
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		// auto-build makes reproducing the problem harder,
 		// since it may build before we trigger parallel builds from the test
 		setAutoBuilding(false);
 		Platform.addLogListener(logListener);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		Job.getJobManager().cancel(BuildTestProject.class);
 
 		Platform.removeLogListener(logListener);
 		logListener.clear();
-
-		super.tearDown();
 	}
 
 	/**
@@ -78,6 +87,7 @@ public class BuildProjectFromMultipleJobsTest extends ResourceTest {
 	 *
 	 * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=517411">Eclipse bug 517411</a>
 	 */
+	@Test
 	public void test10IterationsWithBuildsFrom8Jobs() throws Exception {
 		IProgressMonitor monitor = new NullProgressMonitor();
 
@@ -112,23 +122,26 @@ public class BuildProjectFromMultipleJobsTest extends ResourceTest {
 	/**
 	 * Tests that modifying {@link BuildCommand#getBuilders()} map does not allow to modify internal state of the command.
 	 */
-	@SuppressWarnings("rawtypes")
+	@Test
 	public void testBuildersAreNotModifiable() throws Exception {
 		Project project = (Project) createTestProject(ConfigurationBuilder.BUILDER_NAME, null);
 		project.build(IncrementalProjectBuilder.FULL_BUILD, null);
 
 		// Get a non-cloned version of the project desc build spec
 		BuildCommand buildCommand = (BuildCommand) project.internalGetDescription().getBuildSpec(false)[0];
-		Map buildersMap = (Map) buildCommand.getBuilders();
-		assertEquals(1, buildersMap.size());
+		assertThat(buildCommand.getBuilders(), instanceOf(Map.class));
+		if (buildCommand.getBuilders() instanceof Map<?, ?> buildersMap) {
+			assertThat(buildersMap.entrySet(), hasSize(1));
+			// Try to change the internal data
+			buildersMap.clear();
+			assertThat(buildersMap.entrySet(), hasSize(0));
+		}
 
-		// Try to change the internal data
-		buildersMap.clear();
-		assertEquals(0, buildersMap.size());
-
-		// Should still be OK
-		buildersMap = (Map) buildCommand.getBuilders();
-		assertEquals("BuildCommand state was changed!", 1, buildersMap.size());
+		assertThat(buildCommand.getBuilders(), instanceOf(Map.class));
+		if (buildCommand.getBuilders() instanceof Map<?, ?> buildersMap) {
+			// Should still be OK
+			assertThat("BuildCommand state was changed!", buildersMap.entrySet(), hasSize(1));
+		}
 	}
 
 	private IProject createTestProject(String builderId, IProgressMonitor monitor) throws CoreException {
