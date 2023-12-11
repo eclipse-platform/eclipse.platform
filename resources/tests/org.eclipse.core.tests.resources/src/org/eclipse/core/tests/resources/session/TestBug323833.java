@@ -40,7 +40,7 @@ public class TestBug323833 extends WorkspaceSessionTest {
 			return;
 		}
 
-		IFileStore fileStore = getTempStore().getChild(createUniqueString());
+		IFileStore fileStore = workspaceRule.getTempStore().getChild(createUniqueString());
 		createInFileSystem(fileStore);
 
 		// set EFS.ATTRIBUTE_READ_ONLY which also sets EFS.IMMUTABLE on Mac
