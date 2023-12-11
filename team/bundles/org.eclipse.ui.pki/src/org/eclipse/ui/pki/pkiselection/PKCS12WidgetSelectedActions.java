@@ -1,4 +1,4 @@
-package org.eclipse.pki.pkiselection;
+package org.eclipse.ui.pki.pkiselection;
 
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;

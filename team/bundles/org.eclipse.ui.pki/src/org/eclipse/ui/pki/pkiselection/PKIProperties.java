@@ -1,4 +1,4 @@
-package org.eclipse.pki.pkiselection;
+package org.eclipse.ui.pki.pkiselection;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
