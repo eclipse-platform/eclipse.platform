@@ -25,6 +25,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.IPreferenceConstants;
+import org.eclipse.ui.pki.pkiselection.PKCSpick;
+import org.eclipse.ui.pki.pkiselection.PKI;
+import org.eclipse.ui.pki.pkiselection.PKIProperties;
 import org.eclipse.ui.pki.util.ChangedPressedFieldEditorStatus;
 import org.eclipse.ui.pki.util.PKISecureStorage;
 import org.eclipse.ui.pki.util.TrustStoreSecureStorage;
@@ -32,9 +35,6 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
 import org.eclipse.pki.auth.AuthenticationPlugin;
 import org.eclipse.pki.pkcs.VendorImplementation;
-import org.eclipse.pki.pkiselection.PKCSpick;
-import org.eclipse.pki.pkiselection.PKI;
-import org.eclipse.pki.pkiselection.PKIProperties;
 
 
 /**

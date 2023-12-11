@@ -16,8 +16,7 @@ Bundle-Version: 1.0.0
 Export-Package: org.eclipse.core.pki,
  org.eclipse.pki.auth,
  org.eclipse.pki.exception,
- org.eclipse.pki.pkcs,
- org.eclipse.pki.pkiselection
+ org.eclipse.pki.pkcs
 Bundle-Vendor: %PLUGIN_PROVIDER
 Automatic-Module-Name: org.eclipse.core.pki
 Bundle-ActivationPolicy: lazy
