@@ -2,7 +2,7 @@ package org.eclipse.pki.pkcs;
 
 import java.util.Properties;
 
-import org.eclipse.pki.util.SecurityFileSnapshot;
+import org.eclipse.ui.pki.util.SecurityFileSnapshot;
 
 public enum PublicKeySecurity {
 	INSTANCE;

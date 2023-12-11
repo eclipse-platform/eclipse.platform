@@ -40,8 +40,11 @@ import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-
-
+import org.eclipse.ui.pki.util.ChangedPressedFieldEditorStatus;
+import org.eclipse.ui.pki.util.KeyStoreFormat;
+import org.eclipse.ui.pki.util.KeyStoreUtil;
+import org.eclipse.ui.pki.util.LogUtil;
+import org.eclipse.ui.pki.util.PKISecureStorage;
 import org.eclipse.pki.auth.AuthenticationPlugin;
 import org.eclipse.pki.pkcs.VendorImplementation;
 import org.eclipse.pki.pkiselection.PKCSSelected;
@@ -50,11 +53,6 @@ import org.eclipse.pki.pkiselection.PKI;
 import org.eclipse.pki.pkiselection.PKIProperties;
 import org.eclipse.pki.preferences.AuthenticationPreferences;
 import org.eclipse.pki.ui.PKCSButtons;
-import org.eclipse.pki.util.ChangedPressedFieldEditorStatus;
-import org.eclipse.pki.util.KeyStoreFormat;
-import org.eclipse.pki.util.KeyStoreUtil;
-import org.eclipse.pki.util.LogUtil;
-import org.eclipse.pki.util.PKISecureStorage;
 
  
  

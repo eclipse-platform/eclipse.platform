@@ -19,12 +19,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
-
+import org.eclipse.ui.pki.util.ChangedPressedFieldEditorStatus;
 import org.eclipse.pki.auth.AuthenticationPlugin;
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.pki.pkiselection.PKCSpick;
 import org.eclipse.pki.pkiselection.PKIProperties;
-import org.eclipse.pki.util.ChangedPressedFieldEditorStatus;
 
 /**
  * This class can be used in an {@link FieldEditorPreferencePage} to represent an

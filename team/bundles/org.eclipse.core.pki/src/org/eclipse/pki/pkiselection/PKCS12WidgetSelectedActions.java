@@ -3,8 +3,7 @@ package org.eclipse.pki.pkiselection;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.pki.util.KeyStoreFormat;
+import org.eclipse.ui.pki.util.KeyStoreFormat;
 
 public class PKCS12WidgetSelectedActions {
 	
