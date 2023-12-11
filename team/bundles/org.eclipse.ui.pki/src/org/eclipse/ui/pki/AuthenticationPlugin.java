@@ -80,7 +80,7 @@ import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.ui.pki.util.LogUtil;
 import org.eclipse.ui.pki.util.PKIAuthenticator;
 import org.eclipse.ui.pki.util.SecurityFileSnapshot;
-import org.eclipse.pki.wizard.PKILoginWizard;
+import org.eclipse.ui.pki.wizard.PKILoginWizard;
 import org.eclipse.ui.pki.wizard.TrustStoreLoginWizard;
 
 import org.eclipse.core.runtime.IPath;
