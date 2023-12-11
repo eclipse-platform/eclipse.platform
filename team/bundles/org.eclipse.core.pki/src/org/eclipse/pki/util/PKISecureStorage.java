@@ -15,12 +15,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
+import org.eclipse.ui.pki.AuthenticationPlugin;
+import org.eclipse.ui.pki.PKCSpick;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.pki.auth.AuthenticationPlugin;
 import org.eclipse.pki.pkcs.VendorImplementation;
 
 import org.eclipse.pki.pkiselection.PKCSSelected;
-import org.eclipse.pki.pkiselection.PKCSpick;
 import org.eclipse.pki.pkiselection.PKIProperties;
 
 /**
