@@ -17,6 +17,8 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -28,11 +30,18 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * This class tests the public API of IResourceChangeEvent.
  */
-public class IResourceChangeEventTest extends ResourceTest {
+public class IResourceChangeEventTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/* some random resource handles */
 	protected IProject project1;
 	protected IProject project2;
@@ -52,10 +61,8 @@ public class IResourceChangeEventTest extends ResourceTest {
 	 * Sets up the fixture, for example, open a network connection.
 	 * This method is called before a test is executed.
 	 */
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		// Create some resource handles
 		project1 = getWorkspace().getRoot().getProject("Project" + 1);
 		project2 = getWorkspace().getRoot().getProject("Project" + 2);
@@ -79,6 +86,7 @@ public class IResourceChangeEventTest extends ResourceTest {
 	/**
 	 * Tests the IResourceChangeEvent#findMarkerDeltas method.
 	 */
+	@Test
 	public void testFindMarkerDeltas() throws CoreException {
 		/*
 		 * The following changes will occur:
@@ -132,6 +140,7 @@ public class IResourceChangeEventTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testFindMarkerDeltasInEmptyDelta() throws CoreException {
 		/*
 		 * The following changes will occur:
@@ -211,4 +220,5 @@ public class IResourceChangeEventTest extends ResourceTest {
 		assertTrue("5.1", found2);
 		assertTrue("5.2", found3);
 	}
+
 }

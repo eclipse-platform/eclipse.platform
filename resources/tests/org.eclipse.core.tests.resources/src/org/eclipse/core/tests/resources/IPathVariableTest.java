@@ -15,9 +15,14 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -39,23 +44,40 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests path variables.
  */
-public class IPathVariableTest extends ResourceTest {
+public class IPathVariableTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	IPathVariableManager manager = null;
 	IProject project = null;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		project = getWorkspace().getRoot().getProject("MyProject");
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 		assertTrue("1.4", project.exists());
 		manager = project.getPathVariableManager();
+	}
+
+	/**
+	 * Ensure there are no path variables in the workspace.
+	 */
+	@After
+	public void tearDown() throws Exception {
+		String[] names = manager.getPathVariableNames();
+		for (String name : names) {
+			manager.setValue(name, (IPath) null);
+		}
 	}
 
 	static class PathVariableChangeVerifier implements IPathVariableChangeListener {
@@ -170,6 +192,7 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#getPathVariableNames
 	 */
+	@Test
 	public void testGetPathVariableNames() throws CoreException {
 		String[] names = null;
 
@@ -204,6 +227,7 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#getValue and IPathVariableManager#setValue
 	 */
+	@Test
 	public void testGetSetValue() throws CoreException {
 		boolean WINDOWS = java.io.File.separatorChar == '\\';
 		IPath pathOne = WINDOWS ? IPath.fromOSString("C:\\testGetSetValue") : IPath.fromOSString("/testGetSetValue");
@@ -259,6 +283,7 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#isDefined
 	 */
+	@Test
 	public void testIsDefined() throws CoreException {
 		assertTrue("0.0", !manager.isDefined("one"));
 		manager.setValue("one", IPath.ROOT);
@@ -270,6 +295,7 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#resolvePath
 	 */
+	@Test
 	public void testResolvePathWithMacro() throws CoreException {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
 		IPath pathOne = WINDOWS ? IPath.fromOSString("c:/testGetSetValue/foo") : IPath.fromOSString("/testGetSetValue/foo");
@@ -287,6 +313,7 @@ public class IPathVariableTest extends ResourceTest {
 		assertEquals("1.0", expected, actual);
 	}
 
+	@Test
 	public void testProjectLoc() {
 		IPath path = IPath.fromOSString("${PROJECT_LOC}/bar");
 		IPath projectLocation = project.getLocation();
@@ -296,6 +323,7 @@ public class IPathVariableTest extends ResourceTest {
 		assertEquals("1.0", expected, actual);
 	}
 
+	@Test
 	public void testEclipseHome() {
 		IPath path = IPath.fromOSString("${ECLIPSE_HOME}/bar");
 		IPath expected = IPath.fromOSString(Platform.getInstallLocation().getURL().getPath()).append("bar");
@@ -303,6 +331,7 @@ public class IPathVariableTest extends ResourceTest {
 		assertEquals("1.0", expected, actual);
 	}
 
+	@Test
 	public void testWorkspaceLocation() {
 		IPath path = IPath.fromOSString("${WORKSPACE_LOC}/bar");
 		IPath expected = project.getWorkspace().getRoot().getLocation().append("bar");
@@ -313,7 +342,7 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IgetVariableRelativePathLocation(project, IPath)
 	 */
-
+	@Test
 	public void testGetVariableRelativePathLocation() {
 		IPath path = project.getWorkspace().getRoot().getLocation().append("bar");
 		IPath actual;
@@ -348,6 +377,7 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#resolvePath
 	 */
+	@Test
 	public void testResolvePath() throws CoreException {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
 		IPath pathOne = WINDOWS ? IPath.fromOSString("C:/testGetSetValue/foo") : IPath.fromOSString("/testGetSetValue/foo");
@@ -421,6 +451,7 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#convertToRelative()
 	 */
+	@Test
 	public void testConvertToRelative() throws CoreException {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
 		IPath pathOne = WINDOWS ? IPath.fromOSString("c:/foo/bar") : IPath.fromOSString("/foo/bar");
@@ -482,8 +513,8 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#testValidateName
 	 */
+	@Test
 	public void testValidateName() {
-
 		// valid names
 		assertTrue("0.0", manager.validateName("ECLIPSEHOME").isOK());
 		assertTrue("0.1", manager.validateName("ECLIPSE_HOME").isOK());
@@ -496,12 +527,12 @@ public class IPathVariableTest extends ResourceTest {
 		assertTrue("1.2", !manager.validateName("FOO$BAR").isOK());
 		assertTrue("1.3", !manager.validateName(" FOO").isOK());
 		assertTrue("1.4", !manager.validateName("FOO ").isOK());
-
 	}
 
 	/**
 	 * Regression test for Bug 304195
 	 */
+	@Test
 	public void testEmptyURIResolution() {
 		IPath path = IPath.fromOSString(new String());
 		URI uri = URIUtil.toURI(path);
@@ -512,6 +543,7 @@ public class IPathVariableTest extends ResourceTest {
 	/**
 	 * Test IPathVariableManager#addChangeListener and IPathVariableManager#removeChangeListener
 	 */
+	@Test
 	public void testListeners() throws Exception {
 		PathVariableChangeVerifier listener = new PathVariableChangeVerifier();
 		manager.addChangeListener(listener);
@@ -552,20 +584,9 @@ public class IPathVariableTest extends ResourceTest {
 	}
 
 	/**
-	 * Ensure there are no path variables in the workspace.
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		String[] names = manager.getPathVariableNames();
-		for (String name : names) {
-			manager.setValue(name, (IPath) null);
-		}
-	}
-
-	/**
 	 * Regression for Bug 308975 - Can't recover from 'invalid' path variable
 	 */
+	@Test
 	public void testLinkExistInProjectDescriptionButNotInWorkspace() throws Exception {
 		String dorProjectContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + //
 				"<projectDescription>" + //
@@ -612,6 +633,7 @@ public class IPathVariableTest extends ResourceTest {
 	 * attempting to get the location of a resource that would live under an
 	 * existing IFile.
 	 */
+	@Test
 	public void testDiscoverLocationOfInvalidFile() throws CoreException {
 		IPath filep = IPath.fromOSString("someFile");
 		IPath invalidChild = filep.append("invalidChild");
@@ -626,4 +648,5 @@ public class IPathVariableTest extends ResourceTest {
 		// Don't care about the result, just care there's no exception.
 		invalidFile.getLocationURI();
 	}
+
 }

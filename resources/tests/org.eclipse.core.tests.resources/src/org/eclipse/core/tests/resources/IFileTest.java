@@ -30,7 +30,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -51,12 +54,15 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
-public class IFileTest extends ResourceTest {
+public class IFileTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	//name of files according to sync category
 	public static final String DOES_NOT_EXIST = "DoesNotExistFile";
 
@@ -264,16 +270,9 @@ public class IFileTest extends ResourceTest {
 		}
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		generateInterestingFiles();
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		super.tearDown();
 	}
 
 	@Test
@@ -963,4 +962,5 @@ public class IFileTest extends ResourceTest {
 		QualifiedName nullQualifierName = new QualifiedName(null, "foo");
 		assertThrows(CoreException.class, () -> target.setPersistentProperty(nullQualifierName, value));
 	}
+
 }

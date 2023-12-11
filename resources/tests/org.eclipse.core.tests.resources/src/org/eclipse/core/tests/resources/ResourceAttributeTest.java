@@ -16,6 +16,8 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.canCreateSymLinks;
+import static org.eclipse.core.tests.harness.FileSystemHelper.createSymLink;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
@@ -25,6 +27,11 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSuppo
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import org.eclipse.core.filesystem.EFS;
@@ -34,8 +41,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class ResourceAttributeTest extends ResourceTest {
+public class ResourceAttributeTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private void setArchive(IResource resource, boolean value) throws CoreException {
 		ResourceAttributes attributes = resource.getResourceAttributes();
@@ -65,11 +78,11 @@ public class ResourceAttributeTest extends ResourceTest {
 		resource.setResourceAttributes(attributes);
 	}
 
+	@Test
 	public void testAttributeArchive() throws CoreException {
-		// only activate this test on platforms that support it
-		if (!isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE)) {
-			return;
-		}
+		assumeTrue("test only relevant for platforms supporting archive attribute",
+				isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE));
+
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
 		createInWorkspace(file, createRandomString());
@@ -89,11 +102,11 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertTrue("2.4", !project.getResourceAttributes().isArchive());
 	}
 
+	@Test
 	public void testAttributeExecutable() throws CoreException {
-		// only activate this test on platforms that support it
-		if (!isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE)) {
-			return;
-		}
+		assumeTrue("test only relevant for platforms supporting executable attribute",
+				isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE));
+
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
 		createInWorkspace(file, createRandomString());
@@ -114,11 +127,11 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertTrue("2.4", project.getResourceAttributes().isExecutable());
 	}
 
+	@Test
 	public void testAttributeHidden() throws CoreException {
-		// only activate this test on platforms that support it
-		if (!isAttributeSupported(EFS.ATTRIBUTE_HIDDEN)) {
-			return;
-		}
+		assumeTrue("test only relevant for platforms supporting hidden attribute",
+				isAttributeSupported(EFS.ATTRIBUTE_HIDDEN));
+
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
 		createInWorkspace(file, createRandomString());
@@ -138,11 +151,11 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertTrue("2.4", !project.getResourceAttributes().isHidden());
 	}
 
+	@Test
 	public void testAttributeReadOnly() throws CoreException {
-		// only activate this test on platforms that support it
-		if (!isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY)) {
-			return;
-		}
+		assumeTrue("test only relevant for platforms supporting read-only attribute",
+				isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY));
+
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("target");
 		createInWorkspace(file, createRandomString());
@@ -165,6 +178,7 @@ public class ResourceAttributeTest extends ResourceTest {
 	/**
 	 * Attributes of a closed project should be null.
 	 */
+	@Test
 	public void testClosedProject() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);
@@ -172,6 +186,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertNull("1.0", project.getResourceAttributes());
 	}
 
+	@Test
 	public void testNonExistingResource() throws CoreException {
 		//asking for attributes of a non-existent resource should return null
 		IProject project = getWorkspace().getRoot().getProject("testNonExistingResource");
@@ -201,11 +216,12 @@ public class ResourceAttributeTest extends ResourceTest {
 	 * Test commented out because current failing on Hudson.
 	 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=397353
 	 */
-	public void _testRefreshExecutableOnFolder() throws CoreException {
-		// only test on platforms that implement the executable bit
-		if ((EFS.getLocalFileSystem().attributes() & EFS.ATTRIBUTE_EXECUTABLE) == 0) {
-			return;
-		}
+	@Test
+	@Ignore("currently failing on Hudson: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=397353")
+	public void testRefreshExecutableOnFolder() throws CoreException {
+		assumeTrue("test only relevant for platforms supporting executable attribute",
+				isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE));
+
 		IProject project = getWorkspace().getRoot().getProject("testRefreshExecutableOnFolder");
 		IFolder folder = project.getFolder("folder");
 		IFile file = folder.getFile("file");
@@ -229,11 +245,10 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertTrue("2.2", !fileExists);
 	}
 
+	@Test
 	public void testAttributeSymlink() throws Exception {
-		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+		assumeTrue("test only relevant for platforms supporting symlinks", canCreateSymLinks());
+
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile link = project.getFile("link");
 		createInWorkspace(link, createRandomString());
@@ -273,6 +288,7 @@ public class ResourceAttributeTest extends ResourceTest {
 		assertTrue("3.0", !link.getResourceAttributes().isSymbolicLink());
 	}
 
+	@Test
 	public void testAttributes() throws CoreException {
 		int[] attributes = new int[] {EFS.ATTRIBUTE_GROUP_READ, EFS.ATTRIBUTE_GROUP_WRITE, EFS.ATTRIBUTE_GROUP_EXECUTE, EFS.ATTRIBUTE_OTHER_READ, EFS.ATTRIBUTE_OTHER_WRITE, EFS.ATTRIBUTE_OTHER_EXECUTE};
 
@@ -307,4 +323,5 @@ public class ResourceAttributeTest extends ResourceTest {
 			assertFalse("4.0", project.getResourceAttributes().isSet(attribute));
 		}
 	}
+
 }

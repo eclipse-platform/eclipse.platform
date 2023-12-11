@@ -15,6 +15,8 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_CYCLE1;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_CYCLE2;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_CYCLE3;
@@ -40,8 +42,13 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -65,11 +72,16 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
+import org.junit.Rule;
+import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
-public class IWorkspaceTest extends ResourceTest {
+public class IWorkspaceTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IResource[] buildResourceHierarchy() throws CoreException {
 		return buildResources(getWorkspace().getRoot(),
@@ -92,15 +104,10 @@ public class IWorkspaceTest extends ResourceTest {
 		return null;
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		super.tearDown();
-	}
-
 	/**
 	 * Tests handling of runnables that throw OperationCanceledException.
 	 */
+	@Test
 	public void testCancelRunnable() {
 		assertThrows(OperationCanceledException.class, () -> getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			throw new OperationCanceledException();
@@ -112,6 +119,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * 		IStatus copy([IResource, IPath, boolean, IProgressMonitor)
 	 * See also testMultiCopy()
 	 */
+	@Test
 	public void testCopy() throws Exception {
 		IResource[] resources = buildResourceHierarchy();
 		IProject project = (IProject) resources[1];
@@ -228,6 +236,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 * 		IStatus delete([IResource, boolean, IProgressMonitor)
 	 */
+	@Test
 	public void testDelete() throws CoreException {
 		IResource[] resources = buildResourceHierarchy();
 		IProject project = (IProject) resources[1];
@@ -281,6 +290,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 * 	{@link IWorkspace#forgetSavedTree(String)}.
 	 */
+	@Test
 	public void testForgetSavedTree() {
 		// according to javadoc spec, null means forget all plugin trees
 		getWorkspace().forgetSavedTree(null);
@@ -290,6 +300,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IProjectNatureDescriptor[] getNatureDescriptors()
 	 */
+	@Test
 	public void testGetNatureDescriptors() {
 		//NOTE: see static fields for description of available test natures
 		IProjectNatureDescriptor[] descriptors = getWorkspace().getNatureDescriptors();
@@ -393,6 +404,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IProjectNatureDescriptor getNatureDescriptor(String)
 	 */
+	@Test
 	public void testGetNatureDescriptor() {
 		//NOTE: see static fields for description of available test natures
 		IWorkspace ws = getWorkspace();
@@ -496,6 +508,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus move([IResource, IPath, boolean, IProgressMonitor)
 	 */
+	@Test
 	public void testMove() throws CoreException {
 		/* create folders and files */
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -557,6 +570,7 @@ public class IWorkspaceTest extends ResourceTest {
 	/**
 	 * Another test method for IWorkspace.copy().  See also testCopy
 	 */
+	@Test
 	public void testMultiCopy() throws Exception {
 		/* create common objects */
 		IResource[] resources = buildResourceHierarchy();
@@ -650,6 +664,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertEquals("5.2", 1, status.getChildren().length);
 	}
 
+	@Test
 	public void testMultiCreation() throws Throwable {
 		final IProject project = getWorkspace().getRoot().getProject("bar");
 		final IResource[] resources = buildResources(project, new String[] {"a/", "a/b"});
@@ -676,6 +691,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertExistsInWorkspace(resources);
 	}
 
+	@Test
 	public void testMultiDeletion() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("testProject");
 		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/x", "c/b/y", "c/b/z"});
@@ -689,6 +705,7 @@ public class IWorkspaceTest extends ResourceTest {
 	/**
 	 * Test thread safety of the API method IWorkspace.setDescription.
 	 */
+	@Test
 	public void testMultiSetDescription() throws CoreException {
 		final int THREAD_COUNT = 2;
 		final CoreException[] errorPointer = new CoreException[1];
@@ -730,6 +747,7 @@ public class IWorkspaceTest extends ResourceTest {
 	/**
 	 * Test API method IWorkspace.setDescription.
 	 */
+	@Test
 	public void testSave() throws CoreException {
 		// ensure save returns a warning if a project's .project file is deleted.
 		IProject project = getWorkspace().getRoot().getProject("Broken");
@@ -746,6 +764,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     String[] sortNatureSet(String[])
 	 */
+	@Test
 	public void testSortNatureSet() {
 		//NOTE: see static fields for description of available test natures
 		IWorkspace ws = getWorkspace();
@@ -779,6 +798,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue("4.1", first || second || third);
 	}
 
+	@Test
 	public void testValidateEdit() throws CoreException {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
@@ -798,6 +818,7 @@ public class IWorkspaceTest extends ResourceTest {
 		file.setReadOnly(false);
 	}
 
+	@Test
 	public void testValidateLinkLocation() {
 		// TODO
 		// see also: some tests in LinkedResourceWithPathVariableTest
@@ -807,6 +828,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus validateName(String, int)
 	 */
+	@Test
 	public void testValidateName() {
 		/* normal name */
 		assertTrue("1.1", getWorkspace().validateName("abcdef", IResource.FILE).isOK());
@@ -865,6 +887,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus validateNatureSet(String[])
 	 */
+	@Test
 	public void testValidateNatureSet() {
 		//NOTE: see static fields for description of available test natures
 		IWorkspace ws = getWorkspace();
@@ -887,6 +910,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus validatePath(String, int)
 	 */
+	@Test
 	public void testValidatePath() {
 		/* normal path */
 		assertTrue("1.1", getWorkspace().validatePath("/one/two/three/four/", IResource.FILE | IResource.FOLDER).isOK());
@@ -944,6 +968,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus validateProjectLocation(IProject, IPath)
 	 */
+	@Test
 	public void testValidateProjectLocation() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("Project");
@@ -1095,6 +1120,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus validateProjectLocationURI(IProject, URI)
 	 */
+	@Test
 	public void testValidateProjectLocationURI() throws URISyntaxException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("Project");
@@ -1106,6 +1132,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertFalse("1.1", workspace.validateProjectLocationURI(project, uri).isOK());
 	}
 
+	@Test
 	public void testWorkspaceService() {
 		final BundleContext context = FrameworkUtil.getBundle(IWorkspaceTest.class).getBundleContext();
 		ServiceReference<IWorkspace> ref = context.getServiceReference(IWorkspace.class);
@@ -1114,10 +1141,12 @@ public class IWorkspaceTest extends ResourceTest {
 		assertNotNull("1.1", ws);
 	}
 
+	@Test
 	public void testGetFilterMatcherDescriptor() {
 		IFilterMatcherDescriptor descriptor = getWorkspace().getFilterMatcherDescriptor("");
 		assertNull("1.0", descriptor);
 		descriptor = getWorkspace().getFilterMatcherDescriptor("org.eclipse.core.resources.regexFilterMatcher");
 		assertNotNull("1.1", descriptor);
 	}
+
 }

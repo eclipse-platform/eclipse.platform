@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
@@ -21,7 +22,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
@@ -36,8 +40,15 @@ import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
+public class LinkedResourceSyncMoveAndCopyTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	protected IProject existingProject;
 	protected IProject otherExistingProject;
@@ -56,9 +67,8 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		return uri;
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		existingProject = getWorkspace().getRoot().getProject("ExistingProject");
 		otherExistingProject = getWorkspace().getRoot().getProject("OtherExistingProject");
 		createInWorkspace(new IResource[] { existingProject, otherExistingProject });
@@ -90,6 +100,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		//		}
 	}
 
+	@Test
 	public void testFileLinkedToNonExistent_Deep() throws Exception {
 		IFile fileLink = existingProject.getFile(createUniqueString());
 		IPath fileLocation = getRandomLocation();
@@ -103,7 +114,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(fileLink, IResource.NONE, false);
 
 		createInFileSystem(fileLocation);
-		deleteOnTearDown(fileLocation);
+		workspaceRule.deleteOnTearDown(fileLocation);
 
 		exception = assertThrows(CoreException.class, () -> fileLink
 				.setContents(new ByteArrayInputStream(createRandomString().getBytes()), IResource.NONE, createTestMonitor()));
@@ -118,6 +129,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(fileLink, IResource.NONE, true);
 	}
 
+	@Test
 	public void testFileLinkedToNonExistent_Shallow() throws Exception {
 		IFile fileLink = existingProject.getFile(createUniqueString());
 		IPath fileLocation = getRandomLocation();
@@ -127,7 +139,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(fileLink, IResource.SHALLOW, true);
 
 		createInFileSystem(fileLocation);
-		deleteOnTearDown(fileLocation);
+		workspaceRule.deleteOnTearDown(fileLocation);
 
 		assertFalse("3.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(fileLink, IResource.SHALLOW, true);
@@ -138,6 +150,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(fileLink, IResource.SHALLOW, true);
 	}
 
+	@Test
 	public void testFolderLinkedToNonExistent_Deep() throws CoreException {
 		IFolder folderLink = existingProject.getFolder(createUniqueString());
 		IPath folderLocation = getRandomLocation();
@@ -147,7 +160,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(folderLink, IResource.NONE, false);
 
 		folderLocation.toFile().mkdir();
-		deleteOnTearDown(folderLocation);
+		workspaceRule.deleteOnTearDown(folderLocation);
 
 		assertFalse("3.0", folderLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folderLink, IResource.NONE, true);
@@ -158,6 +171,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(folderLink, IResource.NONE, true);
 	}
 
+	@Test
 	public void testFolderLinkedToNonExistent_Shallow() throws CoreException {
 		IFolder folderLink = existingProject.getFolder(createUniqueString());
 		IPath folderLocation = getRandomLocation();
@@ -167,7 +181,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(folderLink, IResource.SHALLOW, true);
 
 		folderLocation.toFile().mkdir();
-		deleteOnTearDown(folderLocation);
+		workspaceRule.deleteOnTearDown(folderLocation);
 
 		assertFalse("3.0", folderLink.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folderLink, IResource.SHALLOW, true);
@@ -181,6 +195,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	/**
 	 * Tests bug 299024.
 	 */
+	@Test
 	public void testMoveFolderWithLinksToNonExisitngLocations_withShallow() throws CoreException {
 		// create a folder
 		IFolder folderWithLinks = existingProject.getFolder(createUniqueString());
@@ -209,7 +224,9 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 	/**
 	 * Tests bug 299024.
 	 */
-	public void _testCopyFolderWithLinksToNonExisitngLocations_withShallow() throws CoreException {
+	@Test
+	@Ignore("see bug 299024")
+	public void testCopyFolderWithLinksToNonExistingLocations_withShallow() throws CoreException {
 		// create a folder
 		IFolder folderWithLinks = existingProject.getFolder(createUniqueString());
 		folderWithLinks.create(true, true, createTestMonitor());
@@ -233,6 +250,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		assertTrue("6.0", linkedFile.exists());
 	}
 
+	@Test
 	public void testFolderWithFileLinkedToNonExistent_Deep() throws Exception {
 		IFolder folder = existingProject.getFolder(createUniqueString());
 		createInWorkspace(folder);
@@ -246,7 +264,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(folder, IResource.NONE, false);
 
 		createInFileSystem(fileLocation);
-		deleteOnTearDown(fileLocation);
+		workspaceRule.deleteOnTearDown(fileLocation);
 
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folder, IResource.NONE, false);
@@ -257,6 +275,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(folder, IResource.NONE, true);
 	}
 
+	@Test
 	public void testFolderWithFileLinkedToNonExistent_Shallow() throws Exception {
 		IFolder folder = existingProject.getFolder(createUniqueString());
 		createInWorkspace(folder);
@@ -270,7 +289,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(folder, IResource.SHALLOW, true);
 
 		createInFileSystem(fileLocation);
-		deleteOnTearDown(fileLocation);
+		workspaceRule.deleteOnTearDown(fileLocation);
 
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folder, IResource.SHALLOW, true);
@@ -281,6 +300,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(folder, IResource.SHALLOW, true);
 	}
 
+	@Test
 	public void testFolderWithFolderLinkedToNonExistent_Deep() throws CoreException {
 		IFolder folder = existingProject.getFolder(createUniqueString());
 		createInWorkspace(folder);
@@ -294,7 +314,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(folder, IResource.NONE, false);
 
 		folderLocation.toFile().mkdir();
-		deleteOnTearDown(folderLocation);
+		workspaceRule.deleteOnTearDown(folderLocation);
 
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folder, IResource.NONE, true);
@@ -305,6 +325,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(folder, IResource.NONE, true);
 	}
 
+	@Test
 	public void testFolderWithFolderLinkedToNonExistent_Shallow() throws CoreException {
 		IFolder folder = existingProject.getFolder(createUniqueString());
 		createInWorkspace(folder);
@@ -318,7 +339,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(folder, IResource.SHALLOW, true);
 
 		folderLocation.toFile().mkdir();
-		deleteOnTearDown(folderLocation);
+		workspaceRule.deleteOnTearDown(folderLocation);
 
 		assertFalse(folder.isSynchronized(IResource.DEPTH_INFINITE));
 		internalMovedAndCopyTest(folder, IResource.SHALLOW, true);
@@ -329,6 +350,7 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		internalMovedAndCopyTest(folder, IResource.SHALLOW, true);
 	}
 
+	@Test
 	public void test361201() throws CoreException {
 		String linkName = createUniqueString();
 		IFile fileLink = existingProject.getFile(linkName);
@@ -354,4 +376,5 @@ public class LinkedResourceSyncMoveAndCopyTest extends ResourceTest {
 		assertExistsInWorkspace(destProject.getFile(linkName));
 
 	}
+
 }

@@ -15,12 +15,19 @@ package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class ProjectScopeTest extends ResourceTest {
+public class ProjectScopeTest {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testEqualsAndHashCode() {
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		ProjectScope projectScope1 = new ProjectScope(project);
@@ -29,4 +36,5 @@ public class ProjectScopeTest extends ResourceTest {
 		assertTrue(projectScope2.equals(projectScope1));
 		assertTrue(projectScope1.hashCode() == projectScope2.hashCode());
 	}
+
 }

@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,13 +27,18 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Performs black box testing of the following API methods:
  * <code>IWorkspace.computeProjectOrder(IProject[])</code>
  * <code>IWorkspace.computePrerequisiteOrder(IProject[])</code>
  */
-public class ProjectOrderTest extends ResourceTest {
+public class ProjectOrderTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Adds a project reference from the given source project, which must
@@ -58,6 +64,7 @@ public class ProjectOrderTest extends ResourceTest {
 	/**
 	 * P0, P1&lt;-P2&lt;-P3&lt;-P4, P5
 	 */
+	@Test
 	public void test0() throws CoreException {
 		IWorkspace ws = getWorkspace();
 		IWorkspaceRoot root = ws.getRoot();
@@ -109,6 +116,7 @@ public class ProjectOrderTest extends ResourceTest {
 		assertTrue("0.16", x.indexOf(p5) > x.indexOf(p4)); // alpha
 	}
 
+	@Test
 	public void test1() throws CoreException {
 		IWorkspace ws = getWorkspace();
 		IWorkspaceRoot root = ws.getRoot();
@@ -387,6 +395,7 @@ public class ProjectOrderTest extends ResourceTest {
 	 * Cormen, Leiserson, Rivest
 	 * Figure 23.9(b)
 	 */
+	@Test
 	public void test2() throws CoreException {
 		IWorkspace ws = getWorkspace();
 		IWorkspaceRoot root = ws.getRoot();
