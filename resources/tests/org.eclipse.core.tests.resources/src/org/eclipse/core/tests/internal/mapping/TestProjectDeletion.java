@@ -17,28 +17,34 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.mapping.IResourceChangeDescriptionFactory;
 import org.eclipse.core.resources.mapping.ResourceChangeValidator;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * Test to validate project kind and flags on deletion.
  */
-public class TestProjectDeletion extends ResourceTest {
+public class TestProjectDeletion {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	private IResourceChangeDescriptionFactory factory;
 	private IProject project;
 	private static int MASK = 0xFFFFFF;
 	private static int KIND_MASK = 0xFF;
 	private static int FLAGS_MASK = MASK ^= KIND_MASK;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		project = getWorkspace().getRoot().getProject("Project");
 		IResource[] resources = buildResources(project, new String[] { "a/", "a/b/", "a/c/", "a/d", "a/b/e", "a/b/f" });
 		createInWorkspace(resources);
@@ -80,4 +86,5 @@ public class TestProjectDeletion extends ResourceTest {
 			checkAffectedChildrenStatus(iResourceDelta.getAffectedChildren(), deleteContents);
 		}
 	}
+
 }
