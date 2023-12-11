@@ -1,4 +1,4 @@
-package org.eclipse.ui.pki.pkcs;
+package org.eclipse.pki.auth;
 
 import java.util.Properties;
 import org.eclipse.ui.pki.util.SecurityFileSnapshot;
