@@ -17,35 +17,41 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSyst
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.tests.resources.OldCorePerformanceTest;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.harness.PerformanceTestRunner;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
-public class BenchCopyFile extends OldCorePerformanceTest {
+public class BenchCopyFile {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	private static final int COUNT = 5000;
 
+	@Test
 	public void testCopyFile() throws Exception {
-		IFileStore input = getTempStore();
+		IFileStore input = workspaceRule.getTempStore();
 		createInFileSystem(input);
 		IFileStore[] output = new IFileStore[COUNT];
 		for (int i = 0; i < output.length; i++) {
-			output[i] = getTempStore();
+			output[i] = workspaceRule.getTempStore();
 		}
-		startBench();
-		for (IFileStore element : output) {
-			input.copy(element, EFS.NONE, null);
-		}
-		stopBench("copyFile", COUNT);
 
+		new PerformanceTestRunner() {
+			int rep = 0;
+
+			@Override
+			protected void test() throws CoreException {
+				input.copy(output[rep], EFS.NONE, null);
+				rep++;
+			}
+		}.run(getClass(), testName.getMethodName(), 1, COUNT);
 	}
 
-	/**
-	 * Override to get a bigger string
-	 */
-	@Override
-	public String getRandomString() {
-		StringBuilder buf = new StringBuilder();
-		for (int i = 0; i < 100; i++) {
-			buf.append("This is a line of text\n");
-		}
-		return buf.toString();
-	}
 }

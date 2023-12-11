@@ -19,17 +19,22 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSyst
 
 import java.io.IOException;
 import java.util.Random;
-import junit.framework.TestCase;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * Automated performance tests for file system operations.
  */
-public class FileSystemPerformanceTest extends TestCase {
+public class FileSystemPerformanceTest {
+
+	@Rule
+	public TestName testName = new TestName();
 
 	private static final String chars = "abcdefghijklmnopqrstuvwxyz";
 	private static final int FILE_COUNT = 100;
@@ -76,19 +81,16 @@ public class FileSystemPerformanceTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testPutFileInfo() throws Exception {
 		createStructure();
 		PerformanceTestRunner runner = new PerformanceTestRunner() {
 			@Override
-			protected void test() {
-				try {
-					setAttributesOnTree();
-				} catch (Exception e) {
-					fail("Failed to set attributes during performance test");
-				}
+			protected void test() throws CoreException {
+				setAttributesOnTree();
 			}
 		};
-		runner.run(this, OUTER, INNER);
+		runner.run(getClass(), testName.getMethodName(), OUTER, INNER);
 		baseStore.delete(EFS.NONE, null);
 	}
 

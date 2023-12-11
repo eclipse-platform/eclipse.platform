@@ -19,6 +19,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
@@ -34,12 +35,23 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * Basic performance calculations for standard workspace operations.
  */
-public class WorkspacePerformanceTest extends ResourceTest {
+public class WorkspacePerformanceTest {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	private static final String chars = "abcdefghijklmnopqrstuvwxyz";
 	static final int REPEATS = 5;
 	private static final int TREE_WIDTH = 10;
@@ -49,29 +61,21 @@ public class WorkspacePerformanceTest extends ResourceTest {
 	IFolder testFolder;
 	IProject testProject;
 
-	IFolder copyFolder() {
+	IFolder copyFolder() throws CoreException {
 		IFolder destination = testProject.getFolder("CopyDestination");
-		try {
-			testFolder.copy(destination.getFullPath(), IResource.NONE, createTestMonitor());
-		} catch (CoreException e) {
-			fail("Failed to copy project in performance test", e);
-		}
+		testFolder.copy(destination.getFullPath(), IResource.NONE, createTestMonitor());
 		return destination;
 	}
 
 	/**
 	 * Creates a project and fills it with contents
 	 */
-	void createAndPopulateProject(final int totalResources) {
-		try {
-			getWorkspace().run((IWorkspaceRunnable) monitor -> {
-				testProject.create(createTestMonitor());
-				testProject.open(createTestMonitor());
-				createFolder(testFolder, totalResources);
-			}, createTestMonitor());
-		} catch (CoreException e) {
-			fail("Failed to create project in performance test", e);
-		}
+	void createAndPopulateProject(final int totalResources) throws CoreException {
+		getWorkspace().run((IWorkspaceRunnable) monitor -> {
+			testProject.create(createTestMonitor());
+			testProject.open(createTestMonitor());
+			createFolder(testFolder, totalResources);
+		}, createTestMonitor());
 	}
 
 	private byte[] createBytes(int length) {
@@ -113,13 +117,9 @@ public class WorkspacePerformanceTest extends ResourceTest {
 		testProject.open(IResource.NONE, null);
 	}
 
-	IFolder moveFolder() {
+	IFolder moveFolder() throws CoreException {
 		IFolder destination = testFolder.getProject().getFolder("MoveDestination");
-		try {
-			testFolder.move(destination.getFullPath(), IResource.NONE, createTestMonitor());
-		} catch (CoreException e) {
-			fail("Failed to move folder during performance test", e);
-		}
+		testFolder.move(destination.getFullPath(), IResource.NONE, createTestMonitor());
 		return destination;
 	}
 
@@ -143,8 +143,8 @@ public class WorkspacePerformanceTest extends ResourceTest {
 		}
 	}
 
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		testProject = getWorkspace().getRoot().getProject("Project");
 		testFolder = testProject.getFolder("TopFolder");
 	}
@@ -152,7 +152,8 @@ public class WorkspacePerformanceTest extends ResourceTest {
 	/**
 	 * Benchmark test of creating a project and populating it with folders and files.
 	 */
-	public void testCreateResources() {
+	@Test
+	public void testCreateResources() throws SecurityException, Exception {
 		PerformanceTestRunner runner = new PerformanceTestRunner() {
 			@Override
 			protected void setUp() {
@@ -165,39 +166,37 @@ public class WorkspacePerformanceTest extends ResourceTest {
 			}
 
 			@Override
-			protected void test() {
+			protected void test() throws CoreException {
 				createAndPopulateProject(DEFAULT_TOTAL_RESOURCES);
 			}
 		};
-		runner.run(this, REPEATS, 1);
+		runner.run(getClass(), testName.getMethodName(), REPEATS, 1);
 	}
 
-	public void testDeleteProject() {
+	@Test
+	public void testDeleteProject() throws SecurityException, Exception {
 		//create the project contents
 		PerformanceTestRunner runner = new PerformanceTestRunner() {
 			@Override
-			protected void setUp() {
+			protected void setUp() throws CoreException {
 				createAndPopulateProject(DEFAULT_TOTAL_RESOURCES);
 				waitForBackgroundActivity();
 			}
 
 			@Override
-			protected void test() {
-				try {
-					testProject.delete(IResource.NONE, null);
-				} catch (CoreException e) {
-					fail("Failed to delete project during performance test", e);
-				}
+			protected void test() throws CoreException {
+				testProject.delete(IResource.NONE, null);
 			}
 		};
-		runner.run(this, REPEATS, 1);
+		runner.run(getClass(), testName.getMethodName(), REPEATS, 1);
 	}
 
-	public void testFolderCopy() {
+	@Test
+	public void testFolderCopy() throws SecurityException, Exception {
 		//create the project contents
 		new PerformanceTestRunner() {
 			@Override
-			protected void setUp() {
+			protected void setUp() throws CoreException {
 				createAndPopulateProject(DEFAULT_TOTAL_RESOURCES);
 				waitForBackgroundActivity();
 			}
@@ -208,17 +207,18 @@ public class WorkspacePerformanceTest extends ResourceTest {
 			}
 
 			@Override
-			protected void test() {
+			protected void test() throws CoreException {
 				copyFolder();
 			}
-		}.run(this, REPEATS, 1);
+		}.run(getClass(), testName.getMethodName(), REPEATS, 1);
 	}
 
-	public void testFolderMove() {
+	@Test
+	public void testFolderMove() throws SecurityException, Exception {
 		//create the project contents
 		new PerformanceTestRunner() {
 			@Override
-			protected void setUp() {
+			protected void setUp() throws CoreException {
 				createAndPopulateProject(DEFAULT_TOTAL_RESOURCES);
 				waitForBackgroundActivity();
 			}
@@ -229,13 +229,14 @@ public class WorkspacePerformanceTest extends ResourceTest {
 			}
 
 			@Override
-			protected void test() {
+			protected void test() throws CoreException {
 				moveFolder();
 			}
-		}.run(this, REPEATS, 1);
+		}.run(getClass(), testName.getMethodName(), REPEATS, 1);
 	}
 
-	public void testRefreshProject() {
+	@Test
+	public void testRefreshProject() throws SecurityException, Exception {
 		PerformanceTestRunner runner = new PerformanceTestRunner() {
 			@Override
 			protected void setUp() throws CoreException {
@@ -250,23 +251,20 @@ public class WorkspacePerformanceTest extends ResourceTest {
 			}
 
 			@Override
-			protected void test() {
-				try {
-					testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-				} catch (CoreException e) {
-					fail("Failed to refresh during testRefreshProject", e);
-				}
+			protected void test() throws CoreException {
+				testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
 			}
 		};
 		runner.setFingerprintName("Refresh Project");
-		runner.run(this, REPEATS, 1);
+		runner.run(getClass(), testName.getMethodName(), REPEATS, 1);
 	}
 
-	public void testCloseOpenProject() {
+	@Test
+	public void testCloseOpenProject() throws SecurityException, Exception {
 		// 8 minutes total test time, 400 msec test execution time (*3 inner loops)
 		new PerformanceTestRunner() {
 			@Override
-			protected void setUp() {
+			protected void setUp() throws CoreException {
 				createAndPopulateProject(50000);
 				waitForBackgroundActivity();
 			}
@@ -277,18 +275,15 @@ public class WorkspacePerformanceTest extends ResourceTest {
 			}
 
 			@Override
-			protected void test() {
-				try {
-					testProject.close(null);
-					testProject.open(null);
-				} catch (CoreException e) {
-					fail("Failed to close/open during testCloseOpenProject", e);
-				}
+			protected void test() throws CoreException {
+				testProject.close(null);
+				testProject.open(null);
 			}
-		}.run(this, REPEATS, 3);
+		}.run(getClass(), testName.getMethodName(), REPEATS, 3);
 	}
 
-	public void testLoadSnapshot() throws CoreException {
+	@Test
+	public void testLoadSnapshot() throws SecurityException, Exception {
 		// 2 minutes total test time, 528 msec test execution time
 		IProject snapProject = getWorkspace().getRoot().getProject("SnapProject");
 		createInWorkspace(snapProject);
@@ -313,16 +308,12 @@ public class WorkspacePerformanceTest extends ResourceTest {
 			}
 
 			@Override
-			protected void test() {
-				try {
-					testProject.create(null);
-					testProject.loadSnapshot(IProject.SNAPSHOT_TREE, snapshotLocation, null);
-					testProject.open(null);
-				} catch (CoreException e) {
-					fail("Failed to load snapshot during testLoadSnapshot", e);
-				}
+			protected void test() throws CoreException {
+				testProject.create(null);
+				testProject.loadSnapshot(IProject.SNAPSHOT_TREE, snapshotLocation, null);
+				testProject.open(null);
 			}
-		}.run(this, REPEATS, 1);
+		}.run(getClass(), testName.getMethodName(), REPEATS, 1);
 	}
 
 	/**
@@ -353,4 +344,5 @@ public class WorkspacePerformanceTest extends ResourceTest {
 			//ignore interruption
 		}
 	}
+
 }

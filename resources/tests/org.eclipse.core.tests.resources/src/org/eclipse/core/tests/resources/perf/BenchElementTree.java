@@ -16,14 +16,21 @@ package org.eclipse.core.tests.resources.perf;
 
 import java.util.ArrayList;
 import org.eclipse.core.internal.watson.ElementTree;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.OldCorePerformanceTest;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * Benchmarks for <code>ElementTree</code>.
  */
-public class BenchElementTree extends OldCorePerformanceTest {
+public class BenchElementTree {
+
+	@Rule
+	public TestName testName = new TestName();
+
 	static String[] javaLangUnits = {"AbstractMethodError.java", "ArithmeticException.java", "ArrayIndexOutOfBoundsException.java", "ArrayStoreException.java", "Boolean.java", //
 			"Byte.java", "Character.java", "Class.java", "ClassCastException.java", "ClassCircularityError.java", "ClassFormatError.java", "ClassLoader.java", "ClassNotFoundException.java", //
 			"Cloneable.java", "CloneNotSupportedException.java", "Compiler.java", "Double.java", "Error.java", "Exception.java", "ExceptionInInitializerError.java", "Float.java", "FloatingDecimal.java", //
@@ -40,30 +47,24 @@ public class BenchElementTree extends OldCorePerformanceTest {
 	static final IPath folder = project.append("folder");
 	static final IPath[] files = getFilePaths();
 
-	public BenchElementTree() {
-		super();
-	}
-
-	public BenchElementTree(String name) {
-		super(name);
-	}
-
 	/**
 	 * Tests the performance of the createElement operation.
 	 */
-	public void testCreateElement() {
+	@Test
+	public void testCreateElement() throws CoreException {
 		new PerformanceTestRunner() {
 			@Override
 			protected void test() {
 				createTestTree(false);
 			}
-		}.run(this, 10, 400);
+		}.run(getClass(), testName.getMethodName(), 10, 400);
 	}
 
 	/**
 	 * Tests the performance of the deleteElement operation.
 	 */
-	public void benchDeleteElement() {
+	@Test
+	public void testDeleteElement() throws CoreException {
 		final int repeat = 400;
 
 		/* create copies of the original tree */
@@ -72,39 +73,40 @@ public class BenchElementTree extends OldCorePerformanceTest {
 			trees[i] = createTestTree(false);
 		}
 
-		startBench();
-		for (int rep = repeat; --rep >= 0;) {
-			for (IPath file : files) {
-				trees[rep].deleteElement(file);
+		new PerformanceTestRunner() {
+			int rep = 0;
+			@Override
+			protected void test() {
+				for (IPath file : files) {
+					trees[rep].deleteElement(file);
+				}
+				rep++;
 			}
-		}
-
-		stopBench("benchDeleteElement", repeat * files.length);
+		}.run(getClass(), testName.getMethodName(), 1, repeat);
 	}
 
 	/**
 	 * Tests the performance of the getElementData operation.
 	 */
-	public void benchGetElementData() {
-		final int repeat = 500;
-
+	@Test
+	public void testGetElementData() throws CoreException {
 		ElementTree tree = createTestTree(false);
 
-		startBench();
-
-		for (int rep = repeat; --rep >= 0;) {
-			for (IPath file : files) {
-				tree.getElementData(file);
+		new PerformanceTestRunner() {
+			@Override
+			protected void test() {
+				for (IPath file : files) {
+					tree.getElementData(file);
+				}
 			}
-		}
-
-		stopBench("benchGetElementData", repeat * files.length);
+		}.run(getClass(), testName.getMethodName(), 1, 500);
 	}
 
 	/**
 	 * Tests the performance of the mergeDeltaChain operation.
 	 */
-	public void benchMergeDeltaChain() {
+	@Test
+	public void testMergeDeltaChain() throws CoreException {
 		final int repeat = 50;
 
 		/* create all the test trees */
@@ -114,48 +116,48 @@ public class BenchElementTree extends OldCorePerformanceTest {
 			bases[i] = createTestTree(true);
 			chains[i] = buildDeltaChain(createTestTree(false));
 		}
-		startBench();
 
-		for (int i = repeat; --i >= 0;) {
-			bases[i].mergeDeltaChain(folder, chains[i]);
-		}
+		new PerformanceTestRunner() {
+			int rep = 0;
 
-		stopBench("benchMergeDeltaChain", repeat);
+			@Override
+			protected void test() {
+				bases[rep].mergeDeltaChain(folder, chains[rep]);
+				rep++;
+			}
+		}.run(getClass(), testName.getMethodName(), 1, repeat);
 	}
 
 	/**
 	 * Tests a typical series of ElementTree operations, where
 	 * a new delta is generated for each operation.
 	 */
-	public void benchRoutineOperations() {
-		final int repeat = 75;
-
-		int opCount = 0;
-		startBench();
-
-		for (int i = 0; i < repeat; i++) {
-			opCount += doRoutineOperations();
-		}
-
-		stopBench("benchRoutineOperations", opCount);
+	@Test
+	public void testRoutineOperations() throws CoreException {
+		new PerformanceTestRunner() {
+			@Override
+			protected void test() {
+				doRoutineOperations();
+			}
+		}.run(getClass(), testName.getMethodName(), 1, 75);
 	}
 
 	/**
 	 * Tests the performance of the setElementData operation.
 	 */
-	public void benchSetElementData() {
+	@Test
+	public void testSetElementData() throws CoreException {
 		ElementTree tree = createTestTree(false);
 		Object data = new Object();
 
-		startBench();
-
-		for (int rep = 500; --rep >= 0;) {
-			for (IPath file : files) {
-				tree.setElementData(file, data);
+		new PerformanceTestRunner() {
+			@Override
+			protected void test() {
+				for (IPath file : files) {
+					tree.setElementData(file, data);
+				}
 			}
-		}
-
-		stopBench("benchSetElementData", 500 * files.length);
+		}.run(getClass(), testName.getMethodName(), 1, 500);
 	}
 
 	/**

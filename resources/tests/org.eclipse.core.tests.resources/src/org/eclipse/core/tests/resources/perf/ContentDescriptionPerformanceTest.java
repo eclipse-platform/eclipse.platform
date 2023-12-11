@@ -15,6 +15,8 @@ package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 import org.eclipse.core.resources.IFile;
@@ -24,14 +26,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.content.IContentDescription;
-import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.ResourceTest;
-import org.junit.FixMethodOrder;
-import org.junit.runners.MethodSorters;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ContentDescriptionPerformanceTest extends ResourceTest {
+public class ContentDescriptionPerformanceTest {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private final static String DEFAULT_DESCRIPTION_FILE_NAME = "default.xml";
 	private final static String NO_DESCRIPTION_FILE_NAME = "none.some-uncommon-file-extension";
@@ -80,23 +87,19 @@ public class ContentDescriptionPerformanceTest extends ResourceTest {
 		}
 	}
 
-	public void doTestContentDescription() {
+	public void doTestContentDescription(String testDescription) throws Exception {
 		final IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("bigproject");
 		new PerformanceTestRunner() {
 			@Override
-			protected void test() {
-				try {
-					project.accept(resource -> {
-						if (resource.getType() == IResource.FILE && !IGNORED_FILES.contains(resource.getName())) {
-							assertHasExpectedDescription(resource.getName(), ((IFile) resource).getContentDescription());
-						}
-						return true;
-					});
-				} catch (CoreException e) {
-					CoreTest.fail("Failed visiting resources", e);
-				}
+			protected void test() throws CoreException {
+				project.accept(resource -> {
+					if (resource.getType() == IResource.FILE && !IGNORED_FILES.contains(resource.getName())) {
+						assertHasExpectedDescription(resource.getName(), ((IFile) resource).getContentDescription());
+					}
+					return true;
+				});
 			}
-		}.run(this, 1, 1);
+		}.run(getClass(), testDescription, 1, 1);
 	}
 
 	private String getContents(int number) {
@@ -111,24 +114,23 @@ public class ContentDescriptionPerformanceTest extends ResourceTest {
 		}
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		// do not call super.tearDown() because we want to keep the test data accross test cases
+	@Test
+	public void test() throws Exception {
+		test1SetUp();
+		test2ColdContentDescription();
+		test3WarmedUpContentDescription();
 	}
 
-	public void test1SetUp() throws CoreException {
+	private void test1SetUp() throws CoreException {
 		createFiles();
 	}
 
-	public void test2ColdContentDescription() {
-		doTestContentDescription();
+	private void test2ColdContentDescription() throws Exception {
+		doTestContentDescription("ColdContentDescription");
 	}
 
-	public void test3WarmedUpContentDescription() {
-		doTestContentDescription();
+	private void test3WarmedUpContentDescription() throws Exception {
+		doTestContentDescription("WarmContentDescription");
 	}
 
-	public void test4TearDown() throws Exception {
-		super.tearDown();
-	}
 }
