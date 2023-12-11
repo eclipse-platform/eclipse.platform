@@ -38,7 +38,7 @@ public class TestWorkspaceEncodingExistingWorkspace extends WorkspaceSessionTest
 		try {
 			Files.createDirectories(projectsTree);
 		} catch (IOException e) {
-			fail("Unable to create directories: " + projectsTree, e);
+			fail("Unable to create directories: " + projectsTree + System.lineSeparator() + e);
 		}
 		return suite;
 	}

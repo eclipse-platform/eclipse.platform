@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import junit.framework.TestCase;
+import org.junit.Rule;
+
 /**
  * Workspace session tests function as follows:  Each test class looks like a typical JUnit test,
  * except the platform is shutdown and restarted after each test method.  The steps for each
@@ -34,7 +37,11 @@ package org.eclipse.core.tests.resources;
  *
  * @see org.eclipse.core.tests.session.WorkspaceSessionTestSuite
  */
-public class WorkspaceSessionTest extends ResourceTest {
+public class WorkspaceSessionTest extends TestCase {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * Constructor for WorkspaceSessionTest.
 	 */
@@ -52,8 +59,14 @@ public class WorkspaceSessionTest extends ResourceTest {
 		super(name);
 	}
 
+	@Override
+	protected void setUp() throws Exception {
+		workspaceRule.before();
+		workspaceRule.setTestName(getName());
+	}
+
 	/**
-	 * Executes the cleanup functionality in {@link ResourceTest#tearDown()} after
+	 * Executes the cleanup functionality in {@link WorkspaceTestRule#after()} after
 	 * the last of the session of this test class (i.e., the last <code>test*</code>
 	 * method) has finished.
 	 * <p>
@@ -63,16 +76,7 @@ public class WorkspaceSessionTest extends ResourceTest {
 	 * actual test methods.
 	 */
 	public void test___cleanup() throws Exception {
-		super.tearDown();
-	}
-
-	/**
-	 * Cleanup is done after all sessions of this test class in
-	 * {@link #test___cleanup()}. This method is overwritten to do nothing in order
-	 * to not cleanup between the sessions.
-	 */
-	@Override
-	protected final void tearDown() throws Exception {
+		workspaceRule.after();
 	}
 
 }
