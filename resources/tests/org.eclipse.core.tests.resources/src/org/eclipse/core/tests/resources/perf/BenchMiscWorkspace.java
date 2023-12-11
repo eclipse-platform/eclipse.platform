@@ -15,15 +15,29 @@ package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
-public class BenchMiscWorkspace extends ResourceTest {
+public class BenchMiscWorkspace {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * Benchmarks performing many empty operations.
 	 */
+	@Test
 	public void testNoOp() throws Exception {
 		final IWorkspace ws = ResourcesPlugin.getWorkspace();
 		final IWorkspaceRunnable noop = monitor -> {
@@ -34,17 +48,14 @@ public class BenchMiscWorkspace extends ResourceTest {
 		//now start the test
 		new PerformanceTestRunner() {
 			@Override
-			protected void test() {
-				try {
-					ws.run(noop, null);
-				} catch (CoreException e) {
-					fail("0.0", e);
-				}
+			protected void test() throws CoreException {
+				ws.run(noop, null);
 			}
-		}.run(this, 10, 100000);
+		}.run(getClass(), testName.getMethodName(), 10, 100000);
 	}
 
-	public void testGetProject() {
+	@Test
+	public void testGetProject() throws CoreException {
 		new PerformanceTestRunner() {
 			@Override
 			protected void test() {
@@ -53,7 +64,7 @@ public class BenchMiscWorkspace extends ResourceTest {
 					root.getProject(Integer.toString(i));
 				}
 			}
-		}.run(this, 10, 1000);
-
+		}.run(getClass(), testName.getMethodName(), 10, 1000);
 	}
+
 }

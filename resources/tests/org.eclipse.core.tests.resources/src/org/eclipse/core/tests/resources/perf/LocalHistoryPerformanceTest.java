@@ -34,14 +34,24 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.internal.localstore.HistoryStoreTest;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * Contains a set of use case-oriented performance tests for the local history.
  *
  * @since 3.1
  */
-public class LocalHistoryPerformanceTest extends ResourceTest {
+public class LocalHistoryPerformanceTest {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	void cleanHistory() {
 		((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore().clean(createTestMonitor());
@@ -50,7 +60,7 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 	/**
 	 * Creates a tree of resources containing history.
 	 */
-	void createTree(IFolder base, final int filesPerFolder, final int statesPerFile) {
+	void createTree(IFolder base, final int filesPerFolder, final int statesPerFile) throws CoreException {
 		final IFolder[] folders = new IFolder[5];
 		folders[0] = base.getFolder("folder1");
 		folders[1] = base.getFolder("folder2");
@@ -58,26 +68,18 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 		folders[3] = folders[2].getFolder("folder4");
 		folders[4] = folders[3].getFolder("folder5");
 		final IWorkspace workspace = getWorkspace();
-		try {
-			workspace.run((IWorkspaceRunnable) monitor -> {
-				createInWorkspace(folders);
-				for (IFolder folder : folders) {
-					for (int j = 0; j < filesPerFolder; j++) {
-						IFile file = folder.getFile("file" + j);
-						createInWorkspace(file, createRandomString());
-						try {
-							for (int k = 0; k < statesPerFile; k++) {
-								file.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
-							}
-						} catch (CoreException ce) {
-							fail("0.5", ce);
-						}
+		workspace.run((IWorkspaceRunnable) monitor -> {
+			createInWorkspace(folders);
+			for (IFolder folder : folders) {
+				for (int j = 0; j < filesPerFolder; j++) {
+					IFile file = folder.getFile("file" + j);
+					createInWorkspace(file, createRandomString());
+					for (int k = 0; k < statesPerFile; k++) {
+						file.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 					}
 				}
-			}, workspace.getRuleFactory().modifyRule(workspace.getRoot()), IWorkspace.AVOID_UPDATE, createTestMonitor());
-		} catch (CoreException e) {
-			fail("#createTree at : " + base.getFullPath(), e);
-		}
+			}
+		}, workspace.getRuleFactory().modifyRule(workspace.getRoot()), IWorkspace.AVOID_UPDATE, createTestMonitor());
 	}
 
 	IWorkspaceDescription setMaxFileStates(int maxFileStates) throws CoreException {
@@ -88,13 +90,13 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 		return currentDescription;
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		HistoryStoreTest.wipeHistoryStore(createTestMonitor());
 	}
 
-	public void testAddState() throws CoreException {
+	@Test
+	public void testAddState() throws Exception {
 		setMaxFileStates(100);
 		final IFile file = getWorkspace().getRoot().getProject("proj1").getFile("file.txt");
 		new PerformanceTestRunner() {
@@ -105,27 +107,20 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 			}
 
 			@Override
-			protected void tearDown() {
-				try {
-					file.clearHistory(createTestMonitor());
-					file.delete(IResource.FORCE, createTestMonitor());
-				} catch (CoreException e) {
-					fail("1.0", e);
-				}
+			protected void tearDown() throws CoreException {
+				file.clearHistory(createTestMonitor());
+				file.delete(IResource.FORCE, createTestMonitor());
 			}
 
 			@Override
-			protected void test() {
-				try {
-					file.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
-				} catch (CoreException e) {
-					fail("", e);
-				}
+			protected void test() throws CoreException {
+				file.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 			}
-		}.run(LocalHistoryPerformanceTest.this, 10, 30);
+		}.run(getClass(), testName.getMethodName(), 10, 30);
 	}
 
-	public void testBug28603() {
+	@Test
+	public void testBug28603() throws Exception {
 		final IProject project = getWorkspace().getRoot().getProject("myproject");
 		final IFolder folder1 = project.getFolder("myfolder1");
 		final IFolder folder2 = project.getFolder("myfolder2");
@@ -137,44 +132,35 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 			@Override
 			protected void setUp() throws CoreException {
 				createInWorkspace(new IResource[] {project, folder1, folder2});
-				try {
-					file1.create(createRandomContentsStream(), IResource.FORCE, createTestMonitor());
-					file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
-					file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
-					file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
-				} catch (CoreException e) {
-					fail("0.0", e);
-				}
+				file1.create(createRandomContentsStream(), IResource.FORCE, createTestMonitor());
+				file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY,
+						createTestMonitor());
+				file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY,
+						createTestMonitor());
+				file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY,
+						createTestMonitor());
 			}
 
 			@Override
-			protected void tearDown() {
-				try {
-					removeFromWorkspace(getWorkspace().getRoot());
-					IHistoryStore store = ((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore();
-					// Remove all the entries from the history store index.  Note that
-					// this does not cause the history store states to be removed.
-					store.remove(IPath.ROOT, createTestMonitor());
-					// Now make sure all the states are really removed.
-					store.removeGarbage();
-				} catch (Exception e) {
-					fail("2.0", e);
-				}
+			protected void tearDown() throws CoreException {
+				removeFromWorkspace(getWorkspace().getRoot());
+				IHistoryStore store = ((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore();
+				// Remove all the entries from the history store index. Note that
+				// this does not cause the history store states to be removed.
+				store.remove(IPath.ROOT, createTestMonitor());
+				// Now make sure all the states are really removed.
+				store.removeGarbage();
 			}
 
 			@Override
-			protected void test() {
-				try {
-					file1.move(file2.getFullPath(), true, true, createTestMonitor());
-					file2.move(file1.getFullPath(), true, true, createTestMonitor());
-				} catch (CoreException e) {
-					fail("1.0", e);
-				}
+			protected void test() throws CoreException {
+				file1.move(file2.getFullPath(), true, true, createTestMonitor());
+				file2.move(file1.getFullPath(), true, true, createTestMonitor());
 			}
-		}.run(this, 10, 5);
+		}.run(getClass(), testName.getMethodName(), 10, 5);
 	}
 
-	private void testClearHistory(final int filesPerFolder, final int statesPerFile) throws CoreException {
+	private void testClearHistory(final int filesPerFolder, final int statesPerFile) throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		final IFolder base = project.getFolder("base");
 		removeFromWorkspace(base);
@@ -199,29 +185,28 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 			}
 
 			@Override
-			protected void test() {
-				try {
-					base.clearHistory(createTestMonitor());
-				} catch (CoreException e) {
-					fail("", e);
-				}
+			protected void test() throws CoreException {
+				base.clearHistory(createTestMonitor());
 			}
-		}.run(this, 4, 3);
+		}.run(getClass(), testName.getMethodName(), 4, 3);
 	}
 
-	public void testClearHistory100x4() throws CoreException {
+	@Test
+	public void testClearHistory100x4() throws Exception {
 		testClearHistory(100, 4);
 	}
 
-	public void testClearHistory20x20() throws CoreException {
+	@Test
+	public void testClearHistory20x20() throws Exception {
 		testClearHistory(20, 20);
 	}
 
-	public void testClearHistory4x100() throws CoreException {
+	@Test
+	public void testClearHistory4x100() throws Exception {
 		testClearHistory(4, 100);
 	}
 
-	private void testCopyHistory(int filesPerFolder, int statesPerFile) {
+	private void testCopyHistory(int filesPerFolder, int statesPerFile) throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		IFolder base = project.getFolder("base");
 		createTree(base, filesPerFolder, statesPerFile);
@@ -229,32 +214,31 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 		final IProject[] tmpProject = new IProject[] {project};
 		new PerformanceTestRunner() {
 			@Override
-			protected void test() {
-				try {
-					String newProjectName = createUniqueString();
-					IProject newProject = getWorkspace().getRoot().getProject(newProjectName);
-					tmpProject[0].copy(newProject.getFullPath(), true, createTestMonitor());
-					tmpProject[0] = newProject;
-				} catch (CoreException e) {
-					fail("", e);
-				}
+			protected void test() throws CoreException {
+				String newProjectName = createUniqueString();
+				IProject newProject = getWorkspace().getRoot().getProject(newProjectName);
+				tmpProject[0].copy(newProject.getFullPath(), true, createTestMonitor());
+				tmpProject[0] = newProject;
 			}
-		}.run(this, 10, 1);
+		}.run(getClass(), testName.getMethodName(), 10, 1);
 	}
 
-	public void testCopyHistory100x4() {
+	@Test
+	public void testCopyHistory100x4() throws Exception {
 		testCopyHistory(100, 4);
 	}
 
-	public void testCopyHistory20x20() {
+	@Test
+	public void testCopyHistory20x20() throws Exception {
 		testCopyHistory(20, 20);
 	}
 
-	public void testCopyHistory4x100() {
+	@Test
+	public void testCopyHistory4x100() throws Exception {
 		testCopyHistory(4, 100);
 	}
 
-	private void testGetDeletedMembers(int filesPerFolder, int statesPerFile) throws CoreException {
+	private void testGetDeletedMembers(int filesPerFolder, int statesPerFile) throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		IFolder base = project.getFolder("base");
 		createTree(base, filesPerFolder, statesPerFile);
@@ -263,29 +247,29 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 		final IProject tmpProject = project;
 		new PerformanceTestRunner() {
 			@Override
-			protected void test() {
-				try {
-					tmpProject.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-				} catch (CoreException e) {
-					fail("", e);
-				}
+			protected void test() throws CoreException {
+				tmpProject.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
 			}
-		}.run(this, 2, 5);
+		}.run(getClass(), testName.getMethodName(), 2, 5);
 	}
 
-	public void testGetDeletedMembers100x4() throws CoreException {
+	@Test
+	public void testGetDeletedMembers100x4() throws Exception {
 		testGetDeletedMembers(100, 4);
 	}
 
-	public void testGetDeletedMembers20x20() throws CoreException {
+	@Test
+	public void testGetDeletedMembers20x20() throws Exception {
 		testGetDeletedMembers(20, 20);
 	}
 
-	public void testGetDeletedMembers4x100() throws CoreException {
+	@Test
+	public void testGetDeletedMembers4x100() throws Exception {
 		testGetDeletedMembers(4, 100);
 	}
 
-	public void testGetHistory() throws CoreException {
+	@Test
+	public void testGetHistory() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		final IFile file = project.getFile("file.txt");
 		createInWorkspace(file, createRandomString());
@@ -294,17 +278,13 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 		}
 		new PerformanceTestRunner() {
 			@Override
-			protected void test() {
-				try {
-					file.getHistory(createTestMonitor());
-				} catch (CoreException e) {
-					fail("", e);
-				}
+			protected void test() throws CoreException {
+				file.getHistory(createTestMonitor());
 			}
-		}.run(this, 1, 150);
+		}.run(getClass(), testName.getMethodName(), 1, 150);
 	}
 
-	private void testHistoryCleanUp(final int filesPerFolder, final int statesPerFile) throws CoreException {
+	private void testHistoryCleanUp(final int filesPerFolder, final int statesPerFile) throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		final IFolder base = project.getFolder("base");
 		removeFromWorkspace(base);
@@ -333,14 +313,17 @@ public class LocalHistoryPerformanceTest extends ResourceTest {
 				cleanHistory();
 			}
 
-		}.run(this, 5, 1);
+		}.run(getClass(), testName.getMethodName(), 5, 1);
 	}
 
-	public void testHistoryCleanUp100x4() throws CoreException {
+	@Test
+	public void testHistoryCleanUp100x4() throws Exception {
 		testHistoryCleanUp(100, 4);
 	}
 
-	public void testHistoryCleanUp20x20() throws CoreException {
+	@Test
+	public void testHistoryCleanUp20x20() throws Exception {
 		testHistoryCleanUp(20, 20);
 	}
+
 }
