@@ -68,8 +68,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.BundleContext;
 
 import org.eclipse.ui.pki.dialog.PassphraseDialog;
+import org.eclipse.ui.pki.jsse.CdeX509TrustManager;
 import org.eclipse.pki.exception.UserCanceledException;
-import org.eclipse.pki.jsse.CdeX509TrustManager;
 import org.eclipse.pki.pkcs.VendorImplementation;
 import org.eclipse.pki.pkiselection.PKCSSelected;
 import org.eclipse.pki.pkiselection.PKCSpick;

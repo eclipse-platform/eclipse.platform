@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.eclipse.pki.jsse;
+package org.eclipse.ui.pki.jsse;
 
 import java.security.KeyStore;
 import java.security.KeyStoreException;
