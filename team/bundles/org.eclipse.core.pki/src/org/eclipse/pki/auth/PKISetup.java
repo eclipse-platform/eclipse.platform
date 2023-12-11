@@ -101,64 +101,16 @@ public class PKISetup implements IStartup {
 				if ("PKCS11".equalsIgnoreCase(System.getProperty("javax.net.ssl.keyStoreType"))) {
 					if (VendorImplementation.getInstance().isInstalled()) {
 						PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
-						PKCSpick.getInstance().setPKCS11on(true);
-						PKCSpick.getInstance().setPKCS12on(false);
+						PKIState.CONTROL.setPKCS11on(true);
+						PKIState.CONTROL.setPKCS12on(false);
 					} else {
 						// need exception here no PROVIDER
 					}
 				}
 			}
-		} else {
-			if ( AuthenticationBase.INSTANCE.isPkcs11Setup() ) {
-				if (((!(VendorImplementation.getInstance().isInstalled())) || (isPreviousPkiSelection()))) {
-					PKCSpick.getInstance().setPKCS11on(false);
-					PKCSpick.getInstance().setPKCS12on(true);
-					PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
-				} else {
-					PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
-				}
-			}
-		}
-
-		try {
-			//System.out.println("PKIController  Setup preferences");
-			IPreferenceStore store = AuthenticationPlugin.getDefault().getPreferenceStore();
-			String tsPref = store.getString(AuthenticationPreferences.TRUST_STORE_LOCATION);
-
-			// System.out.println("tspref " + tsPref);
-
-			if (tsPref == null || tsPref.isEmpty()) {
-				this.installTrustStore();
-			} else {
-				File tsFileLoc = new File(tsPref);
-				if (!tsFileLoc.exists()) {
-					// TS location exists in pref store but file not actually in default location -
-					// can this break for custom locations?
-					this.installTrustStore();
-				}
-			}
-			// Load system properties
-			if (AuthenticationPlugin.isNeedSSLPropertiesSet()) {
-				//System.out.println("PKIController  Setup preferences SEND EVENT");
-				EventProcessor.getInstance().initializeEvent(this);
-				if (EventProcessor.getInstance().isEventPending()) {
-					EventProcessor.getInstance().sendEvent(EventConstant.SETUP.getValue());
-				}
-				// setupSSLSystemProperties(isPkcs11Installed);
-			}
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 	}
 
-	public boolean isPreviousPkiSelection() {
-
-		PKISecureStorage pkiSecureStorage = new PKISecureStorage();
-		return pkiSecureStorage.isPKISaved();
-
-	}
 
 	public Object eventRunner(int incoming) {
 		final Integer value = Integer.valueOf(incoming);
@@ -170,10 +122,13 @@ public class PKISetup implements IStartup {
 				} else if (value.equals(EventConstant.CANCEL.getValue())) {
 					VendorImplementation.getInstance().off();
 					isPkcs11Installed = false;
-					PKCSpick.getInstance().setPKCS11on(false);
+					PKIState.CONTROL.setPKCS11on(false);
+				
 					System.clearProperty("javax.net.ssl.keyStoreType");
 					System.clearProperty("javax.net.ssl.keyStoreProvider");
+					
 					System.out.println("PKIController - TURNED OFF ALL PKCS11");
+					
 				} else if (value.equals(EventConstant.SETUP.getValue())) {
 					setupSSLSystemProperties(isPkcs11Installed);
 				}
@@ -184,124 +139,14 @@ public class PKISetup implements IStartup {
 	/**
 	 * @see AuthenticationPlugin#setSystemProperties()
 	 */
-	void setupSSLSystemProperties(final boolean isPkcs11Installed) {
-		Display.getDefault().asyncExec(new Runnable() {
-			final boolean is11on = isPkcs11Installed;
-
-			public void run() {
-				final String KEYSTORE_SELECTION = "Selection";
-				PKISecureStorage pkiSecureStorage = new PKISecureStorage();
-				TrustStoreSecureStorage truststoreSecureStorage = new TrustStoreSecureStorage();
-				// if (!(pkiSecureStorage.isPkcs11Enabled())) {
-				if (!(is11on)) {
-					// TrustStoreSecureStorage truststoreSecureStorage = new
-					// TrustStoreSecureStorage();
-
-					if (pkiSecureStorage.isPKISaved() && truststoreSecureStorage.isJKSSaved()) {
-
-						if (pkiSecureStorage.getPkiType().equalsIgnoreCase("PKCS11")) {
-							PKCSpick.getInstance().setPKCS11on(true);
-							PKCSpick.getInstance().setPKCS12on(false);
-						} else {
-							PKCSpick.getInstance().setPKCS11on(false);
-							PKCSpick.getInstance().setPKCS12on(true);
-						}
-						// First, set the system properties from secure storage then retrieved the paths
-						// from the system
-						// properties to set the preference store for later use.
-						// System.out.println("EarlyStartup ---------------- setupSSLSystemProperties");
-						pkiSecureStorage.loadUpPKI();
-						pkiSecureStorage.setPKISystemProperties();
-						truststoreSecureStorage.setTrustStoreSystemProperties();
-
-						String pkiPath = AuthenticationPlugin.getDefault().obtainSystemPropertyPKICertificatePath();
-						String jksPath = AuthenticationPlugin.getDefault().obtainSystemPropertyJKSPath();
-
-						AuthenticationPlugin.getDefault().setCertificatePath(pkiPath);
-						AuthenticationPlugin.getDefault().setCertPassPhrase(pkiSecureStorage.getCertPassPhrase());
-						AuthenticationPlugin.getDefault().setUserKeyStore(pkiSecureStorage.getUserKeyStore());
-
-						AuthenticationPlugin.getDefault().getPreferenceStore()
-								.setValue(AuthenticationPreferences.TRUST_STORE_LOCATION, jksPath);
-						AuthenticationPlugin.getDefault()
-								.setTrustStorePassPhrase(truststoreSecureStorage.getJksPassPhrase());
-						AuthenticationPlugin.getDefault().setTrustStore(truststoreSecureStorage.getTrustStore());
-
-					} else if (pkiSecureStorage.isPKISaved() && !truststoreSecureStorage.isJKSSaved()) {
-						AuthenticationPlugin.getDefault().setTrustStoreSystemProperties(
-								AuthenticationPlugin.getDefault().obtainDefaultJKSTrustStore());
-
-						// First, set the system properties from secure storage then retrieved the paths
-						// from the system
-						// properties to set the preference store for later use.
-						if (pkiSecureStorage.getPkiType().equals("PKCS11")) {
-							PKCSpick.getInstance().setPKCS11on(true);
-							PKCSpick.getInstance().setPKCS12on(false);
-						} else {
-							PKCSpick.getInstance().setPKCS11on(false);
-							PKCSpick.getInstance().setPKCS12on(true);
-						}
-						pkiSecureStorage.loadUpPKI();
-						pkiSecureStorage.setPKISystemProperties();
-
-						// String pkiPath =
-						// AuthenticationPlugin.getDefault().obtainSystemPropertyPKICertificatePath();
-						// AuthenticationPlugin.getDefault().setCertificatePath(pkiPath);
-
-						AuthenticationPlugin.getDefault().setCertPassPhrase(pkiSecureStorage.getCertPassPhrase());
-						AuthenticationPlugin.getDefault().setUserKeyStore(pkiSecureStorage.getUserKeyStore());
-
-					} else if (!pkiSecureStorage.isPKISaved() && truststoreSecureStorage.isJKSSaved()) {
-						// First, set the system properties from secure storage then retrieved the paths
-						// from the system
-						// properties to set the preference store for later use.
-						truststoreSecureStorage.setTrustStoreSystemProperties();
-						String jksPath = AuthenticationPlugin.getDefault().obtainSystemPropertyJKSPath();
-
-						AuthenticationPlugin.getDefault().getPreferenceStore()
-								.setValue(AuthenticationPreferences.TRUST_STORE_LOCATION, jksPath);
-						AuthenticationPlugin.getDefault()
-								.setTrustStorePassPhrase(truststoreSecureStorage.getJksPassPhrase());
-						AuthenticationPlugin.getDefault().setTrustStore(truststoreSecureStorage.getTrustStore());
-
-						// Set the pki system properties.
-						AuthenticationPlugin.getDefault().setUserKeyStoreSystemProperties(
-								AuthenticationPlugin.getDefault().obtainUserKeyStore());
-
-					} else {
-
-						AuthenticationPlugin.getDefault().setSystemProperties();
-					}
-				} else {
-					AuthenticationPlugin.getDefault().obtainDefaultJKSTrustStore();
-					try {
-						AuthenticationPlugin.getDefault().getUserKeyStore(KEYSTORE_SELECTION);
-					} catch (UserCanceledException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (VendorImplementation.getInstance().isEnabled()) {
-						this.dispatchEvent(eventRunner(EventConstant.DONE.getValue()), queue, 0, queue);
-					}
-
-				}
-			}
-
-			private void dispatchEvent(Object eventRunner, ListenerQueue<PKISetup, Object, EventManager> queue,
-					int i, ListenerQueue<PKISetup, Object, EventManager> queue2) {
-				// TODO Auto-generated method stub
-				((Runnable) eventRunner).run();
-			}
-		});
-
-	}
+	
 
 	private void installTrustStore() {
 		/*
 		 * TODO: Create an enum of the IC comms and utilize the correct trust
 		 */
 
-		String filename = AuthenticationPlugin.DEFAULT_TRUST_STORE;
+		String filename = "cacert";
 		File localTrustStore = new File(PKI_ECLIPSE_DIR, filename);
 
 		// System.out.println("Install Truststore - local -> " + localTrustStore);
@@ -322,8 +167,8 @@ public class PKISetup implements IStartup {
 			// open file in eclipses configuration directory
 			//
 			File ConfigurationFile = new File(Platform.getInstallLocation().getURL().getPath() + File.separator
-					+ AuthenticationPlugin.CONFIGURATION_DIR + File.separator
-					+ AuthenticationPlugin.DEFAULT_TRUST_STORE);
+					+ "configuration" + File.separator
+					+ "cacert");
 
 			InputStream is = new FileInputStream(ConfigurationFile);
 
@@ -362,8 +207,8 @@ public class PKISetup implements IStartup {
 			}
 			// }
 		}
-		AuthenticationPlugin.getDefault().getPreferenceStore().setValue(AuthenticationPreferences.TRUST_STORE_LOCATION,
-				localTrustStore.getAbsolutePath());
+		//AuthenticationPlugin.getDefault().getPreferenceStore().setValue(AuthenticationPreferences.TRUST_STORE_LOCATION,
+		//		localTrustStore.getAbsolutePath());
 
 	}
 
