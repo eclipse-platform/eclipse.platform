@@ -14,12 +14,18 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.internal.localstore.LocalStoreTestUtil.createTree;
+import static org.eclipse.core.tests.internal.localstore.LocalStoreTestUtil.getTree;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import org.eclipse.core.filesystem.IFileStore;
@@ -32,16 +38,30 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-//
-public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
+public class RefreshLocalTest implements ICoreConstants {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	private IProject project;
+
+	@Before
+	public void createTestProject() throws CoreException {
+		project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
+	}
 
 	/**
 	 * Tests refreshing a folder whose case has changed on disk.
 	 * This is a regression test for bug 79090.
 	 */
+	@Test
 	public void testDiscoverCaseChange() throws CoreException {
-		IProject project = projects[0];
 		IFolder folder = project.getFolder("A");
 		IFolder folderVariant = project.getFolder("a");
 		IFile file = folder.getFile("file");
@@ -66,6 +86,7 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 	/**
 	 * Test discovery of a linked resource on refresh.
 	 */
+	@Test
 	public void testDiscoverLinkedResource() {
 		//create a linked resource with local contents missing
 		//	IProject project = projects[0];
@@ -119,10 +140,9 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 	 * Tests discovering a file via refresh local when neither the file
 	 * nor its parent exists in the workspace.
 	 */
+	@Test
 	public void testFileDiscovery() throws Throwable {
-		/* initialize common objects */
-		IProject project = projects[0];
-
+		workspaceRule.deleteOnTearDown(project.getLocation());
 		IFolder folder = project.getFolder("Folder");
 		IFile file = folder.getFile("File");
 
@@ -154,10 +174,8 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		assertFalse(folder.exists());
 	}
 
+	@Test
 	public void testFileToFolder() throws Throwable {
-		/* initialize common objects */
-		IProject project = projects[0];
-
 		/* */
 		IFile file = project.getFile("file");
 		file.create(null, true, null);
@@ -174,10 +192,8 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		assertTrue(folder.exists());
 	}
 
+	@Test
 	public void testFolderToFile() throws Throwable {
-		/* initialize common objects */
-		IProject project = projects[0];
-
 		/* test folder to file */
 		IFolder folder = project.getFolder("folder");
 		folder.create(true, true, null);
@@ -192,8 +208,8 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		assertTrue(file.exists());
 	}
 
+	@Test
 	public void testRefreshClosedProject() throws CoreException {
-		IProject project = projects[0];
 		project.close(createTestMonitor());
 
 		//refreshing a closed project should not fail
@@ -202,10 +218,8 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		project.refreshLocal(IResource.DEPTH_ONE, createTestMonitor());
 	}
 
+	@Test
 	public void testRefreshFolder() throws Throwable {
-		/* initialize common objects */
-		IProject project = projects[0];
-
 		/* test deletion of a child */
 		IFile file = project.getFile("file");
 		final IFile hackFile = file;
@@ -269,10 +283,8 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		removeFromFileSystem(file);
 	}
 
+	@Test
 	public void testSimpleRefresh() throws Throwable {
-		/* initialize common objects */
-		IProject project = projects[0];
-
 		/* test root deletion */
 		IFile file = project.getFile("file");
 		createInWorkspace(file);
@@ -290,4 +302,5 @@ public class RefreshLocalTest extends LocalStoreTest implements ICoreConstants {
 		assertTrue(folder.exists());
 		assertEquals(((Resource) folder).countResources(IResource.DEPTH_INFINITE, false), getTree(target).length + 1);
 	}
+
 }

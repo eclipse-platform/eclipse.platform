@@ -18,6 +18,9 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -41,12 +44,19 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class UnifiedTreeTest extends LocalStoreTest {
-	protected static int limit = 10;
+public class UnifiedTreeTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	private static final int LIMIT = 10;
 
 	protected void createFiles(IFileStore folder, Hashtable<String, String> set) throws Exception {
-		for (int i = 0; i < limit; i++) {
+		for (int i = 0; i < LIMIT; i++) {
 			IFileStore child = folder.getChild("fsFile" + i);
 			try (OutputStream out = child.openOutputStream(EFS.NONE, null)) {
 				out.write("contents".getBytes());
@@ -58,7 +68,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 	protected void createFiles(final IContainer target, final Hashtable<String, String> set) throws CoreException {
 		final Workspace workspace = (Workspace) getWorkspace();
 		IWorkspaceRunnable operation = monitor -> {
-			for (int i = 0; i < limit; i++) {
+			for (int i = 0; i < LIMIT; i++) {
 				IFile child = target.getFile(IPath.fromOSString("wbFile" + i));
 				workspace.createResource(child, false);
 				String location = child.getLocation().toOSString();
@@ -70,11 +80,11 @@ public class UnifiedTreeTest extends LocalStoreTest {
 
 	protected void createResourcesInFileSystem(IFileStore folder, Hashtable<String, String> set) throws Exception {
 		createFiles(folder, set);
-		for (int i = 0; i < limit; i++) {
+		for (int i = 0; i < LIMIT; i++) {
 			IFileStore child = folder.getChild("fsFolder" + i);
 			child.mkdir(EFS.NONE, null);
 			set.put(child.toString(), "");
-			if (i < (limit / 2)) {
+			if (i < (LIMIT / 2)) {
 				createFiles(child, set);
 			}
 		}
@@ -82,12 +92,12 @@ public class UnifiedTreeTest extends LocalStoreTest {
 
 	protected void createResourcesInWorkspace(IContainer target, Hashtable<String, String> set) throws CoreException {
 		createFiles(target, set);
-		for (int i = 0; i < limit; i++) {
+		for (int i = 0; i < LIMIT; i++) {
 			IFolder child = target.getFolder(IPath.fromOSString("wbFolder" + i));
 			child.create(true, true, null);
 			String location = child.getLocation().toOSString();
 			set.put(location, "");
-			if (i < (limit / 2)) {
+			if (i < (LIMIT / 2)) {
 				createFiles(child, set);
 			}
 		}
@@ -97,9 +107,10 @@ public class UnifiedTreeTest extends LocalStoreTest {
 	 * Creates some resources in the file system and some in the workspace. After that,
 	 * makes sure the visitor is going to walk through all of them.
 	 */
+	@Test
 	public void testTraverseMechanismInFolder() throws Throwable {
-		/* create common objects */
-		IProject project = projects[0];
+		IProject project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
 		IFolder folder = project.getFolder("root");
 		folder.create(true, true, null);
 
@@ -141,9 +152,10 @@ public class UnifiedTreeTest extends LocalStoreTest {
 	 * Creates some resources in the file system and some in the workspace. After that,
 	 * makes sure the visitor is going to walk through some of them.
 	 */
+	@Test
 	public void testTraverseMechanismInFolderSkippingSomeChildren() throws Throwable {
-		/* create common objects */
-		IProject project = projects[0];
+		IProject project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
 		IFolder folder = project.getFolder("root");
 		folder.create(true, true, null);
 
@@ -199,9 +211,10 @@ public class UnifiedTreeTest extends LocalStoreTest {
 	 * Creates some resources in the file system and some in the workspace. After that,
 	 * makes sure the visitor is going to walk through all of them.
 	 */
+	@Test
 	public void testTraverseMechanismInProject() throws Throwable {
-		/* create common objects */
-		IProject project = projects[0];
+		IProject project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
 
 		/* Create a hash table to hold all resources the tree should visit.
 		 The resources are going to be removed from the hash table as
@@ -239,6 +252,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 	/**
 	 * Regression test for 342968 - Resource layers asks IFileTree for info of linked resources
 	 */
+	@Test
 	public void test342968() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("test");
 		createInWorkspace(project);
@@ -262,7 +276,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 
 		IFileStore fileStore = EFS.getLocalFileSystem().fromLocalFile(file);
 		link.createLink(fileStore.toURI(), IResource.NONE, null);
-		deleteOnTearDown(fileStore);
+		workspaceRule.deleteOnTearDown(fileStore);
 
 		IFile rf = link.getFile("fileTest342968.txt");
 		rf.create(new ByteArrayInputStream("test342968".getBytes()), false, null);
@@ -273,6 +287,7 @@ public class UnifiedTreeTest extends LocalStoreTest {
 		assertTrue("2.0", rf.exists());
 	}
 
+	@Test
 	public void test368376() throws CoreException, IOException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(createUniqueString());
 		createInWorkspace(project);

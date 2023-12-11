@@ -16,7 +16,10 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -36,9 +39,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class BucketTreeTests extends ResourceTest {
+public class BucketTreeTests {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	static class SimpleBucket extends Bucket {
 
@@ -136,9 +144,10 @@ public class BucketTreeTests extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testVisitor() throws CoreException {
 		IPath baseLocation = getRandomLocation();
-		deleteOnTearDown(baseLocation);
+		workspaceRule.deleteOnTearDown(baseLocation);
 
 		// keep the reference around - it is the same returned by tree.getCurrent()
 		SimpleBucket bucket = new SimpleBucket();
@@ -215,4 +224,5 @@ public class BucketTreeTests extends ResourceTest {
 			assertTrue(tag + ".5 " + path, visited.contains(path));
 		}
 	}
+
 }

@@ -15,9 +15,12 @@ package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import org.eclipse.core.internal.resources.Workspace;
@@ -27,11 +30,19 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 
-public class CaseSensitivityTest extends LocalStoreTest {
+public class CaseSensitivityTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	private final boolean isCaseSensitive = Workspace.caseSensitive;
 
+	@Test
 	public void testCreateProjects() throws Throwable {
 		String projectName = "testProject31415";
 
@@ -53,16 +64,18 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testCreateFolders() throws Throwable {
-		String folderName = "testFolder31415";
-		IProject aProject = getWorkspace().getRoot().getProjects()[0];
+		IProject project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
 
+		String folderName = "testFolder31415";
 		// create a folder, should be fine
-		IFolder folder1 = aProject.getFolder(folderName);
+		IFolder folder1 = project.getFolder(folderName);
 		folder1.create(true, true, null);
 
 		// create a second folder; should fail because has same name with different casing
-		IFolder folder2 = aProject.getFolder(folderName.toUpperCase());
+		IFolder folder2 = project.getFolder(folderName.toUpperCase());
 		ThrowingRunnable folderCreation = () -> folder2.create(true, true, null);
 		if (isCaseSensitive) {
 			folderCreation.run();
@@ -71,20 +84,22 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		}
 
 		// create a file; should fail because has same name with different casing
-		IFile file = aProject.getFile(folderName.toUpperCase());
+		IFile file = project.getFile(folderName.toUpperCase());
 		assertThrows(CoreException.class, () -> file.create(createRandomContentsStream(), true, null));
 	}
 
+	@Test
 	public void testCreateFiles() throws Throwable {
-		String fileName = "testFile31415";
-		IProject aProject = getWorkspace().getRoot().getProjects()[0];
+		IProject project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
 
+		String fileName = "testFile31415";
 		// create a file, should be fine
-		IFile file1 = aProject.getFile(fileName);
+		IFile file1 = project.getFile(fileName);
 		file1.create(createRandomContentsStream(), true, null);
 
 		// create a second file; should fail because has same name with different casing
-		IFile file2 = aProject.getFile(fileName.toUpperCase());
+		IFile file2 = project.getFile(fileName.toUpperCase());
 		ThrowingRunnable fileCreation = () -> file2.create(createRandomContentsStream(), true, null);
 		if (isCaseSensitive) {
 			fileCreation.run();
@@ -93,10 +108,11 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		}
 
 		// create a folder; should fail because has same name with different casing
-		IFolder folder = aProject.getFolder(fileName.toUpperCase());
+		IFolder folder = project.getFolder(fileName.toUpperCase());
 		assertThrows(CoreException.class, () -> folder.create(true, true, null));
 	}
 
+	@Test
 	public void testRenameProject() throws Throwable {
 		String project1name = "project1test31415";
 		String project2name = "project2test31415";
@@ -120,20 +136,23 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testRenameFolder() throws Throwable {
+		IProject project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
+
 		String folder1name = "folder1test31415";
 		String folder2name = "folder2test31415";
-		IProject aProject = getWorkspace().getRoot().getProjects()[0];
 
 		// create 2 folders with different names
-		IFolder folder1 = aProject.getFolder(folder1name);
+		IFolder folder1 = project.getFolder(folder1name);
 		folder1.create(true, true, null);
 
-		IFolder folder2 = aProject.getFolder(folder2name);
+		IFolder folder2 = project.getFolder(folder2name);
 		folder2.create(true, true, null);
 
 		// try to rename folder 1 to the uppercase name of folder 2, should fail
-		IFolder folder3 = aProject.getFolder(folder2name.toUpperCase());
+		IFolder folder3 = project.getFolder(folder2name.toUpperCase());
 		ThrowingRunnable folderMovement = () -> folder1.move(folder3.getFullPath(), true, null);
 		if (isCaseSensitive) {
 			folderMovement.run();
@@ -142,20 +161,23 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testRenameFile() throws Throwable {
+		IProject project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
+
 		String file1name = "file1test31415";
 		String file2name = "file2test31415";
-		IProject aProject = getWorkspace().getRoot().getProjects()[0];
 
 		// create 2 files with different names
-		IFile file1 = aProject.getFile(file1name);
+		IFile file1 = project.getFile(file1name);
 		file1.create(createRandomContentsStream(), true, null);
 
-		IFile file2 = aProject.getFile(file2name);
+		IFile file2 = project.getFile(file2name);
 		file2.create(createRandomContentsStream(), true, null);
 
 		// try to rename folder 1 to the uppercase name of folder 2, should fail
-		IFile file3 = aProject.getFile(file2name.toUpperCase());
+		IFile file3 = project.getFile(file2name.toUpperCase());
 		ThrowingRunnable fileMovement = () -> file1.move(file3.getFullPath(), true, null);
 		if (isCaseSensitive) {
 			fileMovement.run();
@@ -164,11 +186,14 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		}
 	}
 
+	@Test
 	public void testCopyAndMoveFolder() throws Throwable {
-		String folderName = "folderTest31415";
-		IProject sourceProject = getWorkspace().getRoot().getProjects()[0];
-		IProject destinationProject = getWorkspace().getRoot().getProjects()[1];
+		IProject sourceProject = getWorkspace().getRoot().getProject("Source");
+		createInWorkspace(sourceProject);
+		IProject destinationProject = getWorkspace().getRoot().getProject("Target");
+		createInWorkspace(destinationProject);
 
+		String folderName = "folderTest31415";
 		// create 2 folders, one in each project, with case-different names
 		IFolder folder1 = sourceProject.getFolder(folderName);
 		folder1.create(true, true, null);
@@ -192,11 +217,14 @@ public class CaseSensitivityTest extends LocalStoreTest {
 				() -> folder1.move(destinationProject.getFullPath().append(folder1.getName()), true, null));
 	}
 
+	@Test
 	public void testCopyAndMoveFile() throws Throwable {
-		String fileName = "fileTest31415";
-		IProject sourceProject = getWorkspace().getRoot().getProjects()[0];
-		IProject destinationProject = getWorkspace().getRoot().getProjects()[1];
+		IProject sourceProject = getWorkspace().getRoot().getProject("Source");
+		createInWorkspace(sourceProject);
+		IProject destinationProject = getWorkspace().getRoot().getProject("Target");
+		createInWorkspace(destinationProject);
 
+		String fileName = "fileTest31415";
 		// create 2 files, one in each project, with case-different names
 		IFile file1 = sourceProject.getFile(fileName);
 		file1.create(createRandomContentsStream(), true, null);
@@ -220,11 +248,14 @@ public class CaseSensitivityTest extends LocalStoreTest {
 				() -> file1.move(destinationProject.getFullPath().append(file1.getName()), true, null));
 	}
 
+	@Test
 	public void testCopyAndMoveFolderOverFile() throws Throwable {
-		String name = "test31415";
-		IProject sourceProject = getWorkspace().getRoot().getProjects()[0];
-		IProject destinationProject = getWorkspace().getRoot().getProjects()[1];
+		IProject sourceProject = getWorkspace().getRoot().getProject("Source");
+		createInWorkspace(sourceProject);
+		IProject destinationProject = getWorkspace().getRoot().getProject("Target");
+		createInWorkspace(destinationProject);
 
+		String name = "test31415";
 		// create 2 resources, one in each project, with case-different names
 		IFolder folder = sourceProject.getFolder(name);
 		folder.create(true, true, null);
@@ -248,11 +279,14 @@ public class CaseSensitivityTest extends LocalStoreTest {
 				() -> folder.move(destinationProject.getFullPath().append(folder.getName()), true, null));
 	}
 
+	@Test
 	public void testCopyAndMoveFileOverFolder() throws Throwable {
-		String name = "test31415";
-		IProject sourceProject = getWorkspace().getRoot().getProjects()[0];
-		IProject destinationProject = getWorkspace().getRoot().getProjects()[1];
+		IProject sourceProject = getWorkspace().getRoot().getProject("Source");
+		createInWorkspace(sourceProject);
+		IProject destinationProject = getWorkspace().getRoot().getProject("Target");
+		createInWorkspace(destinationProject);
 
+		String name = "test31415";
 		// create 2 resources, one in each project, with case-different names
 		IFile file = sourceProject.getFile(name);
 		file.create(createRandomContentsStream(), true, null);
@@ -276,9 +310,12 @@ public class CaseSensitivityTest extends LocalStoreTest {
 				() -> file.move(destinationProject.getFullPath().append(file.getName()), true, null));
 	}
 
+	@Test
 	public void testCopyAndMoveFolderBecomeProject() throws CoreException {
-		IProject sourceProject = getWorkspace().getRoot().getProjects()[0];
-		IProject blockingProject = getWorkspace().getRoot().getProjects()[1];
+		IProject sourceProject = getWorkspace().getRoot().getProject("Source");
+		createInWorkspace(sourceProject);
+		IProject blockingProject = getWorkspace().getRoot().getProject("Blocking");
+		createInWorkspace(blockingProject);
 
 		// create a folder in the source project with a case-different name to the second project
 		IFolder folder = sourceProject.getFolder(blockingProject.getName().toUpperCase());
@@ -293,9 +330,12 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		assertThrows(CoreException.class, () -> folder.copy(IPath.ROOT.append(folder.getName()), true, null));
 	}
 
+	@Test
 	public void testCopyAndMoveProjectBecomeFolder() throws CoreException {
-		IProject sourceProject = getWorkspace().getRoot().getProjects()[0];
-		IProject destinationProject = getWorkspace().getRoot().getProjects()[1];
+		IProject sourceProject = getWorkspace().getRoot().getProject("Source");
+		createInWorkspace(sourceProject);
+		IProject destinationProject = getWorkspace().getRoot().getProject("Target");
+		createInWorkspace(destinationProject);
 
 		// create a file in the destination project with a case-different name of the source project
 		IFile file = destinationProject.getFile(sourceProject.getName().toUpperCase());
@@ -312,10 +352,12 @@ public class CaseSensitivityTest extends LocalStoreTest {
 				() -> sourceProject.copy(destinationProject.getFullPath().append(sourceProject.getName()), true, null));
 	}
 
+	@Test
 	public void testRefreshLocalFolder1() throws CoreException {
-		String name = "test31415";
-		IProject project = getWorkspace().getRoot().getProjects()[0];
+		IProject project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
 
+		String name = "test31415";
 		// create a Folder, which should be fine
 		IFolder folder = project.getFolder(name.toUpperCase());
 		folder.create(true, true, null);
@@ -336,10 +378,12 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		assertTrue(herringRouge.exists());
 	}
 
+	@Test
 	public void testRefreshLocalFile1() throws Exception {
-		String name = "test31415";
-		IProject project = getWorkspace().getRoot().getProjects()[0];
+		IProject project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
 
+		String name = "test31415";
 		// create a File, which should be fine
 		IFile file = project.getFile(name.toUpperCase());
 		file.create(createRandomContentsStream(), true, null);
@@ -359,10 +403,12 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		assertTrue(herringRouge.exists());
 	}
 
+	@Test
 	public void testRefreshLocalFolder2() throws Exception {
-		String name = "test31415";
-		IProject project = getWorkspace().getRoot().getProjects()[0];
+		IProject project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
 
+		String name = "test31415";
 		// create a Folder, which should be fine
 		IFolder folder = project.getFolder(name.toUpperCase());
 		folder.create(true, true, null);
@@ -382,10 +428,12 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		assertTrue(herringRouge.exists());
 	}
 
+	@Test
 	public void testRefreshLocalFile2() throws CoreException {
-		String name = "test31415";
-		IProject project = getWorkspace().getRoot().getProjects()[0];
+		IProject project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
 
+		String name = "test31415";
 		// create a File, which should be fine
 		IFile file = project.getFile(name.toUpperCase());
 		file.create(createRandomContentsStream(), true, null);
@@ -409,6 +457,7 @@ public class CaseSensitivityTest extends LocalStoreTest {
 		assertTrue(herringRouge.exists());
 	}
 
+	@Test
 	public void testDeleteResources() throws CoreException, IOException {
 		String name = "test31415";
 
@@ -448,4 +497,5 @@ public class CaseSensitivityTest extends LocalStoreTest {
 
 		folder.delete(true, null);
 	}
+
 }
