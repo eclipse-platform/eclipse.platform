@@ -29,12 +29,12 @@ import org.eclipse.ui.IStartup;
 import org.eclipse.ui.pki.AuthenticationBase;
 import org.eclipse.ui.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.LogUtil;
-import org.eclipse.ui.pki.util.TrustStoreSecureStorage;
+import org.eclipse.ui.pki.wizard.TrustStoreSecureStorage;
 import org.eclipse.pki.pkcs.PublicKeySecurity;
 import org.eclipse.pki.pkcs.VendorImplementation;
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.pki.pkiselection.PKCSSelected;
-import org.eclipse.pki.preferences.AuthenticationPreferences;
+import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 
 public class PKIController implements IStartup {
 	protected static final String USER_HOME = System.getProperty("user.home");

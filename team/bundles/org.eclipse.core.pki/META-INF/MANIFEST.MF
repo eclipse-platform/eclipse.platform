@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %PLUGIN_NAME
+Bundle-Name: PKI Core
 Bundle-Localization: plugin
 Bundle-SymbolicName: org.eclipse.core.pki; singleton:=true
 Require-Bundle: org.eclipse.equinox.security;bundle-version="[1.0.0,2.0.0)",
@@ -13,11 +13,11 @@ Require-Bundle: org.eclipse.equinox.security;bundle-version="[1.0.0,2.0.0)",
  org.eclipse.core.runtime,
  org.eclipse.core.net
 Bundle-Version: 1.0.0
-Export-Package: org.eclipse.pki.auth,
+Export-Package: org.eclipse.core.pki,
+ org.eclipse.pki.auth,
  org.eclipse.pki.exception,
  org.eclipse.pki.pkcs,
  org.eclipse.pki.pkiselection
-Import-Package: org.eclipse.ui.pki.preferences
 Bundle-Vendor: %PLUGIN_PROVIDER
 Automatic-Module-Name: org.eclipse.core.pki
 Bundle-ActivationPolicy: lazy
