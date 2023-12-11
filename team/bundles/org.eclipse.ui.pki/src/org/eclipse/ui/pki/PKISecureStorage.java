@@ -15,13 +15,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
+import org.eclipse.ui.pki.util.ExpiredCertCheck;
+import org.eclipse.ui.pki.util.LogUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.pki.pkcs.VendorImplementation;
 
 import org.eclipse.pki.pkiselection.PKCSSelected;
 import org.eclipse.pki.pkiselection.PKIProperties;
-import org.eclipse.pki.util.ExpiredCertCheck;
-import org.eclipse.pki.util.LogUtil;
 
 /**
  * 

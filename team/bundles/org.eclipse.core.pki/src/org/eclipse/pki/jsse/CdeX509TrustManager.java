@@ -13,8 +13,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-import org.eclipse.pki.util.LogUtil;
 import org.eclipse.ui.pki.AuthenticationPlugin;
+import org.eclipse.ui.pki.util.LogUtil;
 
 
 /**

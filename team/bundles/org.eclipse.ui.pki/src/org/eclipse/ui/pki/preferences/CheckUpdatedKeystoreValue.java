@@ -10,14 +10,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
-
+import org.eclipse.ui.pki.util.ChangedPressedFieldEditorStatus;
+import org.eclipse.ui.pki.util.KeyStoreFormat;
+import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.pki.auth.AuthenticationPlugin;
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.pki.pkcs.VendorImplementation;
 import org.eclipse.pki.pkiselection.PKCSpick;
-import org.eclipse.pki.util.ChangedPressedFieldEditorStatus;
-import org.eclipse.pki.util.KeyStoreFormat;
-import org.eclipse.pki.util.KeyStoreUtil;
 
 
 public class CheckUpdatedKeystoreValue  {

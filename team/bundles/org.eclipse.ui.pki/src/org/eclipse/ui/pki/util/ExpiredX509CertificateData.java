@@ -1,4 +1,4 @@
-package org.eclipse.pki.util;
+package org.eclipse.ui.pki.util;
 
 public class ExpiredX509CertificateData {
 	private String alias;

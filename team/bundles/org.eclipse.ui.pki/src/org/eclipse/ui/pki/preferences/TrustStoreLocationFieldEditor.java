@@ -5,9 +5,9 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.pki.util.ChangedPressedFieldEditorStatus;
 import org.eclipse.pki.auth.AuthenticationPlugin;
 import org.eclipse.pki.exception.UserCanceledException;
-import org.eclipse.pki.util.ChangedPressedFieldEditorStatus;
 
 /**
  * This class can be used in an {@link FieldEditorPreferencePage} to represent a trust store

@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Pki
 Bundle-SymbolicName: org.eclipse.ui.pki;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Export-Package: org.eclipse.ui.pki.preferences
+Export-Package: org.eclipse.ui.pki.preferences,
+ org.eclipse.ui.pki.util
 Bundle-Activator: org.eclipse.ui.pki.AuthenticationPlugin
 Bundle-Vendor: Security Team
 Bundle-RequiredExecutionEnvironment: JavaSE-17
