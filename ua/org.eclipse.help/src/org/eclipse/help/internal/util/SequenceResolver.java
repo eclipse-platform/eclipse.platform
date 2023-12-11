@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.help.internal.util;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,10 +33,14 @@ import java.util.Set;
  */
 public class SequenceResolver<T> {
 
-	private List<T> primaryList;
-	private List<T>[] secondaryLists;
-	private ListIterator<T> primaryIter;
-	private ListIterator<T>[] secondaryIters;
+	private static record ListWithIterator<T>(List<T> list, ListIterator<T> iterator) {
+		public ListWithIterator(List<T> list) {
+			this(list, list.listIterator());
+		}
+	}
+
+	private ListWithIterator<T> primaryList;
+	private List<ListWithIterator<T>> secondaryLists;
 	private Set<T> processedItems;
 
 	/*
@@ -74,17 +80,15 @@ public class SequenceResolver<T> {
 	 * as many orderings as possible are satisfied. For example, if most orderings
 	 * want x before y, but a few want the opposite, x will be placed before y.
 	 */
-	public List<T> getSequence(List<T> primary, List<T>[] secondary) {
-		primaryList = primary;
-		secondaryLists = secondary;
-		prepareDataStructures();
+	public List<T> getSequence(List<T> primary, List<List<T>> secondary) {
+		prepareDataStructures(primary, secondary);
 		List<T> order = new ArrayList<>();
 		T item;
 		while ((item = getNextItem()) != null) {
 			processedItems.add(item);
-			advanceIterator(primaryIter);
-			for (int i=0;i<secondaryIters.length;++i) {
-				advanceIterator(secondaryIters[i]);
+			advanceIterator(primaryList.iterator);
+			for (ListWithIterator<T> secondaryList : secondaryLists) {
+				advanceIterator(secondaryList.iterator);
 			}
 			order.add(item);
 		}
@@ -94,13 +98,9 @@ public class SequenceResolver<T> {
 	/*
 	 * Create the data structures necessary for later operations.
 	 */
-	@SuppressWarnings("unchecked")
-	private void prepareDataStructures() {
-		primaryIter = primaryList.listIterator();
-		secondaryIters = new ListIterator[secondaryLists.length];
-		for (int i=0;i<secondaryLists.length;++i) {
-			secondaryIters[i] = secondaryLists[i].listIterator();
-		}
+	private void prepareDataStructures(List<T> primary, List<List<T>> secondary) {
+		primaryList = new ListWithIterator<>(primary);
+		secondaryLists = secondary.stream().map(list -> new ListWithIterator<>(list)).collect(toList());
 		processedItems = new HashSet<>();
 	}
 
@@ -191,21 +191,21 @@ public class SequenceResolver<T> {
 	 */
 	private Candidate<T>[] getAllCandidates() {
 		List<Candidate<T>> candidates = new ArrayList<>();
-		T item = getNextItem(primaryIter);
+		T item = getNextItem(primaryList.iterator);
 		if (item != null) {
 			Candidate<T> c = new Candidate<>();
 			c.item = item;
 			c.isPrimary = true;
-			c.src = primaryList;
+			c.src = primaryList.list;
 			candidates.add(c);
 		}
-		for (int i=0;i<secondaryIters.length;++i) {
-			item = getNextItem(secondaryIters[i]);
+		for (ListWithIterator<T> secondary : secondaryLists) {
+			item = getNextItem(secondary.iterator);
 			if (item != null) {
 				Candidate<T> c = new Candidate<>();
 				c.item = item;
 				c.isPrimary = false;
-				c.src = secondaryLists[i];
+				c.src = secondary.list;
 				if (!candidates.contains(c)) {
 					candidates.add(c);
 				}
