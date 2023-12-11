@@ -13,8 +13,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
 import org.eclipse.core.pki.AuthenticationService;
-import org.eclipse.ui.pki.AuthenticationPlugin;
-import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
+//import org.eclipse.ui.pki.AuthenticationPlugin;
+//import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 
 public enum AuthenticationBase implements AuthenticationService {
 	INSTANCE;
@@ -76,22 +76,27 @@ public enum AuthenticationBase implements AuthenticationService {
 
 		KeyStore keyStore = null;
 		is9 = true;
-		DebugLogger.printDebug("In configure  CFG STORED FILE LOC:" + AuthenticationPlugin.getDefault()
-				.getPreferenceStore().getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION));
+		
+		//DebugLogger.printDebug("In configure  CFG STORED FILE LOC:" + AuthenticationPlugin.getDefault()
+		//		.getPreferenceStore().getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION));
 
 		// Pkcs11Location location = new Pkcs11Location();
 		// location.getPkcs11LocationInstance();
 		// String cfgDirectory = location.getDirectory();
-		String cfgDirectory = AuthenticationPlugin.getDefault().getPreferenceStore()
-				.getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION);
+		
+		
+		//String cfgDirectory = AuthenticationPlugin.getDefault().getPreferenceStore()
+		//		.getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION);
+		String cfgDirectory="TBD";
+		
 		// listProviders();
 
 		DebugLogger.printDebug("In configure  DIR:" + cfgDirectory);
 		try {
 
-			// Provider prototype = Security.getProvider("SunPKCS11");
-			Provider prototype = Security.getProvider(AuthenticationPlugin.getDefault().getPreferenceStore()
-					.getString(AuthenticationPreferences.SECURITY_PROVIDER));
+			Provider prototype = Security.getProvider("SunPKCS11");
+			//Provider prototype = Security.getProvider(AuthenticationPlugin.getDefault().getPreferenceStore()
+			//		.getString(AuthenticationPreferences.SECURITY_PROVIDER));
 
 			if (prototype == null) {
 				DebugLogger.printDebug("In configure  PROVIDER NOT FOUND");
@@ -112,20 +117,19 @@ public enum AuthenticationBase implements AuthenticationService {
 
 	public boolean isPkcs11Setup() {
 
-		if (AuthenticationPlugin.getDefault().getPreferenceStore()
-				.getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION) != null) {
-
-			if (!(AuthenticationPlugin.getDefault().getPreferenceStore()
-					.getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION).isEmpty())) {
-				Path path = Paths.get(AuthenticationPlugin.getDefault().getPreferenceStore()
-						.getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION));
-				if (Files.notExists(path)) {
-					System.out.println("AuthenticationBase CFG FILE:" + AuthenticationPlugin.getDefault()
-							.getPreferenceStore().getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION));
-					return true;
-				}
-			} 
-		}
+		/*
+		 * if (AuthenticationPlugin.getDefault().getPreferenceStore()
+		 * .getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION) != null) {
+		 * 
+		 * if (!(AuthenticationPlugin.getDefault().getPreferenceStore()
+		 * .getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION).isEmpty())) {
+		 * Path path = Paths.get(AuthenticationPlugin.getDefault().getPreferenceStore()
+		 * .getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION)); if
+		 * (Files.notExists(path)) { System.out.println("AuthenticationBase CFG FILE:" +
+		 * AuthenticationPlugin.getDefault()
+		 * .getPreferenceStore().getString(AuthenticationPreferences.
+		 * PKCS11_CFG_FILE_LOCATION)); return true; } } }
+		 */
 		return false;
 
 	}
@@ -187,8 +191,9 @@ public enum AuthenticationBase implements AuthenticationService {
 	@Override
 	public String findPkcs11CfgLocation() {
 		// TODO Auto-generated method stub
-		AuthenticationPlugin.getDefault().getPreferenceStore()
-				.getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION);
+		//AuthenticationPlugin.getDefault().getPreferenceStore()
+		//		.getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION);
+		
 		Pkcs11Location location = new Pkcs11Location();
 		location.getPkcs11LocationInstance();
 		return location.getJavaPkcs11Cfg();
