@@ -7,8 +7,8 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.Properties;
 
-import org.eclipse.pki.auth.AuthenticationPlugin;
 import org.eclipse.pki.preferences.AuthenticationPreferences;
+import org.eclipse.ui.pki.AuthenticationPlugin;
 
 public class Pkcs11Provider {
 	

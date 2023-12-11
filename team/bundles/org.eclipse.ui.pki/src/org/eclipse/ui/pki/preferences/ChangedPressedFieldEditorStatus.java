@@ -1,4 +1,4 @@
-package org.eclipse.ui.pki.util;
+package org.eclipse.ui.pki.preferences;
 
 import java.security.KeyStore;
 

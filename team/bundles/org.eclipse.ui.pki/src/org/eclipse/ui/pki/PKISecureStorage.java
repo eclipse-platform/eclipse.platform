@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.eclipse.pki.util;
+package org.eclipse.ui.pki;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -15,13 +15,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
-import org.eclipse.ui.pki.AuthenticationPlugin;
-import org.eclipse.ui.pki.PKCSpick;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.pki.pkcs.VendorImplementation;
 
 import org.eclipse.pki.pkiselection.PKCSSelected;
 import org.eclipse.pki.pkiselection.PKIProperties;
+import org.eclipse.pki.util.ExpiredCertCheck;
+import org.eclipse.pki.util.LogUtil;
 
 /**
  * 

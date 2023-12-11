@@ -21,13 +21,12 @@ import java.util.List;
 
 import javax.net.ssl.SSLContext;
 
-import org.eclipse.core.pki.AuthenticationBase;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.pki.auth.AuthenticationPlugin;
 import org.eclipse.pki.pkiselection.PKCSSelected;
-import org.eclipse.pki.pkiselection.PKIProperties; 
+import org.eclipse.pki.pkiselection.PKIProperties;
+import org.eclipse.ui.pki.AuthenticationBase;
+import org.eclipse.ui.pki.AuthenticationPlugin; 
 
 
 public class SSLPkcs11Provider {

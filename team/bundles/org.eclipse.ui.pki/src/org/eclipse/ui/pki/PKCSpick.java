@@ -1,4 +1,4 @@
-package org.eclipse.pki.pkiselection;
+package org.eclipse.ui.pki;
 
 public class PKCSpick {
 	private static final PKCSpick pkcs = new PKCSpick(); 

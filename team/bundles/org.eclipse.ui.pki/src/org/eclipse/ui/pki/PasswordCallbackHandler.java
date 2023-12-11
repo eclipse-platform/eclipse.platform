@@ -1,4 +1,4 @@
-package org.eclipse.pki.auth;
+package org.eclipse.ui.pki;
 
 import java.io.IOException;
 

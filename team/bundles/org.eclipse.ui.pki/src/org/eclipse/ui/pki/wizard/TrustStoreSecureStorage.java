@@ -1,4 +1,4 @@
-package org.eclipse.pki.util;
+package org.eclipse.ui.pki.wizard;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +14,7 @@ import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.ui.pki.PKCSpick;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.pki.preferences.AuthenticationPreferences;
+import org.eclipse.pki.util.LogUtil;
 
 public class TrustStoreSecureStorage extends AbstractUIPlugin {
 	
