@@ -13,11 +13,14 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.preferences;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.stream.IntStream;
 
 import org.eclipse.help.internal.util.ProductPreferences;
 import org.junit.Assert;
@@ -142,11 +145,8 @@ public class ProductPreferencesTest {
 			List<String> items = ProductPreferences.tokenize(data[0]);
 			List<String> expectedOrder = ProductPreferences.tokenize(data[1]);
 			List<String> primaryOrdering = ProductPreferences.tokenize(data[2]);
-			@SuppressWarnings("unchecked")
-			List<String>[] secondaryOrderings = (List<String>[]) new List<?>[data.length - 3];
-			for (int j=0;j<secondaryOrderings.length;++j) {
-				secondaryOrderings[j] = ProductPreferences.tokenize(data[j + 3]);
-			}
+			List<List<String>> secondaryOrderings = IntStream.range(0, data.length - 3)
+					.mapToObj(i -> ProductPreferences.tokenize(data[i + 3])).collect(toList());
 
 			List<String> actualOrder = ProductPreferences.getOrderedList(items, primaryOrdering, secondaryOrderings, null);
 			Assert.assertEquals("Items in list were not ordered as expected", expectedOrder, actualOrder);
