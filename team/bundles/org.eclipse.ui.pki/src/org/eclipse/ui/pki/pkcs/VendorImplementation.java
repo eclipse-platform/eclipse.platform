@@ -1,11 +1,11 @@
-package org.eclipse.pki.pkcs;
+package org.eclipse.ui.pki.pkcs;
 
 import java.security.KeyStore;
 
 import javax.net.ssl.SSLContext;
 
-import org.eclipse.pki.pkcs.ProviderImpl;
 import org.eclipse.ui.pki.AuthenticationBase;
+import org.eclipse.ui.pki.pkcs.ProviderImpl;
 import org.eclipse.pki.interfaces.IProvider;
 
 

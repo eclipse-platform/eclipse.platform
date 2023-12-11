@@ -1,4 +1,4 @@
-package org.eclipse.pki.pkcs;
+package org.eclipse.ui.pki.pkcs;
 
 import java.util.Properties;
 
