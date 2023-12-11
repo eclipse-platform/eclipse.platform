@@ -5,7 +5,7 @@ import org.eclipse.jface.wizard.Wizard;
 
 import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
-import org.eclipse.ui.pki.ChangedPressedFieldEditorStatus;
+import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
 import org.eclipse.ui.pki.wizard.TrustStoreSecureStorage;
 
 public class TrustStoreLoginWizard extends Wizard {
