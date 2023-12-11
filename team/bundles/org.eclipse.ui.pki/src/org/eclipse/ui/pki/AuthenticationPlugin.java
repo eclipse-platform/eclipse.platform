@@ -67,14 +67,14 @@ import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.BundleContext;
 
-import org.eclipse.pki.dialog.PassphraseDialog;
+import org.eclipse.ui.pki.dialog.PassphraseDialog;
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.pki.jsse.CdeX509TrustManager;
 import org.eclipse.pki.pkcs.VendorImplementation;
 import org.eclipse.pki.pkiselection.PKCSSelected;
 import org.eclipse.pki.pkiselection.PKCSpick;
 import org.eclipse.pki.pkiselection.PKIProperties;
-import org.eclipse.pki.preferences.AuthenticationPreferences;
+import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 import org.eclipse.pki.util.KeyStoreFormat;
 import org.eclipse.pki.util.KeyStoreUtil;
 import org.eclipse.pki.util.LogUtil;
