@@ -24,13 +24,13 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.pki.util.ChangedPressedFieldEditorStatus;
+import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
 import org.eclipse.ui.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.ui.pki.util.LogUtil;
-import org.eclipse.pki.auth.AuthenticationPlugin;
-import org.eclipse.pki.auth.PKIController;
-import org.eclipse.pki.preferences.AuthenticationPreferences;
+import org.eclipse.ui.pki.AuthenticationPlugin;
+import org.eclipse.ui.pki.PKIController;
+import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 
 public class TrustStoreSelectionPage extends WizardPage {
 	

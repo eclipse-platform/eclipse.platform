@@ -11,9 +11,9 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.pki.AuthenticationPlugin;
-import org.eclipse.pki.pkiselection.PKCS11WidgetSelectedActions;
-import org.eclipse.pki.pkiselection.PKCS12WidgetSelectedActions;
-import org.eclipse.pki.preferences.AuthenticationPreferences;
+import org.eclipse.ui.pki.pkiselection.PKCS11WidgetSelectedActions;
+import org.eclipse.ui.pki.pkiselection.PKCS12WidgetSelectedActions;
+import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 
 
 public class PKCSButtons {

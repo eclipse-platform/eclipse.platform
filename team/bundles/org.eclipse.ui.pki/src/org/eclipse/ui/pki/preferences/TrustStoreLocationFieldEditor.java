@@ -5,8 +5,8 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.pki.util.ChangedPressedFieldEditorStatus;
-import org.eclipse.pki.auth.AuthenticationPlugin;
+import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
+import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.pki.exception.UserCanceledException;
 
 /**
