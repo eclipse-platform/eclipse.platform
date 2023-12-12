@@ -61,7 +61,7 @@ public class Bug_129551 extends AbstractJobManagerTest {
 		manager.setProgressProvider(null);
 	}
 
-	public void testBug() {
+	public void testBug() throws InterruptedException {
 		ISchedulingRule rule = new IdentityRule();
 		BugJob job = new BugJob();
 		job.setRule(rule);
@@ -72,18 +72,15 @@ public class Bug_129551 extends AbstractJobManagerTest {
 		//wait until the first job is about to run
 		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		//wait to ensure the other job is blocked
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			fail("4.99", e);
-		}
+		Thread.sleep(1000);
+
 		//let the first job go
 		barrier.setStatus(TestBarrier2.STATUS_START);
 		barrier.waitForStatus(TestBarrier2.STATUS_DONE);
 
 		//check for failure
 		if (failure[0] != null) {
-			fail(failure[0].getMessage());
+			throw failure[0];
 		}
 		//tell the job not to sleep this time around
 		shouldSleep[0] = false;
@@ -91,4 +88,5 @@ public class Bug_129551 extends AbstractJobManagerTest {
 		waitForCompletion(job);
 		waitForCompletion(other);
 	}
+
 }

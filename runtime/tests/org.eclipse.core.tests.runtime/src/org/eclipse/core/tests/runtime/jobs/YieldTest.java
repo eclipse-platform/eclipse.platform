@@ -13,11 +13,25 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import java.util.*;
+import static org.junit.Assert.assertThrows;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicIntegerArray;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
 
@@ -138,13 +152,7 @@ public class YieldTest extends AbstractJobManagerTest {
 				return Status.OK_STATUS;
 			}
 		};
-		try {
-			yielding.yieldRule(null);
-			fail("Did not throw exception");
-		} catch (IllegalArgumentException e) {
-			// ignore
-		}
-
+		assertThrows(IllegalArgumentException.class, () -> yielding.yieldRule(null));
 	}
 
 	public void testThreadRestored() {
@@ -189,7 +197,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		assertTrue(conflictingJob.getResult().isOK());
 	}
 
-	public void testYieldJobToJob() {
+	public void testYieldJobToJob() throws Throwable {
 		final PathRule rule = new PathRule(getName());
 
 		final Job[] jobs = new Job[2];
@@ -227,9 +235,9 @@ public class YieldTest extends AbstractJobManagerTest {
 		if (!yieldResult.isOK()) {
 			Throwable t = yieldResult.getException();
 			if (t != null) {
-				fail("yieldJob failed", t);
+				throw t;
 			}
-			fail("yieldJob failed:" + yieldResult);
+			throw new CoreException(yieldResult);
 		}
 		waitForCompletion(conflictingJob);
 		assertTrue(conflictingJob.getResult().isOK());
@@ -609,7 +617,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		barrier.waitForStatus(TestBarrier2.STATUS_DONE);
 	}
 
-	public void testYieldPingPong() {
+	public void testYieldPingPong() throws Throwable {
 		// yield from one job, then yield again
 		final PathRule rule = new PathRule(getName());
 
@@ -649,9 +657,9 @@ public class YieldTest extends AbstractJobManagerTest {
 		if (!yieldResult.isOK()) {
 			Throwable t = yieldResult.getException();
 			if (t != null) {
-				fail("yieldJob failed", t);
+				throw t;
 			}
-			fail("yieldJob failed:" + yieldResult);
+			throw new CoreException(yieldResult);
 		}
 		waitForCompletion(conflictingJob);
 		assertTrue(conflictingJob.toString(), conflictingJob.getResult().isOK());
@@ -700,11 +708,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		// wait for jobs to start running
 		synchronized (SYNC) {
 			while (started[0].intValue() != count) {
-				try {
-					SYNC.wait();
-				} catch (InterruptedException e) {
-					fail("4.99", e);
-				}
+				SYNC.wait();
 			}
 		}
 		// release all waiting jobs
@@ -769,11 +773,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		// wait for jobs to start running
 		synchronized (SYNC_A) {
 			while (started_A[0].intValue() != count) {
-				try {
-					SYNC_A.wait();
-				} catch (InterruptedException e) {
-					fail("4.99", e);
-				}
+				SYNC_A.wait();
 			}
 		}
 		// release all waiting jobs
@@ -825,11 +825,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		// wait for jobs to start running
 		synchronized (SYNC_B) {
 			while (started_B[0].intValue() != count) {
-				try {
-					SYNC_B.wait();
-				} catch (InterruptedException e) {
-					fail("4.99", e);
-				}
+				SYNC_B.wait();
 			}
 		}
 		// release all waiting jobs
@@ -932,7 +928,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		assertTrue("yieldRule should have thrown OperationCanceledException", operationWasCanceled[0]);
 	}
 
-	public void testYieldJobToJobsInterleaved() {
+	public void testYieldJobToJobsInterleaved() throws InterruptedException {
 		// yield from job to multiple waiting others
 		final TestBarrier2 barrier = new TestBarrier2();
 		final PathRule rule = new PathRule(getName());
@@ -977,11 +973,7 @@ public class YieldTest extends AbstractJobManagerTest {
 		jobs.add(yieldB);
 
 		// wait for jobs to start
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			fail("4.99", e);
-		}
+		Thread.sleep(1000);
 		waitForJobsCompletion(jobs.toArray(new Job[jobs.size()]), 20000);
 		for (Job conflict : jobs) {
 			assertTrue(conflict.getResult().isOK());
@@ -1088,7 +1080,6 @@ public class YieldTest extends AbstractJobManagerTest {
 			yieldA.cancel();
 			Job.getJobManager().removeJobChangeListener(a);
 		}
-
 	}
 
 	public void testNestedAcquireJobIsNotRescheduled() {

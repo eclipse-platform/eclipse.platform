@@ -13,8 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.junit.Test;
 
 public class Bug_478634 extends AbstractJobTest {
@@ -33,7 +38,6 @@ public class Bug_478634 extends AbstractJobTest {
 		j.schedule();
 		waitForCompletion(j);
 		assertFalse("Job was blocked", j.wasBlocked());
-
 	}
 
 	class ShouldNotBeBlockedJob extends Job {
