@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.net.ssl.SSLContext;
 
-import org.eclipse.pki.interfaces.IProvider;
 
 public class ProviderImpl  {
 	public static SSLPkcs11Provider security = SSLPkcs11Provider.getInstance();
