@@ -14,86 +14,30 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.core.internal.jobs.JobListeners;
 import org.eclipse.core.internal.jobs.JobManager;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Common superclass for all tests of the org.eclipse.core.runtime.jobs API. Provides
  * convenience methods useful for testing jobs.
  */
 @SuppressWarnings("restriction")
-public class AbstractJobTest extends TestCase {
+public class AbstractJobTest  {
 	protected IJobManager manager;
 	private FussyProgressProvider progressProvider;
-
-	public AbstractJobTest() {
-		super("");
-	}
-
-	public AbstractJobTest(String name) {
-		super(name);
-	}
-
-	/**
-	 * Fails the test due to the given exception.
-	 */
-	public void fail(String message, Throwable e) {
-		// If the exception is a CoreException with a multistatus
-		// then print out the multistatus so we can see all the info.
-		if (e instanceof CoreException) {
-			IStatus status = ((CoreException) e).getStatus();
-			if (status.getChildren().length > 0) {
-				write(status, 0);
-			}
-		}
-		fail(message + ": " + e);
-	}
-
-	protected void indent(OutputStream output, int indent) {
-		for (int i = 0; i < indent; i++) {
-			try {
-				output.write("\t".getBytes());
-			} catch (IOException e) {
-				//ignore
-			}
-		}
-	}
 
 	protected void sleep(long duration) {
 		try {
 			Thread.sleep(duration);
 		} catch (InterruptedException e) {
 			//ignore
-		}
-	}
-
-	protected void write(IStatus status, int indent) {
-		PrintStream output = System.out;
-		indent(output, indent);
-		output.println("Severity: " + status.getSeverity());
-
-		indent(output, indent);
-		output.println("Plugin ID: " + status.getPlugin());
-
-		indent(output, indent);
-		output.println("Code: " + status.getCode());
-
-		indent(output, indent);
-		output.println("Message: " + status.getMessage());
-
-		if (status.isMultiStatus()) {
-			IStatus[] children = status.getChildren();
-			for (IStatus element : children) {
-				write(element, indent + 1);
-			}
 		}
 	}
 
@@ -139,24 +83,22 @@ public class AbstractJobTest extends TestCase {
 		return ((JobManager) (Job.getJobManager())).now();
 	}
 
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setProgressProvider() throws Exception {
 		assertNoTimeoutOccured();
-		super.setUp();
 		manager = Job.getJobManager();
 		progressProvider = new FussyProgressProvider();
 		manager.setProgressProvider(progressProvider);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void resetProgressProvider() throws Exception {
 		progressProvider.sanityCheck();
-		manager.setProgressProvider(null);
+		Job.getJobManager().setProgressProvider(null);
 		assertNoTimeoutOccured();
-		super.tearDown();
 	}
 
-	public static void assertNoTimeoutOccured() throws Exception {
+	protected final void assertNoTimeoutOccured() throws Exception {
 		int jobListenerTimeout = JobListeners.getJobListenerTimeout();
 		JobListeners.resetJobListenerTimeout();
 		int defaultTimeout = JobListeners.getJobListenerTimeout();

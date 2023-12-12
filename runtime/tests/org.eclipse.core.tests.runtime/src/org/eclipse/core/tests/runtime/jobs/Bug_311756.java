@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -21,6 +23,7 @@ import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.TestBarrier2;
+import org.junit.Test;
 
 /**
  * Make sure that IProgressMonitor's blocked/unblocked is invoked.
@@ -35,6 +38,7 @@ public class Bug_311756 extends AbstractJobTest {
 	 * Tests that the progress monitor blocked state is cleared in the normal case
 	 * that the rule becomes available after being blocked.
 	 */
+	@Test
 	public void testBlockingAndUnblockingMonitor() throws Exception {
 		final int[] blocked = new int[] {UNSET};
 		ProgressMonitorWrapper wrapper = new ProgressMonitorWrapper(new NullProgressMonitor()) {
@@ -87,6 +91,7 @@ public class Bug_311756 extends AbstractJobTest {
 	 * Tests that the progress monitor blocked state is cleared in the case that a rule
 	 * is transferring to the waiting job while blocked.
 	 */
+	@Test
 	public void testBlockingAndUnblockingMonitorUsingTransfer() throws Exception {
 		final int[] blocked = new int[] {UNSET};
 		final ProgressMonitorWrapper wrapper = new ProgressMonitorWrapper(new NullProgressMonitor()) {
@@ -150,6 +155,7 @@ public class Bug_311756 extends AbstractJobTest {
 	 * Tests that the progress monitor blocked state is cleared in the case that a rule
 	 * becomes available to a yielded job while it is blocked.
 	 */
+	@Test
 	public void testBlockingAndUnblockingMonitorUsingYield() throws Exception {
 		final int[] blocked = new int[] {-1};
 		final ProgressMonitorWrapper wrapper = new ProgressMonitorWrapper(new NullProgressMonitor()) {
@@ -208,6 +214,7 @@ public class Bug_311756 extends AbstractJobTest {
 	 * Tests that the progress monitor blocked state is cleared in the case that a rule
 	 * is transferred back to a yielded job while it is blocked.
 	 */
+	@Test
 	public void testBlockingAndUnblockingMonitorUsingYieldAndTransfer() throws Exception {
 		final int[] blocked = new int[] {-1};
 		final ProgressMonitorWrapper wrapper = new ProgressMonitorWrapper(new NullProgressMonitor()) {
@@ -258,4 +265,5 @@ public class Bug_311756 extends AbstractJobTest {
 		}
 		assertEquals(blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called", CLEARED, blocked[0]);
 	}
+	
 }

@@ -17,7 +17,10 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -37,6 +40,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.jobs.ProgressProvider;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -100,6 +104,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testComplexRuleStarting() {
 		//test how the manager reacts when several different threads try to begin conflicting rules
 		final int NUM_THREADS = 3;
@@ -191,6 +196,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testSimpleRuleStarting() {
 		//start two jobs, each of which will begin and end a rule several times
 		//while one job starts a rule, the second job's call to begin rule should block that thread
@@ -280,6 +286,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		assertEquals("6.6", IStatus.OK, jobs[1].getResult().getSeverity());
 	}
 
+	@Test
 	public void testComplexRuleContainment() {
 		ISchedulingRule rules[] = new ISchedulingRule[4];
 
@@ -314,12 +321,15 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		}
 	}
 
-	public void _testEndNullRule() {
+	@Test
+	@Ignore("see bug 43460")
+	public void testEndNullRule() {
 		//see bug #43460
 		//end null IScheduleRule without begin
 		assertThrows(RuntimeException.class, () -> manager.endRule(null));
 	}
 
+	@Test
 	public void testFailureCase() {
 		ISchedulingRule rule1 = new IdentityRule();
 		ISchedulingRule rule2 = new IdentityRule();
@@ -343,6 +353,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 	 * Tests create a job with one scheduling rule, and then attempting
 	 * to acquire an unrelated rule from within that job.
 	 */
+	@Test
 	public void testFailedNestRuleInJob() {
 		final ISchedulingRule rule1 = new PathRule("/testFailedNestRuleInJob/A/");
 		final ISchedulingRule rule2 = new PathRule("/testFailedNestRuleInJob/B/");
@@ -370,6 +381,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		assertTrue("1.1", exception[0].getMessage().indexOf("does not match outer scope rule") > 0);
 	}
 
+	@Test
 	public void testNestedCase() {
 		ISchedulingRule rule1 = new PathRule("/testNestedCase");
 		ISchedulingRule rule2 = new PathRule("/testNestedCase/B");
@@ -420,6 +432,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 	 * Tests a failure where canceling an attempt to beginRule resulted in implicit jobs
 	 * being recycled before they were finished.
 	 */
+	@Test
 	public void testBug44299() {
 		ISchedulingRule rule = new IdentityRule();
 		FussyProgressMonitor monitor = new FussyProgressMonitor();
@@ -448,6 +461,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		manager.endRule(rule);
 	}
 
+	@Test
 	public void testRuleContainment() {
 		ISchedulingRule rules[] = new ISchedulingRule[4];
 
@@ -473,6 +487,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		manager.endRule(rules[1]);
 	}
 
+	@Test
 	public void testSimpleOtherThreadAccess() {
 		//ending a rule started on this thread from another thread
 		ISchedulingRule rule1 = new IdentityRule();
@@ -567,6 +582,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testIgnoreScheduleThreadJob() throws Exception {
 		Set<Job> jobsStartedRunning = Collections.synchronizedSet(new HashSet<>());
 		JobChangeAdapter runningThreadStoreListener = new JobChangeAdapter() {
@@ -592,6 +608,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 				not(hasItem(rescheduledJob)));
 	}
 
+	@Test
 	public void testRunThreadJobIsNotRescheduled() throws Exception {
 		Set<Job> jobsStartedRunning = Collections.synchronizedSet(new HashSet<>());
 		JobChangeAdapter runningThreadStoreListener = new JobChangeAdapter() {
@@ -615,9 +632,11 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		assertThat("ThreadJob was rescheduled", jobsStartedRunning, not(hasItem(scheduledJob)));
 	}
 
+	@Test
 	public void testRunNestedAcquireThreadIsNotRescheduled() throws Exception {
-		final PathRule rule = new PathRule(getName());
-		final PathRule subRule = new PathRule(getName() + "/subRule");
+		String name = "test";
+		final PathRule rule = new PathRule(name);
+		final PathRule subRule = new PathRule(name + "/subRule");
 
 		Set<Job> jobsStartedRunning = Collections.synchronizedSet(new HashSet<>());
 		JobChangeAdapter runningThreadStoreListener = new JobChangeAdapter() {
@@ -629,7 +648,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		Job.getJobManager().addJobChangeListener(runningThreadStoreListener);
 		TestBarrier2 waitForThreadJob = new TestBarrier2();
 		AtomicReference<Job> scheduledJob = new AtomicReference<>();
-		final Job job = new Job(getName() + "acquire") {
+		final Job job = new Job(name + "acquire") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
