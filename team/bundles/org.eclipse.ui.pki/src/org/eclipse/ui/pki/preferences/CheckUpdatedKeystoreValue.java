@@ -12,10 +12,10 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSpick;
-import org.eclipse.ui.pki.util.ChangedPressedFieldEditorStatus;
+import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
 import org.eclipse.ui.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
-import org.eclipse.pki.auth.AuthenticationPlugin;
+import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.pki.exception.UserCanceledException;
 
 

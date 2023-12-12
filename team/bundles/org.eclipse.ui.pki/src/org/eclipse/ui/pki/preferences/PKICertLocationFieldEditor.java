@@ -21,8 +21,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.pki.pkiselection.PKCSpick;
 import org.eclipse.ui.pki.pkiselection.PKIProperties;
-import org.eclipse.ui.pki.util.ChangedPressedFieldEditorStatus;
-import org.eclipse.pki.auth.AuthenticationPlugin;
+import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
+import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.pki.exception.UserCanceledException;
 
 /**

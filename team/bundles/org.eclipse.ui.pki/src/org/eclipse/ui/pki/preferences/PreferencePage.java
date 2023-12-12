@@ -29,12 +29,12 @@ import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSpick;
 import org.eclipse.ui.pki.pkiselection.PKI;
 import org.eclipse.ui.pki.pkiselection.PKIProperties;
-import org.eclipse.ui.pki.util.ChangedPressedFieldEditorStatus;
+import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
 import org.eclipse.ui.pki.util.PKISecureStorage;
-import org.eclipse.ui.pki.util.TrustStoreSecureStorage;
+import org.eclipse.ui.pki.wizard.TrustStoreSecureStorage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
-import org.eclipse.pki.auth.AuthenticationPlugin;
+import org.eclipse.ui.pki.AuthenticationPlugin;
 
 
 /**

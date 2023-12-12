@@ -12,6 +12,8 @@ import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.ui.pki.pkiselection.PKCSpick;
+import org.eclipse.ui.pki.util.KeyStoreFormat;
+import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.ui.pki.util.LogUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;

@@ -23,9 +23,9 @@ import javax.net.ssl.SSLContext;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.pki.pkiselection.PKCSSelected;
-import org.eclipse.pki.pkiselection.PKIProperties;
-import org.eclipse.ui.pki.AuthenticationBase;
+import org.eclipse.ui.pki.pkiselection.PKCSSelected;
+import org.eclipse.ui.pki.pkiselection.PKIProperties;
+import org.eclipse.core.pki.AuthenticationBase;
 import org.eclipse.ui.pki.AuthenticationPlugin; 
 
 
