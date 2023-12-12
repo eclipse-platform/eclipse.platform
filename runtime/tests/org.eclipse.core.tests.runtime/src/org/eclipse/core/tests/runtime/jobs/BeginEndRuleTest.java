@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -59,15 +60,10 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 
 		@Override
 		public void run() {
-			try {
+			assertThrows(RuntimeException.class, () -> {
 				status.set(0, TestBarrier2.STATUS_RUNNING);
 				manager.endRule(rule);
-				fail("Ending Rule");
-
-			} catch (RuntimeException e) {
-				//should fail
-			}
-
+			});
 		}
 	}
 
@@ -294,19 +290,15 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 
 		//adding multiple rules in correct order
 		int RULE_REPEATS = 10;
-		try {
-			for (int i = 0; i < rules.length - 1; i++) {
-				for (int j = 0; j < RULE_REPEATS; j++) {
-					manager.beginRule(rules[i], null);
-				}
+		for (int i = 0; i < rules.length - 1; i++) {
+			for (int j = 0; j < RULE_REPEATS; j++) {
+				manager.beginRule(rules[i], null);
 			}
-			for (int i = rules.length - 1; i > 0; i--) {
-				for (int j = 0; j < RULE_REPEATS; j++) {
-					manager.endRule(rules[i - 1]);
-				}
+		}
+		for (int i = rules.length - 1; i > 0; i--) {
+			for (int j = 0; j < RULE_REPEATS; j++) {
+				manager.endRule(rules[i - 1]);
 			}
-		} catch (RuntimeException e) {
-			fail("4.0");
 		}
 
 		//adding rules in proper order, then adding a rule from a bypassed branch
@@ -314,24 +306,9 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		for (ISchedulingRule rule : rules) {
 			manager.beginRule(rule, null);
 		}
-		try {
-			manager.endRule(rules[2]);
-			fail("4.1");
-		} catch (RuntimeException e) {
-			//should fail
-			try {
-				manager.endRule(rules[1]);
-				fail("4.2");
-			} catch (RuntimeException e1) {
-				//should fail
-				try {
-					manager.endRule(rules[0]);
-					fail("4.3");
-				} catch (RuntimeException e2) {
-					//should fail
-				}
-			}
-		}
+		assertThrows(RuntimeException.class, () -> manager.endRule(rules[2]));
+		assertThrows(RuntimeException.class, () -> manager.endRule(rules[1]));
+		assertThrows(RuntimeException.class, () -> manager.endRule(rules[0]));
 		for (int i = rules.length; i > 0; i--) {
 			manager.endRule(rules[i - 1]);
 		}
@@ -340,12 +317,7 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 	public void _testEndNullRule() {
 		//see bug #43460
 		//end null IScheduleRule without begin
-		try {
-			manager.endRule(null);
-			fail("1.1");
-		} catch (RuntimeException e) {
-			//should fail
-		}
+		assertThrows(RuntimeException.class, () -> manager.endRule(null));
 	}
 
 	public void testFailureCase() {
@@ -353,31 +325,16 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		ISchedulingRule rule2 = new IdentityRule();
 
 		//end without begin
-		try {
-			manager.endRule(rule1);
-			fail("1.0");
-		} catch (RuntimeException e) {
-			//should fail
-		}
+		assertThrows(RuntimeException.class, () -> manager.endRule(rule1));
 		//simple mismatched begin/end
 		manager.beginRule(rule1, null);
-		try {
-			manager.endRule(rule2);
-			fail("1.2");
-		} catch (RuntimeException e) {
-			//should fail
-		}
+		assertThrows(RuntimeException.class, () -> manager.endRule(rule2));
 		//should still be able to end the original rule
 		manager.endRule(rule1);
 
 		//mismatched begin/end, ending a null rule
 		manager.beginRule(rule1, null);
-		try {
-			manager.endRule(null);
-			fail("1.3");
-		} catch (RuntimeException e) {
-			//should fail
-		}
+		assertThrows(RuntimeException.class, () -> manager.endRule(null));
 		//should still be able to end the original rule
 		manager.endRule(rule1);
 	}
@@ -420,67 +377,42 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 		//ending an outer rule before an inner one
 		manager.beginRule(rule1, null);
 		manager.beginRule(rule2, null);
-		try {
-			manager.endRule(rule1);
-			fail("2.0");
-		} catch (RuntimeException e) {
-			//should fail
-		}
+		assertThrows(RuntimeException.class, () -> manager.endRule(rule1));
 		manager.endRule(rule2);
 		manager.endRule(rule1);
 
 		//ending a rule that is not open
 		manager.beginRule(rule1, null);
 		manager.beginRule(rule2, null);
-		try {
-			manager.endRule(null);
-			fail("2.1");
-		} catch (RuntimeException e) {
-			//should fail
-		}
+		assertThrows(RuntimeException.class, () -> manager.endRule(null));
 		manager.endRule(rule2);
 		manager.endRule(rule1);
 
 		//adding rules starting with null rule
-		try {
-			manager.beginRule(null, null);
-			manager.beginRule(rule1, null);
-			manager.endRule(rule1);
-			manager.beginRule(rule2, null);
-			manager.endRule(rule2);
-			manager.endRule(null);
-		} catch (RuntimeException e) {
-			//should not fail
-			fail("2.2");
-		}
+		manager.beginRule(null, null);
+		manager.beginRule(rule1, null);
+		manager.endRule(rule1);
+		manager.beginRule(rule2, null);
+		manager.endRule(rule2);
+		manager.endRule(null);
 
 		//adding numerous instances of the same rule
 		int NUM_ADDITIONS = 100;
-		try {
-			for (int i = 0; i < NUM_ADDITIONS; i++) {
-				manager.beginRule(rule1, null);
-			}
-			for (int i = 0; i < NUM_ADDITIONS; i++) {
-				manager.endRule(rule1);
-			}
-		} catch (RuntimeException e) {
-			//should not fail
-			fail("2.3");
+		for (int i = 0; i < NUM_ADDITIONS; i++) {
+			manager.beginRule(rule1, null);
+		}
+		for (int i = 0; i < NUM_ADDITIONS; i++) {
+			manager.endRule(rule1);
 		}
 
 		//adding numerous instances of the null rule
-		try {
-			for (int i = 0; i < NUM_ADDITIONS; i++) {
-				manager.beginRule(null, null);
-			}
-			manager.beginRule(rule1, null);
-			manager.endRule(rule1);
-			for (int i = 0; i < NUM_ADDITIONS; i++) {
-				manager.endRule(null);
-			}
-		} catch (RuntimeException e) {
-			//should not fail
-			fail("2.4");
+		for (int i = 0; i < NUM_ADDITIONS; i++) {
+			manager.beginRule(null, null);
+		}
+		manager.beginRule(rule1, null);
+		manager.endRule(rule1);
+		for (int i = 0; i < NUM_ADDITIONS; i++) {
+			manager.endRule(null);
 		}
 	}
 
@@ -509,7 +441,7 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 
 		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_DONE);
 		if (runner.exception != null) {
-			fail("1.0", runner.exception);
+			throw runner.exception;
 		}
 
 		//finally clear the rule
@@ -526,28 +458,16 @@ public class BeginEndRuleTest extends AbstractJobManagerTest {
 
 		//simple addition of rules in incorrect containment order
 		manager.beginRule(rules[1], null);
-		try {
-			manager.beginRule(rules[0], null);
-			fail("3.0");
-		} catch (RuntimeException e) {
-			//should fail
-		} finally {
-			//still need to end the rule
-			manager.endRule(rules[0]);
-		}
+		assertThrows(RuntimeException.class, () -> manager.beginRule(rules[0], null));
+		manager.endRule(rules[0]);
 		manager.endRule(rules[1]);
 
 		//adding rules in proper order, then adding a rule from different hierarchy
 		manager.beginRule(rules[1], null);
 		manager.beginRule(rules[2], null);
-		try {
-			manager.beginRule(rules[3], null);
-			fail("3.2");
-		} catch (RuntimeException e) {
-			//should fail
-		} finally {
-			manager.endRule(rules[3]);
-		}
+		assertThrows(RuntimeException.class, () -> manager.beginRule(rules[3], null));
+		manager.endRule(rules[3]);
+
 		//should still be able to end the rules
 		manager.endRule(rules[2]);
 		manager.endRule(rules[1]);

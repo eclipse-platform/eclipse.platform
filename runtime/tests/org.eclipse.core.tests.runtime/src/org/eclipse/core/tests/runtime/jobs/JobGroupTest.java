@@ -707,19 +707,13 @@ public class JobGroupTest extends AbstractJobTest {
 	/**
 	 * Tests joining a job that repeats in a loop.
 	 */
-	public void testJoinWithRepeatingJobs() {
+	public void testJoinWithRepeatingJobs() throws OperationCanceledException, InterruptedException {
 		JobGroup jobGroup = new JobGroup("JobGroup", 1, 1);
 		int count = 25;
 		RepeatingJob job = new RepeatingJob("RepeatingJob", count);
 		job.setJobGroup(jobGroup);
 		job.schedule();
-		try {
-			jobGroup.join(0, null);
-		} catch (OperationCanceledException e) {
-			fail("1.0", e);
-		} catch (InterruptedException e) {
-			fail("1.1", e);
-		}
+		jobGroup.join(0, null);
 		// Verify that the job has run the expected number of times.
 		assertEquals("1.2", count, job.getRunCount());
 	}
