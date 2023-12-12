@@ -13,33 +13,26 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
-import junit.framework.Test;
+import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.team.core.Team;
 import org.eclipse.team.core.mapping.IStorageMerger;
+import org.junit.Test;
 
-public class StorageMergerTests extends TeamTest {
+public class StorageMergerTests {
 
-	public StorageMergerTests() {
-		super();
-	}
-
-	public StorageMergerTests(String name) {
-		super(name);
-	}
-
-	public static Test suite() {
-		return suite(StorageMergerTests.class);
-	}
-
+	@Test
 	public void testGetByExtension() {
-		IStorageMerger merger = new Team().createStorageMerger("blah");
+		IStorageMerger merger = Team.createMerger("blah");
 		assertNotNull("Merger for extension is missing", merger);
 	}
 
+	@Test
 	public void testGetByContentType() {
-		IStorageMerger merger = new Team().createStorageMerger(Platform.getContentTypeManager().getContentType("org.eclipse.team.tests.core.content-type1"));
+		IStorageMerger merger = Team.createMerger(
+				Platform.getContentTypeManager().getContentType("org.eclipse.team.tests.core.content-type1"));
 		assertNotNull("Merger for extension is missing", merger);
 	}
+
 }

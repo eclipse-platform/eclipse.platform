@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
-import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.team.tests.core.regression.AllTeamRegressionTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -27,5 +26,5 @@ import org.junit.runners.Suite.SuiteClasses;
 		StreamTests.class, //
 		UserMappingTest.class, //
 })
-public class AllTeamTests extends ResourceTest {
+public class AllTeamTests {
 }
