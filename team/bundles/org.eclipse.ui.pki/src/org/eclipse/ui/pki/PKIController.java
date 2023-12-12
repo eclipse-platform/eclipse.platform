@@ -36,6 +36,7 @@ import org.eclipse.ui.pki.util.PKISecureStorage;
 import org.eclipse.ui.pki.wizard.TrustStoreSecureStorage;
 
 import org.eclipse.pki.auth.PublicKeySecurity;
+import org.eclipse.pki.auth.EventConstant;
 
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;

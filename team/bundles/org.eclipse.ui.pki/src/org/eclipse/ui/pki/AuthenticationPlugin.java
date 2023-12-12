@@ -67,7 +67,7 @@ import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.BundleContext;
 
-import src.org.eclipse.pki.auth.SecurityFileSnapshot;
+import org.eclipse.pki.auth.SecurityFileSnapshot;
 
 import org.eclipse.ui.pki.dialog.PassphraseDialog;
 import org.eclipse.ui.pki.jsse.CdeX509TrustManager;
