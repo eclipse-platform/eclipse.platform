@@ -366,7 +366,7 @@ public class IPathVariableTest {
 		assertEquals("4.0", null, actual);
 	}
 
-	private IPath getVariableRelativePathLocation(IProject project, IPath location) {
+	private static IPath getVariableRelativePathLocation(IProject project, IPath location) {
 		URI variableRelativePathLocation = project.getPathVariableManager().getVariableRelativePathLocation(URIUtil.toURI(location));
 		if (variableRelativePathLocation != null) {
 			return URIUtil.toPath(variableRelativePathLocation);
@@ -444,7 +444,8 @@ public class IPathVariableTest {
 
 	}
 
-	private IPath convertToRelative(IPathVariableManager manager, IPath path, boolean force, String variableHint) throws CoreException {
+	private static IPath convertToRelative(IPathVariableManager manager, IPath path, boolean force, String variableHint)
+			throws CoreException {
 		return URIUtil.toPath(manager.convertToRelative(URIUtil.toURI(path), force, variableHint));
 	}
 

@@ -254,18 +254,18 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 	 * Compares the values in a workspace description with the corresponding
 	 * properties in a preferences object.
 	 */
-	public void assertEquals(String message, IWorkspaceDescription description, Preferences preferences) throws ComparisonFailure {
-		assertEquals(message + " - 1", description.isAutoBuilding(), preferences.getBoolean(ResourcesPlugin.PREF_AUTO_BUILDING));
-		assertEquals(message + " - 2", description.getBuildOrder() == null, preferences.getBoolean(ResourcesPlugin.PREF_DEFAULT_BUILD_ORDER));
-		assertEquals(message + " - 3", WorkspacePreferences.convertStringArraytoString(description.getBuildOrder()), preferences.getString(ResourcesPlugin.PREF_BUILD_ORDER));
-		assertEquals(message + " - 4", description.isApplyFileStatePolicy(), preferences.getBoolean(ResourcesPlugin.PREF_APPLY_FILE_STATE_POLICY));
-		assertEquals(message + " - 5", description.getFileStateLongevity(), preferences.getLong(ResourcesPlugin.PREF_FILE_STATE_LONGEVITY));
-		assertEquals(message + " - 6", description.getMaxFileStates(), preferences.getInt(ResourcesPlugin.PREF_MAX_FILE_STATES));
-		assertEquals(message + " - 7", description.getMaxFileStateSize(), preferences.getLong(ResourcesPlugin.PREF_MAX_FILE_STATE_SIZE));
-		assertEquals(message + " - 8", description.getSnapshotInterval(), preferences.getLong(ResourcesPlugin.PREF_SNAPSHOT_INTERVAL));
-		assertEquals(message + " - 9", description.getMaxBuildIterations(), preferences.getLong(ResourcesPlugin.PREF_MAX_BUILD_ITERATIONS));
+	public void assertEquals(String message, IWorkspaceDescription description, Preferences expectedPreferences) throws ComparisonFailure {
+		assertEquals(message + " - 1", description.isAutoBuilding(), expectedPreferences.getBoolean(ResourcesPlugin.PREF_AUTO_BUILDING));
+		assertEquals(message + " - 2", description.getBuildOrder() == null, expectedPreferences.getBoolean(ResourcesPlugin.PREF_DEFAULT_BUILD_ORDER));
+		assertEquals(message + " - 3", WorkspacePreferences.convertStringArraytoString(description.getBuildOrder()), expectedPreferences.getString(ResourcesPlugin.PREF_BUILD_ORDER));
+		assertEquals(message + " - 4", description.isApplyFileStatePolicy(), expectedPreferences.getBoolean(ResourcesPlugin.PREF_APPLY_FILE_STATE_POLICY));
+		assertEquals(message + " - 5", description.getFileStateLongevity(), expectedPreferences.getLong(ResourcesPlugin.PREF_FILE_STATE_LONGEVITY));
+		assertEquals(message + " - 6", description.getMaxFileStates(), expectedPreferences.getInt(ResourcesPlugin.PREF_MAX_FILE_STATES));
+		assertEquals(message + " - 7", description.getMaxFileStateSize(), expectedPreferences.getLong(ResourcesPlugin.PREF_MAX_FILE_STATE_SIZE));
+		assertEquals(message + " - 8", description.getSnapshotInterval(), expectedPreferences.getLong(ResourcesPlugin.PREF_SNAPSHOT_INTERVAL));
+		assertEquals(message + " - 9", description.getMaxBuildIterations(), expectedPreferences.getLong(ResourcesPlugin.PREF_MAX_BUILD_ITERATIONS));
 		assertEquals(message + " -10", description.isKeepDerivedState(),
-				preferences.getBoolean(ResourcesPlugin.PREF_KEEP_DERIVED_STATE));
+				expectedPreferences.getBoolean(ResourcesPlugin.PREF_KEEP_DERIVED_STATE));
 	}
 
 	/**

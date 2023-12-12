@@ -110,8 +110,8 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 	}
 
 	@Override
-	public IResourceDelta findMember(IPath path) {
-		int segmentCount = path.segmentCount();
+	public IResourceDelta findMember(IPath memberPath) {
+		int segmentCount = memberPath.segmentCount();
 		if (segmentCount == 0)
 			return this;
 
@@ -119,7 +119,7 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 		ResourceDelta current = this;
 		segments: for (int i = 0; i < segmentCount; i++) {
 			for (ResourceDelta element : current.children) {
-				if (element.getFullPath().lastSegment().equals(path.segment(i))) {
+				if (element.getFullPath().lastSegment().equals(memberPath.segment(i))) {
 					current = element;
 					continue segments;
 				}
