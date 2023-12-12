@@ -13,19 +13,21 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.team.internal.core.TeamPlugin;
 import org.eclipse.team.internal.core.UserStringMappings;
+import org.junit.Test;
 import org.osgi.service.prefs.BackingStoreException;
 
-import junit.framework.TestSuite;
-
-@SuppressWarnings("restriction")
-public final class UserMappingTest extends TeamTest {
+public final class UserMappingTest {
 
 	private static final String KEY = "key";
 
+	@Test
 	public void testParsedCorrectly() {
 		UserStringMappings mappings = mappings();
 		assertEquals((int) UserStringMappings.TEXT, mappings.getType("*.ext"));
@@ -35,6 +37,7 @@ public final class UserMappingTest extends TeamTest {
 		assertEquals((int) UserStringMappings.UNKNOWN, mappings.getType(null));
 	}
 
+	@Test
 	public void testPicksExternalChanges() throws BackingStoreException {
 		UserStringMappings mappings = mappings();
 		assertEquals((int) UserStringMappings.UNKNOWN, mappings.getType("some"));
@@ -42,6 +45,7 @@ public final class UserMappingTest extends TeamTest {
 		assertEquals((int) UserStringMappings.BINARY, mappings.getType("some"));
 	}
 
+	@Test
 	public void testAcceptsCorruptedData() throws BackingStoreException {
 		UserStringMappings mappings = mappings();
 		assertEquals((int) UserStringMappings.TEXT, mappings.getType("*.ext"));
@@ -61,10 +65,6 @@ public final class UserMappingTest extends TeamTest {
 				new String[] { "*.ext", "*.bn", "*.unkwn" }, //
 				new int[] { UserStringMappings.TEXT, UserStringMappings.BINARY, UserStringMappings.UNKNOWN });
 		return mappings;
-	}
-
-	public static TestSuite suite() {
-		return new TestSuite(UserMappingTest.class);
 	}
 
 }
