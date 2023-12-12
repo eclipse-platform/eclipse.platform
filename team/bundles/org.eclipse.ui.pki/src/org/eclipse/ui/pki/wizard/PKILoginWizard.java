@@ -9,6 +9,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.ui.pki.EventProcessor;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSSelected;
 import org.eclipse.ui.pki.pkiselection.PKCSpick;
@@ -17,8 +18,6 @@ import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.ui.pki.util.PKISecureStorage;
 import org.eclipse.pki.auth.AuthenticationPlugin;
 import org.eclipse.pki.auth.EventConstant;
-import org.eclipse.pki.auth.EventProcessor;
-
 import org.eclipse.pki.exception.UserCanceledException;
 
 

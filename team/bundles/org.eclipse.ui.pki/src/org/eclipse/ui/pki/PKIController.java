@@ -29,8 +29,10 @@ import org.eclipse.ui.IStartup;
 import org.eclipse.ui.pki.AuthenticationBase;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSSelected;
+import org.eclipse.ui.pki.pkiselection.PKCSpick;
 import org.eclipse.ui.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.LogUtil;
+import org.eclipse.ui.pki.util.PKISecureStorage;
 import org.eclipse.ui.pki.wizard.TrustStoreSecureStorage;
 
 import src.org.eclipse.core.pki.PublicKeySecurity;

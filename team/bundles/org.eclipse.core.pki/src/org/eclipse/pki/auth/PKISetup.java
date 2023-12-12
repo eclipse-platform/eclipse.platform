@@ -89,7 +89,7 @@ public class PKISetup implements IStartup {
 					PKIState.CONTROL.setPKCS11on(false);
 					PKIState.CONTROL.setPKCS12on(true);
 					
-					PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
+					//PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
 					
 					//AuthenticationPlugin.getDefault()
 	    			//	.getPreferenceStore()
@@ -99,13 +99,13 @@ public class PKISetup implements IStartup {
 					System.out.println("PKIController PKI TYPE NOT FOUND TO BE EQUAL");
 				}
 				if ("PKCS11".equalsIgnoreCase(System.getProperty("javax.net.ssl.keyStoreType"))) {
-					if (VendorImplementation.getInstance().isInstalled()) {
-						PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
+					//if (VendorImplementation.getInstance().isInstalled()) {
+						//PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
 						PKIState.CONTROL.setPKCS11on(true);
 						PKIState.CONTROL.setPKCS12on(false);
-					} else {
-						// need exception here no PROVIDER
-					}
+//					} else {
+//						// need exception here no PROVIDER
+//					}
 				}
 			}
 		} 
@@ -118,9 +118,9 @@ public class PKISetup implements IStartup {
 			public void run() {
 				//System.out.println("PKIController EVENT runner");
 				if (value.equals(EventConstant.DONE.getValue())) {
-					AuthenticationPlugin.getDefault().setUserKeyStore(VendorImplementation.getInstance().getKeyStore());
+					//AuthenticationPlugin.getDefault().setUserKeyStore(VendorImplementation.getInstance().getKeyStore());
 				} else if (value.equals(EventConstant.CANCEL.getValue())) {
-					VendorImplementation.getInstance().off();
+					//VendorImplementation.getInstance().off();
 					isPkcs11Installed = false;
 					PKIState.CONTROL.setPKCS11on(false);
 				
@@ -130,7 +130,7 @@ public class PKISetup implements IStartup {
 					System.out.println("PKIController - TURNED OFF ALL PKCS11");
 					
 				} else if (value.equals(EventConstant.SETUP.getValue())) {
-					setupSSLSystemProperties(isPkcs11Installed);
+					//setupSSLSystemProperties(isPkcs11Installed);
 				}
 			}
 		};
@@ -185,7 +185,7 @@ public class PKISetup implements IStartup {
 			}
 
 		} catch (IOException e) {
-			LogUtil.logError("Issue writing default trust store to disk.", e);
+			//LogUtil.logError("Issue writing default trust store to disk.", e);
 		} finally {
 			if (fc != null) {
 				try {

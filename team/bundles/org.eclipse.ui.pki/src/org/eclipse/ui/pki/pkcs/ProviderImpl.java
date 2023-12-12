@@ -6,7 +6,7 @@ import javax.net.ssl.SSLContext;
 
 import org.eclipse.pki.interfaces.IProvider;
 
-public class ProviderImpl implements IProvider  {
+public class ProviderImpl  {
 	public static SSLPkcs11Provider security = SSLPkcs11Provider.getInstance();
 	public static SSLPkcs11Provider getNewInstance() {
 		security=SSLPkcs11Provider.getInstance();

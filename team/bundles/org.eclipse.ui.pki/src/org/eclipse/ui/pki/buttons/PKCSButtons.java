@@ -1,4 +1,4 @@
-package org.eclipse.pki.ui;
+package org.eclipse.ui.pki.buttons;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;

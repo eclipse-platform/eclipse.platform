@@ -8,7 +8,7 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import org.eclipse.ui.pki.AuthenticationBase;
+//import org.eclipse.ui.pki.AuthenticationBase;
 
 
 public enum SecurePKIVersionInfo {
@@ -30,12 +30,13 @@ public enum SecurePKIVersionInfo {
 			} else {
 				
 				try {
-					path = Paths.get(AuthenticationBase.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-					if (Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
-						DebugLogger.printDebug("PKIVersionInfo -- PATH:"+path.toAbsolutePath());
-					} else {
-						path = null;
-					}
+					/*
+					 * path =
+					 * Paths.get(AuthenticationBase.class.getProtectionDomain().getCodeSource().
+					 * getLocation().toURI()); if (Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
+					 * DebugLogger.printDebug("PKIVersionInfo -- PATH:"+path.toAbsolutePath()); }
+					 * else { path = null; }
+					 */
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					//e.printStackTrace();
