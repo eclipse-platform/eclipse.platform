@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (c) 2023 Security Team and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ * Security Team - initial API and implementation
+ * <Java Joe> Joe@Schiavone.org
+ * yyyymmdd bug      Email and other contact information
+ * -------- -------- -----------------------------------------------------------
+ *
+ *******************************************************************************/
 package org.eclipse.pki.auth;
 
 import java.io.File;
@@ -54,7 +71,7 @@ public class PKISetup implements IStartup {
 	@Override
 	public void earlyStartup() {
 		// TODO Auto-generated method stub
-		//System.out.println("PKIController EARLY Startup");
+		System.out.println("PKISetup EARLY Startup");
 		Startup();
 	}
 
@@ -79,13 +96,13 @@ public class PKISetup implements IStartup {
 		
 		
 		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
-			//System.out.println("PKIController get PKI TYPE");
+			System.out.println("PKISetup get PKI TYPE");
 			PublicKeySecurity.INSTANCE.getPkiPropertyFile();
 			String pkiType = System.getProperty("javax.net.ssl.keyStoreType").trim();
-			//System.out.println("PKIController PKI TYPE:["+pkiType+"]");
+			//System.out.println("PKISetup PKI TYPE:["+pkiType+"]");
 			if ( pkiType != null) {
 				if (pkiType.equalsIgnoreCase("PKCS12")) {
-					//System.out.println("PKIController PKI TYPE FROM FILE:"+System.getProperty("javax.net.ssl.keyStoreType"));
+					//System.out.println("PKISetup PKI TYPE FROM FILE:"+System.getProperty("javax.net.ssl.keyStoreType"));
 					PKIState.CONTROL.setPKCS11on(false);
 					PKIState.CONTROL.setPKCS12on(true);
 					
@@ -96,7 +113,7 @@ public class PKISetup implements IStartup {
 	    			//	.setValue(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION, null );
 					
 				} else {
-					System.out.println("PKIController PKI TYPE NOT FOUND TO BE EQUAL");
+					System.out.println("PKISetup PKI TYPE NOT FOUND TO BE EQUAL");
 				}
 				if ("PKCS11".equalsIgnoreCase(System.getProperty("javax.net.ssl.keyStoreType"))) {
 					//if (VendorImplementation.getInstance().isInstalled()) {
@@ -116,7 +133,7 @@ public class PKISetup implements IStartup {
 		final Integer value = Integer.valueOf(incoming);
 		return new Runnable() {
 			public void run() {
-				//System.out.println("PKIController EVENT runner");
+				//System.out.println("PKISetup EVENT runner");
 				if (value.equals(EventConstant.DONE.getValue())) {
 					//AuthenticationPlugin.getDefault().setUserKeyStore(VendorImplementation.getInstance().getKeyStore());
 				} else if (value.equals(EventConstant.CANCEL.getValue())) {
@@ -127,7 +144,7 @@ public class PKISetup implements IStartup {
 					System.clearProperty("javax.net.ssl.keyStoreType");
 					System.clearProperty("javax.net.ssl.keyStoreProvider");
 					
-					System.out.println("PKIController - TURNED OFF ALL PKCS11");
+					System.out.println("PKISetup - TURNED OFF ALL PKCS11");
 					
 				} else if (value.equals(EventConstant.SETUP.getValue())) {
 					//setupSSLSystemProperties(isPkcs11Installed);
