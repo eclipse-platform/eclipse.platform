@@ -15,18 +15,11 @@
  -->
 
 <plugin>
-	<extension point="org.eclipse.ui.preferencePages">
-		<page
-			category="org.eclipse.ui.net.NetPreferences"
-            class="org.eclipse.pki.preferences.PreferencePage"
-            id="org.eclipse.preferences.pkcs"
-            name="Java KeyStore Setup">
-		</page>
-	</extension>
+	
 	
 	<extension point="org.eclipse.ui.startup">
 		<startup
-			class="org.eclipse.pki.auth.PKIController">
+			class="org.eclipse.pki.auth.PKISetup">
 		</startup>
 	</extension>
 
