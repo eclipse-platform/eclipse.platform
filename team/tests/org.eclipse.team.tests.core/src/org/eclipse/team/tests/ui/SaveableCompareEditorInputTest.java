@@ -13,13 +13,21 @@
  *******************************************************************************/
 package org.eclipse.team.tests.ui;
 
+import static java.util.Collections.synchronizedList;
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.Test;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareViewerSwitchingPane;
@@ -39,6 +47,7 @@ import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
@@ -47,16 +56,17 @@ import org.eclipse.team.internal.ui.mapping.AbstractCompareInput;
 import org.eclipse.team.internal.ui.mapping.CompareInputChangeNotifier;
 import org.eclipse.team.internal.ui.synchronize.LocalResourceTypedElement;
 import org.eclipse.team.internal.ui.synchronize.SaveablesCompareEditorInput;
-import org.eclipse.team.tests.core.TeamTest;
 import org.eclipse.team.ui.synchronize.SaveableCompareEditorInput;
 import org.eclipse.ui.PlatformUI;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class SaveableCompareEditorInputTest extends TeamTest {
+public class SaveableCompareEditorInputTest {
 
-	public static Test suite() {
-		return suite(SaveableCompareEditorInputTest.class);
-	}
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final String COMPARE_EDITOR = CompareUIPlugin.PLUGIN_ID
 			+ ".CompareEditor"; //$NON-NLS-1$
@@ -67,30 +77,28 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 	private final String fileContents1 = "FileContents";
 	private final String fileContents2 = "FileContents2";
 	private final TestLogListener logListener = new TestLogListener();
+	private List<IStatus> errorsInListener = synchronizedList(new ArrayList<>());
 	private IProject project;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
-		project = createProject("Project_", new String[] {
-				"File1.txt", "File2.txt" });
-
+	@Before
+	public void setUp() throws Exception {
+		project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
 		file1 = project.getFile("File1.txt");
 		file2 = project.getFile("File2.txt");
-		file1.setContents(new ByteArrayInputStream(fileContents1.getBytes()),
-				true, true, null);
-		file2.setContents(new ByteArrayInputStream(fileContents2.getBytes()),
-				true, true, null);
+		createInWorkspace(file1);
+		createInWorkspace(file2);
+		file1.setContents(createInputStream(fileContents1), true, true, null);
+		file2.setContents(createInputStream(fileContents2), true, true, null);
 
 		Platform.addLogListener(logListener);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// remove log listener
 		Platform.removeLogListener(logListener);
-		super.tearDown();
+		assertThat("Unexpected errors in log listener", errorsInListener, empty());
 	}
 
 	private class TestFileElement implements ITypedElement {
@@ -125,8 +133,9 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 	private class TestLogListener implements ILogListener {
 		@Override
 		public void logging(IStatus status, String plugin) {
-			if (status.getSeverity() == IStatus.ERROR)
-				fail(status.toString());
+			if (status.getSeverity() == IStatus.ERROR) {
+				errorsInListener.add(status);
+			}
 		}
 	}
 
@@ -249,6 +258,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 		assertFalse(compareEditorInput.isDirty());
 	}
 
+	@Test
 	public void testDirtyFlagOnLocalResourceTypedElement()
 			throws CoreException, InvocationTargetException,
 			InterruptedException, IllegalArgumentException, SecurityException,
@@ -277,6 +287,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 				file1.getContents()));
 	}
 
+	@Test
 	public void testDirtyFlagOnCustomTypedElement() throws CoreException,
 			InvocationTargetException, InterruptedException,
 			IllegalArgumentException, SecurityException,
@@ -301,6 +312,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 		 */
 	}
 
+	@Test
 	public void testDirtyFlagOnLocalResourceTypedElementAndEmptyRight()
 			throws CoreException, InvocationTargetException,
 			InterruptedException, IllegalArgumentException, SecurityException,
@@ -329,6 +341,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 				file1.getContents()));
 	}
 
+	@Test
 	public void testDirtyFlagOnCustomTypedElementAndEmptyRight()
 			throws CoreException, InvocationTargetException,
 			InterruptedException, IllegalArgumentException, SecurityException,
@@ -412,23 +425,29 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 				file2.getContents()));
 	}
 
+	@Test
 	public void testModifyAndSaveBothSidesOfCompareEditorHtml() throws Exception {
 		verifyModifyAndSaveBothSidesOfCompareEditor("html");
 	}
 
+	@Test
 	public void testModifyAndSaveBothSidesOfCompareEditorTxt() throws Exception {
 		verifyModifyAndSaveBothSidesOfCompareEditor("txt");
 	}
 
+	@Test
 	public void testModifyAndSaveBothSidesOfCompareEditorJava() throws Exception {
 		verifyModifyAndSaveBothSidesOfCompareEditor("java");
 	}
 
+	@Test
 	public void testModifyAndSaveBothSidesOfCompareEditorXml() throws Exception {
 		verifyModifyAndSaveBothSidesOfCompareEditor("xml");
 	}
 
+	@Test
 	public void testModifyAndSaveBothSidesOfCompareEditorProperties() throws Exception {
 		verifyModifyAndSaveBothSidesOfCompareEditor("properties");
 	}
+
 }
