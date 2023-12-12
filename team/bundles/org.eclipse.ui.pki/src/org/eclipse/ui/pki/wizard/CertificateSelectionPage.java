@@ -40,19 +40,19 @@ import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.pki.buttons.PKCSButtons;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSSelected;
 import org.eclipse.ui.pki.pkiselection.PKCSpick;
 import org.eclipse.ui.pki.pkiselection.PKI;
 import org.eclipse.ui.pki.pkiselection.PKIProperties;
-import org.eclipse.ui.pki.util.ChangedPressedFieldEditorStatus;
+import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
 import org.eclipse.ui.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.ui.pki.util.LogUtil;
 import org.eclipse.ui.pki.util.PKISecureStorage;
-import org.eclipse.pki.auth.AuthenticationPlugin;
-import org.eclipse.pki.preferences.AuthenticationPreferences;
-import org.eclipse.pki.ui.PKCSButtons;
+import org.eclipse.ui.pki.AuthenticationPlugin;
+import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 
  
  

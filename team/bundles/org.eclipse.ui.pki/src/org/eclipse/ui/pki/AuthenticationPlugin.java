@@ -67,6 +67,8 @@ import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.BundleContext;
 
+import src.org.eclipse.pki.auth.SecurityFileSnapshot;
+
 import org.eclipse.ui.pki.dialog.PassphraseDialog;
 import org.eclipse.ui.pki.jsse.CdeX509TrustManager;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
@@ -79,7 +81,6 @@ import org.eclipse.ui.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.ui.pki.util.LogUtil;
 import org.eclipse.ui.pki.util.PKIAuthenticator;
-import org.eclipse.ui.pki.util.SecurityFileSnapshot;
 import org.eclipse.ui.pki.wizard.PKILoginWizard;
 import org.eclipse.ui.pki.wizard.TrustStoreLoginWizard;
 

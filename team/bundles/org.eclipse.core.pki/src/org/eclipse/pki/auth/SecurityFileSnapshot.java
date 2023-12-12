@@ -1,4 +1,4 @@
-package org.eclipse.ui.pki.util;
+package org.eclipse.pki.auth;
 
 import java.io.IOException;
 import java.nio.channels.Channels;

@@ -4,12 +4,12 @@ import java.security.KeyStore;
 
 import javax.net.ssl.SSLContext;
 
-import org.eclipse.ui.pki.AuthenticationBase;
+import org.eclipse.core.pki.AuthenticationBase;
 import org.eclipse.ui.pki.pkcs.ProviderImpl;
-import org.eclipse.pki.interfaces.IProvider;
 
 
-public class VendorImplementation extends ProviderImpl implements IProvider{
+
+public class VendorImplementation extends ProviderImpl {
 	private static final  VendorImplementation venderImpl=new VendorImplementation();
 	private static VendorImplementation csp=new VendorImplementation();
 	
