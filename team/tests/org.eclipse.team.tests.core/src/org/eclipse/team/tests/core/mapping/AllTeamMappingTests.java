@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 IBM Corporation and others.
+ * Copyright (c) 2023 Vector Informatik GmbH and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -8,10 +8,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.team.tests.core.regression;
+package org.eclipse.team.tests.core.mapping;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -19,8 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ //
-		Bug_217673.class, //
-		DoNotRemoveTest.class, //
+		ScopeTests.class, //
 })
-public class AllTeamRegressionTests {
+public class AllTeamMappingTests {
 }
