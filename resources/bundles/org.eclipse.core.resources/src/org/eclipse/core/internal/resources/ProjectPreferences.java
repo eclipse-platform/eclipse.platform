@@ -88,11 +88,11 @@ public class ProjectPreferences extends EclipsePreferences {
 	 */
 	private boolean isWriting;
 	private IEclipsePreferences loadLevel;
-	private IProject project;
-	private String qualifier;
+	private final IProject project;
+	private final String qualifier;
 
 	// cache
-	private int segmentCount;
+	private final int segmentCount;
 	private Workspace workspace;
 
 	static void deleted(IFile file) throws CoreException {
@@ -380,6 +380,9 @@ public class ProjectPreferences extends EclipsePreferences {
 	 */
 	public ProjectPreferences() {
 		super(null, null);
+		qualifier = null;
+		project = null;
+		segmentCount = 0;
 	}
 
 	private ProjectPreferences(EclipsePreferences parent, String name, Workspace workspace) {
@@ -390,17 +393,18 @@ public class ProjectPreferences extends EclipsePreferences {
 		String path = absolutePath();
 		segmentCount = getSegmentCount(path);
 
-		if (segmentCount == 1)
+		if (segmentCount == 1) {
+			qualifier = null;
+			project = null;
 			return;
+		}
 
 		// cache the project name
 		String projectName = getSegment(path, 1);
-		if (projectName != null)
-			project = getWorkspace().getRoot().getProject(projectName);
+		project = (projectName != null) ? getWorkspace().getRoot().getProject(projectName) : null;
 
 		// cache the qualifier
-		if (segmentCount > 2)
-			qualifier = getSegment(path, 2);
+		qualifier = (segmentCount > 2) ? getSegment(path, 2).intern() : null;
 	}
 
 	@Override
