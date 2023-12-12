@@ -16,6 +16,7 @@ package org.eclipse.core.tests.runtime.jobs;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.TestBarrier2;
+import org.junit.Test;
 
 /**
  * Regression test for bug 311863
@@ -83,6 +84,7 @@ public class Bug_311863 extends AbstractJobTest {
 	 *
 	 * Particularly insidious as the UI thread is interrupted frequently
 	 */
+	@Test
 	public void testInterruptDuringLockRelease() throws Exception {
 		final TestBarrier2 tb1 = new TestBarrier2(-1);
 		final TestBarrier2 tb2 = new TestBarrier2(-1);

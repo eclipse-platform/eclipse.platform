@@ -14,14 +14,18 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.TestJob;
+import org.junit.Test;
 
 /**
  * Regression test for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=320329.
  */
 public class Bug_320329 extends AbstractJobTest {
 
+	@Test
 	public void testBug() {
 		Job j1 = new TestJob("job1", 10, 5);// 50 ms
 		Job j2 = new TestJob("job2");

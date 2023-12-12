@@ -13,9 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.TestBarrier2;
+import org.junit.Test;
 
 /**
  * Regression test for bug 307391
@@ -33,6 +36,7 @@ public class Bug_307391 extends AbstractJobTest {
 	 * java.lang.IllegalArgumentException: Cannot yieldRule job that is YIELDING
 	 * 		in JobManager#yieldRule
 	 */
+	@Test
 	public void testYieldWithlockAcquire() throws Exception {
 		final IdentityRule idSchedRule = new IdentityRule();
 

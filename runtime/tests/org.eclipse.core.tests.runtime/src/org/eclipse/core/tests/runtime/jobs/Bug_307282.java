@@ -13,9 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.TestBarrier2;
+import org.junit.Test;
 
 /**
  * Regression test for bug 307282
@@ -34,6 +37,7 @@ public class Bug_307282 extends AbstractJobTest {
 	 * t1 release l1
 	 * main attempt acquire() l1
 	 */
+	@Test
 	public void testInterruptDuringLockAcquireint() throws Exception {
 
 		final ILock lock1 = Job.getJobManager().newLock();

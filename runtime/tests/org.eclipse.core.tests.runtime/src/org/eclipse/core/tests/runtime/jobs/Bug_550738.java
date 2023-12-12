@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,6 +24,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.tests.harness.TestJob;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Regression test for bug 550738.
@@ -65,14 +70,14 @@ public class Bug_550738 extends AbstractJobTest {
 		}
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void removeProgressProvider() throws Exception {
 		// don't use fussy progress monitor, because in this test we may kill
 		// a job before it has started running
 		manager.setProgressProvider(null);
 	}
 
+	@Test
 	public void testCancelSchedule() throws InterruptedException {
 		BusyLoopJob job = new BusyLoopJob();
 		try {
@@ -103,6 +108,7 @@ public class Bug_550738 extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testReportDoneOncePerSchedule() throws InterruptedException {
 		BusyLoopJob job = new BusyLoopJob();
 		EventCount eventCount = new EventCount();

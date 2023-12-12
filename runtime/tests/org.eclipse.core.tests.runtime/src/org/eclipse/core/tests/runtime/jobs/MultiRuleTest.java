@@ -13,14 +13,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
+import org.junit.Test;
 
 /**
  * Tests for {@link MultiRule}.
  */
 public class MultiRuleTest extends AbstractJobTest {
 
+	@Test
 	public void testCombine() {
 		ISchedulingRule child1 = new PathRule("/a");
 		ISchedulingRule child2 = new PathRule("/b/c");
@@ -45,6 +50,7 @@ public class MultiRuleTest extends AbstractJobTest {
 
 	}
 
+	@Test
 	public void testContains() {
 		ISchedulingRule child1 = new PathRule("/a");
 		ISchedulingRule child2 = new PathRule("/b/c");
@@ -62,6 +68,7 @@ public class MultiRuleTest extends AbstractJobTest {
 		assertTrue("1.6", multi1.contains(multi1));
 	}
 
+	@Test
 	public void testIsConflicting() {
 		ISchedulingRule child1 = new PathRule("/a");
 		ISchedulingRule child2 = new PathRule("/b/c");

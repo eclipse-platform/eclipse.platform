@@ -14,7 +14,14 @@
 
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +46,7 @@ import org.eclipse.core.runtime.jobs.JobGroup;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
+import org.junit.Test;
 
 /**
  * Tests for {@link JobGroup}.
@@ -46,6 +54,7 @@ import org.eclipse.core.tests.harness.TestJob;
 @SuppressWarnings("restriction")
 public class JobGroupTest extends AbstractJobTest {
 
+	@Test
 	public void testThrottlingWhenAllJobsAreKnown() {
 		final int NUM_JOBS = 100;
 		final int MAX_THREADS = 10;
@@ -96,6 +105,7 @@ public class JobGroupTest extends AbstractJobTest {
 		assertTrue("4.0", maxThreadsUsed[0] <= MAX_THREADS);
 	}
 
+	@Test
 	public void testSeedJobsWhenAllJobsAreKnown() {
 		final int NUM_SEED_JOBS = 3;
 		final JobGroup jobGroup = new JobGroup("JobGroup", 1, NUM_SEED_JOBS);
@@ -125,6 +135,7 @@ public class JobGroupTest extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testSeedJobsWhenSeedJobsAddNewJobs() {
 		final int NUM_SEED_JOBS = 10;
 		final int NUM_CHILD_JOBS = 10;
@@ -170,6 +181,7 @@ public class JobGroupTest extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testSeedJobsWithRepeatingJobs() {
 		final int NUM_SEED_JOBS = 10;
 		final int REPEATING_COUNT = 5;
@@ -191,6 +203,7 @@ public class JobGroupTest extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testCancel() {
 		final int NUM_JOBS = 20;
 		TestJob[] jobs = new TestJob[NUM_JOBS];
@@ -256,6 +269,7 @@ public class JobGroupTest extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testGetActiveJobs() {
 		final int NUM_JOBS = 20;
 		final int JOBS_PER_GROUP = NUM_JOBS / 5;
@@ -411,14 +425,15 @@ public class JobGroupTest extends AbstractJobTest {
 		// so check that there no jobs started by this test are present in all running jobs.
 		testJobs.addAll(Arrays.asList(jobs));
 		allJobs = manager.find(null);
-		for (int i = 0; i < allJobs.length; i++) {
+		for (Job job : allJobs) {
 			// Verify that no jobs that we know about are found (they should have all been removed)
-			assertFalse(allJobs[i].toString(), testJobs.remove(allJobs[i]));
+			assertFalse(job.toString(), testJobs.remove(job));
 		}
 		assertEquals("15.0", NUM_JOBS, testJobs.size());
 		testJobs.clear();
 	}
 
+	@Test
 	public void testJoinWithoutTimeout() {
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
 		status.set(0, TestBarrier2.STATUS_WAIT_FOR_START);
@@ -487,6 +502,7 @@ public class JobGroupTest extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testJoinWithTimeout() {
 		TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
 		final int NUM_JOBS = 20;
@@ -552,6 +568,7 @@ public class JobGroupTest extends AbstractJobTest {
 	/**
 	 * Tests joining on a job group, and then canceling the jobs that are blocking the join call.
 	 */
+	@Test
 	public void testJoinWithCancelingJobs() {
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
 		status.set(0, TestBarrier2.STATUS_WAIT_FOR_START);
@@ -618,6 +635,7 @@ public class JobGroupTest extends AbstractJobTest {
 	/**
 	 * Tests joining on a job group, and then canceling the monitor.
 	 */
+	@Test
 	public void testJoinWithCancelingMonitor() {
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
 		status.set(0, TestBarrier2.STATUS_WAIT_FOR_START);
@@ -689,6 +707,7 @@ public class JobGroupTest extends AbstractJobTest {
 	/**
 	 * Tests joining a job that repeats in a loop.
 	 */
+	@Test
 	public void testJoinWithRepeatingJobs() throws OperationCanceledException, InterruptedException {
 		JobGroup jobGroup = new JobGroup("JobGroup", 1, 1);
 		int count = 25;
@@ -704,6 +723,7 @@ public class JobGroupTest extends AbstractJobTest {
 	 * Tests that joining a job from another job that is in the same job group
 	 * yields an IllegalStateException.
 	 */
+	@Test
 	public void testJoiningAJobInTheSameJobGroupFails() {
 		JobGroup jobGroup = new JobGroup("JobGroup", 2, 2);
 		final TestJob firstJob = new TestJob("FirstJob", 1000000, 10);
@@ -738,6 +758,7 @@ public class JobGroupTest extends AbstractJobTest {
 	/**
 	 * Tests that the progress is reported on the monitor used for join.
 	 */
+	@Test
 	public void testJoinWithProgressMonitor() {
 		final int NUM_JOBS = 100;
 		JobGroup jobGroup = new JobGroup("JobGroup", 10, NUM_JOBS);
@@ -769,6 +790,7 @@ public class JobGroupTest extends AbstractJobTest {
 	 * Test for bug 543660 - JobGroup.join() blocks if scheduling more jobs as seed
 	 * count
 	 */
+	@Test
 	public void testJoinIfJobCoundExceedsSeedCount() throws Exception {
 		class ExclusiveRule implements ISchedulingRule {
 			@Override
@@ -860,6 +882,7 @@ public class JobGroupTest extends AbstractJobTest {
 	 * WaitingJob as the WaitingJob is not going to be executed when the job manger
 	 * is suspended.
 	 */
+	@Test
 	public void testJoinWithJobManagerSuspended_1() throws InterruptedException {
 		final JobGroup jobGroup = new JobGroup("JobGroup", 1, 1);
 		final TestBarrier2 barrier = new TestBarrier2();
@@ -925,6 +948,7 @@ public class JobGroupTest extends AbstractJobTest {
 	 *   The join call on the JobGroup should not wait for the WaitingJob as the WaitingJob is not going
 	 *   to be executed when the job manger is suspended.
 	 */
+	@Test
 	public void testJoinWithJobManagerSuspended_2() throws InterruptedException {
 		final JobGroup jobGroup = new JobGroup("JobGroup", 1, 1);
 		final TestBarrier2 barrier = new TestBarrier2();
@@ -1001,6 +1025,7 @@ public class JobGroupTest extends AbstractJobTest {
 	 *   The join call on the JobGroup should wait for the WaitingJob as the WaitingJob was started
 	 *   to execute before the join ended.
 	 */
+	@Test
 	public void testJoinWithJobManagerSuspended_3() throws InterruptedException {
 		final JobGroup jobGroup = new JobGroup("JobGroup", 1, 1);
 		final TestBarrier2 barrier = new TestBarrier2();
@@ -1070,6 +1095,7 @@ public class JobGroupTest extends AbstractJobTest {
 	 *   The JobGroup should be canceled when the failing job is completed, because by default
 	 *   a job group is canceled when a job belonging to the group is failed.
 	 */
+	@Test
 	public void testShouldCancel_1() {
 		final int NUM_SEED_JOBS = 10;
 		final int NUM_ADDITIONAL_JOBs = 10;
@@ -1152,6 +1178,7 @@ public class JobGroupTest extends AbstractJobTest {
 	 *   belonging to that group except the last one (shouldCancel method is not called after the
 	 *   completion of the last job in the jobGroup as there are no jobs left to cancel).
 	 */
+	@Test
 	public void testShouldCancel_2() {
 		final int NUM_JOBS = 10;
 		final int numShouldCancelCalled[] = {0};
@@ -1182,6 +1209,7 @@ public class JobGroupTest extends AbstractJobTest {
 	 *   (the shouldCancel method is not called after the completion of the last job in the
 	 *   jobGroup as there are no jobs left to cancel).
 	 */
+	@Test
 	public void testShouldCancel_3() {
 		final int status[] = {IStatus.OK, IStatus.INFO, IStatus.WARNING, IStatus.ERROR, IStatus.CANCEL, IStatus.OK};
 		final int numShouldCancelCalled[] = {0};
@@ -1248,6 +1276,7 @@ public class JobGroupTest extends AbstractJobTest {
 	 *   The remaining jobs are canceled in a reasonable time after the shouldCancel method of the
 	 *   JobGroup returns true.
 	 */
+	@Test
 	public void testShouldCancel_4() {
 		final int NUM_JOBS = 1000;
 		final int NUM_JOBS_LIMIT = 100;
@@ -1293,6 +1322,7 @@ public class JobGroupTest extends AbstractJobTest {
 	 *
 	 * Expected result: The second job is explicitly canceled
 	 */
+	@Test
 	public void testShouldCancel_5() {
 		// the job group allows for 2 threads so both jobs will be started in
 		// parallel
@@ -1352,6 +1382,7 @@ public class JobGroupTest extends AbstractJobTest {
 		 */
 	}
 
+	@Test
 	public void testDefaultComputeGroupResult() {
 		final int status[] = {IStatus.OK, IStatus.INFO, IStatus.WARNING, IStatus.ERROR, IStatus.CANCEL};
 		final JobGroup jobGroup = new JobGroup("JobGroup", 1, status.length) {
@@ -1383,6 +1414,7 @@ public class JobGroupTest extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testCustomComputeGroupResult() {
 		final MultiStatus returnedGroupResult[] = new MultiStatus[1];
 		final IStatus originalJobResults[][] = {new IStatus[0]};
@@ -1425,6 +1457,7 @@ public class JobGroupTest extends AbstractJobTest {
 	}
 
 	// https://bugs.eclipse.org/461621
+	@Test
 	public void testSlowComputeGroupResult() throws Exception {
 		final JobGroup jobGroup = new JobGroup("group", 1, 1) {
 			@Override
@@ -1453,6 +1486,7 @@ public class JobGroupTest extends AbstractJobTest {
 	/**
 	 * Tests that job groups work fine with normal jobs that are not belonging to any group.
 	 */
+	@Test
 	public void testJobGroupAlongWithNormalJobs() {
 		final int NUM_GROUP_JOBS = 1000;
 		final int NUM_NORMAL_JOBS = 100;
@@ -1485,6 +1519,7 @@ public class JobGroupTest extends AbstractJobTest {
 	/**
 	 * Tests that the JobManager publishes a final job group status to IJobChangeListeners.
 	 */
+	@Test
 	public void testJobManagerPublishesJobGroupResults() throws InterruptedException {
 		final int NUM_GROUP_JOBS = 3;
 		final String GROUP_NAME = "TestJobGroup";

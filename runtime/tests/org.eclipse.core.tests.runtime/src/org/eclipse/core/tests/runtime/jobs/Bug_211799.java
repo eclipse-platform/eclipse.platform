@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.junit.Test;
 
 /**
  * Regression test for bug 211799
@@ -67,6 +68,7 @@ public class Bug_211799 extends AbstractJobTest {
 
 	List<Long> runList = new ArrayList<>(JOBS_TO_SCHEDULE);
 
+	@Test
 	public void testBug() throws Exception {
 		for (int i = 0; i < JOBS_TO_SCHEDULE; i++) {
 			synchronized (list) {
