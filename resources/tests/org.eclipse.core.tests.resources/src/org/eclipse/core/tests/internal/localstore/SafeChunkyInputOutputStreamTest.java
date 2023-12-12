@@ -110,6 +110,7 @@ public class SafeChunkyInputOutputStreamTest {
 		return sb.toString().getBytes();
 	}
 
+	@Test
 	public void testFailure() throws Exception {
 		Workspace.clear(target); // make sure there was nothing here before
 		assertFalse(target.exists());
