@@ -16,11 +16,27 @@ package org.eclipse.core.tools.nls;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.filebuffers.*;
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.filebuffers.ITextFileBuffer;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
+import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jdt.core.*;
-import org.eclipse.jdt.core.dom.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.Flags;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.SearchPattern;
@@ -29,7 +45,11 @@ import org.eclipse.jdt.internal.corext.refactoring.RefactoringSearchEngine;
 import org.eclipse.jdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.jdt.internal.corext.refactoring.util.RefactoringFileBuffers;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.ltk.core.refactoring.*;
+import org.eclipse.ltk.core.refactoring.Change;
+import org.eclipse.ltk.core.refactoring.CompositeChange;
+import org.eclipse.ltk.core.refactoring.Refactoring;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.TextFileChange;
 
 /*
  * Class that removes field declarations which aren't referenced.
@@ -83,7 +103,9 @@ public class RemoveUnusedMessages extends Refactoring {
 				if (!(Flags.isPublic(flags) && Flags.isStatic(flags)))
 					continue;
 				// search for references
-				ICompilationUnit[] affectedUnits = RefactoringSearchEngine.findAffectedCompilationUnits(SearchPattern.createPattern(field, IJavaSearchConstants.REFERENCES), RefactoringScopeFactory.create(accessorClass), new SubProgressMonitor(monitor, 1), result);
+				ICompilationUnit[] affectedUnits = RefactoringSearchEngine.findAffectedCompilationUnits(
+						SearchPattern.createPattern(field, IJavaSearchConstants.REFERENCES),
+						RefactoringScopeFactory.create(accessorClass), Policy.subMonitorFor(monitor, 1), result);
 				// there are references so go to the next field
 				if (affectedUnits.length > 0)
 					continue;

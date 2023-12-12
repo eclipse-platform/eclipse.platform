@@ -16,7 +16,10 @@ package org.eclipse.core.tools.metadata;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.utils.Policy;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tools.AbstractTreeContentProvider;
 import org.eclipse.core.tools.TreeContentProviderNode;
@@ -113,12 +116,12 @@ public class MetadataTreeContentProvider extends AbstractTreeContentProvider {
 			}
 		}
 
-		public synchronized void rebuild(Viewer viewer, File rootDir, TreeContentProviderNode rootNode) {
-			this.rootDir = rootDir;
-			this.rootNode = rootNode;
-			this.viewer = viewer;
+		public synchronized void rebuild(Viewer pViewer, File pRootDir, TreeContentProviderNode pRootNode) {
+			this.rootDir = pRootDir;
+			this.rootNode = pRootNode;
+			this.viewer = pViewer;
 			cancel();
-			setName("Loading metadata tree from " + rootDir); //$NON-NLS-1$
+			setName("Loading metadata tree from " + pRootDir); //$NON-NLS-1$
 			schedule();
 		}
 	}
@@ -161,7 +164,7 @@ public class MetadataTreeContentProvider extends AbstractTreeContentProvider {
 			for (File subDir : subDirs) {
 				// constructs a node for each subdir...
 				childNode = makeNode(subDir);
-				if (extractInfo(subDir, childNode, new SubProgressMonitor(monitor, 98 / subDirs.length)))
+				if (extractInfo(subDir, childNode, Policy.subMonitorFor(monitor, 98 / subDirs.length)))
 					// ...but only adds them if they have files of registered types
 					dirNode.addChild(childNode);
 			}
