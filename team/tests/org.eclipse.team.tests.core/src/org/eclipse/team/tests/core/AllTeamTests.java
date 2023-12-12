@@ -13,36 +13,19 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.team.tests.core.regression.AllTeamRegressionTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
+@RunWith(Suite.class)
+@SuiteClasses({ //
+		AllTeamRegressionTests.class, //
+		RepositoryProviderTests.class, //
+		StorageMergerTests.class, //
+		StreamTests.class, //
+		UserMappingTest.class, //
+})
 public class AllTeamTests extends ResourceTest {
-
-	/**
-	 * Constructor for CVSClientTest.
-	 */
-	public AllTeamTests() {
-		super();
-	}
-
-	/**
-	 * Constructor for CVSClientTest.
-	 */
-	public AllTeamTests(String name) {
-		super(name);
-	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite();
-		suite.addTest(RepositoryProviderTests.suite());
-		suite.addTest(StreamTests.suite());
-		suite.addTest(StorageMergerTests.suite());
-		suite.addTest(AllTeamRegressionTests.suite());
-		suite.addTest(UserMappingTest.suite());
-		return suite;
-	}
 }
-
