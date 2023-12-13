@@ -15,7 +15,7 @@
  * -------- -------- -----------------------------------------------------------
  *
  *******************************************************************************/
-package org.eclipse.pki.auth;
+package org.eclipse.core.pki.auth;
 
 import java.io.File;
 import java.io.FileInputStream;

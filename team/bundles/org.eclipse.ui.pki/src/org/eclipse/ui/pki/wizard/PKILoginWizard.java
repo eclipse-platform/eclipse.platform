@@ -3,6 +3,7 @@ package org.eclipse.ui.pki.wizard;
 
 import java.security.KeyStore;
 
+import org.eclipse.core.pki.auth.EventConstant;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
@@ -17,7 +18,6 @@ import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.ui.pki.util.PKISecureStorage;
 import org.eclipse.ui.pki.AuthenticationPlugin;
-import org.eclipse.pki.auth.EventConstant;
 import org.eclipse.pki.exception.UserCanceledException;
 
 
