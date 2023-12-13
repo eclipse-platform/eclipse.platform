@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.jobs.Job;
 /**
  * Regression test for bug 211799
  */
-public class Bug_211799 extends AbstractJobManagerTest {
+public class Bug_211799 extends AbstractJobTest {
 
 	public class BugJob extends Job {
 		private final long id;

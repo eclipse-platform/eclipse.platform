@@ -42,7 +42,6 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -58,7 +57,6 @@ import org.eclipse.core.tests.harness.TestJob;
 public class JobTest extends AbstractJobTest {
 	protected Job longJob;
 	protected Job shortJob;
-	private FussyProgressProvider progressProvider;
 
 	public JobTest(String name) {
 		super(name);
@@ -111,8 +109,6 @@ public class JobTest extends AbstractJobTest {
 		super.setUp();
 		shortJob = new TestJob("Short Test Job", 10, 1); // job that tests wait on
 		longJob = new TestJob("Long Test Job", 10000000, 10); // job that never finishes in time
-		progressProvider = new FussyProgressProvider();
-		Job.getJobManager().setProgressProvider(progressProvider);
 	}
 
 	@Override
@@ -802,7 +798,6 @@ public class JobTest extends AbstractJobTest {
 
 	// @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=60964
 	public void testIsBlocking2() throws InterruptedException {
-		final IJobManager manager = Job.getJobManager();
 		final ISchedulingRule rule = new IdentityRule();
 		Thread thread = new Thread("testIsBlocking2") {
 			@Override

@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.jobs.Job;
  * were available to process sleeping jobs awaiting execution. For details see:
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=366170
  */
-public class Bug_366170 extends AbstractJobManagerTest {
+public class Bug_366170 extends AbstractJobTest {
 	private final Semaphore m_jobBStopHint = new Semaphore(1);
 
 	public void testBug() throws Exception {

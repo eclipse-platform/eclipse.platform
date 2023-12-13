@@ -16,8 +16,10 @@ package org.eclipse.core.tests.runtime.jobs;
 import static org.junit.Assert.assertThrows;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
@@ -38,7 +40,7 @@ import org.eclipse.core.tests.harness.TestJob;
 /**
  * Tests for {@link Job#yieldRule(IProgressMonitor)}.
  */
-public class YieldTest extends AbstractJobManagerTest {
+public class YieldTest extends AbstractJobTest {
 
 	class TestJobListener extends JobChangeAdapter {
 		private final Set<Job> scheduled = Collections.synchronizedSet(new HashSet<>());
@@ -1136,6 +1138,37 @@ public class YieldTest extends AbstractJobManagerTest {
 			assertEquals("While resuming from yieldRule, conflicting job should only run once", 1, count[0]);
 		} finally {
 			Job.getJobManager().removeJobChangeListener(a);
+		}
+	}
+
+	private List<Job> getFinishedJobs(Job[] jobs) {
+		List<Job> joblist = new ArrayList<>(Arrays.asList(jobs));
+		for (Iterator<Job> iterator = joblist.iterator(); iterator.hasNext();) {
+			Job job = iterator.next();
+			if (job.getState() != Job.NONE) {
+				iterator.remove();
+			}
+		}
+		return joblist;
+	}
+
+	private void waitForJobsCompletion(Job[] jobs, int waitTime) {
+		List<Job> jobList = new ArrayList<>(Arrays.asList(jobs));
+		int i = 0;
+		int tickLength = 10;
+		int ticks = waitTime / tickLength;
+		while (!jobList.isEmpty()) {
+			sleep(tickLength);
+			// sanity test to avoid hanging tests
+			if (i++ > ticks) {
+				dumpState();
+				assertTrue("Timeout waiting for job to complete", false);
+			}
+			for (Iterator<Job> iterator = jobList.iterator(); iterator.hasNext();) {
+				if (iterator.next().getState() == Job.NONE) {
+					iterator.remove();
+				}
+			}
 		}
 	}
 

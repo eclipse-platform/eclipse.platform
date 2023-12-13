@@ -21,7 +21,7 @@ import org.eclipse.core.tests.harness.TestBarrier2;
  * Regression test for bug 307391
  * 'ImplicitJob' style Job doesn't correctly leave YIELDING state
  */
-public class Bug_307391 extends AbstractJobManagerTest {
+public class Bug_307391 extends AbstractJobTest {
 
 	/**
 	 * Threads: main, j, t2

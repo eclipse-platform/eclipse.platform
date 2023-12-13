@@ -23,7 +23,7 @@ import org.eclipse.core.tests.harness.TestBarrier2;
  * Regression test for bug 316839.
  */
 @SuppressWarnings("restriction")
-public class Bug_316839 extends AbstractJobManagerTest {
+public class Bug_316839 extends AbstractJobTest {
 
 	ILock LOCK = Job.getJobManager().newLock();
 
