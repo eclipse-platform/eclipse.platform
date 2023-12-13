@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2023 Security Team and others
+
+    This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        <Java Joe> Joe@Schiavone.org
+ -->
+ <contexts>
+   <context id="preferences" title="PKI Preferences">
+      <description>These are preferences for setting up your PKI
+
+Certificate Location - The location of your certificate if you choose to provide it. Any CDE actions that may need your certificate acquire it from this location (SVN checkout/sharing)
+
+Trust Store Location - The location of your trust store. The trust store is a repository of certificates that are explicitly trusted by an application</description>
+      <topic href="../plugins.core.doc/html/PKIPreference.html" label="PKI Preferences"/>
+   </context>
+</contexts>
+ 

@@ -22,7 +22,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -34,29 +33,16 @@ import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
-import org.eclipse.jface.preference.IPreferenceStore;
+//import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osgi.framework.eventmgr.EventManager;
 import org.eclipse.osgi.framework.eventmgr.ListenerQueue;
-import org.eclipse.osgi.service.datalocation.Location;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IStartup;
-import org.eclipse.core.pki.AuthenticationBase;
-/*import org.eclipse.ui.pki.AuthenticationPlugin;
-import org.eclipse.ui.pki.PKCSpick;
-import org.eclipse.ui.pki.PKISecureStorage;
-import org.eclipse.ui.pki.util.KeyStoreFormat;
-import org.eclipse.ui.pki.util.LogUtil;
-import org.eclipse.ui.pki.wizard.TrustStoreSecureStorage;
-import org.eclipse.pki.pkcs.PublicKeySecurity;
-import org.eclipse.pki.pkcs.VendorImplementation;*/
-import org.eclipse.pki.exception.UserCanceledException;
-/*import org.eclipse.pki.pkiselection.PKCSSelected;
-import org.eclipse.pki.preferences.AuthenticationPreferences;*/
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.eclipse.core.resources.ResourcesPlugin;
 
-public class PKISetup implements IStartup {
+public class PKISetup implements BundleActivator {
+	public static final String ID = "org.eclipse.core.pki"; //$NON-NLS-1$
+	private static PKISetup instance;
 	protected static final String USER_HOME = System.getProperty("user.home");
 	public static final File PKI_ECLIPSE_DIR = new File(USER_HOME, ".eclipse_pki");
 	public static final String PKI_DIR = "eclipse_pki";
@@ -66,13 +52,8 @@ public class PKISetup implements IStartup {
 	Properties pkiProperties = null;
 
 	public PKISetup() {
-	}
-
-	@Override
-	public void earlyStartup() {
-		// TODO Auto-generated method stub
-		System.out.println("PKISetup EARLY Startup");
-		Startup();
+		super();
+		instance = this;
 	}
 
 	@SuppressWarnings("static-access")
@@ -183,7 +164,7 @@ public class PKISetup implements IStartup {
 			//
 			// open file in eclipses configuration directory
 			//
-			File ConfigurationFile = new File(Platform.getInstallLocation().getURL().getPath() + File.separator
+			File ConfigurationFile = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString() + File.separator
 					+ "configuration" + File.separator
 					+ "cacert");
 
@@ -242,5 +223,18 @@ public class PKISetup implements IStartup {
 		} finally {
 			fsLock.unlock();
 		}
+	}
+
+	@Override
+	public void start(BundleContext context) throws Exception {
+		// TODO Auto-generated method stub
+		System.out.println("PKISetup PKISetup START");
+		Startup();
+	}
+
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }
