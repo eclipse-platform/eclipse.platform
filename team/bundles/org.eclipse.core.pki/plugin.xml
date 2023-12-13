@@ -16,10 +16,6 @@
 
 <plugin>
 	
-	<extension point="org.eclipse.ui.startup">
-		<startup
-			class="org.eclipse.pki.auth.PKISetup">
-		</startup>
-	</extension>
+	
 
 </plugin>

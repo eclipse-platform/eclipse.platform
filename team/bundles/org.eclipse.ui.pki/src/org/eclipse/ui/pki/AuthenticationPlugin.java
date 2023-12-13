@@ -52,6 +52,7 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
 
 import org.eclipse.core.pki.FingerprintX509;
+import org.eclipse.core.pki.auth.SecurityFileSnapshot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
@@ -66,9 +67,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.BundleContext;
-
-import org.eclipse.pki.auth.SecurityFileSnapshot;
-
 import org.eclipse.ui.pki.dialog.PassphraseDialog;
 import org.eclipse.ui.pki.jsse.CdeX509TrustManager;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;

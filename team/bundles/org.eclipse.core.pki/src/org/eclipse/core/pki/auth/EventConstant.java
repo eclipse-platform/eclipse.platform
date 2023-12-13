@@ -1,4 +1,4 @@
-package org.eclipse.pki.auth;
+package org.eclipse.core.pki.auth;
 
 public enum EventConstant {
 	DONE(0),

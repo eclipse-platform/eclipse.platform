@@ -1,4 +1,4 @@
-package org.eclipse.pki.auth;
+package org.eclipse.core.pki.auth;
 
 public enum PKIState {
 	CONTROL;

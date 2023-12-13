@@ -1,7 +1,8 @@
-package org.eclipse.pki.auth;
+package org.eclipse.core.pki.auth;
 
 import java.util.Properties;
-import org.eclipse.pki.auth.SecurityFileSnapshot;
+
+import org.eclipse.core.pki.auth.SecurityFileSnapshot;
 
 public enum PublicKeySecurity {
 	INSTANCE;

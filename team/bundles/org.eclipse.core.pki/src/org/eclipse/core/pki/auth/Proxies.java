@@ -8,7 +8,7 @@
  * Contributors:
  *    Marcel Bruch - initial API and implementation.
  */
-package org.eclipse.pki.auth;
+package org.eclipse.core.pki.auth;
 
 import java.io.IOException;
 import java.net.InetAddress;
