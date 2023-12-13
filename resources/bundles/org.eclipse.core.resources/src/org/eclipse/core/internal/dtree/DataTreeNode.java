@@ -15,7 +15,7 @@ package org.eclipse.core.internal.dtree;
 
 import org.eclipse.core.internal.utils.*;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IPath;
+
 
 /**
  * <code>DataTreeNode</code>s are the nodes of a <code>DataTree</code>.  Their
@@ -49,10 +49,10 @@ public class DataTreeNode extends AbstractDataTreeNode {
 	}
 
 	/**
-	 * @see AbstractDataTreeNode#asBackwardDelta(DeltaDataTree, DeltaDataTree, IPath)
+	 * @see AbstractDataTreeNode#asBackwardDelta(DeltaDataTree, DeltaDataTree, JPath)
 	 */
 	@Override
-	AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, IPath key) {
+	AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, JPath key) {
 		if (parentTree.includes(key))
 			return parentTree.copyCompleteSubtree(key);
 		return new DeletedNode(name);
@@ -113,7 +113,7 @@ public class DataTreeNode extends AbstractDataTreeNode {
 	}
 
 	@Override
-	AbstractDataTreeNode compareWithParent(IPath key, DeltaDataTree parent, IComparator comparator) {
+	AbstractDataTreeNode compareWithParent(JPath key, DeltaDataTree parent, IComparator comparator) {
 		if (!parent.includes(key))
 			return convertToAddedComparisonNode(this, NodeComparison.K_ADDED);
 		DataTreeNode inParent = (DataTreeNode) parent.copyCompleteSubtree(key);
@@ -144,12 +144,12 @@ public class DataTreeNode extends AbstractDataTreeNode {
 	 */
 	DataTreeNode copyWithNewChild(String localName, DataTreeNode childNode) {
 
-		AbstractDataTreeNode[] children = this.children;
+		AbstractDataTreeNode[] childs = this.children;
 		int left = 0;
-		int right = children.length - 1;
+		int right = childs.length - 1;
 		while (left <= right) {
 			int mid = (left + right) / 2;
-			int compare = localName.compareTo(children[mid].name);
+			int compare = localName.compareTo(childs[mid].name);
 			if (compare < 0) {
 				right = mid - 1;
 			} else if (compare > 0) {
@@ -159,11 +159,11 @@ public class DataTreeNode extends AbstractDataTreeNode {
 			}
 		}
 
-		AbstractDataTreeNode[] newChildren = new AbstractDataTreeNode[children.length + 1];
-		System.arraycopy(children, 0, newChildren, 0, left);
+		AbstractDataTreeNode[] newChildren = new AbstractDataTreeNode[childs.length + 1];
+		System.arraycopy(childs, 0, newChildren, 0, left);
 		childNode.setName(localName);
 		newChildren[left] = childNode;
-		System.arraycopy(children, left, newChildren, left + 1, children.length - left);
+		System.arraycopy(childs, left, newChildren, left + 1, childs.length - left);
 		return new DataTreeNode(this.getName(), this.getData(), newChildren);
 	}
 
@@ -178,15 +178,15 @@ public class DataTreeNode extends AbstractDataTreeNode {
 
 		int index, newSize;
 		DataTreeNode newNode;
-		AbstractDataTreeNode children[];
+		AbstractDataTreeNode childs[];
 
 		index = this.indexOfChild(localName);
 		if (index == -1) {
 			newNode = (DataTreeNode) this.copy();
 		} else {
 			newSize = this.size() - 1;
-			children = new AbstractDataTreeNode[newSize];
-			newNode = new DataTreeNode(this.getName(), this.getData(), children);
+			childs = new AbstractDataTreeNode[newSize];
+			newNode = new DataTreeNode(this.getName(), this.getData(), childs);
 			newNode.copyChildren(0, index - 1, this, 0); //#from:to:with:startingAt:
 			newNode.copyChildren(index, newSize - 1, this, index + 1);
 		}
@@ -329,7 +329,7 @@ public class DataTreeNode extends AbstractDataTreeNode {
 	 * Simplifies the given node, and answers its replacement.
 	 */
 	@Override
-	AbstractDataTreeNode simplifyWithParent(IPath key, DeltaDataTree parent, IComparator comparer) {
+	AbstractDataTreeNode simplifyWithParent(JPath key, DeltaDataTree parent, IComparator comparer) {
 		/* If not in parent, can't be simplified */
 		if (!parent.includes(key)) {
 			return this;

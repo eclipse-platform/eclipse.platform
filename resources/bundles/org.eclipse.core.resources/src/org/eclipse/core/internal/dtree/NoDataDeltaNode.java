@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.core.internal.dtree;
 
-import org.eclipse.core.runtime.IPath;
-
 /**
  * A <code>NoDataDeltaNode</code>is a node in a delta tree whose subtree contains
  * differences since the delta's parent.  Refer to the <code>DeltaDataTree</code>
@@ -51,10 +49,10 @@ public class NoDataDeltaNode extends AbstractDataTreeNode {
 	}
 
 	/**
-	 * @see AbstractDataTreeNode#asBackwardDelta(DeltaDataTree, DeltaDataTree, IPath)
+	 * @see AbstractDataTreeNode#asBackwardDelta(DeltaDataTree, DeltaDataTree, JPath)
 	 */
 	@Override
-	AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, IPath key) {
+	AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, JPath key) {
 		int numChildren = children.length;
 		if (numChildren == 0)
 			return new NoDataDeltaNode(name, NO_CHILDREN);
@@ -66,10 +64,10 @@ public class NoDataDeltaNode extends AbstractDataTreeNode {
 	}
 
 	/**
-	 * @see AbstractDataTreeNode#compareWithParent(IPath, DeltaDataTree, IComparator)
+	 * @see AbstractDataTreeNode#compareWithParent(JPath, DeltaDataTree, IComparator)
 	 */
 	@Override
-	AbstractDataTreeNode compareWithParent(IPath key, DeltaDataTree parent, IComparator comparator) {
+	AbstractDataTreeNode compareWithParent(JPath key, DeltaDataTree parent, IComparator comparator) {
 		AbstractDataTreeNode[] comparedChildren = compareWithParent(children, key, parent, comparator);
 		Object oldData = parent.getData(key);
 		return new DataTreeNode(key.lastSegment(), new NodeComparison(oldData, oldData, NodeComparison.K_CHANGED, 0), comparedChildren);
@@ -112,7 +110,7 @@ public class NoDataDeltaNode extends AbstractDataTreeNode {
 	 * Simplifies the given node, and returns its replacement.
 	 */
 	@Override
-	AbstractDataTreeNode simplifyWithParent(IPath key, DeltaDataTree parent, IComparator comparer) {
+	AbstractDataTreeNode simplifyWithParent(JPath key, DeltaDataTree parent, IComparator comparer) {
 		AbstractDataTreeNode[] simplifiedChildren = simplifyWithParent(children, key, parent, comparer);
 		return new NoDataDeltaNode(name, simplifiedChildren);
 	}

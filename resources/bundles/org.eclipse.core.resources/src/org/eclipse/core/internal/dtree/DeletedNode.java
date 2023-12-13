@@ -14,7 +14,7 @@
 package org.eclipse.core.internal.dtree;
 
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.runtime.IPath;
+
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -32,10 +32,10 @@ public class DeletedNode extends AbstractDataTreeNode {
 	}
 
 	/**
-	 * @see AbstractDataTreeNode#asBackwardDelta(DeltaDataTree, DeltaDataTree, IPath)
+	 * @see AbstractDataTreeNode#asBackwardDelta(DeltaDataTree, DeltaDataTree, JPath)
 	 */
 	@Override
-	AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, IPath key) {
+	AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, JPath key) {
 		if (parentTree.includes(key))
 			return parentTree.copyCompleteSubtree(key);
 		return this;
@@ -60,7 +60,7 @@ public class DeletedNode extends AbstractDataTreeNode {
 	}
 
 	@Override
-	AbstractDataTreeNode compareWithParent(IPath key, DeltaDataTree parent, IComparator comparator) {
+	AbstractDataTreeNode compareWithParent(JPath key, DeltaDataTree parent, IComparator comparator) {
 		/**
 		 * Just because there is a deleted node, it doesn't mean there must
 		 * be a corresponding node in the parent.  Deleted nodes can live
@@ -94,7 +94,7 @@ public class DeletedNode extends AbstractDataTreeNode {
 	 * Simplifies the given node, and returns its replacement.
 	 */
 	@Override
-	AbstractDataTreeNode simplifyWithParent(IPath key, DeltaDataTree parent, IComparator comparer) {
+	AbstractDataTreeNode simplifyWithParent(JPath key, DeltaDataTree parent, IComparator comparer) {
 		if (parent.includes(key))
 			return this;
 		return new NoDataDeltaNode(name);

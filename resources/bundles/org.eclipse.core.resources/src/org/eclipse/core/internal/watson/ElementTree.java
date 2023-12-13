@@ -23,6 +23,7 @@ import org.eclipse.core.internal.dtree.AbstractDataTreeNode;
 import org.eclipse.core.internal.dtree.DataTreeLookup;
 import org.eclipse.core.internal.dtree.DataTreeNode;
 import org.eclipse.core.internal.dtree.DeltaDataTree;
+import org.eclipse.core.internal.dtree.JPath;
 import org.eclipse.core.internal.dtree.ObjectNotFoundException;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.StringPool;
@@ -34,11 +35,14 @@ import org.eclipse.osgi.util.NLS;
  * <p>
  * An ElementTree can be viewed as a generic rooted tree that stores a hierarchy
  * of elements. An element in the tree consists of a (name, data, children)
- * 3-tuple. The name ({@link #getNamesOfChildren(IPath)}) can be any String, and
- * the data ({@link #getElementData(IPath)}) can be any Object. The children
- * ({@link #getChildren(IPath)}) are a collection of zero or more elements that
- * logically fall below their parent in the tree. The implementation makes no
- * guarantees about the ordering of children.
+ * 3-tuple. The name
+ * ({@link #getNamesOfChildren(IPath)}) can be any
+ * String, and the data
+ * ({@link #getElementData(IPath)}) can be any Object.
+ * The children ({@link #getChildren(IPath)}) are a
+ * collection of zero or more elements that logically fall below their parent in
+ * the tree. The implementation makes no guarantees about the ordering of
+ * children.
  * </p>
  *
  * <p>
@@ -46,7 +50,7 @@ import org.eclipse.osgi.util.NLS;
  * all elements on the path from the root to that element in the tree. For
  * example, if root node "a" has child "b", which has child "c", element "c" can
  * be referenced in the tree using the key (/a/b/c). Keys are represented using
- * {@link IPath} objects, where the Paths are relative to the root element of
+ * {@link JPath} objects, where the Paths are relative to the root element of
  * the tree.
  * </p>
  *
@@ -106,13 +110,13 @@ public class ElementTree {
 	protected volatile IElementTreeData userData;
 
 	private static final class ChildIDsCache {
-		ChildIDsCache(IPath path, IPath[] childPaths) {
+		ChildIDsCache(JPath path, JPath[] childPaths) {
 			this.path = path;
 			this.childPaths = childPaths;
 		}
 
-		final IPath path;
-		final IPath[] childPaths;
+		final JPath path;
+		final JPath[] childPaths;
 	}
 
 	/** synchronized access **/
@@ -211,7 +215,7 @@ public class ElementTree {
 
 		IPath parent = key.removeLastSegments(1);
 		try {
-			tree.createChild(parent, key.lastSegment(), data);
+			tree.createChild(JPath.of(parent), key.lastSegment(), data);
 		} catch (ObjectNotFoundException e) {
 			throw createElementNotFoundException(parent);
 		}
@@ -227,9 +231,13 @@ public class ElementTree {
 	 * key in this tree.
 	 *
 	 * @param key The path of the new subtree in this tree.
-	 * @see #getSubtree(IPath)
+	 * @see #getSubtree(JPath)
 	 */
 	public synchronized void createSubtree(IPath key, ElementTree subtree) {
+		createSubtree(JPath.of(key), subtree);
+	}
+
+	public synchronized void createSubtree(JPath key, ElementTree subtree) {
 		/* don't allow creating subtrees at the root */
 		if (key.isRoot()) {
 			throw new IllegalArgumentException(Messages.watson_noModify);
@@ -243,7 +251,7 @@ public class ElementTree {
 		lookupCache = lookupCacheIgnoreCase = null;
 		try {
 			/* don't copy the implicit root node of the subtree */
-			IPath[] children = subtree.getChildren(subtree.getRoot());
+			JPath[] children = subtree.getChildIDs(JPath.ROOT);
 			if (children.length != 1) {
 				throw new IllegalArgumentException(Messages.watson_illegalSubtree);
 			}
@@ -275,12 +283,15 @@ public class ElementTree {
 		// as for the last lookup.
 		lookupCache = lookupCacheIgnoreCase = null;
 		try {
-			tree.deleteChild(key.removeLastSegments(1), key.lastSegment());
+			tree.deleteChild(JPath.of(key.removeLastSegments(1)), key.lastSegment());
 		} catch (ObjectNotFoundException e) {
 			throw createElementNotFoundException(key);
 		}
 	}
 
+	private IllegalArgumentException createElementNotFoundException(JPath key) {
+		return new IllegalArgumentException(NLS.bind(Messages.watson_elementNotFound, key));
+	}
 	private IllegalArgumentException createElementNotFoundException(IPath key) {
 		return new IllegalArgumentException(NLS.bind(Messages.watson_elementNotFound, key));
 	}
@@ -341,14 +352,14 @@ public class ElementTree {
 	 */
 	public synchronized int getChildCount(IPath key) {
 		Assert.isNotNull(key);
-		return getChildIDs(key).length;
+		return getChildIDs(JPath.of(key)).length;
 	}
 
 	/**
 	 * Returns the IDs of the children of the specified element.
 	 * If the specified element is null, returns the root element path.
 	 */
-	protected IPath[] getChildIDs(IPath key) {
+	protected JPath[] getChildIDs(JPath key) {
 		ChildIDsCache cache = childIDsCache; // Grab it in case it's replaced concurrently.
 		if (cache != null && cache.path == key) {
 			return cache.childPaths;
@@ -356,7 +367,7 @@ public class ElementTree {
 		if (key == null)
 			return tree.rootPaths();
 		try {
-			IPath[] children = tree.getChildren(key);
+			JPath[] children = tree.getChildren(key);
 			childIDsCache = new ChildIDsCache(key, children); // Cache the result
 			return children;
 		} catch (ObjectNotFoundException e) {
@@ -370,8 +381,7 @@ public class ElementTree {
 	 * The given element must be present in this tree.
 	 */
 	public synchronized IPath[] getChildren(IPath key) {
-		Assert.isNotNull(key);
-		return getChildIDs(key);
+		return JPath.toIPath(getChildIDs(JPath.of(key)));
 	}
 
 	/**
@@ -396,7 +406,6 @@ public class ElementTree {
 			return lookup.data;
 		throw createElementNotFoundException(key);
 	}
-
 	/**
 	 * Returns the element data for the given element identifier.
 	 * The given element must be present in this tree.
@@ -442,13 +451,6 @@ public class ElementTree {
 	}
 
 	/**
-	 * Returns the root node of this tree.
-	 */
-	public IPath getRoot() {
-		return getChildIDs(null)[0];
-	}
-
-	/**
 	 * Returns the subtree rooted at the given key. In the resulting tree,
 	 * the implicit root node (designated by Path.ROOT), has a single child,
 	 * which is the node specified by the given key in this tree.
@@ -458,6 +460,10 @@ public class ElementTree {
 	 * @see #createSubtree(IPath, ElementTree)
 	 */
 	public ElementTree getSubtree(IPath key) {
+		return getSubtree(JPath.of(key));
+	}
+
+	public ElementTree getSubtree(JPath key) {
 		/* the subtree of the root of this tree is just this tree */
 		if (key.isRoot()) {
 			return this;
@@ -603,8 +609,8 @@ public class ElementTree {
 			while (toMerge != null) {
 				if (path.isRoot()) {
 					//copy all the children
-					IPath[] children = toMerge.getChildren(IPath.ROOT);
-					for (IPath element : children) {
+					JPath[] children = toMerge.getChildIDs(JPath.ROOT);
+					for (JPath element : children) {
 						current.createSubtree(element, toMerge.getSubtree(element));
 					}
 				} else {
@@ -698,7 +704,7 @@ public class ElementTree {
 		// as for the last lookup.
 		lookupCache = lookupCacheIgnoreCase = null;
 		try {
-			tree.setData(key, data);
+			tree.setData(JPath.of(key), data);
 		} catch (ObjectNotFoundException e) {
 			throw createElementNotFoundException(key);
 		}

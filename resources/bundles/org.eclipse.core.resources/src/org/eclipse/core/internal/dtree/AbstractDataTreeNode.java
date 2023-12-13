@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.StringPool;
-import org.eclipse.core.runtime.IPath;
+
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -64,7 +64,7 @@ public abstract class AbstractDataTreeNode {
 	 * @param parentTree  parent tree on which to base backward delta
 	 * @param key  key of node in its tree
 	 */
-	abstract AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, IPath key);
+	abstract AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, JPath key);
 
 	/**
 	 * If this node is a node in a comparison tree, this method reverses
@@ -209,7 +209,7 @@ public abstract class AbstractDataTreeNode {
 	/**
 	 * Returns the result of assembling this node with the given forward delta node.
 	 */
-	AbstractDataTreeNode assembleWith(AbstractDataTreeNode node, IPath key, int keyIndex) {
+	AbstractDataTreeNode assembleWith(AbstractDataTreeNode node, JPath key, int keyIndex) {
 
 		// leaf case
 		int keyLen = key.segmentCount();
@@ -347,7 +347,7 @@ public abstract class AbstractDataTreeNode {
 		return comparedNodes;
 	}
 
-	protected static AbstractDataTreeNode[] compareWithParent(AbstractDataTreeNode[] nodes, IPath key, DeltaDataTree parent, IComparator comparator) {
+	protected static AbstractDataTreeNode[] compareWithParent(AbstractDataTreeNode[] nodes, JPath key, DeltaDataTree parent, IComparator comparator) {
 
 		AbstractDataTreeNode[] comparedNodes = new AbstractDataTreeNode[nodes.length];
 		int count = 0;
@@ -368,7 +368,7 @@ public abstract class AbstractDataTreeNode {
 		return comparedNodes;
 	}
 
-	abstract AbstractDataTreeNode compareWithParent(IPath key, DeltaDataTree parent, IComparator comparator);
+	abstract AbstractDataTreeNode compareWithParent(JPath key, DeltaDataTree parent, IComparator comparator);
 
 	static AbstractDataTreeNode convertToAddedComparisonNode(AbstractDataTreeNode newNode, int userComparison) {
 		AbstractDataTreeNode[] children = newNode.getChildren();
@@ -536,7 +536,7 @@ public abstract class AbstractDataTreeNode {
 	/**
 	 * Simplifies the given nodes, and answers their replacements.
 	 */
-	protected static AbstractDataTreeNode[] simplifyWithParent(AbstractDataTreeNode[] nodes, IPath key, DeltaDataTree parent, IComparator comparer) {
+	protected static AbstractDataTreeNode[] simplifyWithParent(AbstractDataTreeNode[] nodes, JPath key, DeltaDataTree parent, IComparator comparer) {
 		int nodeCount = nodes.length;
 		if (nodeCount == 0)
 			return NO_CHILDREN;
@@ -561,7 +561,7 @@ public abstract class AbstractDataTreeNode {
 	/**
 	 * Simplifies the given node, and answers its replacement.
 	 */
-	abstract AbstractDataTreeNode simplifyWithParent(IPath key, DeltaDataTree parent, IComparator comparer);
+	abstract AbstractDataTreeNode simplifyWithParent(JPath key, DeltaDataTree parent, IComparator comparer);
 
 	/**
 	 * Returns the number of children of the receiver

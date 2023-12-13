@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.internal.dtree;
 
-import org.eclipse.core.runtime.IPath;
+
 
 /**
  * A <code>DataDeltaNode</code> contains information that represents the differences
@@ -38,10 +38,10 @@ public class DataDeltaNode extends DataTreeNode {
 	}
 
 	/**
-	 * @see AbstractDataTreeNode#asBackwardDelta(DeltaDataTree, DeltaDataTree, IPath)
+	 * @see AbstractDataTreeNode#asBackwardDelta(DeltaDataTree, DeltaDataTree, JPath)
 	 */
 	@Override
-	AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, IPath key) {
+	AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, JPath key) {
 		AbstractDataTreeNode[] newChildren;
 		if (children.length == 0) {
 			newChildren = NO_CHILDREN;
@@ -55,7 +55,7 @@ public class DataDeltaNode extends DataTreeNode {
 	}
 
 	@Override
-	AbstractDataTreeNode compareWithParent(IPath key, DeltaDataTree parent, IComparator comparator) {
+	AbstractDataTreeNode compareWithParent(JPath key, DeltaDataTree parent, IComparator comparator) {
 		AbstractDataTreeNode[] comparedChildren = compareWithParent(children, key, parent, comparator);
 		Object oldData = parent.getData(key);
 		Object newData = data;
@@ -97,7 +97,7 @@ public class DataDeltaNode extends DataTreeNode {
 	 * Simplifies the given node, and answers its replacement.
 	 */
 	@Override
-	AbstractDataTreeNode simplifyWithParent(IPath key, DeltaDataTree parent, IComparator comparer) {
+	AbstractDataTreeNode simplifyWithParent(JPath key, DeltaDataTree parent, IComparator comparer) {
 		AbstractDataTreeNode[] simplifiedChildren = simplifyWithParent(children, key, parent, comparer);
 		/* don't compare root nodes */
 		if (!key.isRoot() && comparer.compare(parent.getData(key), data) == 0)

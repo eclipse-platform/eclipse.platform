@@ -36,12 +36,16 @@ public abstract class AbstractDataTree {
 	/**
 	 * Singleton indicating no children
 	 */
-	protected static final IPath[] NO_CHILDREN = new IPath[0];
+	protected static final JPath[] NO_CHILDREN = new JPath[0];
 
 	/**
 	 * Returns a copy of the node subtree rooted at the given key.
 	 */
-	public abstract AbstractDataTreeNode copyCompleteSubtree(IPath key);
+	public abstract AbstractDataTreeNode copyCompleteSubtree(JPath key);
+
+	public AbstractDataTreeNode copyCompleteSubtree(IPath key) {
+		return copyCompleteSubtree(JPath.of(key));
+	}
 
 	/**
 	 * Creates a new child in the tree.  If a child with such a name exists,
@@ -54,8 +58,11 @@ public abstract class AbstractDataTree {
 	 * @exception RuntimeException
 	 *	receiver is immutable
 	 */
-	public abstract void createChild(IPath parentKey, String localName);
+	public abstract void createChild(JPath parentKey, String localName);
 
+	public void createChild(IPath parentKey, String localName) {
+		createChild(JPath.of(parentKey), localName);
+	}
 	/**
 	 * Creates a new child in the tree.  If a child with such a name exists,
 	 * it is replaced with the new child
@@ -68,7 +75,11 @@ public abstract class AbstractDataTree {
 	 * @exception RuntimeException
 	 *	receiver is immutable
 	 */
-	public abstract void createChild(IPath parentKey, String localName, Object object);
+	public abstract void createChild(JPath parentKey, String localName, Object object);
+
+	public void createChild(IPath parentKey, String localName, Object object) {
+		createChild(JPath.of(parentKey), localName, object);
+	}
 
 	/**
 	 * Creates or replaces a subtree in the tree.  The parent node must exist.
@@ -77,8 +88,11 @@ public abstract class AbstractDataTree {
 	 * @param subtree new subtree to add to tree
 	 * @exception RuntimeException receiver is immutable
 	 */
-	public abstract void createSubtree(IPath key, AbstractDataTreeNode subtree);
+	public abstract void createSubtree(JPath key, AbstractDataTreeNode subtree);
 
+	public void createSubtree(IPath key, AbstractDataTreeNode subtree) {
+		createSubtree(JPath.of(key), subtree);
+	}
 	/**
 	 * Deletes a child from the tree.
 	 *
@@ -92,8 +106,11 @@ public abstract class AbstractDataTree {
 	 * @exception RuntimeException
 	 *	receiver is immutable
 	 */
-	public abstract void deleteChild(IPath parentKey, String localName);
+	public abstract void deleteChild(JPath parentKey, String localName);
 
+	public void deleteChild(IPath parentKey, String localName) {
+		deleteChild(JPath.of(parentKey), localName);
+	}
 	/**
 	 * Returns the key of a node in the tree.
 	 *
@@ -108,7 +125,7 @@ public abstract class AbstractDataTree {
 	 */
 	public IPath getChild(IPath parentKey, int index) {
 		/* Get name of given child of the parent */
-		String child = getNameOfChild(parentKey, index);
+		String child = getNameOfChild(JPath.of(parentKey), index);
 		return parentKey.append(child);
 	}
 
@@ -119,7 +136,11 @@ public abstract class AbstractDataTree {
 	 *                  children
 	 * @exception ObjectNotFoundException parentKey does not exist in the receiver
 	 */
-	abstract int getChildCount(IPath parentKey);
+	abstract int getChildCount(JPath parentKey);
+
+	public int getChildCount(IPath parentKey) {
+		return getChildCount(JPath.of(parentKey));
+	}
 
 	/**
 	 * Returns the keys of all children of a node.
@@ -127,7 +148,11 @@ public abstract class AbstractDataTree {
 	 * @param parentKey key of parent whose children we want to retrieve.
 	 * @exception ObjectNotFoundException parentKey does not exist in the receiver
 	 */
-	abstract IPath[] getChildren(IPath parentKey);
+	abstract JPath[] getChildren(JPath parentKey);
+
+	public IPath[] getChildren(IPath parentKey) {
+		return JPath.toIPath(getChildren(JPath.of(parentKey)));
+	}
 
 	/**
 	 * Returns the data of a node.
@@ -135,7 +160,11 @@ public abstract class AbstractDataTree {
 	 * @param key key of node for which we want to retrieve data.
 	 * @exception ObjectNotFoundException key does not exist in the receiver
 	 */
-	public abstract Object getData(IPath key);
+	public abstract Object getData(JPath key);
+
+	public Object getData(IPath key) {
+		return getData(JPath.of(key));
+	}
 
 	/**
 	 * Returns the local name of a node in the tree
@@ -149,7 +178,7 @@ public abstract class AbstractDataTree {
 	 * @exception ArrayIndexOutOfBoundsException
 	 *	if no child with the given index
 	 */
-	abstract String getNameOfChild(IPath parentKey, int index);
+	abstract String getNameOfChild(JPath parentKey, int index);
 
 	/**
 	 * Returns the local names for the children of a node
@@ -159,7 +188,11 @@ public abstract class AbstractDataTree {
 	 * @exception ObjectNotFoundException
 	 *	parentKey does not exist in the receiver
 	 */
-	public abstract String[] getNamesOfChildren(IPath parentKey);
+	public abstract String[] getNamesOfChildren(JPath parentKey);
+
+	public String[] getNamesOfChildren(IPath parentKey) {
+		return getNamesOfChildren(JPath.of(parentKey));
+	}
 
 	/**
 	 * Handles the case where an attempt was made to modify the tree when it was in
@@ -179,7 +212,7 @@ public abstract class AbstractDataTree {
 	 * an element in the tree that does not exist.  Throws an
 	 * unchecked exception.
 	 */
-	static void handleNotFound(IPath key) {
+	static void handleNotFound(JPath key) {
 		throw new ObjectNotFoundException(NLS.bind(Messages.dtree_notFound, key));
 	}
 
@@ -218,7 +251,11 @@ public abstract class AbstractDataTree {
 	 * @param key
 	 *	key of node to find
 	 */
-	public abstract boolean includes(IPath key);
+	public abstract boolean includes(JPath key);
+
+	public boolean includes(IPath key) {
+		return includes(JPath.of(key));
+	}
 
 	/**
 	 * Returns true if the tree is immutable, and false otherwise.
@@ -239,17 +276,17 @@ public abstract class AbstractDataTree {
 	/**
 	 * Returns the key of the root node.
 	 */
-	public static final IPath rootKey() {
-		return IPath.ROOT;
+	public static final JPath rootKey() {
+		return JPath.ROOT;
 	}
 
-	public boolean isRoot(IPath key) {
+	public boolean isRoot(JPath key) {
 		return key == rootKey();
 	}
 
-	private static final IPath[] ROOT_PATHS = new IPath[] { rootKey() };
+	private static final JPath[] ROOT_PATHS = new JPath[] { rootKey() };
 
-	public IPath[] rootPaths() {
+	public JPath[] rootPaths() {
 		return ROOT_PATHS;
 	}
 
@@ -265,8 +302,11 @@ public abstract class AbstractDataTree {
 	 * @exception IllegalArgumentException
 	 *	receiver is immutable
 	 */
-	public abstract void setData(IPath key, Object data);
+	public abstract void setData(JPath key, Object data);
 
+	public void setData(IPath key, Object data) {
+		setData(JPath.of(key), data);
+	}
 	/**
 	 * Sets the root node of the tree.
 	 *

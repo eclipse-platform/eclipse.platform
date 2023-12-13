@@ -19,6 +19,7 @@ import org.eclipse.core.internal.utils.StringPool;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 
+
 /**
  * Externally, a <code>DeltaDataTree</code> appears to have the same content as
  * a standard data tree.  Internally, the delta tree may be complete, or it may
@@ -76,7 +77,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * @param localName name of child.
 	 * @param childNode child node.
 	 */
-	protected void addChild(IPath parentKey, String localName, AbstractDataTreeNode childNode) {
+	protected void addChild(JPath parentKey, String localName, AbstractDataTreeNode childNode) {
 		if (!includes(parentKey))
 			handleNotFound(parentKey);
 		childNode.setName(localName);
@@ -134,7 +135,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * @param key key of the node to replace.
 	 * @param deltaNode delta node to use to assemble the new node.
 	 */
-	protected void assembleNode(IPath key, AbstractDataTreeNode deltaNode) {
+	protected void assembleNode(JPath key, AbstractDataTreeNode deltaNode) {
 		setRootNode(rootNode.assembleWith(deltaNode, key, 0));
 	}
 
@@ -166,7 +167,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * given path will be the root node of the returned tree.  Both this
 	 * tree and other tree must contain the given path.
 	 */
-	protected DeltaDataTree basicCompare(DeltaDataTree other, IComparator comparator, IPath path) {
+	protected DeltaDataTree basicCompare(DeltaDataTree other, IComparator comparator, JPath path) {
 		DeltaDataTree newTree;
 		if (this == other) {
 			newTree = new DeltaDataTree();
@@ -282,7 +283,8 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * Compares this tree with another tree, starting from the given path.  The
 	 * given path will be the root node of the returned tree.
 	 */
-	public DeltaDataTree compareWith(DeltaDataTree other, IComparator comparator, IPath path) {
+	public DeltaDataTree compareWith(DeltaDataTree other, IComparator comparator, IPath p) {
+		JPath path = JPath.of(p);
 		/* need to figure out if trees really contain the given path */
 		if (this.includes(path)) {
 			if (other.includes(path))
@@ -311,7 +313,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 *	key of subtree to copy
 	 */
 	@Override
-	public AbstractDataTreeNode copyCompleteSubtree(IPath key) {
+	public AbstractDataTreeNode copyCompleteSubtree(JPath key) {
 		AbstractDataTreeNode node = searchNodeAt(key);
 		if (node == null) {
 			handleNotFound(key);
@@ -324,18 +326,18 @@ public class DeltaDataTree extends AbstractDataTree {
 	}
 
 	/**
-	 * @see AbstractDataTree#createChild(IPath, String)
+	 * @see AbstractDataTree#createChild(JPath, String)
 	 */
 	@Override
-	public void createChild(IPath parentKey, String localName) {
+	public void createChild(JPath parentKey, String localName) {
 		createChild(parentKey, localName, null);
 	}
 
 	/**
-	 * @see AbstractDataTree#createChild(IPath, String, Object)
+	 * @see AbstractDataTree#createChild(JPath, String, Object)
 	 */
 	@Override
-	public void createChild(IPath parentKey, String localName, Object data) {
+	public void createChild(JPath parentKey, String localName, Object data) {
 		if (isImmutable())
 			handleImmutableTree();
 		addChild(parentKey, localName, new DataTreeNode(localName, data));
@@ -351,29 +353,29 @@ public class DeltaDataTree extends AbstractDataTree {
 	}
 
 	/**
-	 * @see AbstractDataTree#createSubtree(IPath, AbstractDataTreeNode)
+	 * @see AbstractDataTree#createSubtree(JPath, AbstractDataTreeNode)
 	 */
 	@Override
-	public void createSubtree(IPath key, AbstractDataTreeNode node) {
+	public void createSubtree(JPath key, AbstractDataTreeNode node) {
 		if (isImmutable())
 			handleImmutableTree();
 		if (key.isRoot()) {
 			setParent(null);
 			setRootNode(node);
 		} else {
-			addChild(key.removeLastSegments(1), key.lastSegment(), node);
+			addChild(key.removeLastSegment(), key.lastSegment(), node);
 		}
 	}
 
 	/**
-	 * @see AbstractDataTree#deleteChild(IPath, String)
+	 * @see AbstractDataTree#deleteChild(JPath, String)
 	 */
 	@Override
-	public void deleteChild(IPath parentKey, String localName) {
+	public void deleteChild(JPath parentKey, String localName) {
 		if (isImmutable())
 			handleImmutableTree();
 		/* If the child does not exist */
-		IPath childKey = parentKey.append(localName);
+		JPath childKey = parentKey.append(localName);
 		if (!includes(childKey))
 			handleNotFound(childKey);
 		assembleNode(parentKey, new NoDataDeltaNode(parentKey.lastSegment(), new DeletedNode(localName)));
@@ -385,7 +387,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * @param key
 	 *	key of node to find
 	 */
-	public AbstractDataTreeNode findNodeAt(IPath key) {
+	public AbstractDataTreeNode findNodeAt(JPath key) {
 		AbstractDataTreeNode node = rootNode;
 		int segmentCount = key.segmentCount();
 		for (int i = 0; i < segmentCount; i++) {
@@ -447,17 +449,17 @@ public class DeltaDataTree extends AbstractDataTree {
 	}
 
 	/**
-	 * @see AbstractDataTree#getChildCount(IPath)
+	 * @see AbstractDataTree#getChildCount(JPath)
 	 */
 	@Override
-	public int getChildCount(IPath parentKey) {
+	public int getChildCount(JPath parentKey) {
 		return getChildNodes(parentKey).length;
 	}
 
 	/**
 	 * Returns the child nodes of a node in the tree.
 	 */
-	protected AbstractDataTreeNode[] getChildNodes(IPath parentKey) {
+	protected AbstractDataTreeNode[] getChildNodes(JPath parentKey) {
 
 		/* Algorithm:
 		 *   for each delta in chain (going backwards),
@@ -513,15 +515,15 @@ public class DeltaDataTree extends AbstractDataTree {
 	}
 
 	/**
-	 * @see AbstractDataTree#getChildren(IPath)
+	 * @see AbstractDataTree#getChildren(JPath)
 	 */
 	@Override
-	public IPath[] getChildren(IPath parentKey) {
+	public JPath[] getChildren(JPath parentKey) {
 		AbstractDataTreeNode[] childNodes = getChildNodes(parentKey);
 		int len = childNodes.length;
 		if (len == 0)
 			return NO_CHILDREN;
-		IPath[] answer = new IPath[len];
+		JPath[] answer = new JPath[len];
 		for (int i = 0; i < len; ++i)
 			answer[i] = parentKey.append(childNodes[i].name);
 		return answer;
@@ -534,7 +536,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 *	key of node for which to return data.
 	 */
 	@Override
-	public Object getData(IPath key) {
+	public Object getData(JPath key) {
 
 		/* Algorithm:
 		 *   for each delta in chain (going backwards),
@@ -574,10 +576,10 @@ public class DeltaDataTree extends AbstractDataTree {
 	}
 
 	/**
-	 * @see AbstractDataTree#getNameOfChild(IPath, int)
+	 * @see AbstractDataTree#getNameOfChild(JPath, int)
 	 */
 	@Override
-	public String getNameOfChild(IPath parentKey, int index) {
+	public String getNameOfChild(JPath parentKey, int index) {
 		AbstractDataTreeNode[] childNodes = getChildNodes(parentKey);
 		return childNodes[index].name;
 	}
@@ -585,10 +587,10 @@ public class DeltaDataTree extends AbstractDataTree {
 	/**
 	 * Returns the local names for the children of a node of the tree.
 	 *
-	 * @see AbstractDataTree#getNamesOfChildren(IPath)
+	 * @see AbstractDataTree#getNamesOfChildren(JPath)
 	 */
 	@Override
-	public String[] getNamesOfChildren(IPath parentKey) {
+	public String[] getNamesOfChildren(JPath parentKey) {
 		AbstractDataTreeNode[] childNodes = getChildNodes(parentKey);
 		int len = childNodes.length;
 		String[] namesOfChildren = new String[len];
@@ -636,7 +638,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * the given key, false otherwise.
 	 */
 	@Override
-	public boolean includes(IPath key) {
+	public boolean includes(JPath key) {
 		return searchNodeAt(key) != null;
 	}
 
@@ -741,7 +743,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * @param key
 	 *	key of subtree whose contents we want to copy.
 	 */
-	protected AbstractDataTreeNode naiveCopyCompleteSubtree(IPath key) {
+	protected AbstractDataTreeNode naiveCopyCompleteSubtree(JPath key) {
 		String[] childNames = getNamesOfChildren(key);
 		int numChildren = childNames.length;
 		AbstractDataTreeNode[] childNodes;
@@ -821,7 +823,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 *
 	 * @param key key of subtree to copy
 	 */
-	public AbstractDataTreeNode safeCopyCompleteSubtree(IPath key) {
+	public AbstractDataTreeNode safeCopyCompleteSubtree(JPath key) {
 		AbstractDataTreeNode node = searchNodeAt(key);
 		if (node == null)
 			return null;
@@ -829,6 +831,10 @@ public class DeltaDataTree extends AbstractDataTree {
 			return safeNaiveCopyCompleteSubtree(key);
 		//copy the node in case the user wants to hammer the subtree name
 		return node.copy();
+	}
+
+	public AbstractDataTreeNode safeCopyCompleteSubtree(IPath key) {
+		return safeCopyCompleteSubtree(JPath.of(key));
 	}
 
 	/**
@@ -839,7 +845,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * @param key
 	 *	key of subtree whose contents we want to copy.
 	 */
-	protected AbstractDataTreeNode safeNaiveCopyCompleteSubtree(IPath key) {
+	protected AbstractDataTreeNode safeNaiveCopyCompleteSubtree(JPath key) {
 		try {
 			String[] childNames = getNamesOfChildren(key);
 			int numChildren = childNames.length;
@@ -874,7 +880,7 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * Returns the specified node.  Search in the parent if necessary.  Return null
 	 * if the node is not found or if it has been deleted
 	 */
-	protected AbstractDataTreeNode searchNodeAt(IPath key) {
+	protected AbstractDataTreeNode searchNodeAt(JPath key) {
 		int keyLength = key.segmentCount();
 		for (DeltaDataTree tree = this; tree != null; tree = tree.parent) {
 			AbstractDataTreeNode node = tree.rootNode;
@@ -903,10 +909,10 @@ public class DeltaDataTree extends AbstractDataTree {
 
 	/**
 	 * Returns the specified node. Return null if the node is not found or if it has
-	 * been deleted. Like {@link DeltaDataTree#searchNodeAt(IPath)} but does NOT
+	 * been deleted. Like {@link DeltaDataTree#searchNodeAt(JPath)} but does NOT
 	 * search in the parent.
 	 */
-	protected AbstractDataTreeNode searchLocalNodeAt(IPath key) {
+	protected AbstractDataTreeNode searchLocalNodeAt(JPath key) {
 		int keyLength = key.segmentCount();
 		DeltaDataTree tree = this;
 		AbstractDataTreeNode node = tree.rootNode;
@@ -932,10 +938,10 @@ public class DeltaDataTree extends AbstractDataTree {
 		return null;
 	}
 	/**
-	 * @see AbstractDataTree#setData(IPath, Object)
+	 * @see AbstractDataTree#setData(JPath, Object)
 	 */
 	@Override
-	public void setData(IPath key, Object data) {
+	public void setData(JPath key, Object data) {
 		if (isImmutable())
 			handleImmutableTree();
 		if (!includes(key))
