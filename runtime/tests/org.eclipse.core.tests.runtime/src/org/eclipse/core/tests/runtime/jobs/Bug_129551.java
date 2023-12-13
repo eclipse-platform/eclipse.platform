@@ -23,7 +23,7 @@ import org.eclipse.core.tests.harness.TestJob;
  * the job starts, it is put to sleep.  When the bug existed, putting the job
  * to sleep would cause any blocked jobs behind the job to be lost.
  */
-public class Bug_129551 extends AbstractJobManagerTest {
+public class Bug_129551 extends AbstractJobTest {
 	final boolean[] shouldSleep = new boolean[] {true};
 	TestBarrier2 barrier = new TestBarrier2();
 	RuntimeException[] failure = new RuntimeException[1];

@@ -42,7 +42,7 @@ import org.junit.Test;
 /**
  * Tests API methods IJobManager.beginRule and IJobManager.endRule
  */
-public class BeginEndRuleTest extends AbstractJobManagerTest {
+public class BeginEndRuleTest extends AbstractJobTest {
 
 	private static final long TIMEOUT_IN_MILLIS = 10_000;
 

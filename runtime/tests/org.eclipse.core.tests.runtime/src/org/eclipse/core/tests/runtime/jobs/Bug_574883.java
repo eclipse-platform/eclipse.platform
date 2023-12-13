@@ -30,7 +30,7 @@ import org.junit.runners.MethodSorters;
  * Test for bug 574883
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class Bug_574883 extends AbstractJobManagerTest {
+public class Bug_574883 extends AbstractJobTest {
 
 	static class SerialExecutor extends Job {
 

@@ -25,7 +25,7 @@ import org.eclipse.core.tests.harness.TestBarrier2;
 /**
  * Make sure that IProgressMonitor's blocked/unblocked is invoked.
  */
-public class Bug_311756 extends AbstractJobManagerTest {
+public class Bug_311756 extends AbstractJobTest {
 
 	int UNSET = -1;
 	int CLEARED = 0;

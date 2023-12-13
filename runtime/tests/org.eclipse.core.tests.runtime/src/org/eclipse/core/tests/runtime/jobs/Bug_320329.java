@@ -20,7 +20,7 @@ import org.eclipse.core.tests.harness.TestJob;
 /**
  * Regression test for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=320329.
  */
-public class Bug_320329 extends AbstractJobManagerTest {
+public class Bug_320329 extends AbstractJobTest {
 
 	public void testBug() {
 		Job j1 = new TestJob("job1", 10, 5);// 50 ms

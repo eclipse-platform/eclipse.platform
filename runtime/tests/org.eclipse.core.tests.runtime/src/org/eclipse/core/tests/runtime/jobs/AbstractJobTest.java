@@ -14,12 +14,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import junit.framework.TestCase;
 import org.eclipse.core.internal.jobs.JobListeners;
 import org.eclipse.core.internal.jobs.JobManager;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
@@ -28,6 +31,9 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 @SuppressWarnings("restriction")
 public class AbstractJobTest extends TestCase {
+	protected IJobManager manager;
+	private FussyProgressProvider progressProvider;
+
 	public AbstractJobTest() {
 		super("");
 	}
@@ -137,10 +143,15 @@ public class AbstractJobTest extends TestCase {
 	protected void setUp() throws Exception {
 		assertNoTimeoutOccured();
 		super.setUp();
+		manager = Job.getJobManager();
+		progressProvider = new FussyProgressProvider();
+		manager.setProgressProvider(progressProvider);
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
+		progressProvider.sanityCheck();
+		manager.setProgressProvider(null);
 		assertNoTimeoutOccured();
 		super.tearDown();
 	}

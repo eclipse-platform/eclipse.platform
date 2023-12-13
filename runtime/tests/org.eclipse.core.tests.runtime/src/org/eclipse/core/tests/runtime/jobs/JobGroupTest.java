@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -46,23 +45,6 @@ import org.eclipse.core.tests.harness.TestJob;
  */
 @SuppressWarnings("restriction")
 public class JobGroupTest extends AbstractJobTest {
-	private IJobManager manager;
-	private FussyProgressProvider progressProvider;
-
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
-		manager = Job.getJobManager();
-		progressProvider = new FussyProgressProvider();
-		manager.setProgressProvider(progressProvider);
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-		progressProvider.sanityCheck();
-		manager.setProgressProvider(null);
-	}
 
 	public void testThrottlingWhenAllJobsAreKnown() {
 		final int NUM_JOBS = 100;

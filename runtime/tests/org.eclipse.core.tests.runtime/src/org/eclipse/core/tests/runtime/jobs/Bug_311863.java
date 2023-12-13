@@ -22,7 +22,7 @@ import org.eclipse.core.tests.harness.TestBarrier2;
  * Interrupting a thread, just as it acquires a lock, loses the lock and deadlocks
  * occurs if another thread is in the queue waiting for the lock
  */
-public class Bug_311863 extends AbstractJobManagerTest {
+public class Bug_311863 extends AbstractJobTest {
 
 	/** Signal to the threads that we're done */
 	volatile boolean finished = false;
