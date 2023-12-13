@@ -80,12 +80,16 @@ public class BuildProjectFromMultipleJobsTest {
 	}
 
 	/**
-	 * Creates a project with no contents and a builder, and triggers a project build from multiple jobs.
-	 * Checks that no {@link AssertionFailedException} were logged during the builds.
+	 * Creates a project with no contents and a builder, and triggers a project
+	 * build from multiple jobs. Checks that no
+	 * {@link org.eclipse.core.runtime.AssertionFailedException} were logged during
+	 * the builds.
 	 *
-	 * Repeats this several times, to ensure that no exceptions are thrown due to the build from parallel threads.
+	 * Repeats this several times, to ensure that no exceptions are thrown due to
+	 * the build from parallel threads.
 	 *
-	 * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=517411">Eclipse bug 517411</a>
+	 * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=517411">Eclipse
+	 *      bug 517411</a>
 	 */
 	@Test
 	public void test10IterationsWithBuildsFrom8Jobs() throws Exception {
