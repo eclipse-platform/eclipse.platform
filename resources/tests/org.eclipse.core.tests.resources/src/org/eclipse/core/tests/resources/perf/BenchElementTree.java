@@ -16,7 +16,6 @@ package org.eclipse.core.tests.resources.perf;
 
 import java.util.ArrayList;
 import org.eclipse.core.internal.watson.ElementTree;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.junit.Rule;
@@ -51,7 +50,7 @@ public class BenchElementTree {
 	 * Tests the performance of the createElement operation.
 	 */
 	@Test
-	public void testCreateElement() throws CoreException {
+	public void testCreateElement() throws Exception {
 		new PerformanceTestRunner() {
 			@Override
 			protected void test() {
@@ -64,7 +63,7 @@ public class BenchElementTree {
 	 * Tests the performance of the deleteElement operation.
 	 */
 	@Test
-	public void testDeleteElement() throws CoreException {
+	public void testDeleteElement() throws Exception {
 		final int repeat = 400;
 
 		/* create copies of the original tree */
@@ -89,7 +88,7 @@ public class BenchElementTree {
 	 * Tests the performance of the getElementData operation.
 	 */
 	@Test
-	public void testGetElementData() throws CoreException {
+	public void testGetElementData() throws Exception {
 		ElementTree tree = createTestTree(false);
 
 		new PerformanceTestRunner() {
@@ -106,7 +105,7 @@ public class BenchElementTree {
 	 * Tests the performance of the mergeDeltaChain operation.
 	 */
 	@Test
-	public void testMergeDeltaChain() throws CoreException {
+	public void testMergeDeltaChain() throws Exception {
 		final int repeat = 50;
 
 		/* create all the test trees */
@@ -133,7 +132,7 @@ public class BenchElementTree {
 	 * a new delta is generated for each operation.
 	 */
 	@Test
-	public void testRoutineOperations() throws CoreException {
+	public void testRoutineOperations() throws Exception {
 		new PerformanceTestRunner() {
 			@Override
 			protected void test() {
@@ -146,7 +145,7 @@ public class BenchElementTree {
 	 * Tests the performance of the setElementData operation.
 	 */
 	@Test
-	public void testSetElementData() throws CoreException {
+	public void testSetElementData() throws Exception {
 		ElementTree tree = createTestTree(false);
 		Object data = new Object();
 

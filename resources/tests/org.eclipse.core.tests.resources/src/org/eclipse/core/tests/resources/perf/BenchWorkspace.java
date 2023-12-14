@@ -28,6 +28,8 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.junit.Before;
@@ -131,7 +133,7 @@ public class BenchWorkspace {
 		final IWorkspaceRoot root = workspace.getRoot();
 		new PerformanceTestRunner() {
 			@Override
-			protected void setUp() throws CoreException {
+			protected void setUp() throws Exception {
 				super.setUp();
 				waitForBackgroundActivity();
 			}
@@ -152,7 +154,7 @@ public class BenchWorkspace {
 	}
 
 	@Test
-	public void testCountResourcesDuringOperation() throws CoreException {
+	public void testCountResourcesDuringOperation() throws Exception {
 		final Workspace workspace = (Workspace) getWorkspace();
 		IWorkspaceRunnable runnable = monitor -> {
 			//touch all files
@@ -160,12 +162,18 @@ public class BenchWorkspace {
 				resource.touch(null);
 				return true;
 			});
-			new PerformanceTestRunner() {
-				@Override
-				protected void test() {
-					workspace.countResources(project.getFullPath(), IResource.DEPTH_INFINITE, true);
-				}
-			}.run(getClass(), testName.getMethodName(), 10, 10);
+			try {
+				new PerformanceTestRunner() {
+					@Override
+					protected void test() {
+						workspace.countResources(project.getFullPath(), IResource.DEPTH_INFINITE, true);
+					}
+				}.run(getClass(), testName.getMethodName(), 10, 10);
+			} catch (CoreException e) {
+				throw e;
+			} catch (Exception e) {
+				throw new CoreException(new Status(IStatus.ERROR, getClass(), "exception during performance test", e));
+			}
 		};
 		workspace.run(runnable, createTestMonitor());
 	}
@@ -174,7 +182,7 @@ public class BenchWorkspace {
 	 * Tests computing max marker severity
 	 */
 	@Test
-	public void testFindMaxProblemSeverity() throws CoreException {
+	public void testFindMaxProblemSeverity() throws Exception {
 		addProblems(10);
 		final Workspace workspace = (Workspace) getWorkspace();
 		final IWorkspaceRoot root = workspace.getRoot();
